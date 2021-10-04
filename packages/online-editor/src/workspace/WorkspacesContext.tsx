@@ -73,7 +73,6 @@ export interface LocalFile {
   getFileContents: () => Promise<string>;
 }
 
-// TODO CAPONETTO: review and refactor this context
 export interface WorkspacesContextType {
   workspaceService: WorkspaceService;
   listWorkspaceOverviews: () => Promise<WorkspaceOverview[]>;

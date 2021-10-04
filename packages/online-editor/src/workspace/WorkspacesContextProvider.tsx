@@ -36,9 +36,6 @@ import { emptyTemplates } from "./FileTemplates";
 const INDEXED_DB_NAME = "kogito-online";
 const GIT_CORS_PROXY = "https://cors.isomorphic-git.org"; // TODO CAPONETTO: Deploy our own proxy (https://github.com/isomorphic-git/cors-proxy)
 
-// TODO CAPONETTO: fullname and email to be set via settings? Use octokit?
-const GIT_USER_FULLNAME = "Kogito Tooling Bot (kiegroup)";
-const GIT_USER_EMAIL = "kietooling@gmail.com";
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_WORKSPACE_DEFAULT_NAME = `Untitled Folder`;
 
@@ -52,18 +49,6 @@ export function WorkspacesContextProvider(props: Props) {
   const storageService = useMemo(() => new StorageService(INDEXED_DB_NAME), []);
   const workspaceService = useMemo(() => new WorkspaceService(storageService), [storageService]);
   const gitService = useMemo(() => new GitService(GIT_CORS_PROXY, storageService), [storageService]);
-
-  const authInfo = useMemo(
-    () => ({
-      name: GIT_USER_FULLNAME,
-      email: GIT_USER_EMAIL,
-      onAuth: () => ({
-        username: settings.github.user!,
-        password: settings.github.token!,
-      }),
-    }),
-    [settings.github]
-  );
 
   const createWorkspace = useCallback(
     async (descriptor: WorkspaceDescriptor, fileHandler: FileHandler) => {
@@ -100,11 +85,24 @@ export function WorkspacesContextProvider(props: Props) {
 
   const createWorkspaceFromGitHubRepository = useCallback(
     async (repositoryUrl: URL, sourceBranch: string) => {
+      if (!settings.github.user) {
+        throw new Error("User not authenticated on GitHub");
+      }
+
       const descriptor: WorkspaceDescriptor = {
         workspaceId: workspaceService.newContext(),
         name: NEW_WORKSPACE_DEFAULT_NAME,
         origin: { url: repositoryUrl, branch: sourceBranch, kind: WorkspaceKind.GITHUB_REPOSITORY },
         createdIn: new Date().toString(),
+      };
+
+      const authInfo = {
+        name: settings.github.user.name,
+        email: settings.github.user.email,
+        onAuth: () => ({
+          username: settings.github.user!.login,
+          password: settings.github.token!,
+        }),
       };
 
       const fileHandler = new GitRepositoryFileHandler({
@@ -118,7 +116,7 @@ export function WorkspacesContextProvider(props: Props) {
       await createWorkspace(descriptor, fileHandler);
       return descriptor;
     },
-    [workspaceService, authInfo, gitService, storageService, createWorkspace]
+    [workspaceService, settings.github.user, settings.github.token, gitService, storageService, createWorkspace]
   );
 
   const renameFile = useCallback(

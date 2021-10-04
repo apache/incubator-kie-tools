@@ -28,6 +28,12 @@ export enum AuthStatus {
   SIGNED_IN,
 }
 
+interface GithubUser {
+  login: string;
+  name: string;
+  email: string;
+}
+
 export interface SettingsContextType {
   open: (activeTab?: SettingsTabs) => void;
   close: () => void;
@@ -55,7 +61,7 @@ export interface SettingsContextType {
     authStatus: AuthStatus;
     octokit: Octokit;
     token?: string;
-    user?: string;
+    user?: GithubUser;
     scopes?: string[];
     service: GithubService;
   };
@@ -99,7 +105,7 @@ export function SettingsContextProvider(props: any) {
   const [githubAuthStatus, setGitHubAuthStatus] = useState(AuthStatus.LOADING);
   const [githubOctokit, setGitHubOctokit] = useState<Octokit>(new Octokit());
   const [githubToken, setGitHubToken] = useState<string | undefined>(undefined);
-  const [githubUser, setGitHubUser] = useState<string | undefined>(undefined);
+  const [githubUser, setGitHubUser] = useState<GithubUser | undefined>(undefined);
   const [githubScopes, setGitHubScopes] = useState<string[] | undefined>(undefined);
 
   const githubAuthService = useMemo(() => {
@@ -121,7 +127,11 @@ export function SettingsContextProvider(props: any) {
           setGitHubOctokit(octokit);
           setGitHubAuthStatus(AuthStatus.SIGNED_IN);
           setGitHubToken(token);
-          setGitHubUser(response.data.login);
+          setGitHubUser({
+            login: response.data.login,
+            name: response.data.name ?? "",
+            email: response.data.email ?? "",
+          });
           setGitHubScopes(response.headers["x-oauth-scopes"]?.split(", ") ?? []);
           setCookie(GITHUB_AUTH_TOKEN_COOKIE_NAME, token);
         } catch (e) {

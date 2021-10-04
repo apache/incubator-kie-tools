@@ -322,7 +322,7 @@ export function EditorToolbar(props: Props) {
       // update gist
       if (queryParamUrl && settings.github.service.isGist(queryParamUrl)) {
         const userLogin = settings.github.service.extractUserLoginFromFileUrl(queryParamUrl);
-        if (userLogin === settings.github.user) {
+        if (userLogin === settings.github.user?.login) {
           try {
             const filename = props.workspaceFile.nameWithExtension;
             const response = await settings.github.service.updateGist(settings.github.octokit, {
