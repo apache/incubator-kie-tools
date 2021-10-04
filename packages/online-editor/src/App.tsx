@@ -22,14 +22,11 @@ import { HashRouter } from "react-router-dom";
 import { GlobalContextProvider, SupportedFileExtensions, useGlobals } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { OnlineI18nContextProvider } from "./common/i18n";
-import { HomePage } from "./home/HomePage";
-import { DownloadHubModal } from "./home/DownloadHubModal";
 import { NoMatchPage } from "./NoMatchPage";
 import { KieToolingExtendedServicesContextProvider } from "./editor/KieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
 import { NewHomePage } from "./home/NewHomePage";
-import { useQueryParams } from "./queryParams/QueryParamsContext";
 import { WorkspaceOverviewPage } from "./workspace/pages/WorkspaceOverviewPage";
 import { NewWorkspaceWithEmptyFilePage } from "./workspace/pages/NewWorkspaceWithEmptyFilePage";
 import { NewWorkspaceFromUrlPage } from "./workspace/pages/NewWorkspaceFromUrlPage";
@@ -88,15 +85,8 @@ function RoutesSwitch() {
           />
         )}
       </Route>
-      <Route exact={true} path={"/home-old"}>
-        <HomePage />
-      </Route>
       <Route exact={true} path={globals.routes.home.path({})}>
         <NewHomePage />
-      </Route>
-      <Route exact={true} path={globals.routes.download.path({})}>
-        <HomePage />
-        <DownloadHubModal />
       </Route>
       <Route component={NoMatchPage} />
     </Switch>
