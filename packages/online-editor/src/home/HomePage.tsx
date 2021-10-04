@@ -409,7 +409,7 @@ function WorkspaceCard(props: { workspaceOverview: WorkspaceOverview }) {
   const history = useHistory();
   const workspaces = useWorkspaces();
   const [isHovered, setHovered] = useState(false);
-  const { workspacePromise } = useWorkspacePromise(props.workspaceOverview.workspaceId);
+  const workspacePromise = useWorkspacePromise(props.workspaceOverview.workspaceId);
 
   const deleteWorkspaceIcon = useMemo(() => {
     return (

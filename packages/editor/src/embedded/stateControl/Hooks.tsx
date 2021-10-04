@@ -33,7 +33,7 @@ export function useDirtyState(editor?: EmbeddedEditorRef) {
 
 export function useStateControlSubscription(
   editor: EmbeddedEditorRef | undefined,
-  callback: () => void,
+  callback: (isDirty: boolean) => void | Promise<void>,
   args: { throttle: number } = { throttle: 0 }
 ) {
   useEffect(() => {
@@ -42,18 +42,20 @@ export function useStateControlSubscription(
     }
 
     let timeout: number | undefined;
-    const subscription = editor?.getStateControl().subscribe(() => {
+    const subscription = editor?.getStateControl().subscribe((isDirty) => {
       if (args.throttle <= 0) {
-        callback();
+        callback(isDirty);
         return;
       }
 
       if (timeout) {
         clearTimeout(timeout);
       }
-      timeout = window.setTimeout(callback, args.throttle);
+      timeout = window.setTimeout(() => {
+        callback(isDirty);
+      }, args.throttle);
     });
-    callback();
+    callback(false);
 
     return () => {
       if (subscription) {

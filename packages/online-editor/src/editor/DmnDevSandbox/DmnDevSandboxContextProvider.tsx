@@ -28,15 +28,13 @@ import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus"
 import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandboxModalConfirmDeploy";
 import { useSettings } from "../../settings/SettingsContext";
 import { isConfigValid, OpenShiftSettingsConfig } from "../../settings/OpenShiftSettingsConfig";
-import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { AlertsController, useAlert } from "../Alerts/Alerts";
 import { SUPPORTED_FILES_DMN_DEV_SANDBOX_DEPLOY_PATTERN } from "../../workspace/SupportedFiles";
 import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 interface Props {
-  currentFile: EmbeddedEditorFile;
-  workspaceFile?: WorkspaceFile;
   children: React.ReactNode;
+  workspaceFile: WorkspaceFile | undefined;
   editor: EmbeddedEditorRef | undefined;
   alerts: AlertsController | undefined;
 }
@@ -98,6 +96,10 @@ export function DmnDevSandboxContextProvider(props: Props) {
 
   const onDeploy = useCallback(
     async (config: OpenShiftSettingsConfig) => {
+      if (!props.workspaceFile) {
+        return;
+      }
+
       if (!(isConfigValid(config) && (await settings.openshift.service.isConnectionEstablished(config)))) {
         deployStartedErrorAlert.show();
         return;
@@ -109,10 +111,8 @@ export function DmnDevSandboxContextProvider(props: Props) {
           .replace(/("|')/g, '\\"'); // Escape quotes
 
       const targetFile: DeploymentFile = {
-        path: props.workspaceFile
-          ? props.workspaceFile.pathRelativeToWorkspaceRoot
-          : `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
-        getFileContents: prepareFileContents(props.currentFile.getFileContents),
+        path: props.workspaceFile.pathRelativeToWorkspaceRoot,
+        getFileContents: prepareFileContents(props.workspaceFile.getFileContents),
       };
 
       const relatedFiles: DeploymentFile[] = [];
@@ -157,7 +157,6 @@ export function DmnDevSandboxContextProvider(props: Props) {
     [
       settings.openshift.service,
       props.workspaceFile,
-      props.currentFile,
       workspaces.workspaceService,
       deployStartedSuccessAlert,
       deployStartedErrorAlert,

@@ -1,12 +1,12 @@
 import { useWorkspaces } from "../WorkspacesContext";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { ActiveWorkspace } from "../model/ActiveWorkspace";
-import { useDelayedPromiseState, usePromiseState } from "./PromiseState";
+import { useDelayedPromiseState } from "./PromiseState";
 import { Holder, useCancelableEffect } from "../../common/Hooks";
 
 export function useWorkspacePromise(workspaceId: string | undefined) {
   const workspaces = useWorkspaces();
-  const [workspacePromise, setWorkspacePromise] = useDelayedPromiseState<ActiveWorkspace>(1000);
+  const [workspacePromise, setWorkspacePromise] = useDelayedPromiseState<ActiveWorkspace>(600);
 
   const refresh = useCallback(
     async (canceled: Holder<boolean>) => {
@@ -32,16 +32,6 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
       setWorkspacePromise({ data: { descriptor: descriptor, files } });
     },
     [setWorkspacePromise, workspaceId, workspaces.workspaceService]
-  );
-
-  const addEmptyWorkspaceFile = useCallback(
-    async (fileExtension: string) => {
-      if (!workspacePromise.data) {
-        throw new Error("Can't add file while there's no workspace.");
-      }
-      return await workspaces.addEmptyFile(workspacePromise.data.descriptor.workspaceId, fileExtension);
-    },
-    [workspacePromise] //TODO: Fix dependency array
   );
 
   useCancelableEffect(
@@ -74,9 +64,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
     )
   );
 
-  return useMemo(() => {
-    return { workspacePromise, addEmptyWorkspaceFile };
-  }, [workspacePromise, addEmptyWorkspaceFile]);
+  return workspacePromise;
 }
 
 export type WorkspaceEvents =

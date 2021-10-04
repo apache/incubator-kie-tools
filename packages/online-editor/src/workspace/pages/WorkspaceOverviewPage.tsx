@@ -15,8 +15,8 @@
  */
 
 import * as React from "react";
-import { useState } from "react";
-import { WorkspaceFile } from "../WorkspacesContext";
+import { useCallback, useState } from "react";
+import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
 import { Link } from "react-router-dom";
 import { SUPPORTED_FILES_EDITABLE } from "../SupportedFiles";
 import { OnlineEditorPage } from "../../home/pageTemplate/OnlineEditorPage";
@@ -64,8 +64,19 @@ export interface Props {
 export function WorkspaceOverviewPage(props: Props) {
   const history = useHistory();
   const globals = useGlobals();
-  const { workspacePromise, addEmptyWorkspaceFile } = useWorkspacePromise(props.workspaceId);
+  const workspaces = useWorkspaces();
+  const workspacePromise = useWorkspacePromise(props.workspaceId);
   const [isNewFileDropdownOpen, setNewFileDropdownOpen] = useState(false);
+
+  const addEmptyWorkspaceFile = useCallback(
+    (extension: string) => {
+      if (!workspacePromise.data) {
+        throw new Error("Can't add file.");
+      }
+      return workspaces.addEmptyFile(workspacePromise.data.descriptor.workspaceId, extension);
+    },
+    [workspaces, workspacePromise.data]
+  );
 
   return (
     <OnlineEditorPage>

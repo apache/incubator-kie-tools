@@ -28,17 +28,17 @@ import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useHistory } from "react-router";
 import { useGlobals } from "../../common/GlobalContext";
 import { QueryParams } from "../../common/Routes";
-import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { usePrevious } from "../../common/Hooks";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { jsonParseWithDate } from "../../common/utils";
 import { NotificationsPanelController } from "../NotificationsPanel/NotificationsPanel";
+import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 interface Props {
   children: React.ReactNode;
   editor: EmbeddedEditorRef | undefined;
   notificationsPanel: NotificationsPanelController | undefined;
-  currentFile: EmbeddedEditorFile;
+  workspaceFile: WorkspaceFile | undefined;
 }
 
 const THROTTLING_TIME = 200;
@@ -64,7 +64,7 @@ export function DmnRunnerContextProvider(props: Props) {
   );
 
   const updateFormSchema = useCallback(() => {
-    if (props.currentFile.fileExtension !== "dmn") {
+    if (props.workspaceFile?.extension !== "dmn") {
       return;
     }
 
@@ -83,16 +83,16 @@ export function DmnRunnerContextProvider(props: Props) {
   }, [props.editor, service]);
 
   useEffect(() => {
-    if (props.currentFile.fileExtension !== "dmn") {
+    if (props.workspaceFile?.extension !== "dmn") {
       setDrawerExpanded(false);
       return;
     }
 
     updateFormSchema();
-  }, [props.currentFile, updateFormSchema]);
+  }, [props.workspaceFile, updateFormSchema]);
 
   const validate = useCallback(() => {
-    if (props.currentFile.fileExtension !== "dmn") {
+    if (props.workspaceFile?.extension !== "dmn") {
       return;
     }
 
@@ -110,13 +110,13 @@ export function DmnRunnerContextProvider(props: Props) {
           ?.getTab(i18n.terms.validation)
           ?.kogitoNotifications_setNotifications("", notifications);
       });
-  }, [props.editor, props.currentFile, props.notificationsPanel, service, i18n]);
+  }, [props.editor, props.workspaceFile, props.notificationsPanel, service, i18n]);
 
   useStateControlSubscription(props.editor, validate, { throttle: THROTTLING_TIME });
   useStateControlSubscription(props.editor, updateFormSchema, { throttle: THROTTLING_TIME });
 
   useEffect(() => {
-    if (props.currentFile.fileExtension !== "dmn") {
+    if (props.workspaceFile?.extension !== "dmn") {
       return;
     }
 
@@ -124,7 +124,7 @@ export function DmnRunnerContextProvider(props: Props) {
       props.notificationsPanel?.getTab(i18n.terms.validation)?.kogitoNotifications_setNotifications("", []);
       return;
     }
-  }, [props.currentFile, props.editor, i18n, kieToolingExtendedServices, props.notificationsPanel]);
+  }, [props.workspaceFile, props.editor, i18n, kieToolingExtendedServices, props.notificationsPanel]);
 
   useEffect(() => {
     if (!props.editor?.isReady || !formSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {

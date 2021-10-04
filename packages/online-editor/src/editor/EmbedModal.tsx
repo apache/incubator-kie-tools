@@ -28,6 +28,7 @@ import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useGlobals } from "../common/GlobalContext";
 import { QueryParams } from "../common/Routes";
 import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
+import { WorkspaceFile } from "../workspace/WorkspacesContext";
 
 type SupportedStandaloneEditorFileExtensions = "bpmn" | "bpmn2" | "dmn";
 type StandaloneEditorLibraryName = "BpmnEditor" | "DmnEditor";
@@ -55,7 +56,7 @@ enum ContentSource {
 }
 
 interface Props {
-  currentFile: EmbeddedEditorFile;
+  workspaceFile: WorkspaceFile | undefined;
   isOpen: boolean;
   onClose: () => void;
   editor: EmbeddedEditorRef | undefined;
@@ -64,7 +65,6 @@ interface Props {
 export function EmbedModal(props: Props) {
   const queryParams = useQueryParams();
   const settings = useSettings();
-  const globals = useGlobals();
   const [embedCode, setEmbedCode] = useState("");
   const [contentSource, setContentSource] = useState(ContentSource.CURRENT_CONTENT);
   const [editorContent, setEditorContent] = useState("");
@@ -127,9 +127,9 @@ export function EmbedModal(props: Props) {
 
   useEffect(() => {
     if (
-      props.currentFile.fileExtension !== "bpmn" &&
-      props.currentFile.fileExtension !== "bpmn2" &&
-      props.currentFile.fileExtension !== "dmn"
+      props.workspaceFile?.extension !== "bpmn" &&
+      props.workspaceFile?.extension !== "bpmn2" &&
+      props.workspaceFile?.extension !== "dmn"
     ) {
       return;
     }
@@ -137,7 +137,7 @@ export function EmbedModal(props: Props) {
     const iframe = document.createElement("iframe");
     iframe.width = "100%";
     iframe.height = "100%";
-    const { libraryName, scriptUrl } = editorStandaloneClassMapping.get(props.currentFile.fileExtension)!;
+    const { libraryName, scriptUrl } = editorStandaloneClassMapping.get(props.workspaceFile.extension)!;
 
     const script =
       contentSource === ContentSource.CURRENT_CONTENT
@@ -152,7 +152,7 @@ export function EmbedModal(props: Props) {
     getCurrentContentScript,
     getGithubGistScript,
     getStandaloneEditorIframeSrcdoc,
-    props.currentFile.fileExtension,
+    props.workspaceFile,
   ]);
 
   return (

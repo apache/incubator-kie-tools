@@ -36,7 +36,6 @@ import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedSer
 import { useGlobals } from "../common/GlobalContext";
 import { AuthStatus, useSettings } from "../settings/SettingsContext";
 import { SettingsTabs } from "../settings/SettingsModalBody";
-import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
 import { UpdateGistErrors } from "../settings/GithubService";
 import { QueryParams } from "../common/Routes";
@@ -44,11 +43,10 @@ import { useHistory } from "react-router";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { EmbedModal } from "./EmbedModal";
 import { AlertsController, useAlert } from "./Alerts/Alerts";
-import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
+import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { basename, dirname } from "path";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { CheckIcon } from "@patternfly/react-icons/dist/js/icons/check-icon";
 import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
@@ -68,10 +66,7 @@ export interface Props {
   alerts: AlertsController | undefined;
   editor: EmbeddedEditorRef | undefined;
   workspace: ActiveWorkspace | undefined;
-  currentFile: EmbeddedEditorFile;
-  onRename: (newName: string) => void;
-  addEmptyWorkspaceFile: (extension: string) => Promise<WorkspaceFile>;
-  onClose: () => void;
+  workspaceFile: WorkspaceFile | undefined;
 }
 
 const showWhenSmall: PageHeaderToolsItemProps["visibility"] = {
@@ -86,7 +81,7 @@ const showWhenSmall: PageHeaderToolsItemProps["visibility"] = {
 const hideWhenSmall: PageHeaderToolsItemProps["visibility"] = {
   default: "hidden",
   "2xl": "visible",
-  xl: "hidden",
+  xl: "visible",
   lg: "hidden",
   md: "hidden",
   sm: "hidden",
@@ -97,13 +92,20 @@ export function EditorToolbar(props: Props) {
   const settings = useSettings();
   const history = useHistory();
   const queryParams = useQueryParams();
-  const [fileName, setFileName] = useState(props.currentFile.fileName);
-  const [workspaceName, setWorkspaceName] = useState(props.workspace?.descriptor.name);
+  const [fileName, setFileName] = useState<string>();
+  const [workspaceName, setWorkspaceName] = useState<string>();
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
   const [isEmbedModalOpen, setEmbedModalOpen] = useState(false);
   const { i18n } = useOnlineI18n();
   const isEdited = useDirtyState(props.editor);
+  const downloadRef = useRef<HTMLAnchorElement>(null);
+  const downloadAllRef = useRef<HTMLAnchorElement>(null);
+  const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
+  const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
+  const workspaces = useWorkspaces();
+  const [isWorkspaceFilesMenuOpen, setWorkspaceFilesMenuOpen] = useState(false);
+  const [isWorkspaceAddFileMenuOpen, setWorkspaceAddFileMenuOpen] = useState(false);
 
   useEffect(() => {
     if (props.workspace) {
@@ -198,23 +200,94 @@ export function EditorToolbar(props: Props) {
       [i18n]
     )
   );
+  const requestDownload = useCallback(() => {
+    props.editor?.getStateControl().setSavedCommand();
+    props.editor
+      ?.getContent()
+      .then((content) => {
+        if (downloadRef.current) {
+          const fileBlob = new Blob([content], { type: "text/plain" });
+          downloadRef.current.href = URL.createObjectURL(fileBlob);
+          downloadRef.current.click();
+        }
+      })
+      .then(() => {
+        history.push({ pathname: globals.routes.home.path({}) });
+      });
+  }, [history, globals, props.editor]);
+
+  const closeWithoutSaving = useCallback(() => {
+    history.push({ pathname: globals.routes.home.path({}) });
+  }, [globals, history]);
+
+  const unsavedAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => (
+        <Alert
+          data-testid="unsaved-alert"
+          variant="warning"
+          title={i18n.editorPage.alerts.unsaved.title}
+          actionClose={<AlertActionCloseButton data-testid="unsaved-alert-close-button" onClose={close} />}
+          actionLinks={
+            <>
+              <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestDownload}>
+                {i18n.terms.save}
+              </AlertActionLink>
+              <AlertActionLink data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
+                {i18n.editorPage.alerts.unsaved.closeWithoutSaving}
+              </AlertActionLink>
+            </>
+          }
+        >
+          <p>{i18n.editorPage.alerts.unsaved.message}</p>
+        </Alert>
+      ),
+      [i18n, requestDownload, closeWithoutSaving]
+    )
+  );
+
+  const onClose = useCallback(() => {
+    if (isEdited) {
+      unsavedAlert.show();
+      return;
+    }
+
+    history.push({ pathname: globals.routes.home.path({}) });
+  }, [unsavedAlert, globals, history, isEdited]);
 
   const queryParamUrl = useMemo(() => {
     return queryParams.get(QueryParams.URL);
   }, [queryParams]);
 
   const cancelNewName = useCallback(() => {
-    setFileName(props.currentFile.fileName);
-  }, [props.currentFile.fileName]);
+    if (!props.workspaceFile) {
+      return;
+    }
+    setFileName(props.workspaceFile.nameWithoutExtension);
+  }, [props.workspaceFile]);
 
   useEffect(() => {
-    setFileName(props.currentFile.fileName);
-  }, [props.currentFile.fileName]);
+    if (!props.workspaceFile) {
+      return;
+    }
+    setFileName(props.workspaceFile.nameWithoutExtension);
+  }, [props.workspaceFile]);
+
+  const onRename = useCallback(
+    (newName: string | undefined) => {
+      if (!props.workspaceFile || !newName) {
+        throw new Error("Can't rename workspace");
+      }
+      workspaces.renameFile(props.workspaceFile, newName);
+    },
+    [workspaces, props.workspaceFile]
+  );
 
   const onNameInputKeyUp = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.keyCode === 13 /* Enter */) {
-        props.onRename(fileName);
+        onRename(fileName);
         e.currentTarget.blur();
       } else if (e.keyCode === 27 /* ESC */) {
         cancelNewName();
@@ -225,8 +298,8 @@ export function EditorToolbar(props: Props) {
   );
 
   const includeDownloadSVGDropdownItem = useMemo(() => {
-    return props.currentFile.fileExtension.toLowerCase() !== "pmml";
-  }, [props.currentFile]);
+    return props.workspaceFile?.extension.toLowerCase() !== "pmml";
+  }, [props.workspaceFile]);
 
   const includeEmbedDropdownItem = useMemo(() => {
     return includeDownloadSVGDropdownItem;
@@ -234,17 +307,20 @@ export function EditorToolbar(props: Props) {
 
   const onSendChangesToGitHub = useCallback(() => {
     props.editor?.getContent().then((content) => {
+      if (!props.workspaceFile) {
+        return;
+      }
       window.dispatchEvent(
         new CustomEvent("saveOnlineEditor", {
           detail: {
-            fileName: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
+            fileName: props.workspaceFile.nameWithExtension,
             fileContent: content,
             senderTabId: globals.senderTabId!,
           },
         })
       );
     });
-  }, [props.currentFile, globals.senderTabId, props.editor]);
+  }, [props.workspaceFile, globals.senderTabId, props.editor]);
 
   const onDownload = useCallback(() => {
     props.editor?.getStateControl().setSavedCommand();
@@ -269,7 +345,7 @@ export function EditorToolbar(props: Props) {
   }, [props.editor]);
 
   const onGistIt = useCallback(async () => {
-    if (props.editor) {
+    if (props.editor && props.workspaceFile) {
       const content = await props.editor.getContent();
 
       // update gist
@@ -277,7 +353,7 @@ export function EditorToolbar(props: Props) {
         const userLogin = settings.github.service.extractUserLoginFromFileUrl(queryParamUrl);
         if (userLogin === settings.github.user) {
           try {
-            const filename = `${props.currentFile.fileName}.${props.currentFile.fileExtension}`;
+            const filename = props.workspaceFile.nameWithExtension;
             const response = await settings.github.service.updateGist(settings.github.octokit, {
               filename,
               content,
@@ -297,7 +373,7 @@ export function EditorToolbar(props: Props) {
             if (filename !== settings.github.service.getCurrentGist()?.filename) {
               successUpdateGistAlert.show();
               history.push({
-                pathname: globals.routes.editor.path({ extension: props.currentFile.fileExtension }),
+                pathname: globals.routes.editor.path({ extension: props.workspaceFile.extension }),
                 search: globals.routes.editor.queryString({ url: response }).toString(),
               });
               return;
@@ -316,16 +392,16 @@ export function EditorToolbar(props: Props) {
       // create gist
       try {
         const newGistUrl = await settings.github.service.createGist(settings.github.octokit, {
-          filename: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
+          filename: props.workspaceFile.nameWithExtension,
           content: content,
-          description: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
+          description: props.workspaceFile.nameWithExtension,
           isPublic: true,
         });
 
         successCreateGistAlert.show();
 
         history.push({
-          pathname: globals.routes.editor.path({ extension: props.currentFile.fileExtension }),
+          pathname: globals.routes.editor.path({ extension: props.workspaceFile.extension }),
           search: globals.routes.editor.queryString({ url: newGistUrl }).toString(),
         });
         return;
@@ -341,7 +417,7 @@ export function EditorToolbar(props: Props) {
     successUpdateGistAlert,
     invalidCurrentGistAlert,
     invalidGistFilenameAlert,
-    props.currentFile,
+    props.workspaceFile,
     history,
     globals,
     settings,
@@ -372,7 +448,7 @@ export function EditorToolbar(props: Props) {
         <DropdownItem
           onClick={onDownload}
           key={"donwload-file-item"}
-          description={`${props.currentFile.fileName}.${props.currentFile.fileExtension} will be downloaded`}
+          description={`${props.workspaceFile?.nameWithExtension} will be downloaded`}
           icon={<DownloadIcon />}
         >
           Current file
@@ -384,7 +460,7 @@ export function EditorToolbar(props: Props) {
               data-testid="dropdown-download-svg"
               component="button"
               onClick={onPreview}
-              description={`Image of ${props.currentFile.fileName}.${props.currentFile.fileExtension} will be downloaded in SVG format`}
+              description={`Image of ${props.workspaceFile?.nameWithExtension} will be downloaded in SVG format`}
               icon={<ImageIcon />}
             >
               {"Current file's SVG"}
@@ -467,7 +543,7 @@ export function EditorToolbar(props: Props) {
     ],
     [
       props.workspace,
-      props.currentFile,
+      props.workspaceFile,
       onCopyContentToClipboard,
       onPreview,
       onEmbed,
@@ -481,28 +557,20 @@ export function EditorToolbar(props: Props) {
     ]
   );
 
-  const downloadRef = useRef<HTMLAnchorElement>(null);
-  const downloadAllRef = useRef<HTMLAnchorElement>(null);
-  const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
-  const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
-
   useEffect(() => {
     if (downloadRef.current) {
-      downloadRef.current.download = `${props.currentFile.fileName}.${props.currentFile.fileExtension}`;
+      downloadRef.current.download = `${props.workspaceFile?.nameWithExtension}`;
     }
     if (downloadAllRef.current && props.workspace) {
       downloadAllRef.current.download = `${props.workspace.descriptor.name}.zip`;
     }
     if (downloadPreviewRef.current) {
-      downloadPreviewRef.current.download = `${props.currentFile.fileName}-svg.svg`;
+      downloadPreviewRef.current.download = `${props.workspaceFile?.nameWithoutExtension}-svg.svg`;
     }
-  }, [props.currentFile, props.workspace]);
+  }, [props.workspaceFile, props.workspace]);
 
   //
 
-  const workspaces = useWorkspaces();
-  const [isWorkspaceFilesMenuOpen, setWorkspaceFilesMenuOpen] = useState(false);
-  const [isWorkspaceAddFileMenuOpen, setWorkspaceAddFileMenuOpen] = useState(false);
   const onDownloadAll = useCallback(async () => {
     if (!props.editor || !props.workspace) {
       return;
@@ -567,25 +635,25 @@ export function EditorToolbar(props: Props) {
                 />
               }
             >
-              <span style={{ fontWeight: props.currentFile.path === file.path ? "bold" : "normal" }}>
+              <span style={{ fontWeight: props.workspaceFile?.path === file.path ? "bold" : "normal" }}>
                 {`${basename(file.path)}`}
               </span>
               <EyeIcon
                 style={{
                   height: "0.8em",
                   marginLeft: "10px",
-                  visibility: props.currentFile.path === file.path ? "visible" : "hidden",
+                  visibility: props.workspaceFile?.path === file.path ? "visible" : "hidden",
                 }}
               />
             </DropdownItem>
           ))}
       </DropdownGroup>,
     ];
-  }, [globals, history, props.currentFile.path, props.workspace]);
+  }, [globals, history, props.workspaceFile, props.workspace]);
 
   useEffect(() => {
-    setFileName(props.currentFile.fileName);
-  }, [props.currentFile]);
+    setFileName(props.workspaceFile?.nameWithoutExtension);
+  }, [props.workspaceFile]);
 
   return (
     <>
@@ -602,14 +670,19 @@ export function EditorToolbar(props: Props) {
         {/*    <HomeIcon />*/}
         {/*  </Button>*/}
         {/*</MastheadToggle>*/}
+
         <MastheadMain>
-          <MastheadBrand>
-            <Brand
-              onClick={props.onClose}
-              src={globals.routes.static.images.editorLogo.path({ type: props.currentFile.fileExtension })}
-              alt={`${props.currentFile.fileExtension} kogito logo`}
-            />
-          </MastheadBrand>
+          <PageHeaderToolsItem visibility={{ ...hideWhenSmall, sm: "visible" }}>
+            <MastheadBrand>
+              {props.workspaceFile && (
+                <Brand
+                  onClick={onClose}
+                  src={globals.routes.static.images.editorLogo.path({ type: props.workspaceFile.extension ?? "dmn" })}
+                  alt={`${props.workspaceFile?.extension} kogito logo`}
+                />
+              )}
+            </MastheadBrand>
+          </PageHeaderToolsItem>
         </MastheadMain>
         <Flex justifyContent={{ default: "justifyContentSpaceBetween" }} alignItems={{ default: "alignItemsCenter" }}>
           <FlexItem />
@@ -657,7 +730,7 @@ export function EditorToolbar(props: Props) {
                       onBlur={() => {
                         //FIXME: Duplicated when pressing Enter.
                         //FIXME: Esc is not cancelling.
-                        props.onRename(fileName);
+                        onRename(fileName);
                       }}
                     />
                   </div>
@@ -685,7 +758,7 @@ export function EditorToolbar(props: Props) {
           </FlexItem>
           <FlexItem style={{ display: "flex", alignItems: "center" }}>
             <PageHeaderToolsItem visibility={hideWhenSmall}>
-              {props.currentFile.fileExtension === "dmn" && (
+              {props.workspaceFile?.extension === "dmn" && (
                 <>
                   <KieToolingExtendedServicesButtons />
                 </>
@@ -749,17 +822,20 @@ export function EditorToolbar(props: Props) {
                       <NewFileDropdownItems
                         key={"new-file-dropdown-items"}
                         workspace={props.workspace}
-                        addEmptyWorkspaceFile={(extension) => {
-                          return props.addEmptyWorkspaceFile(extension).then((file) => {
-                            history.push({
-                              pathname: globals.routes.workspaceWithFilePath.path({
-                                workspaceId: file.workspaceId,
-                                filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
-                                extension: file.extension,
-                              }),
-                            });
-                            return file;
+                        addEmptyWorkspaceFile={async (extension) => {
+                          if (!props.workspace) {
+                            throw new Error("Can't add a file without a workspace");
+                          }
+
+                          const file = await workspaces.addEmptyFile(props.workspace.descriptor.workspaceId, extension);
+                          history.push({
+                            pathname: globals.routes.workspaceWithFilePath.path({
+                              workspaceId: file.workspaceId,
+                              filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                              extension: file.extension,
+                            }),
                           });
+                          return file;
                         }}
                       />,
                     ]}
@@ -767,43 +843,8 @@ export function EditorToolbar(props: Props) {
                   />
                 </>
               )}
-              {!props.workspace && (
-                <>
-                  &nbsp;&nbsp;&nbsp;
-                  <Button
-                    variant={"primary"}
-                    className={"kogito--editor__toolbar button"}
-                    onClick={() => {
-                      props.editor
-                        ?.getContent()
-                        .then((content) =>
-                          workspaces.createWorkspaceFromLocal([
-                            {
-                              getFileContents: () => Promise.resolve(content),
-                              path: `${props.currentFile.fileName}.${props.currentFile.fileExtension}`,
-                            },
-                          ])
-                        )
-                        .then(({ suggestedFirstFile }) => {
-                          history.replace({
-                            pathname: globals.routes.workspaceWithFilePath.path({
-                              workspaceId: suggestedFirstFile!.workspaceId,
-                              filePath: suggestedFirstFile!.pathRelativeToWorkspaceRootWithoutExtension,
-                              extension: suggestedFirstFile!.extension,
-                            }),
-                          });
-                        });
-                    }}
-                  >
-                    Make Workspace
-                  </Button>
-                </>
-              )}
             </PageHeaderToolsItem>
             &nbsp;&nbsp;&nbsp;
-            <PageHeaderToolsItem>
-              <SettingsButton />
-            </PageHeaderToolsItem>
             <PageHeaderToolsItem visibility={showWhenSmall}>
               <Dropdown
                 onSelect={() => setKebabOpen(false)}
@@ -823,19 +864,22 @@ export function EditorToolbar(props: Props) {
                 isPlain={true}
                 dropdownItems={[
                   ...shareItems("sm"),
-                  (props.currentFile.fileExtension === "dmn" && (
+                  (props.workspaceFile?.extension === "dmn" && (
                     <KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />
                   )) || <React.Fragment key="kie-tooling-extended-services-group" />,
                 ]}
                 position={DropdownPosition.right}
               />
             </PageHeaderToolsItem>
+            <PageHeaderToolsItem>
+              <SettingsButton />
+            </PageHeaderToolsItem>
           </FlexItem>
         </Flex>
       </Masthead>
 
       <EmbedModal
-        currentFile={props.currentFile}
+        workspaceFile={props.workspaceFile}
         isOpen={isEmbedModalOpen}
         onClose={() => setEmbedModalOpen(false)}
         editor={props.editor}
