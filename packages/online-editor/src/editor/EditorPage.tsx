@@ -22,12 +22,7 @@ import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
 import { ChannelType } from "@kie-tooling-core/editor/dist/api";
-import {
-  EmbeddedEditor,
-  EmbeddedEditorRef,
-  useDirtyState,
-  useStateControlSubscription,
-} from "@kie-tooling-core/editor/dist/embedded";
+import { EmbeddedEditor, EmbeddedEditorRef, useStateControlSubscription } from "@kie-tooling-core/editor/dist/embedded";
 import { DmnRunnerContext } from "./DmnRunner/DmnRunnerContext";
 import { DmnRunnerContextProvider } from "./DmnRunner/DmnRunnerContextProvider";
 import { NotificationsPanel, NotificationsPanelController } from "./NotificationsPanel/NotificationsPanel";
@@ -38,7 +33,7 @@ import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxConte
 import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
 import { Alerts, AlertsController, useAlert } from "./Alerts/Alerts";
-import { useCancelableEffect, useController } from "../common/Hooks";
+import { useCancelableEffect, useController, usePrevious } from "../common/Hooks";
 import { TextEditorModal } from "./TextEditor/TextEditorModal";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kie-tooling-core/workspace/dist/api";
@@ -123,15 +118,13 @@ export function EditorPage(props: Props) {
             return;
           }
 
-          setEmbeddedEditorFile(() => {
-            return {
-              path: workspaceFilePromise.data.path,
-              getFileContents: workspaceFilePromise.data.getFileContents,
-              kind: "local",
-              isReadOnly: false,
-              fileExtension: workspaceFilePromise.data.extension,
-              fileName: workspaceFilePromise.data.nameWithoutExtension,
-            };
+          setEmbeddedEditorFile({
+            path: workspaceFilePromise.data.path,
+            getFileContents: workspaceFilePromise.data.getFileContents,
+            kind: "local",
+            isReadOnly: false,
+            fileExtension: workspaceFilePromise.data.extension,
+            fileName: workspaceFilePromise.data.nameWithoutExtension,
           });
         });
       },
@@ -140,21 +133,29 @@ export function EditorPage(props: Props) {
   );
 
   // auto-save
-  const isDirty = useDirtyState(editor);
-  useEffect(() => {
-    if (isDirty) {
-      if (!editor?.isReady || !workspaceFilePromise.data) {
-        return;
-      }
+  const prevPath = usePrevious(workspaceFilePromise.data?.path);
+  if (prevPath !== workspaceFilePromise.data?.path) {
+    lastContent.current = undefined;
+  }
 
-      editor.getStateControl().setSavedCommand();
+  useStateControlSubscription(
+    editor,
+    useCallback(
+      async (isDirty) => {
+        if (!isDirty || !workspaceFilePromise.data) {
+          return;
+        }
 
-      editor.getContent().then((content) => {
+        const content = await editor?.getContent();
         lastContent.current = content;
-        workspaces.updateFile(workspaceFilePromise.data, () => Promise.resolve(content));
-      });
-    }
-  }, [editor, isDirty, workspaces, workspaceFilePromise]);
+
+        await workspaces.updateFile(workspaceFilePromise.data, () => Promise.resolve(content));
+        editor?.getStateControl().setSavedCommand();
+      },
+      [editor, workspaceFilePromise]
+    ),
+    { throttle: 200 }
+  );
 
   const onResourceContentRequest = useCallback(
     async (request: ResourceContentRequest) => {
@@ -193,30 +194,26 @@ export function EditorPage(props: Props) {
   );
 
   // validate
-  useStateControlSubscription(
-    editor,
-    useCallback(() => {
-      if (props.forExtension === "dmn") {
-        return;
-      }
+  useEffect(() => {
+    if (props.forExtension === "dmn" || !workspaceFilePromise.data || !editor?.isReady) {
+      return;
+    }
 
+    //FIXME: tiago What to do?
+    setTimeout(() => {
       editor?.validate().then((notifications) => {
+        console.info(notifications);
         notificationsPanel
           ?.getTab(i18n.terms.validation)
           ?.kogitoNotifications_setNotifications("", Array.isArray(notifications) ? notifications : []);
       });
-    }, [props.forExtension, notificationsPanel, editor, i18n]),
-    { throttle: 200 }
-  );
+    }, 200);
+  }, [workspaceFilePromise, props.forExtension, notificationsPanel, editor, i18n]);
 
   return (
     <>
-      <DmnRunnerContextProvider
-        workspaceFile={workspaceFilePromise.data}
-        editor={editor}
-        notificationsPanel={notificationsPanel}
-      >
-        <DmnDevSandboxContextProvider workspaceFile={workspaceFilePromise.data} editor={editor} alerts={alerts}>
+      <DmnRunnerContextProvider workspaceFile={workspaceFilePromise.data} notificationsPanel={notificationsPanel}>
+        <DmnDevSandboxContextProvider workspaceFile={workspaceFilePromise.data} alerts={alerts}>
           <Page
             header={
               <EditorToolbar
@@ -228,7 +225,7 @@ export function EditorPage(props: Props) {
             }
           >
             <PageSection isFilled={true} padding={{ default: "noPadding" }} className={"kogito--editor__page-section"}>
-              <DmnRunnerDrawer editor={editor} notificationsPanel={notificationsPanel}>
+              <DmnRunnerDrawer workspaceFile={workspaceFilePromise.data} notificationsPanel={notificationsPanel}>
                 <Alerts ref={alertsRef} />
                 {embeddedEditorFile && (
                   <EmbeddedEditor

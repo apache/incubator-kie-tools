@@ -22,7 +22,6 @@ import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/di
 import { useDmnRunner } from "./DmnRunnerContext";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
-import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { useOnlineI18n } from "../../common/i18n";
 import {
   DecisionResult,
@@ -38,6 +37,7 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { NotificationsPanelController } from "../NotificationsPanel/NotificationsPanel";
+import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -47,7 +47,7 @@ enum ButtonPosition {
 }
 
 interface Props {
-  editor: EmbeddedEditorRef | undefined;
+  workspaceFile: WorkspaceFile | undefined;
   notificationsPanel: NotificationsPanelController | undefined;
 }
 
@@ -134,12 +134,12 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const updateDmnRunnerResults = useCallback(
     (formData: object) => {
-      if (!props.editor?.isReady || dmnRunner.status !== DmnRunnerStatus.AVAILABLE) {
+      if (dmnRunner.status !== DmnRunnerStatus.AVAILABLE) {
         return;
       }
 
-      return props.editor
-        .getContent()
+      return props.workspaceFile
+        ?.getFileContents()
         .then((content) => {
           dmnRunner.service.result({ context: formData, model: content })?.then((result) => {
             if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
@@ -165,7 +165,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           setDmnRunnerResults(undefined);
         });
     },
-    [props.editor, dmnRunner.status, dmnRunner.service, setExecutionNotifications]
+    [props.workspaceFile, dmnRunner.status, dmnRunner.service, setExecutionNotifications]
   );
 
   // Update outputs column on form change

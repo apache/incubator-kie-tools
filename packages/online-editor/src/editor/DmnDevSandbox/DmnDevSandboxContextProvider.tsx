@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
@@ -35,7 +34,6 @@ import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext"
 interface Props {
   children: React.ReactNode;
   workspaceFile: WorkspaceFile | undefined;
-  editor: EmbeddedEditorRef | undefined;
   alerts: AlertsController | undefined;
 }
 

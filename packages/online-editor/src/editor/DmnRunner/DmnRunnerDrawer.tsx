@@ -2,11 +2,11 @@ import * as React from "react";
 import { DmnRunnerDrawerPanelContent } from "./DmnRunnerDrawerPanelContent";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { useDmnRunner } from "./DmnRunnerContext";
-import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { NotificationsPanelController } from "../NotificationsPanel/NotificationsPanel";
+import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 export function DmnRunnerDrawer(props: {
-  editor: EmbeddedEditorRef | undefined;
+  workspaceFile: WorkspaceFile | undefined;
   notificationsPanel: NotificationsPanelController | undefined;
   children: React.ReactNode;
 }) {
@@ -18,7 +18,10 @@ export function DmnRunnerDrawer(props: {
           !dmnRunner.isDrawerExpanded ? "kogito--editor__drawer-content-onClose" : "kogito--editor__drawer-content-open"
         }
         panelContent={
-          <DmnRunnerDrawerPanelContent editor={props.editor} notificationsPanel={props.notificationsPanel} />
+          <DmnRunnerDrawerPanelContent
+            workspaceFile={props.workspaceFile}
+            notificationsPanel={props.notificationsPanel}
+          />
         }
       >
         <DrawerContentBody className={"kogito--editor__drawer-content-body"}>{props.children}</DrawerContentBody>

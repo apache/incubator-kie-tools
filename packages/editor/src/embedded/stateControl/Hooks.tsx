@@ -55,7 +55,6 @@ export function useStateControlSubscription(
         callback(isDirty);
       }, args.throttle);
     });
-    callback(false);
 
     return () => {
       if (subscription) {

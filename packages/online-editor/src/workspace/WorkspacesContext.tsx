@@ -29,7 +29,7 @@ import { basename, extname } from "path";
 import { removeFileExtension } from "../common/utils";
 
 export class WorkspaceFile {
-  constructor(private readonly args: { path: string; getFileContents: () => Promise<string | undefined> }) {}
+  constructor(private readonly args: { path: string; getFileContents: () => Promise<string> }) {}
 
   get path() {
     return this.args.path;

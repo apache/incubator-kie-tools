@@ -283,10 +283,10 @@ export class StorageService {
     }
   }
 
-  private buildGetFileContentsCallback(path: string): () => Promise<string | undefined> {
+  private buildGetFileContentsCallback(path: string): () => Promise<string> {
     return async () => {
       if (!(await this.exists(path))) {
-        return;
+        throw new Error(`Can't read non-existent file '${path}'`);
       }
       return this.decoder.decode(await this.fsp.readFile(path));
     };

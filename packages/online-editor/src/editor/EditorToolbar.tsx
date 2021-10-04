@@ -92,8 +92,7 @@ export function EditorToolbar(props: Props) {
   const settings = useSettings();
   const history = useHistory();
   const queryParams = useQueryParams();
-  const [fileName, setFileName] = useState<string>();
-  const [workspaceName, setWorkspaceName] = useState<string>();
+  const workspaces = useWorkspaces();
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
   const [isEmbedModalOpen, setEmbedModalOpen] = useState(false);
@@ -103,15 +102,8 @@ export function EditorToolbar(props: Props) {
   const downloadAllRef = useRef<HTMLAnchorElement>(null);
   const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
-  const workspaces = useWorkspaces();
   const [isWorkspaceFilesMenuOpen, setWorkspaceFilesMenuOpen] = useState(false);
   const [isWorkspaceAddFileMenuOpen, setWorkspaceAddFileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    if (props.workspace) {
-      setWorkspaceName(props.workspace.descriptor.name);
-    }
-  }, [props.workspace]);
 
   const copySuccessfulAlert = useAlert(
     props.alerts,
@@ -202,8 +194,8 @@ export function EditorToolbar(props: Props) {
   );
   const requestDownload = useCallback(() => {
     props.editor?.getStateControl().setSavedCommand();
-    props.editor
-      ?.getContent()
+    props.workspaceFile
+      ?.getFileContents()
       .then((content) => {
         if (downloadRef.current) {
           const fileBlob = new Blob([content], { type: "text/plain" });
@@ -214,7 +206,7 @@ export function EditorToolbar(props: Props) {
       .then(() => {
         history.push({ pathname: globals.routes.home.path({}) });
       });
-  }, [history, globals, props.editor]);
+  }, [props.editor, props.workspaceFile, history, globals.routes.home]);
 
   const closeWithoutSaving = useCallback(() => {
     history.push({ pathname: globals.routes.home.path({}) });
@@ -260,43 +252,6 @@ export function EditorToolbar(props: Props) {
     return queryParams.get(QueryParams.URL);
   }, [queryParams]);
 
-  const cancelNewName = useCallback(() => {
-    if (!props.workspaceFile) {
-      return;
-    }
-    setFileName(props.workspaceFile.nameWithoutExtension);
-  }, [props.workspaceFile]);
-
-  useEffect(() => {
-    if (!props.workspaceFile) {
-      return;
-    }
-    setFileName(props.workspaceFile.nameWithoutExtension);
-  }, [props.workspaceFile]);
-
-  const onRename = useCallback(
-    (newName: string | undefined) => {
-      if (!props.workspaceFile || !newName) {
-        throw new Error("Can't rename workspace");
-      }
-      workspaces.renameFile(props.workspaceFile, newName);
-    },
-    [workspaces, props.workspaceFile]
-  );
-
-  const onNameInputKeyUp = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.keyCode === 13 /* Enter */) {
-        onRename(fileName);
-        e.currentTarget.blur();
-      } else if (e.keyCode === 27 /* ESC */) {
-        cancelNewName();
-        e.currentTarget.blur();
-      }
-    },
-    [props, fileName, cancelNewName]
-  );
-
   const includeDownloadSVGDropdownItem = useMemo(() => {
     return props.workspaceFile?.extension.toLowerCase() !== "pmml";
   }, [props.workspaceFile]);
@@ -306,7 +261,7 @@ export function EditorToolbar(props: Props) {
   }, [includeDownloadSVGDropdownItem]);
 
   const onSendChangesToGitHub = useCallback(() => {
-    props.editor?.getContent().then((content) => {
+    props.workspaceFile?.getFileContents().then((content) => {
       if (!props.workspaceFile) {
         return;
       }
@@ -320,19 +275,31 @@ export function EditorToolbar(props: Props) {
         })
       );
     });
-  }, [props.workspaceFile, globals.senderTabId, props.editor]);
+  }, [props.workspaceFile, globals.senderTabId]);
 
   const onDownload = useCallback(() => {
     props.editor?.getStateControl().setSavedCommand();
     props.alerts?.closeAll();
-    props.editor?.getContent().then((content) => {
+    props.workspaceFile?.getFileContents().then((content) => {
       if (downloadRef.current) {
         const fileBlob = new Blob([content], { type: "text/plain" });
         downloadRef.current.href = URL.createObjectURL(fileBlob);
         downloadRef.current.click();
       }
     });
-  }, [props.editor, props.alerts]);
+  }, [props.editor, props.workspaceFile, props.alerts]);
+
+  const onDownloadAll = useCallback(async () => {
+    if (!props.editor || !props.workspace) {
+      return;
+    }
+
+    const zipBlob = await workspaces.prepareZip(props.workspace.descriptor.workspaceId);
+    if (downloadAllRef.current) {
+      downloadAllRef.current.href = URL.createObjectURL(zipBlob);
+      downloadAllRef.current.click();
+    }
+  }, [props.editor, props.workspace, workspaces]);
 
   const onPreview = useCallback(() => {
     props.editor?.getPreview().then((previewSvg) => {
@@ -346,7 +313,7 @@ export function EditorToolbar(props: Props) {
 
   const onGistIt = useCallback(async () => {
     if (props.editor && props.workspaceFile) {
-      const content = await props.editor.getContent();
+      const content = await props.workspaceFile.getFileContents();
 
       // update gist
       if (queryParamUrl && settings.github.service.isGist(queryParamUrl)) {
@@ -431,7 +398,7 @@ export function EditorToolbar(props: Props) {
   }, []);
 
   const onCopyContentToClipboard = useCallback(() => {
-    props.editor?.getContent().then((content) => {
+    props.workspaceFile?.getFileContents().then((content) => {
       if (copyContentTextArea.current) {
         copyContentTextArea.current.value = content;
         copyContentTextArea.current.select();
@@ -440,7 +407,7 @@ export function EditorToolbar(props: Props) {
         }
       }
     });
-  }, [props.editor, copySuccessfulAlert]);
+  }, [props.workspaceFile, copySuccessfulAlert]);
 
   const shareItems = useCallback(
     (dropdownId: string) => [
@@ -542,6 +509,8 @@ export function EditorToolbar(props: Props) {
       </DropdownGroup>,
     ],
     [
+      onDownload,
+      onDownloadAll,
       props.workspace,
       props.workspaceFile,
       onCopyContentToClipboard,
@@ -568,20 +537,6 @@ export function EditorToolbar(props: Props) {
       downloadPreviewRef.current.download = `${props.workspaceFile?.nameWithoutExtension}-svg.svg`;
     }
   }, [props.workspaceFile, props.workspace]);
-
-  //
-
-  const onDownloadAll = useCallback(async () => {
-    if (!props.editor || !props.workspace) {
-      return;
-    }
-
-    const zipBlob = await workspaces.prepareZip(props.workspace.descriptor.workspaceId);
-    if (downloadAllRef.current) {
-      downloadAllRef.current.href = URL.createObjectURL(zipBlob);
-      downloadAllRef.current.click();
-    }
-  }, [props.editor, props.workspace, workspaces]);
 
   const filesDropdownItems = useMemo(() => {
     if (!props.workspace || props.workspace.files.length === 0) {
@@ -651,10 +606,6 @@ export function EditorToolbar(props: Props) {
     ];
   }, [globals, history, props.workspaceFile, props.workspace]);
 
-  useEffect(() => {
-    setFileName(props.workspaceFile?.nameWithoutExtension);
-  }, [props.workspaceFile]);
-
   return (
     <>
       <Masthead aria-label={"Page header"}>
@@ -690,50 +641,7 @@ export function EditorToolbar(props: Props) {
             <PageHeaderToolsItem visibility={{ default: "visible" }}>
               <Flex>
                 <FlexItem>
-                  {props.workspace && props.workspace.files.length > 1 && (
-                    <>
-                      <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
-                        <Title aria-label={"EmbeddedEditorFile name"} headingLevel={"h3"} size={"2xl"}>
-                          {workspaceName}
-                        </Title>
-                        <TextInput
-                          value={workspaceName}
-                          type={"text"}
-                          aria-label={"Edit workspace name"}
-                          className={"kogito--editor__toolbar-title"}
-                          onChange={setWorkspaceName}
-                          onBlur={() => {
-                            if (props.workspace && workspaceName) {
-                              workspaces.workspaceService.rename(props.workspace.descriptor, workspaceName, {
-                                broadcast: true,
-                              });
-                            }
-                          }}
-                        />
-                      </div>
-                      <Title headingLevel={"h3"} size={"2xl"} style={{ display: "inline", margin: "10px" }}>
-                        {`/`}
-                      </Title>
-                    </>
-                  )}
-                  <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
-                    <Title aria-label={"EmbeddedEditorFile name"} headingLevel={"h3"} size={"2xl"}>
-                      {fileName}
-                    </Title>
-                    <TextInput
-                      value={fileName}
-                      type={"text"}
-                      aria-label={"Edit file name"}
-                      className={"kogito--editor__toolbar-title"}
-                      onChange={setFileName}
-                      onKeyUp={onNameInputKeyUp}
-                      onBlur={() => {
-                        //FIXME: Duplicated when pressing Enter.
-                        //FIXME: Esc is not cancelling.
-                        onRename(fileName);
-                      }}
-                    />
-                  </div>
+                  <WorkspaceAndWorkspaceFileNames workspace={props.workspace} workspaceFile={props.workspaceFile} />
                 </FlexItem>
                 <FlexItem>
                   <TextContent>
@@ -882,12 +790,137 @@ export function EditorToolbar(props: Props) {
         workspaceFile={props.workspaceFile}
         isOpen={isEmbedModalOpen}
         onClose={() => setEmbedModalOpen(false)}
-        editor={props.editor}
       />
       <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
       <a ref={downloadRef} />
       <a ref={downloadAllRef} />
       <a ref={downloadPreviewRef} />
+    </>
+  );
+}
+
+function WorkspaceAndWorkspaceFileNames(props: {
+  workspace: ActiveWorkspace | undefined;
+  workspaceFile: WorkspaceFile | undefined;
+}) {
+  const workspaces = useWorkspaces();
+  const workspaceNameRef = useRef<HTMLInputElement>(null);
+  const workspaceFileNameRef = useRef<HTMLInputElement>(null);
+
+  const resetWorkspaceFileName = useCallback(() => {
+    if (props.workspaceFile && workspaceFileNameRef.current) {
+      workspaceFileNameRef.current.value = props.workspaceFile.nameWithoutExtension;
+    }
+  }, [props.workspaceFile]);
+
+  const resetWorkspaceName = useCallback(() => {
+    if (props.workspace && workspaceNameRef.current) {
+      workspaceNameRef.current.value = props.workspace.descriptor.name;
+    }
+  }, [props.workspace]);
+
+  const onRenameWorkspace = useCallback(
+    (newName: string | undefined) => {
+      if (!props.workspace) {
+        throw new Error("Can't rename workspace");
+      }
+
+      if (!newName) {
+        resetWorkspaceName();
+        return;
+      }
+
+      if (newName === props.workspace.descriptor.name) {
+        return;
+      }
+
+      workspaces.workspaceService.rename(props.workspace.descriptor, newName, { broadcast: true });
+    },
+    [props.workspace, workspaces.workspaceService, resetWorkspaceName]
+  );
+
+  const onRenameWorkspaceFile = useCallback(
+    (newName: string | undefined) => {
+      if (!props.workspaceFile) {
+        throw new Error("Can't rename file");
+      }
+
+      if (!newName) {
+        resetWorkspaceFileName();
+        return;
+      }
+
+      if (newName === props.workspaceFile.nameWithoutExtension) {
+        return;
+      }
+
+      workspaces.renameFile(props.workspaceFile, newName);
+    },
+    [props.workspaceFile, workspaces, resetWorkspaceFileName]
+  );
+
+  const onWorkspaceNameKeyUp = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.keyCode === 13 /* Enter */) {
+        e.currentTarget.blur();
+      } else if (e.keyCode === 27 /* ESC */) {
+        resetWorkspaceName();
+        e.currentTarget.blur();
+      }
+    },
+    [resetWorkspaceName]
+  );
+
+  const onWorkspaceFileNameKeyUp = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.keyCode === 13 /* Enter */) {
+        e.currentTarget.blur();
+      } else if (e.keyCode === 27 /* ESC */) {
+        resetWorkspaceFileName();
+        e.currentTarget.blur();
+      }
+    },
+    [resetWorkspaceFileName]
+  );
+
+  useEffect(resetWorkspaceName, [resetWorkspaceName]);
+  useEffect(resetWorkspaceFileName, [resetWorkspaceFileName]);
+
+  return (
+    <>
+      {props.workspace && props.workspace.files.length > 1 && (
+        <>
+          <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
+            <Title aria-label={"EmbeddedEditorFile name"} headingLevel={"h3"} size={"2xl"}>
+              {props.workspace.descriptor.name}
+            </Title>
+            <TextInput
+              ref={workspaceNameRef}
+              type={"text"}
+              aria-label={"Edit workspace name"}
+              className={"kogito--editor__toolbar-title"}
+              onKeyUp={onWorkspaceNameKeyUp}
+              onBlur={(e) => onRenameWorkspace(e.target.value)}
+            />
+          </div>
+          <Title headingLevel={"h3"} size={"2xl"} style={{ display: "inline", margin: "10px" }}>
+            {`/`}
+          </Title>
+        </>
+      )}
+      <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
+        <Title aria-label={"EmbeddedEditorFile name"} headingLevel={"h3"} size={"2xl"}>
+          {props.workspaceFile?.nameWithoutExtension}
+        </Title>
+        <TextInput
+          ref={workspaceFileNameRef}
+          type={"text"}
+          aria-label={"Edit file name"}
+          className={"kogito--editor__toolbar-title"}
+          onKeyUp={onWorkspaceFileNameKeyUp}
+          onBlur={(e) => onRenameWorkspaceFile(e.target.value)}
+        />
+      </div>
     </>
   );
 }

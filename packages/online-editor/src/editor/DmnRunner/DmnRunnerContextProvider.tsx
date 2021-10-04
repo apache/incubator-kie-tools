@@ -20,7 +20,6 @@ import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/Kie
 import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
 import { DmnRunnerContext } from "./DmnRunnerContext";
 import { DmnRunnerService } from "./DmnRunnerService";
-import { EmbeddedEditorRef, useStateControlSubscription } from "@kie-tooling-core/editor/dist/embedded";
 import { DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useOnlineI18n } from "../../common/i18n";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
@@ -36,12 +35,9 @@ import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 interface Props {
   children: React.ReactNode;
-  editor: EmbeddedEditorRef | undefined;
   notificationsPanel: NotificationsPanelController | undefined;
   workspaceFile: WorkspaceFile | undefined;
 }
-
-const THROTTLING_TIME = 200;
 
 export function DmnRunnerContextProvider(props: Props) {
   const { i18n } = useOnlineI18n();
@@ -68,19 +64,15 @@ export function DmnRunnerContextProvider(props: Props) {
       return;
     }
 
-    if (!props.editor?.isReady) {
-      return;
-    }
-
-    props.editor
-      ?.getContent()
+    props.workspaceFile
+      .getFileContents()
       .then((content) => service.formSchema(content))
       .then((newSchema) => setFormSchema(newSchema))
       .catch((err) => {
         console.error(err);
         setFormError(true);
       });
-  }, [props.editor, service]);
+  }, [props.workspaceFile, service]);
 
   useEffect(() => {
     if (props.workspaceFile?.extension !== "dmn") {
@@ -96,9 +88,9 @@ export function DmnRunnerContextProvider(props: Props) {
       return;
     }
 
-    props.editor
-      ?.getContent()
-      .then((content) => service.validate(content ?? ""))
+    props.workspaceFile
+      .getFileContents()
+      .then((content) => service.validate(content))
       .then((validationResults) => {
         const notifications: Notification[] = validationResults.map((validationResult: any) => ({
           type: "PROBLEM",
@@ -106,28 +98,29 @@ export function DmnRunnerContextProvider(props: Props) {
           severity: validationResult.severity,
           message: `${validationResult.messageType}: ${validationResult.message}`,
         }));
+        console.info(notifications);
         props.notificationsPanel
           ?.getTab(i18n.terms.validation)
           ?.kogitoNotifications_setNotifications("", notifications);
       });
-  }, [props.editor, props.workspaceFile, props.notificationsPanel, service, i18n]);
+  }, [props.workspaceFile, props.notificationsPanel, service, i18n]);
 
-  useStateControlSubscription(props.editor, validate, { throttle: THROTTLING_TIME });
-  useStateControlSubscription(props.editor, updateFormSchema, { throttle: THROTTLING_TIME });
+  useEffect(validate, [validate]);
+  useEffect(updateFormSchema, [updateFormSchema]);
 
   useEffect(() => {
     if (props.workspaceFile?.extension !== "dmn") {
       return;
     }
 
-    if (!props.editor?.isReady || kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
+    if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
       props.notificationsPanel?.getTab(i18n.terms.validation)?.kogitoNotifications_setNotifications("", []);
       return;
     }
-  }, [props.workspaceFile, props.editor, i18n, kieToolingExtendedServices, props.notificationsPanel]);
+  }, [props.workspaceFile, i18n, kieToolingExtendedServices, props.notificationsPanel]);
 
   useEffect(() => {
-    if (!props.editor?.isReady || !formSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
+    if (!formSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
       return;
     }
 
@@ -142,7 +135,7 @@ export function DmnRunnerContextProvider(props: Props) {
         search: globals.routes.editor.queryArgs(queryParams).without(QueryParams.DMN_RUNNER_FORM_INPUTS).toString(),
       });
     }
-  }, [formSchema, props.editor, history, globals.routes, queryParams]);
+  }, [formSchema, history, globals.routes, queryParams]);
 
   const prevKieToolingExtendedServicesStatus = usePrevious(kieToolingExtendedServices.status);
   useEffect(() => {

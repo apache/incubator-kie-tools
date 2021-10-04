@@ -126,7 +126,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const updateFile = useCallback(
-    async (file: WorkspaceFile, getNewContents: () => Promise<string | undefined>) => {
+    async (file: WorkspaceFile, getNewContents: () => Promise<string>) => {
       if (!file) {
         throw new Error("No active file");
       }

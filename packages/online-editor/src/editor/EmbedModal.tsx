@@ -22,12 +22,9 @@ import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { useOnlineI18n } from "../common/i18n";
-import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { useSettings } from "../settings/SettingsContext";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
-import { useGlobals } from "../common/GlobalContext";
 import { QueryParams } from "../common/Routes";
-import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { WorkspaceFile } from "../workspace/WorkspacesContext";
 
 type SupportedStandaloneEditorFileExtensions = "bpmn" | "bpmn2" | "dmn";
@@ -59,7 +56,6 @@ interface Props {
   workspaceFile: WorkspaceFile | undefined;
   isOpen: boolean;
   onClose: () => void;
-  editor: EmbeddedEditorRef | undefined;
 }
 
 export function EmbedModal(props: Props) {
@@ -72,9 +68,9 @@ export function EmbedModal(props: Props) {
 
   useEffect(() => {
     if (props.isOpen) {
-      props.editor?.getContent().then((c) => setEditorContent(c));
+      props.workspaceFile?.getFileContents().then(setEditorContent);
     }
-  }, [props.editor, props.isOpen]);
+  }, [props.workspaceFile, props.isOpen]);
 
   const isGist = useMemo(
     () => settings.github.service.isGist(queryParams.get(QueryParams.URL) ?? ""),

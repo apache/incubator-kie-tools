@@ -207,7 +207,7 @@ export class WorkspaceService {
     return contextPath;
   }
 
-  private async configAsFile(getFileContents: () => Promise<string | undefined>) {
+  private async configAsFile(getFileContents: () => Promise<string>) {
     return new WorkspaceFile({
       path: this.WORKSPACE_CONFIG_PATH,
       getFileContents,

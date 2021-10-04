@@ -16,8 +16,8 @@
 
 import { EffectCallback, useCallback, useEffect, useRef, useState } from "react";
 
-export function usePrevious(value: any) {
-  const ref = useRef();
+export function usePrevious<T>(value: T) {
+  const ref = useRef<T>();
 
   useEffect(() => {
     if (ref.current !== value) {
