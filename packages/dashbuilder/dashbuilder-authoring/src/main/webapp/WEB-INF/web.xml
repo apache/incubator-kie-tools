@@ -59,6 +59,7 @@
     <servlet-name>DashbuilderExternalComponentsServlet</servlet-name>
     <url-pattern>/dashbuilder/component/*</url-pattern>
   </servlet-mapping>
-
-
+  <session-config>
+    <session-timeout>-1</session-timeout>
+  </session-config>
 </web-app>

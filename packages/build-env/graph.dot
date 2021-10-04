@@ -24,6 +24,7 @@ digraph G {
   "@kogito-tooling/kie-bc-editors" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kogito-tooling/external-assets-base" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/dashbuilder" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kogito-tooling/dashbuilder-base-images" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/desktop" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tooling-core/monaco-editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kogito-tooling/i18n-common-dictionary" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -76,6 +77,7 @@ digraph G {
   "chrome-extension-pack-kogito-kie-editors" -> "@kogito-tooling/kie-bc-editors" [ style = "solid", color = "black" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kogito-tooling/external-assets-base" [ style = "dashed", color = "black" ];
   "@kogito-tooling/dashbuilder" -> "@kogito-tooling/build-env" [ style = "dashed", color = "blue" ];
+  "@kogito-tooling/dashbuilder-base-images" -> "@kogito-tooling/dashbuilder" [ style = "solid", color = "black" ];
   "@kogito-tooling/desktop" -> "@kie-tooling-core/monaco-editor" [ style = "solid", color = "black" ];
   "@kogito-tooling/desktop" -> "@kogito-tooling/i18n-common-dictionary" [ style = "solid", color = "black" ];
   "@kogito-tooling/desktop" -> "@kogito-tooling/kie-bc-editors" [ style = "solid", color = "black" ];
