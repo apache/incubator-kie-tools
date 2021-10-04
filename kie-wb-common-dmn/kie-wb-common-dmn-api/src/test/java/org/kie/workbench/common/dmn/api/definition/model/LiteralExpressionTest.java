@@ -77,7 +77,7 @@ public class LiteralExpressionTest {
         final LiteralExpression target = source.copy();
 
         assertNotNull(target);
-        assertNotEquals(LITERAL_ID, target.getId());
+        assertNotEquals(LITERAL_ID, target.getId().getValue());
         assertEquals(DESCRIPTION, target.getDescription().getValue());
         assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
         assertEquals(TEXT, target.getText().getValue());

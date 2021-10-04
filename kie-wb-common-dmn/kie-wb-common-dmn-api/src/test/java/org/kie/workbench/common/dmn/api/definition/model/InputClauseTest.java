@@ -83,12 +83,12 @@ public class InputClauseTest {
         assertNotEquals(INPUT_ID, target.getId().getValue());
         assertEquals(DESCRIPTION, target.getDescription().getValue());
         assertNotNull(target.getInputExpression());
-        assertNotEquals(CLAUSE_ID, target.getInputExpression().getId());
+        assertNotEquals(CLAUSE_ID, target.getInputExpression().getId().getValue());
         assertEquals(TEXT, target.getInputExpression().getText().getValue());
         assertEquals(DESCRIPTION, target.getInputExpression().getDescription().getValue());
         assertEquals(BuiltInType.BOOLEAN.asQName(), target.getInputExpression().getTypeRef());
         assertNotNull(target.getInputValues());
-        assertNotEquals(UNARY_ID, target.getInputValues().getId());
+        assertNotEquals(UNARY_ID, target.getInputValues().getId().getValue());
         assertEquals(TEXT, target.getInputValues().getText().getValue());
         assertEquals(ConstraintType.ENUMERATION, target.getInputValues().getConstraintType());
     }

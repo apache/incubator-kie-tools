@@ -88,29 +88,21 @@ public class DockingRuleGenerator extends AbstractGenerator {
         root.put("rolesCount",
                  roles.size());
         //Generate code
-        final StringWriter sw = new StringWriter();
-        final BufferedWriter bw = new BufferedWriter(sw);
-        try {
+        try (final StringWriter sw = new StringWriter();
+             final BufferedWriter bw = new BufferedWriter(sw)) {
             final Template template = config.getTemplate("DockingRule.ftl");
             template.process(root,
                              bw);
+            messager.printMessage(Diagnostic.Kind.NOTE,
+                                  "Successfully generated code for [" + className + "]");
+            processingContext.addRule(ruleId,
+                                      ProcessingRule.TYPE.DOCKING,
+                                      sw.getBuffer());
+            return null;
         } catch (IOException ioe) {
             throw new GenerationException(ioe);
         } catch (TemplateException te) {
             throw new GenerationException(te);
-        } finally {
-            try {
-                bw.close();
-                sw.close();
-            } catch (IOException ioe) {
-                throw new GenerationException(ioe);
-            }
         }
-        messager.printMessage(Diagnostic.Kind.NOTE,
-                              "Successfully generated code for [" + className + "]");
-        processingContext.addRule(ruleId,
-                                  ProcessingRule.TYPE.DOCKING,
-                                  sw.getBuffer());
-        return null;
     }
 }

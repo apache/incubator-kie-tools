@@ -90,7 +90,7 @@ public class ListTest {
         final org.kie.workbench.common.dmn.api.definition.model.List target = source.copy();
 
         assertNotNull(target);
-        assertNotEquals(LIST_ID, target.getId());
+        assertNotEquals(LIST_ID, target.getId().getValue());
         assertEquals(DESCRIPTION, target.getDescription().getValue());
         assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
         assertTrue(target.getExpression().isEmpty());

@@ -282,7 +282,7 @@ public class HashCodeAndEqualityTest {
     public void testLinkRef() {
         LinkRef link = new LinkRef("link");
         assertNotEquals(link, null);
-        assertNotEquals(link, "");
+        assertNotEquals(link.getValue(), "");
         assertEquals(link, link);
 
         LinkRef link2 = new LinkRef("link");
@@ -297,7 +297,7 @@ public class HashCodeAndEqualityTest {
         LinkRef link = new LinkRef("link");
         LinkEventExecutionSet executionSet = new LinkEventExecutionSet(link);
         assertNotEquals(executionSet, null);
-        assertNotEquals(executionSet, "");
+        assertNotEquals(executionSet.getLinkRef().getValue(), "");
         assertEquals(executionSet, executionSet);
 
         LinkRef link2 = new LinkRef("link");

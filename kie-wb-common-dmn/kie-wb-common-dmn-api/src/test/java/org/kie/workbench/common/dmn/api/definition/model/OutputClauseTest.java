@@ -86,10 +86,10 @@ public class OutputClauseTest {
         assertNotEquals(OUTPUT_ID, target.getId().getValue());
         assertEquals(DESCRIPTION, target.getDescription().getValue());
         assertNotNull(target.getOutputValues());
-        assertNotEquals(CLAUSE_ID, target.getOutputValues().getId());
+        assertNotEquals(CLAUSE_ID, target.getOutputValues().getId().getValue());
         assertEquals(TEXT, target.getOutputValues().getText().getValue());
         assertNotNull(target.getOutputValues());
-        assertNotEquals(UNARY_ID, target.getOutputValues().getId());
+        assertNotEquals(UNARY_ID, target.getOutputValues().getId().getValue());
         assertEquals(TEXT, target.getOutputValues().getText().getValue());
         assertEquals(ConstraintType.ENUMERATION, target.getOutputValues().getConstraintType());
     }

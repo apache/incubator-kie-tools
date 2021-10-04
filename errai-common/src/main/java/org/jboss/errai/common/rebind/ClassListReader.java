@@ -29,9 +29,8 @@ import java.util.Set;
  */
 public class ClassListReader {
   public static Set<String> getClassSetFromFile(final File file) {
-    InputStream inputStream = null;
-    try {
-      inputStream = new BufferedInputStream(new FileInputStream(file));
+
+    try (InputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
 
       final byte[] buf = new byte[1024];
       int read;
@@ -62,14 +61,6 @@ public class ClassListReader {
     }
     catch (IOException e) {
       throw new RuntimeException("could not load file", e);
-    }
-    finally {
-      try {
-        if (inputStream != null) inputStream.close();
-      }
-      catch (IOException e) {
-        throw new RuntimeException("error closing file", e);
-      }
     }
   }
 }

@@ -98,7 +98,7 @@ public class RelationTest {
         final Relation target = source.copy();
 
         assertNotNull(target);
-        assertNotEquals(RELATION_ID, target.getId());
+        assertNotEquals(RELATION_ID, target.getId().getValue());
         assertEquals(DESCRIPTION, target.getDescription().getValue());
         assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
         assertTrue(target.getColumn().isEmpty());

@@ -149,22 +149,14 @@ public class ExtensionRuleGenerator extends AbstractGenerator {
         root.put("ruleHandlerClass",
                  rhc);
         //Generate code
-        final StringWriter sw = new StringWriter();
-        final BufferedWriter bw = new BufferedWriter(sw);
-        try {
+        try (final StringWriter sw = new StringWriter();
+             final BufferedWriter bw = new BufferedWriter(sw)) {
             final Template template = config.getTemplate("RuleExtension.ftl");
             template.process(root,
                              bw);
+            return sw.getBuffer();
         } catch (IOException | TemplateException ioe) {
             throw new GenerationException(ioe);
-        } finally {
-            try {
-                bw.close();
-                sw.close();
-            } catch (IOException ioe) {
-                throw new GenerationException(ioe);
-            }
         }
-        return sw.getBuffer();
     }
 }

@@ -225,11 +225,10 @@ public class VariableSearchServiceTest {
     @Test
     public void testGetOptionTypeWithoutResults() {
         prepareAndInitSession();
-        prepareAndInitSession();
         List<String> checkedVariables = Arrays.asList("not-existing1", "not-existing2", "not-existing3", "and_so_on");
         checkedVariables.forEach(checkedVariable -> {
             String type = searchService.getOptionType(checkedVariable);
-            assertNotEquals(mockedVariableTypes, type);
+            assertNotEquals(checkedVariable, type);
         });
     }
 

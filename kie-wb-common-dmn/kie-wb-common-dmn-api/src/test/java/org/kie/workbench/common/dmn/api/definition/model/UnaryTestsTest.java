@@ -47,7 +47,7 @@ public class UnaryTestsTest {
         final UnaryTests target = source.copy();
 
         assertNotNull(target);
-        assertNotEquals(UNARY_ID, target.getId());
+        assertNotEquals(UNARY_ID, target.getId().getValue());
         assertEquals(DESCRIPTION, target.getDescription().getValue());
         assertEquals(TEXT_VALUE, target.getText().getValue());
         assertEquals(EXPRESSION_LANGUAGE, target.getExpressionLanguage().getValue());

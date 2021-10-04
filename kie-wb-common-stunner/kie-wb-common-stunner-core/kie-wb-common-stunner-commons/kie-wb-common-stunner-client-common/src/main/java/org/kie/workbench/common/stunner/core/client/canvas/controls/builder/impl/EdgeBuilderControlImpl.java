@@ -65,8 +65,6 @@ public class EdgeBuilderControlImpl
 
     @Override
     public boolean allows(final EdgeBuildRequest request) {
-        final double x = request.getX();
-        final double y = request.getY();
         final Edge<? extends ViewConnector<?>, Node> edge = (Edge<? extends ViewConnector<?>, Node>) request.getEdge();
         final AbstractCanvasHandler<?, ?> wch = canvasHandler;
         final Node<? extends View<?>, Edge> inNode = request.getInNode();
@@ -87,7 +85,7 @@ public class EdgeBuilderControlImpl
                                                                                                               MagnetConnection.Builder.forTarget(outNode, inNode)));
             allowsTargetConn = isAllowed(cr2);
         }
-        return allowsSourceConn & allowsTargetConn;
+        return allowsSourceConn && allowsTargetConn;
     }
 
     @Override

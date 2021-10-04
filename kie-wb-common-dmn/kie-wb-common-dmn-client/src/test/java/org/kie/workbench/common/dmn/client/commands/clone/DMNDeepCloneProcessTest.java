@@ -263,7 +263,7 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
         assertThat(cloned.getEncapsulatedLogic().getKind()).isEqualTo(JAVA);
         assertThat(cloned.getEncapsulatedLogic().getTypeRef()).isEqualTo(BuiltInType.BOOLEAN.asQName());
         assertThat(cloned.getEncapsulatedLogic().getExpression()).isInstanceOf(Context.class);
-        assertThat(cloned.getEncapsulatedLogic().getExpression().getId()).isNotEqualTo(CONTEXT_ID);
+        assertThat(cloned.getEncapsulatedLogic().getExpression().getId().getValue()).isNotEqualTo(CONTEXT_ID);
         assertThat(cloned.getEncapsulatedLogic().getExpression().getTypeRef()).isEqualTo(BuiltInType.NUMBER.asQName());
     }
 
@@ -289,7 +289,7 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
         assertThat(cloned.getExpression().getId().getValue()).isNotEqualTo(FUNCTION_ID);
         assertThat(cloned.getExpression().getTypeRef()).isEqualTo(BuiltInType.BOOLEAN.asQName());
         assertThat(((FunctionDefinition) cloned.getExpression()).getExpression()).isInstanceOf(Context.class);
-        assertThat(((FunctionDefinition) cloned.getExpression()).getExpression().getId()).isNotEqualTo(CONTEXT_ID);
+        assertThat(((FunctionDefinition) cloned.getExpression()).getExpression().getId().getValue()).isNotEqualTo(CONTEXT_ID);
         assertThat(((FunctionDefinition) cloned.getExpression()).getExpression().getTypeRef()).isEqualTo(BuiltInType.NUMBER.asQName());
     }
 

@@ -97,7 +97,7 @@ public class InvocationTest {
         final Invocation target = source.copy();
 
         assertNotNull(target);
-        assertNotEquals(INVOCATION_ID, target.getId());
+        assertNotEquals(INVOCATION_ID, target.getId().getValue());
         assertEquals(DESCRIPTION, target.getDescription().getValue());
         assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
         assertNull(target.getExpression());

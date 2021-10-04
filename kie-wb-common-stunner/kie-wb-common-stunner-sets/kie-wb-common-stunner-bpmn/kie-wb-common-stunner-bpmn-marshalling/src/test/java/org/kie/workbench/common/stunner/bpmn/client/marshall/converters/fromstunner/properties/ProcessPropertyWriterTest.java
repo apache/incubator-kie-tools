@@ -145,7 +145,7 @@ public class ProcessPropertyWriterTest {
     public void caseFileVariables() {
         CaseFileVariables caseFileVariables = new CaseFileVariables("CFV1:Boolean,CFV2:Boolean,CFV3:Boolean");
         p.setCaseFileVariables(caseFileVariables);
-        assertThat(p.itemDefinitions.size() == 3);
+        assertThat(p.itemDefinitions).hasSize(3);
     }
 
     @Test

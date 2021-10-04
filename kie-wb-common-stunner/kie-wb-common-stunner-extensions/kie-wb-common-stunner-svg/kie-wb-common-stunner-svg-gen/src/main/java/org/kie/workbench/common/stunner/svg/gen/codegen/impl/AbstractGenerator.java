@@ -54,25 +54,17 @@ public abstract class AbstractGenerator {
     protected StringBuffer writeTemplate(final Map<String, Object> ctxt,
                                          final String path) throws GenerationException {
         //Generate code
-        final StringWriter sw = new StringWriter();
-        final BufferedWriter bw = new BufferedWriter(sw);
-        try {
+        try (final StringWriter sw = new StringWriter();
+             final BufferedWriter bw = new BufferedWriter(sw)) {
             final Template template = config.getTemplate(path + ".ftl");
             template.process(ctxt,
                              bw);
+            return sw.getBuffer();
         } catch (IOException ioe) {
             throw new GenerationException(ioe);
         } catch (TemplateException te) {
             throw new GenerationException(te);
-        } finally {
-            try {
-                bw.close();
-                sw.close();
-            } catch (IOException ioe) {
-                throw new GenerationException(ioe);
-            }
         }
-        return sw.getBuffer();
     }
 
     protected StringBuffer writeTemplate(final Map<String, Object> ctxt) throws GenerationException {

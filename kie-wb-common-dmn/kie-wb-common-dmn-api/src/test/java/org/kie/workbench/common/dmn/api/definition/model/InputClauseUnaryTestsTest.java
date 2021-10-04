@@ -106,7 +106,7 @@ public class InputClauseUnaryTestsTest {
         final InputClauseUnaryTests target = source.copy();
 
         assertNotNull(target);
-        assertNotEquals(UNARY_ID, target.getId());
+        assertNotEquals(UNARY_ID, target.getId().getValue());
         assertEquals(TEXT, target.getText().getValue());
         assertEquals(ConstraintType.ENUMERATION, target.getConstraintType());
     }

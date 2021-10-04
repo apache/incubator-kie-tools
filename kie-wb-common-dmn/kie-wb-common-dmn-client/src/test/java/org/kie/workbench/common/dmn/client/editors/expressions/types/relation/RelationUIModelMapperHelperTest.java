@@ -102,7 +102,7 @@ public class RelationUIModelMapperHelperTest {
     public void testGetSectionInformationItemColumnNegativeIndex() {
         relation.getColumn().add(new InformationItem());
 
-        assertEquals(RelationSection.INFORMATION_ITEM,
+        assertEquals(RelationSection.INFORMATION_ITEM.ordinal(),
                      getInformationItemIndex(relation,
                                              -1));
     }
@@ -111,7 +111,7 @@ public class RelationUIModelMapperHelperTest {
     public void testGetSectionInformationItemColumnIndexEqualToColumnCount() {
         relation.getColumn().add(new InformationItem());
 
-        assertEquals(RelationSection.INFORMATION_ITEM,
+        assertEquals(RelationSection.INFORMATION_ITEM.ordinal(),
                      getInformationItemIndex(relation,
                                              relation.getColumn().size() + 1));
     }

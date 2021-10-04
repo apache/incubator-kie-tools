@@ -64,7 +64,7 @@ public class InputClauseLiteralExpressionTest {
         final InputClauseLiteralExpression target = source.copy();
 
         assertNotNull(target);
-        assertNotEquals(CLAUSE_ID, target.getId());
+        assertNotEquals(CLAUSE_ID, target.getId().getValue());
         assertEquals(TEXT, target.getText().getValue());
         assertEquals(DESCRIPTION, target.getDescription().getValue());
         assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
