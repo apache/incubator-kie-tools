@@ -29,9 +29,7 @@ import { KieToolingExtendedServicesContextProvider } from "./editor/KieToolingEx
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
 import { NewHomePage } from "./home/NewHomePage";
-import { extractFileExtension } from "./common/utils";
 import { useQueryParams } from "./queryParams/QueryParamsContext";
-import { QueryParams } from "./common/Routes";
 import { WorkspaceOverviewPage } from "./workspace/pages/WorkspaceOverviewPage";
 import { NewWorkspaceWithEmptyFilePage } from "./workspace/pages/NewWorkspaceWithEmptyFilePage";
 import { NewWorkspaceFromUrlPage } from "./workspace/pages/NewWorkspaceFromUrlPage";
@@ -53,47 +51,24 @@ export function App(props: { externalFile?: EmbeddedEditorFile; senderTabId?: st
 
 function RoutesSwitch() {
   const globals = useGlobals();
-  const queryParams = useQueryParams();
 
   const supportedExtensions = useMemo(
     () => Array.from(globals.editorEnvelopeLocator.mapping.keys()).join("|"),
     [globals.editorEnvelopeLocator]
   );
 
-  const queryParamUrl = useMemo(() => {
-    return queryParams.get(QueryParams.URL);
-  }, [queryParams]);
-
   return (
     <Switch>
       <Route path={globals.routes.editor.path({ extension: `:extension(${supportedExtensions})` })}>
         {({ match }) => (
-          <Redirect to={globals.routes.sketchWithEmptyFile.path({ extension: match!.params.extension! })} />
+          <Redirect to={globals.routes.newWorkspaceWithEmptyFile.path({ extension: match!.params.extension! })} />
         )}
       </Route>
-      <Route
-        exact={true}
-        path={globals.routes.sketchWithEmptyFile.path({ extension: `:extension(${supportedExtensions})` })}
-      >
-        {({ match }) => (
-          <EditorPage forExtension={match!.params.extension as SupportedFileExtensions} workspaceEnabled={false} />
-        )}
-      </Route>
-      {queryParamUrl && (
-        <Route exact={true} path={globals.routes.sketchWithUrl.path({})}>
-          {({ match }) => (
-            <EditorPage
-              forExtension={extractFileExtension(queryParamUrl) as SupportedFileExtensions}
-              workspaceEnabled={false}
-            />
-          )}
-        </Route>
-      )}
       <Route path={globals.routes.newWorkspaceWithEmptyFile.path({ extension: `:extension(${supportedExtensions})` })}>
         {({ match }) => <NewWorkspaceWithEmptyFilePage extension={match!.params.extension!} />}
       </Route>
       <Route path={globals.routes.newWorkspaceWithUrl.path({})}>
-        <NewWorkspaceFromUrlPage url={queryParamUrl} />
+        <NewWorkspaceFromUrlPage />
       </Route>
       <Route path={globals.routes.workspaceOverview.path({ workspaceId: ":workspaceId" })}>
         {({ match }) => <WorkspaceOverviewPage workspaceId={match!.params.workspaceId!} />}
@@ -108,7 +83,6 @@ function RoutesSwitch() {
         {({ match }) => (
           <EditorPage
             forExtension={match!.params.extension as SupportedFileExtensions}
-            workspaceEnabled={true}
             workspaceId={match!.params.workspaceId!}
             filePath={`${match!.params.filePath}.${match!.params.extension}`}
           />

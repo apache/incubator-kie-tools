@@ -13,7 +13,6 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useGlobals } from "../common/GlobalContext";
-import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { useHistory } from "react-router";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { extractFileExtension } from "../common/utils";
@@ -30,10 +29,7 @@ export interface FetchFileError {
   reason: FetchFileErrorReason;
 }
 
-export function EditorFetchFileErrorEmptyState(props: {
-  currentFile: EmbeddedEditorFile;
-  fetchFileError: FetchFileError;
-}) {
+export function EditorFetchFileErrorEmptyState(props: { fetchFileError: FetchFileError }) {
   const globals = useGlobals();
   const history = useHistory();
   const queryParams = useQueryParams();
@@ -58,16 +54,18 @@ export function EditorFetchFileErrorEmptyState(props: {
     return Array.from(globals.editorEnvelopeLocator.mapping.keys()).includes(fileExtension);
   }, [globals.editorEnvelopeLocator, fileExtension]);
 
+  const headerLogo = useMemo(() => {
+    const extension = isFileExtensionSupported ? fileExtension : "dmn";
+    return (
+      <Brand src={globals.routes.static.images.editorLogo.path({ type: extension })} alt={`${extension} kogito logo`} />
+    );
+  }, [fileExtension, globals.routes.static.images.editorLogo, isFileExtensionSupported]);
+
   return (
     <Page
       header={
         <PageHeader
-          logo={
-            <Brand
-              src={globals.routes.static.images.editorLogo.path({ type: props.currentFile.fileExtension })}
-              alt={`${props.currentFile.fileExtension} kogito logo`}
-            />
-          }
+          logo={headerLogo}
           logoProps={{ onClick: onClose }}
           headerTools={[]}
           className={"kogito--editor__toolbar"}
@@ -88,7 +86,7 @@ export function EditorFetchFileErrorEmptyState(props: {
               <Text component={"h2"}>{"Oops!"}</Text>
             </TextContent>
             <EmptyStateBody style={{ maxWidth: "800px" }}>
-              {`The requested file cannot be opened by the ${props.currentFile.fileExtension.toUpperCase()} Editor.`}
+              {`The requested file cannot be opened by the ${fileExtension.toUpperCase()} Editor.`}
               <br />
               {isFileExtensionSupported && (
                 <>{`You can open this file using the ${fileExtension.toUpperCase()} Editor`}</>

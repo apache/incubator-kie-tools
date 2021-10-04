@@ -115,26 +115,18 @@ export const routes = {
   }>(() => `/`),
 
   /** @deprecated
-   * Use sketchWithEmptyFile instead */
+   * Use newWorkspaceWithEmptyFile instead */
   editor: new Route<{
     pathParams: PathParams.EXTENSION;
     queryParams: QueryParams.READONLY | QueryParams.URL | QueryParams.SETTINGS | QueryParams.DMN_RUNNER_FORM_INPUTS;
   }>(({ extension }) => `/editor/${extension}`),
-
-  sketchWithEmptyFile: new Route<{
-    pathParams: PathParams.EXTENSION;
-  }>(({ extension }) => `/sketch/${extension}`),
-
-  sketchWithUrl: new Route<{
-    queryParams: QueryParams.URL | QueryParams.READONLY | QueryParams.DMN_RUNNER_FORM_INPUTS;
-  }>(() => `/sketch`),
 
   newWorkspaceWithEmptyFile: new Route<{
     pathParams: PathParams.EXTENSION;
   }>(({ extension }) => `/workspace/new/${extension}`),
 
   newWorkspaceWithUrl: new Route<{
-    queryParams: QueryParams.URL;
+    queryParams: QueryParams.URL | QueryParams.READONLY | QueryParams.DMN_RUNNER_FORM_INPUTS;
   }>(() => `/workspace/new`),
 
   workspaceOverview: new Route<{

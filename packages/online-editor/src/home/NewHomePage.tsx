@@ -238,9 +238,7 @@ export function NewHomePage() {
                 <PageSection variant={"light"}>
                   <TextContent>
                     <Text component={TextVariants.h1}>Try samples</Text>
-                    <Text component={TextVariants.p}>
-                      Start from sample models and create a Workspace later directly from it.
-                    </Text>
+                    <Text component={TextVariants.p}>Start from sample models.</Text>
                     <Flex>
                       <FlexItem>
                         <Button
@@ -248,8 +246,8 @@ export function NewHomePage() {
                           variant={ButtonVariant.tertiary}
                           onClick={() => {
                             history.push({
-                              pathname: globals.routes.sketchWithUrl.path({ extension: "bpmn" }),
-                              search: globals.routes.editor
+                              pathname: globals.routes.newWorkspaceWithUrl.path({ extension: "bpmn" }),
+                              search: globals.routes.newWorkspaceWithUrl
                                 .queryArgs(queryParams)
                                 .with(QueryParams.URL, globals.routes.static.sample.path({ type: "bpmn" }))
                                 .toString(),
@@ -265,8 +263,8 @@ export function NewHomePage() {
                           variant={ButtonVariant.tertiary}
                           onClick={() => {
                             history.push({
-                              pathname: globals.routes.sketchWithUrl.path({ extension: "dmn" }),
-                              search: globals.routes.editor
+                              pathname: globals.routes.newWorkspaceWithUrl.path({ extension: "dmn" }),
+                              search: globals.routes.newWorkspaceWithUrl
                                 .queryArgs(queryParams)
                                 .with(QueryParams.URL, globals.routes.static.sample.path({ type: "dmn" }))
                                 .toString(),
@@ -282,68 +280,11 @@ export function NewHomePage() {
                           variant={ButtonVariant.tertiary}
                           onClick={() => {
                             history.push({
-                              pathname: globals.routes.sketchWithUrl.path({ extension: "pmml" }),
-                              search: globals.routes.editor
+                              pathname: globals.routes.newWorkspaceWithUrl.path({ extension: "pmml" }),
+                              search: globals.routes.newWorkspaceWithUrl
                                 .queryArgs(queryParams)
                                 .with(QueryParams.URL, globals.routes.static.sample.path({ type: "pmml" }))
                                 .toString(),
-                            });
-                          }}
-                        >
-                          PMML
-                        </Button>
-                      </FlexItem>
-                    </Flex>
-                  </TextContent>
-                </PageSection>
-              </StackItem>
-              <StackItem>
-                <PageSection variant={"light"}>
-                  <TextContent>
-                    <Text component={TextVariants.h1}>Sketch</Text>
-                    <Text component={TextVariants.p}>
-                      {`Quickly sketch a model without a Workspace. You can create a new Workspace directly from your Sketch if you'd like. Note that Sketches aren't saved.`}
-                    </Text>
-                    <Flex>
-                      <FlexItem>
-                        <Button
-                          isLarge
-                          variant={ButtonVariant.tertiary}
-                          onClick={() => {
-                            history.push({
-                              pathname: globals.routes.sketchWithEmptyFile.path({
-                                extension: "bpmn",
-                              }),
-                            });
-                          }}
-                        >
-                          BPMN
-                        </Button>
-                      </FlexItem>
-                      <FlexItem>
-                        <Button
-                          isLarge
-                          variant={ButtonVariant.tertiary}
-                          onClick={() => {
-                            history.push({
-                              pathname: globals.routes.sketchWithEmptyFile.path({
-                                extension: "dmn",
-                              }),
-                            });
-                          }}
-                        >
-                          DMN
-                        </Button>
-                      </FlexItem>
-                      <FlexItem>
-                        <Button
-                          isLarge
-                          variant={ButtonVariant.tertiary}
-                          onClick={() => {
-                            history.push({
-                              pathname: globals.routes.sketchWithEmptyFile.path({
-                                extension: "pmml",
-                              }),
                             });
                           }}
                         >

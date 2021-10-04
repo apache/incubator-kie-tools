@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { SupportedFileExtensions, useGlobals } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
@@ -35,12 +35,7 @@ import { DmnRunnerStatus } from "./DmnRunner/DmnRunnerStatus";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxContextProvider";
-import { useQueryParams } from "../queryParams/QueryParamsContext";
-import { extractFileExtension, removeDirectories, removeFileExtension } from "../common/utils";
-import { useSettings } from "../settings/SettingsContext";
 import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
-import { QueryParams } from "../common/Routes";
-import { EditorFetchFileErrorEmptyState, FetchFileError, FetchFileErrorReason } from "./EditorFetchFileErrorEmptyState";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
 import { Alerts, AlertsController, useAlert } from "./Alerts/Alerts";
 import { useCancelableEffect, useController } from "../common/Hooks";
@@ -50,27 +45,15 @@ import { ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kie
 import { useWorkspace } from "../workspace/hooks/WorkspaceHooks";
 import { useWorkspaceFile } from "../workspace/hooks/WorkspaceFileHooks";
 
-export interface CommonProps {
+export interface Props {
   forExtension: SupportedFileExtensions;
-}
-
-export interface PropsWithSketch extends CommonProps {
-  workspaceEnabled: false;
-}
-
-export interface PropsWithWorkspace extends CommonProps {
-  workspaceEnabled: true;
   workspaceId: string;
   filePath: string;
 }
 
-export type Props = PropsWithSketch | PropsWithWorkspace;
-
 export function EditorPage(props: Props) {
   const globals = useGlobals();
-  const settings = useSettings();
   const history = useHistory();
-  const queryParams = useQueryParams();
   const workspaces = useWorkspaces();
   const { locale, i18n } = useOnlineI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
@@ -79,22 +62,10 @@ export function EditorPage(props: Props) {
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const isDirty = useDirtyState(editor);
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
-  const [fetchFileError, setFetchFileError] = useState<FetchFileError | undefined>(undefined);
 
-  const { workspace, addEmptyWorkspaceFile } = useWorkspace(props.workspaceEnabled ? props.workspaceId : undefined);
+  const { workspace, addEmptyWorkspaceFile } = useWorkspace(props.workspaceId);
 
-  const workspaceFile = useWorkspaceFile(
-    workspace?.descriptor.workspaceId,
-    props.workspaceEnabled ? props.filePath : undefined
-  );
-
-  const queryParamUrl = useMemo(() => {
-    return queryParams.get(QueryParams.URL);
-  }, [queryParams]);
-
-  const queryParamReadonly = useMemo(() => {
-    return queryParams.has(QueryParams.READONLY) ? queryParams.get(QueryParams.READONLY) === `${true}` : false;
-  }, [queryParams]);
+  const workspaceFile = useWorkspaceFile(workspace?.descriptor.workspaceId, props.filePath);
 
   const [currentFile, setCurrentFile] = useState<EmbeddedEditorFile>(() => ({
     fileName: "Untitled",
@@ -109,130 +80,6 @@ export function EditorPage(props: Props) {
   }, [alerts]);
 
   useDmnTour(!currentFile.isReadOnly && !editor?.isReady && currentFile.fileExtension === "dmn");
-
-  useEffect(() => {
-    let canceled = false;
-
-    setFetchFileError(undefined);
-    alerts?.closeAll();
-
-    if (props.workspaceEnabled) {
-      return;
-    }
-
-    if (globals.externalFile) {
-      setCurrentFile({ ...globals.externalFile, kind: "external" });
-      return;
-    }
-
-    if (!queryParamUrl) {
-      setCurrentFile({
-        fileName: "Untitled",
-        fileExtension: props.forExtension,
-        getFileContents: () => Promise.resolve(""),
-        isReadOnly: false,
-        kind: "local",
-      });
-    }
-
-    if (queryParamUrl) {
-      const filePathExtension = extractFileExtension(queryParamUrl);
-      if (!filePathExtension) {
-        return;
-      }
-      if (filePathExtension !== props.forExtension) {
-        setFetchFileError({ reason: FetchFileErrorReason.DIFFERENT_EXTENSION, filePath: queryParamUrl });
-        return;
-      }
-      const extractedFileName = removeFileExtension(removeDirectories(queryParamUrl) ?? "unknown");
-      if (settings.github.service.isGist(queryParamUrl)) {
-        settings.github.service
-          .fetchGistFile(settings.github.octokit, queryParamUrl)
-          .then((content) => {
-            if (canceled) {
-              return;
-            }
-
-            setCurrentFile({
-              kind: "gist",
-              isReadOnly: queryParamReadonly,
-              fileExtension: filePathExtension,
-              fileName: extractedFileName,
-              getFileContents: () => Promise.resolve(content),
-            });
-            return;
-          })
-          .catch((error) =>
-            setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl })
-          );
-        return;
-      }
-      if (settings.github.service.isGithub(queryParamUrl) || settings.github.service.isGithubRaw(queryParamUrl)) {
-        settings.github.service
-          .fetchGithubFile(settings.github.octokit, queryParamUrl)
-          .then((response) => {
-            if (canceled) {
-              return;
-            }
-
-            setCurrentFile({
-              kind: "external",
-              isReadOnly: queryParamReadonly,
-              fileExtension: filePathExtension,
-              fileName: extractedFileName,
-              getFileContents: () => Promise.resolve(response),
-            });
-            return;
-          })
-          .catch((error) => {
-            setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl });
-          });
-        return;
-      }
-      fetch(queryParamUrl)
-        .then((response) => {
-          if (canceled) {
-            return;
-          }
-
-          if (!response.ok) {
-            setFetchFileError({
-              details: `${response.status} - ${response.statusText}`,
-              reason: FetchFileErrorReason.CANT_FETCH,
-              filePath: queryParamUrl,
-            });
-            return;
-          }
-
-          // do not inline this variable.
-          const content = response.text();
-
-          setCurrentFile({
-            kind: "external",
-            isReadOnly: queryParamReadonly,
-            fileExtension: filePathExtension,
-            fileName: extractedFileName,
-            getFileContents: () => content,
-          });
-          return;
-        })
-        .catch((error) => {
-          setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl });
-        });
-    }
-
-    return () => {
-      canceled = true;
-    };
-  }, [
-    alerts,
-    globals.externalFile,
-    props,
-    queryParamUrl,
-    queryParamReadonly,
-    settings.github.octokit,
-    settings.github.service,
-  ]);
 
   const setContentErrorAlert = useAlert(
     alerts,
@@ -426,64 +273,58 @@ export function EditorPage(props: Props) {
 
   return (
     <>
-      {fetchFileError && <EditorFetchFileErrorEmptyState fetchFileError={fetchFileError} currentFile={currentFile} />}
-      {!fetchFileError && (
-        <DmnRunnerContextProvider currentFile={currentFile} editor={editor} notificationsPanel={notificationsPanel}>
-          <DmnDevSandboxContextProvider
-            currentFile={currentFile}
-            workspaceFile={workspaceFile}
-            editor={editor}
-            alerts={alerts}
+      <DmnRunnerContextProvider currentFile={currentFile} editor={editor} notificationsPanel={notificationsPanel}>
+        <DmnDevSandboxContextProvider
+          currentFile={currentFile}
+          workspaceFile={workspaceFile}
+          editor={editor}
+          alerts={alerts}
+        >
+          <Page
+            header={
+              <EditorToolbar
+                addEmptyWorkspaceFile={addEmptyWorkspaceFile}
+                workspace={workspace}
+                editor={editor}
+                alerts={alerts}
+                currentFile={currentFile}
+                onRename={(newName) => {
+                  if (workspaceFile) {
+                    return workspaces.renameFile(workspaceFile, newName);
+                  }
+                }}
+                onClose={onClose}
+              />
+            }
           >
-            <Page
-              header={
-                <EditorToolbar
-                  addEmptyWorkspaceFile={addEmptyWorkspaceFile}
-                  workspace={workspace}
-                  editor={editor}
-                  alerts={alerts}
-                  currentFile={currentFile}
-                  onRename={(newName) => {
-                    if (workspaceFile) {
-                      return workspaces.renameFile(workspaceFile, newName);
-                    }
-                  }}
-                  onClose={onClose}
+            <PageSection isFilled={true} padding={{ default: "noPadding" }} className={"kogito--editor__page-section"}>
+              <DmnRunnerDrawer editor={editor} notificationsPanel={notificationsPanel}>
+                <Alerts ref={alertsRef} />
+                <EmbeddedEditor
+                  ref={editorRef}
+                  file={currentFile}
+                  kogitoWorkspace_resourceContentRequest={onResourceContentRequest}
+                  kogitoWorkspace_resourceListRequest={onResourceListRequest}
+                  kogitoEditor_setContentError={setContentErrorAlert.show}
+                  editorEnvelopeLocator={globals.editorEnvelopeLocator}
+                  channelType={ChannelType.VSCODE} // TODO CAPONETTO: Changed the channel type to test the Included Models (undo/redo do not work)
+                  locale={locale}
                 />
-              }
-            >
-              <PageSection
-                isFilled={true}
-                padding={{ default: "noPadding" }}
-                className={"kogito--editor__page-section"}
-              >
-                <DmnRunnerDrawer editor={editor} notificationsPanel={notificationsPanel}>
-                  <Alerts ref={alertsRef} />
-                  <EmbeddedEditor
-                    ref={editorRef}
-                    file={currentFile}
-                    kogitoWorkspace_resourceContentRequest={onResourceContentRequest}
-                    kogitoWorkspace_resourceListRequest={onResourceListRequest}
-                    kogitoEditor_setContentError={setContentErrorAlert.show}
-                    editorEnvelopeLocator={globals.editorEnvelopeLocator}
-                    channelType={ChannelType.VSCODE} // TODO CAPONETTO: Changed the channel type to test the Included Models (undo/redo do not work)
-                    locale={locale}
-                  />
-                  <DmnRunnerContext.Consumer>
-                    {(dmnRunner) => (
-                      <NotificationsPanel
-                        ref={notificationsPanelRef}
-                        tabNames={notificationPanelTabNames(dmnRunner.status)}
-                      />
-                    )}
-                  </DmnRunnerContext.Consumer>
-                </DmnRunnerDrawer>
-              </PageSection>
-              <a ref={downloadRef} />
-            </Page>
-          </DmnDevSandboxContextProvider>
-        </DmnRunnerContextProvider>
-      )}
+                <DmnRunnerContext.Consumer>
+                  {(dmnRunner) => (
+                    <NotificationsPanel
+                      ref={notificationsPanelRef}
+                      tabNames={notificationPanelTabNames(dmnRunner.status)}
+                    />
+                  )}
+                </DmnRunnerContext.Consumer>
+              </DmnRunnerDrawer>
+            </PageSection>
+            <a ref={downloadRef} />
+          </Page>
+        </DmnDevSandboxContextProvider>
+      </DmnRunnerContextProvider>
+
       <TextEditorModal
         editor={editor}
         currentFile={currentFile}
