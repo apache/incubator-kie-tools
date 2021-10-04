@@ -88,6 +88,11 @@ export function DmnRunnerContextProvider(props: Props) {
       return;
     }
 
+    if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
+      props.notificationsPanel?.getTab(i18n.terms.validation)?.kogitoNotifications_setNotifications("", []);
+      return;
+    }
+
     props.workspaceFile
       .getFileContents()
       .then((content) => service.validate(content))
@@ -98,26 +103,14 @@ export function DmnRunnerContextProvider(props: Props) {
           severity: validationResult.severity,
           message: `${validationResult.messageType}: ${validationResult.message}`,
         }));
-        console.info(notifications);
         props.notificationsPanel
           ?.getTab(i18n.terms.validation)
           ?.kogitoNotifications_setNotifications("", notifications);
       });
-  }, [props.workspaceFile, props.notificationsPanel, service, i18n]);
+  }, [props.workspaceFile, props.notificationsPanel, kieToolingExtendedServices.status, i18n, service]);
 
   useEffect(validate, [validate]);
   useEffect(updateFormSchema, [updateFormSchema]);
-
-  useEffect(() => {
-    if (props.workspaceFile?.extension !== "dmn") {
-      return;
-    }
-
-    if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
-      props.notificationsPanel?.getTab(i18n.terms.validation)?.kogitoNotifications_setNotifications("", []);
-      return;
-    }
-  }, [props.workspaceFile, i18n, kieToolingExtendedServices, props.notificationsPanel]);
 
   useEffect(() => {
     if (!formSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {

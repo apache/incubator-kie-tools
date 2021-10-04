@@ -31,28 +31,24 @@ interface Props {
 }
 
 export interface NotificationsPanelController {
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  open: () => void;
   getTab: (name: string) => NotificationsApi | undefined;
-  activeTab: string;
   setActiveTab: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const NotificationsPanel = React.forwardRef<NotificationsPanelController, Props>((props, forwardRef) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<string | undefined>();
   const tabs: Map<string, React.RefObject<NotificationsApi>> = useMemo(() => new Map(), []);
 
   useImperativeHandle(
     forwardRef,
     () => ({
-      isOpen,
-      setIsOpen,
+      open: () => setIsOpen(true),
       getTab: (name: string) => tabs.get(name)?.current ?? undefined,
-      activeTab,
       setActiveTab,
     }),
-    [isOpen, tabs, activeTab]
+    [tabs]
   );
 
   // create tabs
@@ -74,6 +70,13 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelController,
   useEffect(() => {
     setTabsNotificationsCount((prev) => {
       const newMap = new Map(prev);
+
+      // Add new
+      props.tabNames.forEach((name) => {
+        newMap.set(name, newMap.get(name) ?? 0);
+      });
+
+      // Remove deleted
       Array.from(newMap.keys()).forEach((k) => {
         if (!props.tabNames.includes(k)) {
           newMap.delete(k);
@@ -87,7 +90,7 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelController,
     setTabsMap([...tabsMap.entries()]);
   }, [tabsMap, setTabsMap]);
 
-  const toggleNotificationsPanel = useCallback(() => {
+  const togglePanel = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);
 
@@ -182,7 +185,7 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelController,
         className={
           isOpen ? "kogito--editor__notifications-panel-button open" : "kogito--editor__notifications-panel-button"
         }
-        onClick={toggleNotificationsPanel}
+        onClick={togglePanel}
       >
         {totalNotifications === 0 ? (
           <Tooltip

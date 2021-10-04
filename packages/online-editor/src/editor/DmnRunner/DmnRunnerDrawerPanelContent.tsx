@@ -189,12 +189,12 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   }, [dmnRunner.formError, dmnRunner.formData, updateDmnRunnerResults, previousFormError]);
 
   const openValidationTab = useCallback(() => {
-    props.notificationsPanel?.setIsOpen(true);
+    props.notificationsPanel?.open();
     props.notificationsPanel?.setActiveTab(i18n.terms.validation);
   }, [props.notificationsPanel, i18n]);
 
   const openExecutionTab = useCallback(() => {
-    props.notificationsPanel?.setIsOpen(true);
+    props.notificationsPanel?.open();
     props.notificationsPanel?.setActiveTab(i18n.terms.execution);
   }, [props.notificationsPanel, i18n]);
 

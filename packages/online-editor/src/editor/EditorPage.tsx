@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { SupportedFileExtensions, useGlobals } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
@@ -23,10 +23,8 @@ import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
 import { ChannelType } from "@kie-tooling-core/editor/dist/api";
 import { EmbeddedEditor, EmbeddedEditorRef, useStateControlSubscription } from "@kie-tooling-core/editor/dist/embedded";
-import { DmnRunnerContext } from "./DmnRunner/DmnRunnerContext";
 import { DmnRunnerContextProvider } from "./DmnRunner/DmnRunnerContextProvider";
 import { NotificationsPanel, NotificationsPanelController } from "./NotificationsPanel/NotificationsPanel";
-import { DmnRunnerStatus } from "./DmnRunner/DmnRunnerStatus";
 import { Alert, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxContextProvider";
@@ -183,16 +181,6 @@ export function EditorPage(props: Props) {
     setTextEditorModalOpen(false);
   }, [alerts]);
 
-  const notificationPanelTabNames = useCallback(
-    (dmnRunnerStatus: DmnRunnerStatus) => {
-      if (props.forExtension === "dmn" && globals.isChrome && dmnRunnerStatus === DmnRunnerStatus.AVAILABLE) {
-        return [i18n.terms.validation, i18n.terms.execution];
-      }
-      return [i18n.terms.validation];
-    },
-    [props.forExtension, globals.isChrome, i18n]
-  );
-
   // validate
   useEffect(() => {
     if (props.forExtension === "dmn" || !workspaceFilePromise.data || !editor?.isReady) {
@@ -202,7 +190,6 @@ export function EditorPage(props: Props) {
     //FIXME: tiago What to do?
     setTimeout(() => {
       editor?.validate().then((notifications) => {
-        console.info(notifications);
         notificationsPanel
           ?.getTab(i18n.terms.validation)
           ?.kogitoNotifications_setNotifications("", Array.isArray(notifications) ? notifications : []);
@@ -229,6 +216,12 @@ export function EditorPage(props: Props) {
                 <Alerts ref={alertsRef} />
                 {embeddedEditorFile && (
                   <EmbeddedEditor
+                    //FIXME: There's a bug on the PMML Editor that prevents is from working after a setContent call.
+                    key={
+                      embeddedEditorFile.fileExtension === "pmml"
+                        ? embeddedEditorFile.path
+                        : embeddedEditorFile.fileExtension
+                    }
                     ref={editorRef}
                     file={embeddedEditorFile}
                     kogitoWorkspace_resourceContentRequest={onResourceContentRequest}
@@ -239,14 +232,10 @@ export function EditorPage(props: Props) {
                     locale={locale}
                   />
                 )}
-                <DmnRunnerContext.Consumer>
-                  {(dmnRunner) => (
-                    <NotificationsPanel
-                      ref={notificationsPanelRef}
-                      tabNames={notificationPanelTabNames(dmnRunner.status)}
-                    />
-                  )}
-                </DmnRunnerContext.Consumer>
+                <NotificationsPanel
+                  ref={notificationsPanelRef}
+                  tabNames={useMemo(() => [i18n.terms.validation, i18n.terms.execution], [i18n])}
+                />
               </DmnRunnerDrawer>
             </PageSection>
           </Page>
