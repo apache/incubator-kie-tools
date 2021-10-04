@@ -46,7 +46,7 @@ import { AlertsController, useAlert } from "./Alerts/Alerts";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
-import { basename, dirname } from "path";
+import { dirname } from "path";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { CheckIcon } from "@patternfly/react-icons/dist/js/icons/check-icon";
 import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
@@ -63,6 +63,7 @@ import { NewFileDropdownItems } from "./NewFileDropdownItems";
 import { PageHeaderToolsItem, PageHeaderToolsItemProps } from "@patternfly/react-core/dist/js/components/Page";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { FileLabel } from "../workspace/pages/FileLabel";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -106,6 +107,7 @@ export function EditorToolbar(props: Props) {
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [isWorkspaceFilesMenuOpen, setWorkspaceFilesMenuOpen] = useState(false);
   const [isWorkspaceAddFileMenuOpen, setWorkspaceAddFileMenuOpen] = useState(false);
+  const [isDeleteDropdownOpen, setDeleteDropdownOpen] = useState(false);
 
   const copySuccessfulAlert = useAlert(
     props.alerts,
@@ -592,9 +594,16 @@ export function EditorToolbar(props: Props) {
                 />
               }
             >
-              <span style={{ fontWeight: props.workspaceFile?.path === file.path ? "bold" : "normal" }}>
-                {`${basename(file.path)}`}
-              </span>
+              <Flex flexWrap={{ default: "nowrap" }}>
+                <FlexItem>
+                  <span style={{ fontWeight: props.workspaceFile?.path === file.path ? "bold" : "normal" }}>
+                    {file.nameWithoutExtension}
+                  </span>
+                </FlexItem>
+                <FlexItem>
+                  <FileLabel extension={file.extension} />
+                </FlexItem>
+              </Flex>
               <EyeIcon
                 style={{
                   height: "0.8em",
@@ -607,6 +616,35 @@ export function EditorToolbar(props: Props) {
       </DropdownGroup>,
     ];
   }, [globals, history, props.workspaceFile, props.workspace]);
+
+  const deleteWorkspaceFile = useCallback(() => {
+    if (!props.workspace || !props.workspaceFile) {
+      return;
+    }
+
+    if (props.workspace.files.length === 1) {
+      workspaces.workspaceService
+        .delete(props.workspace.descriptor, { broadcast: true })
+        .then(() => history.push({ pathname: globals.routes.home.path({}) }));
+      return;
+    }
+
+    const nextFile = props.workspace?.files.filter((f) => f.path !== props.workspaceFile?.path).pop();
+    if (!nextFile) {
+      history.push({ pathname: globals.routes.home.path({}) });
+      return;
+    }
+
+    workspaces.workspaceService.storageService.deleteFile(props.workspaceFile!, { broadcast: true }).then(() =>
+      history.push({
+        pathname: globals.routes.workspaceWithFilePath.path({
+          workspaceId: nextFile.workspaceId,
+          filePath: nextFile.pathRelativeToWorkspaceRootWithoutExtension,
+          extension: nextFile.extension,
+        }),
+      })
+    );
+  }, [globals, history, props.workspace, props.workspaceFile, workspaces.workspaceService]);
 
   return (
     <>
@@ -666,7 +704,35 @@ export function EditorToolbar(props: Props) {
               </Flex>
             </PageHeaderToolsItem>
           </FlexItem>
+
           <FlexItem style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
+            {props.workspaceFile && props.workspace && (
+              <Dropdown
+                onSelect={() => setDeleteDropdownOpen(false)}
+                toggle={
+                  <DropdownToggle toggleIndicator={null} onToggle={setDeleteDropdownOpen}>
+                    <TrashIcon />
+                  </DropdownToggle>
+                }
+                isOpen={isDeleteDropdownOpen}
+                isPlain={true}
+                position={DropdownPosition.right}
+                dropdownItems={[
+                  <DropdownItem key="confirm-delete" onClick={deleteWorkspaceFile}>
+                    <Flex flexWrap={{ default: "nowrap" }}>
+                      <FlexItem>
+                        Delete <b>{`"${props.workspaceFile.nameWithoutExtension}"`}</b>
+                      </FlexItem>
+                      <FlexItem>
+                        <b>
+                          <FileLabel extension={props.workspaceFile.extension} />
+                        </b>
+                      </FlexItem>
+                    </Flex>
+                  </DropdownItem>,
+                ]}
+              />
+            )}
             <>
               {props.workspace && props.workspaceFile && (
                 <PageHeaderToolsItem visibility={hideWhenSmall}>
