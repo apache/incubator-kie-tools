@@ -30,7 +30,7 @@ Feature: kogito-builder image native build tests
       | wait            | 80                    |
       | expected_phrase | ["hello","world"]     |
     And file /home/kogito/bin/rules-quarkus-helloworld-runner should exist
-    And s2i build log should contain -J-Xmx4g
+    And s2i build log should contain -J-Xmx2576980378
 
   Scenario: Verify if the s2i build is finished as expected using native build and no runtime image
     Given s2i build https://github.com/kiegroup/kogito-examples.git from rules-quarkus-helloworld using nightly-main
@@ -50,7 +50,7 @@ Feature: kogito-builder image native build tests
     And file /home/kogito/bin/rules-quarkus-helloworld-runner should exist
     And file /home/kogito/ssl-libs/libsunec.so should exist
     And file /home/kogito/cacerts should exist
-    And s2i build log should contain -J-Xmx4g
+    And s2i build log should contain -J-Xmx2576980378
 
   Scenario: Verify if the s2i build is finished as expected performing a native build and if it is listening on the expected port, test uses custom properties file to test the port configuration.
     Given s2i build /tmp/kogito-examples from rules-quarkus-helloworld using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-native:latest
@@ -68,6 +68,7 @@ Feature: kogito-builder image native build tests
       | wait            | 80                    |
       | expected_phrase | ["hello","world"]     |
     And file /home/kogito/bin/rules-quarkus-helloworld-runner should exist
+    And s2i build log should contain -J-Xmx5153960755
 
   Scenario: Verify if the s2i build is finished as expected performing a native build with persistence enabled - Step 1: build the application and copy to the runtime image
     Given s2i build https://github.com/kiegroup/kogito-examples.git from process-quarkus-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-native:latest
@@ -80,6 +81,7 @@ Feature: kogito-builder image native build tests
     Then file /home/kogito/bin/process-quarkus-example-runner should exist
      And s2i build log should contain '/home/kogito/bin/demo.orders.proto' -> '/home/kogito/data/protobufs/demo.orders.proto'
      And s2i build log should contain '/home/kogito/bin/persons.proto' -> '/home/kogito/data/protobufs/persons.proto'
+     And s2i build log should contain -J-Xmx5153960755
 
   Scenario: Perform a incremental s2i build for native test
     Given s2i build https://github.com/kiegroup/kogito-examples.git from rules-quarkus-helloworld with env and incremental using nightly-main
@@ -117,6 +119,7 @@ Feature: kogito-builder image native build tests
       | request_body    | {"strings":["hello"]} |
       | wait            | 80                    |
       | expected_phrase | ["hello","world"]     |
+    And s2i build log should contain -J-Xmx5153960755
 
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly using native build
     Given s2i build /tmp/kogito-examples from dmn-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-native:latest
@@ -143,3 +146,4 @@ Feature: kogito-builder image native build tests
       | request_method  | GET                             |
       | content_type    | application/json                |
       | request_body    | {"status": "UP", "checks": []}  |
+    And s2i build log should contain -J-Xmx5153960755

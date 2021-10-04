@@ -125,6 +125,13 @@ what value the min and max should have:
 
 For a complete list ov environment variables that can be used to configure the JVM, please check the [dynamic resources](modules/kogito-dynamic-resources/module.yaml) module      
   
+When performing Quarkus native builds, by default, it will rely on the cgroups memory report to determine the amount of memory
+that will be used by the builder container. On OpenShift or k8s, it can be defined by setting the memory limit.
+The build process will use 80% of the total memory reported by cgroups. For backwards compatibility, the env
+`LIMIT_MEMORY` will be respected, but it is recommended unset it and let the memory be calculated automatic based
+on the available memory, it can be used in specific scenarios, like a CI test where it does not run on OpenShift cluster.
+
+
 ## Kogito Runtime and Builder Images
 
 Today, the Kogito images are divided basically in 2 vectors, when we talk about images that would be used to assemble 
