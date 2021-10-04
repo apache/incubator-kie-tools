@@ -62,6 +62,7 @@ import { SUPPORTED_FILES_EDITABLE } from "../workspace/SupportedFiles";
 import { NewFileDropdownItems } from "./NewFileDropdownItems";
 import { PageHeaderToolsItem, PageHeaderToolsItemProps } from "@patternfly/react-core/dist/js/components/Page";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { FileLabel } from "../workspace/pages/FileLabel";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -637,19 +638,16 @@ export function EditorToolbar(props: Props) {
           </PageHeaderToolsItem>
         </MastheadMain>
         <Flex justifyContent={{ default: "justifyContentSpaceBetween" }} alignItems={{ default: "alignItemsCenter" }}>
-          <FlexItem />
+          <FlexItem style={{ marginRight: "auto" }} />
           <FlexItem>
             <PageHeaderToolsItem visibility={{ default: "visible" }}>
               <Flex>
                 <FlexItem>
-                  <WorkspaceAndWorkspaceFileNames workspace={props.workspace} workspaceFile={props.workspaceFile} />
-                </FlexItem>
-                <FlexItem>
                   <TextContent>
                     <Text
-                      style={{ color: "gray", ...(!isEdited && !props.workspace ? { visibility: "hidden" } : {}) }}
+                      style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
                       component={"small"}
-                      aria-label={"EmbeddedEditorFile is saved"}
+                      aria-label={"File is saved"}
                       data-testid="is-saved-indicator"
                     >
                       {isEdited ? (
@@ -662,10 +660,13 @@ export function EditorToolbar(props: Props) {
                     </Text>
                   </TextContent>
                 </FlexItem>
+                <FlexItem>
+                  <WorkspaceAndWorkspaceFileNames workspace={props.workspace} workspaceFile={props.workspaceFile} />
+                </FlexItem>
               </Flex>
             </PageHeaderToolsItem>
           </FlexItem>
-          <FlexItem style={{ display: "flex", alignItems: "center" }}>
+          <FlexItem style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
             <>
               {props.workspace && props.workspaceFile && (
                 <PageHeaderToolsItem visibility={hideWhenSmall}>
@@ -898,39 +899,44 @@ function WorkspaceAndWorkspaceFileNames(props: {
 
   return (
     <>
-      {props.workspace && props.workspace.files.length > 1 && (
-        <>
-          <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
+      <Flex alignItems={{ default: "alignItemsCenter" }}>
+        <FlexItem>
+          {props.workspace && props.workspace.files.length > 1 && (
+            <>
+              <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
+                <Title aria-label={"EmbeddedEditorFile name"} headingLevel={"h3"} size={"2xl"}>
+                  {props.workspace.descriptor.name}
+                </Title>
+                <TextInput
+                  ref={workspaceNameRef}
+                  type={"text"}
+                  aria-label={"Edit workspace name"}
+                  className={"kogito--editor__toolbar-title"}
+                  onKeyUp={onWorkspaceNameKeyUp}
+                  onBlur={(e) => onRenameWorkspace(e.target.value)}
+                />
+              </div>
+              <Title headingLevel={"h3"} size={"2xl"} style={{ display: "inline", margin: "10px" }}>
+                {`/`}
+              </Title>
+            </>
+          )}
+          <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
             <Title aria-label={"EmbeddedEditorFile name"} headingLevel={"h3"} size={"2xl"}>
-              {props.workspace.descriptor.name}
+              {props.workspaceFile?.nameWithoutExtension}
             </Title>
             <TextInput
-              ref={workspaceNameRef}
+              ref={workspaceFileNameRef}
               type={"text"}
-              aria-label={"Edit workspace name"}
+              aria-label={"Edit file name"}
               className={"kogito--editor__toolbar-title"}
-              onKeyUp={onWorkspaceNameKeyUp}
-              onBlur={(e) => onRenameWorkspace(e.target.value)}
+              onKeyUp={onWorkspaceFileNameKeyUp}
+              onBlur={(e) => onRenameWorkspaceFile(e.target.value)}
             />
           </div>
-          <Title headingLevel={"h3"} size={"2xl"} style={{ display: "inline", margin: "10px" }}>
-            {`/`}
-          </Title>
-        </>
-      )}
-      <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
-        <Title aria-label={"EmbeddedEditorFile name"} headingLevel={"h3"} size={"2xl"}>
-          {props.workspaceFile?.nameWithoutExtension}
-        </Title>
-        <TextInput
-          ref={workspaceFileNameRef}
-          type={"text"}
-          aria-label={"Edit file name"}
-          className={"kogito--editor__toolbar-title"}
-          onKeyUp={onWorkspaceFileNameKeyUp}
-          onBlur={(e) => onRenameWorkspaceFile(e.target.value)}
-        />
-      </div>
+        </FlexItem>
+        <FlexItem>{props.workspaceFile && <FileLabel extension={props.workspaceFile.extension} />}</FlexItem>
+      </Flex>
     </>
   );
 }

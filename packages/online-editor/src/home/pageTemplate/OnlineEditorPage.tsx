@@ -1,19 +1,13 @@
-import {
-  Page,
-  PageHeader,
-  PageHeaderTools,
-  PageHeaderToolsGroup,
-  PageHeaderToolsItem,
-} from "@patternfly/react-core/dist/js/components/Page";
+import { Page, PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import * as React from "react";
-import { useOnlineI18n } from "../../common/i18n";
 import { useGlobals } from "../../common/GlobalContext";
 import { useHistory } from "react-router";
+import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { SettingsButton } from "../../settings/SettingsButton";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export function OnlineEditorPage(props: { children: React.ReactNode }) {
-  const { i18n } = useOnlineI18n();
   const globals = useGlobals();
   const history = useHistory();
 
@@ -21,19 +15,26 @@ export function OnlineEditorPage(props: { children: React.ReactNode }) {
     <Page
       className="kogito--editor-landing"
       header={
-        <PageHeader
-          logo={<Brand src={globals.routes.static.images.homeLogo.path({})} alt="Logo" />}
-          logoProps={{ onClick: () => history.push({ pathname: globals.routes.home.path({}) }) }}
-          headerTools={
-            <PageHeaderTools>
-              <PageHeaderToolsGroup>
-                <PageHeaderToolsItem>
-                  <SettingsButton />
-                </PageHeaderToolsItem>
-              </PageHeaderToolsGroup>
-            </PageHeaderTools>
-          }
-        />
+        <Masthead aria-label={"Page header"}>
+          <MastheadMain>
+            <PageHeaderToolsItem>
+              <MastheadBrand>
+                <Brand
+                  src={globals.routes.static.images.homeLogo.path({})}
+                  onClick={() => history.push({ pathname: globals.routes.home.path({}) })}
+                  alt={"Logo"}
+                />
+              </MastheadBrand>
+            </PageHeaderToolsItem>
+          </MastheadMain>
+          <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
+            <FlexItem>
+              <PageHeaderToolsItem>
+                <SettingsButton />
+              </PageHeaderToolsItem>
+            </FlexItem>
+          </Flex>
+        </Masthead>
       }
     >
       {/*<PageSection variant="dark" className="kogito--editor-landing__title-section">*/}

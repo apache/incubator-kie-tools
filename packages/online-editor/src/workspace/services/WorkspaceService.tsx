@@ -176,15 +176,6 @@ export class WorkspaceService {
     return uuid();
   }
 
-  public async newName(preferredName?: string): Promise<string> {
-    const descriptors = await this.list();
-    const names = descriptors.map((descriptor: WorkspaceDescriptor) => descriptor.name);
-    if (preferredName && names.includes(preferredName)) {
-      throw new Error(`Workspace ${preferredName} already exists`);
-    }
-    return preferredName || `Workspace ${names.length + 1}`;
-  }
-
   public async prepareZip(descriptor: WorkspaceDescriptor): Promise<Blob> {
     const contextPath = await this.resolveContextPath(descriptor);
 

@@ -197,6 +197,10 @@ export function EditorPage(props: Props) {
     }, 200);
   }, [workspaceFilePromise, props.forExtension, notificationsPanel, editor, i18n]);
 
+  const notificationsPanelTabNames = useMemo(() => {
+    return [i18n.terms.validation, i18n.terms.execution];
+  }, [i18n]);
+
   return (
     <>
       <DmnRunnerContextProvider workspaceFile={workspaceFilePromise.data} notificationsPanel={notificationsPanel}>
@@ -232,10 +236,7 @@ export function EditorPage(props: Props) {
                     locale={locale}
                   />
                 )}
-                <NotificationsPanel
-                  ref={notificationsPanelRef}
-                  tabNames={useMemo(() => [i18n.terms.validation, i18n.terms.execution], [i18n])}
-                />
+                <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
               </DmnRunnerDrawer>
             </PageSection>
           </Page>

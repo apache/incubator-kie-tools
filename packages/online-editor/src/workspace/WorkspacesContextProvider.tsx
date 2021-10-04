@@ -40,6 +40,7 @@ const GIT_CORS_PROXY = "https://cors.isomorphic-git.org"; // TODO CAPONETTO: Dep
 const GIT_USER_FULLNAME = "Kogito Tooling Bot (kiegroup)";
 const GIT_USER_EMAIL = "kietooling@gmail.com";
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
+const NEW_WORKSPACE_DEFAULT_NAME = `Untitled Folder`;
 
 interface Props {
   children: React.ReactNode;
@@ -77,10 +78,10 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createWorkspaceFromLocal = useCallback(
-    async (files: LocalFile[], preferredName?: string) => {
+    async (files: LocalFile[]) => {
       const descriptor: WorkspaceDescriptor = {
         workspaceId: workspaceService.newContext(),
-        name: await workspaceService.newName(preferredName),
+        name: NEW_WORKSPACE_DEFAULT_NAME,
         origin: { kind: WorkspaceKind.LOCAL },
         createdIn: new Date().toString(),
       };
@@ -98,10 +99,10 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createWorkspaceFromGitHubRepository = useCallback(
-    async (repositoryUrl: URL, sourceBranch: string, preferredName?: string) => {
+    async (repositoryUrl: URL, sourceBranch: string) => {
       const descriptor: WorkspaceDescriptor = {
         workspaceId: workspaceService.newContext(),
-        name: await workspaceService.newName(preferredName),
+        name: NEW_WORKSPACE_DEFAULT_NAME,
         origin: { url: repositoryUrl, branch: sourceBranch, kind: WorkspaceKind.GITHUB_REPOSITORY },
         createdIn: new Date().toString(),
       };

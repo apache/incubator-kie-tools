@@ -2,7 +2,7 @@ import { LocalFile, useWorkspaces } from "../WorkspacesContext";
 import { useGlobals } from "../../common/GlobalContext";
 import { useHistory } from "react-router";
 import * as React from "react";
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -15,6 +15,8 @@ import {
   FetchFileErrorReason,
 } from "../../editor/EditorFetchFileErrorEmptyState";
 import { extractFileExtension, removeDirectories, removeFileExtension } from "../../common/utils";
+import { OnlineEditorPage } from "../../home/pageTemplate/OnlineEditorPage";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -179,19 +181,28 @@ export function NewWorkspaceFromUrlPage() {
   ]);
 
   return (
-    <>
-      {fetchFileError && <EditorFetchFileErrorEmptyState fetchFileError={fetchFileError} />}
-      {!fetchFileError && (
-        <Bullseye>
-          <TextContent>
+    <OnlineEditorPage>
+      <PageSection
+        variant={"light"}
+        isFilled={true}
+        padding={{ default: "noPadding" }}
+        className={"kogito--editor__page-section"}
+      >
+        <>
+          {fetchFileError && <EditorFetchFileErrorEmptyState fetchFileError={fetchFileError} />}
+          {!fetchFileError && (
             <Bullseye>
-              <Spinner />
+              <TextContent>
+                <Bullseye>
+                  <Spinner />
+                </Bullseye>
+                <br />
+                <Text component={TextVariants.p}>{`Importing workspace from '${queryParamUrl}'`}</Text>
+              </TextContent>
             </Bullseye>
-            <br />
-            <Text component={TextVariants.p}>{`Importing workspace from '${queryParamUrl}'`}</Text>
-          </TextContent>
-        </Bullseye>
-      )}
-    </>
+          )}
+        </>
+      </PageSection>
+    </OnlineEditorPage>
   );
 }

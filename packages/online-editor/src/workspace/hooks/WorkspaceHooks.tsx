@@ -1,12 +1,12 @@
 import { useWorkspaces } from "../WorkspacesContext";
 import { useCallback } from "react";
 import { ActiveWorkspace } from "../model/ActiveWorkspace";
-import { useDelayedPromiseState } from "./PromiseState";
+import { usePromiseState } from "./PromiseState";
 import { Holder, useCancelableEffect } from "../../common/Hooks";
 
 export function useWorkspacePromise(workspaceId: string | undefined) {
   const workspaces = useWorkspaces();
-  const [workspacePromise, setWorkspacePromise] = useDelayedPromiseState<ActiveWorkspace>(600);
+  const [workspacePromise, setWorkspacePromise] = usePromiseState<ActiveWorkspace>();
 
   const refresh = useCallback(
     async (canceled: Holder<boolean>) => {
