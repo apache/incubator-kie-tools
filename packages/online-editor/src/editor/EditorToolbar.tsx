@@ -61,6 +61,7 @@ import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
 import { SUPPORTED_FILES_EDITABLE } from "../workspace/SupportedFiles";
 import { NewFileDropdownItems } from "./NewFileDropdownItems";
 import { PageHeaderToolsItem, PageHeaderToolsItemProps } from "@patternfly/react-core/dist/js/components/Page";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -625,13 +626,13 @@ export function EditorToolbar(props: Props) {
         <MastheadMain>
           <PageHeaderToolsItem visibility={{ ...hideWhenSmall, sm: "visible" }}>
             <MastheadBrand>
-              {props.workspaceFile && (
+              {(props.workspaceFile && (
                 <Brand
                   onClick={onClose}
                   src={globals.routes.static.images.editorLogo.path({ type: props.workspaceFile.extension ?? "dmn" })}
                   alt={`${props.workspaceFile?.extension} kogito logo`}
                 />
-              )}
+              )) || <Spinner size={"md"} />}
             </MastheadBrand>
           </PageHeaderToolsItem>
         </MastheadMain>
@@ -665,93 +666,103 @@ export function EditorToolbar(props: Props) {
             </PageHeaderToolsItem>
           </FlexItem>
           <FlexItem style={{ display: "flex", alignItems: "center" }}>
-            <PageHeaderToolsItem visibility={hideWhenSmall}>
-              {props.workspaceFile?.extension === "dmn" && (
-                <>
-                  <KieToolingExtendedServicesButtons />
-                </>
-              )}
-              &nbsp;&nbsp;&nbsp;
-              <Dropdown
-                onSelect={() => setShareMenuOpen(false)}
-                toggle={
-                  <DropdownToggle
-                    id={"share-id-lg"}
-                    data-testid={"share-menu"}
-                    onToggle={(isOpen) => setShareMenuOpen(isOpen)}
-                  >
-                    {i18n.editorToolbar.share}
-                  </DropdownToggle>
-                }
-                isFullHeight={true}
-                isPlain={true}
-                style={{ marginRight: "2px" }}
-                className={"kogito--editor__toolbar dropdown"}
-                isOpen={isShareMenuOpen}
-                dropdownItems={shareItems("lg")}
-                position={DropdownPosition.right}
-              />
-              {props.workspace && (
-                <>
+            <>
+              {props.workspace && props.workspaceFile && (
+                <PageHeaderToolsItem visibility={hideWhenSmall}>
+                  {props.workspaceFile?.extension === "dmn" && (
+                    <>
+                      <KieToolingExtendedServicesButtons />
+                    </>
+                  )}
                   &nbsp;&nbsp;&nbsp;
                   <Dropdown
-                    onSelect={() => setWorkspaceFilesMenuOpen(false)}
+                    onSelect={() => setShareMenuOpen(false)}
                     toggle={
                       <DropdownToggle
-                        id={"files-id-lg"}
-                        data-testid={"files-menu"}
-                        onToggle={(isOpen) => setWorkspaceFilesMenuOpen(isOpen)}
+                        id={"share-id-lg"}
+                        data-testid={"share-menu"}
+                        onToggle={(isOpen) => setShareMenuOpen(isOpen)}
                       >
-                        {`${props.workspace?.files.length} ${
-                          (props.workspace?.files.length ?? 0) === 1 ? "File" : "Files"
-                        }`}
+                        {i18n.editorToolbar.share}
                       </DropdownToggle>
                     }
                     isFullHeight={true}
                     isPlain={true}
                     style={{ marginRight: "2px" }}
                     className={"kogito--editor__toolbar dropdown"}
-                    isOpen={isWorkspaceFilesMenuOpen}
-                    dropdownItems={filesDropdownItems}
+                    isOpen={isShareMenuOpen}
+                    dropdownItems={shareItems("lg")}
                     position={DropdownPosition.right}
                   />
-                  <Dropdown
-                    onSelect={() => setWorkspaceAddFileMenuOpen(false)}
-                    toggle={
-                      <DropdownToggle toggleIndicator={null} onToggle={(isOpen) => setWorkspaceAddFileMenuOpen(isOpen)}>
-                        <PlusIcon />
-                      </DropdownToggle>
-                    }
-                    isFullHeight={true}
-                    isPlain={true}
-                    className={"kogito--editor__toolbar dropdown"}
-                    isOpen={isWorkspaceAddFileMenuOpen}
-                    dropdownItems={[
-                      <NewFileDropdownItems
-                        key={"new-file-dropdown-items"}
-                        workspace={props.workspace}
-                        addEmptyWorkspaceFile={async (extension) => {
-                          if (!props.workspace) {
-                            throw new Error("Can't add a file without a workspace");
-                          }
+                  {props.workspace && (
+                    <>
+                      &nbsp;&nbsp;&nbsp;
+                      <Dropdown
+                        onSelect={() => setWorkspaceFilesMenuOpen(false)}
+                        toggle={
+                          <DropdownToggle
+                            id={"files-id-lg"}
+                            data-testid={"files-menu"}
+                            onToggle={(isOpen) => setWorkspaceFilesMenuOpen(isOpen)}
+                          >
+                            {`${props.workspace?.files.length} ${
+                              (props.workspace?.files.length ?? 0) === 1 ? "File" : "Files"
+                            }`}
+                          </DropdownToggle>
+                        }
+                        isFullHeight={true}
+                        isPlain={true}
+                        style={{ marginRight: "2px" }}
+                        className={"kogito--editor__toolbar dropdown"}
+                        isOpen={isWorkspaceFilesMenuOpen}
+                        dropdownItems={filesDropdownItems}
+                        position={DropdownPosition.right}
+                      />
+                      <Dropdown
+                        onSelect={() => setWorkspaceAddFileMenuOpen(false)}
+                        toggle={
+                          <DropdownToggle
+                            toggleIndicator={null}
+                            onToggle={(isOpen) => setWorkspaceAddFileMenuOpen(isOpen)}
+                          >
+                            <PlusIcon />
+                          </DropdownToggle>
+                        }
+                        isFullHeight={true}
+                        isPlain={true}
+                        className={"kogito--editor__toolbar dropdown"}
+                        isOpen={isWorkspaceAddFileMenuOpen}
+                        dropdownItems={[
+                          <NewFileDropdownItems
+                            key={"new-file-dropdown-items"}
+                            workspace={props.workspace}
+                            addEmptyWorkspaceFile={async (extension) => {
+                              if (!props.workspace) {
+                                throw new Error("Can't add a file without a workspace");
+                              }
 
-                          const file = await workspaces.addEmptyFile(props.workspace.descriptor.workspaceId, extension);
-                          history.push({
-                            pathname: globals.routes.workspaceWithFilePath.path({
-                              workspaceId: file.workspaceId,
-                              filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
-                              extension: file.extension,
-                            }),
-                          });
-                          return file;
-                        }}
-                      />,
-                    ]}
-                    position={DropdownPosition.right}
-                  />
-                </>
+                              const file = await workspaces.addEmptyFile(
+                                props.workspace.descriptor.workspaceId,
+                                extension
+                              );
+                              history.push({
+                                pathname: globals.routes.workspaceWithFilePath.path({
+                                  workspaceId: file.workspaceId,
+                                  filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                                  extension: file.extension,
+                                }),
+                              });
+                              return file;
+                            }}
+                          />,
+                        ]}
+                        position={DropdownPosition.right}
+                      />
+                    </>
+                  )}
+                </PageHeaderToolsItem>
               )}
-            </PageHeaderToolsItem>
+            </>
             &nbsp;&nbsp;&nbsp;
             <PageHeaderToolsItem visibility={showWhenSmall}>
               <Dropdown
@@ -785,7 +796,6 @@ export function EditorToolbar(props: Props) {
           </FlexItem>
         </Flex>
       </Masthead>
-
       <EmbedModal
         workspaceFile={props.workspaceFile}
         isOpen={isEmbedModalOpen}
