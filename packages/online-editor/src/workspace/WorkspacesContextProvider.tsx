@@ -31,6 +31,7 @@ import { useSettings } from "../settings/SettingsContext";
 import { SupportedFileExtensions } from "../common/GlobalContext";
 import { extractFileExtension } from "../common/utils";
 import { WorkspaceOverview } from "./model/WorkspaceOverview";
+import { emptyTemplates } from "./FileTemplates";
 
 const INDEXED_DB_NAME = "kogito-online";
 const GIT_CORS_PROXY = "https://cors.isomorphic-git.org"; // TODO CAPONETTO: Deploy our own proxy (https://github.com/isomorphic-git/cors-proxy)
@@ -38,6 +39,7 @@ const GIT_CORS_PROXY = "https://cors.isomorphic-git.org"; // TODO CAPONETTO: Dep
 // TODO CAPONETTO: fullname and email to be set via settings? Use octokit?
 const GIT_USER_FULLNAME = "Kogito Tooling Bot (kiegroup)";
 const GIT_USER_EMAIL = "kietooling@gmail.com";
+const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 
 interface Props {
   children: React.ReactNode;
@@ -127,10 +129,6 @@ export function WorkspacesContextProvider(props: Props) {
 
   const updateFile = useCallback(
     async (file: WorkspaceFile, getNewContents: () => Promise<string>) => {
-      if (!file) {
-        throw new Error("No active file");
-      }
-
       const updatedFile = new WorkspaceFile({ path: file.path, getFileContents: getNewContents });
       await storageService.updateFile(updatedFile, { broadcast: true });
     },
@@ -141,12 +139,24 @@ export function WorkspacesContextProvider(props: Props) {
     async (workspaceId: string, fileExtension: SupportedFileExtensions) => {
       const descriptor = (await workspaceService.get(workspaceId))!;
       const contextPath = await workspaceService.resolveContextPath(descriptor);
-      const newEmptyFile = new WorkspaceFile({
-        path: `${contextPath}/Untitled.${fileExtension}`,
-        getFileContents: () => Promise.resolve(""),
-      });
-      await storageService.createFile(newEmptyFile, { broadcast: true });
-      return newEmptyFile;
+
+      for (let i = 0; i < MAX_NEW_FILE_INDEX_ATTEMPTS; i++) {
+        const index = i === 0 ? "" : `-${i}`;
+        const path = `${contextPath}/Untitled${index}.${fileExtension}`;
+        if (await storageService.exists(path)) {
+          continue;
+        }
+        const contents =
+          fileExtension in emptyTemplates
+            ? emptyTemplates[fileExtension as keyof typeof emptyTemplates]
+            : emptyTemplates.default;
+
+        const newEmptyFile = new WorkspaceFile({ path, getFileContents: () => Promise.resolve(contents) });
+        await storageService.createFile(newEmptyFile, { broadcast: true });
+        return newEmptyFile;
+      }
+
+      throw new Error("Max attempts of new empty file exceeded.");
     },
     [workspaceService, storageService]
   );
