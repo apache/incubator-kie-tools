@@ -503,7 +503,7 @@ export function WorkspacesListDrawerPanelContent(props: {
   const globals = useGlobals();
   const workspacePromise = useWorkspacePromise(props.workspaceDescriptor.workspaceId);
   return (
-    <DrawerPanelContent isResizable={true} minSize={"40%"}>
+    <DrawerPanelContent isResizable={true} minSize={"40%"} maxSize={"80%"}>
       <DrawerHead>
         <TextContent>
           <Text component={TextVariants.h3}>{props.workspaceDescriptor.name}</Text>

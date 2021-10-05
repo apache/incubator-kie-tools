@@ -7,7 +7,7 @@ import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/di
 import { SettingsButton } from "../../settings/SettingsButton";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
-export function OnlineEditorPage(props: { children: React.ReactNode }) {
+export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const globals = useGlobals();
   const history = useHistory();
 

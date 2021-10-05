@@ -39,6 +39,7 @@ import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { PromiseStateWrapper, useCombinedPromiseState } from "../workspace/hooks/PromiseState";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
+import { OnlineEditorPage } from "../home/pageTemplate/OnlineEditorPage";
 
 export interface Props {
   forExtension: SupportedFileExtensions;
@@ -213,6 +214,7 @@ export function EditorPage(props: Props) {
   return (
     <PromiseStateWrapper
       promise={combinedStatePromise}
+      pending={() => <OnlineEditorPage />}
       rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.filePath} />}
       resolved={({ workspace, file }) => (
         <>
