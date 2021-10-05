@@ -10,7 +10,7 @@ const labelColors = new Map<string, string>([
 export function FileLabel(props: { extension: string }) {
   return (
     <>
-      <Label color={(labelColors.get(props.extension) as any) ?? "grey"}>{props.extension}</Label>
+      <Label color={(labelColors.get(props.extension) as any) ?? "grey"}>{props.extension.toUpperCase()}</Label>
     </>
   );
 }
