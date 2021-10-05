@@ -686,7 +686,7 @@ export function EditorToolbar(props: Props) {
           <FlexItem>
             <PageHeaderToolsItem visibility={{ default: "visible" }}>
               <Flex>
-                <FlexItem>
+                <FlexItem style={{ width: "60px" }}>
                   <TextContent>
                     <Text
                       style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
