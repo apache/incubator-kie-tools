@@ -24,7 +24,7 @@ import * as React from "react";
 import { createContext, useContext } from "react";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
 import { WorkspaceService } from "./services/WorkspaceService";
-import { basename, extname } from "path";
+import { basename, dirname, extname } from "path";
 import { removeFileExtension } from "../common/utils";
 
 export class WorkspaceFile {
@@ -32,6 +32,10 @@ export class WorkspaceFile {
 
   get path() {
     return this.args.path;
+  }
+
+  get folderPath() {
+    return dirname(this.args.path);
   }
 
   get getFileContents() {
@@ -82,7 +86,7 @@ export interface WorkspacesContextType {
   createWorkspaceFromGitHubRepository: (repositoryUrl: URL, sourceBranch: string) => Promise<WorkspaceDescriptor>;
 
   // edit workspace
-  addEmptyFile: (workspaceId: string, fileExtension: string) => Promise<WorkspaceFile>;
+  addEmptyFile: (destinationFolder: string, fileExtension: string) => Promise<WorkspaceFile>;
   prepareZip: (workspaceId: string) => Promise<Blob>;
   resourceContentList: (workspaceId: string, globPattern: string, opts?: ResourceListOptions) => Promise<ResourcesList>;
 

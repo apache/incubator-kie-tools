@@ -629,7 +629,13 @@ export function EditorToolbar(props: Props) {
       return;
     }
 
-    const nextFile = props.workspace?.files.filter((f) => f.path !== props.workspaceFile?.path).pop();
+    const nextFile = props.workspace?.files
+      .filter(
+        (f) =>
+          f.path !== props.workspaceFile?.path &&
+          Array.from(globals.editorEnvelopeLocator.mapping.keys()).includes(f.extension)
+      )
+      .pop();
     if (!nextFile) {
       history.push({ pathname: globals.routes.home.path({}) });
       return;
@@ -808,10 +814,11 @@ export function EditorToolbar(props: Props) {
                                 throw new Error("Can't add a file without a workspace");
                               }
 
-                              const file = await workspaces.addEmptyFile(
-                                props.workspace.descriptor.workspaceId,
-                                extension
-                              );
+                              const destinationFolder = props.workspaceFile
+                                ? props.workspaceFile.folderPath
+                                : `/${props.workspace.descriptor.workspaceId}`;
+
+                              const file = await workspaces.addEmptyFile(destinationFolder, extension);
                               history.push({
                                 pathname: globals.routes.workspaceWithFilePath.path({
                                   workspaceId: file.workspaceId,

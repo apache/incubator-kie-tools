@@ -3,6 +3,7 @@ import * as React from "react";
 
 const labelColors = new Map<string, string>([
   ["bpmn", "green"],
+  ["bpmn2", "green"],
   ["dmn", "blue"],
   ["pmml", "purple"],
 ]);

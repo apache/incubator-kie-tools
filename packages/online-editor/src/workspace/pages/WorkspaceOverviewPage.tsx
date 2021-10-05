@@ -73,7 +73,7 @@ export function WorkspaceOverviewPage(props: Props) {
       if (!workspacePromise.data) {
         throw new Error("Can't add file.");
       }
-      return workspaces.addEmptyFile(workspacePromise.data.descriptor.workspaceId, extension);
+      return workspaces.addEmptyFile(`/${workspacePromise.data.descriptor.workspaceId}`, extension);
     },
     [workspaces, workspacePromise.data]
   );

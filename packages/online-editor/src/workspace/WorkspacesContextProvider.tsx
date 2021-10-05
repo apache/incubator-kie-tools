@@ -31,6 +31,7 @@ import { useSettings } from "../settings/SettingsContext";
 import { SupportedFileExtensions } from "../common/GlobalContext";
 import { extractFileExtension } from "../common/utils";
 import { emptyTemplates } from "./FileTemplates";
+import { join } from "path";
 
 const INDEXED_DB_NAME = "kogito-online";
 const GIT_CORS_PROXY = "https://cors.isomorphic-git.org"; // TODO CAPONETTO: Deploy our own proxy (https://github.com/isomorphic-git/cors-proxy)
@@ -134,13 +135,10 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const addEmptyFile = useCallback(
-    async (workspaceId: string, fileExtension: SupportedFileExtensions) => {
-      const descriptor = (await workspaceService.get(workspaceId))!;
-      const contextPath = await workspaceService.resolveContextPath(descriptor);
-
+    async (destinationFolder: string, fileExtension: SupportedFileExtensions) => {
       for (let i = 0; i < MAX_NEW_FILE_INDEX_ATTEMPTS; i++) {
         const index = i === 0 ? "" : `-${i}`;
-        const path = `${contextPath}/Untitled${index}.${fileExtension}`;
+        const path = join(destinationFolder, `Untitled${index}.${fileExtension}`);
         if (await workspaceService.exists(path)) {
           continue;
         }
