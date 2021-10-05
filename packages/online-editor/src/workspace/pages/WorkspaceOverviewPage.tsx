@@ -52,7 +52,7 @@ import {
   DescriptionListTerm,
 } from "@patternfly/react-core/dist/js/components/DescriptionList";
 import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { NewFileDropdownItems } from "../../editor/NewFileDropdownItems";
+import { AddFileDropdownItems } from "../../editor/AddFileDropdownItems";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { FileLabel } from "./FileLabel";
 import { PromiseStateWrapper } from "../hooks/PromiseState";
@@ -147,7 +147,7 @@ export function WorkspaceOverviewPage(props: Props) {
                             isPlain={true}
                             isOpen={isNewFileDropdownOpen}
                             dropdownItems={[
-                              <NewFileDropdownItems
+                              <AddFileDropdownItems
                                 key={"new-file-dropdown-items"}
                                 addEmptyWorkspaceFile={addEmptyWorkspaceFile}
                               />,

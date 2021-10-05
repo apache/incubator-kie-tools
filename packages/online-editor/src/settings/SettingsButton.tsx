@@ -6,7 +6,12 @@ import { useSettings } from "./SettingsContext";
 export function SettingsButton() {
   const settings = useSettings();
   return (
-    <Button variant="plain" onClick={() => settings.open()} aria-label="Settings">
+    <Button
+      variant="plain"
+      onClick={() => settings.open()}
+      aria-label="Settings"
+      className={"kogito-tooling--masthead-hoverable"}
+    >
       <CogIcon />
     </Button>
   );

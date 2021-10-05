@@ -13,7 +13,6 @@ export function OnlineEditorPage(props: { children: React.ReactNode }) {
 
   return (
     <Page
-      className="kogito--editor-landing"
       header={
         <Masthead aria-label={"Page header"}>
           <MastheadMain>

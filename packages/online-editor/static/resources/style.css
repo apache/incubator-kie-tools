@@ -619,3 +619,12 @@
 section.kogito-tooling--settings-tab {
   height: calc(100% - 40px);
 }
+
+.kogito-tooling--masthead-hoverable:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+}
+
+#editor-page-masthead-files-dropdown-toggle {
+  padding-left: 0;
+}

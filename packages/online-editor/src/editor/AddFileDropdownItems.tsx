@@ -4,13 +4,13 @@ import { WorkspaceFile } from "../workspace/WorkspacesContext";
 import { FileLabel } from "../workspace/pages/FileLabel";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
-export function NewFileDropdownItems(props: { addEmptyWorkspaceFile: (extension: string) => Promise<WorkspaceFile> }) {
+export function AddFileDropdownItems(props: { addEmptyWorkspaceFile: (extension: string) => Promise<WorkspaceFile> }) {
   return (
     <>
-      <DropdownGroup key={"new-file-group"} label="New file">
+      <DropdownGroup key={"add-file-group"} label="Add file">
         <DropdownItem
           onClick={() => props.addEmptyWorkspaceFile("bpmn")}
-          key={"new-bpmn-item"}
+          key={"add-bpmn-item"}
           description="BPMN files are used to generate business processes"
         >
           <b>
@@ -26,7 +26,7 @@ export function NewFileDropdownItems(props: { addEmptyWorkspaceFile: (extension:
       <DropdownGroup key={"dmn-group"}>
         <DropdownItem
           onClick={() => props.addEmptyWorkspaceFile("dmn")}
-          key={"new-dmn-item"}
+          key={"add-dmn-item"}
           description="DMN files are used to generate decision models"
         >
           <b>
@@ -42,7 +42,7 @@ export function NewFileDropdownItems(props: { addEmptyWorkspaceFile: (extension:
       <DropdownGroup key={"pmml-group"}>
         <DropdownItem
           onClick={() => props.addEmptyWorkspaceFile("pmml")}
-          key={"new-pmml-item"}
+          key={"add-pmml-item"}
           description="PMML files are used to generate scorecards"
         >
           <b>
