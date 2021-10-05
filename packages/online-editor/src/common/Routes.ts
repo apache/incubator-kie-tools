@@ -130,10 +130,6 @@ export const routes = {
     queryParams: QueryParams.URL | QueryParams.READONLY | QueryParams.DMN_RUNNER_FORM_INPUTS;
   }>(() => `/import`),
 
-  workspaceOverview: new Route<{
-    pathParams: PathParams.WORKSPACE_ID;
-  }>(({ workspaceId }) => `/${workspaceId}/overview`),
-
   workspaceWithFilePath: new Route<{
     pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_PATH | PathParams.EXTENSION;
   }>(({ workspaceId, filePath, extension }) => `/${workspaceId}/file/${filePath}.${extension}`),

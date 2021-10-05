@@ -27,7 +27,6 @@ import { KieToolingExtendedServicesContextProvider } from "./editor/KieToolingEx
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
 import { HomePage } from "./home/HomePage";
-import { WorkspaceOverviewPage } from "./workspace/pages/WorkspaceOverviewPage";
 import { NewWorkspaceWithEmptyFilePage } from "./workspace/pages/NewWorkspaceWithEmptyFilePage";
 import { NewWorkspaceFromUrlPage } from "./workspace/pages/NewWorkspaceFromUrlPage";
 
@@ -64,9 +63,6 @@ function RoutesSwitch() {
       </Route>
       <Route path={globals.routes.importModel.path({})}>
         <NewWorkspaceFromUrlPage />
-      </Route>
-      <Route path={globals.routes.workspaceOverview.path({ workspaceId: ":workspaceId" })}>
-        {({ match }) => <WorkspaceOverviewPage workspaceId={match!.params.workspaceId!} />}
       </Route>
       <Route
         path={globals.routes.workspaceWithFilePath.path({

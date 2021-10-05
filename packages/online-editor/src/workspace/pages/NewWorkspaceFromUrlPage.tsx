@@ -42,23 +42,19 @@ export function NewWorkspaceFromUrlPage() {
   const createWorkspaceForFile = useCallback(
     (file: LocalFile) => {
       workspaces.createWorkspaceFromLocal([file]).then(({ descriptor, suggestedFirstFile }) => {
-        if (suggestedFirstFile) {
-          history.replace({
-            pathname: globals.routes.workspaceWithFilePath.path({
-              workspaceId: descriptor.workspaceId,
-              filePath: suggestedFirstFile.pathRelativeToWorkspaceRootWithoutExtension,
-              extension: suggestedFirstFile.extension,
-            }),
-          });
+        if (!suggestedFirstFile) {
           return;
         }
-
         history.replace({
-          pathname: globals.routes.workspaceOverview.path({ workspaceId: descriptor.workspaceId }),
+          pathname: globals.routes.workspaceWithFilePath.path({
+            workspaceId: descriptor.workspaceId,
+            filePath: suggestedFirstFile.pathRelativeToWorkspaceRootWithoutExtension,
+            extension: suggestedFirstFile.extension,
+          }),
         });
       });
     },
-    [globals.routes.workspaceOverview, globals.routes.workspaceWithFilePath, history, workspaces]
+    [globals.routes.workspaceWithFilePath, history, workspaces]
   );
 
   useEffect(() => {
@@ -162,7 +158,6 @@ export function NewWorkspaceFromUrlPage() {
     };
   }, [
     globals.externalFile,
-    globals.routes.workspaceOverview,
     globals.routes.workspaceWithFilePath,
     history,
     queryParamUrl,

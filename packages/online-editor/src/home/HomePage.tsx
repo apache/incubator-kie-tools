@@ -34,6 +34,24 @@ import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import {
+  Drawer,
+  DrawerActions,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerContentBody,
+  DrawerHead,
+  DrawerPanelContent,
+} from "@patternfly/react-core/dist/js/components/Drawer";
+import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
+import {
+  DataList,
+  DataListCell,
+  DataListItem,
+  DataListItemCells,
+  DataListItemRow,
+} from "@patternfly/react-core/dist/js/components/DataList";
+import { Link } from "react-router-dom";
 
 export function HomePage() {
   const globals = useGlobals();
@@ -67,14 +85,21 @@ export function HomePage() {
       return;
     }
 
-    workspaces.createWorkspaceFromLocal(filesToUpload).then(({ descriptor }) => {
-      history.push({
-        pathname: globals.routes.workspaceOverview.path({
+    workspaces.createWorkspaceFromLocal(filesToUpload).then(({ descriptor, suggestedFirstFile }) => {
+      if (!suggestedFirstFile) {
+        return;
+      }
+      history.replace({
+        pathname: globals.routes.workspaceWithFilePath.path({
           workspaceId: descriptor.workspaceId,
+          filePath: suggestedFirstFile.pathRelativeToWorkspaceRootWithoutExtension,
+          extension: suggestedFirstFile.extension,
         }),
       });
     });
   }, [filesToUpload, workspaces, history, globals]);
+
+  const [expandedWorkspace, setExpandedWorkspace] = useState<WorkspaceDescriptor>();
 
   return (
     <OnlineEditorPage>
@@ -192,32 +217,57 @@ export function HomePage() {
             <PromiseStateWrapper
               promise={workspaceDescriptorsPromise}
               rejected={() => <></>}
-              resolved={(workspaceOverviews) => (
-                <TextContent>
-                  {workspaceOverviews.length > 0 && (
-                    <PageSection variant={"light"}>
-                      <Stack hasGutter={true}>
-                        {workspaceOverviews.map((workspace) => (
-                          <StackItem key={workspace.workspaceId}>
-                            <WorkspaceCard workspaceId={workspace.workspaceId} />
-                          </StackItem>
-                        ))}
-                      </Stack>
-                    </PageSection>
-                  )}
-                  {workspaceOverviews.length === 0 && (
-                    <PageSection>
-                      <EmptyState>
-                        <EmptyStateIcon icon={CubesIcon} />
-                        <Title headingLevel="h4" size="lg">
-                          {`Nothing here.`}
-                        </Title>
-                        <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
-                      </EmptyState>
-                    </PageSection>
-                  )}
-                </TextContent>
-              )}
+              resolved={(workspaceDescriptors) => {
+                return (
+                  <Drawer isExpanded={!!expandedWorkspace} isInline={true}>
+                    <DrawerContent
+                      panelContent={
+                        <>
+                          {expandedWorkspace && (
+                            <WorkspacesListDrawerPanelContent
+                              workspaceDescriptor={expandedWorkspace}
+                              onClose={() => setExpandedWorkspace(undefined)}
+                            />
+                          )}
+                        </>
+                      }
+                    >
+                      <DrawerContentBody>
+                        <TextContent>
+                          {workspaceDescriptors.length > 0 && (
+                            <PageSection variant={"light"}>
+                              <Stack hasGutter={true}>
+                                {workspaceDescriptors.map((workspace) => (
+                                  <StackItem key={workspace.workspaceId}>
+                                    <WorkspaceCard
+                                      workspaceId={workspace.workspaceId}
+                                      onSelect={() => {
+                                        setExpandedWorkspace((prev) => (prev === workspace ? undefined : workspace));
+                                      }}
+                                      isSelected={workspace === expandedWorkspace}
+                                    />
+                                  </StackItem>
+                                ))}
+                              </Stack>
+                            </PageSection>
+                          )}
+                          {workspaceDescriptors.length === 0 && (
+                            <PageSection>
+                              <EmptyState>
+                                <EmptyStateIcon icon={CubesIcon} />
+                                <Title headingLevel="h4" size="lg">
+                                  {`Nothing here.`}
+                                </Title>
+                                <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
+                              </EmptyState>
+                            </PageSection>
+                          )}
+                        </TextContent>
+                      </DrawerContentBody>
+                    </DrawerContent>
+                  </Drawer>
+                );
+              }}
             />
           </PageSection>
         </StackItem>
@@ -238,7 +288,7 @@ function WorkspaceLoadingCard() {
   );
 }
 
-function WorkspaceCard(props: { workspaceId: string }) {
+function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSelect: () => void }) {
   const globals = useGlobals();
   const history = useHistory();
   const workspaces = useWorkspaces();
@@ -345,18 +395,13 @@ function WorkspaceCard(props: { workspaceId: string }) {
           )}
           {(editableFiles.length > 1 || editableFiles.length < 1) && (
             <Card
+              className={props.isSelected ? "pf-u-box-shadow-lg" : ""}
               onMouseOver={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
               isHoverable={true}
               isCompact={true}
               style={{ cursor: "pointer" }}
-              onClick={() => {
-                history.push({
-                  pathname: globals.routes.workspaceOverview.path({
-                    workspaceId: props.workspaceId,
-                  }),
-                });
-              }}
+              onClick={props.onSelect}
             >
               <CardHeader>
                 <CardHeaderMain>
@@ -448,5 +493,63 @@ function CreateNewCard(props: { title: string; extension: SupportedFileExtension
         </Button>
       </CardFooter>
     </Card>
+  );
+}
+
+export function WorkspacesListDrawerPanelContent(props: {
+  workspaceDescriptor: WorkspaceDescriptor;
+  onClose: () => void;
+}) {
+  const globals = useGlobals();
+  const workspacePromise = useWorkspacePromise(props.workspaceDescriptor.workspaceId);
+  return (
+    <DrawerPanelContent isResizable={true} minSize={"40%"}>
+      <DrawerHead>
+        <TextContent>
+          <Text component={TextVariants.h3}>{props.workspaceDescriptor.name}</Text>
+        </TextContent>
+        <DrawerActions>
+          <DrawerCloseButton onClick={props.onClose} />
+        </DrawerActions>
+      </DrawerHead>
+      {(workspacePromise.data?.files.length ?? 0) > 0 && (
+        <>
+          <DataList aria-label="draggable data list example" isCompact>
+            {(workspacePromise.data?.files ?? []).map((file) => (
+              <React.Fragment key={file.path}>
+                <DataListItem aria-labelledby="simple-item1" id="data1" key="1">
+                  <DataListItemRow>
+                    <DataListItemCells
+                      dataListCells={[
+                        <DataListCell key={"label"} isIcon={true} style={{ minWidth: "60px" }}>
+                          <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
+                            <FileLabel extension={file.extension} />
+                          </Flex>
+                        </DataListCell>,
+                        <DataListCell key="link" isFilled={false}>
+                          {SUPPORTED_FILES_EDITABLE.includes(file.extension) ? (
+                            <Link
+                              to={globals.routes.workspaceWithFilePath.path({
+                                workspaceId: props.workspaceDescriptor.workspaceId,
+                                filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                                extension: file.extension,
+                              })}
+                            >
+                              {file.pathRelativeToWorkspaceRoot}
+                            </Link>
+                          ) : (
+                            <Text component={TextVariants.p}>{file.pathRelativeToWorkspaceRoot}</Text>
+                          )}
+                        </DataListCell>,
+                      ]}
+                    />
+                  </DataListItemRow>
+                </DataListItem>
+              </React.Fragment>
+            ))}
+          </DataList>
+        </>
+      )}
+    </DrawerPanelContent>
   );
 }
