@@ -89,6 +89,7 @@ type TestConfig struct {
 
 	// Infinispan
 	infinispanInstallationSource string
+	infinispanStorageClass       string
 
 	// Hyperfoil
 	hyperfoilOutputDirectory        string
@@ -198,6 +199,7 @@ func BindFlags(set *flag.FlagSet) {
 
 	// Infinispan
 	set.StringVar(&env.infinispanInstallationSource, prefix+"infinispan-installation-source", installationSourceOlm, "Infinispan operator installation source")
+	set.StringVar(&env.infinispanStorageClass, prefix+"infinispan-storage-class", "", "Defines storage class for Infinispan PVC to be used.")
 
 	// Hyperfoil
 	set.StringVar(&env.hyperfoilOutputDirectory, prefix+"hyperfoil-output-directory", "..", "Defines output directory to store Hyperfoil run statistics. Default is Kogito operator base folder.")
@@ -491,6 +493,11 @@ func IsInfinispanInstalledByOlm() bool {
 // IsInfinispanInstalledByYaml return true if Infinispan operator is installed using YAML files
 func IsInfinispanInstalledByYaml() bool {
 	return env.infinispanInstallationSource == installationSourceYaml
+}
+
+// GetInfinispanStorageClass return the Infinispan storage class
+func GetInfinispanStorageClass() string {
+	return env.infinispanStorageClass
 }
 
 // Hyperfoil

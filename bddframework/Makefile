@@ -65,6 +65,7 @@ examples_ref=
 examples_ignore_ssl=
 # Infinispan
 infinispan_installation_source=
+infinispan_storage_class=
 # Hyperfoil
 hyperfoil_output_directory=
 hyperfoil_controller_image_version=
@@ -146,6 +147,7 @@ run-tests:
 		--operator_installation_source ${operator_installation_source} \
 		--operator_catalog_image ${operator_catalog_image} \
 		--infinispan_installation_source ${infinispan_installation_source} \
+		--infinispan_storage_class ${infinispan_storage_class} \
 		--hyperfoil_output_directory ${hyperfoil_output_directory} \
 		--hyperfoil_controller_image_version ${hyperfoil_controller_image_version} \
 		$${opts_str}

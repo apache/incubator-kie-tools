@@ -21,6 +21,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/logger"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/meta"
+	"github.com/kiegroup/kogito-operator/test/pkg/config"
 
 	"gopkg.in/yaml.v2"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -97,7 +98,7 @@ func SetInfinispanReplicas(namespace, name string, nbPods int) error {
 
 // GetInfinispanStub returns the preconfigured Infinispan stub with set namespace, name and secretName
 func GetInfinispanStub(namespace, name, secretName string) *infinispan.Infinispan {
-	return &infinispan.Infinispan{
+	ispn := &infinispan.Infinispan{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: namespace,
 			Name:      name,
@@ -109,6 +110,14 @@ func GetInfinispanStub(namespace, name, secretName string) *infinispan.Infinispa
 			},
 		},
 	}
+	if storageClass := config.GetInfinispanStorageClass(); len(storageClass) > 0 {
+		if ispn.Spec.Service.Container == nil {
+			ispn.Spec.Service.Container = &infinispan.InfinispanServiceContainerSpec{}
+		}
+		ispn.Spec.Service.Container.StorageClassName = storageClass
+	}
+
+	return ispn
 }
 
 func convertInfinispanCredentialsToYaml(credentialsMap map[string]string) (string, error) {
