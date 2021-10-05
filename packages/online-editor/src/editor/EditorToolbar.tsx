@@ -600,7 +600,7 @@ export function EditorToolbar(props: Props) {
                     {file.nameWithoutExtension}
                   </span>
                 </FlexItem>
-                <FlexItem>
+                <FlexItem style={{ fontWeight: props.workspaceFile?.path === file.path ? "bold" : "normal" }}>
                   <FileLabel extension={file.extension} />
                 </FlexItem>
               </Flex>
@@ -808,7 +808,6 @@ export function EditorToolbar(props: Props) {
                         dropdownItems={[
                           <NewFileDropdownItems
                             key={"new-file-dropdown-items"}
-                            workspace={props.workspace}
                             addEmptyWorkspaceFile={async (extension) => {
                               if (!props.workspace) {
                                 throw new Error("Can't add a file without a workspace");

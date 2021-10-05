@@ -1,11 +1,11 @@
 import * as React from "react";
-import {useCallback, useMemo, useState} from "react";
-import {PageSection} from "@patternfly/react-core/dist/js/components/Page";
-import {Text, TextContent, TextVariants} from "@patternfly/react-core/dist/js/components/Text";
-import {Title} from "@patternfly/react-core/dist/js/components/Title";
-import {SupportedFileExtensions, useGlobals} from "../common/GlobalContext";
-import {useHistory} from "react-router";
-import {Button, ButtonVariant} from "@patternfly/react-core/dist/js/components/Button";
+import { useCallback, useMemo, useState } from "react";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { SupportedFileExtensions, useGlobals } from "../common/GlobalContext";
+import { useHistory } from "react-router";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import {
   Card,
   CardActions,
@@ -15,25 +15,25 @@ import {
   CardHeaderMain,
   CardTitle,
 } from "@patternfly/react-core/dist/js/components/Card";
-import {Flex, FlexItem} from "@patternfly/react-core/dist/js/layouts/Flex";
-import {Stack, StackItem} from "@patternfly/react-core/dist/js/layouts/Stack";
-import {Split, SplitItem} from "@patternfly/react-core/dist/js/layouts/Split";
-import {EmptyState, EmptyStateBody, EmptyStateIcon} from "@patternfly/react-core/dist/js/components/EmptyState";
-import {CubesIcon} from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import {TrashIcon} from "@patternfly/react-icons/dist/js/icons/trash-icon";
-import {LocalFile, useWorkspaces} from "../workspace/WorkspacesContext";
-import {OnlineEditorPage} from "./pageTemplate/OnlineEditorPage";
-import {useWorkspaceDescriptorsPromise} from "../workspace/hooks/WorkspacesHooks";
-import {useWorkspacePromise} from "../workspace/hooks/WorkspaceHooks";
-import {SUPPORTED_FILES_EDITABLE} from "../workspace/SupportedFiles";
-import {FolderIcon} from "@patternfly/react-icons/dist/js/icons/folder-icon";
-import {TaskIcon} from "@patternfly/react-icons/dist/js/icons/task-icon";
-import {FileLabel} from "../workspace/pages/FileLabel";
-import {PromiseStateWrapper} from "../workspace/hooks/PromiseState";
-import {Skeleton} from "@patternfly/react-core/dist/js/components/Skeleton";
-import {Gallery} from "@patternfly/react-core/dist/js/layouts/Gallery";
-import {TextInput} from "@patternfly/react-core/dist/js/components/TextInput";
-import {Divider} from "@patternfly/react-core/dist/js/components/Divider";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { LocalFile, useWorkspaces } from "../workspace/WorkspacesContext";
+import { OnlineEditorPage } from "./pageTemplate/OnlineEditorPage";
+import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
+import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
+import { SUPPORTED_FILES_EDITABLE } from "../workspace/SupportedFiles";
+import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
+import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
+import { FileLabel } from "../workspace/pages/FileLabel";
+import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
+import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
+import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export function HomePage() {
   const globals = useGlobals();
@@ -322,7 +322,9 @@ function WorkspaceCard(props: { workspaceId: string }) {
                       </CardTitle>
                     </FlexItem>
                     <FlexItem>
-                      <FileLabel extension={editableFiles[0].extension} />
+                      <b>
+                        <FileLabel extension={editableFiles[0].extension} />
+                      </b>
                     </FlexItem>
                   </Flex>
                 </CardHeaderMain>

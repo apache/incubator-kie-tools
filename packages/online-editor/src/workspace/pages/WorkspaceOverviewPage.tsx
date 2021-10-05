@@ -149,7 +149,6 @@ export function WorkspaceOverviewPage(props: Props) {
                             dropdownItems={[
                               <NewFileDropdownItems
                                 key={"new-file-dropdown-items"}
-                                workspace={workspace}
                                 addEmptyWorkspaceFile={addEmptyWorkspaceFile}
                               />,
                             ]}
