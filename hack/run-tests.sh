@@ -106,6 +106,7 @@ function usage(){
 
   # Infinispan
   printf "\n--infinispan_installation_source {TAG}\n\tDefines installation source for the Infinispan operator. Options are 'olm' and 'yaml'. Default is olm."
+  printf "\n--infinispan_storage_class {TAG}\n\tDefines storage class for Infinispan PVC to be used."
 
   # Hyperfoil
   printf "\n--hyperfoil_output_directory {PATH}\n\tDefines output directory to store Hyperfoil run statistics. Default is test folder."
@@ -440,6 +441,10 @@ case $1 in
   --infinispan_installation_source)
     shift
     if addParamKeyValueIfAccepted "--tests.infinispan-installation-source" ${1}; then shift; fi
+  ;;
+  --infinispan_storage_class)
+    shift
+    if addParamKeyValueIfAccepted "--tests.infinispan-storage-class" ${1}; then shift; fi
   ;;
 
   # Hyperfoil

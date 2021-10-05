@@ -1005,6 +1005,24 @@ export -f oc
     [[ "${output}" != *"--tests.infinispan-installation-source"* ]]
 }
 
+@test "invoke run-tests with infinispan_storage_class" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --infinispan_storage_class local --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.infinispan-storage-class=local" ]]
+}
+
+@test "invoke run-tests with infinispan_storage_class missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --infinispan_storage_class --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.infinispan-storage-class"* ]]
+}
+
+@test "invoke run-tests with infinispan_storage_class empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --infinispan_storage_class "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.infinispan-storage-class"* ]]
+}
+
 # Hyperfoil
 
 @test "invoke run-tests with hyperfoil_output_directory" {
