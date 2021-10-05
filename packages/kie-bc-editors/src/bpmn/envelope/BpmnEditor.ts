@@ -15,15 +15,15 @@
  */
 
 import { GwtEditorWrapper } from "../../common";
-import { JsLienzo } from "../../jslienzo/JsLienzo";
+import { CanvasApi } from "../../jslienzo/CanvasApi";
 
 interface CustomWindow extends Window {
-  jsLienzo: JsLienzo;
+  canvas: CanvasApi;
 }
 
 declare let window: CustomWindow;
 
-export interface BpmnEditor extends GwtEditorWrapper, JsLienzo {
+export interface BpmnEditor extends GwtEditorWrapper, CanvasApi {
   myBpmnMethod(): string;
 }
 
@@ -33,34 +33,34 @@ export class BpmnEditorImpl extends GwtEditorWrapper implements BpmnEditor {
   }
 
   public getNodeIds() {
-    return window.jsLienzo.getNodeIds();
+    return window.canvas.getNodeIds();
   }
 
   public getBackgroundColor(UUID: string) {
-    return window.jsLienzo.getBackgroundColor(UUID);
+    return window.canvas.getBackgroundColor(UUID);
   }
 
   public setBackgroundColor(UUID: string, backgroundColor: string) {
-    window.jsLienzo.setBackgroundColor(UUID, backgroundColor);
+    window.canvas.setBackgroundColor(UUID, backgroundColor);
   }
 
   public getBorderColor(UUID: string) {
-    return window.jsLienzo.getBorderColor(UUID);
+    return window.canvas.getBorderColor(UUID);
   }
 
   public setBorderColor(UUID: string, borderColor: string) {
-    window.jsLienzo.setBorderColor(UUID, borderColor);
+    window.canvas.setBorderColor(UUID, borderColor);
   }
 
   public getLocation(UUID: string) {
-    return window.jsLienzo.getLocation(UUID);
+    return window.canvas.getLocation(UUID);
   }
 
   public getAbsoluteLocation(UUID: string) {
-    return window.jsLienzo.getAbsoluteLocation(UUID);
+    return window.canvas.getAbsoluteLocation(UUID);
   }
 
   public getDimensions(UUID: string) {
-    return window.jsLienzo.getDimensions(UUID);
+    return window.canvas.getDimensions(UUID);
   }
 }

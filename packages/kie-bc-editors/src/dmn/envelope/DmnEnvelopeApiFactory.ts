@@ -46,42 +46,42 @@ export class DmnEditorEnvelopeApiImpl
     return Promise.resolve(ret);
   }
 
-  public async jsLienzo_getNodeIds() {
+  public async canvas_getNodeIds() {
     const editor = this.dmnArgs.view().getEditor();
     return editor?.getNodeIds() ?? [];
   }
 
-  public async jsLienzo_getBackgroundColor(UUID: string) {
+  public async canvas_getBackgroundColor(UUID: string) {
     const editor = this.dmnArgs.view().getEditor();
     return editor?.getBackgroundColor(UUID) ?? "";
   }
 
-  public async jsLienzo_setBackgroundColor(UUID: string, backgroundColor: string) {
+  public async canvas_setBackgroundColor(UUID: string, backgroundColor: string) {
     const editor = this.dmnArgs.view().getEditor();
     return editor?.setBackgroundColor(UUID, backgroundColor);
   }
 
-  public async jsLienzo_getBorderColor(UUID: string) {
+  public async canvas_getBorderColor(UUID: string) {
     const editor = this.dmnArgs.view().getEditor();
     return editor?.getBorderColor(UUID) ?? "";
   }
 
-  public async jsLienzo_setBorderColor(UUID: string, borderColor: string) {
+  public async canvas_setBorderColor(UUID: string, borderColor: string) {
     const editor = this.dmnArgs.view().getEditor();
     return editor?.setBorderColor(UUID, borderColor);
   }
 
-  public async jsLienzo_getLocation(UUID: string) {
+  public async canvas_getLocation(UUID: string) {
     const editor = this.dmnArgs.view().getEditor();
     return editor?.getLocation(UUID) ?? [];
   }
 
-  public async jsLienzo_getAbsoluteLocation(UUID: string) {
+  public async canvas_getAbsoluteLocation(UUID: string) {
     const editor = this.dmnArgs.view().getEditor();
     return editor?.getAbsoluteLocation(UUID) ?? [];
   }
 
-  public async jsLienzo_getDimensions(UUID: string) {
+  public async canvas_getDimensions(UUID: string) {
     const editor = this.dmnArgs.view().getEditor();
     return editor?.getDimensions(UUID) ?? [];
   }

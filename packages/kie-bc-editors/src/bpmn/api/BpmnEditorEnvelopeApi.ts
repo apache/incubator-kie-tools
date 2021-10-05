@@ -15,8 +15,8 @@
  */
 
 import { KogitoEditorEnvelopeApi } from "@kie-tooling-core/editor/dist/api";
-import { JsLienzo, JsLienzoEnvelopeApi } from "../../jslienzo/JsLienzo";
+import { CanvasEnvelopeApi } from "../../jslienzo/CanvasApi";
 
-export interface BpmnEditorEnvelopeApi extends KogitoEditorEnvelopeApi, JsLienzoEnvelopeApi {
+export interface BpmnEditorEnvelopeApi extends KogitoEditorEnvelopeApi, CanvasEnvelopeApi {
   myBpmnEnvelopeMethod(): Promise<string>;
 }

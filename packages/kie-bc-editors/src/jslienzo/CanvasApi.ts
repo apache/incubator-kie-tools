@@ -18,7 +18,7 @@
  * Javascript API for lienzo that allows interactions with nodes and connectors
  * in Kogito editors.
  */
-export interface JsLienzo {
+export interface CanvasApi {
   /**
    * Returns ID attributes of all nodes displayed in editors canvas.
    */
@@ -84,22 +84,22 @@ export interface JsLienzo {
 
 /**
  * Bridge for Envelope to connect Javascript API for lienzo with envelope.
- * See {@see JsLienzo} for full documenation for the API.
+ * See {@see CanvasApi} for full documenation for the API.
  */
-export interface JsLienzoEnvelopeApi {
-  jsLienzo_getNodeIds(): Promise<string[]>;
+export interface CanvasEnvelopeApi {
+  canvas_getNodeIds(): Promise<string[]>;
 
-  jsLienzo_getBackgroundColor(UUID: string): Promise<string>;
+  canvas_getBackgroundColor(UUID: string): Promise<string>;
 
-  jsLienzo_setBackgroundColor(UUID: string, backgroundColor: string): Promise<void>;
+  canvas_setBackgroundColor(UUID: string, backgroundColor: string): Promise<void>;
 
-  jsLienzo_getBorderColor(UUID: string): Promise<string>;
+  canvas_getBorderColor(UUID: string): Promise<string>;
 
-  jsLienzo_setBorderColor(UUID: string, borderColor: string): Promise<void>;
+  canvas_setBorderColor(UUID: string, borderColor: string): Promise<void>;
 
-  jsLienzo_getLocation(UUID: string): Promise<number[]>;
+  canvas_getLocation(UUID: string): Promise<number[]>;
 
-  jsLienzo_getAbsoluteLocation(UUID: string): Promise<number[]>;
+  canvas_getAbsoluteLocation(UUID: string): Promise<number[]>;
 
-  jsLienzo_getDimensions(UUID: string): Promise<number[]>;
+  canvas_getDimensions(UUID: string): Promise<number[]>;
 }
