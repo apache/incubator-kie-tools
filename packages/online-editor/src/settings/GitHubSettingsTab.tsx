@@ -165,7 +165,7 @@ export function GitHubSettingsTab() {
               </TextContent>
               <TextContent>
                 <b>User: </b>
-                <i>{settings.github.user}</i>
+                <i>{settings.github.user?.login}</i>
               </TextContent>
               <TextContent>
                 <b>Scope: </b>
