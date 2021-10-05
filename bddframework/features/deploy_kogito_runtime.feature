@@ -776,19 +776,18 @@ Feature: Deploy Kogito Runtime
 
   @knative
   Scenario: Deploy process-knative-quickstart-quarkus using Kogito Runtime
-    Given Kogito Operator is deployed
-    And Install Knative eventing
+    Given Install Knative eventing
+    And Install Knative eventing KogitoSource
+    And Kogito Operator is deployed
     And Deploy Knative Broker "default"
     And Deploy Event display "event-display"
     And Create Knative Trigger "event-display" receiving events from Broker "default" delivering to Service "event-display"
-    And Install Broker Kogito Infra "broker" targeting service "default" within 5 minutes
     And Clone Kogito examples into local directory
     And Local example service "process-knative-quickstart-quarkus" is built by Maven and deployed to runtime registry
 
-    When Deploy quarkus example service "process-knative-quickstart-quarkus" from runtime registry with configuration:
-      | config | infra | broker |
-    And Kogito Runtime "process-knative-quickstart-quarkus" has 1 pods running within 10 minutes
-    And HTTP POST request on service "process-knative-quickstart-quarkus" is successful within 2 minutes with path "", headers "ce-specversion=1.0,ce-source=/from/localhost,ce-type=travellers,ce-id=12345" and body:
+    When Create quarkus KogitoSource "process-knative-quickstart-quarkus" sinking events to Broker "default" from runtime registry
+    And Kogito Runtime "ks-process-knative-quickstart-quarkus" has 1 pods running within 10 minutes
+    And HTTP POST request on service "ks-process-knative-quickstart-quarkus" is successful within 2 minutes with path "", headers "ce-specversion=1.0,ce-source=/from/localhost,ce-type=travellers,ce-id=12345" and body:
       """json
       {
       "firstName": "Jan",

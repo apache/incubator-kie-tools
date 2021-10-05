@@ -34,7 +34,7 @@ var (
 	}
 
 	knativeEventingNamespace    = "knative-eventing"
-	knativeEventingVersion      = "v0.20.0"
+	knativeEventingVersion      = "v0.26.0"
 	knativeEventingNumberOfPods = 7
 	knativeEventingServiceName  = "Knative eventing"
 )
