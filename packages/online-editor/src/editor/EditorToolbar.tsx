@@ -666,8 +666,8 @@ export function EditorToolbar(props: Props) {
                 </DropdownToggle>
               }
               dropdownItems={[
-                <DropdownGroup label={"Are you sure?"}>
-                  <DropdownItem key="confirm-delete" onClick={deleteWorkspaceFile}>
+                <DropdownGroup label={"Are you sure?"} key="confirm-delete">
+                  <DropdownItem onClick={deleteWorkspaceFile}>
                     <Flex flexWrap={{ default: "nowrap" }}>
                       <FlexItem>
                         Delete <b>{`"${props.workspaceFile.nameWithoutExtension}"`}</b>
