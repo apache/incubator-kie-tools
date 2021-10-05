@@ -9,11 +9,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { QueryParams } from "../../common/Routes";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useSettings } from "../../settings/SettingsContext";
-import {
-  EditorFetchFileErrorEmptyState,
-  FetchFileError,
-  FetchFileErrorReason,
-} from "../../editor/EditorFetchFileErrorEmptyState";
+import { EditorPageErrorPage, Props } from "../../editor/EditorPageErrorPage";
 import { extractFileExtension, removeDirectories, removeFileExtension } from "../../common/utils";
 import { OnlineEditorPage } from "../../home/pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -24,7 +20,7 @@ export function NewWorkspaceFromUrlPage() {
   const history = useHistory();
   const settings = useSettings();
   const queryParams = useQueryParams();
-  const [fetchFileError, setFetchFileError] = useState<FetchFileError | undefined>(undefined);
+  const [fetchFileError, setFetchFileError] = useState<Props>();
 
   const queryParamUrl = useMemo(() => {
     return queryParams.get(QueryParams.URL);
@@ -86,10 +82,10 @@ export function NewWorkspaceFromUrlPage() {
         try {
           const validUrl = new URL(queryParamUrl);
           filePath = validUrl.origin + validUrl.pathname;
-        } catch (e) {
+        } catch (error) {
           setFetchFileError({
-            reason: FetchFileErrorReason.CANT_FETCH,
-            filePath: queryParamUrl,
+            errors: [error],
+            path: queryParamUrl,
           });
           return;
         }
@@ -111,9 +107,7 @@ export function NewWorkspaceFromUrlPage() {
               getFileContents: () => Promise.resolve(content),
             });
           })
-          .catch((error) =>
-            setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl })
-          );
+          .catch((error) => setFetchFileError({ errors: [error], path: queryParamUrl }));
         return;
       }
 
@@ -131,7 +125,7 @@ export function NewWorkspaceFromUrlPage() {
             });
           })
           .catch((error) => {
-            setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl });
+            setFetchFileError({ errors: [error], path: queryParamUrl });
           });
         return;
       }
@@ -144,9 +138,8 @@ export function NewWorkspaceFromUrlPage() {
 
           if (!response.ok) {
             setFetchFileError({
-              details: `${response.status} - ${response.statusText}`,
-              reason: FetchFileErrorReason.CANT_FETCH,
-              filePath: queryParamUrl,
+              errors: [`${response.status} - ${response.statusText}`],
+              path: queryParamUrl,
             });
             return;
           }
@@ -160,7 +153,7 @@ export function NewWorkspaceFromUrlPage() {
           });
         })
         .catch((error) => {
-          setFetchFileError({ details: error, reason: FetchFileErrorReason.CANT_FETCH, filePath: queryParamUrl });
+          setFetchFileError({ errors: [error], path: queryParamUrl });
         });
     }
 
@@ -189,7 +182,7 @@ export function NewWorkspaceFromUrlPage() {
         className={"kogito--editor__page-section"}
       >
         <>
-          {fetchFileError && <EditorFetchFileErrorEmptyState fetchFileError={fetchFileError} />}
+          {fetchFileError && <EditorPageErrorPage path={fetchFileError.path} errors={fetchFileError.errors} />}
           {!fetchFileError && (
             <Bullseye>
               <TextContent>

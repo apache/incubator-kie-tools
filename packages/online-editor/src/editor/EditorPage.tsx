@@ -37,6 +37,8 @@ import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kie-tooling-core/workspace/dist/api";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
+import { PromiseStateWrapper, useCombinedPromiseState } from "../workspace/hooks/PromiseState";
+import { EditorPageErrorPage } from "./EditorPageErrorPage";
 
 export interface Props {
   forExtension: SupportedFileExtensions;
@@ -57,6 +59,13 @@ export function EditorPage(props: Props) {
   const lastContent = useRef<string>();
   const workspacePromise = useWorkspacePromise(props.workspaceId);
   const workspaceFilePromise = useWorkspaceFilePromise(workspacePromise.data?.descriptor.workspaceId, props.filePath);
+
+  const combinedStatePromise = useCombinedPromiseState(
+    useMemo(
+      () => ({ workspace: workspacePromise, file: workspaceFilePromise }),
+      [workspacePromise, workspaceFilePromise]
+    )
+  );
 
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
 
@@ -202,52 +211,55 @@ export function EditorPage(props: Props) {
   }, [i18n]);
 
   return (
-    <>
-      <DmnRunnerContextProvider workspaceFile={workspaceFilePromise.data} notificationsPanel={notificationsPanel}>
-        <DmnDevSandboxContextProvider workspaceFile={workspaceFilePromise.data} alerts={alerts}>
-          <Page
-            header={
-              <EditorToolbar
-                workspace={workspacePromise.data}
-                workspaceFile={workspaceFilePromise.data}
-                editor={editor}
-                alerts={alerts}
-              />
-            }
-          >
-            <PageSection isFilled={true} padding={{ default: "noPadding" }} className={"kogito--editor__page-section"}>
-              <DmnRunnerDrawer workspaceFile={workspaceFilePromise.data} notificationsPanel={notificationsPanel}>
-                <Alerts ref={alertsRef} />
-                {embeddedEditorFile && (
-                  <EmbeddedEditor
-                    //FIXME: There's a bug on the PMML Editor that prevents is from working after a setContent call.
-                    key={
-                      embeddedEditorFile.fileExtension === "pmml"
-                        ? embeddedEditorFile.path
-                        : embeddedEditorFile.fileExtension
-                    }
-                    ref={editorRef}
-                    file={embeddedEditorFile}
-                    kogitoWorkspace_resourceContentRequest={onResourceContentRequest}
-                    kogitoWorkspace_resourceListRequest={onResourceListRequest}
-                    kogitoEditor_setContentError={setContentErrorAlert.show}
-                    editorEnvelopeLocator={globals.editorEnvelopeLocator}
-                    channelType={ChannelType.VSCODE} // TODO CAPONETTO: Changed the channel type to test the Included Models (undo/redo do not work)
-                    locale={locale}
-                  />
-                )}
-                <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
-              </DmnRunnerDrawer>
-            </PageSection>
-          </Page>
-        </DmnDevSandboxContextProvider>
-      </DmnRunnerContextProvider>
-      <TextEditorModal
-        editor={editor}
-        workspaceFile={workspaceFilePromise.data}
-        refreshEditor={refreshEditor}
-        isOpen={isTextEditorModalOpen}
-      />
-    </>
+    <PromiseStateWrapper
+      promise={combinedStatePromise}
+      rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.filePath} />}
+      resolved={({ workspace, file }) => (
+        <>
+          <DmnRunnerContextProvider workspaceFile={file} notificationsPanel={notificationsPanel}>
+            <DmnDevSandboxContextProvider workspaceFile={file} alerts={alerts}>
+              <Page
+                header={<EditorToolbar workspace={workspace} workspaceFile={file} editor={editor} alerts={alerts} />}
+              >
+                <PageSection
+                  isFilled={true}
+                  padding={{ default: "noPadding" }}
+                  className={"kogito--editor__page-section"}
+                >
+                  <DmnRunnerDrawer workspaceFile={file} notificationsPanel={notificationsPanel}>
+                    <Alerts ref={alertsRef} />
+                    {embeddedEditorFile && (
+                      <EmbeddedEditor
+                        //FIXME: There's a bug on the PMML Editor that prevents is from working after a setContent call.
+                        key={
+                          embeddedEditorFile.fileExtension === "pmml"
+                            ? embeddedEditorFile.path
+                            : embeddedEditorFile.fileExtension
+                        }
+                        ref={editorRef}
+                        file={embeddedEditorFile}
+                        kogitoWorkspace_resourceContentRequest={onResourceContentRequest}
+                        kogitoWorkspace_resourceListRequest={onResourceListRequest}
+                        kogitoEditor_setContentError={setContentErrorAlert.show}
+                        editorEnvelopeLocator={globals.editorEnvelopeLocator}
+                        channelType={ChannelType.VSCODE} // TODO CAPONETTO: Changed the channel type to test the Included Models (undo/redo do not work)
+                        locale={locale}
+                      />
+                    )}
+                    <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
+                  </DmnRunnerDrawer>
+                </PageSection>
+              </Page>
+            </DmnDevSandboxContextProvider>
+          </DmnRunnerContextProvider>
+          <TextEditorModal
+            editor={editor}
+            workspaceFile={file}
+            refreshEditor={refreshEditor}
+            isOpen={isTextEditorModalOpen}
+          />
+        </>
+      )}
+    />
   );
 }

@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
 import { Holder, useCancelableEffect } from "../../common/Hooks";
 import { usePromiseState } from "./PromiseState";
@@ -28,42 +28,51 @@ export function useWorkspaceFilePromise(
     [workspaces.workspaceService, setWorkspaceFilePromise]
   );
 
+  const completePath = useMemo(() => {
+    if (!pathRelativeToWorkspaceRoot || !workspaceId) {
+      return undefined;
+    } else {
+      return `/${workspaceId}/${pathRelativeToWorkspaceRoot}`;
+    }
+  }, [workspaceId, pathRelativeToWorkspaceRoot]);
+
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (!pathRelativeToWorkspaceRoot || !workspaceId) {
+        if (!completePath) {
           return;
         }
-
-        refresh(`/${workspaceId}/${pathRelativeToWorkspaceRoot}`, canceled);
+        refresh(completePath, canceled);
       },
-      [pathRelativeToWorkspaceRoot, workspaceId, refresh]
+      [refresh, completePath]
     )
   );
 
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (!workspaceFilePromise.data) {
+        if (!completePath) {
           return;
         }
 
-        const broadcastChannel = new BroadcastChannel(workspaceFilePromise.data.path);
+        console.info("Subscribing to " + completePath);
+        const broadcastChannel = new BroadcastChannel(completePath);
         broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileEvents>) => {
           console.info(`WORKSPACE_FILE: ${JSON.stringify(data)}`);
-          if (data.type === "UPDATE") {
-            refresh(data.path, canceled);
-          }
           if (data.type === "MOVE" || data.type == "RENAME") {
             refresh(data.newPath, canceled);
+          }
+          if (data.type === "UPDATE" || data.type === "DELETE" || data.type === "ADD") {
+            refresh(data.path, canceled);
           }
         };
 
         return () => {
+          console.info("Unsubscribing to " + completePath);
           broadcastChannel.close();
         };
       },
-      [workspaceFilePromise, refresh]
+      [refresh, completePath]
     )
   );
 

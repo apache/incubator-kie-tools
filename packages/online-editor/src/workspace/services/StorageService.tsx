@@ -111,13 +111,18 @@ export class StorageService {
 
     if (broadcastArgs.broadcast) {
       const broadcastChannel1 = new BroadcastChannel(file.path);
-      const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
+      const broadcastChannel2 = new BroadcastChannel(newFile.path);
+      const broadcastChannel3 = new BroadcastChannel(file.workspaceId);
       broadcastChannel1.postMessage({
         type: "RENAME",
         oldPath: file.path,
         newPath: newFile.path,
       } as WorkspaceFileEvents);
       broadcastChannel2.postMessage({
+        type: "ADD",
+        path: newFile.path,
+      } as WorkspaceFileEvents);
+      broadcastChannel3.postMessage({
         type: "RENAME_FILE",
         oldPath: file.path,
         newPath: newFile.path,
