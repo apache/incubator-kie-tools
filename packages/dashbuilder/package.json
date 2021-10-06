@@ -17,7 +17,7 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "lint": "echo 'Linting'",
     "install:mvnw": "mvn -N io.takari:maven:wrapper",
-    "dist": "rm -f dist/dashbuilder_dist.zip && zip -j dist/dashbuilder_dist.zip ./dashbuilder-authoring/target/dashbuilder-authoring.war ./dashbuilder-authoring/target/dashbuilder-authoring-bootable.jar ./dashbuilder-runtime-parent/dashbuilder-runtime-app/target/dashbuilder-runtime-app-runner.jar",
+    "dist": "rm -rf dist/ && mkdir dist && zip -j dist/dashbuilder_dist.zip ./dashbuilder-authoring/target/dashbuilder-authoring.war ./dashbuilder-authoring/target/dashbuilder-authoring-bootable.jar ./dashbuilder-runtime-parent/dashbuilder-runtime-app/target/dashbuilder-runtime-app-runner.jar",
     "build:dev": "yarn install:mvnw && mvn clean install -B -ntp -DskipTests -Dgwt.compiler.skip=true",
     "build:prod": "yarn lint && yarn install:mvnw && mvn clean install -Dfull -B -ntp -DskipTests=$(build-env global.build.test --not) && yarn dist"
   }
