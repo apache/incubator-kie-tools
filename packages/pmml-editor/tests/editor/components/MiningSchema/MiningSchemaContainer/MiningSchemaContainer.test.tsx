@@ -76,6 +76,26 @@ describe("MiningSchemaContainer", () => {
     expect(getByTestId("mining-schema-field-n1")).not.toBeUndefined();
   });
 
+  test("MiningField:Render::WithNoDataFields", () => {
+    const { getByTestId } = render(
+      <MiningSchemaContext.Provider value={-1}>
+        <MiningSchemaContainer
+          modelIndex={0}
+          dataDictionary={{ DataField: [] }}
+          miningSchema={{ MiningField: miningFields }}
+          onAddField={onAddField}
+          onDeleteField={onDeleteField}
+          onUpdateField={onUpdateField}
+        />
+      </MiningSchemaContext.Provider>
+    );
+    const container = getByTestId("mining-schema-container");
+    expect(container).toMatchSnapshot();
+
+    expect(getByTestId("mining-schema-field-n0")).not.toBeUndefined();
+    expect(getByTestId("mining-schema-field-n1")).not.toBeUndefined();
+  });
+
   test("MiningField:DeleteWithIconClick", () => {
     const onDeleteFieldImpl = jest.fn((index) => {
       miningFields = miningFields.slice(index, 1);
