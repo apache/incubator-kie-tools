@@ -20,7 +20,6 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { LocalFile, useWorkspaces } from "../workspace/WorkspacesContext";
 import { OnlineEditorPage } from "./pageTemplate/OnlineEditorPage";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
@@ -52,6 +51,7 @@ import {
   DataListItemRow,
 } from "@patternfly/react-core/dist/js/components/DataList";
 import { Link } from "react-router-dom";
+import { DeleteDropdownWithConfirmation } from "../editor/DeleteDropdownWithConfirmation";
 
 export function HomePage() {
   const globals = useGlobals();
@@ -140,7 +140,14 @@ export function HomePage() {
                   minWidths={{ sm: "calc(50% - 16px)", default: "100%" }}
                   style={{ height: "calc(100% - 32px)" }}
                 >
-                  <Card isFullHeight={true} isLarge={true} isPlain={false} isHoverable={true}>
+                  <Card
+                    isFullHeight={true}
+                    isLarge={true}
+                    isPlain={false}
+                    isHoverable={true}
+                    isSelectable={true}
+                    isSelected={filesToUpload.length > 0}
+                  >
                     <CardTitle>
                       <TextContent>
                         <Text component={TextVariants.h2}>Upload</Text>
@@ -159,13 +166,23 @@ export function HomePage() {
                       />
                     </CardBody>
                     <CardFooter>
-                      <Button variant={ButtonVariant.secondary} onClick={createWorkspaceFromUploadedFolder}>
+                      <Button
+                        variant={filesToUpload.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
+                        onClick={createWorkspaceFromUploadedFolder}
+                      >
                         Upload
                       </Button>
                     </CardFooter>
                   </Card>
                   {/*<Divider isVertical={true}/>*/}
-                  <Card isFullHeight={true} isLarge={true} isPlain={false} isHoverable={true}>
+                  <Card
+                    isFullHeight={true}
+                    isLarge={true}
+                    isPlain={false}
+                    isHoverable={true}
+                    isSelectable={true}
+                    isSelected={url.length > 0}
+                  >
                     <CardTitle>
                       <TextContent>
                         <Text component={TextVariants.h2}>From Gist</Text>
@@ -189,7 +206,7 @@ export function HomePage() {
                     </CardBody>
                     <CardFooter>
                       <Button
-                        variant={ButtonVariant.secondary}
+                        variant={url.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
                         onClick={() => {
                           // TODO
                           // enable `Enter` key to submit.
@@ -233,36 +250,34 @@ export function HomePage() {
                       }
                     >
                       <DrawerContentBody>
-                        <TextContent>
-                          {workspaceDescriptors.length > 0 && (
-                            <PageSection variant={"light"}>
-                              <Stack hasGutter={true}>
-                                {workspaceDescriptors.map((workspace) => (
-                                  <StackItem key={workspace.workspaceId}>
-                                    <WorkspaceCard
-                                      workspaceId={workspace.workspaceId}
-                                      onSelect={() => {
-                                        setExpandedWorkspace((prev) => (prev === workspace ? undefined : workspace));
-                                      }}
-                                      isSelected={workspace === expandedWorkspace}
-                                    />
-                                  </StackItem>
-                                ))}
-                              </Stack>
-                            </PageSection>
-                          )}
-                          {workspaceDescriptors.length === 0 && (
-                            <PageSection>
-                              <EmptyState>
-                                <EmptyStateIcon icon={CubesIcon} />
-                                <Title headingLevel="h4" size="lg">
-                                  {`Nothing here.`}
-                                </Title>
-                                <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
-                              </EmptyState>
-                            </PageSection>
-                          )}
-                        </TextContent>
+                        {workspaceDescriptors.length > 0 && (
+                          <PageSection variant={"light"}>
+                            <Stack hasGutter={true}>
+                              {workspaceDescriptors.map((workspace) => (
+                                <StackItem key={workspace.workspaceId}>
+                                  <WorkspaceCard
+                                    workspaceId={workspace.workspaceId}
+                                    onSelect={() => {
+                                      setExpandedWorkspace((prev) => (prev === workspace ? undefined : workspace));
+                                    }}
+                                    isSelected={workspace === expandedWorkspace}
+                                  />
+                                </StackItem>
+                              ))}
+                            </Stack>
+                          </PageSection>
+                        )}
+                        {workspaceDescriptors.length === 0 && (
+                          <PageSection>
+                            <EmptyState>
+                              <EmptyStateIcon icon={CubesIcon} />
+                              <Title headingLevel="h4" size="lg">
+                                {`Nothing here.`}
+                              </Title>
+                              <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
+                            </EmptyState>
+                          </PageSection>
+                        )}
                       </DrawerContentBody>
                     </DrawerContent>
                   </Drawer>
@@ -295,26 +310,6 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
   const [isHovered, setHovered] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceId);
 
-  const deleteWorkspaceIcon = useMemo(() => {
-    return (
-      isHovered && (
-        <CardActions>
-          <Button
-            variant={ButtonVariant.plain}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (workspacePromise.data) {
-                workspaces.workspaceService.delete(workspacePromise.data.descriptor, { broadcast: true });
-              }
-            }}
-          >
-            <TrashIcon />
-          </Button>
-        </CardActions>
-      )
-    );
-  }, [isHovered, workspacePromise, workspaces.workspaceService]);
-
   const editableFiles = useMemo(() => {
     return workspacePromise.data?.files.filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension)) ?? [];
   }, [workspacePromise]);
@@ -342,6 +337,8 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
         <>
           {editableFiles.length === 1 && (
             <Card
+              isSelected={props.isSelected}
+              isSelectable={true}
               onMouseOver={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
               isHoverable={true}
@@ -378,7 +375,29 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
                     </FlexItem>
                   </Flex>
                 </CardHeaderMain>
-                {deleteWorkspaceIcon}
+                <CardActions>
+                  {isHovered && (
+                    <DeleteDropdownWithConfirmation
+                      onDelete={() => {
+                        if (workspacePromise.data) {
+                          workspaces.workspaceService.delete(workspacePromise.data.descriptor, { broadcast: true });
+                        }
+                      }}
+                      item={
+                        <Flex flexWrap={{ default: "nowrap" }}>
+                          <FlexItem>
+                            Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
+                          </FlexItem>
+                          <FlexItem>
+                            <b>
+                              <FileLabel extension={editableFiles[0].extension} />
+                            </b>
+                          </FlexItem>
+                        </Flex>
+                      }
+                    />
+                  )}
+                </CardActions>
               </CardHeader>
 
               <CardBody>
@@ -395,7 +414,8 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
           )}
           {(editableFiles.length > 1 || editableFiles.length < 1) && (
             <Card
-              className={props.isSelected ? "pf-u-box-shadow-lg" : ""}
+              isSelected={props.isSelected}
+              isSelectable={true}
               onMouseOver={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
               isHoverable={true}
@@ -424,7 +444,23 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
                     </FlexItem>
                   </Flex>
                 </CardHeaderMain>
-                {deleteWorkspaceIcon}
+
+                <CardActions>
+                  {isHovered && (
+                    <DeleteDropdownWithConfirmation
+                      onDelete={() => {
+                        if (workspacePromise.data) {
+                          workspaces.workspaceService.delete(workspacePromise.data.descriptor, { broadcast: true });
+                        }
+                      }}
+                      item={
+                        <>
+                          Delete <b>{`"${workspacePromise.data?.descriptor.name}"`}</b>
+                        </>
+                      }
+                    />
+                  )}
+                </CardActions>
               </CardHeader>
               <CardBody>
                 <TextContent>

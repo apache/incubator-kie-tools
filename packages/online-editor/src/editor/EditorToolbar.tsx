@@ -65,6 +65,7 @@ import { AddFileDropdownItems } from "./AddFileDropdownItems";
 import { PageHeaderToolsItem, PageHeaderToolsItemProps } from "@patternfly/react-core/dist/js/components/Page";
 import { FileLabel } from "../workspace/pages/FileLabel";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { DeleteDropdownWithConfirmation } from "./DeleteDropdownWithConfirmation";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -107,7 +108,6 @@ export function EditorToolbar(props: Props) {
   const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [isWorkspaceAddFileMenuOpen, setWorkspaceAddFileMenuOpen] = useState(false);
-  const [isDeleteDropdownOpen, setDeleteDropdownOpen] = useState(false);
 
   const copySuccessfulAlert = useAlert(
     props.alerts,
@@ -654,33 +654,20 @@ export function EditorToolbar(props: Props) {
           </FlexItem>
 
           <FlexItem style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
-            <Dropdown
-              className={"kogito-tooling--masthead-hoverable"}
-              onSelect={() => setDeleteDropdownOpen(false)}
-              isOpen={isDeleteDropdownOpen}
-              isPlain={true}
-              position={DropdownPosition.right}
-              toggle={
-                <DropdownToggle toggleIndicator={null} onToggle={setDeleteDropdownOpen}>
-                  <TrashIcon />
-                </DropdownToggle>
+            <DeleteDropdownWithConfirmation
+              onDelete={deleteWorkspaceFile}
+              item={
+                <Flex flexWrap={{ default: "nowrap" }}>
+                  <FlexItem>
+                    Delete <b>{`"${props.workspaceFile.nameWithoutExtension}"`}</b>
+                  </FlexItem>
+                  <FlexItem>
+                    <b>
+                      <FileLabel extension={props.workspaceFile.extension} />
+                    </b>
+                  </FlexItem>
+                </Flex>
               }
-              dropdownItems={[
-                <DropdownGroup label={"Are you sure?"} key="confirm-delete">
-                  <DropdownItem onClick={deleteWorkspaceFile}>
-                    <Flex flexWrap={{ default: "nowrap" }}>
-                      <FlexItem>
-                        Delete <b>{`"${props.workspaceFile.nameWithoutExtension}"`}</b>
-                      </FlexItem>
-                      <FlexItem>
-                        <b>
-                          <FileLabel extension={props.workspaceFile.extension} />
-                        </b>
-                      </FlexItem>
-                    </Flex>
-                  </DropdownItem>
-                </DropdownGroup>,
-              ]}
             />
             <>
               &nbsp;&nbsp;&nbsp;

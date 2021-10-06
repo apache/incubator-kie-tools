@@ -214,7 +214,7 @@ export function EditorPage(props: Props) {
   return (
     <PromiseStateWrapper
       promise={combinedStatePromise}
-      pending={() => <OnlineEditorPage />}
+      pending={<OnlineEditorPage />}
       rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.filePath} />}
       resolved={({ workspace, file }) => (
         <>
