@@ -20,10 +20,10 @@ import {
   ResourceContentRequest,
   ResourceContentService,
   ResourceListRequest,
+  WorkspaceApi,
 } from "@kie-tooling-core/workspace/dist/api";
 import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tooling-core/editor/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tooling-core/guided-tour/dist/api";
-import { WorkspaceApi } from "@kie-tooling-core/workspace/dist/api";
 import * as __path from "path";
 import * as vscode from "vscode";
 import { KogitoEditor } from "./KogitoEditor";
@@ -56,14 +56,18 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   }
 
   public async kogitoEditor_contentRequest() {
-    if (!this.initialBackup && this.editor.document.uri.scheme === "untitled") {
-      return { content: "", path: "" };
+    let contentArray: Uint8Array;
+    try {
+      contentArray = await vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri);
+    } catch (e) {
+      // If file doesn't exist, we create an empty one.
+      // This is important for the use-case where users type `code new-file.dmn` on a terminal.
+      await vscode.workspace.fs.writeFile(this.editor.document.uri, new Uint8Array());
+      return { content: "", path: this.editor.document.relativePath };
     }
 
-    return vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri).then((contentArray) => {
-      this.initialBackup = undefined;
-      return { content: this.decoder.decode(contentArray), path: this.editor.document.relativePath };
-    });
+    this.initialBackup = undefined;
+    return { content: this.decoder.decode(contentArray), path: this.editor.document.relativePath };
   }
 
   public kogitoEditor_setContentError(editorContent: EditorContent) {
