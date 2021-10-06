@@ -116,6 +116,7 @@ export function HomePage() {
                 {/*<Divider inset={{default: "insetXl"}}/>*/}
                 <Gallery
                   hasGutter={true}
+                  // 16px is the "Gutter" width.
                   minWidths={{ sm: "calc(33% - 16px)", default: "100%" }}
                   style={{ height: "calc(100% - 32px)" }}
                 >
@@ -137,6 +138,7 @@ export function HomePage() {
                 {/*<Divider inset={{default: "insetXl"}}/>*/}
                 <Gallery
                   hasGutter={true}
+                  // 16px is the "Gutter" width.
                   minWidths={{ sm: "calc(50% - 16px)", default: "100%" }}
                   style={{ height: "calc(100% - 32px)" }}
                 >

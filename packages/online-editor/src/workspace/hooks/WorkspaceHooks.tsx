@@ -31,7 +31,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
 
       setWorkspacePromise({ data: { descriptor: descriptor, files } });
     },
-    [setWorkspacePromise, workspaceId, workspaces.workspaceService]
+    [setWorkspacePromise, workspaceId, workspaces]
   );
 
   useCancelableEffect(

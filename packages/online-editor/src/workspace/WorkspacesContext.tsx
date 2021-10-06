@@ -83,7 +83,11 @@ export interface WorkspacesContextType {
   createWorkspaceFromLocal: (
     files: LocalFile[]
   ) => Promise<{ descriptor: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
-  createWorkspaceFromGitHubRepository: (repositoryUrl: URL, sourceBranch: string) => Promise<WorkspaceDescriptor>;
+  createWorkspaceFromGitHubRepository: (
+    repositoryUrl: URL,
+    sourceBranch: string,
+    githubSettings: { user: { login: string; name: string; email: string }; token: string }
+  ) => Promise<WorkspaceDescriptor>;
 
   // edit workspace
   addEmptyFile: (destinationFolder: string, fileExtension: string) => Promise<WorkspaceFile>;

@@ -25,7 +25,7 @@ export function useWorkspaceFilePromise(
         setWorkspaceFilePromise({ data: workspaceFile });
       });
     },
-    [workspaces.workspaceService, setWorkspaceFilePromise]
+    [workspaces, setWorkspaceFilePromise]
   );
 
   const completePath = useMemo(() => {

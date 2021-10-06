@@ -28,7 +28,7 @@ export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
           }),
         });
       });
-  }, [globals.routes.workspaceWithFilePath, history, props.extension, workspaces]);
+  }, [globals, history, props.extension, workspaces]);
 
   return (
     <OnlineEditorPage>

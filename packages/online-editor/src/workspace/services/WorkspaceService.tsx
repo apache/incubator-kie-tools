@@ -123,13 +123,13 @@ export class WorkspaceService {
 
   public async delete(descriptor: WorkspaceDescriptor, broadcastArgs: { broadcast: boolean }): Promise<void> {
     const descriptors = await this.list();
-    const index = descriptors.findIndex((w) => w.workspaceId === descriptor.workspaceId);
+    const index = descriptors.findIndex(({ workspaceId }) => workspaceId === descriptor.workspaceId);
     if (index === -1) {
       throw new Error(`Workspace ${descriptor.workspaceId} not found`);
     }
 
     const files = await this.listFiles(descriptor);
-    await this.storageService.deleteFiles(files);
+    await this.storageService.deleteFiles(files.map(this.toStorageFile));
 
     descriptors.splice(index, 1);
     const configFile = await this.configAsFile(async () => JSON.stringify(descriptors));
@@ -162,7 +162,7 @@ export class WorkspaceService {
     await this.storageService.updateFile(configFile);
 
     if (broadcastArgs.broadcast) {
-      this.bumpLastUpdatedDate(descriptor.workspaceId);
+      await this.bumpLastUpdatedDate(descriptor.workspaceId);
 
       const broadcastChannel1 = new BroadcastChannel(this.storageService.rootPath);
       const broadcastChannel2 = new BroadcastChannel(descriptor.workspaceId);
@@ -201,7 +201,7 @@ export class WorkspaceService {
   }
 
   private async configAsFile(getFileContents: () => Promise<string>) {
-    return new WorkspaceFile({
+    return new StorageFile({
       path: this.WORKSPACE_CONFIG_PATH,
       getFileContents,
     });
@@ -223,10 +223,10 @@ export class WorkspaceService {
   }
 
   private toStorageFile(workspaceFile: WorkspaceFile): StorageFile {
-    return {
+    return new StorageFile({
       path: workspaceFile.path,
       getFileContents: workspaceFile.getFileContents,
-    };
+    });
   }
 
   private async bumpLastUpdatedDate(workspaceId: string): Promise<void> {

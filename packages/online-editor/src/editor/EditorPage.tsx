@@ -160,7 +160,7 @@ export function EditorPage(props: Props) {
         await workspaces.updateFile(workspaceFilePromise.data, () => Promise.resolve(content));
         editor?.getStateControl().setSavedCommand();
       },
-      [editor, workspaceFilePromise]
+      [workspaces, editor, workspaceFilePromise]
     ),
     { throttle: 200 }
   );

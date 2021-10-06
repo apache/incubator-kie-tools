@@ -390,7 +390,6 @@ export function EditorToolbar(props: Props) {
     globals,
     settings,
     queryParamUrl,
-    queryParams,
     props.editor,
   ]);
 

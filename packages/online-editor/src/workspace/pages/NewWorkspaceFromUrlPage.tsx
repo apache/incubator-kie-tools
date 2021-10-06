@@ -54,7 +54,7 @@ export function NewWorkspaceFromUrlPage() {
         });
       });
     },
-    [globals.routes.workspaceWithFilePath, history, workspaces]
+    [globals, history, workspaces]
   );
 
   useEffect(() => {

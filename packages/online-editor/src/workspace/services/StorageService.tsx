@@ -18,9 +18,14 @@ import LightningFS, { FSBackend, FSConstructorOptions } from "@isomorphic-git/li
 import { Minimatch } from "minimatch";
 import { basename, dirname, extname, join, parse, resolve } from "path";
 
-export interface StorageFile {
-  path: string;
-  getFileContents: () => Promise<string>;
+export class StorageFile {
+  constructor(private readonly args: { path: string; getFileContents: () => Promise<string> }) {}
+  get path() {
+    return this.args.path;
+  }
+  get getFileContents() {
+    return this.args.getFileContents;
+  }
 }
 
 export class StorageService {
@@ -80,10 +85,10 @@ export class StorageService {
       throw new Error(`File ${newPath} already exists`);
     }
 
-    const newFile = {
+    const newFile = new StorageFile({
       path: newPath,
       getFileContents: file.getFileContents,
-    };
+    });
     await this.fsp.rename(file.path, newFile.path);
 
     return newFile;
@@ -95,10 +100,10 @@ export class StorageService {
     }
 
     const newPath = join(newFolderPath, basename(file.path));
-    const newFile = {
+    const newFile = new StorageFile({
       getFileContents: file.getFileContents,
       path: newPath,
-    };
+    });
     await this.createFile(newFile);
     await this.deleteFile(file);
 
@@ -131,20 +136,20 @@ export class StorageService {
       return;
     }
 
-    return {
+    return new StorageFile({
       getFileContents: this.buildGetFileContentsCallback(path),
       path,
-    };
+    });
   }
 
   public async getFiles(folderPath: string, globPattern?: string): Promise<StorageFile[]> {
     const filePaths = await this.getFilePaths(folderPath);
 
     const files = filePaths.map((path: string) => {
-      return {
+      return new StorageFile({
         getFileContents: this.buildGetFileContentsCallback(path),
         path,
-      };
+      });
     });
 
     if (!globPattern) {

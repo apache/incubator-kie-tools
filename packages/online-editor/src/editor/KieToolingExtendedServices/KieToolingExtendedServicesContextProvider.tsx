@@ -33,7 +33,6 @@ const KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME = 1000;
 export const KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT = "21345";
 
 export function KieToolingExtendedServicesContextProvider(props: Props) {
-  const workspace = useWorkspaces();
   const [status, setStatus] = useState(KieToolingExtendedServicesStatus.AVAILABLE);
   const [isModalOpen, setModalOpen] = useState(false);
   const [installTriggeredBy, setInstallTriggeredBy] = useState<DependentFeature | undefined>(undefined);

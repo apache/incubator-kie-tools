@@ -25,7 +25,7 @@ export function useWorkspaceDescriptorsPromise() {
           }
         });
     },
-    [setWorkspaceDescriptorsPromise, workspaces.workspaceService]
+    [setWorkspaceDescriptorsPromise, workspaces]
   );
 
   useCancelableEffect(
@@ -50,7 +50,7 @@ export function useWorkspaceDescriptorsPromise() {
           broadcastChannel.close();
         };
       },
-      [workspaces.workspaceService, refresh]
+      [workspaces, refresh]
     )
   );
 

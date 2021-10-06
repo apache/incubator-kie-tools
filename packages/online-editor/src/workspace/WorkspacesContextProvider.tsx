@@ -16,7 +16,7 @@
 
 import { ContentType, ResourceContent, ResourcesList } from "@kie-tooling-core/workspace/dist/api";
 import * as React from "react";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FileHandler } from "./handler/FileHandler";
 import { GitRepositoryFileHandler } from "./handler/GitRepositoryFileHandler";
 import { LocalFileHandler } from "./handler/LocalFileHandler";
@@ -27,7 +27,6 @@ import { StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { SUPPORTED_FILES } from "./SupportedFiles";
 import { LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
-import { useSettings } from "../settings/SettingsContext";
 import { SupportedFileExtensions } from "../common/GlobalContext";
 import { extractFileExtension } from "../common/utils";
 import { emptyTemplates } from "./FileTemplates";
@@ -44,8 +43,6 @@ interface Props {
 }
 
 export function WorkspacesContextProvider(props: Props) {
-  const settings = useSettings();
-
   const storageService = useMemo(() => new StorageService(INDEXED_DB_NAME), []);
   const workspaceService = useMemo(() => new WorkspaceService(storageService), [storageService]);
   const gitService = useMemo(() => new GitService(GIT_CORS_PROXY, storageService), [storageService]);
@@ -84,8 +81,12 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createWorkspaceFromGitHubRepository = useCallback(
-    async (repositoryUrl: URL, sourceBranch: string) => {
-      if (!settings.github.user) {
+    async (
+      repositoryUrl: URL,
+      sourceBranch: string,
+      githubSettings: { user: { login: string; email: string; name: string }; token: string }
+    ) => {
+      if (!githubSettings.user) {
         throw new Error("User not authenticated on GitHub");
       }
 
@@ -98,11 +99,11 @@ export function WorkspacesContextProvider(props: Props) {
       };
 
       const authInfo = {
-        name: settings.github.user.name,
-        email: settings.github.user.email,
+        name: githubSettings.user.name,
+        email: githubSettings.user.email,
         onAuth: () => ({
-          username: settings.github.user!.login,
-          password: settings.github.token!,
+          username: githubSettings.user.login,
+          password: githubSettings.token,
         }),
       };
 
@@ -116,7 +117,7 @@ export function WorkspacesContextProvider(props: Props) {
       await createWorkspace(descriptor, fileHandler);
       return descriptor;
     },
-    [workspaceService, settings.github.user, settings.github.token, gitService, createWorkspace]
+    [workspaceService, gitService, createWorkspace]
   );
 
   const renameFile = useCallback(
@@ -208,8 +209,9 @@ export function WorkspacesContextProvider(props: Props) {
     [workspaceService]
   );
 
+  const [ready, setReady] = useState(false);
   useEffect(() => {
-    workspaceService.init();
+    workspaceService.init().then(() => setReady(true));
   }, [workspaceService]);
 
   const value = useMemo(() => {
@@ -236,5 +238,5 @@ export function WorkspacesContextProvider(props: Props) {
     workspaceService,
   ]);
 
-  return <WorkspacesContext.Provider value={value}>{props.children}</WorkspacesContext.Provider>;
+  return <WorkspacesContext.Provider value={value}>{ready && props.children}</WorkspacesContext.Provider>;
 }

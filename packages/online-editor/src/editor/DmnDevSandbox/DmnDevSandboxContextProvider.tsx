@@ -155,10 +155,10 @@ export function DmnDevSandboxContextProvider(props: Props) {
     [
       settings.openshift.service,
       props.workspaceFile,
-      workspaces.workspaceService,
+      workspaces,
       deployStartedSuccessAlert,
       deployStartedErrorAlert,
-      globals.routes.importModel,
+      globals,
     ]
   );
 
