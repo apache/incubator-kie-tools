@@ -58,11 +58,9 @@ pipeline {
                     if (isSonarCloudEnabled()) {
                         getMavenCommand('kogito-editors-java')
                                 .withOptions(['-e', '-nsu'])
-                                .withProperty('sonar.projectKey', 'org.kie.kogito:kogito-editors-java')
-                                .withProperty('sonar.organization', 'kiegroup')
-                                .withProperty('sonar.host.url', 'https://sonarcloud.io')
-                                .withProperty('sonar.login', env['SONARCLOUD_TOKEN'])
-                                .run('validate org.sonarsource.scanner.maven:sonar-maven-plugin:sonar')
+                                .withProperty('enforcer.skip', true)
+                                .withProfiles(['sonarcloud-analysis']) // sonarcloud-analysis  is defined in kie-parent pom
+                                .run('generate-resources')
                     }
                 }
             }

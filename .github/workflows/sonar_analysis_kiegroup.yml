@@ -39,5 +39,5 @@ jobs:
       - name: Analyze with sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B validate org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=org.kie.kogito:kogito-editors-java -Dsonar.organization=kiegroup -Dsonar.host.url=https://sonarcloud.io -DskipTests -Dgwt.compiler.skip -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          SONARCLOUD_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -nsu generate-resources -Psonarcloud-analysis -Denforcer.skip=true # sonarcloud-analysis  is defined in kie-parent pom

@@ -51,10 +51,6 @@
 		</developer>
 	</developers>
 
-	<properties>
-		<sonar.skip>true</sonar.skip>
-	</properties>
-
 	<repositories>
 		<repository>
 			<id>google-snapshots</id>
