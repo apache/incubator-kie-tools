@@ -16,20 +16,22 @@
 
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import * as __path from "path";
-import * as fs from "fs";
 import * as vscode from "vscode";
-import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
+import { WorkspaceApi } from "@kie-tooling-core/workspace/dist/api";
 import { VsCodeI18n } from "./i18n";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
 
-export async function generateSvg(
-  editorStore: KogitoEditorStore,
-  workspaceApi: WorkspaceApi,
-  vsCodeI18n: I18n<VsCodeI18n>
-) {
-  const i18n = vsCodeI18n.getCurrent();
+const encoder = new TextEncoder();
 
-  const editor = editorStore.activeEditor;
+export async function generateSvg(args: {
+  editorStore: KogitoEditorStore;
+  workspaceApi: WorkspaceApi;
+  vsCodeI18n: I18n<VsCodeI18n>;
+  displayNotification: boolean;
+}) {
+  const i18n = args.vsCodeI18n.getCurrent();
+
+  const editor = args.editorStore.activeEditor;
   if (!editor) {
     console.info(`Unable to create SVG because there's no Editor open.`);
     return;
@@ -43,14 +45,16 @@ export async function generateSvg(
 
   const parsedPath = __path.parse(editor.document.uri.fsPath);
   const svgFileName = `${parsedPath.name}-svg.svg`;
-  const svgAbsoluteFilePath = __path.join(parsedPath.dir, svgFileName);
-  fs.writeFileSync(svgAbsoluteFilePath, previewSvg);
+  const svgUri = editor.document.uri.with({ path: __path.join(parsedPath.dir, svgFileName) });
+  await vscode.workspace.fs.writeFile(svgUri, encoder.encode(previewSvg));
 
-  vscode.window.showInformationMessage(i18n.savedSvg(svgFileName), i18n.openSvg).then((selection) => {
-    if (selection !== i18n.openSvg) {
-      return;
-    }
+  if (args.displayNotification) {
+    vscode.window.showInformationMessage(i18n.savedSvg(svgFileName), i18n.openSvg).then((selection) => {
+      if (selection !== i18n.openSvg) {
+        return;
+      }
 
-    workspaceApi.kogitoWorkspace_openFile(svgAbsoluteFilePath);
-  });
+      args.workspaceApi.kogitoWorkspace_openFile(svgUri.fsPath);
+    });
+  }
 }

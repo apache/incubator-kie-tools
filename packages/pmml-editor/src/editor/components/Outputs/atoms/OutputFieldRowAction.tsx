@@ -17,27 +17,36 @@ import * as React from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { Interaction } from "../../../types";
 
 interface OutputsTableActionProps {
-  onDeleteOutputField: () => void;
+  index: number;
+  onDelete: (interaction: Interaction) => void;
 }
 
 export const OutputFieldRowAction = (props: OutputsTableActionProps) => {
-  const onDelete = (e: React.MouseEvent | React.KeyboardEvent) => {
+  const { index, onDelete } = props;
+
+  const handleDelete = (e: React.MouseEvent | React.KeyboardEvent, interaction: Interaction) => {
     e.stopPropagation();
     e.preventDefault();
-    props.onDeleteOutputField();
+    if (onDelete) {
+      onDelete(interaction);
+    }
   };
 
   return (
     <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
       <FlexItem>
         <Button
+          id={`output-field-n${index}__delete`}
+          data-testid={`output-field-n${index}__delete`}
+          className="editable-item__delete"
           variant="plain"
-          onClick={onDelete}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              onDelete(e);
+          onClick={(e) => handleDelete(e, "mouse")}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              handleDelete(event, "keyboard");
             }
           }}
         >

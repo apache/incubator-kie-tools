@@ -16,7 +16,7 @@
 
 describe("Both BPMN DMN.", () => {
   before("Visit page", () => {
-    cy.visit("localhost:9001/both-bpmn-dmn");
+    cy.visit("/both-bpmn-dmn");
     cy.loadEditors(["both-bpmn", "both-dmn"]);
   });
 

@@ -1,5 +1,6 @@
 {
+  "reporter": "mocha-multi-reporters",
   "reporterOptions": {
-    "output": "./it-tests/results/junit.xml"
+    "configFile": "./mocha-reporter-config.json"
   }
 }

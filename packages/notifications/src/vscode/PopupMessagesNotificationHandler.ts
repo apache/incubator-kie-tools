@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
+import { WorkspaceApi } from "@kie-tooling-core/workspace/dist/api";
 import * as vscode from "vscode";
 import { Notification, NotificationsApi, NotificationSeverity } from "../api";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
 import { NotificationsApiVsCodeI18nDictionary } from "./i18n";
 
 export class PopupMessagesNotificationHandler implements NotificationsApi {

@@ -17,7 +17,7 @@
 import { BpmnEditor, BpmnEditorImpl } from "./BpmnEditor";
 import { BpmnEditorChannelApi, getBpmnLanguageData } from "../api";
 import { GwtEditorWrapperFactory } from "../../common";
-import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
+import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tooling-core/editor/dist/api";
 
 export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorChannelApi> {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}

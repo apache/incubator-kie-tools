@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
+import * as EditorEnvelope from "@kie-tooling-core/editor/dist/envelope";
 import { PMMLEditorFactory } from "@kogito-tooling/pmml-editor";
 
 EditorEnvelope.init({

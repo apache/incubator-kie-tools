@@ -16,47 +16,34 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
+const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const { merge } = require("webpack-merge");
-const common = require("../../webpack.common.config");
+const common = require("../../config/webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
 const { EnvironmentPlugin } = require("webpack");
-
-function getLatestGitTag() {
-  const tagName = require("child_process").execSync("git rev-list --tags --max-count=1").toString().trim();
-
-  return require("child_process")
-    .execSync("git describe --tags " + tagName)
-    .toString()
-    .trim();
-}
-
-function getDownloadHubArgs(argv) {
-  let linuxUrl = argv["DOWNLOAD_HUB_linuxUrl"] ?? process.env["DOWNLOAD_HUB_linuxUrl"];
-  let macOsUrl = argv["DOWNLOAD_HUB_macOsUrl"] ?? process.env["DOWNLOAD_HUB_macOsUrl"];
-  let windowsUrl = argv["DOWNLOAD_HUB_windowsUrl"] ?? process.env["DOWNLOAD_HUB_windowsUrl"];
-
-  linuxUrl =
-    linuxUrl ??
-    `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_linux_${getLatestGitTag()}.zip`;
-  macOsUrl =
-    macOsUrl ??
-    `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_macos_${getLatestGitTag()}.zip`;
-  windowsUrl =
-    windowsUrl ??
-    `https://github.com/kiegroup/kogito-tooling/releases/download/${getLatestGitTag()}/business_modeler_hub_preview_windows_${getLatestGitTag()}.zip`;
-
-  console.info("Download Hub :: Linux URL: " + linuxUrl);
-  console.info("Download Hub :: macOS URL: " + macOsUrl);
-  console.info("Download Hub :: Windows URL: " + windowsUrl);
-
-  return [linuxUrl, macOsUrl, windowsUrl];
-}
+const buildEnv = require("@kogito-tooling/build-env");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 
 module.exports = async (env, argv) => {
-  const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs(argv);
+  const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs();
+  const buildInfo = getBuildInfo();
+  const [
+    kieToolingExtendedServices_linuxDownloadUrl,
+    kieToolingExtendedServices_macOsDownloadUrl,
+    kieToolingExtendedServices_windowsDownloadUrl,
+    kieToolingExtendedServices_compatibleVersion,
+  ] = getKieToolingExtendedServicesArgs(argv);
+  const [
+    dmnDevSandbox_baseImageRegistry,
+    dmnDevSandbox_baseImageAccount,
+    dmnDevSandbox_baseImageName,
+    dmnDevSandbox_baseImageTag,
+    dmnDevSandbox_onlineEditorUrl,
+  ] = getDmnDevSandboxArgs(argv);
+  const gtmResource = getGtmResource(argv);
 
-  return merge(common(env, argv), {
+  return merge(common(env), {
     entry: {
       index: "./src/index.tsx",
       "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
@@ -64,32 +51,60 @@ module.exports = async (env, argv) => {
       "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
     },
     plugins: [
+      new HtmlWebpackPlugin({
+        template: "./static/index.html",
+        inject: false,
+        minify: false,
+      }),
+      new HtmlReplaceWebpackPlugin([
+        {
+          pattern: /(<!-- gtm):([\w-\/]+)(\s*-->)?/g,
+          replacement: (match, gtm, type) => {
+            if (gtmResource) {
+              return gtmResource[type] ?? `${match}`;
+            }
+            return `${match}`;
+          },
+        },
+      ]),
       new EnvironmentPlugin({
         WEBPACK_REPLACE__hubLinuxUrl: downloadHub_linuxUrl,
         WEBPACK_REPLACE__hubMacOsUrl: downloadHub_macOsUrl,
         WEBPACK_REPLACE__hubWindowsUrl: downloadHub_windowsUrl,
+        WEBPACK_REPLACE__buildInfo: buildInfo,
+        WEBPACK_REPLACE__kieToolingExtendedServicesLinuxDownloadUrl: kieToolingExtendedServices_linuxDownloadUrl,
+        WEBPACK_REPLACE__kieToolingExtendedServicesMacOsDownloadUrl: kieToolingExtendedServices_macOsDownloadUrl,
+        WEBPACK_REPLACE__kieToolingExtendedServicesWindowsDownloadUrl: kieToolingExtendedServices_windowsDownloadUrl,
+        WEBPACK_REPLACE__kieToolingExtendedServicesCompatibleVersion: kieToolingExtendedServices_compatibleVersion,
+        WEBPACK_REPLACE__dmnDevSandbox_baseImageFullUrl: `${dmnDevSandbox_baseImageRegistry}/${dmnDevSandbox_baseImageAccount}/${dmnDevSandbox_baseImageName}:${dmnDevSandbox_baseImageTag}`,
+        WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl: dmnDevSandbox_onlineEditorUrl,
       }),
       new CopyPlugin({
         patterns: [
           { from: "./static/resources", to: "./resources" },
           { from: "./static/images", to: "./images" },
           { from: "./static/samples", to: "./samples" },
-          { from: "./static/index.html", to: "./index.html" },
           { from: "./static/favicon.ico", to: "./favicon.ico" },
           {
-            from: externalAssets.dmnEditorPath(argv),
+            from: externalAssets.dmnEditorPath(),
             to: "./gwt-editors/dmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
           {
-            from: externalAssets.bpmnEditorPath(argv),
+            from: externalAssets.bpmnEditorPath(),
             to: "./gwt-editors/bpmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
           { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
           { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
           { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
-          { from: "../../node_modules/@kogito-tooling/pmml-editor/dist/images", to: "./images" },
+          {
+            from: path.join(
+              path.dirname(require.resolve("@kogito-tooling/pmml-editor/package.json")),
+              "/static/images"
+            ),
+            to: "./images",
+          },
         ],
       }),
     ],
@@ -97,12 +112,12 @@ module.exports = async (env, argv) => {
       alias: {
         // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
         // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
-        // `@kiegroup/monaco-editor`. This way, everything works as expected.
-        "monaco-editor/esm/vs/editor/editor.api": path.resolve(__dirname, "../../node_modules/@kiegroup/monaco-editor"),
+        // `@kie-tooling-core/monaco-editor`. This way, everything works as expected.
+        "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tooling-core/monaco-editor"),
       },
     },
     module: {
-      rules: [...pfWebpackOptions.patternflyRules],
+      rules: [...patternflyBase.webpackModuleRules],
     },
     devServer: {
       historyApiFallback: false,
@@ -110,7 +125,88 @@ module.exports = async (env, argv) => {
       watchContentBase: true,
       contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
       compress: true,
-      port: 9001,
+      port: buildEnv.onlineEditor.dev.port,
     },
   });
 };
+
+function getGtmResource() {
+  const gtmId = buildEnv.onlineEditor.gtmId;
+  console.info(`Google Tag Manager :: ID: ${gtmId}`);
+
+  if (!gtmId) {
+    return undefined;
+  }
+
+  return {
+    id: gtmId,
+    header: `<!-- Google Tag Manager -->
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','${gtmId}');
+    </script>
+    <!-- End Google Tag Manager -->`,
+    body: `<!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=${gtmId}"
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+      >
+      </iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->`,
+  };
+}
+
+function getDownloadHubArgs() {
+  const linuxUrl = buildEnv.onlineEditor.downloadHubUrl.linux;
+  const macOsUrl = buildEnv.onlineEditor.downloadHubUrl.macOs;
+  const windowsUrl = buildEnv.onlineEditor.downloadHubUrl.windows;
+
+  console.info(`Online Editor :: Download Hub URL (Linux): ${linuxUrl}`);
+  console.info(`Online Editor :: Download Hub URL (macOS): ${macOsUrl}`);
+  console.info(`Online Editor :: Download Hub URL (Windows): ${windowsUrl}`);
+
+  return [linuxUrl, macOsUrl, windowsUrl];
+}
+
+function getBuildInfo() {
+  const buildInfo = buildEnv.onlineEditor.buildInfo;
+  console.info(`Online Editor :: Build info: ${buildInfo}`);
+  return buildInfo;
+}
+
+function getKieToolingExtendedServicesArgs() {
+  const linuxDownloadUrl = buildEnv.onlineEditor.kieToolingExtendedServices.downloadUrl.linux;
+  const macOsDownloadUrl = buildEnv.onlineEditor.kieToolingExtendedServices.downloadUrl.macOs;
+  const windowsDownloadUrl = buildEnv.onlineEditor.kieToolingExtendedServices.downloadUrl.windows;
+  const compatibleVersion = buildEnv.onlineEditor.kieToolingExtendedServices.compatibleVersion;
+
+  console.info("KIE Tooling Extended Services :: Linux download URL: " + linuxDownloadUrl);
+  console.info("KIE Tooling Extended Services :: macOS download URL: " + macOsDownloadUrl);
+  console.info("KIE Tooling Extended Services :: Windows download URL: " + windowsDownloadUrl);
+  console.info("KIE Tooling Extended Services :: Compatible version: " + compatibleVersion);
+
+  return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
+}
+
+function getDmnDevSandboxArgs(argv) {
+  const baseImageRegistry = buildEnv.dmnDevSandbox.baseImage.registry;
+  const baseImageAccount = buildEnv.dmnDevSandbox.baseImage.account;
+  const baseImageName = buildEnv.dmnDevSandbox.baseImage.name;
+  const baseImageTag = buildEnv.dmnDevSandbox.baseImage.tag;
+  const onlineEditorUrl = buildEnv.dmnDevSandbox.onlineEditorUrl;
+
+  console.info("DMN Dev Sandbox :: Base Image Registry: " + baseImageRegistry);
+  console.info("DMN Dev Sandbox :: Base Image Account: " + baseImageAccount);
+  console.info("DMN Dev Sandbox :: Base Image Name: " + baseImageName);
+  console.info("DMN Dev Sandbox :: Base Image Tag: " + baseImageTag);
+  console.info("DMN Dev Sandbox :: Online Editor Url: " + onlineEditorUrl);
+
+  return [baseImageRegistry, baseImageAccount, baseImageName, baseImageTag, onlineEditorUrl];
+}

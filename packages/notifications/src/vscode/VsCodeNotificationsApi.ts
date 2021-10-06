@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import { Notification, NotificationsApi, NotificationType } from "../api";
-import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
+import { WorkspaceApi } from "@kie-tooling-core/workspace/dist/api";
 import { PopupMessagesNotificationHandler } from "./PopupMessagesNotificationHandler";
 import { ProblemsTabNotificationHandler } from "./ProblemsTabNotificationHandler";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
 import * as vscode from "vscode";
 import { notificationsApiVsCodeI18nDefaults, notificationsApiVsCodeI18nDictionaries } from "./i18n";
 

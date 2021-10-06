@@ -4,7 +4,7 @@
     "declaration": false,
     "declarationMap": false,
     "resolveJsonModule": true,
-    "outDir": "out"
+    "outDir": "dist"
   },
   "include": ["src"]
 }

@@ -1,0 +1,53 @@
+{
+  "definitions": {
+    "InputSet": {
+      "required": ["FICO Score", "DTI Ratio", "PITI Ratio"],
+      "type": "object",
+      "properties": {
+        "FICO Score": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        },
+        "DTI Ratio": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        },
+        "PITI Ratio": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        }
+      },
+      "x-dmn-type": "DMNType{ xls2dmn_741b355c-685c-4827-b13a-833da8321da4 : InputSet }",
+      "x-dmn-descriptions": {}
+    },
+    "OutputSet": {
+      "type": "object",
+      "properties": {
+        "Loan Approval": {
+          "x-dmn-type": "FEEL:Any"
+        },
+        "DTI Rating": {
+          "x-dmn-type": "FEEL:Any"
+        },
+        "PITI Rating": {
+          "x-dmn-type": "FEEL:Any"
+        },
+        "FICO Score": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        },
+        "DTI Ratio": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        },
+        "PITI Ratio": {
+          "type": "number",
+          "x-dmn-type": "FEEL:number"
+        }
+      },
+      "x-dmn-type": "DMNType{ xls2dmn_741b355c-685c-4827-b13a-833da8321da4 : OutputSet }",
+      "x-dmn-descriptions": {}
+    }
+  },
+  "$ref": "#/definitions/InputSet"
+}

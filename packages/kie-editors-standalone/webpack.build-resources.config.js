@@ -15,12 +15,12 @@
  */
 
 const { merge } = require("webpack-merge");
-const common = require("../../webpack.common.config");
+const common = require("../../config/webpack.common.config");
 const CopyPlugin = require("copy-webpack-plugin");
-const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
+const patternflyBase = require("@kie-tooling-core/patternfly-base");
 
-module.exports = (env, argv) => [
-  merge(common(env, argv), {
+module.exports = (env) => [
+  merge(common(env), {
     entry: {
       "preprocessor/preprocessor": "./src/preprocessor/preprocessor.ts",
     },
@@ -31,7 +31,7 @@ module.exports = (env, argv) => [
       __filename: true, //Uses current working dir
     },
   }),
-  merge(common(env, argv), {
+  merge(common(env), {
     output: {
       publicPath: "",
     },
@@ -40,7 +40,7 @@ module.exports = (env, argv) => [
       "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
     },
     module: {
-      rules: [...pfWebpackOptions.patternflyRules],
+      rules: [...patternflyBase.webpackModuleRules],
     },
   }),
 ];

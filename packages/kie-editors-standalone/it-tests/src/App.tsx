@@ -18,7 +18,7 @@ import * as React from "react";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { DmnEditorComponent } from "./components/DmnEditorComponent";
 import { BpmnEditorComponent } from "./components/BpmnEditorComponent";
-import { ContentType } from "@kogito-tooling/workspace/dist/api";
+import { ContentType } from "@kie-tooling-core/workspace/dist/api";
 import processWithWidDefinition from "raw-loader!./resources/processWithWidDefinition.bpmn2";
 import customWorkItemWid from "raw-loader!./resources/widDefinitions.wid";
 

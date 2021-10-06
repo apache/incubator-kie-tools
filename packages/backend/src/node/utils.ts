@@ -107,7 +107,7 @@ export function isJavaAvailable(version?: Version): Promise<boolean> {
 export function killProcess(process: cp.ChildProcess) {
   switch (os.platform()) {
     case "win32":
-      cp.spawn("taskkill", ["/pid", process.pid.toString(), "/f", "/t"]);
+      cp.spawn("taskkill", ["/pid", process.pid!.toString(), "/f", "/t"]);
       break;
     case "darwin":
     case "linux":

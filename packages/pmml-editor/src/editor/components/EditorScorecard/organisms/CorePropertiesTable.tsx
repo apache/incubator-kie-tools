@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { BaseSyntheticEvent, useEffect, useMemo, useState } from "react";
 import { GenericSelector } from "../atoms";
 import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kogito-tooling/pmml-editor-marshaller";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -39,7 +39,7 @@ import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import set = Reflect.set;
 import get = Reflect.get;
 
-interface CoreProperties {
+export interface CoreProperties {
   modelIndex: number;
   isScorable: boolean | undefined;
   functionName: MiningFunction | undefined;
@@ -110,9 +110,12 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     return _value ? "Yes" : "No";
   };
 
-  const onEdit = () => {
-    setEditing(true);
+  const onEdit = (event: BaseSyntheticEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
     setActiveOperation(Operation.UPDATE_CORE);
+    setEditing(true);
   };
 
   const onCommitAndClose = () => {
@@ -145,226 +148,259 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
   );
 
   return (
-    <div
-      ref={ref}
-      onClick={onEdit}
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          e.stopPropagation();
-          onEdit();
-        }
-      }}
-    >
-      <PageSection
-        variant={PageSectionVariants.light}
-        className={isEditModeEnabled ? "editable-item--editing" : "editable-item"}
-      >
-        <Stack hasGutter={true}>
-          <StackItem>
-            <Split hasGutter={true}>
-              <SplitItem>
-                <Title size="lg" headingLevel="h1">
-                  Model Setup
-                </Title>
-              </SplitItem>
-              {!isEditModeEnabled && (
-                <SplitItem>
-                  {isScorable !== undefined && CorePropertyLabel("Is Scorable", toYesNo(isScorable))}
-                  {functionName !== undefined && CorePropertyLabel("Function", functionName)}
-                  {algorithmName !== undefined && CorePropertyLabel("Algorithm", algorithmName)}
-                  {initialScore !== undefined && CorePropertyLabel("Initial Score", initialScore)}
-                  {areReasonCodesUsed !== undefined &&
-                    CorePropertyLabel("Use Reason Codes", toYesNo(areReasonCodesUsed))}
-                  {reasonCodeAlgorithm !== undefined && CorePropertyLabel("Reason Code Algorithm", reasonCodeAlgorithm)}
-                  {baselineScore !== undefined &&
-                    baselineScoreValidation.length === 0 &&
-                    CorePropertyLabel("Baseline Score", baselineScore)}
-                  {baselineScoreValidation.length > 0 && (
-                    <ValidationIndicatorLabel validations={baselineScoreValidation} cssClass="core-properties__label">
-                      <>
-                        <strong>Baseline score:</strong>&nbsp;
-                        <em>Missing</em>
-                      </>
-                    </ValidationIndicatorLabel>
-                  )}
-                  {baselineMethod !== undefined && CorePropertyLabel("Baseline Method", baselineMethod)}
-                </SplitItem>
-              )}
-            </Split>
-          </StackItem>
-          {isEditModeEnabled && (
-            <StackItem>
-              <Form
-                onSubmit={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                }}
-                className="core-properties__container"
-              >
-                <Level hasGutter={true}>
-                  <LevelItem>
-                    <FormGroup label="Is Scorable" fieldId="core-isScorable">
-                      <Switch
-                        id="core-isScorable"
-                        isChecked={isScorable === true}
-                        onChange={(checked) => {
-                          setScorable(checked);
-                          onCommit({ isScorable: checked });
-                        }}
-                      />
-                    </FormGroup>
-                  </LevelItem>
-                  <LevelItem>
-                    <FormGroup label="Function" fieldId="core-functionName" required={true}>
-                      {GenericSelectorEditor(
-                        "core-functionName",
-                        [
-                          "associationRules",
-                          "sequences",
-                          "classification",
-                          "regression",
-                          "clustering",
-                          "timeSeries",
-                          "mixed",
-                        ],
-                        functionName,
-                        (_selection) => {
-                          setFunctionName(_selection as MiningFunction);
-                          onCommit({ functionName: _selection as MiningFunction });
-                        },
-                        // TODO {manstis] Scorecards are ALWAYS regression. We probably don't need this field.
-                        // See http://dmg.org/pmml/v4-4/Scorecard.html
-                        true
-                      )}
-                    </FormGroup>
-                  </LevelItem>
-                  <LevelItem>
-                    <FormGroup label="Algorithm" fieldId="core-algorithmName">
-                      <TextInput
-                        type="text"
-                        id="core-algorithmName"
-                        name="core-algorithmName"
-                        aria-describedby="core-algorithmName"
-                        value={algorithmName ?? ""}
-                        onChange={(e) => setAlgorithmName(e)}
-                        onBlur={() => {
-                          onCommit({ algorithmName: algorithmName });
-                        }}
-                      />
-                    </FormGroup>
-                  </LevelItem>
-                  <LevelItem>
-                    <FormGroup label="Initial score" fieldId="core-initialScore">
-                      <TextInput
-                        id="core-initialScore"
-                        value={initialScore}
-                        onChange={(e) => setInitialScore(toNumber(e))}
-                        onBlur={() => {
-                          onCommit({ initialScore: initialScore });
-                        }}
-                        type="number"
-                      />
-                    </FormGroup>
-                  </LevelItem>
-                  <LevelItem>
-                    <FormGroup label="Use reason codes?" fieldId="core-useReasonCodes">
-                      <Switch
-                        id="core-useReasonCodes"
-                        isChecked={areReasonCodesUsed}
-                        onChange={(checked) => {
-                          setAreReasonCodesUsed(checked);
-                          onCommit({ areReasonCodesUsed: checked });
-                        }}
-                      />
-                    </FormGroup>
-                  </LevelItem>
-                  <LevelItem>
-                    <FormGroup label="Reason code algorithm" fieldId="core-reasonCodeAlgorithm">
-                      {GenericSelectorEditor(
-                        "core-reasonCodeAlgorithm",
-                        ["pointsAbove", "pointsBelow"],
-                        reasonCodeAlgorithm,
-                        (_selection) => {
-                          setReasonCodeAlgorithm(_selection as ReasonCodeAlgorithm);
-                          onCommit({ reasonCodeAlgorithm: _selection as ReasonCodeAlgorithm });
-                        },
-                        // Reason Code Algorithm is only required when Reason Codes are enabled.
-                        // See http://dmg.org/pmml/v4-4/Scorecard.html
-                        !areReasonCodesUsed
-                      )}
-                    </FormGroup>
-                  </LevelItem>
-                  <LevelItem>
-                    <FormGroup
-                      label="Baseline score"
-                      fieldId="core-baselineScore"
-                      validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
-                      helperText={baselineScoreValidation.length > 0 ? baselineScoreValidation[0].message : undefined}
-                      labelIcon={
-                        <Tooltip
-                          content={
-                            areReasonCodesUsed && props.isBaselineScoreDisabled
-                              ? `A Baseline score is already provided inside all Characteristics`
-                              : `
+    <>
+      {!isEditModeEnabled && (
+        <div
+          tabIndex={0}
+          onClick={onEdit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              onEdit(e);
+            }
+          }}
+          data-testid="core-properties-table"
+        >
+          <PageSection
+            variant={PageSectionVariants.light}
+            className="editable-item"
+            data-ouia-component-type="model-setup-overview"
+          >
+            <Stack hasGutter={true}>
+              <StackItem>
+                <Split hasGutter={true}>
+                  <SplitItem>
+                    <Title size="lg" headingLevel="h1">
+                      Model Setup
+                    </Title>
+                  </SplitItem>
+                  <SplitItem>
+                    {isScorable !== undefined && CorePropertyLabel("Is Scorable", toYesNo(isScorable))}
+                    {functionName !== undefined && CorePropertyLabel("Function", functionName)}
+                    {algorithmName !== undefined && CorePropertyLabel("Algorithm", algorithmName)}
+                    {initialScore !== undefined && CorePropertyLabel("Initial Score", initialScore)}
+                    {areReasonCodesUsed !== undefined &&
+                      CorePropertyLabel("Use Reason Codes", toYesNo(areReasonCodesUsed))}
+                    {reasonCodeAlgorithm !== undefined &&
+                      CorePropertyLabel("Reason Code Algorithm", reasonCodeAlgorithm)}
+                    {baselineScore !== undefined &&
+                      baselineScoreValidation.length === 0 &&
+                      CorePropertyLabel("Baseline Score", baselineScore)}
+                    {baselineScoreValidation.length > 0 && (
+                      <ValidationIndicatorLabel validations={baselineScoreValidation} cssClass="core-properties__label">
+                        <>
+                          <strong>Baseline Score:</strong>&nbsp;
+                          <em>Missing</em>
+                        </>
+                      </ValidationIndicatorLabel>
+                    )}
+                    {baselineMethod !== undefined && CorePropertyLabel("Baseline Method", baselineMethod)}
+                  </SplitItem>
+                </Split>
+              </StackItem>
+            </Stack>
+          </PageSection>
+        </div>
+      )}
+      {isEditModeEnabled && (
+        <div ref={ref} data-testid="core-properties-table">
+          <PageSection
+            variant={PageSectionVariants.light}
+            className="editable-item--editing"
+            data-ouia-component-type="edit-model-setup"
+          >
+            <Stack hasGutter={true}>
+              <StackItem>
+                <Split hasGutter={true}>
+                  <SplitItem>
+                    <Title size="lg" headingLevel="h1">
+                      Model Setup
+                    </Title>
+                  </SplitItem>
+                </Split>
+              </StackItem>
+              <StackItem>
+                <Form
+                  onSubmit={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }}
+                  className="core-properties__container"
+                >
+                  <Level hasGutter={true}>
+                    <LevelItem>
+                      <FormGroup label="Is Scorable" fieldId="core-isScorable">
+                        <Switch
+                          id="core-isScorable"
+                          isChecked={isScorable === true}
+                          aria-label="Is scorable"
+                          data-testid="core-properties-table-isScorable"
+                          onChange={(checked) => {
+                            setScorable(checked);
+                            onCommit({ isScorable: checked });
+                          }}
+                          ouiaId="is-scorable"
+                        />
+                      </FormGroup>
+                    </LevelItem>
+                    <LevelItem>
+                      <FormGroup label="Function" fieldId="core-functionName" required={true}>
+                        {GenericSelectorEditor(
+                          "core-functionName",
+                          [
+                            "associationRules",
+                            "sequences",
+                            "classification",
+                            "regression",
+                            "clustering",
+                            "timeSeries",
+                            "mixed",
+                          ],
+                          functionName,
+                          (_selection) => {
+                            setFunctionName(_selection as MiningFunction);
+                            onCommit({ functionName: _selection as MiningFunction });
+                          },
+                          // TODO {manstis] Scorecards are ALWAYS regression. We probably don't need this field.
+                          // See http://dmg.org/pmml/v4-4/Scorecard.html
+                          true
+                        )}
+                      </FormGroup>
+                    </LevelItem>
+                    <LevelItem>
+                      <FormGroup label="Algorithm" fieldId="core-algorithmName">
+                        <TextInput
+                          type="text"
+                          id="core-algorithmName"
+                          name="core-algorithmName"
+                          aria-describedby="core-algorithmName"
+                          data-testid="core-properties-table-algorithmName"
+                          value={algorithmName ?? ""}
+                          onChange={(e) => setAlgorithmName(e)}
+                          onBlur={() => {
+                            onCommit({
+                              algorithmName: algorithmName === "" ? undefined : algorithmName,
+                            });
+                          }}
+                          data-ouia-component-id="algorithm"
+                        />
+                      </FormGroup>
+                    </LevelItem>
+                    <LevelItem>
+                      <FormGroup label="Initial score" fieldId="core-initialScore">
+                        <TextInput
+                          id="core-initialScore"
+                          value={initialScore}
+                          onChange={(e) => setInitialScore(toNumber(e))}
+                          onBlur={() => {
+                            onCommit({ initialScore: initialScore });
+                          }}
+                          type="number"
+                          data-ouia-component-id="initial-score"
+                        />
+                      </FormGroup>
+                    </LevelItem>
+                    <LevelItem>
+                      <FormGroup label="Use reason codes?" fieldId="core-useReasonCodes">
+                        <Switch
+                          id="core-useReasonCodes"
+                          isChecked={areReasonCodesUsed}
+                          aria-label="Use reason codes"
+                          data-testid="core-properties-table-useReasonCodes"
+                          onChange={(checked) => {
+                            setAreReasonCodesUsed(checked);
+                            onCommit({ areReasonCodesUsed: checked });
+                          }}
+                          ouiaId="use-reason-codes"
+                        />
+                      </FormGroup>
+                    </LevelItem>
+                    <LevelItem>
+                      <FormGroup label="Reason code algorithm" fieldId="core-reasonCodeAlgorithm">
+                        {GenericSelectorEditor(
+                          "core-reasonCodeAlgorithm",
+                          ["pointsAbove", "pointsBelow"],
+                          reasonCodeAlgorithm,
+                          (_selection) => {
+                            setReasonCodeAlgorithm(_selection as ReasonCodeAlgorithm);
+                            onCommit({ reasonCodeAlgorithm: _selection as ReasonCodeAlgorithm });
+                          },
+                          // Reason Code Algorithm is only required when Reason Codes are enabled.
+                          // See http://dmg.org/pmml/v4-4/Scorecard.html
+                          !areReasonCodesUsed
+                        )}
+                      </FormGroup>
+                    </LevelItem>
+                    <LevelItem>
+                      <FormGroup
+                        label="Baseline score"
+                        fieldId="core-baselineScore"
+                        validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
+                        helperText={baselineScoreValidation.length > 0 ? baselineScoreValidation[0].message : undefined}
+                        labelIcon={
+                          <Tooltip
+                            content={
+                              areReasonCodesUsed && props.isBaselineScoreDisabled
+                                ? `A Baseline score is already provided inside all Characteristics`
+                                : `
                                 When Use Reason Codes is set to yes, a Baseline score value must be provided. \
                                 Alternatively you can provide a Baseline score for all the characteristics
                                 `
-                          }
-                        >
-                          <button
-                            aria-label="More information for Baseline score"
-                            onClick={(e) => e.preventDefault()}
-                            className="pf-c-form__group-label-help"
+                            }
                           >
-                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
-                          </button>
-                        </Tooltip>
-                      }
-                    >
-                      <TextInput
-                        id="core-baselineScore"
-                        value={baselineScore ?? ""}
-                        onChange={(e) => setBaselineScore(toNumber(e))}
-                        onBlur={() => {
-                          onCommit({ baselineScore: baselineScore });
-                        }}
-                        type="number"
-                        validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
-                        isDisabled={props.isBaselineScoreDisabled}
-                      />
-                    </FormGroup>
-                  </LevelItem>
-                  <LevelItem>
-                    <FormGroup label="Baseline method" fieldId="core-baselineMethod">
-                      {GenericSelectorEditor(
-                        "core-baselineMethod",
-                        ["max", "min", "mean", "neutral", "other"],
-                        baselineMethod,
-                        (_selection) => {
-                          setBaselineMethod(_selection as BaselineMethod);
-                          onCommit({ baselineMethod: _selection as BaselineMethod });
-                        },
-                        // Baseline Method is only required when Reason Codes are enabled.
-                        // See http://dmg.org/pmml/v4-4/Scorecard.html
-                        !areReasonCodesUsed
-                      )}
-                    </FormGroup>
-                  </LevelItem>
-                </Level>
-              </Form>
-            </StackItem>
-          )}
-        </Stack>
-      </PageSection>
-    </div>
+                            <button
+                              aria-label="More information for Baseline score"
+                              onClick={(e) => e.preventDefault()}
+                              className="pf-c-form__group-label-help"
+                            >
+                              <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                            </button>
+                          </Tooltip>
+                        }
+                      >
+                        <TextInput
+                          id="core-baselineScore"
+                          value={baselineScore ?? ""}
+                          onChange={(e) => setBaselineScore(toNumber(e))}
+                          onBlur={() => {
+                            onCommit({ baselineScore: baselineScore });
+                          }}
+                          type="number"
+                          validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
+                          isDisabled={props.isBaselineScoreDisabled}
+                          data-ouia-component-id="baseline-score"
+                        />
+                      </FormGroup>
+                    </LevelItem>
+                    <LevelItem>
+                      <FormGroup label="Baseline method" fieldId="core-baselineMethod">
+                        {GenericSelectorEditor(
+                          "core-baselineMethod",
+                          ["max", "min", "mean", "neutral", "other"],
+                          baselineMethod,
+                          (_selection) => {
+                            setBaselineMethod(_selection as BaselineMethod);
+                            onCommit({ baselineMethod: _selection as BaselineMethod });
+                          },
+                          // Baseline Method is only required when Reason Codes are enabled.
+                          // See http://dmg.org/pmml/v4-4/Scorecard.html
+                          !areReasonCodesUsed
+                        )}
+                      </FormGroup>
+                    </LevelItem>
+                  </Level>
+                </Form>
+              </StackItem>
+            </Stack>
+          </PageSection>
+        </div>
+      )}
+    </>
   );
 };
 
 const CorePropertyLabel = (name: string, value: any) => {
   return (
-    <Label color="cyan" className="core-properties__label">
+    <Label color="cyan" className="core-properties__label" data-ouia-component-type="model-property">
       <strong>{name}:</strong>
       &nbsp;
       <span>{value}</span>

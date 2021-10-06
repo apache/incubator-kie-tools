@@ -31,13 +31,14 @@ import "./OutputFieldRow.scss";
 import { ValidationIndicator } from "../../EditorCore/atoms";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
+import { Interaction } from "../../../types";
 
 interface OutputFieldRowProps {
   modelIndex: number;
   outputFieldIndex: number;
   outputField: OutputField | undefined;
   onEditOutputField: () => void;
-  onDeleteOutputField: () => void;
+  onDeleteOutputField: (interaction: Interaction) => void;
 }
 
 interface Values {
@@ -93,7 +94,8 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
 
   return (
     <section
-      tabIndex={0}
+      id={`output-field-n${outputFieldIndex}`}
+      data-testid={`output-field-n${outputFieldIndex}`}
       className={"editable-item__inner"}
       onClick={(event) => handleEdit(event)}
       onKeyDown={(event) => {
@@ -101,6 +103,8 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
           handleEdit(event);
         }
       }}
+      data-ouia-component-type="output-field"
+      tabIndex={0}
     >
       <Split hasGutter={true} style={{ height: "100%" }}>
         <SplitItem>
@@ -114,7 +118,7 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
             </FlexItem>
           </Flex>
         </SplitItem>
-        <SplitItem>
+        <SplitItem data-ouia-component-type="output-field-name">
           <strong>{name}</strong>
         </SplitItem>
         <SplitItem isFilled={true}>
@@ -134,7 +138,11 @@ const OutputFieldRow = (props: OutputFieldRowProps) => {
           />
         </SplitItem>
         <SplitItem>
-          <OutputFieldRowAction onDeleteOutputField={onDeleteOutputField} />
+          <OutputFieldRowAction
+            index={outputFieldIndex}
+            onDelete={onDeleteOutputField}
+            data-ouia-component-type="output-field-delete"
+          />
         </SplitItem>
       </Split>
     </section>

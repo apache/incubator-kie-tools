@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { CapabilityChannelApi } from "@kogito-tooling/backend/dist/channel-api";
-import { NotificationsApi } from "@kogito-tooling/notifications/dist/api";
-import { GuidedTourChannelApi } from "@kogito-tooling/guided-tour/dist/api";
-import { I18nChannelApi } from "@kogito-tooling/i18n/dist/api";
-import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
+import { CapabilityChannelApi } from "@kie-tooling-core/backend/dist/channel-api";
+import { NotificationsApi } from "@kie-tooling-core/notifications/dist/api";
+import { GuidedTourChannelApi } from "@kie-tooling-core/guided-tour/dist/api";
+import { I18nChannelApi } from "@kie-tooling-core/i18n/dist/api";
+import { WorkspaceApi } from "@kie-tooling-core/workspace/dist/api";
 import { EditorContent } from "./EditorContent";
 import { StateControlCommand } from "./StateControlCommand";
 

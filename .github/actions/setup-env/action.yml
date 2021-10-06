@@ -1,0 +1,113 @@
+name: "Setup Kogito Tooling build environment"
+description: ""
+
+inputs:
+  os:
+    description: "Operating System"
+    required: true
+  path:
+    description: "kogito-tooling path"
+    required: false
+    default: "."
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Setup Node"
+      uses: actions/setup-node@v1
+      with:
+        node-version: 16.2.0
+
+    - name: "Setup JDK 11"
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: "Set up GOLANG 1.16"
+      uses: actions/setup-go@v2
+      with:
+        go-version: "1.16"
+
+    - name: "Fetch Git tags"
+      shell: bash
+      run: |
+        echo "STEP: Fetch Git tags"
+        cd ${{ inputs.path }}
+        git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+    - name: "Setup Yarn and Lerna"
+      shell: bash
+      run: |
+        echo "STEP: Setup Yarn and Lerna"
+        cd ${{ inputs.path }}
+        npm install -g lerna@4.0.0 yarn@1.22.10
+        yarn config set network-timeout 1000000
+
+    - name: "Setup default Maven args"
+      shell: bash
+      run: |
+        echo "STEP: Setup default Maven args"
+        cd ${{ inputs.path }}
+        mkdir .mvn
+        echo '-B -ntp' > .mvn/maven.config
+
+    - name: "Bootstrap"
+      shell: bash
+      run: |
+        echo "STEP: Bootstrap"
+        cd ${{ inputs.path }}
+        yarn bootstrap
+
+    - name: "Check yarn.lock"
+      shell: bash
+      run: |
+        echo "STEP: Check yarn.lock"
+        cd ${{ inputs.path }}
+        git diff yarn.lock;
+        [ "0" == "$(git diff yarn.lock | wc -l | tr -d ' ')" ]
+
+    - name: "Check dependencies mismatches"
+      shell: bash
+      run: |
+        echo "STEP: Check dependencies mismatches"
+        cd ${{ inputs.path }}
+        npx --yes syncpack list-mismatches
+
+    - name: "Check format"
+      shell: bash
+      run: |
+        echo "STEP: Check format"
+        cd ${{ inputs.path }}
+        yarn format:check
+
+    - name: "Start Xvfb (Ubuntu only)"
+      shell: bash
+      run: |
+        echo "STEP: Start Xvfb (Ubuntu only)"
+        cd ${{ inputs.path }}
+        if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
+            /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+        fi
+
+    - name: "Increase inotify watches (Ubuntu only)"
+      shell: bash
+      run: |
+        echo "STEP: Increase inotify watches (Ubuntu only)"
+        cd ${{ inputs.path }}
+        if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
+          echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+        fi
+
+    - name: "Setup GOLANG packages (Linux)"
+      shell: bash
+      run: |
+        echo "STEP: Setup GOLANG packages (Linux)"
+        cd ${{ inputs.path }}
+        if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
+          sudo apt update && \
+          sudo apt install -y \
+          build-essential \
+          libgtk-3-dev \
+          libappindicator3-dev \
+          gir1.2-appindicator3-0.1
+        fi

@@ -54,7 +54,7 @@ export const EditorHeader = (props: EditorHeaderProps) => {
         <SplitItem className={"editorHeader__modelName"}>
           <ModelTitle modelName={modelName} commitModelName={commitModelName} />
         </SplitItem>
-        <SplitItem isFilled={true} />
+        <SplitItem isFilled={true} data-ouia-component-type="filler" />
         <SplitItem>
           <DataDictionaryHandler />
         </SplitItem>

@@ -1,0 +1,276 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AttributesTable Attribute:Render 1`] = `
+<section
+  data-testid="attributes-table"
+>
+  <article
+    class="editable-item attribute-item-n0"
+  >
+    <article
+      class="attribute-item"
+      data-ouia-component-type="attribute-item"
+      data-testid="attribute-n0"
+      id="attribute-n0"
+      tabindex="0"
+    >
+      <div
+        class="pf-l-split pf-m-gutter"
+        style="height: 100%;"
+      >
+        <div
+          class="pf-l-split__item"
+        >
+          <span
+            class="pf-c-label pf-m-blue"
+            tabindex="0"
+          >
+            <span
+              class="pf-c-label__content"
+            >
+              <pre />
+            </span>
+            <button
+              aria-disabled="false"
+              aria-label="label-close-button"
+              class="pf-c-button pf-m-plain"
+              data-ouia-component-id="OUIA-Generated-Button-plain-1"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe="true"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 352 512"
+                width="1em"
+              >
+                <path
+                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                />
+              </svg>
+            </button>
+          </span>
+        </div>
+        <div
+          class="pf-l-split__item pf-m-fill"
+        >
+          <span
+            class="pf-c-label pf-m-cyan attribute-list__item__label"
+          >
+            <span
+              class="pf-c-label__content"
+            >
+              <strong>
+                Reason code
+                :
+              </strong>
+               
+              <span>
+                A1
+              </span>
+            </span>
+            <button
+              aria-disabled="false"
+              aria-label="label-close-button"
+              class="pf-c-button pf-m-plain"
+              data-ouia-component-id="OUIA-Generated-Button-plain-2"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe="true"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 352 512"
+                width="1em"
+              >
+                <path
+                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                />
+              </svg>
+            </button>
+          </span>
+        </div>
+        <div
+          class="pf-l-split__item"
+        >
+          <div
+            class="pf-l-flex pf-m-align-items-center"
+            style="height: 100%;"
+          >
+            <div
+              class=""
+            >
+              <button
+                aria-disabled="false"
+                class="pf-c-button pf-m-plain attribute-item__delete"
+                data-ouia-component-id="delete-attribute"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                data-testid="attribute-n0__delete"
+                id="attribute-n0__delete"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 448 512"
+                  width="1em"
+                >
+                  <path
+                    d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </article>
+  <article
+    class="editable-item attribute-item-n1"
+  >
+    <article
+      class="attribute-item"
+      data-ouia-component-type="attribute-item"
+      data-testid="attribute-n1"
+      id="attribute-n1"
+      tabindex="0"
+    >
+      <div
+        class="pf-l-split pf-m-gutter"
+        style="height: 100%;"
+      >
+        <div
+          class="pf-l-split__item"
+        >
+          <span
+            class="pf-c-label pf-m-blue"
+            tabindex="0"
+          >
+            <span
+              class="pf-c-label__content"
+            >
+              <pre />
+            </span>
+            <button
+              aria-disabled="false"
+              aria-label="label-close-button"
+              class="pf-c-button pf-m-plain"
+              data-ouia-component-id="OUIA-Generated-Button-plain-3"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe="true"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 352 512"
+                width="1em"
+              >
+                <path
+                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                />
+              </svg>
+            </button>
+          </span>
+        </div>
+        <div
+          class="pf-l-split__item pf-m-fill"
+        >
+          <span
+            class="pf-c-label pf-m-cyan attribute-list__item__label"
+          >
+            <span
+              class="pf-c-label__content"
+            >
+              <strong>
+                Reason code
+                :
+              </strong>
+               
+              <span>
+                A2
+              </span>
+            </span>
+            <button
+              aria-disabled="false"
+              aria-label="label-close-button"
+              class="pf-c-button pf-m-plain"
+              data-ouia-component-id="OUIA-Generated-Button-plain-4"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe="true"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 352 512"
+                width="1em"
+              >
+                <path
+                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                />
+              </svg>
+            </button>
+          </span>
+        </div>
+        <div
+          class="pf-l-split__item"
+        >
+          <div
+            class="pf-l-flex pf-m-align-items-center"
+            style="height: 100%;"
+          >
+            <div
+              class=""
+            >
+              <button
+                aria-disabled="false"
+                class="pf-c-button pf-m-plain attribute-item__delete"
+                data-ouia-component-id="delete-attribute"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe="true"
+                data-testid="attribute-n1__delete"
+                id="attribute-n1__delete"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 448 512"
+                  width="1em"
+                >
+                  <path
+                    d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </article>
+</section>
+`;

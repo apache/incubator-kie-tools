@@ -19,3 +19,4 @@ export * from "./GwtEditorWrapperFactory";
 export * from "./XmlFormatter";
 export * from "./GwtEditorMapping";
 export * from "./GwtLanguageData";
+export * from "./api";

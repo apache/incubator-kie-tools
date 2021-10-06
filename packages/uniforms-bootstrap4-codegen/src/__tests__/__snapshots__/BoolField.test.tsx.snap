@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<BoolField> tests <BoolField> - rendering - disabled 1`] = `
+<div>
+  {"ref":{"id":"id","binding":"hire"},"html":"&lt;div class=\\"form-check\\"&gt;\\n    &lt;input type=\\"checkbox\\" id=\\"id\\" name=\\"hire\\" class=\\"form-check-input\\" disabled/&gt;\\n    &lt;label class=\\"form-check-label\\" for=\\"id\\"&gt;Hire?&lt;/label&gt;\\n&lt;/div&gt;"}
+</div>
+`;
+
+exports[`<BoolField> tests <BoolField> - rendering 1`] = `
+<div>
+  {"ref":{"id":"id","binding":"hire"},"html":"&lt;div class=\\"form-check\\"&gt;\\n    &lt;input type=\\"checkbox\\" id=\\"id\\" name=\\"hire\\" class=\\"form-check-input\\" checked/&gt;\\n    &lt;label class=\\"form-check-label\\" for=\\"id\\"&gt;Hire?&lt;/label&gt;\\n&lt;/div&gt;"}
+</div>
+`;

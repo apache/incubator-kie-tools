@@ -15,10 +15,10 @@
  */
 
 import { EditorContent } from "./EditorContent";
-import { KeyboardShortcutsEnvelopeApi } from "@kogito-tooling/keyboard-shortcuts/dist/api";
-import { GuidedTourEnvelopeApi } from "@kogito-tooling/guided-tour/dist/api";
-import { I18nEnvelopeApi } from "@kogito-tooling/i18n/dist/api";
-import { Notification } from "@kogito-tooling/notifications/dist/api";
+import { KeyboardShortcutsEnvelopeApi } from "@kie-tooling-core/keyboard-shortcuts/dist/api";
+import { GuidedTourEnvelopeApi } from "@kie-tooling-core/guided-tour/dist/api";
+import { I18nEnvelopeApi } from "@kie-tooling-core/i18n/dist/api";
+import { Notification } from "@kie-tooling-core/notifications/dist/api";
 
 export interface Association {
   origin: string;

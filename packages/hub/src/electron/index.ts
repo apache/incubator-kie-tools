@@ -21,7 +21,7 @@ import * as os from "os";
 import * as child from "child_process";
 import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
-import { OperatingSystem } from "@kogito-tooling/channel-common-api";
+import { OperatingSystem } from "@kie-tooling-core/operating-system";
 import IpcMainEvent = Electron.IpcMainEvent;
 
 app.on("ready", () => {
@@ -55,6 +55,7 @@ function createWindow() {
       enableRemoteModule: true,
       nodeIntegrationInWorker: true,
       nodeIntegration: true, // https://github.com/electron/electron/issues/9920#issuecomment-575839738
+      contextIsolation: false,
     },
   });
 

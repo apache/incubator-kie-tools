@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<SelectField> tests <SelectField> - disabled rendering 1`] = `
+<div>
+  {"ref":{"id":"id","binding":"role"},"html":"&lt;div class=\\"form-group\\"&gt;\\n    &lt;label for=\\"id\\"&gt;Role&lt;/label&gt;\\n    &lt;select class=\\"form-control\\" id=\\"id\\" name=\\"role\\" disabled&gt;\\n\\n\\n    &lt;option value=\\"Developer\\" selected&gt;Developer&lt;/option&gt;\\n\\n    &lt;option value=\\"HR\\"&gt;HR&lt;/option&gt;\\n\\n    &lt;option value=\\"UX\\"&gt;UX&lt;/option&gt;\\n\\n&lt;/select&gt;\\n&lt;/div&gt;"}
+</div>
+`;
+
+exports[`<SelectField> tests <SelectField> - rendering 1`] = `
+<div>
+  {"ref":{"id":"id","binding":"role"},"html":"&lt;div class=\\"form-group\\"&gt;\\n    &lt;label for=\\"id\\"&gt;Role&lt;/label&gt;\\n    &lt;select class=\\"form-control\\" id=\\"id\\" name=\\"role\\"&gt;\\n\\n    &lt;option value=\\"\\"&gt;--- Choose a Role ---&lt;/option&gt;\\n\\n\\n    &lt;option value=\\"Developer\\" selected&gt;Developer&lt;/option&gt;\\n\\n    &lt;option value=\\"HR\\"&gt;HR&lt;/option&gt;\\n\\n    &lt;option value=\\"UX\\"&gt;UX&lt;/option&gt;\\n\\n&lt;/select&gt;\\n&lt;/div&gt;"}
+</div>
+`;
+
+exports[`<SelectField> tests <SelectField> - rendering multiple 1`] = `
+<div>
+  {"ref":{"id":"id","binding":"otherPositions"},"html":"&lt;div class=\\"form-group\\"&gt;\\n    &lt;label for=\\"id\\"&gt;Other Positions&lt;/label&gt;\\n    &lt;select class=\\"form-control\\" id=\\"id\\" name=\\"otherPositions\\" multiple&gt;\\n\\n\\n    &lt;option value=\\"Developer\\"&gt;Developer&lt;/option&gt;\\n\\n    &lt;option value=\\"HR\\"&gt;HR&lt;/option&gt;\\n\\n    &lt;option value=\\"UX\\"&gt;UX&lt;/option&gt;\\n\\n&lt;/select&gt;\\n&lt;/div&gt;"}
+</div>
+`;
+
+exports[`<SelectField> tests <SelectField> - rendering multiple disabled 1`] = `
+<div>
+  {"ref":{"id":"id","binding":"otherPositions"},"html":"&lt;div class=\\"form-group\\"&gt;\\n    &lt;label for=\\"id\\"&gt;Other Positions&lt;/label&gt;\\n    &lt;select class=\\"form-control\\" id=\\"id\\" name=\\"otherPositions\\" disabled multiple&gt;\\n\\n\\n    &lt;option value=\\"Developer\\"&gt;Developer&lt;/option&gt;\\n\\n    &lt;option value=\\"HR\\"&gt;HR&lt;/option&gt;\\n\\n    &lt;option value=\\"UX\\"&gt;UX&lt;/option&gt;\\n\\n&lt;/select&gt;\\n&lt;/div&gt;"}
+</div>
+`;

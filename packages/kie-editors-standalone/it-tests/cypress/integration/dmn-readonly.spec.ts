@@ -16,7 +16,7 @@
 
 describe("Dmn Read Only.", () => {
   before("Visit page", () => {
-    cy.visit("localhost:9001/dmn-read-only");
+    cy.visit("/dmn-read-only");
     cy.loadEditors(["dmn-read-only"]);
   });
 

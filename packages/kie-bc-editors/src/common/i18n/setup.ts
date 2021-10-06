@@ -15,7 +15,7 @@
  */
 
 import { en } from "./locales";
-import { I18nDefaults, I18nDictionaries } from "@kogito-tooling/i18n/dist/core";
+import { I18nDefaults, I18nDictionaries } from "@kie-tooling-core/i18n/dist/core";
 import { KieBcEditorsI18n } from "./KieBcEditorsI18n";
 
 export const kieBcEditorsI18nDefaults: I18nDefaults<KieBcEditorsI18n> = { locale: "en", dictionary: en };

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { backendI18nDefaults, backendI18nDictionaries } from "@kogito-tooling/backend/dist/i18n";
-import { registerTestScenarioRunnerCommand, VsCodeBackendProxy } from "@kogito-tooling/backend/dist/vscode";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
-import * as KogitoVsCode from "@kogito-tooling/vscode-extension";
-import { VsCodeWorkspaceApi } from "@kogito-tooling/workspace/dist/vscode";
-import { VsCodeNotificationsApi } from "@kogito-tooling/notifications/dist/vscode";
+import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tooling-core/backend/dist/i18n";
+import { registerTestScenarioRunnerCommand, VsCodeBackendProxy } from "@kie-tooling-core/backend/dist/vscode";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
+import * as KogitoVsCode from "@kie-tooling-core/vscode-extension";
+import { VsCodeWorkspaceApi } from "@kie-tooling-core/workspace/dist/vscode";
+import { VsCodeNotificationsApi } from "@kie-tooling-core/notifications/dist/vscode";
 import * as vscode from "vscode";
 
 let backendProxy: VsCodeBackendProxy;
@@ -47,7 +47,8 @@ export async function activate(context: vscode.ExtensionContext) {
     extensionName: "kie-group.vscode-extension-pack-kogito-kie-editors",
     context: context,
     viewType: "kieKogitoWebviewEditors",
-    getPreviewCommandId: "extension.kogito.getPreviewSvg",
+    generateSvgCommandId: "extension.kogito.getPreviewSvg",
+    silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvg",
     editorEnvelopeLocator: {
       targetOrigin: envelopeTargetOrigin,
       mapping: new Map([

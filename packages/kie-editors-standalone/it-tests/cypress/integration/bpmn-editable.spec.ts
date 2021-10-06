@@ -16,7 +16,7 @@
 
 describe("Bpmn Editable.", () => {
   before("Visit page", () => {
-    cy.visit("localhost:9001/bpmn-editable");
+    cy.visit("/bpmn-editable");
     cy.loadEditors(["bpmn-editable"]);
   });
 

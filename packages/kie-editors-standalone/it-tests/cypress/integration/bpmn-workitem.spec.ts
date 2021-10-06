@@ -19,7 +19,7 @@ describe("Bpmn Workitem E2E Test.", () => {
   const DATATYPE_SELECT_LOCATOR: string = "select[data-field='dataType']";
 
   before("Visit page", () => {
-    cy.visit("localhost:9001/bpmn-workitem");
+    cy.visit("/bpmn-workitem");
     cy.loadEditors(["bpmn-workitem"]);
   });
 
@@ -97,7 +97,6 @@ describe("Bpmn Workitem E2E Test.", () => {
             .find("[id='mainContainer']")
             .should("be.visible")
             .children(".row")
-            .should("have.length", 11)
             .then(($items) => {
               propertyItems = $items;
             });

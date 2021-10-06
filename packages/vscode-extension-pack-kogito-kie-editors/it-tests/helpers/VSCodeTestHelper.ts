@@ -19,6 +19,7 @@ import {
   ActivityBar,
   By,
   InputBox,
+  ModalDialog,
   SideBarView,
   until,
   ViewControl,
@@ -95,17 +96,13 @@ export default class VSCodeTestHelper {
    * @returns a promise that resolves to a SideBarView of the openned folder
    */
   public openFolder = async (absolutePath: string): Promise<SideBarView> => {
-    await sleep(5000);
-    await this.workbench.executeCommand("Extest: Open Folder");
-    const inputBox = await InputBox.create();
-    await inputBox.setText(absolutePath);
-    await inputBox.confirm();
+    await this.browser.openResources(absolutePath);
 
     const control = (await new ActivityBar().getViewControl("Explorer")) as ViewControl;
     this.sidebarView = await control.openView();
     assert.isTrue(await this.sidebarView.isDisplayed(), "Explorer side bar view was not opened");
 
-    this.workspaceSectionView = await this.sidebarView.getContent().getSection("Untitled (Workspace)");
+    this.workspaceSectionView = await this.sidebarView.getContent().getSection(this.RESOURCES_ROOT);
     return this.sidebarView;
   };
 
@@ -125,11 +122,10 @@ export default class VSCodeTestHelper {
    */
   public openFileFromSidebar = async (fileName: string, fileParentPath?: string): Promise<WebView> => {
     if (fileParentPath == undefined || fileParentPath == "") {
-      await this.workspaceSectionView.openItem(this.RESOURCES_ROOT, fileName);
+      await this.workspaceSectionView.openItem(fileName);
     } else {
       const pathPieces = fileParentPath.split("/");
-      pathPieces.unshift(this.RESOURCES_ROOT);
-      await this.workspaceSectionView.openItem(...pathPieces);
+      const viewItem = await this.workspaceSectionView.openItem(...pathPieces);
       // For some reason openItem() collapses the view it expands so we
       // click on src to reexpand the tree and click on desired item
       const srcItem = await this.workspaceSectionView.findItem(this.SRC_ROOT);
@@ -142,10 +138,6 @@ export default class VSCodeTestHelper {
       }
     }
 
-    // In cases where you have multiple KIE editors installed in VSCode
-    // uncomment this to run locally without issues.
-    // const input = await InputBox.create();
-    // await input.selectQuickPick('KIE Kogito Editors');
     const webview = new WebView(this.workbench.getEditorView(), By.linkText(fileName));
     await this.waitUntilKogitoEditorIsLoaded(webview);
     return webview;
@@ -160,6 +152,11 @@ export default class VSCodeTestHelper {
       await this.workbench.getEditorView().closeAllEditors();
     } catch (error) {
       // catch the error when there is nothing to close
+      // or the Save Dialog appears
+      const dialog = new ModalDialog();
+      if (dialog != null && (await dialog.isDisplayed())) {
+        await dialog.pushButton("Don't Save");
+      }
     }
   };
 
@@ -168,9 +165,9 @@ export default class VSCodeTestHelper {
    */
   public closeAllNotifications = async (): Promise<void> => {
     const activeNotifications = await this.workbench.getNotifications();
-    activeNotifications.forEach(async (notification) => {
+    for (const notification of activeNotifications) {
       await notification.dismiss();
-    });
+    }
   };
 
   /**
@@ -243,8 +240,33 @@ export default class VSCodeTestHelper {
 
     throw new Error(`'${command}' not found in prompt`);
   };
+
+  /**
+   * Switches provided webview's context to iframe#active-frame within it.
+   *
+   * @param webview
+   */
+  public switchWebviewToFrame = async (webview: WebView): Promise<void> => {
+    const driver = webview.getDriver();
+    await driver.wait(
+      until.elementLocated(By.className("webview ready")),
+      2000,
+      "No iframe.webview.ready that was ready was located in webview under 2 seconds." +
+        "This should not happen and is most probably issue of VSCode." +
+        "In case this happens investigate vscode or vscode-extension-tester dependency."
+    );
+    await driver.switchTo().frame(await driver.findElement(By.className("webview ready")));
+    await driver.wait(
+      until.elementLocated(By.id("active-frame")),
+      2000,
+      "No iframe#active-frame located in webview under 2 seconds." +
+        "This should not happen and is most probably issue of VSCode." +
+        "In case this happens investigate vscode or vscode-extension-tester dependency."
+    );
+    await driver.switchTo().frame(await driver.findElement(By.id("active-frame")));
+  };
 }
 
-function sleep(ms: number) {
+export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

@@ -15,7 +15,7 @@
  */
 
 import { useEffect } from "react";
-import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
 import { ChannelKeyboardEvent, KeyboardShortcutsEnvelopeApi } from "../api";
 
 function getChannelKeyboardEvent(keyboardEvent: KeyboardEvent): ChannelKeyboardEvent {

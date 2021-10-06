@@ -2,12 +2,11 @@
   "fixturesFolder": "fixtures",
   "integrationFolder": "integration",
   "pluginsFile": "plugins/index.ts",
-  "screenshotsFolder": "screenshots",
-  "videosFolder": "videos",
+  "screenshotsFolder": "../dist-it-tests/screenshots",
+  "videosFolder": "../dist-it-tests/videos",
   "supportFile": "support/index.ts",
-  "baseUrl": "http://localhost:9001",
   "chromeWebSecurity": false,
-  "video": false,
+  "video": true,
   "downloadsFolder": "downloads",
   "defaultCommandTimeout": 10000
 }

@@ -6,8 +6,8 @@ This package provides a type-safe Notifications library for a Typescript project
 
 Can be installed with `yarn` or `npm`:
 
-- `yarn add @kogito-tooling/notifications`
-- `npm install @kogito-tooling/notifications`
+- `yarn add @kie-tooling-core/notifications`
+- `npm install @kie-tooling-core/notifications`
 
 ## Usage
 
@@ -18,10 +18,10 @@ The library is separated into two submodules:
 
   to use the core:
 
-  - `import { NotificationsApi } from "@kogito-tooling/notifications/dist/api"`
-  - `import { Notification } from "@kogito-tooling/notifications/dist/api"`
-  - `import { NotificationSeverity } from "@kogito-tooling/notifications/dist/api"`
-  - `import { NotificationType } from "@kogito-tooling/notifications/dist/api"`
+  - `import { NotificationsApi } from "@kie-tooling-core/notifications/dist/api"`
+  - `import { Notification } from "@kie-tooling-core/notifications/dist/api"`
+  - `import { NotificationSeverity } from "@kie-tooling-core/notifications/dist/api"`
+  - `import { NotificationType } from "@kie-tooling-core/notifications/dist/api"`
 
 - vscode
 
@@ -30,7 +30,7 @@ The library is separated into two submodules:
   to use the vscode classes:
 
   ```ts
-  import { VsCodeNotificationsApi } from "@kogito-tooling/i18n/dist/react-components";
+  import { VsCodeNotificationsApi } from "@kie-tooling-core/i18n/dist/react-components";
 
   const api: NotificationsApi = new VsCodeNotificationsApi(workspaceApi, i18n);
   ```

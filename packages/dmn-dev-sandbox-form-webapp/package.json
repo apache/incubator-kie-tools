@@ -1,0 +1,45 @@
+{
+  "name": "@kogito-tooling/dmn-dev-sandbox-form-webapp",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "dependencies": {
+    "@kie-tooling-core/patternfly-base": "0.0.0",
+    "@kogito-tooling/form": "0.0.0",
+    "@kogito-tooling/i18n-common-dictionary": "0.0.0",
+    "@types/react-router": "^5.1.14",
+    "@types/react-router-dom": "^5.1.7",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
+  },
+  "scripts": {
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose\"",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "yarn lint && yarn test && rimraf dist && webpack",
+    "start": "webpack serve --host 0.0.0.0 --env dev"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "@babel/react"
+    ]
+  }
+}

@@ -20,7 +20,7 @@ import { useGitHubApi } from "./GitHubContext";
 import { Octokit } from "@octokit/rest";
 import { useGlobals } from "./GlobalContext";
 import { useChromeExtensionI18n } from "../../i18n";
-import { I18nHtml } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nHtml } from "@kie-tooling-core/i18n/dist/react-components";
 
 const GITHUB_OAUTH_TOKEN_SIZE = 40;
 

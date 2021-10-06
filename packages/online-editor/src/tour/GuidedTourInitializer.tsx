@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
@@ -23,11 +23,11 @@ import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { BookOpenIcon } from "@patternfly/react-icons/dist/js/icons/book-open-icon";
 import { TrophyIcon } from "@patternfly/react-icons/dist/js/icons/trophy-icon";
-import { File } from "@kogito-tooling/editor/dist/channel";
-import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/channel";
-import { DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/guided-tour/dist/api";
+import { File } from "@kie-tooling-core/editor/dist/channel";
+import { KogitoGuidedTour } from "@kie-tooling-core/guided-tour/dist/channel";
+import { DemoMode, SubTutorialMode, Tutorial } from "@kie-tooling-core/guided-tour/dist/api";
 import { OnlineI18n, useOnlineI18n } from "../common/i18n";
-import { I18nHtml } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nHtml } from "@kie-tooling-core/i18n/dist/react-components";
 
 export function useDmnTour(isEditorReady: boolean, file: File) {
   const { i18n } = useOnlineI18n();
@@ -46,10 +46,20 @@ export function useDmnTour(isEditorReady: boolean, file: File) {
       guidedTour.registerTutorial(tutorial);
       guidedTour.start(tutorial.label);
     }
-  }, [isEditorReady, file]);
+  }, [isEditorReady, file, i18n]);
+
+  return useCallback(() => {
+    const guidedTour = KogitoGuidedTour.getInstance();
+    guidedTour.teardown();
+  }, []);
 }
 
 function getOnlineEditorTutorial(i18n: OnlineI18n) {
+  function dismissAndStartDmnRunner(props: any) {
+    props.dismiss();
+    (document.getElementsByClassName("kogito--dmn-runner-button") as HTMLCollectionOf<HTMLButtonElement>)?.[0]?.click();
+  }
+
   return new Tutorial("DMN Online Editor Tutorial", [
     {
       position: "center",
@@ -61,12 +71,23 @@ function getOnlineEditorTutorial(i18n: OnlineI18n) {
             {i18n.guidedTour.init.title}
           </Title>
           <Text>{i18n.guidedTour.init.learnMore}</Text>
-          <Button onClick={props.nextStep} variant="primary">
-            {i18n.guidedTour.init.letsGo}
-          </Button>
+          <Text>{i18n.guidedTour.init.dmnRunnerIntro}</Text>
+
           <Text>{"  "}</Text>
+          <Button
+            ouiaId="dmn-guided-tour-skip-runner-start-button"
+            onClick={() => dismissAndStartDmnRunner(props)}
+            variant="link"
+          >
+            {i18n.guidedTour.init.skipTourAndUseDmnRunner}
+          </Button>
+          <br />
           <Button onClick={props.dismiss} variant="link">
             {i18n.guidedTour.init.skipTour}
+          </Button>
+          <Text>{"  "}</Text>
+          <Button onClick={props.nextStep} variant="primary">
+            {i18n.guidedTour.init.takeTour}
           </Button>
         </div>
       ),
@@ -93,7 +114,12 @@ function getOnlineEditorTutorial(i18n: OnlineI18n) {
             <ListItem>
               <I18nHtml>{i18n.guidedTour.end.nextSteps.secondStep}</I18nHtml>
             </ListItem>
-            <ListItem>{i18n.guidedTour.end.nextSteps.thirdStep}</ListItem>
+            <ListItem>
+              {i18n.guidedTour.end.nextSteps.thirdStep}{" "}
+              <Button isInline={true} onClick={() => dismissAndStartDmnRunner(props)} variant="link">
+                {i18n.guidedTour.end.nextSteps.startDmnRunner}
+              </Button>
+            </ListItem>
           </List>
           <Text className="pf-c-content--align-left">
             {`${i18n.guidedTour.end.findUsefulInfo} `}

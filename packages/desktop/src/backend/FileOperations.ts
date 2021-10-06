@@ -24,7 +24,7 @@ import { Menu } from "./Menu";
 import * as path from "path";
 import IpcMainEvent = Electron.IpcMainEvent;
 import { DesktopI18n } from "./i18n";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
 
 export class FileOperations {
   private readonly window: BrowserWindow;

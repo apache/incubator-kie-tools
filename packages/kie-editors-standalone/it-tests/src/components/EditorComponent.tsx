@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FileLoader, UploadedFile } from "./FileLoader";
-import { ContentType } from "@kogito-tooling/workspace/dist/api";
+import { ContentType } from "@kie-tooling-core/workspace/dist/api";
 import { Editor, StandaloneEditorApi } from "@kogito-tooling/kie-editors-standalone/dist/common/Editor";
 
 export interface Props {

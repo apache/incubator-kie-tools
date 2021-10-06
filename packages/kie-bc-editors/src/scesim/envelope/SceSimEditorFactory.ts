@@ -17,7 +17,7 @@
 import { SceSimEditor, SceSimEditorImpl } from "./SceSimEditor";
 import { getSceSimLanguageData, SceSimEditorChannelApi } from "../api";
 import { GwtEditorWrapperFactory } from "../../common";
-import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
+import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tooling-core/editor/dist/api";
 
 export class SceSimEditorFactory implements EditorFactory<SceSimEditor, SceSimEditorChannelApi> {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}

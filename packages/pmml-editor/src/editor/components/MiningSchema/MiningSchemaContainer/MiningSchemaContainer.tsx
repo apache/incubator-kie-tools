@@ -16,6 +16,7 @@ import { DataDictionary, FieldName, MiningField, MiningSchema } from "@kogito-to
 import NoMiningSchemaFieldsOptions from "../NoMiningSchemaFieldsOptions/NoMiningSchemaFieldsOptions";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
+import { Interaction } from "../../../types";
 
 interface MiningSchemaContainerProps {
   modelIndex: number;
@@ -32,6 +33,7 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
   const [fields, setFields] = useState<MiningSchemaOption[]>(prepareFieldOptions(dataDictionary, miningSchema));
   const [viewSection, setViewSection] = useState<MiningSchemaSection>("overview");
   const [editingField, setEditingField] = useState(-1);
+  const [miningFieldFocusIndex, setMiningFieldFocusIndex] = useState<number | undefined>(undefined);
 
   const handleAddFields = (fieldsToAdd: string[]) => {
     if (fieldsToAdd.length) {
@@ -39,8 +41,22 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
     }
   };
 
-  const handleDeleteField = (index: number) => {
+  const handleDeleteField = (index: number, interaction: Interaction) => {
     onDeleteField(index);
+    if (interaction === "mouse") {
+      //If the MiningField was deleted by clicking on the delete icon we need to blur
+      //the element otherwise the CSS :focus-within persists on the deleted element.
+      //See https://issues.redhat.com/browse/FAI-570 for the root cause.
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement?.blur();
+      }
+    } else if (interaction === "keyboard") {
+      //If the MiningField was deleted by pressing enter on the delete icon when focused
+      //we need to set the focus to the next MiningField. The index of the _next_ item
+      //is identical to the index of the deleted item.
+      setMiningFieldFocusIndex(index);
+    }
+    setEditingField(-1);
   };
 
   const handleEditField = (index: number) => {
@@ -92,8 +108,19 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
     [dataDictionary, miningSchema]
   );
 
+  //Set the focus on a MiningField as required
+  useEffect(() => {
+    if (miningFieldFocusIndex !== undefined) {
+      document.querySelector<HTMLElement>(`#mining-schema-field-n${miningFieldFocusIndex}`)?.focus();
+    }
+  }, [miningSchema, miningFieldFocusIndex]);
+
+  const isDisabled = useMemo(() => {
+    return fields.length === 0 || editingField !== -1;
+  }, [fields, editingField]);
+
   return (
-    <section className="mining-schema">
+    <section className="mining-schema" data-testid="mining-schema-container">
       <MiningSchemaContext.Provider value={editingField}>
         <SwitchTransition mode={"out-in"}>
           <CSSTransition
@@ -113,7 +140,7 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
                     </Title>
                   </StackItem>
                   <StackItem>
-                    <MiningSchemaAddFields options={fields} onAdd={handleAddFields} />
+                    <MiningSchemaAddFields options={fields} onAdd={handleAddFields} isDisabled={isDisabled} />
                   </StackItem>
                   {validations.length > 0 && (
                     <section className="mining-schema__validation-alert">

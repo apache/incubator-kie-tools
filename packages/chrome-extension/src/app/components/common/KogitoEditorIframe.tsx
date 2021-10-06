@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/workspace/dist/api";
-import { EmbeddedEditor, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
-import { ChannelType } from "@kogito-tooling/editor/dist/api";
+import { ResourceContentRequest, ResourceListRequest } from "@kie-tooling-core/workspace/dist/api";
+import { EmbeddedEditor, useEditorRef } from "@kie-tooling-core/editor/dist/embedded";
+import { ChannelType } from "@kie-tooling-core/editor/dist/api";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useImperativeHandle, useMemo } from "react";
 import { runScriptOnPage } from "../../utils";

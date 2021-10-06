@@ -53,12 +53,14 @@ export const GenericSelector = (props: GenericSelectorProps) => {
       isOpen={isOpen}
       menuAppendTo={() => document.body}
       isDisabled={props.isDisabled ?? false}
+      ouiaId={props.id}
     >
       {props.items.map((item: string | GenericSelectorOption, index: number) => (
         <SelectOption
           key={index}
           value={typeof item === "string" ? item : item.value}
           isDisabled={typeof item === "string" ? false : item.isDisabled}
+          data-ouia-component-type="select-option"
         />
       ))}
     </Select>

@@ -17,7 +17,7 @@
 import { EditorInitArgs } from "./KogitoEditorEnvelopeApi";
 import { Editor } from "./Editor";
 import { KogitoEditorEnvelopeContextType } from "./KogitoEditorEnvelopeContext";
-import { ApiDefinition } from "@kogito-tooling/envelope-bus/dist/api";
+import { ApiDefinition } from "@kie-tooling-core/envelope-bus/dist/api";
 import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
 
 /**

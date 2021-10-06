@@ -17,10 +17,15 @@
 import * as React from "react";
 import { fireEvent, render } from "@testing-library/react";
 import { EditorToolbar } from "../../editor/EditorToolbar";
-import { EMPTY_FILE_BPMN, EMPTY_FILE_DMN, EMPTY_FILE_PMML, StateControl } from "@kogito-tooling/editor/dist/channel";
-import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../testing_utils";
+import { EMPTY_FILE_BPMN, EMPTY_FILE_DMN, EMPTY_FILE_PMML, StateControl } from "@kie-tooling-core/editor/dist/channel";
+import {
+  usingTestingGlobalContext,
+  usingTestingKieToolingExtendedServicesContext,
+  usingTestingOnlineI18nContext,
+} from "../testing_utils";
 import { GithubService } from "../../common/GithubService";
 import { EditorPage } from "../../editor/EditorPage";
+import { KieToolingExtendedServicesStatus } from "../../editor/KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 
 const onFileNameChanged = jest.fn((file: string) => null);
 const enterFullscreen = jest.fn(() => null);
@@ -112,6 +117,33 @@ describe("EditorToolbar", () => {
       );
 
       expect(queryByTestId("is-dirty-indicator")).toBeNull();
+      expect(getByTestId("toolbar-title")).toMatchSnapshot();
+    });
+
+    test("should show the Read-only indicator when readonly is true", () => {
+      const { queryByTestId, getByTestId } = render(
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(
+            <EditorToolbar
+              onFullScreen={enterFullscreen}
+              onSave={requestSave}
+              onDownload={requestDownload}
+              onClose={close}
+              onFileNameChanged={onFileNameChanged}
+              onCopyContentToClipboard={requestCopyContentToClipboard}
+              isPageFullscreen={fullscreen}
+              onPreview={requestPreview}
+              onSetGitHubToken={requestSetGitHubToken}
+              onGistIt={requestGistIt}
+              onEmbed={requestEmbed}
+              isEdited={false}
+            />,
+            { readonly: true }
+          ).wrapper
+        ).wrapper
+      );
+
+      expect(queryByTestId("is-readonly-indicator")).toBeVisible();
       expect(getByTestId("toolbar-title")).toMatchSnapshot();
     });
   });
@@ -233,6 +265,90 @@ describe("EditorToolbar", () => {
       expect(getByTestId("share-menu")).toBeVisible();
       fireEvent.click(getByTestId("share-menu"));
       expect(queryByTestId("dropdown-embed")).toBeNull();
+    });
+  });
+
+  describe("KIE Tooling Extended Services", () => {
+    const toolbar = (
+      <EditorToolbar
+        onFullScreen={enterFullscreen}
+        onSave={requestSave}
+        onDownload={() => null}
+        onClose={close}
+        onFileNameChanged={onFileNameChanged}
+        onCopyContentToClipboard={requestCopyContentToClipboard}
+        isPageFullscreen={fullscreen}
+        onPreview={requestPreview}
+        onSetGitHubToken={requestSetGitHubToken}
+        onGistIt={requestGistIt}
+        onEmbed={requestEmbed}
+        isEdited={false}
+      />
+    );
+
+    it("should include buttons when dmn", async () => {
+      const { getByTestId } = render(
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(usingTestingKieToolingExtendedServicesContext(toolbar).wrapper).wrapper
+        ).wrapper
+      );
+
+      expect(getByTestId("kie-tooling-extended-services-button")).toBeVisible();
+      expect(getByTestId("dmn-dev-sandbox-button")).toBeVisible();
+      expect(getByTestId("dmn-runner-button")).toBeVisible();
+    });
+
+    it("should not include buttons when services UNAVAILABLE", async () => {
+      const { queryByTestId } = render(
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(
+            usingTestingKieToolingExtendedServicesContext(toolbar, {
+              status: KieToolingExtendedServicesStatus.UNAVAILABLE,
+            }).wrapper
+          ).wrapper
+        ).wrapper
+      );
+
+      expect(queryByTestId("kie-tooling-extended-services-button")).toBeNull();
+      expect(queryByTestId("dmn-dev-sandbox-button")).toBeNull();
+      expect(queryByTestId("dmn-runner-button")).toBeNull();
+    });
+
+    it("should be running", async () => {
+      const { getByTestId } = render(
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(
+            usingTestingKieToolingExtendedServicesContext(toolbar, { status: KieToolingExtendedServicesStatus.RUNNING })
+              .wrapper
+          ).wrapper
+        ).wrapper
+      );
+
+      expect(getByTestId("connected-icon")).toBeVisible();
+    });
+
+    it("should not be running", async () => {
+      const { getByTestId } = render(
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(
+            usingTestingKieToolingExtendedServicesContext(toolbar, { status: KieToolingExtendedServicesStatus.STOPPED })
+              .wrapper
+          ).wrapper
+        ).wrapper
+      );
+
+      expect(getByTestId("disconnected-icon")).toBeVisible();
+    });
+
+    it("should be outdated", async () => {
+      const { getByTestId } = render(
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(usingTestingKieToolingExtendedServicesContext(toolbar, { outdated: true }).wrapper)
+            .wrapper
+        ).wrapper
+      );
+
+      expect(getByTestId("outdated-icon")).toBeVisible();
     });
   });
 });

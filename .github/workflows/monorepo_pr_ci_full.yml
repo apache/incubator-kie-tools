@@ -1,0 +1,94 @@
+name: "CI :: Monorepo (full)"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: "**"
+    paths-ignore:
+      - "packages/**"
+
+concurrency:
+  group: ${{ github.event.pull_request && format('monorepo-pr-ci-full-{0}', github.event.pull_request.number) || 'monorepo-pr-ci-full-push-main' }}
+  cancel-in-progress: true
+
+jobs:
+  monorepo-pr-ci-full:
+    if: github.event.pull_request.draft == false
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ github.base_ref }}
+
+      - name: "Cache Maven packages"
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-ci-full-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-ci-full-m2
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge Changes"
+        if: ${{ github.event.pull_request }}
+        shell: bash
+        run: |
+          user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
+          git remote add $user https://github.com/$user/kogito-tooling.git
+          git fetch $user
+          git merge --squash $user/${{ github.head_ref }}
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ${{ matrix.os }}
+
+      - name: "Build"
+        env:
+          WEBPACK__minimize: "false"
+          WEBPACK__tsLoaderTranspileOnly: "false"
+          KOGITO_TOOLING_BUILD_lint: "true"
+          KOGITO_TOOLING_BUILD_test: "true"
+          KOGITO_TOOLING_BUILD_testIT: ${{ matrix.os == 'ubuntu-latest' }}
+          KOGITO_TOOLING_BUILD_docker: "true"
+          KOGITO_TOOLING_BUILD_examples: "true"
+          DISPLAY: ":99.0"
+          START_SERVER_AND_TEST_INSECURE: "true"
+        run: |
+          lerna run build:prod --stream --concurrency 1
+
+      - name: "Check generated resources (you should commit those!)"
+        shell: bash
+        run: |
+          git diff
+          [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
+
+      - name: "Upload build artifacts"
+        uses: actions/upload-artifact@v2
+        if: always() && !cancelled()
+        with:
+          name: artifacts-${{ matrix.os }}
+          if-no-files-found: warn
+          path: |
+            packages/*/dist
+            packages/hub/out/*.zip
+            packages/desktop/out/*.zip
+            !packages/hub/dist
+            !packages/desktop/dist
+
+      - name: "Upload IT Tests artifacts"
+        uses: actions/upload-artifact@v2
+        if: always() && !cancelled()
+        with:
+          name: it-tests-artifacts-${{ matrix.os }}
+          if-no-files-found: warn
+          path: |
+            packages/*/dist-it-tests

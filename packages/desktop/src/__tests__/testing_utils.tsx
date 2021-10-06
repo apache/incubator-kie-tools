@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import { GlobalContext, GlobalContextType } from "../webview/common/GlobalContext";
-import { EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
-import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n/dist/react-components";
+import { EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
+import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tooling-core/i18n/dist/react-components";
 import { desktopI18nDefaults, desktopI18nDictionaries, DesktopI18nContext } from "../webview/common/i18n";
 import { DesktopI18n } from "../webview/common/i18n";
 

@@ -16,10 +16,10 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { I18nContextType } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nContextType } from "@kie-tooling-core/i18n/dist/react-components";
 import { en } from "./locales";
 import { HubI18n } from "./HubI18n";
-import { I18nDefaults, I18nDictionaries } from "@kogito-tooling/i18n/dist/core";
+import { I18nDefaults, I18nDictionaries } from "@kie-tooling-core/i18n/dist/core";
 
 export const hubI18nDefaults: I18nDefaults<HubI18n> = { locale: "en", dictionary: en };
 export const hubI18nDictionaries: I18nDictionaries<HubI18n> = new Map([["en", en]]);

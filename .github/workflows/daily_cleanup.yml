@@ -15,7 +15,7 @@ jobs:
         os: [ubuntu-latest]
 
     steps:
-      - name: Clone kogito-online-ci
+      - name: "Clone kogito-online-ci"
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
@@ -24,7 +24,7 @@ jobs:
           ref: gh-pages
           fetch-depth: 0
 
-      - name: Remove builds older than 14 days
+      - name: "Remove builds older than 14 days"
         id: remove_build_artifacts
         run: |
           git config --global user.email "kietooling@gmail.com"

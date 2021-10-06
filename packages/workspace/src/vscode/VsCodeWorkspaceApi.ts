@@ -22,15 +22,15 @@ import {
   ResourcesList,
   WorkspaceApi,
 } from "../api";
-import * as fs from "fs";
 import * as vscode from "vscode";
 
 export class VsCodeWorkspaceApi implements WorkspaceApi {
   public kogitoWorkspace_openFile(path: string) {
-    if (!fs.existsSync(path)) {
+    try {
+      vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(path));
+    } catch (e) {
       throw new Error(`Cannot open file at: ${path}.`);
     }
-    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(path));
   }
 
   public async kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent> {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback } from "react";
+import { BaseSyntheticEvent, useCallback } from "react";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import {
   AttributeLabels,
@@ -27,6 +27,7 @@ import { IndexedCharacteristic } from "../organisms";
 import "./CharacteristicsTableRow.scss";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
+import { Interaction } from "../../../types";
 
 interface CharacteristicsTableRowProps {
   modelIndex: number;
@@ -36,7 +37,7 @@ interface CharacteristicsTableRowProps {
   scorecardBaselineScore: number | undefined;
   dataFields: DataField[];
   onEdit: () => void;
-  onDelete: () => void;
+  onDelete: (interaction: Interaction) => void;
 }
 
 export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => {
@@ -51,18 +52,25 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
     onDelete,
   } = props;
 
+  const handleEdit = (event: BaseSyntheticEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    onEdit();
+  };
+
   return (
     <article
+      id={`characteristic-n${characteristicIndex}`}
+      data-testid={`characteristic-n${characteristicIndex}`}
       className={"editable-item__inner"}
-      tabIndex={0}
-      onClick={onEdit}
+      onClick={handleEdit}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
-          e.preventDefault();
-          e.stopPropagation();
-          onEdit();
+          handleEdit(e);
         }
       }}
+      data-ouia-component-type="characteristic-item"
+      tabIndex={0}
     >
       <Split hasGutter={true} style={{ height: "100%" }}>
         <SplitItem>
@@ -85,7 +93,7 @@ export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => 
           />
         </SplitItem>
         <SplitItem>
-          <CharacteristicsTableAction onDelete={onDelete} />
+          <CharacteristicsTableAction index={characteristicIndex} onDelete={onDelete} />
         </SplitItem>
       </Split>
     </article>

@@ -1,6 +1,6 @@
 {
-  "name": "@kogito-tooling/run-script-if",
-  "version": "0.10.0",
+  "name": "@kie-tooling-core/run-script-if",
+  "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
   "files": [
@@ -11,7 +11,17 @@
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
+  "scripts": {
+    "write-readme:darwin:linux": "echo '```' > README.md && run-script-if --help >> README.md && echo '```' >> README.md",
+    "write-readme:win32": "echo 'Nothing to do.'",
+    "write-readme": "run-script-os",
+    "build:dev": "yarn write-readme",
+    "build:prod": "yarn write-readme"
+  },
   "dependencies": {
     "yargs": "^17.0.1"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
   }
 }

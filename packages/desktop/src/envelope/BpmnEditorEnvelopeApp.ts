@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
+import * as EditorEnvelope from "@kie-tooling-core/editor/dist/envelope";
 import { BpmnEditorChannelApi, BpmnEditorEnvelopeApi } from "@kogito-tooling/kie-bc-editors/dist/bpmn/api";
 import { BpmnEditor, BpmnEditorEnvelopeApiImpl } from "@kogito-tooling/kie-bc-editors/dist/bpmn/envelope";
 

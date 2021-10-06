@@ -1,8 +1,0 @@
-node_modules/
-dist/
-coverage/
-target/
-.idea
-it-tests/**/videos
-it-tests/**/screenshots
-it-tests/**/results

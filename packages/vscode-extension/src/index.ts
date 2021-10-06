@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { VsCodeBackendProxy } from "@kogito-tooling/backend/dist/vscode";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
-import { VsCodeWorkspaceApi } from "@kogito-tooling/workspace/dist/vscode";
+import { VsCodeBackendProxy } from "@kie-tooling-core/backend/dist/vscode";
+import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
+import { VsCodeWorkspaceApi } from "@kie-tooling-core/workspace/dist/vscode";
 import * as vscode from "vscode";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { generateSvg } from "./generateSvg";
@@ -25,7 +25,7 @@ import { vsCodeI18nDefaults, vsCodeI18nDictionaries } from "./i18n";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorWebviewProvider } from "./KogitoEditorWebviewProvider";
-import { VsCodeNotificationsApi } from "@kogito-tooling/notifications/dist/vscode";
+import { VsCodeNotificationsApi } from "@kie-tooling-core/notifications/dist/vscode";
 
 /**
  * Starts a Kogito extension.
@@ -40,7 +40,8 @@ export async function startExtension(args: {
   extensionName: string;
   context: vscode.ExtensionContext;
   viewType: string;
-  getPreviewCommandId: string;
+  generateSvgCommandId: string;
+  silentlyGenerateSvgCommandId: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   backendProxy: VsCodeBackendProxy;
 }) {
@@ -79,6 +80,24 @@ export async function startExtension(args: {
   );
 
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(args.getPreviewCommandId, () => generateSvg(editorStore, workspaceApi, vsCodeI18n))
+    vscode.commands.registerCommand(args.generateSvgCommandId, () =>
+      generateSvg({
+        editorStore: editorStore,
+        workspaceApi: workspaceApi,
+        vsCodeI18n: vsCodeI18n,
+        displayNotification: true,
+      })
+    )
+  );
+
+  args.context.subscriptions.push(
+    vscode.commands.registerCommand(args.silentlyGenerateSvgCommandId, () =>
+      generateSvg({
+        editorStore: editorStore,
+        workspaceApi: workspaceApi,
+        vsCodeI18n: vsCodeI18n,
+        displayNotification: false,
+      })
+    )
   );
 }

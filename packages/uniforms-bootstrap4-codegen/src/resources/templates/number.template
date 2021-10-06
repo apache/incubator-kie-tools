@@ -1,0 +1,12 @@
+<input
+    type="number"
+    class="form-control"
+    id="<%=props.id%>"
+    name="<%=props.name%>"
+    <%=props.autoComplete==='off' ? ' autoComplete="off"' : ''%>
+    <%=props.disabled ? "disabled" : ""%>
+    <%=props.placeholder ? `placeholder="${props.placeholder}"` : ''%>
+    <%=props.min ? `min="${props.min}"` : ''%>
+    <%=props.max ? `max="${props.max}"` : ''%>
+    <%=props.step ? `step="${props.step}"` : ''%>
+    value="<%=props.value%>"/>

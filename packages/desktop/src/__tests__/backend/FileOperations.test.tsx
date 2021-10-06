@@ -22,7 +22,7 @@ import { Menu } from "../../backend/Menu";
 import { FileOperations } from "../../backend/FileOperations";
 import { showSaveDialogMock } from "../../../__mocks__/electron";
 import { desktopI18nDefaults, desktopI18nDictionaries } from "../../backend/i18n";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
 
 beforeEach(() => {
   document.execCommand = () => true;

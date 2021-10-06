@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { BackendManagerService } from "@kogito-tooling/backend/dist/api";
-import { BackendExtensionApi } from "@kogito-tooling/backend/dist/channel-api";
-import { DefaultHttpBridge } from "@kogito-tooling/backend/dist/http-bridge";
-import { QuarkusLocalServer } from "@kogito-tooling/backend/dist/node";
-import { VsCodeTestScenarioRunnerService } from "@kogito-tooling/backend/dist/vscode";
+import { BackendManagerService } from "@kie-tooling-core/backend/dist/api";
+import { BackendExtensionApi } from "@kie-tooling-core/backend/dist/channel-api";
+import { DefaultHttpBridge } from "@kie-tooling-core/backend/dist/http-bridge";
+import { QuarkusLocalServer } from "@kie-tooling-core/backend/dist/node";
+import { VsCodeTestScenarioRunnerService } from "@kie-tooling-core/backend/dist/vscode";
 import * as path from "path";
 import * as vscode from "vscode";
 

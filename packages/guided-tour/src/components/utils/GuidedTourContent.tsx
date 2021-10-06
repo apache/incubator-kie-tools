@@ -33,7 +33,7 @@ import { NavigationControls } from "..";
 import { CurrentTutorialContext } from "../../contexts";
 import { Step } from "../../api";
 import { useGuidedTourI18n } from "../../i18n";
-import { I18nHtml } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nHtml } from "@kie-tooling-core/i18n/dist/react-components";
 
 function renderContent(
   content: React.ReactNode | ((props: object) => React.ReactNode) | string,

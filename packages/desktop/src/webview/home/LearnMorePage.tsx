@@ -15,25 +15,16 @@
  */
 
 import * as React from "react";
-import {
-  PageSection,
-  Grid,
-  Card,
-  Title,
-  TextContent,
-  CardFooter,
-  CardHeader,
-  CardBody,
-  Stack,
-  SplitItem,
-  Split,
-  StackItem,
-  Text,
-  TextVariants,
-} from "@patternfly/react-core";
-import { Button } from "@patternfly/react-core/dist/js/components/Button/Button";
 import { useCallback } from "react";
-import { ExternalLinkAltIcon } from "@patternfly/react-icons";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Card, CardBody, CardFooter, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { Grid } from "@patternfly/react-core/dist/js/layouts/Grid";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import * as electron from "electron";
 import { useDesktopI18n } from "../common/i18n";
 

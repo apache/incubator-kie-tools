@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import {
   Dropdown,
@@ -22,22 +23,25 @@ import {
   DropdownPosition,
   DropdownToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import {
   PageHeader,
   PageHeaderTools,
   PageHeaderToolsGroup,
   PageHeaderToolsItem,
 } from "@patternfly/react-core/dist/js/components/Page";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
-import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
+import { GlobalContext } from "../common/GlobalContext";
 import { useOnlineI18n } from "../common/i18n";
+import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/KieToolingExtendedServicesButtons";
+import { useKieToolingExtendedServices } from "./KieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
+import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 
 interface Props {
   onFileNameChanged: (fileName: string, fileExtension: string) => void;
@@ -56,6 +60,7 @@ interface Props {
 
 export function EditorToolbar(props: Props) {
   const context = useContext(GlobalContext);
+  const kieToolingExtendedServices = useKieToolingExtendedServices();
   const location = useLocation();
   const [fileName, setFileName] = useState(context.file.fileName);
   const [isShareMenuOpen, setShareMenuOpen] = useState(false);
@@ -111,7 +116,7 @@ export function EditorToolbar(props: Props) {
         {i18n.editorToolbar.enterFullScreenView}
       </DropdownItem>,
     ],
-    [i18n, context, props.onClose, props.onFullScreen]
+    [i18n, context, props]
   );
 
   const includeDownloadSVGDropdownItem = useMemo(() => {
@@ -171,6 +176,7 @@ export function EditorToolbar(props: Props) {
             key={`dropdown-${dropdownId}-export-gist`}
             content={<div>{i18n.editorToolbar.gistItTooltip}</div>}
             trigger={!context.githubService.isAuthenticated() ? "mouseenter click" : ""}
+            position="left"
           >
             <DropdownItem
               data-testid={"gist-it-button"}
@@ -210,6 +216,22 @@ export function EditorToolbar(props: Props) {
       logoProps={logoProps}
       headerTools={
         <PageHeaderTools>
+          {kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.UNAVAILABLE && (
+            <PageHeaderToolsGroup>
+              <PageHeaderToolsItem
+                visibility={{
+                  default: "hidden",
+                  "2xl": "visible",
+                  xl: "visible",
+                  lg: "hidden",
+                  md: "hidden",
+                  sm: "hidden",
+                }}
+              >
+                <KieToolingExtendedServicesButtons />
+              </PageHeaderToolsItem>
+            </PageHeaderToolsGroup>
+          )}
           <PageHeaderToolsGroup>
             <PageHeaderToolsItem
               visibility={{
@@ -229,7 +251,7 @@ export function EditorToolbar(props: Props) {
                 className={"kogito--editor__toolbar button"}
                 ouiaId="save-and-download-button"
               >
-                {i18n.editorToolbar.saveAndDownload}
+                {i18n.terms.save}
               </Button>
             </PageHeaderToolsItem>
           </PageHeaderToolsGroup>
@@ -325,6 +347,7 @@ export function EditorToolbar(props: Props) {
                   <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
                     {...shareItems("sm")}
                   </DropdownGroup>,
+                  <KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />,
                 ]}
                 position={DropdownPosition.right}
               />
@@ -334,28 +357,53 @@ export function EditorToolbar(props: Props) {
       }
       topNav={
         <>
-          <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
-            <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
-              {fileName}
-            </Title>
-            <TextInput
-              value={fileName}
-              type={"text"}
-              aria-label={"Edit file name"}
-              className={"kogito--editor__toolbar-title"}
-              onChange={setFileName}
-              onKeyUp={onNameInputKeyUp}
-              onBlur={saveNewName}
-            />
-          </div>
-          {props.isEdited && (
-            <span
-              aria-label={"File was edited"}
-              className={"kogito--editor__toolbar-edited"}
-              data-testid="is-dirty-indicator"
-            >
-              {` - ${i18n.terms.edited}`}
-            </span>
+          {!context.readonly && (
+            <>
+              <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
+                <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
+                  {fileName}
+                </Title>
+                <TextInput
+                  value={fileName}
+                  type={"text"}
+                  aria-label={"Edit file name"}
+                  className={"kogito--editor__toolbar-title"}
+                  onChange={setFileName}
+                  onKeyUp={onNameInputKeyUp}
+                  onBlur={saveNewName}
+                />
+              </div>
+              {props.isEdited && (
+                <span
+                  aria-label={"File was edited"}
+                  className={"kogito--editor__toolbar-edited"}
+                  data-testid="is-dirty-indicator"
+                >
+                  {` - ${i18n.terms.edited}`}
+                </span>
+              )}
+            </>
+          )}
+          {context.readonly && (
+            <>
+              <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container readonly"}>
+                <Title
+                  className="kogito--editor__toolbar-title"
+                  aria-label={"File name"}
+                  headingLevel={"h3"}
+                  size={"2xl"}
+                >
+                  {fileName}
+                </Title>
+              </div>
+              <span
+                aria-label={"File is readonly"}
+                className={"kogito--editor__toolbar-edited"}
+                data-testid="is-readonly-indicator"
+              >
+                {` - ${i18n.terms.readonly}`}
+              </span>
+            </>
           )}
         </>
       }

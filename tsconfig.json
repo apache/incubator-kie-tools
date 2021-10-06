@@ -5,12 +5,14 @@
     "target": "es5",
     "declaration": true,
     "declarationMap": true,
+    "sourceMap": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "removeComments": true,
     "strictNullChecks": true,
     "experimentalDecorators": true,
     "downlevelIteration": true,
+    "skipLibCheck": true,
     "jsx": "react-jsx"
   }
 }

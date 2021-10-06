@@ -189,11 +189,18 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                       });
                     }
                   }}
+                  data-ouia-component-type="set-output-field-name"
                 />
               </FormGroup>
             </SplitItem>
             <SplitItem isFilled={true}>
-              <FormGroup label="Data type" fieldId="output-dataType-helper" style={{ width: "12em" }} isRequired={true}>
+              <FormGroup
+                label="Data type"
+                fieldId="output-dataType-helper"
+                style={{ width: "12em" }}
+                isRequired={true}
+                data-ouia-component-type="select-output-field-type"
+              >
                 <Select
                   id="output-dataType"
                   name="output-dataType"
@@ -215,7 +222,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   menuAppendTo={"parent"}
                 >
                   {dataTypes.map((dt, _index) => (
-                    <SelectOption key={_index} value={dt} />
+                    <SelectOption key={_index} value={dt} data-ouia-component-type="select-option" />
                   ))}
                 </Select>
               </FormGroup>

@@ -17,9 +17,9 @@
 import * as React from "react";
 import { useContext } from "react";
 import { en } from "./locales";
-import { I18nDefaults, I18nDictionaries } from "@kogito-tooling/i18n/dist/core";
+import { I18nDefaults, I18nDictionaries } from "@kie-tooling-core/i18n/dist/core";
 import { EditorEnvelopeI18n } from "./EditorEnvelopeI18n";
-import { I18nContextType } from "@kogito-tooling/i18n/dist/react-components";
+import { I18nContextType } from "@kie-tooling-core/i18n/dist/react-components";
 
 export const editorEnvelopeI18nDefaults: I18nDefaults<EditorEnvelopeI18n> = { locale: "en", dictionary: en };
 export const editorEnvelopeI18nDictionaries: I18nDictionaries<EditorEnvelopeI18n> = new Map([["en", en]]);

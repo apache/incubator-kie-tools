@@ -14,58 +14,6 @@
  * limitations under the License.
  */
 
-declare namespace Cypress {
-  interface Chainable {
-    /**
-     * Returns DOM Element for button which open new file.
-     */
-    newButtonPMML(): Chainable<JQuery<HTMLBodyElement>>;
-
-    /**
-     * Return DOM Element for button which upload new file.
-     */
-    uploadButtonPMML(): Chainable<JQuery<HTMLBodyElement>>;
-
-    /**
-     * Return DOM Element for button which open Data Dictionary Editor.
-     */
-    buttonDataDictionary(): Chainable<JQuery<HTMLBodyElement>>;
-
-    /**
-     * Return DOM Element for button which open Mining Schema Editor.
-     */
-
-    buttonMiningSchema(): Chainable<JQuery<HTMLBodyElement>>;
-
-    /**
-     * Return DOM Element for button which open Outputs Editor.
-     */
-
-    buttonOutputs(): Chainable<JQuery<HTMLBodyElement>>;
-
-    /**
-     * Return DOM Element for button which invoke Undo operation.
-     */
-    buttonUndo(): Chainable<JQuery<HTMLBodyElement>>;
-
-    /**
-     * Return DOM Element for button which invoke Redo operation.
-     */
-
-    buttonRedo(): Chainable<JQuery<HTMLBodyElement>>;
-
-    /**
-     * Return DOM Element for button which open PMML Source Editor.
-     */
-    buttonPMML(): Chainable<JQuery<HTMLBodyElement>>;
-
-    /**
-     * Return DOM Element for button which validate PMML.
-     */
-    buttonValidation(): Chainable<JQuery<HTMLBodyElement>>;
-  }
-}
-
 Cypress.Commands.add("newButtonPMML", () => {
   return cy.get("[data-ouia-component-id='new-button']");
 });
@@ -100,4 +48,19 @@ Cypress.Commands.add("buttonPMML", () => {
 
 Cypress.Commands.add("buttonValidation", () => {
   return cy.get("[data-ouia-component-id='validate-button']");
+});
+
+Cypress.Commands.add("ouiaId", (valueStr) => {
+  return cy.get(`[data-ouia-component-id='${valueStr}']`);
+});
+
+Cypress.Commands.add("ouiaType", (valueStr) => {
+  return cy.get(`[data-ouia-component-type='${valueStr}']`);
+});
+
+Cypress.Commands.add("editorShouldContains", (fileName) => {
+  cy.fixture(fileName).then(($fileContent) => {
+    const text = $fileContent.toString().replaceAll("\n", "").replaceAll("\r", "");
+    cy.ouiaType("source-code").should("to.have.text", text);
+  });
 });

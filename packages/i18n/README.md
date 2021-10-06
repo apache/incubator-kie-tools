@@ -6,8 +6,8 @@ This package provides a type-safe i18n library for a Typescript project.
 
 Can be installed with `yarn` or `npm`:
 
-- `yarn add @kogito-tooling/i18n`
-- `npm install @kogito-tooling/i18n`
+- `yarn add @kie-tooling-core/i18n`
+- `npm install @kie-tooling-core/i18n`
 
 ## Usage
 
@@ -16,13 +16,13 @@ The library is separated into two submodules:
 - core
   All core functionalities, which includes the types, and the I18n class.
   to use the core:
-  `import * as I18nCore from "@kogito-tooling/i18n/dist/core"`
+  `import * as I18nCore from "@kie-tooling-core/i18n/dist/core"`
 - react-components
 
   All components and types necessaries to integrate on your React project.
 
   to use the React components:
-  `import * as I18nReact from "@kogito-tooling/i18n/dist/react-components"`
+  `import * as I18nReact from "@kie-tooling-core/i18n/dist/react-components"`
 
 ## Examples
 
@@ -33,7 +33,7 @@ The library is separated into two submodules:
 
 ### Class
 
-The core class `I18n` is under the `core` submodule "@kogito-tooling/i18n/dist/core".
+The core class `I18n` is under the `core` submodule "@kie-tooling-core/i18n/dist/core".
 
 - Constructor
 

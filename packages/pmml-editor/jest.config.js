@@ -16,16 +16,16 @@
 
 module.exports = {
   reporters: ["default"],
-  moduleDirectories: ["node_modules", "src"],
+  moduleDirectories: ["node_modules"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
-  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
+  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
   transform: {
     "^.+\\.jsx?$": "babel-jest",
     "^.+\\.tsx?$": "ts-jest",
   },
   moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
-    "monaco-editor": "<rootDir>/__mocks__/monacoMock.js",
+    "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMock.js",
+    "monaco-editor": "<rootDir>/tests/__mocks__/monacoMock.js",
   },
+  setupFilesAfterEnv: ["./tests/jest.setup.ts"],
 };

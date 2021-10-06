@@ -1,12 +1,19 @@
+## ci
+!/.ci
+
+## node
 **/node_modules/
 **/dist/
+**/dist-dev/
+**/dist-tests/
+**/dist-it-tests/
+**/it-tests-tmp/
 **/coverage/
 **/target/
 **/out/
 **/.idea/
 **/.DS_Store
 *.log
-**/.vscode/
 .classpath
 .project
 **/.settings/
@@ -39,6 +46,23 @@ package-lock.json
 
 ## vscode-*
 **/.vscode-test/
+**/.vscode-test-web/
 *.vsix
 *.dockerimage
 **/test-resources/
+**/vscode*-tmp
+
+**/mvnw
+**/mvnw.cmd
+**/.mvn
+
+# Eclipse, Netbeans and IntelliJ files
+**/nbproject
+**/*.ipr
+**/*.iws
+**/*.iml
+**/.classpath
+**/.project
+**/.settings
+
+**/jitexecutor

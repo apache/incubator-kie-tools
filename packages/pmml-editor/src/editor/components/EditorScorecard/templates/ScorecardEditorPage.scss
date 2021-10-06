@@ -101,4 +101,16 @@
   &:last-child {
     margin-bottom: 0 !important;
   }
+
+  &__delete {
+    visibility: hidden;
+  }
+
+  &:focus-within .editable-item__delete {
+    visibility: visible;
+  }
+
+  &:hover .editable-item__delete {
+    visibility: visible;
+  }
 }

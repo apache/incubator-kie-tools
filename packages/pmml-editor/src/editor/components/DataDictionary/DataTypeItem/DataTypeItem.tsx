@@ -20,7 +20,7 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
-import { Validated } from "../../../types";
+import { Interaction, Validated } from "../../../types";
 import PropertiesLabels from "../PropertiesLabels/PropertiesLabels";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
@@ -32,7 +32,7 @@ interface DataTypeItemProps {
   editingIndex: number | undefined;
   onSave: (dataType: DDDataField, index: number | null) => void;
   onEdit?: (index: number) => void;
-  onDelete?: (index: number) => void;
+  onDelete?: (index: number, interaction: Interaction) => void;
   onConstraintsEdit: (dataType: DDDataField) => void;
   onConstraintsSave: (dataType: DDDataField) => void;
   onValidate: (dataTypeName: string) => boolean;
@@ -123,11 +123,11 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     }
   };
 
-  const handleDelete = (event: React.MouseEvent | React.KeyboardEvent) => {
+  const handleDelete = (event: React.MouseEvent | React.KeyboardEvent, interaction: Interaction) => {
     event.stopPropagation();
     event.preventDefault();
     if (onDelete) {
-      onDelete(index);
+      onDelete(index, interaction);
     }
   };
 
@@ -174,13 +174,16 @@ const DataTypeItem = (props: DataTypeItemProps) => {
 
   return (
     <article
+      id={`data-type-item-n${index}`}
+      data-testid={`data-type-item-n${index}`}
       className={`editable-item ${editingIndex === index ? "editable-item--editing" : ""} data-type-item-n${index}`}
+      data-ouia-component-type="dd-type-item"
+      tabIndex={0}
     >
       {editingIndex === index && (
         <section
           className={"editable-item__inner"}
           ref={ref}
-          tabIndex={0}
           onKeyDown={(event) => {
             if (event.key === "Escape") {
               onOutsideClick();
@@ -207,6 +210,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                           validated={validation}
                           style={{ width: 280 }}
                           isRequired={true}
+                          data-ouia-component-type="field-name"
                         >
                           <TextInput
                             type="text"
@@ -222,7 +226,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         </FormGroup>
                       </SplitItem>
                       <SplitItem>
-                        <FormGroup fieldId="type" label="Type" isRequired={true}>
+                        <FormGroup fieldId="type" label="Type" isRequired={true} data-ouia-component-type="field-type">
                           <Select
                             id="type"
                             variant={SelectVariant.single}
@@ -240,13 +244,19 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                                 key={optionIndex}
                                 value={option.value}
                                 className="ignore-onclickoutside data-type-item__type-select__option"
+                                data-ouia-component-type="select-option"
                               />
                             ))}
                           </Select>
                         </FormGroup>
                       </SplitItem>
                       <SplitItem>
-                        <FormGroup fieldId="optype" label="Op Type" isRequired={true}>
+                        <FormGroup
+                          fieldId="optype"
+                          label="Op Type"
+                          isRequired={true}
+                          data-ouia-component-type="field-optype"
+                        >
                           <Select
                             id="optype"
                             variant={SelectVariant.single}
@@ -264,6 +274,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                                 key={optionIndex}
                                 value={option.value}
                                 className="ignore-onclickoutside data-type-item__type-select__option"
+                                data-ouia-component-type="select-option"
                               />
                             ))}
                           </Select>
@@ -310,8 +321,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
       {editingIndex !== index && (
         <section
           className={"editable-item__inner"}
-          tabIndex={0}
-          onClick={(event) => handleEditStatus(event)}
+          onClick={handleEditStatus}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               handleEditStatus(event);
@@ -346,7 +356,18 @@ const DataTypeItem = (props: DataTypeItemProps) => {
               <ConstraintsLabel dataType={dataType} dataTypeIndex={index} />
             </SplitItem>
             <SplitItem>
-              <Button variant="plain" onClick={handleDelete}>
+              <Button
+                id={`data-type-item-n${index}__delete`}
+                data-testid={`data-type-item-n${index}__delete`}
+                className="editable-item__delete"
+                variant="plain"
+                onClick={(e) => handleDelete(e, "mouse")}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    handleDelete(event, "keyboard");
+                  }
+                }}
+              >
                 <TrashIcon />
               </Button>
             </SplitItem>

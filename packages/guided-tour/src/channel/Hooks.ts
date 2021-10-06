@@ -17,7 +17,7 @@
 import { useEffect } from "react";
 import { KogitoGuidedTour } from "..";
 import { GuidedTourEnvelopeApi } from "../api";
-import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
 
 export function useGuidedTourPositionProvider(
   envelopeApi: MessageBusClientApi<GuidedTourEnvelopeApi>,

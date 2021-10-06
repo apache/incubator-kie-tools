@@ -16,14 +16,14 @@
 
 import * as React from "react";
 import { getGuidedTourElementPosition, GwtEditor } from "./GwtAppFormerApi";
-import { Editor, KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
+import { Editor, KogitoEditorChannelApi } from "@kie-tooling-core/editor/dist/api";
 import { editors } from "./GwtEditorMapping";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
-import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
-import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
+import { I18n } from "@kie-tooling-core/i18n/dist/core";
 import { KieBcEditorsI18n } from "./i18n";
-import { Notification } from "@kogito-tooling/notifications/dist/api";
+import { Notification } from "@kie-tooling-core/notifications/dist/api";
 
 export class GwtEditorWrapper implements Editor {
   public readonly af_isReact = true;

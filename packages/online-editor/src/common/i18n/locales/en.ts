@@ -16,6 +16,7 @@
 
 import { OnlineI18n } from "..";
 import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
+import { wrapped } from "@kie-tooling-core/i18n/dist/core";
 
 export const en: OnlineI18n = {
   ...en_common,
@@ -81,6 +82,103 @@ export const en: OnlineI18n = {
     gistItTooltip: `Set up your ${en_common.names.github} token to be able to create and update gists!`,
     share: "Share",
     embed: "Embed",
+  },
+  dmnDevSandbox: {
+    common: {
+      deployYourModel: "Deploy your model",
+      deployInstanceInfo: "Deploy instance information",
+      disclaimer:
+        "When you set up the required information, you are able to deploy decision models on your configured instance. All the information you provide is locally stored as browser cookies and they are never shared with anyone.",
+      learnMore: "Learn more",
+      requiredField: "This field cannot be empty.",
+      deploying: "Deploying ...",
+      saving: "Saving ...",
+      setupFirst: `Set up your ${en_common.names.dmnDevSandbox} to be able to deploy your models`,
+    },
+    dropdown: {
+      noDeployments: "Your deployments show up here",
+      setupFor: (username: string) => `Setup for ${username}`,
+      item: {
+        upTooltip: "This deployment is up and running.",
+        downTooltip: "This deployment is not running.",
+        inProgressTooltip: "This deployment is in progress and it will be available shortly.",
+        createdAt: (date: string) => `Created at ${date}`,
+      },
+    },
+    configModal: {
+      hostInfo: `The hostname associated with your instance.`,
+      namespaceInfo: `The namespace (project) you want to deploy the Decision Model.`,
+      tokenInfo: `The token associated with your instance.`,
+      validationError: "You must fill out all required fields before you can proceed.",
+      connectionError: "Connection refused. Please check the information provided.",
+      configExpiredWarning: "Token or account expired. Please update your configuration.",
+      useWizard: "Configure through the guided wizard instead",
+    },
+    confirmModal: {
+      title: "Deploy",
+      body: "Are you sure you want to deploy this diagram on your instance? This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.",
+    },
+    alerts: {
+      deployStartedError:
+        "Something went wrong when creating your deployment. Please check your configuration and try again.",
+      deployStartedSuccess: "Your deployment has been successfully started and it will be available shortly.",
+    },
+    introduction: {
+      explanation: `Deploy your decision models to a cloud instance on ${en_common.names.devSandbox} and share with others.`,
+      disclaimer: `${
+        en_common.names.dmnDevSandbox
+      } is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
+      getStarted: "To get started, configure your instance information.",
+    },
+    configWizard: {
+      header: {
+        provider: "Provider",
+      },
+      footer: {
+        deployNow: "Deploy now",
+        continueEditing: "Continue editing",
+      },
+      steps: {
+        first: {
+          name: "Create your instance",
+          introduction: `In order to create your ${en_common.names.shortDevSandbox} instance:`,
+          goToGetStartedPage: "Go to the Get Started page",
+          followSteps: `Follow the steps to launch your instance. You will be asked to log in with your ${en_common.names.redHat} account.`,
+          informNamespace: `Once your instance is up and running, inform the namespace (project) in your cluster you want to have the Decision Model deployed to.`,
+          inputReason:
+            "This information is necessary for deploying your Decision Model into the right project namespace.",
+          namespacePlaceholder: `The namespace (project) you want to deploy the Decision Model. If using ${en_common.names.redHat} dev sandbox your namespace should be 'username-dev' (eg. scott-dev). Note that when logged in your Openshift Console your username appears at the top right corner`,
+        },
+        second: {
+          name: "Set credentials",
+          introduction: `In your ${en_common.names.shortDevSandbox} instance:`,
+          accessLoginCommand: `Click on your username on the top right corner and then ${"'Copy login command'".bold()}.`,
+          accessDisplayToken: `If asked, log in with ${"'DevSandbox'".bold()}, and then access the ${"'Display Token'".bold()} link.`,
+          copyInformation: `In ${"'Log in with this token'".bold()} section, copy your ${"'--server'".bold()} and ${"'--token'".bold()} values, and paste them below.`,
+          inputReason: "This information is necessary for establishing a connection with your instance.",
+          hostPlaceholder: "Paste the --server value here",
+          tokenPlaceholder: "Paste the --token value here",
+        },
+        final: {
+          name: "Connect",
+          connectionSuccess: "Connection successfully established.",
+          connectionError: "Connection refused.",
+          introduction: "Now you are able to:",
+          deployNowExplanation: `${"Deploy now".bold()}: Your model will be deployed on your instance. This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.`,
+          continueEditingExplanation: `${"Continue editing".bold()}: Continue editing your model and deploy it later.`,
+          configNote: "Your configuration will be stored as browser cookies after the operations above.",
+          connectionErrorLong: `A connection with your ${en_common.names.shortDevSandbox} instance could not be established.`,
+          checkInfo: "Please check the information provided and try again.",
+          possibleErrorReasons: {
+            introduction: "Here are some possible reasons:",
+            emptyField: "One or more required information are not filled.",
+            instanceExpired:
+              "Instances expire in 30 days. After this period, you will need to recreate it, thus receiving a new host.",
+            tokenExpired: "Tokens expire on a daily basis.",
+          },
+        },
+      },
+    },
   },
   embedModal: {
     title: "Embed",
@@ -164,20 +262,23 @@ export const en: OnlineI18n = {
   },
   guidedTour: {
     init: {
-      title: "Welcome to this 5-minute tour",
-      learnMore: `Learn more about the DMN online editor by taking this brief and interactive tour.`,
-      letsGo: "Let's go",
+      title: `Welcome to the ${en_common.names.dmn} Editor`,
+      learnMore: `Take this 5-minute tour to learn more about the ${en_common.names.dmn} Editor in a brief and interactive way.`,
+      dmnRunnerIntro: `If you already know your way around the ${en_common.names.dmn} Editor, you can skip this tour and start executing your models with the ${en_common.names.dmnRunner}.`,
+      takeTour: "Take tour",
       skipTour: "Skip tour",
+      skipTourAndUseDmnRunner: `Skip tour and start ${en_common.names.dmnRunner}`,
     },
     end: {
       title: "Congratulations",
-      motivational: `Now you know how each part of the ${en_common.names.dmn} editor works, and you're empowered to go ahead and explore!`,
+      motivational: `Now you know how each part of the ${en_common.names.dmn} Editor works, and you're empowered to go ahead and explore!`,
       nextSteps: {
         title: "As next steps, you can try to",
         firstStep: `Connect the ${"Age".bold()} input with the ${"Can drive?".bold()} decision;`,
         secondStep: `Define the decision logic in the ${"Can drive?".bold()} node to return ${"true".bold()} when ${"Age".bold()} is
               greater than ${"21".bold()}, otherwise ${"false".bold()};`,
         thirdStep: "Execute the model.",
+        startDmnRunner: `Start ${en_common.names.dmnRunner}`,
       },
       findUsefulInfo: "You can find useful information in the",
       learnDMN: `Learn ${en_common.names.dmn} in 15 minutes`,
@@ -198,6 +299,188 @@ export const en: OnlineI18n = {
       possibleCauses: "Possible causes:",
       missingGitHubToken: `If you're trying to open a private file, make sure to set your GitHub token before. To do it use one of the Editor pages and open the "Set your GitHub token" modal under the Share dropdown.`,
       cors: "The URL to your file must allow CORS in its response, which should contain the following header:",
+    },
+  },
+  dmnRunner: {
+    drawer: {
+      error: {
+        title: `${en_common.terms.oops}!`,
+        explanation: `The ${en_common.names.dmnRunner} drawer couldn't be rendered due to an error.`,
+        message: [
+          `This ${en_common.names.dmn} has a construct that is not supported. Please refer to `,
+          wrapped("jira"),
+          " and report an issue. Don't forget to upload the current file, and the used inputs",
+        ],
+      },
+    },
+    modal: {
+      initial: {
+        runDmnModels: "Run your models and see live forms and results as you edit.",
+        explanation:
+          "Input nodes become interactive fields on an auto-generated form, and the results are displayed as easy-to-read cards.",
+        notificationPanelExplanation: [
+          `The Notifications Panel `,
+          wrapped("icon"),
+          `, at the bottom-right corner of the Editor, displays live Execution messages to assist modeling your decisions.`,
+        ],
+      },
+      wizard: {
+        title: `${en_common.names.kieToolingExtendedServices} ${en_common.terms.setup}`,
+        description: `Choose your ${en_common.terms.os.full} and follow the instructions to install and start the ${en_common.names.kieToolingExtendedServices}.`,
+        outdatedAlert: {
+          title: `${en_common.names.kieToolingExtendedServices} is outdated!`,
+          message: `It looks like you're using an incompatible version of the ${en_common.names.kieToolingExtendedServices}. Follow the instructions below to update.`,
+        },
+        stoppedAlert: {
+          title: `${en_common.names.kieToolingExtendedServices} has stopped!`,
+          message: `It looks like the ${en_common.names.kieToolingExtendedServices} has suddenly stopped, please follow these instructions to start it again.`,
+        },
+        macos: {
+          install: {
+            download: ` ${en_common.names.kieToolingExtendedServices}.`,
+            openFile: ["Open the ", wrapped("file"), " file."],
+            dragFileToApplicationsFolder: ["Drag ", wrapped("file"), " to the ", wrapped("folder"), " folder."],
+          },
+          start: {
+            stopped: {
+              startInstruction: `If you see the ${en_common.names.kieToolingExtendedServices} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
+              launchKieToolingExtendedServices: [
+                `If not, start the ${en_common.names.kieToolingExtendedServices} app by launching `,
+                wrapped("file"),
+                ".",
+              ],
+            },
+            firstTime: {
+              title: `If you just installed ${en_common.names.kieToolingExtendedServices}:`,
+              openApplicationsFolder: ["Open the ", wrapped("folder"), " folder."],
+              again: "again",
+              openAndCancel: [
+                "Right-click on ",
+                wrapped("file"),
+                ` select "${en_common.terms.open}" and then "${en_common.terms.cancel}".`,
+              ],
+              openInstruction: [
+                "Right-click on ",
+                wrapped("file"),
+                " ",
+                wrapped("again"),
+                ` and then select "${en_common.terms.open}".`,
+              ],
+            },
+            alreadyRanBefore: `If you already installed and ran the ${en_common.names.kieToolingExtendedServices} before:`,
+            launchKieToolingExtendedServices: ["Launch the ", wrapped("file")],
+            advanced: {
+              title: "Advanced Settings",
+              runFollowingCommand: `Run the following command on a Terminal tab to start ${en_common.names.kieToolingExtendedServices} on a different port:`,
+            },
+          },
+        },
+        windows: {
+          install: {
+            keepDownload: ` ${en_common.names.kieToolingExtendedServices}. Note that you'll probably have to right-click the download and choose "Keep"`,
+            moveTheFile: ["Move the ", wrapped("file"), " file to your preferred folder."],
+          },
+          start: {
+            stopped: {
+              startInstruction: `If you see the ${en_common.names.kieToolingExtendedServices} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
+              launchKieToolingExtendedServices: [
+                `If not, start the ${en_common.names.kieToolingExtendedServices} by opening the `,
+                wrapped("file"),
+                "file.",
+              ],
+            },
+            firstTime: {
+              title: `If you just installed ${en_common.names.kieToolingExtendedServices}:`,
+              openFolder: ["Open folder where you placed the ", wrapped("file"), " file."],
+              runAnyway: `Double-click it and select "More info" then click on the "Run anyway" button.`,
+            },
+            alreadyRanBefore: `If you already installed and ran the ${en_common.names.kieToolingExtendedServices} before:`,
+            launchKieToolingExtendedServices: ["Open the ", wrapped("file"), " file."],
+            advanced: {
+              title: "Advanced Settings",
+              runFollowingCommand: `Run the following command on the Command prompt to start ${en_common.names.kieToolingExtendedServices} on a different port:`,
+            },
+          },
+        },
+        linux: {
+          install: {
+            download: ` ${en_common.names.kieToolingExtendedServices}.`,
+            installAppIndicator: "Install the AppIndicator lib for your system:",
+            ubuntuDependency: [`${en_common.names.ubuntu}: `, wrapped("package")],
+            fedoraDependency: [`${en_common.names.fedora}: `, wrapped("package")],
+            extractContent: ["Extract the contents of ", wrapped("file"), " to your location of choice."],
+            binaryExplanation: [
+              `The ${en_common.names.kieToolingExtendedServices} binary, `,
+              wrapped("file"),
+              ", is a single binary file, which means you can add it to your PATH or even configure it to execute when your computer starts.",
+            ],
+          },
+          start: {
+            openTerminal: "Open a Terminal window.",
+            goToFolder: ["Go to the folder where you placed the ", wrapped("file"), " binary."],
+            runCommand: "Run ",
+            advanced: {
+              title: "Advanced Settings",
+              runFollowingCommand: [
+                "Open a Terminal window and run the following command on the directory where you placed the ",
+                wrapped("file"),
+                " binary:",
+              ],
+            },
+          },
+        },
+        footerWaitingToConnect: `Waiting to connect to ${en_common.names.kieToolingExtendedServices}`,
+        advancedSettings: {
+          title: [
+            `The default ${en_common.names.kieToolingExtendedServices} port is `,
+            wrapped("port"),
+            `. If you're already using this port for another application, you can change the port used to connect with the ${en_common.names.kieToolingExtendedServices}.`,
+          ],
+          label: "Port",
+          helperTextInvalid: "Invalid port. Valid ports: 0 <= port <= 65353",
+        },
+      },
+      use: {
+        title: "All set! 🎉",
+        connected: `You're connected to the ${en_common.names.kieToolingExtendedServices}.`,
+        fillTheForm: "Fill the Form on the Inputs column and automatically see the results on the Outputs column.",
+        deployTheModel: `You can also deploy your model to the ${en_common.names.dmnDevSandbox} when you're done editing.`,
+        backToEditor: "Back to Editor",
+        setupDmnDevSandbox: `Set up the ${en_common.names.dmnDevSandbox}`,
+        dmnDevSandboxAlreadySetup: `${en_common.names.dmnDevSandbox} already set up`,
+      },
+    },
+    dropdown: {
+      label: `${en_common.names.kieToolingExtendedServices}`,
+      setup: `${en_common.terms.setup} ${en_common.names.kieToolingExtendedServices}`,
+      open: `${en_common.terms.open} ${en_common.names.kieToolingExtendedServices} panel`,
+      close: `${en_common.terms.close} ${en_common.names.kieToolingExtendedServices} panel`,
+    },
+    button: {
+      available: `This is only available in ${en_common.names.chrome} at the moment`,
+    },
+  },
+  notificationsPanel: {
+    name: "Notifications Panel",
+    tooltip: {
+      retractAll: "Retract All",
+      expandAll: "Expand All",
+    },
+  },
+  kieToolingExtendedServices: {
+    dropdown: {
+      shortConnected: (port: string) => `Connected to port ${port}`,
+      tooltip: {
+        connected: (port: string) => `${en_common.names.kieToolingExtendedServices} is connected to port ${port}.`,
+        install: `Setup ${en_common.names.kieToolingExtendedServices} to use this feature. Click to install.`,
+        outdated: `${en_common.names.kieToolingExtendedServices} is outdated. Click to update.`,
+        disconnected: `${en_common.names.kieToolingExtendedServices} is disconnected.`,
+      },
+    },
+    modal: {
+      initial: {
+        subHeader: `Augment the ${en_common.names.dmn} editor`,
+      },
     },
   },
 };

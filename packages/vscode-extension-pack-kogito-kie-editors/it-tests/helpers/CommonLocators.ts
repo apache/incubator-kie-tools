@@ -35,11 +35,23 @@ export const spanComponentWithText = (text: string): By => {
 };
 
 /**
- * Creates a XPATH locator that locates <input> element with specified label.
+ * Creates a XPATH locator that locates <{inputElement}> element with specified label
+ * in properties panel. Use this for special widgets and elements that ae not direct children
+ * of fieldContainers.
+ *
+ * Looks for <input> if the inputElement is not provided or empty
+ *
+ * @param inputElement should be XPATH locator for element withing fieldContainer div, optional
  * @param label label of the input field
  */
-export const labeledInputElementInPropertiesPanel = (label: string): By => {
-  return By.xpath(`//label[contains(.,\'${label}\')]/following-sibling::div[@data-field='fieldContainer']/input`);
+export const labeledAnyElementInPropertiesPanel = (label: string, inputElement?: string): By => {
+  if (inputElement && inputElement.length != 0) {
+    return By.xpath(
+      `//label[contains(.,\'${label}\')]/following-sibling::div[@data-field='fieldContainer']/${inputElement}`
+    );
+  } else {
+    return By.xpath(`//label[contains(.,\'${label}\')]/following-sibling::div[@data-field='fieldContainer']/input`);
+  }
 };
 
 /**
@@ -81,4 +93,13 @@ export const tabWithTitle = (title: string): By => {
  */
 export const kogitoLoadingSpinner = (): By => {
   return By.className("kogito-tooling--loading-screen-spinner");
+};
+
+/**
+ * Creates a XPATH string that locates <a> element with specific <span> with text.
+ *
+ * @param itemName name displayed inside of span
+ */
+export const anchorContainingSpanWithTextEqual = (itemName: string): By => {
+  return By.xpath(`//a[.//span[text() = '${itemName}']]`);
 };

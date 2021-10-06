@@ -23,9 +23,10 @@ import Page from "../framework/Page";
 import PageFragment from "../framework/PageFragment";
 import Screenshot from "./tools/ScreenShot";
 import Window from "./tools/Window";
+import { resolve } from "path";
 
 export default class Tools {
-  private static readonly SCREENSHOTS_DIR: string = "screenshots";
+  private static readonly SCREENSHOTS_DIR: string = resolve("dist-it-tests", "screenshots");
 
   private readonly screenShot: Screenshot;
 

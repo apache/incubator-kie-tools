@@ -16,7 +16,7 @@
 
 describe("Bpmn Read Only.", () => {
   before("Visit page", () => {
-    cy.visit("localhost:9001/bpmn-read-only");
+    cy.visit("/bpmn-read-only");
     cy.loadEditors(["bpmn-read-only"]);
   });
 
