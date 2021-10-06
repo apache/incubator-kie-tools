@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.drd;
 
+import java.util.Objects;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -100,8 +102,7 @@ public class DRDNameChangerView implements DRDNameChanger {
             hideDRDNameChanger();
         } else {
             this.drdName.setText(selected.getDiagramElement().getName().getValue());
-            editMode.getStyle().setDisplay(NONE);
-            viewMode.getStyle().setDisplay(BLOCK);
+            enableEditMode(false);
             showDRDNameChanger();
         }
     }
@@ -115,8 +116,7 @@ public class DRDNameChangerView implements DRDNameChanger {
     @EventHandler("viewMode")
     void enableEdit(final ClickEvent event) {
         drdNameInput.setValue(drdName.getText());
-        viewMode.getStyle().setDisplay(NONE);
-        editMode.getStyle().setDisplay(BLOCK);
+        enableEditMode(true);
         drdNameInput.focus();
     }
 
@@ -137,7 +137,16 @@ public class DRDNameChangerView implements DRDNameChanger {
     }
 
     private void performSave(final DMNDiagramElement dmnDiagramElement) {
-        dmnDiagramElement.getName().setValue(drdNameInput.getValue());
-        selectedEvent.fire(new DMNDiagramSelected(dmnDiagramElement));
+        if (!Objects.equals(dmnDiagramElement.getName().getValue(), drdNameInput.getValue())) {
+            dmnDiagramElement.getName().setValue(drdNameInput.getValue());
+            selectedEvent.fire(new DMNDiagramSelected(dmnDiagramElement));
+        } else {
+            enableEditMode(false);
+        }
+    }
+
+    private void enableEditMode(boolean enabled) {
+        viewMode.getStyle().setDisplay(enabled ? NONE : BLOCK);
+        editMode.getStyle().setDisplay(enabled ? BLOCK : NONE);
     }
 }
