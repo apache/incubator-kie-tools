@@ -239,14 +239,10 @@ export function HomePage() {
                   <Drawer isExpanded={!!expandedWorkspace} isInline={true}>
                     <DrawerContent
                       panelContent={
-                        <>
-                          {expandedWorkspace && (
-                            <WorkspacesListDrawerPanelContent
-                              workspaceDescriptor={expandedWorkspace}
-                              onClose={() => setExpandedWorkspace(undefined)}
-                            />
-                          )}
-                        </>
+                        <WorkspacesListDrawerPanelContent
+                          workspaceDescriptor={expandedWorkspace}
+                          onClose={() => setExpandedWorkspace(undefined)}
+                        />
                       }
                     >
                       <DrawerContentBody>
@@ -533,59 +529,55 @@ function CreateNewCard(props: { title: string; extension: SupportedFileExtension
 }
 
 export function WorkspacesListDrawerPanelContent(props: {
-  workspaceDescriptor: WorkspaceDescriptor;
+  workspaceDescriptor: WorkspaceDescriptor | undefined;
   onClose: () => void;
 }) {
   const globals = useGlobals();
-  const workspacePromise = useWorkspacePromise(props.workspaceDescriptor.workspaceId);
+  const workspacePromise = useWorkspacePromise(props.workspaceDescriptor?.workspaceId);
   return (
     <DrawerPanelContent isResizable={true} minSize={"40%"} maxSize={"80%"}>
       <DrawerHead>
         <TextContent>
-          <Text component={TextVariants.h3}>{props.workspaceDescriptor.name}</Text>
+          <Text component={TextVariants.h3}>{workspacePromise.data?.descriptor.name}</Text>
         </TextContent>
         <DrawerActions>
           <DrawerCloseButton onClick={props.onClose} />
         </DrawerActions>
       </DrawerHead>
-      {(workspacePromise.data?.files.length ?? 0) > 0 && (
-        <>
-          <DataList aria-label="draggable data list example" isCompact>
-            {(workspacePromise.data?.files ?? []).map((file) => (
-              <React.Fragment key={file.path}>
-                <DataListItem aria-labelledby="simple-item1" id="data1" key="1">
-                  <DataListItemRow>
-                    <DataListItemCells
-                      dataListCells={[
-                        <DataListCell key={"label"} isIcon={true} style={{ minWidth: "60px" }}>
-                          <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
-                            <FileLabel extension={file.extension} />
-                          </Flex>
-                        </DataListCell>,
-                        <DataListCell key="link" isFilled={false}>
-                          {SUPPORTED_FILES_EDITABLE.includes(file.extension) ? (
-                            <Link
-                              to={globals.routes.workspaceWithFilePath.path({
-                                workspaceId: props.workspaceDescriptor.workspaceId,
-                                filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
-                                extension: file.extension,
-                              })}
-                            >
-                              {file.pathRelativeToWorkspaceRoot}
-                            </Link>
-                          ) : (
-                            <Text component={TextVariants.p}>{file.pathRelativeToWorkspaceRoot}</Text>
-                          )}
-                        </DataListCell>,
-                      ]}
-                    />
-                  </DataListItemRow>
-                </DataListItem>
-              </React.Fragment>
-            ))}
-          </DataList>
-        </>
-      )}
+      <DataList aria-label="draggable data list example" isCompact>
+        {(workspacePromise.data?.files ?? []).map((file) => (
+          <React.Fragment key={file.path}>
+            <DataListItem aria-labelledby="simple-item1" id="data1" key="1">
+              <DataListItemRow>
+                <DataListItemCells
+                  dataListCells={[
+                    <DataListCell key={"label"} isIcon={true} style={{ minWidth: "60px" }}>
+                      <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
+                        <FileLabel extension={file.extension} />
+                      </Flex>
+                    </DataListCell>,
+                    <DataListCell key="link" isFilled={false}>
+                      {SUPPORTED_FILES_EDITABLE.includes(file.extension) ? (
+                        <Link
+                          to={globals.routes.workspaceWithFilePath.path({
+                            workspaceId: props.workspaceDescriptor?.workspaceId ?? "",
+                            filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                            extension: file.extension,
+                          })}
+                        >
+                          {file.pathRelativeToWorkspaceRoot}
+                        </Link>
+                      ) : (
+                        <Text component={TextVariants.p}>{file.pathRelativeToWorkspaceRoot}</Text>
+                      )}
+                    </DataListCell>,
+                  ]}
+                />
+              </DataListItemRow>
+            </DataListItem>
+          </React.Fragment>
+        ))}
+      </DataList>
     </DrawerPanelContent>
   );
 }
