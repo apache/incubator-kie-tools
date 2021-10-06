@@ -132,6 +132,10 @@ export function DmnRunnerContextProvider(props: Props) {
 
   const prevKieToolingExtendedServicesStatus = usePrevious(kieToolingExtendedServices.status);
   useEffect(() => {
+    if (props.workspaceFile?.extension !== "dmn") {
+      return;
+    }
+
     if (
       prevKieToolingExtendedServicesStatus &&
       prevKieToolingExtendedServicesStatus !== KieToolingExtendedServicesStatus.AVAILABLE &&
@@ -147,7 +151,7 @@ export function DmnRunnerContextProvider(props: Props) {
     ) {
       setDrawerExpanded(false);
     }
-  }, [prevKieToolingExtendedServicesStatus, kieToolingExtendedServices.status]);
+  }, [prevKieToolingExtendedServicesStatus, kieToolingExtendedServices.status, props.workspaceFile?.extension]);
 
   return (
     <DmnRunnerContext.Provider

@@ -32,7 +32,7 @@ export function KieToolingExtendedServicesIcon() {
       <>
         {kieToolingExtendedServices.outdated && (
           <Tooltip
-            className="kogito--editor__kie-tooling-extended-services-dropdown-tooltip"
+            className="kogito--editor__light-tooltip"
             key={"outdated"}
             content={i18n.kieToolingExtendedServices.dropdown.tooltip.outdated}
             flipBehavior={["left"]}
@@ -49,7 +49,7 @@ export function KieToolingExtendedServicesIcon() {
           <>
             {kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING ? (
               <Tooltip
-                className="kogito--editor__kie-tooling-extended-services-dropdown-tooltip"
+                className="kogito--editor__light-tooltip"
                 key={"connected"}
                 content={i18n.kieToolingExtendedServices.dropdown.tooltip.connected(kieToolingExtendedServices.port)}
                 flipBehavior={["left"]}
@@ -63,7 +63,7 @@ export function KieToolingExtendedServicesIcon() {
               </Tooltip>
             ) : (
               <Tooltip
-                className="kogito--editor__kie-tooling-extended-services-dropdown-tooltip"
+                className="kogito--editor__light-tooltip"
                 key={"disconnected"}
                 content={i18n.kieToolingExtendedServices.dropdown.tooltip.disconnected}
                 flipBehavior={["left"]}

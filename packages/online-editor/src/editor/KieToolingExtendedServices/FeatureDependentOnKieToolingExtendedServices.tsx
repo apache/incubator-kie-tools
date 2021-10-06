@@ -37,7 +37,7 @@ export function FeatureDependentOnKieToolingExtendedServices(props: Props) {
     <Tooltip
       content={i18n.kieToolingExtendedServices.dropdown.tooltip.install}
       position={props.position}
-      className={props.isLight ? "kogito--editor__kie-tooling-extended-services-dropdown-tooltip" : ""}
+      className={props.isLight ? "kogito--editor__light-tooltip" : ""}
     >
       {props.children}
     </Tooltip>

@@ -46,6 +46,11 @@
   position: relative;
 }
 
+.kogito--editor__toolbar-name-container.invalid {
+  border: var(--pf-global--BorderWidth--md) solid var(--pf-global--danger-color--100);
+  border-radius: var(--pf-global--BorderRadius--sm);
+}
+
 .kogito--editor__toolbar-name-container h3 {
   display: inline-block;
   visibility: hidden;
@@ -522,7 +527,7 @@
   color: var(--pf-global--palette--green-300);
 }
 
-.kogito--editor__kie-tooling-extended-services-dropdown-tooltip {
+.kogito--editor__light-tooltip {
   --pf-c-tooltip__content--Color: var(--pf-global--BackgroundColor--dark-100);
   --pf-c-tooltip__content--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
 }
