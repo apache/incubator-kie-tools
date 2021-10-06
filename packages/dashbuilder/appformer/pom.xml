@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~       http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!-- ~ Copyright 2015 Red Hat, Inc. and/or its affiliates. ~ ~ Licensed under 
+  the Apache License, Version 2.0 (the "License"); ~ you may not use this file 
+  except in compliance with the License. ~ You may obtain a copy of the License 
+  at ~ ~ http://www.apache.org/licenses/LICENSE-2.0 ~ ~ Unless required by 
+  applicable law or agreed to in writing, software ~ distributed under the 
+  License is distributed on an "AS IS" BASIS, ~ WITHOUT WARRANTIES OR CONDITIONS 
+  OF ANY KIND, either express or implied. ~ See the License for the specific 
+  language governing permissions and ~ limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -62,9 +56,9 @@
     <version.org.webjars.npm.react-dom>16.6.0</version.org.webjars.npm.react-dom>
     <version.org.webjars.bower.bootstrap-daterangepicker>2.1.25</version.org.webjars.bower.bootstrap-daterangepicker>
     <version.org.webjars.bower.filesaver>1.3.3</version.org.webjars.bower.filesaver>
-    <!-- Notice actually there exists a 1.3.3 version for jsPDF, but using this one
-        produces a conflict with the UF ace js plugin once trying to create a new jsPDF
-        instance.-->
+    <!-- Notice actually there exists a 1.3.3 version for jsPDF, but using 
+      this one produces a conflict with the UF ace js plugin once trying to create 
+      a new jsPDF instance. -->
     <version.org.webjars.bower.jspdf>1.2.61</version.org.webjars.bower.jspdf>
     <version.org.webjars.bowergithub.gliffy.canvas2svg>0.1</version.org.webjars.bowergithub.gliffy.canvas2svg>
     <version.org.webjars.bower.mustachejs>3.0.1</version.org.webjars.bower.mustachejs>
@@ -79,7 +73,8 @@
     <netty-transport-native-epoll-classifier>linux-x86_64</netty-transport-native-epoll-classifier>
     <netty-transport-native-kqueue-classifier>osx-x86_64</netty-transport-native-kqueue-classifier>
 
-    <version.bundle.plugin>3.3.0</version.bundle.plugin><!-- 3.2.0 sometimes fails with NPE during parallel build-->
+    <version.bundle.plugin>3.3.0</version.bundle.plugin><!-- 3.2.0 sometimes 
+      fails with NPE during parallel build -->
     <!-- Make OSGi happy -->
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
     <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
@@ -108,7 +103,8 @@
     <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
 
     <version.org.jboss.marshalling.api>1.2.3.GA</version.org.jboss.marshalling.api>
-    <!-- Version 2.0.1.Final which is coming from kie-parent is not compatible with dashbuilder-validator module -->
+    <!-- Version 2.0.1.Final which is coming from kie-parent is not compatible 
+      with dashbuilder-validator module -->
     <version.javax.validation>1.0.0.GA</version.javax.validation>
   </properties>
 
@@ -194,7 +190,8 @@
           <artifactId>maven-bundle-plugin</artifactId>
           <extensions>true</extensions>
           <configuration>
-            <!-- Split packages in combination with <Export-Package> causes bloated jars otherwise -->
+            <!-- Split packages in combination with <Export-Package> causes 
+              bloated jars otherwise -->
             <excludeDependencies>true</excludeDependencies>
             <instructions>
               <_removeheaders>Ignore-Package</_removeheaders>
@@ -323,8 +320,8 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
           <configuration>
-            <!-- Manually push changes (including git tags) after nexus staged
-                 repo is successfully closed -->
+            <!-- Manually push changes (including git tags) after nexus staged 
+              repo is successfully closed -->
             <pushChanges>false</pushChanges>
             <autoVersionSubmodules>true</autoVersionSubmodules>
           </configuration>
@@ -351,12 +348,14 @@
           <version>1.3</version>
         </plugin>
 
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <!--This plugin's configuration is used to store Eclipse m2e settings 
+          only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
-          <!-- Important: do not remove the lifecycle-mapping plugin version (even if already coming from parent)!
-               This is to workaround bug in Eclipse m2e: https://bugs.eclipse.org/bugs/show_bug.cgi?id=371618 -->
+          <!-- Important: do not remove the lifecycle-mapping plugin version 
+            (even if already coming from parent)! This is to workaround bug in Eclipse 
+            m2e: https://bugs.eclipse.org/bugs/show_bug.cgi?id=371618 -->
           <version>1.0.0</version>
           <configuration>
             <lifecycleMappingMetadata>
@@ -371,7 +370,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
+                    <ignore />
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -384,7 +383,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <execute/>
+                    <execute />
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -473,44 +472,24 @@
         </configuration>
       </plugin>
 
-      <!-- Zanata - translations -->
-      <plugin>
-        <groupId>org.zanata</groupId>
-        <artifactId>zanata-maven-plugin</artifactId>
-        <configuration>
-          <excludes>**/ErraiApp.properties</excludes>
-          <projectConfig>${session.executionRootDirectory}/src/main/config/zanata.xml</projectConfig>
-          <srcDir>src/main/resources/</srcDir>
-          <transDir>src/main/resources/</transDir>
-          <includes>**/*Constants.properties</includes>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <!-- Entry needed to create test-jars even for packaging types war, bundle, ... -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-      </plugin>
-
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
-          <!-- Temporary workaround for https://issues.jboss.org/browse/ERRAI-1101. Needs to stay here until
-          we find a general solution (e.g. moving all localized code to Errai TranslationService. -->
+          <!-- Temporary workaround for https://issues.jboss.org/browse/ERRAI-1101. 
+            Needs to stay here until we find a general solution (e.g. moving all localized 
+            code to Errai TranslationService. -->
           <execution>
             <id>create-default-i18n-resource</id>
             <phase>process-resources</phase>
             <configuration>
               <target>
                 <copy todir="${project.build.directory}/classes"
-                      includeemptydirs="false" failonerror="false" quiet="true">
-                  <fileset dir="${project.build.directory}/classes"/>
-                  <globmapper from="*Constants.properties" to="*Constants_default.properties"/>
+                  includeemptydirs="false" failonerror="false"
+                  quiet="true">
+                  <fileset
+                    dir="${project.build.directory}/classes" />
+                  <globmapper from="*Constants.properties"
+                    to="*Constants_default.properties" />
                 </copy>
               </target>
             </configuration>
@@ -541,7 +520,8 @@
       <id>graph</id>
       <build>
         <plugins>
-          <!-- Important: you need to have Graphviz installed on your system to make the plugin work! -->
+          <!-- Important: you need to have Graphviz installed on your system 
+            to make the plugin work! -->
           <plugin>
             <groupId>org.fusesource.mvnplugins</groupId>
             <artifactId>maven-graph-plugin</artifactId>
@@ -578,7 +558,8 @@
               <newArtifacts>
                 <artifact>${project.groupId}:${project.artifactId}:${revapi.newUberFireVersion}</artifact>
               </newArtifacts>
-              <!-- By default revapi will check the oldArtifact against the currently executed build -->
+              <!-- By default revapi will check the oldArtifact against the 
+                currently executed build -->
               <analysisConfigurationFiles>
                 <configurationFile>
                   <path>src/build/revapi-config.json</path>
@@ -588,16 +569,18 @@
                   </roots>
                 </configurationFile>
               </analysisConfigurationFiles>
-              <!-- By default, revapi will only fail the build if there are potentially breaking or breaking changes. However, in the report
-                   we want even non breaking changes to be present. -->
+              <!-- By default, revapi will only fail the build if there are 
+                potentially breaking or breaking changes. However, in the report we want 
+                even non breaking changes to be present. -->
               <reportSeverity>nonBreaking</reportSeverity>
               <failSeverity>potentiallyBreaking</failSeverity>
             </configuration>
-            <!-- Running two executions is a workaround to make sure we get a HTML report in case revapi finds
-                 some incompatible changes. The "check" goal will simply fail the whole build before it could get
-                 to the report. To make sure we always get a HTML report, the "report" goal needs to be executed
-                 before the "check" goal.
-                 Once https://github.com/revapi/revapi/issues/11 is fixed it should be possible to use single execution. -->
+            <!-- Running two executions is a workaround to make sure we get 
+              a HTML report in case revapi finds some incompatible changes. The "check" 
+              goal will simply fail the whole build before it could get to the report. 
+              To make sure we always get a HTML report, the "report" goal needs to be executed 
+              before the "check" goal. Once https://github.com/revapi/revapi/issues/11 
+              is fixed it should be possible to use single execution. -->
             <executions>
               <execution>
                 <id>check</id>
@@ -813,8 +796,9 @@
         <artifactId>scannotation</artifactId>
         <version>${version.org.scannotation}</version>
         <exclusions>
-          <!-- Uses old javassist groupId so Maven is not able to exclude this itself. All UF modules have to use
-               org.javassist:javassist instead of this one. -->
+          <!-- Uses old javassist groupId so Maven is not able to exclude 
+            this itself. All UF modules have to use org.javassist:javassist instead of 
+            this one. -->
           <exclusion>
             <groupId>javassist</groupId>
             <artifactId>javassist</artifactId>
@@ -1022,8 +1006,9 @@
         <version>${version.com.jcraft}</version>
       </dependency>
 
-      <!-- Required to run the ElasticSearch server when performing the unit test executions.
-          The ELS data provider requires groovy scripts enabled on the server.-->
+      <!-- Required to run the ElasticSearch server when performing the unit 
+        test executions. The ELS data provider requires groovy scripts enabled on 
+        the server. -->
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
         <artifactId>groovy-all</artifactId>
@@ -1092,7 +1077,7 @@
           <exclusion>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
-          </exclusion> 
+          </exclusion>
           <exclusion>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -1121,17 +1106,11 @@
         <version>${version.org.jboss.shrinkwrap}</version>
         <scope>test</scope>
       </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${version.junit}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <version>${version.org.assertj}</version>
-    </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${version.org.assertj}</version>
+      </dependency>
 
     </dependencies>
   </dependencyManagement>
