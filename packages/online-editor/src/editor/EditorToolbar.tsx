@@ -64,7 +64,6 @@ import { SUPPORTED_FILES_EDITABLE } from "../workspace/SupportedFiles";
 import { AddFileDropdownItems } from "./AddFileDropdownItems";
 import { PageHeaderToolsItem, PageHeaderToolsItemProps } from "@patternfly/react-core/dist/js/components/Page";
 import { FileLabel } from "../workspace/pages/FileLabel";
-import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { DeleteDropdownWithConfirmation } from "./DeleteDropdownWithConfirmation";
 
 export interface Props {
@@ -928,6 +927,24 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
                   onBlur={(e) => onRenameWorkspace(e.target.value)}
                 />
               </div>
+              <Title headingLevel={"h3"} size={"2xl"} style={{ display: "inline", margin: "10px" }}>
+                {`/`}
+              </Title>
+            </>
+          )}
+          {props.workspaceFile.pathRelativeToWorkspaceRootWithoutExtension !==
+            props.workspaceFile.nameWithoutExtension && (
+            <>
+              <Tooltip content={dirname(props.workspaceFile.pathRelativeToWorkspaceRoot)} position={"bottom"}>
+                <Title
+                  headingLevel={"h3"}
+                  size={"2xl"}
+                  style={{ display: "inline", padding: "10px" }}
+                  className={"kogito-tooling--masthead-hoverable"}
+                >
+                  <span style={{ cursor: "default" }}>{`…`}</span>
+                </Title>
+              </Tooltip>
               <Title headingLevel={"h3"} size={"2xl"} style={{ display: "inline", margin: "10px" }}>
                 {`/`}
               </Title>
