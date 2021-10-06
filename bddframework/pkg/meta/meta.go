@@ -33,6 +33,7 @@ import (
 	sources "knative.dev/eventing/pkg/apis/sources/v1"
 
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 
 	olmapiv1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1"
 	olmapiv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
@@ -96,5 +97,7 @@ func getRegisteredSchemeBuilder() runtime.SchemeBuilder {
 		hyperfoil.AddToScheme,
 		olmapiv1alpha1.AddToScheme,
 		olmapiv1.AddToScheme,
-		olmv1.AddToScheme)
+		olmv1.AddToScheme,
+		// Required for MogoDB, can be removed once we start using newer MongoDB operator version
+		apiextensionsv1beta1.AddToScheme)
 }
