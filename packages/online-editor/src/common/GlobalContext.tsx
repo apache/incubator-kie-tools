@@ -25,20 +25,14 @@ export type SupportedFileExtensions = "bpmn" | "bpmn2" | "dmn" | "pmml";
 export interface GlobalContextType {
   uploadedFile?: EmbeddedEditorFile;
   setUploadedFile: React.Dispatch<React.SetStateAction<EmbeddedEditorFile | undefined>>;
-  externalFile?: EmbeddedEditorFile;
   routes: typeof routes;
   editorEnvelopeLocator: EditorEnvelopeLocator;
-  senderTabId?: string;
   isChrome: boolean;
 }
 
 export const GlobalContext = React.createContext<GlobalContextType>({} as any);
 
-export function GlobalContextProvider(props: {
-  externalFile?: EmbeddedEditorFile;
-  senderTabId?: string;
-  children: React.ReactNode;
-}) {
+export function GlobalContextProvider(props: { children: React.ReactNode }) {
   const [uploadedFile, setUploadedFile] = useState<EmbeddedEditorFile | undefined>(undefined);
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () => ({
@@ -56,7 +50,6 @@ export function GlobalContextProvider(props: {
   return (
     <GlobalContext.Provider
       value={{
-        ...props,
         editorEnvelopeLocator,
         uploadedFile,
         setUploadedFile,

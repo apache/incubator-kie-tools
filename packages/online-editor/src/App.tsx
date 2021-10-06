@@ -30,12 +30,12 @@ import { HomePage } from "./home/HomePage";
 import { NewWorkspaceWithEmptyFilePage } from "./workspace/pages/NewWorkspaceWithEmptyFilePage";
 import { NewWorkspaceFromUrlPage } from "./workspace/pages/NewWorkspaceFromUrlPage";
 
-export function App(props: { externalFile?: EmbeddedEditorFile; senderTabId?: string }) {
+export function App() {
   return (
     <HashRouter>
       {nest(
         [OnlineI18nContextProvider, {}],
-        [GlobalContextProvider, props],
+        [GlobalContextProvider, {}],
         [KieToolingExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
         [WorkspacesContextProvider, {}],

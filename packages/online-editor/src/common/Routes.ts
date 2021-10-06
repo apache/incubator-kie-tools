@@ -18,8 +18,6 @@ const IS_HASH_ROUTER = true;
 
 export enum QueryParams {
   SETTINGS = "settings",
-  READONLY = "readonly",
-  EXT = "ext",
   URL = "url",
   DMN_RUNNER_FORM_INPUTS = "formInputs",
   EXPAND = "expand",
@@ -112,14 +110,14 @@ export const routes = {
   download: new Route<{}>(() => `/download`),
 
   home: new Route<{
-    queryParams: QueryParams.EXT | QueryParams.EXPAND;
+    queryParams: QueryParams.EXPAND;
   }>(() => `/`),
 
   /** @deprecated
    * Use importModel instead */
   editor: new Route<{
     pathParams: PathParams.EXTENSION;
-    queryParams: QueryParams.READONLY | QueryParams.URL | QueryParams.SETTINGS | QueryParams.DMN_RUNNER_FORM_INPUTS;
+    queryParams: QueryParams.URL | QueryParams.SETTINGS | QueryParams.DMN_RUNNER_FORM_INPUTS;
   }>(({ extension }) => `/editor/${extension}`),
 
   newModel: new Route<{
@@ -127,7 +125,7 @@ export const routes = {
   }>(({ extension }) => `/new/${extension}`),
 
   importModel: new Route<{
-    queryParams: QueryParams.URL | QueryParams.READONLY | QueryParams.DMN_RUNNER_FORM_INPUTS;
+    queryParams: QueryParams.URL | QueryParams.DMN_RUNNER_FORM_INPUTS;
   }>(() => `/import`),
 
   workspaceWithFilePath: new Route<{

@@ -15,7 +15,6 @@
  */
 
 import { ExternalEditorManager } from "@kie-tooling-core/chrome-extension";
-import { extractFileExtension } from "./utils";
 
 export class OnlineEditorManager implements ExternalEditorManager {
   public name = "Online Editor";
@@ -33,22 +32,6 @@ export class OnlineEditorManager implements ExternalEditorManager {
   }
 
   public getLink(filePath: string) {
-    return `${process.env.WEBPACK_REPLACE__onlineEditor_url}/#/editor/${extractFileExtension(
-      filePath
-    )}?file=https://raw.githubusercontent.com/${filePath}`;
-  }
-
-  public listenToComeBack(setFileName: (fileName: string) => void, setFileContent: (fileContent: string) => void) {
-    const listener = (request: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) => {
-      if (request.messageId === "RETURN_FROM_EXTERNAL_EDITOR") {
-        setFileName(request.fileName);
-        setFileContent(request.fileContent);
-      }
-      sendResponse({ success: true });
-    };
-
-    chrome.runtime.onMessage.addListener(listener);
-
-    return { stopListening: () => chrome.runtime.onMessage.removeListener(listener) };
+    return `${process.env.WEBPACK_REPLACE__onlineEditor_url}/#/import?url=https://raw.githubusercontent.com/${filePath}`;
   }
 }

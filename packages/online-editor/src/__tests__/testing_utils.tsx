@@ -51,8 +51,6 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
         ["bpmn2", envelopeMapping],
       ]),
     },
-    externalFile: undefined,
-    senderTabId: undefined,
     isChrome: true,
     ...ctx,
   };

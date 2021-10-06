@@ -108,21 +108,6 @@ export function SingleEditorApp(props: {
     );
   }, [globals.externalEditorManager]);
 
-  useEffect(() => {
-    const listener = globals.externalEditorManager?.listenToComeBack(
-      (fileName) => {
-        globals.dependencies.all.edit__githubFileNameInput()!.value = fileName;
-      },
-      (content) => {
-        isolatedEditor?.setContent(content);
-      }
-    );
-
-    return () => {
-      listener?.stopListening();
-    };
-  }, [globals.externalEditorManager, isolatedEditor]);
-
   const onEditorReady = useCallback(() => {
     setTextModeAvailable(true);
   }, []);

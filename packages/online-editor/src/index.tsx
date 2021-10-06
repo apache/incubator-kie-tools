@@ -19,30 +19,6 @@ import "@patternfly/patternfly/patternfly-addons.scss";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { App } from "./App";
-import { extractFileExtension, removeFileExtension } from "./common/utils";
 import "../static/resources/style.css";
-import { QueryParams } from "./common/Routes";
 
-function main() {
-  const queryParams = new URLSearchParams(window.location.search);
-  if (!queryParams.has(QueryParams.EXT)) {
-    ReactDOM.render(<App />, document.getElementById("app")!);
-    return;
-  }
-
-  window.addEventListener("loadOnlineEditor", (e: CustomEvent) => {
-    const externalFile = {
-      isReadOnly: false,
-      fileExtension: extractFileExtension(e.detail.fileName)!,
-      fileName: removeFileExtension(e.detail.fileName),
-      getFileContents: () => Promise.resolve(e.detail.fileContent),
-    };
-
-    ReactDOM.render(
-      <App externalFile={externalFile} senderTabId={e.detail.senderTabId} />,
-      document.getElementById("app")!
-    );
-  });
-}
-
-main();
+ReactDOM.render(<App />, document.getElementById("app")!);

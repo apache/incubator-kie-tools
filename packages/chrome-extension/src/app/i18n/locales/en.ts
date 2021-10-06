@@ -22,9 +22,6 @@ export const en: ChromeExtensionI18n = {
   fullScreen: "Full Screen",
   reset: "Reset",
   note: "Note",
-  tree: {
-    openInOnlineEditor: "Open in Online Editor",
-  },
   single: {
     exitFullScreen: `Exit Full Screen`,
     editorToolbar: {

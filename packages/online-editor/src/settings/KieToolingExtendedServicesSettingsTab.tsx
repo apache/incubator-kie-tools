@@ -52,7 +52,7 @@ export function KieToolingExtendedServicesSettingsTab() {
                 helperTextInvalid={""}
                 validated={"default"}
                 label={"Port"}
-                fieldId={"github-pat"}
+                fieldId={"port-input"}
               >
                 <InputGroup>
                   <TextInput

@@ -263,20 +263,6 @@ export function EditorToolbar(props: Props) {
     return includeDownloadSVGDropdownItem;
   }, [includeDownloadSVGDropdownItem]);
 
-  const onSendChangesToGitHub = useCallback(() => {
-    props.workspaceFile.getFileContents().then((content) => {
-      window.dispatchEvent(
-        new CustomEvent("saveOnlineEditor", {
-          detail: {
-            fileName: props.workspaceFile.nameWithExtension,
-            fileContent: content,
-            senderTabId: globals.senderTabId!,
-          },
-        })
-      );
-    });
-  }, [props.workspaceFile, globals.senderTabId]);
-
   const onDownload = useCallback(() => {
     props.editor?.getStateControl().setSavedCommand();
     props.alerts?.closeAll();
@@ -487,15 +473,6 @@ export function EditorToolbar(props: Props) {
               {i18n.editorToolbar.gistIt}
             </DropdownItem>
           </Tooltip>
-          {globals.externalFile && (
-            <DropdownItem
-              key={`dropdown-${dropdownId}-send-changes-to-github`}
-              component={"button"}
-              onClick={onSendChangesToGitHub}
-            >
-              {i18n.editorToolbar.sendChangesToGitHub}
-            </DropdownItem>
-          )}
         </React.Fragment>
         <DropdownItem
           data-testid={"set-github-token"}
@@ -516,7 +493,6 @@ export function EditorToolbar(props: Props) {
       onPreview,
       onEmbed,
       onGistIt,
-      onSendChangesToGitHub,
       includeDownloadSVGDropdownItem,
       includeEmbedDropdownItem,
       i18n,

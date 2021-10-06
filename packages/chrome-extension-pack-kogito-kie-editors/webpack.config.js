@@ -51,7 +51,6 @@ module.exports = async (env) => {
   return merge(common(env), {
     entry: {
       "content_scripts/github": "./src/github-content-script.ts",
-      "content_scripts/online-editor": "./src/online-editor-content-script.ts",
       background: "./src/background.ts",
       "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
       "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",

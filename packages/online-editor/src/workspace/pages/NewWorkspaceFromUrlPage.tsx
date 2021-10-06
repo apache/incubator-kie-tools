@@ -61,14 +61,6 @@ export function NewWorkspaceFromUrlPage() {
     let canceled = false;
     setFetchFileError(undefined);
 
-    if (globals.externalFile) {
-      createWorkspaceForFile({
-        path: `${globals.externalFile.fileName}.${globals.externalFile.fileExtension}`,
-        getFileContents: async () => (await globals.externalFile!.getFileContents()) ?? "",
-      });
-      return;
-    }
-
     if (queryParamUrl) {
       let filePath: string;
 
@@ -157,7 +149,6 @@ export function NewWorkspaceFromUrlPage() {
       canceled = true;
     };
   }, [
-    globals.externalFile,
     globals.routes.workspaceWithFilePath,
     history,
     queryParamUrl,
