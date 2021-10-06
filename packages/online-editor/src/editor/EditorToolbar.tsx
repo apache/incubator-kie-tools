@@ -797,7 +797,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
     [props.workspaceFile, workspaces, resetWorkspaceFileName]
   );
 
-  const onWorkspaceNameKeyUp = useCallback(
+  const onWorkspaceNameKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       e.stopPropagation();
       if (e.keyCode === 13 /* Enter */) {
@@ -810,7 +810,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
     [resetWorkspaceName]
   );
 
-  const onWorkspaceFileNameKeyUp = useCallback(
+  const onWorkspaceFileNameKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       e.stopPropagation();
       if (e.keyCode === 13 /* Enter */) {
@@ -909,7 +909,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
                   type={"text"}
                   aria-label={"Edit workspace name"}
                   className={"kogito--editor__toolbar-title"}
-                  onKeyDown={onWorkspaceNameKeyUp}
+                  onKeyDown={onWorkspaceNameKeyDown}
                   onBlur={(e) => onRenameWorkspace(e.target.value)}
                 />
               </div>
@@ -937,7 +937,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
                         onClick={(e) => e.stopPropagation()}
                         onKeyPress={(e) => e.stopPropagation()}
                         onKeyUp={(e) => e.stopPropagation()}
-                        onKeyDown={onWorkspaceFileNameKeyUp}
+                        onKeyDown={onWorkspaceFileNameKeyDown}
                         ref={workspaceFileNameRef}
                         type={"text"}
                         aria-label={"Edit file name"}

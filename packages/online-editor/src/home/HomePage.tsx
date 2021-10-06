@@ -229,7 +229,7 @@ export function HomePage() {
           <br />
           <Divider inset={{ default: "inset3xl" }} />
         </StackItem>
-        <StackItem key={"workspaces"}>
+        <StackItem key={"workspaces"} isFilled={true}>
           <PageSection isFilled={true} style={{ height: "100%" }}>
             <PromiseStateWrapper
               promise={workspaceDescriptorsPromise}
@@ -268,7 +268,7 @@ export function HomePage() {
                           </PageSection>
                         )}
                         {workspaceDescriptors.length === 0 && (
-                          <PageSection>
+                          <PageSection isFilled={true} style={{ height: "100%" }}>
                             <EmptyState>
                               <EmptyStateIcon icon={CubesIcon} />
                               <Title headingLevel="h4" size="lg">
