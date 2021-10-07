@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
@@ -103,7 +103,7 @@ export function HomePage() {
 
   const queryParams = useQueryParams();
 
-  const expandQueryParam = useMemo(() => {
+  const expandedWorkspaceId = useMemo(() => {
     return queryParams.get(QueryParams.EXPAND);
   }, [queryParams]);
 
@@ -113,7 +113,7 @@ export function HomePage() {
 
   const expandWorkspace = useCallback(
     (workspace: WorkspaceDescriptor) => {
-      const expand = workspace.workspaceId !== expandQueryParam ? workspace.workspaceId : undefined;
+      const expand = workspace.workspaceId !== expandedWorkspaceId ? workspace.workspaceId : undefined;
       if (!expand) {
         closeExpandedWorkspace();
         return;
@@ -124,8 +124,14 @@ export function HomePage() {
         search: globals.routes.home.queryString({ expand }),
       });
     },
-    [closeExpandedWorkspace, history, globals, expandQueryParam]
+    [closeExpandedWorkspace, history, globals, expandedWorkspaceId]
   );
+
+  useEffect(() => {
+    if (!workspaceDescriptorsPromise.data?.map((f) => f.workspaceId).includes(expandedWorkspaceId!)) {
+      closeExpandedWorkspace();
+    }
+  }, [workspaceDescriptorsPromise, closeExpandedWorkspace, expandedWorkspaceId]);
 
   return (
     <OnlineEditorPage>
@@ -264,11 +270,11 @@ export function HomePage() {
               rejected={() => <></>}
               resolved={(workspaceDescriptors) => {
                 return (
-                  <Drawer isExpanded={!!expandQueryParam} isInline={true}>
+                  <Drawer isExpanded={!!expandedWorkspaceId} isInline={true}>
                     <DrawerContent
                       panelContent={
                         <WorkspacesListDrawerPanelContent
-                          workspaceId={expandQueryParam}
+                          workspaceId={expandedWorkspaceId}
                           onClose={closeExpandedWorkspace}
                         />
                       }
@@ -282,7 +288,7 @@ export function HomePage() {
                                   <WorkspaceCard
                                     workspaceId={workspace.workspaceId}
                                     onSelect={() => expandWorkspace(workspace)}
-                                    isSelected={workspace.workspaceId === expandQueryParam}
+                                    isSelected={workspace.workspaceId === expandedWorkspaceId}
                                   />
                                 </StackItem>
                               ))}
