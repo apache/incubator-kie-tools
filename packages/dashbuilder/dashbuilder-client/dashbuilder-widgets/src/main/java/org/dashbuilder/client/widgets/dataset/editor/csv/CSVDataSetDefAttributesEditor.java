@@ -15,9 +15,10 @@
  */
 package org.dashbuilder.client.widgets.dataset.editor.csv;
 
-import com.google.gwt.editor.client.EditorDelegate;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.dashbuilder.client.widgets.resources.i18n.DataSetEditorConstants;
 import org.dashbuilder.common.client.editor.ValueBoxEditor;
 import org.dashbuilder.common.client.editor.file.FileUploadEditor;
@@ -26,9 +27,9 @@ import org.dashbuilder.dataset.def.CSVDataSetDef;
 import org.gwtbootstrap3.client.ui.constants.Placement;
 import org.uberfire.client.mvp.UberView;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import com.google.gwt.editor.client.EditorDelegate;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * <p>CSV Data Set specific attributes editor presenter.</p>
@@ -115,7 +116,7 @@ public class CSVDataSetDefAttributesEditor implements IsWidget, org.dashbuilder.
                 Placement.BOTTOM);
 
         // Configure file upload component.
-        filePath.configure("csvFileUpload", new FileUploadEditor.FileUploadEditorCallback() {
+        filePath.configure("selectedFile", new FileUploadEditor.FileUploadEditorCallback() {
             @Override
             public String getUploadFileName() {
                 return value.getUUID() + ".csv";
@@ -123,8 +124,7 @@ public class CSVDataSetDefAttributesEditor implements IsWidget, org.dashbuilder.
 
             @Override
             public String getUploadFileUrl() {
-                String csvPath = "default://master@dashbuilder/datasets/tmp/" + value.getUUID() + ".csv";
-                return dataSetClientServices.getUploadFileUrl(csvPath);
+                return dataSetClientServices.getUploadFileUrl();
             }
         });
         

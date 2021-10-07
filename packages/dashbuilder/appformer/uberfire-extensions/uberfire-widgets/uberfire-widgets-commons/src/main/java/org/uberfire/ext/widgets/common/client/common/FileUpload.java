@@ -16,24 +16,22 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Input;
 import org.gwtbootstrap3.client.ui.InputGroupAddon;
 import org.uberfire.mvp.Command;
 
-public class FileUpload
-        extends Composite {
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 
-    private static final String FAKEPATH = "c:\\fakepath\\";
+public class FileUpload extends Composite {
+
+    public static final String FAKEPATH = "C:\\\\fakepath\\\\";    
     private static FileUploadBinder uiBinder = GWT.create(FileUploadBinder.class);
     private final Command command;
     @UiField
@@ -48,6 +46,9 @@ public class FileUpload
     @UiField
     Input fileText;
 
+    @UiField
+    Input inputFileName;
+
     private boolean isDisabled = false;
 
     public FileUpload() {
@@ -56,8 +57,7 @@ public class FileUpload
     }
 
     public FileUpload(final Command command) {
-        this(command,
-             true);
+        this(command, true);
     }
 
     public FileUpload(final Command command,
@@ -65,30 +65,24 @@ public class FileUpload
         initWidget(uiBinder.createAndBindUi(this));
         this.command = command;
         fileText.setReadOnly(true);
+        fileText.setName("inputFileName");
 
         file.addChangeHandler(getFileChangeHandler());
 
-        chooseButton.addDomHandler(new ClickHandler() {
-                                       @Override
-                                       public void onClick(ClickEvent event) {
-                                           ((InputElement) file.getElement().cast()).click();
-                                       }
-                                   },
-                                   ClickEvent.getType());
+        chooseButton.addDomHandler(event -> ((InputElement) file.getElement().cast()).click(),
+                ClickEvent.getType());
 
         if (displayUploadButton) {
-            uploadButton.addDomHandler(new ClickHandler() {
-                                           @Override
-                                           public void onClick(ClickEvent event) {
-                                               if (isDisabled) {
-                                                   return;
-                                               }
-                                               if (command != null) {
-                                                   command.execute();
-                                               }
-                                           }
-                                       },
-                                       ClickEvent.getType());
+            uploadButton.addDomHandler(event -> {
+                if (isDisabled) {
+                    return;
+                }
+                if (command != null) {
+                    command.execute();
+                }
+
+            }, ClickEvent.getType());
+
         } else {
             uploadButton.removeFromParent();
             uploadButton = null;
@@ -104,7 +98,8 @@ public class FileUpload
     }
 
     public String getFilename() {
-        return file.getValue();
+        var value = file.getValue();
+        return value == null ? null : value.replaceAll(FAKEPATH, "");
     }
 
     public void setAccept(String type) {
@@ -129,16 +124,15 @@ public class FileUpload
         }
     }
 
+    public void setInputFileName(String text) {
+        inputFileName.setValue(text);
+    }
+
     protected ChangeHandler getFileChangeHandler() {
-        return new ChangeHandler() {
-            @Override
-            public void onChange(ChangeEvent event) {
-                String fileName = file.getValue();
-                if (fileName != null && fileName.toLowerCase().startsWith(FAKEPATH)) {
-                    fileName = fileName.substring(FAKEPATH.length());
-                }
-                fileText.setValue(fileName);
-            }
+        return (event) -> {
+            var fileName = file.getValue().replaceAll(FAKEPATH, "");
+            setInputFileName(fileName);
+            fileText.setValue(fileName);
         };
     }
 

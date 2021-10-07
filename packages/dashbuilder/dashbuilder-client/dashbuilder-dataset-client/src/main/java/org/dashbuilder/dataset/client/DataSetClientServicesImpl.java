@@ -496,8 +496,8 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
      *
      * @param path The path of the file.
      */
-    public String getUploadFileUrl(String path) {
-        return pathUrlFactory.getUploadFileUrl(path);
+    public String getUploadFileUrl() {
+        return pathUrlFactory.getUploadFileUrl();
     }
 
     private class DataSetPushHandler implements DataSetReadyCallback {

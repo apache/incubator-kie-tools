@@ -16,9 +16,12 @@
 package org.dashbuilder.dataset;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -143,13 +146,12 @@ public class DataSetDefRegistryCDI extends DataSetDefRegistryImpl implements CSV
         }
 
         try {
-            String defJson = getDataSetDefJsonMarshaller().toJsonString(def);
-            projectStorageServices.saveDataSet(def.getUUID(), defJson);
-
             // CSV specific
             if (def instanceof CSVDataSetDef) {
                 saveCSVFile((CSVDataSetDef) def);
             }
+            var defJson = getDataSetDefJsonMarshaller().toJsonString(def);
+            projectStorageServices.saveDataSet(def.getUUID(), defJson);
             super.registerDataSetDef(def,
                     subjectId,
                     message);
@@ -216,7 +218,7 @@ public class DataSetDefRegistryCDI extends DataSetDefRegistryImpl implements CSV
                                      String newName,
                                      String subjectId,
                                      String message) {
-        DataSetDef clone = def.clone();
+        var clone = def.clone();
         clone.setUUID(uuidGenerator.newUuid());
         clone.setName(newName);
         try {
@@ -229,6 +231,7 @@ public class DataSetDefRegistryCDI extends DataSetDefRegistryImpl implements CSV
                 var csvContent = projectStorageServices.getDataSetContent(csvName);
                 if (csvContent.isPresent()) {
                     projectStorageServices.saveDataSetContent(cloneCsvName, csvContent.get());
+                    csvCloneDef.setFilePath(cloneCsvName);
                 }
             }
             var defJson = getDataSetDefJsonMarshaller().toJsonString(clone);
@@ -261,7 +264,7 @@ public class DataSetDefRegistryCDI extends DataSetDefRegistryImpl implements CSV
 
     @Override
     public InputStream getCSVInputStream(CSVDataSetDef def) {
-        var csvName = resolveCsvName(def);
+        var csvName = Optional.ofNullable(def.getFilePath()).orElse(resolveCsvName(def));
         var csvContent = projectStorageServices.getDataSetContent(csvName);
         return csvContent.map(csv -> new ByteArrayInputStream(csv.getBytes(StandardCharsets.UTF_8))).orElse(null);
     }
@@ -274,11 +277,25 @@ public class DataSetDefRegistryCDI extends DataSetDefRegistryImpl implements CSV
 
     @Override
     public void saveCSVFile(CSVDataSetDef def) {
-        String path = def.getFilePath();
+        var path = def.getFilePath();
         if (StringUtils.isBlank(path)) {
             return;
         }
 
+        try {
+            var csvName = resolveCsvName(def);
+            var currentFile = projectStorageServices.getTempPath(path);
+            if (Files.exists(currentFile)) {
+                projectStorageServices.saveDataSetContent(csvName, Files.readString(currentFile));
+                projectStorageServices.removeTempContent(path);
+                def.setFilePath(csvName);
+            }
+        } catch (IOException e) {
+            log.error("Error saving dataset CSV content: " + e.getMessage());
+            log.debug("Error saving dataset CSV content.", e);
+        }
+        
+        
         // The CSV file was uploaded from UI to the temp directory => move the file to the definitions directory
         // TODO: Adjust upload tmp DIR  = grab the TMP and use the new storage
     }

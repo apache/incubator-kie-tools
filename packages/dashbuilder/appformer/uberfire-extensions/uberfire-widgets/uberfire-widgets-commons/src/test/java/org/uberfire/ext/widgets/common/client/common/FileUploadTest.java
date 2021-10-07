@@ -50,17 +50,6 @@ public class FileUploadTest {
                      "NewFile.txt");
     }
 
-    @Test
-    public void testSecuredFileName1() {
-        testFileName("c:\\fakepath\\newfile.txt",
-                     "newfile.txt");
-    }
-
-    @Test
-    public void testSecuredFileName2() {
-        testFileName("C:\\fakepath\\NewFile.txt",
-                     "NewFile.txt");
-    }
 
     private void testFileName(String fileInput,
                               String expected) {

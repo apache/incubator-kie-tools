@@ -115,6 +115,6 @@ public interface DataSetClientServices {
      *
      * @param path The path of the file.
      */
-    String getUploadFileUrl(String path);
+    String getUploadFileUrl();
     
 }

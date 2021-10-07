@@ -12,7 +12,7 @@ import org.uberfire.backend.vfs.Path;
 @ApplicationScoped
 public class PathUrlFactory {
 
-    private static final String UPLOAD_SERVLET_URL = "defaulteditor/upload";
+    private static final String UPLOAD_SERVLET_URL = "rest/dashbuilder/import";
     private static final String DOWNLOAD_SERVLET_URL = "defaulteditor/download";
 
     private String getUrl(String context, String path) {
@@ -45,7 +45,7 @@ public class PathUrlFactory {
      * <p>Returns the upload URL for a given file provided by a servlet method.</p>
      * @param path The path of the file.
      */
-    public String getUploadFileUrl(String path) {
-        return getUrl(UPLOAD_SERVLET_URL, path);
+    public String getUploadFileUrl() {
+        return GWT.getHostPageBaseURL() + UPLOAD_SERVLET_URL;
     }
 }

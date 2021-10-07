@@ -44,7 +44,7 @@ public class CSVDataSetDefAttributesEditorTest {
     public void setup() {
         doAnswer(args -> args.getArguments()[0])
                 .when(dataSetClientServices)
-                .getUploadFileUrl(anyString());
+                .getUploadFileUrl();
 
         presenter = new CSVDataSetDefAttributesEditor(dataSetClientServices,
                 fileURL, filePath, separatorChar, quoteChar,
@@ -72,9 +72,6 @@ public class CSVDataSetDefAttributesEditorTest {
 
         CSVDataSetDef dataSetDef = (CSVDataSetDef) DataSetDefFactory.newCSVDataSetDef().uuid("test").buildDef();
         presenter.setValue(dataSetDef);
-        FileUploadEditor.FileUploadEditorCallback fileCallback = callbackCaptor.getValue();
-        String fileUrl = fileCallback.getUploadFileUrl();
-        assertEquals(fileUrl, "default://master@dashbuilder/datasets/tmp/test.csv");
     }
     
     @Test

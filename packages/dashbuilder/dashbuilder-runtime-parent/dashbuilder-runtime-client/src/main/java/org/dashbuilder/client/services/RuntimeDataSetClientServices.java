@@ -194,7 +194,7 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
     }
 
     @Override
-    public String getUploadFileUrl(String path) {
+    public String getUploadFileUrl() {
         throw new IllegalArgumentException("Uploaded not supported");
     }
 

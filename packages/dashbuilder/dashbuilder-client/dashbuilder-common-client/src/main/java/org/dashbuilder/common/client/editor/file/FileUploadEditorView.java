@@ -2,6 +2,10 @@ package org.dashbuilder.common.client.editor.file;
 
 import javax.enterprise.context.Dependent;
 
+import org.gwtbootstrap3.client.ui.Tooltip;
+import org.gwtbootstrap3.client.ui.constants.Placement;
+import org.uberfire.ext.widgets.common.client.common.FileUpload;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -12,11 +16,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Widget;
-
-import org.gwtbootstrap3.client.ui.Tooltip;
-import org.gwtbootstrap3.client.ui.constants.Placement;
-import org.uberfire.ext.widgets.common.client.common.FileUpload;
-import org.uberfire.mvp.Command;
 
 /**
  * <p>The FileUploadEditor view.</p>
@@ -29,6 +28,7 @@ public class FileUploadEditorView extends Composite implements FileUploadEditor.
     private static final String STYLE_ERROR = " control-group has-error ";
 
     interface Binder extends UiBinder<Widget, FileUploadEditorView> {
+
         Binder BINDER = GWT.create(Binder.class);
     }
 
@@ -70,38 +70,25 @@ public class FileUploadEditorView extends Composite implements FileUploadEditor.
     }
 
     private FileUpload createFileUpload() {
-        return new FileUpload( new Command() {
-            @Override
-            public void execute() {
-                presenter.fileUploadHandler();
-            }
-        }, true );
+        return new FileUpload(() -> presenter.fileUploadHandler(), true);
     }
 
     private void initFormPanel() {
-        formPanel.setEncoding( FormPanel.ENCODING_MULTIPART );
-        formPanel.setMethod( FormPanel.METHOD_POST );
-        formPanel.setWidget( fileUpload );
-        formPanel.addSubmitHandler(new FormPanel.SubmitHandler() {
-            @Override
-            public void onSubmit(final FormPanel.SubmitEvent event) {
-                final boolean isFireEvent = presenter.onSubmit();
-                if (!isFireEvent) {
-                    event.cancel();
-                }
+        formPanel.setEncoding(FormPanel.ENCODING_MULTIPART);
+        formPanel.setMethod(FormPanel.METHOD_POST);
+        formPanel.setWidget(fileUpload);
+        formPanel.addSubmitHandler(event -> {
+            final var isFireEvent = presenter.onSubmit();
+            if (!isFireEvent) {
+                event.cancel();
             }
         });
-        formPanel.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
-            @Override
-            public void onSubmitComplete(final FormPanel.SubmitCompleteEvent event) {
-                presenter.onSubmitComplete(event.getResults());
-            }
-        });
+        formPanel.addSubmitCompleteHandler(event -> presenter.onSubmitComplete(event.getResults()));
     }
 
     @Override
     public FileUploadEditor.View addHelpContent(final String title, final String content, final Placement placement) {
-        final Tooltip tooltip = new Tooltip(fileUpload);
+        final var tooltip = new Tooltip(fileUpload);
         tooltip.setContainer("body");
         tooltip.setShowDelayMs(1000);
         tooltip.setPlacement(placement);
@@ -147,7 +134,7 @@ public class FileUploadEditorView extends Composite implements FileUploadEditor.
 
     @Override
     public FileUploadEditor.View setFormAction(final String action) {
-        formPanel.setAction( action );
+        formPanel.setAction(action);
         return this;
     }
 
@@ -170,7 +157,7 @@ public class FileUploadEditorView extends Composite implements FileUploadEditor.
         errorTooltip.setTitle("");
         return this;
     }
-    
+
     @Override
     public FileUploadEditor.View setAccept(String type) {
         fileUpload.setAccept(type);

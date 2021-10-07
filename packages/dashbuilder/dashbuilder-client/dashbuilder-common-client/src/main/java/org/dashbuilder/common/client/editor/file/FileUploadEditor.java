@@ -33,7 +33,7 @@ import static org.uberfire.workbench.events.NotificationEvent.NotificationType.S
  */
 @Dependent
 public class FileUploadEditor implements IsWidget, LeafAttributeEditor<String> {
-
+        
     public interface View extends UberView<FileUploadEditor> {
 
         View addHelpContent(final String title, final String content, final Placement placement);
@@ -90,7 +90,7 @@ public class FileUploadEditor implements IsWidget, LeafAttributeEditor<String> {
     public void init() {
         view.init(this);
         view.setLoadingImageVisible(false);
-        view.setFileUploadName("fileUpload");
+        view.setFileUploadName("selectedFile");
     }
 
     public void configure(final String fileUploadName, final FileUploadEditorCallback callback) {
@@ -162,7 +162,7 @@ public class FileUploadEditor implements IsWidget, LeafAttributeEditor<String> {
     }
 
     boolean onSubmit() {
-        final String fileName = view.getFileName();
+        final var fileName = view.getFileName();
         if ( isNullOrEmpty( fileName ) ) {
             return false;
         } else {

@@ -46,7 +46,7 @@ public class DataTransferResource {
 
     @Inject
     private DataTransferServices dataTransferServices;
-    
+
     @Inject
     private ProjectStorageServices projectStorageServices;
 
@@ -63,20 +63,26 @@ public class DataTransferResource {
             logger.error(errorMessage);
             logger.debug("Not able to create export.", e);
             return Response.serverError()
-                           .entity(errorMessage)
-                           .build();
+                    .entity(errorMessage)
+                    .build();
         }
     }
-    
 
     @POST
     @Path("import")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadFile(@MultipartForm FileUploadModel form) throws IOException {
+        var fileName = getFileName(form);
         var inputBytes = form.getFileData();
-        var importPath = projectStorageServices.createTempPath(DataTransferServices.IMPORT_FILE_NAME);
+        var importPath = projectStorageServices.createTempPath(fileName);
         Files.write(importPath, inputBytes);
-        return Response.created(URI.create(DataTransferServices.IMPORT_FILE_NAME)).build();
+        return Response.created(URI.create(fileName)).build();
     }
-    
+
+    String getFileName(FileUploadModel form) {
+        var fileName = form.getFileName() == null || form.getFileName().trim().isEmpty()
+                ? DataTransferServices.IMPORT_FILE_NAME : form.getFileName();
+        return Paths.get(fileName).toFile().getName();
+    }
+
 }

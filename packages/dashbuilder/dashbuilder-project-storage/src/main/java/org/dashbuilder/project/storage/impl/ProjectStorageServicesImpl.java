@@ -233,6 +233,9 @@ public class ProjectStorageServicesImpl implements ProjectStorageServices {
     @Override
     public Optional<String> getDataSetContent(String name) {
         var path = dataSetsPath.resolve(name);
+        if (!Files.exists(path)) {
+            path = getTempPath(name);
+        } 
         return getContentFrom(path);
     }
 

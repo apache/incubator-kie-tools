@@ -23,6 +23,7 @@
     <b:InputGroup>
         <b:Input ui:field="file" type="FILE" visible="false"/>
         <b:Input ui:field="fileText" type="TEXT"/>
+        <b:Input ui:field="inputFileName" type="TEXT" visible="false"/>
         <b:InputGroupAddon ui:field="chooseButton" icon="FILE_O" iconPosition="RIGHT" title="{i18n.ChooseFile}" addStyleNames="btn btn-default"/>
         <b:InputGroupAddon ui:field="uploadButton" icon="UPLOAD" iconPosition="RIGHT" title="{i18n.Upload}" addStyleNames="btn btn-default"/>
     </b:InputGroup>

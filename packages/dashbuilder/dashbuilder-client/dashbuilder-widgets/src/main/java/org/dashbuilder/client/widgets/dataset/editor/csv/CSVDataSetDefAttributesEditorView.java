@@ -95,16 +95,6 @@ public class CSVDataSetDefAttributesEditorView extends Composite implements CSVD
         filePathRow.setVisible(false);
     }
 
-    final ClickHandler useFilePathButtonHandler = new ClickHandler() {
-        @Override
-        public void onClick(final ClickEvent event) {
-            presenter.onUseFilePathButtonClick();
-        }
-    };
-    final ClickHandler useFileURLButtonHandler = new ClickHandler() {
-        @Override
-        public void onClick(final ClickEvent event) {
-            presenter.onUseFileURLButtonClick();
-        }
-    };
+    final ClickHandler useFilePathButtonHandler = event -> presenter.onUseFilePathButtonClick();
+    final ClickHandler useFileURLButtonHandler = event -> presenter.onUseFileURLButtonClick();
 }
