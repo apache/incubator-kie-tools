@@ -47,8 +47,8 @@ export class WorkspaceService {
   }
 
   public async listFiles(descriptor: WorkspaceDescriptor, globPattern?: string): Promise<WorkspaceFile[]> {
-    const contextPath = await this.resolveContextPath(descriptor);
-    const storageFiles = await this.storageService.getFiles(contextPath, globPattern);
+    const rootPath = await this.resolveRootPath(descriptor);
+    const storageFiles = await this.storageService.getFiles(rootPath, globPattern);
     return this.toWorkspaceFiles(storageFiles);
   }
 
@@ -57,17 +57,17 @@ export class WorkspaceService {
   }
 
   public async getByFilePath(path: string): Promise<WorkspaceDescriptor> {
-    const contextMatches = path.match(/\/(.+?)\//);
+    const rootPathMatches = path.match(/\/(.+?)\//);
 
-    if (!contextMatches || contextMatches.length < 2) {
+    if (!rootPathMatches || rootPathMatches.length < 2) {
       throw new Error(`Invalid path: ${path}`);
     }
 
-    const context = contextMatches[1];
-    const descriptor = await this.get(context);
+    const rootPath = rootPathMatches[1];
+    const descriptor = await this.get(rootPath);
 
     if (!descriptor) {
-      throw new Error(`Workspace ${context} not found`);
+      throw new Error(`Workspace ${rootPath} not found`);
     }
 
     return descriptor;
@@ -174,15 +174,15 @@ export class WorkspaceService {
     }
   }
 
-  public newContext(): string {
+  public newRootPath(): string {
     return uuid();
   }
 
   public async prepareZip(descriptor: WorkspaceDescriptor): Promise<Blob> {
-    const contextPath = await this.resolveContextPath(descriptor);
+    const rootPath = await this.resolveRootPath(descriptor);
 
     const zip = new JSZip();
-    const storageFiles = await this.storageService.getFiles(contextPath, SUPPORTED_FILES_PATTERN);
+    const storageFiles = await this.storageService.getFiles(rootPath, SUPPORTED_FILES_PATTERN);
 
     for (const file of this.toWorkspaceFiles(storageFiles)) {
       zip.file(file.pathRelativeToWorkspaceRoot, (await file.getFileContents()) ?? "");
@@ -191,13 +191,13 @@ export class WorkspaceService {
     return await zip.generateAsync({ type: "blob" });
   }
 
-  public async resolveContextPath(descriptor: WorkspaceDescriptor): Promise<string> {
-    const contextPath = `${this.storageService.rootPath}${descriptor.workspaceId}`;
-    if (!(await this.storageService.exists(contextPath))) {
-      throw new Error(`Context ${context} does not exist`);
+  public async resolveRootPath(descriptor: WorkspaceDescriptor): Promise<string> {
+    const rootPath = `${this.storageService.rootPath}${descriptor.workspaceId}`;
+    if (!(await this.storageService.exists(rootPath))) {
+      throw new Error(`Root ${rootPath} does not exist`);
     }
 
-    return contextPath;
+    return rootPath;
   }
 
   private async configAsFile(getFileContents: () => Promise<string>) {

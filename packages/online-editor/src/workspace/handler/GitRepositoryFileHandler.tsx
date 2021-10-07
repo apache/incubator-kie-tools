@@ -17,12 +17,12 @@
 import { WorkspaceFile } from "../WorkspacesContext";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { GitHubRepositoryOrigin } from "../model/WorkspaceOrigin";
-import { AuthInfo, GitService } from "../services/GitService";
+import { GitService } from "../services/GitService";
 import { SUPPORTED_FILES_EDITABLE_PATTERN } from "../SupportedFiles";
 import { FileHandler, FileHandlerCommonArgs } from "./FileHandler";
 
 export interface GitRepositoryFileHandlerArgs extends FileHandlerCommonArgs {
-  authInfo: AuthInfo;
+  authInfo: { name: string; email: string; onAuth: () => { username: string; password: string } };
   repositoryUrl: URL;
   sourceBranch: string;
   gitService: GitService;
@@ -36,29 +36,29 @@ export class GitRepositoryFileHandler extends FileHandler {
   }
 
   public async store(descriptor: WorkspaceDescriptor): Promise<WorkspaceFile[]> {
-    const contextPath = await this.workspaceService.resolveContextPath(descriptor);
+    const rootPath = await this.workspaceService.resolveRootPath(descriptor);
     await this.args.gitService.clone({
-      contextPath: contextPath,
+      rootPath: rootPath,
       authInfo: this.args.authInfo,
       repositoryUrl: this.args.repositoryUrl,
       sourceBranch: this.args.sourceBranch,
     });
-    return await this.workspaceService.getFiles(contextPath);
+    return await this.workspaceService.getFiles(rootPath);
   }
 
   public async sync(descriptor: WorkspaceDescriptor): Promise<void> {
-    const contextPath = await this.workspaceService.resolveContextPath(descriptor);
-    const files = await this.workspaceService.getFiles(contextPath, SUPPORTED_FILES_EDITABLE_PATTERN);
+    const rootPath = await this.workspaceService.resolveRootPath(descriptor);
+    const files = await this.workspaceService.getFiles(rootPath, SUPPORTED_FILES_EDITABLE_PATTERN);
     const targetBranch = (descriptor.origin as GitHubRepositoryOrigin).branch;
     await this.args.gitService.gitCommit({
-      contextPath: contextPath,
+      rootPath: rootPath,
       message: this.COMMIT_MESSAGE,
       authInfo: this.args.authInfo,
       files: files,
       targetBranch: targetBranch,
     });
     await this.args.gitService.gitPush({
-      contextPath: contextPath,
+      rootPath: rootPath,
       authInfo: this.args.authInfo,
       targetBranch: targetBranch,
     });

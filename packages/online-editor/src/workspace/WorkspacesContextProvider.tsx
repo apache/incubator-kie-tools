@@ -62,7 +62,7 @@ export function WorkspacesContextProvider(props: Props) {
   const createWorkspaceFromLocal = useCallback(
     async (files: LocalFile[]) => {
       const descriptor: WorkspaceDescriptor = {
-        workspaceId: workspaceService.newContext(),
+        workspaceId: workspaceService.newRootPath(),
         name: NEW_WORKSPACE_DEFAULT_NAME,
         origin: { kind: WorkspaceKind.LOCAL },
         createdDateISO: new Date().toISOString(),
@@ -91,7 +91,7 @@ export function WorkspacesContextProvider(props: Props) {
       }
 
       const descriptor: WorkspaceDescriptor = {
-        workspaceId: workspaceService.newContext(),
+        workspaceId: workspaceService.newRootPath(),
         name: NEW_WORKSPACE_DEFAULT_NAME,
         origin: { url: repositoryUrl, branch: sourceBranch, kind: WorkspaceKind.GITHUB_REPOSITORY },
         createdDateISO: new Date().toISOString(),
