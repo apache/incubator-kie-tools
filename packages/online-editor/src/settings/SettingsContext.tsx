@@ -82,13 +82,14 @@ export function SettingsContextProvider(props: any) {
   const [activeTab, setActiveTab] = useState(SettingsTabs.GITHUB);
 
   useEffect(() => {
+    console.info(queryParams);
     setOpen(!!queryParams.get(QueryParams.SETTINGS));
     setActiveTab((queryParams.get(QueryParams.SETTINGS) as SettingsTabs) ?? SettingsTabs.GITHUB);
   }, [queryParams]);
 
   const open = useCallback(
     (activeTab = SettingsTabs.GITHUB) => {
-      history.push({
+      history.replace({
         search: queryParams.with(QueryParams.SETTINGS, activeTab).toString(),
       });
     },
@@ -96,7 +97,7 @@ export function SettingsContextProvider(props: any) {
   );
 
   const close = useCallback(() => {
-    history.push({
+    history.replace({
       search: queryParams.without(QueryParams.SETTINGS).toString(),
     });
   }, [history, queryParams]);

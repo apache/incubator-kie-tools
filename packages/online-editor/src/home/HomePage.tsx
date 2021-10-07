@@ -42,7 +42,6 @@ import {
   DrawerHead,
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
-import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
 import {
   DataList,
   DataListCell,
@@ -52,6 +51,9 @@ import {
 } from "@patternfly/react-core/dist/js/components/DataList";
 import { Link } from "react-router-dom";
 import { DeleteDropdownWithConfirmation } from "../editor/DeleteDropdownWithConfirmation";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
+import { QueryParams } from "../common/Routes";
+import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
 
 export function HomePage() {
   const globals = useGlobals();
@@ -99,7 +101,31 @@ export function HomePage() {
     });
   }, [filesToUpload, workspaces, history, globals]);
 
-  const [expandedWorkspace, setExpandedWorkspace] = useState<WorkspaceDescriptor>();
+  const queryParams = useQueryParams();
+
+  const expandQueryParam = useMemo(() => {
+    return queryParams.get(QueryParams.EXPAND);
+  }, [queryParams]);
+
+  const closeExpandedWorkspace = useCallback(() => {
+    history.replace({ pathname: globals.routes.home.path({}) });
+  }, [history, globals]);
+
+  const expandWorkspace = useCallback(
+    (workspace: WorkspaceDescriptor) => {
+      const expand = workspace.workspaceId !== expandQueryParam ? workspace.workspaceId : undefined;
+      if (!expand) {
+        closeExpandedWorkspace();
+        return;
+      }
+
+      history.replace({
+        pathname: globals.routes.home.path({}),
+        search: globals.routes.home.queryString({ expand }),
+      });
+    },
+    [closeExpandedWorkspace, history, globals, expandQueryParam]
+  );
 
   return (
     <OnlineEditorPage>
@@ -238,12 +264,12 @@ export function HomePage() {
               rejected={() => <></>}
               resolved={(workspaceDescriptors) => {
                 return (
-                  <Drawer isExpanded={!!expandedWorkspace} isInline={true}>
+                  <Drawer isExpanded={!!expandQueryParam} isInline={true}>
                     <DrawerContent
                       panelContent={
                         <WorkspacesListDrawerPanelContent
-                          workspaceDescriptor={expandedWorkspace}
-                          onClose={() => setExpandedWorkspace(undefined)}
+                          workspaceId={expandQueryParam}
+                          onClose={closeExpandedWorkspace}
                         />
                       }
                     >
@@ -255,10 +281,8 @@ export function HomePage() {
                                 <StackItem key={workspace.workspaceId}>
                                   <WorkspaceCard
                                     workspaceId={workspace.workspaceId}
-                                    onSelect={() => {
-                                      setExpandedWorkspace((prev) => (prev === workspace ? undefined : workspace));
-                                    }}
-                                    isSelected={workspace === expandedWorkspace}
+                                    onSelect={() => expandWorkspace(workspace)}
+                                    isSelected={workspace.workspaceId === expandQueryParam}
                                   />
                                 </StackItem>
                               ))}
@@ -530,12 +554,9 @@ function CreateNewCard(props: { title: string; extension: SupportedFileExtension
   );
 }
 
-export function WorkspacesListDrawerPanelContent(props: {
-  workspaceDescriptor: WorkspaceDescriptor | undefined;
-  onClose: () => void;
-}) {
+export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | undefined; onClose: () => void }) {
   const globals = useGlobals();
-  const workspacePromise = useWorkspacePromise(props.workspaceDescriptor?.workspaceId);
+  const workspacePromise = useWorkspacePromise(props.workspaceId);
   return (
     <DrawerPanelContent isResizable={true} minSize={"40%"} maxSize={"80%"}>
       <DrawerHead>
@@ -562,7 +583,7 @@ export function WorkspacesListDrawerPanelContent(props: {
                       {SUPPORTED_FILES_EDITABLE.includes(file.extension) ? (
                         <Link
                           to={globals.routes.workspaceWithFilePath.path({
-                            workspaceId: props.workspaceDescriptor?.workspaceId ?? "",
+                            workspaceId: workspacePromise.data?.descriptor.workspaceId ?? "",
                             filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
                             extension: file.extension,
                           })}

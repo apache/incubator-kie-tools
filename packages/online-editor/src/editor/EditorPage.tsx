@@ -40,6 +40,7 @@ import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { PromiseStateWrapper, useCombinedPromiseState } from "../workspace/hooks/PromiseState";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { OnlineEditorPage } from "../home/pageTemplate/OnlineEditorPage";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
 
 export interface Props {
   forExtension: SupportedFileExtensions;
@@ -94,6 +95,8 @@ export function EditorPage(props: Props) {
     }, [i18n])
   );
 
+  const queryParams = useQueryParams();
+
   // keep the page in sync with the name of `workspaceFilePromise`, even if changes
   useEffect(() => {
     if (!workspaceFilePromise.data) {
@@ -106,8 +109,9 @@ export function EditorPage(props: Props) {
         filePath: workspaceFilePromise.data.pathRelativeToWorkspaceRootWithoutExtension,
         extension: workspaceFilePromise.data.extension,
       }),
+      search: queryParams.toString(),
     });
-  }, [history, globals, workspaceFilePromise]);
+  }, [history, globals, workspaceFilePromise, queryParams]);
 
   // update EmbeddedEditorFile, but only if content is different than what was saved
   useCancelableEffect(
