@@ -27,7 +27,6 @@ const editor = DmnEditor.open({
   container: document.getElementById("dmn-editor-container"),
   initialContent: Promise.resolve(""),
   readOnly: false,
-  origin: "",
   resources: new Map([
     [
       "MyIncludedModel.dmn",
@@ -40,7 +39,7 @@ const editor = DmnEditor.open({
 });
 ```
 
-Parameters description:
+Available parameters:
 
 - `container`: HTML element in which the Editor will be appended to.
 - `initialContent`: Promise to a DMN model content. Can be empty. Examples:
