@@ -86,11 +86,6 @@ export class Cell {
 
     const children = [].slice.call((refSibling as HTMLElement).querySelectorAll(`.${this.getHeaderType()}`));
     const childrenRects = children.map((c: HTMLElement) => c.getBoundingClientRect());
-
-    if (childrenRects.length === 0) {
-      return;
-    }
-
     const x = Math.min(...childrenRects.map((c: DOMRect) => c.x));
     const right = Math.max(...childrenRects.map((c: DOMRect) => c.right));
 

@@ -72,10 +72,6 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   useLayoutEffect(() => {
     function listener(event: CustomEvent) {
       const width = Math.round(event.detail.width);
-      if (width === resizerWidth) {
-        return;
-      }
-
       setResizerWidth(width);
       onHorizontalResizeStop?.(width);
     }
