@@ -48,41 +48,65 @@ export class BpmnEditorEnvelopeApiImpl
 
   public async canvas_getNodeIds() {
     const editor = this.bpmnArgs.view().getEditor();
-    return editor?.getNodeIds() ?? [];
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.getNodeIds();
   }
 
-  public async canvas_getBackgroundColor(UUID: string) {
+  public async canvas_getBackgroundColor(uuid: string) {
     const editor = this.bpmnArgs.view().getEditor();
-    return editor?.getBackgroundColor(UUID) ?? "";
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.getBackgroundColor(uuid);
   }
 
-  public async canvas_setBackgroundColor(UUID: string, backgroundColor: string) {
+  public async canvas_setBackgroundColor(uuid: string, backgroundColor: string) {
     const editor = this.bpmnArgs.view().getEditor();
-    return editor?.setBackgroundColor(UUID, backgroundColor);
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.setBackgroundColor(uuid, backgroundColor);
   }
 
-  public async canvas_getBorderColor(UUID: string) {
+  public async canvas_getBorderColor(uuid: string) {
     const editor = this.bpmnArgs.view().getEditor();
-    return editor?.getBorderColor(UUID) ?? "";
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.getBorderColor(uuid);
   }
 
-  public async canvas_setBorderColor(UUID: string, borderColor: string) {
+  public async canvas_setBorderColor(uuid: string, borderColor: string) {
     const editor = this.bpmnArgs.view().getEditor();
-    return editor?.setBorderColor(UUID, borderColor);
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.setBorderColor(uuid, borderColor);
   }
 
-  public async canvas_getLocation(UUID: string) {
+  public async canvas_getLocation(uuid: string) {
     const editor = this.bpmnArgs.view().getEditor();
-    return editor?.getLocation(UUID) ?? [];
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.getLocation(uuid);
   }
 
-  public async canvas_getAbsoluteLocation(UUID: string) {
+  public async canvas_getAbsoluteLocation(uuid: string) {
     const editor = this.bpmnArgs.view().getEditor();
-    return editor?.getAbsoluteLocation(UUID) ?? [];
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.getAbsoluteLocation(uuid);
   }
 
-  public async canvas_getDimensions(UUID: string) {
+  public async canvas_getDimensions(uuid: string) {
     const editor = this.bpmnArgs.view().getEditor();
-    return editor?.getDimensions(UUID) ?? [];
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.getDimensions(uuid);
   }
 }

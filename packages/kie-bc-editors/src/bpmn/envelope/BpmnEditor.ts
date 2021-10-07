@@ -36,31 +36,31 @@ export class BpmnEditorImpl extends GwtEditorWrapper implements BpmnEditor {
     return window.canvas.getNodeIds();
   }
 
-  public getBackgroundColor(UUID: string) {
-    return window.canvas.getBackgroundColor(UUID);
+  public getBackgroundColor(uuid: string) {
+    return window.canvas.getBackgroundColor(uuid);
   }
 
-  public setBackgroundColor(UUID: string, backgroundColor: string) {
-    window.canvas.setBackgroundColor(UUID, backgroundColor);
+  public setBackgroundColor(uuid: string, backgroundColor: string) {
+    window.canvas.setBackgroundColor(uuid, backgroundColor);
   }
 
-  public getBorderColor(UUID: string) {
-    return window.canvas.getBorderColor(UUID);
+  public getBorderColor(uuid: string) {
+    return window.canvas.getBorderColor(uuid);
   }
 
-  public setBorderColor(UUID: string, borderColor: string) {
-    window.canvas.setBorderColor(UUID, borderColor);
+  public setBorderColor(uuid: string, borderColor: string) {
+    window.canvas.setBorderColor(uuid, borderColor);
   }
 
-  public getLocation(UUID: string) {
-    return window.canvas.getLocation(UUID);
+  public getLocation(uuid: string) {
+    return window.canvas.getLocation(uuid);
   }
 
-  public getAbsoluteLocation(UUID: string) {
-    return window.canvas.getAbsoluteLocation(UUID);
+  public getAbsoluteLocation(uuid: string) {
+    return window.canvas.getAbsoluteLocation(uuid);
   }
 
-  public getDimensions(UUID: string) {
-    return window.canvas.getDimensions(UUID);
+  public getDimensions(uuid: string) {
+    return window.canvas.getDimensions(uuid);
   }
 }

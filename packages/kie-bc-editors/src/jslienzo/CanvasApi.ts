@@ -28,58 +28,58 @@ export interface CanvasApi {
    * Returns a background color of a node with provided UUID.
    * Returned string is a hex number of the color.
    *
-   * @param UUID ID attribute of the queried node
+   * @param uuid ID attribute of the queried node
    */
-  getBackgroundColor(UUID: string): string;
+  getBackgroundColor(uuid: string): string;
 
   /**
    * Sets a background color of a node with provided UUID.
    *
-   * @param UUID ID attribute of the target node
+   * @param uuid ID attribute of the target node
    * @param backgroundColor hex number of the desired color as string
    */
-  setBackgroundColor(UUID: string, backgroundColor: string): void;
+  setBackgroundColor(uuid: string, backgroundColor: string): void;
 
   /**
    * Returns a border color of a node with provided UUID.
    * Returned string is a hex number of the color.
    *
-   * @param UUID ID attribute of the target node
+   * @param uuid ID attribute of the target node
    */
-  getBorderColor(UUID: string): string;
+  getBorderColor(uuid: string): string;
 
   /**
    * Sets a border color of a node with provided UUID.
    *
-   * @param UUID ID attribute of the target node
+   * @param uuid ID attribute of the target node
    * @param backgroundColor hex number of the desired color as string
    */
-  setBorderColor(UUID: string, backgroundColor: string): void;
+  setBorderColor(uuid: string, backgroundColor: string): void;
 
   /**
    * Returns a canvas location of a node with provided UUID.
    * Returns an array where first position is X-attribute
    * and second position is Y-attribute in the context of canvas.
    *
-   * @param UUID ID attribute of the target node
+   * @param uuid ID attribute of the target node
    */
-  getLocation(UUID: string): number[];
+  getLocation(uuid: string): number[];
 
   /**
    * Returns a window location fo a node with provided UUID.
    * Returns an array where first position is X-attribute
    * and second position is Y-attribute in the context of window
    *
-   * @param UUID ID attribute of target node
+   * @param uuid ID attribute of target node
    */
-  getAbsoluteLocation(UUID: string): number[];
+  getAbsoluteLocation(uuid: string): number[];
 
   /**
    * Returns dimensions of a node with provided UUID.
    *
-   * @param UUID ID attribute of a target node
+   * @param uuid ID attribute of a target node
    */
-  getDimensions(UUID: string): number[];
+  getDimensions(uuid: string): number[];
 }
 
 /**
@@ -89,17 +89,17 @@ export interface CanvasApi {
 export interface CanvasEnvelopeApi {
   canvas_getNodeIds(): Promise<string[]>;
 
-  canvas_getBackgroundColor(UUID: string): Promise<string>;
+  canvas_getBackgroundColor(uuid: string): Promise<string>;
 
-  canvas_setBackgroundColor(UUID: string, backgroundColor: string): Promise<void>;
+  canvas_setBackgroundColor(uuid: string, backgroundColor: string): Promise<void>;
 
-  canvas_getBorderColor(UUID: string): Promise<string>;
+  canvas_getBorderColor(uuid: string): Promise<string>;
 
-  canvas_setBorderColor(UUID: string, borderColor: string): Promise<void>;
+  canvas_setBorderColor(uuid: string, borderColor: string): Promise<void>;
 
-  canvas_getLocation(UUID: string): Promise<number[]>;
+  canvas_getLocation(uuid: string): Promise<number[]>;
 
-  canvas_getAbsoluteLocation(UUID: string): Promise<number[]>;
+  canvas_getAbsoluteLocation(uuid: string): Promise<number[]>;
 
-  canvas_getDimensions(UUID: string): Promise<number[]>;
+  canvas_getDimensions(uuid: string): Promise<number[]>;
 }
