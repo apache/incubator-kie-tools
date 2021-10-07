@@ -39,7 +39,7 @@ const editor = DmnEditor.open({
 });
 ```
 
-Parameters description:
+Available parameters:
 
 - `container`: HTML element in which the Editor will be appended to.
 - `initialContent`: Promise to a DMN model content. Can be empty. Examples:
