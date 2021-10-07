@@ -149,21 +149,20 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
                   )}
                   <StackItem className="mining-schema__fields">
                     <section>
-                      {miningSchema === undefined ||
-                        (miningSchema?.MiningField.length === 0 && (
-                          <>
-                            {fields.length === 0 && (
-                              <Bullseye style={{ height: "40vh" }}>
-                                <NoMiningSchemaFieldsOptions />
-                              </Bullseye>
-                            )}{" "}
-                            {fields.length > 0 && (
-                              <Bullseye style={{ height: "40vh" }}>
-                                <EmptyMiningSchema />
-                              </Bullseye>
-                            )}
-                          </>
-                        ))}
+                      {(miningSchema === undefined || miningSchema?.MiningField.length === 0) && (
+                        <>
+                          {fields.length === 0 && (
+                            <Bullseye style={{ height: "40vh" }}>
+                              <NoMiningSchemaFieldsOptions />
+                            </Bullseye>
+                          )}{" "}
+                          {fields.length > 0 && (
+                            <Bullseye style={{ height: "40vh" }}>
+                              <EmptyMiningSchema />
+                            </Bullseye>
+                          )}
+                        </>
+                      )}
                       {miningSchema && miningSchema.MiningField.length > 0 && (
                         <>
                           <MiningSchemaFields
