@@ -353,3 +353,34 @@ jobs:
           asset_path: "${{ github.workspace }}/kogito-tooling/packages/extended-services/dist/win32/kie_tooling_extended_services.exe"
           asset_name: "STAGING__kie_tooling_extended_services_windows_${{ needs.create_release.outputs.tag }}.exe"
           asset_content_type: application/octet-stream
+  dashbuilder:
+    runs-on: ${{ matrix.os }}
+    needs: [prepare]
+    strategy:
+      matrix:
+        os: ubuntu-latest
+    steps:
+      - name: "STAGING: Checkout"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.prepare.outputs.release_ref }}
+
+      - name: "STAGING: Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ubuntu-latest
+
+      - name: "STAGING: Build"
+        shell: bash
+        run: |
+          lerna run build:prod --scope=@kogito-tooling/dashbuilder --include-dependencies --stream
+
+      - name: "STAGING: Upload DashBuilder Assets"
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: ./packages/dashbuilder/dist/dashbuilder_dist.zip
+          asset_name: STAGING_dashbuilder_dist_${{ needs.prepare.outputs.version }}.zip
+          asset_content_type: application/zip
