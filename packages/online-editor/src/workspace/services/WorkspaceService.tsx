@@ -176,7 +176,7 @@ export class WorkspaceService {
     const storageFiles = await this.storageService.getFiles(workspaceRootPath, SUPPORTED_FILES_PATTERN);
 
     for (const file of this.toWorkspaceFiles(descriptor.workspaceId, storageFiles)) {
-      zip.file(file.pathRelativeToWorkspaceRoot, (await file.getFileContents()) ?? "");
+      zip.file(file.relativePath, (await file.getFileContents()) ?? "");
     }
 
     return await zip.generateAsync({ type: "blob" });
@@ -203,19 +203,16 @@ export class WorkspaceService {
       const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
       broadcastChannel1.postMessage({
         type: "ADD",
-        pathRelativeToWorkspaceRoot: file.pathRelativeToWorkspaceRoot,
+        relativePath: file.relativePath,
       } as WorkspaceFileEvents);
       broadcastChannel2.postMessage({
         type: "ADD_FILE",
-        pathRelativeToWorkspaceRoot: file.pathRelativeToWorkspaceRoot,
+        relativePath: file.relativePath,
       } as WorkspaceEvents);
     }
   }
 
-  public async getFile(args: {
-    workspaceId: string;
-    pathRelativeToWorkspaceRoot: string;
-  }): Promise<WorkspaceFile | undefined> {
+  public async getFile(args: { workspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined> {
     const absolutePath = this.getAbsolutePath(args);
     console.info(`Reading file '${absolutePath}'`);
     const storageFile = await this.storageService.getFile(absolutePath);
@@ -233,7 +230,7 @@ export class WorkspaceService {
     await this.storageService.updateFile(
       this.toStorageFile(
         new WorkspaceFile({
-          pathRelativeToWorkspaceRoot: file.pathRelativeToWorkspaceRoot,
+          relativePath: file.relativePath,
           workspaceId: file.workspaceId,
           getFileContents: getNewContents,
         })
@@ -247,11 +244,11 @@ export class WorkspaceService {
       const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
       broadcastChannel1.postMessage({
         type: "UPDATE",
-        pathRelativeToWorkspaceRoot: file.pathRelativeToWorkspaceRoot,
+        relativePath: file.relativePath,
       } as WorkspaceFileEvents);
       broadcastChannel2.postMessage({
         type: "UPDATE_FILE",
-        pathRelativeToWorkspaceRoot: file.pathRelativeToWorkspaceRoot,
+        relativePath: file.relativePath,
       } as WorkspaceEvents);
     }
   }
@@ -266,11 +263,11 @@ export class WorkspaceService {
       const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
       broadcastChannel1.postMessage({
         type: "DELETE",
-        pathRelativeToWorkspaceRoot: file.pathRelativeToWorkspaceRoot,
+        relativePath: file.relativePath,
       } as WorkspaceFileEvents);
       broadcastChannel2.postMessage({
         type: "DELETE_FILE",
-        pathRelativeToWorkspaceRoot: file.pathRelativeToWorkspaceRoot,
+        relativePath: file.relativePath,
       } as WorkspaceEvents);
     }
   }
@@ -291,17 +288,17 @@ export class WorkspaceService {
       const broadcastChannel3 = new BroadcastChannel(file.workspaceId);
       broadcastChannel1.postMessage({
         type: "RENAME",
-        oldPathRelativeToWorkspaceRoot: file.pathRelativeToWorkspaceRoot,
-        newPathRelativeToWorkspaceRoot: renamedWorkspaceFile.pathRelativeToWorkspaceRoot,
+        oldRelativePath: file.relativePath,
+        newRelativePath: renamedWorkspaceFile.relativePath,
       } as WorkspaceFileEvents);
       broadcastChannel2.postMessage({
         type: "ADD",
-        pathRelativeToWorkspaceRoot: renamedWorkspaceFile.pathRelativeToWorkspaceRoot,
+        relativePath: renamedWorkspaceFile.relativePath,
       } as WorkspaceFileEvents);
       broadcastChannel3.postMessage({
         type: "RENAME_FILE",
-        oldPathRelativeToWorkspaceRoot: file.pathRelativeToWorkspaceRoot,
-        newPathRelativeToWorkspaceRoot: renamedWorkspaceFile.pathRelativeToWorkspaceRoot,
+        oldRelativePath: file.relativePath,
+        newRelativePath: renamedWorkspaceFile.relativePath,
       } as WorkspaceEvents);
     }
 
@@ -323,13 +320,13 @@ export class WorkspaceService {
       const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
       broadcastChannel1.postMessage({
         type: "MOVE",
-        oldPathRelativeToWorkspaceRoot: file.pathRelativeToWorkspaceRoot,
-        newPathRelativeToWorkspaceRoot: movedWorkspaceFile.pathRelativeToWorkspaceRoot,
+        oldRelativePath: file.relativePath,
+        newRelativePath: movedWorkspaceFile.relativePath,
       } as WorkspaceFileEvents);
       broadcastChannel2.postMessage({
         type: "MOVE_FILE",
-        oldPathRelativeToWorkspaceRoot: file.pathRelativeToWorkspaceRoot,
-        newPathRelativeToWorkspaceRoot: movedWorkspaceFile.pathRelativeToWorkspaceRoot,
+        oldRelativePath: file.relativePath,
+        newRelativePath: movedWorkspaceFile.relativePath,
       } as WorkspaceEvents);
     }
 
@@ -346,7 +343,7 @@ export class WorkspaceService {
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(files[0].workspaceId);
 
-      const pathsRelativeToWorkspaceRoot = files.map((file) => file.pathRelativeToWorkspaceRoot);
+      const pathsRelativeToWorkspaceRoot = files.map((file) => file.relativePath);
       const broadcastChannel = new BroadcastChannel(files[0].workspaceId);
       broadcastChannel.postMessage({
         type: "ADD_BATCH",
@@ -366,7 +363,7 @@ export class WorkspaceService {
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(files[0].workspaceId);
 
-      const pathsRelativeToWorkspaceRoot = files.map((file) => file.pathRelativeToWorkspaceRoot);
+      const pathsRelativeToWorkspaceRoot = files.map((file) => file.relativePath);
       const broadcastChannel = new BroadcastChannel(files[0].workspaceId);
       broadcastChannel.postMessage({
         type: "DELETE_BATCH",
@@ -405,7 +402,7 @@ export class WorkspaceService {
     return this.toWorkspaceFiles(descriptor.workspaceId, storageFiles);
   }
 
-  public async existsFile(args: { workspaceId: string; pathRelativeToWorkspaceRoot: string }): Promise<boolean> {
+  public async existsFile(args: { workspaceId: string; relativePath: string }): Promise<boolean> {
     return this.storageService.exists(this.getAbsolutePath(args));
   }
 
@@ -428,7 +425,7 @@ export class WorkspaceService {
     return new WorkspaceFile({
       workspaceId,
       getFileContents: storageFile.getFileContents,
-      pathRelativeToWorkspaceRoot: storageFile.path.replace(`/${workspaceId}/`, ""), // FIXME: This can break if structure changes
+      relativePath: storageFile.path.replace(`/${workspaceId}/`, ""), // FIXME: This can break if structure changes
     });
   }
 
@@ -454,14 +451,14 @@ export class WorkspaceService {
     await this.storageService.updateFile(configFile);
   }
 
-  public getAbsolutePath(args: { workspaceId: string; pathRelativeToWorkspaceRoot: string }) {
-    return join(this.rootPath, args.workspaceId, args.pathRelativeToWorkspaceRoot);
+  public getAbsolutePath(args: { workspaceId: string; relativePath: string }) {
+    return join(this.rootPath, args.workspaceId, args.relativePath);
   }
 
   public getAbsolutePathForFile(file: WorkspaceFile) {
     return this.getAbsolutePath({
       workspaceId: file.workspaceId,
-      pathRelativeToWorkspaceRoot: file.pathRelativeToWorkspaceRoot,
+      relativePath: file.relativePath,
     });
   }
 }

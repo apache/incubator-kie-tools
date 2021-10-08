@@ -94,7 +94,7 @@ export function HomePage() {
       history.replace({
         pathname: globals.routes.workspaceWithFilePath.path({
           workspaceId: descriptor.workspaceId,
-          filePath: suggestedFirstFile.pathRelativeToWorkspaceRootWithoutExtension,
+          filePath: suggestedFirstFile.relativePathWithoutExtension,
           extension: suggestedFirstFile.extension,
         }),
       });
@@ -376,7 +376,7 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
                 history.push({
                   pathname: globals.routes.workspaceWithFilePath.path({
                     workspaceId: editableFiles[0].workspaceId,
-                    filePath: editableFiles[0].pathRelativeToWorkspaceRootWithoutExtension,
+                    filePath: editableFiles[0].relativePathWithoutExtension,
                     extension: editableFiles[0].extension,
                   }),
                 });
@@ -575,7 +575,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
       </DrawerHead>
       <DataList aria-label="draggable data list example" isCompact>
         {(workspacePromise.data?.files ?? []).map((file) => (
-          <React.Fragment key={file.pathRelativeToWorkspaceRoot}>
+          <React.Fragment key={file.relativePath}>
             <DataListItem aria-labelledby="simple-item1" id="data1" key="1">
               <DataListItemRow>
                 <DataListItemCells
@@ -590,14 +590,14 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                         <Link
                           to={globals.routes.workspaceWithFilePath.path({
                             workspaceId: workspacePromise.data?.descriptor.workspaceId ?? "",
-                            filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                            filePath: file.relativePathWithoutExtension,
                             extension: file.extension,
                           })}
                         >
-                          {file.pathRelativeToWorkspaceRoot}
+                          {file.relativePath}
                         </Link>
                       ) : (
-                        <Text component={TextVariants.p}>{file.pathRelativeToWorkspaceRoot}</Text>
+                        <Text component={TextVariants.p}>{file.relativePath}</Text>
                       )}
                     </DataListCell>,
                   ]}

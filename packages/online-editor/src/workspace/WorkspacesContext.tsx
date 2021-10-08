@@ -31,7 +31,7 @@ export class WorkspaceFile {
   constructor(
     private readonly args: {
       workspaceId: string;
-      pathRelativeToWorkspaceRoot: string;
+      relativePath: string;
       getFileContents: () => Promise<string>;
     }
   ) {}
@@ -44,32 +44,28 @@ export class WorkspaceFile {
     return this.args.workspaceId;
   }
 
-  get pathRelativeToWorkspaceRoot() {
-    return this.args.pathRelativeToWorkspaceRoot;
+  get relativePath() {
+    return this.args.relativePath;
   }
 
-  get pathRelativeToWorkspaceRootWithoutExtension() {
-    return removeFileExtension(this.pathRelativeToWorkspaceRoot);
+  get relativePathWithoutExtension() {
+    return removeFileExtension(this.relativePath);
   }
 
-  get dirPath() {
-    return dirname(this.pathRelativeToWorkspaceRoot);
-  }
-
-  get dirPathRelativeToWorkspaceRoot() {
-    return dirname(this.pathRelativeToWorkspaceRoot);
+  get relativeDirPath() {
+    return dirname(this.relativePath);
   }
 
   get extension() {
-    return extname(this.pathRelativeToWorkspaceRoot).replace(".", "");
+    return extname(this.relativePath).replace(".", "");
   }
 
   get nameWithoutExtension() {
-    return basename(this.pathRelativeToWorkspaceRoot, `.${this.extension}`);
+    return basename(this.relativePath, `.${this.extension}`);
   }
 
   get name() {
-    return basename(this.pathRelativeToWorkspaceRoot);
+    return basename(this.relativePath);
   }
 }
 
@@ -94,7 +90,7 @@ export interface WorkspacesContextType {
   // edit workspace
   addEmptyFile(args: {
     workspaceId: string;
-    destinationDirPathRelativeToWorkspaceRoot: string;
+    destinationDirRelativePath: string;
     extension: string;
   }): Promise<WorkspaceFile>;
   prepareZip: (workspaceId: string) => Promise<Blob>;
@@ -105,11 +101,11 @@ export interface WorkspacesContextType {
   updateFile: (file: WorkspaceFile, getNewContents: () => Promise<string | undefined>) => Promise<void>;
   resourceContentGet: (args: {
     workspaceId: string;
-    pathRelativeToWorkspaceRoot: string;
+    relativePath: string;
     opts?: ResourceContentOptions;
   }) => Promise<ResourceContent | undefined>;
 
-  getAbsolutePath(args: { workspaceId: string; pathRelativeToWorkspaceRoot: string }): string;
+  getAbsolutePath(args: { workspaceId: string; relativePath: string }): string;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);

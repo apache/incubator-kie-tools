@@ -78,7 +78,7 @@ export class GitService {
       await git.add({
         fs: this.storageService.fs,
         dir: args.dir,
-        filepath: file.pathRelativeToWorkspaceRoot,
+        filepath: file.relativePath,
       });
     }
 

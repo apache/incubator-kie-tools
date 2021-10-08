@@ -109,7 +109,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
           .replace(/("|')/g, '\\"'); // Escape quotes
 
       const targetFile: DeploymentFile = {
-        path: props.workspaceFile.pathRelativeToWorkspaceRoot,
+        path: props.workspaceFile.relativePath,
         getFileContents: prepareFileContents(props.workspaceFile.getFileContents),
       };
 
@@ -124,9 +124,9 @@ export function DmnDevSandboxContextProvider(props: Props) {
 
         relatedFiles.push(
           ...workspaceFiles
-            .filter((f: WorkspaceFile) => f.pathRelativeToWorkspaceRoot !== targetFile.path)
+            .filter((f: WorkspaceFile) => f.relativePath !== targetFile.path)
             .map((f: WorkspaceFile) => ({
-              path: f.pathRelativeToWorkspaceRoot,
+              path: f.relativePath,
               getFileContents: prepareFileContents(f.getFileContents),
             }))
         );

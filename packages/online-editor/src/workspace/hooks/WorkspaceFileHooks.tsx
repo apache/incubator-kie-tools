@@ -3,23 +3,20 @@ import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
 import { Holder, useCancelableEffect } from "../../common/Hooks";
 import { usePromiseState } from "./PromiseState";
 
-export function useWorkspaceFilePromise(
-  workspaceId: string | undefined,
-  pathRelativeToWorkspaceRoot: string | undefined
-) {
+export function useWorkspaceFilePromise(workspaceId: string | undefined, relativePath: string | undefined) {
   const workspaces = useWorkspaces();
   const [workspaceFilePromise, setWorkspaceFilePromise] = usePromiseState<WorkspaceFile>();
 
   const refresh = useCallback(
-    (workspaceId: string, pathRelativeToWorkspaceRoot: string, canceled: Holder<boolean>) => {
-      workspaces.workspaceService.getFile({ workspaceId, pathRelativeToWorkspaceRoot }).then((workspaceFile) => {
+    (workspaceId: string, relativePath: string, canceled: Holder<boolean>) => {
+      workspaces.workspaceService.getFile({ workspaceId, relativePath }).then((workspaceFile) => {
         if (canceled.get()) {
           return;
         }
 
         if (!workspaceFile) {
           setWorkspaceFilePromise({
-            error: `File '${pathRelativeToWorkspaceRoot}' not found in Workspace '${workspaceId}'`,
+            error: `File '${relativePath}' not found in Workspace '${workspaceId}'`,
           });
           return;
         }
@@ -33,33 +30,33 @@ export function useWorkspaceFilePromise(
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (!pathRelativeToWorkspaceRoot || !workspaceId) {
+        if (!relativePath || !workspaceId) {
           return;
         }
-        refresh(workspaceId, pathRelativeToWorkspaceRoot, canceled);
+        refresh(workspaceId, relativePath, canceled);
       },
-      [pathRelativeToWorkspaceRoot, workspaceId, refresh]
+      [relativePath, workspaceId, refresh]
     )
   );
 
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (!pathRelativeToWorkspaceRoot || !workspaceId) {
+        if (!relativePath || !workspaceId) {
           return;
         }
 
-        const absolutePath = workspaces.getAbsolutePath({ workspaceId, pathRelativeToWorkspaceRoot });
+        const absolutePath = workspaces.getAbsolutePath({ workspaceId, relativePath });
 
         console.info("Subscribing to " + absolutePath);
         const broadcastChannel = new BroadcastChannel(absolutePath);
         broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileEvents>) => {
           console.info(`WORKSPACE_FILE: ${JSON.stringify(data)}`);
           if (data.type === "MOVE" || data.type == "RENAME") {
-            refresh(workspaceId, data.newPathRelativeToWorkspaceRoot, canceled);
+            refresh(workspaceId, data.newRelativePath, canceled);
           }
           if (data.type === "UPDATE" || data.type === "DELETE" || data.type === "ADD") {
-            refresh(workspaceId, data.pathRelativeToWorkspaceRoot, canceled);
+            refresh(workspaceId, data.relativePath, canceled);
           }
         };
 
@@ -68,7 +65,7 @@ export function useWorkspaceFilePromise(
           broadcastChannel.close();
         };
       },
-      [pathRelativeToWorkspaceRoot, workspaceId, workspaces, refresh]
+      [relativePath, workspaceId, workspaces, refresh]
     )
   );
 
@@ -76,8 +73,8 @@ export function useWorkspaceFilePromise(
 }
 
 export type WorkspaceFileEvents =
-  | { type: "MOVE"; newPathRelativeToWorkspaceRoot: string; oldPathRelativeToWorkspaceRoot: string }
-  | { type: "RENAME"; newPathRelativeToWorkspaceRoot: string; oldPathRelativeToWorkspaceRoot: string }
-  | { type: "UPDATE"; pathRelativeToWorkspaceRoot: string }
-  | { type: "DELETE"; pathRelativeToWorkspaceRoot: string }
-  | { type: "ADD"; pathRelativeToWorkspaceRoot: string };
+  | { type: "MOVE"; newRelativePath: string; oldRelativePath: string }
+  | { type: "RENAME"; newRelativePath: string; oldRelativePath: string }
+  | { type: "UPDATE"; relativePath: string }
+  | { type: "DELETE"; relativePath: string }
+  | { type: "ADD"; relativePath: string };

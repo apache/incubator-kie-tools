@@ -106,7 +106,7 @@ export function EditorPage(props: Props) {
     history.replace({
       pathname: globals.routes.workspaceWithFilePath.path({
         workspaceId: workspaceFilePromise.data.workspaceId,
-        filePath: workspaceFilePromise.data.pathRelativeToWorkspaceRootWithoutExtension,
+        filePath: workspaceFilePromise.data.relativePathWithoutExtension,
         extension: workspaceFilePromise.data.extension,
       }),
       search: queryParams.toString(),
@@ -131,7 +131,7 @@ export function EditorPage(props: Props) {
           }
 
           setEmbeddedEditorFile({
-            path: workspaceFilePromise.data.pathRelativeToWorkspaceRoot,
+            path: workspaceFilePromise.data.relativePath,
             getFileContents: workspaceFilePromise.data.getFileContents,
             kind: "local",
             isReadOnly: false,
@@ -174,7 +174,7 @@ export function EditorPage(props: Props) {
     async (request: ResourceContentRequest) => {
       return workspaces.resourceContentGet({
         workspaceId: props.workspaceId,
-        pathRelativeToWorkspaceRoot: request.path,
+        relativePath: request.path,
         opts: request.opts,
       });
     },

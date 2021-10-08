@@ -48,7 +48,7 @@ export function NewWorkspaceFromUrlPage() {
         history.replace({
           pathname: globals.routes.workspaceWithFilePath.path({
             workspaceId: descriptor.workspaceId,
-            filePath: suggestedFirstFile.pathRelativeToWorkspaceRootWithoutExtension,
+            filePath: suggestedFirstFile.relativePathWithoutExtension,
             extension: suggestedFirstFile.extension,
           }),
         });

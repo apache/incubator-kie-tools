@@ -23,7 +23,7 @@ export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
         history.replace({
           pathname: globals.routes.workspaceWithFilePath.path({
             workspaceId: suggestedFirstFile!.workspaceId,
-            filePath: suggestedFirstFile!.pathRelativeToWorkspaceRootWithoutExtension,
+            filePath: suggestedFirstFile!.relativePathWithoutExtension,
             extension: suggestedFirstFile!.extension,
           }),
         });

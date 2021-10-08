@@ -71,11 +71,11 @@ export type WorkspaceEvents =
   | { type: "ADD"; workspaceId: string }
   | { type: "RENAME"; workspaceId: string }
   | { type: "DELETE"; workspaceId: string }
-  | { type: "ADD_FILE"; pathRelativeToWorkspaceRoot: string }
-  | { type: "MOVE_FILE"; newPathRelativeToWorkspaceRoot: string; oldPathRelativeToWorkspaceRoot: string }
-  | { type: "RENAME_FILE"; newPathRelativeToWorkspaceRoot: string; oldPathRelativeToWorkspaceRoot: string }
-  | { type: "UPDATE_FILE"; pathRelativeToWorkspaceRoot: string }
-  | { type: "DELETE_FILE"; pathRelativeToWorkspaceRoot: string }
+  | { type: "ADD_FILE"; relativePath: string }
+  | { type: "MOVE_FILE"; newRelativePath: string; oldRelativePath: string }
+  | { type: "RENAME_FILE"; newRelativePath: string; oldRelativePath: string }
+  | { type: "UPDATE_FILE"; relativePath: string }
+  | { type: "DELETE_FILE"; relativePath: string }
   | { type: "ADD_BATCH"; workspaceId: string; pathsRelativeToWorkspaceRoot: string[] }
   | { type: "MOVE_BATCH"; workspaceId: string; pathsRelativeToWorkspaceRoot: Map<string, string> }
   | { type: "DELETE_BATCH"; workspaceId: string; pathsRelativeToWorkspaceRoot: string[] };

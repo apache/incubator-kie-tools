@@ -524,7 +524,7 @@ export function EditorToolbar(props: Props) {
     const nextFile = props.workspace.files
       .filter(
         (f) =>
-          f.pathRelativeToWorkspaceRoot !== props.workspaceFile.pathRelativeToWorkspaceRoot &&
+          f.relativePath !== props.workspaceFile.relativePath &&
           Array.from(globals.editorEnvelopeLocator.mapping.keys()).includes(f.extension)
       )
       .pop();
@@ -537,7 +537,7 @@ export function EditorToolbar(props: Props) {
       history.push({
         pathname: globals.routes.workspaceWithFilePath.path({
           workspaceId: nextFile.workspaceId,
-          filePath: nextFile.pathRelativeToWorkspaceRootWithoutExtension,
+          filePath: nextFile.relativePathWithoutExtension,
           extension: nextFile.extension,
         }),
       })
@@ -606,14 +606,13 @@ export function EditorToolbar(props: Props) {
                         addEmptyWorkspaceFile={async (extension) => {
                           const file = await workspaces.addEmptyFile({
                             workspaceId: props.workspace.descriptor.workspaceId,
-                            destinationDirPathRelativeToWorkspaceRoot:
-                              props.workspaceFile.dirPathRelativeToWorkspaceRoot,
+                            destinationDirRelativePath: props.workspaceFile.relativeDirPath,
                             extension,
                           });
                           history.push({
                             pathname: globals.routes.workspaceWithFilePath.path({
                               workspaceId: file.workspaceId,
-                              filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                              filePath: file.relativePathWithoutExtension,
                               extension: file.extension,
                             }),
                           });
@@ -765,14 +764,14 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
         return;
       }
 
-      const newPathRelativeToWorkspaceRoot = join(
-        props.workspaceFile.dirPathRelativeToWorkspaceRoot,
+      const newRelativePath = join(
+        props.workspaceFile.relativeDirPath,
         `${newFileNameWithoutExtension}.${props.workspaceFile.extension}`
       );
 
       const exists = await workspaces.workspaceService.existsFile({
         workspaceId: props.workspaceFile.workspaceId,
-        pathRelativeToWorkspaceRoot: newPathRelativeToWorkspaceRoot,
+        relativePath: newRelativePath,
       });
       setNewFileNameValid(!exists);
     },
@@ -828,7 +827,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
     () => [
       <DropdownGroup key={"workspace-group"} label="Files">
         {props.workspace.files
-          .sort((a, b) => a.pathRelativeToWorkspaceRoot.localeCompare(b.pathRelativeToWorkspaceRoot))
+          .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
           .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension))
           .map((file, idx: number) => (
             <DropdownItem
@@ -836,12 +835,12 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
                 history.push({
                   pathname: globals.routes.workspaceWithFilePath.path({
                     workspaceId: file.workspaceId,
-                    filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                    filePath: file.relativePathWithoutExtension,
                     extension: file.extension,
                   }),
                 });
               }}
-              description={"/ " + dirname(file.pathRelativeToWorkspaceRoot).split("/").join(" > ")}
+              description={"/ " + dirname(file.relativePath).split("/").join(" > ")}
               key={`file-item-${idx}`}
               icon={
                 <ExternalLinkAltIcon
@@ -852,7 +851,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
                       globals.routes.workspaceWithFilePath.url({
                         pathParams: {
                           workspaceId: file.workspaceId,
-                          filePath: file.pathRelativeToWorkspaceRootWithoutExtension,
+                          filePath: file.relativePathWithoutExtension,
                           extension: file.extension,
                         },
                       }),
@@ -866,10 +865,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
                 <FlexItem>
                   <span
                     style={{
-                      fontWeight:
-                        props.workspaceFile.pathRelativeToWorkspaceRoot === file.pathRelativeToWorkspaceRoot
-                          ? "bold"
-                          : "normal",
+                      fontWeight: props.workspaceFile.relativePath === file.relativePath ? "bold" : "normal",
                     }}
                   >
                     {file.nameWithoutExtension}
@@ -877,10 +873,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
                 </FlexItem>
                 <FlexItem
                   style={{
-                    fontWeight:
-                      props.workspaceFile.pathRelativeToWorkspaceRoot === file.pathRelativeToWorkspaceRoot
-                        ? "bold"
-                        : "normal",
+                    fontWeight: props.workspaceFile.relativePath === file.relativePath ? "bold" : "normal",
                   }}
                 >
                   <FileLabel extension={file.extension} />
@@ -890,10 +883,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
                 style={{
                   height: "0.8em",
                   marginLeft: "10px",
-                  visibility:
-                    props.workspaceFile.pathRelativeToWorkspaceRoot === file.pathRelativeToWorkspaceRoot
-                      ? "visible"
-                      : "hidden",
+                  visibility: props.workspaceFile.relativePath === file.relativePath ? "visible" : "hidden",
                 }}
               />
             </DropdownItem>
@@ -927,10 +917,9 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
               </Title>
             </>
           )}
-          {props.workspaceFile.pathRelativeToWorkspaceRootWithoutExtension !==
-            props.workspaceFile.nameWithoutExtension && (
+          {props.workspaceFile.relativePathWithoutExtension !== props.workspaceFile.nameWithoutExtension && (
             <>
-              <Tooltip content={dirname(props.workspaceFile.pathRelativeToWorkspaceRoot)} position={"bottom"}>
+              <Tooltip content={dirname(props.workspaceFile.relativePath)} position={"bottom"}>
                 <Title
                   headingLevel={"h3"}
                   size={"2xl"}
