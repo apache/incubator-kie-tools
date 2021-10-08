@@ -42,12 +42,12 @@ import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/
 import { UpdateGistErrors } from "../settings/GithubService";
 import { QueryParams } from "../common/Routes";
 import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { EmbedModal } from "./EmbedModal";
 import { AlertsController, useAlert } from "./Alerts/Alerts";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { dirname, join } from "path";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { CheckIcon } from "@patternfly/react-icons/dist/js/icons/check-icon";
@@ -829,64 +829,38 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
         {props.workspace.files
           .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
           .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension))
-          .map((file, idx: number) => (
-            <DropdownItem
-              onClick={() => {
-                history.push({
-                  pathname: globals.routes.workspaceWithFilePath.path({
-                    workspaceId: file.workspaceId,
-                    filePath: file.relativePathWithoutExtension,
-                    extension: file.extension,
-                  }),
-                });
-              }}
-              description={"/ " + dirname(file.relativePath).split("/").join(" > ")}
-              key={`file-item-${idx}`}
-              icon={
-                <ExternalLinkAltIcon
-                  className="kogito--editor__workspace-files-dropdown-open"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    window.open(
-                      globals.routes.workspaceWithFilePath.url({
-                        pathParams: {
-                          workspaceId: file.workspaceId,
-                          filePath: file.relativePathWithoutExtension,
-                          extension: file.extension,
-                        },
-                      }),
-                      "_blank"
-                    );
-                  }}
-                />
-              }
+          .map((file) => (
+            <Link
+              key={file.relativePath}
+              style={{ fontWeight: props.workspaceFile.relativePath === file.relativePath ? "bold" : "normal" }}
+              to={globals.routes.workspaceWithFilePath.path({
+                workspaceId: file.workspaceId,
+                filePath: file.relativePathWithoutExtension,
+                extension: file.extension,
+              })}
             >
-              <Flex flexWrap={{ default: "nowrap" }}>
-                <FlexItem>
-                  <span
+              <DropdownItem description={"/ " + dirname(file.relativePath).split("/").join(" > ")}>
+                <Flex flexWrap={{ default: "nowrap" }}>
+                  <FlexItem>{file.nameWithoutExtension}</FlexItem>
+                  <FlexItem
                     style={{
                       fontWeight: props.workspaceFile.relativePath === file.relativePath ? "bold" : "normal",
                     }}
                   >
-                    {file.nameWithoutExtension}
-                  </span>
-                </FlexItem>
-                <FlexItem
-                  style={{
-                    fontWeight: props.workspaceFile.relativePath === file.relativePath ? "bold" : "normal",
-                  }}
-                >
-                  <FileLabel extension={file.extension} />
-                </FlexItem>
-              </Flex>
-              <EyeIcon
-                style={{
-                  height: "0.8em",
-                  marginLeft: "10px",
-                  visibility: props.workspaceFile.relativePath === file.relativePath ? "visible" : "hidden",
-                }}
-              />
-            </DropdownItem>
+                    <FileLabel extension={file.extension} />
+                  </FlexItem>
+                  <FlexItem>
+                    <EyeIcon
+                      style={{
+                        height: "0.8em",
+                        marginLeft: "10px",
+                        visibility: props.workspaceFile.relativePath === file.relativePath ? "visible" : "hidden",
+                      }}
+                    />
+                  </FlexItem>
+                </Flex>
+              </DropdownItem>
+            </Link>
           ))}
       </DropdownGroup>,
     ],
