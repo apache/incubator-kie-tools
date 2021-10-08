@@ -42,14 +42,6 @@ on:
         description: "Standalone Editors CDN"
         default: "true"
         required: true
-      dashbuilder:
-        description: "Dashbuilder"
-        default: "true"
-        required: true
-      dashbuilder_images:
-        description: "Dashbuilder"
-        default: "true"
-        required: true
 
 env:
   KOGITO_TOOLING_BUILD_lint: "false"
@@ -698,8 +690,7 @@ jobs:
           asset_name: "kie_tooling_extended_services_windows_${{ needs.prepare.outputs.version }}.exe"
           asset_content_type: application/octet-stream
   dashbuilder:
-    if: ${{ always() && github.event.inputs.dashbuilder == 'true' }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     needs: [prepare]
     strategy:
       matrix:
@@ -739,7 +730,6 @@ jobs:
       DASHBUILDER__baseImageTag: "${{ needs.prepare.outputs.version }}"
       DASHBUILDER__baseImageBuildTags: "latest ${{ needs.prepare.outputs.version }}"
 
-    if: ${{ always() && github.event.inputs.dashbuilder_images == 'true' }}
     runs-on: ubuntu-latest
     needs: [prepare]
     steps:

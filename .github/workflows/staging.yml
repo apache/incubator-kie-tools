@@ -354,7 +354,7 @@ jobs:
           asset_name: "STAGING__kie_tooling_extended_services_windows_${{ needs.create_release.outputs.tag }}.exe"
           asset_content_type: application/octet-stream
   dashbuilder:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     needs: [prepare]
     strategy:
       matrix:
@@ -394,7 +394,6 @@ jobs:
       DASHBUILDER__baseImageTag: "${{ needs.prepare.outputs.version }}-prerelease"
       DASHBUILDER__baseImageBuildTags: "latest ${{ needs.prepare.outputs.version }}-prerelease"
 
-    if: ${{ always() && github.event.inputs.dashbuilder_images == 'true' }}
     runs-on: ubuntu-latest
     needs: [prepare]
     steps:
