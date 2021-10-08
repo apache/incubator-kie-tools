@@ -11,8 +11,8 @@
   "scripts": {
     "cleanup": "rm -f dashbuilder-authoring/dashbuilder-authoring.war dashbuilder-runtime/dashbuilder-runtime-app-runner.jar",
     "copy:assets": "cp ../dashbuilder/dashbuilder-authoring/target/dashbuilder-authoring.war ./dashbuilder-authoring && cp ../dashbuilder/dashbuilder-runtime-parent/dashbuilder-runtime-app/target/dashbuilder-runtime-app-runner.jar ./dashbuilder-runtime",
-    "podman:build:authoring": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --tag dashbuilder-authoring:0.0.0 -f dashbuilder-authoring/Dockerfile\" --else \"echo Podman not found, skipping image build.\"",
-    "podman:build:runtime": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --tag dashbuilder-runtime:0.0.0 -f dashbuilder-runtime/Dockerfile\" --else \"echo Podman not found, skipping image build.\"",
+    "podman:build:authoring": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env dashbuilder.baseImage.buildTags) | xargs printf -- \"-t $(build-env dashbuilder.baseImage.registry)/$(build-env dashbuilder.baseImage.account)/$(build-env dashbuilder.baseImage.authoringName):%s\n\" | xargs echo) -f dashbuilder-authoring/Dockerfile\" --else \"echo Podman not found, skipping image build.\"",
+    "podman:build:runtime": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env dashbuilder.baseImage.buildTags) | xargs printf -- \"-t $(build-env dashbuilder.baseImage.registry)/$(build-env dashbuilder.baseImage.account)/$(build-env dashbuilder.baseImage.runtimeName):%s\n\" | xargs echo) -f dashbuilder-runtime/Dockerfile\" --else \"echo Podman not found, skipping image build.\"",
     "build:dev": "yarn cleanup",
     "build:prod": "yarn cleanup && yarn copy:assets && yarn podman:build:runtime && yarn podman:build:authoring"
   },

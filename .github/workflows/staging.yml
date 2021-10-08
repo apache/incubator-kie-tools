@@ -384,3 +384,57 @@ jobs:
           asset_path: ./packages/dashbuilder/dist/dashbuilder_dist.zip
           asset_name: STAGING_dashbuilder_dist_${{ needs.prepare.outputs.version }}.zip
           asset_content_type: application/zip
+
+  dashbuilder_images:
+    env:
+      DASHBUILDER__baseImageRegistry: "quay.io"
+      DASHBUILDER__baseImageAccount: "kogito_tooling_bot"
+      DASHBUILDER_AUTHORING__baseImageName: "dashbuilder-authoring"
+      DASHBUILDER_RUNTIME__baseImageName: "dashbuilder-runtime"
+      DASHBUILDER__baseImageTag: "${{ needs.prepare.outputs.version }}-prerelease"
+      DASHBUILDER__baseImageBuildTags: "latest ${{ needs.prepare.outputs.version }}-prerelease"
+
+    if: ${{ always() && github.event.inputs.dashbuilder_images == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    steps:
+      - name: " STAGING Checkout kogito-tooling"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.prepare.outputs.release_ref }}
+          path: ${{ github.workspace }}/kogito-tooling
+          fetch-depth: 0
+
+      - name: "STAGING Setup environment"
+        uses: ./kogito-tooling/.github/actions/setup-env
+        with:
+          path: kogito-tooling
+          os: ubuntu-latest
+
+      - name: "STAGING Build Dashbuilder"
+        working-directory: ${{ github.workspace }}/kogito-tooling
+        run: |
+          lerna run build:prod --scope=@kogito-tooling/dashbuilder --include-dependencies --stream
+
+      - name: "STAGING Build Dashbuilder Images"
+        working-directory: ${{ github.workspace }}/kogito-tooling
+        run: |
+          lerna run build:prod --scope=@kogito-tooling/dashbuilder-base-images --include-dependencies --stream
+
+      - name: "STAGING Push dashbuilder-authoring image to quay.io"
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.DASHBUILDER_AUTHORING__baseImageName }}"
+          tags: "${{ env.DASHBUILDER__baseImageBuildTags }}"
+          registry: "${{ env.DASHBUILDER__baseImageRegistry }}/${{ env.DASHBUILDER__baseImageAccount }}"
+          username: "${{ env.DASHBUILDER__baseImageAccount }}"
+          password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
+
+      - name: "STAGING Push dashbuilder-runtime image to quay.io"
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.DASHBUILDER_RUNTIME__baseImageName }}"
+          tags: "${{ env.DASHBUILDER__baseImageBuildTags }}"
+          registry: "${{ env.DASHBUILDER__baseImageRegistry }}/${{ env.DASHBUILDER__baseImageAccount }}"
+          username: "${{ env.DASHBUILDER__baseImageAccount }}"
+          password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
