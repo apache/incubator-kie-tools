@@ -13,10 +13,10 @@ import MiningSchemaPropertiesEdit from "../MiningSchemaPropertiesEdit/MiningSche
 import "./MiningSchemaContainer.scss";
 
 import { DataDictionary, FieldName, MiningField, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller";
-import NoMiningSchemaFieldsOptions from "../NoMiningSchemaFieldsOptions/NoMiningSchemaFieldsOptions";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { Interaction } from "../../../types";
+import NoMiningSchemaFieldsOptions from "../NoMiningSchemaFieldsOptions/NoMiningSchemaFieldsOptions";
 
 interface MiningSchemaContainerProps {
   modelIndex: number;
@@ -149,33 +149,32 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
                   )}
                   <StackItem className="mining-schema__fields">
                     <section>
-                      {fields.length === 0 && (
-                        <Bullseye style={{ height: "40vh" }}>
-                          <NoMiningSchemaFieldsOptions />
-                        </Bullseye>
-                      )}
-                      {fields.length > 0 && (
+                      {(miningSchema === undefined || miningSchema?.MiningField.length === 0) && (
                         <>
-                          {miningSchema === undefined ||
-                            (miningSchema?.MiningField.length === 0 && (
-                              <Bullseye style={{ height: "40vh" }}>
-                                <EmptyMiningSchema />
-                              </Bullseye>
-                            ))}
-                          {miningSchema && miningSchema.MiningField.length > 0 && (
-                            <>
-                              <MiningSchemaFields
-                                modelIndex={modelIndex}
-                                dataDictionary={dataDictionary}
-                                fields={miningSchema?.MiningField}
-                                onAddProperties={goToProperties}
-                                onDelete={handleDeleteField}
-                                onPropertyDelete={handlePropertyDelete}
-                                onEdit={handleEditField}
-                                onCancel={handleCancelEditing}
-                              />
-                            </>
+                          {fields.length === 0 && (
+                            <Bullseye style={{ height: "40vh" }}>
+                              <NoMiningSchemaFieldsOptions />
+                            </Bullseye>
+                          )}{" "}
+                          {fields.length > 0 && (
+                            <Bullseye style={{ height: "40vh" }}>
+                              <EmptyMiningSchema />
+                            </Bullseye>
                           )}
+                        </>
+                      )}
+                      {miningSchema && miningSchema.MiningField.length > 0 && (
+                        <>
+                          <MiningSchemaFields
+                            modelIndex={modelIndex}
+                            dataDictionary={dataDictionary}
+                            fields={miningSchema?.MiningField}
+                            onAddProperties={goToProperties}
+                            onDelete={handleDeleteField}
+                            onPropertyDelete={handlePropertyDelete}
+                            onEdit={handleEditField}
+                            onCancel={handleCancelEditing}
+                          />
                         </>
                       )}
                     </section>
