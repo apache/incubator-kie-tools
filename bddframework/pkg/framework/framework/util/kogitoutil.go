@@ -12,19 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package operator
+package util
 
 import (
-	"github.com/kiegroup/kogito-operator/core/client"
-	"github.com/kiegroup/kogito-operator/core/logger"
-	"k8s.io/apimachinery/pkg/runtime"
+	"os"
+	"strings"
 )
 
-// Context ...
-type Context struct {
-	Client  *client.Client
-	Log     logger.Logger
-	Scheme  *runtime.Scheme
-	Version string
-	Labels  map[string]string
+// IsProductMode returns true if application is running in product mode.
+func IsProductMode() bool {
+	var group = "GROUP"
+	productMode, _ := os.LookupEnv(group)
+	return strings.ToUpper(productMode) == "RHPAM"
 }

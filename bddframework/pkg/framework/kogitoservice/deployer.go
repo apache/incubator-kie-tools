@@ -21,7 +21,6 @@ import (
 	"github.com/kiegroup/kogito-operator/core/manager"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/record"
-	"github.com/kiegroup/kogito-operator/internal"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -77,10 +76,6 @@ type serviceDeployer struct {
 func NewServiceDeployer(context operator.Context, definition ServiceDefinition, serviceType api.KogitoService, infraHandler manager.KogitoInfraHandler) ServiceDeployer {
 	if len(definition.Request.NamespacedName.Namespace) == 0 && len(definition.Request.NamespacedName.Name) == 0 {
 		panic("No Request provided for the Service Deployer")
-	}
-	if infraHandler == nil {
-		context.Log.Debug("InfraHandler not defined. KogitoInfra features will be disabled.")
-		infraHandler = internal.NewNoOpKogitoInfraHandler(context)
 	}
 	return &serviceDeployer{
 		Context:      context,

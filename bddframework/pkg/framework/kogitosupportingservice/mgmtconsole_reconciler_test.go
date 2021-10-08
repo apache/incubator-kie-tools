@@ -18,7 +18,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
-	"github.com/kiegroup/kogito-operator/internal"
+	"github.com/kiegroup/kogito-operator/internal/app"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
 	v12 "k8s.io/api/apps/v1"
@@ -39,8 +39,8 @@ func TestReconcileKogitoSupportingServiceMgmtConsole_Reconcile(t *testing.T) {
 		supportingServiceContext: supportingServiceContext{
 			Context:                  context,
 			instance:                 instance,
-			infraHandler:             internal.NewKogitoInfraHandler(context),
-			supportingServiceHandler: internal.NewKogitoSupportingServiceHandler(context),
+			infraHandler:             app.NewKogitoInfraHandler(context),
+			supportingServiceHandler: app.NewKogitoSupportingServiceHandler(context),
 		},
 	}
 	// first reconciliation
@@ -71,8 +71,8 @@ func TestReconcileKogitoSupportingServiceMgmtConsole_CustomImage(t *testing.T) {
 		supportingServiceContext: supportingServiceContext{
 			Context:                  context,
 			instance:                 instance,
-			infraHandler:             internal.NewKogitoInfraHandler(context),
-			supportingServiceHandler: internal.NewKogitoSupportingServiceHandler(context),
+			infraHandler:             app.NewKogitoInfraHandler(context),
+			supportingServiceHandler: app.NewKogitoSupportingServiceHandler(context),
 		},
 	}
 

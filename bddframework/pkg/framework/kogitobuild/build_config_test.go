@@ -38,9 +38,9 @@ func TestNewBuildConfig_CustomLabels(t *testing.T) {
 	context := BuildContext{
 		Context: operator.Context{
 			Log: test.TestLogger,
-		},
-		Labels: map[string]string{
-			"key1": "value1",
+			Labels: map[string]string{
+				"key1": "value1",
+			},
 		},
 	}
 

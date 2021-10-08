@@ -19,5 +19,4 @@ import "github.com/kiegroup/kogito-operator/core/operator"
 // BuildContext ...
 type BuildContext struct {
 	operator.Context
-	Labels map[string]string
 }

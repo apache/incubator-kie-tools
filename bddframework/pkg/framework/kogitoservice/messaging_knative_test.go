@@ -19,7 +19,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
-	"github.com/kiegroup/kogito-operator/internal"
+	"github.com/kiegroup/kogito-operator/internal/app"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
@@ -68,7 +68,7 @@ func Test_knativeMessagingDeployer_CreateRequiredResources(t *testing.T) {
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	infraHandler := internal.NewKogitoInfraHandler(context)
+	infraHandler := app.NewKogitoInfraHandler(context)
 	knativeDeployer := NewKnativeMessagingDeployer(context, ServiceDefinition{Request: request}, infraHandler)
 
 	err := knativeDeployer.CreateRequiredResources(kogitoSvc)

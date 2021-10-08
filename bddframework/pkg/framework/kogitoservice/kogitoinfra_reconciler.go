@@ -63,10 +63,6 @@ func (k *kogitoInfraReconciler) Reconcile() error {
 		if err := k.checkInfraDependencies(infra); err != nil {
 			return err
 		}
-		// we need to take ownership of the provided KogitoInfra instances
-		if err := k.takeKogitoInfraOwnership(infra); err != nil {
-			return err
-		}
 
 		k.serviceDefinition.ConfigMapEnvFromReferences = append(k.serviceDefinition.ConfigMapEnvFromReferences, infra.GetStatus().GetConfigMapEnvFromReferences()...)
 		k.serviceDefinition.ConfigMapVolumeReferences = append(k.serviceDefinition.ConfigMapVolumeReferences, infra.GetStatus().GetConfigMapVolumeReferences()...)
@@ -87,13 +83,6 @@ func (k *kogitoInfraReconciler) checkInfraDependencies(infra api.KogitoInfraInte
 			return err
 		}
 		return infrastructure.ErrorForInfraNotReady(k.instance.GetName(), infra.GetName(), conditionReason)
-	}
-	return nil
-}
-
-func (k *kogitoInfraReconciler) takeKogitoInfraOwnership(infra api.KogitoInfraInterface) error {
-	if err := k.infraManager.TakeKogitoInfraOwnership(types.NamespacedName{Name: infra.GetName(), Namespace: infra.GetNamespace()}, k.instance); err != nil {
-		return err
 	}
 	return nil
 }

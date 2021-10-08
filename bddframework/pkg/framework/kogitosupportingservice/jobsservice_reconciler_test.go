@@ -18,7 +18,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
-	"github.com/kiegroup/kogito-operator/internal"
+	"github.com/kiegroup/kogito-operator/internal/app"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -37,9 +37,9 @@ func TestReconcileKogitoJobsService_Reconcile(t *testing.T) {
 		supportingServiceContext: supportingServiceContext{
 			Context:                  context,
 			instance:                 jobsService,
-			supportingServiceHandler: internal.NewKogitoSupportingServiceHandler(context),
-			infraHandler:             internal.NewKogitoInfraHandler(context),
-			runtimeHandler:           internal.NewKogitoRuntimeHandler(context),
+			supportingServiceHandler: app.NewKogitoSupportingServiceHandler(context),
+			infraHandler:             app.NewKogitoInfraHandler(context),
+			runtimeHandler:           app.NewKogitoRuntimeHandler(context),
 		},
 	}
 	// first reconciliation

@@ -19,13 +19,13 @@ import (
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/meta"
-	"github.com/kiegroup/kogito-operator/version"
+	"github.com/kiegroup/kogito-operator/version/app"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-var defaultKogitoImageFullTag = infrastructure.GetKogitoImageVersion(version.Version) + ":latest"
+var defaultKogitoImageFullTag = infrastructure.GetKogitoImageVersion(app.Version) + ":latest"
 
 func Test_createRequiredDeployment_CheckQuarkusProbe(t *testing.T) {
 	dataIndex := test.CreateFakeDataIndex(t.Name())

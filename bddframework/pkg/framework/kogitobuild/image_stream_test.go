@@ -19,7 +19,7 @@ import (
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
-	"github.com/kiegroup/kogito-operator/version"
+	"github.com/kiegroup/kogito-operator/version/app"
 	"testing"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -46,7 +46,7 @@ func Test_resolveSourceStrategyImageNameForBuilds(t *testing.T) {
 		ObjectMeta: metav1.ObjectMeta{Name: "buildSpringBootCustom", Namespace: t.Name()},
 		Spec:       v1beta1.KogitoBuildSpec{Runtime: api.SpringBootRuntimeType, BuildImage: "my-image:1.0"},
 	}
-	tag := ":" + infrastructure.GetKogitoImageVersion(version.Version)
+	tag := ":" + infrastructure.GetKogitoImageVersion(app.Version)
 	type args struct {
 		build        *v1beta1.KogitoBuild
 		builderImage bool
@@ -68,7 +68,7 @@ func Test_resolveSourceStrategyImageNameForBuilds(t *testing.T) {
 
 	context := BuildContext{
 		Context: operator.Context{
-			Version: version.Version,
+			Version: app.Version,
 		},
 	}
 	imageStreamHandler := NewImageSteamHandler(context)

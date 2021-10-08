@@ -193,9 +193,9 @@ func Test_decoratorForCustomLabels(t *testing.T) {
 			Client: cli,
 			Log:    test.TestLogger,
 			Scheme: meta.GetRegisteredSchema(),
-		},
-		Labels: map[string]string{
-			"key1": "value1",
+			Labels: map[string]string{
+				"key1": "value1",
+			},
 		},
 	}
 

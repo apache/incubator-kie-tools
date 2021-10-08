@@ -17,7 +17,7 @@ package kogitosupportingservice
 import (
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
-	"github.com/kiegroup/kogito-operator/internal"
+	"github.com/kiegroup/kogito-operator/internal/app"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -42,9 +42,9 @@ func TestKogitoSupportingServiceDataIndex_Reconcile(t *testing.T) {
 		supportingServiceContext: supportingServiceContext{
 			Context:                  context,
 			instance:                 dataIndex,
-			supportingServiceHandler: internal.NewKogitoSupportingServiceHandler(context),
-			infraHandler:             internal.NewKogitoInfraHandler(context),
-			runtimeHandler:           internal.NewKogitoRuntimeHandler(context),
+			supportingServiceHandler: app.NewKogitoSupportingServiceHandler(context),
+			infraHandler:             app.NewKogitoInfraHandler(context),
+			runtimeHandler:           app.NewKogitoRuntimeHandler(context),
 		},
 	}
 	err := r.Reconcile()

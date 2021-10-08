@@ -21,7 +21,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/manager"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
-	"github.com/kiegroup/kogito-operator/internal"
+	"github.com/kiegroup/kogito-operator/internal/app"
 	"github.com/kiegroup/kogito-operator/meta"
 	"testing"
 
@@ -72,8 +72,8 @@ func TestInjectDataIndexURLIntoKogitoRuntime(t *testing.T) {
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	runtimeHandler := internal.NewKogitoRuntimeHandler(context)
-	supportingServiceHandler := internal.NewKogitoSupportingServiceHandler(context)
+	runtimeHandler := app.NewKogitoRuntimeHandler(context)
+	supportingServiceHandler := app.NewKogitoSupportingServiceHandler(context)
 	urlHandler := NewURLHandler(context, runtimeHandler, supportingServiceHandler)
 	err := urlHandler.InjectDataIndexURLIntoKogitoRuntimeServices(ns)
 	assert.NoError(t, err)
@@ -86,7 +86,7 @@ func TestInjectDataIndexURLIntoKogitoRuntime(t *testing.T) {
 
 func TestInjectJobsServicesURLIntoKogitoRuntime(t *testing.T) {
 	URI := "http://localhost:8080"
-	app := &v1beta1.KogitoRuntime{
+	kogitoRuntime := &v1beta1.KogitoRuntime{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "kogito-app",
 			Namespace: t.Name(),
@@ -109,21 +109,21 @@ func TestInjectJobsServicesURLIntoKogitoRuntime(t *testing.T) {
 	}
 	dc := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{Name: "dc", Namespace: t.Name(), OwnerReferences: []metav1.OwnerReference{{
-			Name: app.Name,
-			UID:  app.UID,
+			Name: kogitoRuntime.Name,
+			UID:  kogitoRuntime.UID,
 		}}},
 		Spec: appsv1.DeploymentSpec{
 			Template: v1.PodTemplateSpec{Spec: v1.PodSpec{Containers: []v1.Container{{Name: "the-app"}}}},
 		},
 	}
-	cli := test.NewFakeClientBuilder().AddK8sObjects(app, dc, jobs).Build()
+	cli := test.NewFakeClientBuilder().AddK8sObjects(kogitoRuntime, dc, jobs).Build()
 	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	runtimeHandler := internal.NewKogitoRuntimeHandler(context)
-	supportingServiceHandler := internal.NewKogitoSupportingServiceHandler(context)
+	runtimeHandler := app.NewKogitoRuntimeHandler(context)
+	supportingServiceHandler := app.NewKogitoSupportingServiceHandler(context)
 	urlHandler := NewURLHandler(context, runtimeHandler, supportingServiceHandler)
 	err := urlHandler.InjectJobsServicesURLIntoKogitoRuntimeServices(t.Name())
 	assert.NoError(t, err)
@@ -141,7 +141,7 @@ func TestInjectJobsServicesURLIntoKogitoRuntime(t *testing.T) {
 
 func TestInjectJobsServicesURLIntoKogitoRuntimeCleanUp(t *testing.T) {
 	URI := "http://localhost:8080"
-	app := &v1beta1.KogitoRuntime{
+	kogitoRuntime := &v1beta1.KogitoRuntime{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "kogito-app",
 			Namespace: t.Name(),
@@ -160,21 +160,21 @@ func TestInjectJobsServicesURLIntoKogitoRuntimeCleanUp(t *testing.T) {
 	}
 	dc := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{Name: "dc", Namespace: t.Name(), OwnerReferences: []metav1.OwnerReference{{
-			Name: app.Name,
-			UID:  app.UID,
+			Name: kogitoRuntime.Name,
+			UID:  kogitoRuntime.UID,
 		}}},
 		Spec: appsv1.DeploymentSpec{
 			Template: v1.PodTemplateSpec{Spec: v1.PodSpec{Containers: []v1.Container{{Name: "the-app"}}}},
 		},
 	}
-	cli := test.NewFakeClientBuilder().AddK8sObjects(dc, app, jobs).Build()
+	cli := test.NewFakeClientBuilder().AddK8sObjects(dc, kogitoRuntime, jobs).Build()
 	context := operator.Context{
 		Client: cli,
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	runtimeHandler := internal.NewKogitoRuntimeHandler(context)
-	supportingServiceHandler := internal.NewKogitoSupportingServiceHandler(context)
+	runtimeHandler := app.NewKogitoRuntimeHandler(context)
+	supportingServiceHandler := app.NewKogitoSupportingServiceHandler(context)
 	urlHandler := NewURLHandler(context, runtimeHandler, supportingServiceHandler)
 	// first we inject
 	err := urlHandler.InjectJobsServicesURLIntoKogitoRuntimeServices(t.Name())
@@ -226,8 +226,8 @@ func TestInjectTrustyURLIntoKogitoApps(t *testing.T) {
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	runtimeHandler := internal.NewKogitoRuntimeHandler(context)
-	supportingServiceHandler := internal.NewKogitoSupportingServiceHandler(context)
+	runtimeHandler := app.NewKogitoRuntimeHandler(context)
+	supportingServiceHandler := app.NewKogitoSupportingServiceHandler(context)
 	urlHandler := NewURLHandler(context, runtimeHandler, supportingServiceHandler)
 	err := urlHandler.InjectTrustyURLIntoKogitoRuntimeServices(ns)
 	assert.NoError(t, err)
@@ -279,8 +279,8 @@ func Test_getKogitoDataIndexURLs(t *testing.T) {
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	inSecureSupportingServiceHandler := internal.NewKogitoSupportingServiceHandler(inSecureContext)
-	secureSupportingServiceHandler := internal.NewKogitoSupportingServiceHandler(secureContext)
+	inSecureSupportingServiceHandler := app.NewKogitoSupportingServiceHandler(inSecureContext)
+	secureSupportingServiceHandler := app.NewKogitoSupportingServiceHandler(secureContext)
 	type args struct {
 		client                   *client.Client
 		namespace                string
@@ -320,7 +320,7 @@ func Test_getKogitoDataIndexURLs(t *testing.T) {
 			args: args{
 				client:                   test.NewFakeClientBuilder().Build(),
 				namespace:                ns,
-				supportingServiceHandler: internal.NewKogitoSupportingServiceHandler(operator.Context{Client: test.NewFakeClientBuilder().Build(), Log: test.TestLogger}),
+				supportingServiceHandler: app.NewKogitoSupportingServiceHandler(operator.Context{Client: test.NewFakeClientBuilder().Build(), Log: test.TestLogger}),
 			},
 			wantHTTPURL: "",
 			wantWSURL:   "",
@@ -329,7 +329,7 @@ func Test_getKogitoDataIndexURLs(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			runtimeHandler := internal.NewKogitoRuntimeHandler(operator.Context{Client: tt.args.client, Log: test.TestLogger})
+			runtimeHandler := app.NewKogitoRuntimeHandler(operator.Context{Client: tt.args.client, Log: test.TestLogger})
 			urlHandler := &urlHandler{
 				Context: operator.Context{
 					Client: tt.args.client,

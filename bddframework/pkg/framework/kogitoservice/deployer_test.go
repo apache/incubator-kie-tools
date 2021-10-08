@@ -20,7 +20,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
-	"github.com/kiegroup/kogito-operator/internal"
+	"github.com/kiegroup/kogito-operator/internal/app"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -52,7 +52,7 @@ func Test_serviceDeployer_DataIndex_InfraNotReady(t *testing.T) {
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	infraHandler := internal.NewKogitoInfraHandler(context)
+	infraHandler := app.NewKogitoInfraHandler(context)
 	deployer := NewServiceDeployer(context, definition, dataIndex, infraHandler)
 	err := deployer.Deploy()
 	assert.Error(t, err)
@@ -103,7 +103,7 @@ func Test_serviceDeployer_DataIndex_InfraNotReconciled(t *testing.T) {
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	infraHandler := internal.NewKogitoInfraHandler(context)
+	infraHandler := app.NewKogitoInfraHandler(context)
 	deployer := NewServiceDeployer(context, definition, dataIndex, infraHandler)
 	err := deployer.Deploy()
 	assert.Error(t, err)
@@ -151,7 +151,7 @@ func Test_serviceDeployer_DataIndex(t *testing.T) {
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	infraHandler := internal.NewKogitoInfraHandler(context)
+	infraHandler := app.NewKogitoInfraHandler(context)
 	deployer := NewServiceDeployer(context, definition, dataIndex, infraHandler)
 	err := deployer.Deploy()
 	assert.NoError(t, err)

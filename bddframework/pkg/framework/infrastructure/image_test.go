@@ -19,7 +19,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/meta"
-	"github.com/kiegroup/kogito-operator/version"
+	"github.com/kiegroup/kogito-operator/version/app"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -27,13 +27,13 @@ import (
 
 func Test_imageHandler_resolveImageOnOpenShiftWithImageStreamCreated(t *testing.T) {
 	ns := t.Name()
-	is, tag := test.CreateFakeImageStreams("jobs-service", ns, GetKogitoImageVersion(version.Version))
+	is, tag := test.CreateFakeImageStreams("jobs-service", ns, GetKogitoImageVersion(app.Version))
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(is).AddImageObjects(tag).Build()
 	context := operator.Context{
 		Client:  cli,
 		Log:     test.TestLogger,
 		Scheme:  meta.GetRegisteredSchema(),
-		Version: version.Version,
+		Version: app.Version,
 	}
 	imageHandler := NewImageHandler(context, &api.Image{Name: "jobs-service"}, "jobs-service", "jobs-service", ns, false, false)
 	image, err := imageHandler.ResolveImage()

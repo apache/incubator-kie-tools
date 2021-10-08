@@ -19,7 +19,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/meta"
-	"github.com/kiegroup/kogito-operator/version"
+	"github.com/kiegroup/kogito-operator/version/app"
 	"github.com/stretchr/testify/assert"
 	"k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -29,7 +29,7 @@ import (
 
 func TestRemoveSharedImageStreamOwnerShip(t *testing.T) {
 	ns := t.Name()
-	is, tag := test.CreateFakeImageStreams("dmn-quarkus-example", ns, GetKogitoImageVersion(version.Version))
+	is, tag := test.CreateFakeImageStreams("dmn-quarkus-example", ns, GetKogitoImageVersion(app.Version))
 	owner1 := &v1.Deployment{ObjectMeta: metav1.ObjectMeta{Name: "deployment1", Namespace: t.Name(), UID: test.GenerateUID()}}
 	owner2 := &v1.Deployment{ObjectMeta: metav1.ObjectMeta{Name: "deployment2", Namespace: t.Name(), UID: test.GenerateUID()}}
 
@@ -44,7 +44,7 @@ func TestRemoveSharedImageStreamOwnerShip(t *testing.T) {
 		Client:  cli,
 		Log:     test.TestLogger,
 		Scheme:  meta.GetRegisteredSchema(),
-		Version: version.Version,
+		Version: app.Version,
 	}
 	imageStreamHandler := NewImageStreamHandler(context)
 	err = imageStreamHandler.RemoveSharedImageStreamOwnerShip(types.NamespacedName{Name: is.Name, Namespace: is.Namespace}, owner2)

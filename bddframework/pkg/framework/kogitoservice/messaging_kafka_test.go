@@ -19,7 +19,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/kogitoinfra"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
-	"github.com/kiegroup/kogito-operator/internal"
+	"github.com/kiegroup/kogito-operator/internal/app"
 	"github.com/kiegroup/kogito-operator/meta"
 	"testing"
 
@@ -45,7 +45,7 @@ func Test_createKafkaTopics(t *testing.T) {
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	infraHandler := internal.NewKogitoInfraHandler(context)
+	infraHandler := app.NewKogitoInfraHandler(context)
 	k := kafkaMessagingDeployer{
 		messagingDeployer{
 			Context:      context,

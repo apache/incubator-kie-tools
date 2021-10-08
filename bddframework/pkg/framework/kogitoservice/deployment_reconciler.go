@@ -15,6 +15,7 @@
 package kogitoservice
 
 import (
+	"github.com/kiegroup/kogito-operator/core/framework/util"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
@@ -97,6 +98,7 @@ func (d *deploymentReconciler) createRequiredResources(imageName string) (map[re
 	if err := d.mountSecretReferencesOnDeployment(deployment); err != nil {
 		return resources, err
 	}
+	d.mountMeteringLabelsOnDeployment(deployment)
 	if err := framework.SetOwner(d.instance, d.Scheme, deployment); err != nil {
 		return nil, err
 	}
@@ -166,4 +168,8 @@ func (d *deploymentReconciler) mountSecretReferencesOnDeployment(deployment *app
 func (d *deploymentReconciler) mountEnvsOnDeployment(deployment *appsv1.Deployment) {
 	deployment.Spec.Template.Spec.Containers[0].Env = framework.EnvOverride(deployment.Spec.Template.Spec.Containers[0].Env, framework.CreateEnvVar(infrastructure.RuntimeTypeKey, string(d.instance.GetSpec().GetRuntime())))
 	deployment.Spec.Template.Spec.Containers[0].Env = framework.EnvOverride(deployment.Spec.Template.Spec.Containers[0].Env, d.definition.Envs...)
+}
+
+func (d *deploymentReconciler) mountMeteringLabelsOnDeployment(deployment *appsv1.Deployment) {
+	util.AppendToStringMap(d.Labels, deployment.Spec.Template.Labels)
 }

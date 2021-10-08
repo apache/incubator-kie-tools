@@ -17,20 +17,15 @@ package manager
 import (
 	"fmt"
 	"github.com/kiegroup/kogito-operator/apis"
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"k8s.io/apimachinery/pkg/api/meta"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // KogitoInfraManager ...
 type KogitoInfraManager interface {
 	MustFetchKogitoInfraInstance(key types.NamespacedName) (api.KogitoInfraInterface, error)
-	TakeKogitoInfraOwnership(key types.NamespacedName, owner client.Object) error
-	RemoveKogitoInfraOwnership(key types.NamespacedName, owner client.Object) error
 	IsKogitoInfraReady(key types.NamespacedName) (bool, error)
 	GetKogitoInfraFailureConditionReason(key types.NamespacedName) (string, error)
 }
@@ -69,37 +64,6 @@ func (k *kogitoInfraManager) MustFetchKogitoInfraInstance(key types.NamespacedNa
 		k.Log.Debug("Successfully fetch deployed kogito infra reference")
 		return instance, nil
 	}
-}
-
-func (k *kogitoInfraManager) TakeKogitoInfraOwnership(key types.NamespacedName, owner client.Object) (err error) {
-	kogitoInfra, err := k.MustFetchKogitoInfraInstance(key)
-	if err != nil {
-		return
-	}
-	if framework.IsOwner(kogitoInfra, owner) {
-		return
-	}
-	if err = framework.AddOwnerReference(owner, k.Scheme, kogitoInfra); err != nil {
-		return
-	}
-	if err = kubernetes.ResourceC(k.Client).Update(kogitoInfra); err != nil {
-		return
-	}
-	return
-}
-
-func (k *kogitoInfraManager) RemoveKogitoInfraOwnership(key types.NamespacedName, owner client.Object) (err error) {
-	k.Log.Info("Removing kogito infra ownership", "infra name", key.Name, "owner", owner.GetName())
-	kogitoInfra, err := k.infraHandler.FetchKogitoInfraInstance(key)
-	if err != nil || kogitoInfra == nil {
-		return
-	}
-	framework.RemoveOwnerReference(owner, kogitoInfra)
-	if err = kubernetes.ResourceC(k.Client).Update(kogitoInfra); err != nil {
-		return err
-	}
-	k.Log.Debug("Successfully removed KogitoInfra ownership", "infra name", kogitoInfra.GetName(), "owner", owner.GetName())
-	return
 }
 
 func (k *kogitoInfraManager) IsKogitoInfraReady(key types.NamespacedName) (bool, error) {

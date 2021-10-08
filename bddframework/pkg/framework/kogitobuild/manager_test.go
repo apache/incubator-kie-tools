@@ -21,7 +21,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/meta"
-	"github.com/kiegroup/kogito-operator/version"
+	"github.com/kiegroup/kogito-operator/version/app"
 	"reflect"
 	"testing"
 
@@ -48,7 +48,7 @@ func TestNewWhenBuildingFromRemoteSource(t *testing.T) {
 			Client:  cli,
 			Log:     test.TestLogger,
 			Scheme:  meta.GetRegisteredSchema(),
-			Version: version.Version,
+			Version: app.Version,
 		},
 	}
 	deltaProcessor := &deltaProcessor{BuildContext: context, build: build}
@@ -63,14 +63,14 @@ func TestNewWhenBuildingFromRemoteSource(t *testing.T) {
 	bcBuilder := resources[reflect.TypeOf(buildv1.BuildConfig{})][0].(*buildv1.BuildConfig)
 	assert.NotNil(t, bcBuilder)
 	assert.Contains(t, bcBuilder.Spec.Strategy.SourceStrategy.From.Name, GetDefaultBuilderImage())
-	assert.Contains(t, bcBuilder.Spec.Strategy.SourceStrategy.From.Name, infrastructure.GetKogitoImageVersion(version.Version))
+	assert.Contains(t, bcBuilder.Spec.Strategy.SourceStrategy.From.Name, infrastructure.GetKogitoImageVersion(app.Version))
 	assert.Equal(t, buildv1.BuildSourceGit, bcBuilder.Spec.Source.Type)
 	assert.Contains(t, bcBuilder.Name, builderSuffix)
 
 	bcRuntime := resources[reflect.TypeOf(buildv1.BuildConfig{})][1].(*buildv1.BuildConfig)
 	assert.NotNil(t, bcRuntime)
 	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, GetDefaultRuntimeJVMImage())
-	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, infrastructure.GetKogitoImageVersion(version.Version))
+	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, infrastructure.GetKogitoImageVersion(app.Version))
 	assert.Contains(t, bcRuntime.Spec.Triggers[0].ImageChange.From.Name, bcBuilder.Name)
 	assert.Equal(t, bcRuntime.Name, build.Name)
 
@@ -100,7 +100,7 @@ func TestNewWhenBuildingFromLocalSource(t *testing.T) {
 			Client:  cli,
 			Log:     test.TestLogger,
 			Scheme:  meta.GetRegisteredSchema(),
-			Version: version.Version,
+			Version: app.Version,
 		},
 	}
 	deltaProcessor := &deltaProcessor{BuildContext: context, build: build}
@@ -115,14 +115,14 @@ func TestNewWhenBuildingFromLocalSource(t *testing.T) {
 	bcBuilder := resources[reflect.TypeOf(buildv1.BuildConfig{})][0].(*buildv1.BuildConfig)
 	assert.NotNil(t, bcBuilder)
 	assert.Contains(t, bcBuilder.Spec.Strategy.SourceStrategy.From.Name, GetDefaultBuilderImage())
-	assert.Contains(t, bcBuilder.Spec.Strategy.SourceStrategy.From.Name, infrastructure.GetKogitoImageVersion(version.Version))
+	assert.Contains(t, bcBuilder.Spec.Strategy.SourceStrategy.From.Name, infrastructure.GetKogitoImageVersion(app.Version))
 	assert.Equal(t, buildv1.BuildSourceBinary, bcBuilder.Spec.Source.Type)
 	assert.Contains(t, bcBuilder.Name, builderSuffix)
 
 	bcRuntime := resources[reflect.TypeOf(buildv1.BuildConfig{})][1].(*buildv1.BuildConfig)
 	assert.NotNil(t, bcRuntime)
 	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, GetDefaultRuntimeJVMImage())
-	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, infrastructure.GetKogitoImageVersion(version.Version))
+	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, infrastructure.GetKogitoImageVersion(app.Version))
 	assert.Contains(t, bcRuntime.Spec.Triggers[0].ImageChange.From.Name, bcBuilder.Name)
 	assert.Equal(t, bcRuntime.Name, build.Name)
 
@@ -153,7 +153,7 @@ func TestNewWhenBuildingFromBinary(t *testing.T) {
 			Client:  cli,
 			Log:     test.TestLogger,
 			Scheme:  meta.GetRegisteredSchema(),
-			Version: version.Version,
+			Version: app.Version,
 		},
 	}
 	deltaProcessor := &deltaProcessor{BuildContext: context, build: build}
@@ -169,7 +169,7 @@ func TestNewWhenBuildingFromBinary(t *testing.T) {
 	assert.NotNil(t, bcRuntime)
 	assert.Equal(t, buildv1.BuildSourceBinary, bcRuntime.Spec.Source.Type)
 	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, GetDefaultRuntimeJVMImage())
-	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, infrastructure.GetKogitoImageVersion(version.Version))
+	assert.Contains(t, bcRuntime.Spec.Strategy.SourceStrategy.From.Name, infrastructure.GetKogitoImageVersion(app.Version))
 	assert.Equal(t, bcRuntime.Name, build.Name)
 
 	isRuntime := resources[reflect.TypeOf(imgv1.ImageStream{})][0].(*imgv1.ImageStream)
@@ -194,7 +194,7 @@ func TestNewWhenSanityCheckComplainAboutType(t *testing.T) {
 			Client:  cli,
 			Log:     test.TestLogger,
 			Scheme:  meta.GetRegisteredSchema(),
-			Version: version.Version,
+			Version: app.Version,
 		},
 	}
 	manager, err := NewDeltaProcessor(context, build)
@@ -219,7 +219,7 @@ func TestNewWhenSanityCheckComplainAboutGit(t *testing.T) {
 			Client:  cli,
 			Log:     test.TestLogger,
 			Scheme:  meta.GetRegisteredSchema(),
-			Version: version.Version,
+			Version: app.Version,
 		},
 	}
 	manager, err := NewDeltaProcessor(context, build)

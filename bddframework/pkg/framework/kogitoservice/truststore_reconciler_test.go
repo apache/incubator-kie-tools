@@ -19,7 +19,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/meta"
-	"github.com/kiegroup/kogito-operator/version"
+	"github.com/kiegroup/kogito-operator/version/app"
 	"github.com/stretchr/testify/assert"
 	v12 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -63,7 +63,7 @@ func TestTrustStoreReconcilerTrustStore_MissingCM(t *testing.T) {
 		Client:  cli,
 		Log:     test.TestLogger,
 		Scheme:  meta.GetRegisteredSchema(),
-		Version: version.Version,
+		Version: app.Version,
 	}
 	trustStoreReconciler := newTrustStoreReconciler(context, instance, &serviceDefinition)
 	err := trustStoreReconciler.Reconcile()

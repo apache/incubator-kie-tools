@@ -22,7 +22,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/manager"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
-	"github.com/kiegroup/kogito-operator/internal"
+	"github.com/kiegroup/kogito-operator/internal/app"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
@@ -96,7 +96,7 @@ func TestMountProtoBufConfigMapOnDataIndex(t *testing.T) {
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	supportingServiceHandler := internal.NewKogitoSupportingServiceHandler(context)
+	supportingServiceHandler := app.NewKogitoSupportingServiceHandler(context)
 	protoBufHandler := NewProtoBufHandler(context, supportingServiceHandler)
 	err := protoBufHandler.MountProtoBufConfigMapOnDataIndex(runtimeService)
 	assert.NoError(t, err)
