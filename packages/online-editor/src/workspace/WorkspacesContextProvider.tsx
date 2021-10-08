@@ -164,16 +164,10 @@ export function WorkspacesContextProvider(props: Props) {
 
       throw new Error("Max attempts of new empty file exceeded.");
     },
-    [getAbsolutePath, workspaceService]
-  );
-
-  const prepareZip = useCallback(
-    async (workspaceId: string) => {
-      const descriptor = (await workspaceService.get(workspaceId))!;
-      return await workspaceService.prepareZip(descriptor);
-    },
     [workspaceService]
   );
+
+  const prepareZip = useCallback((workspaceId: string) => workspaceService.prepareZip(workspaceId), [workspaceService]);
 
   // const syncWorkspace = useCallback(async () => {
   //   if (!active) {
@@ -204,13 +198,12 @@ export function WorkspacesContextProvider(props: Props) {
       const content = await file.getFileContents();
       return new ResourceContent(args.relativePath, content, ContentType.TEXT);
     },
-    [getAbsolutePath, workspaceService]
+    [workspaceService]
   );
 
   const resourceContentList = useCallback(
     async (workspaceId: string, globPattern: string) => {
-      const descriptor = (await workspaceService.get(workspaceId))!;
-      const files = await workspaceService.listFiles(descriptor, globPattern);
+      const files = await workspaceService.listFiles(workspaceId, globPattern);
       const matchingPaths = files.map((file) => file.relativePath);
       return new ResourcesList(globPattern, matchingPaths);
     },

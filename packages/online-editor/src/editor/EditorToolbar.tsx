@@ -516,7 +516,7 @@ export function EditorToolbar(props: Props) {
   const deleteWorkspaceFile = useCallback(() => {
     if (props.workspace.files.length === 1) {
       workspaces.workspaceService
-        .delete(props.workspace.descriptor, { broadcast: true })
+        .delete(props.workspace.descriptor.workspaceId, { broadcast: true })
         .then(() => history.push({ pathname: globals.routes.home.path({}) }));
       return;
     }
@@ -752,7 +752,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
         return;
       }
 
-      workspaces.workspaceService.rename(props.workspace.descriptor, newName, { broadcast: true });
+      workspaces.workspaceService.rename(props.workspace.descriptor.workspaceId, newName, { broadcast: true });
     },
     [props.workspace, workspaces.workspaceService, resetWorkspaceName]
   );

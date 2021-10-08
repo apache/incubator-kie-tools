@@ -20,16 +20,16 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
       }
 
       if (!descriptor) {
-        setWorkspacePromise({ error: `Can't find Workspace with id ${workspaceId}` });
+        setWorkspacePromise({ error: `Can't find Workspace with id '${workspaceId}'` });
         return;
       }
 
-      const files = await workspaces.workspaceService.listFiles(descriptor);
+      const files = await workspaces.workspaceService.listFiles(workspaceId);
       if (canceled.get()) {
         return;
       }
 
-      setWorkspacePromise({ data: { descriptor: descriptor, files } });
+      setWorkspacePromise({ data: { descriptor, files } });
     },
     [setWorkspacePromise, workspaceId, workspaces]
   );
@@ -76,6 +76,6 @@ export type WorkspaceEvents =
   | { type: "RENAME_FILE"; newRelativePath: string; oldRelativePath: string }
   | { type: "UPDATE_FILE"; relativePath: string }
   | { type: "DELETE_FILE"; relativePath: string }
-  | { type: "ADD_BATCH"; workspaceId: string; pathsRelativeToWorkspaceRoot: string[] }
-  | { type: "MOVE_BATCH"; workspaceId: string; pathsRelativeToWorkspaceRoot: Map<string, string> }
-  | { type: "DELETE_BATCH"; workspaceId: string; pathsRelativeToWorkspaceRoot: string[] };
+  | { type: "ADD_BATCH"; workspaceId: string; relativePaths: string[] }
+  | { type: "MOVE_BATCH"; workspaceId: string; relativePaths: Map<string, string> }
+  | { type: "DELETE_BATCH"; workspaceId: string; relativePaths: string[] };

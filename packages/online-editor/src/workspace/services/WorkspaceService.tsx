@@ -110,20 +110,20 @@ export class WorkspaceService {
     return descriptor;
   }
 
-  public async listFiles(descriptor: WorkspaceDescriptor, globPattern?: string): Promise<WorkspaceFile[]> {
-    const workspaceRootPath = await this.resolveRootPath(descriptor);
+  public async listFiles(workspaceId: string, globPattern?: string): Promise<WorkspaceFile[]> {
+    const workspaceRootPath = await this.resolveRootPath(workspaceId);
     const storageFiles = await this.storageService.getFiles(workspaceRootPath, globPattern);
-    return this.toWorkspaceFiles(descriptor.workspaceId, storageFiles);
+    return this.toWorkspaceFiles(workspaceId, storageFiles);
   }
 
-  public async delete(descriptor: WorkspaceDescriptor, broadcastArgs: { broadcast: boolean }): Promise<void> {
+  public async delete(workspaceId: string, broadcastArgs: { broadcast: boolean }): Promise<void> {
     const descriptors = await this.listAll();
-    const index = descriptors.findIndex(({ workspaceId }) => workspaceId === descriptor.workspaceId);
+    const index = descriptors.findIndex((d) => d.workspaceId === workspaceId);
     if (index === -1) {
-      throw new Error(`Workspace ${descriptor.workspaceId} not found`);
+      throw new Error(`Workspace '${workspaceId}' not found`);
     }
 
-    const files = await this.listFiles(descriptor);
+    const files = await this.listFiles(workspaceId);
     await this.storageService.deleteFiles(files.map(this.toStorageFile));
 
     descriptors.splice(index, 1);
@@ -132,24 +132,17 @@ export class WorkspaceService {
 
     if (broadcastArgs.broadcast) {
       const broadcastChannel1 = new BroadcastChannel(this.rootPath);
-      const broadcastChannel2 = new BroadcastChannel(descriptor.workspaceId);
-      broadcastChannel1.postMessage({
-        type: "DELETE_WORKSPACE",
-        workspaceId: descriptor.workspaceId,
-      } as WorkspacesEvents);
-      broadcastChannel2.postMessage({ type: "DELETE", workspaceId: descriptor.workspaceId } as WorkspaceEvents);
+      const broadcastChannel2 = new BroadcastChannel(workspaceId);
+      broadcastChannel1.postMessage({ type: "DELETE_WORKSPACE", workspaceId } as WorkspacesEvents);
+      broadcastChannel2.postMessage({ type: "DELETE", workspaceId } as WorkspaceEvents);
     }
   }
 
-  public async rename(
-    descriptor: WorkspaceDescriptor,
-    newName: string,
-    broadcastArgs: { broadcast: boolean }
-  ): Promise<void> {
+  public async rename(workspaceId: string, newName: string, broadcastArgs: { broadcast: boolean }): Promise<void> {
     const descriptors = await this.listAll();
-    const index = descriptors.findIndex((w) => w.workspaceId === descriptor.workspaceId);
+    const index = descriptors.findIndex((w) => w.workspaceId === workspaceId);
     if (index === -1) {
-      throw new Error(`Workspace ${descriptor.workspaceId} not found`);
+      throw new Error(`Workspace ${workspaceId} not found`);
     }
 
     descriptors[index].name = newName;
@@ -157,35 +150,32 @@ export class WorkspaceService {
     await this.storageService.updateFile(configFile);
 
     if (broadcastArgs.broadcast) {
-      await this.bumpLastUpdatedDate(descriptor.workspaceId);
+      await this.bumpLastUpdatedDate(workspaceId);
 
       const broadcastChannel1 = new BroadcastChannel(this.rootPath);
-      const broadcastChannel2 = new BroadcastChannel(descriptor.workspaceId);
-      broadcastChannel1.postMessage({
-        type: "RENAME_WORKSPACE",
-        workspaceId: descriptor.workspaceId,
-      } as WorkspacesEvents);
-      broadcastChannel2.postMessage({ type: "RENAME", workspaceId: descriptor.workspaceId } as WorkspaceEvents);
+      const broadcastChannel2 = new BroadcastChannel(workspaceId);
+      broadcastChannel1.postMessage({ type: "RENAME_WORKSPACE", workspaceId } as WorkspacesEvents);
+      broadcastChannel2.postMessage({ type: "RENAME", workspaceId } as WorkspaceEvents);
     }
   }
 
-  public async prepareZip(descriptor: WorkspaceDescriptor): Promise<Blob> {
-    const workspaceRootPath = await this.resolveRootPath(descriptor);
+  public async prepareZip(workspaceId: string): Promise<Blob> {
+    const workspaceRootPath = await this.resolveRootPath(workspaceId);
 
     const zip = new JSZip();
     const storageFiles = await this.storageService.getFiles(workspaceRootPath, SUPPORTED_FILES_PATTERN);
 
-    for (const file of this.toWorkspaceFiles(descriptor.workspaceId, storageFiles)) {
+    for (const file of this.toWorkspaceFiles(workspaceId, storageFiles)) {
       zip.file(file.relativePath, (await file.getFileContents()) ?? "");
     }
 
     return await zip.generateAsync({ type: "blob" });
   }
 
-  public async resolveRootPath(descriptor: WorkspaceDescriptor): Promise<string> {
-    const workspaceRootPath = `${this.rootPath}${descriptor.workspaceId}`;
+  public async resolveRootPath(workspaceId: string): Promise<string> {
+    const workspaceRootPath = this.getAbsolutePath({ workspaceId, relativePath: "" });
     if (!(await this.storageService.exists(workspaceRootPath))) {
-      throw new Error(`Root ${workspaceRootPath} does not exist`);
+      throw new Error(`Root '${workspaceRootPath}' does not exist`);
     }
 
     return workspaceRootPath;
@@ -199,7 +189,7 @@ export class WorkspaceService {
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(file.workspaceId);
 
-      const broadcastChannel1 = new BroadcastChannel(this.getAbsolutePathForFile(file));
+      const broadcastChannel1 = new BroadcastChannel(this.getAbsolutePath(file));
       const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
       broadcastChannel1.postMessage({
         type: "ADD",
@@ -240,7 +230,7 @@ export class WorkspaceService {
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(file.workspaceId);
 
-      const broadcastChannel1 = new BroadcastChannel(this.getAbsolutePathForFile(file));
+      const broadcastChannel1 = new BroadcastChannel(this.getAbsolutePath(file));
       const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
       broadcastChannel1.postMessage({
         type: "UPDATE",
@@ -259,7 +249,7 @@ export class WorkspaceService {
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(file.workspaceId);
 
-      const broadcastChannel1 = new BroadcastChannel(this.getAbsolutePathForFile(file));
+      const broadcastChannel1 = new BroadcastChannel(this.getAbsolutePath(file));
       const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
       broadcastChannel1.postMessage({
         type: "DELETE",
@@ -283,8 +273,8 @@ export class WorkspaceService {
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(file.workspaceId);
 
-      const broadcastChannel1 = new BroadcastChannel(this.getAbsolutePathForFile(file));
-      const broadcastChannel2 = new BroadcastChannel(this.getAbsolutePathForFile(renamedWorkspaceFile));
+      const broadcastChannel1 = new BroadcastChannel(this.getAbsolutePath(file));
+      const broadcastChannel2 = new BroadcastChannel(this.getAbsolutePath(renamedWorkspaceFile));
       const broadcastChannel3 = new BroadcastChannel(file.workspaceId);
       broadcastChannel1.postMessage({
         type: "RENAME",
@@ -316,7 +306,7 @@ export class WorkspaceService {
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(file.workspaceId);
 
-      const broadcastChannel1 = new BroadcastChannel(this.getAbsolutePathForFile(file));
+      const broadcastChannel1 = new BroadcastChannel(this.getAbsolutePath(file));
       const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
       broadcastChannel1.postMessage({
         type: "MOVE",
@@ -333,6 +323,14 @@ export class WorkspaceService {
     return movedWorkspaceFile;
   }
 
+  public async existsFile(args: { workspaceId: string; relativePath: string }): Promise<boolean> {
+    return this.storageService.exists(this.getAbsolutePath(args));
+  }
+
+  public getAbsolutePath(args: { workspaceId: string; relativePath: string }) {
+    return join(this.rootPath, args.workspaceId, args.relativePath);
+  }
+
   public async createFiles(files: WorkspaceFile[], broadcastArgs: { broadcast: boolean }): Promise<void> {
     if (files.length === 0) {
       return;
@@ -343,12 +341,12 @@ export class WorkspaceService {
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(files[0].workspaceId);
 
-      const pathsRelativeToWorkspaceRoot = files.map((file) => file.relativePath);
+      const relativePaths = files.map((file) => file.relativePath);
       const broadcastChannel = new BroadcastChannel(files[0].workspaceId);
       broadcastChannel.postMessage({
         type: "ADD_BATCH",
         workspaceId: files[0].workspaceId,
-        pathsRelativeToWorkspaceRoot,
+        relativePaths,
       } as WorkspaceEvents);
     }
   }
@@ -363,12 +361,12 @@ export class WorkspaceService {
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(files[0].workspaceId);
 
-      const pathsRelativeToWorkspaceRoot = files.map((file) => file.relativePath);
+      const relativePaths = files.map((file) => file.relativePath);
       const broadcastChannel = new BroadcastChannel(files[0].workspaceId);
       broadcastChannel.postMessage({
         type: "DELETE_BATCH",
         workspaceId: files[0].workspaceId,
-        pathsRelativeToWorkspaceRoot,
+        relativePaths,
       } as WorkspaceEvents);
     }
   }
@@ -391,19 +389,15 @@ export class WorkspaceService {
       broadcastChannel.postMessage({
         type: "MOVE_BATCH",
         workspaceId: files[0].workspaceId,
-        pathsRelativeToWorkspaceRoot: pathMap,
+        relativePaths: pathMap,
       } as WorkspaceEvents);
     }
   }
 
-  public async getFiles(descriptor: WorkspaceDescriptor, globPattern?: string): Promise<WorkspaceFile[]> {
-    const workspaceRootPath = await this.resolveRootPath(descriptor);
+  public async getFiles(workspaceId: string, globPattern?: string): Promise<WorkspaceFile[]> {
+    const workspaceRootPath = await this.resolveRootPath(workspaceId);
     const storageFiles = await this.storageService.getFiles(workspaceRootPath, globPattern);
-    return this.toWorkspaceFiles(descriptor.workspaceId, storageFiles);
-  }
-
-  public async existsFile(args: { workspaceId: string; relativePath: string }): Promise<boolean> {
-    return this.storageService.exists(this.getAbsolutePath(args));
+    return this.toWorkspaceFiles(workspaceId, storageFiles);
   }
 
   private async configAsFile(getFileContents: () => Promise<string>) {
@@ -425,13 +419,13 @@ export class WorkspaceService {
     return new WorkspaceFile({
       workspaceId,
       getFileContents: storageFile.getFileContents,
-      relativePath: storageFile.path.replace(`/${workspaceId}/`, ""), // FIXME: This can break if structure changes
+      relativePath: storageFile.path.replace(this.getAbsolutePath({ workspaceId, relativePath: "/" }), ""),
     });
   }
 
   private toStorageFile(workspaceFile: WorkspaceFile): StorageFile {
     return new StorageFile({
-      path: this.getAbsolutePathForFile(workspaceFile),
+      path: this.getAbsolutePath(workspaceFile),
       getFileContents: workspaceFile.getFileContents,
     });
   }
@@ -449,16 +443,5 @@ export class WorkspaceService {
     });
     const configFile = await this.configAsFile(async () => JSON.stringify(updatedDescriptors));
     await this.storageService.updateFile(configFile);
-  }
-
-  public getAbsolutePath(args: { workspaceId: string; relativePath: string }) {
-    return join(this.rootPath, args.workspaceId, args.relativePath);
-  }
-
-  public getAbsolutePathForFile(file: WorkspaceFile) {
-    return this.getAbsolutePath({
-      workspaceId: file.workspaceId,
-      relativePath: file.relativePath,
-    });
   }
 }

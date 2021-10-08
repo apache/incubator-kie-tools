@@ -116,9 +116,8 @@ export function DmnDevSandboxContextProvider(props: Props) {
       const relatedFiles: DeploymentFile[] = [];
 
       if (props.workspaceFile) {
-        const descriptor = await workspaces.workspaceService.get(props.workspaceFile.workspaceId);
         const workspaceFiles = await workspaces.workspaceService.listFiles(
-          descriptor,
+          props.workspaceFile.workspaceId,
           SUPPORTED_FILES_DMN_DEV_SANDBOX_DEPLOY_PATTERN
         );
 
