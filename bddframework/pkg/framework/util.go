@@ -16,6 +16,7 @@ package framework
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-operator/version/app"
 	"io"
 	"io/ioutil"
 	"math/rand"
@@ -24,8 +25,6 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
-
-	"github.com/kiegroup/kogito-operator/version"
 
 	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
@@ -269,7 +268,7 @@ func GetKogitoBuildImage(imageName string, useDefaultValues bool) string {
 	}
 
 	if len(image.Tag) == 0 && useDefaultValues {
-		image.Tag = infrastructure.GetKogitoImageVersion(version.Version)
+		image.Tag = infrastructure.GetKogitoImageVersion(app.Version)
 	}
 
 	// Update image name with suffix if provided

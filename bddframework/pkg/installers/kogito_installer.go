@@ -17,9 +17,8 @@ package installers
 import (
 	"errors"
 	"fmt"
+	"github.com/kiegroup/kogito-operator/version/app"
 	"regexp"
-
-	"github.com/kiegroup/kogito-operator/version"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
@@ -124,7 +123,7 @@ func installKogitoUsingYaml() error {
 		return err
 	}
 
-	regexp, err := regexp.Compile("quay.io/kiegroup/kogito-operator.*" + ":" + version.Version)
+	regexp, err := regexp.Compile("quay.io/kiegroup/kogito-operator.*" + ":" + app.Version)
 	if err != nil {
 		return err
 	}

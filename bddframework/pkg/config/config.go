@@ -15,9 +15,9 @@
 package config
 
 import (
+	"github.com/kiegroup/kogito-operator/version/app"
 	"path/filepath"
 
-	"github.com/kiegroup/kogito-operator/version"
 	flag "github.com/spf13/pflag"
 )
 
@@ -123,7 +123,7 @@ const (
 )
 
 var (
-	defaultOperatorImageTag = version.Version
+	defaultOperatorImageTag = app.Version
 
 	env = TestConfig{}
 )
