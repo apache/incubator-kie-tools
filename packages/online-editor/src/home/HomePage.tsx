@@ -128,7 +128,10 @@ export function HomePage() {
   );
 
   useEffect(() => {
-    if (!workspaceDescriptorsPromise.data?.map((f) => f.workspaceId).includes(expandedWorkspaceId!)) {
+    if (
+      workspaceDescriptorsPromise.data &&
+      !workspaceDescriptorsPromise.data.map((f) => f.workspaceId).includes(expandedWorkspaceId!)
+    ) {
       closeExpandedWorkspace();
     }
   }, [workspaceDescriptorsPromise, closeExpandedWorkspace, expandedWorkspaceId]);
