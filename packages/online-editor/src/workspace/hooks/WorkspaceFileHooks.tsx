@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
 import { Holder, useCancelableEffect } from "../../common/Hooks";
 import { usePromiseState } from "./PromiseState";
@@ -11,14 +11,16 @@ export function useWorkspaceFilePromise(
   const [workspaceFilePromise, setWorkspaceFilePromise] = usePromiseState<WorkspaceFile>();
 
   const refresh = useCallback(
-    (workspaceId: string, path: string, canceled: Holder<boolean>) => {
-      workspaces.workspaceService.getFile(workspaceId, path).then((workspaceFile) => {
+    (workspaceId: string, pathRelativeToWorkspaceRoot: string, canceled: Holder<boolean>) => {
+      workspaces.workspaceService.getFile({ workspaceId, pathRelativeToWorkspaceRoot }).then((workspaceFile) => {
         if (canceled.get()) {
           return;
         }
 
         if (!workspaceFile) {
-          setWorkspaceFilePromise({ error: `File '${path}' not found` });
+          setWorkspaceFilePromise({
+            error: `File '${pathRelativeToWorkspaceRoot}' not found in Workspace '${workspaceId}'`,
+          });
           return;
         }
 
@@ -28,51 +30,45 @@ export function useWorkspaceFilePromise(
     [workspaces, setWorkspaceFilePromise]
   );
 
-  const completePath = useMemo(() => {
-    if (!pathRelativeToWorkspaceRoot || !workspaceId) {
-      return undefined;
-    }
-
-    return workspaces.assemblePath({ workspaceId, pathRelativeToWorkspaceRoot });
-  }, [workspaces, workspaceId, pathRelativeToWorkspaceRoot]);
-
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (!completePath || !workspaceId) {
+        if (!pathRelativeToWorkspaceRoot || !workspaceId) {
           return;
         }
-        refresh(workspaceId, completePath, canceled);
+        refresh(workspaceId, pathRelativeToWorkspaceRoot, canceled);
       },
-      [refresh, completePath]
+      [pathRelativeToWorkspaceRoot, workspaceId, refresh]
     )
   );
 
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (!completePath || !workspaceId) {
+        if (!pathRelativeToWorkspaceRoot || !workspaceId) {
           return;
         }
 
-        console.info("Subscribing to " + completePath);
-        const broadcastChannel = new BroadcastChannel(completePath);
+        const absolutePath = workspaces.getAbsolutePath({ workspaceId, pathRelativeToWorkspaceRoot });
+
+        console.info("Subscribing to " + absolutePath);
+        const broadcastChannel = new BroadcastChannel(absolutePath);
         broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileEvents>) => {
           console.info(`WORKSPACE_FILE: ${JSON.stringify(data)}`);
           if (data.type === "MOVE" || data.type == "RENAME") {
-            refresh(workspaceId, data.newPath, canceled);
+            refresh(workspaceId, data.newPathRelativeToWorkspaceRoot, canceled);
           }
           if (data.type === "UPDATE" || data.type === "DELETE" || data.type === "ADD") {
-            refresh(workspaceId, data.path, canceled);
+            refresh(workspaceId, data.pathRelativeToWorkspaceRoot, canceled);
           }
         };
 
         return () => {
-          console.info("Unsubscribing to " + completePath);
+          console.info("Unsubscribing to " + absolutePath);
           broadcastChannel.close();
         };
       },
-      [refresh, completePath]
+      [pathRelativeToWorkspaceRoot, workspaceId, workspaces, refresh]
     )
   );
 
@@ -80,8 +76,8 @@ export function useWorkspaceFilePromise(
 }
 
 export type WorkspaceFileEvents =
-  | { type: "MOVE"; newPath: string; oldPath: string }
-  | { type: "RENAME"; newPath: string; oldPath: string }
-  | { type: "UPDATE"; path: string }
-  | { type: "DELETE"; path: string }
-  | { type: "ADD"; path: string };
+  | { type: "MOVE"; newPathRelativeToWorkspaceRoot: string; oldPathRelativeToWorkspaceRoot: string }
+  | { type: "RENAME"; newPathRelativeToWorkspaceRoot: string; oldPathRelativeToWorkspaceRoot: string }
+  | { type: "UPDATE"; pathRelativeToWorkspaceRoot: string }
+  | { type: "DELETE"; pathRelativeToWorkspaceRoot: string }
+  | { type: "ADD"; pathRelativeToWorkspaceRoot: string };

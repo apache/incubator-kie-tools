@@ -524,7 +524,7 @@ export function EditorToolbar(props: Props) {
     const nextFile = props.workspace.files
       .filter(
         (f) =>
-          f.path !== props.workspaceFile.path &&
+          f.pathRelativeToWorkspaceRoot !== props.workspaceFile.pathRelativeToWorkspaceRoot &&
           Array.from(globals.editorEnvelopeLocator.mapping.keys()).includes(f.extension)
       )
       .pop();
@@ -759,15 +759,22 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
   );
 
   const checkNewFileName = useCallback(
-    (newFileName: string) => {
-      if (newFileName === props.workspaceFile.nameWithoutExtension) {
+    async (newFileNameWithoutExtension: string) => {
+      if (newFileNameWithoutExtension === props.workspaceFile.nameWithoutExtension) {
         setNewFileNameValid(true);
         return;
       }
-      const newPath = join(props.workspaceFile.dirPath, `${newFileName}.${props.workspaceFile.extension}`);
-      workspaces.workspaceService.exists(newPath).then((exist: boolean) => {
-        setNewFileNameValid(!exist);
+
+      const newPathRelativeToWorkspaceRoot = join(
+        props.workspaceFile.dirPathRelativeToWorkspaceRoot,
+        `${newFileNameWithoutExtension}.${props.workspaceFile.extension}`
+      );
+
+      const exists = await workspaces.workspaceService.existsFile({
+        workspaceId: props.workspaceFile.workspaceId,
+        pathRelativeToWorkspaceRoot: newPathRelativeToWorkspaceRoot,
       });
+      setNewFileNameValid(!exists);
     },
     [props.workspaceFile, workspaces.workspaceService]
   );
@@ -821,7 +828,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
     () => [
       <DropdownGroup key={"workspace-group"} label="Files">
         {props.workspace.files
-          .sort((a, b) => a.path.localeCompare(b.path))
+          .sort((a, b) => a.pathRelativeToWorkspaceRoot.localeCompare(b.pathRelativeToWorkspaceRoot))
           .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension))
           .map((file, idx: number) => (
             <DropdownItem

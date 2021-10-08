@@ -171,7 +171,11 @@ export class StorageService {
     });
   }
 
-  public async createDirStructure(path: string): Promise<void> {
+  public async createDirStructureAtRoot(pathRelativeToRoot: string) {
+    await this.createDirStructure(this.rootPath + pathRelativeToRoot + this.SEPARATOR);
+  }
+
+  private async createDirStructure(path: string): Promise<void> {
     const dirPath = path.endsWith(this.SEPARATOR) ? path : dirname(path);
     const intermediaryDirPaths = dirPath.split(this.SEPARATOR).filter((p) => p);
 

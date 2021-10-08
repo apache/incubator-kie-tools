@@ -131,7 +131,7 @@ export function EditorPage(props: Props) {
           }
 
           setEmbeddedEditorFile({
-            path: workspaceFilePromise.data.path,
+            path: workspaceFilePromise.data.pathRelativeToWorkspaceRoot,
             getFileContents: workspaceFilePromise.data.getFileContents,
             kind: "local",
             isReadOnly: false,
@@ -145,8 +145,9 @@ export function EditorPage(props: Props) {
   );
 
   // auto-save
-  const prevPath = usePrevious(workspaceFilePromise.data?.path);
-  if (prevPath !== workspaceFilePromise.data?.path) {
+  const absolutePath = workspaceFilePromise.data ? workspaces.getAbsolutePath(workspaceFilePromise.data) : undefined;
+  const prevPath = usePrevious(absolutePath);
+  if (prevPath !== absolutePath) {
     lastContent.current = undefined;
   }
 

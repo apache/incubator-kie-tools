@@ -47,10 +47,8 @@ export function WorkspacesContextProvider(props: Props) {
   const workspaceService = useMemo(() => new WorkspaceService(storageService), [storageService]);
   const gitService = useMemo(() => new GitService(GIT_CORS_PROXY, storageService), [storageService]);
 
-  const assemblePath = useCallback(
-    (args: { workspaceId: string; pathRelativeToWorkspaceRoot: string }) => {
-      return join(workspaceService.rootPath, args.workspaceId, args.pathRelativeToWorkspaceRoot);
-    },
+  const getAbsolutePath = useCallback(
+    (args: { workspaceId: string; pathRelativeToWorkspaceRoot: string }) => workspaceService.getAbsolutePath(args),
     [workspaceService]
   );
 
@@ -58,7 +56,7 @@ export function WorkspacesContextProvider(props: Props) {
     async (descriptor: WorkspaceDescriptor, fileHandler: FileHandler) => {
       const files = await workspaceService.create(descriptor, fileHandler, { broadcast: true });
       if (files.length > 0) {
-        return files.sort((a, b) => a.path.localeCompare(b.path))[0];
+        return files.sort((a, b) => a.pathRelativeToWorkspaceRoot.localeCompare(b.pathRelativeToWorkspaceRoot))[0];
       } else {
         return undefined;
       }
@@ -67,7 +65,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createWorkspaceFromLocal = useCallback(
-    async (files: LocalFile[]) => {
+    async (localFiles: LocalFile[]) => {
       const descriptor: WorkspaceDescriptor = {
         workspaceId: workspaceService.newWorkspaceId(),
         name: NEW_WORKSPACE_DEFAULT_NAME,
@@ -79,13 +77,11 @@ export function WorkspacesContextProvider(props: Props) {
       // git init
       // git commit -am "Init"
 
-      const supportedFiles = files.filter((localFile) =>
+      const supportedFiles = localFiles.filter((localFile) =>
         SUPPORTED_FILES.includes(extractFileExtension(localFile.path)!)
       );
-      const fileHandler = new LocalFileHandler({
-        files: supportedFiles,
-        workspaceService: workspaceService,
-      });
+
+      const fileHandler = new LocalFileHandler({ files: supportedFiles, workspaceService });
       const suggestedFirstFile = await createWorkspace(descriptor, fileHandler);
       return { descriptor, suggestedFirstFile };
     },
@@ -141,12 +137,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const updateFile = useCallback(
     async (file: WorkspaceFile, getNewContents: () => Promise<string>) => {
-      const updatedFile = new WorkspaceFile({
-        workspaceId: file.workspaceId,
-        path: file.path,
-        getFileContents: getNewContents,
-      });
-      await workspaceService.updateFile(updatedFile, { broadcast: true });
+      await workspaceService.updateFile(file, getNewContents, { broadcast: true });
     },
     [workspaceService]
   );
@@ -161,17 +152,15 @@ export function WorkspacesContextProvider(props: Props) {
         const index = i === 0 ? "" : `-${i}`;
         const fileName = `Untitled${index}.${args.extension}`;
         const pathRelativeToWorkspaceRoot = join(args.destinationDirPathRelativeToWorkspaceRoot, fileName);
-        const path = assemblePath({ workspaceId: args.workspaceId, pathRelativeToWorkspaceRoot });
-
-        if (await workspaceService.exists(path)) {
+        if (await workspaceService.existsFile({ workspaceId: args.workspaceId, pathRelativeToWorkspaceRoot })) {
           continue;
         }
 
         const contents = args.extension in emptyTemplates ? emptyTemplates[args.extension] : emptyTemplates.default;
         const newEmptyFile = new WorkspaceFile({
           workspaceId: args.workspaceId,
-          path,
           getFileContents: () => Promise.resolve(contents),
+          pathRelativeToWorkspaceRoot,
         });
         await workspaceService.createFile(newEmptyFile, { broadcast: true });
         return newEmptyFile;
@@ -179,7 +168,7 @@ export function WorkspacesContextProvider(props: Props) {
 
       throw new Error("Max attempts of new empty file exceeded.");
     },
-    [assemblePath, workspaceService]
+    [getAbsolutePath, workspaceService]
   );
 
   const prepareZip = useCallback(
@@ -211,7 +200,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const resourceContentGet = useCallback(
     async (args: { workspaceId: string; pathRelativeToWorkspaceRoot: string }) => {
-      const file = await workspaceService.getFile(args.workspaceId, assemblePath(args));
+      const file = await workspaceService.getFile(args);
       if (!file) {
         throw new Error(`File '${args.pathRelativeToWorkspaceRoot}' not found in Workspace ${args.workspaceId}`);
       }
@@ -219,7 +208,7 @@ export function WorkspacesContextProvider(props: Props) {
       const content = await file.getFileContents();
       return new ResourceContent(args.pathRelativeToWorkspaceRoot, content, ContentType.TEXT);
     },
-    [assemblePath, workspaceService]
+    [getAbsolutePath, workspaceService]
   );
 
   const resourceContentList = useCallback(
@@ -249,7 +238,7 @@ export function WorkspacesContextProvider(props: Props) {
         addEmptyFile,
         updateFile,
         prepareZip,
-        assemblePath,
+        getAbsolutePath,
       }}
     >
       {ready && props.children}

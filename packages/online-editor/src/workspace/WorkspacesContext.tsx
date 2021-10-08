@@ -31,14 +31,10 @@ export class WorkspaceFile {
   constructor(
     private readonly args: {
       workspaceId: string;
-      path: string;
+      pathRelativeToWorkspaceRoot: string;
       getFileContents: () => Promise<string>;
     }
   ) {}
-
-  get path() {
-    return this.args.path;
-  }
 
   get getFileContents() {
     return this.args.getFileContents;
@@ -48,32 +44,32 @@ export class WorkspaceFile {
     return this.args.workspaceId;
   }
 
-  get dirPath() {
-    return dirname(this.path);
-  }
-
-  get dirPathRelativeToWorkspaceRoot() {
-    return dirname(this.pathRelativeToWorkspaceRoot);
-  }
-
   get pathRelativeToWorkspaceRoot() {
-    return this.path.replace(`/${this.workspaceId}/`, ""); //FIXME: This will break if the structure changes.
+    return this.args.pathRelativeToWorkspaceRoot;
   }
 
   get pathRelativeToWorkspaceRootWithoutExtension() {
     return removeFileExtension(this.pathRelativeToWorkspaceRoot);
   }
 
+  get dirPath() {
+    return dirname(this.pathRelativeToWorkspaceRoot);
+  }
+
+  get dirPathRelativeToWorkspaceRoot() {
+    return dirname(this.pathRelativeToWorkspaceRoot);
+  }
+
   get extension() {
-    return extname(this.path).replace(".", "");
+    return extname(this.pathRelativeToWorkspaceRoot).replace(".", "");
   }
 
   get nameWithoutExtension() {
-    return basename(this.path, `.${this.extension}`);
+    return basename(this.pathRelativeToWorkspaceRoot, `.${this.extension}`);
   }
 
   get name() {
-    return basename(this.path);
+    return basename(this.pathRelativeToWorkspaceRoot);
   }
 }
 
@@ -113,7 +109,7 @@ export interface WorkspacesContextType {
     opts?: ResourceContentOptions;
   }) => Promise<ResourceContent | undefined>;
 
-  assemblePath(args: { workspaceId: string; pathRelativeToWorkspaceRoot: string }): string;
+  getAbsolutePath(args: { workspaceId: string; pathRelativeToWorkspaceRoot: string }): string;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);
