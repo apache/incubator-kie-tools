@@ -28,9 +28,9 @@ git clone https://github.com/k8s-operatorhub/community-operators.git "${tempfold
 mv "${tempfolder}/operators" "${tempfolder}/community-operators"
 mkdir  "${tempfolder}/community-operators/kogito-operator/${version}/"
 ## copy the latest manifests
-cp -r bundle/manifests/ "${tempfolder}/community-operators/kogito-operator/${version}/"
-cp -r bundle/metadata/ "${tempfolder}/community-operators/kogito-operator/${version}/"
-cp -r bundle/tests/ "${tempfolder}/community-operators/kogito-operator/${version}/"
+cp -r bundle/app/manifests/ "${tempfolder}/community-operators/kogito-operator/${version}/"
+cp -r bundle/app/metadata/ "${tempfolder}/community-operators/kogito-operator/${version}/"
+cp -r bundle/app/tests/ "${tempfolder}/community-operators/kogito-operator/${version}/"
 cp bundle.Dockerfile "${tempfolder}/community-operators/kogito-operator/${version}/Dockerfile"
 
 #Edit dockerfile with correct relative path

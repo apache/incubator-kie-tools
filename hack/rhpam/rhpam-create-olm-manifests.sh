@@ -15,7 +15,7 @@
 
 
 script_dir_path=`dirname "${BASH_SOURCE[0]}"`
-source ${script_dir_path}/env.sh
+source ${script_dir_path}/rhpam-env.sh
 
 OLM_DIR="build/_output/olm/"
 VERSION=$(getOperatorVersion)
@@ -27,10 +27,10 @@ rm -rf "${OLM_DIR}"
 mkdir -p "${MANIFESTS}"
 
 #copy bundle manifests and Dockerfile
-cp -r bundle/app/*  "${MANIFESTS}/"
+cp -r bundle/rhpam/*  "${MANIFESTS}/"
 cp bundle.Dockerfile "${MANIFESTS}/Dockerfile"
 
 #Correct the relative path in Dockerfile
-sed -i "s|bundle/app/manifests|manifests|g"  "${MANIFESTS}/Dockerfile"
-sed -i "s|bundle/app/metadata|metadata|g"    "${MANIFESTS}/Dockerfile"
-sed -i "s|bundle/app/tests|tests|g"          "${MANIFESTS}/Dockerfile"
+sed -i "s|bundle/rhpam/manifests|manifests|g"  "${MANIFESTS}/Dockerfile"
+sed -i "s|bundle/rhpam/metadata|metadata|g"    "${MANIFESTS}/Dockerfile"
+sed -i "s|bundle/rhpam/tests|tests|g"          "${MANIFESTS}/Dockerfile"

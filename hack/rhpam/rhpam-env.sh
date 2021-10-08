@@ -13,26 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-CSV_DIR="config/manifests/app/bases"
+CSV_DIR="config/manifests/rhpam/bases"
+BUNDLE_CSV_DIR="bundle/rhpam/manifests"
 TEST_CONFIG_FILE="test/.default_config"
 
 DEPENDENT_CRDS_KEYS=(grafana hyperfoil infinispan kafka keycloak knative kogito mongodb)
 DEPENDENT_SENSITIVE_CRDS_KEYS=(prometheus)
 
 getOperatorVersion() {
-  local version=$(grep -m 1 'Version =' version/app/version.go) && version=$(echo ${version#*=} | tr -d '"' | tr -d ' ')
+  local version=$(grep -m 1 'Version =' version/rhpam/version.go) && version=$(echo ${version#*=} | tr -d '"' | tr -d ' ')
   echo "${version}"
 }
 
-getLatestOlmReleaseVersion() {
-  local tempfolder=$(mktemp -d)
-  git clone https://github.com/k8s-operatorhub/community-operators.git "${tempfolder}" > /dev/null 2>&1
-  local version=$(cd ${tempfolder}/operators/kogito-operator && for i in $(ls -d */); do echo ${i%%/}; done | sort -V | tail -1)
-  echo ${version}
+getCsvFile() {
+  echo "${CSV_DIR}/rhpam-kogito-operator.clusterserviceversion.yaml"
 }
 
-getCsvFile() {
-  echo "${CSV_DIR}/kogito-operator.clusterserviceversion.yaml"
+getBundleCsvFile() {
+  echo "${BUNDLE_CSV_DIR}/rhpam-kogito-operator.clusterserviceversion.yaml"
 }
 
 getAllDependentCrds() {

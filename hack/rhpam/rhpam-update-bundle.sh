@@ -26,9 +26,9 @@ fi
 echo "Will update the bundle CSV with ${1} image"
 
 ## update the image
-sed -i  "s|quay.io/kiegroup/kogito-operator.*|${1}|g" bundle/app/manifests/kogito-operator.clusterserviceversion.yaml
+sed -i  "s|registry.stage.redhat.io/rhpam-7/rhpam-kogito-rhel8-operator.*|${1}|g" bundle/rhpam/manifests/rhpam-kogito-operator.clusterserviceversion.yaml
 
 ## remove the replaces field
-sed -i "/replaces.*/d" bundle/app/manifests/kogito-operator.clusterserviceversion.yaml
+sed -i "/replaces.*/d" bundle/rhpam/manifests/rhpam-kogito-operator.clusterserviceversion.yaml
 
 echo "Bundle CSV updated"

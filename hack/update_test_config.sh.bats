@@ -45,7 +45,7 @@ teardown() {
 
     dir="${BATS_TMPDIR}/${BATS_TEST_NAME}"
     cd ${dir}
-    sed -i "s|Version = .*|Version = \"${VERSION_MAJOR_MINOR}.0-snapshot\"|g" version/version.go
+    sed -i "s|Version = .*|Version = \"${VERSION_MAJOR_MINOR}.0-snapshot\"|g" version/app/version.go
     run hack/update_test_config.sh
     [ "$status" -eq 0 ]
 
@@ -66,7 +66,7 @@ teardown() {
 
     dir="${BATS_TMPDIR}/${BATS_TEST_NAME}"
     cd ${dir}
-    sed -i "s|Version = .*|Version = \"${VERSION_MAJOR_MINOR}.0-Final\"|g" version/version.go
+    sed -i "s|Version = .*|Version = \"${VERSION_MAJOR_MINOR}.0-Final\"|g" version/app/version.go
     hack/bump-version.sh "${VERSION_MAJOR_MINOR}.0"
     run hack/update_test_config.sh
     [ "$status" -eq 0 ]
