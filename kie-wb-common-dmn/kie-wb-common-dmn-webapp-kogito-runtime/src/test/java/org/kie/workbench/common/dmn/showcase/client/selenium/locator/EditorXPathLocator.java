@@ -65,6 +65,27 @@ public class EditorXPathLocator implements XPathLocator {
         return new EditorXPathLocator("//li[@data-ouia-component-type='editor-nav-tab'][@data-ouia-component-id='Data Types']/a");
     }
 
+    /**
+     * Component for displaying and renaming the active DRD name
+     */
+    public static EditorXPathLocator drdNameEditor() {
+        return new EditorXPathLocator("//div[@data-field='drdNameEditor']");
+    }
+
+    /**
+     * Component for displaying active DRD name
+     */
+    public static EditorXPathLocator drdNameViewMode() {
+        return new EditorXPathLocator(drdNameEditor().getXPathLocator() + "/div/span[@data-field='drdName']");
+    }
+
+    /**
+     * Component for changing active DRD name
+     */
+    public static EditorXPathLocator drdNameEditMode() {
+        return new EditorXPathLocator(drdNameEditor().getXPathLocator() + "/div/input[@data-field='drdNameInput']");
+    }
+
     @Override
     public String getXPathLocator() {
         return xPathLocator;
