@@ -79,7 +79,9 @@ export function WorkspacesContextProvider(props: Props) {
       // git init
       // git commit -am "Init"
 
-      const supportedFiles = files.filter((file) => SUPPORTED_FILES.includes(extractFileExtension(file.path)!));
+      const supportedFiles = files.filter((localFile) =>
+        SUPPORTED_FILES.includes(extractFileExtension(localFile.path)!)
+      );
       const fileHandler = new LocalFileHandler({
         files: supportedFiles,
         workspaceService: workspaceService,
@@ -139,7 +141,11 @@ export function WorkspacesContextProvider(props: Props) {
 
   const updateFile = useCallback(
     async (file: WorkspaceFile, getNewContents: () => Promise<string>) => {
-      const updatedFile = new WorkspaceFile({ path: file.path, getFileContents: getNewContents });
+      const updatedFile = new WorkspaceFile({
+        workspaceId: file.workspaceId,
+        path: file.path,
+        getFileContents: getNewContents,
+      });
       await workspaceService.updateFile(updatedFile, { broadcast: true });
     },
     [workspaceService]
@@ -162,7 +168,11 @@ export function WorkspacesContextProvider(props: Props) {
         }
 
         const contents = args.extension in emptyTemplates ? emptyTemplates[args.extension] : emptyTemplates.default;
-        const newEmptyFile = new WorkspaceFile({ path, getFileContents: () => Promise.resolve(contents) });
+        const newEmptyFile = new WorkspaceFile({
+          workspaceId: args.workspaceId,
+          path,
+          getFileContents: () => Promise.resolve(contents),
+        });
         await workspaceService.createFile(newEmptyFile, { broadcast: true });
         return newEmptyFile;
       }
@@ -201,7 +211,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const resourceContentGet = useCallback(
     async (args: { workspaceId: string; pathRelativeToWorkspaceRoot: string }) => {
-      const file = await workspaceService.getFile(assemblePath(args));
+      const file = await workspaceService.getFile(args.workspaceId, assemblePath(args));
       if (!file) {
         throw new Error(`File '${args.pathRelativeToWorkspaceRoot}' not found in Workspace ${args.workspaceId}`);
       }

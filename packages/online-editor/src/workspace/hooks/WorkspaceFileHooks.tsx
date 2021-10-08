@@ -11,8 +11,8 @@ export function useWorkspaceFilePromise(
   const [workspaceFilePromise, setWorkspaceFilePromise] = usePromiseState<WorkspaceFile>();
 
   const refresh = useCallback(
-    (path: string, canceled: Holder<boolean>) => {
-      workspaces.workspaceService.getFile(path).then((workspaceFile) => {
+    (workspaceId: string, path: string, canceled: Holder<boolean>) => {
+      workspaces.workspaceService.getFile(workspaceId, path).then((workspaceFile) => {
         if (canceled.get()) {
           return;
         }
@@ -39,10 +39,10 @@ export function useWorkspaceFilePromise(
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (!completePath) {
+        if (!completePath || !workspaceId) {
           return;
         }
-        refresh(completePath, canceled);
+        refresh(workspaceId, completePath, canceled);
       },
       [refresh, completePath]
     )
@@ -51,7 +51,7 @@ export function useWorkspaceFilePromise(
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (!completePath) {
+        if (!completePath || !workspaceId) {
           return;
         }
 
@@ -60,10 +60,10 @@ export function useWorkspaceFilePromise(
         broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileEvents>) => {
           console.info(`WORKSPACE_FILE: ${JSON.stringify(data)}`);
           if (data.type === "MOVE" || data.type == "RENAME") {
-            refresh(data.newPath, canceled);
+            refresh(workspaceId, data.newPath, canceled);
           }
           if (data.type === "UPDATE" || data.type === "DELETE" || data.type === "ADD") {
-            refresh(data.path, canceled);
+            refresh(workspaceId, data.path, canceled);
           }
         };
 

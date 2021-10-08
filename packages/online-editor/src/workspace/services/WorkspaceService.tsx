@@ -49,7 +49,7 @@ export class WorkspaceService {
   public async listFiles(descriptor: WorkspaceDescriptor, globPattern?: string): Promise<WorkspaceFile[]> {
     const workspaceRootPath = await this.resolveRootPath(descriptor);
     const storageFiles = await this.storageService.getFiles(workspaceRootPath, globPattern);
-    return this.toWorkspaceFiles(storageFiles);
+    return this.toWorkspaceFiles(descriptor.workspaceId, storageFiles);
   }
 
   public async getByFile(file: WorkspaceFile): Promise<WorkspaceDescriptor> {
@@ -169,7 +169,7 @@ export class WorkspaceService {
     const zip = new JSZip();
     const storageFiles = await this.storageService.getFiles(workspaceRootPath, SUPPORTED_FILES_PATTERN);
 
-    for (const file of this.toWorkspaceFiles(storageFiles)) {
+    for (const file of this.toWorkspaceFiles(descriptor.workspaceId, storageFiles)) {
       zip.file(file.pathRelativeToWorkspaceRoot, (await file.getFileContents()) ?? "");
     }
 
@@ -192,16 +192,17 @@ export class WorkspaceService {
     });
   }
 
-  private toWorkspaceFiles(storageFiles: StorageFile[]): WorkspaceFile[] {
-    return storageFiles.map((storageFile: StorageFile) => this.toWorkspaceFile(storageFile));
+  private toWorkspaceFiles(workspaceId: string, storageFiles: StorageFile[]): WorkspaceFile[] {
+    return storageFiles.map((storageFile: StorageFile) => this.toWorkspaceFile(workspaceId, storageFile));
   }
 
   private toStorageFiles(workspaceFiles: WorkspaceFile[]): StorageFile[] {
     return workspaceFiles.map((workspaceFile: WorkspaceFile) => this.toStorageFile(workspaceFile));
   }
 
-  private toWorkspaceFile(storageFile: StorageFile): WorkspaceFile {
+  private toWorkspaceFile(workspaceId: string, storageFile: StorageFile): WorkspaceFile {
     return new WorkspaceFile({
+      workspaceId,
       path: storageFile.path,
       getFileContents: storageFile.getFileContents,
     });
@@ -278,7 +279,7 @@ export class WorkspaceService {
     broadcastArgs: { broadcast: boolean }
   ): Promise<WorkspaceFile> {
     const renamedStorageFile = await this.storageService.renameFile(this.toStorageFile(file), newFileName);
-    const renamedWorkspaceFile = this.toWorkspaceFile(renamedStorageFile);
+    const renamedWorkspaceFile = this.toWorkspaceFile(file.workspaceId, renamedStorageFile);
 
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(file.workspaceId);
@@ -311,7 +312,7 @@ export class WorkspaceService {
     broadcastArgs: { broadcast: boolean }
   ): Promise<WorkspaceFile> {
     const movedStorageFile = await this.storageService.renameFile(this.toStorageFile(file), newDirPath);
-    const movedWorkspaceFile = this.toWorkspaceFile(movedStorageFile);
+    const movedWorkspaceFile = this.toWorkspaceFile(file.workspaceId, movedStorageFile);
 
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(file.workspaceId);
@@ -396,18 +397,18 @@ export class WorkspaceService {
     }
   }
 
-  public async getFile(path: string): Promise<WorkspaceFile | undefined> {
+  public async getFile(workspaceId: string, path: string): Promise<WorkspaceFile | undefined> {
     const storageFile = await this.storageService.getFile(path);
     if (!storageFile) {
       return;
     }
-    return this.toWorkspaceFile(storageFile);
+    return this.toWorkspaceFile(workspaceId, storageFile);
   }
 
   public async getFiles(descriptor: WorkspaceDescriptor, globPattern?: string): Promise<WorkspaceFile[]> {
     const workspaceRootPath = await this.resolveRootPath(descriptor);
     const storageFiles = await this.storageService.getFiles(workspaceRootPath, globPattern);
-    return this.toWorkspaceFiles(storageFiles);
+    return this.toWorkspaceFiles(descriptor.workspaceId, storageFiles);
   }
 
   public async exists(filePath: string): Promise<boolean> {

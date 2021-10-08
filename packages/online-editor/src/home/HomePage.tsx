@@ -575,7 +575,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
       </DrawerHead>
       <DataList aria-label="draggable data list example" isCompact>
         {(workspacePromise.data?.files ?? []).map((file) => (
-          <React.Fragment key={file.path}>
+          <React.Fragment key={file.pathRelativeToWorkspaceRoot}>
             <DataListItem aria-labelledby="simple-item1" id="data1" key="1">
               <DataListItemRow>
                 <DataListItemCells

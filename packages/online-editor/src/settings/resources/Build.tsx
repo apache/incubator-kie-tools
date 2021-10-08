@@ -62,8 +62,8 @@ export class CreateBuild extends ResourceFetch {
     return "POST";
   }
 
-  private buildAccessibleFilePath(file: DeploymentFile): string {
-    return `${this.PROJECT_METAINF_RESOURCES}/${file.path}`;
+  private buildAccessibleFilePath(deploymentFile: DeploymentFile): string {
+    return `${this.PROJECT_METAINF_RESOURCES}/${deploymentFile.path}`;
   }
 
   protected async requestBody(): Promise<string | undefined> {

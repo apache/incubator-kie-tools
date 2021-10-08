@@ -28,7 +28,13 @@ import { basename, dirname, extname } from "path";
 import { removeFileExtension } from "../common/utils";
 
 export class WorkspaceFile {
-  constructor(private readonly args: { path: string; getFileContents: () => Promise<string> }) {}
+  constructor(
+    private readonly args: {
+      workspaceId: string;
+      path: string;
+      getFileContents: () => Promise<string>;
+    }
+  ) {}
 
   get path() {
     return this.args.path;
@@ -36,6 +42,10 @@ export class WorkspaceFile {
 
   get getFileContents() {
     return this.args.getFileContents;
+  }
+
+  get workspaceId() {
+    return this.args.workspaceId;
   }
 
   get dirPath() {
@@ -64,15 +74,6 @@ export class WorkspaceFile {
 
   get name() {
     return basename(this.path);
-  }
-
-  get workspaceId() {
-    //FIXME: This will break if the structure changes.
-    return this.path
-      .split("/")
-      .reverse()
-      .filter((a) => a)
-      .pop()!;
   }
 }
 

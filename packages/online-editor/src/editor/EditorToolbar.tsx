@@ -857,11 +857,25 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
             >
               <Flex flexWrap={{ default: "nowrap" }}>
                 <FlexItem>
-                  <span style={{ fontWeight: props.workspaceFile.path === file.path ? "bold" : "normal" }}>
+                  <span
+                    style={{
+                      fontWeight:
+                        props.workspaceFile.pathRelativeToWorkspaceRoot === file.pathRelativeToWorkspaceRoot
+                          ? "bold"
+                          : "normal",
+                    }}
+                  >
                     {file.nameWithoutExtension}
                   </span>
                 </FlexItem>
-                <FlexItem style={{ fontWeight: props.workspaceFile.path === file.path ? "bold" : "normal" }}>
+                <FlexItem
+                  style={{
+                    fontWeight:
+                      props.workspaceFile.pathRelativeToWorkspaceRoot === file.pathRelativeToWorkspaceRoot
+                        ? "bold"
+                        : "normal",
+                  }}
+                >
                   <FileLabel extension={file.extension} />
                 </FlexItem>
               </Flex>
@@ -869,7 +883,10 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
                 style={{
                   height: "0.8em",
                   marginLeft: "10px",
-                  visibility: props.workspaceFile.path === file.path ? "visible" : "hidden",
+                  visibility:
+                    props.workspaceFile.pathRelativeToWorkspaceRoot === file.pathRelativeToWorkspaceRoot
+                      ? "visible"
+                      : "hidden",
                 }}
               />
             </DropdownItem>

@@ -82,7 +82,6 @@ export function SettingsContextProvider(props: any) {
   const [activeTab, setActiveTab] = useState(SettingsTabs.GITHUB);
 
   useEffect(() => {
-    console.info(queryParams);
     setOpen(!!queryParams.get(QueryParams.SETTINGS));
     setActiveTab((queryParams.get(QueryParams.SETTINGS) as SettingsTabs) ?? SettingsTabs.GITHUB);
   }, [queryParams]);
