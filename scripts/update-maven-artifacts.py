@@ -29,6 +29,7 @@ Modules = {
     "data-index-service-postgresql": "kogito-data-index-postgresql",
     "trusty-service-infinispan": "kogito-trusty-infinispan",
     "trusty-service-redis": "kogito-trusty-redis",
+    "trusty-service-postgresql": "kogito-trusty-postgresql",
     "explainability-service-rest": "kogito-explainability",
     "explainability-service-messaging": "kogito-explainability",
     "jobs-service-infinispan": "kogito-jobs-service-infinispan",

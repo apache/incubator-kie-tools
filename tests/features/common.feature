@@ -6,6 +6,7 @@
 @quay.io/kiegroup/kogito-data-index-postgresql
 @quay.io/kiegroup/kogito-trusty-infinispan
 @quay.io/kiegroup/kogito-trusty-redis
+@quay.io/kiegroup/kogito-trusty-postgresql
 @quay.io/kiegroup/kogito-trusty-ui
 @quay.io/kiegroup/kogito-explainability
 @quay.io/kiegroup/kogito-jit-runner

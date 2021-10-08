@@ -177,6 +177,27 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
+      name: kogito-trusty-postgresql
+      annotations:
+        openshift.io/display-name: Runtime image for the Kogito Trusty Service for PostgreSQL persistence provider
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '2.0.0-snapshot'
+          annotations:
+            description: Runtime image for the Kogito Trusty Service with PostgreSQL
+            iconClass: icon-jbpm
+            tags: kogito,trusty,trusty-postgresql
+            supports: persistence backed by PostgreSQL RDBMS
+            version: '2.0.0-snapshot'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-trusty-postgresql:2.0.0-snapshot
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
       name: kogito-trusty-ui
       annotations:
         openshift.io/display-name: Runtime image for the Kogito Trusty UI Service

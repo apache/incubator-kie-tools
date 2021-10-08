@@ -203,6 +203,7 @@ The command will update the needed files with the new URL:
 - kogito-trusty-ui/module.yaml
 - kogito-trusty-infinispan/module.yaml
 - kogito-trusty-redis/module.yaml
+- kogito-trusty-postgresql/module.yaml
 
 ### Update tests script
 

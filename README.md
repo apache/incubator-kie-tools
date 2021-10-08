@@ -549,13 +549,14 @@ Order has been created Order[12345] with assigned approver JOHN
 
 The Kogito Component Images can be considered as lightweight images that will complement the Kogito core engine 
 by providing extra capabilities, like managing the processes on a web UI or providing persistence layer to the Kogito applications.
-Today we have 14 Kogito Component Images:
+Today we have 15 Kogito Component Images:
 
 * [quay.io/kiegroup/kogito-data-index-infinispan](https://quay.io/kiegroup/kogito-data-index-infinispan)
 * [quay.io/kiegroup/kogito-data-index-mongodb](https://quay.io/kiegroup/kogito-data-index-mongodb)
 * [quay.io/kiegroup/kogito-data-index-postgresql](https://quay.io/kiegroup/kogito-data-index-postgresql)
 * [quay.io/kiegroup/kogito-trusty-infinispan](https://quay.io/kiegroup/kogito-trusty-infinispan)
 * [quay.io/kiegroup/kogito-trusty-redis](https://quay.io/kiegroup/kogito-trusty-redis)
+* [quay.io/kiegroup/kogito-trusty-postgresql](https://quay.io/kiegroup/kogito-trusty-postgresql)
 * [quay.io/kiegroup/kogito-explainability](https://quay.io/kiegroup/kogito-explainability)
 * [quay.io/kiegroup/kogito-jobs-service-ephemeral](https://quay.io/kiegroup/kogito-jobs-service-ephemeral) 
 * [quay.io/kiegroup/kogito-jobs-service-infinispan](https://quay.io/kiegroup/kogito-jobs-service-infinispan)
@@ -636,14 +637,15 @@ to your Kogito infrastructure on a Kubernetes cluster and provide its capabiliti
 ### Kogito Trusty Component Image
 
 The Trusty Service aims at collecting tracing information by one or more Kogito runtime services and provides analytical capabilities on top of the collected data. 
-The Trusty Service depends on a running Infinispan or Redis Server.
+The Trusty Service depends on a running Infinispan, Redis Server or PostgreSQL RDBMS.
 The Trusty service can be switched by using its corresponding image
 
 - Infinispan: quay.io/kiegroup/kogito-trusty-infinispan
     [image.yaml](kogito-trusty-infinispan-overrides.yaml)
 - Redis: quay.io/kiegroup/kogito-trusty-redis
     [image.yaml](kogito-trusty-redis-overrides.yaml)
-
+- PostgreSQL: quay.io/kiegroup/kogito-trusty-postgresql
+    [image.yaml](kogito-trusty-postgresql-overrides.yaml)
 
 Basic usage with Infinispan:
 ```bash
@@ -653,6 +655,14 @@ $ docker run -it --env QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=my-infinispan-serve
 Basic usage with Redis:
 ```bash
 $ docker run -it --env KOGITO_PERSISTENCE_REDIS_URL=redis://localhost:6379 quay.io/kiegroup/kogito-trusty-redis:latest
+```
+
+Basic usage with PostgreSQL:
+```bash
+$ docker run -it --env QUARKUS_DATASOURCE_JDBC_URL="jdbc:postgresql://localhost:5432/quarkus"  \
+    --env QUARKUS_DATASOURCE_USERNAME="kogito" \
+    --env QUARKUS_DATASOURCE_PASSWORD="secret" \
+    quay.io/kiegroup/kogito-trusty-postgresql:latest
 ```
 
 To enable debug just use this env while running this image:
@@ -836,6 +846,7 @@ imagestream.image.openshift.io/kogito-data-index-mongodb created
 imagestream.image.openshift.io/kogito-data-index-postgresql created
 imagestream.image.openshift.io/kogito-trusty-infinispan created
 imagestream.image.openshift.io/kogito-trusty-redis created
+imagestream.image.openshift.io/kogito-trusty-postgresql created
 imagestream.image.openshift.io/kogito-jobs-service-ephemeral created
 imagestream.image.openshift.io/kogito-jobs-service-infinispan created
 imagestream.image.openshift.io/kogito-jobs-service-mongodb created
@@ -1027,6 +1038,7 @@ With this Makefile you can:
      $ make build-image image_name=kogito-data-index-postgresql
      $ make build-image image_name=kogito-trusty-infinispan
      $ make build-image image_name=kogito-trusty-redis
+     $ make build-image image_name=kogito-trusty-postgresql
      $ make build-image image_name=kogito-explainability
      $ make build-image image_name=kogito-jobs-service-ephemeral
      $ make build-image image_name=kogito-jobs-service-infinispan
@@ -1095,6 +1107,7 @@ Below you can find all modules used to build the Kogito Images
 - [kogito-data-index-postgresql](modules/kogito-data-index-postgresql): Installs and Configure the postgresql data-index jar inside the image.
 - [kogito-trusty-infinispan](modules/kogito-trusty-infinispan): Installs and Configure the infinispan trusty jar inside the image.
 - [kogito-trusty-redis](modules/kogito-trusty-redis): Installs and Configure the redis trusty jar inside the image.
+- [kogito-trusty-postgresql](modules/kogito-trusty-postgresql): Installs and Configure the PostgreSQL trusty jar inside the image.
 - [kogito-explainability](modules/kogito-explainability): Installs and Configure the explainability jar inside the image.
 - [kogito-epel](modules/kogito-epel): Configures the epel repository on the target image.
 - [kogito-graalvm-installer](modules/kogito-graalvm-installer): Installs the GraalVM on the target Image.
@@ -1129,6 +1142,7 @@ Please inspect the images overrides files to learn which modules are being insta
 - [quay.io/kiegroup/kogito-data-index-postgresql](kogito-data-index-postgresql-overrides.yaml)
 - [quay.io/kiegroup/kogito-trusty-infinispan](kogito-trusty-infinispan-overrides.yaml)
 - [quay.io/kiegroup/kogito-trusty-redis](kogito-trusty-redis-overrides.yaml)
+- [quay.io/kiegroup/kogito-trusty-postgresql](kogito-trusty-postgresql-overrides.yaml)
 - [quay.io/kiegroup/kogito-explainability](kogito-explainability-overrides.yaml)
 - [quay.io/kiegroup/kogito-jobs-service-ephemeral](kogito-jobs-service-ephemeral-overrides.yaml)
 - [quay.io/kiegroup/kogito-jobs-service-infinispan](kogito-jobs-service-infinispan-overrides.yaml)
