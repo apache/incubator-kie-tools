@@ -42,32 +42,20 @@ export class WorkspaceService {
   public async deleteAll() {
     await this.storageService.wipeStorage();
     await this.init();
-    const broadcastChannel = new BroadcastChannel(this.storageService.rootPath);
+    const broadcastChannel = new BroadcastChannel(this.rootPath);
     broadcastChannel.postMessage({ type: "DELETE_ALL" } as WorkspacesEvents);
   }
 
   public async listFiles(descriptor: WorkspaceDescriptor, globPattern?: string): Promise<WorkspaceFile[]> {
-    const rootPath = await this.resolveRootPath(descriptor);
-    const storageFiles = await this.storageService.getFiles(rootPath, globPattern);
+    const workspaceRootPath = await this.resolveRootPath(descriptor);
+    const storageFiles = await this.storageService.getFiles(workspaceRootPath, globPattern);
     return this.toWorkspaceFiles(storageFiles);
   }
 
   public async getByFile(file: WorkspaceFile): Promise<WorkspaceDescriptor> {
-    return this.getByFilePath(file.path);
-  }
-
-  public async getByFilePath(path: string): Promise<WorkspaceDescriptor> {
-    const rootPathMatches = path.match(/\/(.+?)\//);
-
-    if (!rootPathMatches || rootPathMatches.length < 2) {
-      throw new Error(`Invalid path: ${path}`);
-    }
-
-    const rootPath = rootPathMatches[1];
-    const descriptor = await this.get(rootPath);
-
+    const descriptor = await this.get(file.workspaceId);
     if (!descriptor) {
-      throw new Error(`Workspace ${rootPath} not found`);
+      throw new Error(`Workspace ${file.workspaceId} not found`);
     }
 
     return descriptor;
@@ -99,20 +87,17 @@ export class WorkspaceService {
     fileHandler: FileHandler,
     broadcastArgs: { broadcast: boolean }
   ): Promise<WorkspaceFile[]> {
+    await this.storageService.createDirStructure(`/${descriptor.workspaceId}/`);
+    const createdFiles = await fileHandler.store(descriptor);
+    const supportedFiles = createdFiles.filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension));
+
     const descriptors = await this.list();
     descriptors.push(descriptor);
-
     const configFile = await this.configAsFile(async () => JSON.stringify(descriptors));
     await this.storageService.updateFile(configFile);
-    await this.storageService.createFolderStructure(`/${descriptor.workspaceId}/`);
-
-    const createdFiles = await fileHandler.store(descriptor);
-    const supportedFiles = createdFiles.filter((file: WorkspaceFile) =>
-      SUPPORTED_FILES_EDITABLE.includes(file.extension)
-    );
 
     if (broadcastArgs.broadcast) {
-      const broadcastChannel1 = new BroadcastChannel(this.storageService.rootPath);
+      const broadcastChannel1 = new BroadcastChannel(this.rootPath);
       const broadcastChannel2 = new BroadcastChannel(descriptor.workspaceId);
       broadcastChannel1.postMessage({ type: "ADD_WORKSPACE", workspaceId: descriptor.workspaceId } as WorkspacesEvents);
       broadcastChannel2.postMessage({ type: "ADD", workspaceId: descriptor.workspaceId } as WorkspaceEvents);
@@ -136,7 +121,7 @@ export class WorkspaceService {
     await this.storageService.updateFile(configFile);
 
     if (broadcastArgs.broadcast) {
-      const broadcastChannel1 = new BroadcastChannel(this.storageService.rootPath);
+      const broadcastChannel1 = new BroadcastChannel(this.rootPath);
       const broadcastChannel2 = new BroadcastChannel(descriptor.workspaceId);
       broadcastChannel1.postMessage({
         type: "DELETE_WORKSPACE",
@@ -164,7 +149,7 @@ export class WorkspaceService {
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(descriptor.workspaceId);
 
-      const broadcastChannel1 = new BroadcastChannel(this.storageService.rootPath);
+      const broadcastChannel1 = new BroadcastChannel(this.rootPath);
       const broadcastChannel2 = new BroadcastChannel(descriptor.workspaceId);
       broadcastChannel1.postMessage({
         type: "RENAME_WORKSPACE",
@@ -174,15 +159,15 @@ export class WorkspaceService {
     }
   }
 
-  public newRootPath(): string {
+  public newWorkspaceId(): string {
     return uuid();
   }
 
   public async prepareZip(descriptor: WorkspaceDescriptor): Promise<Blob> {
-    const rootPath = await this.resolveRootPath(descriptor);
+    const workspaceRootPath = await this.resolveRootPath(descriptor);
 
     const zip = new JSZip();
-    const storageFiles = await this.storageService.getFiles(rootPath, SUPPORTED_FILES_PATTERN);
+    const storageFiles = await this.storageService.getFiles(workspaceRootPath, SUPPORTED_FILES_PATTERN);
 
     for (const file of this.toWorkspaceFiles(storageFiles)) {
       zip.file(file.pathRelativeToWorkspaceRoot, (await file.getFileContents()) ?? "");
@@ -192,12 +177,12 @@ export class WorkspaceService {
   }
 
   public async resolveRootPath(descriptor: WorkspaceDescriptor): Promise<string> {
-    const rootPath = `${this.storageService.rootPath}${descriptor.workspaceId}`;
-    if (!(await this.storageService.exists(rootPath))) {
-      throw new Error(`Root ${rootPath} does not exist`);
+    const workspaceRootPath = `${this.rootPath}${descriptor.workspaceId}`;
+    if (!(await this.storageService.exists(workspaceRootPath))) {
+      throw new Error(`Root ${workspaceRootPath} does not exist`);
     }
 
-    return rootPath;
+    return workspaceRootPath;
   }
 
   private async configAsFile(getFileContents: () => Promise<string>) {
@@ -322,10 +307,10 @@ export class WorkspaceService {
 
   public async moveFile(
     file: WorkspaceFile,
-    newFolderPath: string,
+    newDirPath: string,
     broadcastArgs: { broadcast: boolean }
   ): Promise<WorkspaceFile> {
-    const movedStorageFile = await this.storageService.renameFile(this.toStorageFile(file), newFolderPath);
+    const movedStorageFile = await this.storageService.renameFile(this.toStorageFile(file), newDirPath);
     const movedWorkspaceFile = this.toWorkspaceFile(movedStorageFile);
 
     if (broadcastArgs.broadcast) {
@@ -390,14 +375,14 @@ export class WorkspaceService {
 
   public async moveFiles(
     files: WorkspaceFile[],
-    newFolderPath: string,
+    newDirPath: string,
     broadcastArgs: { broadcast: boolean }
   ): Promise<void> {
     if (files.length === 0) {
       return;
     }
 
-    const pathMap = await this.storageService.moveFiles(this.toStorageFiles(files), newFolderPath);
+    const pathMap = await this.storageService.moveFiles(this.toStorageFiles(files), newDirPath);
 
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(files[0].workspaceId);
@@ -419,8 +404,9 @@ export class WorkspaceService {
     return this.toWorkspaceFile(storageFile);
   }
 
-  public async getFiles(folderPath: string, globPattern?: string): Promise<WorkspaceFile[]> {
-    const storageFiles = await this.storageService.getFiles(folderPath, globPattern);
+  public async getFiles(descriptor: WorkspaceDescriptor, globPattern?: string): Promise<WorkspaceFile[]> {
+    const workspaceRootPath = await this.resolveRootPath(descriptor);
+    const storageFiles = await this.storageService.getFiles(workspaceRootPath, globPattern);
     return this.toWorkspaceFiles(storageFiles);
   }
 

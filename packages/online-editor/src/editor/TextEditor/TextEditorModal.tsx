@@ -42,20 +42,18 @@ export function TextEditorModal(props: {
       monacoInstance.dispose();
 
       props.editor
-        ?.setContent(props.workspaceFile.nameWithExtension, contentAfterFix)
+        ?.setContent(props.workspaceFile.name, contentAfterFix)
         .then(() => {
           props.editor?.getStateControl().updateCommandStack({
             id: "fix-from-text-editor",
             undo: () => {
               if (props.workspaceFile) {
-                props.editor?.setContent(props.workspaceFile.nameWithExtension, textEditorContent!);
+                props.editor?.setContent(props.workspaceFile.name, textEditorContent!);
               }
             },
             redo: () => {
               if (props.workspaceFile) {
-                props.editor
-                  ?.setContent(props.workspaceFile.nameWithExtension, contentAfterFix)
-                  .then(props.refreshEditor);
+                props.editor?.setContent(props.workspaceFile.name, contentAfterFix).then(props.refreshEditor);
               }
             },
           });

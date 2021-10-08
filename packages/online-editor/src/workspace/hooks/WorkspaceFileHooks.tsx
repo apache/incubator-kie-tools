@@ -31,10 +31,10 @@ export function useWorkspaceFilePromise(
   const completePath = useMemo(() => {
     if (!pathRelativeToWorkspaceRoot || !workspaceId) {
       return undefined;
-    } else {
-      return `/${workspaceId}/${pathRelativeToWorkspaceRoot}`;
     }
-  }, [workspaceId, pathRelativeToWorkspaceRoot]);
+
+    return workspaces.assemblePath({ workspaceId, pathRelativeToWorkspaceRoot });
+  }, [workspaces, workspaceId, pathRelativeToWorkspaceRoot]);
 
   useCancelableEffect(
     useCallback(

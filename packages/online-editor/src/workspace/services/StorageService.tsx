@@ -20,16 +20,18 @@ import { basename, dirname, extname, join, parse, resolve } from "path";
 
 export class StorageFile {
   constructor(private readonly args: { path: string; getFileContents: () => Promise<string> }) {}
+
   get path() {
     return this.args.path;
   }
+
   get getFileContents() {
     return this.args.getFileContents;
   }
 }
 
 export class StorageService {
-  private readonly FOLDER_SEPARATOR = "/";
+  private readonly SEPARATOR = "/";
   private readonly encoder: TextEncoder = new TextEncoder();
   private readonly decoder: TextDecoder = new TextDecoder("utf-8");
 
@@ -42,7 +44,7 @@ export class StorageService {
   }
 
   public get rootPath(): string {
-    return this.FOLDER_SEPARATOR;
+    return this.SEPARATOR;
   }
 
   public async createFile(file: StorageFile): Promise<void> {
@@ -50,7 +52,7 @@ export class StorageService {
       throw new Error(`File ${file.path} already exists`);
     }
 
-    await this.createFolderStructure(file.path);
+    await this.createDirStructure(file.path);
     await this.writeFile(file);
   }
 
@@ -94,12 +96,12 @@ export class StorageService {
     return newFile;
   }
 
-  public async moveFile(file: StorageFile, newFolderPath: string): Promise<StorageFile> {
+  public async moveFile(file: StorageFile, newDirPath: string): Promise<StorageFile> {
     if (!(await this.exists(file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
 
-    const newPath = join(newFolderPath, basename(file.path));
+    const newPath = join(newDirPath, basename(file.path));
     const newFile = new StorageFile({
       getFileContents: file.getFileContents,
       path: newPath,
@@ -122,10 +124,10 @@ export class StorageService {
     }
   }
 
-  public async moveFiles(files: StorageFile[], newFolderPath: string): Promise<Map<string, string>> {
+  public async moveFiles(files: StorageFile[], newDirPath: string): Promise<Map<string, string>> {
     const paths = new Map<string, string>();
     for (const fileToMove of files) {
-      const movedFile = await this.moveFile(fileToMove, newFolderPath);
+      const movedFile = await this.moveFile(fileToMove, newDirPath);
       paths.set(fileToMove.path, movedFile.path);
     }
     return paths;
@@ -142,8 +144,8 @@ export class StorageService {
     });
   }
 
-  public async getFiles(folderPath: string, globPattern?: string): Promise<StorageFile[]> {
-    const filePaths = await this.getFilePaths(folderPath);
+  public async getFiles(dirPath: string, globPattern?: string): Promise<StorageFile[]> {
+    const filePaths = await this.getFilePaths(dirPath);
 
     const files = filePaths.map((path: string) => {
       return new StorageFile({
@@ -169,22 +171,22 @@ export class StorageService {
     });
   }
 
-  public async createFolderStructure(path: string): Promise<void> {
-    const folderPath = path.endsWith(this.FOLDER_SEPARATOR) ? path : dirname(path);
-    const folders = folderPath.split(this.FOLDER_SEPARATOR).filter((p: string) => p);
+  public async createDirStructure(path: string): Promise<void> {
+    const dirPath = path.endsWith(this.SEPARATOR) ? path : dirname(path);
+    const intermediaryDirPaths = dirPath.split(this.SEPARATOR).filter((p) => p);
 
     let currentPath = this.rootPath;
-    for (const folder of folders) {
-      currentPath = join(currentPath, folder);
+    for (const dirPath of intermediaryDirPaths) {
+      currentPath = join(currentPath, dirPath);
       if (!(await this.exists(currentPath))) {
         await this.fsp.mkdir(currentPath);
       }
     }
   }
 
-  public async exists(filePath: string): Promise<boolean> {
+  public async exists(path: string): Promise<boolean> {
     try {
-      await this.fs.promises.stat(filePath);
+      await this.fs.promises.stat(path);
       return true;
     } catch (err) {
       if (err.code === "ENOENT" || err.code === "ENOTDIR") {
@@ -210,15 +212,15 @@ export class StorageService {
     await this.fsp.writeFile(file.path, this.encoder.encode(content));
   }
 
-  private async getFilePaths(folder: string): Promise<string[]> {
-    if (!(await this.exists(folder))) {
-      throw new Error(`Folder ${folder} does not exist`);
+  private async getFilePaths(dirPath: string): Promise<string[]> {
+    if (!(await this.exists(dirPath))) {
+      throw new Error(`Dir '${dirPath}' does not exist`);
     }
 
-    const subFolders = await this.fsp.readdir(folder);
+    const subDirPaths = await this.fsp.readdir(dirPath);
     const files = await Promise.all(
-      subFolders.map(async (subFolder: string) => {
-        const path = resolve(folder, subFolder);
+      subDirPaths.map(async (subDirPath: string) => {
+        const path = resolve(dirPath, subDirPath);
         return (await this.fsp.stat(path)).isDirectory() ? this.getFilePaths(path) : path;
       })
     );

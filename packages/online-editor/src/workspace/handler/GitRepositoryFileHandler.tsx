@@ -36,29 +36,29 @@ export class GitRepositoryFileHandler extends FileHandler {
   }
 
   public async store(descriptor: WorkspaceDescriptor): Promise<WorkspaceFile[]> {
-    const rootPath = await this.workspaceService.resolveRootPath(descriptor);
+    const workspaceRootPath = await this.workspaceService.resolveRootPath(descriptor);
     await this.args.gitService.clone({
-      rootPath: rootPath,
+      dir: workspaceRootPath,
       authInfo: this.args.authInfo,
       repositoryUrl: this.args.repositoryUrl,
       sourceBranch: this.args.sourceBranch,
     });
-    return await this.workspaceService.getFiles(rootPath);
+    return await this.workspaceService.getFiles(descriptor);
   }
 
   public async sync(descriptor: WorkspaceDescriptor): Promise<void> {
-    const rootPath = await this.workspaceService.resolveRootPath(descriptor);
-    const files = await this.workspaceService.getFiles(rootPath, SUPPORTED_FILES_EDITABLE_PATTERN);
+    const files = await this.workspaceService.getFiles(descriptor, SUPPORTED_FILES_EDITABLE_PATTERN);
     const targetBranch = (descriptor.origin as GitHubRepositoryOrigin).branch;
+    const workspaceRootPath = await this.workspaceService.resolveRootPath(descriptor);
     await this.args.gitService.gitCommit({
-      rootPath: rootPath,
+      dir: workspaceRootPath,
       message: this.COMMIT_MESSAGE,
       authInfo: this.args.authInfo,
       files: files,
       targetBranch: targetBranch,
     });
     await this.args.gitService.gitPush({
-      rootPath: rootPath,
+      dir: workspaceRootPath,
       authInfo: this.args.authInfo,
       targetBranch: targetBranch,
     });

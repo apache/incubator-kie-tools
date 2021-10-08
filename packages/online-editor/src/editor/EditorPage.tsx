@@ -171,9 +171,13 @@ export function EditorPage(props: Props) {
 
   const onResourceContentRequest = useCallback(
     async (request: ResourceContentRequest) => {
-      return workspaces.resourceContentGet(request.path, request.opts);
+      return workspaces.resourceContentGet({
+        workspaceId: props.workspaceId,
+        pathRelativeToWorkspaceRoot: request.path,
+        opts: request.opts,
+      });
     },
-    [workspaces]
+    [props.workspaceId, workspaces]
   );
 
   const onResourceListRequest = useCallback(

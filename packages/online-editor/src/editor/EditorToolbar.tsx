@@ -306,7 +306,7 @@ export function EditorToolbar(props: Props) {
         const userLogin = settings.github.service.extractUserLoginFromFileUrl(queryParamUrl);
         if (userLogin === settings.github.user?.login) {
           try {
-            const filename = props.workspaceFile.nameWithExtension;
+            const filename = props.workspaceFile.name;
             const response = await settings.github.service.updateGist(settings.github.octokit, {
               filename,
               content,
@@ -345,9 +345,9 @@ export function EditorToolbar(props: Props) {
       // create gist
       try {
         const newGistUrl = await settings.github.service.createGist(settings.github.octokit, {
-          filename: props.workspaceFile.nameWithExtension,
+          filename: props.workspaceFile.name,
           content: content,
-          description: props.workspaceFile.nameWithExtension,
+          description: props.workspaceFile.name,
           isPublic: true,
         });
 
@@ -400,7 +400,7 @@ export function EditorToolbar(props: Props) {
         <DropdownItem
           onClick={onDownload}
           key={"donwload-file-item"}
-          description={`${props.workspaceFile.nameWithExtension} will be downloaded`}
+          description={`${props.workspaceFile.name} will be downloaded`}
           icon={<DownloadIcon />}
         >
           Current file
@@ -412,7 +412,7 @@ export function EditorToolbar(props: Props) {
               data-testid="dropdown-download-svg"
               component="button"
               onClick={onPreview}
-              description={`Image of ${props.workspaceFile.nameWithExtension} will be downloaded in SVG format`}
+              description={`Image of ${props.workspaceFile.name} will be downloaded in SVG format`}
               icon={<ImageIcon />}
             >
               {"Current file's SVG"}
@@ -503,7 +503,7 @@ export function EditorToolbar(props: Props) {
 
   useEffect(() => {
     if (downloadRef.current) {
-      downloadRef.current.download = `${props.workspaceFile.nameWithExtension}`;
+      downloadRef.current.download = `${props.workspaceFile.name}`;
     }
     if (downloadAllRef.current) {
       downloadAllRef.current.download = `${props.workspace.descriptor.name}.zip`;
@@ -604,11 +604,12 @@ export function EditorToolbar(props: Props) {
                       <AddFileDropdownItems
                         key={"new-file-dropdown-items"}
                         addEmptyWorkspaceFile={async (extension) => {
-                          const destinationFolder = props.workspaceFile
-                            ? props.workspaceFile.folderPath
-                            : `/${props.workspace.descriptor.workspaceId}`;
-
-                          const file = await workspaces.addEmptyFile(destinationFolder, extension);
+                          const file = await workspaces.addEmptyFile({
+                            workspaceId: props.workspace.descriptor.workspaceId,
+                            destinationDirPathRelativeToWorkspaceRoot:
+                              props.workspaceFile.dirPathRelativeToWorkspaceRoot,
+                            extension,
+                          });
                           history.push({
                             pathname: globals.routes.workspaceWithFilePath.path({
                               workspaceId: file.workspaceId,
@@ -763,7 +764,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
         setNewFileNameValid(true);
         return;
       }
-      const newPath = join(props.workspaceFile.folderPath, `${newFileName}.${props.workspaceFile.extension}`);
+      const newPath = join(props.workspaceFile.dirPath, `${newFileName}.${props.workspaceFile.extension}`);
       workspaces.workspaceService.exists(newPath).then((exist: boolean) => {
         setNewFileNameValid(!exist);
       });
@@ -833,13 +834,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
                   }),
                 });
               }}
-              description={
-                "/ " +
-                dirname(file.path!)
-                  .replace(`/${props.workspace!.descriptor.workspaceId}`, "")
-                  .substring(1)
-                  .replace(/\//g, " > ")
-              }
+              description={"/ " + dirname(file.pathRelativeToWorkspaceRoot).split("/").join(" > ")}
               key={`file-item-${idx}`}
               icon={
                 <ExternalLinkAltIcon

@@ -47,6 +47,13 @@ export function WorkspacesContextProvider(props: Props) {
   const workspaceService = useMemo(() => new WorkspaceService(storageService), [storageService]);
   const gitService = useMemo(() => new GitService(GIT_CORS_PROXY, storageService), [storageService]);
 
+  const assemblePath = useCallback(
+    (args: { workspaceId: string; pathRelativeToWorkspaceRoot: string }) => {
+      return join(workspaceService.rootPath, args.workspaceId, args.pathRelativeToWorkspaceRoot);
+    },
+    [workspaceService]
+  );
+
   const createWorkspace = useCallback(
     async (descriptor: WorkspaceDescriptor, fileHandler: FileHandler) => {
       const files = await workspaceService.create(descriptor, fileHandler, { broadcast: true });
@@ -62,12 +69,15 @@ export function WorkspacesContextProvider(props: Props) {
   const createWorkspaceFromLocal = useCallback(
     async (files: LocalFile[]) => {
       const descriptor: WorkspaceDescriptor = {
-        workspaceId: workspaceService.newRootPath(),
+        workspaceId: workspaceService.newWorkspaceId(),
         name: NEW_WORKSPACE_DEFAULT_NAME,
         origin: { kind: WorkspaceKind.LOCAL },
         createdDateISO: new Date().toISOString(),
         lastUpdatedDateISO: new Date().toISOString(),
       };
+
+      // git init
+      // git commit -am "Init"
 
       const supportedFiles = files.filter((file) => SUPPORTED_FILES.includes(extractFileExtension(file.path)!));
       const fileHandler = new LocalFileHandler({
@@ -91,7 +101,7 @@ export function WorkspacesContextProvider(props: Props) {
       }
 
       const descriptor: WorkspaceDescriptor = {
-        workspaceId: workspaceService.newRootPath(),
+        workspaceId: workspaceService.newWorkspaceId(),
         name: NEW_WORKSPACE_DEFAULT_NAME,
         origin: { url: repositoryUrl, branch: sourceBranch, kind: WorkspaceKind.GITHUB_REPOSITORY },
         createdDateISO: new Date().toISOString(),
@@ -136,18 +146,22 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const addEmptyFile = useCallback(
-    async (destinationFolder: string, fileExtension: SupportedFileExtensions) => {
+    async (args: {
+      workspaceId: string;
+      destinationDirPathRelativeToWorkspaceRoot: string;
+      extension: SupportedFileExtensions;
+    }) => {
       for (let i = 0; i < MAX_NEW_FILE_INDEX_ATTEMPTS; i++) {
         const index = i === 0 ? "" : `-${i}`;
-        const path = join(destinationFolder, `Untitled${index}.${fileExtension}`);
+        const fileName = `Untitled${index}.${args.extension}`;
+        const pathRelativeToWorkspaceRoot = join(args.destinationDirPathRelativeToWorkspaceRoot, fileName);
+        const path = assemblePath({ workspaceId: args.workspaceId, pathRelativeToWorkspaceRoot });
+
         if (await workspaceService.exists(path)) {
           continue;
         }
-        const contents =
-          fileExtension in emptyTemplates
-            ? emptyTemplates[fileExtension as keyof typeof emptyTemplates]
-            : emptyTemplates.default;
 
+        const contents = args.extension in emptyTemplates ? emptyTemplates[args.extension] : emptyTemplates.default;
         const newEmptyFile = new WorkspaceFile({ path, getFileContents: () => Promise.resolve(contents) });
         await workspaceService.createFile(newEmptyFile, { broadcast: true });
         return newEmptyFile;
@@ -155,7 +169,7 @@ export function WorkspacesContextProvider(props: Props) {
 
       throw new Error("Max attempts of new empty file exceeded.");
     },
-    [workspaceService]
+    [assemblePath, workspaceService]
   );
 
   const prepareZip = useCallback(
@@ -186,24 +200,23 @@ export function WorkspacesContextProvider(props: Props) {
   // }, [active, authInfo, gitService, storageService, workspaceService]);
 
   const resourceContentGet = useCallback(
-    async (path: string) => {
-      const file = await workspaceService.getFile(path);
-
+    async (args: { workspaceId: string; pathRelativeToWorkspaceRoot: string }) => {
+      const file = await workspaceService.getFile(assemblePath(args));
       if (!file) {
-        throw new Error(`File ${path} not found`);
+        throw new Error(`File '${args.pathRelativeToWorkspaceRoot}' not found in Workspace ${args.workspaceId}`);
       }
 
       const content = await file.getFileContents();
-      return new ResourceContent(path, content, ContentType.TEXT);
+      return new ResourceContent(args.pathRelativeToWorkspaceRoot, content, ContentType.TEXT);
     },
-    [workspaceService]
+    [assemblePath, workspaceService]
   );
 
   const resourceContentList = useCallback(
     async (workspaceId: string, globPattern: string) => {
       const descriptor = (await workspaceService.get(workspaceId))!;
       const files = await workspaceService.listFiles(descriptor, globPattern);
-      const matchingPaths = files.map((file: WorkspaceFile) => file.path);
+      const matchingPaths = files.map((file) => file.pathRelativeToWorkspaceRoot);
       return new ResourcesList(globPattern, matchingPaths);
     },
     [workspaceService]
@@ -214,29 +227,22 @@ export function WorkspacesContextProvider(props: Props) {
     workspaceService.init().then(() => setReady(true));
   }, [workspaceService]);
 
-  const value = useMemo(() => {
-    return {
-      workspaceService,
-      resourceContentGet,
-      resourceContentList,
-      renameFile,
-      createWorkspaceFromLocal,
-      createWorkspaceFromGitHubRepository,
-      addEmptyFile,
-      updateFile,
-      prepareZip,
-    };
-  }, [
-    addEmptyFile,
-    createWorkspaceFromGitHubRepository,
-    createWorkspaceFromLocal,
-    prepareZip,
-    renameFile,
-    resourceContentGet,
-    resourceContentList,
-    updateFile,
-    workspaceService,
-  ]);
-
-  return <WorkspacesContext.Provider value={value}>{ready && props.children}</WorkspacesContext.Provider>;
+  return (
+    <WorkspacesContext.Provider
+      value={{
+        workspaceService,
+        resourceContentGet,
+        resourceContentList,
+        renameFile,
+        createWorkspaceFromLocal,
+        createWorkspaceFromGitHubRepository,
+        addEmptyFile,
+        updateFile,
+        prepareZip,
+        assemblePath,
+      }}
+    >
+      {ready && props.children}
+    </WorkspacesContext.Provider>
+  );
 }

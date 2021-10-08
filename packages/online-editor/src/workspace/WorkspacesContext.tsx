@@ -34,16 +34,20 @@ export class WorkspaceFile {
     return this.args.path;
   }
 
-  get folderPath() {
-    return dirname(this.args.path);
-  }
-
   get getFileContents() {
     return this.args.getFileContents;
   }
 
+  get dirPath() {
+    return dirname(this.path);
+  }
+
+  get dirPathRelativeToWorkspaceRoot() {
+    return dirname(this.pathRelativeToWorkspaceRoot);
+  }
+
   get pathRelativeToWorkspaceRoot() {
-    return this.args.path.replace(`/${this.workspaceId}/`, "");
+    return this.path.replace(`/${this.workspaceId}/`, ""); //FIXME: This will break if the structure changes.
   }
 
   get pathRelativeToWorkspaceRootWithoutExtension() {
@@ -51,19 +55,20 @@ export class WorkspaceFile {
   }
 
   get extension() {
-    return extname(this.args.path).replace(".", "");
+    return extname(this.path).replace(".", "");
   }
 
   get nameWithoutExtension() {
-    return basename(this.args.path, `.${this.extension}`);
+    return basename(this.path, `.${this.extension}`);
   }
 
-  get nameWithExtension() {
-    return basename(this.args.path);
+  get name() {
+    return basename(this.path);
   }
 
   get workspaceId() {
-    return this.args.path
+    //FIXME: This will break if the structure changes.
+    return this.path
       .split("/")
       .reverse()
       .filter((a) => a)
@@ -90,14 +95,24 @@ export interface WorkspacesContextType {
   ) => Promise<WorkspaceDescriptor>;
 
   // edit workspace
-  addEmptyFile: (destinationFolder: string, fileExtension: string) => Promise<WorkspaceFile>;
+  addEmptyFile(args: {
+    workspaceId: string;
+    destinationDirPathRelativeToWorkspaceRoot: string;
+    extension: string;
+  }): Promise<WorkspaceFile>;
   prepareZip: (workspaceId: string) => Promise<Blob>;
   resourceContentList: (workspaceId: string, globPattern: string, opts?: ResourceListOptions) => Promise<ResourcesList>;
 
   // edit files
   renameFile: (file: WorkspaceFile, newFileName: string) => Promise<WorkspaceFile>;
   updateFile: (file: WorkspaceFile, getNewContents: () => Promise<string | undefined>) => Promise<void>;
-  resourceContentGet: (path: string, opts?: ResourceContentOptions) => Promise<ResourceContent | undefined>;
+  resourceContentGet: (args: {
+    workspaceId: string;
+    pathRelativeToWorkspaceRoot: string;
+    opts?: ResourceContentOptions;
+  }) => Promise<ResourceContent | undefined>;
+
+  assemblePath(args: { workspaceId: string; pathRelativeToWorkspaceRoot: string }): string;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);

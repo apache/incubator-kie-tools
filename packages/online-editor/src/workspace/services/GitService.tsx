@@ -22,7 +22,7 @@ import { StorageService } from "./StorageService";
 export interface CloneArgs {
   repositoryUrl: URL;
   sourceBranch: string;
-  rootPath: string;
+  dir: string;
   authInfo: {
     name: string;
     email: string;
@@ -34,7 +34,7 @@ export interface CommitArgs {
   message: string;
   files: WorkspaceFile[];
   targetBranch: string;
-  rootPath: string;
+  dir: string;
   authInfo: {
     name: string;
     email: string;
@@ -43,7 +43,7 @@ export interface CommitArgs {
 
 export interface PushArgs {
   targetBranch: string;
-  rootPath: string;
+  dir: string;
   authInfo: {
     name: string;
     email: string;
@@ -61,7 +61,7 @@ export class GitService {
       fs: this.storageService.fs,
       http: http,
       corsProxy: this.corsProxy,
-      dir: args.rootPath,
+      dir: args.dir,
       url: args.repositoryUrl.href,
       singleBranch: true,
       noTags: true,
@@ -70,21 +70,21 @@ export class GitService {
       onAuth: args.authInfo.onAuth,
     });
 
-    await this.gitConfig(args.rootPath, args.authInfo.name, args.authInfo.email);
+    await this.gitConfig(args.dir, args.authInfo.name, args.authInfo.email);
   }
 
   public async gitCommit(args: CommitArgs): Promise<void> {
     for (const file of args.files) {
       await git.add({
         fs: this.storageService.fs,
-        dir: args.rootPath,
+        dir: args.dir,
         filepath: file.pathRelativeToWorkspaceRoot,
       });
     }
 
     await git.commit({
       fs: this.storageService.fs,
-      dir: args.rootPath,
+      dir: args.dir,
       message: args.message,
       author: {
         name: args.authInfo.name,
@@ -95,7 +95,7 @@ export class GitService {
   }
 
   public async gitPush(args: PushArgs): Promise<void> {
-    const remotes = await git.listRemotes({ fs: this.storageService.fs, dir: args.rootPath });
+    const remotes = await git.listRemotes({ fs: this.storageService.fs, dir: args.dir });
     if (remotes.length === 0) {
       throw new Error("No remote repository found");
     }
@@ -103,7 +103,7 @@ export class GitService {
     await git.push({
       fs: this.storageService.fs,
       http: http,
-      dir: args.rootPath,
+      dir: args.dir,
       ref: args.targetBranch,
       remote: this.GIT_REMOTE_NAME,
       onAuth: args.authInfo.onAuth,
@@ -111,17 +111,17 @@ export class GitService {
     });
   }
 
-  private async gitConfig(rootPath: string, userName: string, userEmail: string): Promise<void> {
+  private async gitConfig(dir: string, userName: string, userEmail: string): Promise<void> {
     await git.setConfig({
       fs: this.storageService.fs,
-      dir: rootPath,
+      dir: dir,
       path: "user.name",
       value: userName,
     });
 
     await git.setConfig({
       fs: this.storageService.fs,
-      dir: rootPath,
+      dir: dir,
       path: "user.email",
       value: userEmail,
     });
