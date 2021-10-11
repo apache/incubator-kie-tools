@@ -41,6 +41,7 @@ import {
   DrawerContentBody,
   DrawerHead,
   DrawerPanelContent,
+  DrawerSection,
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import {
   DataList,
@@ -54,6 +55,7 @@ import { DeleteDropdownWithConfirmation } from "../editor/DeleteDropdownWithConf
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { QueryParams } from "../common/Routes";
 import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 
 export function HomePage() {
   const globals = useGlobals();
@@ -138,186 +140,168 @@ export function HomePage() {
 
   return (
     <OnlineEditorPage>
-      <Stack hasGutter={true}>
-        <StackItem key={"cards"}>
-          <Split isWrappable={true}>
-            <SplitItem isFilled={true}>
-              {/*<PageSection isFilled={true} variant={"light"} style={{ height: "100%" }}>*/}
-              <PageSection isFilled={true} style={{ height: "100%" }}>
-                <TextContent>
-                  <Text component={TextVariants.h1}>Create</Text>
-                </TextContent>
-                <br />
-                {/*<Divider inset={{default: "insetXl"}}/>*/}
-                <Gallery
-                  hasGutter={true}
-                  // 16px is the "Gutter" width.
-                  minWidths={{ sm: "calc(33% - 16px)", default: "100%" }}
-                  style={{ height: "calc(100% - 32px)" }}
-                >
-                  <CreateNewCard title={"Process"} extension={"bpmn"} />
-                  {/*<Divider isVertical={true}/>*/}
-                  <CreateNewCard title={"Decision"} extension={"dmn"} />
-                  {/*<Divider isVertical={true}/>*/}
-                  <CreateNewCard title={"Scorecard"} extension={"pmml"} />
-                </Gallery>
-              </PageSection>
-            </SplitItem>
-            <SplitItem isFilled={true}>
-              {/*<PageSection isFilled={true} variant={"light"} style={{ height: "100%" }}>*/}
-              <PageSection isFilled={true} style={{ height: "100%" }}>
-                <TextContent>
-                  <Text component={TextVariants.h1}>Import</Text>
-                </TextContent>
-                <br />
-                {/*<Divider inset={{default: "insetXl"}}/>*/}
-                <Gallery
-                  hasGutter={true}
-                  // 16px is the "Gutter" width.
-                  minWidths={{ sm: "calc(50% - 16px)", default: "100%" }}
-                  style={{ height: "calc(100% - 32px)" }}
-                >
-                  <Card
-                    isFullHeight={true}
-                    isLarge={true}
-                    isPlain={false}
-                    isHoverable={true}
-                    isSelectable={true}
-                    isSelected={filesToUpload.length > 0}
-                  >
-                    <CardTitle>
-                      <TextContent>
-                        <Text component={TextVariants.h2}>Upload</Text>
-                      </TextContent>
-                    </CardTitle>
-                    <CardBody>
-                      <TextContent>
-                        <Text component={TextVariants.p}>Import files from your computer.</Text>
-                      </TextContent>
-                      <br />
-                      <input
-                        type="file"
-                        /* @ts-expect-error directory and webkitdirectory are not available but works*/
-                        webkitdirectory=""
-                        onChange={onFolderUpload}
-                      />
-                    </CardBody>
-                    <CardFooter>
-                      <Button
-                        variant={filesToUpload.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
-                        onClick={createWorkspaceFromUploadedFolder}
-                      >
-                        Upload
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                  {/*<Divider isVertical={true}/>*/}
-                  <Card
-                    isFullHeight={true}
-                    isLarge={true}
-                    isPlain={false}
-                    isHoverable={true}
-                    isSelectable={true}
-                    isSelected={url.length > 0}
-                  >
-                    <CardTitle>
-                      <TextContent>
-                        <Text component={TextVariants.h2}>From Gist</Text>
-                      </TextContent>
-                    </CardTitle>
-                    <CardBody>
-                      <TextContent>
-                        <Text component={TextVariants.p}>Import files from a GitHub Gist.</Text>
-                      </TextContent>
-                      <br />
-                      <TextInput
-                        isRequired={true}
-                        placeholder={"URL"}
-                        value={url}
-                        onChange={(v) => {
-                          // TODO
-                          // validate URL. if validated, change button to "primary"
-                          setUrl(v);
-                        }}
-                      />
-                    </CardBody>
-                    <CardFooter>
-                      <Button
-                        variant={url.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
-                        onClick={() => {
-                          // TODO
-                          // enable `Enter` key to submit.
-                          history.push({
-                            pathname: globals.routes.importModel.path({}),
-                            search: globals.routes.importModel.queryString({ url: url }),
-                          });
-                        }}
-                      >
-                        Import
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </Gallery>
-              </PageSection>
-            </SplitItem>
-          </Split>
-        </StackItem>
-        <StackItem>
-          <br />
-          <Divider inset={{ default: "inset3xl" }} />
-        </StackItem>
-        <StackItem key={"workspaces"} isFilled={true}>
-          <PageSection isFilled={true} style={{ height: "100%" }}>
-            <PromiseStateWrapper
-              promise={workspaceDescriptorsPromise}
-              rejected={() => <></>}
-              resolved={(workspaceDescriptors) => {
-                return (
-                  <Drawer isExpanded={!!expandedWorkspaceId} isInline={true}>
-                    <DrawerContent
-                      panelContent={
-                        <WorkspacesListDrawerPanelContent
-                          workspaceId={expandedWorkspaceId}
-                          onClose={closeExpandedWorkspace}
-                        />
-                      }
+      <PageSection sticky={"top"}>
+        <Split isWrappable={true} hasGutter={true}>
+          <SplitItem isFilled={true}>
+            <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
+              <TextContent>
+                <Text component={TextVariants.h1}>Create</Text>
+              </TextContent>
+              <br />
+              <Divider inset={{ default: "insetXl" }} />
+              <Gallery
+                hasGutter={true}
+                // 16px is the "Gutter" width.
+                minWidths={{ sm: "calc(33% - 16px)", default: "100%" }}
+                style={{ height: "calc(100% - 32px)" }}
+              >
+                <CreateNewCard title={"Process"} extension={"bpmn"} />
+                {/*<Divider isVertical={true} />*/}
+                <CreateNewCard title={"Decision"} extension={"dmn"} />
+                {/*<Divider isVertical={true} />*/}
+                <CreateNewCard title={"Scorecard"} extension={"pmml"} />
+              </Gallery>
+            </PageSection>
+          </SplitItem>
+          <SplitItem isFilled={true}>
+            <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
+              <TextContent>
+                <Text component={TextVariants.h1}>Import</Text>
+              </TextContent>
+              <br />
+              <Divider inset={{ default: "insetXl" }} />
+              <Gallery
+                hasGutter={true}
+                // 16px is the "Gutter" width.
+                minWidths={{ sm: "calc(50% - 16px)", default: "100%" }}
+                style={{ height: "calc(100% - 32px)" }}
+              >
+                <Card isFullHeight={true} isLarge={true} isPlain={true}>
+                  <CardTitle>
+                    <TextContent>
+                      <Text component={TextVariants.h2}>Upload</Text>
+                    </TextContent>
+                  </CardTitle>
+                  <CardBody>
+                    <TextContent>
+                      <Text component={TextVariants.p}>Import files from your computer.</Text>
+                    </TextContent>
+                    <br />
+                    <input
+                      type="file"
+                      /* @ts-expect-error directory and webkitdirectory are not available but works*/
+                      webkitdirectory=""
+                      onChange={onFolderUpload}
+                    />
+                  </CardBody>
+                  <CardFooter>
+                    <Button
+                      variant={filesToUpload.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
+                      onClick={createWorkspaceFromUploadedFolder}
                     >
-                      <DrawerContentBody>
-                        {workspaceDescriptors.length > 0 && (
-                          <PageSection variant={"light"}>
-                            <Stack hasGutter={true}>
-                              {workspaceDescriptors.map((workspace) => (
-                                <StackItem key={workspace.workspaceId}>
-                                  <WorkspaceCard
-                                    workspaceId={workspace.workspaceId}
-                                    onSelect={() => expandWorkspace(workspace)}
-                                    isSelected={workspace.workspaceId === expandedWorkspaceId}
-                                  />
-                                </StackItem>
-                              ))}
-                            </Stack>
-                          </PageSection>
-                        )}
-                        {workspaceDescriptors.length === 0 && (
-                          <PageSection isFilled={true} style={{ height: "100%" }}>
-                            <EmptyState>
-                              <EmptyStateIcon icon={CubesIcon} />
-                              <Title headingLevel="h4" size="lg">
-                                {`Nothing here.`}
-                              </Title>
-                              <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
-                            </EmptyState>
-                          </PageSection>
-                        )}
-                      </DrawerContentBody>
-                    </DrawerContent>
-                  </Drawer>
-                );
-              }}
-            />
-          </PageSection>
-        </StackItem>
-      </Stack>
+                      Upload
+                    </Button>
+                  </CardFooter>
+                </Card>
+                {/*<Divider isVertical={true} />*/}
+                <Card isFullHeight={true} isLarge={true} isPlain={true} isSelected={url.length > 0}>
+                  <CardTitle>
+                    <TextContent>
+                      <Text component={TextVariants.h2}>From Gist</Text>
+                    </TextContent>
+                  </CardTitle>
+                  <CardBody>
+                    <TextContent>
+                      <Text component={TextVariants.p}>Import files from a GitHub Gist.</Text>
+                    </TextContent>
+                    <br />
+                    <TextInput
+                      isRequired={true}
+                      placeholder={"URL"}
+                      value={url}
+                      onChange={(v) => {
+                        // TODO
+                        // validate URL. if validated, change button to "primary"
+                        setUrl(v);
+                      }}
+                    />
+                  </CardBody>
+                  <CardFooter>
+                    <Button
+                      variant={url.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
+                      onClick={() => {
+                        // TODO
+                        // enable `Enter` key to submit.
+                        history.push({
+                          pathname: globals.routes.importModel.path({}),
+                          search: globals.routes.importModel.queryString({ url: url }),
+                        });
+                      }}
+                    >
+                      Import
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </Gallery>
+            </PageSection>
+          </SplitItem>
+        </Split>
+      </PageSection>
+      <PageSection variant={"light"}>
+        <PromiseStateWrapper
+          promise={workspaceDescriptorsPromise}
+          rejected={() => <></>}
+          resolved={(workspaceDescriptors) => {
+            return (
+              <Drawer isExpanded={!!expandedWorkspaceId} isInline={true}>
+                <DrawerSection>
+                  <TextContent>
+                    <Text component={TextVariants.h1}>Recent models</Text>
+                  </TextContent>
+                  <br />
+                </DrawerSection>
+                <DrawerContent
+                  panelContent={
+                    <WorkspacesListDrawerPanelContent
+                      workspaceId={expandedWorkspaceId}
+                      onClose={closeExpandedWorkspace}
+                    />
+                  }
+                >
+                  <DrawerContentBody>
+                    {workspaceDescriptors.length > 0 && (
+                      <Stack hasGutter={true} style={{ padding: "10px" }}>
+                        {workspaceDescriptors
+                          .sort((a, b) => (new Date(a.lastUpdatedDateISO) < new Date(b.lastUpdatedDateISO) ? 1 : -1))
+                          .map((workspace) => (
+                            <StackItem key={workspace.workspaceId}>
+                              <WorkspaceCard
+                                workspaceId={workspace.workspaceId}
+                                onSelect={() => expandWorkspace(workspace)}
+                                isSelected={workspace.workspaceId === expandedWorkspaceId}
+                              />
+                            </StackItem>
+                          ))}
+                      </Stack>
+                    )}
+                    {workspaceDescriptors.length === 0 && (
+                      <Bullseye>
+                        <EmptyState>
+                          <EmptyStateIcon icon={CubesIcon} />
+                          <Title headingLevel="h4" size="lg">
+                            {`Nothing here`}
+                          </Title>
+                          <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
+                        </EmptyState>
+                      </Bullseye>
+                    )}
+                  </DrawerContentBody>
+                </DrawerContent>
+              </Drawer>
+            );
+          }}
+        />
+      </PageSection>
     </OnlineEditorPage>
   );
 }
@@ -514,7 +498,7 @@ function CreateNewCard(props: { title: string; extension: SupportedFileExtension
   const globals = useGlobals();
 
   return (
-    <Card isFullHeight={true} isPlain={false} isLarge={true} isHoverable={true}>
+    <Card isFullHeight={true} isPlain={true} isLarge={true}>
       <CardTitle>
         <Flex>
           <FlexItem>
