@@ -28,7 +28,7 @@ export class LocalFileHandler extends FileHandler {
   }
 
   public async store(descriptor: WorkspaceDescriptor): Promise<WorkspaceFile[]> {
-    const updatedFiles = this.args.files.map((localFile: LocalFile) => {
+    const updatedFiles = this.args.files.map((localFile) => {
       const relativePath = localFile.path.substring(localFile.path.indexOf("/") + 1);
       return new WorkspaceFile({
         workspaceId: descriptor.workspaceId,

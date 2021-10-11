@@ -73,7 +73,7 @@ export class GitService {
     await this.gitConfig(args.dir, args.authInfo.name, args.authInfo.email);
   }
 
-  public async gitCommit(args: CommitArgs): Promise<void> {
+  public async commit(args: CommitArgs): Promise<void> {
     for (const file of args.files) {
       await git.add({
         fs: this.storageService.fs,
@@ -95,7 +95,11 @@ export class GitService {
   }
 
   public async gitPush(args: PushArgs): Promise<void> {
-    const remotes = await git.listRemotes({ fs: this.storageService.fs, dir: args.dir });
+    const remotes = await git.listRemotes({
+      fs: this.storageService.fs,
+      dir: args.dir,
+    });
+
     if (remotes.length === 0) {
       throw new Error("No remote repository found");
     }
@@ -108,6 +112,14 @@ export class GitService {
       remote: this.GIT_REMOTE_NAME,
       onAuth: args.authInfo.onAuth,
       force: false,
+    });
+  }
+
+  public async add(args: { dir: string; relativePath: string }) {
+    await git.add({
+      fs: this.storageService.fs,
+      dir: args.dir,
+      filepath: args.relativePath,
     });
   }
 
@@ -125,5 +137,34 @@ export class GitService {
       path: "user.email",
       value: userEmail,
     });
+  }
+
+  async init(args: { dir: string }) {
+    await git.init({
+      fs: this.storageService.fs,
+      dir: args.dir,
+      bare: false,
+    });
+  }
+
+  async rm(args: { dir: string; relativePath: string }) {
+    await git.remove({
+      fs: this.storageService.fs,
+      dir: args.dir,
+      filepath: args.relativePath,
+    });
+  }
+
+  async isModified(args: { dir: string }) {
+    const statusMatrix = await git.statusMatrix({
+      fs: this.storageService.fs,
+      dir: args.dir,
+      ref: "main",
+    });
+
+    // See https://isomorphic-git.org/docs/en/statusMatrix#q-what-files-have-been-modified-since-the-last-commit
+    const HEAD = 1;
+    const WORKDIR = 2;
+    return statusMatrix.filter((statusRow) => statusRow[HEAD] !== statusRow[WORKDIR]).length > 0;
   }
 }

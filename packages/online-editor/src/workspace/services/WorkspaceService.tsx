@@ -80,7 +80,6 @@ export class WorkspaceService {
   ): Promise<WorkspaceFile[]> {
     await this.storageService.createDirStructureAtRoot(descriptor.workspaceId);
     const createdFiles = await fileHandler.store(descriptor);
-    const supportedFiles = createdFiles.filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension));
 
     const descriptors = await this.listAll();
     descriptors.push(descriptor);
@@ -97,7 +96,7 @@ export class WorkspaceService {
       broadcastChannel2.postMessage({ type: "ADD", workspaceId: descriptor.workspaceId } as WorkspaceEvents);
     }
 
-    return supportedFiles;
+    return createdFiles.filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension));
   }
 
   public async get(workspaceId: string): Promise<WorkspaceDescriptor> {
@@ -300,6 +299,8 @@ export class WorkspaceService {
     newDirPath: string,
     broadcastArgs: { broadcast: boolean }
   ): Promise<WorkspaceFile> {
+    //FIXME: I'm not sure this works correctly.
+
     const movedStorageFile = await this.storageService.renameFile(this.toStorageFile(file), newDirPath);
     const movedWorkspaceFile = this.toWorkspaceFile(file.workspaceId, movedStorageFile);
 

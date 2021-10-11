@@ -49,7 +49,8 @@ import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/reac
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { dirname, join } from "path";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
-import { CheckIcon } from "@patternfly/react-icons/dist/js/icons/check-icon";
+import { SecurityIcon } from "@patternfly/react-icons/dist/js/icons/security-icon";
+import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
@@ -284,6 +285,7 @@ export function EditorToolbar(props: Props) {
       downloadAllRef.current.href = URL.createObjectURL(zipBlob);
       downloadAllRef.current.click();
     }
+    await workspaces.createSavePoint(props.workspace.descriptor.workspaceId);
   }, [props.editor, props.workspace, workspaces]);
 
   const onPreview = useCallback(() => {
@@ -532,7 +534,7 @@ export function EditorToolbar(props: Props) {
       return;
     }
 
-    workspaces.workspaceService.deleteFile(props.workspaceFile, { broadcast: true }).then(() =>
+    workspaces.deleteFile(props.workspaceFile).then(() =>
       history.push({
         pathname: globals.routes.workspaceWithFilePath.path({
           workspaceId: nextFile.workspaceId,
@@ -541,7 +543,7 @@ export function EditorToolbar(props: Props) {
         }),
       })
     );
-  }, [globals, history, props.workspace, props.workspaceFile, workspaces.workspaceService]);
+  }, [globals, history, props.workspace, props.workspaceFile, workspaces]);
 
   return (
     <>
@@ -566,23 +568,21 @@ export function EditorToolbar(props: Props) {
           <FlexItem>
             <PageHeaderToolsItem visibility={{ default: "visible" }}>
               <Flex flexWrap={{ default: "nowrap" }}>
-                <FlexItem style={{ width: "60px" }}>
-                  <TextContent>
-                    <Text
-                      style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
-                      component={"small"}
-                      aria-label={"File is saved"}
-                      data-testid="is-saved-indicator"
-                    >
-                      {isEdited ? (
-                        <>{`Edited`}</>
-                      ) : (
-                        <>
-                          {`Saved`} <CheckIcon size={"sm"} />
-                        </>
-                      )}
-                    </Text>
-                  </TextContent>
+                <FlexItem style={{ width: "20px" }}>
+                  {isEdited && (
+                    <Tooltip content={"Saving file..."} position={"bottom"}>
+                      <TextContent>
+                        <Text
+                          style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
+                          component={"small"}
+                          aria-label={"File is saved"}
+                          data-testid="is-saved-indicator"
+                        >
+                          <SyncIcon size={"sm"} />
+                        </Text>
+                      </TextContent>
+                    </Tooltip>
+                  )}
                 </FlexItem>
                 <FlexItem>
                   <WorkspaceAndWorkspaceFileNames workspace={props.workspace} workspaceFile={props.workspaceFile} />
@@ -861,6 +861,17 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
         <FlexItem style={{ display: "flex", alignItems: "baseline" }}>
           {props.workspace.files.length > 1 && (
             <>
+              {props.workspace.isModified && (
+                <Tooltip content={"There are new changes since your last download."} position={"bottom"}>
+                  <Title
+                    headingLevel={"h6"}
+                    style={{ display: "inline", padding: "10px", cursor: "default", color: "gray" }}
+                    className={"kogito-tooling--masthead-hoverable"}
+                  >
+                    <SecurityIcon />
+                  </Title>
+                </Tooltip>
+              )}
               <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
                 <Title aria-label={"EmbeddedEditorFile name"} headingLevel={"h3"} size={"2xl"}>
                   {props.workspace.descriptor.name}

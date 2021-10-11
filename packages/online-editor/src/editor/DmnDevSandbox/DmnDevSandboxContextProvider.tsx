@@ -28,7 +28,6 @@ import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandboxModalConfirmDepl
 import { useSettings } from "../../settings/SettingsContext";
 import { isConfigValid, OpenShiftSettingsConfig } from "../../settings/OpenShiftSettingsConfig";
 import { AlertsController, useAlert } from "../Alerts/Alerts";
-import { SUPPORTED_FILES_DMN_DEV_SANDBOX_DEPLOY_PATTERN } from "../../workspace/SupportedFiles";
 import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 interface Props {
@@ -116,9 +115,8 @@ export function DmnDevSandboxContextProvider(props: Props) {
       const relatedFiles: DeploymentFile[] = [];
 
       if (props.workspaceFile) {
-        const workspaceFiles = await workspaces.workspaceService.listFiles(
-          props.workspaceFile.workspaceId,
-          SUPPORTED_FILES_DMN_DEV_SANDBOX_DEPLOY_PATTERN
+        const workspaceFiles = (await workspaces.listFiles(props.workspaceFile.workspaceId)).filter(
+          (f) => f.extension === "dmn" || f.extension === "pmml"
         );
 
         relatedFiles.push(

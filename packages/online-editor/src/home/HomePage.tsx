@@ -155,11 +155,11 @@ export function HomePage() {
                 minWidths={{ sm: "calc(33% - 16px)", default: "100%" }}
                 style={{ height: "calc(100% - 32px)" }}
               >
-                <CreateNewCard title={"Process"} extension={"bpmn"} />
+                <NewModelCard title={"Process"} extension={"bpmn"} />
                 {/*<Divider isVertical={true} />*/}
-                <CreateNewCard title={"Decision"} extension={"dmn"} />
+                <NewModelCard title={"Decision"} extension={"dmn"} />
                 {/*<Divider isVertical={true} />*/}
-                <CreateNewCard title={"Scorecard"} extension={"pmml"} />
+                <NewModelCard title={"Scorecard"} extension={"pmml"} />
               </Gallery>
             </PageSection>
           </SplitItem>
@@ -494,13 +494,13 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
   );
 }
 
-function CreateNewCard(props: { title: string; extension: SupportedFileExtensions }) {
+function NewModelCard(props: { title: string; extension: SupportedFileExtensions }) {
   const globals = useGlobals();
 
   return (
     <Card isFullHeight={true} isPlain={true} isLarge={true}>
       <CardTitle>
-        <Flex>
+        <Flex flexWrap={{ default: "nowrap" }}>
           <FlexItem>
             <TextContent>
               <Text component={TextVariants.h2}>{props.title}</Text>

@@ -24,12 +24,13 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
         return;
       }
 
-      const files = await workspaces.workspaceService.listFiles(workspaceId);
+      const files = await workspaces.listFiles(workspaceId);
+
       if (canceled.get()) {
         return;
       }
 
-      setWorkspacePromise({ data: { descriptor, files } });
+      setWorkspacePromise({ data: { descriptor, files, isModified: await workspaces.isModified(workspaceId) } });
     },
     [setWorkspacePromise, workspaceId, workspaces]
   );
@@ -69,6 +70,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
 
 export type WorkspaceEvents =
   | { type: "ADD"; workspaceId: string }
+  | { type: "CREATE_SAVE_POINT"; workspaceId: string }
   | { type: "RENAME"; workspaceId: string }
   | { type: "DELETE"; workspaceId: string }
   | { type: "ADD_FILE"; relativePath: string }

@@ -9,7 +9,7 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
 
   const refresh = useCallback(
     (workspaceId: string, relativePath: string, canceled: Holder<boolean>) => {
-      workspaces.workspaceService.getFile({ workspaceId, relativePath }).then((workspaceFile) => {
+      workspaces.getFile({ workspaceId, relativePath }).then((workspaceFile) => {
         if (canceled.get()) {
           return;
         }

@@ -18,6 +18,7 @@ import { WorkspaceFile } from "../WorkspacesContext";
 import { WorkspaceDescriptor } from "./WorkspaceDescriptor";
 
 export interface ActiveWorkspace {
+  isModified: boolean;
   descriptor: WorkspaceDescriptor;
   files: WorkspaceFile[];
 }

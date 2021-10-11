@@ -50,7 +50,7 @@ export class GitRepositoryFileHandler extends FileHandler {
     const files = await this.workspaceService.getFiles(descriptor.workspaceId, SUPPORTED_FILES_EDITABLE_PATTERN);
     const targetBranch = (descriptor.origin as GitHubRepositoryOrigin).branch;
     const workspaceRootPath = await this.workspaceService.resolveRootPath(descriptor.workspaceId);
-    await this.args.gitService.gitCommit({
+    await this.args.gitService.commit({
       dir: workspaceRootPath,
       message: this.COMMIT_MESSAGE,
       authInfo: this.args.authInfo,

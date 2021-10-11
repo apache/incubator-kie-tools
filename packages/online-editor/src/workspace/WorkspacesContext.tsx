@@ -106,6 +106,16 @@ export interface WorkspacesContextType {
   }) => Promise<ResourceContent | undefined>;
 
   getAbsolutePath(args: { workspaceId: string; relativePath: string }): string;
+
+  createSavePoint(workspaceId: string): Promise<void>;
+
+  deleteFile(workspaceFile: WorkspaceFile): Promise<void>;
+
+  listFiles(workspaceId: string): Promise<WorkspaceFile[]>;
+
+  getFile(args: { workspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined>;
+
+  isModified(workspaceId: string): Promise<boolean>;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);
