@@ -367,23 +367,32 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
       resolved={(workspace) => (
         <>
           {editableFiles.length === 1 && (
-            <Link
-              to={globals.routes.workspaceWithFilePath.path({
-                workspaceId: editableFiles[0].workspaceId,
-                filePath: editableFiles[0].relativePathWithoutExtension,
-                extension: editableFiles[0].extension,
-              })}
+            <Card
+              isSelected={props.isSelected}
+              isSelectable={true}
+              onMouseOver={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+              isHoverable={true}
+              isCompact={true}
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                history.push({
+                  pathname: globals.routes.workspaceWithFilePath.path({
+                    workspaceId: editableFiles[0].workspaceId,
+                    filePath: editableFiles[0].relativePathWithoutExtension,
+                    extension: editableFiles[0].extension,
+                  }),
+                });
+              }}
             >
-              <Card
-                isSelected={props.isSelected}
-                isSelectable={true}
-                onMouseOver={() => setHovered(true)}
-                onMouseLeave={() => setHovered(false)}
-                isHoverable={true}
-                isCompact={true}
-                style={{ cursor: "pointer" }}
-              >
-                <CardHeader>
+              <CardHeader>
+                <Link
+                  to={globals.routes.workspaceWithFilePath.path({
+                    workspaceId: editableFiles[0].workspaceId,
+                    filePath: editableFiles[0].relativePathWithoutExtension,
+                    extension: editableFiles[0].extension,
+                  })}
+                >
                   <CardHeaderMain>
                     <Flex>
                       <FlexItem>
@@ -404,39 +413,38 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
                       </FlexItem>
                     </Flex>
                   </CardHeaderMain>
-                  <CardActions>
-                    {isHovered && (
-                      <DeleteDropdownWithConfirmation
-                        onDelete={() => workspaces.workspaceService.delete(props.workspaceId, { broadcast: true })}
-                        item={
-                          <Flex flexWrap={{ default: "nowrap" }}>
-                            <FlexItem>
-                              Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
-                            </FlexItem>
-                            <FlexItem>
-                              <b>
-                                <FileLabel extension={editableFiles[0].extension} />
-                              </b>
-                            </FlexItem>
-                          </Flex>
-                        }
-                      />
-                    )}
-                  </CardActions>
-                </CardHeader>
-
-                <CardBody>
-                  <TextContent>
-                    <Text component={TextVariants.p}>
-                      <b>{`Created: `}</b>
-                      {createdDate}
-                      <b>{`, Last updated: `}</b>
-                      {lastUpdatedDate}
-                    </Text>
-                  </TextContent>
-                </CardBody>
-              </Card>
-            </Link>
+                </Link>
+                <CardActions>
+                  {isHovered && (
+                    <DeleteDropdownWithConfirmation
+                      onDelete={() => workspaces.workspaceService.delete(props.workspaceId, { broadcast: true })}
+                      item={
+                        <Flex flexWrap={{ default: "nowrap" }}>
+                          <FlexItem>
+                            Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
+                          </FlexItem>
+                          <FlexItem>
+                            <b>
+                              <FileLabel extension={editableFiles[0].extension} />
+                            </b>
+                          </FlexItem>
+                        </Flex>
+                      }
+                    />
+                  )}
+                </CardActions>
+              </CardHeader>
+              <CardBody>
+                <TextContent>
+                  <Text component={TextVariants.p}>
+                    <b>{`Created: `}</b>
+                    {createdDate}
+                    <b>{`, Last updated: `}</b>
+                    {lastUpdatedDate}
+                  </Text>
+                </TextContent>
+              </CardBody>
+            </Card>
           )}
           {(editableFiles.length > 1 || editableFiles.length < 1) && (
             <Card

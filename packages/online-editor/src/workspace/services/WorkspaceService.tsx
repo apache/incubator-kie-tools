@@ -124,7 +124,7 @@ export class WorkspaceService {
     }
 
     const files = await this.listFiles(workspaceId);
-    await this.storageService.deleteFiles(files.map(this.toStorageFile));
+    await this.storageService.deleteFiles(files.map((f) => this.toStorageFile(f)));
 
     descriptors.splice(index, 1);
     const configFile = await this.configAsFile(async () => JSON.stringify(descriptors));
