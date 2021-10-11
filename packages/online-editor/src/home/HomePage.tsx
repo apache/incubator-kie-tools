@@ -140,7 +140,7 @@ export function HomePage() {
 
   return (
     <OnlineEditorPage>
-      <PageSection sticky={"top"}>
+      <PageSection>
         <Split isWrappable={true} hasGutter={true}>
           <SplitItem isFilled={true}>
             <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
