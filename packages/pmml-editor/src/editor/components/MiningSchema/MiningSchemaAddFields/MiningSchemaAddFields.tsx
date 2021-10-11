@@ -82,6 +82,7 @@ const MiningSchemaAddFields = ({ options, onAdd, isDisabled }: MiningSchemaAddFi
                 isDisabled={option.disabled}
                 key={index}
                 value={option.value}
+                data-ouia-component-id={option.value}
                 data-ouia-component-type="select-option"
               />
             ))}
@@ -93,7 +94,7 @@ const MiningSchemaAddFields = ({ options, onAdd, isDisabled }: MiningSchemaAddFi
           </Button>
         </SplitItem>
         <SplitItem>
-          <Button variant="secondary" onClick={addAllFields} isDisabled={isDisabled}>
+          <Button variant="secondary" onClick={addAllFields} isDisabled={isDisabled} ouiaId="add-all-fields">
             Add All Fields
           </Button>
         </SplitItem>

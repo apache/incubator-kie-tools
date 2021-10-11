@@ -120,7 +120,12 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
   }, [fields, editingField]);
 
   return (
-    <section className="mining-schema" data-testid="mining-schema-container">
+    <section
+      className="mining-schema"
+      data-testid="mining-schema-container"
+      data-ouia-component-id="mining-container"
+      data-ouia-component-type="editor-container"
+    >
       <MiningSchemaContext.Provider value={editingField}>
         <SwitchTransition mode={"out-in"}>
           <CSSTransition
@@ -143,7 +148,11 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
                     <MiningSchemaAddFields options={fields} onAdd={handleAddFields} isDisabled={isDisabled} />
                   </StackItem>
                   {validations.length > 0 && (
-                    <section className="mining-schema__validation-alert">
+                    <section
+                      className="mining-schema__validation-alert"
+                      data-ouia-component-id="validation-container"
+                      data-ouia-component-type="validation-alerts"
+                    >
                       <Alert variant="warning" isInline={true} title="Some items are invalid and need attention." />
                     </section>
                   )}

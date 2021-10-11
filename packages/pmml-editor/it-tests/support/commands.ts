@@ -58,6 +58,10 @@ Cypress.Commands.add("ouiaType", (valueStr) => {
   return cy.get(`[data-ouia-component-type='${valueStr}']`);
 });
 
+Cypress.Commands.add("ouia", (id, type) => {
+  return cy.get(`[data-ouia-component-id='${id}'][data-ouia-component-type='${type}']`);
+});
+
 Cypress.Commands.add("editorShouldContains", (fileName) => {
   cy.fixture(fileName).then(($fileContent) => {
     const text = $fileContent.toString().replaceAll("\n", "").replaceAll("\r", "");
