@@ -21,7 +21,6 @@ enable_clean_cluster=
 # operator information
 operator_image=
 operator_tag=
-operator_namespaced=false
 operator_installation_source=
 operator_catalog_image=
 use_product_operator=false
@@ -97,7 +96,6 @@ run-tests:
 	&& if [ "${disable_maven_native_build_container}" = "true" ]; then opts+=("--disable_maven_native_build_container"); fi \
 	&& if [ "${custom_maven_repo_replace_default}" = "true" ]; then opts+=("--custom_maven_repo_replace_default"); fi \
 	&& if [ "${examples_ignore_ssl}" = "true" ]; then opts+=("--examples_ignore_ssl"); fi \
-	&& if [ "${operator_namespaced}" = "true" ]; then opts+=("--operator_namespaced"); fi \
 	&& if [ "${operator_profiling}" = "true" ]; then opts+=("--operator_profiling"); fi \
 	&& if [ "${enable_clean_cluster}" = "true" ]; then opts+=("--enable_clean_cluster"); fi \
 	&& if [ "${use_product_operator}" = "true" ]; then opts+=("--use_product_operator"); fi \

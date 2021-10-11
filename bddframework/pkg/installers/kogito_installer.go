@@ -38,16 +38,6 @@ var (
 		CleanupClusterYamlCrsInNamespace: cleanupKogitoCrsInNamespace,
 	}
 
-	// kogitoCustomOlmNamespacedInstaller installs Kogito in the namespace using OLM with custom catalog
-	kogitoCustomOlmNamespacedInstaller = OlmNamespacedServiceInstaller{
-		SubscriptionName:                   kogitoOperatorSubscriptionName,
-		Channel:                            kogitoOperatorSubscriptionChannel,
-		Catalog:                            framework.GetCustomKogitoOperatorCatalog,
-		InstallationTimeoutInMinutes:       5,
-		GetAllNamespacedOlmCrsInNamespace:  getKogitoCrsInNamespace,
-		CleanupNamespacedOlmCrsInNamespace: cleanupKogitoCrsInNamespace,
-	}
-
 	// kogitoCustomOlmClusterWideInstaller installs Kogito cluster wide using OLM with custom catalog
 	kogitoCustomOlmClusterWideInstaller = OlmClusterWideServiceInstaller{
 		SubscriptionName:                    kogitoOperatorSubscriptionName,
@@ -56,16 +46,6 @@ var (
 		InstallationTimeoutInMinutes:        5,
 		GetAllClusterWideOlmCrsInNamespace:  getKogitoCrsInNamespace,
 		CleanupClusterWideOlmCrsInNamespace: cleanupKogitoCrsInNamespace,
-	}
-
-	// kogitoOlmNamespacedInstaller installs Kogito in the namespace using OLM with community catalog
-	kogitoOlmNamespacedInstaller = OlmNamespacedServiceInstaller{
-		SubscriptionName:                   kogitoOperatorSubscriptionName,
-		Channel:                            kogitoOperatorSubscriptionChannel,
-		Catalog:                            framework.GetCommunityCatalog,
-		InstallationTimeoutInMinutes:       5,
-		GetAllNamespacedOlmCrsInNamespace:  getKogitoCrsInNamespace,
-		CleanupNamespacedOlmCrsInNamespace: cleanupKogitoCrsInNamespace,
 	}
 
 	// kogitoOlmClusterWideInstaller installs Kogito cluster wide using OLM with community catalog
@@ -91,23 +71,14 @@ func GetKogitoInstaller() (ServiceInstaller, error) {
 	// If user doesn't pass Kogito operator image then use community OLM catalog to install operator
 	if len(config.GetOperatorImageName()) == 0 {
 		framework.GetMainLogger().Info("Installing Kogito operator using community catalog.")
-		if config.IsOperatorNamespaced() {
-			return &kogitoOlmNamespacedInstaller, nil
-		}
 		return &kogitoOlmClusterWideInstaller, nil
 	}
 
 	if config.IsOperatorInstalledByYaml() || config.IsOperatorProfiling() {
-		if config.IsOperatorNamespaced() {
-			return nil, errors.New("Installing namespace scoped Kogito operator using YAML files is not supported")
-		}
 		return &kogitoYamlClusterInstaller, nil
 	}
 
 	if config.IsOperatorInstalledByOlm() {
-		if config.IsOperatorNamespaced() {
-			return &kogitoCustomOlmNamespacedInstaller, nil
-		}
 		return &kogitoCustomOlmClusterWideInstaller, nil
 	}
 
