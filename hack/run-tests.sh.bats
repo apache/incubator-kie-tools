@@ -406,6 +406,18 @@ export -f oc
     [[ "${output}" != *"--tests.operator-catalog-image"* ]]
 }
 
+@test "invoke run-tests with use_product_operator" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --use_product_operator --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.use-product-operator" ]]
+}
+
+@test "invoke run-tests without use_product_operator" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.use-product-operator"* ]]
+}
+
 # operator profiling
 
 @test "invoke run-tests with operator_profiling" {
@@ -492,6 +504,24 @@ export -f oc
     run ${BATS_TEST_DIRNAME}/run-tests.sh --cli_path "" --dry_run
     [ "$status" -eq 0 ]
     [[ "${output}" != *"--tests.cli-path"* ]]
+}
+
+@test "invoke run-tests with rhpam_operator_yaml_uri" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --rhpam_operator_yaml_uri file.yaml --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.rhpam-operator-yaml-uri=file.yaml" ]]
+}
+
+@test "invoke run-tests with rhpam_operator_yaml_uri missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --rhpam_operator_yaml_uri --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.rhpam-operator-yaml-uri"* ]]
+}
+
+@test "invoke run-tests with rhpam_operator_yaml_uri empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --rhpam_operator_yaml_uri "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.rhpam-operator-yaml-uri"* ]]
 }
 
 # runtime
