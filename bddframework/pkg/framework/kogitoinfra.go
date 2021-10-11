@@ -16,15 +16,19 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 
-	"github.com/kiegroup/kogito-operator/apis"
+	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
+	rhpamv1 "github.com/kiegroup/kogito-operator/apis/rhpam/v1"
+
+	api "github.com/kiegroup/kogito-operator/apis"
 	"k8s.io/apimachinery/pkg/api/meta"
 
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework/mappers"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
@@ -60,26 +64,17 @@ func cliInstallKogitoInfraComponent(namespace string, infraResource api.KogitoIn
 }
 
 // GetKogitoInfraResourceStub Get basic KogitoInfra stub with all needed fields initialized
-func GetKogitoInfraResourceStub(namespace, name, targetResourceType, targetResourceName string) (*v1beta1.KogitoInfra, error) {
+func GetKogitoInfraResourceStub(namespace, name, targetResourceType, targetResourceName string) (api.KogitoInfraInterface, error) {
 	infraResource, err := parseKogitoInfraResource(targetResourceType)
 	if err != nil {
 		return nil, err
 	}
 	infraResource.SetName(targetResourceName)
 
-	return &v1beta1.KogitoInfra{
-		ObjectMeta: NewObjectMetadata(namespace, name),
-		Spec: v1beta1.KogitoInfraSpec{
-			Resource: infraResource,
-		},
-		Status: v1beta1.KogitoInfraStatus{
-			Conditions: &[]v1.Condition{
-				{
-					LastTransitionTime: v1.Now(),
-				},
-			},
-		},
-	}, nil
+	if config.UseProductOperator() {
+		return &rhpamv1.KogitoInfra{ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace}, Spec: v1beta1.KogitoInfraSpec{Resource: infraResource}}, nil
+	}
+	return &v1beta1.KogitoInfra{ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace}, Spec: v1beta1.KogitoInfraSpec{Resource: infraResource}}, nil
 }
 
 // Converts infra resource from name to InfraResource struct
@@ -125,7 +120,10 @@ func WaitForKogitoInfraResource(namespace, name string, timeoutInMin int, getKog
 
 // GetKogitoInfraResource retrieves the KogitoInfra resource
 func GetKogitoInfraResource(namespace, name string) (api.KogitoInfraInterface, error) {
-	infraResource := &v1beta1.KogitoInfra{}
+	var infraResource api.KogitoInfraInterface = &v1beta1.KogitoInfra{}
+	if config.UseProductOperator() {
+		infraResource = &rhpamv1.KogitoInfra{}
+	}
 	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: name, Namespace: namespace}, infraResource); err != nil && !errors.IsNotFound(err) {
 		return nil, fmt.Errorf("Error while trying to look for KogitoInfra %s: %v ", name, err)
 	} else if !exists {

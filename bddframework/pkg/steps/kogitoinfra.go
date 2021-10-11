@@ -45,7 +45,7 @@ func (data *Data) installKogitoInfraTargetingServiceWithinMinutesWithConfigurati
 		return err
 	}
 
-	framework.GetLogger(data.Namespace).Debug("Got kogitoInfra config", "config", infraResource.Spec.InfraProperties)
+	framework.GetLogger(data.Namespace).Debug("Got kogitoInfra config", "config", infraResource.GetSpec().GetInfraProperties())
 	err = framework.InstallKogitoInfraComponent(data.Namespace, framework.GetDefaultInstallerType(), infraResource)
 	if err != nil {
 		return err

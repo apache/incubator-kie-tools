@@ -501,6 +501,11 @@ func GetCommunityCatalog() OperatorCatalog {
 	return GetOperatorCatalog(KubernetesCatalogNamespace, "operatorhubio-catalog")
 }
 
+// GetProductCatalog returns OperatorCatalog with red hat operators
+func GetProductCatalog() OperatorCatalog {
+	return GetOperatorCatalog(OpenShiftCatalogNamespace, "redhat-operators")
+}
+
 // GetCustomKogitoOperatorCatalog returns OperatorCatalog containing custom Kogito operator informations
 func GetCustomKogitoOperatorCatalog() OperatorCatalog {
 	if IsOpenshift() {

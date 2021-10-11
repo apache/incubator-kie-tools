@@ -16,6 +16,7 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
+	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	"github.com/kiegroup/kogito-operator/test/pkg/installers"
 )
@@ -31,15 +32,17 @@ func (data *Data) kogitoOperatorShouldBeInstalled() error {
 	return framework.WaitForKogitoOperatorRunning(data.Namespace)
 }
 
-func (data *Data) kogitoOperatorIsDeployed() error {
-	installer, err := installers.GetKogitoInstaller()
+func (data *Data) kogitoOperatorIsDeployed() (err error) {
+	var installer installers.ServiceInstaller
+	if config.UseProductOperator() {
+		installer, err = installers.GetRhpamKogitoInstaller()
+	} else {
+		installer, err = installers.GetKogitoInstaller()
+	}
 	if err != nil {
 		return err
 	}
-	if err := installer.Install(data.Namespace); err != nil {
-		return err
-	}
-	return nil
+	return installer.Install(data.Namespace)
 }
 
 func (data *Data) cliInstallKogitoOperator() error {

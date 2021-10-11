@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
+	v1 "github.com/kiegroup/kogito-operator/apis/rhpam/v1"
 
 	api "github.com/kiegroup/kogito-operator/apis"
 
@@ -74,32 +75,31 @@ func cliDeployKogitoBuild(buildHolder *bddtypes.KogitoBuildHolder) error {
 }
 
 // GetKogitoBuildStub Get basic KogitoBuild stub with all needed fields initialized
-func GetKogitoBuildStub(namespace, runtimeType, name string) *v1beta1.KogitoBuild {
-	kogitoBuild := &v1beta1.KogitoBuild{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: namespace,
-		},
-		Spec: v1beta1.KogitoBuildSpec{
-			Runtime:        api.RuntimeType(runtimeType),
-			MavenMirrorURL: config.GetMavenMirrorURL(),
-		},
+func GetKogitoBuildStub(namespace, runtimeType, name string) api.KogitoBuildInterface {
+	var kogitoBuild api.KogitoBuildInterface = &v1beta1.KogitoBuild{ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace}}
+	if config.UseProductOperator() {
+		kogitoBuild = &v1.KogitoBuild{ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace}}
 	}
+	kogitoBuild.GetSpec().SetRuntime(api.RuntimeType(runtimeType))
+	kogitoBuild.GetSpec().SetMavenMirrorURL(config.GetMavenMirrorURL())
 
 	if len(config.GetCustomMavenRepoURL()) > 0 {
-		kogitoBuild.Spec.Env = framework.EnvOverride(kogitoBuild.Spec.Env, corev1.EnvVar{Name: "MAVEN_REPO_URL", Value: config.GetCustomMavenRepoURL()})
+		kogitoBuild.GetSpec().SetEnv(framework.EnvOverride(kogitoBuild.GetSpec().GetEnv(), corev1.EnvVar{Name: "MAVEN_REPO_URL", Value: config.GetCustomMavenRepoURL()}))
 	}
 
 	if config.IsMavenIgnoreSelfSignedCertificate() {
-		kogitoBuild.Spec.Env = framework.EnvOverride(kogitoBuild.Spec.Env, corev1.EnvVar{Name: "MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE", Value: "true"})
+		kogitoBuild.GetSpec().SetEnv(framework.EnvOverride(kogitoBuild.GetSpec().GetEnv(), corev1.EnvVar{Name: "MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE", Value: "true"}))
 	}
 
 	return kogitoBuild
 }
 
 // GetKogitoBuild returns the KogitoBuild type
-func GetKogitoBuild(namespace, buildName string) (*v1beta1.KogitoBuild, error) {
-	build := &v1beta1.KogitoBuild{}
+func GetKogitoBuild(namespace, buildName string) (api.KogitoBuildInterface, error) {
+	var build api.KogitoBuildInterface = &v1beta1.KogitoBuild{}
+	if config.UseProductOperator() {
+		build = &v1.KogitoBuild{}
+	}
 	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: buildName, Namespace: namespace}, build); err != nil && !errors.IsNotFound(err) {
 		return nil, fmt.Errorf("Error while trying to look for KogitoBuild %s: %v ", buildName, err)
 	} else if errors.IsNotFound(err) || !exists {
@@ -109,7 +109,7 @@ func GetKogitoBuild(namespace, buildName string) (*v1beta1.KogitoBuild, error) {
 }
 
 // SetupKogitoBuildImageStreams sets the correct images for the KogitoBuild
-func SetupKogitoBuildImageStreams(kogitoBuild *v1beta1.KogitoBuild) {
-	kogitoBuild.Spec.BuildImage = GetKogitoBuildS2IImage()
-	kogitoBuild.Spec.RuntimeImage = GetKogitoBuildRuntimeImage(kogitoBuild.Spec.Native)
+func SetupKogitoBuildImageStreams(kogitoBuild api.KogitoBuildInterface) {
+	kogitoBuild.GetSpec().SetBuildImage(GetKogitoBuildS2IImage())
+	kogitoBuild.GetSpec().SetRuntimeImage(GetKogitoBuildRuntimeImage(kogitoBuild.GetSpec().IsNative()))
 }

@@ -16,11 +16,13 @@ package executor
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 	"io"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
+	v1 "github.com/kiegroup/kogito-operator/apis/rhpam/v1"
 
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/colors"
@@ -200,7 +202,9 @@ func initializeScenario(ctx *godog.ScenarioContext) {
 	data.RegisterAllSteps(ctx)
 
 	// Log objects
-	if logKogitoCommunityObjects {
+	if config.UseProductOperator() {
+		data.RegisterLogsKubernetesObjects(&v1.KogitoRuntimeList{}, &v1.KogitoBuildList{})
+	} else {
 		data.RegisterLogsKubernetesObjects(&v1beta1.KogitoRuntimeList{}, &v1beta1.KogitoBuildList{}, &v1beta1.KogitoSupportingServiceList{}, &v1beta1.KogitoInfraList{})
 	}
 	data.RegisterLogsKubernetesObjects(&olmapiv1alpha1.ClusterServiceVersionList{})

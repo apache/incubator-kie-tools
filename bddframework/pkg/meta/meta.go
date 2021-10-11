@@ -16,6 +16,7 @@ package meta
 
 import (
 	kogito "github.com/kiegroup/kogito-operator/apis/app/v1beta1"
+	rhpamkogito "github.com/kiegroup/kogito-operator/apis/rhpam/v1"
 	grafana "github.com/kiegroup/kogito-operator/core/infrastructure/grafana/v1alpha1"
 	infinispan "github.com/kiegroup/kogito-operator/core/infrastructure/infinispan/v1"
 	kafka "github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
@@ -77,6 +78,7 @@ func GetRegisteredSchema() *runtime.Scheme {
 func getRegisteredSchemeBuilder() runtime.SchemeBuilder {
 	return runtime.NewSchemeBuilder(
 		kogito.SchemeBuilder.AddToScheme,
+		rhpamkogito.SchemeBuilder.AddToScheme,
 		clientgoscheme.AddToScheme,
 		corev1.AddToScheme,
 		coreappsv1.AddToScheme,

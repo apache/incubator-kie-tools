@@ -17,10 +17,12 @@ package steps
 import (
 	"fmt"
 	"path/filepath"
+	"strings"
+	"time"
 
 	corev1 "k8s.io/api/core/v1"
 
-	"github.com/kiegroup/kogito-operator/apis"
+	api "github.com/kiegroup/kogito-operator/apis"
 
 	operatorframework "github.com/kiegroup/kogito-operator/core/framework"
 
@@ -64,7 +66,22 @@ func (data *Data) buildExampleServiceWithConfiguration(runtimeType, contextDir s
 		buildHolder.KogitoBuild.GetSpec().SetEnv(operatorframework.EnvOverride(envs, corev1.EnvVar{Name: "GIT_SSL_NO_VERIFY", Value: "true"}))
 	}
 
-	return framework.DeployKogitoBuild(data.Namespace, framework.GetDefaultInstallerType(), buildHolder)
+	err = framework.DeployKogitoBuild(data.Namespace, framework.GetDefaultInstallerType(), buildHolder)
+	if err != nil {
+		return err
+	}
+
+	// In case of OpenShift the ImageStream needs to be patched to allow insecure registries
+	if framework.IsOpenshift() {
+		if err := makeImageStreamInsecure(data.Namespace, framework.GetKogitoBuildS2IImage()); err != nil {
+			return err
+		}
+		if err := makeImageStreamInsecure(data.Namespace, framework.GetKogitoBuildRuntimeImage(buildHolder.KogitoBuild.GetSpec().IsNative())); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (data *Data) buildBinaryLocalExampleServiceFromTargetFolderWithConfiguration(runtimeType, serviceName string, table *godog.Table) error {
@@ -79,6 +96,13 @@ func (data *Data) buildBinaryLocalExampleServiceFromTargetFolderWithConfiguratio
 	err = framework.DeployKogitoBuild(data.Namespace, framework.GetDefaultInstallerType(), buildHolder)
 	if err != nil {
 		return err
+	}
+
+	// In case of OpenShift the ImageStream needs to be patched to allow insecure registries
+	if framework.IsOpenshift() {
+		if err := makeImageStreamInsecure(data.Namespace, framework.GetKogitoBuildRuntimeImage(buildHolder.KogitoBuild.GetSpec().IsNative())); err != nil {
+			return err
+		}
 	}
 
 	// If we don't use Kogito CLI then upload target folder using OC client
@@ -112,4 +136,34 @@ func getKogitoBuildConfiguredStub(namespace, runtimeType, serviceName string, ta
 	framework.SetupKogitoBuildImageStreams(kogitoBuild)
 
 	return buildHolder, err
+}
+
+func makeImageStreamInsecure(namespace, insecureImageTag string) error {
+	// Need to wait as operator overrides image stream in initial reconciliation
+	time.Sleep(time.Duration(2*config.GetLoadFactor()) * time.Second)
+	return framework.WaitForOnOpenshift(namespace, fmt.Sprintf("patching ImageStream pointing to %s to be insecure", insecureImageTag), 2, func() (bool, error) {
+		imageStreams, err := framework.GetImageStreams(namespace)
+		if err != nil {
+			return false, err
+		}
+		for _, is := range imageStreams.Items {
+			imageStream := &is
+			for i, tag := range imageStream.Spec.Tags {
+				if tag.From != nil && strings.Contains(tag.From.Name, insecureImageTag) {
+					// Image tag has to be removed and created again, to trigger image fetch
+					imageStream.Spec.Tags = append(imageStream.Spec.Tags[:i], imageStream.Spec.Tags[i+1:]...)
+					if err := framework.UpdateObject(imageStream); err != nil {
+						return false, err
+					}
+					tag.ImportPolicy.Insecure = true
+					imageStream.Spec.Tags = append(imageStream.Spec.Tags, tag)
+					if err := framework.UpdateObject(imageStream); err != nil {
+						return false, err
+					}
+					return true, nil
+				}
+			}
+		}
+		return false, nil
+	})
 }
