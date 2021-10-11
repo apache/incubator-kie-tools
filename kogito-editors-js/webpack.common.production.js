@@ -16,6 +16,7 @@
 
 const { commonConfig } = require("./webpack.common");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 const productionConfig = (name, options = {}) => {
   return commonConfig(name, false, {
@@ -24,7 +25,14 @@ const productionConfig = (name, options = {}) => {
     optimization: {
       minimize: true,
       minimizer: [
-        // `...`,
+        new TerserPlugin({
+          terserOptions: {
+            format: {
+              comments: false,
+            },
+          },
+          extractComments: false,
+        }),
         new CssMinimizerPlugin(),
       ],
     },
