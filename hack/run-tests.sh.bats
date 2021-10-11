@@ -358,18 +358,6 @@ export -f oc
     [[ "${output}" != *"--tests.operator-image-tag"* ]]
 }
 
-@test "invoke run-tests with operator_namespaced" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_namespaced --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" =~ "--tests.operator-namespaced" ]]
-}
-
-@test "invoke run-tests without operator_namespaced" {
-    run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
-    [ "$status" -eq 0 ]
-    [[ "${output}" != *"--tests.operator-namespaced"* ]]
-}
-
 @test "invoke run-tests with operator_installation_source" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --operator_installation_source olm --dry_run
     [ "$status" -eq 0 ]

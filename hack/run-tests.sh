@@ -55,7 +55,6 @@ function usage(){
   # operator information
   printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup/kogito-operator' one."
   printf "\n--operator_tag {TAG}\n\tOperator image tag. Default is operator version."
-  printf "\n--operator_namespaced {TAG}\n\tSet to true to deploy Kogito operator into namespace used for scenario execution, false for cluster wide deployment. Default is false."
   printf "\n--operator_installation_source {TAG}\n\tDefines installation source for the Kogito operator. Options are 'olm' and 'yaml'. Default is yaml."
   printf "\n--operator_catalog_image {TAG}\n\tDefines image containing operator catalog. Needs to be specified only when operator_installation_source is 'olm'."
   printf "\n--use_product_operator {TAG}\n\tSet to true to deploy RHPAM Kogito operator, false for using Kogito operator. Default is false."
@@ -279,10 +278,6 @@ case $1 in
   --operator_tag)
     shift
     if addParamKeyValueIfAccepted "--tests.operator-image-tag" ${1}; then shift; fi
-  ;;
-  --operator_namespaced)
-    addParam "--tests.operator-namespaced"
-    shift
   ;;
   --operator_installation_source)
     shift
