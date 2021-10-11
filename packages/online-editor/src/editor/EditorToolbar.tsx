@@ -23,7 +23,6 @@ import {
   DropdownToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
-import { EyeIcon } from "@patternfly/react-icons/dist/js/icons/eye-icon";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -825,46 +824,35 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
   const [isFilesDropdownOpen, setFilesDropdownOpen] = useState(false);
   const filesDropdownItems = useMemo(
     () => [
-      <DropdownGroup key={"workspace-group"} label="Files">
-        {props.workspace.files
-          .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-          .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension))
-          .map((file) => (
-            <Link
-              key={file.relativePath}
-              style={{ fontWeight: props.workspaceFile.relativePath === file.relativePath ? "bold" : "normal" }}
-              to={globals.routes.workspaceWithFilePath.path({
-                workspaceId: file.workspaceId,
-                filePath: file.relativePathWithoutExtension,
-                extension: file.extension,
-              })}
-            >
-              <DropdownItem description={"/ " + dirname(file.relativePath).split("/").join(" > ")}>
-                <Flex flexWrap={{ default: "nowrap" }}>
-                  <FlexItem>{file.nameWithoutExtension}</FlexItem>
-                  <FlexItem
-                    style={{
-                      fontWeight: props.workspaceFile.relativePath === file.relativePath ? "bold" : "normal",
-                    }}
-                  >
-                    <FileLabel extension={file.extension} />
-                  </FlexItem>
-                  <FlexItem>
-                    <EyeIcon
-                      style={{
-                        height: "0.8em",
-                        marginLeft: "10px",
-                        visibility: props.workspaceFile.relativePath === file.relativePath ? "visible" : "hidden",
-                      }}
-                    />
-                  </FlexItem>
-                </Flex>
-              </DropdownItem>
-            </Link>
-          ))}
-      </DropdownGroup>,
+      props.workspace.files
+        .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
+        .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension))
+        .filter((file) => file.relativePath !== props.workspaceFile.relativePath)
+        .map((file) => (
+          <Link
+            key={file.relativePath}
+            to={globals.routes.workspaceWithFilePath.path({
+              workspaceId: file.workspaceId,
+              filePath: file.relativePathWithoutExtension,
+              extension: file.extension,
+            })}
+          >
+            <DropdownItem>
+              <Flex flexWrap={{ default: "nowrap" }}>
+                <FlexItem>{file.nameWithoutExtension}</FlexItem>
+                <FlexItem>
+                  <FileLabel extension={file.extension} />
+                </FlexItem>
+              </Flex>
+              <div className={"pf-c-dropdown__menu-item-description"}>
+                {file.relativeDirPath.split("/").join(" > ")}
+                &nbsp;
+              </div>
+            </DropdownItem>
+          </Link>
+        )),
     ],
-    [globals, history, props.workspaceFile, props.workspace]
+    [globals, props.workspaceFile, props.workspace]
   );
 
   return (

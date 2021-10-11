@@ -24,8 +24,7 @@ import * as React from "react";
 import { createContext, useContext } from "react";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
 import { WorkspaceService } from "./services/WorkspaceService";
-import { basename, dirname, extname } from "path";
-import { removeFileExtension } from "../common/utils";
+import { basename, extname, parse } from "path";
 
 export class WorkspaceFile {
   constructor(
@@ -49,11 +48,11 @@ export class WorkspaceFile {
   }
 
   get relativePathWithoutExtension() {
-    return removeFileExtension(this.relativePath);
+    return basename(this.relativePath, `.${this.extension}`);
   }
 
   get relativeDirPath() {
-    return dirname(this.relativePath);
+    return parse(this.relativePath).dir;
   }
 
   get extension() {

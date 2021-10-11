@@ -20,7 +20,7 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { LocalFile, useWorkspaces } from "../workspace/WorkspacesContext";
+import { LocalFile, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { OnlineEditorPage } from "./pageTemplate/OnlineEditorPage";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
@@ -572,40 +572,48 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
           <DrawerCloseButton onClick={props.onClose} />
         </DrawerActions>
       </DrawerHead>
-      <DataList aria-label="draggable data list example" isCompact>
+      <DataList aria-label="files-data-list">
         {(workspacePromise.data?.files ?? []).map((file) => (
           <React.Fragment key={file.relativePath}>
-            <DataListItem aria-labelledby="simple-item1" id="data1" key="1">
-              <DataListItemRow>
-                <DataListItemCells
-                  dataListCells={[
-                    <DataListCell key={"label"} isIcon={true} style={{ minWidth: "60px" }}>
-                      <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
-                        <FileLabel extension={file.extension} />
-                      </Flex>
-                    </DataListCell>,
-                    <DataListCell key="link" isFilled={false}>
-                      {SUPPORTED_FILES_EDITABLE.includes(file.extension) ? (
-                        <Link
-                          to={globals.routes.workspaceWithFilePath.path({
-                            workspaceId: workspacePromise.data?.descriptor.workspaceId ?? "",
-                            filePath: file.relativePathWithoutExtension,
-                            extension: file.extension,
-                          })}
-                        >
-                          {file.relativePath}
-                        </Link>
-                      ) : (
-                        <Text component={TextVariants.p}>{file.relativePath}</Text>
-                      )}
-                    </DataListCell>,
-                  ]}
-                />
-              </DataListItemRow>
-            </DataListItem>
+            {!SUPPORTED_FILES_EDITABLE.includes(file.extension) && <FileDataListItem file={file} />}
+            {SUPPORTED_FILES_EDITABLE.includes(file.extension) && (
+              <Link
+                to={globals.routes.workspaceWithFilePath.path({
+                  workspaceId: workspacePromise.data?.descriptor.workspaceId ?? "",
+                  filePath: file.relativePathWithoutExtension,
+                  extension: file.extension,
+                })}
+              >
+                <FileDataListItem file={file} />
+              </Link>
+            )}
           </React.Fragment>
         ))}
       </DataList>
     </DrawerPanelContent>
+  );
+}
+
+function FileDataListItem(props: { file: WorkspaceFile }) {
+  return (
+    <DataListItem>
+      <DataListItemRow>
+        <DataListItemCells
+          dataListCells={[
+            <DataListCell key="link" isFilled={false}>
+              <Flex flexWrap={{ default: "nowrap" }}>
+                <FlexItem>{props.file.nameWithoutExtension}</FlexItem>
+                <FlexItem>
+                  <FileLabel extension={props.file.extension} />
+                </FlexItem>
+              </Flex>
+              <TextContent>
+                <Text component={TextVariants.small}>{props.file.relativeDirPath.split("/").join(" > ")}</Text>
+              </TextContent>
+            </DataListCell>,
+          ]}
+        />
+      </DataListItemRow>
+    </DataListItem>
   );
 }
