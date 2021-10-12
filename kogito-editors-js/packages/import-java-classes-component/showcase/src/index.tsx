@@ -44,26 +44,37 @@ const Showcase: React.FunctionComponent = () => {
       return [];
     }
   };
-  const lspGetClassFieldsServiceMocked = (className: string) => {
+  const lspGetClassFieldsServiceMocked = async (className: string) => {
     /* Mocked data retrieved from LSP Service */
     const bookClassFieldsList = new Map<string, string>();
-    bookClassFieldsList.set("author", "string");
-    bookClassFieldsList.set("title", "string");
-    bookClassFieldsList.set("year", "integer");
+    bookClassFieldsList.set("author", "org.kie.test.kogito.Author");
+    bookClassFieldsList.set("title", "java.lang.String");
+    bookClassFieldsList.set("year", "java.lang.Integer");
+    bookClassFieldsList.set("boom", "org.kie.test.kogito.Boom");
     const boomClassFieldsList = new Map<string, string>();
-    boomClassFieldsList.set("time", "date");
-    boomClassFieldsList.set("big", "boolean");
-    boomClassFieldsList.set("color", "string");
+    boomClassFieldsList.set("time", "java.util.Date");
+    boomClassFieldsList.set("big", "java.lang.Boolean");
+    boomClassFieldsList.set("color", "java.lang.String");
+    boomClassFieldsList.set("countdown", "java.time.Duration");
+    const authorClassFieldsList = new Map<string, string>();
+    authorClassFieldsList.set("age", "int");
+    authorClassFieldsList.set("name", "java.lang.String");
+
+    await delay();
 
     /* Temporary mocks managing */
     if (className === "org.kie.test.kogito.Book") {
       return bookClassFieldsList;
     } else if (className === "org.kie.test.kogito.Boom") {
       return boomClassFieldsList;
+    } else if (className === "org.kie.test.kogito.Author") {
+      return authorClassFieldsList;
     } else {
       return new Map<string, string>();
     }
   };
+
+  const delay = () => new Promise((res) => setTimeout(res, Math.random() * (4000 - 750) + 1000));
 
   window.envelopeMock = {
     lspGetClassServiceMocked: (value: string) => lspGetClassServiceMocked(value),
@@ -92,7 +103,7 @@ const Showcase: React.FunctionComponent = () => {
         <strong>Tooltip Message (Optional)</strong>
         <input value={buttonTooltipMessage} onChange={onInputChange} />
       </div>
-      <div className="import-java-classes">
+      <div className="main">
         <ImportJavaClasses buttonDisabledStatus={buttonDisableStatus} buttonTooltipMessage={buttonTooltipMessage} />
       </div>
     </div>

@@ -37,6 +37,7 @@ interface ImportJavaClassesWizardDictionary extends ReferenceDictionary<ImportJa
     };
     secondStep: {
       stepName: string;
+      fetchButtonLabel: string;
     };
     thirdStep: {
       stepName: string;

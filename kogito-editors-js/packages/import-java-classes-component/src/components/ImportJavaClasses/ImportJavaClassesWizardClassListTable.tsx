@@ -17,10 +17,11 @@
 import * as React from "react";
 import { DataList } from "@patternfly/react-core";
 import { ImportJavaClassesWizardClassListTableItems } from "./ImportJavaClassesWizardClassListTableItems";
+import { JavaClass } from "./Model/JavaClass";
 
 export interface ImportJavaClassesWizardClassListTableProps {
   /** Previously selected Java Classes from the user */
-  selectedJavaClasses: string[];
+  selectedJavaClasses: JavaClass[];
   /** Retrieved JavaClasses from external service */
   retrievedJavaClasses: string[];
   /** Function to call when an item related checkbox is pressed by the user */
@@ -33,13 +34,13 @@ export const ImportJavaClassesWizardClassListTable: React.FunctionComponent<Impo
     retrievedJavaClasses,
     onJavaClassItemSelected,
   }: ImportJavaClassesWizardClassListTableProps) => {
-    const classesSet = new Set(selectedJavaClasses);
+    const classesSet = new Set(selectedJavaClasses.map((javaClass) => javaClass.name));
     return (
       <DataList aria-label={"class-data-list"}>
         {selectedJavaClasses.map((value) => (
           <ImportJavaClassesWizardClassListTableItems
-            key={value}
-            fullClassName={value}
+            key={value.name}
+            fullClassName={value.name}
             selected={true}
             onJavaClassItemSelected={onJavaClassItemSelected}
           />

@@ -20,6 +20,10 @@ import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { ImportJavaClassesWizardFirstStep } from "./ImportJavaClassesWizardFirstStep";
 import { ImportJavaClassesWizardSecondStep } from "./ImportJavaClassesWizardSecondStep";
 import { useState } from "react";
+import { JavaClass } from "./Model/JavaClass";
+import { JavaField } from "./Model/JavaField";
+import { DMNSimpleType } from "./Model/DMNSimpleType";
+import { getJavaClassSimpleName } from "./Model/JavaClassUtils";
 
 export interface ImportJavaClassesWizardProps {
   /** Button disabled status */
@@ -33,37 +37,74 @@ export const ImportJavaClassesWizard: React.FunctionComponent<ImportJavaClassesW
   buttonTooltipMessage,
 }: ImportJavaClassesWizardProps) => {
   const { i18n } = useImportJavaClassesWizardI18n();
-  const [selectedJavaClasses, setSelectedJavaClasses] = useState<string[]>([]);
+  const [javaClasses, setJavaClasses] = useState<JavaClass[]>([]);
   const updateSelectedClasses = (fullClassName: string, add: boolean) => {
     if (add) {
-      const classesSet = new Set(selectedJavaClasses);
-      classesSet.add(fullClassName);
-      setSelectedJavaClasses(Array.from(classesSet));
+      addJavaClass(fullClassName);
     } else {
-      const classesSet = new Set(selectedJavaClasses);
-      classesSet.delete(fullClassName);
-      setSelectedJavaClasses(Array.from(classesSet));
+      removeJavaClass(fullClassName);
     }
   };
-
+  const addJavaClass = (fullClassName: string) => {
+    if (!javaClasses.some((javaClass) => javaClass.name === fullClassName)) {
+      const updatedSelectedJavaClasses: JavaClass[] = [...javaClasses, new JavaClass(fullClassName)];
+      updatedSelectedJavaClasses.sort((a, b) => (a.name < b.name ? -1 : 1));
+      updateJavaFieldsReferences(updatedSelectedJavaClasses, javaClasses);
+      setJavaClasses(updatedSelectedJavaClasses);
+    }
+  };
+  const removeJavaClass = (fullClassName: string) => {
+    const updatedSelectedJavaClasses: JavaClass[] = javaClasses.filter((javaClass) => javaClass.name !== fullClassName);
+    updateJavaFieldsReferences(updatedSelectedJavaClasses, javaClasses);
+    setJavaClasses(updatedSelectedJavaClasses);
+  };
+  const updateSelectedClassesFields = (fullClassName: string, fields: JavaField[]) => {
+    const javaClassIndex: number = javaClasses.findIndex((javaClass) => javaClass.name === fullClassName);
+    if (javaClassIndex > -1) {
+      javaClasses[javaClassIndex].setFields(fields);
+    }
+    setJavaClasses([...javaClasses]);
+  };
+  const updateJavaFieldsReferences = (updatedJavaClasses: JavaClass[], previousJavaClasses: JavaClass[]) => {
+    const updatedJavaClassesNames: string[] = updatedJavaClasses.map((javaClass) => javaClass.name);
+    const previousJavaClassesNames: string[] = previousJavaClasses.map((javaClass) => javaClass.name);
+    const allFields: JavaField[] = javaClasses.map((javaClass) => javaClass.fields).flat(1);
+    allFields.forEach((field: JavaField) => {
+      if (field.dmnTypeRef === DMNSimpleType.ANY && updatedJavaClassesNames.includes(field.type)) {
+        field.dmnTypeRef = getJavaClassSimpleName(field.type);
+      } else if (previousJavaClassesNames.includes(field.type) && !updatedJavaClassesNames.includes(field.type)) {
+        field.dmnTypeRef = DMNSimpleType.ANY;
+      }
+    });
+  };
+  const resetJavaClassState = () => {
+    setJavaClasses([]);
+  };
   const steps = [
     {
       name: i18n.modalWizard.firstStep.stepName,
       component: (
         <ImportJavaClassesWizardFirstStep
-          selectedJavaClasses={selectedJavaClasses}
+          selectedJavaClasses={javaClasses}
           onSelectedJavaClassesUpdated={updateSelectedClasses}
         />
       ),
-      enableNext: selectedJavaClasses.length > 0,
+      enableNext: javaClasses.length > 0,
       canJumpTo: true,
       hideBackButton: true,
     },
     {
       name: i18n.modalWizard.secondStep.stepName,
-      component: <ImportJavaClassesWizardSecondStep selectedJavaClasses={selectedJavaClasses} />,
+      component: (
+        <ImportJavaClassesWizardSecondStep
+          selectedJavaClasses={javaClasses}
+          onSelectedJavaClassesUpdated={updateSelectedClasses}
+          onSelectedJavaClassedFieldsLoaded={updateSelectedClassesFields}
+          fetchButtonLabel={i18n.modalWizard.secondStep.fetchButtonLabel}
+        />
+      ),
       enableNext: false,
-      canJumpTo: selectedJavaClasses.length > 0,
+      canJumpTo: javaClasses.length > 0,
     },
     {
       name: i18n.modalWizard.thirdStep.stepName,
@@ -79,9 +120,11 @@ export const ImportJavaClassesWizard: React.FunctionComponent<ImportJavaClassesW
       buttonText={i18n.modalButton.text}
       buttonDisabledStatus={buttonDisabledStatus}
       buttonTooltipMessage={buttonTooltipMessage}
+      className={"import-java-classes"}
       wizardTitle={i18n.modalWizard.title}
       wizardDescription={i18n.modalWizard.description}
       wizardSteps={steps}
+      onWizardClose={resetJavaClassState}
     />
   );
 };

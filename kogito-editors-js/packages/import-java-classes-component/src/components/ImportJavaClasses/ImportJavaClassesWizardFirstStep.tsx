@@ -21,10 +21,11 @@ import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { useCallback, useState } from "react";
 import { EmptyStateWidget } from "../EmptyStateWidget";
 import { ImportJavaClassesWizardClassListTable } from "./ImportJavaClassesWizardClassListTable";
+import { JavaClass } from "./Model/JavaClass";
 
 export interface ImportJavaClassesWizardFirstStepProps {
   /** List of the selected classes by user */
-  selectedJavaClasses: string[];
+  selectedJavaClasses: JavaClass[];
   /** Function to be called when selecting a Java Class */
   onSelectedJavaClassesUpdated: (fullClassName: string, add: boolean) => void;
 }

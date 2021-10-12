@@ -15,41 +15,71 @@
  */
 
 import * as React from "react";
+import "./ImportJavaClassesWizardSecondStep.css";
 import { Spinner } from "@patternfly/react-core";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ImportJavaClassesWizardFieldListTable } from "./ImportJavaClassesWizardFieldListTable";
-import { JavaClassField } from "./Model/JavaClassField";
+import { JavaField } from "./Model/JavaField";
 import { JavaClass } from "./Model/JavaClass";
+import { DMNSimpleType, JAVA_TO_DMN_MAP } from "./Model/DMNSimpleType";
+import { getJavaClassSimpleName } from "./Model/JavaClassUtils";
 
 export interface ImportJavaClassesWizardSecondStepProps {
   /** List of the selected classes by user */
-  selectedJavaClasses: string[];
+  selectedJavaClasses: JavaClass[];
+  /** Function to be called to update selected Java Class, after a Fetching request */
+  onSelectedJavaClassesUpdated: (fullClassName: string, add: boolean) => void;
+  /** Function to be called to update a Java Class with its retrieved Fields */
+  onSelectedJavaClassedFieldsLoaded: (fullClassName: string, fields: JavaField[]) => void;
+  /** Fetch button label */
+  fetchButtonLabel: string;
 }
 
 export const ImportJavaClassesWizardSecondStep: React.FunctionComponent<ImportJavaClassesWizardSecondStepProps> = ({
   selectedJavaClasses,
+  onSelectedJavaClassesUpdated,
+  onSelectedJavaClassedFieldsLoaded,
+  fetchButtonLabel,
 }: ImportJavaClassesWizardSecondStepProps) => {
-  const [retrievedJavaClassFields, setRetrievedJavaClassFields] = useState<JavaClass[]>([]);
-  /* This function temporary mocks a call to the LSP service method getClasseFields */
-  const loadJavaClassFields = (className: string) => {
-    const retrieved: Map<string, string> = window.envelopeMock.lspGetClassFieldsServiceMocked(className);
-    setRetrievedJavaClassFields((prevState) => {
-      const javaFields = Array.from(retrieved, ([key, value]) => new JavaClassField(key, value));
-      const javaClass = new JavaClass(className, javaFields);
-      return [...prevState, javaClass].sort((a, b) => (a.name < b.name ? -1 : 1));
-    });
-  };
   useEffect(
-    () => selectedJavaClasses.forEach((className: string) => loadJavaClassFields(className)),
+    () =>
+      selectedJavaClasses
+        .filter((javaClass: JavaClass) => !javaClass.fieldsLoaded)
+        .forEach((javaClass: JavaClass) => loadJavaFields(javaClass.name)),
+    // eslint-disable-next-line
     [selectedJavaClasses]
   );
+  const loadJavaFields = (className: string) => {
+    window.envelopeMock
+      .lspGetClassFieldsServiceMocked(className)
+      .then((value: Map<string, string>) => {
+        const fields = Array.from(value, ([name, type]) => generateJavaClassField(name, type, selectedJavaClasses));
+        fields.sort((a, b) => (a.name < b.name ? -1 : 1));
+        onSelectedJavaClassedFieldsLoaded(className, fields);
+      })
+      .catch((reason) => {
+        console.error(reason);
+      });
+  };
+  const generateJavaClassField = (name: string, type: string, selectedJavaClasses: JavaClass[]) => {
+    let dmnTypeRef: string = (JAVA_TO_DMN_MAP as any)[getJavaClassSimpleName(type)] || DMNSimpleType.ANY;
+    if (dmnTypeRef === DMNSimpleType.ANY && selectedJavaClasses.some((javaClass) => javaClass.name === type)) {
+      dmnTypeRef = getJavaClassSimpleName(type);
+    }
+    return new JavaField(name, type, dmnTypeRef);
+  };
 
   return (
     <>
-      {retrievedJavaClassFields.length != selectedJavaClasses.length ? (
-        <Spinner isSVG diameter="80px" />
+      {selectedJavaClasses.some((javaClass: JavaClass) => !javaClass.fieldsLoaded) ? (
+        <Spinner isSVG={true} diameter="150px" className={"loader"} />
       ) : (
-        <ImportJavaClassesWizardFieldListTable selectedJavaClassFields={retrievedJavaClassFields} />
+        <ImportJavaClassesWizardFieldListTable
+          selectedJavaClassFields={selectedJavaClasses}
+          readOnly={false}
+          onFetchButtonClick={(fullClassName: string) => onSelectedJavaClassesUpdated(fullClassName, true)}
+          fetchButtonLabel={fetchButtonLabel}
+        />
       )}
     </>
   );

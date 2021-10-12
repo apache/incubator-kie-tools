@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-export class JavaClassField {
+export class JavaField {
+  /* Field Name */
   public name: string;
+  /* The Java Type of the field (eg. java.lang.String OR com.mypackace.Test) */
   public type: string;
+  /* The DMN Type reference */
+  public dmnTypeRef: string;
 
-  constructor(name: string, type: string) {
+  constructor(name: string, type: string, dmnTypeRef: string) {
     this.name = name;
     this.type = type;
+    this.dmnTypeRef = dmnTypeRef;
   }
 }

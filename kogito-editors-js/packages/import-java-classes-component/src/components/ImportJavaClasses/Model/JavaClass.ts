@@ -14,14 +14,24 @@
  * limitations under the License.
  */
 
-import { JavaClassField } from "./JavaClassField";
+import { JavaField } from "./JavaField";
 
 export class JavaClass {
+  /** Java Class Name (eg. java.lang.String OR com.mypackage.Test) */
   public name: string;
-  public fields: JavaClassField[];
+  /** Java Fields of the class */
+  public fields: JavaField[];
+  /** It indicates if the fields has been loaded, in order to support empty fields Java Classes */
+  public fieldsLoaded: boolean;
 
-  constructor(name: string, fields: JavaClassField[]) {
+  constructor(name: string) {
     this.name = name;
+    this.fields = [];
+    this.fieldsLoaded = false;
+  }
+
+  setFields(fields: JavaField[]) {
     this.fields = fields;
+    this.fieldsLoaded = true;
   }
 }

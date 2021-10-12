@@ -29,12 +29,16 @@ export interface ModalWizardProps {
   buttonDisabledStatus: boolean;
   /** Button tooltip message */
   buttonTooltipMessage?: string;
+  /** Additional className to assign to the Wizard */
+  className?: string;
   /** Title of the Modal Wizard */
   wizardTitle: string;
   /** Title of the Modal Wizard */
   wizardDescription: string;
   /** Steps of the Modal Wizard */
   wizardSteps: WizardStep[];
+  /** Action to apply at Wizard closure */
+  onWizardClose?: () => void;
 }
 
 export const ModalWizard: React.FunctionComponent<ModalWizardProps> = ({
@@ -43,18 +47,26 @@ export const ModalWizard: React.FunctionComponent<ModalWizardProps> = ({
   buttonIcon,
   buttonDisabledStatus,
   buttonTooltipMessage,
+  className,
   wizardTitle,
   wizardDescription,
   wizardSteps,
+  onWizardClose,
 }: ModalWizardProps) => {
   const [isOpen, setOpen] = useState(false);
-  const handleModalToggle = useCallback(() => setOpen(!isOpen), [isOpen]);
+  const changeWizardState = useCallback(() => setOpen(!isOpen), [isOpen]);
+  const onClose = () => {
+    changeWizardState();
+    if (onWizardClose) {
+      onWizardClose();
+    }
+  };
   const WizardButton: React.FunctionComponent = () => {
     return (
       <Button
         variant={buttonStyle}
         icon={buttonIcon}
-        onClick={handleModalToggle}
+        onClick={changeWizardState}
         isDisabled={buttonDisabledStatus}
         data-testid={"modal-wizard-button"}
       >
@@ -68,7 +80,7 @@ export const ModalWizard: React.FunctionComponent<ModalWizardProps> = ({
         <Button
           variant={buttonStyle}
           icon={buttonIcon}
-          onClick={handleModalToggle}
+          onClick={changeWizardState}
           isAriaDisabled={buttonDisabledStatus}
           data-testid={"modal-wizard-button"}
         >
@@ -81,13 +93,16 @@ export const ModalWizard: React.FunctionComponent<ModalWizardProps> = ({
   return (
     <>
       {buttonTooltipMessage ? <WizardButtonWithTooltip /> : <WizardButton />}
-      <Wizard
-        title={wizardTitle}
-        description={wizardDescription}
-        steps={wizardSteps}
-        onClose={handleModalToggle}
-        isOpen={isOpen}
-      />
+      {isOpen ? (
+        <Wizard
+          className={className}
+          description={wizardDescription}
+          isOpen={isOpen}
+          onClose={onClose}
+          steps={wizardSteps}
+          title={wizardTitle}
+        />
+      ) : null}
     </>
   );
 };

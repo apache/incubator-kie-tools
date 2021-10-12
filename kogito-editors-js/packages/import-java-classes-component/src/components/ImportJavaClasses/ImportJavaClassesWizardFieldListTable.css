@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-export {};
+.import-java-classes .fetch-button {
+  margin-left: 20px;
+}
 
-declare global {
-  interface Window {
-    renderImportJavaClasses: (selector: string, buttonDisabledStatus: boolean, buttonTooltipMessage?: string) => void;
-    envelopeMock: {
-      lspGetClassServiceMocked: (value: string) => string[];
-      lspGetClassFieldsServiceMocked: (className: string) => Promise<Map<string, string>>;
-    };
-  }
+.import-java-classes .dmn-type-name {
+  margin-left: 10px;
 }
