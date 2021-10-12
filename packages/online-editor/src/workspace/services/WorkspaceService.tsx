@@ -18,7 +18,7 @@ import { WorkspaceFile } from "../WorkspacesContext";
 import JSZip from "jszip";
 import { FileHandler } from "../handler/FileHandler";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
-import { SUPPORTED_FILES_EDITABLE, SUPPORTED_FILES_PATTERN } from "../SupportedFiles";
+import { SUPPORTED_FILES_PATTERN } from "../SupportedFiles";
 import { StorageFile, StorageService } from "./StorageService";
 import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
@@ -96,7 +96,7 @@ export class WorkspaceService {
       broadcastChannel2.postMessage({ type: "ADD", workspaceId: descriptor.workspaceId } as WorkspaceEvents);
     }
 
-    return createdFiles.filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension));
+    return createdFiles;
   }
 
   public async get(workspaceId: string): Promise<WorkspaceDescriptor> {

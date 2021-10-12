@@ -25,7 +25,7 @@ import { WorkspaceKind } from "./model/WorkspaceOrigin";
 import { GitService } from "./services/GitService";
 import { StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
-import { SUPPORTED_FILES } from "./SupportedFiles";
+import { SUPPORTED_FILES, SUPPORTED_FILES_EDITABLE } from "./SupportedFiles";
 import { LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { SupportedFileExtensions } from "../common/GlobalContext";
 import { extractFileExtension } from "../common/utils";
@@ -64,7 +64,12 @@ export function WorkspacesContextProvider(props: Props) {
     async (descriptor: WorkspaceDescriptor, fileHandler: FileHandler) => {
       const files = await workspaceService.create(descriptor, fileHandler, { broadcast: true });
       if (files.length > 0) {
-        return { files, suggestedFirstFile: files.sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0] };
+        return {
+          files,
+          suggestedFirstFile: files
+            .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension))
+            .sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0],
+        };
       } else {
         return { files, suggestedFirstFile: undefined };
       }
