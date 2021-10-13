@@ -6,7 +6,7 @@ import { NotificationsPanelController } from "../NotificationsPanel/Notification
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 export function DmnRunnerDrawer(props: {
-  workspaceFile: WorkspaceFile | undefined;
+  workspaceFile: WorkspaceFile;
   notificationsPanel: NotificationsPanelController | undefined;
   children: React.ReactNode;
 }) {

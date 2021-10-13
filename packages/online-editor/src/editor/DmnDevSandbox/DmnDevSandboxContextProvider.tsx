@@ -32,7 +32,7 @@ import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext"
 
 interface Props {
   children: React.ReactNode;
-  workspaceFile: WorkspaceFile | undefined;
+  workspaceFile: WorkspaceFile;
   alerts: AlertsController | undefined;
 }
 
@@ -93,10 +93,6 @@ export function DmnDevSandboxContextProvider(props: Props) {
 
   const onDeploy = useCallback(
     async (config: OpenShiftSettingsConfig) => {
-      if (!props.workspaceFile) {
-        return;
-      }
-
       if (!(isConfigValid(config) && (await settings.openshift.service.isConnectionEstablished(config)))) {
         deployStartedErrorAlert.show();
         return;
@@ -109,25 +105,19 @@ export function DmnDevSandboxContextProvider(props: Props) {
 
       const targetFile: DeploymentFile = {
         path: props.workspaceFile.relativePath,
-        getFileContents: prepareFileContents(props.workspaceFile.getFileContents),
+        getFileContents: prepareFileContents(props.workspaceFile.getFileContentsAsString),
       };
 
-      const relatedFiles: DeploymentFile[] = [];
+      const workspaceFiles = (await workspaces.listFiles(props.workspaceFile.workspaceId)).filter(
+        (f) => f.extension === "dmn" || f.extension === "pmml"
+      );
 
-      if (props.workspaceFile) {
-        const workspaceFiles = (await workspaces.listFiles(props.workspaceFile.workspaceId)).filter(
-          (f) => f.extension === "dmn" || f.extension === "pmml"
-        );
-
-        relatedFiles.push(
-          ...workspaceFiles
-            .filter((f: WorkspaceFile) => f.relativePath !== targetFile.path)
-            .map((f: WorkspaceFile) => ({
-              path: f.relativePath,
-              getFileContents: prepareFileContents(f.getFileContents),
-            }))
-        );
-      }
+      const relatedFiles: DeploymentFile[] = workspaceFiles
+        .filter((f) => f.relativePath !== targetFile.path)
+        .map((f) => ({
+          path: f.relativePath,
+          getFileContents: prepareFileContents(f.getFileContentsAsString),
+        }));
 
       try {
         await settings.openshift.service.deploy({

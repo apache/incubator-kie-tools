@@ -27,14 +27,21 @@ import { WorkspaceService } from "./services/WorkspaceService";
 import { basename, extname, parse } from "path";
 import { removeFileExtension } from "../common/utils";
 
+export const decoder = new TextDecoder("utf-8");
+export const encoder = new TextEncoder();
+
 export class WorkspaceFile {
   constructor(
     private readonly args: {
       workspaceId: string;
       relativePath: string;
-      getFileContents: () => Promise<string>;
+      getFileContents: () => Promise<Uint8Array>;
     }
   ) {}
+
+  get getFileContentsAsString() {
+    return () => this.getFileContents().then((c) => decoder.decode(c));
+  }
 
   get getFileContents() {
     return this.args.getFileContents;
@@ -71,7 +78,7 @@ export class WorkspaceFile {
 
 export interface LocalFile {
   path: string;
-  getFileContents: () => Promise<string>;
+  getFileContents: () => Promise<Uint8Array>;
 }
 
 export interface WorkspacesContextType {
@@ -81,11 +88,6 @@ export interface WorkspacesContextType {
   createWorkspaceFromLocal: (
     files: LocalFile[]
   ) => Promise<{ descriptor: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
-  createWorkspaceFromGitHubRepository: (
-    repositoryUrl: URL,
-    sourceBranch: string,
-    githubSettings: { user: { login: string; name: string; email: string }; token: string }
-  ) => Promise<WorkspaceDescriptor>;
 
   // edit workspace
   addEmptyFile(args: {

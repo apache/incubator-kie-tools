@@ -11,7 +11,7 @@ const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ 
 export function TextEditorModal(props: {
   editor: EmbeddedEditorRef | undefined;
   isOpen: boolean;
-  workspaceFile: WorkspaceFile | undefined;
+  workspaceFile: WorkspaceFile;
   refreshEditor: () => void;
 }) {
   const { i18n } = useOnlineI18n();
@@ -65,29 +65,25 @@ export function TextEditorModal(props: {
   }, [props.refreshEditor, props.isOpen, props.editor, props.workspaceFile, textEditorContent]);
 
   useEffect(() => {
-    props.workspaceFile?.getFileContents().then((content) => {
+    props.workspaceFile.getFileContentsAsString().then((content) => {
       setTextEditorContext(content);
     });
   }, [props.workspaceFile]);
 
   return (
-    <>
-      {props.workspaceFile && (
-        <Modal
-          showClose={false}
-          width={"100%"}
-          height={"100%"}
-          title={i18n.editorPage.textEditorModal.title(props.workspaceFile.nameWithoutExtension)}
-          isOpen={props.isOpen}
-          actions={[
-            <Button key="confirm" variant="primary" onClick={props.refreshEditor}>
-              {i18n.terms.done}
-            </Button>,
-          ]}
-        >
-          <div style={{ width: "100%", minHeight: "calc(100vh - 210px)" }} ref={textEditorContainerRef} />
-        </Modal>
-      )}
-    </>
+    <Modal
+      showClose={false}
+      width={"100%"}
+      height={"100%"}
+      title={i18n.editorPage.textEditorModal.title(props.workspaceFile.nameWithoutExtension)}
+      isOpen={props.isOpen}
+      actions={[
+        <Button key="confirm" variant="primary" onClick={props.refreshEditor}>
+          {i18n.terms.done}
+        </Button>,
+      ]}
+    >
+      <div style={{ width: "100%", minHeight: "calc(100vh - 210px)" }} ref={textEditorContainerRef} />
+    </Modal>
   );
 }

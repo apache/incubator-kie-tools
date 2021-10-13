@@ -19,7 +19,7 @@ import { Minimatch } from "minimatch";
 import { basename, dirname, extname, join, parse, resolve } from "path";
 
 export class StorageFile {
-  constructor(private readonly args: { path: string; getFileContents: () => Promise<string> }) {}
+  constructor(private readonly args: { path: string; getFileContents: () => Promise<Uint8Array> }) {}
 
   get path() {
     return this.args.path;
@@ -32,8 +32,6 @@ export class StorageFile {
 
 export class StorageService {
   private readonly SEPARATOR = "/";
-  private readonly encoder: TextEncoder = new TextEncoder();
-  private readonly decoder: TextDecoder = new TextDecoder("utf-8");
 
   public readonly fs;
   private readonly fsp;
@@ -202,18 +200,18 @@ export class StorageService {
     }
   }
 
-  private buildGetFileContentsCallback(path: string): () => Promise<string> {
+  private buildGetFileContentsCallback(path: string): () => Promise<Uint8Array> {
     return async () => {
       if (!(await this.exists(path))) {
         throw new Error(`Can't read non-existent file '${path}'`);
       }
-      return this.decoder.decode(await this.fsp.readFile(path));
+      return await this.fsp.readFile(path);
     };
   }
 
   private async writeFile(file: StorageFile): Promise<void> {
     const content = await file.getFileContents();
-    await this.fsp.writeFile(file.path, this.encoder.encode(content));
+    await this.fsp.writeFile(file.path, content);
   }
 
   private async getFilePaths(dirPath: string): Promise<string[]> {

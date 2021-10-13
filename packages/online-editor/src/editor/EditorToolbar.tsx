@@ -300,7 +300,7 @@ export function EditorToolbar(props: Props) {
 
   const onGistIt = useCallback(async () => {
     if (props.editor) {
-      const content = await props.workspaceFile.getFileContents();
+      const content = await props.workspaceFile.getFileContentsAsString();
 
       // update gist
       if (queryParamUrl && settings.github.service.isGist(queryParamUrl)) {
@@ -384,7 +384,7 @@ export function EditorToolbar(props: Props) {
   }, []);
 
   const onCopyContentToClipboard = useCallback(() => {
-    props.workspaceFile.getFileContents().then((content) => {
+    props.workspaceFile.getFileContentsAsString().then((content) => {
       if (copyContentTextArea.current) {
         copyContentTextArea.current.value = content;
         copyContentTextArea.current.select();
@@ -498,7 +498,6 @@ export function EditorToolbar(props: Props) {
       includeEmbedDropdownItem,
       i18n,
       settings,
-      globals,
     ]
   );
 
@@ -538,7 +537,7 @@ export function EditorToolbar(props: Props) {
       history.push({
         pathname: globals.routes.workspaceWithFilePath.path({
           workspaceId: nextFile.workspaceId,
-          filePath: nextFile.relativePathWithoutExtension,
+          fileRelativePath: nextFile.relativePathWithoutExtension,
           extension: nextFile.extension,
         }),
       })
@@ -611,7 +610,7 @@ export function EditorToolbar(props: Props) {
                           history.push({
                             pathname: globals.routes.workspaceWithFilePath.path({
                               workspaceId: file.workspaceId,
-                              filePath: file.relativePathWithoutExtension,
+                              fileRelativePath: file.relativePathWithoutExtension,
                               extension: file.extension,
                             }),
                           });
@@ -833,7 +832,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
             key={file.relativePath}
             to={globals.routes.workspaceWithFilePath.path({
               workspaceId: file.workspaceId,
-              filePath: file.relativePathWithoutExtension,
+              fileRelativePath: file.relativePathWithoutExtension,
               extension: file.extension,
             })}
           >

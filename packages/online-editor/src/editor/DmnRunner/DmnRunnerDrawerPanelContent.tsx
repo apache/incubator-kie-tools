@@ -47,7 +47,7 @@ enum ButtonPosition {
 }
 
 interface Props {
-  workspaceFile: WorkspaceFile | undefined;
+  workspaceFile: WorkspaceFile;
   notificationsPanel: NotificationsPanelController | undefined;
 }
 
@@ -139,7 +139,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
       }
 
       return props.workspaceFile
-        ?.getFileContents()
+        .getFileContentsAsString()
         .then((content) => {
           dmnRunner.service.result({ context: formData, model: content })?.then((result) => {
             if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {

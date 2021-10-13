@@ -1,4 +1,4 @@
-import { LocalFile, useWorkspaces } from "../WorkspacesContext";
+import { encoder, LocalFile, useWorkspaces } from "../WorkspacesContext";
 import { useGlobals } from "../../common/GlobalContext";
 import { useHistory } from "react-router";
 import * as React from "react";
@@ -48,7 +48,7 @@ export function NewWorkspaceFromUrlPage() {
         history.replace({
           pathname: globals.routes.workspaceWithFilePath.path({
             workspaceId: descriptor.workspaceId,
-            filePath: suggestedFirstFile.relativePathWithoutExtension,
+            fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
             extension: suggestedFirstFile.extension,
           }),
         });
@@ -92,7 +92,7 @@ export function NewWorkspaceFromUrlPage() {
 
             return createWorkspaceForFile({
               path: `${extractedFileName}.${filePathExtension}`,
-              getFileContents: () => Promise.resolve(content),
+              getFileContents: () => Promise.resolve(encoder.encode(content)),
             });
           })
           .catch((error) => setFetchFileError({ errors: [error], path: queryParamUrl }));
@@ -109,7 +109,7 @@ export function NewWorkspaceFromUrlPage() {
 
             return createWorkspaceForFile({
               path: `${extractedFileName}.${filePathExtension}`,
-              getFileContents: () => Promise.resolve(response),
+              getFileContents: () => Promise.resolve(encoder.encode(response)),
             });
           })
           .catch((error) => {
@@ -137,7 +137,7 @@ export function NewWorkspaceFromUrlPage() {
 
           return createWorkspaceForFile({
             path: `${extractedFileName}.${filePathExtension}`,
-            getFileContents: () => content,
+            getFileContents: () => content.then((c) => encoder.encode(c)),
           });
         })
         .catch((error) => {

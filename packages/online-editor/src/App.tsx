@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import * as React from "react";
 import { useMemo } from "react";
 import { Redirect, Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
-import { GlobalContextProvider, SupportedFileExtensions, useGlobals } from "./common/GlobalContext";
+import { GlobalContextProvider, useGlobals } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { OnlineI18nContextProvider } from "./common/i18n";
 import { NoMatchPage } from "./NoMatchPage";
@@ -67,15 +66,14 @@ function RoutesSwitch() {
       <Route
         path={globals.routes.workspaceWithFilePath.path({
           workspaceId: ":workspaceId",
-          filePath: `:filePath*`,
+          fileRelativePath: `:fileRelativePath*`,
           extension: `:extension(${supportedExtensions})`,
         })}
       >
         {({ match }) => (
           <EditorPage
-            forExtension={match!.params.extension as SupportedFileExtensions}
             workspaceId={match!.params.workspaceId!}
-            filePath={`${match!.params.filePath}.${match!.params.extension}`}
+            fileRelativePath={`${match!.params.fileRelativePath}.${match!.params.extension}`}
           />
         )}
       </Route>

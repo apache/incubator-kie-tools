@@ -14,25 +14,28 @@
  * limitations under the License.
  */
 
-import { ContentType, ResourceContent, ResourcesList } from "@kie-tooling-core/workspace/dist/api";
+import {
+  ContentType,
+  ResourceContent,
+  ResourceContentOptions,
+  ResourcesList,
+} from "@kie-tooling-core/workspace/dist/api";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FileHandler } from "./handler/FileHandler";
-import { GitRepositoryFileHandler } from "./handler/GitRepositoryFileHandler";
-import { LocalFileHandler } from "./handler/LocalFileHandler";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
 import { WorkspaceKind } from "./model/WorkspaceOrigin";
 import { GitService } from "./services/GitService";
-import { StorageService } from "./services/StorageService";
+import { StorageFile, StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { SUPPORTED_FILES, SUPPORTED_FILES_EDITABLE } from "./SupportedFiles";
-import { LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
+import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { SupportedFileExtensions } from "../common/GlobalContext";
 import { extractFileExtension } from "../common/utils";
 import { emptyTemplates } from "./FileTemplates";
 import { join } from "path";
 import git from "isomorphic-git";
 import { WorkspaceEvents } from "./hooks/WorkspaceHooks";
+import { Buffer } from "buffer";
 
 const INDEXED_DB_NAME = "kogito-online";
 const GIT_CORS_PROXY = "https://cors.isomorphic-git.org"; // TODO CAPONETTO: Deploy our own proxy (https://github.com/isomorphic-git/cors-proxy)
@@ -49,6 +52,7 @@ export function WorkspacesContextProvider(props: Props) {
   const workspaceService = useMemo(() => new WorkspaceService(storageService), [storageService]);
   const gitService = useMemo(() => {
     const instance = new GitService(GIT_CORS_PROXY, storageService);
+    // FIXME: easy access to git in the window object.
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     (window as any).git = (prop: unknown, args: any) => git[prop]({ fs: storageService.fs, ...args });
@@ -61,8 +65,8 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createWorkspace = useCallback(
-    async (descriptor: WorkspaceDescriptor, fileHandler: FileHandler) => {
-      const files = await workspaceService.create(descriptor, fileHandler, { broadcast: true });
+    async (descriptor: WorkspaceDescriptor, storeFiles: () => Promise<WorkspaceFile[]>) => {
+      const files = await workspaceService.create(descriptor, storeFiles, { broadcast: true });
       if (files.length > 0) {
         return {
           files,
@@ -114,25 +118,38 @@ export function WorkspacesContextProvider(props: Props) {
         createdDateISO: new Date().toISOString(),
         lastUpdatedDateISO: new Date().toISOString(),
       };
-
       const supportedFiles = localFiles.filter((localFile) =>
         SUPPORTED_FILES.includes(extractFileExtension(localFile.path)!)
       );
 
-      const fileHandler = new LocalFileHandler({ files: supportedFiles, workspaceService });
-      const { files, suggestedFirstFile } = await createWorkspace(descriptor, fileHandler);
+      const storeFiles = async () => {
+        const updatedFiles = supportedFiles.map((localFile) => {
+          const relativePath = localFile.path.substring(localFile.path.indexOf("/") + 1);
+          return new StorageFile({
+            path: workspaceService.getAbsolutePath({ workspaceId: descriptor.workspaceId, relativePath }),
+            getFileContents: localFile.getFileContents,
+          });
+        });
 
+        await storageService.createFiles(updatedFiles);
+        return workspaceService.getFiles(descriptor.workspaceId);
+      };
+
+      console.info("START STORE" + new Date().getTime());
+      const { files, suggestedFirstFile } = await createWorkspace(descriptor, storeFiles);
+
+      console.info("START INIT" + new Date().getTime());
       await gitService.init({
         dir: workspaceService.getAbsolutePath({ workspaceId: descriptor.workspaceId, relativePath: "" }),
       });
-
+      console.info("START ADD" + new Date().getTime());
       for (const file of files) {
         await gitService.add({
           dir: workspaceService.getAbsolutePath({ workspaceId: descriptor.workspaceId, relativePath: "" }),
           relativePath: file.relativePath,
         });
       }
-
+      console.info("START COMMIT" + new Date().getTime());
       await gitService.commit({
         files: [],
         dir: workspaceService.getAbsolutePath({ workspaceId: descriptor.workspaceId, relativePath: "" }),
@@ -143,51 +160,51 @@ export function WorkspacesContextProvider(props: Props) {
           email: "tfernand+dev@redhat.com", //FIXME: Change this.
         },
       });
-
+      console.info("START RETURN" + new Date().getTime());
       return { descriptor, suggestedFirstFile };
     },
-    [createWorkspace, gitService, workspaceService]
+    [createWorkspace, gitService, storageService, workspaceService]
   );
 
-  const createWorkspaceFromGitHubRepository = useCallback(
-    async (
-      repositoryUrl: URL,
-      sourceBranch: string,
-      githubSettings: { user: { login: string; email: string; name: string }; token: string }
-    ) => {
-      if (!githubSettings.user) {
-        throw new Error("User not authenticated on GitHub");
-      }
-
-      const descriptor: WorkspaceDescriptor = {
-        workspaceId: workspaceService.newWorkspaceId(),
-        name: NEW_WORKSPACE_DEFAULT_NAME,
-        origin: { url: repositoryUrl, branch: sourceBranch, kind: WorkspaceKind.GITHUB_REPOSITORY },
-        createdDateISO: new Date().toISOString(),
-        lastUpdatedDateISO: new Date().toISOString(),
-      };
-
-      const authInfo = {
-        name: githubSettings.user.name,
-        email: githubSettings.user.email,
-        onAuth: () => ({
-          username: githubSettings.user.login,
-          password: githubSettings.token,
-        }),
-      };
-
-      const fileHandler = new GitRepositoryFileHandler({
-        authInfo: authInfo,
-        repositoryUrl: repositoryUrl,
-        sourceBranch: sourceBranch,
-        gitService: gitService,
-        workspaceService: workspaceService,
-      });
-      await createWorkspace(descriptor, fileHandler);
-      return descriptor;
-    },
-    [workspaceService, gitService, createWorkspace]
-  );
+  // const createWorkspaceFromGitHubRepository = useCallback(
+  //   async (
+  //     repositoryUrl: URL,
+  //     sourceBranch: string,
+  //     githubSettings: { user: { login: string; email: string; name: string }; token: string }
+  //   ) => {
+  //     if (!githubSettings.user) {
+  //       throw new Error("User not authenticated on GitHub");
+  //     }
+  //
+  //     const descriptor: WorkspaceDescriptor = {
+  //       workspaceId: workspaceService.newWorkspaceId(),
+  //       name: NEW_WORKSPACE_DEFAULT_NAME,
+  //       origin: { url: repositoryUrl, branch: sourceBranch, kind: WorkspaceKind.GITHUB_REPOSITORY },
+  //       createdDateISO: new Date().toISOString(),
+  //       lastUpdatedDateISO: new Date().toISOString(),
+  //     };
+  //
+  //     const authInfo = {
+  //       name: githubSettings.user.name,
+  //       email: githubSettings.user.email,
+  //       onAuth: () => ({
+  //         username: githubSettings.user.login,
+  //         password: githubSettings.token,
+  //       }),
+  //     };
+  //
+  //     const fileHandler = new GitRepositoryFileHandler({
+  //       authInfo: authInfo,
+  //       repositoryUrl: repositoryUrl,
+  //       sourceBranch: sourceBranch,
+  //       gitService: gitService,
+  //       workspaceService: workspaceService,
+  //     });
+  //     await createWorkspace(descriptor, fileHandler);
+  //     return descriptor;
+  //   },
+  //   [workspaceService, gitService, createWorkspace]
+  // );
 
   const renameFile = useCallback(
     async (file: WorkspaceFile, newFileName: string) => {
@@ -255,7 +272,7 @@ export function WorkspacesContextProvider(props: Props) {
         const contents = args.extension in emptyTemplates ? emptyTemplates[args.extension] : emptyTemplates.default;
         const newEmptyFile = new WorkspaceFile({
           workspaceId: args.workspaceId,
-          getFileContents: () => Promise.resolve(contents),
+          getFileContents: () => Promise.resolve(encoder.encode(contents)),
           relativePath,
         });
         await workspaceService.createFile(newEmptyFile, { broadcast: true });
@@ -268,7 +285,7 @@ export function WorkspacesContextProvider(props: Props) {
 
       throw new Error("Max attempts of new empty file exceeded.");
     },
-    [workspaceService]
+    [gitService, workspaceService]
   );
 
   const prepareZip = useCallback((workspaceId: string) => workspaceService.prepareZip(workspaceId), [workspaceService]);
@@ -293,16 +310,28 @@ export function WorkspacesContextProvider(props: Props) {
   // }, [active, authInfo, gitService, storageService, workspaceService]);
 
   const resourceContentGet = useCallback(
-    async (args: { workspaceId: string; relativePath: string }) => {
-      const file = await workspaceService.getFile(args);
+    async (args: { workspaceId: string; relativePath: string; opts?: ResourceContentOptions }) => {
+      const file = await storageService.getFile(workspaceService.getAbsolutePath(args));
       if (!file) {
         throw new Error(`File '${args.relativePath}' not found in Workspace ${args.workspaceId}`);
       }
 
-      const content = await file.getFileContents();
-      return new ResourceContent(args.relativePath, content, ContentType.TEXT);
+      console.info("Reading " + args.relativePath);
+
+      try {
+        const content = await file.getFileContents();
+        if (args.opts?.type === "binary") {
+          return new ResourceContent(args.relativePath, Buffer.from(content).toString("base64"), ContentType.BINARY);
+        }
+
+        // "text" is the default
+        return new ResourceContent(args.relativePath, decoder.decode(content), ContentType.TEXT);
+      } catch (e) {
+        console.error(e);
+        throw e;
+      }
     },
-    [workspaceService]
+    [workspaceService, storageService]
   );
 
   const resourceContentList = useCallback(
@@ -327,7 +356,6 @@ export function WorkspacesContextProvider(props: Props) {
         resourceContentList,
         //
         createWorkspaceFromLocal,
-        createWorkspaceFromGitHubRepository,
         prepareZip,
         getAbsolutePath,
         createSavePoint,

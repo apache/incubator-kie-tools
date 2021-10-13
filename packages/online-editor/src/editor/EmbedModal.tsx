@@ -53,7 +53,7 @@ enum ContentSource {
 }
 
 interface Props {
-  workspaceFile: WorkspaceFile | undefined;
+  workspaceFile: WorkspaceFile;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -68,7 +68,7 @@ export function EmbedModal(props: Props) {
 
   useEffect(() => {
     if (props.isOpen) {
-      props.workspaceFile?.getFileContents().then(setEditorContent);
+      props.workspaceFile.getFileContentsAsString().then(setEditorContent);
     }
   }, [props.workspaceFile, props.isOpen]);
 
@@ -123,9 +123,9 @@ export function EmbedModal(props: Props) {
 
   useEffect(() => {
     if (
-      props.workspaceFile?.extension !== "bpmn" &&
-      props.workspaceFile?.extension !== "bpmn2" &&
-      props.workspaceFile?.extension !== "dmn"
+      props.workspaceFile.extension !== "bpmn" &&
+      props.workspaceFile.extension !== "bpmn2" &&
+      props.workspaceFile.extension !== "dmn"
     ) {
       return;
     }

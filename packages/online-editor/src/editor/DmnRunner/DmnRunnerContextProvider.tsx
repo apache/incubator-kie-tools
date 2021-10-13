@@ -36,7 +36,7 @@ import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 interface Props {
   children: React.ReactNode;
   notificationsPanel: NotificationsPanelController | undefined;
-  workspaceFile: WorkspaceFile | undefined;
+  workspaceFile: WorkspaceFile;
 }
 
 export function DmnRunnerContextProvider(props: Props) {
@@ -60,12 +60,12 @@ export function DmnRunnerContextProvider(props: Props) {
   );
 
   const updateFormSchema = useCallback(() => {
-    if (props.workspaceFile?.extension !== "dmn") {
+    if (props.workspaceFile.extension !== "dmn") {
       return;
     }
 
     props.workspaceFile
-      .getFileContents()
+      .getFileContentsAsString()
       .then((content) => service.formSchema(content))
       .then((newSchema) => setFormSchema(newSchema))
       .catch((err) => {
@@ -75,7 +75,7 @@ export function DmnRunnerContextProvider(props: Props) {
   }, [props.workspaceFile, service]);
 
   useEffect(() => {
-    if (props.workspaceFile?.extension !== "dmn") {
+    if (props.workspaceFile.extension !== "dmn") {
       setDrawerExpanded(false);
       return;
     }
@@ -84,7 +84,7 @@ export function DmnRunnerContextProvider(props: Props) {
   }, [props.workspaceFile, updateFormSchema]);
 
   const validate = useCallback(() => {
-    if (props.workspaceFile?.extension !== "dmn") {
+    if (props.workspaceFile.extension !== "dmn") {
       return;
     }
 
@@ -94,7 +94,7 @@ export function DmnRunnerContextProvider(props: Props) {
     }
 
     props.workspaceFile
-      .getFileContents()
+      .getFileContentsAsString()
       .then((content) => service.validate(content))
       .then((validationResults) => {
         const notifications: Notification[] = validationResults.map((validationResult: any) => ({
@@ -132,7 +132,7 @@ export function DmnRunnerContextProvider(props: Props) {
 
   const prevKieToolingExtendedServicesStatus = usePrevious(kieToolingExtendedServices.status);
   useEffect(() => {
-    if (props.workspaceFile?.extension !== "dmn") {
+    if (props.workspaceFile.extension !== "dmn") {
       return;
     }
 
@@ -151,7 +151,7 @@ export function DmnRunnerContextProvider(props: Props) {
     ) {
       setDrawerExpanded(false);
     }
-  }, [prevKieToolingExtendedServicesStatus, kieToolingExtendedServices.status, props.workspaceFile?.extension]);
+  }, [prevKieToolingExtendedServicesStatus, kieToolingExtendedServices.status, props.workspaceFile.extension]);
 
   return (
     <DmnRunnerContext.Provider

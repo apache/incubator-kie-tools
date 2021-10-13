@@ -1,4 +1,4 @@
-import { useWorkspaces } from "../WorkspacesContext";
+import { encoder, useWorkspaces } from "../WorkspacesContext";
 import * as React from "react";
 import { useEffect } from "react";
 import { useHistory } from "react-router";
@@ -16,14 +16,14 @@ export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
       .createWorkspaceFromLocal([
         {
           path: "Untitled." + props.extension,
-          getFileContents: () => Promise.resolve(""),
+          getFileContents: () => Promise.resolve(encoder.encode("")),
         },
       ])
       .then(({ suggestedFirstFile }) => {
         history.replace({
           pathname: globals.routes.workspaceWithFilePath.path({
             workspaceId: suggestedFirstFile!.workspaceId,
-            filePath: suggestedFirstFile!.relativePathWithoutExtension,
+            fileRelativePath: suggestedFirstFile!.relativePathWithoutExtension,
             extension: suggestedFirstFile!.extension,
           }),
         });

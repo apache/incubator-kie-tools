@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { WorkspaceFile } from "../WorkspacesContext";
+import { decoder, encoder, WorkspaceFile } from "../WorkspacesContext";
 import JSZip from "jszip";
-import { FileHandler } from "../handler/FileHandler";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { SUPPORTED_FILES_PATTERN } from "../SupportedFiles";
 import { StorageFile, StorageService } from "./StorageService";
@@ -58,7 +57,7 @@ export class WorkspaceService {
       throw new Error("Workspaces config file not found");
     }
 
-    const fileContent = await configFile.getFileContents();
+    const fileContent = decoder.decode(await configFile.getFileContents());
 
     if (!fileContent) {
       throw new Error("No workspaces found");
@@ -75,11 +74,11 @@ export class WorkspaceService {
 
   public async create(
     descriptor: WorkspaceDescriptor,
-    fileHandler: FileHandler,
+    storeFiles: () => Promise<WorkspaceFile[]>,
     broadcastArgs: { broadcast: boolean }
   ): Promise<WorkspaceFile[]> {
     await this.storageService.createDirStructureAtRoot(descriptor.workspaceId);
-    const createdFiles = await fileHandler.store(descriptor);
+    const createdFiles = await storeFiles();
 
     const descriptors = await this.listAll();
     descriptors.push(descriptor);
@@ -221,7 +220,7 @@ export class WorkspaceService {
         new WorkspaceFile({
           relativePath: file.relativePath,
           workspaceId: file.workspaceId,
-          getFileContents: getNewContents,
+          getFileContents: () => getNewContents().then((c) => encoder.encode(c)),
         })
       )
     );
@@ -404,7 +403,7 @@ export class WorkspaceService {
   private async configAsFile(getFileContents: () => Promise<string>) {
     return new StorageFile({
       path: this.WORKSPACE_CONFIG_PATH,
-      getFileContents,
+      getFileContents: () => getFileContents().then((c) => encoder.encode(c)),
     });
   }
 

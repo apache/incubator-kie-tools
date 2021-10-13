@@ -25,10 +25,11 @@
     "@types/react-router-dom": "^5.1.7",
     "react-router": "^5.2.1",
     "react-router-dom": "^5.2.0",
-    "@isomorphic-git/lightning-fs": "4.4.1",
-    "@types/isomorphic-git__lightning-fs": "4.4.2",
-    "isomorphic-git": "1.10.0",
-    "jszip": "3.7.1"
+    "@isomorphic-git/lightning-fs": "^4.4.1",
+    "@types/isomorphic-git__lightning-fs": "^4.4.2",
+    "isomorphic-git": "^1.10.1",
+    "jszip": "3.7.1",
+    "buffer": "^6.0.3"
   },
   "devDependencies": {
     "@kogito-tooling/build-env": "0.0.0",

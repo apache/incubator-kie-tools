@@ -26,7 +26,7 @@ export enum QueryParams {
 export enum PathParams {
   EXTENSION = "extension",
   WORKSPACE_ID = "workspaceId",
-  FILE_PATH = "filePath",
+  FILE_RELATIVE_PATH = "fileRelativePath",
 }
 
 export class Route<
@@ -129,8 +129,8 @@ export const routes = {
   }>(() => `/import`),
 
   workspaceWithFilePath: new Route<{
-    pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_PATH | PathParams.EXTENSION;
-  }>(({ workspaceId, filePath, extension }) => `/${workspaceId}/file/${filePath}.${extension}`),
+    pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_RELATIVE_PATH | PathParams.EXTENSION;
+  }>(({ workspaceId, fileRelativePath, extension }) => `/${workspaceId}/file/${fileRelativePath}.${extension}`),
 
   static: {
     sample: new Route<{ pathParams: "type" }>(({ type }) => `samples/Sample.${type}`),

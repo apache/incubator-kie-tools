@@ -76,8 +76,8 @@ export function HomePage() {
           getFileContents: () =>
             new Promise((resolve) => {
               const reader = new FileReader();
-              reader.onload = (event: any) => resolve(event.target.result as string);
-              reader.readAsText(file);
+              reader.onload = (event: any) => resolve(event.target.result);
+              reader.readAsArrayBuffer(file);
             }),
         };
       })
@@ -96,7 +96,7 @@ export function HomePage() {
       history.replace({
         pathname: globals.routes.workspaceWithFilePath.path({
           workspaceId: descriptor.workspaceId,
-          filePath: suggestedFirstFile.relativePathWithoutExtension,
+          fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
           extension: suggestedFirstFile.extension,
         }),
       });
@@ -363,7 +363,7 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
                 history.push({
                   pathname: globals.routes.workspaceWithFilePath.path({
                     workspaceId: editableFiles[0].workspaceId,
-                    filePath: editableFiles[0].relativePathWithoutExtension,
+                    fileRelativePath: editableFiles[0].relativePathWithoutExtension,
                     extension: editableFiles[0].extension,
                   }),
                 });
@@ -373,7 +373,7 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
                 <Link
                   to={globals.routes.workspaceWithFilePath.path({
                     workspaceId: editableFiles[0].workspaceId,
-                    filePath: editableFiles[0].relativePathWithoutExtension,
+                    fileRelativePath: editableFiles[0].relativePathWithoutExtension,
                     extension: editableFiles[0].extension,
                   })}
                 >
@@ -564,7 +564,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
               <Link
                 to={globals.routes.workspaceWithFilePath.path({
                   workspaceId: workspacePromise.data?.descriptor.workspaceId ?? "",
-                  filePath: file.relativePathWithoutExtension,
+                  fileRelativePath: file.relativePathWithoutExtension,
                   extension: file.extension,
                 })}
               >

@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { SupportedFileExtensions, useGlobals } from "../common/GlobalContext";
+import { useGlobals } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
@@ -43,9 +43,8 @@ import { OnlineEditorPage } from "../home/pageTemplate/OnlineEditorPage";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 
 export interface Props {
-  forExtension: SupportedFileExtensions;
   workspaceId: string;
-  filePath: string;
+  fileRelativePath: string;
 }
 
 export function EditorPage(props: Props) {
@@ -60,7 +59,10 @@ export function EditorPage(props: Props) {
 
   const lastContent = useRef<string>();
   const workspacePromise = useWorkspacePromise(props.workspaceId);
-  const workspaceFilePromise = useWorkspaceFilePromise(workspacePromise.data?.descriptor.workspaceId, props.filePath);
+  const workspaceFilePromise = useWorkspaceFilePromise(
+    workspacePromise.data?.descriptor.workspaceId,
+    props.fileRelativePath
+  );
 
   const combinedStatePromise = useCombinedPromiseState(
     useMemo(
@@ -75,7 +77,7 @@ export function EditorPage(props: Props) {
     alerts?.closeAll();
   }, [alerts]);
 
-  useDmnTour(!editor?.isReady && props.forExtension === "dmn");
+  useDmnTour(!editor?.isReady && workspaceFilePromise.data?.extension === "dmn");
 
   const setContentErrorAlert = useAlert(
     alerts,
@@ -106,7 +108,7 @@ export function EditorPage(props: Props) {
     history.replace({
       pathname: globals.routes.workspaceWithFilePath.path({
         workspaceId: workspaceFilePromise.data.workspaceId,
-        filePath: workspaceFilePromise.data.relativePathWithoutExtension,
+        fileRelativePath: workspaceFilePromise.data.relativePathWithoutExtension,
         extension: workspaceFilePromise.data.extension,
       }),
       search: queryParams.toString(),
@@ -121,7 +123,7 @@ export function EditorPage(props: Props) {
           return;
         }
 
-        workspaceFilePromise.data.getFileContents().then((content) => {
+        workspaceFilePromise.data.getFileContentsAsString().then((content) => {
           if (canceled.get()) {
             return;
           }
@@ -132,7 +134,7 @@ export function EditorPage(props: Props) {
 
           setEmbeddedEditorFile({
             path: workspaceFilePromise.data.relativePath,
-            getFileContents: workspaceFilePromise.data.getFileContents,
+            getFileContents: workspaceFilePromise.data.getFileContentsAsString,
             kind: "local",
             isReadOnly: false,
             fileExtension: workspaceFilePromise.data.extension,
@@ -202,7 +204,7 @@ export function EditorPage(props: Props) {
 
   // validate
   useEffect(() => {
-    if (props.forExtension === "dmn" || !workspaceFilePromise.data || !editor?.isReady) {
+    if (workspaceFilePromise.data?.extension === "dmn" || !workspaceFilePromise.data || !editor?.isReady) {
       return;
     }
 
@@ -214,7 +216,7 @@ export function EditorPage(props: Props) {
           ?.kogitoNotifications_setNotifications("", Array.isArray(notifications) ? notifications : []);
       });
     }, 200);
-  }, [workspaceFilePromise, props.forExtension, notificationsPanel, editor, i18n]);
+  }, [workspaceFilePromise, notificationsPanel, editor, i18n]);
 
   const notificationsPanelTabNames = useMemo(() => {
     return [i18n.terms.validation, i18n.terms.execution];
@@ -224,7 +226,7 @@ export function EditorPage(props: Props) {
     <PromiseStateWrapper
       promise={combinedStatePromise}
       pending={<OnlineEditorPage />}
-      rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.filePath} />}
+      rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
       resolved={({ workspace, file }) => (
         <>
           <DmnRunnerContextProvider workspaceFile={file} notificationsPanel={notificationsPanel}>
