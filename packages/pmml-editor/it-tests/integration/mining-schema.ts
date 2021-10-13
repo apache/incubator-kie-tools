@@ -196,10 +196,11 @@ describe("Mining Schema Test", () => {
         .first()
         .should("be.visible")
         .should("contain", "Some items are invalid and need attention.");
-      /*
-       * TODO: https://issues.redhat.com/browse/FAI-622
-       */
-      cy.ouiaId("mining-schema-no-data-fields-title").should("be.visible");
+
+      cy.ouiaId("test").then(() => {
+        cy.ouiaId("validation-issue").should("be.visible");
+      });
+
       cy.ouiaId("editor-close").click();
 
       /*

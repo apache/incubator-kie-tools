@@ -181,7 +181,7 @@ const MiningSchemaItem: React.FC<MiningSchemaFieldProps> = (props) => {
                     justifyContent={{ default: "justifyContentCenter" }}
                     style={{ height: "100%" }}
                   >
-                    <FlexItem>
+                    <FlexItem data-ouia-component-id="validation-issue">
                       <ValidationIndicator validations={validations} />
                     </FlexItem>
                   </Flex>

@@ -245,6 +245,8 @@ exports[`MiningSchemaContainer MiningField:Render 1`] = `
 exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
 <section
   class="mining-schema"
+  data-ouia-component-id="mining-container"
+  data-ouia-component-type="editor-container"
   data-testid="mining-schema-container"
 >
   <div
@@ -345,7 +347,7 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
             <button
               aria-disabled="true"
               class="pf-c-button pf-m-secondary pf-m-disabled"
-              data-ouia-component-id="OUIA-Generated-Button-secondary-2"
+              data-ouia-component-id="add-all-fields"
               data-ouia-component-type="PF4/Button"
               data-ouia-safe="true"
               disabled=""
@@ -363,9 +365,12 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
       <section>
         <ul
           class="mining-schema-list"
+          data-ouia-component-type="mining-schema-list"
         >
           <li
             class="editable-item "
+            data-ouia-component-id="field1"
+            data-ouia-component-type="mining-field-row"
             data-testid="mining-schema-field-n0"
             id="mining-schema-field-n0"
             tabindex="0"
@@ -394,7 +399,7 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-plain editable-item__delete"
-                    data-ouia-component-id="OUIA-Generated-Button-plain-3"
+                    data-ouia-component-id="delete-field"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     data-testid="mining-schema-field-n0__delete"
@@ -421,6 +426,8 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
           </li>
           <li
             class="editable-item "
+            data-ouia-component-id="field2"
+            data-ouia-component-type="mining-field-row"
             data-testid="mining-schema-field-n1"
             id="mining-schema-field-n1"
             tabindex="0"
@@ -449,7 +456,7 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-plain editable-item__delete"
-                    data-ouia-component-id="OUIA-Generated-Button-plain-4"
+                    data-ouia-component-id="delete-field"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     data-testid="mining-schema-field-n1__delete"
