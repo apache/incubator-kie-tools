@@ -121,15 +121,19 @@ export function WorkspacesContextProvider(props: Props) {
 
       const storeFiles = async () => {
         await Promise.all(
-          localFiles.map(async (localFile) => {
+          localFiles.map((localFile) => {
             if (!SUPPORTED_FILES.includes(extractFileExtension(localFile.path)!)) {
               return Promise.resolve();
             }
 
-            const relativePath = localFile.path.substring(localFile.path.indexOf("/") + 1);
+            const path = workspaceService.getAbsolutePath({
+              workspaceId: descriptor.workspaceId,
+              relativePath: localFile.path.substring(localFile.path.indexOf("/") + 1),
+            });
+
             return storageService.createFile(
               new StorageFile({
-                path: workspaceService.getAbsolutePath({ workspaceId: descriptor.workspaceId, relativePath }),
+                path,
                 getFileContents: localFile.getFileContents,
               })
             );

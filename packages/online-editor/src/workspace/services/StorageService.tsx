@@ -62,12 +62,8 @@ export class StorageService {
     await this.writeFile(file);
   }
 
-  public async deleteFile(file: StorageFile): Promise<void> {
-    if (!(await this.exists(file.path))) {
-      throw new Error(`File ${file.path} does not exist`);
-    }
-
-    await this.fsp.unlink(file.path);
+  public async deleteFile(path: string): Promise<void> {
+    await this.fsp.unlink(path);
   }
 
   public async renameFile(file: StorageFile, newFileName: string): Promise<StorageFile> {
@@ -105,7 +101,7 @@ export class StorageService {
       path: newPath,
     });
     await this.createFile(newFile);
-    await this.deleteFile(file);
+    await this.deleteFile(file.path);
 
     return newFile;
   }
@@ -199,15 +195,15 @@ export class StorageService {
 
   public async getFilePaths<T = string>(args: {
     dirPath: string;
-    transform: (path: string) => T | undefined;
+    visit: (path: string) => T | undefined;
   }): Promise<T[]> {
     const subDirPaths = await this.fsp.readdir(args.dirPath);
     const files = await Promise.all(
       subDirPaths.map(async (subDirPath: string) => {
         const path = resolve(args.dirPath, subDirPath);
         return (await this.fsp.stat(path)).isDirectory()
-          ? this.getFilePaths({ dirPath: path, transform: args.transform })
-          : args.transform(path);
+          ? this.getFilePaths({ dirPath: path, visit: args.visit })
+          : args.visit(path);
       })
     );
     return files.reduce((paths: T[], path: T) => (path ? paths.concat(path) : paths), []) as T[];

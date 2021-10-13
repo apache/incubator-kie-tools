@@ -112,7 +112,7 @@ export class WorkspaceService {
     const matcher = globPattern ? new Minimatch(globPattern, { dot: true }) : undefined;
     const files = await this.storageService.getFilePaths({
       dirPath: await this.resolveRootPath(workspaceId),
-      transform: (path) => {
+      visit: (path) => {
         const workspaceFile = new WorkspaceFile({
           workspaceId,
           relativePath: path.replace(this.getAbsolutePath({ workspaceId, relativePath: "/" }), ""),
@@ -141,8 +141,12 @@ export class WorkspaceService {
       throw new Error(`Workspace '${workspaceId}' not found`);
     }
 
-    const files = await this.getFiles(workspaceId);
-    await Promise.all(files.map((f) => this.toStorageFile(f)).map((f) => this.storageService.deleteFile(f)));
+    await this.storageService.getFilePaths({
+      dirPath: await this.resolveRootPath(workspaceId),
+      visit: (path) => {
+        this.storageService.deleteFile(path);
+      },
+    });
 
     descriptors.splice(index, 1);
     const configFile = await this.configAsFile(async () => JSON.stringify(descriptors));
@@ -265,7 +269,7 @@ export class WorkspaceService {
   }
 
   public async deleteFile(file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    await this.storageService.deleteFile(this.toStorageFile(file));
+    await this.storageService.deleteFile(this.toStorageFile(file).path);
 
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(file.workspaceId);
@@ -379,7 +383,7 @@ export class WorkspaceService {
       return;
     }
 
-    await Promise.all(files.map((f) => this.toStorageFile(f)).map((f) => this.storageService.deleteFile(f)));
+    await Promise.all(files.map((f) => this.toStorageFile(f)).map((f) => this.storageService.deleteFile(f.path)));
 
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(files[0].workspaceId);
