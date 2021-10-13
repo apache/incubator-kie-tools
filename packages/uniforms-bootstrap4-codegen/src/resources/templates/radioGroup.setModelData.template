@@ -1,0 +1,1 @@
+setRadioButtonGroupValue("<%=name%>", data?.<%=path%>);

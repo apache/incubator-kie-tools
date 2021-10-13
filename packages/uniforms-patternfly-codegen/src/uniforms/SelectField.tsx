@@ -20,6 +20,7 @@ import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 import { getInputReference, getStateCode, getStateCodeFromRef, NS_SEPARATOR, renderField } from "./utils/Utils";
 import { MULTIPLE_SELECT_FUNCTIONS, SELECT_FUNCTIONS } from "./staticCode/staticCodeBlocks";
+import { ARRAY, STRING } from "./utils/dataTypes";
 
 export type SelectInputProps = HTMLFieldProps<
   string | string[],
@@ -33,7 +34,9 @@ export type SelectInputProps = HTMLFieldProps<
 export const SELECT_IMPORTS: string[] = ["SelectOption", "SelectOptionObject", "Select", "SelectVariant", "FormGroup"];
 
 const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
-  const ref: InputReference = getInputReference(props.name);
+  const isArray: boolean = props.fieldType === Array;
+
+  const ref: InputReference = getInputReference(props.name, isArray ? ARRAY : STRING);
 
   const selectedOptions: string[] = [];
 
@@ -49,9 +52,7 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
     selectedOptions.unshift(placeHolderOption);
   }
 
-  const isArray: boolean = props.fieldType === Array;
-
-  let stateCode = getStateCodeFromRef(ref, isArray ? "string[]" : "string", isArray ? "[]" : "''");
+  let stateCode = getStateCodeFromRef(ref);
 
   const expandedStateName = `${ref.stateName}${NS_SEPARATOR}expanded`;
   const expandedStateNameSetter = `${ref.stateSetter}${NS_SEPARATOR}expanded`;
@@ -93,6 +94,7 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
     requiredCode: [isArray ? MULTIPLE_SELECT_FUNCTIONS : SELECT_FUNCTIONS],
     jsxCode,
     stateCode,
+    isReadonly: props.disabled,
   };
 
   useAddFormElementToContext(element);

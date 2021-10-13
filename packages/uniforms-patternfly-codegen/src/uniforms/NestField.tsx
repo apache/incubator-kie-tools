@@ -17,10 +17,11 @@
 import React, { useContext } from "react";
 import { connectField, context, HTMLFieldProps } from "uniforms/es5";
 import { renderNestedInputFragmentWithContext } from "./rendering/RenderingUtils";
-import { renderField } from "./utils/Utils";
+import { getInputReference, renderField } from "./utils/Utils";
 import { InputReference, InputsContainer } from "../api";
 import { codeGenContext } from "./CodeGenContext";
 import { union } from "lodash";
+import { OBJECT } from "./utils/dataTypes";
 
 export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps?: object }>;
 
@@ -56,6 +57,10 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
         nestedStates.push(renderedInput.stateCode);
         nestedJsx.push(renderedInput.jsxCode);
         nestedRefs.push(renderedInput.ref);
+        if (renderedInput.ref.dataType === OBJECT) {
+          const nestedContainer: InputsContainer = renderedInput as InputsContainer;
+          nestedRefs.push(...nestedContainer.childRefs);
+        }
         pfImports = union(pfImports, renderedInput.pfImports);
         reactImports = union(reactImports, renderedInput.reactImports);
         if (renderedInput.requiredCode) {
@@ -82,7 +87,9 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
     requiredCode: requiredCode,
     stateCode,
     jsxCode,
-    ref: nestedRefs,
+    ref: getInputReference(name, OBJECT),
+    childRefs: nestedRefs,
+    isReadonly: disabled,
   };
 
   codegenCtx?.rendered.push(rendered);

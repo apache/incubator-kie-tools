@@ -1,0 +1,7 @@
+function setSelectValue(fieldId, value) {
+    const select = document.getElementById(fieldId);
+    if(!select || !value) {
+        return
+    }
+    select.value = value;
+}

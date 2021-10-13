@@ -43,7 +43,7 @@ const CheckBoxGroup: React.FC<CheckBoxGroupProps> = (props: CheckBoxGroupProps) 
     }) || [];
 
   const inputProps = {
-    id: props.id,
+    id: props.name,
     name: props.name,
     label: props.label,
     disabled: props.disabled,

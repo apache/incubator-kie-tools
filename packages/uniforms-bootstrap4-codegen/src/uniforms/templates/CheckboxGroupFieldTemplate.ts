@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-import checkboxGroup from "!!raw-loader!../../resources/templates/checkboxGroup.template";
-import { AbstractFormGroupInputTemplate, FormElementTemplateProps } from "./types";
-import { template } from "underscore";
+import setRequiredCode from "!!raw-loader!../../resources/staticCode/setCheckboxGroupValue.txt";
+import getRequiredCode from "!!raw-loader!../../resources/staticCode/getCheckboxGroupValue.txt";
+import input from "!!raw-loader!../../resources/templates/checkboxGroup.template";
+import setValueFromModel from "!!raw-loader!../../resources/templates/checkboxGroup.setModelData.template";
+import writeValueToModel from "!!raw-loader!../../resources/templates/checkboxGroup.writeModelData.template";
+import { FORM_GROUP_TEMPLATE, FormElementTemplate, FormElementTemplateProps } from "./types";
+import { CompiledTemplate, template } from "underscore";
+import { CodeFragment, FormInput } from "../../api";
+import { fieldNameToOptionalChain, flatFieldName } from "./utils";
+import { getInputReference } from "../utils/Utils";
 
 export interface Option {
   value: string;
@@ -28,8 +35,51 @@ export interface CheckBoxGroupFieldProps extends FormElementTemplateProps<string
   options: Option[];
 }
 
-export class CheckBoxGroupFieldTemplate extends AbstractFormGroupInputTemplate<CheckBoxGroupFieldProps> {
+export class CheckBoxGroupFieldTemplate implements FormElementTemplate<FormInput, CheckBoxGroupFieldProps> {
+  private readonly inputTemplate: CompiledTemplate;
+  private readonly setValueFromModelTemplate: CompiledTemplate;
+  private readonly writeValueToModelTemplate: CompiledTemplate;
+
   constructor() {
-    super(template(checkboxGroup));
+    this.inputTemplate = template(input);
+    this.setValueFromModelTemplate = template(setValueFromModel);
+    this.writeValueToModelTemplate = template(writeValueToModel);
+  }
+
+  render(props: CheckBoxGroupFieldProps): FormInput {
+    const data = {
+      props: props,
+      input: this.inputTemplate({ props: props }),
+    };
+
+    return {
+      ref: getInputReference(props),
+      html: FORM_GROUP_TEMPLATE(data),
+      disabled: props.disabled,
+      setValueFromModelCode: this.buildSetValueFromModelCode(props),
+      writeValueToModelCode: this.buildWriteValueToModelCode(props),
+    };
+  }
+
+  private buildSetValueFromModelCode(props: CheckBoxGroupFieldProps): CodeFragment {
+    const properties = {
+      ...props,
+      path: fieldNameToOptionalChain(props.name),
+    };
+    return {
+      code: this.setValueFromModelTemplate(properties),
+      requiredCode: [setRequiredCode],
+    };
+  }
+
+  private buildWriteValueToModelCode(props: CheckBoxGroupFieldProps): CodeFragment | undefined {
+    if (props.disabled) {
+      return undefined;
+    }
+
+    return {
+      code: this.writeValueToModelTemplate(props),
+      requiredCode: [getRequiredCode],
+    };
   }
 }

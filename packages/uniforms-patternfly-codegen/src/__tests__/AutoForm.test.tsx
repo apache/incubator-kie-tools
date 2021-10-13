@@ -22,39 +22,49 @@ import SimpleSchema from "simpl-schema";
 import createSchema from "./_createSchema";
 
 const schema = {
-  name: String,
-  position: {
+  personalData: { type: Object },
+  "personalData.name": { type: String },
+  "personalData.email": { type: String },
+  "personalData.child": { type: Object },
+  "personalData.child.name": { type: String },
+  address: { type: Object },
+  "address.street": { type: String },
+  "address.num": { type: SimpleSchema.Integer },
+  "address.cp": { type: String },
+  "address.city": { type: String },
+  interview: { type: Object },
+  "interview.position": {
     type: String,
     allowedValues: ["Developer", "HR", "UX"],
   },
-  otherPositions: {
+  "interview.otherPositions": {
     type: Array,
     allowedValues: ["Developer", "HR", "UX"],
   },
-  "otherPositions.$": String,
-  skills: {
+  "interview.otherPositions.$": String,
+  "interview.skills": {
     type: Array,
     allowedValues: ["Java", "React", "TypeScript", "Quarkus"],
     uniforms: { checkboxes: true },
   },
-  "skills.$": String,
-  age: {
+  "interview.skills.$": String,
+  "interview.age": {
     type: SimpleSchema.Integer,
     min: 18,
     max: 99,
   },
-  salary: {
+  "interview.salary": {
     type: Number,
     min: 0,
     max: 1000.5,
   },
-  rating: {
+  "interview.rating": {
     type: Number,
     allowedValues: [1, 2, 3, 4, 5],
     uniforms: { checkboxes: true },
   },
-  hire: Boolean,
-  hidingDate: Date,
+  "interview.hire": Boolean,
+  "interview.hiringDate": Date,
   friends: { type: Array },
   "friends.$": Object,
   "friends.$.name": { type: String },

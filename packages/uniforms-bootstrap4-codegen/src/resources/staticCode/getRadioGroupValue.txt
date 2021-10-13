@@ -1,0 +1,9 @@
+function getRadioButtonGroupValue(fieldName) {
+    const radioButtons = document.querySelectorAll(`[name="${fieldName}"]`);
+    for (let i = 0; i < radioButtons.length; i++) {
+        if (radioButtons[i].checked) {
+            return  radioButtons[i].value;
+        }
+    }
+    return null;
+}

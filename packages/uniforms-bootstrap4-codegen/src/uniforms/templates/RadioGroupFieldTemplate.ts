@@ -14,9 +14,21 @@
  * limitations under the License.
  */
 
-import radioGroup from "!!raw-loader!../../resources/templates/radioGroup.template";
-import { AbstractFormGroupInputTemplate, FormElementTemplateProps } from "./types";
-import { template } from "underscore";
+import setRequiredCode from "!!raw-loader!../../resources/staticCode/setRadioGroupValue.txt";
+import getRequiredCode from "!!raw-loader!../../resources/staticCode/getRadioGroupValue.txt";
+import input from "!!raw-loader!../../resources/templates/radioGroup.template";
+import setValueFromModel from "!!raw-loader!../../resources/templates/radioGroup.setModelData.template";
+import writeValueToModel from "!!raw-loader!../../resources/templates/radioGroup.writeModelData.template";
+import {
+  AbstractFormGroupInputTemplate,
+  FORM_GROUP_TEMPLATE,
+  FormElementTemplate,
+  FormElementTemplateProps,
+} from "./types";
+import { CompiledTemplate, template } from "underscore";
+import { CodeFragment, FormInput } from "../../api";
+import { fieldNameToOptionalChain, flatFieldName } from "./utils";
+import { getInputReference } from "../utils/Utils";
 
 export interface Option {
   value: string;
@@ -28,8 +40,52 @@ export interface RadioGroupFieldProps extends FormElementTemplateProps<string> {
   options: Option[];
 }
 
-export class RadioGroupFieldTemplate extends AbstractFormGroupInputTemplate<RadioGroupFieldProps> {
+export class RadioGroupFieldTemplate implements FormElementTemplate<FormInput, RadioGroupFieldProps> {
+  private readonly inputTemplate: CompiledTemplate;
+  private readonly setValueFromModelTemplate: CompiledTemplate;
+  private readonly writeValueToModelTemplate: CompiledTemplate;
+
   constructor() {
-    super(template(radioGroup));
+    this.inputTemplate = template(input);
+    this.setValueFromModelTemplate = template(setValueFromModel);
+    this.writeValueToModelTemplate = template(writeValueToModel);
+  }
+
+  render(props: RadioGroupFieldProps): FormInput {
+    const data = {
+      props: props,
+      input: this.inputTemplate({ props: props }),
+    };
+
+    return {
+      ref: getInputReference(props),
+      html: FORM_GROUP_TEMPLATE(data),
+      disabled: props.disabled,
+      setValueFromModelCode: this.buildSetValueFromModelCode(props),
+      writeValueToModelCode: this.writeValueToModelCode(props),
+    };
+  }
+
+  protected buildSetValueFromModelCode(props: RadioGroupFieldProps): CodeFragment {
+    const properties = {
+      ...props,
+      path: fieldNameToOptionalChain(props.name),
+    };
+
+    return {
+      requiredCode: [setRequiredCode],
+      code: this.setValueFromModelTemplate(properties),
+    };
+  }
+
+  protected writeValueToModelCode(props: RadioGroupFieldProps): CodeFragment | undefined {
+    if (props.disabled) {
+      return undefined;
+    }
+
+    return {
+      requiredCode: [getRequiredCode],
+      code: this.writeValueToModelTemplate(props),
+    };
   }
 }

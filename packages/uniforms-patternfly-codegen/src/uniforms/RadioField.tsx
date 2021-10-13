@@ -19,6 +19,7 @@ import { connectField, HTMLFieldProps } from "uniforms/es5";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
+import { STRING } from "./utils/dataTypes";
 
 export type RadioFieldProps = HTMLFieldProps<
   string,
@@ -34,7 +35,7 @@ export type RadioFieldProps = HTMLFieldProps<
 >;
 
 const Radio = (props: RadioFieldProps) => {
-  const ref: InputReference = getInputReference(props.name);
+  const ref: InputReference = getInputReference(props.name, STRING);
 
   const radios: string[] = [];
 
@@ -58,12 +59,12 @@ const Radio = (props: RadioFieldProps) => {
     pfImports: ["Radio"],
     inputJsxCode: jsxCode,
     ref,
-    dataType: "string",
     wrapper: {
       id: props.id,
       label: props.label,
       required: props.required,
     },
+    disabled: props.disabled,
   });
 
   useAddFormElementToContext(element);

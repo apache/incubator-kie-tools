@@ -1,0 +1,1 @@
+setCheckboxGroupValues("<%=name%>", data?.<%=path%>);

@@ -36,12 +36,15 @@ describe("<BoolField> tests", () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(formElement.html).toContain(`<label class="form-check-label" for="${props.id}">${props.label}</label>`);
-    expect(formElement.html).toContain('id="id"');
+    expect(formElement.html).toContain(`<label class="form-check-label" for="${props.name}">${props.label}</label>`);
+    expect(formElement.html).toContain(`id="${props.name}"`);
     expect(formElement.html).toContain('type="checkbox"');
-    expect(formElement.html).toContain('name="hire"');
+    expect(formElement.html).toContain(`name="${props.name}"`);
     expect(formElement.html).toContain("checked");
     expect(formElement.html).not.toContain('disabled"');
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement.writeValueToModelCode).not.toBeUndefined();
   });
 
   it("<BoolField> - rendering - disabled", () => {
@@ -56,10 +59,13 @@ describe("<BoolField> tests", () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(formElement.html).toContain(`<label class="form-check-label" for="${props.id}">${props.label}</label>`);
-    expect(formElement.html).toContain('id="id"');
+    expect(formElement.html).toContain(`<label class="form-check-label" for="${props.name}">${props.label}</label>`);
+    expect(formElement.html).toContain(`id="${props.name}"`);
     expect(formElement.html).toContain('type="checkbox"');
-    expect(formElement.html).toContain('name="hire"');
+    expect(formElement.html).toContain(`name="${props.name}"`);
     expect(formElement.html).toContain("disabled");
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement.writeValueToModelCode).toBeUndefined();
   });
 });

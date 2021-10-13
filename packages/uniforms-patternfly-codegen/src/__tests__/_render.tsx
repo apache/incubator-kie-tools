@@ -30,7 +30,7 @@ const TestCodeGenContextProvider: React.FC<any> = (props: any) => {
   );
 };
 
-export type RenderedField<Element extends FormElement<any>, Container extends Element | DocumentFragment> = {
+export type RenderedField<Element extends FormElement, Container extends Element | DocumentFragment> = {
   formElement: Element;
   container: Container;
 };

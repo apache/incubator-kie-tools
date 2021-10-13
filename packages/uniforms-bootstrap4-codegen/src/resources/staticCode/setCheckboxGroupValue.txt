@@ -1,0 +1,9 @@
+function setCheckboxGroupValues(fieldName, values) {
+    if(!values || !values.length) {
+        return;
+    }
+    const checkboxes = document.querySelectorAll(`[name="${fieldName}"]`);
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = values.includes(checkbox.value);
+    });
+}

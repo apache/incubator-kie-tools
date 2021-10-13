@@ -20,6 +20,7 @@ import { connectField, HTMLFieldProps } from "uniforms/es5";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
+import { NUMBER } from "./utils/dataTypes";
 
 export type NumFieldProps = HTMLFieldProps<
   string,
@@ -34,7 +35,7 @@ export type NumFieldProps = HTMLFieldProps<
 >;
 
 const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
-  const ref: InputReference = getInputReference(props.name);
+  const ref: InputReference = getInputReference(props.name, NUMBER);
 
   const max = props.max ? `max={${props.max}}` : "";
   const min = props.min ? `min={${props.min}}` : "";
@@ -47,19 +48,19 @@ const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
       placeholder={'${props.placeholder}'}
       step={${props.decimal ? 0.01 : 1}} ${max} ${min}
       value={${ref.stateName}}
-      onChange={${ref.stateSetter}}
+      onChange={(newValue) => ${ref.stateSetter}(Number(newValue))}
     />`;
 
   const element: FormInput = buildDefaultInputElement({
     pfImports: ["TextInput"],
     inputJsxCode,
     ref,
-    dataType: "string",
     wrapper: {
       id: props.id,
       label: props.label,
       required: props.required,
     },
+    disabled: props.disabled,
   });
 
   useAddFormElementToContext(element);
