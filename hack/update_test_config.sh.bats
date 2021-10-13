@@ -27,15 +27,18 @@ teardown() {
 
     dir="${BATS_TMPDIR}/${BATS_TEST_NAME}"
     cd ${dir}
-    hack/bump-version.sh "${VERSION_MAJOR_MINOR}.0-snapshot"
+    sed -i "s|Version = .*|Version = \"${VERSION_MAJOR_MINOR}.0-snapshot\"|g" version/app/version.go
     run hack/update_test_config.sh
     [ "$status" -eq 0 ]
 
     testConfigFile=$(cat ${TEST_CONFIG_FILE})
-    [[ "${testConfigFile}" =~ "tests.build-image-version=latest" ]]
-    [[ "${testConfigFile}" =~ "tests.services-image-version=latest" ]]
-    [[ "${testConfigFile}" =~ "tests.runtime-application-image-version=latest" ]]
-    [[ "${testConfigFile}" =~ "tests.examples-ref=nightly-main" ]]
+    
+    [[ "${testConfigFile}" =~ "tests.build_builder_image_tag=quay.io/kiegroup/kogito-builder-nightly:latest" ]]
+    [[ "${testConfigFile}" =~ "tests.build_runtime_jvm_image_tag=quay.io/kiegroup/kogito-runtime-jvm-nightly:latest" ]]
+    [[ "${testConfigFile}" =~ "tests.build_runtime_native_image_tag=quay.io/kiegroup/kogito-runtime-native-nightly:latest" ]]
+    [[ "${testConfigFile}" =~ "tests.services_image_version=latest" ]]
+    [[ "${testConfigFile}" =~ "tests.runtime_application_image_version=latest" ]]
+    [[ "${testConfigFile}" =~ "tests.examples_ref=nightly-main" ]]
 }
 
 @test "check update_test_config on release branch with snapshot version" {
@@ -50,10 +53,12 @@ teardown() {
     [ "$status" -eq 0 ]
 
     testConfigFile=$(cat ${TEST_CONFIG_FILE})
-    [[ "${testConfigFile}" =~ "tests.build-image-version=${VERSION_MAJOR_MINOR}" ]]
-    [[ "${testConfigFile}" =~ "tests.services-image-version=${VERSION_MAJOR_MINOR}" ]]
-    [[ "${testConfigFile}" =~ "tests.runtime-application-image-version=${VERSION_MAJOR_MINOR}" ]]
-    [[ "${testConfigFile}" =~ "tests.examples-ref=nightly-${VERSION_MAJOR_MINOR}.x" ]]
+    [[ "${testConfigFile}" =~ "tests.build_builder_image_tag=quay.io/kiegroup/kogito-builder-nightly:${VERSION_MAJOR_MINOR}" ]]
+    [[ "${testConfigFile}" =~ "tests.build_runtime_jvm_image_tag=quay.io/kiegroup/kogito-runtime-jvm-nightly:${VERSION_MAJOR_MINOR}" ]]
+    [[ "${testConfigFile}" =~ "tests.build_runtime_native_image_tag=quay.io/kiegroup/kogito-runtime-native-nightly:${VERSION_MAJOR_MINOR}" ]]
+    [[ "${testConfigFile}" =~ "tests.services_image_version=${VERSION_MAJOR_MINOR}" ]]
+    [[ "${testConfigFile}" =~ "tests.runtime_application_image_version=${VERSION_MAJOR_MINOR}" ]]
+    [[ "${testConfigFile}" =~ "tests.examples_ref=nightly-${VERSION_MAJOR_MINOR}.x" ]]
 }
 
 @test "check update_test_config on release branch with non snapshot version" {
@@ -72,8 +77,10 @@ teardown() {
     [ "$status" -eq 0 ]
 
     testConfigFile=$(cat ${TEST_CONFIG_FILE})
-    [[ "${testConfigFile}" =~ "tests.build-image-version=${VERSION_MAJOR_MINOR}" ]]
-    [[ "${testConfigFile}" =~ "tests.services-image-version=${VERSION_MAJOR_MINOR}" ]]
-    [[ "${testConfigFile}" =~ "tests.runtime-application-image-version=${VERSION_MAJOR_MINOR}" ]]
-    [[ "${testConfigFile}" =~ "tests.examples-ref=${VERSION_MAJOR_MINOR}.x" ]]
+    [[ "${testConfigFile}" =~ "tests.build_builder_image_tag=quay.io/kiegroup/kogito-builder-nightly:${VERSION_MAJOR_MINOR}" ]]
+    [[ "${testConfigFile}" =~ "tests.build_runtime_jvm_image_tag=quay.io/kiegroup/kogito-runtime-jvm-nightly:${VERSION_MAJOR_MINOR}" ]]
+    [[ "${testConfigFile}" =~ "tests.build_runtime_native_image_tag=quay.io/kiegroup/kogito-runtime-native-nightly:${VERSION_MAJOR_MINOR}" ]]
+    [[ "${testConfigFile}" =~ "tests.services_image_version=${VERSION_MAJOR_MINOR}" ]]
+    [[ "${testConfigFile}" =~ "tests.runtime_application_image_version=${VERSION_MAJOR_MINOR}" ]]
+    [[ "${testConfigFile}" =~ "tests.examples_ref=${VERSION_MAJOR_MINOR}.x" ]]
 }

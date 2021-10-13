@@ -40,7 +40,6 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Set test config with image version ${test_image_version} and branch ${test_branch}"
-sed -i "s|tests.build-image-version=.*|tests.build-image-version=${test_image_version}|g" ${TEST_CONFIG_FILE}
-sed -i "s|tests.services-image-version=.*|tests.services-image-version=${test_image_version}|g" ${TEST_CONFIG_FILE}
-sed -i "s|tests.runtime-application-image-version=.*|tests.runtime-application-image-version=${test_image_version}|g" ${TEST_CONFIG_FILE}
-sed -i "s|tests.examples-ref=.*|tests.examples-ref=${test_branch}|g" ${TEST_CONFIG_FILE}
+sed -r -i "s|image_tag=(.*):.*|image_tag=\1:${test_image_version}|g" ${TEST_CONFIG_FILE}
+sed -i "s|image_version=.*|image_version=${test_image_version}|g" ${TEST_CONFIG_FILE}
+sed -i "s|tests.examples_ref=.*|tests.examples_ref=${test_branch}|g" ${TEST_CONFIG_FILE}
