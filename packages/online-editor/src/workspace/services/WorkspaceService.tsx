@@ -24,6 +24,7 @@ import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
 import { v4 as uuid } from "uuid";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
 import { join } from "path";
+import { Minimatch } from "minimatch";
 
 export class WorkspaceService {
   private readonly WORKSPACE_CONFIG_PATH = "/workspaces.json";
@@ -76,9 +77,9 @@ export class WorkspaceService {
     descriptor: WorkspaceDescriptor,
     storeFiles: () => Promise<WorkspaceFile[]>,
     broadcastArgs: { broadcast: boolean }
-  ): Promise<WorkspaceFile[]> {
+  ): Promise<void> {
     await this.storageService.createDirStructureAtRoot(descriptor.workspaceId);
-    const createdFiles = await storeFiles();
+    await storeFiles();
 
     const descriptors = await this.listAll();
     descriptors.push(descriptor);
@@ -94,8 +95,6 @@ export class WorkspaceService {
       } as WorkspacesEvents);
       broadcastChannel2.postMessage({ type: "ADD", workspaceId: descriptor.workspaceId } as WorkspaceEvents);
     }
-
-    return createdFiles;
   }
 
   public async get(workspaceId: string): Promise<WorkspaceDescriptor> {
@@ -108,10 +107,31 @@ export class WorkspaceService {
     return descriptor;
   }
 
-  public async listFiles(workspaceId: string, globPattern?: string): Promise<WorkspaceFile[]> {
-    const workspaceRootPath = await this.resolveRootPath(workspaceId);
-    const storageFiles = await this.storageService.getFiles(workspaceRootPath, globPattern);
-    return this.toWorkspaceFiles(workspaceId, storageFiles);
+  public async getFiles(workspaceId: string, globPattern?: string): Promise<WorkspaceFile[]> {
+    console.time(`workspaceService#getFiles--${workspaceId}`);
+    const matcher = globPattern ? new Minimatch(globPattern, { dot: true }) : undefined;
+    const files = await this.storageService.getFilePaths({
+      dirPath: await this.resolveRootPath(workspaceId),
+      transform: (path) => {
+        const workspaceFile = new WorkspaceFile({
+          workspaceId,
+          relativePath: path.replace(this.getAbsolutePath({ workspaceId, relativePath: "/" }), ""),
+          getFileContents: () => this.storageService.getFile(path).then((f) => f!.getFileContents()),
+        });
+
+        if (workspaceFile.relativePath.startsWith(".git")) {
+          return undefined;
+        }
+
+        if (matcher && !matcher.match(workspaceFile.name)) {
+          return undefined;
+        }
+
+        return workspaceFile;
+      },
+    });
+    console.timeEnd(`workspaceService#getFiles--${workspaceId}`);
+    return files;
   }
 
   public async delete(workspaceId: string, broadcastArgs: { broadcast: boolean }): Promise<void> {
@@ -121,8 +141,8 @@ export class WorkspaceService {
       throw new Error(`Workspace '${workspaceId}' not found`);
     }
 
-    const files = await this.listFiles(workspaceId);
-    await this.storageService.deleteFiles(files.map((f) => this.toStorageFile(f)));
+    const files = await this.getFiles(workspaceId);
+    await Promise.all(files.map((f) => this.toStorageFile(f)).map((f) => this.storageService.deleteFile(f)));
 
     descriptors.splice(index, 1);
     const configFile = await this.configAsFile(async () => JSON.stringify(descriptors));
@@ -158,16 +178,19 @@ export class WorkspaceService {
   }
 
   public async prepareZip(workspaceId: string): Promise<Blob> {
+    console.time(`WorkspaceService#prepareZip--${workspaceId}`);
     const workspaceRootPath = await this.resolveRootPath(workspaceId);
 
     const zip = new JSZip();
-    const storageFiles = await this.storageService.getFiles(workspaceRootPath, SUPPORTED_FILES_PATTERN);
+    const files = await this.getFiles(workspaceRootPath, SUPPORTED_FILES_PATTERN);
 
-    for (const file of this.toWorkspaceFiles(workspaceId, storageFiles)) {
+    for (const file of files) {
       zip.file(file.relativePath, (await file.getFileContents()) ?? "");
     }
 
-    return await zip.generateAsync({ type: "blob" });
+    const blob = await zip.generateAsync({ type: "blob" });
+    console.timeEnd(`WorkspaceService#prepareZip--${workspaceId}`);
+    return blob;
   }
 
   public async resolveRootPath(workspaceId: string): Promise<string> {
@@ -336,7 +359,7 @@ export class WorkspaceService {
       return;
     }
 
-    await this.storageService.createFiles(this.toStorageFiles(files));
+    await Promise.all(files.map((f) => this.toStorageFile(f)).map((f) => this.storageService.createFile(f)));
 
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(files[0].workspaceId);
@@ -356,7 +379,7 @@ export class WorkspaceService {
       return;
     }
 
-    await this.storageService.deleteFiles(this.toStorageFiles(files));
+    await Promise.all(files.map((f) => this.toStorageFile(f)).map((f) => this.storageService.deleteFile(f)));
 
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(files[0].workspaceId);
@@ -380,7 +403,10 @@ export class WorkspaceService {
       return;
     }
 
-    const pathMap = await this.storageService.moveFiles(this.toStorageFiles(files), newDirPath);
+    const relativePaths = await this.storageService.moveFiles(
+      files.map((f) => this.toStorageFile(f)),
+      newDirPath
+    );
 
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(files[0].workspaceId);
@@ -389,15 +415,9 @@ export class WorkspaceService {
       broadcastChannel.postMessage({
         type: "MOVE_BATCH",
         workspaceId: files[0].workspaceId,
-        relativePaths: pathMap,
+        relativePaths,
       } as WorkspaceEvents);
     }
-  }
-
-  public async getFiles(workspaceId: string, globPattern?: string): Promise<WorkspaceFile[]> {
-    const workspaceRootPath = await this.resolveRootPath(workspaceId);
-    const storageFiles = await this.storageService.getFiles(workspaceRootPath, globPattern);
-    return this.toWorkspaceFiles(workspaceId, storageFiles);
   }
 
   private async configAsFile(getFileContents: () => Promise<string>) {
@@ -405,14 +425,6 @@ export class WorkspaceService {
       path: this.WORKSPACE_CONFIG_PATH,
       getFileContents: () => getFileContents().then((c) => encoder.encode(c)),
     });
-  }
-
-  private toWorkspaceFiles(workspaceId: string, storageFiles: StorageFile[]): WorkspaceFile[] {
-    return storageFiles.map((storageFile: StorageFile) => this.toWorkspaceFile(workspaceId, storageFile));
-  }
-
-  private toStorageFiles(workspaceFiles: WorkspaceFile[]): StorageFile[] {
-    return workspaceFiles.map((workspaceFile: WorkspaceFile) => this.toStorageFile(workspaceFile));
   }
 
   private toWorkspaceFile(workspaceId: string, storageFile: StorageFile): WorkspaceFile {

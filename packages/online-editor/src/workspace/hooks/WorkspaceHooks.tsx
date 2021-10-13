@@ -4,6 +4,39 @@ import { ActiveWorkspace } from "../model/ActiveWorkspace";
 import { usePromiseState } from "./PromiseState";
 import { Holder, useCancelableEffect } from "../../common/Hooks";
 
+export function useWorkspaceIsModifiedPromise(workspace: ActiveWorkspace | undefined) {
+  const workspaces = useWorkspaces();
+  const [isModifiedPromise, setModifiedPromise] = usePromiseState<boolean>();
+
+  const refresh = useCallback(
+    async (canceled: Holder<boolean>) => {
+      if (!workspace) {
+        return;
+      }
+      console.time(`WorkspaceHooks#isModifiedPromise--${workspace.descriptor.workspaceId}`);
+      const isModified = await workspaces.isModified(workspace.descriptor.workspaceId);
+      if (canceled.get()) {
+        return;
+      }
+
+      setModifiedPromise({ data: isModified });
+      console.timeEnd(`WorkspaceHooks#isModifiedPromise--${workspace.descriptor.workspaceId}`);
+    },
+    [workspace, workspaces, setModifiedPromise]
+  );
+
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        refresh(canceled);
+      },
+      [refresh]
+    )
+  );
+
+  return isModifiedPromise;
+}
+
 export function useWorkspacePromise(workspaceId: string | undefined) {
   const workspaces = useWorkspaces();
   const [workspacePromise, setWorkspacePromise] = usePromiseState<ActiveWorkspace>();
@@ -14,6 +47,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
         return;
       }
 
+      console.time(`WorkspaceHooks#workspacePromise--${workspaceId}`);
       const descriptor = await workspaces.workspaceService.get(workspaceId);
       if (canceled.get()) {
         return;
@@ -24,13 +58,13 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
         return;
       }
 
-      const files = await workspaces.listFiles(workspaceId);
-
+      const files = await workspaces.getFiles(workspaceId);
       if (canceled.get()) {
         return;
       }
 
-      setWorkspacePromise({ data: { descriptor, files, isModified: await workspaces.isModified(workspaceId) } });
+      setWorkspacePromise({ data: { descriptor, files } });
+      console.timeEnd(`WorkspaceHooks#workspacePromise--${workspaceId}`);
     },
     [setWorkspacePromise, workspaceId, workspaces]
   );
@@ -53,7 +87,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
 
         const broadcastChannel = new BroadcastChannel(workspaceId);
         broadcastChannel.onmessage = ({ data }) => {
-          console.info(`WORKSPACE: ${JSON.stringify(data)}`);
+          console.info(`EVENT::WORKSPACE: ${JSON.stringify(data)}`);
           return refresh(canceled);
         };
 

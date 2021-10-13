@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import LightningFS, { FSBackend, FSConstructorOptions } from "@isomorphic-git/lightning-fs";
-import { Minimatch } from "minimatch";
-import { basename, dirname, extname, join, parse, resolve } from "path";
+import LightningFS from "@isomorphic-git/lightning-fs";
+import { basename, dirname, extname, join, resolve } from "path";
 
 export class StorageFile {
   constructor(private readonly args: { path: string; getFileContents: () => Promise<Uint8Array> }) {}
@@ -34,10 +33,10 @@ export class StorageService {
   private readonly SEPARATOR = "/";
 
   public readonly fs;
-  private readonly fsp;
+  public readonly fsp;
 
-  public constructor(private readonly dbName: string, fsBackend?: FSBackend) {
-    this.fs = new LightningFS(this.dbName, { backend: fsBackend } as FSConstructorOptions);
+  public constructor(private readonly dbName: string) {
+    this.fs = new LightningFS(this.dbName);
     this.fsp = this.fs.promises;
   }
 
@@ -45,13 +44,14 @@ export class StorageService {
     return this.SEPARATOR;
   }
 
-  public async createFile(file: StorageFile): Promise<void> {
-    if (await this.exists(file.path)) {
-      throw new Error(`File ${file.path} already exists`);
+  public async createFile(file: StorageFile) {
+    const contents = await file.getFileContents();
+    try {
+      await this.fsp.writeFile(file.path, contents);
+    } catch (err) {
+      await this.mkdir(dirname(file.path));
+      await this.fsp.writeFile(file.path, contents);
     }
-
-    await this.createDirStructure(file.path);
-    await this.writeFile(file);
   }
 
   public async updateFile(file: StorageFile): Promise<void> {
@@ -110,18 +110,6 @@ export class StorageService {
     return newFile;
   }
 
-  public async createFiles(files: StorageFile[]): Promise<void> {
-    for (const file of files) {
-      await this.createFile(file);
-    }
-  }
-
-  public async deleteFiles(files: StorageFile[]): Promise<void> {
-    for (const file of files) {
-      await this.deleteFile(file);
-    }
-  }
-
   public async moveFiles(files: StorageFile[], newDirPath: string): Promise<Map<string, string>> {
     const paths = new Map<string, string>();
     for (const fileToMove of files) {
@@ -137,27 +125,9 @@ export class StorageService {
     }
 
     return new StorageFile({
-      getFileContents: this.buildGetFileContentsCallback(path),
       path,
+      getFileContents: () => this.fsp.readFile(path),
     });
-  }
-
-  public async getFiles(dirPath: string, globPattern?: string): Promise<StorageFile[]> {
-    const filePaths = await this.getFilePaths(dirPath);
-
-    const files = filePaths.map((path: string) => {
-      return new StorageFile({
-        getFileContents: this.buildGetFileContentsCallback(path),
-        path,
-      });
-    });
-
-    if (!globPattern) {
-      return files;
-    }
-
-    const matcher = new Minimatch(globPattern, { dot: true });
-    return files.filter((file: StorageFile) => matcher.match(parse(file.path).base));
   }
 
   public async wipeStorage(): Promise<void> {
@@ -170,25 +140,48 @@ export class StorageService {
   }
 
   public async createDirStructureAtRoot(pathRelativeToRoot: string) {
-    await this.createDirStructure(this.rootPath + pathRelativeToRoot + this.SEPARATOR);
+    await this.mkdir(this.rootPath + pathRelativeToRoot + this.SEPARATOR);
   }
 
-  private async createDirStructure(path: string): Promise<void> {
-    const dirPath = path.endsWith(this.SEPARATOR) ? path : dirname(path);
-    const intermediaryDirPaths = dirPath.split(this.SEPARATOR).filter((p) => p);
+  async mkdir(dirPath: string, _selfCall = false) {
+    try {
+      await this.fsp.mkdir(dirPath);
+      return;
+    } catch (err) {
+      // If err is null then operation succeeded!
+      if (err === null) {
+        return;
+      }
 
-    let currentPath = this.rootPath;
-    for (const dirPath of intermediaryDirPaths) {
-      currentPath = join(currentPath, dirPath);
-      if (!(await this.exists(currentPath))) {
-        await this.fsp.mkdir(currentPath);
+      // If the directory already exists, that's OK!
+      if (err.code === "EEXIST") {
+        return;
+      }
+
+      // Avoid infinite loops of failure
+      if (_selfCall) {
+        throw err;
+      }
+
+      // If we got a "no such file or directory error" backup and try again.
+      if (err.code === "ENOENT") {
+        const parent = dirname(dirPath);
+
+        // Check to see if we've gone too far
+        if (parent === "." || parent === "/" || parent === dirPath) {
+          throw err;
+        }
+
+        // Infinite recursion, what could go wrong?
+        await this.mkdir(parent);
+        await this.mkdir(dirPath, true);
       }
     }
   }
 
   public async exists(path: string): Promise<boolean> {
     try {
-      await this.fs.promises.stat(path);
+      await this.fsp.stat(path);
       return true;
     } catch (err) {
       if (err.code === "ENOENT" || err.code === "ENOTDIR") {
@@ -199,33 +192,24 @@ export class StorageService {
       }
     }
   }
-
-  private buildGetFileContentsCallback(path: string): () => Promise<Uint8Array> {
-    return async () => {
-      if (!(await this.exists(path))) {
-        throw new Error(`Can't read non-existent file '${path}'`);
-      }
-      return await this.fsp.readFile(path);
-    };
-  }
-
   private async writeFile(file: StorageFile): Promise<void> {
     const content = await file.getFileContents();
     await this.fsp.writeFile(file.path, content);
   }
 
-  private async getFilePaths(dirPath: string): Promise<string[]> {
-    if (!(await this.exists(dirPath))) {
-      throw new Error(`Dir '${dirPath}' does not exist`);
-    }
-
-    const subDirPaths = await this.fsp.readdir(dirPath);
+  public async getFilePaths<T = string>(args: {
+    dirPath: string;
+    transform: (path: string) => T | undefined;
+  }): Promise<T[]> {
+    const subDirPaths = await this.fsp.readdir(args.dirPath);
     const files = await Promise.all(
       subDirPaths.map(async (subDirPath: string) => {
-        const path = resolve(dirPath, subDirPath);
-        return (await this.fsp.stat(path)).isDirectory() ? this.getFilePaths(path) : path;
+        const path = resolve(args.dirPath, subDirPath);
+        return (await this.fsp.stat(path)).isDirectory()
+          ? this.getFilePaths({ dirPath: path, transform: args.transform })
+          : args.transform(path);
       })
     );
-    return files.reduce((paths: string[], path: string) => paths.concat(path), []) as string[];
+    return files.reduce((paths: T[], path: T) => (path ? paths.concat(path) : paths), []) as T[];
   }
 }

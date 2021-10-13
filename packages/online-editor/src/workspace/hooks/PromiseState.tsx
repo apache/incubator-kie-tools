@@ -61,7 +61,7 @@ export function usePromiseState<T>(): [PromiseState<T>, (newState: NewStateArgs<
   const set = useCallback((newState: NewStateArgs<T>) => {
     if (newState.error) {
       setState({ status: PromiseStateStatus.REJECTED, error: [newState.error] });
-    } else if (newState.data) {
+    } else if (newState.data !== undefined) {
       setState({ status: PromiseStateStatus.RESOLVED, data: newState.data });
     } else {
       throw new Error("Invalid state");

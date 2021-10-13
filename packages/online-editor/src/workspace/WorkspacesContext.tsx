@@ -113,7 +113,7 @@ export interface WorkspacesContextType {
 
   deleteFile(workspaceFile: WorkspaceFile): Promise<void>;
 
-  listFiles(workspaceId: string): Promise<WorkspaceFile[]>;
+  getFiles(workspaceId: string): Promise<WorkspaceFile[]>;
 
   getFile(args: { workspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined>;
 

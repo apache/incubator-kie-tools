@@ -65,6 +65,7 @@ import { AddFileDropdownItems } from "./AddFileDropdownItems";
 import { PageHeaderToolsItem, PageHeaderToolsItemProps } from "@patternfly/react-core/dist/js/components/Page";
 import { FileLabel } from "../workspace/pages/FileLabel";
 import { DeleteDropdownWithConfirmation } from "./DeleteDropdownWithConfirmation";
+import { useWorkspaceIsModifiedPromise } from "../workspace/hooks/WorkspaceHooks";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -828,31 +829,35 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
         .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension))
         .filter((file) => file.relativePath !== props.workspaceFile.relativePath)
         .map((file) => (
-          <Link
+          <DropdownItem
             key={file.relativePath}
-            to={globals.routes.workspaceWithFilePath.path({
-              workspaceId: file.workspaceId,
-              fileRelativePath: file.relativePathWithoutExtension,
-              extension: file.extension,
-            })}
-          >
-            <DropdownItem>
-              <Flex flexWrap={{ default: "nowrap" }}>
-                <FlexItem>{file.nameWithoutExtension}</FlexItem>
-                <FlexItem>
-                  <FileLabel extension={file.extension} />
-                </FlexItem>
-              </Flex>
-              <div className={"pf-c-dropdown__menu-item-description"}>
-                {file.relativeDirPath.split("/").join(" > ")}
-                &nbsp;
-              </div>
-            </DropdownItem>
-          </Link>
+            component={
+              <Link
+                to={globals.routes.workspaceWithFilePath.path({
+                  workspaceId: file.workspaceId,
+                  fileRelativePath: file.relativePathWithoutExtension,
+                  extension: file.extension,
+                })}
+              >
+                <Flex flexWrap={{ default: "nowrap" }}>
+                  <FlexItem>{file.nameWithoutExtension}</FlexItem>
+                  <FlexItem>
+                    <FileLabel extension={file.extension} />
+                  </FlexItem>
+                </Flex>
+                <div className={"pf-c-dropdown__menu-item-description"}>
+                  {file.relativeDirPath.split("/").join(" > ")}
+                  &nbsp;
+                </div>
+              </Link>
+            }
+          />
         )),
     ],
     [globals, props.workspaceFile, props.workspace]
   );
+
+  const workspaceIsModifiedPromise = useWorkspaceIsModifiedPromise(props.workspace);
 
   return (
     <>
@@ -860,7 +865,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
         <FlexItem style={{ display: "flex", alignItems: "baseline" }}>
           {props.workspace.files.length > 1 && (
             <>
-              {props.workspace.isModified && (
+              {workspaceIsModifiedPromise.data && (
                 <Tooltip content={"There are new changes since your last download."} position={"bottom"}>
                   <Title
                     headingLevel={"h6"}

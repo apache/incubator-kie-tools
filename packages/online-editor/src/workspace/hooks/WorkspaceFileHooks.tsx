@@ -51,7 +51,7 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
         console.info("Subscribing to " + absolutePath);
         const broadcastChannel = new BroadcastChannel(absolutePath);
         broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileEvents>) => {
-          console.info(`WORKSPACE_FILE: ${JSON.stringify(data)}`);
+          console.info(`EVENT::WORKSPACE_FILE: ${JSON.stringify(data)}`);
           if (data.type === "MOVE" || data.type == "RENAME") {
             refresh(workspaceId, data.newRelativePath, canceled);
           }

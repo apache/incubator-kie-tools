@@ -42,7 +42,7 @@ export function useWorkspaceDescriptorsPromise() {
       ({ canceled }) => {
         const broadcastChannel = new BroadcastChannel(workspaces.workspaceService.rootPath);
         broadcastChannel.onmessage = ({ data }) => {
-          console.info(`WORKSPACES: ${JSON.stringify(data)}`);
+          console.info(`EVENT::WORKSPACES: ${JSON.stringify(data)}`);
           refresh(canceled);
         };
 
