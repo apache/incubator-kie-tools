@@ -16,7 +16,6 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/version/app"
 	"io"
 	"io/ioutil"
 	"math/rand"
@@ -27,11 +26,12 @@ import (
 	"time"
 
 	api "github.com/kiegroup/kogito-operator/apis"
+	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/kogitobuild"
 	"github.com/kiegroup/kogito-operator/core/test"
+	"github.com/kiegroup/kogito-operator/version/app"
 
-	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 )
 
@@ -234,7 +234,7 @@ func GetKogitoBuildS2IImage() string {
 		return config.GetBuildBuilderImageStreamTag()
 	}
 
-	return GetKogitoBuildImage(kogitobuild.GetDefaultBuilderImage(), true)
+	return ConstructDefaultImageFullTag(kogitobuild.GetDefaultBuilderImage())
 }
 
 // GetKogitoBuildRuntimeImage returns the Runtime image tag
@@ -251,31 +251,29 @@ func GetKogitoBuildRuntimeImage(native bool) string {
 		}
 		imageName = kogitobuild.GetDefaultRuntimeJVMImage()
 	}
-	return GetKogitoBuildImage(imageName, true)
+
+	return ConstructDefaultImageFullTag(imageName)
 }
 
-// GetKogitoBuildImage returns a build image with defaults set
-func GetKogitoBuildImage(imageName string, useDefaultValues bool) string {
-	image := api.Image{
+// ConstructDefaultImageFullTag construct the full image tag (adding default registry and tag)
+func ConstructDefaultImageFullTag(imageName string) string {
+	image := &api.Image{
 		Name: imageName,
-		Tag:  config.GetBuildImageVersion(),
 	}
+	AppendImageDefaultValues(image)
 
-	if len(config.GetBuildImageRegistry()) > 0 {
-		image.Domain = config.GetBuildImageRegistry()
-	} else if useDefaultValues {
+	return framework.ConvertImageToImageTag(*image)
+}
+
+// AppendImageDefaultValues appends the image default values if none existing
+func AppendImageDefaultValues(image *api.Image) {
+	if len(image.Domain) == 0 {
 		image.Domain = infrastructure.GetDefaultImageRegistry()
 	}
 
-	if len(image.Tag) == 0 && useDefaultValues {
+	if len(image.Tag) == 0 {
 		image.Tag = infrastructure.GetKogitoImageVersion(app.Version)
 	}
-
-	// Update image name with suffix if provided
-	if len(config.GetBuildImageNameSuffix()) > 0 {
-		image.Name = fmt.Sprintf("%s-%s", imageName, config.GetBuildImageNameSuffix())
-	}
-	return framework.ConvertImageToImageTag(image)
 }
 
 // AddLineToFile adds the given line to the given file

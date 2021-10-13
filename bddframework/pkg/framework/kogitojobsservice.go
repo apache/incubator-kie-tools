@@ -16,9 +16,10 @@ package framework
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 
-	"github.com/kiegroup/kogito-operator/apis"
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/kogitosupportingservice"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
@@ -76,7 +77,7 @@ func GetKogitoJobsServiceResourceStub(namespace string, replicas int) *v1beta1.K
 		ObjectMeta: NewObjectMetadata(namespace, getJobsServiceName()),
 		Spec: v1beta1.KogitoSupportingServiceSpec{
 			ServiceType:       api.JobsService,
-			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetJobsServiceImageTag(), kogitosupportingservice.DefaultJobsServiceImageName),
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetServiceImageTag(config.JobServiceImageType, config.EphemeralPersistenceType), kogitosupportingservice.DefaultJobsServiceImageName),
 		},
 	}
 }

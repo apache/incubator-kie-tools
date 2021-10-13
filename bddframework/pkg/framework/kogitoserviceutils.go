@@ -16,14 +16,12 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/version/app"
 
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 
 	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
-	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework/mappers"
 	bddtypes "github.com/kiegroup/kogito-operator/test/pkg/types"
@@ -117,33 +115,18 @@ func NewImageOrDefault(fullImage string, defaultImageName string) string {
 	if len(fullImage) > 0 {
 		return fullImage
 	}
-
-	image := api.Image{}
-	if isRuntimeImageInformationSet() {
-		image.Domain = config.GetServicesImageRegistry()
-		image.Name = defaultImageName
-		image.Tag = config.GetServicesImageVersion()
-
-		if len(image.Domain) == 0 {
-			image.Domain = infrastructure.GetDefaultImageRegistry()
-		}
-
-		if len(image.Tag) == 0 {
-			image.Tag = infrastructure.GetKogitoImageVersion(app.Version)
-		}
-
-		// Update image name with suffix if provided
-		if len(config.GetServicesImageNameSuffix()) > 0 {
-			image.Name = fmt.Sprintf("%s-%s", image.Name, config.GetServicesImageNameSuffix())
-		}
+	image := &api.Image{
+		Domain: config.GetServicesImageRegistry(),
+		Name:   defaultImageName,
+		Tag:    config.GetServicesImageVersion(),
 	}
-	return framework.ConvertImageToImageTag(image)
-}
+	// Update image name with suffix if provided
+	if len(config.GetServicesImageNameSuffix()) > 0 {
+		image.Name = fmt.Sprintf("%s-%s", image.Name, config.GetServicesImageNameSuffix())
+	}
+	AppendImageDefaultValues(image)
 
-func isRuntimeImageInformationSet() bool {
-	return len(config.GetServicesImageRegistry()) > 0 ||
-		len(config.GetServicesImageNameSuffix()) > 0 ||
-		len(config.GetServicesImageVersion()) > 0
+	return framework.ConvertImageToImageTag(*image)
 }
 
 func crInstall(serviceHolder *bddtypes.KogitoServiceHolder) error {

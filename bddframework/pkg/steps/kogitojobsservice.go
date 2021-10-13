@@ -55,13 +55,13 @@ func (data *Data) installKogitoJobsServiceWithReplicasWithConfiguration(replicas
 	}
 	if jobsService.DatabaseType == infrastructure.InfinispanKind {
 		framework.GetMainLogger().Debug("Setting Jobs service Infinispan image")
-		jobsService.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetJobsServiceImageTag(), kogitosupportingservice.JobsServiceInfinispanImageName))
+		jobsService.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetServiceImageTag(config.JobServiceImageType, config.InfinispanPersistenceType), kogitosupportingservice.JobsServiceInfinispanImageName))
 	} else if jobsService.DatabaseType == infrastructure.MongoDBKind {
 		framework.GetMainLogger().Debug("Setting Jobs service MongoDB image")
-		jobsService.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetJobsServiceImageTag(), kogitosupportingservice.JobsServiceMongoDBImageName))
+		jobsService.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetServiceImageTag(config.JobServiceImageType, config.MongoDBPersistenceType), kogitosupportingservice.JobsServiceMongoDBImageName))
 	} else if jobsService.DatabaseType == "PostgreSQL" {
 		framework.GetMainLogger().Debug("Setting Jobs service PostgreSQL image")
-		jobsService.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetJobsServiceImageTag(), kogitosupportingservice.JobsServicePostgresqlImageName))
+		jobsService.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetServiceImageTag(config.JobServiceImageType, config.PosgresqlPersistenceType), kogitosupportingservice.JobsServicePostgresqlImageName))
 	}
 
 	return framework.InstallKogitoJobsService(framework.GetDefaultInstallerType(), jobsService)

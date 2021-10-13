@@ -15,7 +15,7 @@
 package framework
 
 import (
-	"github.com/kiegroup/kogito-operator/apis"
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/kogitosupportingservice"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
@@ -42,7 +42,7 @@ func GetKogitoTrustyUIResourceStub(namespace string, replicas int) *v1beta1.Kogi
 		ObjectMeta: NewObjectMetadata(namespace, getTrustyUIServiceName()),
 		Spec: v1beta1.KogitoSupportingServiceSpec{
 			ServiceType:       api.TrustyUI,
-			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetTrustyUIImageTag(), kogitosupportingservice.DefaultTrustyUIImageName),
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetServiceImageTag(config.TrustyImageType, config.EphemeralPersistenceType), kogitosupportingservice.DefaultTrustyUIImageName),
 		},
 	}
 }

@@ -15,7 +15,7 @@
 package framework
 
 import (
-	"github.com/kiegroup/kogito-operator/apis"
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 	framework2 "github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/kogitosupportingservice"
@@ -49,8 +49,9 @@ func GetKogitoDataIndexResourceStub(namespace string, replicas int) *v1beta1.Kog
 	return &v1beta1.KogitoSupportingService{
 		ObjectMeta: NewObjectMetadata(namespace, getDataIndexServiceName()),
 		Spec: v1beta1.KogitoSupportingServiceSpec{
-			ServiceType:       api.DataIndex,
-			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetDataIndexImageTag(), kogitosupportingservice.DefaultDataIndexImageName),
+			ServiceType: api.DataIndex,
+			// This should be changed to `ephemeral` once inmemory data-index is available
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetServiceImageTag(config.DataIndexImageType, config.InfinispanPersistenceType), kogitosupportingservice.DefaultDataIndexImageName),
 		},
 	}
 }

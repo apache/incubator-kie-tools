@@ -382,11 +382,6 @@ func DeleteSubscription(subscription *olmapiv1alpha1.Subscription) error {
 	return nil
 }
 
-// GetOperatorImageNameAndTag ...
-func GetOperatorImageNameAndTag() string {
-	return fmt.Sprintf("%s:%s", config.GetOperatorImageName(), config.GetOperatorImageTag())
-}
-
 // WaitForMongoDBOperatorRunning waits for MongoDB operator to be running
 func WaitForMongoDBOperatorRunning(namespace string) error {
 	return WaitForOnOpenshift(namespace, "MongoDB operator running", mongoDBOperatorTimeoutInMin,

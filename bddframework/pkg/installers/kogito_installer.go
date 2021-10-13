@@ -69,7 +69,7 @@ var (
 // GetKogitoInstaller returns Kogito installer
 func GetKogitoInstaller() (ServiceInstaller, error) {
 	// If user doesn't pass Kogito operator image then use community OLM catalog to install operator
-	if len(config.GetOperatorImageName()) == 0 {
+	if len(config.GetOperatorImageTag()) == 0 {
 		framework.GetMainLogger().Info("Installing Kogito operator using community catalog.")
 		return &kogitoOlmClusterWideInstaller, nil
 	}
@@ -98,7 +98,7 @@ func installKogitoUsingYaml() error {
 	if err != nil {
 		return err
 	}
-	yamlContent = regexp.ReplaceAllString(yamlContent, framework.GetOperatorImageNameAndTag())
+	yamlContent = regexp.ReplaceAllString(yamlContent, config.GetOperatorImageTag())
 
 	tempFilePath, err := framework.CreateTemporaryFile("kogito-operator*.yaml", yamlContent)
 	if err != nil {

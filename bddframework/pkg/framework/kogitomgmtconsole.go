@@ -15,7 +15,7 @@
 package framework
 
 import (
-	"github.com/kiegroup/kogito-operator/apis"
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/kogitosupportingservice"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
@@ -42,7 +42,7 @@ func GetKogitoManagementConsoleResourceStub(namespace string, replicas int) *v1b
 		ObjectMeta: NewObjectMetadata(namespace, getManagementConsoleServiceName()),
 		Spec: v1beta1.KogitoSupportingServiceSpec{
 			ServiceType:       api.MgmtConsole,
-			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetManagementConsoleImageTag(), kogitosupportingservice.DefaultMgmtConsoleImageName),
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetServiceImageTag(config.ManagementConsoleImageType, config.EphemeralPersistenceType), kogitosupportingservice.DefaultMgmtConsoleImageName),
 		},
 	}
 }

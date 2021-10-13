@@ -88,15 +88,15 @@ func installRhpamKogitoUsingYaml() error {
 	}
 
 	// Use insecure ImageStream when deploying on OpenShift to support using insecure registries, unless the operator tag already points to internal registry
-	if framework.IsOpenshift() && !strings.Contains(framework.GetOperatorImageNameAndTag(), openShiftInternalRegistryURL) {
-		if err := framework.CreateInsecureImageStream(rhpamKogitoNamespace, rhpamKogitoImageStreamName, config.GetOperatorImageTag(), framework.GetOperatorImageNameAndTag()); err != nil {
+	if framework.IsOpenshift() && !strings.Contains(config.GetOperatorImageTag(), openShiftInternalRegistryURL) {
+		if err := framework.CreateInsecureImageStream(rhpamKogitoNamespace, rhpamKogitoImageStreamName, config.GetOperatorImageTag(), config.GetOperatorImageTag()); err != nil {
 			return err
 		}
 
 		rhpamKogitoInternalImageTagName := fmt.Sprintf("%s/%s/%s:%s", openShiftInternalRegistryURL, rhpamKogitoNamespace, rhpamKogitoImageStreamName, config.GetOperatorImageTag())
 		yamlContent = strings.ReplaceAll(yamlContent, "registry.stage.redhat.io/rhpam-7/rhpam-kogito-rhel8-operator:"+rhpam.Version, rhpamKogitoInternalImageTagName)
 	} else {
-		yamlContent = strings.ReplaceAll(yamlContent, "registry.stage.redhat.io/rhpam-7/rhpam-kogito-rhel8-operator:"+rhpam.Version, framework.GetOperatorImageNameAndTag())
+		yamlContent = strings.ReplaceAll(yamlContent, "registry.stage.redhat.io/rhpam-7/rhpam-kogito-rhel8-operator:"+rhpam.Version, config.GetOperatorImageTag())
 	}
 
 	tempFilePath, err := framework.CreateTemporaryFile("rhpam-operator*.yaml", yamlContent)
