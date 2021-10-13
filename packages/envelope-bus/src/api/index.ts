@@ -71,7 +71,7 @@ export interface EnvelopeBusMessage<D, T> {
   targetEnvelopeServerId?: string; // Used for messages going from the Envelope to the EnvelopeServer
   requestId?: string; // Used when purpose is REQUEST or RESPONSE
   purpose: EnvelopeBusMessagePurpose;
-  error?: any; // Used on RESPONSES when an exception happens when processing a request
+  error?: string; // Used on RESPONSES when an exception happens when processing a request
   targetEnvelopeId?: string; // Used for messages going from the EnvelopeServer to the Envelope
   directSender?: EnvelopeBusMessageDirectSender;
 }

@@ -185,7 +185,7 @@ export class EnvelopeBusMessageManager<
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       type: request.type as FunctionPropertyNames<ApiToProvide>,
       data: data,
-      error: error,
+      error: error instanceof Error ? error.message : JSON.stringify(error),
     });
   }
 
@@ -207,7 +207,7 @@ export class EnvelopeBusMessageManager<
     if (!response.error) {
       callback.resolve(response.data);
     } else {
-      callback.reject(response.error);
+      callback.reject(new Error(response.error));
     }
   }
 
