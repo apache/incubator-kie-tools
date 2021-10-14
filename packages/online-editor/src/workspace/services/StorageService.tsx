@@ -16,7 +16,20 @@
 
 import LightningFS from "@isomorphic-git/lightning-fs";
 import { basename, dirname, extname, join, resolve } from "path";
+import { IdbDexieBackend } from "./IdbDexieBackend";
+import DefaultBackend from "@isomorphic-git/lightning-fs/src/DefaultBackend";
 
+export class EagerStorageFile {
+  constructor(private readonly args: { path: string; content: Uint8Array }) {}
+
+  get path() {
+    return this.args.path;
+  }
+
+  get content() {
+    return this.args.content;
+  }
+}
 export class StorageFile {
   constructor(private readonly args: { path: string; getFileContents: () => Promise<Uint8Array> }) {}
 
@@ -36,7 +49,13 @@ export class StorageService {
   public readonly fsp;
 
   public constructor(private readonly dbName: string) {
-    this.fs = new LightningFS(this.dbName);
+    this.fs = new LightningFS(this.dbName, {
+      backend: new DefaultBackend({
+        idbBackendDelegate: (fileDbName, fileStoreName) => {
+          return new IdbDexieBackend(fileDbName, fileStoreName);
+        },
+      }) as any,
+    });
     this.fsp = this.fs.promises;
   }
 
@@ -52,6 +71,18 @@ export class StorageService {
       await this.mkdir(dirname(file.path));
       await this.fsp.writeFile(file.path, contents);
     }
+  }
+
+  public async createFiles(files: StorageFile[]) {
+    for (const file of files) {
+      await this.mkdir(dirname(file.path));
+    }
+
+    const filesArray = await Promise.all(
+      files.map(async (f) => [f.path, await f.getFileContents()] as [string, Uint8Array])
+    );
+
+    await this.fsp.writeFileBulk?.(filesArray);
   }
 
   public async updateFile(file: StorageFile): Promise<void> {
@@ -126,6 +157,20 @@ export class StorageService {
     });
   }
 
+  public async getFiles(paths: string[]): Promise<EagerStorageFile[]> {
+    const files = await this.fsp.readFileBulk?.(paths);
+    if (!files) {
+      throw new Error("Can't read bulk");
+    }
+
+    return files.map(([path, content]) => {
+      return new EagerStorageFile({
+        path,
+        content,
+      });
+    });
+  }
+
   public async wipeStorage(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       const request = indexedDB.deleteDatabase(this.dbName);
@@ -195,15 +240,18 @@ export class StorageService {
 
   public async getFilePaths<T = string>(args: {
     dirPath: string;
+    excludeDir: (dirPath: string) => boolean;
     visit: (path: string) => T | undefined;
   }): Promise<T[]> {
     const subDirPaths = await this.fsp.readdir(args.dirPath);
     const files = await Promise.all(
       subDirPaths.map(async (subDirPath: string) => {
         const path = resolve(args.dirPath, subDirPath);
-        return (await this.fsp.stat(path)).isDirectory()
-          ? this.getFilePaths({ dirPath: path, visit: args.visit })
-          : args.visit(path);
+        return !(await this.fsp.stat(path)).isDirectory()
+          ? args.visit(path)
+          : args.excludeDir(path)
+          ? []
+          : this.getFilePaths({ dirPath: path, excludeDir: args.excludeDir, visit: args.visit });
       })
     );
     return files.reduce((paths: T[], path: T) => (path ? paths.concat(path) : paths), []) as T[];

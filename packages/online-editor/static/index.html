@@ -30,7 +30,9 @@
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <script>
       if (!("BroadcastChannel" in window)) {
+        //FIXME: Make this work for a single tab.
         window.BroadcastChannel = class BroadcastChannel {
+          constructor(name) {}
           postMessage = () => {};
           close = () => {};
         };

@@ -34,10 +34,9 @@ import { Alerts, AlertsController, useAlert } from "./Alerts/Alerts";
 import { useCancelableEffect, useController, usePrevious } from "../common/Hooks";
 import { TextEditorModal } from "./TextEditor/TextEditorModal";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
-import { ResourceContentRequest, ResourceListRequest, ResourcesList } from "@kie-tooling-core/workspace/dist/api";
-import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
+import { ResourceContentRequest, ResourceListRequest } from "@kie-tooling-core/workspace/dist/api";
 import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
-import { PromiseStateWrapper, useCombinedPromiseState } from "../workspace/hooks/PromiseState";
+import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { OnlineEditorPage } from "../home/pageTemplate/OnlineEditorPage";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
@@ -58,18 +57,7 @@ export function EditorPage(props: Props) {
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
 
   const lastContent = useRef<string>();
-  const workspacePromise = useWorkspacePromise(props.workspaceId);
-  const workspaceFilePromise = useWorkspaceFilePromise(
-    workspacePromise.data?.descriptor.workspaceId,
-    props.fileRelativePath
-  );
-
-  const combinedStatePromise = useCombinedPromiseState(
-    useMemo(
-      () => ({ workspace: workspacePromise, file: workspaceFilePromise }),
-      [workspacePromise, workspaceFilePromise]
-    )
-  );
+  const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
 
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
 
@@ -184,17 +172,14 @@ export function EditorPage(props: Props) {
   );
 
   const onResourceListRequest = useCallback(
-    async (request: ResourceListRequest) => {
-      if (!workspacePromise.data) {
-        return new ResourcesList(request.pattern, []);
-      }
-      return workspaces.resourceContentList(
-        workspacePromise.data.descriptor.workspaceId,
-        request.pattern,
-        request.opts
-      );
+    (request: ResourceListRequest) => {
+      return workspaces.resourceContentList({
+        workspaceId: props.workspaceId,
+        globPattern: request.pattern,
+        opts: request.opts,
+      });
     },
-    [workspaces, workspacePromise]
+    [workspaces, props.workspaceId]
   );
 
   const refreshEditor = useCallback(() => {
@@ -224,16 +209,14 @@ export function EditorPage(props: Props) {
 
   return (
     <PromiseStateWrapper
-      promise={combinedStatePromise}
+      promise={workspaceFilePromise}
       pending={<OnlineEditorPage />}
       rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
-      resolved={({ workspace, file }) => (
+      resolved={(file) => (
         <>
           <DmnRunnerContextProvider workspaceFile={file} notificationsPanel={notificationsPanel}>
             <DmnDevSandboxContextProvider workspaceFile={file} alerts={alerts}>
-              <Page
-                header={<EditorToolbar workspace={workspace} workspaceFile={file} editor={editor} alerts={alerts} />}
-              >
+              <Page header={<EditorToolbar workspaceFile={file} editor={editor} alerts={alerts} />}>
                 <PageSection
                   isFilled={true}
                   padding={{ default: "noPadding" }}

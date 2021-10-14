@@ -48,8 +48,15 @@ interface Props {
 }
 
 export function WorkspacesContextProvider(props: Props) {
-  const storageService = useMemo(() => new StorageService(INDEXED_DB_NAME), []);
-  const workspaceService = useMemo(() => new WorkspaceService(storageService), [storageService]);
+  const storageService = useMemo(() => {
+    const instance = new StorageService(INDEXED_DB_NAME);
+    // FIXME: easy access to git in the window object.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    (window as any).fs = () => instance;
+    return instance;
+  }, []);
+
   const gitService = useMemo(() => {
     const instance = new GitService(GIT_CORS_PROXY, storageService);
     // FIXME: easy access to git in the window object.
@@ -59,6 +66,8 @@ export function WorkspacesContextProvider(props: Props) {
     return instance;
   }, [storageService]);
 
+  const workspaceService = useMemo(() => new WorkspaceService(storageService), [storageService]);
+
   const getAbsolutePath = useCallback(
     (args: { workspaceId: string; relativePath: string }) => workspaceService.getAbsolutePath(args),
     [workspaceService]
@@ -67,7 +76,7 @@ export function WorkspacesContextProvider(props: Props) {
   const createWorkspace = useCallback(
     async (descriptor: WorkspaceDescriptor, storeFiles: () => Promise<WorkspaceFile[]>) => {
       await workspaceService.create(descriptor, storeFiles, { broadcast: true });
-      const files = await workspaceService.getFiles(descriptor.workspaceId);
+      const files = await workspaceService.getFilesLazy(descriptor.workspaceId);
       if (files.length <= 0) {
         return { suggestedFirstFile: undefined };
       }
@@ -120,35 +129,39 @@ export function WorkspacesContextProvider(props: Props) {
       };
 
       const storeFiles = async () => {
-        await Promise.all(
-          localFiles.map((localFile) => {
-            if (!SUPPORTED_FILES.includes(extractFileExtension(localFile.path)!)) {
-              return Promise.resolve();
-            }
-
+        const files = localFiles
+          .filter((f) => SUPPORTED_FILES.includes(extractFileExtension(f.path)!))
+          .map((localFile) => {
             const path = workspaceService.getAbsolutePath({
               workspaceId: descriptor.workspaceId,
               relativePath: localFile.path.substring(localFile.path.indexOf("/") + 1),
             });
 
-            return storageService.createFile(
-              new StorageFile({
-                path,
-                getFileContents: localFile.getFileContents,
-              })
-            );
-          })
-        );
+            return new StorageFile({
+              path,
+              getFileContents: localFile.getFileContents,
+            });
+          });
 
+        console.time("create files");
+        // await Promise.all(files.map((f) => storageService.createFile(f)));
+        await storageService.createFiles(files);
+        console.timeEnd("create files");
+
+        console.time("git init");
         await gitService.init({
           dir: workspaceService.getAbsolutePath({ workspaceId: descriptor.workspaceId, relativePath: "" }),
         });
+        console.timeEnd("git init");
 
+        console.time("git add");
         await gitService.add({
           dir: workspaceService.getAbsolutePath({ workspaceId: descriptor.workspaceId, relativePath: "" }),
           relativePath: ".",
         });
+        console.timeEnd("git add");
 
+        console.time("git commit");
         await gitService.commit({
           files: [],
           dir: workspaceService.getAbsolutePath({ workspaceId: descriptor.workspaceId, relativePath: "" }),
@@ -159,8 +172,9 @@ export function WorkspacesContextProvider(props: Props) {
             email: "tfernand+dev@redhat.com", //FIXME: Change this.
           },
         });
+        console.timeEnd("git commit");
 
-        return workspaceService.getFiles(descriptor.workspaceId);
+        return workspaceService.getFilesLazy(descriptor.workspaceId);
       };
 
       const { suggestedFirstFile } = await createWorkspace(descriptor, storeFiles);
@@ -228,7 +242,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const getFiles = useCallback(
     async (workspaceId: string) => {
-      return await workspaceService.getFiles(workspaceId);
+      return await workspaceService.getFilesLazy(workspaceId);
     },
     [workspaceService]
   );
@@ -338,10 +352,10 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const resourceContentList = useCallback(
-    async (workspaceId: string, globPattern: string) => {
-      const files = await workspaceService.getFiles(workspaceId, globPattern);
+    async (args: { workspaceId: string; globPattern: string }) => {
+      const files = await workspaceService.getFilesLazy(args.workspaceId, args.globPattern);
       const matchingPaths = files.map((file) => file.relativePath);
-      return new ResourcesList(globPattern, matchingPaths);
+      return new ResourcesList(args.globPattern, matchingPaths);
     },
     [workspaceService]
   );

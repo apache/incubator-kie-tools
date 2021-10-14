@@ -95,29 +95,33 @@ export interface WorkspacesContextType {
     destinationDirRelativePath: string;
     extension: string;
   }): Promise<WorkspaceFile>;
-  prepareZip: (workspaceId: string) => Promise<Blob>;
-  resourceContentList: (workspaceId: string, globPattern: string, opts?: ResourceListOptions) => Promise<ResourcesList>;
+  prepareZip(workspaceId: string): Promise<Blob>;
+  getFiles(workspaceId: string): Promise<WorkspaceFile[]>;
+  isModified(workspaceId: string): Promise<boolean>;
+  getAbsolutePath(args: { workspaceId: string; relativePath: string }): string;
+  createSavePoint(workspaceId: string): Promise<void>;
 
-  // edit files
-  renameFile: (file: WorkspaceFile, newFileName: string) => Promise<WorkspaceFile>;
-  updateFile: (file: WorkspaceFile, getNewContents: () => Promise<string | undefined>) => Promise<void>;
+  resourceContentList: (args: {
+    workspaceId: string;
+    globPattern: string;
+    opts?: ResourceListOptions;
+  }) => Promise<ResourcesList>;
+
   resourceContentGet: (args: {
     workspaceId: string;
     relativePath: string;
     opts?: ResourceContentOptions;
   }) => Promise<ResourceContent | undefined>;
 
-  getAbsolutePath(args: { workspaceId: string; relativePath: string }): string;
-
-  createSavePoint(workspaceId: string): Promise<void>;
-
-  deleteFile(workspaceFile: WorkspaceFile): Promise<void>;
-
-  getFiles(workspaceId: string): Promise<WorkspaceFile[]>;
+  //
 
   getFile(args: { workspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined>;
 
-  isModified(workspaceId: string): Promise<boolean>;
+  renameFile(file: WorkspaceFile, newFileName: string): Promise<WorkspaceFile>;
+
+  updateFile(file: WorkspaceFile, getNewContents: () => Promise<string | undefined>): Promise<void>;
+
+  deleteFile(file: WorkspaceFile): Promise<void>;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);

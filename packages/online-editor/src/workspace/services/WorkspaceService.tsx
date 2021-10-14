@@ -23,7 +23,7 @@ import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
 import { v4 as uuid } from "uuid";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
-import { join } from "path";
+import { basename, join } from "path";
 import { Minimatch } from "minimatch";
 
 export class WorkspaceService {
@@ -107,21 +107,21 @@ export class WorkspaceService {
     return descriptor;
   }
 
-  public async getFiles(workspaceId: string, globPattern?: string): Promise<WorkspaceFile[]> {
-    console.time(`workspaceService#getFiles--${workspaceId}`);
+  public async getFilesLazy(workspaceId: string, globPattern?: string): Promise<WorkspaceFile[]> {
+    console.time(`WorkspaceService#getFilesLazy--${workspaceId}`);
     const matcher = globPattern ? new Minimatch(globPattern, { dot: true }) : undefined;
+    const gitDirPath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
+    const rootDirPath = this.getAbsolutePath({ workspaceId, relativePath: "/" });
+
     const files = await this.storageService.getFilePaths({
       dirPath: await this.resolveRootPath(workspaceId),
+      excludeDir: (dirPath) => dirPath === gitDirPath,
       visit: (path) => {
         const workspaceFile = new WorkspaceFile({
           workspaceId,
-          relativePath: path.replace(this.getAbsolutePath({ workspaceId, relativePath: "/" }), ""),
+          relativePath: path.replace(rootDirPath, ""),
           getFileContents: () => this.storageService.getFile(path).then((f) => f!.getFileContents()),
         });
-
-        if (workspaceFile.relativePath.startsWith(".git")) {
-          return undefined;
-        }
 
         if (matcher && !matcher.match(workspaceFile.name)) {
           return undefined;
@@ -130,7 +130,7 @@ export class WorkspaceService {
         return workspaceFile;
       },
     });
-    console.timeEnd(`workspaceService#getFiles--${workspaceId}`);
+    console.timeEnd(`WorkspaceService#getFilesLazy--${workspaceId}`);
     return files;
   }
 
@@ -143,6 +143,7 @@ export class WorkspaceService {
 
     await this.storageService.getFilePaths({
       dirPath: await this.resolveRootPath(workspaceId),
+      excludeDir: () => false,
       visit: (path) => {
         this.storageService.deleteFile(path);
       },
@@ -182,18 +183,28 @@ export class WorkspaceService {
   }
 
   public async prepareZip(workspaceId: string): Promise<Blob> {
-    console.time(`WorkspaceService#prepareZip--${workspaceId}`);
+    console.time(`WorkspaceService#assembleZip--${workspaceId}`);
     const workspaceRootPath = await this.resolveRootPath(workspaceId);
 
+    const matcher = new Minimatch(SUPPORTED_FILES_PATTERN, { dot: true });
+    const gitDirPath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
+    const paths = await this.storageService.getFilePaths({
+      dirPath: await this.resolveRootPath(workspaceId),
+      excludeDir: (dirPath) => dirPath === gitDirPath,
+      visit: (path) => (!matcher.match(basename(path)) ? undefined : path),
+    });
+
+    const files = await this.storageService.getFiles(paths);
+
     const zip = new JSZip();
-    const files = await this.getFiles(workspaceRootPath, SUPPORTED_FILES_PATTERN);
-
     for (const file of files) {
-      zip.file(file.relativePath, (await file.getFileContents()) ?? "");
+      zip.file(file.path.replace(workspaceRootPath, ""), file.content);
     }
+    console.timeEnd(`WorkspaceService#assembleZip--${workspaceId}`);
 
+    console.time(`WorkspaceService#prepareZip#generateAsync--${workspaceId}`);
     const blob = await zip.generateAsync({ type: "blob" });
-    console.timeEnd(`WorkspaceService#prepareZip--${workspaceId}`);
+    console.timeEnd(`WorkspaceService#prepareZip#generateAsync--${workspaceId}`);
     return blob;
   }
 

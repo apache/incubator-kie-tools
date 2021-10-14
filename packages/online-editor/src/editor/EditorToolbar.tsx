@@ -65,12 +65,11 @@ import { AddFileDropdownItems } from "./AddFileDropdownItems";
 import { PageHeaderToolsItem, PageHeaderToolsItemProps } from "@patternfly/react-core/dist/js/components/Page";
 import { FileLabel } from "../workspace/pages/FileLabel";
 import { DeleteDropdownWithConfirmation } from "./DeleteDropdownWithConfirmation";
-import { useWorkspaceIsModifiedPromise } from "../workspace/hooks/WorkspaceHooks";
+import { useWorkspaceIsModifiedPromise, useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 
 export interface Props {
   alerts: AlertsController | undefined;
   editor: EmbeddedEditorRef | undefined;
-  workspace: ActiveWorkspace;
   workspaceFile: WorkspaceFile;
 }
 
@@ -108,6 +107,7 @@ export function EditorToolbar(props: Props) {
   const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [isWorkspaceAddFileMenuOpen, setWorkspaceAddFileMenuOpen] = useState(false);
+  const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
 
   const copySuccessfulAlert = useAlert(
     props.alerts,
@@ -281,13 +281,13 @@ export function EditorToolbar(props: Props) {
       return;
     }
 
-    const zipBlob = await workspaces.prepareZip(props.workspace.descriptor.workspaceId);
+    const zipBlob = await workspaces.prepareZip(props.workspaceFile.workspaceId);
     if (downloadAllRef.current) {
       downloadAllRef.current.href = URL.createObjectURL(zipBlob);
       downloadAllRef.current.click();
     }
-    await workspaces.createSavePoint(props.workspace.descriptor.workspaceId);
-  }, [props.editor, props.workspace, workspaces]);
+    await workspaces.createSavePoint(props.workspaceFile.workspaceId);
+  }, [props.editor, props.workspaceFile, workspaces]);
 
   const onPreview = useCallback(() => {
     props.editor?.getPreview().then((previewSvg) => {
@@ -422,16 +422,14 @@ export function EditorToolbar(props: Props) {
           )}
         </React.Fragment>
         <React.Fragment key={`dropdown-${dropdownId}-fragment-download-all`}>
-          {props.workspace && (
-            <DropdownItem
-              onClick={onDownloadAll}
-              key={"download-zip-item"}
-              description={`A zip file including all files will be downloaded`}
-              icon={<FolderIcon />}
-            >
-              All files
-            </DropdownItem>
-          )}
+          <DropdownItem
+            onClick={onDownloadAll}
+            key={"download-zip-item"}
+            description={`A zip file including all files will be downloaded`}
+            icon={<FolderIcon />}
+          >
+            All files
+          </DropdownItem>
         </React.Fragment>
       </DropdownGroup>,
       <DropdownGroup key={"other-group"} label="Other">
@@ -489,7 +487,6 @@ export function EditorToolbar(props: Props) {
     [
       onDownload,
       onDownloadAll,
-      props.workspace,
       props.workspaceFile,
       onCopyContentToClipboard,
       onPreview,
@@ -503,26 +500,33 @@ export function EditorToolbar(props: Props) {
   );
 
   useEffect(() => {
+    if (!workspacePromise.data) {
+      return;
+    }
     if (downloadRef.current) {
       downloadRef.current.download = `${props.workspaceFile.name}`;
     }
     if (downloadAllRef.current) {
-      downloadAllRef.current.download = `${props.workspace.descriptor.name}.zip`;
+      downloadAllRef.current.download = `${workspacePromise.data.descriptor.name}.zip`;
     }
     if (downloadPreviewRef.current) {
       downloadPreviewRef.current.download = `${props.workspaceFile.nameWithoutExtension}-svg.svg`;
     }
-  }, [props.workspaceFile, props.workspace]);
+  }, [props.workspaceFile, workspacePromise.data]);
 
   const deleteWorkspaceFile = useCallback(() => {
-    if (props.workspace.files.length === 1) {
+    if (!workspacePromise.data) {
+      return;
+    }
+
+    if (workspacePromise.data.files.length === 1) {
       workspaces.workspaceService
-        .delete(props.workspace.descriptor.workspaceId, { broadcast: true })
+        .delete(props.workspaceFile.workspaceId, { broadcast: true })
         .then(() => history.push({ pathname: globals.routes.home.path({}) }));
       return;
     }
 
-    const nextFile = props.workspace.files
+    const nextFile = workspacePromise.data.files
       .filter(
         (f) =>
           f.relativePath !== props.workspaceFile.relativePath &&
@@ -543,7 +547,7 @@ export function EditorToolbar(props: Props) {
         }),
       })
     );
-  }, [globals, history, props.workspace, props.workspaceFile, workspaces]);
+  }, [globals, history, workspacePromise.data, props.workspaceFile, workspaces]);
 
   return (
     <>
@@ -585,7 +589,12 @@ export function EditorToolbar(props: Props) {
                   )}
                 </FlexItem>
                 <FlexItem>
-                  <WorkspaceAndWorkspaceFileNames workspace={props.workspace} workspaceFile={props.workspaceFile} />
+                  {workspacePromise.data && (
+                    <WorkspaceAndWorkspaceFileNames
+                      workspace={workspacePromise.data}
+                      workspaceFile={props.workspaceFile}
+                    />
+                  )}
                 </FlexItem>
                 <FlexItem>
                   <Dropdown
@@ -604,7 +613,7 @@ export function EditorToolbar(props: Props) {
                         key={"new-file-dropdown-items"}
                         addEmptyWorkspaceFile={async (extension) => {
                           const file = await workspaces.addEmptyFile({
-                            workspaceId: props.workspace.descriptor.workspaceId,
+                            workspaceId: props.workspaceFile.workspaceId,
                             destinationDirRelativePath: props.workspaceFile.relativeDirPath,
                             extension,
                           });
@@ -722,7 +731,6 @@ export function EditorToolbar(props: Props) {
 function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; workspaceFile: WorkspaceFile }) {
   const workspaces = useWorkspaces();
   const globals = useGlobals();
-  const history = useHistory();
   const workspaceNameRef = useRef<HTMLInputElement>(null);
   const workspaceFileNameRef = useRef<HTMLInputElement>(null);
   const [newFileNameValid, setNewFileNameValid] = useState<boolean>(true);
