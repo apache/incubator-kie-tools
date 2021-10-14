@@ -1,4 +1,4 @@
-TEST_PARAMS=$(foreach V,$(.VARIABLES),$(if $(filter command line, $(origin $V)),--$V $($V)))
+TEST_PARAMS=$(foreach V,$(.VARIABLES),$(if $(filter command line, $(origin $V)),--$V "$($V)"))
 
 update-modules:
 	go mod tidy
