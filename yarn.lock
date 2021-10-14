@@ -1662,25 +1662,25 @@
     methods "^1.1.2"
     path-to-regexp "^6.1.0"
 
-"@kogito-tooling/bpmn-editor-unpacked@^8.4.1":
-  version "8.4.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-8.4.1.tgz#08b1836decfc4e340f05fe304de97904789206a1"
-  integrity sha512-V4LjF/rC3k9TK4ciZrnCVp6EQMXz/EJsVAGCI8aaemHFBsWixhVjOO7QlZVQnSNLpybjVDbTo7sAndyt5epMLg==
+"@kogito-tooling/bpmn-editor-unpacked@^8.4.2":
+  version "8.4.2"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-8.4.2.tgz#aab1efdad932d9b2501e3252842e9a857276fc96"
+  integrity sha512-YY1H2E/VMjUqE4FY/EZt7QWroVDDxwi5IHDkVUdN+ujUAUwZcnb0Dro5LSjWvo2MbCNc97f4NWkwwuU6wEU9mw==
 
-"@kogito-tooling/dmn-editor-unpacked@^8.4.1":
-  version "8.4.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-8.4.1.tgz#9b9a01c87f5ef83fcb566796d42204118ca59cc8"
-  integrity sha512-ccvF1rRCerWKcUw13swb9HtO4U9SIHg86IMzj2vcqgWLSuUTYmvvHi9kB08KlntoAi2hpZjCBXhDdJSH5Ig6aQ==
+"@kogito-tooling/dmn-editor-unpacked@^8.4.2":
+  version "8.4.2"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-8.4.2.tgz#75166bffd5fce276ded30e2f489a0cdda52fb00c"
+  integrity sha512-eKkilpMI3fCLn+mg+8D8LzaRpye6lZy+jEukvaH04wibL4PGrBg0oft5t/QY89usd9RkP1tqZ/Ajnb3n2CIBBQ==
 
 "@kogito-tooling/jitexecutor-native@1.11.1-Final":
   version "1.11.1-Final"
   resolved "https://registry.yarnpkg.com/@kogito-tooling/jitexecutor-native/-/jitexecutor-native-1.11.1-Final.tgz#a51fd1d7ee76fbe616388a5cbe356b008d603df6"
   integrity sha512-KWsI/95HCr7w2tMleAFyv5E4INGE/U9/IBp1FkxWoxRAeWcrC92cJkH0mnv9Fa5jktbvwPKuXfqh3ZLsbSipgw==
 
-"@kogito-tooling/scesim-editor-unpacked@^8.4.1":
-  version "8.4.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.4.1.tgz#6085ff60fb511a0dd4f649b443bf8d95480eb774"
-  integrity sha512-y7RjWn3p78EwjGGtyOAxfPfQgVvHXNI/k2PrrBJjD92QtbtM50MJfFKM2KsuBgJlo0baX9RJMXij+TJppYNKEg==
+"@kogito-tooling/scesim-editor-unpacked@^8.4.2":
+  version "8.4.2"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.4.2.tgz#d12de81e3d7a5481fd4de4305eb9c7ac1fe31007"
+  integrity sha512-qdGTaCOcbXk/DZls8A5lfwp37Hf3WufbhIWHSMHw313hvgBkk2612rNWrbQg06UwgNdjYRBm3OY2cTJpGzVH4A==
 
 "@lerna/add@4.0.0":
   version "4.0.0"
