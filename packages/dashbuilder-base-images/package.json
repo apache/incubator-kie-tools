@@ -15,6 +15,8 @@
     "podman:build:runtime": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env dashbuilder.baseImage.buildTags) | xargs printf -- \"-t $(build-env dashbuilder.baseImage.registry)/$(build-env dashbuilder.baseImage.account)/$(build-env dashbuilder.baseImage.runtimeName):%s\n\" | xargs echo) -f dashbuilder-runtime/Dockerfile\" --else \"echo Podman not found, skipping image build.\"",
     "build:dev": "yarn cleanup",
     "build:prod:linux": "yarn cleanup && yarn copy:assets && yarn podman:build:runtime && yarn podman:build:authoring",
+    "build:prod:win32": "echo \"Build not supported on Windows\"",
+    "build:prod:darwin": "echo \"Build not supported on Mac\"",
     "build:prod": "run-script-os"
   },
   "dependencies": {
