@@ -365,6 +365,9 @@ jobs:
         with:
           ref: ${{ needs.prepare.outputs.release_ref }}
 
+      - name: "Support longpaths"
+        run: git config --system core.longpaths true
+
       - name: "STAGING: Setup environment"
         uses: ./.github/actions/setup-env
         with:

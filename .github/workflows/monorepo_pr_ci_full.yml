@@ -27,6 +27,9 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.base_ref }}
 
+      - name: "Support longpaths"
+        run: git config --system core.longpaths true
+
       - name: "Cache Maven packages"
         uses: actions/cache@v2
         with:
