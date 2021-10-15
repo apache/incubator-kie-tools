@@ -45,4 +45,68 @@ export class BpmnEditorEnvelopeApiImpl
     const ret = editor?.myBpmnMethod() ?? "bpmn-specific--default";
     return Promise.resolve(ret);
   }
+
+  public async canvas_getNodeIds() {
+    const editor = this.bpmnArgs.view().getEditor();
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.getNodeIds();
+  }
+
+  public async canvas_getBackgroundColor(uuid: string) {
+    const editor = this.bpmnArgs.view().getEditor();
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.getBackgroundColor(uuid);
+  }
+
+  public async canvas_setBackgroundColor(uuid: string, backgroundColor: string) {
+    const editor = this.bpmnArgs.view().getEditor();
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.setBackgroundColor(uuid, backgroundColor);
+  }
+
+  public async canvas_getBorderColor(uuid: string) {
+    const editor = this.bpmnArgs.view().getEditor();
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.getBorderColor(uuid);
+  }
+
+  public async canvas_setBorderColor(uuid: string, borderColor: string) {
+    const editor = this.bpmnArgs.view().getEditor();
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.setBorderColor(uuid, borderColor);
+  }
+
+  public async canvas_getLocation(uuid: string) {
+    const editor = this.bpmnArgs.view().getEditor();
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.getLocation(uuid);
+  }
+
+  public async canvas_getAbsoluteLocation(uuid: string) {
+    const editor = this.bpmnArgs.view().getEditor();
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.getAbsoluteLocation(uuid);
+  }
+
+  public async canvas_getDimensions(uuid: string) {
+    const editor = this.bpmnArgs.view().getEditor();
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.getDimensions(uuid);
+  }
 }

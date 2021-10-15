@@ -15,13 +15,52 @@
  */
 
 import { GwtEditorWrapper } from "../../common";
+import { CanvasApi } from "../../jslienzo/CanvasApi";
 
-export interface DmnEditor extends GwtEditorWrapper {
+interface CustomWindow extends Window {
+  canvas: CanvasApi;
+}
+
+declare let window: CustomWindow;
+
+export interface DmnEditor extends GwtEditorWrapper, CanvasApi {
   myDmnMethod(): string;
 }
 
 export class DmnEditorImpl extends GwtEditorWrapper implements DmnEditor {
   public myDmnMethod() {
     return "dmn-specific--configured";
+  }
+
+  public getNodeIds() {
+    return window.canvas.getNodeIds();
+  }
+
+  public getBackgroundColor(uuid: string) {
+    return window.canvas.getBackgroundColor(uuid);
+  }
+
+  public setBackgroundColor(uuid: string, backgroundColor: string) {
+    window.canvas.setBackgroundColor(uuid, backgroundColor);
+  }
+
+  public getBorderColor(uuid: string) {
+    return window.canvas.getBorderColor(uuid);
+  }
+
+  public setBorderColor(uuid: string, borderColor: string) {
+    window.canvas.setBorderColor(uuid, borderColor);
+  }
+
+  public getLocation(uuid: string) {
+    return window.canvas.getLocation(uuid);
+  }
+
+  public getAbsoluteLocation(uuid: string) {
+    return window.canvas.getAbsoluteLocation(uuid);
+  }
+
+  public getDimensions(uuid: string) {
+    return window.canvas.getDimensions(uuid);
   }
 }
