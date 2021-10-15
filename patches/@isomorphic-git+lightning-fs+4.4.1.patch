@@ -1,5 +1,5 @@
 diff --git a/node_modules/@isomorphic-git/lightning-fs/src/DefaultBackend.js b/node_modules/@isomorphic-git/lightning-fs/src/DefaultBackend.js
-index ddd4e92..a9a5040 100644
+index ddd4e92..d007280 100644
 --- a/node_modules/@isomorphic-git/lightning-fs/src/DefaultBackend.js
 +++ b/node_modules/@isomorphic-git/lightning-fs/src/DefaultBackend.js
 @@ -11,7 +11,8 @@ const Mutex2 = require("./Mutex2.js");
@@ -7,16 +7,18 @@ index ddd4e92..a9a5040 100644
  
  module.exports = class DefaultBackend {
 -  constructor() {
-+  constructor({ idbBackendDelegate = undefined }) {
-+    this.idbBackendDelegate = idbBackendDelegate;
++  constructor(args) {
++    this._idbBackendDelegate = args ? args.idbBackendDelegate : undefined;
      this.saveSuperblock = debounce(() => {
        this._saveSuperblock();
      }, 500);
-@@ -24,9 +25,10 @@ module.exports = class DefaultBackend {
+@@ -24,9 +25,12 @@ module.exports = class DefaultBackend {
      fileStoreName = name + "_files",
      lockDbName = name + "_lock",
      lockStoreName = name + "_lock",
-+    idbBackend = this.idbBackendDelegate ? this.idbBackendDelegate(fileDbName, fileStoreName) : new IdbBackend(fileDbName, fileStoreName)
++    idbBackend = this._idbBackendDelegate
++      ? this._idbBackendDelegate(fileDbName, fileStoreName)
++      : new IdbBackend(fileDbName, fileStoreName)
    } = {}) {
      this._name = name
 -    this._idb = new IdbBackend(fileDbName, fileStoreName);
@@ -24,13 +26,14 @@ index ddd4e92..a9a5040 100644
      this._mutex = navigator.locks ? new Mutex2(name) : new Mutex(lockDbName, lockStoreName);
      this._cache = new CacheFS(name);
      this._opts = { wipe, url };
-@@ -123,6 +125,67 @@ module.exports = class DefaultBackend {
+@@ -123,6 +127,52 @@ module.exports = class DefaultBackend {
      if (!stat) throw new ENOENT(filepath)
      return data;
    }
 +  async readFileBulk(filepaths, opts) {
 +    const { encoding } = opts;
 +    if (encoding && encoding !== "utf8") {
++      console.info(encoding)
 +      throw new Error('Only "utf8" encoding is supported in readFile');
 +    }
 +
@@ -45,10 +48,14 @@ index ddd4e92..a9a5040 100644
 +    const inoBulk = [];
 +    const enoentBulk = [];
 +    for (const filepath of filepaths) {
-+      const stat = this._cache.stat(filepath);
-+      if (stat) {
-+        inoBulk.push(stat.ino);
-+      } else {
++      try {
++        const stat = this._cache.stat(filepath);
++        if (stat) {
++          inoBulk.push(stat.ino);
++        } else {
++          enoentBulk.push(filepath);
++        }
++      } catch (e) {
 +        enoentBulk.push(filepath);
 +      }
 +    }
@@ -64,14 +71,21 @@ index ddd4e92..a9a5040 100644
 +
 +    const fileBulk = [];
 +    for (let i = 0; i < dataBulk.length; i++) {
-+      fileBulk[i] = [filepaths[i], dataBulk[i]];
++      fileBulk[i] = [filepaths[i], encoding ? decode(dataBulk[i]) : dataBulk[i]];
 +    }
 +
 +    return fileBulk;
 +  }
+   async writeFile(filepath, data, opts) {
+     const { mode, encoding = "utf8" } = opts;
+     if (typeof data === "string") {
+@@ -134,6 +184,26 @@ module.exports = class DefaultBackend {
+     const stat = await this._cache.writeStat(filepath, data.byteLength, { mode });
+     await this._idb.writeFile(stat.ino, data)
+   }
 +  async writeFileBulk(files, opts) {
 +    if (!this._idb.writeFileBulk) {
-+      throw new Error("Current IndexedDB backend doesn't support bulk operations.");
++      throw new Error("Current IndexedDB backend doesn't support bulk-writing operations.");
 +    }
 +
 +    const { mode, encoding = "utf8" } = opts;
@@ -87,22 +101,44 @@ index ddd4e92..a9a5040 100644
 +      dataBulk.push(typeof data === "string" ? encode(data) : data);
 +    }
 +
-+    await this._idb.writeFileBulk(inoBulk, dataBulk)
++    await this._idb.writeFileBulk(inoBulk, dataBulk);
 +  }
-   async writeFile(filepath, data, opts) {
-     const { mode, encoding = "utf8" } = opts;
-     if (typeof data === "string") {
+   async unlink(filepath, opts) {
+     const stat = this._cache.lstat(filepath);
+     this._cache.unlink(filepath);
+@@ -141,6 +211,21 @@ module.exports = class DefaultBackend {
+       await this._idb.unlink(stat.ino)
+     }
+   }
++  async unlinkBulk(filepaths, opts) {
++    if (!this._idb.unlinkBulk) {
++      throw new Error("Current IndexedDB backend doesn't support bulk-unlinking operations.");
++    }
++
++    const inoBulk = [];
++    for (const filepath of filepaths) {
++      const stat = this._cache.lstat(filepath);
++      this._cache.unlink(filepath);
++      if (stat.type !== "symlink") {
++        inoBulk.push(stat.ino);
++      }
++    }
++    await this._idb.unlinkBulk(inoBulk);
++  }
+   readdir(filepath, opts) {
+     return this._cache.readdir(filepath);
+   }
 diff --git a/node_modules/@isomorphic-git/lightning-fs/src/DexieBackend.js b/node_modules/@isomorphic-git/lightning-fs/src/DexieBackend.js
 new file mode 100644
-index 0000000..0199aab
+index 0000000..d96c9c9
 --- /dev/null
 +++ b/node_modules/@isomorphic-git/lightning-fs/src/DexieBackend.js
-@@ -0,0 +1,41 @@
+@@ -0,0 +1,50 @@
 +const { Dexie } = require("dexie");
 +
-+module.exports = class IdbBackend {
++module.exports = class DexieBackend {
 +  constructor(dbname, storename) {
-+    const stores = {}
++    const stores = {};
 +    stores[storename] = "";
 +    this._dexie = new Dexie(dbname);
 +    this._dexie.version(1).stores(stores);
@@ -110,120 +146,46 @@ index 0000000..0199aab
 +  }
 +  async saveSuperblock(superblock) {
 +    await this._dexie.open();
-+    return await this._dexie[this._storename].put(superblock, "!root");
++    return this._dexie[this._storename].put(superblock, "!root");
 +  }
 +  async loadSuperblock() {
 +    await this._dexie.open();
-+    return await this._dexie[this._storename].get("!root");
++    return this._dexie[this._storename].get("!root");
 +  }
 +  async readFile(inode) {
 +    await this._dexie.open();
-+    return await this._dexie[this._storename].get(inode);
++    return this._dexie[this._storename].get(inode);
++  }
++  async readFileBulk(inodeBulk) {
++    await this._dexie.open();
++    return this._dexie[this._storename].bulkGet(inodeBulk);
 +  }
 +  async writeFile(inode, data) {
 +    await this._dexie.open();
-+    return await this._dexie[this._storename].put(data, inode);
++    return this._dexie[this._storename].put(data, inode);
 +  }
-+  async writeFileBulk(inoBulk, dataBulk) {
++  async writeFileBulk(inodeBulk, dataBulk) {
 +    await this._dexie.open();
-+    await this._dexie[this._storename].bulkPut(dataBulk, inoBulk)
++    return this._dexie[this._storename].bulkPut(dataBulk, inodeBulk);
 +  }
 +  async unlink(inode) {
 +    await this._dexie.open();
-+    return await this._dexie[this._storename].delete(inode);
++    return this._dexie[this._storename].delete(inode);
++  }
++  async unlinkBulk(inodeBulk) {
++    await this._dexie.open();
++    return this._dexie[this._storename].bulkDelete(inodeBulk);
 +  }
 +  async wipe() {
-+    return this._dexie.clear();
++    await this._dexie.open();
++    return this._dexie[this._storename].clear();
 +  }
 +  async close() {
-+    return this._dexie.close()
++    return this._dexie.close();
 +  }
-+}
-diff --git a/node_modules/@isomorphic-git/lightning-fs/src/IdbDexieBackend.js b/node_modules/@isomorphic-git/lightning-fs/src/IdbDexieBackend.js
-new file mode 100644
-index 0000000..3d6fbde
---- /dev/null
-+++ b/node_modules/@isomorphic-git/lightning-fs/src/IdbDexieBackend.js
-@@ -0,0 +1,41 @@
-+const { Dexie } = require("dexie");
-+
-+module.exports = class IdbDexieBackend {
-+  constructor(dbname, storename) {
-+    const stores = {}
-+    stores[storename] = "";
-+    this._dexie = new Dexie(dbname);
-+    this._dexie.version(1).stores(stores);
-+    this._storename = storename;
-+  }
-+  async saveSuperblock(superblock) {
-+    await this._dexie.open();
-+    return await this._dexie[this._storename].put(superblock, "!root");
-+  }
-+  async loadSuperblock() {
-+    await this._dexie.open();
-+    return await this._dexie[this._storename].get("!root");
-+  }
-+  async readFile(inode) {
-+    await this._dexie.open();
-+    return await this._dexie[this._storename].get(inode);
-+  }
-+  async writeFile(inode, data) {
-+    await this._dexie.open();
-+    return await this._dexie[this._storename].put(data, inode);
-+  }
-+  async writeFileBulk(inoBulk, dataBulk) {
-+    await this._dexie.open();
-+    await this._dexie[this._storename].bulkPut(dataBulk, inoBulk)
-+  }
-+  async unlink(inode) {
-+    await this._dexie.open();
-+    return await this._dexie[this._storename].delete(inode);
-+  }
-+  async wipe() {
-+    return this._dexie.clear();
-+  }
-+  async close() {
-+    return this._dexie.close()
-+  }
-+}
-diff --git a/node_modules/@isomorphic-git/lightning-fs/src/IdbKeyvalBackend.js b/node_modules/@isomorphic-git/lightning-fs/src/IdbKeyvalBackend.js
-new file mode 100644
-index 0000000..0685fb1
---- /dev/null
-+++ b/node_modules/@isomorphic-git/lightning-fs/src/IdbKeyvalBackend.js
-@@ -0,0 +1,30 @@
-+const idb = require("@isomorphic-git/idb-keyval");
-+
-+module.exports = class IdbKeyvalBackend {
-+  constructor(dbname, storename) {
-+    this._database = dbname;
-+    this._storename = storename;
-+    this._store = new idb.Store(this._database, this._storename);
-+  }
-+  saveSuperblock(superblock) {
-+    return idb.set("!root", superblock, this._store);
-+  }
-+  loadSuperblock() {
-+    return idb.get("!root", this._store);
-+  }
-+  readFile(inode) {
-+    return idb.get(inode, this._store)
-+  }
-+  writeFile(inode, data) {
-+    return idb.set(inode, data, this._store)
-+  }
-+  unlink(inode) {
-+    return idb.del(inode, this._store)
-+  }
-+  wipe() {
-+    return idb.clear(this._store)
-+  }
-+  close() {
-+    return idb.close(this._store)
-+  }
-+}
++};
 diff --git a/node_modules/@isomorphic-git/lightning-fs/src/PromisifiedFS.js b/node_modules/@isomorphic-git/lightning-fs/src/PromisifiedFS.js
-index c219bca..e34bc32 100644
+index c219bca..7a03b25 100644
 --- a/node_modules/@isomorphic-git/lightning-fs/src/PromisifiedFS.js
 +++ b/node_modules/@isomorphic-git/lightning-fs/src/PromisifiedFS.js
 @@ -18,6 +18,23 @@ function cleanParamsFilepathOpts(filepath, opts, ...rest) {
@@ -275,160 +237,19 @@ index c219bca..e34bc32 100644
  function cleanParamsFilepathFilepath(oldFilepath, newFilepath, ...rest) {
    // normalize paths
    return [path.normalize(oldFilepath), path.normalize(newFilepath), ...rest];
-@@ -42,39 +77,41 @@ function cleanParamsFilepathFilepath(oldFilepath, newFilepath, ...rest) {
- 
- module.exports = class PromisifiedFS {
+@@ -44,8 +79,11 @@ module.exports = class PromisifiedFS {
    constructor(name, options = {}) {
--    this.init = this.init.bind(this)
--    this.readFile = this._wrap(this.readFile, cleanParamsFilepathOpts, false)
--    this.writeFile = this._wrap(this.writeFile, cleanParamsFilepathDataOpts, true)
--    this.unlink = this._wrap(this.unlink, cleanParamsFilepathOpts, true)
--    this.readdir = this._wrap(this.readdir, cleanParamsFilepathOpts, false)
--    this.mkdir = this._wrap(this.mkdir, cleanParamsFilepathOpts, true)
--    this.rmdir = this._wrap(this.rmdir, cleanParamsFilepathOpts, true)
--    this.rename = this._wrap(this.rename, cleanParamsFilepathFilepath, true)
--    this.stat = this._wrap(this.stat, cleanParamsFilepathOpts, false)
--    this.lstat = this._wrap(this.lstat, cleanParamsFilepathOpts, false)
--    this.readlink = this._wrap(this.readlink, cleanParamsFilepathOpts, false)
--    this.symlink = this._wrap(this.symlink, cleanParamsFilepathFilepath, true)
--    this.backFile = this._wrap(this.backFile, cleanParamsFilepathOpts, true)
-+    this.init = this.init.bind(this);
-+    this.readFile = this._wrap(this.readFile, cleanParamsFilepathOpts, false);
-+    this.readFileBulk = this._wrap(this.readFileBulk, cleanParamsFilepathsOpts, true);
-+    this.writeFile = this._wrap(this.writeFile, cleanParamsFilepathDataOpts, true);
-+    this.writeFileBulk = this._wrap(this.writeFileBulk, cleanParamsFilesOpts, true);
-+    this.unlink = this._wrap(this.unlink, cleanParamsFilepathOpts, true);
-+    this.readdir = this._wrap(this.readdir, cleanParamsFilepathOpts, false);
-+    this.mkdir = this._wrap(this.mkdir, cleanParamsFilepathOpts, true);
-+    this.rmdir = this._wrap(this.rmdir, cleanParamsFilepathOpts, true);
-+    this.rename = this._wrap(this.rename, cleanParamsFilepathFilepath, true);
-+    this.stat = this._wrap(this.stat, cleanParamsFilepathOpts, false);
-+    this.lstat = this._wrap(this.lstat, cleanParamsFilepathOpts, false);
-+    this.readlink = this._wrap(this.readlink, cleanParamsFilepathOpts, false);
-+    this.symlink = this._wrap(this.symlink, cleanParamsFilepathFilepath, true);
-+    this.backFile = this._wrap(this.backFile, cleanParamsFilepathOpts, true);
-     this.du = this._wrap(this.du, cleanParamsFilepathOpts, false);
- 
--    this._deactivationPromise = null
--    this._deactivationTimeout = null
--    this._activationPromise = null
-+    this._deactivationPromise = null;
-+    this._deactivationTimeout = null;
-+    this._activationPromise = null;
- 
--    this._operations = new Set()
-+    this._operations = new Set();
- 
-     if (name) {
--      this.init(name, options)
-+      this.init(name, options);
-     }
-   }
--  async init (...args) {
-+  async init(...args) {
-     if (this._initPromiseResolve) await this._initPromise;
--    this._initPromise = this._init(...args)
--    return this._initPromise
-+    this._initPromise = this._init(...args);
-+    return this._initPromise;
-   }
--  async _init (name, options = {}) {
-+  async _init(name, options = {}) {
-     await this._gracefulShutdown();
--    if (this._activationPromise) await this._deactivate()
-+    if (this._activationPromise) await this._deactivate();
- 
-     if (this._backend && this._backend.destroy) {
-       await this._backend.destroy();
-@@ -94,79 +131,87 @@ module.exports = class PromisifiedFS {
-     if (!options.defer) {
-       // The fs is initially activated when constructed (in order to wipe/save the superblock)
-       // This is not awaited, because that would create a cycle.
--      this.stat('/')
-+      this.stat("/");
-     }
-   }
--  async _gracefulShutdown () {
-+  async _gracefulShutdown() {
-     if (this._operations.size > 0) {
--      this._isShuttingDown = true
--      await new Promise(resolve => this._gracefulShutdownResolve = resolve);
--      this._isShuttingDown = false
--      this._gracefulShutdownResolve = null
-+      this._isShuttingDown = true;
-+      await new Promise(resolve => (this._gracefulShutdownResolve = resolve));
-+      this._isShuttingDown = false;
-+      this._gracefulShutdownResolve = null;
-     }
-   }
--  _wrap (fn, paramCleaner, mutating) {
-+  _wrap(fn, paramCleaner, mutating) {
-     return async (...args) => {
--      args = paramCleaner(...args)
-+      args = paramCleaner(...args);
-       let op = {
-         name: fn.name,
-         args,
--      }
--      this._operations.add(op)
-+      };
-+      this._operations.add(op);
-       try {
--        await this._activate()
--        return await fn.apply(this, args)
-+        await this._activate();
-+        return await fn.apply(this, args);
-       } finally {
--        this._operations.delete(op)
--        if (mutating) this._backend.saveSuperblock() // this is debounced
-+        this._operations.delete(op);
-+        if (mutating) this._backend.saveSuperblock(); // this is debounced
-         if (this._operations.size === 0) {
--          if (!this._deactivationTimeout) clearTimeout(this._deactivationTimeout)
--          this._deactivationTimeout = setTimeout(this._deactivate.bind(this), 500)
-+          if (!this._deactivationTimeout) clearTimeout(this._deactivationTimeout);
-+          this._deactivationTimeout = setTimeout(this._deactivate.bind(this), 500);
-         }
-       }
--    }
-+    };
-   }
-   async _activate() {
--    if (!this._initPromise) console.warn(new Error(`Attempted to use LightningFS ${this._name} before it was initialized.`))
--    await this._initPromise
-+    if (!this._initPromise)
-+      console.warn(new Error(`Attempted to use LightningFS ${this._name} before it was initialized.`));
-+    await this._initPromise;
-     if (this._deactivationTimeout) {
--      clearTimeout(this._deactivationTimeout)
--      this._deactivationTimeout = null
-+      clearTimeout(this._deactivationTimeout);
-+      this._deactivationTimeout = null;
-     }
--    if (this._deactivationPromise) await this._deactivationPromise
--    this._deactivationPromise = null
-+    if (this._deactivationPromise) await this._deactivationPromise;
-+    this._deactivationPromise = null;
-     if (!this._activationPromise) {
-       this._activationPromise = this._backend.activate ? this._backend.activate() : Promise.resolve();
-     }
--    await this._activationPromise
-+    await this._activationPromise;
-   }
-   async _deactivate() {
--    if (this._activationPromise) await this._activationPromise
-+    if (this._activationPromise) await this._activationPromise;
- 
-     if (!this._deactivationPromise) {
-       this._deactivationPromise = this._backend.deactivate ? this._backend.deactivate() : Promise.resolve();
-     }
--    this._activationPromise = null
--    if (this._gracefulShutdownResolve) this._gracefulShutdownResolve()
--    return this._deactivationPromise
-+    this._activationPromise = null;
-+    if (this._gracefulShutdownResolve) this._gracefulShutdownResolve();
-+    return this._deactivationPromise;
-   }
+     this.init = this.init.bind(this)
+     this.readFile = this._wrap(this.readFile, cleanParamsFilepathOpts, false)
++    this.readFileBulk = this._wrap(this.readFileBulk, cleanParamsFilepathsOpts, false)
+     this.writeFile = this._wrap(this.writeFile, cleanParamsFilepathDataOpts, true)
++    this.writeFileBulk = this._wrap(this.writeFileBulk, cleanParamsFilesOpts, true)
+     this.unlink = this._wrap(this.unlink, cleanParamsFilepathOpts, true)
++    this.unlinkBulk = this._wrap(this.unlinkBulk, cleanParamsFilepathsOpts, true)
+     this.readdir = this._wrap(this.readdir, cleanParamsFilepathOpts, false)
+     this.mkdir = this._wrap(this.mkdir, cleanParamsFilepathOpts, true)
+     this.rmdir = this._wrap(this.rmdir, cleanParamsFilepathOpts, true)
+@@ -153,14 +191,25 @@ module.exports = class PromisifiedFS {
    async readFile(filepath, opts) {
      return this._backend.readFile(filepath, opts);
    }
@@ -437,45 +258,28 @@ index c219bca..e34bc32 100644
 +  }
    async writeFile(filepath, data, opts) {
      await this._backend.writeFile(filepath, data, opts);
--    return null
-+    return null;
-+  }
+     return null
+   }
 +  async writeFileBulk(files, opts) {
 +    await this._backend.writeFileBulk(files, opts);
 +    return null;
-   }
++  }
    async unlink(filepath, opts) {
      await this._backend.unlink(filepath, opts);
--    return null
-+    return null;
+     return null
    }
++  async unlinkBulk(filepath, opts) {
++    await this._backend.unlinkBulk(filepath, opts);
++    return null;
++  }
    async readdir(filepath, opts) {
      return this._backend.readdir(filepath, opts);
    }
-   async mkdir(filepath, opts) {
-     await this._backend.mkdir(filepath, opts);
--    return null
-+    return null;
-   }
-   async rmdir(filepath, opts) {
-     await this._backend.rmdir(filepath, opts);
-@@ -193,9 +238,9 @@ module.exports = class PromisifiedFS {
-   }
-   async backFile(filepath, opts) {
-     await this._backend.backFile(filepath, opts);
--    return null
-+    return null;
-   }
-   async du(filepath) {
-     return this._backend.du(filepath);
-   }
--}
-+};
 diff --git a/node_modules/@isomorphic-git/lightning-fs/src/index.js b/node_modules/@isomorphic-git/lightning-fs/src/index.js
-index 3947876..680db4b 100755
+index 3947876..20cab37 100755
 --- a/node_modules/@isomorphic-git/lightning-fs/src/index.js
 +++ b/node_modules/@isomorphic-git/lightning-fs/src/index.js
-@@ -17,7 +17,9 @@ module.exports = class FS {
+@@ -17,8 +17,11 @@ module.exports = class FS {
      // Needed so things don't break if you destructure fs and pass individual functions around
      this.init = this.init.bind(this)
      this.readFile = this.readFile.bind(this)
@@ -483,9 +287,11 @@ index 3947876..680db4b 100755
      this.writeFile = this.writeFile.bind(this)
 +    this.writeFileBulk = this.writeFileBulk.bind(this)
      this.unlink = this.unlink.bind(this)
++    this.unlinkBulk = this.unlinkBulk.bind(this)
      this.readdir = this.readdir.bind(this)
      this.mkdir = this.mkdir.bind(this)
-@@ -37,10 +39,18 @@ module.exports = class FS {
+     this.rmdir = this.rmdir.bind(this)
+@@ -37,14 +40,26 @@ module.exports = class FS {
      const [resolve, reject] = wrapCallback(opts, cb);
      this.promises.readFile(filepath, opts).then(resolve).catch(reject)
    }
@@ -504,3 +310,11 @@ index 3947876..680db4b 100755
    unlink(filepath, opts, cb) {
      const [resolve, reject] = wrapCallback(opts, cb);
      this.promises.unlink(filepath, opts).then(resolve).catch(reject);
+   }
++  unlinkBulk(filepaths, opts, cb) {
++    const [resolve, reject] = wrapCallback(opts, cb);
++    this.promises.unlinkBulk(filepaths, opts).then(resolve).catch(reject);
++  }
+   readdir(filepath, opts, cb) {
+     const [resolve, reject] = wrapCallback(opts, cb);
+     this.promises.readdir(filepath, opts).then(resolve).catch(reject);

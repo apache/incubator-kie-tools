@@ -1,8 +1,8 @@
 diff --git a/node_modules/@types/isomorphic-git__lightning-fs/index.d.ts b/node_modules/@types/isomorphic-git__lightning-fs/index.d.ts
-index 2556d4e..a0678ab 100755
+index 2556d4e..cb5729b 100755
 --- a/node_modules/@types/isomorphic-git__lightning-fs/index.d.ts
 +++ b/node_modules/@types/isomorphic-git__lightning-fs/index.d.ts
-@@ -5,28 +5,146 @@
+@@ -5,28 +5,152 @@
  
  /// <reference types="node" />
  
@@ -32,6 +32,8 @@ index 2556d4e..a0678ab 100755
 +  writeFileBulk? : (files: [filePath: string, data: Uint8Array][], opts?: WriteFileOpts) => Promise<void>;
 +  /** Remove File from Disk */
 +  unlink(filePath: string): Promise<void>;
++  /** Remove File Bulk from Disk */
++  unlinkBulk?: (filePaths: string[]) => Promise<void>;
 +  /** Lists all files and sub-directory in given directory Path */
 +  readdir(filePath: string): Promise<string[]>;
 +  /** Creates Directory in Disk for given Path */
@@ -111,6 +113,8 @@ index 2556d4e..a0678ab 100755
 +    writeFileBulk?: (files: [filePath: string, data: Uint8Array][], opts?: WriteFileOpts) => Promise<void>;
 +    /** Remove File from Disk */
 +    unlink(filePath: string): Promise<void>;
++    /** Remove File Bulk from Disk */
++    unlinkBulk?: (filePaths: string[]) => Promise<void>;
 +    /** Lists all files and sub-directory in given directory Path */
 +    readdir(filePath: string): string[];
 +    /** Creates Directory in Disk for given Path */
@@ -149,6 +153,8 @@ index 2556d4e..a0678ab 100755
 +    writeFileBulk?: (files: [filePath: string, data: Uint8Array][], opts?: WriteFileOpts) => Promise<void>;
      /** Remove File from Disk */
      unlink(filePath: string): Promise<void>;
++    /** Remove File Bulk from Disk */
++    unlinkBulk?: (filePaths: string[]) => Promise<void>;
      /** Lists all files and sub-directory in given directory Path */
      readdir(filePath: string): Promise<string[]>;
      /** Creates Directory in Disk for given Path */
@@ -157,7 +163,7 @@ index 2556d4e..a0678ab 100755
      /** Remove Directory from Disk */
      rmdir(filePath: string): Promise<void>;
      /** Rename File Name in Disk */
-@@ -39,113 +157,9 @@ declare class LightningFS {
+@@ -39,113 +163,9 @@ declare class LightningFS {
      readlink(filePath: string): Promise<string>;
      /** Create Symbolic Link to a target file */
      symlink(target: string, filePath: string): Promise<void>;

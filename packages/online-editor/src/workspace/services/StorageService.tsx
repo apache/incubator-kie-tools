@@ -16,8 +16,8 @@
 
 import LightningFS from "@isomorphic-git/lightning-fs";
 import { basename, dirname, extname, join, resolve } from "path";
-import { IdbDexieBackend } from "./IdbDexieBackend";
 import DefaultBackend from "@isomorphic-git/lightning-fs/src/DefaultBackend";
+import DexieBackend from "@isomorphic-git/lightning-fs/src/DexieBackend";
 
 export class EagerStorageFile {
   constructor(private readonly args: { path: string; content: Uint8Array }) {}
@@ -52,7 +52,7 @@ export class StorageService {
     this.fs = new LightningFS(this.dbName, {
       backend: new DefaultBackend({
         idbBackendDelegate: (fileDbName, fileStoreName) => {
-          return new IdbDexieBackend(fileDbName, fileStoreName);
+          return new DexieBackend(fileDbName, fileStoreName);
         },
       }) as any,
     });
@@ -74,6 +74,10 @@ export class StorageService {
   }
 
   public async createFiles(files: StorageFile[]) {
+    if (!this.fsp.writeFileBulk) {
+      throw new Error("Can't write bulk");
+    }
+
     for (const file of files) {
       await this.mkdir(dirname(file.path));
     }
@@ -82,7 +86,7 @@ export class StorageService {
       files.map(async (f) => [f.path, await f.getFileContents()] as [string, Uint8Array])
     );
 
-    await this.fsp.writeFileBulk?.(filesArray);
+    await this.fsp.writeFileBulk(filesArray);
   }
 
   public async updateFile(file: StorageFile): Promise<void> {
@@ -158,11 +162,11 @@ export class StorageService {
   }
 
   public async getFiles(paths: string[]): Promise<EagerStorageFile[]> {
-    const files = await this.fsp.readFileBulk?.(paths);
-    if (!files) {
+    if (!this.fsp.readFileBulk) {
       throw new Error("Can't read bulk");
     }
 
+    const files = await this.fsp.readFileBulk(paths);
     return files.map(([path, content]) => {
       return new EagerStorageFile({
         path,
@@ -255,5 +259,13 @@ export class StorageService {
       })
     );
     return files.reduce((paths: T[], path: T) => (path ? paths.concat(path) : paths), []) as T[];
+  }
+
+  async deleteFiles(paths: string[]) {
+    if (!this.fsp.unlinkBulk) {
+      throw new Error("Can't unlink bulk");
+    }
+
+    await this.fsp.unlinkBulk(paths);
   }
 }

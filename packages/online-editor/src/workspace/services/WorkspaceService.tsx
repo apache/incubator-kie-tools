@@ -141,13 +141,14 @@ export class WorkspaceService {
       throw new Error(`Workspace '${workspaceId}' not found`);
     }
 
-    await this.storageService.getFilePaths({
+    console.time(`WorkspaceService#delete--${workspaceId}`);
+    const paths = await this.storageService.getFilePaths({
       dirPath: await this.resolveRootPath(workspaceId),
       excludeDir: () => false,
-      visit: (path) => {
-        this.storageService.deleteFile(path);
-      },
+      visit: (path) => path,
     });
+    await this.storageService.deleteFiles(paths);
+    console.timeEnd(`WorkspaceService#delete--${workspaceId}`);
 
     descriptors.splice(index, 1);
     const configFile = await this.configAsFile(async () => JSON.stringify(descriptors));
