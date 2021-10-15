@@ -1,4 +1,5 @@
 @quay.io/kiegroup/kogito-data-index-infinispan
+@quay.io/kiegroup/kogito-data-index-ephemeral
 @quay.io/kiegroup/kogito-data-index-mongodb
 @quay.io/kiegroup/kogito-data-index-postgresql
 Feature: Kogito-data-index common feature.

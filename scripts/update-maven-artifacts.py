@@ -25,6 +25,7 @@ Modules = {
     # service-name: module-name(directory in which module's module.yaml file is present)
     # Note: Service name should be same as given in the repository
     "data-index-service-infinispan": "kogito-data-index-infinispan",
+    "data-index-service-inmemory": "kogito-data-index-ephemeral",
     "data-index-service-mongodb": "kogito-data-index-mongodb",
     "data-index-service-postgresql": "kogito-data-index-postgresql",
     "trusty-service-infinispan": "kogito-trusty-infinispan",

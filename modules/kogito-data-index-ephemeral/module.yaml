@@ -1,0 +1,16 @@
+schema_version: 1
+name: org.kie.kogito.dataindex.ephemeral
+version: "2.0.0-snapshot"
+
+artifacts:
+  - name: data-index-service-ephemeral-runner.jar
+    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/data-index-service-inmemory/2.0.0-SNAPSHOT/data-index-service-inmemory-2.0.0-20211013.044626-76-runner.jar
+    md5: a490b7ed76d4579a8667bb785682253d
+
+execute:
+  - script: configure
+
+packages:
+  install:
+    - pam
+

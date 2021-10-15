@@ -549,9 +549,10 @@ Order has been created Order[12345] with assigned approver JOHN
 
 The Kogito Component Images can be considered as lightweight images that will complement the Kogito core engine 
 by providing extra capabilities, like managing the processes on a web UI or providing persistence layer to the Kogito applications.
-Today we have 15 Kogito Component Images:
+Today we have 16 Kogito Component Images:
 
 * [quay.io/kiegroup/kogito-data-index-infinispan](https://quay.io/kiegroup/kogito-data-index-infinispan)
+* [quay.io/kiegroup/kogito-data-index-ephemeral](https://quay.io/kiegroup/kogito-data-index-ephemeral)
 * [quay.io/kiegroup/kogito-data-index-mongodb](https://quay.io/kiegroup/kogito-data-index-mongodb)
 * [quay.io/kiegroup/kogito-data-index-postgresql](https://quay.io/kiegroup/kogito-data-index-postgresql)
 * [quay.io/kiegroup/kogito-trusty-infinispan](https://quay.io/kiegroup/kogito-trusty-infinispan)
@@ -576,9 +577,11 @@ The Data Index Service depends on a running Infinispan, MongoDB or PostgreSQL.
 The Persistence service can be switched by using its corresponding image
 
 - Infinispan: quay.io/kiegroup/kogito-data-index-infinispan
-    [image.yaml](kogito-data-index-infinispan-overrides.yaml)
-- Mongodb: quay.io/kiegroup/kogito-data-index-mongodb
-    [image.yaml](kogito-data-index-mongodb-overrides.yaml)
+  [image.yaml](kogito-data-index-infinispan-overrides.yaml)
+- Ephemeral PostgreSQL: quay.io/kiegroup/kogito-data-index-ephemeral
+  [image.yaml](kogito-data-index-ephemeral-overrides.yaml)
+- Mongodb: quay.io/kiegroup/kogito-data-index-mongodb 
+  [image.yaml](kogito-data-index-mongodb-overrides.yaml)
 - PostgreSQL: quay.io/kiegroup/kogito-data-index-postgresql
   [image.yaml](kogito-data-index-postgresql-overrides.yaml)
 
@@ -586,6 +589,11 @@ The Persistence service can be switched by using its corresponding image
 Basic usage with Infinispan:
 ```bash
 $ docker run -it --env QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=my-infinispan-server:11222 quay.io/kiegroup/kogito-data-index-infinispan:latest
+```
+
+Basic usage with Ephemeral PostgreSQL:
+```bash
+$ docker run -it quay.io/kiegroup/kogito-data-index-ephemeral:latest
 ```
 
 Basic usage with Mongodb:
@@ -842,6 +850,7 @@ imagestream.image.openshift.io/kogito-runtime-native created
 imagestream.image.openshift.io/kogito-runtime-jvm created
 imagestream.image.openshift.io/kogito-builder created
 imagestream.image.openshift.io/kogito-data-index-infinispan created
+imagestream.image.openshift.io/kogito-data-index-ephemeral created
 imagestream.image.openshift.io/kogito-data-index-mongodb created
 imagestream.image.openshift.io/kogito-data-index-postgresql created
 imagestream.image.openshift.io/kogito-trusty-infinispan created
@@ -1034,6 +1043,7 @@ With this Makefile you can:
      $ make build-image image_name=kogito-runtime-jvm-ubi8
      $ make build-image image_name=kogito-runtime-native
      $ make build-image image_name=kogito-data-index-infinispan
+     $ make build-image image_name=kogito-data-index-ephemeral
      $ make build-image image_name=kogito-data-index-mongodb
      $ make build-image image_name=kogito-data-index-postgresql
      $ make build-image image_name=kogito-trusty-infinispan
@@ -1103,8 +1113,9 @@ Below you can find all modules used to build the Kogito Images
 
 - [kogito-data-index-common](modules/kogito-data-index-common): Data Index common module.
 - [kogito-data-index-infinispan](modules/kogito-data-index-infinispan): Installs and Configure the infinispan data-index jar inside the image.
+- [kogito-data-index-ephemeral](modules/kogito-data-index-ephemeral): Installs and Configure the ephemeral PostgreSQL data-index jar inside the image.
 - [kogito-data-index-mongodb](modules/kogito-data-index-mongodb): Installs and Configure the mongodb data-index jar inside the image.
-- [kogito-data-index-postgresql](modules/kogito-data-index-postgresql): Installs and Configure the postgresql data-index jar inside the image.
+- [kogito-data-index-postgresql](modules/kogito-data-index-postgresql): Installs and Configure the PostgreSQL data-index jar inside the image.
 - [kogito-trusty-infinispan](modules/kogito-trusty-infinispan): Installs and Configure the infinispan trusty jar inside the image.
 - [kogito-trusty-redis](modules/kogito-trusty-redis): Installs and Configure the redis trusty jar inside the image.
 - [kogito-trusty-postgresql](modules/kogito-trusty-postgresql): Installs and Configure the PostgreSQL trusty jar inside the image.
@@ -1138,6 +1149,7 @@ For each image, we use a specific *-overrides.yaml file which will specific the 
 Please inspect the images overrides files to learn which modules are being installed on each image:
 
 - [quay.io/kiegroup/kogito-data-index-infinispan](kogito-data-index-infinispan-overrides.yaml)
+- [quay.io/kiegroup/kogito-data-index-ephemeral](kogito-data-index-ephemeral-overrides.yaml)
 - [quay.io/kiegroup/kogito-data-index-mongodb](kogito-data-index-mongodb-overrides.yaml)
 - [quay.io/kiegroup/kogito-data-index-postgresql](kogito-data-index-postgresql-overrides.yaml)
 - [quay.io/kiegroup/kogito-trusty-infinispan](kogito-trusty-infinispan-overrides.yaml)

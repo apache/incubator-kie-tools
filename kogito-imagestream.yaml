@@ -83,13 +83,34 @@ items:
             description: Runtime image for the Kogito Data Index Service with Infinispan
             iconClass: icon-jbpm
             tags: kogito,data-index,data-index-infinispan
-            supports: persistence backed by Infinispan server
+            supports: persistence backed by Infinispan Server
             version: '2.0.0-snapshot'
           referencePolicy:
             type: Local
           from:
             kind: DockerImage
             name: quay.io/kiegroup/kogito-data-index-infinispan:2.0.0-snapshot
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: kogito-data-index-ephemeral
+      annotations:
+        openshift.io/display-name: Runtime image for the Kogito Data Index Service for ephemeral PostgreSQL persistence provider
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '2.0.0-snapshot'
+          annotations:
+            description: Runtime image for the Kogito Data Index Service with ephemeral PostgreSQL
+            iconClass: icon-jbpm
+            tags: kogito,data-index,data-index-ephemeral
+            supports: persistence backed by ephemeral PostgreSQL Server
+            version: '2.0.0-snapshot'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-data-index-ephemeral:2.0.0-snapshot
   - kind: ImageStream
     apiVersion: v1
     metadata:
