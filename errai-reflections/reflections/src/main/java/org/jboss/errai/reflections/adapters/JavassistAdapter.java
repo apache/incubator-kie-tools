@@ -22,7 +22,6 @@ import static javassist.bytecode.AccessFlag.*;
 import com.google.common.collect.Lists;
 import javassist.bytecode.*;
 import javassist.bytecode.annotation.Annotation;
-import org.jboss.errai.reflections.ReflectionsException;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -98,19 +97,8 @@ public class JavassistAdapter implements MetadataAdapter<ClassFile, FieldInfo, M
     }
 
     public ClassFile createClassObject(InputStream inputStream) throws IOException {
-        DataInputStream dis = null;
-        try {
-            dis = new DataInputStream(new BufferedInputStream(inputStream));
+        try (DataInputStream dis = new DataInputStream(new BufferedInputStream(inputStream))) {
             return new ClassFile(dis);
-        } finally {
-            if (dis != null) {
-                try {
-                    dis.close();
-                } catch (IOException e) {
-                    //noinspection ThrowFromFinallyBlock
-                    throw new ReflectionsException("could not close DataInputStream", e);
-                }
-            }
         }
     }
 
