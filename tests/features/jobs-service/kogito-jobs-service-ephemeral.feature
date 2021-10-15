@@ -11,15 +11,15 @@ Feature: Kogito-jobs-service-ephemeral feature.
     And the image should contain label io.k8s.display-name with value Kogito in memory Jobs Service
     And the image should contain label io.openshift.tags with value kogito,jobs-service-ephemeral
 
-  Scenario: verify if the jobs service common binary is available on /home/kogito/bin
+  Scenario: verify if the jobs service ephemeral binary is available on /home/kogito/bin
     When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/jobs-service-common-runner.jar' in container and immediately check its output for /home/kogito/bin/jobs-service-common-runner.jar
+    Then run sh -c 'ls /home/kogito/bin/jobs-service-ephemeral-runner.jar' in container and immediately check its output for /home/kogito/bin/jobs-service-ephemeral-runner.jar
 
-  Scenario: Verify if the debug is correctly enabled with the common jar
+  Scenario: Verify if the debug is correctly enabled with the ephemeral jar
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/jobs-service-common-runner.jar
+    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/jobs-service-ephemeral-runner.jar
     And container log should contain started in
     And container log should not contain Application failed to start
 
