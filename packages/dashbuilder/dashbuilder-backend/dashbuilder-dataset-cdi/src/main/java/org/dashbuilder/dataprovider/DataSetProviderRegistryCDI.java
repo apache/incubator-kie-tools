@@ -40,6 +40,9 @@ public class DataSetProviderRegistryCDI extends DataSetProviderRegistryImpl {
     
     @Inject
     private KafkaDataSetProviderCDI kafkaDataSetProviderCDI;
+    
+    @Inject
+    private ExternalDataSetProviderCDI externalDataSetProviderCDI;
 
     @Inject
     private Instance<DataSetProvider> providerSet;
@@ -61,6 +64,7 @@ public class DataSetProviderRegistryCDI extends DataSetProviderRegistryImpl {
         super.registerDataProvider(sqlDataSetProviderCDI);
         super.registerDataProvider(prometheusDataSetProviderCDI);
         super.registerDataProvider(kafkaDataSetProviderCDI);
+        super.registerDataProvider(externalDataSetProviderCDI);
     }
 
     public StaticDataSetProviderCDI getStaticDataSetProviderCDI() {

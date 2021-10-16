@@ -152,6 +152,9 @@ public class DataSetPanel implements IsWidget {
         if (KAFKA.equals(dataSetDef.getProvider())) {
             return DataSetClientResources.INSTANCE.images().kafkaIcon32().getSafeUri();
         }
+        if (EXTERNAL.equals(dataSetDef.getProvider())) {
+            return DataSetClientResources.INSTANCE.images().externalIcon32().getSafeUri();
+        }
         
         if (!dataSetEditorPlugin.isUnsatisfied()) {
             for (DataSetEditorPlugin plugin : dataSetEditorPlugin) {
@@ -179,6 +182,9 @@ public class DataSetPanel implements IsWidget {
         if (KAFKA.equals(dataSetDef.getProvider())) {
             return DataSetExplorerConstants.INSTANCE.kafka();
         }
+        if (EXTERNAL.equals(dataSetDef.getProvider())) {
+            return DataSetExplorerConstants.INSTANCE.external();
+        }        
         if (!dataSetEditorPlugin.isUnsatisfied()) {
             for (DataSetEditorPlugin plugin : dataSetEditorPlugin) {
                 if (plugin.getProviderType().equals(dataSetDef.getProvider())) {
