@@ -40,6 +40,9 @@ import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { OnlineEditorPage } from "../home/pageTemplate/OnlineEditorPage";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 
 export interface Props {
   workspaceId: string;
@@ -210,7 +213,26 @@ export function EditorPage(props: Props) {
   return (
     <PromiseStateWrapper
       promise={workspaceFilePromise}
-      pending={<OnlineEditorPage />}
+      pending={
+        <OnlineEditorPage>
+          <PageSection
+            variant={"light"}
+            isFilled={true}
+            padding={{ default: "noPadding" }}
+            className={"kogito--editor__page-section"}
+          >
+            <Bullseye>
+              <TextContent>
+                <Bullseye>
+                  <Spinner />
+                </Bullseye>
+                <br />
+                <Text component={TextVariants.p}>{`Loading...`}</Text>
+              </TextContent>
+            </Bullseye>
+          </PageSection>
+        </OnlineEditorPage>
+      }
       rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
       resolved={(file) => (
         <>

@@ -36,6 +36,7 @@ import { join } from "path";
 import git from "isomorphic-git";
 import { WorkspaceEvents } from "./hooks/WorkspaceHooks";
 import { Buffer } from "buffer";
+import LightningFS from "@isomorphic-git/lightning-fs";
 
 const INDEXED_DB_NAME = "kogito-online";
 const GIT_CORS_PROXY = "https://cors.isomorphic-git.org"; // TODO CAPONETTO: Deploy our own proxy (https://github.com/isomorphic-git/cors-proxy)
@@ -58,11 +59,11 @@ export function WorkspacesContextProvider(props: Props) {
   }, []);
 
   const gitService = useMemo(() => {
-    const instance = new GitService(GIT_CORS_PROXY, storageService);
+    const instance = new GitService(GIT_CORS_PROXY);
     // FIXME: easy access to git in the window object.
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    (window as any).git = (prop: unknown, args: any) => git[prop]({ fs: storageService.fs, ...args });
+    (window as any).git = async (prop: unknown, args: any) => git[prop]({ fs: await storageService.fs(), ...args });
     return instance;
   }, [storageService]);
 
@@ -74,9 +75,9 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createWorkspace = useCallback(
-    async (descriptor: WorkspaceDescriptor, storeFiles: () => Promise<WorkspaceFile[]>) => {
-      await workspaceService.create(descriptor, storeFiles, { broadcast: true });
-      const files = await workspaceService.getFilesLazy(descriptor.workspaceId);
+    async (fs: LightningFS, descriptor: WorkspaceDescriptor, storeFiles: () => Promise<WorkspaceFile[]>) => {
+      await workspaceService.create(fs, descriptor, storeFiles, { broadcast: true });
+      const files = await workspaceService.getFilesLazy(fs, descriptor.workspaceId);
       if (files.length <= 0) {
         return { suggestedFirstFile: undefined };
       }
@@ -93,16 +94,21 @@ export function WorkspacesContextProvider(props: Props) {
   const isModified = useCallback(
     async (workspaceId: string) => {
       return await gitService.isModified({
+        fs: await storageService.fs(),
         dir: workspaceService.getAbsolutePath({ workspaceId, relativePath: "" }),
       });
     },
-    [gitService, workspaceService]
+    [gitService, storageService, workspaceService]
   );
 
   const createSavePoint = useCallback(
     async (workspaceId: string) => {
       await gitService.commit({
-        files: [],
+        fs: await storageService.fs(),
+        filePaths: await gitService.unstagedModifiedFileRelativePaths({
+          fs: await storageService.fs(),
+          dir: await workspaceService.resolveRootPath(await storageService.fs(), workspaceId),
+        }),
         dir: workspaceService.getAbsolutePath({ workspaceId, relativePath: "" }),
         targetBranch: "main",
         message: "Save point",
@@ -115,12 +121,12 @@ export function WorkspacesContextProvider(props: Props) {
       const workspaceEvent: WorkspaceEvents = { type: "CREATE_SAVE_POINT", workspaceId };
       broadcastChannel.postMessage(workspaceEvent);
     },
-    [gitService, workspaceService]
+    [gitService, storageService, workspaceService]
   );
 
   const createWorkspaceFromLocal = useCallback(
     async (localFiles: LocalFile[]) => {
-      const descriptor: WorkspaceDescriptor = {
+      const workspace: WorkspaceDescriptor = {
         workspaceId: workspaceService.newWorkspaceId(),
         name: NEW_WORKSPACE_DEFAULT_NAME,
         origin: { kind: WorkspaceKind.LOCAL },
@@ -128,12 +134,14 @@ export function WorkspacesContextProvider(props: Props) {
         lastUpdatedDateISO: new Date().toISOString(),
       };
 
+      const fsBatch = storageService.fsBatch();
+
       const storeFiles = async () => {
         const files = localFiles
           .filter((f) => SUPPORTED_FILES.includes(extractFileExtension(f.path)!))
           .map((localFile) => {
             const path = workspaceService.getAbsolutePath({
-              workspaceId: descriptor.workspaceId,
+              workspaceId: workspace.workspaceId,
               relativePath: localFile.path.substring(localFile.path.indexOf("/") + 1),
             });
 
@@ -144,27 +152,25 @@ export function WorkspacesContextProvider(props: Props) {
           });
 
         console.time("create files");
-        // await Promise.all(files.map((f) => storageService.createFile(f)));
-        await storageService.createFiles(files);
+        await storageService.createFiles(fsBatch, files);
         console.timeEnd("create files");
 
-        console.time("git init");
+        const gitRoot = await workspaceService.resolveRootPath(fsBatch, workspace.workspaceId);
         await gitService.init({
-          dir: workspaceService.getAbsolutePath({ workspaceId: descriptor.workspaceId, relativePath: "" }),
+          fs: fsBatch,
+          dir: gitRoot,
         });
-        console.timeEnd("git init");
 
-        console.time("git add");
         await gitService.add({
-          dir: workspaceService.getAbsolutePath({ workspaceId: descriptor.workspaceId, relativePath: "" }),
+          fs: fsBatch,
+          dir: gitRoot,
           relativePath: ".",
         });
-        console.timeEnd("git add");
 
-        console.time("git commit");
         await gitService.commit({
-          files: [],
-          dir: workspaceService.getAbsolutePath({ workspaceId: descriptor.workspaceId, relativePath: "" }),
+          fs: fsBatch,
+          filePaths: [],
+          dir: gitRoot,
           message: "Initial",
           targetBranch: "main",
           authInfo: {
@@ -172,13 +178,13 @@ export function WorkspacesContextProvider(props: Props) {
             email: "tfernand+dev@redhat.com", //FIXME: Change this.
           },
         });
-        console.timeEnd("git commit");
 
-        return workspaceService.getFilesLazy(descriptor.workspaceId);
+        return workspaceService.getFilesLazy(fsBatch, workspace.workspaceId);
       };
 
-      const { suggestedFirstFile } = await createWorkspace(descriptor, storeFiles);
-      return { descriptor, suggestedFirstFile };
+      const { suggestedFirstFile } = await createWorkspace(fsBatch, workspace, storeFiles);
+      console.info("OI");
+      return { workspace, suggestedFirstFile };
     },
     [createWorkspace, gitService, storageService, workspaceService]
   );
@@ -227,22 +233,22 @@ export function WorkspacesContextProvider(props: Props) {
     async (file: WorkspaceFile, newFileName: string) => {
       const renamedFile = await workspaceService.renameFile(file, newFileName, { broadcast: true });
 
-      await gitService.rm({
-        dir: workspaceService.getAbsolutePath({ workspaceId: file.workspaceId, relativePath: "" }),
-        relativePath: file.relativePath,
-      });
-      await gitService.add({
-        dir: workspaceService.getAbsolutePath({ workspaceId: renamedFile.workspaceId, relativePath: "" }),
-        relativePath: renamedFile.relativePath,
-      });
+      // await gitService.rm({
+      //   dir: workspaceService.getAbsolutePath({ workspaceId: file.workspaceId, relativePath: "" }),
+      //   relativePath: file.relativePath,
+      // });
+      // await gitService.add({
+      //   dir: workspaceService.getAbsolutePath({ workspaceId: renamedFile.workspaceId, relativePath: "" }),
+      //   relativePath: renamedFile.relativePath,
+      // });
       return renamedFile;
     },
-    [workspaceService, gitService]
+    [workspaceService]
   );
 
   const getFiles = useCallback(
     async (workspaceId: string) => {
-      return await workspaceService.getFilesLazy(workspaceId);
+      return await workspaceService.getFilesLazy(await storageService.fs(), workspaceId);
     },
     [workspaceService]
   );
@@ -258,22 +264,23 @@ export function WorkspacesContextProvider(props: Props) {
     async (file: WorkspaceFile) => {
       await workspaceService.deleteFile(file, { broadcast: true });
       await gitService.rm({
+        fs: await storageService.fs(),
         dir: workspaceService.getAbsolutePath({ workspaceId: file.workspaceId, relativePath: "" }),
         relativePath: file.relativePath,
       });
     },
-    [workspaceService, gitService]
+    [workspaceService, gitService, storageService]
   );
 
   const updateFile = useCallback(
     async (file: WorkspaceFile, getNewContents: () => Promise<string>) => {
       await workspaceService.updateFile(file, getNewContents, { broadcast: true });
-      await gitService.add({
-        dir: workspaceService.getAbsolutePath({ workspaceId: file.workspaceId, relativePath: "" }),
-        relativePath: file.relativePath,
-      });
+      // await gitService.add({
+      //   dir: workspaceService.getAbsolutePath({ workspaceId: file.workspaceId, relativePath: "" }),
+      //   relativePath: file.relativePath,
+      // });
     },
-    [workspaceService, gitService]
+    [workspaceService]
   );
 
   const addEmptyFile = useCallback(
@@ -282,7 +289,13 @@ export function WorkspacesContextProvider(props: Props) {
         const index = i === 0 ? "" : `-${i}`;
         const fileName = `Untitled${index}.${args.extension}`;
         const relativePath = join(args.destinationDirRelativePath, fileName);
-        if (await workspaceService.existsFile({ workspaceId: args.workspaceId, relativePath })) {
+        if (
+          await workspaceService.existsFile({
+            fs: await storageService.fs(),
+            workspaceId: args.workspaceId,
+            relativePath,
+          })
+        ) {
           continue;
         }
 
@@ -293,16 +306,16 @@ export function WorkspacesContextProvider(props: Props) {
           relativePath,
         });
         await workspaceService.createFile(newEmptyFile, { broadcast: true });
-        await gitService.add({
-          dir: workspaceService.getAbsolutePath({ workspaceId: newEmptyFile.workspaceId, relativePath: "" }),
-          relativePath: newEmptyFile.relativePath,
-        });
+        // await gitService.add({
+        //   dir: workspaceService.getAbsolutePath({ workspaceId: newEmptyFile.workspaceId, relativePath: "" }),
+        //   relativePath: newEmptyFile.relativePath,
+        // });
         return newEmptyFile;
       }
 
       throw new Error("Max attempts of new empty file exceeded.");
     },
-    [gitService, workspaceService]
+    [workspaceService]
   );
 
   const prepareZip = useCallback((workspaceId: string) => workspaceService.prepareZip(workspaceId), [workspaceService]);
@@ -328,7 +341,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const resourceContentGet = useCallback(
     async (args: { workspaceId: string; relativePath: string; opts?: ResourceContentOptions }) => {
-      const file = await storageService.getFile(workspaceService.getAbsolutePath(args));
+      const file = await storageService.getFile(await storageService.fs(), workspaceService.getAbsolutePath(args));
       if (!file) {
         throw new Error(`File '${args.relativePath}' not found in Workspace ${args.workspaceId}`);
       }
@@ -353,17 +366,12 @@ export function WorkspacesContextProvider(props: Props) {
 
   const resourceContentList = useCallback(
     async (args: { workspaceId: string; globPattern: string }) => {
-      const files = await workspaceService.getFilesLazy(args.workspaceId, args.globPattern);
+      const files = await workspaceService.getFilesLazy(await storageService.fs(), args.workspaceId, args.globPattern);
       const matchingPaths = files.map((file) => file.relativePath);
       return new ResourcesList(args.globPattern, matchingPaths);
     },
-    [workspaceService]
+    [storageService, workspaceService]
   );
-
-  const [ready, setReady] = useState(false);
-  useEffect(() => {
-    workspaceService.init().then(() => setReady(true));
-  }, [workspaceService]);
 
   return (
     <WorkspacesContext.Provider
@@ -386,7 +394,7 @@ export function WorkspacesContextProvider(props: Props) {
         getFile,
       }}
     >
-      {ready && props.children}
+      {props.children}
     </WorkspacesContext.Provider>
   );
 }

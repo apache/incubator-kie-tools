@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { WorkspaceFile } from "../WorkspacesContext";
-import git from "isomorphic-git";
+import LightningFS from "@isomorphic-git/lightning-fs";
+import git, { STAGE, WORKDIR } from "isomorphic-git";
 import http from "isomorphic-git/http/web";
-import { StorageService } from "./StorageService";
 
 export interface CloneArgs {
+  fs: LightningFS;
   repositoryUrl: URL;
   sourceBranch: string;
   dir: string;
@@ -31,8 +31,9 @@ export interface CloneArgs {
 }
 
 export interface CommitArgs {
+  fs: LightningFS;
   message: string;
-  files: WorkspaceFile[];
+  filePaths: string[];
   targetBranch: string;
   dir: string;
   authInfo: {
@@ -42,6 +43,7 @@ export interface CommitArgs {
 }
 
 export interface PushArgs {
+  fs: LightningFS;
   targetBranch: string;
   dir: string;
   authInfo: {
@@ -54,11 +56,13 @@ export interface PushArgs {
 export class GitService {
   private readonly GIT_REMOTE_NAME = "origin";
 
-  public constructor(private readonly corsProxy: string, private readonly storageService: StorageService) {}
+  public constructor(private readonly corsProxy: string) {}
 
   public async clone(args: CloneArgs): Promise<void> {
+    console.info("GitService#clone--------begin");
+    console.time("GitService#clone");
     await git.clone({
-      fs: this.storageService.fs,
+      fs: args.fs,
       http: http,
       corsProxy: this.corsProxy,
       dir: args.dir,
@@ -70,20 +74,23 @@ export class GitService {
       onAuth: args.authInfo.onAuth,
     });
 
-    await this.gitConfig(args.dir, args.authInfo.name, args.authInfo.email);
+    await this.gitConfig(args.fs, args.dir, args.authInfo.name, args.authInfo.email);
+    console.timeEnd("GitService#clone");
   }
 
   public async commit(args: CommitArgs): Promise<void> {
-    for (const file of args.files) {
+    console.info("GitService#commit--------begin");
+    console.time("GitService#commit");
+    for (const path of args.filePaths) {
       await git.add({
-        fs: this.storageService.fs,
+        fs: args.fs,
         dir: args.dir,
-        filepath: file.relativePath,
+        filepath: path,
       });
     }
 
     await git.commit({
-      fs: this.storageService.fs,
+      fs: args.fs,
       dir: args.dir,
       message: args.message,
       author: {
@@ -92,11 +99,14 @@ export class GitService {
       },
       ref: args.targetBranch,
     });
+    console.timeEnd("GitService#commit");
   }
 
   public async gitPush(args: PushArgs): Promise<void> {
+    console.info("GitService#push--------begin");
+    console.time("GitService#push");
     const remotes = await git.listRemotes({
-      fs: this.storageService.fs,
+      fs: args.fs,
       dir: args.dir,
     });
 
@@ -105,7 +115,7 @@ export class GitService {
     }
 
     await git.push({
-      fs: this.storageService.fs,
+      fs: args.fs,
       http: http,
       dir: args.dir,
       ref: args.targetBranch,
@@ -113,58 +123,116 @@ export class GitService {
       onAuth: args.authInfo.onAuth,
       force: false,
     });
+    console.timeEnd("GitService#push");
   }
 
-  public async add(args: { dir: string; relativePath: string }) {
+  public async add(args: { fs: LightningFS; dir: string; relativePath: string }) {
+    console.info("GitService#add--------begin");
+    console.time("GitService#add");
     await git.add({
-      fs: this.storageService.fs,
+      fs: args.fs,
       dir: args.dir,
       filepath: args.relativePath,
     });
+    console.timeEnd("GitService#add");
   }
 
-  private async gitConfig(dir: string, userName: string, userEmail: string): Promise<void> {
+  private async gitConfig(fs: LightningFS, dir: string, userName: string, userEmail: string): Promise<void> {
     await git.setConfig({
-      fs: this.storageService.fs,
+      fs: fs,
       dir: dir,
       path: "user.name",
       value: userName,
     });
 
     await git.setConfig({
-      fs: this.storageService.fs,
+      fs: fs,
       dir: dir,
       path: "user.email",
       value: userEmail,
     });
   }
 
-  async init(args: { dir: string }) {
+  async init(args: { fs: LightningFS; dir: string }) {
     await git.init({
-      fs: this.storageService.fs,
+      fs: args.fs,
       dir: args.dir,
       bare: false,
     });
   }
 
-  async rm(args: { dir: string; relativePath: string }) {
+  async rm(args: { fs: LightningFS; dir: string; relativePath: string }) {
+    console.info("GitService#rm--------begin");
+    console.time("GitService#rm");
     await git.remove({
-      fs: this.storageService.fs,
+      fs: args.fs,
       dir: args.dir,
       filepath: args.relativePath,
     });
+    console.timeEnd("GitService#end");
   }
 
-  async isModified(args: { dir: string }) {
-    const statusMatrix = await git.statusMatrix({
-      fs: this.storageService.fs,
+  async isModified(args: { fs: LightningFS; dir: string }) {
+    console.info("GitService#walk--------begin");
+    console.time("GitService#walk");
+    const files = await this.unstagedModifiedFileRelativePaths(args);
+    console.timeEnd("GitService#walk");
+    return files.length > 0;
+  }
+
+  public async unstagedModifiedFileRelativePaths(args: { fs: LightningFS; dir: string }): Promise<string[]> {
+    const pseudoStatusMatrix = await git.walk({
+      fs: args.fs,
       dir: args.dir,
-      ref: "main",
+      trees: [WORKDIR(), STAGE()],
+      map: async (filepath, [workdir, stage]) => {
+        // TODO: How to ignore these files?
+        // Ignore ignored files, but only if they are not already tracked.
+        // if (!stage && workdir) {
+        //   if (
+        //       await GitIgnoreManager.isIgnored({
+        //         fs: this.storageService.fs,
+        //         dir: args.dir,
+        //         filepath,
+        //       })
+        //   ) {
+        //     return null
+        //   }
+        // }
+
+        // match against base paths
+        if (filepath.startsWith(".git")) {
+          return null;
+        }
+
+        // For now, just bail on directories
+        const workdirType = workdir && (await workdir.type());
+        if (workdirType === "tree" || workdirType === "special") return;
+
+        const stageType = stage && (await stage.type());
+        if (stageType === "commit") return null;
+        if (stageType === "tree" || stageType === "special") return;
+
+        // Figure out the oids, using the staged oid for the working dir oid if the stats match.
+        const stageOid = stage ? await stage.oid() : undefined;
+        let workdirOid;
+        if (workdir && !stage) {
+          // We don't actually NEED the sha. Any sha will do
+          // TODO: update this logic to handle N trees instead of just 3.
+          workdirOid = "42";
+        } else if (workdir) {
+          workdirOid = await workdir.oid();
+        }
+        const entry = [undefined, undefined, workdirOid, stageOid];
+        const result = entry.map((value) => entry.indexOf(value));
+        result.shift(); // remove leading undefined entry
+        return [filepath, ...result];
+      },
     });
 
-    // See https://isomorphic-git.org/docs/en/statusMatrix#q-what-files-have-been-modified-since-the-last-commit
-    const HEAD = 1;
-    const WORKDIR = 2;
-    return statusMatrix.filter((statusRow) => statusRow[HEAD] !== statusRow[WORKDIR]).length > 0;
+    const _WORKDIR = 2;
+    const _STAGE = 3;
+    const _FILE = 0;
+    return pseudoStatusMatrix.filter((row: any) => row[_WORKDIR] !== row[_STAGE]).map((row: any) => row[_FILE]);
   }
 }

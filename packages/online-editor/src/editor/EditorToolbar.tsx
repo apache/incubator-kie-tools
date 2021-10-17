@@ -289,6 +289,10 @@ export function EditorToolbar(props: Props) {
     await workspaces.createSavePoint(props.workspaceFile.workspaceId);
   }, [props.editor, props.workspaceFile, workspaces]);
 
+  const createSavePoint = useCallback(() => {
+    return workspaces.createSavePoint(props.workspaceFile.workspaceId);
+  }, [workspaces, props.workspaceFile]);
+
   const onPreview = useCallback(() => {
     props.editor?.getPreview().then((previewSvg) => {
       if (downloadPreviewRef.current && previewSvg) {
@@ -429,6 +433,11 @@ export function EditorToolbar(props: Props) {
             icon={<FolderIcon />}
           >
             All files
+          </DropdownItem>
+        </React.Fragment>
+        <React.Fragment key={`dropdown-${dropdownId}-fragment-create-save-point`}>
+          <DropdownItem onClick={createSavePoint} key={"create-save-point"}>
+            Create Save point
           </DropdownItem>
         </React.Fragment>
       </DropdownGroup>,
@@ -777,6 +786,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
       );
 
       const exists = await workspaces.workspaceService.existsFile({
+        fs: await workspaces.workspaceService.storageService.fs(),
         workspaceId: props.workspaceFile.workspaceId,
         relativePath: newRelativePath,
       });

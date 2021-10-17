@@ -41,13 +41,13 @@ export function NewWorkspaceFromUrlPage() {
 
   const createWorkspaceForFile = useCallback(
     (file: LocalFile) => {
-      workspaces.createWorkspaceFromLocal([file]).then(({ descriptor, suggestedFirstFile }) => {
+      workspaces.createWorkspaceFromLocal([file]).then(({ workspace, suggestedFirstFile }) => {
         if (!suggestedFirstFile) {
           return;
         }
         history.replace({
           pathname: globals.routes.workspaceWithFilePath.path({
-            workspaceId: descriptor.workspaceId,
+            workspaceId: workspace.workspaceId,
             fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
             extension: suggestedFirstFile.extension,
           }),

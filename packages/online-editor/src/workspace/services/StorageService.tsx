@@ -18,6 +18,7 @@ import LightningFS from "@isomorphic-git/lightning-fs";
 import { basename, dirname, extname, join, resolve } from "path";
 import DefaultBackend from "@isomorphic-git/lightning-fs/src/DefaultBackend";
 import DexieBackend from "@isomorphic-git/lightning-fs/src/DexieBackend";
+import { InMemoryBackend } from "./InMemoryBackend";
 
 export class EagerStorageFile {
   constructor(private readonly args: { path: string; content: Uint8Array }) {}
@@ -45,64 +46,89 @@ export class StorageFile {
 export class StorageService {
   private readonly SEPARATOR = "/";
 
-  public readonly fs;
-  public readonly fsp;
+  public readonly fsInstance;
 
   public constructor(private readonly dbName: string) {
-    this.fs = new LightningFS(this.dbName, {
+    this.fsInstance = new LightningFS(this.dbName, {
       backend: new DefaultBackend({
         idbBackendDelegate: (fileDbName, fileStoreName) => {
           return new DexieBackend(fileDbName, fileStoreName);
         },
       }) as any,
     });
-    this.fsp = this.fs.promises;
+  }
+
+  public fsBatch() {
+    return new LightningFS(this.dbName, {
+      backend: new DefaultBackend({
+        idbBackendDelegate: (fileDbName, fileStoreName) => {
+          return new InMemoryBackend(new DexieBackend(fileDbName, fileStoreName));
+        },
+      }) as any,
+    });
+  }
+
+  public async fs() {
+    return this.fsInstance;
+
+    // return new Promise<LightningFS>((res) => {
+    //   const i = setInterval(() => {
+    //     if (isFsBatchInProgress) {
+    //       console.info("Waiting until fsBatchInProgress is `false`...");
+    //       return;
+    //     }
+    //
+    //     console.info("Acquiring regular FS...");
+    //     res(this.fsInstance);
+    //     clearInterval(i);
+    //   }, 100);
+    // });
   }
 
   public get rootPath(): string {
     return this.SEPARATOR;
   }
 
-  public async createFile(file: StorageFile) {
+  public async createFile(fs: LightningFS, file: StorageFile) {
     const contents = await file.getFileContents();
     try {
-      await this.fsp.writeFile(file.path, contents);
+      await fs.promises.writeFile(file.path, contents);
     } catch (err) {
-      await this.mkdir(dirname(file.path));
-      await this.fsp.writeFile(file.path, contents);
+      await this.mkdir(fs, dirname(file.path));
+      await fs.promises.writeFile(file.path, contents);
     }
   }
 
-  public async createFiles(files: StorageFile[]) {
-    if (!this.fsp.writeFileBulk) {
+  public async createFiles(fs: LightningFS, files: StorageFile[]) {
+    if (!fs.promises.writeFileBulk) {
       throw new Error("Can't write bulk");
     }
 
     for (const file of files) {
-      await this.mkdir(dirname(file.path));
+      await this.mkdir(fs, dirname(file.path));
     }
 
     const filesArray = await Promise.all(
       files.map(async (f) => [f.path, await f.getFileContents()] as [string, Uint8Array])
     );
 
-    await this.fsp.writeFileBulk(filesArray);
+    await fs.promises.writeFileBulk(filesArray);
   }
 
-  public async updateFile(file: StorageFile): Promise<void> {
-    if (!(await this.exists(file.path))) {
+  public async updateFile(fs: LightningFS, file: StorageFile): Promise<void> {
+    if (!(await this.exists(fs, file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
 
-    await this.writeFile(file);
+    await this.writeFile(fs, file);
   }
 
-  public async deleteFile(path: string): Promise<void> {
-    await this.fsp.unlink(path);
+  public async deleteFile(fs: LightningFS, path: string): Promise<void> {
+    await fs.promises.unlink(path);
   }
 
-  public async renameFile(file: StorageFile, newFileName: string): Promise<StorageFile> {
-    if (!(await this.exists(file.path))) {
+  public async renameFile(fs: LightningFS, file: StorageFile, newFileName: string): Promise<StorageFile> {
+    if (!(await this.exists(fs, file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
 
@@ -112,7 +138,7 @@ export class StorageService {
 
     const newPath = join(dirname(file.path), `${newFileName}${extname(file.path)}`);
 
-    if (await this.exists(newPath)) {
+    if (await this.exists(fs, newPath)) {
       throw new Error(`File ${newPath} already exists`);
     }
 
@@ -120,13 +146,13 @@ export class StorageService {
       path: newPath,
       getFileContents: file.getFileContents,
     });
-    await this.fsp.rename(file.path, newFile.path);
+    await fs.promises.rename(file.path, newFile.path);
 
     return newFile;
   }
 
-  public async moveFile(file: StorageFile, newDirPath: string): Promise<StorageFile> {
-    if (!(await this.exists(file.path))) {
+  public async moveFile(fs: LightningFS, file: StorageFile, newDirPath: string): Promise<StorageFile> {
+    if (!(await this.exists(fs, file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
 
@@ -135,38 +161,38 @@ export class StorageService {
       getFileContents: file.getFileContents,
       path: newPath,
     });
-    await this.createFile(newFile);
-    await this.deleteFile(file.path);
+    await this.createFile(fs, newFile);
+    await this.deleteFile(fs, file.path);
 
     return newFile;
   }
 
-  public async moveFiles(files: StorageFile[], newDirPath: string): Promise<Map<string, string>> {
+  public async moveFiles(fs: LightningFS, files: StorageFile[], newDirPath: string): Promise<Map<string, string>> {
     const paths = new Map<string, string>();
     for (const fileToMove of files) {
-      const movedFile = await this.moveFile(fileToMove, newDirPath);
+      const movedFile = await this.moveFile(fs, fileToMove, newDirPath);
       paths.set(fileToMove.path, movedFile.path);
     }
     return paths;
   }
 
-  public async getFile(path: string): Promise<StorageFile | undefined> {
-    if (!(await this.exists(path))) {
+  public async getFile(fs: LightningFS, path: string): Promise<StorageFile | undefined> {
+    if (!(await this.exists(fs, path))) {
       return;
     }
 
     return new StorageFile({
       path,
-      getFileContents: () => this.fsp.readFile(path),
+      getFileContents: () => fs.promises.readFile(path),
     });
   }
 
-  public async getFiles(paths: string[]): Promise<EagerStorageFile[]> {
-    if (!this.fsp.readFileBulk) {
+  public async getFiles(fs: LightningFS, paths: string[]): Promise<EagerStorageFile[]> {
+    if (!fs.promises.readFileBulk) {
       throw new Error("Can't read bulk");
     }
 
-    const files = await this.fsp.readFileBulk(paths);
+    const files = await fs.promises.readFileBulk(paths);
     return files.map(([path, content]) => {
       return new EagerStorageFile({
         path,
@@ -184,13 +210,13 @@ export class StorageService {
     });
   }
 
-  public async createDirStructureAtRoot(pathRelativeToRoot: string) {
-    await this.mkdir(this.rootPath + pathRelativeToRoot + this.SEPARATOR);
+  public async createDirStructureAtRoot(fs: LightningFS, pathRelativeToRoot: string) {
+    await this.mkdir(fs, this.rootPath + pathRelativeToRoot + this.SEPARATOR);
   }
 
-  async mkdir(dirPath: string, _selfCall = false) {
+  async mkdir(fs: LightningFS, dirPath: string, _selfCall = false) {
     try {
-      await this.fsp.mkdir(dirPath);
+      await fs.promises.mkdir(dirPath);
       return;
     } catch (err) {
       // If err is null then operation succeeded!
@@ -218,15 +244,15 @@ export class StorageService {
         }
 
         // Infinite recursion, what could go wrong?
-        await this.mkdir(parent);
-        await this.mkdir(dirPath, true);
+        await this.mkdir(fs, parent);
+        await this.mkdir(fs, dirPath, true);
       }
     }
   }
 
-  public async exists(path: string): Promise<boolean> {
+  public async exists(fs: LightningFS, path: string): Promise<boolean> {
     try {
-      await this.fsp.stat(path);
+      await fs.promises.stat(path);
       return true;
     } catch (err) {
       if (err.code === "ENOENT" || err.code === "ENOTDIR") {
@@ -237,35 +263,36 @@ export class StorageService {
       }
     }
   }
-  private async writeFile(file: StorageFile): Promise<void> {
+  private async writeFile(fs: LightningFS, file: StorageFile): Promise<void> {
     const content = await file.getFileContents();
-    await this.fsp.writeFile(file.path, content);
+    await fs.promises.writeFile(file.path, content);
   }
 
   public async getFilePaths<T = string>(args: {
+    fs: LightningFS;
     dirPath: string;
     excludeDir: (dirPath: string) => boolean;
     visit: (path: string) => T | undefined;
   }): Promise<T[]> {
-    const subDirPaths = await this.fsp.readdir(args.dirPath);
+    const subDirPaths = await args.fs.promises.readdir(args.dirPath);
     const files = await Promise.all(
       subDirPaths.map(async (subDirPath: string) => {
         const path = resolve(args.dirPath, subDirPath);
-        return !(await this.fsp.stat(path)).isDirectory()
+        return !(await args.fs.promises.stat(path)).isDirectory()
           ? args.visit(path)
           : args.excludeDir(path)
           ? []
-          : this.getFilePaths({ dirPath: path, excludeDir: args.excludeDir, visit: args.visit });
+          : this.getFilePaths({ fs: args.fs, dirPath: path, excludeDir: args.excludeDir, visit: args.visit });
       })
     );
     return files.reduce((paths: T[], path: T) => (path ? paths.concat(path) : paths), []) as T[];
   }
 
-  async deleteFiles(paths: string[]) {
-    if (!this.fsp.unlinkBulk) {
+  async deleteFiles(fs: LightningFS, paths: string[]) {
+    if (!fs.promises.unlinkBulk) {
       throw new Error("Can't unlink bulk");
     }
 
-    await this.fsp.unlinkBulk(paths);
+    await fs.promises.unlinkBulk(paths);
   }
 }

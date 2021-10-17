@@ -87,7 +87,7 @@ export interface WorkspacesContextType {
   // create
   createWorkspaceFromLocal: (
     files: LocalFile[]
-  ) => Promise<{ descriptor: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
+  ) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
 
   // edit workspace
   addEmptyFile(args: {

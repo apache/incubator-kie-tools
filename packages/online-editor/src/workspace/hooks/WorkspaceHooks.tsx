@@ -13,14 +13,13 @@ export function useWorkspaceIsModifiedPromise(workspace: ActiveWorkspace | undef
       if (!workspace) {
         return;
       }
-      console.time(`WorkspaceHooks#isModifiedPromise--${workspace.descriptor.workspaceId}`);
+
       const isModified = await workspaces.isModified(workspace.descriptor.workspaceId);
       if (canceled.get()) {
         return;
       }
 
       setModifiedPromise({ data: isModified });
-      console.timeEnd(`WorkspaceHooks#isModifiedPromise--${workspace.descriptor.workspaceId}`);
     },
     [workspace, workspaces, setModifiedPromise]
   );

@@ -54,7 +54,6 @@ import { Link } from "react-router-dom";
 import { DeleteDropdownWithConfirmation } from "../editor/DeleteDropdownWithConfirmation";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { QueryParams } from "../common/Routes";
-import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 
 export function HomePage() {
@@ -63,6 +62,7 @@ export function HomePage() {
   const workspaces = useWorkspaces();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const [url, setUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
   const [filesToUpload, setFilesToUpload] = useState<LocalFile[]>([]);
 
   const onFolderUpload = useCallback((e) => {
@@ -84,25 +84,6 @@ export function HomePage() {
     );
   }, []);
 
-  const createWorkspaceFromUploadedFolder = useCallback(() => {
-    if (filesToUpload.length === 0) {
-      return;
-    }
-
-    workspaces.createWorkspaceFromLocal(filesToUpload).then(({ descriptor, suggestedFirstFile }) => {
-      if (!suggestedFirstFile) {
-        return;
-      }
-      history.replace({
-        pathname: globals.routes.workspaceWithFilePath.path({
-          workspaceId: descriptor.workspaceId,
-          fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-          extension: suggestedFirstFile.extension,
-        }),
-      });
-    });
-  }, [filesToUpload, workspaces, history, globals]);
-
   const queryParams = useQueryParams();
 
   const expandedWorkspaceId = useMemo(() => {
@@ -114,8 +95,8 @@ export function HomePage() {
   }, [history, globals]);
 
   const expandWorkspace = useCallback(
-    (workspace: WorkspaceDescriptor) => {
-      const expand = workspace.workspaceId !== expandedWorkspaceId ? workspace.workspaceId : undefined;
+    (workspaceId: string) => {
+      const expand = workspaceId !== expandedWorkspaceId ? workspaceId : undefined;
       if (!expand) {
         closeExpandedWorkspace();
         return;
@@ -137,6 +118,33 @@ export function HomePage() {
       closeExpandedWorkspace();
     }
   }, [workspaceDescriptorsPromise, closeExpandedWorkspace, expandedWorkspaceId]);
+
+  const createWorkspaceFromUploadedFolder = useCallback(() => {
+    if (filesToUpload.length === 0) {
+      return;
+    }
+
+    setUploading(true);
+
+    workspaces
+      .createWorkspaceFromLocal(filesToUpload)
+      .then(({ workspace, suggestedFirstFile }) => {
+        if (!suggestedFirstFile) {
+          expandWorkspace(workspace.workspaceId);
+          return;
+        }
+        history.push({
+          pathname: globals.routes.workspaceWithFilePath.path({
+            workspaceId: workspace.workspaceId,
+            fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
+            extension: suggestedFirstFile.extension,
+          }),
+        });
+      })
+      .finally(() => {
+        setUploading(false);
+      });
+  }, [expandWorkspace, filesToUpload, workspaces, history, globals]);
 
   return (
     <OnlineEditorPage>
@@ -196,6 +204,7 @@ export function HomePage() {
                   </CardBody>
                   <CardFooter>
                     <Button
+                      isLoading={uploading}
                       variant={filesToUpload.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
                       onClick={createWorkspaceFromUploadedFolder}
                     >
@@ -250,7 +259,7 @@ export function HomePage() {
       <PageSection variant={"light"}>
         <PromiseStateWrapper
           promise={workspaceDescriptorsPromise}
-          rejected={() => <></>}
+          rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
           resolved={(workspaceDescriptors) => {
             return (
               <Drawer isExpanded={!!expandedWorkspaceId} isInline={true}>
@@ -277,7 +286,7 @@ export function HomePage() {
                             <StackItem key={workspace.workspaceId}>
                               <WorkspaceCard
                                 workspaceId={workspace.workspaceId}
-                                onSelect={() => expandWorkspace(workspace)}
+                                onSelect={() => expandWorkspace(workspace.workspaceId)}
                                 isSelected={workspace.workspaceId === expandedWorkspaceId}
                               />
                             </StackItem>

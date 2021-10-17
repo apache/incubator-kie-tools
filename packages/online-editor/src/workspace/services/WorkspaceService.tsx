@@ -25,46 +25,43 @@ import { v4 as uuid } from "uuid";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
 import { basename, join } from "path";
 import { Minimatch } from "minimatch";
+import LightningFS from "@isomorphic-git/lightning-fs";
+import DefaultBackend from "@isomorphic-git/lightning-fs/src/DefaultBackend";
+import DexieBackend from "@isomorphic-git/lightning-fs/src/DexieBackend";
 
+const WORKSPACE_CONFIG_FS_NAME = "workspaces";
 export class WorkspaceService {
-  private readonly WORKSPACE_CONFIG_PATH = "/workspaces.json";
-
-  public constructor(private readonly storageService: StorageService) {}
+  public constructor(
+    public readonly storageService: StorageService,
+    private readonly workspacesFs = new LightningFS(WORKSPACE_CONFIG_FS_NAME, {
+      backend: new DefaultBackend({
+        idbBackendDelegate: (fileDbName, fileStoreName) => {
+          return new DexieBackend(fileDbName, fileStoreName);
+        },
+      }) as any,
+    })
+  ) {}
 
   public get rootPath(): string {
     return this.storageService.rootPath;
   }
 
-  public async init(): Promise<void> {
-    const configFile = await this.storageService.getFile(this.WORKSPACE_CONFIG_PATH);
-
-    if (!configFile) {
-      const freshConfigFile = await this.configAsFile(async () => JSON.stringify([]));
-      await this.storageService.createFile(freshConfigFile);
-    }
-  }
-
-  public async deleteAll() {
-    await this.storageService.wipeStorage();
-    await this.init();
-    const broadcastChannel = new BroadcastChannel(this.rootPath);
-    broadcastChannel.postMessage({ type: "DELETE_ALL" } as WorkspacesEvents);
-  }
-
   public async listAll(): Promise<WorkspaceDescriptor[]> {
-    const configFile = await this.storageService.getFile(this.WORKSPACE_CONFIG_PATH);
+    const workspaceDescriptorsFilePaths = await this.storageService.getFilePaths({
+      fs: this.workspacesFs,
+      dirPath: "/",
+      excludeDir: () => false,
+      visit: (p) => p,
+    });
 
-    if (!configFile) {
-      throw new Error("Workspaces config file not found");
-    }
+    const workspaceDescriptorFiles = await this.storageService.getFiles(
+      this.workspacesFs,
+      workspaceDescriptorsFilePaths
+    );
 
-    const fileContent = decoder.decode(await configFile.getFileContents());
-
-    if (!fileContent) {
-      throw new Error("No workspaces found");
-    }
-
-    return JSON.parse(fileContent) as WorkspaceDescriptor[];
+    return workspaceDescriptorFiles.map((workspaceDescriptorFile) => {
+      return JSON.parse(decoder.decode(workspaceDescriptorFile.content)) as WorkspaceDescriptor;
+    });
   }
 
   //
@@ -74,17 +71,14 @@ export class WorkspaceService {
   }
 
   public async create(
+    fs: LightningFS,
     descriptor: WorkspaceDescriptor,
     storeFiles: () => Promise<WorkspaceFile[]>,
     broadcastArgs: { broadcast: boolean }
   ): Promise<void> {
-    await this.storageService.createDirStructureAtRoot(descriptor.workspaceId);
+    await this.storageService.createFile(this.workspacesFs, this.workspaceDescriptorFile(descriptor));
+    await this.storageService.createDirStructureAtRoot(fs, descriptor.workspaceId);
     await storeFiles();
-
-    const descriptors = await this.listAll();
-    descriptors.push(descriptor);
-    const configFile = await this.configAsFile(async () => JSON.stringify(descriptors));
-    await this.storageService.updateFile(configFile);
 
     if (broadcastArgs.broadcast) {
       const broadcastChannel1 = new BroadcastChannel(this.rootPath);
@@ -98,29 +92,29 @@ export class WorkspaceService {
   }
 
   public async get(workspaceId: string): Promise<WorkspaceDescriptor> {
-    const descriptors = await this.listAll();
-    const descriptor = descriptors.find((descriptor) => descriptor.workspaceId === workspaceId);
-    if (!descriptor) {
-      throw new Error(`Workspace '${workspaceId}' not found`);
+    const workspaceDescriptorFile = await this.storageService.getFile(this.workspacesFs, `/${workspaceId}`);
+    if (!workspaceDescriptorFile) {
+      throw new Error("Workspace not found.");
     }
-
-    return descriptor;
+    return JSON.parse(decoder.decode(await workspaceDescriptorFile.getFileContents())) as WorkspaceDescriptor;
   }
 
-  public async getFilesLazy(workspaceId: string, globPattern?: string): Promise<WorkspaceFile[]> {
+  public async getFilesLazy(fs: LightningFS, workspaceId: string, globPattern?: string): Promise<WorkspaceFile[]> {
+    console.info(`WorkspaceService#getFilesLazy--${workspaceId}-----------begin`);
     console.time(`WorkspaceService#getFilesLazy--${workspaceId}`);
     const matcher = globPattern ? new Minimatch(globPattern, { dot: true }) : undefined;
     const gitDirPath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
     const rootDirPath = this.getAbsolutePath({ workspaceId, relativePath: "/" });
 
     const files = await this.storageService.getFilePaths({
-      dirPath: await this.resolveRootPath(workspaceId),
+      fs,
+      dirPath: await this.resolveRootPath(fs, workspaceId),
       excludeDir: (dirPath) => dirPath === gitDirPath,
       visit: (path) => {
         const workspaceFile = new WorkspaceFile({
           workspaceId,
           relativePath: path.replace(rootDirPath, ""),
-          getFileContents: () => this.storageService.getFile(path).then((f) => f!.getFileContents()),
+          getFileContents: () => this.storageService.getFile(fs, path).then((f) => f!.getFileContents()),
         });
 
         if (matcher && !matcher.match(workspaceFile.name)) {
@@ -135,24 +129,17 @@ export class WorkspaceService {
   }
 
   public async delete(workspaceId: string, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    const descriptors = await this.listAll();
-    const index = descriptors.findIndex((d) => d.workspaceId === workspaceId);
-    if (index === -1) {
-      throw new Error(`Workspace '${workspaceId}' not found`);
-    }
+    await this.storageService.deleteFile(this.workspacesFs, `/${workspaceId}`);
 
     console.time(`WorkspaceService#delete--${workspaceId}`);
     const paths = await this.storageService.getFilePaths({
-      dirPath: await this.resolveRootPath(workspaceId),
+      fs: await this.storageService.fs(),
+      dirPath: await this.resolveRootPath(await this.storageService.fs(), workspaceId),
       excludeDir: () => false,
       visit: (path) => path,
     });
-    await this.storageService.deleteFiles(paths);
+    await this.storageService.deleteFiles(await this.storageService.fs(), paths);
     console.timeEnd(`WorkspaceService#delete--${workspaceId}`);
-
-    descriptors.splice(index, 1);
-    const configFile = await this.configAsFile(async () => JSON.stringify(descriptors));
-    await this.storageService.updateFile(configFile);
 
     if (broadcastArgs.broadcast) {
       const broadcastChannel1 = new BroadcastChannel(this.rootPath);
@@ -163,15 +150,13 @@ export class WorkspaceService {
   }
 
   public async rename(workspaceId: string, newName: string, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    const descriptors = await this.listAll();
-    const index = descriptors.findIndex((w) => w.workspaceId === workspaceId);
-    if (index === -1) {
-      throw new Error(`Workspace ${workspaceId} not found`);
-    }
-
-    descriptors[index].name = newName;
-    const configFile = await this.configAsFile(async () => JSON.stringify(descriptors));
-    await this.storageService.updateFile(configFile);
+    await this.storageService.updateFile(
+      this.workspacesFs,
+      this.workspaceDescriptorFile({
+        ...(await this.get(workspaceId)),
+        name: newName,
+      })
+    );
 
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(workspaceId);
@@ -183,19 +168,27 @@ export class WorkspaceService {
     }
   }
 
+  private workspaceDescriptorFile(descriptor: WorkspaceDescriptor) {
+    return new StorageFile({
+      path: `/${descriptor.workspaceId}`,
+      getFileContents: () => Promise.resolve(encoder.encode(JSON.stringify(descriptor))),
+    });
+  }
+
   public async prepareZip(workspaceId: string): Promise<Blob> {
     console.time(`WorkspaceService#assembleZip--${workspaceId}`);
-    const workspaceRootPath = await this.resolveRootPath(workspaceId);
+    const workspaceRootPath = await this.resolveRootPath(await this.storageService.fs(), workspaceId);
 
     const matcher = new Minimatch(SUPPORTED_FILES_PATTERN, { dot: true });
     const gitDirPath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
     const paths = await this.storageService.getFilePaths({
-      dirPath: await this.resolveRootPath(workspaceId),
+      fs: await this.storageService.fs(),
+      dirPath: await this.resolveRootPath(await this.storageService.fs(), workspaceId),
       excludeDir: (dirPath) => dirPath === gitDirPath,
       visit: (path) => (!matcher.match(basename(path)) ? undefined : path),
     });
 
-    const files = await this.storageService.getFiles(paths);
+    const files = await this.storageService.getFiles(await this.storageService.fs(), paths);
 
     const zip = new JSZip();
     for (const file of files) {
@@ -209,9 +202,9 @@ export class WorkspaceService {
     return blob;
   }
 
-  public async resolveRootPath(workspaceId: string): Promise<string> {
+  public async resolveRootPath(fs: LightningFS, workspaceId: string): Promise<string> {
     const workspaceRootPath = this.getAbsolutePath({ workspaceId, relativePath: "" });
-    if (!(await this.storageService.exists(workspaceRootPath))) {
+    if (!(await this.storageService.exists(fs, workspaceRootPath))) {
       throw new Error(`Root '${workspaceRootPath}' does not exist`);
     }
 
@@ -221,7 +214,7 @@ export class WorkspaceService {
   //
 
   public async createFile(file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    await this.storageService.createFile(this.toStorageFile(file));
+    await this.storageService.createFile(await this.storageService.fs(), this.toStorageFile(file));
 
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(file.workspaceId);
@@ -242,7 +235,7 @@ export class WorkspaceService {
   public async getFile(args: { workspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined> {
     const absolutePath = this.getAbsolutePath(args);
     console.info(`Reading file '${absolutePath}'`);
-    const storageFile = await this.storageService.getFile(absolutePath);
+    const storageFile = await this.storageService.getFile(await this.storageService.fs(), absolutePath);
     if (!storageFile) {
       return;
     }
@@ -255,6 +248,7 @@ export class WorkspaceService {
     broadcastArgs: { broadcast: boolean }
   ): Promise<void> {
     await this.storageService.updateFile(
+      await this.storageService.fs(),
       this.toStorageFile(
         new WorkspaceFile({
           relativePath: file.relativePath,
@@ -281,7 +275,7 @@ export class WorkspaceService {
   }
 
   public async deleteFile(file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    await this.storageService.deleteFile(this.toStorageFile(file).path);
+    await this.storageService.deleteFile(await this.storageService.fs(), this.toStorageFile(file).path);
 
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(file.workspaceId);
@@ -304,7 +298,11 @@ export class WorkspaceService {
     newFileName: string,
     broadcastArgs: { broadcast: boolean }
   ): Promise<WorkspaceFile> {
-    const renamedStorageFile = await this.storageService.renameFile(this.toStorageFile(file), newFileName);
+    const renamedStorageFile = await this.storageService.renameFile(
+      await this.storageService.fs(),
+      this.toStorageFile(file),
+      newFileName
+    );
     const renamedWorkspaceFile = this.toWorkspaceFile(file.workspaceId, renamedStorageFile);
 
     if (broadcastArgs.broadcast) {
@@ -339,7 +337,11 @@ export class WorkspaceService {
   ): Promise<WorkspaceFile> {
     //FIXME: I'm not sure this works correctly.
 
-    const movedStorageFile = await this.storageService.renameFile(this.toStorageFile(file), newDirPath);
+    const movedStorageFile = await this.storageService.renameFile(
+      await this.storageService.fs(),
+      this.toStorageFile(file),
+      newDirPath
+    );
     const movedWorkspaceFile = this.toWorkspaceFile(file.workspaceId, movedStorageFile);
 
     if (broadcastArgs.broadcast) {
@@ -362,8 +364,8 @@ export class WorkspaceService {
     return movedWorkspaceFile;
   }
 
-  public async existsFile(args: { workspaceId: string; relativePath: string }): Promise<boolean> {
-    return this.storageService.exists(this.getAbsolutePath(args));
+  public async existsFile(args: { fs: LightningFS; workspaceId: string; relativePath: string }): Promise<boolean> {
+    return this.storageService.exists(args.fs, this.getAbsolutePath(args));
   }
 
   public getAbsolutePath(args: { workspaceId: string; relativePath: string }) {
@@ -375,7 +377,9 @@ export class WorkspaceService {
       return;
     }
 
-    await Promise.all(files.map((f) => this.toStorageFile(f)).map((f) => this.storageService.createFile(f)));
+    const fs = await this.storageService.fs();
+
+    await Promise.all(files.map((f) => this.toStorageFile(f)).map((f) => this.storageService.createFile(fs, f)));
 
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(files[0].workspaceId);
@@ -395,7 +399,9 @@ export class WorkspaceService {
       return;
     }
 
-    await Promise.all(files.map((f) => this.toStorageFile(f)).map((f) => this.storageService.deleteFile(f.path)));
+    const fs = await this.storageService.fs();
+
+    await Promise.all(files.map((f) => this.toStorageFile(f)).map((f) => this.storageService.deleteFile(fs, f.path)));
 
     if (broadcastArgs.broadcast) {
       await this.bumpLastUpdatedDate(files[0].workspaceId);
@@ -420,6 +426,7 @@ export class WorkspaceService {
     }
 
     const relativePaths = await this.storageService.moveFiles(
+      await this.storageService.fs(),
       files.map((f) => this.toStorageFile(f)),
       newDirPath
     );
@@ -434,13 +441,6 @@ export class WorkspaceService {
         relativePaths,
       } as WorkspaceEvents);
     }
-  }
-
-  private async configAsFile(getFileContents: () => Promise<string>) {
-    return new StorageFile({
-      path: this.WORKSPACE_CONFIG_PATH,
-      getFileContents: () => getFileContents().then((c) => encoder.encode(c)),
-    });
   }
 
   private toWorkspaceFile(workspaceId: string, storageFile: StorageFile): WorkspaceFile {
@@ -459,17 +459,12 @@ export class WorkspaceService {
   }
 
   private async bumpLastUpdatedDate(workspaceId: string): Promise<void> {
-    const descriptors = await this.listAll();
-    const updatedDescriptors = descriptors.map((descriptor) => {
-      if (descriptor.workspaceId !== workspaceId) {
-        return descriptor;
-      }
-      return {
-        ...descriptor,
+    await this.storageService.updateFile(
+      this.workspacesFs,
+      this.workspaceDescriptorFile({
+        ...(await this.get(workspaceId)),
         lastUpdatedDateISO: new Date().toISOString(),
-      };
-    });
-    const configFile = await this.configAsFile(async () => JSON.stringify(updatedDescriptors));
-    await this.storageService.updateFile(configFile);
+      })
+    );
   }
 }
