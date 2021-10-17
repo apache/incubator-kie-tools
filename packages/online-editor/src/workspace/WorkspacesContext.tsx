@@ -26,6 +26,7 @@ import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { basename, extname, parse } from "path";
 import { removeFileExtension } from "../common/utils";
+import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
 
 export const decoder = new TextDecoder("utf-8");
 export const encoder = new TextEncoder();
@@ -83,6 +84,7 @@ export interface LocalFile {
 
 export interface WorkspacesContextType {
   workspaceService: WorkspaceService;
+  workspaceDescriptorService: WorkspaceDescriptorService;
 
   // create
   createWorkspaceFromLocal: (

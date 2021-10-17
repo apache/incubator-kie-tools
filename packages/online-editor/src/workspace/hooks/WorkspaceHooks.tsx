@@ -47,7 +47,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
       }
 
       console.time(`WorkspaceHooks#workspacePromise--${workspaceId}`);
-      const descriptor = await workspaces.workspaceService.get(workspaceId);
+      const descriptor = await workspaces.workspaceDescriptorService.get(workspaceId);
       if (canceled.get()) {
         return;
       }
@@ -85,7 +85,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
         }
 
         const broadcastChannel = new BroadcastChannel(workspaceId);
-        broadcastChannel.onmessage = ({ data }) => {
+        broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceEvents>) => {
           console.info(`EVENT::WORKSPACE: ${JSON.stringify(data)}`);
           return refresh(canceled);
         };

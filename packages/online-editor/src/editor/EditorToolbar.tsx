@@ -786,7 +786,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
       );
 
       const exists = await workspaces.workspaceService.existsFile({
-        fs: await workspaces.workspaceService.storageService.fs(),
+        fs: workspaces.workspaceService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         relativePath: newRelativePath,
       });

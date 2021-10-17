@@ -14,89 +14,79 @@
  * limitations under the License.
  */
 
-import { decoder, encoder, WorkspaceFile } from "../WorkspacesContext";
+import { encoder, WorkspaceFile } from "../WorkspacesContext";
 import JSZip from "jszip";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { SUPPORTED_FILES_PATTERN } from "../SupportedFiles";
 import { StorageFile, StorageService } from "./StorageService";
 import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
-import { v4 as uuid } from "uuid";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
 import { basename, join } from "path";
 import { Minimatch } from "minimatch";
 import LightningFS from "@isomorphic-git/lightning-fs";
 import DefaultBackend from "@isomorphic-git/lightning-fs/src/DefaultBackend";
 import DexieBackend from "@isomorphic-git/lightning-fs/src/DexieBackend";
+import { InMemoryBackend } from "./InMemoryBackend";
+import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
 
-const WORKSPACE_CONFIG_FS_NAME = "workspaces";
 export class WorkspaceService {
+  private fsCache = new Map<string, LightningFS>();
+
   public constructor(
     public readonly storageService: StorageService,
-    private readonly workspacesFs = new LightningFS(WORKSPACE_CONFIG_FS_NAME, {
-      backend: new DefaultBackend({
-        idbBackendDelegate: (fileDbName, fileStoreName) => {
-          return new DexieBackend(fileDbName, fileStoreName);
-        },
-      }) as any,
-    })
+    private readonly workspaceDescriptorService: WorkspaceDescriptorService
   ) {}
 
   public get rootPath(): string {
     return this.storageService.rootPath;
   }
 
-  public async listAll(): Promise<WorkspaceDescriptor[]> {
-    const workspaceDescriptorsFilePaths = await this.storageService.getFilePaths({
-      fs: this.workspacesFs,
-      dirPath: "/",
-      excludeDir: () => false,
-      visit: (p) => p,
-    });
-
-    const workspaceDescriptorFiles = await this.storageService.getFiles(
-      this.workspacesFs,
-      workspaceDescriptorsFilePaths
-    );
-
-    return workspaceDescriptorFiles.map((workspaceDescriptorFile) => {
-      return JSON.parse(decoder.decode(workspaceDescriptorFile.content)) as WorkspaceDescriptor;
-    });
-  }
-
-  //
-
-  public newWorkspaceId(): string {
-    return uuid();
-  }
-
   public async create(
-    fs: LightningFS,
-    descriptor: WorkspaceDescriptor,
-    storeFiles: () => Promise<WorkspaceFile[]>,
+    storeFiles: (fs: LightningFS, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>,
     broadcastArgs: { broadcast: boolean }
-  ): Promise<void> {
-    await this.storageService.createFile(this.workspacesFs, this.workspaceDescriptorFile(descriptor));
-    await this.storageService.createDirStructureAtRoot(fs, descriptor.workspaceId);
-    await storeFiles();
+  ) {
+    const workspace = await this.workspaceDescriptorService.create();
+    const fs = this.createBatchWorkspaceFs(workspace.workspaceId);
+    await this.storageService.createDirStructureAtRoot(fs, workspace.workspaceId);
+    const files = await storeFiles(fs, workspace);
 
     if (broadcastArgs.broadcast) {
       const broadcastChannel1 = new BroadcastChannel(this.rootPath);
-      const broadcastChannel2 = new BroadcastChannel(descriptor.workspaceId);
+      const broadcastChannel2 = new BroadcastChannel(workspace.workspaceId);
       broadcastChannel1.postMessage({
         type: "ADD_WORKSPACE",
-        workspaceId: descriptor.workspaceId,
+        workspaceId: workspace.workspaceId,
       } as WorkspacesEvents);
-      broadcastChannel2.postMessage({ type: "ADD", workspaceId: descriptor.workspaceId } as WorkspaceEvents);
+      broadcastChannel2.postMessage({ type: "ADD", workspaceId: workspace.workspaceId } as WorkspaceEvents);
     }
+
+    return { workspace, files };
   }
 
-  public async get(workspaceId: string): Promise<WorkspaceDescriptor> {
-    const workspaceDescriptorFile = await this.storageService.getFile(this.workspacesFs, `/${workspaceId}`);
-    if (!workspaceDescriptorFile) {
-      throw new Error("Workspace not found.");
+  getWorkspaceFs(workspaceId: string) {
+    const fs = this.fsCache.get(workspaceId);
+    if (fs) {
+      return fs;
     }
-    return JSON.parse(decoder.decode(await workspaceDescriptorFile.getFileContents())) as WorkspaceDescriptor;
+
+    const newFs = new LightningFS(workspaceId, {
+      backend: new DefaultBackend({
+        idbBackendDelegate: (fileDbName, fileStoreName) => new DexieBackend(fileDbName, fileStoreName),
+      }) as any,
+    });
+
+    this.fsCache.set(workspaceId, newFs);
+    return newFs;
+  }
+
+  createBatchWorkspaceFs(workspaceId: string) {
+    return new LightningFS(workspaceId, {
+      backend: new DefaultBackend({
+        idbBackendDelegate: (fileDbName, fileStoreName) =>
+          new InMemoryBackend(new DexieBackend(fileDbName, fileStoreName)),
+      }) as any,
+    });
   }
 
   public async getFilesLazy(fs: LightningFS, workspaceId: string, globPattern?: string): Promise<WorkspaceFile[]> {
@@ -129,17 +119,8 @@ export class WorkspaceService {
   }
 
   public async delete(workspaceId: string, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    await this.storageService.deleteFile(this.workspacesFs, `/${workspaceId}`);
-
-    console.time(`WorkspaceService#delete--${workspaceId}`);
-    const paths = await this.storageService.getFilePaths({
-      fs: await this.storageService.fs(),
-      dirPath: await this.resolveRootPath(await this.storageService.fs(), workspaceId),
-      excludeDir: () => false,
-      visit: (path) => path,
-    });
-    await this.storageService.deleteFiles(await this.storageService.fs(), paths);
-    console.timeEnd(`WorkspaceService#delete--${workspaceId}`);
+    await this.workspaceDescriptorService.delete(workspaceId);
+    indexedDB.deleteDatabase(workspaceId);
 
     if (broadcastArgs.broadcast) {
       const broadcastChannel1 = new BroadcastChannel(this.rootPath);
@@ -150,16 +131,10 @@ export class WorkspaceService {
   }
 
   public async rename(workspaceId: string, newName: string, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    await this.storageService.updateFile(
-      this.workspacesFs,
-      this.workspaceDescriptorFile({
-        ...(await this.get(workspaceId)),
-        name: newName,
-      })
-    );
+    await this.workspaceDescriptorService.rename(workspaceId, newName);
 
     if (broadcastArgs.broadcast) {
-      await this.bumpLastUpdatedDate(workspaceId);
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(workspaceId);
 
       const broadcastChannel1 = new BroadcastChannel(this.rootPath);
       const broadcastChannel2 = new BroadcastChannel(workspaceId);
@@ -168,27 +143,21 @@ export class WorkspaceService {
     }
   }
 
-  private workspaceDescriptorFile(descriptor: WorkspaceDescriptor) {
-    return new StorageFile({
-      path: `/${descriptor.workspaceId}`,
-      getFileContents: () => Promise.resolve(encoder.encode(JSON.stringify(descriptor))),
-    });
-  }
-
   public async prepareZip(workspaceId: string): Promise<Blob> {
     console.time(`WorkspaceService#assembleZip--${workspaceId}`);
-    const workspaceRootPath = await this.resolveRootPath(await this.storageService.fs(), workspaceId);
+    const fs = this.getWorkspaceFs(workspaceId);
+    const workspaceRootPath = await this.resolveRootPath(fs, workspaceId);
 
     const matcher = new Minimatch(SUPPORTED_FILES_PATTERN, { dot: true });
     const gitDirPath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
     const paths = await this.storageService.getFilePaths({
-      fs: await this.storageService.fs(),
-      dirPath: await this.resolveRootPath(await this.storageService.fs(), workspaceId),
+      fs,
+      dirPath: await this.resolveRootPath(fs, workspaceId),
       excludeDir: (dirPath) => dirPath === gitDirPath,
       visit: (path) => (!matcher.match(basename(path)) ? undefined : path),
     });
 
-    const files = await this.storageService.getFiles(await this.storageService.fs(), paths);
+    const files = await this.storageService.getFiles(fs, paths);
 
     const zip = new JSZip();
     for (const file of files) {
@@ -214,10 +183,10 @@ export class WorkspaceService {
   //
 
   public async createFile(file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    await this.storageService.createFile(await this.storageService.fs(), this.toStorageFile(file));
+    await this.storageService.createFile(this.getWorkspaceFs(file.workspaceId), this.toStorageFile(file));
 
     if (broadcastArgs.broadcast) {
-      await this.bumpLastUpdatedDate(file.workspaceId);
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);
 
       const broadcastChannel1 = new BroadcastChannel(this.getAbsolutePath(file));
       const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
@@ -235,7 +204,7 @@ export class WorkspaceService {
   public async getFile(args: { workspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined> {
     const absolutePath = this.getAbsolutePath(args);
     console.info(`Reading file '${absolutePath}'`);
-    const storageFile = await this.storageService.getFile(await this.storageService.fs(), absolutePath);
+    const storageFile = await this.storageService.getFile(this.getWorkspaceFs(args.workspaceId), absolutePath);
     if (!storageFile) {
       return;
     }
@@ -248,7 +217,7 @@ export class WorkspaceService {
     broadcastArgs: { broadcast: boolean }
   ): Promise<void> {
     await this.storageService.updateFile(
-      await this.storageService.fs(),
+      await this.getWorkspaceFs(file.workspaceId),
       this.toStorageFile(
         new WorkspaceFile({
           relativePath: file.relativePath,
@@ -259,7 +228,7 @@ export class WorkspaceService {
     );
 
     if (broadcastArgs.broadcast) {
-      await this.bumpLastUpdatedDate(file.workspaceId);
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);
 
       const broadcastChannel1 = new BroadcastChannel(this.getAbsolutePath(file));
       const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
@@ -275,10 +244,10 @@ export class WorkspaceService {
   }
 
   public async deleteFile(file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    await this.storageService.deleteFile(await this.storageService.fs(), this.toStorageFile(file).path);
+    await this.storageService.deleteFile(this.getWorkspaceFs(file.workspaceId), this.toStorageFile(file).path);
 
     if (broadcastArgs.broadcast) {
-      await this.bumpLastUpdatedDate(file.workspaceId);
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);
 
       const broadcastChannel1 = new BroadcastChannel(this.getAbsolutePath(file));
       const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
@@ -299,14 +268,14 @@ export class WorkspaceService {
     broadcastArgs: { broadcast: boolean }
   ): Promise<WorkspaceFile> {
     const renamedStorageFile = await this.storageService.renameFile(
-      await this.storageService.fs(),
+      this.getWorkspaceFs(file.workspaceId),
       this.toStorageFile(file),
       newFileName
     );
     const renamedWorkspaceFile = this.toWorkspaceFile(file.workspaceId, renamedStorageFile);
 
     if (broadcastArgs.broadcast) {
-      await this.bumpLastUpdatedDate(file.workspaceId);
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);
 
       const broadcastChannel1 = new BroadcastChannel(this.getAbsolutePath(file));
       const broadcastChannel2 = new BroadcastChannel(this.getAbsolutePath(renamedWorkspaceFile));
@@ -338,14 +307,14 @@ export class WorkspaceService {
     //FIXME: I'm not sure this works correctly.
 
     const movedStorageFile = await this.storageService.renameFile(
-      await this.storageService.fs(),
+      await this.getWorkspaceFs(file.workspaceId),
       this.toStorageFile(file),
       newDirPath
     );
     const movedWorkspaceFile = this.toWorkspaceFile(file.workspaceId, movedStorageFile);
 
     if (broadcastArgs.broadcast) {
-      await this.bumpLastUpdatedDate(file.workspaceId);
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);
 
       const broadcastChannel1 = new BroadcastChannel(this.getAbsolutePath(file));
       const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
@@ -372,39 +341,19 @@ export class WorkspaceService {
     return join(this.rootPath, args.workspaceId, args.relativePath);
   }
 
-  public async createFiles(files: WorkspaceFile[], broadcastArgs: { broadcast: boolean }): Promise<void> {
+  public async deleteFiles(
+    fs: LightningFS,
+    files: WorkspaceFile[],
+    broadcastArgs: { broadcast: boolean }
+  ): Promise<void> {
     if (files.length === 0) {
       return;
     }
-
-    const fs = await this.storageService.fs();
-
-    await Promise.all(files.map((f) => this.toStorageFile(f)).map((f) => this.storageService.createFile(fs, f)));
-
-    if (broadcastArgs.broadcast) {
-      await this.bumpLastUpdatedDate(files[0].workspaceId);
-
-      const relativePaths = files.map((file) => file.relativePath);
-      const broadcastChannel = new BroadcastChannel(files[0].workspaceId);
-      broadcastChannel.postMessage({
-        type: "ADD_BATCH",
-        workspaceId: files[0].workspaceId,
-        relativePaths,
-      } as WorkspaceEvents);
-    }
-  }
-
-  public async deleteFiles(files: WorkspaceFile[], broadcastArgs: { broadcast: boolean }): Promise<void> {
-    if (files.length === 0) {
-      return;
-    }
-
-    const fs = await this.storageService.fs();
 
     await Promise.all(files.map((f) => this.toStorageFile(f)).map((f) => this.storageService.deleteFile(fs, f.path)));
 
     if (broadcastArgs.broadcast) {
-      await this.bumpLastUpdatedDate(files[0].workspaceId);
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(files[0].workspaceId);
 
       const relativePaths = files.map((file) => file.relativePath);
       const broadcastChannel = new BroadcastChannel(files[0].workspaceId);
@@ -417,6 +366,7 @@ export class WorkspaceService {
   }
 
   public async moveFiles(
+    fs: LightningFS,
     files: WorkspaceFile[],
     newDirPath: string,
     broadcastArgs: { broadcast: boolean }
@@ -426,13 +376,13 @@ export class WorkspaceService {
     }
 
     const relativePaths = await this.storageService.moveFiles(
-      await this.storageService.fs(),
+      fs,
       files.map((f) => this.toStorageFile(f)),
       newDirPath
     );
 
     if (broadcastArgs.broadcast) {
-      await this.bumpLastUpdatedDate(files[0].workspaceId);
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(files[0].workspaceId);
 
       const broadcastChannel = new BroadcastChannel(files[0].workspaceId);
       broadcastChannel.postMessage({
@@ -456,15 +406,5 @@ export class WorkspaceService {
       path: this.getAbsolutePath(workspaceFile),
       getFileContents: workspaceFile.getFileContents,
     });
-  }
-
-  private async bumpLastUpdatedDate(workspaceId: string): Promise<void> {
-    await this.storageService.updateFile(
-      this.workspacesFs,
-      this.workspaceDescriptorFile({
-        ...(await this.get(workspaceId)),
-        lastUpdatedDateISO: new Date().toISOString(),
-      })
-    );
   }
 }

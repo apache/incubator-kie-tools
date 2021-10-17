@@ -16,9 +16,6 @@
 
 import LightningFS from "@isomorphic-git/lightning-fs";
 import { basename, dirname, extname, join, resolve } from "path";
-import DefaultBackend from "@isomorphic-git/lightning-fs/src/DefaultBackend";
-import DexieBackend from "@isomorphic-git/lightning-fs/src/DexieBackend";
-import { InMemoryBackend } from "./InMemoryBackend";
 
 export class EagerStorageFile {
   constructor(private readonly args: { path: string; content: Uint8Array }) {}
@@ -45,45 +42,6 @@ export class StorageFile {
 
 export class StorageService {
   private readonly SEPARATOR = "/";
-
-  public readonly fsInstance;
-
-  public constructor(private readonly dbName: string) {
-    this.fsInstance = new LightningFS(this.dbName, {
-      backend: new DefaultBackend({
-        idbBackendDelegate: (fileDbName, fileStoreName) => {
-          return new DexieBackend(fileDbName, fileStoreName);
-        },
-      }) as any,
-    });
-  }
-
-  public fsBatch() {
-    return new LightningFS(this.dbName, {
-      backend: new DefaultBackend({
-        idbBackendDelegate: (fileDbName, fileStoreName) => {
-          return new InMemoryBackend(new DexieBackend(fileDbName, fileStoreName));
-        },
-      }) as any,
-    });
-  }
-
-  public async fs() {
-    return this.fsInstance;
-
-    // return new Promise<LightningFS>((res) => {
-    //   const i = setInterval(() => {
-    //     if (isFsBatchInProgress) {
-    //       console.info("Waiting until fsBatchInProgress is `false`...");
-    //       return;
-    //     }
-    //
-    //     console.info("Acquiring regular FS...");
-    //     res(this.fsInstance);
-    //     clearInterval(i);
-    //   }, 100);
-    // });
-  }
 
   public get rootPath(): string {
     return this.SEPARATOR;
@@ -198,15 +156,6 @@ export class StorageService {
         path,
         content,
       });
-    });
-  }
-
-  public async wipeStorage(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      const request = indexedDB.deleteDatabase(this.dbName);
-      request.onsuccess = () => resolve();
-      request.onerror = () => reject("Could not delete database");
-      request.onblocked = () => reject("Could not delete database due to the operation being blocked");
     });
   }
 
