@@ -47,9 +47,10 @@ export class WorkspaceService {
     broadcastArgs: { broadcast: boolean }
   ) {
     const workspace = await this.workspaceDescriptorService.create();
-    const fs = this.createBatchWorkspaceFs(workspace.workspaceId);
+    const { fs, flush } = await this.createBatchWorkspaceFs(workspace.workspaceId);
     await this.storageService.createDirStructureAtRoot(fs, workspace.workspaceId);
     const files = await storeFiles(fs, workspace);
+    await flush();
 
     if (broadcastArgs.broadcast) {
       const broadcastChannel1 = new BroadcastChannel(this.rootPath);
@@ -80,13 +81,45 @@ export class WorkspaceService {
     return newFs;
   }
 
-  createBatchWorkspaceFs(workspaceId: string) {
-    return new LightningFS(workspaceId, {
-      backend: new DefaultBackend({
-        idbBackendDelegate: (fileDbName, fileStoreName) =>
-          new InMemoryBackend(new DexieBackend(fileDbName, fileStoreName)),
-      }) as any,
+  public async createBatchWorkspaceFs(workspaceId: string) {
+    const readEntireFs = async (dexieBackend: DexieBackend) => {
+      console.info("MEM :: Reading FS to memory");
+      console.time("MEM :: Reading FS to memory");
+      await dexieBackend._dexie.open();
+      const keys = await dexieBackend._dexie.table(dexieBackend._storename).toCollection().keys();
+      const data = await dexieBackend.readFileBulk(keys);
+      const fsAsMapConstructorParameter: any[] = [];
+      for (let i = 0; i < data.length; i++) {
+        fsAsMapConstructorParameter[i] = [keys[i], data[i]];
+      }
+      console.timeEnd("MEM :: Reading FS to memory");
+      return fsAsMapConstructorParameter;
+    };
+
+    const dbName = workspaceId; // don't change. (This is hardcoded on LightningFS).
+    const storeName = workspaceId + "_files"; // don't change (This is hardcoded on LightningFS).
+    const dexieBackend = new DexieBackend(dbName, storeName);
+    const inMemoryBackend = new InMemoryBackend(dexieBackend, new Map(await readEntireFs(dexieBackend)));
+
+    const flush = async () => {
+      return new Promise<void>((res) => {
+        setTimeout(async () => {
+          const inodeBulk = Array.from(inMemoryBackend.fs.keys());
+          const dataBulk = Array.from(inMemoryBackend.fs.values());
+          console.info("MEM :: Flushing in memory FS");
+          console.time("MEM :: Flushing in memory FS");
+          await dexieBackend.writeFileBulk(inodeBulk, dataBulk);
+          console.timeEnd("MEM :: Flushing in memory FS");
+          res();
+        }, 500); // necessary to wait for debounce of 500ms (This is hardcoded on LightningFS).
+      });
+    };
+
+    const fs = new LightningFS(dbName, {
+      backend: new DefaultBackend({ idbBackendDelegate: () => inMemoryBackend }) as any,
     });
+
+    return { fs, flush };
   }
 
   public async getFilesLazy(fs: LightningFS, workspaceId: string, globPattern?: string): Promise<WorkspaceFile[]> {
