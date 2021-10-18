@@ -27,6 +27,7 @@ import { WorkspaceService } from "./services/WorkspaceService";
 import { basename, extname, parse } from "path";
 import { removeFileExtension } from "../common/utils";
 import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
+import { WorkspaceFsService } from "./services/WorkspaceFsService";
 
 export const decoder = new TextDecoder("utf-8");
 export const encoder = new TextEncoder();
@@ -83,12 +84,19 @@ export interface LocalFile {
 }
 
 export interface WorkspacesContextType {
-  workspaceService: WorkspaceService;
-  workspaceDescriptorService: WorkspaceDescriptorService;
+  service: WorkspaceService;
+  descriptorService: WorkspaceDescriptorService;
+  fsService: WorkspaceFsService;
 
   // create
   createWorkspaceFromLocal: (
     files: LocalFile[]
+  ) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
+
+  createWorkspaceFromGitRepository: (
+    repositoryUrl: URL,
+    sourceBranch: string,
+    githubSettings: { user: { login: string; email: string; name: string }; token: string }
   ) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
 
   // edit workspace
@@ -102,6 +110,8 @@ export interface WorkspacesContextType {
   isModified(workspaceId: string): Promise<boolean>;
   getAbsolutePath(args: { workspaceId: string; relativePath: string }): string;
   createSavePoint(workspaceId: string): Promise<void>;
+  deleteWorkspace(workspaceId: string): Promise<void>;
+  renameWorkspace(workspaceId: string, newName: string): Promise<void>;
 
   resourceContentList: (args: {
     workspaceId: string;

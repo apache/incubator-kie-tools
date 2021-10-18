@@ -10,7 +10,7 @@ declare module "@isomorphic-git/lightning-fs/src/DexieBackend" {
   export default class DexieBackend {
     _dexie: any;
     _storename: any;
-    constructor(fileDbName: string, fileStoreName: string) {}
+    constructor(dbName: string, storeName: string) {}
     async saveSuperblock(superblock: any);
     async loadSuperblock();
     async readFile(inode: string);

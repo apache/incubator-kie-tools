@@ -410,7 +410,7 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
                 <CardActions>
                   {isHovered && (
                     <DeleteDropdownWithConfirmation
-                      onDelete={() => workspaces.workspaceService.delete(props.workspaceId, { broadcast: true })}
+                      onDelete={() => workspaces.deleteWorkspace(props.workspaceId)}
                       item={
                         <Flex flexWrap={{ default: "nowrap" }}>
                           <FlexItem>
@@ -475,7 +475,7 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
                 <CardActions>
                   {isHovered && (
                     <DeleteDropdownWithConfirmation
-                      onDelete={() => workspaces.workspaceService.delete(props.workspaceId, { broadcast: true })}
+                      onDelete={() => workspaces.deleteWorkspace(props.workspaceId)}
                       item={
                         <>
                           Delete <b>{`"${workspacePromise.data?.descriptor.name}"`}</b>

@@ -10,7 +10,7 @@ export function useWorkspaceDescriptorsPromise() {
 
   const refresh = useCallback(
     async (canceled: Holder<boolean>) => {
-      workspaces.workspaceDescriptorService
+      workspaces.descriptorService
         .listAll()
         .then((descriptors) => {
           if (!canceled.get()) {
@@ -40,7 +40,7 @@ export function useWorkspaceDescriptorsPromise() {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        const broadcastChannel = new BroadcastChannel(workspaces.workspaceService.rootPath);
+        const broadcastChannel = new BroadcastChannel(workspaces.service.rootPath);
         broadcastChannel.onmessage = ({ data }) => {
           console.info(`EVENT::WORKSPACES: ${JSON.stringify(data)}`);
           refresh(canceled);

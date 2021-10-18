@@ -58,6 +58,7 @@ export class StorageService {
   }
 
   public async createFiles(fs: LightningFS, files: StorageFile[]) {
+    console.time("create files");
     if (!fs.promises.writeFileBulk) {
       throw new Error("Can't write bulk");
     }
@@ -71,6 +72,7 @@ export class StorageService {
     );
 
     await fs.promises.writeFileBulk(filesArray);
+    console.timeEnd("create files");
   }
 
   public async updateFile(fs: LightningFS, file: StorageFile): Promise<void> {
@@ -212,6 +214,7 @@ export class StorageService {
       }
     }
   }
+
   private async writeFile(fs: LightningFS, file: StorageFile): Promise<void> {
     const content = await file.getFileContents();
     await fs.promises.writeFile(file.path, content);

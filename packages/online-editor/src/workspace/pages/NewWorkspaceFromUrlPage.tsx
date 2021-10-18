@@ -1,6 +1,6 @@
 import { encoder, LocalFile, useWorkspaces } from "../WorkspacesContext";
 import { useGlobals } from "../../common/GlobalContext";
-import { useHistory } from "react-router";
+import { matchPath, useHistory } from "react-router";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -61,115 +61,130 @@ export function NewWorkspaceFromUrlPage() {
     let canceled = false;
     setFetchFileError(undefined);
 
-    if (queryParamUrl) {
-      let filePath: string;
+    if (!queryParamUrl) {
+      return;
+    }
 
-      if (isSample) {
-        filePath = queryParamUrl;
-      } else {
-        try {
-          const validUrl = new URL(queryParamUrl);
-          filePath = validUrl.origin + validUrl.pathname;
-        } catch (error) {
-          setFetchFileError({
-            errors: [error],
-            path: queryParamUrl,
-          });
+    let filePath: string;
+    if (isSample) {
+      filePath = queryParamUrl;
+    } else {
+      try {
+        const validUrl = new URL(queryParamUrl);
+        filePath = validUrl.origin + validUrl.pathname;
+      } catch (error) {
+        setFetchFileError({
+          errors: [error],
+          path: queryParamUrl,
+        });
+        return;
+      }
+    }
+
+    if (settings.github.service.isGithub(queryParamUrl)) {
+      const url = new URL(queryParamUrl);
+      const match = matchPath(url.pathname, { path: "/:org/:repo", exact: true, strict: true });
+      if (match) {
+        if (!settings.github.token || !settings.github.user) {
           return;
         }
-      }
-
-      const filePathExtension = extractFileExtension(filePath)!;
-      const extractedFileName = decodeURIComponent(removeFileExtension(removeDirectories(filePath) ?? "unknown"));
-
-      if (settings.github.service.isGist(queryParamUrl)) {
-        settings.github.service
-          .fetchGistFile(settings.github.octokit, queryParamUrl)
-          .then((content) => {
-            if (canceled) {
-              return;
-            }
-
-            return createWorkspaceForFile({
-              path: `${extractedFileName}.${filePathExtension}`,
-              getFileContents: () => Promise.resolve(encoder.encode(content)),
-            });
+        workspaces
+          .createWorkspaceFromGitRepository(url, "main", {
+            user: {
+              login: settings.github.user.login,
+              email: settings.github.user.email,
+              name: settings.github.user.name,
+            },
+            token: settings.github.token,
           })
-          .catch((error) => setFetchFileError({ errors: [error], path: queryParamUrl }));
-        return;
-      }
-
-      if (settings.github.service.isGithub(queryParamUrl) || settings.github.service.isGithubRaw(queryParamUrl)) {
-        settings.github.service
-          .fetchGithubFile(settings.github.octokit, queryParamUrl)
-          .then((response) => {
-            if (canceled) {
-              return;
-            }
-
-            return createWorkspaceForFile({
-              path: `${extractedFileName}.${filePathExtension}`,
-              getFileContents: () => Promise.resolve(encoder.encode(response)),
-            });
-          })
-          .catch((error) => {
-            setFetchFileError({ errors: [error], path: queryParamUrl });
+          .then(() => {
+            history.replace({ pathname: globals.routes.home.path({}) });
           });
         return;
       }
+    }
 
-      fetch(queryParamUrl)
+    const filePathExtension = extractFileExtension(filePath)!;
+    const extractedFileName = decodeURIComponent(removeFileExtension(removeDirectories(filePath) ?? "unknown"));
+
+    if (settings.github.service.isGist(queryParamUrl)) {
+      settings.github.service
+        .fetchGistFile(settings.github.octokit, queryParamUrl)
+        .then((content) => {
+          if (canceled) {
+            return;
+          }
+
+          return createWorkspaceForFile({
+            path: `${extractedFileName}.${filePathExtension}`,
+            getFileContents: () => Promise.resolve(encoder.encode(content)),
+          });
+        })
+        .catch((error) => setFetchFileError({ errors: [error], path: queryParamUrl }));
+      return;
+    }
+
+    if (settings.github.service.isGithub(queryParamUrl) || settings.github.service.isGithubRaw(queryParamUrl)) {
+      settings.github.service
+        .fetchGithubFile(settings.github.octokit, queryParamUrl)
         .then((response) => {
           if (canceled) {
             return;
           }
 
-          if (!response.ok) {
-            setFetchFileError({
-              errors: [`${response.status} - ${response.statusText}`],
-              path: queryParamUrl,
-            });
-            return;
-          }
-
-          // do not inline this variable.
-          const content = response.text();
-
           return createWorkspaceForFile({
             path: `${extractedFileName}.${filePathExtension}`,
-            getFileContents: () => content.then((c) => encoder.encode(c)),
+            getFileContents: () => Promise.resolve(encoder.encode(response)),
           });
         })
         .catch((error) => {
           setFetchFileError({ errors: [error], path: queryParamUrl });
         });
+      return;
     }
+
+    fetch(queryParamUrl)
+      .then((response) => {
+        if (canceled) {
+          return;
+        }
+
+        if (!response.ok) {
+          setFetchFileError({
+            errors: [`${response.status} - ${response.statusText}`],
+            path: queryParamUrl,
+          });
+          return;
+        }
+
+        // do not inline this variable.
+        const content = response.text();
+
+        return createWorkspaceForFile({
+          path: `${extractedFileName}.${filePathExtension}`,
+          getFileContents: () => content.then((c) => encoder.encode(c)),
+        });
+      })
+      .catch((error) => {
+        setFetchFileError({ errors: [error], path: queryParamUrl });
+      });
 
     return () => {
       canceled = true;
     };
-  }, [
-    globals.routes.workspaceWithFilePath,
-    history,
-    queryParamUrl,
-    settings.github.octokit,
-    settings.github.service,
-    workspaces,
-    isSample,
-    createWorkspaceForFile,
-  ]);
+  }, [globals.routes, history, queryParamUrl, workspaces, isSample, createWorkspaceForFile, settings.github]);
 
   return (
-    <OnlineEditorPage>
-      <PageSection
-        variant={"light"}
-        isFilled={true}
-        padding={{ default: "noPadding" }}
-        className={"kogito--editor__page-section"}
-      >
-        <>
-          {fetchFileError && <EditorPageErrorPage path={fetchFileError.path} errors={fetchFileError.errors} />}
-          {!fetchFileError && (
+    <>
+      {fetchFileError && <EditorPageErrorPage path={fetchFileError.path} errors={fetchFileError.errors} />}
+      {!fetchFileError && (
+        <OnlineEditorPage>
+          <PageSection
+            variant={"light"}
+            isFilled={true}
+            padding={{ default: "noPadding" }}
+            className={"kogito--editor__page-section"}
+          >
             <Bullseye>
               <TextContent>
                 <Bullseye>
@@ -179,9 +194,9 @@ export function NewWorkspaceFromUrlPage() {
                 <Text component={TextVariants.p}>{`Importing workspace from '${queryParamUrl}'`}</Text>
               </TextContent>
             </Bullseye>
-          )}
-        </>
-      </PageSection>
-    </OnlineEditorPage>
+          </PageSection>
+        </OnlineEditorPage>
+      )}
+    </>
   );
 }

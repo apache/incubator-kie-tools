@@ -529,8 +529,8 @@ export function EditorToolbar(props: Props) {
     }
 
     if (workspacePromise.data.files.length === 1) {
-      workspaces.workspaceService
-        .delete(props.workspaceFile.workspaceId, { broadcast: true })
+      workspaces
+        .deleteWorkspace(props.workspaceFile.workspaceId)
         .then(() => history.push({ pathname: globals.routes.home.path({}) }));
       return;
     }
@@ -758,7 +758,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
   }, [props.workspace]);
 
   const onRenameWorkspace = useCallback(
-    (newName: string | undefined) => {
+    async (newName: string | undefined) => {
       if (!newName) {
         resetWorkspaceName();
         return;
@@ -768,9 +768,9 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
         return;
       }
 
-      workspaces.workspaceService.rename(props.workspace.descriptor.workspaceId, newName, { broadcast: true });
+      await workspaces.renameWorkspace(props.workspace.descriptor.workspaceId, newName);
     },
-    [props.workspace, workspaces.workspaceService, resetWorkspaceName]
+    [props.workspace, workspaces, resetWorkspaceName]
   );
 
   const checkNewFileName = useCallback(
@@ -785,14 +785,14 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
         `${newFileNameWithoutExtension}.${props.workspaceFile.extension}`
       );
 
-      const exists = await workspaces.workspaceService.existsFile({
-        fs: workspaces.workspaceService.getWorkspaceFs(props.workspaceFile.workspaceId),
+      const exists = await workspaces.service.existsFile({
+        fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         relativePath: newRelativePath,
       });
       setNewFileNameValid(!exists);
     },
-    [props.workspaceFile, workspaces.workspaceService]
+    [props.workspaceFile, workspaces.service, workspaces.fsService]
   );
 
   const onRenameWorkspaceFile = useCallback(

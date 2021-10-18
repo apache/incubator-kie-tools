@@ -25,17 +25,14 @@ import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
 import { basename, join } from "path";
 import { Minimatch } from "minimatch";
 import LightningFS from "@isomorphic-git/lightning-fs";
-import DefaultBackend from "@isomorphic-git/lightning-fs/src/DefaultBackend";
-import DexieBackend from "@isomorphic-git/lightning-fs/src/DexieBackend";
-import { InMemoryBackend } from "./InMemoryBackend";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
+import { WorkspaceFsService } from "./WorkspaceFsService";
 
 export class WorkspaceService {
-  private fsCache = new Map<string, LightningFS>();
-
   public constructor(
     public readonly storageService: StorageService,
-    private readonly workspaceDescriptorService: WorkspaceDescriptorService
+    private readonly workspaceDescriptorService: WorkspaceDescriptorService,
+    private readonly fsService: WorkspaceFsService
   ) {}
 
   public get rootPath(): string {
@@ -47,10 +44,10 @@ export class WorkspaceService {
     broadcastArgs: { broadcast: boolean }
   ) {
     const workspace = await this.workspaceDescriptorService.create();
-    const { fs, flush } = await this.createBatchWorkspaceFs(workspace.workspaceId);
-    await this.storageService.createDirStructureAtRoot(fs, workspace.workspaceId);
-    const files = await storeFiles(fs, workspace);
-    await flush();
+    const files = await this.fsService.withInMemoryFs(workspace.workspaceId, async (fs) => {
+      await this.storageService.createDirStructureAtRoot(fs, workspace.workspaceId);
+      return storeFiles(fs, workspace);
+    });
 
     if (broadcastArgs.broadcast) {
       const broadcastChannel1 = new BroadcastChannel(this.rootPath);
@@ -63,63 +60,6 @@ export class WorkspaceService {
     }
 
     return { workspace, files };
-  }
-
-  getWorkspaceFs(workspaceId: string) {
-    const fs = this.fsCache.get(workspaceId);
-    if (fs) {
-      return fs;
-    }
-
-    const newFs = new LightningFS(workspaceId, {
-      backend: new DefaultBackend({
-        idbBackendDelegate: (fileDbName, fileStoreName) => new DexieBackend(fileDbName, fileStoreName),
-      }) as any,
-    });
-
-    this.fsCache.set(workspaceId, newFs);
-    return newFs;
-  }
-
-  public async createBatchWorkspaceFs(workspaceId: string) {
-    const readEntireFs = async (dexieBackend: DexieBackend) => {
-      console.info("MEM :: Reading FS to memory");
-      console.time("MEM :: Reading FS to memory");
-      await dexieBackend._dexie.open();
-      const keys = await dexieBackend._dexie.table(dexieBackend._storename).toCollection().keys();
-      const data = await dexieBackend.readFileBulk(keys);
-      const fsAsMapConstructorParameter: any[] = [];
-      for (let i = 0; i < data.length; i++) {
-        fsAsMapConstructorParameter[i] = [keys[i], data[i]];
-      }
-      console.timeEnd("MEM :: Reading FS to memory");
-      return fsAsMapConstructorParameter;
-    };
-
-    const dbName = workspaceId; // don't change. (This is hardcoded on LightningFS).
-    const storeName = workspaceId + "_files"; // don't change (This is hardcoded on LightningFS).
-    const dexieBackend = new DexieBackend(dbName, storeName);
-    const inMemoryBackend = new InMemoryBackend(dexieBackend, new Map(await readEntireFs(dexieBackend)));
-
-    const flush = async () => {
-      return new Promise<void>((res) => {
-        setTimeout(async () => {
-          const inodeBulk = Array.from(inMemoryBackend.fs.keys());
-          const dataBulk = Array.from(inMemoryBackend.fs.values());
-          console.info("MEM :: Flushing in memory FS");
-          console.time("MEM :: Flushing in memory FS");
-          await dexieBackend.writeFileBulk(inodeBulk, dataBulk);
-          console.timeEnd("MEM :: Flushing in memory FS");
-          res();
-        }, 500); // necessary to wait for debounce of 500ms (This is hardcoded on LightningFS).
-      });
-    };
-
-    const fs = new LightningFS(dbName, {
-      backend: new DefaultBackend({ idbBackendDelegate: () => inMemoryBackend }) as any,
-    });
-
-    return { fs, flush };
   }
 
   public async getFilesLazy(fs: LightningFS, workspaceId: string, globPattern?: string): Promise<WorkspaceFile[]> {
@@ -178,7 +118,7 @@ export class WorkspaceService {
 
   public async prepareZip(workspaceId: string): Promise<Blob> {
     console.time(`WorkspaceService#assembleZip--${workspaceId}`);
-    const fs = this.getWorkspaceFs(workspaceId);
+    const fs = this.fsService.getWorkspaceFs(workspaceId);
     const workspaceRootPath = await this.resolveRootPath(fs, workspaceId);
 
     const matcher = new Minimatch(SUPPORTED_FILES_PATTERN, { dot: true });
@@ -216,7 +156,7 @@ export class WorkspaceService {
   //
 
   public async createFile(file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    await this.storageService.createFile(this.getWorkspaceFs(file.workspaceId), this.toStorageFile(file));
+    await this.storageService.createFile(this.fsService.getWorkspaceFs(file.workspaceId), this.toStorageFile(file));
 
     if (broadcastArgs.broadcast) {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);
@@ -237,7 +177,10 @@ export class WorkspaceService {
   public async getFile(args: { workspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined> {
     const absolutePath = this.getAbsolutePath(args);
     console.info(`Reading file '${absolutePath}'`);
-    const storageFile = await this.storageService.getFile(this.getWorkspaceFs(args.workspaceId), absolutePath);
+    const storageFile = await this.storageService.getFile(
+      this.fsService.getWorkspaceFs(args.workspaceId),
+      absolutePath
+    );
     if (!storageFile) {
       return;
     }
@@ -250,7 +193,7 @@ export class WorkspaceService {
     broadcastArgs: { broadcast: boolean }
   ): Promise<void> {
     await this.storageService.updateFile(
-      await this.getWorkspaceFs(file.workspaceId),
+      await this.fsService.getWorkspaceFs(file.workspaceId),
       this.toStorageFile(
         new WorkspaceFile({
           relativePath: file.relativePath,
@@ -277,7 +220,10 @@ export class WorkspaceService {
   }
 
   public async deleteFile(file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    await this.storageService.deleteFile(this.getWorkspaceFs(file.workspaceId), this.toStorageFile(file).path);
+    await this.storageService.deleteFile(
+      this.fsService.getWorkspaceFs(file.workspaceId),
+      this.toStorageFile(file).path
+    );
 
     if (broadcastArgs.broadcast) {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);
@@ -301,7 +247,7 @@ export class WorkspaceService {
     broadcastArgs: { broadcast: boolean }
   ): Promise<WorkspaceFile> {
     const renamedStorageFile = await this.storageService.renameFile(
-      this.getWorkspaceFs(file.workspaceId),
+      this.fsService.getWorkspaceFs(file.workspaceId),
       this.toStorageFile(file),
       newFileName
     );
@@ -340,7 +286,7 @@ export class WorkspaceService {
     //FIXME: I'm not sure this works correctly.
 
     const movedStorageFile = await this.storageService.renameFile(
-      await this.getWorkspaceFs(file.workspaceId),
+      await this.fsService.getWorkspaceFs(file.workspaceId),
       this.toStorageFile(file),
       newDirPath
     );

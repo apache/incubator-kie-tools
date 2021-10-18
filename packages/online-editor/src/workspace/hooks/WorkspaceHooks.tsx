@@ -47,7 +47,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
       }
 
       console.time(`WorkspaceHooks#workspacePromise--${workspaceId}`);
-      const descriptor = await workspaces.workspaceDescriptorService.get(workspaceId);
+      const descriptor = await workspaces.descriptorService.get(workspaceId);
       if (canceled.get()) {
         return;
       }
