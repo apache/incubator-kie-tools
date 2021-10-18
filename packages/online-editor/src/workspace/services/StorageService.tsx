@@ -41,18 +41,12 @@ export class StorageFile {
 }
 
 export class StorageService {
-  private readonly SEPARATOR = "/";
-
-  public get rootPath(): string {
-    return this.SEPARATOR;
-  }
-
   public async createFile(fs: LightningFS, file: StorageFile) {
     const contents = await file.getFileContents();
     try {
       await fs.promises.writeFile(file.path, contents);
     } catch (err) {
-      await this.mkdir(fs, dirname(file.path));
+      await this.mkdirDeep(fs, dirname(file.path));
       await fs.promises.writeFile(file.path, contents);
     }
   }
@@ -64,7 +58,7 @@ export class StorageService {
     }
 
     for (const file of files) {
-      await this.mkdir(fs, dirname(file.path));
+      await this.mkdirDeep(fs, dirname(file.path));
     }
 
     const filesArray = await Promise.all(
@@ -80,7 +74,8 @@ export class StorageService {
       throw new Error(`File ${file.path} does not exist`);
     }
 
-    await this.writeFile(fs, file);
+    const content = await file.getFileContents();
+    await fs.promises.writeFile(file.path, content);
   }
 
   public async deleteFile(fs: LightningFS, path: string): Promise<void> {
@@ -161,11 +156,7 @@ export class StorageService {
     });
   }
 
-  public async createDirStructureAtRoot(fs: LightningFS, pathRelativeToRoot: string) {
-    await this.mkdir(fs, this.rootPath + pathRelativeToRoot + this.SEPARATOR);
-  }
-
-  async mkdir(fs: LightningFS, dirPath: string, _selfCall = false) {
+  async mkdirDeep(fs: LightningFS, dirPath: string, _selfCall = false) {
     try {
       await fs.promises.mkdir(dirPath);
       return;
@@ -195,8 +186,8 @@ export class StorageService {
         }
 
         // Infinite recursion, what could go wrong?
-        await this.mkdir(fs, parent);
-        await this.mkdir(fs, dirPath, true);
+        await this.mkdirDeep(fs, parent);
+        await this.mkdirDeep(fs, dirPath, true);
       }
     }
   }
@@ -215,29 +206,33 @@ export class StorageService {
     }
   }
 
-  private async writeFile(fs: LightningFS, file: StorageFile): Promise<void> {
-    const content = await file.getFileContents();
-    await fs.promises.writeFile(file.path, content);
-  }
-
-  public async getFilePaths<T = string>(args: {
+  public async walk<T = string>(args: {
     fs: LightningFS;
-    dirPath: string;
-    excludeDir: (dirPath: string) => boolean;
-    visit: (path: string) => T | undefined;
+    startFromDirPath: string;
+    shouldExcludeDir: (dirPath: string) => boolean;
+    onVisit: (path: string) => T | undefined;
   }): Promise<T[]> {
-    const subDirPaths = await args.fs.promises.readdir(args.dirPath);
+    const subDirPaths = await args.fs.promises.readdir(args.startFromDirPath);
+
     const files = await Promise.all(
       subDirPaths.map(async (subDirPath: string) => {
-        const path = resolve(args.dirPath, subDirPath);
+        const path = resolve(args.startFromDirPath, subDirPath);
         return !(await args.fs.promises.stat(path)).isDirectory()
-          ? args.visit(path)
-          : args.excludeDir(path)
+          ? args.onVisit(path)
+          : args.shouldExcludeDir(path)
           ? []
-          : this.getFilePaths({ fs: args.fs, dirPath: path, excludeDir: args.excludeDir, visit: args.visit });
+          : this.walk({
+              fs: args.fs,
+              startFromDirPath: path,
+              shouldExcludeDir: args.shouldExcludeDir,
+              onVisit: args.onVisit,
+            });
       })
     );
-    return files.reduce((paths: T[], path: T) => (path ? paths.concat(path) : paths), []) as T[];
+
+    return files.reduce((paths: T[], path: T) => {
+      return path ? paths.concat(path) : paths;
+    }, []) as T[];
   }
 
   async deleteFiles(fs: LightningFS, paths: string[]) {

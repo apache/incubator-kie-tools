@@ -73,6 +73,11 @@ export function WorkspacesContextProvider(props: Props) {
     [service]
   );
 
+  const getUniqueFileIdentifier = useCallback(
+    (args: { workspaceId: string; relativePath: string }) => service.getUniqueFileIdentifier(args),
+    [service]
+  );
+
   const createWorkspace = useCallback(
     async (args: {
       useInMemoryFs: boolean;
@@ -91,10 +96,8 @@ export function WorkspacesContextProvider(props: Props) {
       const suggestedFirstFile = files
         .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension))
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0];
-      return {
-        workspace,
-        suggestedFirstFile,
-      };
+
+      return { workspace, suggestedFirstFile };
     },
     [service]
   );
@@ -103,7 +106,7 @@ export function WorkspacesContextProvider(props: Props) {
     async (args: { fs: LightningFS; workspaceId: string }) => {
       return await gitService.isModified({
         fs: args.fs,
-        dir: service.getAbsolutePath({ workspaceId: args.workspaceId, relativePath: "" }),
+        dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
       });
     },
     [gitService, service]
@@ -111,16 +114,27 @@ export function WorkspacesContextProvider(props: Props) {
 
   const createSavePoint = useCallback(
     async (args: { fs: LightningFS; workspaceId: string }) => {
-      const filePaths = await gitService.unstagedModifiedFileRelativePaths({
+      const workspaceRootDirPath = service.getAbsolutePath({ workspaceId: args.workspaceId });
+
+      const fileRelativePaths = await gitService.unstagedModifiedFileRelativePaths({
         fs: args.fs,
-        dir: await service.resolveRootPath(args.fs, args.workspaceId),
+        dir: workspaceRootDirPath,
       });
+
+      await Promise.all(
+        fileRelativePaths.map(async (relativePath) => {
+          await gitService.add({
+            fs: args.fs,
+            dir: workspaceRootDirPath,
+            relativePath,
+          });
+        })
+      );
 
       await gitService.commit({
         fs: args.fs,
-        filePaths,
-        dir: service.getAbsolutePath({ workspaceId: args.workspaceId, relativePath: "" }),
-        targetBranch: "main",
+        dir: workspaceRootDirPath,
+        targetBranch: "main", //FIXME: Use current branch whatever it is?
         message: "Save point",
         authInfo: {
           name: "Tiago",
@@ -139,38 +153,35 @@ export function WorkspacesContextProvider(props: Props) {
       return await createWorkspace({
         useInMemoryFs: args.useInMemoryFs,
         storeFiles: async (fs: LightningFS, workspace: WorkspaceDescriptor) => {
-          const files = args.localFiles
-            .filter((f) => SUPPORTED_FILES.includes(extractFileExtension(f.path)!))
-            .map((localFile) => {
-              const path = service.getAbsolutePath({
-                workspaceId: workspace.workspaceId,
-                relativePath: localFile.path.substring(localFile.path.indexOf("/") + 1),
-              });
+          await storageService.createFiles(
+            fs,
+            args.localFiles
+              .filter((f) => SUPPORTED_FILES.includes(extractFileExtension(f.path)!))
+              .map((localFile) => {
+                const path = service.getAbsolutePath({
+                  workspaceId: workspace.workspaceId,
+                  relativePath: localFile.path.substring(localFile.path.indexOf("/") + 1), //FIXME: This doesn't look so good.
+                });
 
-              return new StorageFile({
-                path,
-                getFileContents: localFile.getFileContents,
-              });
-            });
+                return new StorageFile({ path, getFileContents: localFile.getFileContents });
+              })
+          );
 
-          await storageService.createFiles(fs, files);
-
-          const gitRoot = await service.resolveRootPath(fs, workspace.workspaceId);
+          const workspaceRootDirPath = await service.getAbsolutePath({ workspaceId: workspace.workspaceId });
           await gitService.init({
             fs: fs,
-            dir: gitRoot,
+            dir: workspaceRootDirPath,
           });
 
           await gitService.add({
             fs: fs,
-            dir: gitRoot,
+            dir: workspaceRootDirPath,
             relativePath: ".",
           });
 
           await gitService.commit({
             fs: fs,
-            filePaths: [],
-            dir: gitRoot,
+            dir: workspaceRootDirPath,
             message: "Initial",
             targetBranch: "main",
             authInfo: {
@@ -179,7 +190,7 @@ export function WorkspacesContextProvider(props: Props) {
             },
           });
 
-          return service.getFilesLazy(fs, workspace.workspaceId);
+          return service.getFilesWithLazyContent(fs, workspace.workspaceId);
         },
       });
     },
@@ -208,15 +219,14 @@ export function WorkspacesContextProvider(props: Props) {
       return await createWorkspace({
         useInMemoryFs: true,
         storeFiles: async (fs, workspace) => {
-          const dir = await service.resolveRootPath(fs, workspace.workspaceId);
           await gitService.clone({
             fs,
-            dir,
+            dir: service.getAbsolutePath({ workspaceId: workspace.workspaceId }),
             repositoryUrl: args.repositoryUrl,
             authInfo,
             sourceBranch: args.sourceBranch,
           });
-          return service.getFilesLazy(fs, workspace.workspaceId);
+          return service.getFilesWithLazyContent(fs, workspace.workspaceId);
         },
       });
     },
@@ -232,7 +242,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const getFiles = useCallback(
     async (args: { fs: LightningFS; workspaceId: string }) => {
-      return service.getFilesLazy(args.fs, args.workspaceId);
+      return service.getFilesWithLazyContent(args.fs, args.workspaceId);
     },
     [service]
   );
@@ -345,7 +355,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const resourceContentList = useCallback(
     async (args: { fs: LightningFS; workspaceId: string; globPattern: string }) => {
-      const files = await service.getFilesLazy(args.fs, args.workspaceId, args.globPattern);
+      const files = await service.getFilesWithLazyContent(args.fs, args.workspaceId, args.globPattern);
       const matchingPaths = files.map((file) => file.relativePath);
       return new ResourcesList(args.globPattern, matchingPaths);
     },
@@ -382,6 +392,7 @@ export function WorkspacesContextProvider(props: Props) {
         deleteWorkspace,
         prepareZip,
         getAbsolutePath,
+        getUniqueFileIdentifier,
         createSavePoint,
         getFiles,
         isModified,

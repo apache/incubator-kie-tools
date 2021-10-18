@@ -23,11 +23,11 @@ export class WorkspaceDescriptorService {
   ) {}
 
   public async listAll(): Promise<WorkspaceDescriptor[]> {
-    const workspaceDescriptorsFilePaths = await this.storageService.getFilePaths({
+    const workspaceDescriptorsFilePaths = await this.storageService.walk({
       fs: this.workspacesFs,
-      dirPath: "/",
-      excludeDir: () => false,
-      visit: (p) => p,
+      startFromDirPath: "/",
+      shouldExcludeDir: () => false,
+      onVisit: (path) => path,
     });
 
     const workspaceDescriptorFiles = await this.storageService.getFiles(

@@ -40,7 +40,7 @@ export function useWorkspaceDescriptorsPromise() {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        const broadcastChannel = new BroadcastChannel(workspaces.service.rootPath);
+        const broadcastChannel = new BroadcastChannel("workspaces");
         broadcastChannel.onmessage = ({ data }) => {
           console.info(`EVENT::WORKSPACES: ${JSON.stringify(data)}`);
           refresh(canceled);
@@ -50,7 +50,7 @@ export function useWorkspaceDescriptorsPromise() {
           broadcastChannel.close();
         };
       },
-      [workspaces, refresh]
+      [refresh]
     )
   );
 

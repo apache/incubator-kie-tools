@@ -138,9 +138,12 @@ export function EditorPage(props: Props) {
   );
 
   // auto-save
-  const absolutePath = workspaceFilePromise.data ? workspaces.getAbsolutePath(workspaceFilePromise.data) : undefined;
-  const prevPath = usePrevious(absolutePath);
-  if (prevPath !== absolutePath) {
+  const uniqueIdentifierOfFile = workspaceFilePromise.data
+    ? workspaces.getUniqueFileIdentifier(workspaceFilePromise.data)
+    : undefined;
+
+  const prev = usePrevious(uniqueIdentifierOfFile);
+  if (prev !== uniqueIdentifierOfFile) {
     lastContent.current = undefined;
   }
 

@@ -52,6 +52,7 @@ export class WorkspaceFsService {
     const flush = async () => {
       // TODO: Mutate `inMemoryBackend` to not allow further use after flush.
       // TODO: Make a lock mechanism to not allow interactions with this FS while the in-memory operation is in progress
+      // TODO: Improve `autoinc` performance. Right now it's iterating over the superblock on each write.
       return new Promise<void>((res) => {
         setTimeout(async () => {
           const inodeBulk = Array.from(inMemoryBackend.fs.keys());

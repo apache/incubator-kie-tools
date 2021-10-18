@@ -33,7 +33,6 @@ export interface CloneArgs {
 export interface CommitArgs {
   fs: LightningFS;
   message: string;
-  filePaths: string[];
   targetBranch: string;
   dir: string;
   authInfo: {
@@ -81,14 +80,6 @@ export class GitService {
   public async commit(args: CommitArgs): Promise<void> {
     console.info("GitService#commit--------begin");
     console.time("GitService#commit");
-    for (const path of args.filePaths) {
-      await git.add({
-        fs: args.fs,
-        dir: args.dir,
-        filepath: path,
-      });
-    }
-
     await git.commit({
       fs: args.fs,
       dir: args.dir,
@@ -191,7 +182,7 @@ export class GitService {
         // if (!stage && workdir) {
         //   if (
         //       await GitIgnoreManager.isIgnored({
-        //         fs: this.storageService.fs,
+        //         fs: args.fs,
         //         dir: args.dir,
         //         filepath,
         //       })

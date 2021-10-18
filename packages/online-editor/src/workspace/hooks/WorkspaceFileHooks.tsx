@@ -48,10 +48,10 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
           return;
         }
 
-        const absolutePath = workspaces.getAbsolutePath({ workspaceId, relativePath });
+        const uniqueFileIdentifier = workspaces.getUniqueFileIdentifier({ workspaceId, relativePath });
 
-        console.info("Subscribing to " + absolutePath);
-        const broadcastChannel = new BroadcastChannel(absolutePath);
+        console.info("Subscribing to " + uniqueFileIdentifier);
+        const broadcastChannel = new BroadcastChannel(uniqueFileIdentifier);
         broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileEvents>) => {
           console.info(`EVENT::WORKSPACE_FILE: ${JSON.stringify(data)}`);
           if (data.type === "MOVE" || data.type == "RENAME") {
@@ -63,7 +63,7 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
         };
 
         return () => {
-          console.info("Unsubscribing to " + absolutePath);
+          console.info("Unsubscribing to " + uniqueFileIdentifier);
           broadcastChannel.close();
         };
       },

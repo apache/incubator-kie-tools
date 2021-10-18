@@ -113,6 +113,7 @@ export interface WorkspacesContextType {
   isModified(args: { fs: LightningFS; workspaceId: string }): Promise<boolean>;
   createSavePoint(args: { fs: LightningFS; workspaceId: string }): Promise<void>;
   getAbsolutePath(args: { workspaceId: string; relativePath: string }): string;
+  getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }): string;
   deleteWorkspace(args: { workspaceId: string }): Promise<void>;
   renameWorkspace(args: { workspaceId: string; newName: string }): Promise<void>;
 
