@@ -55,6 +55,7 @@ import { DeleteDropdownWithConfirmation } from "../editor/DeleteDropdownWithConf
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { QueryParams } from "../common/Routes";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { RelativeDate } from "./RelativeDate";
 
 export function HomePage() {
   const globals = useGlobals();
@@ -342,16 +343,6 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
     return workspacePromise.data ? workspacePromise.data.descriptor.name : null;
   }, [workspacePromise.data]);
 
-  const createdDate = useMemo(() => {
-    return workspacePromise.data ? new Date(workspacePromise.data.descriptor.createdDateISO).toLocaleString() : null;
-  }, [workspacePromise.data]);
-
-  const lastUpdatedDate = useMemo(() => {
-    return workspacePromise.data
-      ? new Date(workspacePromise.data.descriptor.lastUpdatedDateISO).toLocaleString()
-      : null;
-  }, [workspacePromise.data]);
-
   return (
     <PromiseStateWrapper
       promise={workspacePromise}
@@ -431,9 +422,9 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
                 <TextContent>
                   <Text component={TextVariants.p}>
                     <b>{`Created: `}</b>
-                    {createdDate}
+                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.createdDateISO ?? "")} />
                     <b>{`, Last updated: `}</b>
-                    {lastUpdatedDate}
+                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.lastUpdatedDateISO ?? "")} />
                   </Text>
                 </TextContent>
               </CardBody>
@@ -489,9 +480,9 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
                 <TextContent>
                   <Text component={TextVariants.p}>
                     <b>{`Created: `}</b>
-                    {createdDate}
+                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.createdDateISO ?? "")} />
                     <b>{`, Last updated: `}</b>
-                    {lastUpdatedDate}
+                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.lastUpdatedDateISO ?? "")} />
                   </Text>
                 </TextContent>
               </CardBody>
