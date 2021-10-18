@@ -68,6 +68,7 @@ const MiningSchemaAddFields = ({ options, onAdd, isDisabled }: MiningSchemaAddFi
             variant={SelectVariant.typeaheadMulti}
             typeAheadAriaLabel="Select fields"
             onToggle={onToggle}
+            toggleId="select-mining-field"
             onSelect={onSelect}
             onClear={clearSelection}
             selections={selected}

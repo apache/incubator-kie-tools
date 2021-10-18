@@ -30,7 +30,10 @@ describe("Mining Schema Test", () => {
     cy.ouiaId("mining-toolbar")
       .should("be.visible")
       .within(() => {
-        cy.ouiaId("select-mining-field").find("div").first().should("have.class", "pf-m-disabled");
+        cy.ouiaId("select-mining-field")
+          .find("input#select-mining-field-select-multi-typeahead-typeahead")
+          .should("be.disabled");
+        cy.ouiaId("select-mining-field").find("button#select-mining-field").should("be.disabled");
         cy.ouiaId("add-mining-field").should("be.disabled");
         cy.ouiaId("add-all-fields").should("be.disabled");
       });
@@ -187,7 +190,10 @@ describe("Mining Schema Test", () => {
       cy.ouiaId("mining-toolbar")
         .should("be.visible")
         .within(() => {
-          cy.ouiaId("select-mining-field").find("div").first().should("have.class", "pf-m-disabled");
+          cy.ouiaId("select-mining-field")
+            .find("input#select-mining-field-select-multi-typeahead-typeahead")
+            .should("be.disabled");
+          cy.ouiaId("select-mining-field").find("button#select-mining-field").should("be.disabled");
           cy.ouiaId("add-mining-field").should("be.disabled");
           cy.ouiaId("add-all-fields").should("be.disabled");
         });
