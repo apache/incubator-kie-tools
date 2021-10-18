@@ -33,6 +33,7 @@ public interface KeyboardEvent {
         ARROW_DOWN("down", KeyCodes.KEY_DOWN),
         ARROW_LEFT("left", KeyCodes.KEY_LEFT),
         ARROW_RIGHT("right", KeyCodes.KEY_RIGHT),
+        A("a", KeyCodes.KEY_A),
         C("c", KeyCodes.KEY_C),
         D("d", KeyCodes.KEY_D),
         E("e", KeyCodes.KEY_E),

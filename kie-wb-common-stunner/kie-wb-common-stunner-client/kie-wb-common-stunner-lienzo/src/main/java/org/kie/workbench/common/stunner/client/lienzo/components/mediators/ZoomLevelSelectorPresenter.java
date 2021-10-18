@@ -53,6 +53,7 @@ public class ZoomLevelSelectorPresenter {
     static final String LEVEL_100 = "100%";
     static final String LEVEL_150 = "150%";
     static final String LEVEL_200 = "200%";
+    static final double DEFAULT_LEVEL = 0.75;
     static final String ON_MOUSE_OVER = EventType.MOUSE_OVER.getType();
 
     private final ClientTranslationService translationService;
@@ -135,7 +136,7 @@ public class ZoomLevelSelectorPresenter {
 
         selectorMouseOverEventListener = mouseOverEvent -> cancelHide();
         selectorElement.addEventListener(ON_MOUSE_OVER, selectorMouseOverEventListener);
-
+        setLevel(DEFAULT_LEVEL);
         return this;
     }
 

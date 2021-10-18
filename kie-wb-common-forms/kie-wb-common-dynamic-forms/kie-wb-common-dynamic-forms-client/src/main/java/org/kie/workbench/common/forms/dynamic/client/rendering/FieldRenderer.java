@@ -67,6 +67,9 @@ public abstract class FieldRenderer<F extends FieldDefinition, G extends FormGro
     }
 
     public IsWidget renderWidget() {
+        if (field.getId().equals("genericServiceTaskInfo")) {
+            renderingContext.setRenderMode(RenderMode.READ_ONLY_MODE);
+        }
         FieldConfigStatus configStatus = checkFieldConfig();
 
         if (!configStatus.isWellConfigured()) {

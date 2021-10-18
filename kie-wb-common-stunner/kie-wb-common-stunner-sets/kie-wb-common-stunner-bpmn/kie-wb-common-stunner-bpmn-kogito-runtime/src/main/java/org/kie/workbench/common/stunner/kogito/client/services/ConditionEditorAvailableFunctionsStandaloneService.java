@@ -16,7 +16,8 @@
 
 package org.kie.workbench.common.stunner.kogito.client.services;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -30,6 +31,31 @@ public class ConditionEditorAvailableFunctionsStandaloneService implements Condi
 
     @Override
     public Promise<List<FunctionDef>> call(final Input input) {
-        return Promise.resolve(Collections.emptyList());
+        return Promise.resolve(getFunctions(input));
+    }
+
+    /** Method for getting actual functions list for each type of object
+     * @param input - object type.
+     * @return - list with available functions.
+     */
+    private List<FunctionDef> getFunctions(Input input) {
+        String definitionClass;
+        if (input.clazz.equals(Date.class.getName()) || input.clazz.equals(Object.class.getName())) {
+            definitionClass = Object.class.getName();
+        } else if (input.clazz.equals(Boolean.class.getName())) {
+            definitionClass = Boolean.class.getName();
+        } else if (input.clazz.equals(String.class.getName())) {
+            definitionClass = String.class.getName();
+        } else {
+            definitionClass = Number.class.getName();
+        }
+        List<FunctionDef> functionDefList = new ArrayList<>();
+        for (FunctionDef functionDef : FunctionsRegistry.getInstance().getFunctions()) {
+            String param = functionDef.getParams().get(0).getType();
+            if (param.equals(definitionClass)) {
+                functionDefList.add(functionDef);
+            }
+        }
+        return functionDefList;
     }
 }

@@ -74,6 +74,8 @@ public class ConditionEditorFieldEditorPresenter
 
     private final ClientTranslationService translationService;
 
+    public static final String KIE_FUNCTIONS = "KieFunctions.";
+
     @Inject
     public ConditionEditorFieldEditorPresenter(final View view,
                                                final SimpleConditionEditorPresenter simpleConditionEditor,
@@ -88,7 +90,7 @@ public class ConditionEditorFieldEditorPresenter
         this.conditionEditorGeneratorService = conditionEditorGeneratorService;
         this.translationService = translationService;
 
-        if (isServiceAvailable()) {
+        if (!isServiceAvailable()) {
             enableSimpleConditionEditor(false);
             view.setSingleOptionSelection();
         }
@@ -110,7 +112,7 @@ public class ConditionEditorFieldEditorPresenter
         scriptEditor.addChangeHandler(this::onScriptChange);
         simpleConditionEditor.addChangeHandler(this::onSimpleConditionChange);
 
-        if (!isServiceAvailable()) {
+        if (isServiceAvailable()) {
             showSimpleConditionEditor();
         } else {
             showScriptEditor();
@@ -135,7 +137,7 @@ public class ConditionEditorFieldEditorPresenter
         simpleConditionEditor.clear();
         clearError();
         if (value != null) {
-            if (isInDefaultLanguage(value) && !isServiceAvailable()) {
+            if (isInDefaultLanguage(value) && isServiceAvailable() && !checkOnCustomExpression(value.getScript())) {
                 if (!isEmpty(value.getScript())) {
                     conditionEditorParsingService
                             .call(value.getScript())
@@ -159,9 +161,20 @@ public class ConditionEditorFieldEditorPresenter
         }
     }
 
+    private boolean checkOnCustomExpression(String expression) {
+        int negativeExpression = count(expression, "!" + KIE_FUNCTIONS);
+        int expressionCount = count(expression, KIE_FUNCTIONS);
+        return negativeExpression > 0 || expressionCount != 1 || expression.contains("&&") || expression.contains("||");
+    }
+
+    public static int count(String str, String target) {
+        return (str.length() - str.replace(target, "").length()) / target.length();
+    }
+
     void onSimpleConditionSelected() {
         clearError();
-        if (value != null && !isEmpty(value.getScript()) && !isServiceAvailable()) {
+        if (value != null && !isEmpty(value.getScript()) && isServiceAvailable() && !checkOnCustomExpression(
+            value.getScript())) {
             conditionEditorParsingService
                     .call(value.getScript())
                     .then(result -> {

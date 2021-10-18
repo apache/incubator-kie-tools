@@ -44,7 +44,7 @@ public class ProcessesDataProvider {
     @Inject
     public ProcessesDataProvider(final StunnerFormsHandler formsHandler) {
         this.formsHandler = formsHandler;
-        this.processIds = new LinkedList<>();
+        this.processIds = new LinkedList<>(toList(buildArrayProcessesPaths(getJsonResourcesPaths())));
     }
 
     public List<String> getProcessIds() {
@@ -66,4 +66,23 @@ public class ProcessesDataProvider {
     private static List<String> toList(final String[] s) {
         return stream(s).collect(Collectors.toList());
     }
+
+    private static native String getJsonResourcesPaths()/*-{
+        if (parent.parent.resourcesPaths && Object.keys(parent.parent.resourcesPaths).length !== 0) {
+            return parent.parent.resourcesPaths;
+        }
+        return null;
+    }-*/;
+
+    private static native String[] buildArrayProcessesPaths(String jsonResources)/*-{
+        var parsedResourcesPaths = JSON.parse(jsonResources);
+        var processesList = [];
+        if (parsedResourcesPaths === undefined) {
+            throw new Error("Failed parsed JSON with resources paths");
+        }
+        for (var key in parsedResourcesPaths) {
+            processesList.push(key);
+        }
+        return processesList;
+    }-*/;
 }

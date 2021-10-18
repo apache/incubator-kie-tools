@@ -129,9 +129,22 @@ public class MorphActionsToolboxFactory
                                                                                                   .setTargetDefinitionId(targetMorphId)));
                 }
             }
+            if (element.getContent().getDefinition() != null && definition != null && definitionUtils != null) {
+                Object definitionElement = element.getContent().getDefinition();
+                getElementName(definitionUtils.getName(definitionElement));
+                getElementType(getDefinitionManager().adapters().forDefinition().getId(definition).value());
+            }
         }
         return actions;
     }
+
+    private static native void getElementName(String elementName)/*-{
+        parent.parent.nodeElementName = elementName;
+    }-*/;
+
+    private static native void getElementType(String elementType)/*-{
+        parent.parent.nodeElementType = elementType;
+    }-*/;
 
     @PreDestroy
     public void destroy() {

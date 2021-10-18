@@ -74,7 +74,7 @@ public abstract class AbstractFactoryManager {
     public <M extends Metadata, D extends Diagram> D newDiagram(final String name,
                                                                 final String id,
                                                                 final M metadata) {
-        final Graph<DefinitionSet, ?> graph = (Graph<DefinitionSet, ?>) newElement(UUID.uuid(), id, metadata);
+        final Graph<DefinitionSet, ?> graph = (Graph<DefinitionSet, ?>) newElement(UUID.customUuid(), id, metadata);
         return (D) checkDiagramFactoryNotNull(graph.getContent().getDefinition(),
                                               metadata).build(name,
                                                               metadata,
