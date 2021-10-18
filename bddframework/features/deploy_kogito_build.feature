@@ -29,7 +29,7 @@ Feature: Deploy Kogito Build
 
     @quarkus
     @native
-    @nonnativelts
+    @ignorelts
     Examples:
       | runtime    | example-service         | native  | minutes |
       | quarkus    | process-quarkus-example | enabled | 20      |
