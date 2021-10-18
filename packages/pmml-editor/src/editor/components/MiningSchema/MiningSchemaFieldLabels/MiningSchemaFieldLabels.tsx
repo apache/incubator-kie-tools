@@ -32,6 +32,8 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
         className="mining-schema-list__item__label"
         closeBtnProps={{ className: "ignore-onclickoutside" }}
         onClose={editing ? onClose : undefined}
+        data-ouia-component-id={name}
+        data-ouia-component-type="mining-label"
       >
         <strong>{name}:</strong>
         &nbsp;
@@ -239,6 +241,8 @@ const MiningSchemaFieldLabels = (props: MiningSchemaFieldLabelsProps) => {
             event.preventDefault();
             onEdit();
           }}
+          data-ouia-component-id="edit-properties"
+          data-ouia-component-type="mf-label"
         >
           Edit Properties
         </Label>

@@ -25,10 +25,19 @@ interface MiningSchemaFieldsProps {
   onCancel: () => void;
 }
 
-const MiningSchemaFields = (props: MiningSchemaFieldsProps) => {
-  const { dataDictionary, fields, modelIndex, onAddProperties, onDelete, onPropertyDelete, onEdit, onCancel } = props;
+const MiningSchemaFields: React.FC<MiningSchemaFieldsProps> = ({
+  modelIndex,
+  dataDictionary,
+  fields,
+  onAddProperties,
+  onDelete,
+  onPropertyDelete,
+  onEdit,
+  onCancel,
+}) => {
+  //const { dataDictionary, fields, modelIndex, onAddProperties, onDelete, onPropertyDelete, onEdit, onCancel } = props;
   return (
-    <ul className="mining-schema-list">
+    <ul className="mining-schema-list" data-ouia-component-type="mining-schema-list">
       {fields?.map((field, index) => {
         return (
           <MiningSchemaItem
@@ -63,7 +72,7 @@ interface MiningSchemaFieldProps {
   onCancel: () => void;
 }
 
-const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
+const MiningSchemaItem: React.FC<MiningSchemaFieldProps> = (props) => {
   const { index, modelIndex, dataDictionary, field, onAddProperties, onDelete, onPropertyDelete, onEdit, onCancel } =
     props;
   const editing = useContext(MiningSchemaContext);
@@ -112,6 +121,8 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
         <li
           id={`mining-schema-field-n${index}`}
           data-testid={`mining-schema-field-n${index}`}
+          data-ouia-component-id={field.name}
+          data-ouia-component-type="edit-mining-field-row-"
           className={`editable-item ${editing === index ? "editable-item--editing" : ""}`}
           key={field.name.value}
           ref={ref}
@@ -145,6 +156,8 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
         <li
           id={`mining-schema-field-n${index}`}
           data-testid={`mining-schema-field-n${index}`}
+          data-ouia-component-id={field.name}
+          data-ouia-component-type="mining-field-row"
           className={`editable-item ${editing === index ? "editable-item--editing" : ""}`}
           key={field.name.value}
           onClick={(event) => handleEdit(event)}
@@ -168,7 +181,7 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
                     justifyContent={{ default: "justifyContentCenter" }}
                     style={{ height: "100%" }}
                   >
-                    <FlexItem>
+                    <FlexItem data-ouia-component-id="validation-issue">
                       <ValidationIndicator validations={validations} />
                     </FlexItem>
                   </Flex>
@@ -191,6 +204,7 @@ const MiningSchemaItem = (props: MiningSchemaFieldProps) => {
                 <Button
                   id={`mining-schema-field-n${index}__delete`}
                   data-testid={`mining-schema-field-n${index}__delete`}
+                  ouiaId="delete-field"
                   className="editable-item__delete"
                   variant="plain"
                   onClick={(e) => handleDelete(e, "mouse")}
