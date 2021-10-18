@@ -67,18 +67,34 @@ public abstract class AbstractNodeEvent<H, S> implements INodeEvent<H, S> {
     }
 
     public static final boolean isShiftKeyDown(final UIEvent event) {
-        return (null != event) && (event instanceof MouseEvent) ? ((MouseEvent) event).shiftKey : ((TouchEvent) event).shiftKey;
+        if (null != event) {
+            return (event instanceof MouseEvent) ? ((MouseEvent) event).shiftKey : ((TouchEvent) event).shiftKey;
+        } else {
+            return false;
+        }
     }
 
     public static final boolean isAltKeyDown(final UIEvent event) {
-        return (null != event) && (event instanceof MouseEvent) ? ((MouseEvent) event).altKey : ((TouchEvent) event).altKey;
+        if (null != event) {
+            return (event instanceof MouseEvent) ? ((MouseEvent) event).altKey : ((TouchEvent) event).altKey;
+        } else {
+            return false;
+        }
     }
 
     public static final boolean isMetaKeyDown(final UIEvent event) {
-        return (null != event) && (event instanceof MouseEvent) ? ((MouseEvent) event).metaKey : ((TouchEvent) event).metaKey;
+        if (null != event) {
+            return (event instanceof MouseEvent) ? ((MouseEvent) event).metaKey : ((TouchEvent) event).metaKey;
+        } else {
+            return false;
+        }
     }
 
     public static final boolean isCtrlKeyDown(final UIEvent event) {
-        return (null != event) && (event instanceof MouseEvent) ? ((MouseEvent) event).ctrlKey : ((TouchEvent) event).ctrlKey;
+        if (null != event) {
+            return (event instanceof MouseEvent) ? ((MouseEvent) event).ctrlKey : ((TouchEvent) event).ctrlKey;
+        } else {
+            return false;
+        }
     }
 }

@@ -274,12 +274,12 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl 
             }
             final Point2D scale = node.getScale();
 
-            if (null != scale && (scale.getX() != 1) || (scale.getY() != 1)) {
+            if (null != scale && ((scale.getX() != 1) || (scale.getY() != 1))) {
                 return true;
             }
             final Point2D shear = node.getShear();
 
-            if (null != shear && (shear.getX() != 0) || (shear.getY() != 0)) {
+            if (null != shear && ((shear.getX() != 0) || (shear.getY() != 0))) {
                 return true;
             }
         }

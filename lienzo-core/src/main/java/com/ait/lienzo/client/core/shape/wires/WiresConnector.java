@@ -377,7 +377,7 @@ public class WiresConnector {
         WiresMagnet tailM = null;
         if (headBox != null && !headBox.intersects(firstBB)) {
             WiresMagnet[] magnets = getMagnetsNonOverlappedShapes(headS, null, headBox, firstBB);
-            if (magnets.length > 0) {
+            if (magnets != null && magnets.length > 0) {
                 headM = magnets[0];
             }
         } else {
@@ -387,7 +387,7 @@ public class WiresConnector {
 
         if (tailBox != null && !tailBox.intersects(lastBB)) {
             WiresMagnet[] magnets = getMagnetsNonOverlappedShapes(null, tailS, lastBB, tailBox);
-            if (magnets.length > 1) {
+            if (magnets != null && magnets.length > 1) {
                 tailM = magnets[1];
             }
         } else {
