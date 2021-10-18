@@ -41,18 +41,20 @@ export function NewWorkspaceFromUrlPage() {
 
   const createWorkspaceForFile = useCallback(
     (file: LocalFile) => {
-      workspaces.createWorkspaceFromLocal([file]).then(({ workspace, suggestedFirstFile }) => {
-        if (!suggestedFirstFile) {
-          return;
-        }
-        history.replace({
-          pathname: globals.routes.workspaceWithFilePath.path({
-            workspaceId: workspace.workspaceId,
-            fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-            extension: suggestedFirstFile.extension,
-          }),
+      workspaces
+        .createWorkspaceFromLocal({ useInMemoryFs: false, localFiles: [file] })
+        .then(({ workspace, suggestedFirstFile }) => {
+          if (!suggestedFirstFile) {
+            return;
+          }
+          history.replace({
+            pathname: globals.routes.workspaceWithFilePath.path({
+              workspaceId: workspace.workspaceId,
+              fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
+              extension: suggestedFirstFile.extension,
+            }),
+          });
         });
-      });
     },
     [globals, history, workspaces]
   );
@@ -89,13 +91,17 @@ export function NewWorkspaceFromUrlPage() {
           return;
         }
         workspaces
-          .createWorkspaceFromGitRepository(url, "main", {
-            user: {
-              login: settings.github.user.login,
-              email: settings.github.user.email,
-              name: settings.github.user.name,
+          .createWorkspaceFromGitRepository({
+            repositoryUrl: url,
+            sourceBranch: "main",
+            githubSettings: {
+              user: {
+                login: settings.github.user.login,
+                email: settings.github.user.email,
+                name: settings.github.user.name,
+              },
+              token: settings.github.token,
             },
-            token: settings.github.token,
           })
           .then(() => {
             history.replace({ pathname: globals.routes.home.path({}) });

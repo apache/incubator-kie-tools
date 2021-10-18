@@ -49,26 +49,13 @@ interface Props {
 }
 
 export function WorkspacesContextProvider(props: Props) {
-  const storageService = useMemo(() => {
-    const instance = new StorageService();
-    // FIXME: easy access to git in the window object.
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    (window as any).fs = () => instance;
-    return instance;
-  }, []);
-
-  const fsService = useMemo(() => {
-    return new WorkspaceFsService();
-  }, []);
-
-  const descriptorService = useMemo(() => {
-    return new WorkspaceDescriptorService(storageService);
-  }, [storageService]);
-
-  const service = useMemo(() => {
-    return new WorkspaceService(storageService, descriptorService, fsService);
-  }, [storageService, descriptorService, fsService]);
+  const storageService = useMemo(() => new StorageService(), []);
+  const fsService = useMemo(() => new WorkspaceFsService(), []);
+  const descriptorService = useMemo(() => new WorkspaceDescriptorService(storageService), [storageService]);
+  const service = useMemo(
+    () => new WorkspaceService(storageService, descriptorService, fsService),
+    [storageService, descriptorService, fsService]
+  );
 
   const gitService = useMemo(() => {
     const instance = new GitService(GIT_CORS_PROXY);
@@ -87,8 +74,16 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createWorkspace = useCallback(
-    async (storeFiles: (fs: LightningFS, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>) => {
-      const { workspace, files } = await service.create(storeFiles, { broadcast: true });
+    async (args: {
+      useInMemoryFs: boolean;
+      storeFiles: (fs: LightningFS, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
+    }) => {
+      const { workspace, files } = await service.create({
+        useInMemoryFs: args.useInMemoryFs,
+        storeFiles: args.storeFiles,
+        broadcastArgs: { broadcast: true },
+      });
+
       if (files.length <= 0) {
         return { workspace, suggestedFirstFile: undefined };
       }
@@ -105,27 +100,26 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const isModified = useCallback(
-    async (workspaceId: string) => {
+    async (args: { fs: LightningFS; workspaceId: string }) => {
       return await gitService.isModified({
-        fs: fsService.getWorkspaceFs(workspaceId),
-        dir: service.getAbsolutePath({ workspaceId, relativePath: "" }),
+        fs: args.fs,
+        dir: service.getAbsolutePath({ workspaceId: args.workspaceId, relativePath: "" }),
       });
     },
-    [fsService, gitService, service]
+    [gitService, service]
   );
 
   const createSavePoint = useCallback(
-    async (workspaceId: string) => {
-      const fs = fsService.getWorkspaceFs(workspaceId);
+    async (args: { fs: LightningFS; workspaceId: string }) => {
       const filePaths = await gitService.unstagedModifiedFileRelativePaths({
-        fs,
-        dir: await service.resolveRootPath(fs, workspaceId),
+        fs: args.fs,
+        dir: await service.resolveRootPath(args.fs, args.workspaceId),
       });
 
       await gitService.commit({
-        fs,
+        fs: args.fs,
         filePaths,
-        dir: service.getAbsolutePath({ workspaceId, relativePath: "" }),
+        dir: service.getAbsolutePath({ workspaceId: args.workspaceId, relativePath: "" }),
         targetBranch: "main",
         message: "Save point",
         authInfo: {
@@ -133,134 +127,151 @@ export function WorkspacesContextProvider(props: Props) {
           email: "tfernand+dev@redhat.com", //FIXME: Change this.
         },
       });
-      const broadcastChannel = new BroadcastChannel(workspaceId);
-      const workspaceEvent: WorkspaceEvents = { type: "CREATE_SAVE_POINT", workspaceId };
+      const broadcastChannel = new BroadcastChannel(args.workspaceId);
+      const workspaceEvent: WorkspaceEvents = { type: "CREATE_SAVE_POINT", workspaceId: args.workspaceId };
       broadcastChannel.postMessage(workspaceEvent);
     },
-    [fsService, gitService, service]
+    [gitService, service]
   );
 
   const createWorkspaceFromLocal = useCallback(
-    async (localFiles: LocalFile[]) => {
-      return await createWorkspace(async (fs: LightningFS, workspace: WorkspaceDescriptor) => {
-        const files = localFiles
-          .filter((f) => SUPPORTED_FILES.includes(extractFileExtension(f.path)!))
-          .map((localFile) => {
-            const path = service.getAbsolutePath({
-              workspaceId: workspace.workspaceId,
-              relativePath: localFile.path.substring(localFile.path.indexOf("/") + 1),
+    async (args: { useInMemoryFs: boolean; localFiles: LocalFile[] }) => {
+      return await createWorkspace({
+        useInMemoryFs: args.useInMemoryFs,
+        storeFiles: async (fs: LightningFS, workspace: WorkspaceDescriptor) => {
+          const files = args.localFiles
+            .filter((f) => SUPPORTED_FILES.includes(extractFileExtension(f.path)!))
+            .map((localFile) => {
+              const path = service.getAbsolutePath({
+                workspaceId: workspace.workspaceId,
+                relativePath: localFile.path.substring(localFile.path.indexOf("/") + 1),
+              });
+
+              return new StorageFile({
+                path,
+                getFileContents: localFile.getFileContents,
+              });
             });
 
-            return new StorageFile({
-              path,
-              getFileContents: localFile.getFileContents,
-            });
+          await storageService.createFiles(fs, files);
+
+          const gitRoot = await service.resolveRootPath(fs, workspace.workspaceId);
+          await gitService.init({
+            fs: fs,
+            dir: gitRoot,
           });
 
-        await storageService.createFiles(fs, files);
+          await gitService.add({
+            fs: fs,
+            dir: gitRoot,
+            relativePath: ".",
+          });
 
-        const gitRoot = await service.resolveRootPath(fs, workspace.workspaceId);
-        await gitService.init({
-          fs: fs,
-          dir: gitRoot,
-        });
+          await gitService.commit({
+            fs: fs,
+            filePaths: [],
+            dir: gitRoot,
+            message: "Initial",
+            targetBranch: "main",
+            authInfo: {
+              name: "Tiago",
+              email: "tfernand+dev@redhat.com", //FIXME: Change this.
+            },
+          });
 
-        await gitService.add({
-          fs: fs,
-          dir: gitRoot,
-          relativePath: ".",
-        });
-
-        await gitService.commit({
-          fs: fs,
-          filePaths: [],
-          dir: gitRoot,
-          message: "Initial",
-          targetBranch: "main",
-          authInfo: {
-            name: "Tiago",
-            email: "tfernand+dev@redhat.com", //FIXME: Change this.
-          },
-        });
-
-        return service.getFilesLazy(fs, workspace.workspaceId);
+          return service.getFilesLazy(fs, workspace.workspaceId);
+        },
       });
     },
     [createWorkspace, gitService, storageService, service]
   );
 
   const createWorkspaceFromGitRepository = useCallback(
-    async (
-      repositoryUrl: URL,
-      sourceBranch: string,
-      githubSettings: { user: { login: string; email: string; name: string }; token: string }
-    ) => {
-      if (!githubSettings.user) {
+    async (args: {
+      repositoryUrl: URL;
+      sourceBranch: string;
+      githubSettings: { user: { login: string; email: string; name: string }; token: string };
+    }) => {
+      if (!args.githubSettings.user) {
         throw new Error("User not authenticated on GitHub");
       }
 
       const authInfo = {
-        name: githubSettings.user.name,
-        email: githubSettings.user.email,
+        name: args.githubSettings.user.name,
+        email: args.githubSettings.user.email,
         onAuth: () => ({
-          username: githubSettings.user.login,
-          password: githubSettings.token,
+          username: args.githubSettings.user.login,
+          password: args.githubSettings.token,
         }),
       };
 
-      return await createWorkspace(async (fs, workspace) => {
-        const dir = await service.resolveRootPath(fs, workspace.workspaceId);
-        await gitService.clone({ fs, dir, repositoryUrl, authInfo, sourceBranch });
-        return service.getFilesLazy(fs, workspace.workspaceId);
+      return await createWorkspace({
+        useInMemoryFs: true,
+        storeFiles: async (fs, workspace) => {
+          const dir = await service.resolveRootPath(fs, workspace.workspaceId);
+          await gitService.clone({
+            fs,
+            dir,
+            repositoryUrl: args.repositoryUrl,
+            authInfo,
+            sourceBranch: args.sourceBranch,
+          });
+          return service.getFilesLazy(fs, workspace.workspaceId);
+        },
       });
     },
     [createWorkspace, gitService, service]
   );
 
   const renameFile = useCallback(
-    async (file: WorkspaceFile, newFileName: string) => {
-      return service.renameFile(file, newFileName, { broadcast: true });
+    async (args: { fs: LightningFS; file: WorkspaceFile; newFileName: string }) => {
+      return service.renameFile(args.fs, args.file, args.newFileName, { broadcast: true });
     },
     [service]
   );
 
   const getFiles = useCallback(
-    async (workspaceId: string) => {
-      return service.getFilesLazy(fsService.getWorkspaceFs(workspaceId), workspaceId);
+    async (args: { fs: LightningFS; workspaceId: string }) => {
+      return service.getFilesLazy(args.fs, args.workspaceId);
     },
-    [fsService, service]
+    [service]
   );
 
   const getFile = useCallback(
-    async (args: { workspaceId: string; relativePath: string }) => {
+    async (args: { fs: LightningFS; workspaceId: string; relativePath: string }) => {
       return service.getFile(args);
     },
     [service]
   );
 
   const deleteFile = useCallback(
-    async (file: WorkspaceFile) => {
-      await service.deleteFile(file, { broadcast: true });
+    async (args: { fs: LightningFS; file: WorkspaceFile }) => {
+      await service.deleteFile(args.fs, args.file, { broadcast: true });
     },
     [service]
   );
 
   const updateFile = useCallback(
-    async (file: WorkspaceFile, getNewContents: () => Promise<string>) => {
-      await service.updateFile(file, getNewContents, { broadcast: true });
+    async (args: { fs: LightningFS; file: WorkspaceFile; getNewContents: () => Promise<string> }) => {
+      await service.updateFile(args.fs, args.file, args.getNewContents, { broadcast: true });
     },
     [service]
   );
 
   const addEmptyFile = useCallback(
-    async (args: { workspaceId: string; destinationDirRelativePath: string; extension: SupportedFileExtensions }) => {
+    async (args: {
+      fs: LightningFS;
+      workspaceId: string;
+      destinationDirRelativePath: string;
+      extension: SupportedFileExtensions;
+    }) => {
       for (let i = 0; i < MAX_NEW_FILE_INDEX_ATTEMPTS; i++) {
         const index = i === 0 ? "" : `-${i}`;
         const fileName = `${NEW_FILE_DEFAULT_NAME}${index}.${args.extension}`;
         const relativePath = join(args.destinationDirRelativePath, fileName);
         if (
           await service.existsFile({
-            fs: fsService.getWorkspaceFs(args.workspaceId),
+            fs: args.fs,
             workspaceId: args.workspaceId,
             relativePath,
           })
@@ -274,16 +285,19 @@ export function WorkspacesContextProvider(props: Props) {
           getFileContents: () => Promise.resolve(encoder.encode(contents)),
           relativePath,
         });
-        await service.createFile(newEmptyFile, { broadcast: true });
+        await service.createFile(args.fs, newEmptyFile, { broadcast: true });
         return newEmptyFile;
       }
 
       throw new Error("Max attempts of new empty file exceeded.");
     },
-    [fsService, service]
+    [service]
   );
 
-  const prepareZip = useCallback((workspaceId: string) => service.prepareZip(workspaceId), [service]);
+  const prepareZip = useCallback(
+    (args: { fs: LightningFS; workspaceId: string }) => service.prepareZip(args.fs, args.workspaceId),
+    [service]
+  );
 
   // const syncWorkspace = useCallback(async () => {
   //   if (!active) {
@@ -305,7 +319,7 @@ export function WorkspacesContextProvider(props: Props) {
   // }, [active, authInfo, gitService, storageService, workspaceService]);
 
   const resourceContentGet = useCallback(
-    async (args: { workspaceId: string; relativePath: string; opts?: ResourceContentOptions }) => {
+    async (args: { fs: LightningFS; workspaceId: string; relativePath: string; opts?: ResourceContentOptions }) => {
       const file = await service.getFile(args);
       if (!file) {
         throw new Error(`File '${args.relativePath}' not found in Workspace ${args.workspaceId}`);
@@ -330,28 +344,24 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const resourceContentList = useCallback(
-    async (args: { workspaceId: string; globPattern: string }) => {
-      const files = await service.getFilesLazy(
-        fsService.getWorkspaceFs(args.workspaceId),
-        args.workspaceId,
-        args.globPattern
-      );
+    async (args: { fs: LightningFS; workspaceId: string; globPattern: string }) => {
+      const files = await service.getFilesLazy(args.fs, args.workspaceId, args.globPattern);
       const matchingPaths = files.map((file) => file.relativePath);
       return new ResourcesList(args.globPattern, matchingPaths);
     },
-    [fsService, service]
+    [service]
   );
 
   const deleteWorkspace = useCallback(
-    async (workspaceId: string) => {
-      await service.delete(workspaceId, { broadcast: true });
+    async (args: { workspaceId: string }) => {
+      await service.delete(args.workspaceId, { broadcast: true });
     },
     [service]
   );
 
   const renameWorkspace = useCallback(
-    async (workspaceId: string, newName: string) => {
-      await service.rename(workspaceId, newName, { broadcast: true });
+    async (args: { workspaceId: string; newName: string }) => {
+      await service.rename(args.workspaceId, args.newName, { broadcast: true });
     },
     [service]
   );
@@ -360,15 +370,16 @@ export function WorkspacesContextProvider(props: Props) {
     <WorkspacesContext.Provider
       value={{
         service,
-        descriptorService,
         fsService,
+        descriptorService,
+        //
         resourceContentGet,
         resourceContentList,
         //
-        renameWorkspace,
-        deleteWorkspace,
         createWorkspaceFromLocal,
         createWorkspaceFromGitRepository,
+        renameWorkspace,
+        deleteWorkspace,
         prepareZip,
         getAbsolutePath,
         createSavePoint,

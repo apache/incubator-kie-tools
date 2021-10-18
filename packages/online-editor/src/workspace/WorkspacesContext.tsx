@@ -28,6 +28,7 @@ import { basename, extname, parse } from "path";
 import { removeFileExtension } from "../common/utils";
 import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
+import LightningFS from "@isomorphic-git/lightning-fs";
 
 export const decoder = new TextDecoder("utf-8");
 export const encoder = new TextEncoder();
@@ -89,37 +90,41 @@ export interface WorkspacesContextType {
   fsService: WorkspaceFsService;
 
   // create
-  createWorkspaceFromLocal: (
-    files: LocalFile[]
-  ) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
+  createWorkspaceFromLocal: (args: {
+    useInMemoryFs: boolean;
+    localFiles: LocalFile[];
+  }) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
 
-  createWorkspaceFromGitRepository: (
-    repositoryUrl: URL,
-    sourceBranch: string,
-    githubSettings: { user: { login: string; email: string; name: string }; token: string }
-  ) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
+  createWorkspaceFromGitRepository: (args: {
+    repositoryUrl: URL;
+    sourceBranch: string;
+    githubSettings: { user: { login: string; email: string; name: string }; token: string };
+  }) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
 
   // edit workspace
   addEmptyFile(args: {
+    fs: LightningFS;
     workspaceId: string;
     destinationDirRelativePath: string;
     extension: string;
   }): Promise<WorkspaceFile>;
-  prepareZip(workspaceId: string): Promise<Blob>;
-  getFiles(workspaceId: string): Promise<WorkspaceFile[]>;
-  isModified(workspaceId: string): Promise<boolean>;
+  prepareZip(args: { fs: LightningFS; workspaceId: string }): Promise<Blob>;
+  getFiles(args: { fs: LightningFS; workspaceId: string }): Promise<WorkspaceFile[]>;
+  isModified(args: { fs: LightningFS; workspaceId: string }): Promise<boolean>;
+  createSavePoint(args: { fs: LightningFS; workspaceId: string }): Promise<void>;
   getAbsolutePath(args: { workspaceId: string; relativePath: string }): string;
-  createSavePoint(workspaceId: string): Promise<void>;
-  deleteWorkspace(workspaceId: string): Promise<void>;
-  renameWorkspace(workspaceId: string, newName: string): Promise<void>;
+  deleteWorkspace(args: { workspaceId: string }): Promise<void>;
+  renameWorkspace(args: { workspaceId: string; newName: string }): Promise<void>;
 
   resourceContentList: (args: {
+    fs: LightningFS;
     workspaceId: string;
     globPattern: string;
     opts?: ResourceListOptions;
   }) => Promise<ResourcesList>;
 
   resourceContentGet: (args: {
+    fs: LightningFS;
     workspaceId: string;
     relativePath: string;
     opts?: ResourceContentOptions;
@@ -127,13 +132,17 @@ export interface WorkspacesContextType {
 
   //
 
-  getFile(args: { workspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined>;
+  getFile(args: { fs: LightningFS; workspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined>;
 
-  renameFile(file: WorkspaceFile, newFileName: string): Promise<WorkspaceFile>;
+  renameFile(args: { fs: LightningFS; file: WorkspaceFile; newFileName: string }): Promise<WorkspaceFile>;
 
-  updateFile(file: WorkspaceFile, getNewContents: () => Promise<string | undefined>): Promise<void>;
+  updateFile(args: {
+    fs: LightningFS;
+    file: WorkspaceFile;
+    getNewContents: () => Promise<string | undefined>;
+  }): Promise<void>;
 
-  deleteFile(file: WorkspaceFile): Promise<void>;
+  deleteFile(args: { fs: LightningFS; file: WorkspaceFile }): Promise<void>;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);

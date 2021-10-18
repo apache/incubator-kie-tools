@@ -39,17 +39,25 @@ export class WorkspaceService {
     return this.storageService.rootPath;
   }
 
-  public async create(
-    storeFiles: (fs: LightningFS, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>,
-    broadcastArgs: { broadcast: boolean }
-  ) {
+  public async create(args: {
+    useInMemoryFs: boolean;
+    storeFiles: (fs: LightningFS, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
+    broadcastArgs: { broadcast: boolean };
+  }) {
     const workspace = await this.workspaceDescriptorService.create();
-    const files = await this.fsService.withInMemoryFs(workspace.workspaceId, async (fs) => {
-      await this.storageService.createDirStructureAtRoot(fs, workspace.workspaceId);
-      return storeFiles(fs, workspace);
-    });
 
-    if (broadcastArgs.broadcast) {
+    const files = args.useInMemoryFs
+      ? await this.fsService.withInMemoryFs(workspace.workspaceId, async (fs) => {
+          await this.storageService.createDirStructureAtRoot(fs, workspace.workspaceId);
+          return args.storeFiles(fs, workspace);
+        })
+      : await (async () => {
+          const fs = this.fsService.getWorkspaceFs(workspace.workspaceId);
+          await this.storageService.createDirStructureAtRoot(fs, workspace.workspaceId);
+          return args.storeFiles(fs, workspace);
+        })();
+
+    if (args.broadcastArgs.broadcast) {
       const broadcastChannel1 = new BroadcastChannel(this.rootPath);
       const broadcastChannel2 = new BroadcastChannel(workspace.workspaceId);
       broadcastChannel1.postMessage({
@@ -116,9 +124,8 @@ export class WorkspaceService {
     }
   }
 
-  public async prepareZip(workspaceId: string): Promise<Blob> {
+  public async prepareZip(fs: LightningFS, workspaceId: string): Promise<Blob> {
     console.time(`WorkspaceService#assembleZip--${workspaceId}`);
-    const fs = this.fsService.getWorkspaceFs(workspaceId);
     const workspaceRootPath = await this.resolveRootPath(fs, workspaceId);
 
     const matcher = new Minimatch(SUPPORTED_FILES_PATTERN, { dot: true });
@@ -155,8 +162,8 @@ export class WorkspaceService {
 
   //
 
-  public async createFile(file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    await this.storageService.createFile(this.fsService.getWorkspaceFs(file.workspaceId), this.toStorageFile(file));
+  public async createFile(fs: LightningFS, file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
+    await this.storageService.createFile(fs, this.toStorageFile(file));
 
     if (broadcastArgs.broadcast) {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);
@@ -174,13 +181,14 @@ export class WorkspaceService {
     }
   }
 
-  public async getFile(args: { workspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined> {
+  public async getFile(args: {
+    fs: LightningFS;
+    workspaceId: string;
+    relativePath: string;
+  }): Promise<WorkspaceFile | undefined> {
     const absolutePath = this.getAbsolutePath(args);
     console.info(`Reading file '${absolutePath}'`);
-    const storageFile = await this.storageService.getFile(
-      this.fsService.getWorkspaceFs(args.workspaceId),
-      absolutePath
-    );
+    const storageFile = await this.storageService.getFile(args.fs, absolutePath);
     if (!storageFile) {
       return;
     }
@@ -188,12 +196,13 @@ export class WorkspaceService {
   }
 
   public async updateFile(
+    fs: LightningFS,
     file: WorkspaceFile,
     getNewContents: () => Promise<string>,
     broadcastArgs: { broadcast: boolean }
   ): Promise<void> {
     await this.storageService.updateFile(
-      await this.fsService.getWorkspaceFs(file.workspaceId),
+      fs,
       this.toStorageFile(
         new WorkspaceFile({
           relativePath: file.relativePath,
@@ -219,11 +228,8 @@ export class WorkspaceService {
     }
   }
 
-  public async deleteFile(file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    await this.storageService.deleteFile(
-      this.fsService.getWorkspaceFs(file.workspaceId),
-      this.toStorageFile(file).path
-    );
+  public async deleteFile(fs: LightningFS, file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
+    await this.storageService.deleteFile(fs, this.toStorageFile(file).path);
 
     if (broadcastArgs.broadcast) {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);
@@ -242,15 +248,12 @@ export class WorkspaceService {
   }
 
   public async renameFile(
+    fs: LightningFS,
     file: WorkspaceFile,
     newFileName: string,
     broadcastArgs: { broadcast: boolean }
   ): Promise<WorkspaceFile> {
-    const renamedStorageFile = await this.storageService.renameFile(
-      this.fsService.getWorkspaceFs(file.workspaceId),
-      this.toStorageFile(file),
-      newFileName
-    );
+    const renamedStorageFile = await this.storageService.renameFile(fs, this.toStorageFile(file), newFileName);
     const renamedWorkspaceFile = this.toWorkspaceFile(file.workspaceId, renamedStorageFile);
 
     if (broadcastArgs.broadcast) {
@@ -279,17 +282,14 @@ export class WorkspaceService {
   }
 
   public async moveFile(
+    fs: LightningFS,
     file: WorkspaceFile,
     newDirPath: string,
     broadcastArgs: { broadcast: boolean }
   ): Promise<WorkspaceFile> {
     //FIXME: I'm not sure this works correctly.
 
-    const movedStorageFile = await this.storageService.renameFile(
-      await this.fsService.getWorkspaceFs(file.workspaceId),
-      this.toStorageFile(file),
-      newDirPath
-    );
+    const movedStorageFile = await this.storageService.renameFile(fs, this.toStorageFile(file), newDirPath);
     const movedWorkspaceFile = this.toWorkspaceFile(file.workspaceId, movedStorageFile);
 
     if (broadcastArgs.broadcast) {

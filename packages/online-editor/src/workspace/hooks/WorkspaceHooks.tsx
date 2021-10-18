@@ -14,7 +14,10 @@ export function useWorkspaceIsModifiedPromise(workspace: ActiveWorkspace | undef
         return;
       }
 
-      const isModified = await workspaces.isModified(workspace.descriptor.workspaceId);
+      const isModified = await workspaces.isModified({
+        fs: workspaces.fsService.getWorkspaceFs(workspace.descriptor.workspaceId),
+        workspaceId: workspace.descriptor.workspaceId,
+      });
       if (canceled.get()) {
         return;
       }
@@ -57,7 +60,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
         return;
       }
 
-      const files = await workspaces.getFiles(workspaceId);
+      const files = await workspaces.getFiles({ fs: workspaces.fsService.getWorkspaceFs(workspaceId), workspaceId });
       if (canceled.get()) {
         return;
       }

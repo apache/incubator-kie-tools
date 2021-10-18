@@ -108,9 +108,12 @@ export function DmnDevSandboxContextProvider(props: Props) {
         getFileContents: prepareFileContents(props.workspaceFile.getFileContentsAsString),
       };
 
-      const workspaceFiles = (await workspaces.getFiles(props.workspaceFile.workspaceId)).filter(
-        (f) => f.extension === "dmn" || f.extension === "pmml"
-      );
+      const workspaceFiles = (
+        await workspaces.getFiles({
+          fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+          workspaceId: props.workspaceFile.workspaceId,
+        })
+      ).filter((f) => f.extension === "dmn" || f.extension === "pmml");
 
       const relatedFiles: DeploymentFile[] = workspaceFiles
         .filter((f) => f.relativePath !== targetFile.path)

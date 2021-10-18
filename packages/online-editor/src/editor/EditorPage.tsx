@@ -155,7 +155,11 @@ export function EditorPage(props: Props) {
         const content = await editor?.getContent();
         lastContent.current = content;
 
-        await workspaces.updateFile(workspaceFilePromise.data, () => Promise.resolve(content));
+        await workspaces.updateFile({
+          fs: workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
+          file: workspaceFilePromise.data,
+          getNewContents: () => Promise.resolve(content),
+        });
         editor?.getStateControl().setSavedCommand();
       },
       [workspaces, editor, workspaceFilePromise]
@@ -166,6 +170,7 @@ export function EditorPage(props: Props) {
   const onResourceContentRequest = useCallback(
     async (request: ResourceContentRequest) => {
       return workspaces.resourceContentGet({
+        fs: workspaces.fsService.getWorkspaceFs(props.workspaceId),
         workspaceId: props.workspaceId,
         relativePath: request.path,
         opts: request.opts,
@@ -177,6 +182,7 @@ export function EditorPage(props: Props) {
   const onResourceListRequest = useCallback(
     (request: ResourceListRequest) => {
       return workspaces.resourceContentList({
+        fs: workspaces.fsService.getWorkspaceFs(props.workspaceId),
         workspaceId: props.workspaceId,
         globPattern: request.pattern,
         opts: request.opts,

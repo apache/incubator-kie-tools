@@ -281,16 +281,20 @@ export function EditorToolbar(props: Props) {
       return;
     }
 
-    const zipBlob = await workspaces.prepareZip(props.workspaceFile.workspaceId);
+    const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
+    const zipBlob = await workspaces.prepareZip({ fs, workspaceId: props.workspaceFile.workspaceId });
     if (downloadAllRef.current) {
       downloadAllRef.current.href = URL.createObjectURL(zipBlob);
       downloadAllRef.current.click();
     }
-    await workspaces.createSavePoint(props.workspaceFile.workspaceId);
+    await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId });
   }, [props.editor, props.workspaceFile, workspaces]);
 
   const createSavePoint = useCallback(() => {
-    return workspaces.createSavePoint(props.workspaceFile.workspaceId);
+    return workspaces.createSavePoint({
+      fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+      workspaceId: props.workspaceFile.workspaceId,
+    });
   }, [workspaces, props.workspaceFile]);
 
   const onPreview = useCallback(() => {
@@ -530,7 +534,7 @@ export function EditorToolbar(props: Props) {
 
     if (workspacePromise.data.files.length === 1) {
       workspaces
-        .deleteWorkspace(props.workspaceFile.workspaceId)
+        .deleteWorkspace({ workspaceId: props.workspaceFile.workspaceId })
         .then(() => history.push({ pathname: globals.routes.home.path({}) }));
       return;
     }
@@ -547,15 +551,20 @@ export function EditorToolbar(props: Props) {
       return;
     }
 
-    workspaces.deleteFile(props.workspaceFile).then(() =>
-      history.push({
-        pathname: globals.routes.workspaceWithFilePath.path({
-          workspaceId: nextFile.workspaceId,
-          fileRelativePath: nextFile.relativePathWithoutExtension,
-          extension: nextFile.extension,
-        }),
+    workspaces
+      .deleteFile({
+        fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+        file: props.workspaceFile,
       })
-    );
+      .then(() =>
+        history.push({
+          pathname: globals.routes.workspaceWithFilePath.path({
+            workspaceId: nextFile.workspaceId,
+            fileRelativePath: nextFile.relativePathWithoutExtension,
+            extension: nextFile.extension,
+          }),
+        })
+      );
   }, [globals, history, workspacePromise.data, props.workspaceFile, workspaces]);
 
   return (
@@ -622,6 +631,7 @@ export function EditorToolbar(props: Props) {
                         key={"new-file-dropdown-items"}
                         addEmptyWorkspaceFile={async (extension) => {
                           const file = await workspaces.addEmptyFile({
+                            fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
                             workspaceId: props.workspaceFile.workspaceId,
                             destinationDirRelativePath: props.workspaceFile.relativeDirPath,
                             extension,
@@ -768,7 +778,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
         return;
       }
 
-      await workspaces.renameWorkspace(props.workspace.descriptor.workspaceId, newName);
+      await workspaces.renameWorkspace({ workspaceId: props.workspace.descriptor.workspaceId, newName });
     },
     [props.workspace, workspaces, resetWorkspaceName]
   );
@@ -796,17 +806,21 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
   );
 
   const onRenameWorkspaceFile = useCallback(
-    (newName: string | undefined) => {
-      if (!newName || !newFileNameValid) {
+    (newFileName: string | undefined) => {
+      if (!newFileName || !newFileNameValid) {
         resetWorkspaceFileName();
         return;
       }
 
-      if (newName === props.workspaceFile.nameWithoutExtension) {
+      if (newFileName === props.workspaceFile.nameWithoutExtension) {
         return;
       }
 
-      workspaces.renameFile(props.workspaceFile, newName);
+      workspaces.renameFile({
+        fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+        file: props.workspaceFile,
+        newFileName,
+      });
     },
     [props.workspaceFile, workspaces, resetWorkspaceFileName, newFileNameValid]
   );

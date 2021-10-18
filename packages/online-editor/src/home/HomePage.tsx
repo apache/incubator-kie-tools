@@ -127,7 +127,7 @@ export function HomePage() {
     setUploading(true);
 
     workspaces
-      .createWorkspaceFromLocal(filesToUpload)
+      .createWorkspaceFromLocal({ useInMemoryFs: true, localFiles: filesToUpload })
       .then(({ workspace, suggestedFirstFile }) => {
         if (!suggestedFirstFile) {
           expandWorkspace(workspace.workspaceId);
@@ -410,7 +410,7 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
                 <CardActions>
                   {isHovered && (
                     <DeleteDropdownWithConfirmation
-                      onDelete={() => workspaces.deleteWorkspace(props.workspaceId)}
+                      onDelete={() => workspaces.deleteWorkspace({ workspaceId: props.workspaceId })}
                       item={
                         <Flex flexWrap={{ default: "nowrap" }}>
                           <FlexItem>
@@ -475,7 +475,7 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
                 <CardActions>
                   {isHovered && (
                     <DeleteDropdownWithConfirmation
-                      onDelete={() => workspaces.deleteWorkspace(props.workspaceId)}
+                      onDelete={() => workspaces.deleteWorkspace({ workspaceId: props.workspaceId })}
                       item={
                         <>
                           Delete <b>{`"${workspacePromise.data?.descriptor.name}"`}</b>
