@@ -75,6 +75,12 @@ public class WiresShape extends WiresContainer {
     }
 
     @Override
+    public WiresShape setID(String id) {
+        super.setID(id);
+        return this;
+    }
+
+    @Override
     public WiresShape setLocation(final Point2D p) {
         super.setLocation(p);
         return this;

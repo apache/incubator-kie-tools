@@ -27,7 +27,9 @@ import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
+@JsType
 public class Spline extends AbstractMultiPointShape<Spline> {
 
     private boolean m_fill = false;

@@ -28,6 +28,7 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
+import jsinterop.annotations.JsIgnore;
 
 /**
  * ContainerNode acts as a Collection holder for primitives.
@@ -49,12 +50,14 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
 
     private IStorageEngine<M> m_stor;
 
+    @JsIgnore
     protected ContainerNode(final NodeType type, final IStorageEngine<M> storage) {
         super(type);
 
         setStorageEngine(storage);
     }
 
+    @JsIgnore
     protected ContainerNode(final NodeType type) {
         super(type);
     }

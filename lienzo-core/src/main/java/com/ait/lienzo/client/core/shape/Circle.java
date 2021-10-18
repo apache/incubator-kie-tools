@@ -23,10 +23,12 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * Circle with a radius. The center point is set via the X,Y attributes.
  */
+@JsType
 public class Circle extends Shape<Circle> {
 
     @JsProperty

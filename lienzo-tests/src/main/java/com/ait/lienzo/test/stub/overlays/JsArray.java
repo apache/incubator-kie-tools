@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * In-memory array implementation stub for class <code>com.google.gwt.core.client.JsArray</code>.
- *
  * @author Roger Martinez
  * @since 1.0
  */
@@ -135,5 +134,12 @@ public class JsArray<T> {
 
     public T getAt(int i) {
         return list.get(i);
+    }
+
+    public final T[] asArray(T[] array) {
+        for (int i = 0; i < list.size(); i++) {
+            array[i] = list.get(i);
+        }
+        return array;
     }
 }

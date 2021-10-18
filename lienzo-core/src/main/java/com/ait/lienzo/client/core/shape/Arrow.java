@@ -28,6 +28,7 @@ import com.ait.lienzo.client.core.util.GeometryException;
 import com.ait.lienzo.shared.core.types.ArrowType;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * Arrow is a type of Polygon. A picture is worth more than a 1000 words:
@@ -55,6 +56,7 @@ import jsinterop.annotations.JsProperty;
  * and both lines of the base meet in point (S).
  * (Similarly for AT_START_TAPERED.)
  */
+@JsType
 public class Arrow extends Shape<Arrow> {
 
     private Point2DArray m_polygon;

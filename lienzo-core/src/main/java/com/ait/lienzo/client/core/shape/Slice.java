@@ -22,13 +22,16 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
+import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * A Slice is defined by a start angle and an end angle, like a slice of a pizza.
  * The angles can be specified in clockwise or counter-clockwise order.
  * Slices greater than 180 degrees (or PI radians) look like pacmans.
  */
+@JsType
 public class Slice extends Shape<Slice> {
 
     @JsProperty
@@ -64,6 +67,7 @@ public class Slice extends Shape<Slice> {
      * @param startAngle in radians
      * @param endAngle   in radians
      */
+    @JsIgnore
     public Slice(final double radius, final double startAngle, final double endAngle) {
         this(radius, startAngle, endAngle, false);
     }

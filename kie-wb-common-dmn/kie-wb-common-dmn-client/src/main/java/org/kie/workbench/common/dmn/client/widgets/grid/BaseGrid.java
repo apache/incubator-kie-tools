@@ -25,6 +25,7 @@ import java.util.stream.StreamSupport;
 
 import javax.enterprise.event.Event;
 
+import jsinterop.annotations.JsIgnore;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -83,6 +84,7 @@ public abstract class BaseGrid<E extends Expression> extends BaseGridWidget impl
 
     protected boolean isOnlyVisualChangeAllowed;
 
+    @JsIgnore
     public BaseGrid(final DMNGridLayer gridLayer,
                     final GridData gridData,
                     final GridRenderer gridRenderer,
@@ -234,7 +236,8 @@ public abstract class BaseGrid<E extends Expression> extends BaseGridWidget impl
      * The width of a column is updated dynamically during a resize operation. This registers a {@link Command} on
      * the {@link SessionCommandManager} at the point the column resize operation completed to support "undo'ing"
      * column resize operations.
-     * @param uiColumn The column being resized.
+     *
+     * @param uiColumn             The column being resized.
      * @param uiColumnInitialWidth The column's initial width when the resize operation started.
      */
     public void registerColumnResizeCompleted(final DMNGridColumn uiColumn,

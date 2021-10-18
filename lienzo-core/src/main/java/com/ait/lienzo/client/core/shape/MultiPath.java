@@ -23,19 +23,20 @@ import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
 
+@JsType
 public class MultiPath extends AbstractMultiPathPartShape<MultiPath> {
 
+    @JsIgnore
     public MultiPath() {
-        super(ShapeType.MULTI_PATH);
+        this(new String[] {});
     }
 
+    @JsIgnore
     public MultiPath(String path) {
-        super(ShapeType.MULTI_PATH);
-
-        PathPartList list = getOrIncrementList();
-
-        SVGPath.parse(list, path);
+        this(new String[] {path});
     }
 
     public MultiPath(String[] paths) {
@@ -60,6 +61,7 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath> {
         return this;
     }
 
+    @JsIgnore
     public MultiPath M(final Point2D p) {
         return M(p.getX(), p.getY());
     }
@@ -70,6 +72,7 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath> {
         return this;
     }
 
+    @JsIgnore
     public MultiPath L(final Point2D p) {
         return L(p.getX(), p.getY());
     }
@@ -92,6 +95,7 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath> {
         return this;
     }
 
+    @JsIgnore
     public MultiPath Q(final Point2D cp, final Point2D ep) {
         return Q(cp.getX(), cp.getY(), ep.getX(), ep.getY());
     }
@@ -102,6 +106,7 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath> {
         return this;
     }
 
+    @JsIgnore
     public MultiPath C(final Point2D c1, final Point2D c2, final Point2D ep) {
         return C(c1.getX(), c1.getY(), c2.getX(), c2.getY(), ep.getX(), ep.getY());
     }
@@ -112,6 +117,7 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath> {
         return this;
     }
 
+    @JsIgnore
     public MultiPath A(final double rx, final double ry, final double ps, final double fa, final double fs, final double x, final double y) {
         getOrIncrementList().A(rx, ry, ps, fa, fs, x, y);
 

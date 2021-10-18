@@ -60,6 +60,7 @@ import com.ait.lienzo.tools.client.collection.NFastDoubleArray;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
 import elemental2.core.JsArray;
+import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsProperty;
 
 import static com.ait.lienzo.client.core.shape.wires.decorator.IShapeDecorator.ShapeState.VALID;
@@ -94,6 +95,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
     @JsProperty
     private Double maxHeight = -1d;
 
+    @JsIgnore
     protected AbstractMultiPathPartShape(final ShapeType type) {
         super(type);
     }

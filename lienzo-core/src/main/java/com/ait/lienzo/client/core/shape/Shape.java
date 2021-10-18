@@ -106,6 +106,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     @JsProperty
     private double miterLimit = 0;
 
+    @JsIgnore
     protected Shape(final ShapeType type) {
         super(NodeType.SHAPE);
 

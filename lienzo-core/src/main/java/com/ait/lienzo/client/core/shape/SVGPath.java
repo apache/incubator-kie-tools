@@ -27,7 +27,9 @@ import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.tools.client.collection.NFastDoubleArray;
 import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
+@JsType
 public class SVGPath extends Shape<SVGPath> {
 
     private static final String[] COMMANDS = {"m", "M", "l", "L", "v", "V", "h", "H", "z", "Z", "c", "C", "q", "Q", "t", "T", "s", "S", "a", "A"};

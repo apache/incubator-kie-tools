@@ -36,15 +36,17 @@ public class GroupingToggle extends Group {
 
     private final Text toggle = new Text("",
                                          TOGGLE_FONT_FAMILY,
+                                         null,
                                          TOGGLE_FONT_SIZE) {{
         setFillColor(ColorName.GRAY);
     }};
 
     /**
      * Constructor for the widget.
-     * @param cellWidth Width of the containing cell.
+     *
+     * @param cellWidth  Width of the containing cell.
      * @param cellHeight Height of the containing cell.
-     * @param isGrouped true is the cell is collapsed.
+     * @param isGrouped  true is the cell is collapsed.
      */
     @SuppressWarnings("unused")
     public GroupingToggle(final double cellWidth,
@@ -58,9 +60,10 @@ public class GroupingToggle extends Group {
 
     /**
      * Check whether a cell-relative coordinate is "on" the hot-spot to toggle the collapsed/expanded state.
-     * @param cellX The MouseEvent relative to the cell's x-coordinate.
-     * @param cellY The MouseEvent relative to the cell's y-coordinate.
-     * @param cellWidth Width of the containing cell.
+     *
+     * @param cellX      The MouseEvent relative to the cell's x-coordinate.
+     * @param cellY      The MouseEvent relative to the cell's y-coordinate.
+     * @param cellWidth  Width of the containing cell.
      * @param cellHeight Height of the containing cell.
      * @return true if the cell coordinate is on the hot-spot.
      */

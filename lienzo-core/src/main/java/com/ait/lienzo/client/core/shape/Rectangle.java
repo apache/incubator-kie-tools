@@ -22,12 +22,16 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * Rectangle is defined by a width and a height.
  * It may have rounded corners.
  */
+@JsType
 public class Rectangle extends Shape<Rectangle> {
 
     @JsProperty
@@ -47,7 +51,6 @@ public class Rectangle extends Shape<Rectangle> {
      */
     public Rectangle(final double width, final double height) {
         super(ShapeType.RECTANGLE);
-
         setWidth(width).setHeight(height);
     }
 
@@ -58,6 +61,7 @@ public class Rectangle extends Shape<Rectangle> {
      * @param height
      * @param cornerRadius
      */
+    @JsIgnore
     public Rectangle(final double width, final double height, final double corner) {
         this(width, height);
 

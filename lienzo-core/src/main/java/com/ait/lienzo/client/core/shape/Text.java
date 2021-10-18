@@ -31,11 +31,14 @@ import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
 import elemental2.dom.TextMetrics;
+import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * Text implementation for Canvas.
  */
+@JsType
 public class Text extends Shape<Text> {
 
     private static final boolean GRADFILLS = LienzoCore.get().isSafariBroken();
@@ -80,17 +83,9 @@ public class Text extends Shape<Text> {
      *
      * @param text
      */
+    @JsIgnore
     public Text(String text) {
-        super(ShapeType.TEXT);
-
-        final LienzoCore globals = LienzoCore.get();
-
-        if (null == text) {
-            text = "";
-        }
-        setText(text).setFontFamily(globals.getDefaultFontFamily())
-                .setFontStyle(globals.getDefaultFontStyle())
-                .setFontSize(globals.getDefaultFontSize());
+       this(text, null, null, -1);
     }
 
     /**
@@ -100,21 +95,9 @@ public class Text extends Shape<Text> {
      * @param family font family
      * @param size   font size
      */
+    @JsIgnore
     public Text(String text, String family, double size) {
-        super(ShapeType.TEXT);
-
-        final LienzoCore globals = LienzoCore.get();
-
-        if (null == text) {
-            text = "";
-        }
-        if ((null == family) || ((family = family.trim()).isEmpty())) {
-            family = globals.getDefaultFontFamily();
-        }
-        if (size <= 0) {
-            size = globals.getDefaultFontSize();
-        }
-        setText(text).setFontFamily(family).setFontStyle(globals.getDefaultFontStyle()).setFontSize(size);
+        this(text, family, null, size);
     }
 
     /**

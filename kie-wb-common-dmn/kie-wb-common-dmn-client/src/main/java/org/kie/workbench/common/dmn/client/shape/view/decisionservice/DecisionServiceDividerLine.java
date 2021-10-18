@@ -30,6 +30,7 @@ public class DecisionServiceDividerLine extends Line {
     private final Supplier<Double> dynamicWidthSupplier;
 
     public DecisionServiceDividerLine(final Supplier<Double> dynamicWidthSupplier) {
+        super(new Point2D(0, 0), new Point2D(0, 0));
         this.dynamicWidthSupplier = dynamicWidthSupplier;
 
         setStrokeWidth(1.5);

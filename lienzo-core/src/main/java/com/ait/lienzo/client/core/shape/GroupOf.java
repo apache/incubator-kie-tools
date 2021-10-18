@@ -36,6 +36,7 @@ import com.ait.lienzo.shared.core.types.GroupType;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
 import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
@@ -52,6 +53,7 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     /**
      * Constructor. Creates an instance of a group.
      */
+    @JsIgnore
     protected GroupOf(final GroupType type, final IStorageEngine<T> stor) {
         super(NodeType.GROUP, stor);
 
@@ -143,6 +145,7 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
      * In other words, if the Container has already been drawn and a new primitive is added, you'll need to invoke draw() on the
      * Container. This is done to enhance performance, otherwise, for every addBoundingBox we would have draws impacting performance.
      */
+    @JsMethod // TODO: Only this method exposed for now.
     @Override
     public C add(final T child) {
         child.removeFromParent();

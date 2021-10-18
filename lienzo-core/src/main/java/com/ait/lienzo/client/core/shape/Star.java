@@ -25,12 +25,15 @@ import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
+import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * Star is defined by an inner radius, an outer radius and the number of points.
  * The center points is at (0,0) unless additional attributes are set.
  */
+@JsType
 public class Star extends Shape<Star> {
 
     private final PathPartList m_list = new PathPartList();
@@ -63,6 +66,7 @@ public class Star extends Shape<Star> {
         setStarPoints(points).setInnerRadius(innerRadius).setOuterRadius(outerRadius);
     }
 
+    @JsIgnore
     public Star(final int points, final double innerRadius, final double outerRadius, final double corner) {
         this(points, innerRadius, outerRadius);
 

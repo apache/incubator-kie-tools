@@ -39,7 +39,7 @@ public final class ScratchPad {
         m_high = high;
 
         if (LienzoCore.IS_CANVAS_SUPPORTED) {
-            m_element = (HTMLCanvasElement) DomGlobal.document.createElement("canvas");
+            m_element = (HTMLCanvasElement) DomGlobal.document.createElement("canvas");;
 
             m_element.width = wide;
 
@@ -126,7 +126,7 @@ public final class ScratchPad {
     }
 
     private static final String toDataURL(final HTMLCanvasElement element) {
-        return element.toDataURL(null);
+        return element.toDataURL(null); // @FIXME Make sure this accepts null (mdp)
     }
 
     private static final String toDataURL(HTMLCanvasElement element, String mimetype, double quality) {

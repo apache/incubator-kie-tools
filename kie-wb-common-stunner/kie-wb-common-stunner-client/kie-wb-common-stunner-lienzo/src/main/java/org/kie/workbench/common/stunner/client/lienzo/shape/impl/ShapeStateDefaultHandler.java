@@ -59,8 +59,8 @@ public class ShapeStateDefaultHandler
     private static final Shadow SHADOW_SELECTED = new Shadow(ColorName.BLACK.getColor().setA(0.40), 5, 2, 2);
 
     protected final ShapeStateAttributeAnimationHandler<LienzoShapeView<?>> handler;
-    protected Supplier<LienzoShapeView<?>> backgroundShapeSupplier;
-    protected Supplier<LienzoShapeView<?>> borderShapeSupplier;
+    public Supplier<LienzoShapeView<?>> backgroundShapeSupplier;
+    public Supplier<LienzoShapeView<?>> borderShapeSupplier;
     private ShapeViewUserDataEncoder shapeViewDataEncoder;
 
     public ShapeStateDefaultHandler() {

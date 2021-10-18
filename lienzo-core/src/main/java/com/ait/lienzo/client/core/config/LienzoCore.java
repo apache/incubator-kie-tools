@@ -257,7 +257,6 @@ public final class LienzoCore {
 
     /**
      * Returns true if the Canvas element is supported.
-     *
      * @return
      */
     public final boolean isCanvasSupportedx() {

@@ -24,8 +24,12 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.core.types.JsCanvas;
+import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.editor.EditorSessionCommands;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -37,6 +41,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.kie.workbench.common.stunner.core.client.util.WindowJSType;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasDiagramValidator;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -220,6 +225,21 @@ public class BPMNDiagramEditor {
         metadata.setPath(path);
         commands.bind(stunnerEditor.getSession());
         docksOpen();
+        initLienzoType();
+    }
+
+    private void initLienzoType() {
+        LienzoCanvas canvas = (LienzoCanvas) stunnerEditor.getCanvasHandler().getCanvas();
+        if (canvas != null) {
+            LienzoPanel panel = (LienzoPanel) canvas.getView().getPanel();
+            LienzoBoundsPanel lienzoPanel = panel.getView();
+            JsCanvas jsCanvas = new JsCanvas(lienzoPanel, lienzoPanel.getLayer());
+            setupJsCanvasTypeNative(jsCanvas);
+        }
+    }
+
+    private static void setupJsCanvasTypeNative(JsCanvas jsCanvas) {
+        WindowJSType.linkCanvasJS(jsCanvas);
     }
 
     void docksInit() {

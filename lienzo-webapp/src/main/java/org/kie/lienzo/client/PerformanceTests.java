@@ -85,6 +85,9 @@ public class PerformanceTests extends BaseExample implements Example {
         stopAnimationButton = createButton("Stop", this::stopAnimation);
         buttonsDiv.appendChild(stopAnimationButton);
         updateAnimationButtonsState();
+
+        width = 300;
+        height = 300;
     }
 
     private void decreaseInstanceCount() {

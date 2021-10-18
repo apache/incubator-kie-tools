@@ -26,7 +26,9 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
+import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * A triangle is one of the basic shapes of geometry: a polygon with three corners or vertices and three sides
@@ -34,6 +36,7 @@ import jsinterop.annotations.JsProperty;
  * In Euclidean geometry any three points, when non-collinear, determine a unique triangle and a unique plane
  * (i.e. a two-dimensional Euclidean space).
  */
+@JsType
 public class Triangle extends AbstractMultiPointShape<Triangle> {
 
     @JsProperty
@@ -50,6 +53,7 @@ public class Triangle extends AbstractMultiPointShape<Triangle> {
         setPoints(a, b, c);
     }
 
+    @JsIgnore
     public Triangle(final Point2D a, final Point2D b, final Point2D c, final double corner) {
         this(a, b, c);
 

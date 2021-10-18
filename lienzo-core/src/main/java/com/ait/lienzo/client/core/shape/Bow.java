@@ -23,11 +23,14 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
+import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
- *
+ * Bow shaped shape
  */
+@JsType
 public class Bow extends Shape<Bow> {
 
     @JsProperty
@@ -66,6 +69,7 @@ public class Bow extends Shape<Bow> {
      * @param startAngle in radians
      * @param endAngle   in radians
      */
+    @JsIgnore
     public Bow(final double innerRadius, final double outerRadius, final double startAngle, final double endAngle) {
         this(innerRadius, outerRadius, startAngle, endAngle, false);
     }

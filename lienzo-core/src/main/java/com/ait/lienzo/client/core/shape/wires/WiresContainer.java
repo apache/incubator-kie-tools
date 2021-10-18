@@ -76,6 +76,15 @@ public class WiresContainer {
         this.m_registrationManager = m_registrationManager;
     }
 
+    public String getID() {
+        return getContainer().getID();
+    }
+
+    public WiresContainer setID(String id) {
+        getContainer().setID(id);
+        return this;
+    }
+
     public WiresManager getWiresManager() {
         return m_wiresManager;
     }

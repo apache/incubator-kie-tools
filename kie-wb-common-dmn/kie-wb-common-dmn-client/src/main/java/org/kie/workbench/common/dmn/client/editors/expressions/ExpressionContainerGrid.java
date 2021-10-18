@@ -109,7 +109,10 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
                                    final ParameterizedCommand<Optional<HasName>> onHasNameChanged,
                                    final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                    final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent) {
-        super(gridLayer,
+        super(Optional.empty(),
+              HasExpression.NOP,
+              Optional.empty(),
+              gridLayer,
               new DMNGridData(),
               new ExpressionContainerRenderer(),
               sessionManager,
@@ -118,7 +121,8 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
               refreshFormPropertiesEvent,
               domainObjectSelectionEvent,
               cellEditorControls,
-              translationService);
+              translationService,
+              false);
         this.expressionGridCache = expressionGridCache;
         this.onHasExpressionChanged = onHasExpressionChanged;
         this.onHasNameChanged = onHasNameChanged;

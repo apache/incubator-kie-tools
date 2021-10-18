@@ -201,6 +201,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
         return false;
     }
 
+    @JsIgnore
     protected Node(final NodeType type) {
         m_type = type;
 

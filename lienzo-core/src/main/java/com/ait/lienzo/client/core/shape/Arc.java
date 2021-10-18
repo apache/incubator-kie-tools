@@ -22,11 +22,14 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
+import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * Arcs are defined by a center point, a radius, a starting angle, an ending angle, and the drawing direction (either clockwise or counterclockwise).
  */
+@JsType
 public class Arc extends Shape<Arc> {
 
     @JsProperty
@@ -42,6 +45,18 @@ public class Arc extends Shape<Arc> {
     private boolean counterClockwise;
 
     /**
+     * Constructor. Creates an instance of an arc, drawn clockwise.
+     *
+     * @param radius     radius of the circle
+     * @param startAngle starting angle (in radians) of this arc
+     * @param endAngle   end angle (in radians) of this arc
+     */
+    @JsIgnore
+    public Arc(final double radius, final double startAngle, final double endAngle) {
+        this(radius, startAngle, endAngle, false);
+    }
+
+    /**
      * Constructor. Creates an instance of an arc.
      *
      * @param radius           radius of the circle
@@ -52,21 +67,7 @@ public class Arc extends Shape<Arc> {
      */
     public Arc(final double radius, final double startAngle, final double endAngle, final boolean counterClockwise) {
         super(ShapeType.ARC);
-
         setRadius(radius).setStartAngle(startAngle).setEndAngle(endAngle).setCounterClockwise(counterClockwise);
-    }
-
-    /**
-     * Constructor. Creates an instance of an arc, drawn clockwise.
-     *
-     * @param radius     radius of the circle
-     * @param startAngle starting angle (in radians) of this arc
-     * @param endAngle   end angle (in radians) of this arc
-     */
-    public Arc(final double radius, final double startAngle, final double endAngle) {
-        super(ShapeType.ARC);
-
-        setRadius(radius).setStartAngle(startAngle).setEndAngle(endAngle).setCounterClockwise(false);
     }
 
     @Override

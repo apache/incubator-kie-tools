@@ -23,12 +23,14 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
 /**
  * Ellipse is defined by a width and a height.
  * The center of the ellipse will be at (0,0) unless
  * it is moved by setting X, Y, OFFSET or TRANSFORM attributes.
  */
+@JsType
 public class Ellipse extends Shape<Ellipse> {
 
     @JsProperty
