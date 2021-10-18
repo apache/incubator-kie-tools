@@ -257,8 +257,13 @@ export function WorkspacesContextProvider(props: Props) {
   const deleteFile = useCallback(
     async (args: { fs: LightningFS; file: WorkspaceFile }) => {
       await service.deleteFile(args.fs, args.file, { broadcast: true });
+      await gitService.rm({
+        fs: args.fs,
+        dir: service.getAbsolutePath({ workspaceId: args.file.workspaceId }),
+        relativePath: args.file.relativePath,
+      });
     },
-    [service]
+    [gitService, service]
   );
 
   const updateFile = useCallback(
