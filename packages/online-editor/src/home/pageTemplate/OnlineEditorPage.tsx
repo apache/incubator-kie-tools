@@ -6,6 +6,7 @@ import { useHistory } from "react-router";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { SettingsButton } from "../../settings/SettingsButton";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { KieToolingExtendedServicesIcon } from "../../editor/KieToolingExtendedServices/KieToolingExtendedServicesIcon";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const globals = useGlobals();
@@ -27,6 +28,11 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
             </PageHeaderToolsItem>
           </MastheadMain>
           <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
+            <FlexItem>
+              <PageHeaderToolsItem>
+                <KieToolingExtendedServicesIcon />
+              </PageHeaderToolsItem>
+            </FlexItem>
             <FlexItem>
               <PageHeaderToolsItem>
                 <SettingsButton />

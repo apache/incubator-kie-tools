@@ -10,7 +10,7 @@ export function SettingsButton() {
       variant="plain"
       onClick={() => settings.open()}
       aria-label="Settings"
-      className={"kogito-tooling--masthead-hoverable"}
+      className={"kogito-tooling--masthead-hoverable-dark"}
     >
       <CogIcon />
     </Button>

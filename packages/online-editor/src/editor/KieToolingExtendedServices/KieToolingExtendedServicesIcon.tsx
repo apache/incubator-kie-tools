@@ -90,14 +90,13 @@ export function KieToolingExtendedServicesIcon() {
           id="kie-tooling-extended-services-button"
           toggleIndicator={null}
           onToggle={onToggleKieToolingExtendedServices}
-          className="kogito--kie-tooling-extended-services-button"
+          className="kogito-tooling--masthead-hoverable-dark"
           data-testid="kie-tooling-extended-services-button"
         >
           {dropdownToggleIcon}
         </DropdownToggle>
       }
       isPlain={true}
-      className={"kogito--editor__toolbar dropdown"}
       position={DropdownPosition.right}
       style={
         kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING

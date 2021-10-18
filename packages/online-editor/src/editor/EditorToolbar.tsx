@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import {
   Dropdown,
   DropdownGroup,
   DropdownItem,
   DropdownPosition,
   DropdownToggle,
+  KebabToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Breadcrumb, BreadcrumbItem } from "@patternfly/react-core/dist/js/components/Breadcrumb";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
@@ -31,7 +32,6 @@ import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOnlineI18n } from "../common/i18n";
-import { SettingsButton } from "../settings/SettingsButton";
 import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/KieToolingExtendedServicesButtons";
 import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
 import { useGlobals } from "../common/GlobalContext";
@@ -44,11 +44,10 @@ import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { EmbedModal } from "./EmbedModal";
-import { AlertsController, useAlert } from "./Alerts/Alerts";
+import { Alerts, AlertsController, useAlert } from "./Alerts/Alerts";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { dirname, join } from "path";
-import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
+import { join } from "path";
 import { SecurityIcon } from "@patternfly/react-icons/dist/js/icons/security-icon";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
@@ -62,13 +61,19 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
 import { SUPPORTED_FILES_EDITABLE } from "../workspace/SupportedFiles";
 import { AddFileDropdownItems } from "./AddFileDropdownItems";
-import { PageHeaderToolsItem, PageHeaderToolsItemProps } from "@patternfly/react-core/dist/js/components/Page";
+import {
+  PageHeaderToolsItem,
+  PageHeaderToolsItemProps,
+  PageSection,
+} from "@patternfly/react-core/dist/js/components/Page";
 import { FileLabel } from "../workspace/pages/FileLabel";
 import { DeleteDropdownWithConfirmation } from "./DeleteDropdownWithConfirmation";
 import { useWorkspaceIsModifiedPromise, useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
+import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 
 export interface Props {
   alerts: AlertsController | undefined;
+  alertsRef: (controller: AlertsController) => void;
   editor: EmbeddedEditorRef | undefined;
   workspaceFile: WorkspaceFile;
 }
@@ -242,15 +247,6 @@ export function EditorToolbar(props: Props) {
       [i18n, requestDownload, closeWithoutSaving]
     )
   );
-
-  const onClose = useCallback(() => {
-    if (isEdited) {
-      unsavedAlert.show();
-      return;
-    }
-
-    history.push({ pathname: globals.routes.home.path({}) });
-  }, [unsavedAlert, globals, history, isEdited]);
 
   const queryParamUrl = useMemo(() => {
     return queryParams.get(QueryParams.URL);
@@ -567,94 +563,183 @@ export function EditorToolbar(props: Props) {
       );
   }, [globals, history, workspacePromise.data, props.workspaceFile, workspaces]);
 
+  const workspaceNameRef = useRef<HTMLInputElement>(null);
+
+  const resetWorkspaceName = useCallback(() => {
+    if (workspaceNameRef.current && workspacePromise.data) {
+      workspaceNameRef.current.value = workspacePromise.data.descriptor.name;
+    }
+  }, [workspacePromise.data]);
+
+  useEffect(resetWorkspaceName, [resetWorkspaceName]);
+
+  const onRenameWorkspace = useCallback(
+    async (newName: string | undefined) => {
+      if (!newName) {
+        resetWorkspaceName();
+        return;
+      }
+
+      if (!workspacePromise.data || newName === workspacePromise.data.descriptor.name) {
+        return;
+      }
+
+      await workspaces.renameWorkspace({ workspaceId: workspacePromise.data.descriptor.workspaceId, newName });
+    },
+    [workspacePromise.data, workspaces, resetWorkspaceName]
+  );
+
+  const onWorkspaceNameKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      e.stopPropagation();
+      if (e.keyCode === 13 /* Enter */) {
+        e.currentTarget.blur();
+      } else if (e.keyCode === 27 /* ESC */) {
+        resetWorkspaceName();
+        e.currentTarget.blur();
+      }
+    },
+    [resetWorkspaceName]
+  );
+
+  const workspaceIsModifiedPromise = useWorkspaceIsModifiedPromise(workspacePromise.data);
+
   return (
     <>
-      <Masthead aria-label={"Page header"}>
-        <MastheadMain>
-          <PageHeaderToolsItem visibility={{ ...hideWhenSmall, sm: "visible", default: "visible" }}>
-            <MastheadBrand>
-              <Brand
-                onClick={onClose}
-                src={globals.routes.static.images.editorLogo.path({ type: props.workspaceFile.extension ?? "dmn" })}
-                alt={`${props.workspaceFile.extension} kogito logo`}
-              />
-            </MastheadBrand>
-          </PageHeaderToolsItem>
-        </MastheadMain>
+      <Alerts ref={props.alertsRef} />
+      <PageSection type={"nav"} variant={"light"} padding={{ default: "noPadding" }}>
+        {workspacePromise.data && workspacePromise.data.files.length > 1 && (
+          <Flex justifyContent={{ default: "justifyContentFlexStart" }}>
+            <FlexItem className={"kogito-tooling--masthead-hoverable"}>
+              <Breadcrumb>
+                <BreadcrumbItem component="button" />
+                <BreadcrumbItem component="button">
+                  <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
+                    <Title
+                      aria-label={"EmbeddedEditorFile name"}
+                      headingLevel={"h3"}
+                      size={"md"}
+                      style={{ fontStyle: "italic" }}
+                    >
+                      {workspacePromise.data.descriptor.name}
+                    </Title>
+                    <TextInput
+                      ref={workspaceNameRef}
+                      type={"text"}
+                      aria-label={"Edit workspace name"}
+                      onKeyDown={onWorkspaceNameKeyDown}
+                      className={"kogito--editor__toolbar-subtitle"}
+                      onBlur={(e) => onRenameWorkspace(e.target.value)}
+                      style={{ fontStyle: "italic" }}
+                    />
+                  </div>
+
+                  {workspaceIsModifiedPromise.data && (
+                    <Title
+                      headingLevel={"h6"}
+                      style={{ display: "inline", padding: "10px", cursor: "default", color: "gray" }}
+                    >
+                      <Tooltip content={"There are new changes since your last download."} position={"right"}>
+                        <small>
+                          <SecurityIcon />
+                        </small>
+                      </Tooltip>
+                    </Title>
+                  )}
+                </BreadcrumbItem>
+              </Breadcrumb>
+            </FlexItem>
+          </Flex>
+        )}
+      </PageSection>
+      <PageSection type={"nav"} variant={"light"} style={{ paddingTop: 0, paddingBottom: "16px" }}>
         <Flex
           justifyContent={{ default: "justifyContentSpaceBetween" }}
           alignItems={{ default: "alignItemsCenter" }}
           flexWrap={{ default: "nowrap" }}
         >
-          <FlexItem style={{ marginRight: "auto" }} />
           <FlexItem>
             <PageHeaderToolsItem visibility={{ default: "visible" }}>
-              <Flex flexWrap={{ default: "nowrap" }}>
-                <FlexItem style={{ width: "20px" }}>
-                  {isEdited && (
+              <Flex flexWrap={{ default: "nowrap" }} alignItems={{ default: "alignItemsCenter" }}>
+                <FlexItem>
+                  {workspacePromise.data && (
+                    <WorkspaceFileNameDropdown workspace={workspacePromise.data} workspaceFile={props.workspaceFile} />
+                  )}
+                </FlexItem>
+                <FlexItem>
+                  {(isEdited && (
                     <Tooltip content={"Saving file..."} position={"bottom"}>
-                      <TextContent>
+                      <TextContent style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}>
                         <Text
-                          style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
-                          component={"small"}
+                          aria-label={"Saving file..."}
+                          data-testid="is-saving-indicator"
+                          component={TextVariants.small}
+                        >
+                          <span>
+                            <SyncIcon size={"sm"} />
+                          </span>
+                          &nbsp;
+                          <span>Saving...</span>
+                        </Text>
+                      </TextContent>
+                    </Tooltip>
+                  )) || (
+                    <Tooltip content={"File is saved"} position={"bottom"}>
+                      <TextContent style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}>
+                        <Text
                           aria-label={"File is saved"}
                           data-testid="is-saved-indicator"
+                          component={TextVariants.small}
                         >
-                          <SyncIcon size={"sm"} />
+                          <span>
+                            <CheckCircleIcon size={"sm"} />
+                          </span>
+                          &nbsp;
+                          <span>Saved</span>
                         </Text>
                       </TextContent>
                     </Tooltip>
                   )}
                 </FlexItem>
-                <FlexItem>
-                  {workspacePromise.data && (
-                    <WorkspaceAndWorkspaceFileNames
-                      workspace={workspacePromise.data}
-                      workspaceFile={props.workspaceFile}
-                    />
-                  )}
-                </FlexItem>
-                <FlexItem>
-                  <Dropdown
-                    className={"kogito-tooling--masthead-hoverable"}
-                    isFullHeight={true}
-                    isPlain={true}
-                    isOpen={isWorkspaceAddFileMenuOpen}
-                    onSelect={() => setWorkspaceAddFileMenuOpen(false)}
-                    toggle={
-                      <DropdownToggle toggleIndicator={null} onToggle={setWorkspaceAddFileMenuOpen}>
-                        <PlusIcon />
-                      </DropdownToggle>
-                    }
-                    dropdownItems={[
-                      <AddFileDropdownItems
-                        key={"new-file-dropdown-items"}
-                        addEmptyWorkspaceFile={async (extension) => {
-                          const file = await workspaces.addEmptyFile({
-                            fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
-                            workspaceId: props.workspaceFile.workspaceId,
-                            destinationDirRelativePath: props.workspaceFile.relativeDirPath,
-                            extension,
-                          });
-                          history.push({
-                            pathname: globals.routes.workspaceWithFilePath.path({
-                              workspaceId: file.workspaceId,
-                              fileRelativePath: file.relativePathWithoutExtension,
-                              extension: file.extension,
-                            }),
-                          });
-                          return file;
-                        }}
-                      />,
-                    ]}
-                    position={DropdownPosition.right}
-                  />
-                </FlexItem>
               </Flex>
             </PageHeaderToolsItem>
           </FlexItem>
-
           <FlexItem style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
+            <FlexItem>
+              <Dropdown
+                className={"kogito-tooling--masthead-hoverable"}
+                isPlain={true}
+                isOpen={isWorkspaceAddFileMenuOpen}
+                onSelect={() => setWorkspaceAddFileMenuOpen(false)}
+                toggle={
+                  <DropdownToggle toggleIndicator={null} onToggle={setWorkspaceAddFileMenuOpen}>
+                    <PlusIcon />
+                  </DropdownToggle>
+                }
+                dropdownItems={[
+                  <AddFileDropdownItems
+                    key={"new-file-dropdown-items"}
+                    addEmptyWorkspaceFile={async (extension) => {
+                      const file = await workspaces.addEmptyFile({
+                        fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+                        workspaceId: props.workspaceFile.workspaceId,
+                        destinationDirRelativePath: props.workspaceFile.relativeDirPath,
+                        extension,
+                      });
+                      history.push({
+                        pathname: globals.routes.workspaceWithFilePath.path({
+                          workspaceId: file.workspaceId,
+                          fileRelativePath: file.relativePathWithoutExtension,
+                          extension: file.extension,
+                        }),
+                      });
+                      return file;
+                    }}
+                  />,
+                ]}
+                position={DropdownPosition.right}
+              />
+            </FlexItem>
             <DeleteDropdownWithConfirmation
               onDelete={deleteWorkspaceFile}
               item={
@@ -673,18 +758,9 @@ export function EditorToolbar(props: Props) {
             <>
               &nbsp;&nbsp;&nbsp;
               <PageHeaderToolsItem visibility={hideWhenSmall}>
-                {props.workspaceFile.extension === "dmn" && (
-                  <>
-                    <KieToolingExtendedServicesButtons />
-                  </>
-                )}
-                &nbsp;&nbsp;&nbsp;
+                {props.workspaceFile.extension === "dmn" && <KieToolingExtendedServicesButtons />}
                 <Dropdown
                   onSelect={() => setShareMenuOpen(false)}
-                  isFullHeight={true}
-                  isPlain={true}
-                  style={{ marginRight: "2px" }}
-                  className={"kogito--editor__toolbar dropdown"}
                   isOpen={isShareMenuOpen}
                   dropdownItems={shareItems("lg")}
                   position={DropdownPosition.right}
@@ -705,7 +781,6 @@ export function EditorToolbar(props: Props) {
               <Dropdown
                 className={"kogito-tooling--masthead-hoverable"}
                 isOpen={isKebabOpen}
-                isPlain={true}
                 position={DropdownPosition.right}
                 onSelect={() => setKebabOpen(false)}
                 toggle={
@@ -729,11 +804,17 @@ export function EditorToolbar(props: Props) {
               />
             </PageHeaderToolsItem>
             <PageHeaderToolsItem>
-              <SettingsButton />
+              <Dropdown
+                className={"kogito-tooling--masthead-hoverable"}
+                toggle={<KebabToggle onToggle={() => {}} />}
+                isOpen={false}
+                isPlain={true}
+                dropdownItems={[]}
+              />
             </PageHeaderToolsItem>
           </FlexItem>
         </Flex>
-      </Masthead>
+      </PageSection>
       <EmbedModal
         workspaceFile={props.workspaceFile}
         isOpen={isEmbedModalOpen}
@@ -747,10 +828,9 @@ export function EditorToolbar(props: Props) {
   );
 }
 
-function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; workspaceFile: WorkspaceFile }) {
+function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; workspaceFile: WorkspaceFile }) {
   const workspaces = useWorkspaces();
   const globals = useGlobals();
-  const workspaceNameRef = useRef<HTMLInputElement>(null);
   const workspaceFileNameRef = useRef<HTMLInputElement>(null);
   const [newFileNameValid, setNewFileNameValid] = useState<boolean>(true);
 
@@ -760,28 +840,6 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
       setNewFileNameValid(true);
     }
   }, [props.workspaceFile]);
-
-  const resetWorkspaceName = useCallback(() => {
-    if (workspaceNameRef.current) {
-      workspaceNameRef.current.value = props.workspace.descriptor.name;
-    }
-  }, [props.workspace]);
-
-  const onRenameWorkspace = useCallback(
-    async (newName: string | undefined) => {
-      if (!newName) {
-        resetWorkspaceName();
-        return;
-      }
-
-      if (newName === props.workspace.descriptor.name) {
-        return;
-      }
-
-      await workspaces.renameWorkspace({ workspaceId: props.workspace.descriptor.workspaceId, newName });
-    },
-    [props.workspace, workspaces, resetWorkspaceName]
-  );
 
   const checkNewFileName = useCallback(
     async (newFileNameWithoutExtension: string) => {
@@ -825,19 +883,6 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
     [props.workspaceFile, workspaces, resetWorkspaceFileName, newFileNameValid]
   );
 
-  const onWorkspaceNameKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      e.stopPropagation();
-      if (e.keyCode === 13 /* Enter */) {
-        e.currentTarget.blur();
-      } else if (e.keyCode === 27 /* ESC */) {
-        resetWorkspaceName();
-        e.currentTarget.blur();
-      }
-    },
-    [resetWorkspaceName]
-  );
-
   const onWorkspaceFileNameKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       e.stopPropagation();
@@ -851,7 +896,6 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
     [newFileNameValid, resetWorkspaceFileName]
   );
 
-  useEffect(resetWorkspaceName, [resetWorkspaceName]);
   useEffect(resetWorkspaceFileName, [resetWorkspaceFileName]);
   const [isFilesDropdownOpen, setFilesDropdownOpen] = useState(false);
   const filesDropdownItems = useMemo(
@@ -889,76 +933,36 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
     [globals, props.workspaceFile, props.workspace]
   );
 
-  const workspaceIsModifiedPromise = useWorkspaceIsModifiedPromise(props.workspace);
-
   return (
     <>
       <Flex alignItems={{ default: "alignItemsCenter" }} flexWrap={{ default: "nowrap" }}>
         <FlexItem style={{ display: "flex", alignItems: "baseline" }}>
-          {props.workspace.files.length > 1 && (
-            <>
-              {workspaceIsModifiedPromise.data && (
-                <Tooltip content={"There are new changes since your last download."} position={"bottom"}>
-                  <Title
-                    headingLevel={"h6"}
-                    style={{ display: "inline", padding: "10px", cursor: "default", color: "gray" }}
-                    className={"kogito-tooling--masthead-hoverable"}
-                  >
-                    <SecurityIcon />
-                  </Title>
-                </Tooltip>
-              )}
-              <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
-                <Title aria-label={"EmbeddedEditorFile name"} headingLevel={"h3"} size={"2xl"}>
-                  {props.workspace.descriptor.name}
-                </Title>
-                <TextInput
-                  ref={workspaceNameRef}
-                  type={"text"}
-                  aria-label={"Edit workspace name"}
-                  className={"kogito--editor__toolbar-title"}
-                  onKeyDown={onWorkspaceNameKeyDown}
-                  onBlur={(e) => onRenameWorkspace(e.target.value)}
-                />
-              </div>
-              <Title headingLevel={"h3"} size={"2xl"} style={{ display: "inline", margin: "10px" }}>
-                {`/`}
-              </Title>
-            </>
-          )}
-          {props.workspaceFile.relativePathWithoutExtension !== props.workspaceFile.nameWithoutExtension && (
-            <>
-              <Tooltip content={dirname(props.workspaceFile.relativePath)} position={"bottom"}>
-                <Title
-                  headingLevel={"h3"}
-                  size={"2xl"}
-                  style={{ display: "inline", padding: "10px" }}
-                  className={"kogito-tooling--masthead-hoverable"}
-                >
-                  <span style={{ cursor: "default" }}>{`…`}</span>
-                </Title>
-              </Tooltip>
-              <Title headingLevel={"h3"} size={"2xl"} style={{ display: "inline", margin: "10px" }}>
-                {`/`}
-              </Title>
-            </>
-          )}
           <Dropdown
             className={"kogito-tooling--masthead-hoverable"}
             isOpen={isFilesDropdownOpen}
             isPlain={true}
-            position={DropdownPosition.right}
             dropdownItems={filesDropdownItems}
             onSelect={() => setFilesDropdownOpen(false)}
             toggle={
               <Toggle onToggle={setFilesDropdownOpen} id={"editor-page-masthead-files-dropdown-toggle"}>
                 <Flex flexWrap={{ default: "nowrap" }} alignItems={{ default: "alignItemsCenter" }}>
+                  <FlexItem />
+                  <FlexItem>
+                    <b>
+                      <FileLabel extension={props.workspaceFile.extension} />
+                    </b>
+                  </FlexItem>
                   <FlexItem>
                     <div
                       data-testid={"toolbar-title"}
                       className={`kogito--editor__toolbar-name-container ${newFileNameValid ? "" : "invalid"}`}
                     >
-                      <Title aria-label={"EmbeddedEditorFile name"} headingLevel={"h3"} size={"2xl"}>
+                      <Title
+                        aria-label={"EmbeddedEditorFile name"}
+                        headingLevel={"h3"}
+                        size={"2xl"}
+                        style={{ fontWeight: "bold" }}
+                      >
                         {props.workspaceFile.nameWithoutExtension}
                       </Title>
                       <Tooltip
@@ -973,6 +977,7 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
                         className="kogito--editor__light-tooltip"
                       >
                         <TextInput
+                          style={{ fontWeight: "bold" }}
                           onClick={(e) => e.stopPropagation()}
                           onKeyPress={(e) => e.stopPropagation()}
                           onKeyUp={(e) => e.stopPropagation()}
@@ -986,9 +991,6 @@ function WorkspaceAndWorkspaceFileNames(props: { workspace: ActiveWorkspace; wor
                         />
                       </Tooltip>
                     </div>
-                  </FlexItem>
-                  <FlexItem>
-                    <FileLabel extension={props.workspaceFile.extension} />
                   </FlexItem>
                   <FlexItem>
                     <CaretDownIcon />

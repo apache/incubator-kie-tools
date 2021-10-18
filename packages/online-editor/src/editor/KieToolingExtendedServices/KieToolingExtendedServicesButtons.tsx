@@ -59,8 +59,6 @@ export function KieToolingExtendedServicesButtons() {
 
   return (
     <>
-      <KieToolingExtendedServicesIcon />
-
       <FeatureDependentOnKieToolingExtendedServices isLight={true} position="bottom">
         <Dropdown
           onSelect={() => dmnDevSandbox.setDropdownOpen(false)}
@@ -74,8 +72,6 @@ export function KieToolingExtendedServicesButtons() {
             </DropdownToggle>
           }
           isOpen={dmnDevSandbox.isDropdownOpen}
-          isPlain={true}
-          className={"kogito--editor__toolbar dropdown"}
           position={DropdownPosition.right}
           dropdownItems={dmnDevSandboxDropdownItems}
           style={
@@ -99,8 +95,6 @@ export function KieToolingExtendedServicesButtons() {
               {i18n.terms.run}
             </DropdownToggle>
           }
-          isPlain={true}
-          className={"kogito--editor__toolbar dropdown"}
           position={DropdownPosition.right}
           isOpen={false}
           style={
