@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.dmn.api.property.font;
+package org.kie.workbench.common.dmn.api.property.styling;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -29,24 +29,24 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @Property
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
-public class FontSize implements DMNProperty {
+public class FontFamily implements DMNProperty {
 
     @Value
     @FieldValue
-    private Double value;
+    private String value;
 
-    public FontSize() {
+    public FontFamily() {
     }
 
-    public FontSize(final Double value) {
+    public FontFamily(final String value) {
         this.value = value;
     }
 
-    public Double getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(final Double value) {
+    public void setValue(final String value) {
         this.value = value;
     }
 
@@ -55,13 +55,13 @@ public class FontSize implements DMNProperty {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FontSize)) {
+        if (!(o instanceof FontFamily)) {
             return false;
         }
 
-        final FontSize fontSize = (FontSize) o;
+        final FontFamily that = (FontFamily) o;
 
-        return value != null ? value.equals(fontSize.value) : fontSize.value == null;
+        return value != null ? value.equals(that.value) : that.value == null;
     }
 
     @Override

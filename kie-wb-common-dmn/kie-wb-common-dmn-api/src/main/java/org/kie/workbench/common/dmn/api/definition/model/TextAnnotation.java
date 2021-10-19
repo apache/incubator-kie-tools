@@ -25,12 +25,11 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.HasText;
-import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.TextFormat;
-import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
@@ -88,11 +87,7 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition<Genera
     @Property
     @FormField(afterElement = "variable")
     @Valid
-    protected BackgroundSet backgroundSet;
-
-    @Property
-    @FormField(afterElement = "backgroundSet")
-    protected FontSet fontSet;
+    protected StylingSet stylingSet;
 
     @Property
     protected GeneralRectangleDimensionsSet dimensionsSet;
@@ -102,8 +97,7 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition<Genera
              new org.kie.workbench.common.dmn.api.property.dmn.Description(),
              new Text(),
              new TextFormat(),
-             new BackgroundSet(),
-             new FontSet(),
+             new StylingSet(),
              new GeneralRectangleDimensionsSet());
     }
 
@@ -111,15 +105,13 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition<Genera
                           final org.kie.workbench.common.dmn.api.property.dmn.Description description,
                           final Text text,
                           final TextFormat textFormat,
-                          final BackgroundSet backgroundSet,
-                          final FontSet fontSet,
+                          final StylingSet stylingSet,
                           final GeneralRectangleDimensionsSet dimensionsSet) {
         super(id,
               description);
         this.text = text;
         this.textFormat = textFormat;
-        this.backgroundSet = backgroundSet;
-        this.fontSet = fontSet;
+        this.stylingSet = stylingSet;
         this.dimensionsSet = dimensionsSet;
     }
 
@@ -136,21 +128,12 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition<Genera
     }
 
     @Override
-    public BackgroundSet getBackgroundSet() {
-        return backgroundSet;
+    public StylingSet getStylingSet() {
+        return stylingSet;
     }
 
-    public void setBackgroundSet(final BackgroundSet backgroundSet) {
-        this.backgroundSet = backgroundSet;
-    }
-
-    @Override
-    public FontSet getFontSet() {
-        return fontSet;
-    }
-
-    public void setFontSet(final FontSet fontSet) {
-        this.fontSet = fontSet;
+    public void setStylingSet(final StylingSet stylingSet) {
+        this.stylingSet = stylingSet;
     }
 
     @Override
@@ -227,10 +210,7 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition<Genera
         if (textFormat != null ? !textFormat.equals(that.textFormat) : that.textFormat != null) {
             return false;
         }
-        if (backgroundSet != null ? !backgroundSet.equals(that.backgroundSet) : that.backgroundSet != null) {
-            return false;
-        }
-        if (fontSet != null ? !fontSet.equals(that.fontSet) : that.fontSet != null) {
+        if (stylingSet != null ? !stylingSet.equals(that.stylingSet) : that.stylingSet != null) {
             return false;
         }
         return dimensionsSet != null ? dimensionsSet.equals(that.dimensionsSet) : that.dimensionsSet == null;
@@ -242,8 +222,7 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition<Genera
                                          description != null ? description.hashCode() : 0,
                                          text != null ? text.hashCode() : 0,
                                          textFormat != null ? textFormat.hashCode() : 0,
-                                         backgroundSet != null ? backgroundSet.hashCode() : 0,
-                                         fontSet != null ? fontSet.hashCode() : 0,
+                                         stylingSet != null ? stylingSet.hashCode() : 0,
                                          dimensionsSet != null ? dimensionsSet.hashCode() : 0);
     }
 

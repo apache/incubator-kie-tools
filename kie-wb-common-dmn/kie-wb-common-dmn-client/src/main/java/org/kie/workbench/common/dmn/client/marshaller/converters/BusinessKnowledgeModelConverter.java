@@ -30,12 +30,11 @@ import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.model.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource;
-import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 import org.kie.workbench.common.dmn.client.marshaller.unmarshall.nodes.NodeEntry;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITAuthorityRequirement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITBusinessKnowledgeModel;
@@ -83,8 +82,7 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<JSITBusine
                                                                       name,
                                                                       informationItem,
                                                                       functionDefinition,
-                                                                      new BackgroundSet(),
-                                                                      new FontSet(),
+                                                                      new StylingSet(),
                                                                       new GeneralRectangleDimensionsSet());
         bkm.setDiagramId(nodeEntry.getDiagramId());
         node.getContent().setDefinition(bkm);

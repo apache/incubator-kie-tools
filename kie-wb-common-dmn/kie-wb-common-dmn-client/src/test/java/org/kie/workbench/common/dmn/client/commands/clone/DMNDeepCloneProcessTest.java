@@ -36,7 +36,6 @@ import org.kie.workbench.common.dmn.api.definition.model.InputData;
 import org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.model.NamedElement;
 import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
-import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.DecisionServiceRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers;
@@ -52,7 +51,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Question;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.TextFormat;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
-import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -158,8 +157,7 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
                 new Description(),
                 new Name(INPUT_DATA_NAME),
                 buildInformationItemPrimary(BuiltInType.STRING),
-                new BackgroundSet(),
-                new FontSet(),
+                new StylingSet(),
                 new GeneralRectangleDimensionsSet()
         );
     }
@@ -181,8 +179,7 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
                 new Description(),
                 new Text(TEXT_DATA),
                 new TextFormat(),
-                new BackgroundSet(),
-                new FontSet(),
+                new StylingSet(),
                 new GeneralRectangleDimensionsSet()
         );
     }
@@ -209,8 +206,7 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
                 new ArrayList<>(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                new BackgroundSet(),
-                new FontSet(),
+                new StylingSet(),
                 new DecisionServiceRectangleDimensionsSet(),
                 new DecisionServiceDividerLineY()
         );
@@ -238,8 +234,7 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
                 new Name(KNOWLEDGE_SOURCE_NAME),
                 new KnowledgeSourceType(),
                 new LocationURI(),
-                new BackgroundSet(),
-                new FontSet(),
+                new StylingSet(),
                 new GeneralRectangleDimensionsSet()
         );
     }
@@ -300,8 +295,7 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
                 new Name(BKM_SOURCE_NAME),
                 buildInformationItemPrimary(BuiltInType.BOOLEAN),
                 buildFunctionDefinition(),
-                new BackgroundSet(),
-                new FontSet(),
+                new StylingSet(),
                 new GeneralRectangleDimensionsSet()
         );
     }
@@ -315,8 +309,7 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
                 new AllowedAnswers(ANSWER),
                 buildInformationItemPrimary(BuiltInType.BOOLEAN),
                 buildFunctionDefinition(),
-                new BackgroundSet(),
-                new FontSet(),
+                new StylingSet(),
                 new GeneralRectangleDimensionsSet()
         );
     }

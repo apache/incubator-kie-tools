@@ -26,13 +26,12 @@ import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
-import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.Question;
-import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 import org.kie.workbench.common.dmn.api.resource.i18n.DMNAPIConstants;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
@@ -88,12 +87,7 @@ public class Decision extends DRGElement implements DomainObject,
     @Property
     @FormField
     @Valid
-    protected BackgroundSet backgroundSet;
-
-    @Property
-    @FormField
-    @Valid
-    protected FontSet fontSet;
+    protected StylingSet stylingSet;
 
     @Property
     protected GeneralRectangleDimensionsSet dimensionsSet;
@@ -106,8 +100,7 @@ public class Decision extends DRGElement implements DomainObject,
              new AllowedAnswers(),
              new InformationItemPrimary(),
              null,
-             new BackgroundSet(),
-             new FontSet(),
+             new StylingSet(),
              new GeneralRectangleDimensionsSet());
     }
 
@@ -118,8 +111,7 @@ public class Decision extends DRGElement implements DomainObject,
                     final AllowedAnswers allowedAnswers,
                     final InformationItemPrimary variable,
                     final Expression expression,
-                    final BackgroundSet backgroundSet,
-                    final FontSet fontSet,
+                    final StylingSet stylingSet,
                     final GeneralRectangleDimensionsSet dimensionsSet) {
         super(id,
               description,
@@ -128,8 +120,7 @@ public class Decision extends DRGElement implements DomainObject,
         this.allowedAnswers = allowedAnswers;
         this.variable = variable;
         this.expression = expression;
-        this.backgroundSet = backgroundSet;
-        this.fontSet = fontSet;
+        this.stylingSet = stylingSet;
         this.dimensionsSet = dimensionsSet;
 
         setVariableParent();
@@ -148,21 +139,12 @@ public class Decision extends DRGElement implements DomainObject,
     }
 
     @Override
-    public BackgroundSet getBackgroundSet() {
-        return backgroundSet;
+    public StylingSet getStylingSet() {
+        return stylingSet;
     }
 
-    public void setBackgroundSet(final BackgroundSet backgroundSet) {
-        this.backgroundSet = backgroundSet;
-    }
-
-    @Override
-    public FontSet getFontSet() {
-        return fontSet;
-    }
-
-    public void setFontSet(final FontSet fontSet) {
-        this.fontSet = fontSet;
+    public void setStylingSet(final StylingSet stylingSet) {
+        this.stylingSet = stylingSet;
     }
 
     @Override
@@ -265,10 +247,7 @@ public class Decision extends DRGElement implements DomainObject,
         if (expression != null ? !expression.equals(that.expression) : that.expression != null) {
             return false;
         }
-        if (backgroundSet != null ? !backgroundSet.equals(that.backgroundSet) : that.backgroundSet != null) {
-            return false;
-        }
-        if (fontSet != null ? !fontSet.equals(that.fontSet) : that.fontSet != null) {
+        if (stylingSet != null ? !stylingSet.equals(that.stylingSet) : that.stylingSet != null) {
             return false;
         }
         if (linksHolder != null ? !linksHolder.equals(that.linksHolder) : that.linksHolder != null) {
@@ -287,8 +266,7 @@ public class Decision extends DRGElement implements DomainObject,
                                          allowedAnswers != null ? allowedAnswers.hashCode() : 0,
                                          variable != null ? variable.hashCode() : 0,
                                          expression != null ? expression.hashCode() : 0,
-                                         backgroundSet != null ? backgroundSet.hashCode() : 0,
-                                         fontSet != null ? fontSet.hashCode() : 0,
+                                         stylingSet != null ? stylingSet.hashCode() : 0,
                                          dimensionsSet != null ? dimensionsSet.hashCode() : 0,
                                          linksHolder != null ? linksHolder.hashCode() : 0);
     }

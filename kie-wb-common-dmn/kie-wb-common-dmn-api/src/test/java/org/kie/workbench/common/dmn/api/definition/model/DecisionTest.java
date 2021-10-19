@@ -17,16 +17,18 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import org.junit.Test;
-import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.Question;
-import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.property.styling.FontSize;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.mock;
 
 public class DecisionTest {
@@ -39,8 +41,7 @@ public class DecisionTest {
         final Question question = mock(Question.class);
         final AllowedAnswers allowedAnswers = mock(AllowedAnswers.class);
         final Expression expression = mock(Expression.class);
-        final BackgroundSet backgroundSet = mock(BackgroundSet.class);
-        final FontSet fontSet = mock(FontSet.class);
+        final StylingSet stylingSet = mock(StylingSet.class);
         final GeneralRectangleDimensionsSet dimensionsSet = mock(GeneralRectangleDimensionsSet.class);
 
         final InformationItemPrimary variable = new InformationItemPrimary();
@@ -51,12 +52,52 @@ public class DecisionTest {
                                                      allowedAnswers,
                                                      variable,
                                                      expression,
-                                                     backgroundSet,
-                                                     fontSet,
+                                                     stylingSet,
                                                      dimensionsSet);
 
         final DMNModelInstrumentedBase actualParent = variable.getParent();
 
         assertEquals(expectedParent, actualParent);
+    }
+
+    @Test
+    public void testDifferentStylingSet() {
+
+        final Decision modelOne = new Decision(new Id("123"),
+                                               new Description(),
+                                               new Name(),
+                                               new Question(),
+                                               new AllowedAnswers(),
+                                               new InformationItemPrimary(new Id("346"),
+                                                                          new Name(),
+                                                                          new QName()),
+                                               new FunctionDefinition(new Id("789"),
+                                                                      new Description(),
+                                                                      new QName(),
+                                                                      null),
+                                               new StylingSet(),
+                                               new GeneralRectangleDimensionsSet());
+
+        final Decision modelTwo = new Decision(new Id("123"),
+                                               new Description(),
+                                               new Name(),
+                                               new Question(),
+                                               new AllowedAnswers(),
+                                               new InformationItemPrimary(new Id("346"),
+                                                                          new Name(),
+                                                                          new QName()),
+                                               new FunctionDefinition(new Id("789"),
+                                                                      new Description(),
+                                                                      new QName(),
+                                                                      null),
+                                               new StylingSet(),
+                                               new GeneralRectangleDimensionsSet());
+
+        assertEquals(modelOne, modelTwo);
+
+        modelOne.getStylingSet().setFontSize(new FontSize(10.0));
+        modelTwo.getStylingSet().setFontSize(new FontSize(11.0));
+
+        assertNotEquals(modelOne, modelTwo);
     }
 }

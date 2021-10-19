@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.api.property.dmn;
 
+import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -75,5 +76,22 @@ public class DecisionServiceParametersListSet implements DMNPropertySet {
 
     public void setDecisionService(final DecisionService decisionService) {
         value.setDecisionService(decisionService);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DecisionServiceParametersListSet that = (DecisionServiceParametersListSet) o;
+        return Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }

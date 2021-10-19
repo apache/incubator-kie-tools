@@ -43,9 +43,9 @@ public class DMNViewHandlers {
             extends FontHandler.Builder<W, V> {
 
         public FontHandlerBuilder() {
-            this.fontFamily(bean -> bean.getFontSet().getFontFamily().getValue())
-                    .fontColor(bean -> bean.getFontSet().getFontColour().getValue())
-                    .fontSize(bean -> bean.getFontSet().getFontSize().getValue())
+            this.fontFamily(bean -> bean.getStylingSet().getFontFamily().getValue())
+                    .fontColor(bean -> bean.getStylingSet().getFontColour().getValue())
+                    .fontSize(bean -> bean.getStylingSet().getFontSize().getValue())
                     .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE)
                     .verticalAlignment(bean -> HasTitle.VerticalAlignment.MIDDLE)
                     .horizontalAlignment(bean -> HasTitle.HorizontalAlignment.CENTER)
@@ -74,9 +74,9 @@ public class DMNViewHandlers {
             extends ViewAttributesHandler.Builder<W, V> {
 
         public ViewAttributesHandlerBuilder() {
-            this.fillColor(bean -> bean.getBackgroundSet().getBgColour().getValue())
-                    .strokeColor(bean -> bean.getBackgroundSet().getBorderColour().getValue())
-                    .strokeWidth(bean -> bean.getBackgroundSet().getBorderSize().getValue());
+            this.fillColor(bean -> bean.getStylingSet().getBgColour().getValue())
+                    .strokeColor(bean -> bean.getStylingSet().getBorderColour().getValue())
+                    .strokeWidth(bean -> bean.getStylingSet().getBorderSize().getValue());
         }
     }
 }

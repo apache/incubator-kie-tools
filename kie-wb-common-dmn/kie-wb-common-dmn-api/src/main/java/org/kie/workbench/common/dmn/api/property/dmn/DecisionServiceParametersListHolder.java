@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.api.property.dmn;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
@@ -50,5 +52,22 @@ public class DecisionServiceParametersListHolder implements DMNPropertySet {
 
     public void setDecisionService(final DecisionService decisionService) {
         value.setDecisionService(decisionService);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DecisionServiceParametersListHolder that = (DecisionServiceParametersListHolder) o;
+        return Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }

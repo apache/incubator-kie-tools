@@ -33,13 +33,12 @@ import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.model.InputData;
 import org.kie.workbench.common.dmn.api.definition.model.KnowledgeRequirement;
-import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.DecisionServiceRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.DecisionServiceDividerLineY;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.marshaller.unmarshall.nodes.NodeEntry;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDMNElementReference;
@@ -137,8 +136,7 @@ public class DecisionServiceConverter implements NodeConverter<JSITDecisionServi
                                                                     encapsulatedDecision,
                                                                     inputDecision,
                                                                     inputData,
-                                                                    new BackgroundSet(),
-                                                                    new FontSet(),
+                                                                    new StylingSet(),
                                                                     new DecisionServiceRectangleDimensionsSet(),
                                                                     new DecisionServiceDividerLineY());
         decisionService.setDiagramId(nodeEntry.getDiagramId());

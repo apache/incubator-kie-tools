@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.dmn.api.property.background;
+package org.kie.workbench.common.dmn.api.property.styling;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -22,7 +22,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.Fiel
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.definition.property.type.ColorType;
@@ -32,22 +31,21 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @Property
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
-public class BgColour implements DMNProperty {
+public class BorderColour implements DMNProperty {
 
-    private static final String DEFAULT = "#ffffff";
+    private static final String DEFAULT = "#000000";
 
-    @Type
     public static final PropertyType type = new ColorType();
 
     @Value
     @FieldValue
     private String value;
 
-    public BgColour() {
+    public BorderColour() {
         this(DEFAULT);
     }
 
-    public BgColour(final String value) {
+    public BorderColour(final String value) {
         this.value = value;
     }
 
@@ -68,13 +66,13 @@ public class BgColour implements DMNProperty {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof BgColour)) {
+        if (!(o instanceof BorderColour)) {
             return false;
         }
 
-        final BgColour bgColour = (BgColour) o;
+        final BorderColour that = (BorderColour) o;
 
-        return value != null ? value.equals(bgColour.value) : bgColour.value == null;
+        return value != null ? value.equals(that.value) : that.value == null;
     }
 
     @Override

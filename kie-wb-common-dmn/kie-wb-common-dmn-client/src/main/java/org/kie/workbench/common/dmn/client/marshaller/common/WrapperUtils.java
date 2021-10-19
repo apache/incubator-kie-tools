@@ -33,12 +33,10 @@ import org.kie.workbench.common.dmn.api.definition.model.InputData;
 import org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.model.NamedElement;
 import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
-import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
-import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 import org.kie.workbench.common.dmn.client.marshaller.converters.dd.ColorUtils;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dc.JSIBounds;
-import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dc.JSIColor;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dc.JSIPoint;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITAssociation;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITContext;
@@ -249,33 +247,27 @@ public class WrapperUtils {
         if (v.getDefinition() instanceof Decision) {
             final Decision d = (Decision) v.getDefinition();
             applyBounds(d.getDimensionsSet(), bounds);
-            applyBackgroundStyles(d.getBackgroundSet(), style);
-            applyFontStyle(d.getFontSet(), style);
+            applyStylingStyles(d.getStylingSet(), style);
         } else if (v.getDefinition() instanceof InputData) {
             InputData d = (InputData) v.getDefinition();
             applyBounds(d.getDimensionsSet(), bounds);
-            applyBackgroundStyles(d.getBackgroundSet(), style);
-            applyFontStyle(d.getFontSet(), style);
+            applyStylingStyles(d.getStylingSet(), style);
         } else if (v.getDefinition() instanceof BusinessKnowledgeModel) {
             final BusinessKnowledgeModel d = (BusinessKnowledgeModel) v.getDefinition();
             applyBounds(d.getDimensionsSet(), bounds);
-            applyBackgroundStyles(d.getBackgroundSet(), style);
-            applyFontStyle(d.getFontSet(), style);
+            applyStylingStyles(d.getStylingSet(), style);
         } else if (v.getDefinition() instanceof KnowledgeSource) {
             final KnowledgeSource d = (KnowledgeSource) v.getDefinition();
             applyBounds(d.getDimensionsSet(), bounds);
-            applyBackgroundStyles(d.getBackgroundSet(), style);
-            applyFontStyle(d.getFontSet(), style);
+            applyStylingStyles(d.getStylingSet(), style);
         } else if (v.getDefinition() instanceof TextAnnotation) {
             final TextAnnotation d = (TextAnnotation) v.getDefinition();
             applyBounds(d.getDimensionsSet(), bounds);
-            applyBackgroundStyles(d.getBackgroundSet(), style);
-            applyFontStyle(d.getFontSet(), style);
+            applyStylingStyles(d.getStylingSet(), style);
         } else if (v.getDefinition() instanceof DecisionService) {
             final DecisionService d = (DecisionService) v.getDefinition();
             applyBounds(d.getDimensionsSet(), bounds);
-            applyBackgroundStyles(d.getBackgroundSet(), style);
-            applyFontStyle(d.getFontSet(), style);
+            applyStylingStyles(d.getStylingSet(), style);
             final JSIDMNDecisionServiceDividerLine dl = JSIDMNDecisionServiceDividerLine.newInstance();
             final JSIPoint leftPoint = JSIPoint.newInstance();
             leftPoint.setX(v.getBounds().getUpperLeft().getX());
@@ -341,18 +333,6 @@ public class WrapperUtils {
                 .orElse("");
     }
 
-    private static void applyFontStyle(final FontSet fontSet,
-                                       final JSIDMNStyle style) {
-        final JSIColor fontColor = ColorUtils.dmnFromWB(fontSet.getFontColour().getValue());
-        style.setFontColor(fontColor);
-        if (Objects.nonNull(fontSet.getFontFamily().getValue())) {
-            style.setFontFamily(fontSet.getFontFamily().getValue());
-        }
-        if (Objects.nonNull(fontSet.getFontSize().getValue())) {
-            style.setFontSize(fontSet.getFontSize().getValue());
-        }
-    }
-
     private static void applyBounds(final RectangleDimensionsSet dimensionsSet,
                                     final JSIBounds bounds) {
         if (null != dimensionsSet.getWidth().getValue() &&
@@ -362,13 +342,22 @@ public class WrapperUtils {
         }
     }
 
-    private static void applyBackgroundStyles(final BackgroundSet bgset,
-                                              final JSIDMNStyle style) {
-        if (Objects.nonNull(bgset.getBgColour().getValue())) {
-            style.setFillColor(ColorUtils.dmnFromWB(bgset.getBgColour().getValue()));
+    private static void applyStylingStyles(final StylingSet stylingSet,
+                                           final JSIDMNStyle style) {
+        if (Objects.nonNull(stylingSet.getBgColour().getValue())) {
+            style.setFillColor(ColorUtils.dmnFromWB(stylingSet.getBgColour().getValue()));
         }
-        if (Objects.nonNull(bgset.getBorderColour().getValue())) {
-            style.setStrokeColor(ColorUtils.dmnFromWB(bgset.getBorderColour().getValue()));
+        if (Objects.nonNull(stylingSet.getBorderColour().getValue())) {
+            style.setStrokeColor(ColorUtils.dmnFromWB(stylingSet.getBorderColour().getValue()));
+        }
+        if (Objects.nonNull(stylingSet.getFontColour().getValue())) {
+            style.setFontColor(ColorUtils.dmnFromWB(stylingSet.getFontColour().getValue()));
+        }
+        if (Objects.nonNull(stylingSet.getFontFamily().getValue())) {
+            style.setFontFamily(stylingSet.getFontFamily().getValue());
+        }
+        if (Objects.nonNull(stylingSet.getFontSize().getValue())) {
+            style.setFontSize(stylingSet.getFontSize().getValue());
         }
     }
 }

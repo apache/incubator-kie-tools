@@ -15,15 +15,12 @@
  */
 package org.kie.workbench.common.dmn.api.definition;
 
-import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
-import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 
 public interface DMNViewDefinition<D extends RectangleDimensionsSet> extends DMNDefinition {
 
-    BackgroundSet getBackgroundSet();
-
-    FontSet getFontSet();
+    StylingSet getStylingSet();
 
     D getDimensionsSet();
 }

@@ -26,14 +26,13 @@ import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.InputData;
 import org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource;
-import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.KnowledgeSourceType;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 import org.kie.workbench.common.dmn.client.marshaller.unmarshall.nodes.NodeEntry;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITAuthorityRequirement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDMNElementReference;
@@ -76,8 +75,7 @@ public class KnowledgeSourceConverter implements NodeConverter<JSITKnowledgeSour
                                                        name,
                                                        ksType,
                                                        locationURI,
-                                                       new BackgroundSet(),
-                                                       new FontSet(),
+                                                       new StylingSet(),
                                                        new GeneralRectangleDimensionsSet());
         ks.setDiagramId(nodeEntry.getDiagramId());
         node.getContent().setDefinition(ks);

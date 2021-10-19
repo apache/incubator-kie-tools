@@ -21,13 +21,12 @@ import java.util.function.Consumer;
 
 import jsinterop.base.Js;
 import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
-import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.TextFormat;
-import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 import org.kie.workbench.common.dmn.client.marshaller.unmarshall.nodes.NodeEntry;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITTextAnnotation;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.kie.JSITComponentWidths;
@@ -63,8 +62,7 @@ public class TextAnnotationConverter implements NodeConverter<JSITTextAnnotation
                                                                  description,
                                                                  text,
                                                                  textFormat,
-                                                                 new BackgroundSet(),
-                                                                 new FontSet(),
+                                                                 new StylingSet(),
                                                                  new GeneralRectangleDimensionsSet());
         textAnnotation.setDiagramId(nodeEntry.getDiagramId());
         node.getContent().setDefinition(textAnnotation);

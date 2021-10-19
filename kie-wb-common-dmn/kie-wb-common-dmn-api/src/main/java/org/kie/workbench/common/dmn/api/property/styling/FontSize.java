@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.dmn.api.property.background;
+package org.kie.workbench.common.dmn.api.property.styling;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -29,16 +29,16 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @Property
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
-public class BorderSize implements DMNProperty {
+public class FontSize implements DMNProperty {
 
     @Value
     @FieldValue
     private Double value;
 
-    public BorderSize() {
+    public FontSize() {
     }
 
-    public BorderSize(final Double value) {
+    public FontSize(final Double value) {
         this.value = value;
     }
 
@@ -55,13 +55,13 @@ public class BorderSize implements DMNProperty {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof BorderSize)) {
+        if (!(o instanceof FontSize)) {
             return false;
         }
 
-        final BorderSize that = (BorderSize) o;
+        final FontSize fontSize = (FontSize) o;
 
-        return value != null ? value.equals(that.value) : that.value == null;
+        return value != null ? value.equals(fontSize.value) : fontSize.value == null;
     }
 
     @Override

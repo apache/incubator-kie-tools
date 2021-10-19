@@ -68,9 +68,9 @@ public class DMNDecisionServiceSVGShapeDefImpl implements DMNDecisionServiceSVGS
     @Override
     public FontHandler<DecisionService, SVGShapeView> newFontHandler() {
         return new FontHandler.Builder<DecisionService, SVGShapeView>()
-                .fontFamily(bean -> bean.getFontSet().getFontFamily().getValue())
-                .fontColor(bean -> bean.getFontSet().getFontColour().getValue())
-                .fontSize(bean -> bean.getFontSet().getFontSize().getValue())
+                .fontFamily(bean -> bean.getStylingSet().getFontFamily().getValue())
+                .fontColor(bean -> bean.getStylingSet().getFontColour().getValue())
+                .fontSize(bean -> bean.getStylingSet().getFontSize().getValue())
                 .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE)
                 .strokeAlpha(bean -> 0.0d)
                 .verticalAlignment(bean -> HasTitle.VerticalAlignment.TOP)

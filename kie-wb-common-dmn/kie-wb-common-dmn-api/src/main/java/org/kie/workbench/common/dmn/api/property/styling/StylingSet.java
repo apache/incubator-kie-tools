@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.dmn.api.property.font;
+package org.kie.workbench.common.dmn.api.property.styling;
+
+import java.util.Objects;
 
 import javax.validation.Valid;
 
@@ -33,9 +35,26 @@ import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldType;
 @Bindable
 @FormDefinition(
         policy = FieldPolicy.ONLY_MARKED,
-        startElement = "fontFamily"
+        startElement = "bgColour"
 )
-public class FontSet implements DMNPropertySet {
+public class StylingSet implements DMNPropertySet {
+
+    @Property
+    @FormField(
+            type = ColorPickerFieldType.class
+    )
+    @Valid
+    private BgColour bgColour;
+
+    @Property
+    @FormField(
+            type = ColorPickerFieldType.class,
+            afterElement = "bgColour"
+    )
+    @Valid
+    private BorderColour borderColour;
+
+    private BorderSize borderSize;
 
     @Property
     @FormField
@@ -63,15 +82,24 @@ public class FontSet implements DMNPropertySet {
     @Valid
     private FontSize fontSize;
 
-    public FontSet() {
-        this(new FontFamily(),
+    public StylingSet() {
+        this(new BgColour(),
+             new BorderColour(),
+             new BorderSize(),
+             new FontFamily(),
              new FontColour(),
              new FontSize());
     }
 
-    public FontSet(final FontFamily fontFamily,
-                   final FontColour fontColour,
-                   final FontSize fontSize) {
+    public StylingSet(final BgColour bgColour,
+                      final BorderColour borderColour,
+                      final BorderSize borderSize,
+                      final FontFamily fontFamily,
+                      final FontColour fontColour,
+                      final FontSize fontSize) {
+        this.bgColour = bgColour;
+        this.borderColour = borderColour;
+        this.borderSize = borderSize;
         this.fontFamily = fontFamily;
         this.fontColour = fontColour;
         this.fontSize = fontSize;
@@ -101,29 +129,55 @@ public class FontSet implements DMNPropertySet {
         this.fontSize = fontSize;
     }
 
+    public BgColour getBgColour() {
+        return bgColour;
+    }
+
+    public BorderColour getBorderColour() {
+        return borderColour;
+    }
+
+    public BorderSize getBorderSize() {
+        return borderSize;
+    }
+
+    public void setBgColour(final BgColour bgColour) {
+        this.bgColour = bgColour;
+    }
+
+    public void setBorderColour(final BorderColour borderColour) {
+        this.borderColour = borderColour;
+    }
+
+    public void setBorderSize(final BorderSize borderSize) {
+        this.borderSize = borderSize;
+    }
+
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FontSet)) {
+        if (!(o instanceof StylingSet)) {
             return false;
         }
 
-        final FontSet fontSet = (FontSet) o;
+        final StylingSet that = (StylingSet) o;
 
-        if (fontFamily != null ? !fontFamily.equals(fontSet.fontFamily) : fontSet.fontFamily != null) {
-            return false;
-        }
-        if (fontColour != null ? !fontColour.equals(fontSet.fontColour) : fontSet.fontColour != null) {
-            return false;
-        }
-        return fontSize != null ? fontSize.equals(fontSet.fontSize) : fontSet.fontSize == null;
+        return Objects.equals(bgColour, that.bgColour) &&
+                Objects.equals(borderColour, that.borderColour) &&
+                Objects.equals(borderSize, that.borderSize) &&
+                Objects.equals(fontFamily, that.fontFamily) &&
+                Objects.equals(fontColour, that.fontColour) &&
+                Objects.equals(fontSize, that.fontSize);
     }
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(fontFamily != null ? fontFamily.hashCode() : 0,
+        return HashUtil.combineHashCodes(bgColour != null ? bgColour.hashCode() : 0,
+                                         borderColour != null ? borderColour.hashCode() : 0,
+                                         borderSize != null ? borderSize.hashCode() : 0,
+                                         fontFamily != null ? fontFamily.hashCode() : 0,
                                          fontColour != null ? fontColour.hashCode() : 0,
                                          fontSize != null ? fontSize.hashCode() : 0);
     }

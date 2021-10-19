@@ -18,13 +18,17 @@ package org.kie.workbench.common.dmn.client.marshaller.converters.dd;
 
 import java.util.Objects;
 
-import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNStyle;
 
-public class FontSetPropertyConverter {
+public class FontStylingSetPropertyConverter {
 
-    public static FontSet wbFromDMN(final JSIDMNStyle dmn) {
-        final FontSet result = new FontSet();
+    private FontStylingSetPropertyConverter() {
+        // recommended by sonar
+    }
+
+    public static StylingSet wbFromDMN(final JSIDMNStyle dmn) {
+        final StylingSet result = new StylingSet();
         if (Objects.nonNull(dmn.getFontFamily())) {
             result.getFontFamily().setValue(dmn.getFontFamily());
         }
@@ -37,7 +41,7 @@ public class FontSetPropertyConverter {
         return result;
     }
 
-    public static JSIDMNStyle dmnFromWB(final FontSet wb) {
+    public static JSIDMNStyle dmnFromWB(final StylingSet wb) {
         final JSIDMNStyle result = JSIDMNStyle.newInstance();
         if (Objects.nonNull(wb.getFontFamily().getValue())) {
             result.setFontFamily(wb.getFontFamily().getValue());

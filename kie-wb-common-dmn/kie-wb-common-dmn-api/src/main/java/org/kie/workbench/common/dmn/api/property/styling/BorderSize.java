@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.dmn.api.property.font;
+package org.kie.workbench.common.dmn.api.property.styling;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -22,44 +22,31 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.Fiel
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-import org.kie.workbench.common.stunner.core.definition.property.type.ColorType;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
 @Property
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
-public class FontColour implements DMNProperty {
-
-    private static final String DEFAULT = "#000000";
-
-    @Type
-    public static final PropertyType type = new ColorType();
+public class BorderSize implements DMNProperty {
 
     @Value
     @FieldValue
-    private String value;
+    private Double value;
 
-    public FontColour() {
-        this(DEFAULT);
+    public BorderSize() {
     }
 
-    public FontColour(final String value) {
+    public BorderSize(final Double value) {
         this.value = value;
     }
 
-    public PropertyType getType() {
-        return type;
-    }
-
-    public String getValue() {
+    public Double getValue() {
         return value;
     }
 
-    public void setValue(final String value) {
+    public void setValue(final Double value) {
         this.value = value;
     }
 
@@ -68,11 +55,11 @@ public class FontColour implements DMNProperty {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FontColour)) {
+        if (!(o instanceof BorderSize)) {
             return false;
         }
 
-        final FontColour that = (FontColour) o;
+        final BorderSize that = (BorderSize) o;
 
         return value != null ? value.equals(that.value) : that.value == null;
     }

@@ -32,14 +32,13 @@ import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.model.InputData;
 import org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
-import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
-import org.kie.workbench.common.dmn.api.property.background.BgColour;
-import org.kie.workbench.common.dmn.api.property.background.BorderColour;
 import org.kie.workbench.common.dmn.api.property.dimensions.Height;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.Width;
 import org.kie.workbench.common.dmn.api.property.dmn.DecisionServiceDividerLineY;
-import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.property.styling.BgColour;
+import org.kie.workbench.common.dmn.api.property.styling.BorderColour;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.marshaller.converters.BusinessKnowledgeModelConverter;
 import org.kie.workbench.common.dmn.client.marshaller.converters.DecisionConverter;
@@ -49,7 +48,7 @@ import org.kie.workbench.common.dmn.client.marshaller.converters.KnowledgeSource
 import org.kie.workbench.common.dmn.client.marshaller.converters.NodeConverter;
 import org.kie.workbench.common.dmn.client.marshaller.converters.TextAnnotationConverter;
 import org.kie.workbench.common.dmn.client.marshaller.converters.dd.ColorUtils;
-import org.kie.workbench.common.dmn.client.marshaller.converters.dd.FontSetPropertyConverter;
+import org.kie.workbench.common.dmn.client.marshaller.converters.dd.FontStylingSetPropertyConverter;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dc.JSIPoint;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.di.JSIStyle;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITBusinessKnowledgeModel;
@@ -164,8 +163,7 @@ public class StunnerConverter {
                             ulBound,
                             decision.getDimensionsSet(),
                             lrBound,
-                            decision.getBackgroundSet(),
-                            decision::setFontSet,
+                            decision.getStylingSet(),
                             (line) -> {/*NOP*/});
         } else if (definition instanceof InputData) {
             final InputData inputData = (InputData) definition;
@@ -173,8 +171,7 @@ public class StunnerConverter {
                             ulBound,
                             inputData.getDimensionsSet(),
                             lrBound,
-                            inputData.getBackgroundSet(),
-                            inputData::setFontSet,
+                            inputData.getStylingSet(),
                             (line) -> {/*NOP*/});
         } else if (definition instanceof BusinessKnowledgeModel) {
             final BusinessKnowledgeModel businessKnowledgeModel = (BusinessKnowledgeModel) definition;
@@ -182,8 +179,7 @@ public class StunnerConverter {
                             ulBound,
                             businessKnowledgeModel.getDimensionsSet(),
                             lrBound,
-                            businessKnowledgeModel.getBackgroundSet(),
-                            businessKnowledgeModel::setFontSet,
+                            businessKnowledgeModel.getStylingSet(),
                             (line) -> {/*NOP*/});
         } else if (definition instanceof KnowledgeSource) {
             final KnowledgeSource knowledgeSource = (KnowledgeSource) definition;
@@ -191,8 +187,7 @@ public class StunnerConverter {
                             ulBound,
                             knowledgeSource.getDimensionsSet(),
                             lrBound,
-                            knowledgeSource.getBackgroundSet(),
-                            knowledgeSource::setFontSet,
+                            knowledgeSource.getStylingSet(),
                             (line) -> {/*NOP*/});
         } else if (definition instanceof TextAnnotation) {
             final TextAnnotation textAnnotation = (TextAnnotation) definition;
@@ -200,8 +195,7 @@ public class StunnerConverter {
                             ulBound,
                             textAnnotation.getDimensionsSet(),
                             lrBound,
-                            textAnnotation.getBackgroundSet(),
-                            textAnnotation::setFontSet,
+                            textAnnotation.getStylingSet(),
                             (line) -> {/*NOP*/});
         } else if (definition instanceof DecisionService) {
             final DecisionService decisionService = (DecisionService) definition;
@@ -209,8 +203,7 @@ public class StunnerConverter {
                             ulBound,
                             decisionService.getDimensionsSet(),
                             lrBound,
-                            decisionService.getBackgroundSet(),
-                            decisionService::setFontSet,
+                            decisionService.getStylingSet(),
                             (dividerLineY) -> decisionService.setDividerLineY(new DecisionServiceDividerLineY(dividerLineY - ulBound.getY())));
         }
     }
@@ -219,8 +212,7 @@ public class StunnerConverter {
                                  final Bound ulBound,
                                  final RectangleDimensionsSet dimensionsSet,
                                  final Bound lrBound,
-                                 final BackgroundSet bgset,
-                                 final Consumer<FontSet> fontSetSetter,
+                                 final StylingSet stylingSet,
                                  final Consumer<Double> decisionServiceDividerLineYSetter) {
 
         if (Objects.nonNull(ulBound)) {
@@ -235,8 +227,7 @@ public class StunnerConverter {
         }
 
         internalAugmentStyles(drgShape,
-                              bgset,
-                              fontSetSetter);
+                              stylingSet);
 
         if (Objects.nonNull(drgShape.getDMNDecisionServiceDividerLine())) {
             final JSIDMNDecisionServiceDividerLine divider = Js.uncheckedCast(drgShape.getDMNDecisionServiceDividerLine());
@@ -247,27 +238,26 @@ public class StunnerConverter {
     }
 
     private void internalAugmentStyles(final JSIDMNShape drgShape,
-                                       final BackgroundSet bgset,
-                                       final Consumer<FontSet> fontSetSetter) {
+                                       final StylingSet stylingSet) {
         final JSIStyle jsiStyle = drgShape.getStyle();
         if (Objects.isNull(jsiStyle)) {
             return;
         }
 
-        final JSIStyle drgStyle = Js.uncheckedCast(JsUtils.getUnwrappedElement(jsiStyle));
-        final JSIDMNStyle dmnStyleOfDrgShape = JSIDMNStyle.instanceOf(drgStyle) ? Js.uncheckedCast(drgStyle) : null;
+        final JSIStyle drgStyle = getUnwrappedJSIStyle(jsiStyle);
+        final JSIDMNStyle dmnStyleOfDrgShape = isJSIDMNStyle(drgStyle) ? getJSIDmnStyle(drgStyle) : null;
         if (Objects.nonNull(dmnStyleOfDrgShape)) {
             if (Objects.nonNull(dmnStyleOfDrgShape.getFillColor())) {
-                bgset.setBgColour(new BgColour(ColorUtils.wbFromDMN(dmnStyleOfDrgShape.getFillColor())));
+                stylingSet.setBgColour(new BgColour(ColorUtils.wbFromDMN(dmnStyleOfDrgShape.getFillColor())));
             }
             if (Objects.nonNull(dmnStyleOfDrgShape.getStrokeColor())) {
-                bgset.setBorderColour(new BorderColour(ColorUtils.wbFromDMN(dmnStyleOfDrgShape.getStrokeColor())));
+                stylingSet.setBorderColour(new BorderColour(ColorUtils.wbFromDMN(dmnStyleOfDrgShape.getStrokeColor())));
             }
         }
 
-        final FontSet fontSet = new FontSet();
+        final StylingSet fontStylingSet = new StylingSet();
         if (Objects.nonNull(dmnStyleOfDrgShape)) {
-            mergeFontSet(fontSet, FontSetPropertyConverter.wbFromDMN(dmnStyleOfDrgShape));
+            mergeFontStylingSet(fontStylingSet, FontStylingSetPropertyConverter.wbFromDMN(dmnStyleOfDrgShape));
         }
 
         if (Objects.nonNull(drgShape.getDMNLabel())) {
@@ -275,25 +265,43 @@ public class StunnerConverter {
             final JSIStyle jsiLabelStyle = jsiLabel.getStyle();
             final Object jsiLabelSharedStyle = Js.uncheckedCast(jsiLabel.getSharedStyle());
             if (Objects.nonNull(jsiLabelSharedStyle) && JSIDMNStyle.instanceOf(jsiLabelSharedStyle)) {
-                mergeFontSet(fontSet, FontSetPropertyConverter.wbFromDMN((Js.uncheckedCast(jsiLabelSharedStyle))));
+                mergeFontStylingSet(fontStylingSet, FontStylingSetPropertyConverter.wbFromDMN((Js.uncheckedCast(jsiLabelSharedStyle))));
             }
-            if (Objects.nonNull(jsiLabelStyle) && JSIDMNStyle.instanceOf(jsiLabelStyle)) {
-                mergeFontSet(fontSet, FontSetPropertyConverter.wbFromDMN(Js.uncheckedCast(jsiLabelStyle)));
+            if (Objects.nonNull(jsiLabelStyle) && isJSIDMNStyle(jsiLabelStyle)) {
+                mergeFontStylingSet(fontStylingSet, FontStylingSetPropertyConverter.wbFromDMN(Js.uncheckedCast(jsiLabelStyle)));
             }
         }
-        fontSetSetter.accept(fontSet);
+        mergeFontStylingSet(stylingSet, fontStylingSet);
     }
 
-    private void mergeFontSet(final FontSet fontSet,
-                              final FontSet additional) {
+    private void mergeFontStylingSet(final StylingSet stylingSet,
+                                     final StylingSet additional) {
         if (Objects.nonNull(additional.getFontFamily())) {
-            fontSet.setFontFamily(additional.getFontFamily());
+            stylingSet.setFontFamily(additional.getFontFamily());
         }
         if (Objects.nonNull(additional.getFontSize())) {
-            fontSet.setFontSize(additional.getFontSize());
+            stylingSet.setFontSize(additional.getFontSize());
         }
         if (Objects.nonNull(additional.getFontColour())) {
-            fontSet.setFontColour(additional.getFontColour());
+            stylingSet.setFontColour(additional.getFontColour());
         }
+    }
+
+    /**
+     * ########################################
+     * package protected methods due to testing
+     * ########################################
+     */
+
+    boolean isJSIDMNStyle(JSIStyle drgStyle) {
+        return JSIDMNStyle.instanceOf(drgStyle);
+    }
+
+    JSIStyle getUnwrappedJSIStyle(JSIStyle jsiStyle) {
+        return Js.uncheckedCast(JsUtils.getUnwrappedElement(jsiStyle));
+    }
+
+    JSIDMNStyle getJSIDmnStyle(JSIStyle jsiStyle) {
+        return Js.uncheckedCast(jsiStyle);
     }
 }

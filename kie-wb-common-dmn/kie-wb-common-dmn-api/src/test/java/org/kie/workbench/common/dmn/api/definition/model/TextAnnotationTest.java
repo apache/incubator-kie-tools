@@ -19,11 +19,18 @@ package org.kie.workbench.common.dmn.api.definition.model;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.dmn.api.property.dmn.TextFormat;
+import org.kie.workbench.common.dmn.api.property.styling.FontSize;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly.ReadOnly.FALSE;
 import static org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly.ReadOnly.NOT_SET;
 import static org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly.ReadOnly.TRUE;
@@ -107,6 +114,31 @@ public class TextAnnotationTest {
         final String currentId = textAnnotation.getContentDefinitionId();
 
         assertEquals(contentDefinitionId, currentId);
+    }
+
+    @Test
+    public void testDifferentStylingSet() {
+
+        final TextAnnotation modelOne = new TextAnnotation(new Id("123"),
+                                                           new Description(),
+                                                           new Text(),
+                                                           new TextFormat(),
+                                                           new StylingSet(),
+                                                           new GeneralRectangleDimensionsSet());
+
+        final TextAnnotation modelTwo = new TextAnnotation(new Id("123"),
+                                                           new Description(),
+                                                           new Text(),
+                                                           new TextFormat(),
+                                                           new StylingSet(),
+                                                           new GeneralRectangleDimensionsSet());
+
+        assertEquals(modelOne, modelTwo);
+
+        modelOne.getStylingSet().setFontSize(new FontSize(10.0));
+        modelTwo.getStylingSet().setFontSize(new FontSize(11.0));
+
+        assertNotEquals(modelOne, modelTwo);
     }
 
     private void checkIfItIsNotReadOnly(final String property) {

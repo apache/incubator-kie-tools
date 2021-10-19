@@ -23,13 +23,12 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
-import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.KnowledgeSourceType;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
@@ -70,12 +69,7 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition<Gen
     @Property
     @FormField(afterElement = "locationURI")
     @Valid
-    protected BackgroundSet backgroundSet;
-
-    @Property
-    @FormField(afterElement = "backgroundSet")
-    @Valid
-    protected FontSet fontSet;
+    protected StylingSet stylingSet;
 
     @Property
     protected GeneralRectangleDimensionsSet dimensionsSet;
@@ -86,8 +80,7 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition<Gen
              new Name(),
              new KnowledgeSourceType(),
              new LocationURI(),
-             new BackgroundSet(),
-             new FontSet(),
+             new StylingSet(),
              new GeneralRectangleDimensionsSet());
     }
 
@@ -96,16 +89,14 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition<Gen
                            final Name name,
                            final KnowledgeSourceType type,
                            final LocationURI locationURI,
-                           final BackgroundSet backgroundSet,
-                           final FontSet fontSet,
+                           final StylingSet stylingSet,
                            final GeneralRectangleDimensionsSet dimensionsSet) {
         super(id,
               description,
               name);
         this.type = type;
         this.locationURI = locationURI;
-        this.backgroundSet = backgroundSet;
-        this.fontSet = fontSet;
+        this.stylingSet = stylingSet;
         this.dimensionsSet = dimensionsSet;
     }
 
@@ -122,21 +113,12 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition<Gen
     }
 
     @Override
-    public BackgroundSet getBackgroundSet() {
-        return backgroundSet;
+    public StylingSet getStylingSet() {
+        return stylingSet;
     }
 
-    public void setBackgroundSet(final BackgroundSet backgroundSet) {
-        this.backgroundSet = backgroundSet;
-    }
-
-    @Override
-    public FontSet getFontSet() {
-        return fontSet;
-    }
-
-    public void setFontSet(final FontSet fontSet) {
-        this.fontSet = fontSet;
+    public void setStylingSet(final StylingSet stylingSet) {
+        this.stylingSet = stylingSet;
     }
 
     @Override
@@ -194,10 +176,7 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition<Gen
         if (locationURI != null ? !locationURI.equals(that.locationURI) : that.locationURI != null) {
             return false;
         }
-        if (backgroundSet != null ? !backgroundSet.equals(that.backgroundSet) : that.backgroundSet != null) {
-            return false;
-        }
-        if (fontSet != null ? !fontSet.equals(that.fontSet) : that.fontSet != null) {
+        if (stylingSet != null ? !stylingSet.equals(that.stylingSet) : that.stylingSet != null) {
             return false;
         }
         if (linksHolder != null ? !linksHolder.equals(that.linksHolder) : that.linksHolder != null) {
@@ -213,8 +192,7 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition<Gen
                                          nameHolder != null ? nameHolder.hashCode() : 0,
                                          type != null ? type.hashCode() : 0,
                                          locationURI != null ? locationURI.hashCode() : 0,
-                                         backgroundSet != null ? backgroundSet.hashCode() : 0,
-                                         fontSet != null ? fontSet.hashCode() : 0,
+                                         stylingSet != null ? stylingSet.hashCode() : 0,
                                          dimensionsSet != null ? dimensionsSet.hashCode() : 0,
                                          linksHolder != null ? linksHolder.hashCode() : 0);
     }

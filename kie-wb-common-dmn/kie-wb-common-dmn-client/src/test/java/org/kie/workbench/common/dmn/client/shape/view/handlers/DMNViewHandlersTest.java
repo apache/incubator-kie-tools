@@ -24,7 +24,7 @@ import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDime
 import org.kie.workbench.common.dmn.api.property.dimensions.Height;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.Width;
-import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 import org.kie.workbench.common.dmn.client.shape.def.DMNSVGShapeDefImpl;
 import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
@@ -62,7 +62,7 @@ public class DMNViewHandlersTest {
 
         doReturn(dimensions).when(definition).getDimensionsSet();
 
-        doReturn(new FontSet()).when(definition).getFontSet();
+        doReturn(new StylingSet()).when(definition).getStylingSet();
     }
 
     @Test

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.dmn.api.property.font;
+package org.kie.workbench.common.dmn.api.property.styling;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -23,23 +23,34 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.Fiel
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
+import org.kie.workbench.common.stunner.core.definition.property.type.ColorType;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
 @Property
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
-public class FontFamily implements DMNProperty {
+public class FontColour implements DMNProperty {
+
+    private static final String DEFAULT = "#000000";
+
+    public static final PropertyType type = new ColorType();
 
     @Value
     @FieldValue
     private String value;
 
-    public FontFamily() {
+    public FontColour() {
+        this(DEFAULT);
     }
 
-    public FontFamily(final String value) {
+    public FontColour(final String value) {
         this.value = value;
+    }
+
+    public PropertyType getType() {
+        return type;
     }
 
     public String getValue() {
@@ -55,11 +66,11 @@ public class FontFamily implements DMNProperty {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof FontFamily)) {
+        if (!(o instanceof FontColour)) {
             return false;
         }
 
-        final FontFamily that = (FontFamily) o;
+        final FontColour that = (FontColour) o;
 
         return value != null ? value.equals(that.value) : that.value == null;
     }

@@ -27,14 +27,13 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
-import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.DecisionServiceRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.DecisionServiceDividerLineY;
 import org.kie.workbench.common.dmn.api.property.dmn.DecisionServiceParametersListSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.property.styling.StylingSet;
 import org.kie.workbench.common.dmn.api.resource.i18n.DMNAPIConstants;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
@@ -85,12 +84,7 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
     @Property
     @FormField(afterElement = "variable")
     @Valid
-    protected BackgroundSet backgroundSet;
-
-    @Property
-    @FormField(afterElement = "backgroundSet")
-    @Valid
-    protected FontSet fontSet;
+    protected StylingSet stylingSet;
 
     @Property
     protected DecisionServiceRectangleDimensionsSet dimensionsSet;
@@ -112,8 +106,7 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
              null,
              null,
              null,
-             new BackgroundSet(),
-             new FontSet(),
+             new StylingSet(),
              new DecisionServiceRectangleDimensionsSet(),
              new DecisionServiceDividerLineY());
     }
@@ -126,8 +119,7 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
                            final List<DMNElementReference> encapsulatedDecision,
                            final List<DMNElementReference> inputDecision,
                            final List<DMNElementReference> inputData,
-                           final BackgroundSet backgroundSet,
-                           final FontSet fontSet,
+                           final StylingSet stylingSet,
                            final DecisionServiceRectangleDimensionsSet dimensionsSet,
                            final DecisionServiceDividerLineY dividerLineY) {
         super(id,
@@ -138,8 +130,7 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
         this.encapsulatedDecision = encapsulatedDecision;
         this.inputDecision = inputDecision;
         this.inputData = inputData;
-        this.backgroundSet = backgroundSet;
-        this.fontSet = fontSet;
+        this.stylingSet = stylingSet;
         this.dimensionsSet = dimensionsSet;
         this.dividerLineY = dividerLineY;
         this.decisionServiceParametersList = new DecisionServiceParametersListSet();
@@ -160,21 +151,12 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
     }
 
     @Override
-    public BackgroundSet getBackgroundSet() {
-        return backgroundSet;
+    public StylingSet getStylingSet() {
+        return stylingSet;
     }
 
-    public void setBackgroundSet(final BackgroundSet backgroundSet) {
-        this.backgroundSet = backgroundSet;
-    }
-
-    @Override
-    public FontSet getFontSet() {
-        return fontSet;
-    }
-
-    public void setFontSet(final FontSet fontSet) {
-        this.fontSet = fontSet;
+    public void setStylingSet(final StylingSet stylingSet) {
+        this.stylingSet = stylingSet;
     }
 
     @Override
@@ -302,6 +284,9 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
         if (decisionServiceParametersList != null ? !decisionServiceParametersList.equals(that.decisionServiceParametersList) : that.decisionServiceParametersList != null) {
             return false;
         }
+        if (stylingSet != null ? !stylingSet.equals(that.stylingSet) : that.stylingSet != null) {
+            return false;
+        }
         return inputData != null ? inputData.equals(that.inputData) : that.inputData == null;
     }
 
@@ -314,6 +299,7 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
                                          dividerLineY != null ? dividerLineY.hashCode() : 0,
                                          outputDecision != null ? outputDecision.hashCode() : 0,
                                          encapsulatedDecision != null ? encapsulatedDecision.hashCode() : 0,
+                                         stylingSet != null ? stylingSet.hashCode() : 0,
                                          inputDecision != null ? inputDecision.hashCode() : 0,
                                          inputData != null ? inputData.hashCode() : 0,
                                          linksHolder != null ? linksHolder.hashCode() : 0,
