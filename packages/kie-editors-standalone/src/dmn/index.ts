@@ -111,26 +111,26 @@ export function open(args: {
       getNodeIds: () => {
         return envelopeServer.envelopeApi.requests.canvas_getNodeIds();
       },
-      getBackgroundColor: (UUID: string) => {
-        return envelopeServer.envelopeApi.requests.canvas_getBackgroundColor(UUID);
+      getBackgroundColor: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_getBackgroundColor(uuid);
       },
-      setBackgroundColor: (UUID: string, backgroundColor: string) => {
-        return envelopeServer.envelopeApi.requests.canvas_setBackgroundColor(UUID, backgroundColor);
+      setBackgroundColor: (uuid: string, backgroundColor: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_setBackgroundColor(uuid, backgroundColor);
       },
-      getBorderColor: (UUID: string) => {
-        return envelopeServer.envelopeApi.requests.canvas_getBorderColor(UUID);
+      getBorderColor: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_getBorderColor(uuid);
       },
-      setBorderColor: (UUID: string, backgroundColor: string) => {
-        return envelopeServer.envelopeApi.requests.canvas_setBorderColor(UUID, backgroundColor);
+      setBorderColor: (uuid: string, backgroundColor: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_setBorderColor(uuid, backgroundColor);
       },
-      getLocation: (UUID: string) => {
-        return envelopeServer.envelopeApi.requests.canvas_getLocation(UUID);
+      getLocation: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_getLocation(uuid);
       },
-      getAbsoluteLocation: (UUID: string) => {
-        return envelopeServer.envelopeApi.requests.canvas_getAbsoluteLocation(UUID);
+      getAbsoluteLocation: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_getAbsoluteLocation(uuid);
       },
-      getDimensions: (UUID: string) => {
-        return envelopeServer.envelopeApi.requests.canvas_getDimensions(UUID);
+      getDimensions: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_getDimensions(uuid);
       },
     },
   };
