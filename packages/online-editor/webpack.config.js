@@ -50,6 +50,7 @@ module.exports = async (env, argv) => {
       "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
       "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
       "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
+      "broadcast-channel-single-tab-polyfill": "./src/polyfill/BroadcastChannelSingleTab.ts",
     },
     plugins: [
       new HtmlWebpackPlugin({
