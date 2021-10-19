@@ -20,7 +20,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { useOnlineI18n } from "../common/i18n";
 import { useSettings } from "../settings/SettingsContext";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
@@ -194,6 +194,7 @@ export function EmbedModal(props: Props) {
       <div className={"kogito--editor__embed-modal-embed-code"}>
         <p className={"kogito--editor__embed-modal-embed-code-items"}>{i18n.embedModal.embedCode}</p>
         <ClipboardCopy
+          variant={ClipboardCopyVariant.expansion}
           className={"kogito--editor__embed-modal-embed-code-items"}
           aria-label={"Embed code"}
           type={"text"}

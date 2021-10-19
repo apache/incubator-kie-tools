@@ -22,13 +22,11 @@ import {
   DropdownToggle,
   KebabToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Breadcrumb, BreadcrumbItem } from "@patternfly/react-core/dist/js/components/Breadcrumb";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
-import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOnlineI18n } from "../common/i18n";
@@ -41,13 +39,11 @@ import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/
 import { UpdateGistErrors } from "../settings/GithubService";
 import { QueryParams } from "../common/Routes";
 import { useHistory } from "react-router";
-import { Link } from "react-router-dom";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { EmbedModal } from "./EmbedModal";
 import { Alerts, AlertsController, useAlert } from "./Alerts/Alerts";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { join } from "path";
 import { SecurityIcon } from "@patternfly/react-icons/dist/js/icons/security-icon";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
@@ -58,8 +54,6 @@ import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { ColumnsIcon } from "@patternfly/react-icons/dist/js/icons/columns-icon";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
-import { SUPPORTED_FILES_EDITABLE } from "../workspace/SupportedFiles";
 import { AddFileDropdownItems } from "./AddFileDropdownItems";
 import {
   PageHeaderToolsItem,
@@ -70,6 +64,7 @@ import { FileLabel } from "../workspace/pages/FileLabel";
 import { DeleteDropdownWithConfirmation } from "./DeleteDropdownWithConfirmation";
 import { useWorkspaceIsModifiedPromise, useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+import { WorkspaceFileNameDropdown } from "./WorkspaceFileNameDropdown";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -824,183 +819,6 @@ export function EditorToolbar(props: Props) {
       <a ref={downloadRef} />
       <a ref={downloadAllRef} />
       <a ref={downloadPreviewRef} />
-    </>
-  );
-}
-
-function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; workspaceFile: WorkspaceFile }) {
-  const workspaces = useWorkspaces();
-  const globals = useGlobals();
-  const workspaceFileNameRef = useRef<HTMLInputElement>(null);
-  const [newFileNameValid, setNewFileNameValid] = useState<boolean>(true);
-
-  const resetWorkspaceFileName = useCallback(() => {
-    if (workspaceFileNameRef.current) {
-      workspaceFileNameRef.current.value = props.workspaceFile.nameWithoutExtension;
-      setNewFileNameValid(true);
-    }
-  }, [props.workspaceFile]);
-
-  const checkNewFileName = useCallback(
-    async (newFileNameWithoutExtension: string) => {
-      if (newFileNameWithoutExtension === props.workspaceFile.nameWithoutExtension) {
-        setNewFileNameValid(true);
-        return;
-      }
-
-      const newRelativePath = join(
-        props.workspaceFile.relativeDirPath,
-        `${newFileNameWithoutExtension}.${props.workspaceFile.extension}`
-      );
-
-      const exists = await workspaces.service.existsFile({
-        fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
-        workspaceId: props.workspaceFile.workspaceId,
-        relativePath: newRelativePath,
-      });
-      setNewFileNameValid(!exists);
-    },
-    [props.workspaceFile, workspaces.service, workspaces.fsService]
-  );
-
-  const onRenameWorkspaceFile = useCallback(
-    (newFileName: string | undefined) => {
-      if (!newFileName || !newFileNameValid) {
-        resetWorkspaceFileName();
-        return;
-      }
-
-      if (newFileName === props.workspaceFile.nameWithoutExtension) {
-        return;
-      }
-
-      workspaces.renameFile({
-        fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
-        file: props.workspaceFile,
-        newFileName,
-      });
-    },
-    [props.workspaceFile, workspaces, resetWorkspaceFileName, newFileNameValid]
-  );
-
-  const onWorkspaceFileNameKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      e.stopPropagation();
-      if (newFileNameValid && e.keyCode === 13 /* Enter */) {
-        e.currentTarget.blur();
-      } else if (e.keyCode === 27 /* ESC */) {
-        resetWorkspaceFileName();
-        e.currentTarget.blur();
-      }
-    },
-    [newFileNameValid, resetWorkspaceFileName]
-  );
-
-  useEffect(resetWorkspaceFileName, [resetWorkspaceFileName]);
-  const [isFilesDropdownOpen, setFilesDropdownOpen] = useState(false);
-  const filesDropdownItems = useMemo(
-    () => [
-      props.workspace.files
-        .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-        .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension))
-        .filter((file) => file.relativePath !== props.workspaceFile.relativePath)
-        .map((file) => (
-          <DropdownItem
-            key={file.relativePath}
-            component={
-              <Link
-                to={globals.routes.workspaceWithFilePath.path({
-                  workspaceId: file.workspaceId,
-                  fileRelativePath: file.relativePathWithoutExtension,
-                  extension: file.extension,
-                })}
-              >
-                <Flex flexWrap={{ default: "nowrap" }}>
-                  <FlexItem>{file.nameWithoutExtension}</FlexItem>
-                  <FlexItem>
-                    <FileLabel extension={file.extension} />
-                  </FlexItem>
-                </Flex>
-                <div className={"pf-c-dropdown__menu-item-description"}>
-                  {file.relativeDirPath.split("/").join(" > ")}
-                  &nbsp;
-                </div>
-              </Link>
-            }
-          />
-        )),
-    ],
-    [globals, props.workspaceFile, props.workspace]
-  );
-
-  return (
-    <>
-      <Flex alignItems={{ default: "alignItemsCenter" }} flexWrap={{ default: "nowrap" }}>
-        <FlexItem style={{ display: "flex", alignItems: "baseline" }}>
-          <Dropdown
-            className={"kogito-tooling--masthead-hoverable"}
-            isOpen={isFilesDropdownOpen}
-            isPlain={true}
-            dropdownItems={filesDropdownItems}
-            onSelect={() => setFilesDropdownOpen(false)}
-            toggle={
-              <Toggle onToggle={setFilesDropdownOpen} id={"editor-page-masthead-files-dropdown-toggle"}>
-                <Flex flexWrap={{ default: "nowrap" }} alignItems={{ default: "alignItemsCenter" }}>
-                  <FlexItem />
-                  <FlexItem>
-                    <b>
-                      <FileLabel extension={props.workspaceFile.extension} />
-                    </b>
-                  </FlexItem>
-                  <FlexItem>
-                    <div
-                      data-testid={"toolbar-title"}
-                      className={`kogito--editor__toolbar-name-container ${newFileNameValid ? "" : "invalid"}`}
-                    >
-                      <Title
-                        aria-label={"EmbeddedEditorFile name"}
-                        headingLevel={"h3"}
-                        size={"2xl"}
-                        style={{ fontWeight: "bold" }}
-                      >
-                        {props.workspaceFile.nameWithoutExtension}
-                      </Title>
-                      <Tooltip
-                        content={
-                          <Text component={TextVariants.p}>
-                            {`A file already exists at this location. Please choose a different name.`}
-                          </Text>
-                        }
-                        position={"bottom"}
-                        trigger={"manual"}
-                        isVisible={!newFileNameValid}
-                        className="kogito--editor__light-tooltip"
-                      >
-                        <TextInput
-                          style={{ fontWeight: "bold" }}
-                          onClick={(e) => e.stopPropagation()}
-                          onKeyPress={(e) => e.stopPropagation()}
-                          onKeyUp={(e) => e.stopPropagation()}
-                          onKeyDown={onWorkspaceFileNameKeyDown}
-                          onChange={checkNewFileName}
-                          ref={workspaceFileNameRef}
-                          type={"text"}
-                          aria-label={"Edit file name"}
-                          className={"kogito--editor__toolbar-title"}
-                          onBlur={(e) => onRenameWorkspaceFile(e.target.value)}
-                        />
-                      </Tooltip>
-                    </div>
-                  </FlexItem>
-                  <FlexItem>
-                    <CaretDownIcon />
-                  </FlexItem>
-                </Flex>
-              </Toggle>
-            }
-          />
-        </FlexItem>
-      </Flex>
     </>
   );
 }
