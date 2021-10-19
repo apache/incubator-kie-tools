@@ -21,6 +21,7 @@ import {
   Menu,
   MenuContent,
   MenuGroup,
+  MenuInput,
   MenuItem,
   MenuList,
 } from "@patternfly/react-core/dist/js/components/Menu";
@@ -30,17 +31,11 @@ import { ThLargeIcon } from "@patternfly/react-icons/dist/js/icons/th-large-icon
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
-import {
-  PromiseStateWrapper,
-  useCombinedPromiseState,
-  useDelay,
-  usePromiseState,
-} from "../workspace/hooks/PromiseState";
+import { PromiseStateWrapper, useCombinedPromiseState, useDelay } from "../workspace/hooks/PromiseState";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
-import { Holder, useCancelableEffect } from "../common/Hooks";
 import { useWorkspacesFiles } from "../workspace/hooks/WorkspacesFiles";
 
 const ROOT_MENU_ID = "rootMenu";
@@ -127,8 +122,11 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
   const [menuDrilledIn, setMenuDrilledIn] = useState<string[]>([]);
   const [drilldownPath, setDrilldownPath] = useState<string[]>([]);
   const [menuHeights, setMenuHeights] = useState<{ [key: string]: number }>({});
-
   const [activeMenu, setActiveMenu] = useState(ROOT_MENU_ID);
+
+  useEffect(() => {
+    setMenuHeights({});
+  }, [props.workspace.descriptor.workspaceId]);
 
   useEffect(() => {
     if (isFilesDropdownOpen) {
@@ -137,7 +135,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
 
     setMenuDrilledIn([ROOT_MENU_ID]);
     setDrilldownPath([props.workspace.descriptor.workspaceId]);
-    setActiveMenu(props.workspace.descriptor.workspaceId);
+    setActiveMenu("dd" + props.workspace.descriptor.workspaceId);
   }, [isFilesDropdownOpen, props.workspace.descriptor.workspaceId]);
 
   const drillIn = useCallback((fromMenuId, toMenuId, pathId) => {
@@ -154,11 +152,14 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
 
   const setHeight = useCallback((menuId: string, height: number) => {
     // do not try to simply this ternary's condition as some heights are 0, resulting in an infinite loop.
-    setMenuHeights((prev) => (prev[menuId] !== undefined ? prev : { ...prev, [menuId]: height }));
+    setMenuHeights((prev) => {
+      //FIXME: There's a problem with the height of the ROOT_MENU_ID.
+      return prev[menuId] !== undefined ? prev : { ...prev, [menuId]: height };
+    });
   }, []);
 
   const workspacesMenuItems = useMemo(() => {
-    if (activeMenu !== ROOT_MENU_ID) {
+    if (activeMenu !== ROOT_MENU_ID && activeMenu === "dd" + props.workspace.descriptor.workspaceId) {
       return <></>;
     }
 
@@ -259,7 +260,10 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
                             style={{ fontWeight: "bold" }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setPopoverVisible(true);
+                              //FIXME: Change this when it is possible to move a file.
+                              if (props.workspaceFile.relativePath !== props.workspaceFile.name) {
+                                setPopoverVisible(true);
+                              }
                             }}
                             onKeyPress={(e) => e.stopPropagation()}
                             onKeyUp={(e) => e.stopPropagation()}
@@ -295,7 +299,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
                 onGetMenuHeight={setHeight}
               >
                 <MenuContent
-                  maxMenuHeight={"70%"}
+                  maxMenuHeight={"600px"}
                   menuHeight={activeMenu === ROOT_MENU_ID ? undefined : `${menuHeights[activeMenu]}px`}
                   style={{ overflow: "hidden" }}
                 >
@@ -305,7 +309,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
                       description={"Current"}
                       direction={"down"}
                       drilldownMenu={
-                        <DrilldownMenu id={props.workspace.descriptor.workspaceId}>
+                        <DrilldownMenu id={"dd" + props.workspace.descriptor.workspaceId}>
                           <FilesMenuItems
                             filesDropdownMode={filesDropdownMode}
                             setFilesDropdownMode={setFilesDropdownMode}
@@ -384,9 +388,14 @@ function WorkspacesMenuItems(props: {
                   {workspaceFiles.get(descriptor.workspaceId)!.length > 1 && (
                     <MenuItem
                       itemId={descriptor.workspaceId}
+                      description={`${workspaceFiles.get(descriptor.workspaceId)!.length} files, ${
+                        workspaceFiles
+                          .get(descriptor.workspaceId)!
+                          .filter((f) => SUPPORTED_FILES_EDITABLE.includes(f.extension)).length
+                      } models`}
                       direction={"down"}
                       drilldownMenu={
-                        <DrilldownMenu id={descriptor.workspaceId}>
+                        <DrilldownMenu id={"dd" + descriptor.workspaceId}>
                           <FilesMenuItems
                             filesDropdownMode={props.filesDropdownMode}
                             setFilesDropdownMode={props.setFilesDropdownMode}
@@ -397,7 +406,10 @@ function WorkspacesMenuItems(props: {
                         </DrilldownMenu>
                       }
                     >
-                      {descriptor.name}
+                      <>
+                        <FolderIcon />
+                        &nbsp;&nbsp;{descriptor.name}
+                      </>
                     </MenuItem>
                   )}
                 </React.Fragment>
@@ -417,11 +429,14 @@ function FilesMenuItems(props: {
   filesDropdownMode: FilesDropdownMode;
   setFilesDropdownMode: React.Dispatch<React.SetStateAction<FilesDropdownMode>>;
 }) {
+  const [search, setSearch] = useState("");
   return (
     <>
       <Split>
         <SplitItem isFilled={true}>
-          <MenuItem direction="up">All</MenuItem>
+          <MenuItem direction="up" itemId={props.workspaceDescriptor.workspaceId}>
+            All
+          </MenuItem>
         </SplitItem>
         <SplitItem>
           {props.filesDropdownMode === FilesDropdownMode.CAROUSEL && (
@@ -455,15 +470,23 @@ function FilesMenuItems(props: {
       </Split>
       <Divider component="li" />
       <MenuGroup key={props.workspaceDescriptor.workspaceId} label={`Files in ${props.workspaceDescriptor.name}`}>
-        <MenuList>
-          {props.workspaceFiles
-            .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-            .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension))
-            .filter((file) => file.relativePath !== props.currentWorkspaceFile?.relativePath)
-            .map((file) => (
-              <FileMenuItem key={file.relativePath} file={file} onSelectFile={props.onSelectFile} />
-            ))}
-        </MenuList>
+        <MenuInput>
+          <TextInput
+            value={search}
+            aria-label="Filter menu items"
+            iconVariant="search"
+            type="search"
+            onChange={(value) => setSearch(value)}
+          />
+        </MenuInput>
+        {props.workspaceFiles
+          .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
+          .filter((file) => file.nameWithoutExtension.toLowerCase().includes(search.toLowerCase()))
+          .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension))
+          .filter((file) => file.relativePath !== props.currentWorkspaceFile?.relativePath)
+          .map((file) => (
+            <FileMenuItem key={file.relativePath} file={file} onSelectFile={props.onSelectFile} />
+          ))}
       </MenuGroup>
     </>
   );
