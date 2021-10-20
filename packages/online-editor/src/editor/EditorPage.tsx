@@ -43,6 +43,7 @@ import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export interface Props {
   workspaceId: string;
@@ -247,6 +248,7 @@ export function EditorPage(props: Props) {
                 <DmnDevSandboxContextProvider workspaceFile={file} alerts={alerts}>
                   <Page>
                     <EditorToolbar workspaceFile={file} editor={editor} alerts={alerts} alertsRef={alertsRef} />
+                    <Divider />
                     <PageSection isFilled={true} padding={{ default: "noPadding" }}>
                       <DmnRunnerDrawer workspaceFile={file} notificationsPanel={notificationsPanel}>
                         {embeddedEditorFile && (
