@@ -418,7 +418,7 @@ jobs:
       - name: "STAGING Build Dashbuilder Images"
         working-directory: ${{ github.workspace }}/kogito-tooling
         run: |
-          lerna run build:prod --scope=@kogito-tooling/dashbuilder-base-images --include-dependencies --stream
+          lerna run build:prod --scope=@kogito-tooling/dashbuilder-images --include-dependencies --stream
 
       - name: "STAGING Push dashbuilder-authoring image to quay.io"
         uses: redhat-actions/push-to-registry@v2
