@@ -16,7 +16,7 @@
 
 import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../common/i18n";
 import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
 import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
@@ -26,7 +26,7 @@ import { FeatureDependentOnKieToolingExtendedServices } from "./FeatureDependent
 import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 import { useSettings } from "../../settings/SettingsContext";
-import { KieToolingExtendedServicesIcon } from "./KieToolingExtendedServicesIcon";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 
 export function KieToolingExtendedServicesButtons() {
   const { i18n } = useOnlineI18n();
@@ -36,7 +36,7 @@ export function KieToolingExtendedServicesButtons() {
   const settings = useSettings();
   const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems();
 
-  const onToggleDmnRunner = useCallback(() => {
+  const toggleDmnRunnerDrawer = useCallback(() => {
     if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
       dmnRunner.setDrawerExpanded((prev) => !prev);
       return;
@@ -45,7 +45,7 @@ export function KieToolingExtendedServicesButtons() {
     kieToolingExtendedServices.setModalOpen(true);
   }, [dmnRunner, kieToolingExtendedServices]);
 
-  const onToggleDmnDevSandbox = useCallback(
+  const toggleDmnDevSandboxDropdown = useCallback(
     (isOpen: boolean) => {
       if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
         dmnDevSandbox.setDropdownOpen(isOpen);
@@ -57,15 +57,23 @@ export function KieToolingExtendedServicesButtons() {
     [dmnDevSandbox, kieToolingExtendedServices]
   );
 
+  const isDevSandboxEnabled = useMemo(() => {
+    return (
+      kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING &&
+      settings.openshift.status.get === OpenShiftInstanceStatus.CONNECTED
+    );
+  }, [kieToolingExtendedServices.status, settings.openshift.status.get]);
+
   return (
     <>
       <FeatureDependentOnKieToolingExtendedServices isLight={true} position="bottom">
         <Dropdown
+          className={isDevSandboxEnabled ? "pf-m-active" : ""}
           onSelect={() => dmnDevSandbox.setDropdownOpen(false)}
           toggle={
             <DropdownToggle
               id="dmn-dev-sandbox-dropdown-button"
-              onToggle={(isOpen: boolean) => onToggleDmnDevSandbox(isOpen)}
+              onToggle={toggleDmnDevSandboxDropdown}
               data-testid="dmn-dev-sandbox-button"
             >
               {i18n.terms.deploy}
@@ -74,35 +82,17 @@ export function KieToolingExtendedServicesButtons() {
           isOpen={dmnDevSandbox.isDropdownOpen}
           position={DropdownPosition.right}
           dropdownItems={dmnDevSandboxDropdownItems}
-          style={
-            kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING &&
-            settings.openshift.status.get === OpenShiftInstanceStatus.CONNECTED
-              ? { marginRight: "2px", borderBottom: "solid var(--pf-global--palette--blue-300) 2px", paddingBottom: 0 }
-              : { marginRight: "2px" }
-          }
         />
       </FeatureDependentOnKieToolingExtendedServices>
       <FeatureDependentOnKieToolingExtendedServices isLight={true} position="bottom">
-        <Dropdown
-          toggle={
-            <DropdownToggle
-              id="dmn-runner-button"
-              toggleIndicator={null}
-              onToggle={onToggleDmnRunner}
-              className="kogito--dmn-runner-button"
-              data-testid="dmn-runner-button"
-            >
-              {i18n.terms.run}
-            </DropdownToggle>
-          }
-          position={DropdownPosition.right}
-          isOpen={false}
-          style={
-            dmnRunner.isDrawerExpanded
-              ? { marginRight: "2px", borderBottom: "solid var(--pf-global--palette--blue-300) 2px", paddingBottom: 0 }
-              : { marginRight: "2px" }
-          }
-        />
+        <Button
+          variant={ButtonVariant.control}
+          onClick={toggleDmnRunnerDrawer}
+          className={dmnRunner.isDrawerExpanded ? "pf-m-active" : ""}
+          data-testid={"dmn-runner-button"}
+        >
+          {i18n.terms.run}
+        </Button>
       </FeatureDependentOnKieToolingExtendedServices>
     </>
   );

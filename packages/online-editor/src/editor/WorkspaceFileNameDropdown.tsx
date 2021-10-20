@@ -13,7 +13,7 @@ import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggl
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
@@ -29,14 +29,13 @@ import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { ThLargeIcon } from "@patternfly/react-icons/dist/js/icons/th-large-icon";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
-import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
 import { PromiseStateWrapper, useCombinedPromiseState, useDelay } from "../workspace/hooks/PromiseState";
-import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
 import { useWorkspacesFiles } from "../workspace/hooks/WorkspacesFiles";
+import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -174,36 +173,13 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
     );
   }, [activeMenu, filesDropdownMode, props.workspace]);
 
-  const dropdownContainerRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!dropdownContainerRef.current?.parentNode) {
-      return;
-    }
-
-    const dropdownContainerRefParent = dropdownContainerRef.current.parentNode as HTMLElement;
-
-    if (filesDropdownMode === FilesDropdownMode.LIST || activeMenu === ROOT_MENU_ID) {
-      dropdownContainerRefParent.style.position = "";
-      dropdownContainerRefParent.style.bottom = "";
-      dropdownContainerRefParent.style.left = "";
-      dropdownContainerRefParent.style.width = "";
-      dropdownContainerRefParent.style.height = "";
-    } else {
-      dropdownContainerRefParent.style.position = "absolute";
-      dropdownContainerRefParent.style.bottom = "0";
-      dropdownContainerRefParent.style.left = "0";
-      dropdownContainerRefParent.style.width = "calc(100vw - 16px)";
-      dropdownContainerRefParent.style.height = `${menuHeights[activeMenu] + 8}px`;
-    }
-  }, [filesDropdownMode, activeMenu, menuHeights, isFilesDropdownOpen]);
-
   return (
     <>
       <Flex alignItems={{ default: "alignItemsCenter" }} flexWrap={{ default: "nowrap" }}>
         <FlexItem style={{ display: "flex", alignItems: "baseline" }}>
           <Dropdown
             style={{ position: "relative" }}
-            position={"right"}
+            position={"left"}
             className={"kogito-tooling--masthead-hoverable"}
             isOpen={isFilesDropdownOpen}
             isPlain={true}
@@ -287,49 +263,50 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
               </Toggle>
             }
           >
-            <div ref={dropdownContainerRef}>
-              <Menu
-                style={{ boxShadow: "none" }}
-                id="rootMenu"
-                containsDrilldown={true}
-                drilldownItemPath={drilldownPath}
-                drilledInMenus={menuDrilledIn}
-                activeMenu={activeMenu}
-                onDrillIn={drillIn}
-                onDrillOut={drillOut}
-                onGetMenuHeight={setHeight}
+            <Menu
+              style={{
+                boxShadow: "none",
+                minWidth: filesDropdownMode === FilesDropdownMode.CAROUSEL ? "calc(100vw - 16px)" : "400px",
+              }}
+              id={ROOT_MENU_ID}
+              containsDrilldown={true}
+              drilldownItemPath={drilldownPath}
+              drilledInMenus={menuDrilledIn}
+              activeMenu={activeMenu}
+              onDrillIn={drillIn}
+              onDrillOut={drillOut}
+              onGetMenuHeight={setHeight}
+            >
+              <MenuContent
+                maxMenuHeight={"600px"}
+                menuHeight={activeMenu === ROOT_MENU_ID ? undefined : `${menuHeights[activeMenu]}px`}
+                style={{ overflow: "hidden" }}
               >
-                <MenuContent
-                  maxMenuHeight={"600px"}
-                  menuHeight={activeMenu === ROOT_MENU_ID ? undefined : `${menuHeights[activeMenu]}px`}
-                  style={{ overflow: "hidden" }}
-                >
-                  <MenuList>
-                    <MenuItem
-                      itemId={props.workspace.descriptor.workspaceId}
-                      description={"Current"}
-                      direction={"down"}
-                      drilldownMenu={
-                        <DrilldownMenu id={`dd${props.workspace.descriptor.workspaceId}`}>
-                          <FilesMenuItems
-                            shouldFocusOnSearch={activeMenu === `dd${props.workspace.descriptor.workspaceId}`}
-                            filesDropdownMode={filesDropdownMode}
-                            setFilesDropdownMode={setFilesDropdownMode}
-                            workspaceDescriptor={props.workspace.descriptor}
-                            workspaceFiles={props.workspace.files}
-                            currentWorkspaceFile={props.workspaceFile}
-                            onSelectFile={() => setFilesDropdownOpen(false)}
-                          />
-                        </DrilldownMenu>
-                      }
-                    >
-                      {props.workspace.descriptor.name}
-                    </MenuItem>
-                    {workspacesMenuItems}
-                  </MenuList>
-                </MenuContent>
-              </Menu>
-            </div>
+                <MenuList>
+                  <MenuItem
+                    itemId={props.workspace.descriptor.workspaceId}
+                    description={"Current"}
+                    direction={"down"}
+                    drilldownMenu={
+                      <DrilldownMenu id={`dd${props.workspace.descriptor.workspaceId}`}>
+                        <FilesMenuItems
+                          shouldFocusOnSearch={activeMenu === `dd${props.workspace.descriptor.workspaceId}`}
+                          filesDropdownMode={filesDropdownMode}
+                          setFilesDropdownMode={setFilesDropdownMode}
+                          workspaceDescriptor={props.workspace.descriptor}
+                          workspaceFiles={props.workspace.files}
+                          currentWorkspaceFile={props.workspaceFile}
+                          onSelectFile={() => setFilesDropdownOpen(false)}
+                        />
+                      </DrilldownMenu>
+                    }
+                  >
+                    {props.workspace.descriptor.name}
+                  </MenuItem>
+                  {workspacesMenuItems}
+                </MenuList>
+              </MenuContent>
+            </Menu>
           </Dropdown>
         </FlexItem>
       </Flex>
@@ -359,22 +336,19 @@ function WorkspacesMenuItems(props: {
       <PromiseStateWrapper
         promise={combined}
         pending={
-          <>
+          <div style={{ padding: "8px" }}>
+            <Skeleton />
             <br />
+            <Skeleton width={"80%"} />
             <br />
+            <Skeleton />
             <br />
+            <Skeleton width={"80%"} />
             <br />
-            <Bullseye>
-              <TextContent>
-                <Bullseye>
-                  <Spinner size={"md"} />
-                </Bullseye>
-                <br />
-                <Text component={TextVariants.p}>{`Loading...`}</Text>
-              </TextContent>
-            </Bullseye>
+            <Skeleton />
             <br />
-          </>
+            <Skeleton width={"80%"} />
+          </div>
         }
         resolved={({ workspaceDescriptors, workspaceFiles }) => (
           <>
@@ -439,9 +413,11 @@ function FilesMenuItems(props: {
 
   useEffect(() => {
     if (props.shouldFocusOnSearch) {
-      searchInputRef.current?.focus();
+      setTimeout(() => {
+        searchInputRef.current?.focus();
+      }, 500);
     }
-  }, [props.shouldFocusOnSearch]);
+  }, [props.shouldFocusOnSearch, props.filesDropdownMode]);
 
   return (
     <>

@@ -159,11 +159,6 @@ export function EmbedModal(props: Props) {
       onClose={props.onClose}
       title={i18n.embedModal.title}
       description={i18n.embedModal.description}
-      actions={[
-        <Button key="cancel" variant="link" onClick={props.onClose}>
-          {i18n.terms.close}
-        </Button>,
-      ]}
     >
       <Radio
         aria-label="Current content source option"

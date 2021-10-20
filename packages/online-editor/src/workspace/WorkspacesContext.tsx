@@ -144,6 +144,15 @@ export interface WorkspacesContextType {
   }): Promise<void>;
 
   deleteFile(args: { fs: LightningFS; file: WorkspaceFile }): Promise<void>;
+
+  addFile(args: {
+    fs: LightningFS;
+    workspaceId: string;
+    name: string;
+    destinationDirRelativePath: string;
+    content: string;
+    extension: string;
+  }): Promise<WorkspaceFile>;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);

@@ -273,6 +273,38 @@ export function WorkspacesContextProvider(props: Props) {
     [service]
   );
 
+  const addFile = useCallback(
+    async (args: {
+      fs: LightningFS;
+      workspaceId: string;
+      name: string;
+      destinationDirRelativePath: string;
+      content: string;
+      extension: SupportedFileExtensions;
+    }) => {
+      for (let i = 0; i < MAX_NEW_FILE_INDEX_ATTEMPTS; i++) {
+        const index = i === 0 ? "" : `-${i}`;
+        const fileName = `${args.name}${index}.${args.extension}`;
+        const relativePath = join(args.destinationDirRelativePath, fileName);
+
+        if (await service.existsFile({ fs: args.fs, workspaceId: args.workspaceId, relativePath })) {
+          continue;
+        }
+
+        const newFile = new WorkspaceFile({
+          workspaceId: args.workspaceId,
+          getFileContents: () => Promise.resolve(encoder.encode(args.content)),
+          relativePath,
+        });
+        await service.createFile(args.fs, newFile, { broadcast: true });
+        return newFile;
+      }
+
+      throw new Error("Max attempts of new empty file exceeded.");
+    },
+    [service]
+  );
+
   const addEmptyFile = useCallback(
     async (args: {
       fs: LightningFS;
@@ -280,33 +312,11 @@ export function WorkspacesContextProvider(props: Props) {
       destinationDirRelativePath: string;
       extension: SupportedFileExtensions;
     }) => {
-      for (let i = 0; i < MAX_NEW_FILE_INDEX_ATTEMPTS; i++) {
-        const index = i === 0 ? "" : `-${i}`;
-        const fileName = `${NEW_FILE_DEFAULT_NAME}${index}.${args.extension}`;
-        const relativePath = join(args.destinationDirRelativePath, fileName);
-        if (
-          await service.existsFile({
-            fs: args.fs,
-            workspaceId: args.workspaceId,
-            relativePath,
-          })
-        ) {
-          continue;
-        }
-
-        const contents = args.extension in emptyTemplates ? emptyTemplates[args.extension] : emptyTemplates.default;
-        const newEmptyFile = new WorkspaceFile({
-          workspaceId: args.workspaceId,
-          getFileContents: () => Promise.resolve(encoder.encode(contents)),
-          relativePath,
-        });
-        await service.createFile(args.fs, newEmptyFile, { broadcast: true });
-        return newEmptyFile;
-      }
-
-      throw new Error("Max attempts of new empty file exceeded.");
+      const name = NEW_FILE_DEFAULT_NAME;
+      const content = args.extension in emptyTemplates ? emptyTemplates[args.extension] : emptyTemplates.default;
+      return addFile({ ...args, name, content });
     },
-    [service]
+    [addFile]
   );
 
   const prepareZip = useCallback(
@@ -403,6 +413,7 @@ export function WorkspacesContextProvider(props: Props) {
         isModified,
         //
         addEmptyFile,
+        addFile,
         renameFile,
         updateFile,
         deleteFile,

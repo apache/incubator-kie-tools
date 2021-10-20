@@ -20,18 +20,22 @@ import {
   DropdownItem,
   DropdownPosition,
   DropdownToggle,
-  KebabToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Breadcrumb, BreadcrumbItem } from "@patternfly/react-core/dist/js/components/Breadcrumb";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import {
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem,
+  ToolbarItemProps,
+} from "@patternfly/react-core/dist/js/components/Toolbar";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOnlineI18n } from "../common/i18n";
 import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/KieToolingExtendedServicesButtons";
-import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
 import { useGlobals } from "../common/GlobalContext";
 import { AuthStatus, useSettings } from "../settings/SettingsContext";
 import { SettingsTabs } from "../settings/SettingsModalBody";
@@ -54,17 +58,16 @@ import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { ColumnsIcon } from "@patternfly/react-icons/dist/js/icons/columns-icon";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { AddFileDropdownItems } from "./AddFileDropdownItems";
-import {
-  PageHeaderToolsItem,
-  PageHeaderToolsItemProps,
-  PageSection,
-} from "@patternfly/react-core/dist/js/components/Page";
+import { AddFileMenu } from "./AddFileMenu";
+import { PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { FileLabel } from "../workspace/pages/FileLabel";
-import { DeleteDropdownWithConfirmation } from "./DeleteDropdownWithConfirmation";
 import { useWorkspaceIsModifiedPromise, useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { WorkspaceFileNameDropdown } from "./WorkspaceFileNameDropdown";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -73,22 +76,20 @@ export interface Props {
   workspaceFile: WorkspaceFile;
 }
 
-const showWhenSmall: PageHeaderToolsItemProps["visibility"] = {
+const showWhenSmall: ToolbarItemProps["visibility"] = {
   default: "visible",
   "2xl": "hidden",
   xl: "hidden",
   lg: "visible",
   md: "visible",
-  sm: "visible",
 };
 
-const hideWhenSmall: PageHeaderToolsItemProps["visibility"] = {
+const hideWhenSmall: ToolbarItemProps["visibility"] = {
   default: "hidden",
   "2xl": "visible",
   xl: "visible",
   lg: "hidden",
   md: "hidden",
-  sm: "hidden",
 };
 
 export function EditorToolbar(props: Props) {
@@ -97,8 +98,9 @@ export function EditorToolbar(props: Props) {
   const history = useHistory();
   const queryParams = useQueryParams();
   const workspaces = useWorkspaces();
-  const [isShareMenuOpen, setShareMenuOpen] = useState(false);
-  const [isKebabOpen, setKebabOpen] = useState(false);
+  const [isShareDropdownOpen, setShareDropdownOpen] = useState(false);
+  const [isLargeKebabOpen, setLargeKebabOpen] = useState(false);
+  const [isSmallKebabOpen, setSmallKebabOpen] = useState(false);
   const [isEmbedModalOpen, setEmbedModalOpen] = useState(false);
   const { i18n } = useOnlineI18n();
   const isEdited = useDirtyState(props.editor);
@@ -395,8 +397,8 @@ export function EditorToolbar(props: Props) {
     });
   }, [props.workspaceFile, copySuccessfulAlert]);
 
-  const shareItems = useCallback(
-    (dropdownId: string) => [
+  const shareDropdownItems = useMemo(
+    () => [
       <DropdownGroup key={"download-group"} label="Download">
         <DropdownItem
           onClick={onDownload}
@@ -406,10 +408,10 @@ export function EditorToolbar(props: Props) {
         >
           Current file
         </DropdownItem>
-        <React.Fragment key={`dropdown-${dropdownId}-fragment-download-svg`}>
+        <React.Fragment key={`dropdown-fragment-download-svg`}>
           {includeDownloadSVGDropdownItem && (
             <DropdownItem
-              key={`dropdown-${dropdownId}-download-svg`}
+              key={`dropdown-download-svg`}
               data-testid="dropdown-download-svg"
               component="button"
               onClick={onPreview}
@@ -420,7 +422,7 @@ export function EditorToolbar(props: Props) {
             </DropdownItem>
           )}
         </React.Fragment>
-        <React.Fragment key={`dropdown-${dropdownId}-fragment-download-all`}>
+        <React.Fragment key={`dropdown-fragment-download-all`}>
           <DropdownItem
             onClick={onDownloadAll}
             key={"download-zip-item"}
@@ -430,40 +432,43 @@ export function EditorToolbar(props: Props) {
             All files
           </DropdownItem>
         </React.Fragment>
-        <React.Fragment key={`dropdown-${dropdownId}-fragment-create-save-point`}>
+        <React.Fragment key={`dropdown-fragment-create-save-point`}>
           <DropdownItem onClick={createSavePoint} key={"create-save-point"}>
-            Create Save point
+            Create Save point &nbsp;&nbsp;
+            <span style={{ color: "red" }}>
+              <i>{"//Remove"}</i>
+            </span>
           </DropdownItem>
         </React.Fragment>
       </DropdownGroup>,
       <DropdownGroup key={"other-group"} label="Other">
         <DropdownItem
-          key={`dropdown-${dropdownId}-copy-source`}
+          key={`dropdown-copy-source`}
           component={"button"}
           onClick={onCopyContentToClipboard}
           icon={<CopyIcon />}
         >
           {i18n.editorToolbar.copySource}
         </DropdownItem>
-        <React.Fragment key={`dropdown-${dropdownId}-fragment-embed`}>
+        <React.Fragment key={`dropdown-fragment-embed`}>
           {includeEmbedDropdownItem && (
             <DropdownItem
-              key={`dropdown-${dropdownId}-embed`}
+              key={`dropdown-embed`}
               data-testid="dropdown-embed"
               component="button"
               onClick={onEmbed}
               icon={<ColumnsIcon />}
             >
-              {i18n.editorToolbar.embed}
+              {i18n.editorToolbar.embed}...
             </DropdownItem>
           )}
         </React.Fragment>
       </DropdownGroup>,
       <DropdownGroup key={"github-group"} label={i18n.names.github}>
-        <React.Fragment key={`dropdown-${dropdownId}-fragment-export-gist`}>
+        <React.Fragment key={`dropdown-fragment-export-gist`}>
           <Tooltip
             data-testid={"gist-it-tooltip"}
-            key={`dropdown-${dropdownId}-export-gist`}
+            key={`dropdown-export-gist`}
             content={<div>{i18n.editorToolbar.gistItTooltip}</div>}
             trigger={settings.github.authStatus !== AuthStatus.SIGNED_IN ? "mouseenter click" : ""}
             position="left"
@@ -480,26 +485,27 @@ export function EditorToolbar(props: Props) {
         </React.Fragment>
         <DropdownItem
           data-testid={"set-github-token"}
-          key={`dropdown-${dropdownId}-setup-github-token`}
+          key={`dropdown-setup-github-token`}
           component="button"
           onClick={() => settings.open(SettingsTabs.GITHUB)}
         >
-          {i18n.editorToolbar.setGitHubToken}
+          {i18n.editorToolbar.setGitHubToken}...
         </DropdownItem>
       </DropdownGroup>,
     ],
     [
       onDownload,
-      onDownloadAll,
       props.workspaceFile,
-      onCopyContentToClipboard,
-      onPreview,
-      onEmbed,
-      onGistIt,
       includeDownloadSVGDropdownItem,
-      includeEmbedDropdownItem,
+      onPreview,
+      onDownloadAll,
+      createSavePoint,
+      onCopyContentToClipboard,
       i18n,
+      includeEmbedDropdownItem,
+      onEmbed,
       settings,
+      onGistIt,
     ]
   );
 
@@ -598,6 +604,24 @@ export function EditorToolbar(props: Props) {
   );
 
   const workspaceIsModifiedPromise = useWorkspaceIsModifiedPromise(workspacePromise.data);
+
+  const deleteFileDropdownItem = useMemo(() => {
+    return (
+      <DropdownItem key={"delete-dropdown-item"} onClick={deleteWorkspaceFile}>
+        <Flex flexWrap={{ default: "nowrap" }}>
+          <FlexItem>
+            <TrashIcon />
+            &nbsp;&nbsp;Delete <b>{`"${props.workspaceFile.nameWithoutExtension}"`}</b>
+          </FlexItem>
+          <FlexItem>
+            <b>
+              <FileLabel extension={props.workspaceFile.extension} />
+            </b>
+          </FlexItem>
+        </Flex>
+      </DropdownItem>
+    );
+  }, [deleteWorkspaceFile, props.workspaceFile]);
 
   return (
     <>
@@ -699,114 +723,83 @@ export function EditorToolbar(props: Props) {
               </Flex>
             </PageHeaderToolsItem>
           </FlexItem>
-          <FlexItem style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
-            <FlexItem>
-              <Dropdown
-                className={"kogito-tooling--masthead-hoverable"}
-                isPlain={true}
-                isOpen={isWorkspaceAddFileMenuOpen}
-                onSelect={() => setWorkspaceAddFileMenuOpen(false)}
-                toggle={
-                  <DropdownToggle toggleIndicator={null} onToggle={setWorkspaceAddFileMenuOpen}>
-                    <PlusIcon />
-                  </DropdownToggle>
-                }
-                dropdownItems={[
-                  <AddFileDropdownItems
-                    key={"new-file-dropdown-items"}
-                    addEmptyWorkspaceFile={async (extension) => {
-                      const file = await workspaces.addEmptyFile({
-                        fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
-                        workspaceId: props.workspaceFile.workspaceId,
-                        destinationDirRelativePath: props.workspaceFile.relativeDirPath,
-                        extension,
-                      });
-                      history.push({
-                        pathname: globals.routes.workspaceWithFilePath.path({
-                          workspaceId: file.workspaceId,
-                          fileRelativePath: file.relativePathWithoutExtension,
-                          extension: file.extension,
-                        }),
-                      });
-                      return file;
-                    }}
-                  />,
-                ]}
-                position={DropdownPosition.right}
-              />
-            </FlexItem>
-            <DeleteDropdownWithConfirmation
-              onDelete={deleteWorkspaceFile}
-              item={
-                <Flex flexWrap={{ default: "nowrap" }}>
-                  <FlexItem>
-                    Delete <b>{`"${props.workspaceFile.nameWithoutExtension}"`}</b>
-                  </FlexItem>
-                  <FlexItem>
-                    <b>
-                      <FileLabel extension={props.workspaceFile.extension} />
-                    </b>
-                  </FlexItem>
-                </Flex>
-              }
-            />
-            <>
-              &nbsp;&nbsp;&nbsp;
-              <PageHeaderToolsItem visibility={hideWhenSmall}>
-                {props.workspaceFile.extension === "dmn" && <KieToolingExtendedServicesButtons />}
-                <Dropdown
-                  onSelect={() => setShareMenuOpen(false)}
-                  isOpen={isShareMenuOpen}
-                  dropdownItems={shareItems("lg")}
-                  position={DropdownPosition.right}
-                  toggle={
-                    <DropdownToggle
-                      id={"share-id-lg"}
-                      data-testid={"share-menu"}
-                      onToggle={(isOpen) => setShareMenuOpen(isOpen)}
-                    >
-                      {i18n.editorToolbar.share}
-                    </DropdownToggle>
-                  }
-                />
-              </PageHeaderToolsItem>
-            </>
-            &nbsp;&nbsp;&nbsp;
-            <PageHeaderToolsItem visibility={showWhenSmall}>
-              <Dropdown
-                className={"kogito-tooling--masthead-hoverable"}
-                isOpen={isKebabOpen}
-                position={DropdownPosition.right}
-                onSelect={() => setKebabOpen(false)}
-                toggle={
-                  <DropdownToggle
-                    data-testid={"kebab-sm"}
-                    className={"kogito--editor__toolbar-icon-button"}
-                    id={"kebab-id-sm"}
-                    toggleIndicator={null}
-                    onToggle={(isOpen) => setKebabOpen(isOpen)}
-                    ouiaId="small-toolbar-button"
+          <FlexItem>
+            <Toolbar>
+              <ToolbarContent style={{ paddingRight: 0 }}>
+                <ToolbarItem>
+                  <Dropdown
+                    position={"right"}
+                    isOpen={isWorkspaceAddFileMenuOpen}
+                    toggle={
+                      <DropdownToggle
+                        onToggle={setWorkspaceAddFileMenuOpen}
+                        isPrimary={true}
+                        toggleIndicator={CaretDownIcon}
+                      >
+                        <PlusIcon />
+                        &nbsp;&nbsp;New file
+                      </DropdownToggle>
+                    }
                   >
-                    <EllipsisVIcon />
-                  </DropdownToggle>
-                }
-                dropdownItems={[
-                  ...shareItems("sm"),
-                  (props.workspaceFile.extension === "dmn" && (
-                    <KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />
-                  )) || <React.Fragment key="kie-tooling-extended-services-group" />,
-                ]}
-              />
-            </PageHeaderToolsItem>
-            <PageHeaderToolsItem>
-              <Dropdown
-                className={"kogito-tooling--masthead-hoverable"}
-                toggle={<KebabToggle onToggle={() => {}} />}
-                isOpen={false}
-                isPlain={true}
-                dropdownItems={[]}
-              />
-            </PageHeaderToolsItem>
+                    <AddFileMenu
+                      workspaceId={props.workspaceFile.workspaceId}
+                      destinationDirPath={props.workspaceFile.relativeDirPath}
+                      onAddFile={async (file) => {
+                        setWorkspaceAddFileMenuOpen(false);
+                        history.push({
+                          pathname: globals.routes.workspaceWithFilePath.path({
+                            workspaceId: file.workspaceId,
+                            fileRelativePath: file.relativePathWithoutExtension,
+                            extension: file.extension,
+                          }),
+                        });
+                      }}
+                    />
+                  </Dropdown>
+                </ToolbarItem>
+                <ToolbarItem visibility={hideWhenSmall}>
+                  {props.workspaceFile.extension === "dmn" && <KieToolingExtendedServicesButtons />}
+                </ToolbarItem>
+                <ToolbarItem visibility={hideWhenSmall}>
+                  <Dropdown
+                    onSelect={() => setShareDropdownOpen(false)}
+                    isOpen={isShareDropdownOpen}
+                    dropdownItems={shareDropdownItems}
+                    position={DropdownPosition.right}
+                    toggle={
+                      <DropdownToggle
+                        id={"share-dropdown"}
+                        data-testid={"share-dropdown"}
+                        onToggle={(isOpen) => setShareDropdownOpen(isOpen)}
+                      >
+                        {i18n.editorToolbar.share}
+                      </DropdownToggle>
+                    }
+                  />
+                </ToolbarItem>
+                <ToolbarItem visibility={hideWhenSmall} style={{ marginRight: 0 }}>
+                  <KebabDropdown
+                    id={"kebab-lg"}
+                    state={[isLargeKebabOpen, setLargeKebabOpen]}
+                    items={[deleteFileDropdownItem]}
+                  />
+                </ToolbarItem>
+                <ToolbarItem visibility={showWhenSmall} style={{ marginRight: 0 }}>
+                  <KebabDropdown
+                    id={"kebab-sm"}
+                    state={[isSmallKebabOpen, setSmallKebabOpen]}
+                    items={[
+                      deleteFileDropdownItem,
+                      <Divider key={"divider-1"} />,
+                      ...shareDropdownItems,
+                      ...(props.workspaceFile.extension !== "dmn"
+                        ? []
+                        : [<KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />]),
+                    ]}
+                  />
+                </ToolbarItem>
+              </ToolbarContent>
+            </Toolbar>
           </FlexItem>
         </Flex>
       </PageSection>
@@ -820,5 +813,35 @@ export function EditorToolbar(props: Props) {
       <a ref={downloadAllRef} />
       <a ref={downloadPreviewRef} />
     </>
+  );
+}
+
+function KebabDropdown(props: {
+  id: string;
+  items: React.ReactNode[];
+  state: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+}) {
+  return (
+    <Dropdown
+      className={"kogito-tooling--masthead-hoverable"}
+      isOpen={props.state[0]}
+      isPlain={true}
+      position={DropdownPosition.right}
+      onSelect={() => props.state[1](false)}
+      toggle={
+        <DropdownToggle
+          id={props.id}
+          toggleIndicator={null}
+          onToggle={(isOpen) => {
+            console.info(isOpen);
+            props.state[1](isOpen);
+          }}
+          ouiaId={props.id}
+        >
+          <EllipsisVIcon />
+        </DropdownToggle>
+      }
+      dropdownItems={props.items}
+    />
   );
 }
