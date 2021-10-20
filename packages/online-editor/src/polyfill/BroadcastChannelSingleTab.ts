@@ -26,7 +26,7 @@ function main() {
             return;
           }
 
-          bc.onmessage?.(message);
+          bc.onmessage?.({ data: message });
         });
       }, 0);
     }
