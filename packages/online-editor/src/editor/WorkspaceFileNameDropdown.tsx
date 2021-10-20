@@ -135,7 +135,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
 
     setMenuDrilledIn([ROOT_MENU_ID]);
     setDrilldownPath([props.workspace.descriptor.workspaceId]);
-    setActiveMenu("dd" + props.workspace.descriptor.workspaceId);
+    setActiveMenu(`dd${props.workspace.descriptor.workspaceId}`);
   }, [isFilesDropdownOpen, props.workspace.descriptor.workspaceId]);
 
   const drillIn = useCallback((fromMenuId, toMenuId, pathId) => {
@@ -159,12 +159,13 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
   }, []);
 
   const workspacesMenuItems = useMemo(() => {
-    if (activeMenu !== ROOT_MENU_ID && activeMenu === "dd" + props.workspace.descriptor.workspaceId) {
+    if (activeMenu !== ROOT_MENU_ID && activeMenu === `dd${props.workspace.descriptor.workspaceId}`) {
       return <></>;
     }
 
     return (
       <WorkspacesMenuItems
+        activeMenu={activeMenu}
         currentWorkspace={props.workspace}
         onSelectFile={() => setFilesDropdownOpen(false)}
         filesDropdownMode={filesDropdownMode}
@@ -194,7 +195,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
       dropdownContainerRefParent.style.width = "calc(100vw - 16px)";
       dropdownContainerRefParent.style.height = `${menuHeights[activeMenu] + 8}px`;
     }
-  }, [filesDropdownMode, activeMenu, menuHeights]);
+  }, [filesDropdownMode, activeMenu, menuHeights, isFilesDropdownOpen]);
 
   return (
     <>
@@ -309,8 +310,9 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
                       description={"Current"}
                       direction={"down"}
                       drilldownMenu={
-                        <DrilldownMenu id={"dd" + props.workspace.descriptor.workspaceId}>
+                        <DrilldownMenu id={`dd${props.workspace.descriptor.workspaceId}`}>
                           <FilesMenuItems
+                            shouldFocusOnSearch={activeMenu === `dd${props.workspace.descriptor.workspaceId}`}
                             filesDropdownMode={filesDropdownMode}
                             setFilesDropdownMode={setFilesDropdownMode}
                             workspaceDescriptor={props.workspace.descriptor}
@@ -336,6 +338,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
 }
 
 function WorkspacesMenuItems(props: {
+  activeMenu: string;
   currentWorkspace: ActiveWorkspace;
   onSelectFile: () => void;
   filesDropdownMode: FilesDropdownMode;
@@ -395,8 +398,9 @@ function WorkspacesMenuItems(props: {
                       } models`}
                       direction={"down"}
                       drilldownMenu={
-                        <DrilldownMenu id={"dd" + descriptor.workspaceId}>
+                        <DrilldownMenu id={`dd${descriptor.workspaceId}`}>
                           <FilesMenuItems
+                            shouldFocusOnSearch={props.activeMenu === `dd${descriptor.workspaceId}`}
                             filesDropdownMode={props.filesDropdownMode}
                             setFilesDropdownMode={props.setFilesDropdownMode}
                             workspaceDescriptor={descriptor}
@@ -428,8 +432,17 @@ function FilesMenuItems(props: {
   onSelectFile: () => void;
   filesDropdownMode: FilesDropdownMode;
   setFilesDropdownMode: React.Dispatch<React.SetStateAction<FilesDropdownMode>>;
+  shouldFocusOnSearch: boolean;
 }) {
   const [search, setSearch] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (props.shouldFocusOnSearch) {
+      searchInputRef.current?.focus();
+    }
+  }, [props.shouldFocusOnSearch]);
+
   return (
     <>
       <Split>
@@ -468,14 +481,15 @@ function FilesMenuItems(props: {
           &nbsp; &nbsp;
         </SplitItem>
       </Split>
-      <Divider component="li" />
+      <Divider component={"li"} />
       <MenuGroup key={props.workspaceDescriptor.workspaceId} label={`Files in ${props.workspaceDescriptor.name}`}>
         <MenuInput>
           <TextInput
+            ref={searchInputRef}
             value={search}
-            aria-label="Filter menu items"
-            iconVariant="search"
-            type="search"
+            aria-label={"Filter menu items"}
+            iconVariant={"search"}
+            type={"search"}
             onChange={(value) => setSearch(value)}
           />
         </MenuInput>
