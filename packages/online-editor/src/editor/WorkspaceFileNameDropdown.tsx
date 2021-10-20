@@ -126,7 +126,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
 
   useEffect(() => {
     setMenuHeights({});
-  }, [props.workspace.descriptor.workspaceId]);
+  }, [props.workspace]);
 
   useEffect(() => {
     if (isFilesDropdownOpen) {
