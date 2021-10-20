@@ -746,11 +746,6 @@ jobs:
           path: kogito-tooling
           os: ubuntu-latest
 
-      - name: "Build Dashbuilder"
-        working-directory: ${{ github.workspace }}/kogito-tooling
-        run: |
-          lerna run build:prod --scope=@kogito-tooling/dashbuilder --include-dependencies --stream
-
       - name: "Build Dashbuilder Images"
         working-directory: ${{ github.workspace }}/kogito-tooling
         run: |

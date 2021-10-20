@@ -397,7 +397,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [prepare]
     steps:
-      - name: " STAGING Checkout kogito-tooling"
+      - name: "STAGING Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
           ref: ${{ needs.prepare.outputs.release_ref }}
@@ -409,11 +409,6 @@ jobs:
         with:
           path: kogito-tooling
           os: ubuntu-latest
-
-      - name: "STAGING Build Dashbuilder"
-        working-directory: ${{ github.workspace }}/kogito-tooling
-        run: |
-          lerna run build:prod --scope=@kogito-tooling/dashbuilder --include-dependencies --stream
 
       - name: "STAGING Build Dashbuilder Images"
         working-directory: ${{ github.workspace }}/kogito-tooling
