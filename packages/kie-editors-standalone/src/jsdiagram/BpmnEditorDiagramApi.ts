@@ -16,6 +16,6 @@
 
 import { CanvasEditorApi } from "./CanvasEditorApi";
 
-export interface BpmnLienzoEditorApi {
+export interface BpmnEditorDiagramApi {
   canvas: CanvasEditorApi;
 }

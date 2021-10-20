@@ -22,7 +22,7 @@ import { StateControl } from "@kie-tooling-core/editor/dist/channel";
 import { ContentType } from "@kie-tooling-core/workspace/dist/api";
 import { createEditor, Editor, StandaloneEditorApi } from "../common/Editor";
 import { DmnEditorEnvelopeApi } from "../../../kie-bc-editors/dist/dmn/api/DmnEditorEnvelopeApi";
-import { BpmnLienzoEditorApi } from "../jslienzo/BpmnLienzoEditorApi";
+import { DmnEditorDiagramApi } from "../jsdiagram/DmnEditorDiagramApi";
 
 declare global {
   interface Window {
@@ -61,7 +61,7 @@ export function open(args: {
   origin?: string;
   onError?: () => any;
   resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
-}): StandaloneEditorApi & BpmnLienzoEditorApi {
+}): StandaloneEditorApi & DmnEditorDiagramApi {
   const iframe = document.createElement("iframe");
   iframe.srcdoc = bpmnEnvelopeIndex;
   iframe.style.width = "100%";
