@@ -5,11 +5,11 @@ update-modules:
 
 .PHONY: run-tests
 run-tests: update-modules
-	../hack/run-tests.sh $(shell echo $(TEST_PARAMS) | xargs)
+	../hack/run-tests.sh $(TEST_PARAMS)
 
 .PHONY: build-examples-images
 build-examples-images: update-modules
-	make run-tests test_main_dir=./examples feature=../features cr_deployment_only=true
+	make run-tests test_main_dir=./examples feature=../features cr_deployment_only=true enable_clean_cluster=false
 
 .PHONY: run-smoke-tests
 run-smoke-tests: update-modules
