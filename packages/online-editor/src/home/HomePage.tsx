@@ -257,7 +257,7 @@ export function HomePage() {
           </SplitItem>
         </Split>
       </PageSection>
-      <PageSection variant={"light"}>
+      <PageSection variant={"light"} hasOverflowScroll={true}>
         <PromiseStateWrapper
           promise={workspaceDescriptorsPromise}
           rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
