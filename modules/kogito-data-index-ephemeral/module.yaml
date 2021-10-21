@@ -3,9 +3,9 @@ name: org.kie.kogito.dataindex.ephemeral
 version: "2.0.0-snapshot"
 
 artifacts:
-  - name: data-index-service-ephemeral-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/data-index-service-inmemory/2.0.0-SNAPSHOT/data-index-service-inmemory-2.0.0-20211013.044626-76-runner.jar
-    md5: a490b7ed76d4579a8667bb785682253d
+  - name: data-index-service-inmemory-runner.jar
+    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/data-index-service-inmemory/2.0.0-SNAPSHOT/data-index-service-inmemory-2.0.0-20211021.040807-85-runner.jar
+    md5: a4c160192760794ba0b95caa33022f03
 
 execute:
   - script: configure

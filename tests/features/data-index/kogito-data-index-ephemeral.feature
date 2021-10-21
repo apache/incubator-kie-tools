@@ -13,13 +13,13 @@ Feature: Kogito-data-index ephemeral postgresql feature.
 
   Scenario: verify if the indexing service binaries are available on /home/kogito/bin
     When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/data-index-service-ephemeral-runner.jar' in container and immediately check its output for /home/kogito/bin/data-index-service-ephemeral-runner.jar
+    Then run sh -c 'ls /home/kogito/bin/data-index-service-inmemory-runner.jar' in container and immediately check its output for /home/kogito/bin/data-index-service-inmemory-runner.jar
 
   Scenario: verify if of kogito-data-index-ephemeral container is correctly started
     When container is started with env
       | variable       | value  |
       | SCRIPT_DEBUG   | true   |
-    Then container log should contain -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/data-index-service-ephemeral-runner.jar
+    Then container log should contain -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/data-index-service-inmemory-runner.jar
     And container log should contain Embedded Postgres started at port
     And container log should not contain Application failed to start
 

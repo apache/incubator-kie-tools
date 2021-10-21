@@ -13,13 +13,13 @@ Feature: Kogito-jobs-service-ephemeral feature.
 
   Scenario: verify if the jobs service ephemeral binary is available on /home/kogito/bin
     When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/jobs-service-ephemeral-runner.jar' in container and immediately check its output for /home/kogito/bin/jobs-service-ephemeral-runner.jar
+    Then run sh -c 'ls /home/kogito/bin/jobs-service-inmemory-runner.jar' in container and immediately check its output for /home/kogito/bin/jobs-service-inmemory-runner.jar
 
   Scenario: Verify if the debug is correctly enabled with the ephemeral jar
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/jobs-service-ephemeral-runner.jar
+    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/jobs-service-inmemory-runner.jar
     And container log should contain started in
     And container log should not contain Application failed to start
 

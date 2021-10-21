@@ -26,5 +26,5 @@ exec java ${SHOW_JVM_SETTINGS} ${DYNAMIC_RESOURCES_OPTS} ${JAVA_OPTIONS} ${KOGIT
         -Djava.library.path="${KOGITO_HOME}"/lib \
         -Dquarkus.http.host=0.0.0.0 \
         -Dquarkus.http.port=8080 \
-        -jar "${KOGITO_HOME}"/bin/data-index-service-ephemeral-runner.jar
+        -jar "${KOGITO_HOME}"/bin/data-index-service-inmemory-runner.jar
 
