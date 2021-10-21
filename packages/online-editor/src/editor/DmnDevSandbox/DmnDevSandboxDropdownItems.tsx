@@ -70,7 +70,7 @@ export function useDmnDevSandboxDropdownItems() {
             onClick={onDevSandboxSetup}
             ouiaId={"setup-dmn-dev-sandbox-dropdown-button"}
           >
-            {i18n.terms.setup}
+            Setup...
           </DropdownItem>
         )}
         <FeatureDependentOnKieToolingExtendedServices isLight={false} position="left">

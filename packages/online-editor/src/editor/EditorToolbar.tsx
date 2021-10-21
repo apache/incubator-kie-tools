@@ -22,7 +22,6 @@ import {
   DropdownToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Breadcrumb, BreadcrumbItem } from "@patternfly/react-core/dist/js/components/Breadcrumb";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import {
@@ -352,7 +351,7 @@ export function EditorToolbar(props: Props) {
       downloadAllRef.current.download = `${workspacePromise.data.descriptor.name}.zip`;
     }
     if (downloadPreviewRef.current) {
-      downloadPreviewRef.current.download = `${props.workspaceFile.nameWithoutExtension}-svg.svg`;
+      downloadPreviewRef.current.download = `${props.workspaceFile.name}.svg`;
     }
   }, [props.workspaceFile, workspacePromise.data]);
 
@@ -462,43 +461,42 @@ export function EditorToolbar(props: Props) {
         {workspacePromise.data && workspacePromise.data.files.length > 1 && (
           <Flex justifyContent={{ default: "justifyContentFlexStart" }}>
             <FlexItem className={"kogito-tooling--masthead-hoverable"}>
-              <Breadcrumb>
-                <BreadcrumbItem component="button" />
-                <BreadcrumbItem component="button">
-                  <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
-                    <Title
-                      aria-label={"EmbeddedEditorFile name"}
-                      headingLevel={"h3"}
-                      size={"md"}
-                      style={{ fontStyle: "italic" }}
-                    >
-                      {workspacePromise.data.descriptor.name}
-                    </Title>
-                    <TextInput
-                      ref={workspaceNameRef}
-                      type={"text"}
-                      aria-label={"Edit workspace name"}
-                      onKeyDown={onWorkspaceNameKeyDown}
-                      className={"kogito--editor__toolbar-subtitle"}
-                      onBlur={(e) => onRenameWorkspace(e.target.value)}
-                      style={{ fontStyle: "italic" }}
-                    />
-                  </div>
-
-                  {workspaceIsModifiedPromise.data && (
-                    <Title
-                      headingLevel={"h6"}
-                      style={{ display: "inline", padding: "10px", cursor: "default", color: "gray" }}
-                    >
-                      <Tooltip content={"There are new changes since your last download."} position={"right"}>
-                        <small>
-                          <SecurityIcon />
-                        </small>
-                      </Tooltip>
-                    </Title>
-                  )}
-                </BreadcrumbItem>
-              </Breadcrumb>
+              {(workspaceIsModifiedPromise.data && (
+                <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
+                  <Tooltip content={"There are new changes since your last download."} position={"right"}>
+                    <small>
+                      <SecurityIcon color={"gray"} />
+                    </small>
+                  </Tooltip>
+                </Title>
+              )) || (
+                <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
+                  <Tooltip content={"All changes were downloaded."} position={"right"}>
+                    <small>
+                      <CheckCircleIcon color={"green"} />
+                    </small>
+                  </Tooltip>
+                </Title>
+              )}
+              <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
+                <Title
+                  aria-label={"EmbeddedEditorFile name"}
+                  headingLevel={"h3"}
+                  size={"md"}
+                  style={{ fontStyle: "italic" }}
+                >
+                  {workspacePromise.data.descriptor.name}
+                </Title>
+                <TextInput
+                  ref={workspaceNameRef}
+                  type={"text"}
+                  aria-label={"Edit workspace name"}
+                  onKeyDown={onWorkspaceNameKeyDown}
+                  className={"kogito--editor__toolbar-subtitle"}
+                  onBlur={(e) => onRenameWorkspace(e.target.value)}
+                  style={{ fontStyle: "italic" }}
+                />
+              </div>
             </FlexItem>
           </Flex>
         )}
@@ -664,10 +662,7 @@ function KebabDropdown(props: {
         <DropdownToggle
           id={props.id}
           toggleIndicator={null}
-          onToggle={(isOpen) => {
-            console.info(isOpen);
-            props.state[1](isOpen);
-          }}
+          onToggle={(isOpen) => props.state[1](isOpen)}
           ouiaId={props.id}
         >
           <EllipsisVIcon />

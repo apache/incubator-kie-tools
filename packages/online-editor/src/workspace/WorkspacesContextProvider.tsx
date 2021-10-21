@@ -296,7 +296,7 @@ export function WorkspacesContextProvider(props: Props) {
           getFileContents: () => Promise.resolve(encoder.encode(args.content)),
           relativePath,
         });
-        await service.createFile(args.fs, newFile, { broadcast: true });
+        await service.createOrOverwriteFile(args.fs, newFile, { broadcast: true });
         return newFile;
       }
 
@@ -349,8 +349,6 @@ export function WorkspacesContextProvider(props: Props) {
       if (!file) {
         throw new Error(`File '${args.relativePath}' not found in Workspace ${args.workspaceId}`);
       }
-
-      console.info("Reading " + args.relativePath);
 
       try {
         const content = await file.getFileContents();

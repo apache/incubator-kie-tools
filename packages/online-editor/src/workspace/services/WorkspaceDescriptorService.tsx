@@ -66,7 +66,7 @@ export class WorkspaceDescriptorService {
       createdDateISO: new Date().toISOString(),
       lastUpdatedDateISO: new Date().toISOString(),
     };
-    await this.storageService.createFile(this.workspacesFs, this.workspaceDescriptorFile(workspace));
+    await this.storageService.createFileOrOverwriteFile(this.workspacesFs, this.workspaceDescriptorFile(workspace));
     return workspace;
   }
 

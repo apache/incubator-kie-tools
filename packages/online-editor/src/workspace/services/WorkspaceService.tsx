@@ -139,8 +139,12 @@ export class WorkspaceService {
   }
   //
 
-  public async createFile(fs: LightningFS, file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    await this.storageService.createFile(fs, this.toStorageFile(file));
+  public async createOrOverwriteFile(
+    fs: LightningFS,
+    file: WorkspaceFile,
+    broadcastArgs: { broadcast: boolean }
+  ): Promise<void> {
+    await this.storageService.createFileOrOverwriteFile(fs, this.toStorageFile(file));
 
     if (broadcastArgs.broadcast) {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);
@@ -164,7 +168,6 @@ export class WorkspaceService {
     relativePath: string;
   }): Promise<WorkspaceFile | undefined> {
     const absolutePath = this.getAbsolutePath(args);
-    console.info(`Reading file '${absolutePath}'`);
     const storageFile = await this.storageService.getFile(args.fs, absolutePath);
     if (!storageFile) {
       return;

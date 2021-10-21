@@ -30,10 +30,10 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxContextProvider";
 import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
-import { Alerts, AlertsController, useAlert } from "./Alerts/Alerts";
+import { AlertsController, useAlert } from "./Alerts/Alerts";
 import { useCancelableEffect, useController, usePrevious } from "../common/Hooks";
 import { TextEditorModal } from "./TextEditor/TextEditorModal";
-import { useWorkspaces } from "../workspace/WorkspacesContext";
+import { encoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tooling-core/workspace/dist/api";
 import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
@@ -157,7 +157,20 @@ export function EditorPage(props: Props) {
         }
 
         const content = await editor?.getContent();
+        const svg = await editor?.getPreview();
+
         lastContent.current = content;
+
+        //FIXME: Not ideal using service directly.
+        await workspaces.service.createOrOverwriteFile(
+          workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
+          new WorkspaceFile({
+            workspaceId: workspaceFilePromise.data.workspaceId,
+            getFileContents: () => Promise.resolve(encoder.encode(svg)),
+            relativePath: `${workspaceFilePromise.data.relativePath}.svg`,
+          }),
+          { broadcast: false }
+        );
 
         await workspaces.updateFile({
           fs: workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),

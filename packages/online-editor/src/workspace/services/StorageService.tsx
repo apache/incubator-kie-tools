@@ -41,7 +41,7 @@ export class StorageFile {
 }
 
 export class StorageService {
-  public async createFile(fs: LightningFS, file: StorageFile) {
+  public async createFileOrOverwriteFile(fs: LightningFS, file: StorageFile) {
     const contents = await file.getFileContents();
     try {
       await fs.promises.writeFile(file.path, contents);
@@ -116,7 +116,7 @@ export class StorageService {
       getFileContents: file.getFileContents,
       path: newPath,
     });
-    await this.createFile(fs, newFile);
+    await this.createFileOrOverwriteFile(fs, newFile);
     await this.deleteFile(fs, file.path);
 
     return newFile;
