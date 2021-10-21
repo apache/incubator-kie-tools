@@ -76,7 +76,7 @@ export function KieToolingExtendedServicesButtons() {
               onToggle={toggleDmnDevSandboxDropdown}
               data-testid="dmn-dev-sandbox-button"
             >
-              {i18n.terms.deploy}
+              Try on OpenShift
             </DropdownToggle>
           }
           isOpen={dmnDevSandbox.isDropdownOpen}

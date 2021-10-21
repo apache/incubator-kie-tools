@@ -38,19 +38,14 @@ import { useOnlineI18n } from "../common/i18n";
 import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/KieToolingExtendedServicesButtons";
 import { useGlobals } from "../common/GlobalContext";
 import { AuthStatus, useSettings } from "../settings/SettingsContext";
-import { SettingsTabs } from "../settings/SettingsModalBody";
 import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
-import { UpdateGistErrors } from "../settings/GithubService";
-import { QueryParams } from "../common/Routes";
 import { useHistory } from "react-router";
-import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { EmbedModal } from "./EmbedModal";
 import { Alerts, AlertsController, useAlert } from "./Alerts/Alerts";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { SecurityIcon } from "@patternfly/react-icons/dist/js/icons/security-icon";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
-import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
 import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
@@ -96,7 +91,6 @@ export function EditorToolbar(props: Props) {
   const globals = useGlobals();
   const settings = useSettings();
   const history = useHistory();
-  const queryParams = useQueryParams();
   const workspaces = useWorkspaces();
   const [isShareDropdownOpen, setShareDropdownOpen] = useState(false);
   const [isLargeKebabOpen, setLargeKebabOpen] = useState(false);
@@ -111,38 +105,6 @@ export function EditorToolbar(props: Props) {
   const [isWorkspaceAddFileMenuOpen, setWorkspaceAddFileMenuOpen] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
 
-  const copySuccessfulAlert = useAlert(
-    props.alerts,
-    useCallback(
-      ({ close }) => (
-        <Alert
-          variant="success"
-          title={i18n.editorPage.alerts.copy}
-          actionClose={
-            <>
-              <AlertActionCloseButton onClose={close} />
-            </>
-          }
-        />
-      ),
-      [i18n]
-    ),
-    useMemo(() => ({ durationInSeconds: 4 }), [])
-  );
-
-  const successUpdateGistAlert = useAlert(
-    props.alerts,
-    useCallback(
-      ({ close }) => (
-        <Alert
-          variant="success"
-          title={i18n.editorPage.alerts.updateGist}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      ),
-      [i18n]
-    )
-  );
   const successCreateGistAlert = useAlert(
     props.alerts,
     useCallback(
@@ -150,34 +112,6 @@ export function EditorToolbar(props: Props) {
         <Alert
           variant="success"
           title={i18n.editorPage.alerts.createGist}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      ),
-      [i18n]
-    )
-  );
-
-  const invalidCurrentGistAlert = useAlert(
-    props.alerts,
-    useCallback(
-      ({ close }) => (
-        <Alert
-          variant="danger"
-          title={i18n.editorPage.alerts.invalidCurrentGist}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      ),
-      [i18n]
-    )
-  );
-
-  const invalidGistFilenameAlert = useAlert(
-    props.alerts,
-    useCallback(
-      ({ close }) => (
-        <Alert
-          variant="danger"
-          title={i18n.editorPage.alerts.invalidGistFilename}
           actionClose={<AlertActionCloseButton onClose={close} />}
         />
       ),
@@ -245,17 +179,13 @@ export function EditorToolbar(props: Props) {
     )
   );
 
-  const queryParamUrl = useMemo(() => {
-    return queryParams.get(QueryParams.URL);
-  }, [queryParams]);
-
-  const includeDownloadSVGDropdownItem = useMemo(() => {
+  const shouldIncludeDownloadSVGDropdownItem = useMemo(() => {
     return props.workspaceFile.extension.toLowerCase() !== "pmml";
   }, [props.workspaceFile]);
 
-  const includeEmbedDropdownItem = useMemo(() => {
-    return includeDownloadSVGDropdownItem;
-  }, [includeDownloadSVGDropdownItem]);
+  const shouldIncludeEmbedDropdownItem = useMemo(() => {
+    return props.workspaceFile.extension.toLowerCase() !== "pmml";
+  }, [props.workspaceFile]);
 
   const onDownload = useCallback(() => {
     props.editor?.getStateControl().setSavedCommand();
@@ -269,7 +199,7 @@ export function EditorToolbar(props: Props) {
     });
   }, [props.editor, props.workspaceFile, props.alerts]);
 
-  const onDownloadAll = useCallback(async () => {
+  const downloadWorkspaceZip = useCallback(async () => {
     if (!props.editor) {
       return;
     }
@@ -283,14 +213,7 @@ export function EditorToolbar(props: Props) {
     await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId });
   }, [props.editor, props.workspaceFile, workspaces]);
 
-  const createSavePoint = useCallback(() => {
-    return workspaces.createSavePoint({
-      fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
-      workspaceId: props.workspaceFile.workspaceId,
-    });
-  }, [workspaces, props.workspaceFile]);
-
-  const onPreview = useCallback(() => {
+  const downloadSvg = useCallback(() => {
     props.editor?.getPreview().then((previewSvg) => {
       if (downloadPreviewRef.current && previewSvg) {
         const fileBlob = new Blob([previewSvg], { type: "image/svg+xml" });
@@ -300,50 +223,9 @@ export function EditorToolbar(props: Props) {
     });
   }, [props.editor]);
 
-  const onGistIt = useCallback(async () => {
+  const createGist = useCallback(async () => {
     if (props.editor) {
       const content = await props.workspaceFile.getFileContentsAsString();
-
-      // update gist
-      if (queryParamUrl && settings.github.service.isGist(queryParamUrl)) {
-        const userLogin = settings.github.service.extractUserLoginFromFileUrl(queryParamUrl);
-        if (userLogin === settings.github.user?.login) {
-          try {
-            const filename = props.workspaceFile.name;
-            const response = await settings.github.service.updateGist(settings.github.octokit, {
-              filename,
-              content,
-            });
-
-            if (response === UpdateGistErrors.INVALID_CURRENT_GIST) {
-              invalidCurrentGistAlert.show();
-              return;
-            }
-
-            if (response === UpdateGistErrors.INVALID_GIST_FILENAME) {
-              invalidGistFilenameAlert.show();
-              return;
-            }
-
-            props.editor.getStateControl().setSavedCommand();
-            if (filename !== settings.github.service.getCurrentGist()?.filename) {
-              successUpdateGistAlert.show();
-              history.push({
-                pathname: globals.routes.editor.path({ extension: props.workspaceFile.extension }),
-                search: globals.routes.editor.queryString({ url: response }).toString(),
-              });
-              return;
-            }
-
-            successUpdateGistAlert.show();
-            return;
-          } catch (err) {
-            console.error(err);
-            errorAlert.show();
-            return;
-          }
-        }
-      }
 
       // create gist
       try {
@@ -367,35 +249,11 @@ export function EditorToolbar(props: Props) {
         return;
       }
     }
-  }, [
-    errorAlert,
-    successCreateGistAlert,
-    successUpdateGistAlert,
-    invalidCurrentGistAlert,
-    invalidGistFilenameAlert,
-    props.workspaceFile,
-    history,
-    globals,
-    settings,
-    queryParamUrl,
-    props.editor,
-  ]);
+  }, [errorAlert, successCreateGistAlert, props.workspaceFile, history, globals, settings, props.editor]);
 
   const onEmbed = useCallback(() => {
     setEmbedModalOpen(true);
   }, []);
-
-  const onCopyContentToClipboard = useCallback(() => {
-    props.workspaceFile.getFileContentsAsString().then((content) => {
-      if (copyContentTextArea.current) {
-        copyContentTextArea.current.value = content;
-        copyContentTextArea.current.select();
-        if (document.execCommand("copy")) {
-          copySuccessfulAlert.show();
-        }
-      }
-    });
-  }, [props.workspaceFile, copySuccessfulAlert]);
 
   const shareDropdownItems = useMemo(
     () => [
@@ -409,12 +267,12 @@ export function EditorToolbar(props: Props) {
           Current file
         </DropdownItem>
         <React.Fragment key={`dropdown-fragment-download-svg`}>
-          {includeDownloadSVGDropdownItem && (
+          {shouldIncludeDownloadSVGDropdownItem && (
             <DropdownItem
               key={`dropdown-download-svg`}
               data-testid="dropdown-download-svg"
               component="button"
-              onClick={onPreview}
+              onClick={downloadSvg}
               description={`Image of ${props.workspaceFile.name} will be downloaded in SVG format`}
               icon={<ImageIcon />}
             >
@@ -424,7 +282,7 @@ export function EditorToolbar(props: Props) {
         </React.Fragment>
         <React.Fragment key={`dropdown-fragment-download-all`}>
           <DropdownItem
-            onClick={onDownloadAll}
+            onClick={downloadWorkspaceZip}
             key={"download-zip-item"}
             description={`A zip file including all files will be downloaded`}
             icon={<FolderIcon />}
@@ -432,26 +290,10 @@ export function EditorToolbar(props: Props) {
             All files
           </DropdownItem>
         </React.Fragment>
-        <React.Fragment key={`dropdown-fragment-create-save-point`}>
-          <DropdownItem onClick={createSavePoint} key={"create-save-point"}>
-            Create Save point &nbsp;&nbsp;
-            <span style={{ color: "red" }}>
-              <i>{"//Remove"}</i>
-            </span>
-          </DropdownItem>
-        </React.Fragment>
       </DropdownGroup>,
       <DropdownGroup key={"other-group"} label="Other">
-        <DropdownItem
-          key={`dropdown-copy-source`}
-          component={"button"}
-          onClick={onCopyContentToClipboard}
-          icon={<CopyIcon />}
-        >
-          {i18n.editorToolbar.copySource}
-        </DropdownItem>
         <React.Fragment key={`dropdown-fragment-embed`}>
-          {includeEmbedDropdownItem && (
+          {shouldIncludeEmbedDropdownItem && (
             <DropdownItem
               key={`dropdown-embed`}
               data-testid="dropdown-embed"
@@ -476,36 +318,26 @@ export function EditorToolbar(props: Props) {
             <DropdownItem
               data-testid={"gist-it-button"}
               component="button"
-              onClick={onGistIt}
+              onClick={createGist}
               isDisabled={settings.github.authStatus !== AuthStatus.SIGNED_IN}
             >
               {i18n.editorToolbar.gistIt}
             </DropdownItem>
           </Tooltip>
         </React.Fragment>
-        <DropdownItem
-          data-testid={"set-github-token"}
-          key={`dropdown-setup-github-token`}
-          component="button"
-          onClick={() => settings.open(SettingsTabs.GITHUB)}
-        >
-          {i18n.editorToolbar.setGitHubToken}...
-        </DropdownItem>
       </DropdownGroup>,
     ],
     [
       onDownload,
       props.workspaceFile,
-      includeDownloadSVGDropdownItem,
-      onPreview,
-      onDownloadAll,
-      createSavePoint,
-      onCopyContentToClipboard,
+      shouldIncludeDownloadSVGDropdownItem,
+      downloadSvg,
+      downloadWorkspaceZip,
       i18n,
-      includeEmbedDropdownItem,
+      shouldIncludeEmbedDropdownItem,
       onEmbed,
       settings,
-      onGistIt,
+      createGist,
     ]
   );
 

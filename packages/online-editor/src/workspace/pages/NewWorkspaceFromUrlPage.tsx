@@ -11,7 +11,7 @@ import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useSettings } from "../../settings/SettingsContext";
 import { EditorPageErrorPage, Props } from "../../editor/EditorPageErrorPage";
 import { extractFileExtension, removeDirectories, removeFileExtension } from "../../common/utils";
-import { OnlineEditorPage } from "../../home/pageTemplate/OnlineEditorPage";
+import { BusinessAutomationStudioPage } from "../../home/pageTemplate/BusinessAutomationStudioPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
 export function NewWorkspaceFromUrlPage() {
@@ -184,7 +184,7 @@ export function NewWorkspaceFromUrlPage() {
     <>
       {fetchFileError && <EditorPageErrorPage path={fetchFileError.path} errors={fetchFileError.errors} />}
       {!fetchFileError && (
-        <OnlineEditorPage>
+        <BusinessAutomationStudioPage>
           <PageSection
             variant={"light"}
             isFilled={true}
@@ -201,7 +201,7 @@ export function NewWorkspaceFromUrlPage() {
               </TextContent>
             </Bullseye>
           </PageSection>
-        </OnlineEditorPage>
+        </BusinessAutomationStudioPage>
       )}
     </>
   );

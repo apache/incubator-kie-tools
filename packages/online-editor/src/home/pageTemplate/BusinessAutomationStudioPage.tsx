@@ -7,8 +7,9 @@ import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/di
 import { SettingsButton } from "../../settings/SettingsButton";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { KieToolingExtendedServicesIcon } from "../../editor/KieToolingExtendedServices/KieToolingExtendedServicesIcon";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
-export function OnlineEditorPage(props: { children?: React.ReactNode }) {
+export function BusinessAutomationStudioPage(props: { children?: React.ReactNode }) {
   const globals = useGlobals();
   const history = useHistory();
 
@@ -18,12 +19,22 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
         <Masthead aria-label={"Page header"}>
           <MastheadMain>
             <PageHeaderToolsItem>
-              <MastheadBrand>
-                <Brand
-                  src={globals.routes.static.images.homeLogo.path({})}
-                  onClick={() => history.push({ pathname: globals.routes.home.path({}) })}
-                  alt={"Logo"}
-                />
+              <MastheadBrand
+                onClick={() => history.push({ pathname: globals.routes.home.path({}) })}
+                style={{ textDecoration: "none" }}
+              >
+                <Flex alignItems={{ default: "alignItemsCenter" }}>
+                  <Brand
+                    src={globals.routes.static.images.homeLogo.path({})}
+                    alt={"Logo"}
+                    style={{ display: "inline" }}
+                  />
+                  <TextContent>
+                    <Text component={TextVariants.h1} style={{ fontWeight: "lighter", fontSize: "2em" }}>
+                      Business Automation Studio
+                    </Text>
+                  </TextContent>
+                </Flex>
               </MastheadBrand>
             </PageHeaderToolsItem>
           </MastheadMain>

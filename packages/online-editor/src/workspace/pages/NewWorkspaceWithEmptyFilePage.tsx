@@ -3,7 +3,7 @@ import * as React from "react";
 import { useEffect } from "react";
 import { useHistory } from "react-router";
 import { useGlobals } from "../../common/GlobalContext";
-import { OnlineEditorPage } from "../../home/pageTemplate/OnlineEditorPage";
+import { BusinessAutomationStudioPage } from "../../home/pageTemplate/BusinessAutomationStudioPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -37,7 +37,7 @@ export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
   }, [globals, history, props.extension, workspaces]);
 
   return (
-    <OnlineEditorPage>
+    <BusinessAutomationStudioPage>
       <PageSection
         variant={"light"}
         isFilled={true}
@@ -54,6 +54,6 @@ export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
           </TextContent>
         </Bullseye>
       </PageSection>
-    </OnlineEditorPage>
+    </BusinessAutomationStudioPage>
   );
 }

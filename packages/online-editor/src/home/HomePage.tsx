@@ -21,7 +21,7 @@ import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { LocalFile, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { OnlineEditorPage } from "./pageTemplate/OnlineEditorPage";
+import { BusinessAutomationStudioPage } from "./pageTemplate/BusinessAutomationStudioPage";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { SUPPORTED_FILES_EDITABLE } from "../workspace/SupportedFiles";
@@ -148,7 +148,7 @@ export function HomePage() {
   }, [expandWorkspace, filesToUpload, workspaces, history, globals]);
 
   return (
-    <OnlineEditorPage>
+    <BusinessAutomationStudioPage>
       <PageSection>
         <Split isWrappable={true} hasGutter={true}>
           <SplitItem isFilled={true}>
@@ -312,7 +312,7 @@ export function HomePage() {
           }}
         />
       </PageSection>
-    </OnlineEditorPage>
+    </BusinessAutomationStudioPage>
   );
 }
 
