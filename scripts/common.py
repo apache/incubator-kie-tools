@@ -263,7 +263,7 @@ def update_artifacts_version_in_behave_tests(artifacts_version):
     """
     print("Set artifacts_version {} in behave tests".format(artifacts_version))
     # pattern to change the KOGITO_VERSION
-    pattern = re.compile('\|[\s]*KOGITO_VERSION[\s]*\|[\s]*(([\d.]+.x)|([\d.]+)[\s]*|([\d.]+-SNAPSHOT)|([\d.]+.Final))[\s]*\|')
+    pattern = re.compile('\|[\s]*KOGITO_VERSION[\s]*\|[\s]*(([\d.]+.x)|([\d.]+)[\s]*|([\d.]+-SNAPSHOT)|([\d.]+.Final)|([\d.]+\.redhat-[\d]+))[\s]*\|')
     replacement = '| KOGITO_VERSION | {} | '.format(artifacts_version)
     update_in_behave_tests(pattern, replacement)
 

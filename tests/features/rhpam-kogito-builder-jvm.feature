@@ -32,7 +32,7 @@ Feature: rhpam-kogito-builder-rhel8 feature.
       | NATIVE         | false          |
       | KOGITO_VERSION | 1.5.0.redhat-00001 |
     Then file /home/kogito/bin/quarkus-run.jar should exist
-    And s2i build log should contain Generating quarkus project structure using the kogito-quarkus-dm-archetype archetype...
+    And s2i build log should contain Generating quarkus project structure for project...
     And check that page is served
       | property        | value                                                                                            |
       | port            | 8080                                                                                             |
@@ -61,7 +61,7 @@ Feature: rhpam-kogito-builder-rhel8 feature.
       | PROJECT_ARTIFACT_ID | myproject      |
       | PROJECT_VERSION     | 2.0-SNAPSHOT   |
     Then file /home/kogito/bin/quarkus-run.jar should exist
-    And s2i build log should contain Generating quarkus project structure using the kogito-quarkus-dm-archetype archetype...
+    And s2i build log should contain Generating quarkus project structure for myproject...
     And check that page is served
       | property        | value                                                                                            |
       | port            | 8080                                                                                             |
@@ -80,7 +80,7 @@ Feature: rhpam-kogito-builder-rhel8 feature.
       | KOGITO_VERSION | 2.0.0-SNAPSHOT |
       | RUNTIME_TYPE   | springboot     |
     Then file /home/kogito/bin/project-1.0-SNAPSHOT.jar should exist
-    And s2i build log should contain Generating springboot project structure using the kogito-springboot-dm-archetype archetype...
+    And s2i build log should contain Generating springboot project structure for project...
     And check that page is served
       | property        | value                                                                                            |
       | port            | 8080                                                                                             |
