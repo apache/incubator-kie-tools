@@ -19,6 +19,7 @@ import { ModalWizard } from "../ModalWizard";
 import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { ImportJavaClassesWizardFirstStep } from "./ImportJavaClassesWizardFirstStep";
 import { ImportJavaClassesWizardSecondStep } from "./ImportJavaClassesWizardSecondStep";
+import { ImportJavaClassesWizardThirdStep } from "./ImportJavaClassesWizardThirdStep";
 import { useState } from "react";
 import { JavaClass } from "./Model/JavaClass";
 import { JavaField } from "./Model/JavaField";
@@ -77,24 +78,30 @@ export const ImportJavaClassesWizard: React.FunctionComponent<ImportJavaClassesW
       }
     });
   };
+  const isSecondStepActivatable = () => {
+    return javaClasses.length > 0;
+  };
+  const isThirdStepActivatable = () => {
+    return javaClasses.length > 0 && javaClasses.every((javaClass: JavaClass) => javaClass.fieldsLoaded);
+  };
   const resetJavaClassState = () => {
     setJavaClasses([]);
   };
   const steps = [
     {
-      name: i18n.modalWizard.firstStep.stepName,
+      canJumpTo: true,
       component: (
         <ImportJavaClassesWizardFirstStep
           selectedJavaClasses={javaClasses}
           onSelectedJavaClassesUpdated={updateSelectedClasses}
         />
       ),
-      enableNext: javaClasses.length > 0,
-      canJumpTo: true,
+      enableNext: isSecondStepActivatable(),
       hideBackButton: true,
+      name: i18n.modalWizard.firstStep.stepName,
     },
     {
-      name: i18n.modalWizard.secondStep.stepName,
+      canJumpTo: isSecondStepActivatable(),
       component: (
         <ImportJavaClassesWizardSecondStep
           selectedJavaClasses={javaClasses}
@@ -103,14 +110,14 @@ export const ImportJavaClassesWizard: React.FunctionComponent<ImportJavaClassesW
           fetchButtonLabel={i18n.modalWizard.secondStep.fetchButtonLabel}
         />
       ),
-      enableNext: false,
-      canJumpTo: javaClasses.length > 0,
+      enableNext: isThirdStepActivatable(),
+      name: i18n.modalWizard.secondStep.stepName,
     },
     {
+      canJumpTo: isThirdStepActivatable(),
+      component: <ImportJavaClassesWizardThirdStep selectedJavaClasses={javaClasses} />,
       name: i18n.modalWizard.thirdStep.stepName,
-      component: <p>Step 3 content</p>,
-      enableNext: false,
-      canJumpTo: false,
+      nextButtonText: i18n.modalWizard.thirdStep.nextButtonText,
     },
   ];
 
@@ -121,10 +128,10 @@ export const ImportJavaClassesWizard: React.FunctionComponent<ImportJavaClassesW
       buttonDisabledStatus={buttonDisabledStatus}
       buttonTooltipMessage={buttonTooltipMessage}
       className={"import-java-classes"}
-      wizardTitle={i18n.modalWizard.title}
+      onWizardClose={resetJavaClassState}
       wizardDescription={i18n.modalWizard.description}
       wizardSteps={steps}
-      onWizardClose={resetJavaClassState}
+      wizardTitle={i18n.modalWizard.title}
     />
   );
 };
