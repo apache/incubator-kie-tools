@@ -163,10 +163,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
 
   const setHeight = useCallback((menuId: string, height: number) => {
     // do not try to simply this ternary's condition as some heights are 0, resulting in an infinite loop.
-    setMenuHeights((prev) => {
-      //FIXME: There's a problem with the height of the ROOT_MENU_ID.
-      return prev[menuId] !== undefined ? prev : { ...prev, [menuId]: height };
-    });
+    setMenuHeights((prev) => (prev[menuId] !== undefined ? prev : { ...prev, [menuId]: height }));
   }, []);
 
   const workspacesMenuItems = useMemo(() => {
@@ -423,7 +420,7 @@ function FileSvg(props: { workspaceFile: WorkspaceFile }) {
           .getFile({
             fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
             workspaceId: props.workspaceFile.workspaceId,
-            relativePath: `${props.workspaceFile.name}.svg`,
+            relativePath: `${props.workspaceFile.relativePath}.svg`,
           })
           .then(async (file) => {
             if (canceled.get()) {

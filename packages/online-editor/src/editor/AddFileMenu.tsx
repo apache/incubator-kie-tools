@@ -41,10 +41,7 @@ export function AddFileMenu(props: {
 
   const setHeight = useCallback((menuId: string, height: number) => {
     // do not try to simply this ternary's condition as some heights are 0, resulting in an infinite loop.
-    setMenuHeights((prev) => {
-      //FIXME: There's a problem with the height of the ROOT_MENU_ID.
-      return prev[menuId] !== undefined ? prev : { ...prev, [menuId]: height };
-    });
+    setMenuHeights((prev) => (prev[menuId] !== undefined ? prev : { ...prev, [menuId]: height }));
   }, []);
 
   const workspaces = useWorkspaces();
@@ -63,13 +60,6 @@ export function AddFileMenu(props: {
     [props, workspaces]
   );
 
-  const addSample = useCallback(
-    async (extension: SupportedFileExtensions) => {
-      importFromUrl(globals.routes.static.sample.path({ type: extension }));
-    },
-    [props, globals, workspaces]
-  );
-
   const urlInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (activeMenu === "importFromUrlMenu") {
@@ -81,7 +71,7 @@ export function AddFileMenu(props: {
 
   const [isImporting, setImporting] = useState(false);
 
-  //FIXME: We have to unify this logic with  `NewWorkspaceFromUrlPage.tsx`
+  //FIXME: We have to unify this logic with `NewWorkspaceFromUrlPage.tsx`
   const importFromUrl = useCallback(
     async (url: string) => {
       setImporting(true);
@@ -106,6 +96,10 @@ export function AddFileMenu(props: {
       }
     },
     [props, workspaces]
+  );
+  const addSample = useCallback(
+    (extension: SupportedFileExtensions) => importFromUrl(globals.routes.static.sample.path({ type: extension })),
+    [importFromUrl, globals]
   );
 
   return (

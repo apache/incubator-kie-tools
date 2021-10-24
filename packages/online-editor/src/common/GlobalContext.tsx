@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 import * as React from "react";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useMemo } from "react";
 import { routes } from "./Routes";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
 
 export type SupportedFileExtensions = "bpmn" | "bpmn2" | "dmn" | "pmml";
 
 export interface GlobalContextType {
-  uploadedFile?: EmbeddedEditorFile;
-  setUploadedFile: React.Dispatch<React.SetStateAction<EmbeddedEditorFile | undefined>>;
   routes: typeof routes;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   isChrome: boolean;
@@ -33,7 +30,6 @@ export interface GlobalContextType {
 export const GlobalContext = React.createContext<GlobalContextType>({} as any);
 
 export function GlobalContextProvider(props: { children: React.ReactNode }) {
-  const [uploadedFile, setUploadedFile] = useState<EmbeddedEditorFile | undefined>(undefined);
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () => ({
       targetOrigin: window.location.origin,
@@ -51,8 +47,6 @@ export function GlobalContextProvider(props: { children: React.ReactNode }) {
     <GlobalContext.Provider
       value={{
         editorEnvelopeLocator,
-        uploadedFile,
-        setUploadedFile,
         routes,
         isChrome: !!window.chrome,
       }}

@@ -41,8 +41,6 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
 
   const usedCtx: GlobalContextType = {
     routes,
-    uploadedFile: undefined,
-    setUploadedFile: jest.fn(),
     editorEnvelopeLocator: {
       targetOrigin: window.location.origin,
       mapping: new Map([
