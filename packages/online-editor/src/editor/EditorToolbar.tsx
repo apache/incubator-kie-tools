@@ -206,7 +206,7 @@ export function EditorToolbar(props: Props) {
     )
   );
 
-  const shouldIncludeDownloadSVGDropdownItem = useMemo(() => {
+  const shouldIncludeDownloadSvgDropdownItem = useMemo(() => {
     return props.workspaceFile.extension.toLowerCase() !== "pmml";
   }, [props.workspaceFile]);
 
@@ -283,7 +283,16 @@ export function EditorToolbar(props: Props) {
           public: true,
 
           // This file is used just for creating the Gist. The `push -f` overwrites it.
-          files: { "README.md": { content: "This Gist was created from Business Automation Studio." } },
+          files: {
+            "README.md": {
+              content: `
+This Gist was created from Business Automation Studio. 
+
+This file is temporary and you should not be seeing it. 
+If you are, it means that creating this Gist failed and it can safely be deleted.
+`,
+            },
+          },
         });
 
         if (!gist.data.git_push_url) {
@@ -383,7 +392,7 @@ export function EditorToolbar(props: Props) {
           Current file
         </DropdownItem>
         <React.Fragment key={`dropdown-fragment-download-svg`}>
-          {shouldIncludeDownloadSVGDropdownItem && (
+          {shouldIncludeDownloadSvgDropdownItem && (
             <DropdownItem
               key={`dropdown-download-svg`}
               data-testid="dropdown-download-svg"
@@ -451,14 +460,14 @@ export function EditorToolbar(props: Props) {
     [
       onDownload,
       props.workspaceFile,
-      shouldIncludeDownloadSVGDropdownItem,
+      shouldIncludeDownloadSvgDropdownItem,
       downloadSvg,
       downloadWorkspaceZip,
       shouldIncludeEmbedDropdownItem,
       onEmbed,
       i18n,
-      workspacePromise,
-      settings.github.authStatus,
+      isLocalWorkspace,
+      canCreateGist,
       createGist,
     ]
   );
@@ -478,44 +487,43 @@ export function EditorToolbar(props: Props) {
     }
   }, [props.workspaceFile, workspacePromise.data]);
 
-  const deleteWorkspaceFile = useCallback(() => {
+  const deleteWorkspaceFile = useCallback(async () => {
     if (!workspacePromise.data) {
       return;
     }
 
     if (workspacePromise.data.files.length === 1) {
-      workspaces
-        .deleteWorkspace({ workspaceId: props.workspaceFile.workspaceId })
-        .then(() => history.push({ pathname: globals.routes.home.path({}) }));
+      await workspaces.deleteWorkspace({ workspaceId: props.workspaceFile.workspaceId });
+      history.push({ pathname: globals.routes.home.path({}) });
       return;
     }
 
     const nextFile = workspacePromise.data.files
-      .filter(
-        (f) =>
+      .filter((f) => {
+        return (
           f.relativePath !== props.workspaceFile.relativePath &&
           Array.from(globals.editorEnvelopeLocator.mapping.keys()).includes(f.extension)
-      )
+        );
+      })
       .pop();
+
     if (!nextFile) {
       history.push({ pathname: globals.routes.home.path({}) });
       return;
     }
 
-    workspaces
-      .deleteFile({
-        fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
-        file: props.workspaceFile,
-      })
-      .then(() =>
-        history.push({
-          pathname: globals.routes.workspaceWithFilePath.path({
-            workspaceId: nextFile.workspaceId,
-            fileRelativePath: nextFile.relativePathWithoutExtension,
-            extension: nextFile.extension,
-          }),
-        })
-      );
+    await workspaces.deleteFile({
+      fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+      file: props.workspaceFile,
+    });
+
+    history.push({
+      pathname: globals.routes.workspaceWithFilePath.path({
+        workspaceId: nextFile.workspaceId,
+        fileRelativePath: nextFile.relativePathWithoutExtension,
+        extension: nextFile.extension,
+      }),
+    });
   }, [globals, history, workspacePromise.data, props.workspaceFile, workspaces]);
 
   const workspaceNameRef = useRef<HTMLInputElement>(null);
