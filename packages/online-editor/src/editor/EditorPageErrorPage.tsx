@@ -29,7 +29,7 @@ export function EditorPageErrorPage(props: Props) {
   }, [props.errors]);
 
   return (
-    <PageSection isFilled={true} padding={{ default: "noPadding" }} className={"kogito--editor__page-section"}>
+    <PageSection isFilled={true} padding={{ default: "noPadding" }}>
       <br />
       <br />
       <br />
@@ -56,7 +56,7 @@ export function EditorPageErrorPage(props: Props) {
                   <PageSection variant={"light"} isFilled={true} style={{ height: "100%", minWidth: "1000px" }}>
                     <ClipboardCopy
                       variant={ClipboardCopyVariant.expansion}
-                      isReadOnly
+                      isReadOnly={true}
                       hoverTip="Copy"
                       clickTip="Copied"
                     >{`${detailsString}`}</ClipboardCopy>

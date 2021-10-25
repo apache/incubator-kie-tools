@@ -9,12 +9,12 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { QueryParams } from "../../common/Routes";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useSettings } from "../../settings/SettingsContext";
-import { EditorPageErrorPage, Props } from "../../editor/EditorPageErrorPage";
-import { extractFileExtension, removeDirectories, removeFileExtension } from "../../common/utils";
+import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
 import { BusinessAutomationStudioPage } from "../../home/pageTemplate/BusinessAutomationStudioPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../services/GitService";
 import { WorkspaceKind } from "../model/WorkspaceOrigin";
+import { basename, extname } from "path";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -22,7 +22,7 @@ export function NewWorkspaceFromUrlPage() {
   const history = useHistory();
   const settings = useSettings();
   const queryParams = useQueryParams();
-  const [fetchFileError, setFetchFileError] = useState<Props>();
+  const [error, setError] = useState<{ errors: string[]; path: string }>();
 
   const queryParamUrl = useMemo(() => {
     return queryParams.get(QueryParams.URL);
@@ -49,32 +49,23 @@ export function NewWorkspaceFromUrlPage() {
   );
 
   useEffect(() => {
-    let canceled = false;
     async function run() {
-      setFetchFileError(undefined);
+      setError(undefined);
 
       if (!queryParamUrl) {
         return;
       }
 
-      let filePath: string;
       let url: URL;
       try {
         url = new URL(queryParamUrl);
-        filePath = url.origin + url.pathname;
       } catch (error) {
-        setFetchFileError({
-          errors: [error],
-          path: queryParamUrl,
-        });
+        setError({ errors: [error], path: queryParamUrl });
         return;
       }
 
       if (url.protocol !== "https:") {
-        setFetchFileError({
-          errors: ["Please use HTTPS."],
-          path: queryParamUrl,
-        });
+        setError({ errors: ["Please use HTTPS."], path: queryParamUrl });
         return;
       }
 
@@ -83,21 +74,16 @@ export function NewWorkspaceFromUrlPage() {
           path: "/:org/:repo/(tree)?/:tree?",
           exact: true,
           strict: true,
+          sensitive: false,
         });
 
         if (!match) {
-          setFetchFileError({
-            errors: ["Unsupported GitHub URL"],
-            path: queryParamUrl,
-          });
+          setError({ errors: ["Unsupported GitHub URL"], path: queryParamUrl });
           return;
         }
 
         if (!settings.github.token || !settings.github.user) {
-          setFetchFileError({
-            errors: ["You're not authenticated with GitHub."],
-            path: queryParamUrl,
-          });
+          setError({ errors: ["You're not authenticated with GitHub."], path: queryParamUrl });
           return;
         }
 
@@ -129,10 +115,7 @@ export function NewWorkspaceFromUrlPage() {
         });
 
         if (!match) {
-          setFetchFileError({
-            errors: ["Unsupported Gist URL"],
-            path: queryParamUrl,
-          });
+          setError({ errors: ["Unsupported Gist URL"], path: queryParamUrl });
           return;
         }
 
@@ -157,73 +140,50 @@ export function NewWorkspaceFromUrlPage() {
         return;
       }
 
-      //fetch github file
-      // if (settings.github.service.isGithub(queryParamUrl) || settings.github.service.isGithubRaw(queryParamUrl)) {
-      //   settings.github.service
-      //     .fetchGithubFile(settings.github.octokit, queryParamUrl)
-      //     .then((response) => {
-      //       if (canceled) {
-      //         return;
-      //       }
-      //
-      //       return createWorkspaceForFile({
-      //         path: `${extractedFileName}.${filePathExtension}`,
-      //         getFileContents: () => Promise.resolve(encoder.encode(response)),
-      //       });
-      //     })
-      //     .catch((error) => {
-      //       setFetchFileError({ errors: [error], path: queryParamUrl });
-      //     });
-      //   return;
-      // }
+      const extension = extname(url.pathname).replace(".", "");
+      if (!extension) {
+        setError({ errors: [`Can't determine file extension from URL.`], path: queryParamUrl });
+        return;
+      }
 
-      // fetch any file
-      const filePathExtension = extractFileExtension(filePath)!;
-      const extractedFileName = decodeURIComponent(removeFileExtension(removeDirectories(filePath) ?? "unknown"));
-      fetch(queryParamUrl)
-        .then((response) => {
-          if (canceled) {
-            return;
-          }
+      if (extension === "zip") {
+        //TODO: Import ZIP files. This is going to be import for DMN Dev Sandbox.
+      }
 
-          if (!response.ok) {
-            setFetchFileError({
-              errors: [`${response.status} - ${response.statusText}`],
-              path: queryParamUrl,
-            });
-            return;
-          }
+      if (![...globals.editorEnvelopeLocator.mapping.keys()].includes(extension)) {
+        setError({ errors: [`Unsupported extension '${extension}'`], path: queryParamUrl });
+        return;
+      }
 
-          // do not inline this variable.
-          const content = response.text();
+      // import any file
+      const response = await fetch(queryParamUrl);
+      try {
+        if (!response.ok) {
+          setError({ errors: [`${response.status} - ${response.statusText}`], path: queryParamUrl });
+          return;
+        }
 
-          return createWorkspaceForFile({
-            path: `${extractedFileName}.${filePathExtension}`,
-            getFileContents: () => content.then((c) => encoder.encode(c)),
-          });
-        })
-        .catch((error) => {
-          setFetchFileError({ errors: [error], path: queryParamUrl });
+        const content = await response.text();
+
+        await createWorkspaceForFile({
+          path: basename(url.pathname),
+          getFileContents: () => Promise.resolve(encoder.encode(content)),
         });
+      } catch (e) {
+        setError({ errors: [e], path: queryParamUrl });
+        return;
+      }
     }
-    run();
 
-    return () => {
-      canceled = true;
-    };
-  }, [globals.routes, history, queryParamUrl, workspaces, createWorkspaceForFile, settings.github]);
+    run();
+  }, [globals, history, queryParamUrl, workspaces, createWorkspaceForFile, settings.github]);
 
   return (
     <>
       <BusinessAutomationStudioPage>
-        {fetchFileError && <EditorPageErrorPage path={fetchFileError.path} errors={fetchFileError.errors} />}
-        {!fetchFileError && (
-          <PageSection
-            variant={"light"}
-            isFilled={true}
-            padding={{ default: "noPadding" }}
-            className={"kogito--editor__page-section"}
-          >
+        {error && <EditorPageErrorPage path={error.path} errors={error.errors} />}
+        {!error && (
+          <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
             <Bullseye>
               <TextContent>
                 <Bullseye>

@@ -218,10 +218,6 @@
   display: inline;
 }
 
-.kogito--editor__page-section {
-  flex-basis: 100%;
-}
-
 .kogito--editor__drawer-content-close {
   flex-basis: 100vw;
   flex-shrink: 0 !important;

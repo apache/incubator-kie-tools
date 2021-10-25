@@ -226,12 +226,7 @@ export function EditorPage(props: Props) {
 
   return (
     <BusinessAutomationStudioPage>
-      <PageSection
-        variant={"light"}
-        isFilled={true}
-        padding={{ default: "noPadding" }}
-        className={"kogito--editor__page-section"}
-      >
+      <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
         <PromiseStateWrapper
           promise={workspaceFilePromise}
           pending={

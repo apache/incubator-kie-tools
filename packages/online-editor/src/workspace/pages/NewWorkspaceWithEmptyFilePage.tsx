@@ -38,12 +38,7 @@ export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
 
   return (
     <BusinessAutomationStudioPage>
-      <PageSection
-        variant={"light"}
-        isFilled={true}
-        padding={{ default: "noPadding" }}
-        className={"kogito--editor__page-section"}
-      >
+      <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
         <Bullseye>
           <TextContent>
             <Bullseye>

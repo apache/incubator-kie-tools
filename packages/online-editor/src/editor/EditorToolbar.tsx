@@ -442,68 +442,63 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         >
           Current file
         </DropdownItem>
-        <React.Fragment key={`dropdown-fragment-download-svg`}>
-          {shouldIncludeDownloadSvgDropdownItem && (
-            <DropdownItem
-              key={`dropdown-download-svg`}
-              data-testid="dropdown-download-svg"
-              component="button"
-              onClick={downloadSvg}
-              description={`Image of ${props.workspaceFile.name} will be downloaded in SVG format`}
-              icon={<ImageIcon />}
-            >
-              {"Current file's SVG"}
-            </DropdownItem>
-          )}
-        </React.Fragment>
-        <React.Fragment key={`dropdown-fragment-download-all`}>
+        {shouldIncludeDownloadSvgDropdownItem && (
           <DropdownItem
-            onClick={downloadWorkspaceZip}
-            key={"download-zip-item"}
-            description={`A zip file including all files will be downloaded`}
-            icon={<FolderIcon />}
+            key={`dropdown-download-svg`}
+            data-testid="dropdown-download-svg"
+            component="button"
+            onClick={downloadSvg}
+            description={`Image of ${props.workspaceFile.name} will be downloaded in SVG format`}
+            icon={<ImageIcon />}
           >
-            All files
+            {"Current file's SVG"}
           </DropdownItem>
-        </React.Fragment>
+        )}
+        <DropdownItem
+          onClick={downloadWorkspaceZip}
+          key={"download-zip-item"}
+          description={`A zip file including all files will be downloaded`}
+          icon={<FolderIcon />}
+        >
+          All files
+        </DropdownItem>
       </DropdownGroup>,
-      <DropdownGroup key={"other-group"} label="Other">
-        <React.Fragment key={`dropdown-fragment-embed`}>
-          {shouldIncludeEmbedDropdownItem && (
-            <DropdownItem
-              key={`dropdown-embed`}
-              data-testid="dropdown-embed"
-              component="button"
-              onClick={onEmbed}
-              icon={<ColumnsIcon />}
-            >
-              {i18n.editorToolbar.embed}...
-            </DropdownItem>
-          )}
-        </React.Fragment>
-      </DropdownGroup>,
+      ...(shouldIncludeEmbedDropdownItem
+        ? [
+            <Divider key={"divider-other-group"} />,
+            <DropdownGroup key={"other-group"} label="Other">
+              <DropdownItem
+                key={`dropdown-embed`}
+                data-testid="dropdown-embed"
+                component="button"
+                onClick={onEmbed}
+                icon={<ColumnsIcon />}
+              >
+                {i18n.editorToolbar.embed}...
+              </DropdownItem>
+            </DropdownGroup>,
+          ]
+        : []),
       ...(workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL
         ? [
             <DropdownGroup key={"github-group"} label={i18n.names.github}>
-              <React.Fragment key={`dropdown-fragment-export-gist`}>
-                <Tooltip
-                  data-testid={"gist-it-tooltip"}
-                  key={`dropdown-export-gist`}
-                  content={<div>{i18n.editorToolbar.cantCreateGistTooltip}</div>}
-                  trigger={!canCreateGist ? "mouseenter click" : ""}
-                  position="left"
+              <Tooltip
+                data-testid={"gist-it-tooltip"}
+                key={`dropdown-export-gist`}
+                content={<div>{i18n.editorToolbar.cantCreateGistTooltip}</div>}
+                trigger={!canCreateGist ? "mouseenter click" : ""}
+                position="left"
+              >
+                <DropdownItem
+                  icon={<GithubIcon />}
+                  data-testid={"gist-it-button"}
+                  component="button"
+                  onClick={createGist}
+                  isDisabled={!canCreateGist}
                 >
-                  <DropdownItem
-                    icon={<GithubIcon />}
-                    data-testid={"gist-it-button"}
-                    component="button"
-                    onClick={createGist}
-                    isDisabled={!canCreateGist}
-                  >
-                    {i18n.editorToolbar.createGist}
-                  </DropdownItem>
-                </Tooltip>
-              </React.Fragment>
+                  {i18n.editorToolbar.createGist}
+                </DropdownItem>
+              </Tooltip>
             </DropdownGroup>,
           ]
         : []),
@@ -792,21 +787,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         <Dropdown
                           onSelect={() => setSyncDropdownOpen(false)}
                           isOpen={isSyncDropdownOpen}
-                          dropdownItems={[
-                            <DropdownGroup key={"sync-gist-dropdown-group"}>
-                              <Tooltip
-                                data-testid={"gist-it-tooltip"}
-                                key={`dropdown-export-gist`}
-                                content={<div>{i18n.editorToolbar.cantUpdateGistTooltip}</div>}
-                                trigger={!canUpdateGist ? "mouseenter click" : ""}
-                                position="left"
-                              >
-                                <DropdownItem icon={<GithubIcon />} onClick={updateGist} isDisabled={!canUpdateGist}>
-                                  Update Gist
-                                </DropdownItem>
-                              </Tooltip>
-                            </DropdownGroup>,
-                          ]}
                           position={DropdownPosition.right}
                           toggle={
                             <DropdownToggle
@@ -817,6 +797,20 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               Sync
                             </DropdownToggle>
                           }
+                          dropdownItems={[
+                            <DropdownGroup key={"sync-gist-dropdown-group"}>
+                              <Tooltip
+                                data-testid={"gist-it-tooltip"}
+                                content={<div>{i18n.editorToolbar.cantUpdateGistTooltip}</div>}
+                                trigger={!canUpdateGist ? "mouseenter click" : ""}
+                                position="left"
+                              >
+                                <DropdownItem icon={<GithubIcon />} onClick={updateGist} isDisabled={!canUpdateGist}>
+                                  Update Gist
+                                </DropdownItem>
+                              </Tooltip>
+                            </DropdownGroup>,
+                          ]}
                         />
                       </ToolbarItem>
                     )}

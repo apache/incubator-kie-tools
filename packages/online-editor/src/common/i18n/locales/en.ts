@@ -80,7 +80,7 @@ export const en: OnlineI18n = {
   },
   dmnDevSandbox: {
     common: {
-      deployYourModel: "Deploy your model",
+      deployYourModel: "Deploy",
       deployInstanceInfo: "Deploy instance information",
       disclaimer:
         "When you set up the required information, you are able to deploy decision models on your configured instance. All the information you provide is locally stored as browser cookies and they are never shared with anyone.",

@@ -25,6 +25,7 @@ import { FeatureDependentOnKieToolingExtendedServices } from "./FeatureDependent
 import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 import { KieToolingExtendedServicesIcon } from "./KieToolingExtendedServicesIcon";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export function KieToolingExtendedServicesDropdownGroup() {
   const { i18n } = useOnlineI18n();
@@ -52,7 +53,7 @@ export function KieToolingExtendedServicesDropdownGroup() {
         key={"dmn-runner-group"}
         label={
           <>
-            {i18n.names.dmnRunner}
+            {"Run"}
             <KieToolingExtendedServicesIcon />
           </>
         }
@@ -69,11 +70,12 @@ export function KieToolingExtendedServicesDropdownGroup() {
           </DropdownItem>
         </FeatureDependentOnKieToolingExtendedServices>
       </DropdownGroup>
+      <Divider key={"divider-kie-extended-service-dropdown-items"} />
       <DropdownGroup
         key={"dmn-dev-sandbox-group"}
         label={
           <>
-            {i18n.names.dmnDevSandbox}
+            {"Try on OpenShift"}
             <KieToolingExtendedServicesIcon />
           </>
         }

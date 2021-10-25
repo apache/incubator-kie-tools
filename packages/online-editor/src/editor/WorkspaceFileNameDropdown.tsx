@@ -432,7 +432,7 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
             if (file) {
               setSvg({ data: decoder.decode(await file.getFileContents()) });
             } else {
-              setSvg({ error: "Can't find SVG for " + props.workspaceFile.relativePath });
+              setSvg({ error: `Can't find SVG for '${props.workspaceFile.relativePath}'` });
             }
           });
       },
