@@ -325,7 +325,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
   );
 }
 
-function WorkspacesMenuItems(props: {
+export function WorkspacesMenuItems(props: {
   activeMenu: string;
   currentWorkspace: ActiveWorkspace;
   onSelectFile: () => void;
@@ -414,7 +414,7 @@ function WorkspacesMenuItems(props: {
   );
 }
 
-function FileSvg(props: { workspaceFile: WorkspaceFile }) {
+export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
   const workspaces = useWorkspaces();
   const imgRef = useRef<HTMLImageElement>(null);
   const [svg, setSvg] = useDelayedPromiseState<string>(600);
@@ -423,13 +423,7 @@ function FileSvg(props: { workspaceFile: WorkspaceFile }) {
     useCallback(
       ({ canceled }) => {
         Promise.resolve()
-          .then(async () =>
-            workspaces.getFile({
-              fs: await workspaces.fsService.getWorkspaceSvgsFs(props.workspaceFile.workspaceId),
-              workspaceId: props.workspaceFile.workspaceId,
-              relativePath: `${props.workspaceFile.relativePath}.svg`,
-            })
-          )
+          .then(async () => workspaces.svgService.getSvg(props.workspaceFile))
           .then(async (file) => {
             if (canceled.get()) {
               return;
@@ -475,7 +469,7 @@ function FileSvg(props: { workspaceFile: WorkspaceFile }) {
   );
 }
 
-function FilesMenuItems(props: {
+export function FilesMenuItems(props: {
   workspaceDescriptor: WorkspaceDescriptor;
   workspaceFiles: WorkspaceFile[];
   currentWorkspaceFile?: WorkspaceFile;

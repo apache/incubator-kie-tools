@@ -98,7 +98,10 @@ export function AddFileMenu(props: {
     [props, workspaces]
   );
   const addSample = useCallback(
-    (extension: SupportedFileExtensions) => importFromUrl(globals.routes.static.sample.path({ type: extension })),
+    (extension: SupportedFileExtensions) =>
+      importFromUrl(
+        `${window.location.origin}${window.location.pathname}${globals.routes.static.sample.path({ type: extension })}`
+      ),
     [importFromUrl, globals]
   );
 

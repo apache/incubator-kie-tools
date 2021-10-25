@@ -318,7 +318,7 @@ export function HomePage() {
   );
 }
 
-function WorkspaceLoadingCard() {
+export function WorkspaceLoadingCard() {
   return (
     <Card>
       <CardBody>
@@ -330,7 +330,7 @@ function WorkspaceLoadingCard() {
   );
 }
 
-function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSelect: () => void }) {
+export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSelect: () => void }) {
   const globals = useGlobals();
   const history = useHistory();
   const workspaces = useWorkspaces();
@@ -498,7 +498,7 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
   );
 }
 
-function NewModelCard(props: { title: string; extension: SupportedFileExtensions }) {
+export function NewModelCard(props: { title: string; extension: SupportedFileExtensions }) {
   const globals = useGlobals();
 
   return (
@@ -527,7 +527,9 @@ function NewModelCard(props: { title: string; extension: SupportedFileExtensions
           to={{
             pathname: globals.routes.importModel.path({}),
             search: globals.routes.importModel.queryString({
-              url: globals.routes.static.sample.path({ type: props.extension }),
+              url: `${window.location.origin}${window.location.pathname}${globals.routes.static.sample.path({
+                type: props.extension,
+              })}`,
             }),
           }}
         >
@@ -582,7 +584,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
   );
 }
 
-function FileDataListItem(props: { file: WorkspaceFile }) {
+export function FileDataListItem(props: { file: WorkspaceFile }) {
   return (
     <DataListItem>
       <DataListItemRow>

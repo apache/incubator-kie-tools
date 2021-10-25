@@ -19,7 +19,7 @@ import git, { STAGE, WORKDIR } from "isomorphic-git";
 import http from "isomorphic-git/http/web";
 
 export const GIST_DEFAULT_BRANCH = "master";
-export const GIST_ORIGIN_REMOTE_NAME = "gist_origin";
+export const GIST_ORIGIN_REMOTE_NAME = "origin";
 export const GIT_DEFAULT_BRANCH = "main";
 
 export interface CloneArgs {
@@ -27,7 +27,7 @@ export interface CloneArgs {
   repositoryUrl: URL;
   sourceBranch: string;
   dir: string;
-  authInfo: {
+  authInfo?: {
     name: string;
     email: string;
     onAuth: () => { username: string; password: string };
@@ -75,10 +75,12 @@ export class GitService {
       noTags: true,
       depth: 1,
       ref: args.sourceBranch,
-      onAuth: args.authInfo.onAuth,
+      onAuth: args.authInfo?.onAuth,
     });
 
-    await this.gitConfig(args.fs, args.dir, args.authInfo.name, args.authInfo.email);
+    if (args.authInfo) {
+      await this.gitConfig(args.fs, args.dir, args.authInfo.name, args.authInfo.email);
+    }
     console.timeEnd("GitService#clone");
   }
 

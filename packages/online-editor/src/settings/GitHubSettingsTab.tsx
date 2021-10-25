@@ -8,13 +8,17 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { GITHUB_OAUTH_TOKEN_SIZE, GITHUB_TOKENS_HOW_TO_URL, GITHUB_TOKENS_URL } from "./GithubService";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { AuthStatus, useSettings } from "./SettingsContext";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useOnlineI18n } from "../common/i18n";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
+
+export const GITHUB_OAUTH_TOKEN_SIZE = 40;
+export const GITHUB_TOKENS_URL = "https://github.com/settings/tokens";
+export const GITHUB_TOKENS_HOW_TO_URL =
+  "https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line";
 
 export enum GitHubSignInOption {
   PERSONAL_ACCESS_TOKEN,

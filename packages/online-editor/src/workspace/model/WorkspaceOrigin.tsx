@@ -18,19 +18,19 @@ import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../services/GitService"
 
 export enum WorkspaceKind {
   GIST = "GIST",
-  GITHUB_REPOSITORY = "GITHUB_REPOSITORY",
+  GITHUB = "GITHUB",
   LOCAL = "LOCAL",
 }
 
-export type WorkspaceOrigin = LocalOrigin | GistOrigin | GitHubRepositoryOrigin;
+export type WorkspaceOrigin = LocalOrigin | GistOrigin | GitHubOrigin;
 
 export interface LocalOrigin {
   kind: WorkspaceKind.LOCAL;
   branch: typeof GIT_DEFAULT_BRANCH;
 }
 
-export interface GitHubRepositoryOrigin {
-  kind: WorkspaceKind.GITHUB_REPOSITORY;
+export interface GitHubOrigin {
+  kind: WorkspaceKind.GITHUB;
   url: URL;
   branch: string;
 }

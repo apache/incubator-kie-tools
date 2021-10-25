@@ -30,6 +30,8 @@ import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorServic
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import LightningFS from "@isomorphic-git/lightning-fs";
 import { GitService } from "./services/GitService";
+import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
+import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
 
 export const decoder = new TextDecoder("utf-8");
 export const encoder = new TextEncoder();
@@ -88,6 +90,7 @@ export interface LocalFile {
 export interface WorkspacesContextType {
   service: WorkspaceService;
   gitService: GitService;
+  svgService: WorkspaceSvgService;
   descriptorService: WorkspaceDescriptorService;
   fsService: WorkspaceFsService;
 
@@ -98,9 +101,8 @@ export interface WorkspacesContextType {
   }) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
 
   createWorkspaceFromGitRepository: (args: {
-    repositoryUrl: URL;
-    sourceBranch: string;
-    githubSettings: { user: { login: string; email: string; name: string }; token: string };
+    origin: GistOrigin | GitHubOrigin;
+    githubSettings?: { user: { login: string; email: string; name: string }; token: string };
   }) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
 
   // edit workspace

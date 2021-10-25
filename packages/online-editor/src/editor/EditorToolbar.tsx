@@ -319,13 +319,16 @@ export function EditorToolbar(props: Props) {
           }),
         },
       });
+    } catch (e) {
+      errorAlert.show();
+      throw e;
     } finally {
       setGistLoading(false);
       setSyncDropdownOpen(false);
     }
 
     successfullyUpdateGistAlert.show();
-  }, [props.workspaceFile, settings.github, workspaces, successfullyUpdateGistAlert]);
+  }, [successfullyUpdateGistAlert, workspaces, props.workspaceFile, settings.github, errorAlert]);
 
   const createGist = useCallback(async () => {
     try {
@@ -407,19 +410,25 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     setEmbedModalOpen(true);
   }, []);
 
-  const isLocalWorkspace = useMemo(
-    () => workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL,
-    [workspacePromise]
-  );
-
   const workspaceHasNestedDirectories = useMemo(
     () => workspacePromise.data?.files.filter((f) => f.relativePath !== f.name).length !== 0,
     [workspacePromise]
   );
 
   const canCreateGist = useMemo(
-    () => settings.github.authStatus === AuthStatus.SIGNED_IN && isLocalWorkspace && !workspaceHasNestedDirectories,
-    [isLocalWorkspace, settings.github.authStatus, workspaceHasNestedDirectories]
+    () =>
+      settings.github.authStatus === AuthStatus.SIGNED_IN &&
+      workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL &&
+      !workspaceHasNestedDirectories,
+    [workspacePromise, settings.github.authStatus, workspaceHasNestedDirectories]
+  );
+
+  const canUpdateGist = useMemo(
+    () =>
+      settings.github.authStatus === AuthStatus.SIGNED_IN &&
+      workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST &&
+      !workspaceHasNestedDirectories,
+    [workspacePromise, settings.github.authStatus, workspaceHasNestedDirectories]
   );
 
   const shareDropdownItems = useMemo(
@@ -473,7 +482,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           )}
         </React.Fragment>
       </DropdownGroup>,
-      ...(isLocalWorkspace
+      ...(workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL
         ? [
             <DropdownGroup key={"github-group"} label={i18n.names.github}>
               <React.Fragment key={`dropdown-fragment-export-gist`}>
@@ -501,6 +510,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     ],
     [
       onDownload,
+      workspacePromise,
       props.workspaceFile,
       shouldIncludeDownloadSvgDropdownItem,
       downloadSvg,
@@ -508,7 +518,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       shouldIncludeEmbedDropdownItem,
       onEmbed,
       i18n,
-      isLocalWorkspace,
       canCreateGist,
       createGist,
     ]
@@ -789,14 +798,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                 data-testid={"gist-it-tooltip"}
                                 key={`dropdown-export-gist`}
                                 content={<div>{i18n.editorToolbar.cantUpdateGistTooltip}</div>}
-                                trigger={workspaceHasNestedDirectories ? "mouseenter click" : ""}
+                                trigger={!canUpdateGist ? "mouseenter click" : ""}
                                 position="left"
                               >
-                                <DropdownItem
-                                  icon={<GithubIcon />}
-                                  onClick={updateGist}
-                                  isDisabled={workspaceHasNestedDirectories}
-                                >
+                                <DropdownItem icon={<GithubIcon />} onClick={updateGist} isDisabled={!canUpdateGist}>
                                   Update Gist
                                 </DropdownItem>
                               </Tooltip>
@@ -877,7 +882,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   );
 }
 
-function KebabDropdown(props: {
+export function KebabDropdown(props: {
   id: string;
   items: React.ReactNode[];
   state: [boolean, React.Dispatch<React.SetStateAction<boolean>>];

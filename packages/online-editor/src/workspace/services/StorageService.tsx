@@ -28,6 +28,7 @@ export class EagerStorageFile {
     return this.args.content;
   }
 }
+
 export class StorageFile {
   constructor(private readonly args: { path: string; getFileContents: () => Promise<Uint8Array> }) {}
 
@@ -41,7 +42,7 @@ export class StorageFile {
 }
 
 export class StorageService {
-  public async createFileOrOverwriteFile(fs: LightningFS, file: StorageFile) {
+  public async createOrOverwriteFile(fs: LightningFS, file: StorageFile) {
     const contents = await file.getFileContents();
     try {
       await fs.promises.writeFile(file.path, contents);
@@ -116,7 +117,7 @@ export class StorageService {
       getFileContents: file.getFileContents,
       path: newPath,
     });
-    await this.createFileOrOverwriteFile(fs, newFile);
+    await this.createOrOverwriteFile(fs, newFile);
     await this.deleteFile(fs, file.path);
 
     return newFile;

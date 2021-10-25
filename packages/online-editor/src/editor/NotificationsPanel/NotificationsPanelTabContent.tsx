@@ -126,7 +126,7 @@ interface NotificationDrawerGroupProps {
   setAllExpanded: React.Dispatch<boolean | undefined>;
 }
 
-function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
+export function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const onExpand = useCallback(() => {
     setIsExpanded((prevExpanded) => !prevExpanded);

@@ -2,7 +2,6 @@ import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "../common/utils";
 import { Octokit } from "@octokit/rest";
-import { GithubService } from "./GithubService";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
 import { OpenShiftSettingsConfig, readConfigCookie } from "./OpenShiftSettingsConfig";
@@ -63,7 +62,6 @@ export interface SettingsContextType {
     token?: string;
     user?: GithubUser;
     scopes?: string[];
-    service: GithubService;
   };
   general: {
     guidedTourEnabled: {
@@ -155,8 +153,6 @@ export function SettingsContextProvider(props: any) {
     });
   }, [githubAuthService]);
 
-  const githubService = useMemo(() => new GithubService(), []);
-
   //guided tour
   const [isGuidedTourEnabled, setGuidedTourEnabled] = useState(
     getBooleanCookieInitialValue(GUIDED_TOUR_ENABLED_COOKIE_NAME, true)
@@ -199,7 +195,6 @@ export function SettingsContextProvider(props: any) {
         user: githubUser,
         scopes: githubScopes,
         authService: githubAuthService,
-        service: githubService,
       },
       kieToolingExtendedServices: {
         port: {
@@ -221,7 +216,6 @@ export function SettingsContextProvider(props: any) {
     githubAuthStatus,
     githubOctokit,
     githubScopes,
-    githubService,
     githubToken,
     githubUser,
     isGuidedTourEnabled,

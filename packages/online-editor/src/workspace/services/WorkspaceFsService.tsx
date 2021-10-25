@@ -3,36 +3,19 @@ import DexieBackend from "@isomorphic-git/lightning-fs/src/DexieBackend";
 import { InMemoryBackend } from "./InMemoryBackend";
 import DefaultBackend from "@isomorphic-git/lightning-fs/src/DefaultBackend";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
+import { FsCache } from "./FsCache";
 
 export class WorkspaceFsService {
-  constructor(private readonly descriptorService: WorkspaceDescriptorService) {}
-
-  private fsCache = new Map<string, LightningFS>();
-  public async getWorkspaceSvgsFs(workspaceId: string) {
-    return this.getOrCreateFs(`${workspaceId}__svgs`);
-  }
+  constructor(
+    private readonly descriptorService: WorkspaceDescriptorService,
+    private readonly fsCache = new FsCache()
+  ) {}
 
   public async getWorkspaceFs(workspaceId: string) {
     if (!(await this.descriptorService.get(workspaceId))) {
       throw new Error(`Can't get FS for non-existent workspace '${workspaceId}'`);
     }
-    return this.getOrCreateFs(workspaceId);
-  }
-
-  private getOrCreateFs(workspaceId: string) {
-    const fs = this.fsCache.get(workspaceId);
-    if (fs) {
-      return fs;
-    }
-
-    const newFs = new LightningFS(workspaceId, {
-      backend: new DefaultBackend({
-        idbBackendDelegate: (dbName, storeName) => new DexieBackend(dbName, storeName),
-      }) as any,
-    });
-
-    this.fsCache.set(workspaceId, newFs);
-    return newFs;
+    return this.fsCache.getOrCreateFs(workspaceId);
   }
 
   public async withInMemoryFs<T>(workspaceId: string, callback: (fs: LightningFS) => Promise<T>) {

@@ -27,6 +27,7 @@ import { Minimatch } from "minimatch";
 import LightningFS from "@isomorphic-git/lightning-fs";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./WorkspaceFsService";
+import { WorkspaceOrigin } from "../model/WorkspaceOrigin";
 
 export class WorkspaceService {
   public constructor(
@@ -39,8 +40,9 @@ export class WorkspaceService {
     useInMemoryFs: boolean;
     storeFiles: (fs: LightningFS, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
     broadcastArgs: { broadcast: boolean };
+    origin: WorkspaceOrigin;
   }) {
-    const workspace = await this.workspaceDescriptorService.create();
+    const workspace = await this.workspaceDescriptorService.create(args.origin);
 
     const files = await (args.useInMemoryFs
       ? this.fsService.withInMemoryFs(workspace.workspaceId, (fs) => args.storeFiles(fs, workspace))
@@ -144,7 +146,7 @@ export class WorkspaceService {
     file: WorkspaceFile,
     broadcastArgs: { broadcast: boolean }
   ): Promise<void> {
-    await this.storageService.createFileOrOverwriteFile(fs, this.toStorageFile(file));
+    await this.storageService.createOrOverwriteFile(fs, this.toStorageFile(file));
 
     if (broadcastArgs.broadcast) {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);

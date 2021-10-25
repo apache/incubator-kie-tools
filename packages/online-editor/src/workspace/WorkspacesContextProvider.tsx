@@ -23,7 +23,7 @@ import {
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
-import { GIT_DEFAULT_BRANCH, GitService } from "./services/GitService";
+import { CloneArgs, GIT_DEFAULT_BRANCH, GitService } from "./services/GitService";
 import { StorageFile, StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { SUPPORTED_FILES, SUPPORTED_FILES_EDITABLE } from "./SupportedFiles";
@@ -38,6 +38,8 @@ import { Buffer } from "buffer";
 import LightningFS from "@isomorphic-git/lightning-fs";
 import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
+import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
+import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
 
 const GIT_CORS_PROXY = "https://cors.isomorphic-git.org"; // TODO CAPONETTO: Deploy our own proxy (https://github.com/isomorphic-git/cors-proxy)
 
@@ -56,6 +58,7 @@ export function WorkspacesContextProvider(props: Props) {
     () => new WorkspaceService(storageService, descriptorService, fsService),
     [storageService, descriptorService, fsService]
   );
+  const svgService = useMemo(() => new WorkspaceSvgService(service), [service]);
 
   const gitService = useMemo(() => {
     const instance = new GitService(GIT_CORS_PROXY);
@@ -82,11 +85,13 @@ export function WorkspacesContextProvider(props: Props) {
     async (args: {
       useInMemoryFs: boolean;
       storeFiles: (fs: LightningFS, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
+      origin: WorkspaceOrigin;
     }) => {
       const { workspace, files } = await service.create({
         useInMemoryFs: args.useInMemoryFs,
         storeFiles: args.storeFiles,
         broadcastArgs: { broadcast: true },
+        origin: args.origin,
       });
 
       if (files.length <= 0) {
@@ -153,6 +158,7 @@ export function WorkspacesContextProvider(props: Props) {
   const createWorkspaceFromLocal = useCallback(
     async (args: { useInMemoryFs: boolean; localFiles: LocalFile[] }) => {
       return await createWorkspace({
+        origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
         useInMemoryFs: args.useInMemoryFs,
         storeFiles: async (fs: LightningFS, workspace: WorkspaceDescriptor) => {
           await storageService.createFiles(
@@ -201,32 +207,30 @@ export function WorkspacesContextProvider(props: Props) {
 
   const createWorkspaceFromGitRepository = useCallback(
     async (args: {
-      repositoryUrl: URL;
-      sourceBranch: string;
-      githubSettings: { user: { login: string; email: string; name: string }; token: string };
+      origin: GistOrigin | GitHubOrigin;
+      githubSettings?: { user: { login: string; email: string; name: string }; token: string };
     }) => {
-      if (!args.githubSettings.user) {
-        throw new Error("User not authenticated on GitHub");
+      let authInfo: CloneArgs["authInfo"];
+      if (args.githubSettings) {
+        const username = args.githubSettings.user.login;
+        const password = args.githubSettings.token;
+        authInfo = {
+          name: args.githubSettings.user.name,
+          email: args.githubSettings.user.email,
+          onAuth: () => ({ username, password }),
+        };
       }
 
-      const authInfo = {
-        name: args.githubSettings.user.name,
-        email: args.githubSettings.user.email,
-        onAuth: () => ({
-          username: args.githubSettings.user.login,
-          password: args.githubSettings.token,
-        }),
-      };
-
       return await createWorkspace({
+        origin: args.origin,
         useInMemoryFs: true,
         storeFiles: async (fs, workspace) => {
           await gitService.clone({
             fs,
             dir: service.getAbsolutePath({ workspaceId: workspace.workspaceId }),
-            repositoryUrl: args.repositoryUrl,
+            repositoryUrl: args.origin.url,
             authInfo,
-            sourceBranch: args.sourceBranch,
+            sourceBranch: args.origin.branch,
           });
           return service.getFilesWithLazyContent(fs, workspace.workspaceId);
         },
@@ -397,6 +401,7 @@ export function WorkspacesContextProvider(props: Props) {
         service,
         gitService,
         fsService,
+        svgService,
         descriptorService,
         //
         resourceContentGet,

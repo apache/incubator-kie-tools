@@ -13,7 +13,8 @@ import { EditorPageErrorPage, Props } from "../../editor/EditorPageErrorPage";
 import { extractFileExtension, removeDirectories, removeFileExtension } from "../../common/utils";
 import { BusinessAutomationStudioPage } from "../../home/pageTemplate/BusinessAutomationStudioPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { GIT_DEFAULT_BRANCH } from "../services/GitService";
+import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../services/GitService";
+import { WorkspaceKind } from "../model/WorkspaceOrigin";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -26,19 +27,6 @@ export function NewWorkspaceFromUrlPage() {
   const queryParamUrl = useMemo(() => {
     return queryParams.get(QueryParams.URL);
   }, [queryParams]);
-
-  const isSample = useMemo(() => {
-    if (!queryParamUrl) {
-      return false;
-    }
-
-    const fileExtension = extractFileExtension(queryParamUrl);
-    if (!fileExtension || !Array.from(globals.editorEnvelopeLocator.mapping.keys()).includes(fileExtension)) {
-      return false;
-    }
-
-    return queryParamUrl === globals.routes.static.sample.path({ type: fileExtension });
-  }, [globals.editorEnvelopeLocator.mapping, globals.routes.static.sample, queryParamUrl]);
 
   const createWorkspaceForFile = useCallback(
     (file: LocalFile) => {
@@ -62,19 +50,18 @@ export function NewWorkspaceFromUrlPage() {
 
   useEffect(() => {
     let canceled = false;
-    setFetchFileError(undefined);
+    async function run() {
+      setFetchFileError(undefined);
 
-    if (!queryParamUrl) {
-      return;
-    }
+      if (!queryParamUrl) {
+        return;
+      }
 
-    let filePath: string;
-    if (isSample) {
-      filePath = queryParamUrl;
-    } else {
+      let filePath: string;
+      let url: URL;
       try {
-        const validUrl = new URL(queryParamUrl);
-        filePath = validUrl.origin + validUrl.pathname;
+        url = new URL(queryParamUrl);
+        filePath = url.origin + url.pathname;
       } catch (error) {
         setFetchFileError({
           errors: [error],
@@ -82,114 +69,155 @@ export function NewWorkspaceFromUrlPage() {
         });
         return;
       }
-    }
 
-    if (settings.github.service.isGithub(queryParamUrl)) {
-      const url = new URL(queryParamUrl);
-      const match = matchPath<{ org: string; repo: string; tree: string }>(url.pathname, {
-        path: "/:org/:repo/(tree)?/:tree?",
-        exact: true,
-        strict: true,
-      });
-      if (match) {
-        if (!settings.github.token || !settings.github.user) {
-          return;
-        }
-        workspaces
-          .createWorkspaceFromGitRepository({
-            repositoryUrl: url,
-            sourceBranch: match?.params.tree ?? GIT_DEFAULT_BRANCH,
-            githubSettings: {
-              user: {
-                login: settings.github.user.login,
-                email: settings.github.user.email,
-                name: settings.github.user.name,
-              },
-              token: settings.github.token,
-            },
-          })
-          .then(() => {
-            history.replace({ pathname: globals.routes.home.path({}) });
-          });
+      if (url.protocol !== "https:") {
+        setFetchFileError({
+          errors: ["Please use HTTPS."],
+          path: queryParamUrl,
+        });
         return;
       }
-    }
 
-    const filePathExtension = extractFileExtension(filePath)!;
-    const extractedFileName = decodeURIComponent(removeFileExtension(removeDirectories(filePath) ?? "unknown"));
-
-    if (settings.github.service.isGist(queryParamUrl)) {
-      settings.github.service
-        .fetchGistFile(settings.github.octokit, queryParamUrl)
-        .then((content) => {
-          if (canceled) {
-            return;
-          }
-
-          return createWorkspaceForFile({
-            path: `${extractedFileName}.${filePathExtension}`,
-            getFileContents: () => Promise.resolve(encoder.encode(content)),
-          });
-        })
-        .catch((error) => setFetchFileError({ errors: [error], path: queryParamUrl }));
-      return;
-    }
-
-    if (settings.github.service.isGithub(queryParamUrl) || settings.github.service.isGithubRaw(queryParamUrl)) {
-      settings.github.service
-        .fetchGithubFile(settings.github.octokit, queryParamUrl)
-        .then((response) => {
-          if (canceled) {
-            return;
-          }
-
-          return createWorkspaceForFile({
-            path: `${extractedFileName}.${filePathExtension}`,
-            getFileContents: () => Promise.resolve(encoder.encode(response)),
-          });
-        })
-        .catch((error) => {
-          setFetchFileError({ errors: [error], path: queryParamUrl });
+      if (url.host === "github.com") {
+        const match = matchPath<{ org: string; repo: string; tree: string }>(url.pathname, {
+          path: "/:org/:repo/(tree)?/:tree?",
+          exact: true,
+          strict: true,
         });
-      return;
-    }
 
-    fetch(queryParamUrl)
-      .then((response) => {
-        if (canceled) {
-          return;
-        }
-
-        if (!response.ok) {
+        if (!match) {
           setFetchFileError({
-            errors: [`${response.status} - ${response.statusText}`],
+            errors: ["Unsupported GitHub URL"],
             path: queryParamUrl,
           });
           return;
         }
 
-        // do not inline this variable.
-        const content = response.text();
+        if (!settings.github.token || !settings.github.user) {
+          setFetchFileError({
+            errors: ["You're not authenticated with GitHub."],
+            path: queryParamUrl,
+          });
+          return;
+        }
 
-        return createWorkspaceForFile({
-          path: `${extractedFileName}.${filePathExtension}`,
-          getFileContents: () => content.then((c) => encoder.encode(c)),
+        const { workspace, suggestedFirstFile } = await workspaces.createWorkspaceFromGitRepository({
+          origin: { kind: WorkspaceKind.GITHUB, url, branch: match?.params.tree ?? GIT_DEFAULT_BRANCH },
+          githubSettings: { user: settings.github.user, token: settings.github.token },
         });
-      })
-      .catch((error) => {
-        setFetchFileError({ errors: [error], path: queryParamUrl });
-      });
+
+        if (!suggestedFirstFile) {
+          history.replace({ pathname: globals.routes.home.path({}) });
+          return;
+        }
+
+        history.replace({
+          pathname: globals.routes.workspaceWithFilePath.path({
+            workspaceId: workspace.workspaceId,
+            fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
+            extension: suggestedFirstFile.extension,
+          }),
+        });
+        return;
+      }
+
+      if (url.host === "gist.github.com") {
+        const match = matchPath<{ org: string; repo: string; tree: string }>(url.pathname, {
+          path: "/:user/:gistId",
+          exact: true,
+          strict: true,
+        });
+
+        if (!match) {
+          setFetchFileError({
+            errors: ["Unsupported Gist URL"],
+            path: queryParamUrl,
+          });
+          return;
+        }
+
+        url.hash = "";
+
+        const { workspace, suggestedFirstFile } = await workspaces.createWorkspaceFromGitRepository({
+          origin: { kind: WorkspaceKind.GIST, url, branch: GIST_DEFAULT_BRANCH },
+        });
+
+        if (!suggestedFirstFile) {
+          history.replace({ pathname: globals.routes.home.path({}) });
+          return;
+        }
+
+        history.replace({
+          pathname: globals.routes.workspaceWithFilePath.path({
+            workspaceId: workspace.workspaceId,
+            fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
+            extension: suggestedFirstFile.extension,
+          }),
+        });
+        return;
+      }
+
+      //fetch github file
+      // if (settings.github.service.isGithub(queryParamUrl) || settings.github.service.isGithubRaw(queryParamUrl)) {
+      //   settings.github.service
+      //     .fetchGithubFile(settings.github.octokit, queryParamUrl)
+      //     .then((response) => {
+      //       if (canceled) {
+      //         return;
+      //       }
+      //
+      //       return createWorkspaceForFile({
+      //         path: `${extractedFileName}.${filePathExtension}`,
+      //         getFileContents: () => Promise.resolve(encoder.encode(response)),
+      //       });
+      //     })
+      //     .catch((error) => {
+      //       setFetchFileError({ errors: [error], path: queryParamUrl });
+      //     });
+      //   return;
+      // }
+
+      // fetch any file
+      const filePathExtension = extractFileExtension(filePath)!;
+      const extractedFileName = decodeURIComponent(removeFileExtension(removeDirectories(filePath) ?? "unknown"));
+      fetch(queryParamUrl)
+        .then((response) => {
+          if (canceled) {
+            return;
+          }
+
+          if (!response.ok) {
+            setFetchFileError({
+              errors: [`${response.status} - ${response.statusText}`],
+              path: queryParamUrl,
+            });
+            return;
+          }
+
+          // do not inline this variable.
+          const content = response.text();
+
+          return createWorkspaceForFile({
+            path: `${extractedFileName}.${filePathExtension}`,
+            getFileContents: () => content.then((c) => encoder.encode(c)),
+          });
+        })
+        .catch((error) => {
+          setFetchFileError({ errors: [error], path: queryParamUrl });
+        });
+    }
+    run();
 
     return () => {
       canceled = true;
     };
-  }, [globals.routes, history, queryParamUrl, workspaces, isSample, createWorkspaceForFile, settings.github]);
+  }, [globals.routes, history, queryParamUrl, workspaces, createWorkspaceForFile, settings.github]);
 
   return (
     <>
-      {fetchFileError && <EditorPageErrorPage path={fetchFileError.path} errors={fetchFileError.errors} />}
-      {!fetchFileError && (
-        <BusinessAutomationStudioPage>
+      <BusinessAutomationStudioPage>
+        {fetchFileError && <EditorPageErrorPage path={fetchFileError.path} errors={fetchFileError.errors} />}
+        {!fetchFileError && (
           <PageSection
             variant={"light"}
             isFilled={true}
@@ -206,8 +234,8 @@ export function NewWorkspaceFromUrlPage() {
               </TextContent>
             </Bullseye>
           </PageSection>
-        </BusinessAutomationStudioPage>
-      )}
+        )}
+      </BusinessAutomationStudioPage>
     </>
   );
 }
