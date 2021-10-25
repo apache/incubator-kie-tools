@@ -64,9 +64,10 @@ import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedSer
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { GIST_DEFAULT_BRANCH, GIST_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
-import { GistOrigin, WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
+import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -109,12 +110,17 @@ export function EditorToolbar(props: Props) {
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [isWorkspaceAddFileMenuOpen, setWorkspaceAddFileMenuOpen] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
+  const [isGistLoading, setGistLoading] = useState(false);
 
   const successfullyCreateGistAlert = useAlert(
     props.alerts,
     useCallback(
       ({ close }) => {
-        const gistUrl = (workspacePromise.data?.descriptor.origin as GistOrigin).url.toString();
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIST) {
+          return <></>;
+        }
+
+        const gistUrl = workspacePromise.data?.descriptor.origin.url.toString();
         return (
           <Alert
             variant="success"
@@ -128,11 +134,50 @@ export function EditorToolbar(props: Props) {
     )
   );
 
+  const loadingGistAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIST) {
+          return <></>;
+        }
+
+        const gistUrl = workspacePromise.data?.descriptor.origin.url.toString();
+        return (
+          <Alert
+            variant="info"
+            title={
+              <>
+                <Spinner size={"sm"} />
+                &nbsp;&nbsp; Updating gist...
+              </>
+            }
+            actionClose={<AlertActionCloseButton onClose={close} />}
+            actionLinks={<AlertActionLink onClick={() => window.open(gistUrl, "_blank")}>{gistUrl}</AlertActionLink>}
+          />
+        );
+      },
+      [i18n, workspacePromise]
+    )
+  );
+
+  useEffect(() => {
+    if (isGistLoading) {
+      loadingGistAlert.show();
+    } else {
+      loadingGistAlert.close();
+    }
+  }, [isGistLoading, loadingGistAlert]);
+
   const successfullyUpdateGistAlert = useAlert(
     props.alerts,
     useCallback(
       ({ close }) => {
-        const gistUrl = (workspacePromise.data?.descriptor.origin as GistOrigin).url.toString();
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIST) {
+          return <></>;
+        }
+
+        const gistUrl = workspacePromise.data?.descriptor.origin.url.toString();
         return (
           <Alert
             variant="success"
@@ -252,115 +297,111 @@ export function EditorToolbar(props: Props) {
   }, [props.editor]);
 
   const updateGist = useCallback(async () => {
-    const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-    await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId });
+    try {
+      setGistLoading(true);
+      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
+      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId });
 
-    //TODO: Check if there are new changes in the Gist before force-pushing.
+      //TODO: Check if there are new changes in the Gist before force-pushing.
 
-    await workspaces.gitService.push({
-      fs,
-      dir: await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId }),
-      remote: GIST_ORIGIN_REMOTE_NAME,
-      remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
-      force: true,
-      authInfo: {
-        name: "Tiago",
-        email: "tfernand+dev@redhat.com", //FIXME: Change this.
-        onAuth: () => ({
-          username: settings.github.user!.login,
-          password: settings.github.token!,
-        }),
-      },
-    });
+      await workspaces.gitService.push({
+        fs,
+        dir: await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId }),
+        remote: GIST_ORIGIN_REMOTE_NAME,
+        remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
+        force: true,
+        authInfo: {
+          name: "Tiago",
+          email: "tfernand+dev@redhat.com", //FIXME: Change this.
+          onAuth: () => ({
+            username: settings.github.user!.login,
+            password: settings.github.token!,
+          }),
+        },
+      });
+    } finally {
+      setGistLoading(false);
+      setSyncDropdownOpen(false);
+    }
 
     successfullyUpdateGistAlert.show();
   }, [props.workspaceFile, settings.github, workspaces, successfullyUpdateGistAlert]);
 
   const createGist = useCallback(async () => {
-    if (props.editor) {
-      try {
-        const gist = await settings.github.octokit.gists.create({
-          description: workspacePromise.data?.descriptor.name ?? "",
-          public: true,
+    try {
+      setGistLoading(true);
+      const gist = await settings.github.octokit.gists.create({
+        description: workspacePromise.data?.descriptor.name ?? "",
+        public: true,
 
-          // This file is used just for creating the Gist. The `push -f` overwrites it.
-          files: {
-            "README.md": {
-              content: `
+        // This file is used just for creating the Gist. The `push -f` overwrites it.
+        files: {
+          "README.md": {
+            content: `
 This Gist was created from Business Automation Studio. 
 
 This file is temporary and you should not be seeing it. 
 If you are, it means that creating this Gist failed and it can safely be deleted.
 `,
-            },
           },
-        });
+        },
+      });
 
-        if (!gist.data.git_push_url) {
-          throw new Error("Gist creation failed.");
-        }
-
-        await workspaces.descriptorService.turnIntoGist(
-          props.workspaceFile.workspaceId,
-          new URL(gist.data.git_push_url)
-        );
-
-        const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-        const workspaceRootDirPath = await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
-
-        await workspaces.gitService.addRemote({
-          fs,
-          dir: workspaceRootDirPath,
-          url: gist.data.git_push_url,
-          name: GIST_ORIGIN_REMOTE_NAME,
-          force: true,
-        });
-
-        await workspaces.gitService.branch({
-          fs,
-          dir: workspaceRootDirPath,
-          checkout: true,
-          name: GIST_DEFAULT_BRANCH,
-        });
-
-        await workspaces.createSavePoint({
-          fs: fs,
-          workspaceId: props.workspaceFile.workspaceId,
-        });
-
-        await workspaces.gitService.push({
-          fs: fs,
-          dir: workspaceRootDirPath,
-          remote: GIST_ORIGIN_REMOTE_NAME,
-          remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
-          force: true,
-          authInfo: {
-            name: "Tiago",
-            email: "tfernand+dev@redhat.com", //FIXME: Change this.
-            onAuth: () => ({
-              username: settings.github.user!.login,
-              password: settings.github.token!,
-            }),
-          },
-        });
-
-        successfullyCreateGistAlert.show();
-
-        return;
-      } catch (err) {
-        errorAlert.show();
-        throw err;
+      if (!gist.data.git_push_url) {
+        throw new Error("Gist creation failed.");
       }
+
+      await workspaces.descriptorService.turnIntoGist(props.workspaceFile.workspaceId, new URL(gist.data.git_push_url));
+
+      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
+      const workspaceRootDirPath = await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
+
+      await workspaces.gitService.addRemote({
+        fs,
+        dir: workspaceRootDirPath,
+        url: gist.data.git_push_url,
+        name: GIST_ORIGIN_REMOTE_NAME,
+        force: true,
+      });
+
+      await workspaces.gitService.branch({
+        fs,
+        dir: workspaceRootDirPath,
+        checkout: true,
+        name: GIST_DEFAULT_BRANCH,
+      });
+
+      await workspaces.createSavePoint({
+        fs: fs,
+        workspaceId: props.workspaceFile.workspaceId,
+      });
+
+      await workspaces.gitService.push({
+        fs: fs,
+        dir: workspaceRootDirPath,
+        remote: GIST_ORIGIN_REMOTE_NAME,
+        remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
+        force: true,
+        authInfo: {
+          name: "Tiago",
+          email: "tfernand+dev@redhat.com", //FIXME: Change this.
+          onAuth: () => ({
+            username: settings.github.user!.login,
+            password: settings.github.token!,
+          }),
+        },
+      });
+
+      successfullyCreateGistAlert.show();
+
+      return;
+    } catch (err) {
+      errorAlert.show();
+      throw err;
+    } finally {
+      setGistLoading(false);
     }
-  }, [
-    props.editor,
-    props.workspaceFile,
-    settings.github,
-    workspacePromise,
-    workspaces,
-    successfullyCreateGistAlert,
-    errorAlert,
-  ]);
+  }, [props.workspaceFile, settings.github, workspacePromise, workspaces, successfullyCreateGistAlert, errorAlert]);
 
   const onEmbed = useCallback(() => {
     setEmbedModalOpen(true);
@@ -748,7 +789,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                 data-testid={"gist-it-tooltip"}
                                 key={`dropdown-export-gist`}
                                 content={<div>{i18n.editorToolbar.cantUpdateGistTooltip}</div>}
-                                trigger={!workspaceHasNestedDirectories ? "mouseenter click" : ""}
+                                trigger={workspaceHasNestedDirectories ? "mouseenter click" : ""}
                                 position="left"
                               >
                                 <DropdownItem

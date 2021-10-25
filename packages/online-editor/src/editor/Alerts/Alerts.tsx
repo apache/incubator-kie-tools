@@ -21,13 +21,15 @@ export interface AlertsController {
 
 const AUTO_CLOSE_ALERTS_REFRESH_RATE_IN_MS = 1000;
 
+type AlertControl = {
+  alertDelegate: AlertDelegate;
+  autoCloseArgs?: AlertAutoCloseArgs;
+  isShowing: boolean;
+  lastShowedAt?: Date;
+};
+
 export const Alerts = React.forwardRef<AlertsController>((props: {}, forwardedRef) => {
-  const [alerts, setAlerts] = useState(
-    new Map<
-      string,
-      { alertDelegate: AlertDelegate; lastShowedAt?: Date; isShowing: boolean; autoCloseArgs?: AlertAutoCloseArgs }
-    >()
-  );
+  const [alerts, setAlerts] = useState(new Map<string, AlertControl>());
   const [autoCloseAlertsControl, setAutoCloseAlertsControl] = useState(
     new Map<string, { secondsLeft: number; interval: ReturnType<typeof setInterval> }>()
   );
@@ -62,6 +64,7 @@ export const Alerts = React.forwardRef<AlertsController>((props: {}, forwardedRe
           next.set(key, {
             alertDelegate,
             isShowing: prev.get(key)?.isShowing ?? false,
+            lastShowedAt: prev.get(key)?.lastShowedAt,
             autoCloseArgs,
           });
           return next;
