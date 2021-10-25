@@ -513,7 +513,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     }
 
     await workspaces.deleteFile({
-      fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+      fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
       file: props.workspaceFile,
     });
 

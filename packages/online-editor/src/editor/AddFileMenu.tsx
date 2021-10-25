@@ -50,7 +50,7 @@ export function AddFileMenu(props: {
   const addEmptyFile = useCallback(
     async (extension: SupportedFileExtensions) => {
       const file = await workspaces.addEmptyFile({
-        fs: workspaces.fsService.getWorkspaceFs(props.workspaceId),
+        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
         workspaceId: props.workspaceId,
         destinationDirRelativePath: props.destinationDirPath,
         extension,
@@ -83,7 +83,7 @@ export function AddFileMenu(props: {
 
         const content = await response.text();
         const file = await workspaces.addFile({
-          fs: workspaces.fsService.getWorkspaceFs(props.workspaceId),
+          fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
           workspaceId: props.workspaceId,
           name: decodeURIComponent(removeFileExtension(removeDirectories(url) ?? "Imported file")),
           extension: extractFileExtension(url)!,

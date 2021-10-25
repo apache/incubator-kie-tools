@@ -15,7 +15,7 @@ export function useWorkspaceIsModifiedPromise(workspace: ActiveWorkspace | undef
       }
 
       const isModified = await workspaces.isModified({
-        fs: workspaces.fsService.getWorkspaceFs(workspace.descriptor.workspaceId),
+        fs: await workspaces.fsService.getWorkspaceFs(workspace.descriptor.workspaceId),
         workspaceId: workspace.descriptor.workspaceId,
       });
       if (canceled.get()) {
@@ -60,7 +60,10 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
         return;
       }
 
-      const files = await workspaces.getFiles({ fs: workspaces.fsService.getWorkspaceFs(workspaceId), workspaceId });
+      const files = await workspaces.getFiles({
+        fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
+        workspaceId,
+      });
       if (canceled.get()) {
         return;
       }

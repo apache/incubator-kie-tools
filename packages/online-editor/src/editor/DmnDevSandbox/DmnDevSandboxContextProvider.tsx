@@ -110,7 +110,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
 
       const workspaceFiles = (
         await workspaces.getFiles({
-          fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+          fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
           workspaceId: props.workspaceFile.workspaceId,
         })
       ).filter((f) => f.extension === "dmn" || f.extension === "pmml");

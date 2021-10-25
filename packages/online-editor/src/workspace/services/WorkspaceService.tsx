@@ -44,7 +44,7 @@ export class WorkspaceService {
 
     const files = await (args.useInMemoryFs
       ? this.fsService.withInMemoryFs(workspace.workspaceId, (fs) => args.storeFiles(fs, workspace))
-      : args.storeFiles(this.fsService.getWorkspaceFs(workspace.workspaceId), workspace));
+      : args.storeFiles(await this.fsService.getWorkspaceFs(workspace.workspaceId), workspace));
 
     if (args.broadcastArgs.broadcast) {
       const broadcastChannel1 = new BroadcastChannel("workspaces");

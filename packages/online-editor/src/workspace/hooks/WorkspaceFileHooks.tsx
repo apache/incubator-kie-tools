@@ -8,9 +8,9 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
   const [workspaceFilePromise, setWorkspaceFilePromise] = usePromiseState<WorkspaceFile>();
 
   const refresh = useCallback(
-    (workspaceId: string, relativePath: string, canceled: Holder<boolean>) => {
+    async (workspaceId: string, relativePath: string, canceled: Holder<boolean>) => {
       workspaces
-        .getFile({ fs: workspaces.fsService.getWorkspaceFs(workspaceId), workspaceId, relativePath })
+        .getFile({ fs: await workspaces.fsService.getWorkspaceFs(workspaceId), workspaceId, relativePath })
         .then((workspaceFile) => {
           if (canceled.get()) {
             return;

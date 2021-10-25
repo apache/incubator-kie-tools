@@ -163,7 +163,7 @@ export function EditorPage(props: Props) {
 
         //FIXME: Not ideal using service directly.
         await workspaces.service.createOrOverwriteFile(
-          workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
+          await workspaces.fsService.getWorkspaceSvgsFs(workspaceFilePromise.data.workspaceId),
           new WorkspaceFile({
             workspaceId: workspaceFilePromise.data.workspaceId,
             getFileContents: () => Promise.resolve(encoder.encode(svg)),
@@ -173,7 +173,7 @@ export function EditorPage(props: Props) {
         );
 
         await workspaces.updateFile({
-          fs: workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
+          fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
           file: workspaceFilePromise.data,
           getNewContents: () => Promise.resolve(content),
         });
@@ -187,7 +187,7 @@ export function EditorPage(props: Props) {
   const onResourceContentRequest = useCallback(
     async (request: ResourceContentRequest) => {
       return workspaces.resourceContentGet({
-        fs: workspaces.fsService.getWorkspaceFs(props.workspaceId),
+        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
         workspaceId: props.workspaceId,
         relativePath: request.path,
         opts: request.opts,
@@ -197,9 +197,9 @@ export function EditorPage(props: Props) {
   );
 
   const onResourceListRequest = useCallback(
-    (request: ResourceListRequest) => {
+    async (request: ResourceListRequest) => {
       return workspaces.resourceContentList({
-        fs: workspaces.fsService.getWorkspaceFs(props.workspaceId),
+        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
         workspaceId: props.workspaceId,
         globPattern: request.pattern,
         opts: request.opts,

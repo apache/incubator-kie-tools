@@ -84,7 +84,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
 
       //FIXME: Not ideal using service directly.
       const exists = await workspaces.service.existsFile({
-        fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         relativePath: newRelativePath,
       });
@@ -94,7 +94,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
   );
 
   const onRenameWorkspaceFile = useCallback(
-    (newFileName: string | undefined) => {
+    async (newFileName: string | undefined) => {
       if (!newFileName || !newFileNameValid) {
         resetWorkspaceFileName();
         return;
@@ -104,8 +104,8 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
         return;
       }
 
-      workspaces.renameFile({
-        fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+      await workspaces.renameFile({
+        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         file: props.workspaceFile,
         newFileName,
       });
@@ -422,12 +422,14 @@ function FileSvg(props: { workspaceFile: WorkspaceFile }) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        workspaces
-          .getFile({
-            fs: workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
-            workspaceId: props.workspaceFile.workspaceId,
-            relativePath: `${props.workspaceFile.relativePath}.svg`,
-          })
+        Promise.resolve()
+          .then(async () =>
+            workspaces.getFile({
+              fs: await workspaces.fsService.getWorkspaceSvgsFs(props.workspaceFile.workspaceId),
+              workspaceId: props.workspaceFile.workspaceId,
+              relativePath: `${props.workspaceFile.relativePath}.svg`,
+            })
+          )
           .then(async (file) => {
             if (canceled.get()) {
               return;

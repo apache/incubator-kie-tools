@@ -50,8 +50,8 @@ interface Props {
 
 export function WorkspacesContextProvider(props: Props) {
   const storageService = useMemo(() => new StorageService(), []);
-  const fsService = useMemo(() => new WorkspaceFsService(), []);
   const descriptorService = useMemo(() => new WorkspaceDescriptorService(storageService), [storageService]);
+  const fsService = useMemo(() => new WorkspaceFsService(descriptorService), [descriptorService]);
   const service = useMemo(
     () => new WorkspaceService(storageService, descriptorService, fsService),
     [storageService, descriptorService, fsService]
