@@ -26,6 +26,7 @@ import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorWebviewProvider } from "./KogitoEditorWebviewProvider";
 import { VsCodeNotificationsApi } from "@kie-tooling-core/notifications/dist/vscode";
+import { VsCodeJavaCodeCompletionImpl } from "@kie-tooling-core/vscode-lsp/dist/vscode";
 
 /**
  * Starts a Kogito extension.
@@ -52,6 +53,7 @@ export async function startExtension(args: {
   const editorStore = new KogitoEditorStore();
   const messageBroadcaster = new EnvelopeBusMessageBroadcaster();
   const vsCodeNotificationsApi = new VsCodeNotificationsApi(workspaceApi);
+  const vsCodeJavaCodeCompletionChannelApi = new VsCodeJavaCodeCompletionImpl();
   const editorFactory = new KogitoEditorFactory(
     args.context,
     editorStore,
@@ -60,6 +62,7 @@ export async function startExtension(args: {
     workspaceApi,
     args.backendProxy,
     vsCodeNotificationsApi,
+    vsCodeJavaCodeCompletionChannelApi,
     args.viewType,
     vsCodeI18n
   );

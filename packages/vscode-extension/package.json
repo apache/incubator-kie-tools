@@ -29,6 +29,7 @@
     "@kie-tooling-core/i18n": "0.0.0",
     "@kie-tooling-core/keyboard-shortcuts": "0.0.0",
     "@kie-tooling-core/workspace": "0.0.0",
+    "@kie-tooling-core/vscode-lsp": "0.0.0",
     "minimatch": "^3.0.4"
   },
   "devDependencies": {

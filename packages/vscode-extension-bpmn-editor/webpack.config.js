@@ -17,7 +17,7 @@
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const externalAssets = require("@kogito-tooling/external-assets-base");
-
+const vscodeLspExtensionPlugin = require("@kogito-tooling/vscode-lsp-extension-plugin");
 const { merge } = require("webpack-merge");
 const common = require("../../config/webpack.common.config");
 
@@ -56,6 +56,11 @@ module.exports = async (env) => [
           {
             from: externalAssets.bpmnEditorPath(),
             to: "webview/editors/bpmn",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+          {
+            from: vscodeLspExtensionPlugin.path(),
+            to: "server/",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
         ],

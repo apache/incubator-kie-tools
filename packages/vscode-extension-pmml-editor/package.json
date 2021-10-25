@@ -47,6 +47,9 @@
     }
   },
   "contributes": {
+    "javaExtensions": [
+      "./server/vscode-lsp-extension-plugin.jar"
+    ],
     "customEditors": [
       {
         "viewType": "kieKogitoWebviewEditorsPmml",

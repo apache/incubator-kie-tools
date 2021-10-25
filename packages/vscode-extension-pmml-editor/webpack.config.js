@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
+const vscodeLspExtensionPlugin = require("@kogito-tooling/vscode-lsp-extension-plugin");
 const { merge } = require("webpack-merge");
 const common = require("../../config/webpack.common.config");
 
@@ -60,5 +62,16 @@ module.exports = async (env) => [
         ...patternflyBase.webpackModuleRules,
       ],
     },
+    plugins: [
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: vscodeLspExtensionPlugin.path(),
+            to: "server/",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+        ],
+      }),
+    ],
   }),
 ];
