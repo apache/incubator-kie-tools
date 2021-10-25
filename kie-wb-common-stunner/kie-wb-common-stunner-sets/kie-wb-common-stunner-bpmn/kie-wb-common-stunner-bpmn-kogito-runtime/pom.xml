@@ -360,6 +360,11 @@
       <artifactId>elemental2-promise</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Core utility classes -->
     <dependency>

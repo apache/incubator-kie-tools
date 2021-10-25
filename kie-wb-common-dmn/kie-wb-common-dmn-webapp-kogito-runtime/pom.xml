@@ -374,10 +374,6 @@
           <groupId>org.mortbay.jasper</groupId>
           <artifactId>apache-el</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
       </exclusions>
     </dependency>
 
