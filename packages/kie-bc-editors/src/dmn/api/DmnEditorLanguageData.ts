@@ -27,8 +27,14 @@ export function getDmnLanguageData(resourcesPathPrefix: string): GwtLanguageData
         paths: [`${resourcesPathPrefix}/${editors.dmn.name}/css/patternfly.min.css`],
       },
       {
+        type: "css",
+        rel: "stylesheet",
+        paths: [`${resourcesPathPrefix}/kogito-editors-js/dmn-loader.css`],
+      },
+      {
         type: "js",
         paths: [
+          `${resourcesPathPrefix}/kogito-editors-js/dmn-loader.js`,
           `${resourcesPathPrefix}/model/Jsonix-all.js`,
           `${resourcesPathPrefix}/model/DC.js`,
           `${resourcesPathPrefix}/model/DI.js`,

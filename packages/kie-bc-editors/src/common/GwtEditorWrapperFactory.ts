@@ -183,7 +183,7 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
         for (const sheet of resource.paths) {
           const link = document.createElement("link");
           link.href = sheet;
-          link.rel = "text/css";
+          link.rel = resource.rel ?? "text/css";
           document.head.appendChild(link);
         }
         return Promise.resolve();

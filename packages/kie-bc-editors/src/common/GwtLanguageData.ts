@@ -24,4 +24,5 @@ export interface GwtLanguageData {
 export interface Resource {
   type: "css" | "js";
   paths: string[];
+  rel?: HTMLLinkElement["rel"];
 }
