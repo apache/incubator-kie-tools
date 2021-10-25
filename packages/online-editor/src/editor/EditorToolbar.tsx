@@ -66,6 +66,7 @@ import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-
 import { GIST_DEFAULT_BRANCH, GIST_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
 import { GistOrigin, WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -586,239 +587,252 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   }, [deleteWorkspaceFile, props.workspaceFile]);
 
   return (
-    <>
-      <Alerts ref={props.alertsRef} />
-      <PageSection type={"nav"} variant={"light"} padding={{ default: "noPadding" }}>
-        {workspacePromise.data && workspacePromise.data.files.length > 1 && (
-          <Flex justifyContent={{ default: "justifyContentFlexStart" }}>
-            <FlexItem className={"kogito-tooling--masthead-hoverable"}>
-              {(workspaceIsModifiedPromise.data && (
-                <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
-                  <Tooltip content={"There are new changes since your last download."} position={"right"}>
-                    <small>
-                      <SecurityIcon color={"gray"} />
-                    </small>
-                  </Tooltip>
-                </Title>
-              )) || (
-                <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
-                  <Tooltip content={"All changes were downloaded."} position={"right"}>
-                    <small>
-                      <CheckCircleIcon color={"green"} />
-                    </small>
-                  </Tooltip>
-                </Title>
-              )}
-              {workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST && (
-                <>
-                  <Label>Gist</Label>
-                </>
-              )}
-              <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
-                <Title
-                  aria-label={"EmbeddedEditorFile name"}
-                  headingLevel={"h3"}
-                  size={"md"}
-                  style={{ fontStyle: "italic" }}
-                >
-                  {workspacePromise.data.descriptor.name}
-                </Title>
-                <TextInput
-                  ref={workspaceNameRef}
-                  type={"text"}
-                  aria-label={"Edit workspace name"}
-                  onKeyDown={onWorkspaceNameKeyDown}
-                  className={"kogito--editor__toolbar-subtitle"}
-                  onBlur={(e) => onRenameWorkspace(e.target.value)}
-                  style={{ fontStyle: "italic" }}
-                />
-              </div>
-            </FlexItem>
-          </Flex>
-        )}
-      </PageSection>
-      <PageSection type={"nav"} variant={"light"} style={{ paddingTop: 0, paddingBottom: "16px" }}>
-        <Flex
-          justifyContent={{ default: "justifyContentSpaceBetween" }}
-          alignItems={{ default: "alignItemsCenter" }}
-          flexWrap={{ default: "nowrap" }}
-        >
-          <FlexItem>
-            <PageHeaderToolsItem visibility={{ default: "visible" }}>
-              <Flex flexWrap={{ default: "nowrap" }} alignItems={{ default: "alignItemsCenter" }}>
-                <FlexItem>
-                  {workspacePromise.data && (
-                    <WorkspaceFileNameDropdown workspace={workspacePromise.data} workspaceFile={props.workspaceFile} />
-                  )}
-                </FlexItem>
-                <FlexItem>
-                  {(isEdited && (
-                    <Tooltip content={"Saving file..."} position={"bottom"}>
-                      <TextContent style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}>
-                        <Text
-                          aria-label={"Saving file..."}
-                          data-testid="is-saving-indicator"
-                          component={TextVariants.small}
-                        >
-                          <span>
-                            <SyncIcon size={"sm"} />
-                          </span>
-                          &nbsp;
-                          <span>Saving...</span>
-                        </Text>
-                      </TextContent>
-                    </Tooltip>
+    <PromiseStateWrapper
+      promise={workspacePromise}
+      resolved={(workspace) => (
+        <>
+          <Alerts ref={props.alertsRef} />
+          <PageSection type={"nav"} variant={"light"} padding={{ default: "noPadding" }}>
+            {workspacePromise.data && workspacePromise.data.files.length > 1 && (
+              <Flex justifyContent={{ default: "justifyContentFlexStart" }}>
+                <FlexItem className={"kogito-tooling--masthead-hoverable"}>
+                  {(workspaceIsModifiedPromise.data && (
+                    <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
+                      <Tooltip content={"There are new changes since your last download."} position={"right"}>
+                        <small>
+                          <SecurityIcon color={"gray"} />
+                        </small>
+                      </Tooltip>
+                    </Title>
                   )) || (
-                    <Tooltip content={"File is saved"} position={"bottom"}>
-                      <TextContent style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}>
-                        <Text
-                          aria-label={"File is saved"}
-                          data-testid="is-saved-indicator"
-                          component={TextVariants.small}
-                        >
-                          <span>
-                            <CheckCircleIcon size={"sm"} />
-                          </span>
-                          &nbsp;
-                          <span>Saved</span>
-                        </Text>
-                      </TextContent>
-                    </Tooltip>
+                    <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
+                      <Tooltip content={"All changes were downloaded."} position={"right"}>
+                        <small>
+                          <CheckCircleIcon color={"green"} />
+                        </small>
+                      </Tooltip>
+                    </Title>
                   )}
+                  {workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST && (
+                    <>
+                      <Label>Gist</Label>
+                    </>
+                  )}
+                  <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
+                    <Title
+                      aria-label={"EmbeddedEditorFile name"}
+                      headingLevel={"h3"}
+                      size={"md"}
+                      style={{ fontStyle: "italic" }}
+                    >
+                      {workspacePromise.data.descriptor.name}
+                    </Title>
+                    <TextInput
+                      ref={workspaceNameRef}
+                      type={"text"}
+                      aria-label={"Edit workspace name"}
+                      onKeyDown={onWorkspaceNameKeyDown}
+                      className={"kogito--editor__toolbar-subtitle"}
+                      onBlur={(e) => onRenameWorkspace(e.target.value)}
+                      style={{ fontStyle: "italic" }}
+                    />
+                  </div>
                 </FlexItem>
               </Flex>
-            </PageHeaderToolsItem>
-          </FlexItem>
-          <FlexItem>
-            <Toolbar>
-              <ToolbarContent style={{ paddingRight: 0 }}>
-                <ToolbarItem>
-                  <Dropdown
-                    position={"right"}
-                    isOpen={isWorkspaceAddFileMenuOpen}
-                    toggle={
-                      <DropdownToggle
-                        onToggle={setWorkspaceAddFileMenuOpen}
-                        isPrimary={true}
-                        toggleIndicator={CaretDownIcon}
-                      >
-                        <PlusIcon />
-                        &nbsp;&nbsp;New file
-                      </DropdownToggle>
-                    }
-                  >
-                    <AddFileMenu
-                      workspaceId={props.workspaceFile.workspaceId}
-                      destinationDirPath={props.workspaceFile.relativeDirPath}
-                      onAddFile={async (file) => {
-                        setWorkspaceAddFileMenuOpen(false);
-                        history.push({
-                          pathname: globals.routes.workspaceWithFilePath.path({
-                            workspaceId: file.workspaceId,
-                            fileRelativePath: file.relativePathWithoutExtension,
-                            extension: file.extension,
-                          }),
-                        });
-                      }}
-                    />
-                  </Dropdown>
-                </ToolbarItem>
-                <ToolbarItem visibility={hideWhenSmall}>
-                  {props.workspaceFile.extension === "dmn" && <KieToolingExtendedServicesButtons />}
-                </ToolbarItem>
-                {workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST && (
-                  <ToolbarItem>
-                    <Dropdown
-                      onSelect={() => setSyncDropdownOpen(false)}
-                      isOpen={isSyncDropdownOpen}
-                      dropdownItems={[
-                        <DropdownGroup key={"sync-gist-dropdown-group"}>
-                          <Tooltip
-                            data-testid={"gist-it-tooltip"}
-                            key={`dropdown-export-gist`}
-                            content={<div>{i18n.editorToolbar.cantUpdateGistTooltip}</div>}
-                            trigger={!workspaceHasNestedDirectories ? "mouseenter click" : ""}
-                            position="left"
+            )}
+          </PageSection>
+          <PageSection type={"nav"} variant={"light"} style={{ paddingTop: 0, paddingBottom: "16px" }}>
+            <Flex
+              justifyContent={{ default: "justifyContentSpaceBetween" }}
+              alignItems={{ default: "alignItemsCenter" }}
+              flexWrap={{ default: "nowrap" }}
+            >
+              <FlexItem>
+                <PageHeaderToolsItem visibility={{ default: "visible" }}>
+                  <Flex flexWrap={{ default: "nowrap" }} alignItems={{ default: "alignItemsCenter" }}>
+                    <FlexItem>
+                      {workspacePromise.data && (
+                        <WorkspaceFileNameDropdown
+                          workspace={workspacePromise.data}
+                          workspaceFile={props.workspaceFile}
+                        />
+                      )}
+                    </FlexItem>
+                    <FlexItem>
+                      {(isEdited && (
+                        <Tooltip content={"Saving file..."} position={"bottom"}>
+                          <TextContent
+                            style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
                           >
-                            <DropdownItem
-                              icon={<GithubIcon />}
-                              onClick={updateGist}
-                              isDisabled={workspaceHasNestedDirectories}
+                            <Text
+                              aria-label={"Saving file..."}
+                              data-testid="is-saving-indicator"
+                              component={TextVariants.small}
                             >
-                              Update Gist
-                            </DropdownItem>
-                          </Tooltip>
-                        </DropdownGroup>,
-                      ]}
-                      position={DropdownPosition.right}
-                      toggle={
-                        <DropdownToggle
-                          id={"sync-dropdown"}
-                          data-testid={"sync-dropdown"}
-                          onToggle={(isOpen) => setSyncDropdownOpen(isOpen)}
-                        >
-                          Sync
-                        </DropdownToggle>
-                      }
-                    />
-                  </ToolbarItem>
-                )}
-                <ToolbarItem visibility={hideWhenSmall}>
-                  <Dropdown
-                    onSelect={() => setShareDropdownOpen(false)}
-                    isOpen={isShareDropdownOpen}
-                    dropdownItems={shareDropdownItems}
-                    position={DropdownPosition.right}
-                    toggle={
-                      <DropdownToggle
-                        id={"share-dropdown"}
-                        data-testid={"share-dropdown"}
-                        onToggle={(isOpen) => setShareDropdownOpen(isOpen)}
+                              <span>
+                                <SyncIcon size={"sm"} />
+                              </span>
+                              &nbsp;
+                              <span>Saving...</span>
+                            </Text>
+                          </TextContent>
+                        </Tooltip>
+                      )) || (
+                        <Tooltip content={"File is saved"} position={"bottom"}>
+                          <TextContent
+                            style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
+                          >
+                            <Text
+                              aria-label={"File is saved"}
+                              data-testid="is-saved-indicator"
+                              component={TextVariants.small}
+                            >
+                              <span>
+                                <CheckCircleIcon size={"sm"} />
+                              </span>
+                              &nbsp;
+                              <span>Saved</span>
+                            </Text>
+                          </TextContent>
+                        </Tooltip>
+                      )}
+                    </FlexItem>
+                  </Flex>
+                </PageHeaderToolsItem>
+              </FlexItem>
+              <FlexItem>
+                <Toolbar>
+                  <ToolbarContent style={{ paddingRight: 0 }}>
+                    <ToolbarItem>
+                      <Dropdown
+                        position={"right"}
+                        isOpen={isWorkspaceAddFileMenuOpen}
+                        toggle={
+                          <DropdownToggle
+                            onToggle={setWorkspaceAddFileMenuOpen}
+                            isPrimary={true}
+                            toggleIndicator={CaretDownIcon}
+                          >
+                            <PlusIcon />
+                            &nbsp;&nbsp;New file
+                          </DropdownToggle>
+                        }
                       >
-                        {i18n.editorToolbar.share}
-                      </DropdownToggle>
-                    }
-                  />
-                </ToolbarItem>
-                <ToolbarItem visibility={hideWhenSmall} style={{ marginRight: 0 }}>
-                  <KebabDropdown
-                    id={"kebab-lg"}
-                    state={[isLargeKebabOpen, setLargeKebabOpen]}
-                    items={[deleteFileDropdownItem]}
-                  />
-                </ToolbarItem>
-                <ToolbarItem visibility={showWhenSmall} style={{ marginRight: 0 }}>
-                  <KebabDropdown
-                    id={"kebab-sm"}
-                    state={[isSmallKebabOpen, setSmallKebabOpen]}
-                    items={[
-                      deleteFileDropdownItem,
-                      <Divider key={"divider-1"} />,
-                      ...shareDropdownItems,
-                      ...(props.workspaceFile.extension !== "dmn"
-                        ? []
-                        : [
-                            <Divider key={"divider-2"} />,
-                            <KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />,
-                          ]),
-                    ]}
-                  />
-                </ToolbarItem>
-              </ToolbarContent>
-            </Toolbar>
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <EmbedModal
-        workspaceFile={props.workspaceFile}
-        isOpen={isEmbedModalOpen}
-        onClose={() => setEmbedModalOpen(false)}
-      />
-      <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
-      <a ref={downloadRef} />
-      <a ref={downloadAllRef} />
-      <a ref={downloadPreviewRef} />
-    </>
+                        <AddFileMenu
+                          workspaceId={props.workspaceFile.workspaceId}
+                          destinationDirPath={props.workspaceFile.relativeDirPath}
+                          onAddFile={async (file) => {
+                            setWorkspaceAddFileMenuOpen(false);
+                            history.push({
+                              pathname: globals.routes.workspaceWithFilePath.path({
+                                workspaceId: file.workspaceId,
+                                fileRelativePath: file.relativePathWithoutExtension,
+                                extension: file.extension,
+                              }),
+                            });
+                          }}
+                        />
+                      </Dropdown>
+                    </ToolbarItem>
+                    <ToolbarItem visibility={hideWhenSmall}>
+                      {props.workspaceFile.extension === "dmn" && <KieToolingExtendedServicesButtons />}
+                    </ToolbarItem>
+                    {workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST && (
+                      <ToolbarItem>
+                        <Dropdown
+                          onSelect={() => setSyncDropdownOpen(false)}
+                          isOpen={isSyncDropdownOpen}
+                          dropdownItems={[
+                            <DropdownGroup key={"sync-gist-dropdown-group"}>
+                              <Tooltip
+                                data-testid={"gist-it-tooltip"}
+                                key={`dropdown-export-gist`}
+                                content={<div>{i18n.editorToolbar.cantUpdateGistTooltip}</div>}
+                                trigger={!workspaceHasNestedDirectories ? "mouseenter click" : ""}
+                                position="left"
+                              >
+                                <DropdownItem
+                                  icon={<GithubIcon />}
+                                  onClick={updateGist}
+                                  isDisabled={workspaceHasNestedDirectories}
+                                >
+                                  Update Gist
+                                </DropdownItem>
+                              </Tooltip>
+                            </DropdownGroup>,
+                          ]}
+                          position={DropdownPosition.right}
+                          toggle={
+                            <DropdownToggle
+                              id={"sync-dropdown"}
+                              data-testid={"sync-dropdown"}
+                              onToggle={(isOpen) => setSyncDropdownOpen(isOpen)}
+                            >
+                              Sync
+                            </DropdownToggle>
+                          }
+                        />
+                      </ToolbarItem>
+                    )}
+                    <ToolbarItem visibility={hideWhenSmall}>
+                      <Dropdown
+                        onSelect={() => setShareDropdownOpen(false)}
+                        isOpen={isShareDropdownOpen}
+                        dropdownItems={shareDropdownItems}
+                        position={DropdownPosition.right}
+                        toggle={
+                          <DropdownToggle
+                            id={"share-dropdown"}
+                            data-testid={"share-dropdown"}
+                            onToggle={(isOpen) => setShareDropdownOpen(isOpen)}
+                          >
+                            {i18n.editorToolbar.share}
+                          </DropdownToggle>
+                        }
+                      />
+                    </ToolbarItem>
+                    <ToolbarItem visibility={hideWhenSmall} style={{ marginRight: 0 }}>
+                      <KebabDropdown
+                        id={"kebab-lg"}
+                        state={[isLargeKebabOpen, setLargeKebabOpen]}
+                        items={[deleteFileDropdownItem]}
+                      />
+                    </ToolbarItem>
+                    <ToolbarItem visibility={showWhenSmall} style={{ marginRight: 0 }}>
+                      <KebabDropdown
+                        id={"kebab-sm"}
+                        state={[isSmallKebabOpen, setSmallKebabOpen]}
+                        items={[
+                          deleteFileDropdownItem,
+                          <Divider key={"divider-1"} />,
+                          ...shareDropdownItems,
+                          ...(props.workspaceFile.extension !== "dmn"
+                            ? []
+                            : [
+                                <Divider key={"divider-2"} />,
+                                <KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />,
+                              ]),
+                        ]}
+                      />
+                    </ToolbarItem>
+                  </ToolbarContent>
+                </Toolbar>
+              </FlexItem>
+            </Flex>
+          </PageSection>
+          <EmbedModal
+            workspace={workspace.descriptor}
+            workspaceFile={props.workspaceFile}
+            isOpen={isEmbedModalOpen}
+            onClose={() => setEmbedModalOpen(false)}
+          />
+          <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
+          <a ref={downloadRef} />
+          <a ref={downloadAllRef} />
+          <a ref={downloadPreviewRef} />
+        </>
+      )}
+    />
   );
 }
 

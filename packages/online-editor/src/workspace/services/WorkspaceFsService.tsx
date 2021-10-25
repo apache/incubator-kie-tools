@@ -9,14 +9,17 @@ export class WorkspaceFsService {
 
   private fsCache = new Map<string, LightningFS>();
   public async getWorkspaceSvgsFs(workspaceId: string) {
-    return await this.getWorkspaceFs(`${workspaceId}__svgs`);
+    return this.getOrCreateFs(`${workspaceId}__svgs`);
   }
 
   public async getWorkspaceFs(workspaceId: string) {
     if (!(await this.descriptorService.get(workspaceId))) {
       throw new Error(`Can't get FS for non-existent workspace '${workspaceId}'`);
     }
+    return this.getOrCreateFs(workspaceId);
+  }
 
+  private getOrCreateFs(workspaceId: string) {
     const fs = this.fsCache.get(workspaceId);
     if (fs) {
       return fs;

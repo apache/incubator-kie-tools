@@ -16,16 +16,16 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { useOnlineI18n } from "../common/i18n";
-import { useSettings } from "../settings/SettingsContext";
-import { useQueryParams } from "../queryParams/QueryParamsContext";
-import { QueryParams } from "../common/Routes";
 import { WorkspaceFile } from "../workspace/WorkspacesContext";
+import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
+import { GistOrigin, WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
 type SupportedStandaloneEditorFileExtensions = "bpmn" | "bpmn2" | "dmn";
 type StandaloneEditorLibraryName = "BpmnEditor" | "DmnEditor";
@@ -52,17 +52,16 @@ enum ContentSource {
   GIST,
 }
 
-interface Props {
+export function EmbedModal(props: {
+  workspace: WorkspaceDescriptor;
   workspaceFile: WorkspaceFile;
   isOpen: boolean;
   onClose: () => void;
-}
-
-export function EmbedModal(props: Props) {
-  const queryParams = useQueryParams();
-  const settings = useSettings();
+}) {
   const [embedCode, setEmbedCode] = useState("");
-  const [contentSource, setContentSource] = useState(ContentSource.CURRENT_CONTENT);
+  const [contentSource, setContentSource] = useState(
+    props.workspace.origin.kind === WorkspaceKind.GIST ? ContentSource.GIST : ContentSource.CURRENT_CONTENT
+  );
   const [editorContent, setEditorContent] = useState("");
   const { i18n } = useOnlineI18n();
 
@@ -72,36 +71,44 @@ export function EmbedModal(props: Props) {
     }
   }, [props.workspaceFile, props.isOpen]);
 
-  const isGist = useMemo(
-    () => settings.github.service.isGist(queryParams.get(QueryParams.URL) ?? ""),
-    [queryParams, settings.github.service]
-  );
+  const isGist = useMemo(() => props.workspace.origin.kind === WorkspaceKind.GIST, [props.workspace]);
 
   const getCurrentContentScript = useCallback((content: string, libraryName: string) => {
-    const editorContent = content.replace(/(\r\n|\n|\r)/gm, "");
+    const fileContent = content.replace(/(\r\n|\n|\r)/gm, "");
     return `
-    <script>
-      ${libraryName}.open({container: document.body, readOnly: true, initialContent: '${editorContent}', origin: "*" })
-    </script>`;
+<script>
+  ${libraryName}.open({container: document.body, readOnly: true, initialContent: '${fileContent}', origin: "*" })
+</script>
+`;
   }, []);
 
   const getGithubGistScript = useCallback(
     (libraryName: string) => {
+      const gistId = (props.workspace.origin as GistOrigin).url.toString().split("/").pop()!.replace(".git", "");
       return `
-    <script>
-      fetch("${queryParams.get(QueryParams.URL)}")
-        .then(response => response.text())
-        .then(content => ${libraryName}.open({container: document.body, readOnly: true, initialContent: content, origin: "*" }))
-    </script>`;
+<script type="module">
+  import {Octokit} from "https://cdn.skypack.dev/@octokit/rest";
+  async function main() {
+    const gist = await new Octokit().gists.get({ gist_id: "${gistId}" });
+    ${libraryName}.open({ 
+      container: document.body, 
+      readOnly: true, 
+      initialContent: await fetch(gist.data.files["${props.workspaceFile.relativePath}"].raw_url).then(r => r.text()), 
+      origin: "*",
+      resources: new Map([...Object.keys(gist.data.files)].map(n => ([n, { contentType: "text", content: fetch(gist.data.files[n].raw_url).then(r => r.text()) }])))
+    });
+  }
+  main();
+</script>
+`;
     },
-    [queryParams]
+    [props.workspace, props.workspaceFile]
   );
 
-  const getStandaloneEditorIframeSrcdoc = useCallback((script: string, scriptUrl: string) => {
+  const getStandaloneEditorIframeSrcdoc = useCallback((contentScript: string, standaloneEditorLibraryUrl: string) => {
     return `<!DOCTYPE html>
     <html lang="en">
     <head>
-      <script src="${scriptUrl}"></script>
       <title></title>
       <style>
         html,
@@ -114,9 +121,10 @@ export function EmbedModal(props: Props) {
           width: 100%;
         }
       </style>
+      <script src="${standaloneEditorLibraryUrl}"></script>
     </head>
     <body>
-      ${script}
+      ${contentScript}
     </body>
     </html>`;
   }, []);
@@ -133,6 +141,7 @@ export function EmbedModal(props: Props) {
     const iframe = document.createElement("iframe");
     iframe.width = "100%";
     iframe.height = "100%";
+    iframe.style.border = "0";
     const { libraryName, scriptUrl } = editorStandaloneClassMapping.get(props.workspaceFile.extension)!;
 
     const script =
@@ -186,17 +195,27 @@ export function EmbedModal(props: Props) {
         />
       </Tooltip>
       <br />
-      <div className={"kogito--editor__embed-modal-embed-code"}>
-        <p className={"kogito--editor__embed-modal-embed-code-items"}>{i18n.embedModal.embedCode}</p>
-        <ClipboardCopy
-          variant={ClipboardCopyVariant.expansion}
-          className={"kogito--editor__embed-modal-embed-code-items"}
-          aria-label={"Embed code"}
-          type={"text"}
-        >
-          {embedCode}
-        </ClipboardCopy>
-      </div>
+      <Stack hasGutter={true}>
+        <StackItem>
+          <TextContent>
+            <Text component={TextVariants.h4}>{i18n.embedModal.embedCode}</Text>
+          </TextContent>
+        </StackItem>
+        <StackItem>
+          <ClipboardCopy
+            isCode={true}
+            clickTip={"Copied"}
+            hoverTip={"Copy"}
+            variant={ClipboardCopyVariant.expansion}
+            aria-label={"Embed code"}
+          >
+            {embedCode
+              .split("\n")
+              .map((line) => line.trim())
+              .join("")}
+          </ClipboardCopy>
+        </StackItem>
+      </Stack>
     </Modal>
   );
 }
