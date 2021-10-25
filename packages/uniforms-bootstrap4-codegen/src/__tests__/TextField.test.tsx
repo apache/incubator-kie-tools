@@ -34,13 +34,16 @@ describe("<TextField> tests", () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(formElement.html).toContain('<label for="id">label</label>');
-    expect(formElement.html).toContain('id="id"');
+    expect(formElement.html).toContain('<label for="name">label</label>');
+    expect(formElement.html).toContain('id="name"');
     expect(formElement.html).toContain('type="text"');
     expect(formElement.html).toContain('name="name"');
     expect(formElement.html).not.toContain("autoComplete");
     expect(formElement.html).not.toContain("disabled");
     expect(formElement.html).not.toContain("placeholder");
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement.writeValueToModelCode).not.toBeUndefined();
   });
 
   it("<TextField> - TextInput rendering - full", () => {
@@ -57,12 +60,15 @@ describe("<TextField> tests", () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(formElement.html).toContain('<label for="id">label</label>');
-    expect(formElement.html).toContain('id="id"');
+    expect(formElement.html).toContain('<label for="name">label</label>');
+    expect(formElement.html).toContain('id="name"');
     expect(formElement.html).toContain('type="text"');
     expect(formElement.html).toContain('name="name"');
     expect(formElement.html).toContain('autoComplete="off"');
     expect(formElement.html).toContain("disabled");
     expect(formElement.html).toContain('placeholder="placeholder"');
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement.writeValueToModelCode).toBeUndefined();
   });
 });

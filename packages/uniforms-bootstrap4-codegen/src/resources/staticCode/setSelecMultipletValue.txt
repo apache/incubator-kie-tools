@@ -1,0 +1,10 @@
+function setMultipleSelectValues(fieldId, values) {
+    const select = document.getElementById(fieldId);
+    if(!select || !values) {
+        return
+    }
+    const options = select.options;
+    for (let i = 0; i < options.length; i++) {
+        options[i].selected = values.includes(options[i].value);
+    }
+}

@@ -3,155 +3,270 @@
 exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 <div>
   &lt;div&gt;
-  &lt;fieldset&gt;
-    &lt;legend&gt;Personal data&lt;/legend&gt;
-    &lt;div&gt;
-      &lt;div class=&quot;form-group&quot;&gt;
-        &lt;label for=&quot;uniforms-0000-0002&quot;&gt;Name&lt;/label&gt;
-        &lt;input type=&quot;text&quot; id=&quot;uniforms-0000-0002&quot; name=&quot;personalData.name&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
-      &lt;/div&gt;
-
-      &lt;div class=&quot;form-group&quot;&gt;
-        &lt;label for=&quot;uniforms-0000-0003&quot;&gt;Email&lt;/label&gt;
-        &lt;input type=&quot;text&quot; id=&quot;uniforms-0000-0003&quot; name=&quot;personalData.email&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/fieldset&gt;
-
-  &lt;fieldset&gt;
-    &lt;legend&gt;Address&lt;/legend&gt;
-    &lt;div&gt;
-      &lt;div class=&quot;form-group&quot;&gt;
-        &lt;label for=&quot;uniforms-0000-0006&quot;&gt;Street&lt;/label&gt;
-        &lt;input type=&quot;text&quot; id=&quot;uniforms-0000-0006&quot; name=&quot;address.street&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
-      &lt;/div&gt;
-
-      &lt;div class=&quot;form-group&quot;&gt;
-        &lt;label for=&quot;uniforms-0000-0008&quot;&gt;Num&lt;/label&gt;
-        &lt;input type=&quot;number&quot; class=&quot;form-control&quot; id=&quot;uniforms-0000-0008&quot; name=&quot;address.num&quot; step=&quot;1&quot; value=&quot;&quot; /&gt;
-      &lt;/div&gt;
-
-      &lt;div class=&quot;form-group&quot;&gt;
-        &lt;label for=&quot;uniforms-0000-0009&quot;&gt;Cp&lt;/label&gt;
-        &lt;input type=&quot;text&quot; id=&quot;uniforms-0000-0009&quot; name=&quot;address.cp&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
-      &lt;/div&gt;
-
-      &lt;div class=&quot;form-group&quot;&gt;
-        &lt;label for=&quot;uniforms-0000-000a&quot;&gt;City&lt;/label&gt;
-        &lt;input type=&quot;text&quot; id=&quot;uniforms-0000-000a&quot; name=&quot;address.city&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/fieldset&gt;
-
-  &lt;fieldset&gt;
-    &lt;legend&gt;Interview&lt;/legend&gt;
-    &lt;div&gt;
-      &lt;div class=&quot;form-group&quot;&gt;
-        &lt;label for=&quot;uniforms-0000-000e&quot;&gt;Position&lt;/label&gt;
-        &lt;select class=&quot;form-control&quot; id=&quot;uniforms-0000-000e&quot; name=&quot;interview.position&quot;&gt;
-          &lt;option value=&quot;Developer&quot;&gt;Developer&lt;/option&gt;
-
-          &lt;option value=&quot;HR&quot;&gt;HR&lt;/option&gt;
-
-          &lt;option value=&quot;UX&quot;&gt;UX&lt;/option&gt;
-        &lt;/select&gt;
-      &lt;/div&gt;
-
-      &lt;div class=&quot;form-group&quot;&gt;
-        &lt;label for=&quot;uniforms-0000-000g&quot;&gt;Other positions&lt;/label&gt;
-        &lt;select class=&quot;form-control&quot; id=&quot;uniforms-0000-000g&quot; name=&quot;interview.otherPositions&quot; multiple&gt;
-          &lt;option value=&quot;Developer&quot;&gt;Developer&lt;/option&gt;
-
-          &lt;option value=&quot;HR&quot;&gt;HR&lt;/option&gt;
-
-          &lt;option value=&quot;UX&quot;&gt;UX&lt;/option&gt;
-        &lt;/select&gt;
-      &lt;/div&gt;
-
-      &lt;div class=&quot;form-group&quot;&gt;
-        &lt;label for=&quot;uniforms-0000-000i&quot;&gt;Skills&lt;/label&gt;
-
-        &lt;div class=&quot;form-check&quot;&gt;
-          &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000i__Java&quot; name=&quot;interview.skills&quot; value=&quot;Java&quot; /&gt;
-          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000i__Java&quot;&gt;Java&lt;/label&gt;
-        &lt;/div&gt;
-
-        &lt;div class=&quot;form-check&quot;&gt;
-          &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000i__React&quot; name=&quot;interview.skills&quot; value=&quot;React&quot; /&gt;
-          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000i__React&quot;&gt;React&lt;/label&gt;
-        &lt;/div&gt;
-
-        &lt;div class=&quot;form-check&quot;&gt;
-          &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000i__TypeScript&quot; name=&quot;interview.skills&quot; value=&quot;TypeScript&quot; /&gt;
-          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000i__TypeScript&quot;&gt;TypeScript&lt;/label&gt;
-        &lt;/div&gt;
-
-        &lt;div class=&quot;form-check&quot;&gt;
-          &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000i__Quarkus&quot; name=&quot;interview.skills&quot; value=&quot;Quarkus&quot; /&gt;
-          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000i__Quarkus&quot;&gt;Quarkus&lt;/label&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-
-      &lt;div class=&quot;form-group&quot;&gt;
-        &lt;label for=&quot;uniforms-0000-000k&quot;&gt;Age&lt;/label&gt;
-        &lt;input type=&quot;number&quot; class=&quot;form-control&quot; id=&quot;uniforms-0000-000k&quot; name=&quot;interview.age&quot; min=&quot;18&quot; max=&quot;99&quot; step=&quot;1&quot; value=&quot;&quot; /&gt;
-      &lt;/div&gt;
-
-      &lt;div class=&quot;form-group&quot;&gt;
-        &lt;label for=&quot;uniforms-0000-000m&quot;&gt;Salary&lt;/label&gt;
-        &lt;input type=&quot;number&quot; class=&quot;form-control&quot; id=&quot;uniforms-0000-000m&quot; name=&quot;interview.salary&quot; max=&quot;1000.5&quot; step=&quot;0.01&quot; value=&quot;&quot; /&gt;
-      &lt;/div&gt;
-
-      &lt;div class=&quot;form-group&quot;&gt;
-        &lt;label for=&quot;uniforms-0000-000o&quot;&gt;Rating&lt;/label&gt;
-
-        &lt;div class=&quot;form-check&quot;&gt;
-          &lt;input type=&quot;radio&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000o__1&quot; name=&quot;interview.rating&quot; value=&quot;1&quot; /&gt;
-          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000o__1&quot;&gt;1&lt;/label&gt;
-        &lt;/div&gt;
-
-        &lt;div class=&quot;form-check&quot;&gt;
-          &lt;input type=&quot;radio&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000o__2&quot; name=&quot;interview.rating&quot; value=&quot;2&quot; /&gt;
-          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000o__2&quot;&gt;2&lt;/label&gt;
-        &lt;/div&gt;
-
-        &lt;div class=&quot;form-check&quot;&gt;
-          &lt;input type=&quot;radio&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000o__3&quot; name=&quot;interview.rating&quot; value=&quot;3&quot; /&gt;
-          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000o__3&quot;&gt;3&lt;/label&gt;
-        &lt;/div&gt;
-
-        &lt;div class=&quot;form-check&quot;&gt;
-          &lt;input type=&quot;radio&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000o__4&quot; name=&quot;interview.rating&quot; value=&quot;4&quot; /&gt;
-          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000o__4&quot;&gt;4&lt;/label&gt;
-        &lt;/div&gt;
-
-        &lt;div class=&quot;form-check&quot;&gt;
-          &lt;input type=&quot;radio&quot; class=&quot;form-check-input&quot; id=&quot;uniforms-0000-000o__5&quot; name=&quot;interview.rating&quot; value=&quot;5&quot; /&gt;
-          &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000o__5&quot;&gt;5&lt;/label&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-
-      &lt;div class=&quot;form-check&quot;&gt;
-        &lt;input type=&quot;checkbox&quot; id=&quot;uniforms-0000-000q&quot; name=&quot;interview.hire&quot; class=&quot;form-check-input&quot; /&gt;
-        &lt;label class=&quot;form-check-label&quot; for=&quot;uniforms-0000-000q&quot;&gt;Hire&lt;/label&gt;
-      &lt;/div&gt;
-
-      &lt;div class=&quot;form-group&quot;&gt;
-        &lt;label for=&quot;uniforms-0000-000s&quot;&gt;Hiding date&lt;/label&gt;
-        &lt;input type=&quot;datetime-local&quot; id=&quot;uniforms-0000-000s&quot; name=&quot;interview.hidingDate&quot; class=&quot;form-control&quot; /&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/fieldset&gt;
-
-  &lt;div class=&quot;alert alert-warning&quot; role=&quot;alert&quot;&gt;
-    &lt;h4 class=&quot;alert-heading&quot;&gt;Unsupported field type: Array&lt;/h4&gt;
-    &lt;p&gt;Cannot find form control for property &lt;code&gt;friends&lt;/code&gt; with type &lt;code&gt;Array&lt;/code&gt;.&lt;/p&gt;
-    &lt;hr /&gt;
-    &lt;p class=&quot;mb-0&quot;&gt;
-      Some complex property types, such as &lt;code&gt;Array&lt;/code&gt; aren&#39;t yet supported, however, you can still write your own component into the
-      form and manually bind it.
-    &lt;/p&gt;
-  &lt;/div&gt;
+	&lt;fieldset&gt;
+		&lt;legend&gt;Personal data&lt;/legend&gt;
+		&lt;div&gt;
+			&lt;div class=&quot;form-group&quot;&gt;
+				&lt;label for=&quot;personalData.name&quot;&gt;Name&lt;/label&gt;
+				&lt;input type=&quot;text&quot; id=&quot;personalData.name&quot; name=&quot;personalData.name&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;form-group&quot;&gt;
+				&lt;label for=&quot;personalData.email&quot;&gt;Email&lt;/label&gt;
+				&lt;input type=&quot;text&quot; id=&quot;personalData.email&quot; name=&quot;personalData.email&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/fieldset&gt;
+	&lt;fieldset&gt;
+		&lt;legend&gt;Address&lt;/legend&gt;
+		&lt;div&gt;
+			&lt;div class=&quot;form-group&quot;&gt;
+				&lt;label for=&quot;address.street&quot;&gt;Street&lt;/label&gt;
+				&lt;input type=&quot;text&quot; id=&quot;address.street&quot; name=&quot;address.street&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;form-group&quot;&gt;
+				&lt;label for=&quot;address.num&quot;&gt;Num&lt;/label&gt;
+				&lt;input type=&quot;number&quot; class=&quot;form-control&quot; id=&quot;address.num&quot; name=&quot;address.num&quot; step=&quot;1&quot; value=&quot;&quot; /&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;form-group&quot;&gt;
+				&lt;label for=&quot;address.cp&quot;&gt;Cp&lt;/label&gt;
+				&lt;input type=&quot;text&quot; id=&quot;address.cp&quot; name=&quot;address.cp&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;form-group&quot;&gt;
+				&lt;label for=&quot;address.city&quot;&gt;City&lt;/label&gt;
+				&lt;input type=&quot;text&quot; id=&quot;address.city&quot; name=&quot;address.city&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/fieldset&gt;
+	&lt;fieldset&gt;
+		&lt;legend&gt;Interview&lt;/legend&gt;
+		&lt;div&gt;
+			&lt;div class=&quot;form-group&quot;&gt;
+				&lt;label for=&quot;interview.position&quot;&gt;Position&lt;/label&gt;
+				&lt;select class=&quot;form-control&quot; id=&quot;interview.position&quot; name=&quot;interview.position&quot;&gt;
+					&lt;option value=&quot;Developer&quot;&gt;Developer&lt;/option&gt;
+					&lt;option value=&quot;HR&quot;&gt;HR&lt;/option&gt;
+					&lt;option value=&quot;UX&quot;&gt;UX&lt;/option&gt;
+				&lt;/select&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;form-group&quot;&gt;
+				&lt;label for=&quot;interview.otherPositions&quot;&gt;Other positions&lt;/label&gt;
+				&lt;select class=&quot;form-control&quot; id=&quot;interview.otherPositions&quot; name=&quot;interview.otherPositions&quot; multiple&gt;
+					&lt;option value=&quot;Developer&quot;&gt;Developer&lt;/option&gt;
+					&lt;option value=&quot;HR&quot;&gt;HR&lt;/option&gt;
+					&lt;option value=&quot;UX&quot;&gt;UX&lt;/option&gt;
+				&lt;/select&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;form-group&quot;&gt;
+				&lt;label for=&quot;interview.skills&quot;&gt;Skills&lt;/label&gt;
+				&lt;div class=&quot;form-check&quot;&gt;
+					&lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; id=&quot;interview.skills__Java&quot; name=&quot;interview.skills&quot; value=&quot;Java&quot; /&gt;
+					&lt;label class=&quot;form-check-label&quot; for=&quot;interview.skills__Java&quot;&gt;Java&lt;/label&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;form-check&quot;&gt;
+					&lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; id=&quot;interview.skills__React&quot; name=&quot;interview.skills&quot; value=&quot;React&quot; /&gt;
+					&lt;label class=&quot;form-check-label&quot; for=&quot;interview.skills__React&quot;&gt;React&lt;/label&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;form-check&quot;&gt;
+					&lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; id=&quot;interview.skills__TypeScript&quot; name=&quot;interview.skills&quot; value=&quot;TypeScript&quot; /&gt;
+					&lt;label class=&quot;form-check-label&quot; for=&quot;interview.skills__TypeScript&quot;&gt;TypeScript&lt;/label&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;form-check&quot;&gt;
+					&lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; id=&quot;interview.skills__Quarkus&quot; name=&quot;interview.skills&quot; value=&quot;Quarkus&quot; /&gt;
+					&lt;label class=&quot;form-check-label&quot; for=&quot;interview.skills__Quarkus&quot;&gt;Quarkus&lt;/label&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;form-group&quot;&gt;
+				&lt;label for=&quot;interview.age&quot;&gt;Age&lt;/label&gt;
+				&lt;input type=&quot;number&quot; class=&quot;form-control&quot; id=&quot;interview.age&quot; name=&quot;interview.age&quot; min=&quot;18&quot; max=&quot;99&quot; step=&quot;1&quot; value=&quot;&quot; /&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;form-group&quot;&gt;
+				&lt;label for=&quot;interview.salary&quot;&gt;Salary&lt;/label&gt;
+				&lt;input type=&quot;number&quot; class=&quot;form-control&quot; id=&quot;interview.salary&quot; name=&quot;interview.salary&quot; max=&quot;1000.5&quot; step=&quot;0.01&quot; value=&quot;&quot; /&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;form-group&quot;&gt;
+				&lt;label for=&quot;interview.rating&quot;&gt;Rating&lt;/label&gt;
+				&lt;div class=&quot;form-check&quot;&gt;
+					&lt;input type=&quot;radio&quot; class=&quot;form-check-input&quot; id=&quot;interview.rating__1&quot; name=&quot;interview.rating&quot; value=&quot;1&quot; /&gt;
+					&lt;label class=&quot;form-check-label&quot; for=&quot;interview.rating__1&quot;&gt;1&lt;/label&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;form-check&quot;&gt;
+					&lt;input type=&quot;radio&quot; class=&quot;form-check-input&quot; id=&quot;interview.rating__2&quot; name=&quot;interview.rating&quot; value=&quot;2&quot; /&gt;
+					&lt;label class=&quot;form-check-label&quot; for=&quot;interview.rating__2&quot;&gt;2&lt;/label&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;form-check&quot;&gt;
+					&lt;input type=&quot;radio&quot; class=&quot;form-check-input&quot; id=&quot;interview.rating__3&quot; name=&quot;interview.rating&quot; value=&quot;3&quot; /&gt;
+					&lt;label class=&quot;form-check-label&quot; for=&quot;interview.rating__3&quot;&gt;3&lt;/label&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;form-check&quot;&gt;
+					&lt;input type=&quot;radio&quot; class=&quot;form-check-input&quot; id=&quot;interview.rating__4&quot; name=&quot;interview.rating&quot; value=&quot;4&quot; /&gt;
+					&lt;label class=&quot;form-check-label&quot; for=&quot;interview.rating__4&quot;&gt;4&lt;/label&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;form-check&quot;&gt;
+					&lt;input type=&quot;radio&quot; class=&quot;form-check-input&quot; id=&quot;interview.rating__5&quot; name=&quot;interview.rating&quot; value=&quot;5&quot; /&gt;
+					&lt;label class=&quot;form-check-label&quot; for=&quot;interview.rating__5&quot;&gt;5&lt;/label&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;form-check&quot;&gt;
+				&lt;input type=&quot;checkbox&quot; id=&quot;interview.hire&quot; name=&quot;interview.hire&quot; class=&quot;form-check-input&quot; /&gt;
+				&lt;label class=&quot;form-check-label&quot; for=&quot;interview.hire&quot;&gt;Hire&lt;/label&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;form-group&quot;&gt;
+				&lt;label for=&quot;interview.hiringDate&quot;&gt;Hiring date&lt;/label&gt;
+				&lt;input type=&quot;datetime-local&quot; id=&quot;interview.hiringDate&quot; name=&quot;interview.hiringDate&quot; class=&quot;form-control&quot; /&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/fieldset&gt;
+	&lt;div class=&quot;alert alert-warning&quot; role=&quot;alert&quot;&gt;
+		&lt;h4 class=&quot;alert-heading&quot;&gt;Unsupported field type: Array&lt;/h4&gt;
+		&lt;p&gt;Cannot find form control for property &lt;code&gt;friends&lt;/code&gt; with type &lt;code&gt;Array&lt;/code&gt;.&lt;/p&gt;
+		&lt;hr /&gt;
+		&lt;p class=&quot;mb-0&quot;&gt;
+			Some complex property types, such as &lt;code&gt;Array&lt;/code&gt; aren&#39;t yet supported, however, you can still write your own component into the
+			form and manually bind it.
+		&lt;/p&gt;
+	&lt;/div&gt;
+	&lt;script&gt;
+		/* Utility function that fills the form with the data received from the kogito runtime */
+		function setFormData(data) {
+			if (!data) {
+				return;
+			}
+			function setSelectValue(fieldId, value) {
+				const select = document.getElementById(fieldId);
+				if (!select || !value) {
+					return;
+				}
+				select.value = value;
+			}
+			function setMultipleSelectValues(fieldId, values) {
+				const select = document.getElementById(fieldId);
+				if (!select || !values) {
+					return;
+				}
+				const options = select.options;
+				for (let i = 0; i &lt; options.length; i++) {
+					options[i].selected = values.includes(options[i].value);
+				}
+			}
+			function setCheckboxGroupValues(fieldName, values) {
+				if (!values || !values.length) {
+					return;
+				}
+				const checkboxes = document.querySelectorAll(\`[name=&quot;\${fieldName}&quot;]\`);
+				checkboxes.forEach((checkbox) =&gt; {
+					checkbox.checked = values.includes(checkbox.value);
+				});
+			}
+			function setRadioButtonGroupValue(fieldName, value) {
+				if (!value) {
+					return;
+				}
+				const radioButtons = document.querySelectorAll(\`[name=&quot;\${fieldName}&quot;]\`);
+				radioButtons.forEach((radioButton) =&gt; {
+					radioButton.checked = radioButton.value === value;
+				});
+			}
+			document.getElementById(&quot;personalData.name&quot;).value = data?.personalData?.name ?? &quot;&quot;;
+			document.getElementById(&quot;personalData.email&quot;).value = data?.personalData?.email ?? &quot;&quot;;
+			document.getElementById(&quot;address.street&quot;).value = data?.address?.street ?? &quot;&quot;;
+			document.getElementById(&quot;address.num&quot;).value = data?.address?.num ?? &quot;&quot;;
+			document.getElementById(&quot;address.cp&quot;).value = data?.address?.cp ?? &quot;&quot;;
+			document.getElementById(&quot;address.city&quot;).value = data?.address?.city ?? &quot;&quot;;
+			setSelectValue(&quot;interview.position&quot;, data?.interview?.position);
+			setMultipleSelectValues(&quot;interview.otherPositions&quot;, data?.interview?.otherPositions);
+			setCheckboxGroupValues(&quot;interview.skills&quot;, data?.interview?.skills);
+			document.getElementById(&quot;interview.age&quot;).value = data?.interview?.age ?? &quot;&quot;;
+			document.getElementById(&quot;interview.salary&quot;).value = data?.interview?.salary ?? &quot;&quot;;
+			setRadioButtonGroupValue(&quot;interview.rating&quot;, data?.interview?.rating);
+			document.getElementById(&quot;interview.hire&quot;).checked = data?.interview?.hire;
+			document.getElementById(&quot;interview.hiringDate&quot;).value = data?.interview?.hiringDate
+				? new Date(data?.interview?.hiringDate).toISOString().slice(0, 16)
+				: &quot;&quot;;
+		}
+		/* Utility function to generate the expected form output as a json object */
+		function getFormData() {
+			function getMultipleSelectValues(fieldId) {
+				const select = document.getElementById(fieldId);
+				if (!select) {
+					return [];
+				}
+				const selectedValues = [];
+				const options = select.selectedOptions;
+				for (let i = 0; i &lt; options.length; i++) {
+					selectedValues.push(options[i].value);
+				}
+				return selectedValues;
+			}
+			function getCheckboxGroupValues(fieldName) {
+				const checkboxes = document.querySelectorAll(\`[name=&quot;\${fieldName}&quot;]\`);
+				const selectedValues = [];
+				checkboxes.forEach((checkbox) =&gt; {
+					if (checkbox.checked) {
+						selectedValues.push(checkbox.value);
+					}
+				});
+				return selectedValues;
+			}
+			function getRadioButtonGroupValue(fieldName) {
+				const radioButtons = document.querySelectorAll(\`[name=&quot;\${fieldName}&quot;]\`);
+				for (let i = 0; i &lt; radioButtons.length; i++) {
+					if (radioButtons[i].checked) {
+						return radioButtons[i].value;
+					}
+				}
+				return null;
+			}
+			const formData = {};
+			formData.personalData = {};
+			formData.personalData.name = document.getElementById(&quot;personalData.name&quot;).value;
+			formData.personalData.email = document.getElementById(&quot;personalData.email&quot;).value;
+			formData.address = {};
+			formData.address.street = document.getElementById(&quot;address.street&quot;).value;
+			formData.address.num = Number(document.getElementById(&quot;address.num&quot;).value);
+			formData.address.cp = document.getElementById(&quot;address.cp&quot;).value;
+			formData.address.city = document.getElementById(&quot;address.city&quot;).value;
+			formData.interview = {};
+			formData.interview.position = document.getElementById(&quot;interview.position&quot;).value;
+			formData.interview.otherPositions = getMultipleSelectValues(&quot;interview.otherPositions&quot;);
+			formData.interview.skills = getCheckboxGroupValues(&quot;interview.skills&quot;);
+			formData.interview.age = Number(document.getElementById(&quot;interview.age&quot;).value);
+			formData.interview.salary = Number(document.getElementById(&quot;interview.salary&quot;).value);
+			formData.interview.rating = getRadioButtonGroupValue(&quot;interview.rating&quot;);
+			formData.interview.hire = document.getElementById(&quot;interview.hire&quot;).checked;
+			formData.interview.hiringDate = document.getElementById(&quot;interview.hiringDate&quot;).value;
+			return formData;
+		}
+		/* Utility function to validate the form on the &#39;beforeSubmit&#39; Lifecycle Hook */
+		function validateForm() {}
+		/*
+            Call to the Kogito console form engine. It will establish the connection with the console embeding the form
+            and return an instance of FormAPI that will allow hook custom code into the form lifecycle.
+            The \`window.Form.openForm\` call expects an object with the following entries:
+                - onOpen: Callback that will be called after the connection with the console is established. The callback
+                will receive the following arguments:
+                    - data: the data to be bound into the form
+                    - ctx: info about the context where the form is being displayed. This will contain information such as the form JSON Schema, process/task, user...
+        */
+		const formApi = window.Form.openForm({
+			onOpen: (data, context) =&gt; {
+				setFormData(data);
+			},
+		});
+		/*
+            Form Lifecycle Hook that will be executed before the form is submitted.
+            Throwing an error will stop the form submit. Usually should be used to validate the form.
+        */
+		formApi.beforeSubmit = () =&gt; {
+			validateForm();
+		};
+		/*
+            Form Lifecycle Hook that will be executed after the form is submitted.
+            It will receive a response object containing the \`type\` flag indicating if the submit has been successful and \`info\` with extra information about the submit result.
+        */
+		formApi.afterSubmit = (response) =&gt; {};
+		/* Generates the expected form output object to be posted */
+		formApi.getFormData = () =&gt; getFormData();
+	&lt;/script&gt;
 &lt;/div&gt;
 
 </div>

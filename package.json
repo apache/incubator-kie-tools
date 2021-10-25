@@ -57,7 +57,7 @@
     "@vscode/test-web": "^0.0.8",
     "babel-loader": "^8.2.2",
     "chai": "^4.3.4",
-    "chromedriver": "^92.0.0",
+    "chromedriver": "^94.0.0",
     "circular-dependency-plugin": "^5.2.2",
     "compressing": "^1.5.1",
     "copy-webpack-plugin": "^8.1.1",
@@ -137,6 +137,7 @@
     "zip-webpack-plugin": "^4.0.1"
   },
   "resolutions": {
+    "ua-parser-js": "^0.7.30",
     "@types/react": "^17.0.6"
   }
 }

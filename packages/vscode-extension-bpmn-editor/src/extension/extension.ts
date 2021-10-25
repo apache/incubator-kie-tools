@@ -32,7 +32,8 @@ export function activate(context: vscode.ExtensionContext) {
     extensionName: "kie-group.vscode-extension-bpmn-editor",
     context: context,
     viewType: "kieKogitoWebviewEditorsBpmn",
-    getPreviewCommandId: "extension.kogito.getPreviewSvgBpmn",
+    generateSvgCommandId: "extension.kogito.getPreviewSvgBpmn",
+    silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgBpmn",
     editorEnvelopeLocator: {
       targetOrigin: "vscode",
       mapping: new Map([

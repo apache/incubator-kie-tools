@@ -20,6 +20,7 @@ import { buildDefaultInputElement, getInputReference, renderField } from "./util
 import { FormInput, InputReference } from "../api";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { CHECKBOX_GROUP_FUNCTIONS } from "./staticCode/staticCodeBlocks";
+import { ARRAY } from "./utils/dataTypes";
 
 export type CheckBoxGroupProps = HTMLFieldProps<
   string[],
@@ -34,7 +35,7 @@ export type CheckBoxGroupProps = HTMLFieldProps<
 >;
 
 const CheckBoxGroup: React.FC<CheckBoxGroupProps> = (props: CheckBoxGroupProps) => {
-  const ref: InputReference = getInputReference(props.name);
+  const ref: InputReference = getInputReference(props.name, ARRAY);
 
   const jsxCode = props.allowedValues
     ?.map((value) => {
@@ -53,14 +54,13 @@ const CheckBoxGroup: React.FC<CheckBoxGroupProps> = (props: CheckBoxGroupProps) 
     pfImports: ["Checkbox"],
     inputJsxCode: jsxCode || "",
     ref: ref,
-    dataType: "string[]",
-    defaultValue: "[]",
     requiredCode: [CHECKBOX_GROUP_FUNCTIONS],
     wrapper: {
       id: props.id,
       label: props.label,
       required: props.required,
     },
+    disabled: props.disabled,
   });
 
   useAddFormElementToContext(element);

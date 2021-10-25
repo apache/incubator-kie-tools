@@ -51,7 +51,7 @@ try {
   _templates.set(SELECT, new SelectFieldTemplate());
   _templates.set(UNSUPPORTED, new UnsupportedFieldTemplate());
 } catch (err) {
-  console.log(err);
+  console.log("ERROR: ", err);
 }
 
 const getTemplate = (templateId: string): CodeGenTemplate<any, any> => {

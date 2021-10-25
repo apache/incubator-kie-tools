@@ -22,7 +22,7 @@ import FormInputs from "./FormInputs";
 import { CodeGenContext } from "../CodeGenContext";
 import NestedFieldInput from "./NestedFieldInput";
 
-export const renderFormInputs = (schema: Bridge): FormElement<any>[] => {
+export const renderFormInputs = (schema: Bridge): FormElement[] => {
   const codegenCtx: CodeGenContext = {
     rendered: [],
   };

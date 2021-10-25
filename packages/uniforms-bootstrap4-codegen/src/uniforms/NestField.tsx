@@ -46,13 +46,13 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
       if (nestedElement) {
         nestedFields.push(nestedElement);
       } else {
-        console.log(`Cannnot render form field for: '${field}'`);
+        console.log(`Cannot render form field for: '${field}'`);
       }
     });
   }
 
   const properties = {
-    id: id,
+    id: name,
     name: name,
     label: label,
     disabled: disabled,

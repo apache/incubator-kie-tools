@@ -57,6 +57,10 @@ describe("<DateField> tests", () => {
       `onChange={newDate => onDateChange(newDate, ${formElement.ref.stateSetter},  ${formElement.ref.stateName})}`
     );
     expect(formElement.jsxCode).toContain(`value={parseDate(${formElement.ref.stateName})}`);
+    expect(formElement.jsxCode).toContain(`time={parseTime(${formElement.ref.stateName})}`);
+    expect(formElement.jsxCode).toContain(
+      `onChange={(time, hours?, minutes?) => onTimeChange(time, ${formElement.ref.stateSetter}, ${formElement.ref.stateName}, hours, minutes)}`
+    );
     expect(formElement.stateCode).not.toBeNull();
   });
 

@@ -87,6 +87,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
           variant={ButtonVariant.plain}
           onClick={handleMiningSchemaToggle}
           data-title="MiningSchemaModalClose"
+          ouiaId="editor-close"
         >
           <CloseIcon />
         </Button>
@@ -97,7 +98,12 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
   return (
     <>
       {validations.length === 0 && (
-        <Button variant="secondary" onClick={handleMiningSchemaToggle} data-title="MiningSchema">
+        <Button
+          variant="secondary"
+          onClick={handleMiningSchemaToggle}
+          data-title="MiningSchema"
+          ouiaId="open-mining-schema-editor"
+        >
           Set Mining Schema
         </Button>
       )}
@@ -108,6 +114,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
             icon={<WarningTriangleIcon size={"sm"} color={"orange"} />}
             onClick={handleMiningSchemaToggle}
             data-title="MiningSchema"
+            ouiaId="open-mining-schema-editor"
           >
             Set Mining Schema
           </Button>
@@ -122,6 +129,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
         variant={ModalVariant.large}
         onEscapePress={() => false}
         data-title="MiningSchemaModal"
+        ouiaId="mining-schema-editor"
       >
         <MiningSchemaContainer
           modelIndex={modelIndex}

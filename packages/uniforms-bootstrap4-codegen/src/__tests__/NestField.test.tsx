@@ -52,6 +52,9 @@ describe("<NestField> tests", () => {
     expect(inputContainer.ref[0].binding).toEqual("candidate.name");
     expect(inputContainer.ref[1].binding).toEqual("candidate.age");
     expect(inputContainer.ref[2].binding).toEqual("candidate.role");
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement.writeValueToModelCode).not.toBeUndefined();
   });
 
   it("<NestField> - rendering disabled", () => {
@@ -76,5 +79,8 @@ describe("<NestField> tests", () => {
     expect(inputContainer.ref[0].binding).toEqual("candidate.name");
     expect(inputContainer.ref[1].binding).toEqual("candidate.age");
     expect(inputContainer.ref[2].binding).toEqual("candidate.role");
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement.writeValueToModelCode).toBeUndefined();
   });
 });

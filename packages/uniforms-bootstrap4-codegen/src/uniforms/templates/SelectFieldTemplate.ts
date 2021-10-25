@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 
-import select from "!!raw-loader!../../resources/templates/select.template";
-import { AbstractFormGroupInputTemplate, FormElementTemplateProps } from "./types";
-import { template } from "underscore";
+import setRequiredCode from "!!raw-loader!../../resources/staticCode/setSelectValue.txt";
+import setMultipleRequiredCode from "!!raw-loader!../../resources/staticCode/setSelecMultipletValue.txt";
+import getMultipleRequiredCode from "!!raw-loader!../../resources/staticCode/getMultipleSelectValue.txt";
+import input from "!!raw-loader!../../resources/templates/select.template";
+import setValueFromModel from "!!raw-loader!../../resources/templates/select.setModelData.template";
+import writeValueToModel from "!!raw-loader!../../resources/templates/select.writeModelData.template";
+import { FORM_GROUP_TEMPLATE, FormElementTemplate, FormElementTemplateProps } from "./types";
+import { CompiledTemplate, template } from "underscore";
+import { CodeFragment, FormInput } from "../../api";
+import { fieldNameToOptionalChain } from "./utils";
+import { getInputReference } from "../utils/Utils";
 
 export interface Option {
   value: string;
@@ -30,8 +38,51 @@ export interface SelectFieldProps extends FormElementTemplateProps<string> {
   options: Option[];
 }
 
-export class SelectFieldTemplate extends AbstractFormGroupInputTemplate<SelectFieldProps> {
+export class SelectFieldTemplate implements FormElementTemplate<FormInput, SelectFieldProps> {
+  private readonly inputTemplate: CompiledTemplate;
+  private readonly setValueFromModelTemplate: CompiledTemplate;
+  private readonly writeValueToModelTemplate: CompiledTemplate;
+
   constructor() {
-    super(template(select));
+    this.inputTemplate = template(input);
+    this.setValueFromModelTemplate = template(setValueFromModel);
+    this.writeValueToModelTemplate = template(writeValueToModel);
+  }
+
+  render(props: SelectFieldProps): FormInput {
+    const data = {
+      props: props,
+      input: this.inputTemplate({ props: props }),
+    };
+
+    return {
+      ref: getInputReference(props),
+      html: FORM_GROUP_TEMPLATE(data),
+      disabled: props.disabled,
+      setValueFromModelCode: this.buildSetValueFromModelCode(props),
+      writeValueToModelCode: this.writeValueToModelCode(props),
+    };
+  }
+
+  protected buildSetValueFromModelCode(props: SelectFieldProps): CodeFragment {
+    const properties = {
+      ...props,
+      path: fieldNameToOptionalChain(props.name),
+    };
+    return {
+      code: this.setValueFromModelTemplate(properties),
+      requiredCode: props.multiple ? [setMultipleRequiredCode] : [setRequiredCode],
+    };
+  }
+
+  protected writeValueToModelCode(props: SelectFieldProps): CodeFragment | undefined {
+    if (props.disabled) {
+      return undefined;
+    }
+
+    return {
+      requiredCode: props.multiple ? [getMultipleRequiredCode] : undefined,
+      code: this.writeValueToModelTemplate(props),
+    };
   }
 }

@@ -91,9 +91,19 @@ export class KogitoEditableDocument implements CustomDocument {
       }
 
       await vscode.workspace.fs.writeFile(destination, this.encoder.encode(content));
+      this.executeOnSaveHook();
       vscode.window.setStatusBarMessage(i18n.savedSuccessfully, 3000);
     } catch (e) {
       this.vsCodeLogger.error(`Error saving. ${e}`);
+    }
+  }
+
+  private executeOnSaveHook() {
+    const hookId = `kogito.${this.fileExtension}.runOnSave`;
+    const hook = vscode.workspace.getConfiguration().get(hookId, "");
+
+    if (hook) {
+      vscode.commands.executeCommand(hook);
     }
   }
 

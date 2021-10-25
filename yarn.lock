@@ -1684,25 +1684,25 @@
     methods "^1.1.2"
     path-to-regexp "^6.1.0"
 
-"@kogito-tooling/bpmn-editor-unpacked@^8.4.0":
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-8.4.0.tgz#8c995ac1af552b641ea5d9c26c0b0316a9bc45fa"
-  integrity sha512-8s35FnXFHV+aN/vTrR2/PyXm/092xdUBPC9d6L3pRgAkiISC1zIsZQ/30t5kCrLh970mj8/PzO+1yb6TEmkDoA==
+"@kogito-tooling/bpmn-editor-unpacked@^8.4.2":
+  version "8.4.2"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-8.4.2.tgz#aab1efdad932d9b2501e3252842e9a857276fc96"
+  integrity sha512-YY1H2E/VMjUqE4FY/EZt7QWroVDDxwi5IHDkVUdN+ujUAUwZcnb0Dro5LSjWvo2MbCNc97f4NWkwwuU6wEU9mw==
 
-"@kogito-tooling/dmn-editor-unpacked@^8.4.0":
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-8.4.0.tgz#0f2f10af06d22b5132564d64fcb5cc67285306f5"
-  integrity sha512-G9NXmXXAm7qKEYdXvXKNjoQwtdFlzwblfZOQVLg6eagpeOoWhkmZbH2HrSsSR8wCtFdAYIaDwxmIPB9c/i3zqQ==
+"@kogito-tooling/dmn-editor-unpacked@^8.4.2":
+  version "8.4.2"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-8.4.2.tgz#75166bffd5fce276ded30e2f489a0cdda52fb00c"
+  integrity sha512-eKkilpMI3fCLn+mg+8D8LzaRpye6lZy+jEukvaH04wibL4PGrBg0oft5t/QY89usd9RkP1tqZ/Ajnb3n2CIBBQ==
 
 "@kogito-tooling/jitexecutor-native@1.11.1-Final":
   version "1.11.1-Final"
   resolved "https://registry.yarnpkg.com/@kogito-tooling/jitexecutor-native/-/jitexecutor-native-1.11.1-Final.tgz#a51fd1d7ee76fbe616388a5cbe356b008d603df6"
   integrity sha512-KWsI/95HCr7w2tMleAFyv5E4INGE/U9/IBp1FkxWoxRAeWcrC92cJkH0mnv9Fa5jktbvwPKuXfqh3ZLsbSipgw==
 
-"@kogito-tooling/scesim-editor-unpacked@^8.4.0":
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.4.0.tgz#d54bcb87980f5b7a839e76b953956e0ec505f2bd"
-  integrity sha512-2ysSOVgBeN4BqC1hs0OJcuEdU0TD0nRmAj91XP8szKaFttchFOc0jjSCSakFe6p+npdEcyc0H/VD0cPSb42A3g==
+"@kogito-tooling/scesim-editor-unpacked@^8.4.2":
+  version "8.4.2"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.4.2.tgz#d12de81e3d7a5481fd4de4305eb9c7ac1fe31007"
+  integrity sha512-qdGTaCOcbXk/DZls8A5lfwp37Hf3WufbhIWHSMHw313hvgBkk2612rNWrbQg06UwgNdjYRBm3OY2cTJpGzVH4A==
 
 "@lerna/add@4.0.0":
   version "4.0.0"
@@ -4208,6 +4208,13 @@ axios@^0.21.1:
   dependencies:
     follow-redirects "^1.10.0"
 
+axios@^0.21.2:
+  version "0.21.4"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
+  integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
+  dependencies:
+    follow-redirects "^1.14.0"
+
 azure-devops-node-api@^11.0.1:
   version "11.0.1"
   resolved "https://registry.yarnpkg.com/azure-devops-node-api/-/azure-devops-node-api-11.0.1.tgz#b7ec4783230e1de8fc972b23effe7ed2ebac17ff"
@@ -5644,13 +5651,13 @@ chrome-trace-event@^1.0.2:
   dependencies:
     tslib "^1.9.0"
 
-chromedriver@^92.0.0:
-  version "92.0.0"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-92.0.0.tgz#7860efe7d082ec877dc8146aa920d30340fcbb47"
-  integrity sha512-IdJ5n5jLL6tCsGQF/fQHF2gDEhVzoYIqktUn6hE/BSsXlCcyDTi45fQbhTEhZlmshM8+BpnRtPuIT5DRbxNqKg==
+chromedriver@^94.0.0:
+  version "94.0.0"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-94.0.0.tgz#f6a3533976ba72413a01672954040c3544ea9d30"
+  integrity sha512-x4hK7R7iOyAhdLHJEcOyGBW/oa2kno6AqpHVLd+n3G7c2Vk9XcAXMz84XhNItqykJvTc6E3z/JRIT1eHYH//Eg==
   dependencies:
     "@testim/chrome-version" "^1.0.7"
-    axios "^0.21.1"
+    axios "^0.21.2"
     del "^6.0.0"
     extract-zip "^2.0.1"
     https-proxy-agent "^5.0.0"
@@ -8279,6 +8286,11 @@ follow-redirects@^1.10.0:
   version "1.13.2"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.2.tgz#dd73c8effc12728ba5cf4259d760ea5fb83e3147"
   integrity sha512-6mPTgLxYm3r6Bkkg0vNM0HTjfGrOEtsfbhagQvbxDEsEkpNhw582upBaoRZylzen6krEmxXJgt9Ju6HiI4O7BA==
+
+follow-redirects@^1.14.0:
+  version "1.14.4"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.4.tgz#838fdf48a8bbdd79e52ee51fb1c94e3ed98b9379"
+  integrity sha512-zwGkiSXC1MUJG/qmeIFH2HBJx9u0V46QGUe3YR1fXG8bXQxq7fLj0RjLZQ5nubr9qNJUZrH+xUcwXEoXNpfS+g==
 
 for-in@^1.0.2:
   version "1.0.2"
@@ -16312,10 +16324,10 @@ typescript@^4.2.4:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.2.4.tgz#8610b59747de028fda898a8aef0e103f156d0961"
   integrity sha512-V+evlYHZnQkaz8TRBuxTA92yZBPotr5H+WhQ7bD3hZUndx5tGOa1fuCgeSjxAzM1RiN5IzvadIXTVefuuwZCRg==
 
-ua-parser-js@^0.7.21:
-  version "0.7.28"
-  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.28.tgz#8ba04e653f35ce210239c64661685bf9121dec31"
-  integrity sha512-6Gurc1n//gjp9eQNXjD9O3M/sMwVtN5S8Lv9bvOYBfKfDNiIIhqiyi01vMBO45u4zkDE420w/e0se7Vs+sIg+g==
+ua-parser-js@^0.7.21, ua-parser-js@^0.7.30:
+  version "0.7.30"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.30.tgz#4cf5170e8b55ac553fe8b38df3a82f0669671f0b"
+  integrity sha512-uXEtSresNUlXQ1QL4/3dQORcGv7+J2ookOG2ybA/ga9+HYEXueT2o+8dUJQkpedsyTyCJ6jCCirRcKtdtx1kbg==
 
 uc.micro@^1.0.1, uc.micro@^1.0.5:
   version "1.0.6"

@@ -44,7 +44,8 @@ export function activate(context: vscode.ExtensionContext) {
     extensionName: "kogito-tooling-examples.base64png-editor-vscode-extension",
     context: context,
     viewType: "kieKogitoWebviewBase64PNGEditor",
-    getPreviewCommandId: "extension.kogito.getPreviewSvg",
+    generateSvgCommandId: "extension.kogito.getPreviewSvg",
+    silentlyGenerateSvgCommandId: "",
     editorEnvelopeLocator: {
       targetOrigin: "vscode",
       mapping: new Map([

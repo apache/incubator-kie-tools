@@ -43,18 +43,25 @@ describe("<CheckBoxGroupField> tests", () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(formElement.html).toContain(`<label for="${props.id}">${props.label}</label>`);
+    expect(formElement.html).toContain(`<label for="${props.name}">${props.label}</label>`);
 
     const options = formElement.html.match(new RegExp('type="checkbox"', "g")) || [];
     expect(options).toHaveLength(3);
     const names = formElement.html.match(new RegExp('name="roles"', "g")) || [];
     expect(names).toHaveLength(3);
     props.allowedValues.forEach((value) => {
-      expect(formElement.html).toContain(`id="${props.id}__${value}"`);
+      expect(formElement.html).toContain(`id="${props.name}__${value}"`);
       expect(formElement.html).toContain(`value="${value}"`);
-      expect(formElement.html).toContain(`for="${props.id}__${value}">${value}</label>`);
+      expect(formElement.html).toContain(`for="${props.name}__${value}">${value}</label>`);
     });
     expect(formElement.ref.binding).toBe(props.name);
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement?.setValueFromModelCode?.code).not.toBeUndefined();
+    expect(formElement?.setValueFromModelCode?.requiredCode).toHaveLength(1);
+    expect(formElement.writeValueToModelCode).not.toBeUndefined();
+    expect(formElement?.writeValueToModelCode?.code).not.toBeUndefined();
+    expect(formElement?.writeValueToModelCode?.requiredCode).toHaveLength(1);
   });
 
   it("<CheckBoxGroupField> - rendering - disabled", () => {
@@ -75,10 +82,13 @@ describe("<CheckBoxGroupField> tests", () => {
     const disabled = formElement.html.match(new RegExp("disabled", "g")) || [];
     expect(disabled).toHaveLength(3);
     props.allowedValues.forEach((value) => {
-      expect(formElement.html).toContain(`id="${props.id}__${value}"`);
+      expect(formElement.html).toContain(`id="${props.name}__${value}"`);
       expect(formElement.html).toContain(`value="${value}"`);
-      expect(formElement.html).toContain(`for="${props.id}__${value}">${value}</label>`);
+      expect(formElement.html).toContain(`for="${props.name}__${value}">${value}</label>`);
     });
     expect(formElement.ref.binding).toBe(props.name);
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement.writeValueToModelCode).toBeUndefined();
   });
 });

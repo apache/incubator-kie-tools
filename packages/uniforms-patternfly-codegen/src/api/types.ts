@@ -14,25 +14,44 @@
  * limitations under the License.
  */
 
-export interface FormElement<REFERENCE_TYPE> {
+export interface FormElement {
   reactImports: string[];
   pfImports: string[];
 
   requiredCode?: string[];
 
-  ref: REFERENCE_TYPE;
+  ref: InputReference;
 
   stateCode: string;
   jsxCode: string;
+  isReadonly: boolean;
 }
 
-export interface FormInput extends FormElement<InputReference> {}
+abstract class AbstractFormElement implements FormElement {
+  jsxCode: string;
+  pfImports: string[];
+  reactImports: string[];
+  requiredCode?: string[];
+  ref: InputReference;
+  stateCode: string;
+  isReadonly: boolean;
+}
 
-export interface InputsContainer extends FormElement<InputReference[]> {}
+export class FormInput extends AbstractFormElement {}
+
+export class InputsContainer extends AbstractFormElement {
+  childRefs: InputReference[];
+}
 
 export interface InputReference {
   binding: string;
+  dataType: DataType;
 
   stateName: string;
   stateSetter: string;
+}
+
+export interface DataType {
+  name: string;
+  defaultValue?: string;
 }

@@ -44,7 +44,7 @@ const Radio = (props: RadioFieldProps) => {
     }) || [];
 
   const inputProps = {
-    id: props.id,
+    id: props.name,
     name: props.name,
     label: props.label,
     disabled: props.disabled,

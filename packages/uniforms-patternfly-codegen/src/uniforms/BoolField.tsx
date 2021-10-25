@@ -20,6 +20,7 @@ import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 
 import { getInputReference, getStateCodeFromRef, renderField } from "./utils/Utils";
+import { BOOLEAN } from "./utils/dataTypes";
 
 export type BoolFieldProps = HTMLFieldProps<
   boolean,
@@ -31,9 +32,9 @@ export type BoolFieldProps = HTMLFieldProps<
 >;
 
 const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
-  const ref: InputReference = getInputReference(props.name);
+  const ref: InputReference = getInputReference(props.name, BOOLEAN);
 
-  const stateCode = getStateCodeFromRef(ref, "boolean");
+  const stateCode = getStateCodeFromRef(ref);
 
   const jsxCode = `<FormGroup fieldId='${props.id}'>
     <Checkbox
@@ -52,6 +53,7 @@ const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
     reactImports: ["useState"],
     jsxCode,
     stateCode,
+    isReadonly: props.disabled,
   };
 
   useAddFormElementToContext(element);

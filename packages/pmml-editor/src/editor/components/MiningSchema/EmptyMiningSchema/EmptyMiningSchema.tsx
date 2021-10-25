@@ -10,7 +10,7 @@ import { BoxesIcon } from "@patternfly/react-icons/dist/js/icons/boxes-icon";
 
 const EmptyMiningSchema = () => {
   return (
-    <EmptyState variant={EmptyStateVariant.large}>
+    <EmptyState variant={EmptyStateVariant.large} data-ouia-component-id="no-mining-fields">
       <EmptyStateIcon icon={BoxesIcon} />
       <Title headingLevel="h4" size="lg">
         No Mining Fields found

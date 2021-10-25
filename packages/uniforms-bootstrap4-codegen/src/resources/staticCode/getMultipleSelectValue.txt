@@ -1,0 +1,12 @@
+function getMultipleSelectValues(fieldId) {
+    const select = document.getElementById(fieldId);
+    if(!select) {
+        return []
+    }
+    const selectedValues = [];
+    const options = select.selectedOptions;
+    for (let i = 0; i < options.length; i++) {
+        selectedValues.push(options[i].value);
+    }
+    return selectedValues;
+}

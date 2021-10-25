@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
-const _staticBlocks: Map<string, string> = new Map<string, string>();
+export function fieldNameToOptionalChain(fieldName: string): string {
+  if (!fieldName) {
+    return "";
+  }
 
-export const getStaticCodeBlock = (blockName: string): string | undefined => {
-  return _staticBlocks.get(blockName);
-};
+  return fieldName.split(".").join("?.");
+}
+
+export function flatFieldName(fieldName: string): string {
+  if (!fieldName) {
+    return "";
+  }
+
+  return fieldName.split(".").join("__");
+}

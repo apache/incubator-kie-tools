@@ -62,7 +62,7 @@ const schema = {
     uniforms: { checkboxes: true },
   },
   "interview.hire": Boolean,
-  "interview.hidingDate": Date,
+  "interview.hiringDate": Date,
   friends: { type: Array },
   "friends.$": Object,
   "friends.$.name": { type: String },

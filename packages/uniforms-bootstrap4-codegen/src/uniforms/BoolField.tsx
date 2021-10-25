@@ -32,7 +32,7 @@ export type BoolFieldProps = HTMLFieldProps<
 
 const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
   const properties = {
-    id: props.id,
+    id: props.name,
     name: props.name,
     label: props.label,
     disabled: props.disabled ?? false,

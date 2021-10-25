@@ -1,0 +1,5 @@
+<% if(multiple) { %>
+setMultipleSelectValues("<%=id%>", data?.<%=path%>);
+<% } else { %>
+setSelectValue("<%=id%>", data?.<%=path%>);
+<% } %>

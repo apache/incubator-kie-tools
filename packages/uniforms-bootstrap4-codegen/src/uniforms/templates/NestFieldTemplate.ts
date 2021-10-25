@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-import nestFieldTemplate from "!!raw-loader!../../resources/templates/nestField.template";
-import { FormElementTemplateProps, FormElementTemplate } from "./types";
-import { FormElement, FormInputContainer, InputReference } from "../../api";
+import nestField from "!!raw-loader!../../resources/templates/nestField.template";
+import setValueFromModel from "!!raw-loader!../../resources/templates/nestField.setModelData.template";
+import writeValueToModel from "!!raw-loader!../../resources/templates/nestField.writeModelData.template";
+import { FormElementTemplate, FormElementTemplateProps } from "./types";
+import { CodeFragment, FormElement, FormInputContainer, InputReference } from "../../api";
 import { CompiledTemplate, template } from "underscore";
 import { union } from "lodash";
 
@@ -25,11 +27,15 @@ interface NestFieldTemplateProps extends FormElementTemplateProps<any> {
 }
 
 export class NestFieldTemplate implements FormElementTemplate<FormInputContainer, NestFieldTemplateProps> {
-  private readonly nestFieldTemplate: CompiledTemplate = template(nestFieldTemplate);
+  private readonly nestFieldTemplate: CompiledTemplate = template(nestField);
+  private readonly nestFieldSetValueFromModelTemplate: CompiledTemplate = template(setValueFromModel);
+  private readonly nestFieldWriteValueToModelTemplate: CompiledTemplate = template(writeValueToModel);
 
   render(props: NestFieldTemplateProps): FormInputContainer {
     const ref: InputReference[] = [];
-    let requiredCode: string[] = [];
+
+    let setValueFromModelRequiredCode: string[] = [];
+    let writeValueToModelRequiredCode: string[] = [];
 
     props.children.forEach((child: FormElement<any>) => {
       if (Array.isArray(child.ref)) {
@@ -37,15 +43,45 @@ export class NestFieldTemplate implements FormElementTemplate<FormInputContainer
       } else {
         ref.push(child.ref);
       }
-      if (child.requiredCode) {
-        requiredCode = union(requiredCode, child.requiredCode);
+
+      if (child.setValueFromModelCode) {
+        setValueFromModelRequiredCode = union(setValueFromModelRequiredCode, child.setValueFromModelCode.requiredCode);
+      }
+
+      if (child.writeValueToModelCode) {
+        writeValueToModelRequiredCode = union(writeValueToModelRequiredCode, child.writeValueToModelCode.requiredCode);
       }
     });
 
     return {
       ref,
       html: this.nestFieldTemplate({ props: props }),
-      requiredCode,
+      disabled: props.disabled,
+      setValueFromModelCode: this.buildSetValueFromModelCode(props, setValueFromModelRequiredCode),
+      writeValueToModelCode: this.buildWriteValueFromModelCode(props, writeValueToModelRequiredCode),
+    };
+  }
+
+  protected buildSetValueFromModelCode(
+    props: NestFieldTemplateProps,
+    setValueFromModelRequiredCode: string[]
+  ): CodeFragment {
+    return {
+      code: this.nestFieldSetValueFromModelTemplate({ props: props }),
+      requiredCode: setValueFromModelRequiredCode,
+    };
+  }
+
+  protected buildWriteValueFromModelCode(
+    props: NestFieldTemplateProps,
+    writeValueToModelRequiredCode: string[]
+  ): CodeFragment | undefined {
+    if (props.disabled) {
+      return undefined;
+    }
+    return {
+      code: this.nestFieldWriteValueToModelTemplate({ props: props }),
+      requiredCode: writeValueToModelRequiredCode,
     };
   }
 }

@@ -218,6 +218,8 @@ const MiningSchemaPropertiesEdit = ({
                           setSubmitChanges(true);
                         }}
                         selection={usageType}
+                        data-ouia-component-id="usage-type"
+                        data-ouia-component-type="option-box"
                       />
                     </FormGroup>
                   </SplitItem>
@@ -252,6 +254,8 @@ const MiningSchemaPropertiesEdit = ({
                     name="importance"
                     aria-describedby="Importance"
                     value={importance ?? ""}
+                    data-ouia-component-id="importance"
+                    data-ouia-component-type="double-input"
                     validated={validationsImportance.length === 0 ? "default" : "warning"}
                     onChange={(value) => setImportance(toNumberOrUndefined(value))}
                     onBlur={() => {
@@ -286,6 +290,7 @@ const MiningSchemaPropertiesEdit = ({
                           setSubmitChanges(true);
                         }}
                         selection={outliers}
+                        data-ouia-component-id="outliers"
                       />
                     </FormGroup>
                   </SplitItem>
@@ -322,6 +327,8 @@ const MiningSchemaPropertiesEdit = ({
                         className={!enableLowValueComponent ? "mining-schema__edit__form__disabled" : ""}
                         onChange={(value) => setLowValue(toNumberOrUndefined(value))}
                         onBlur={handleSave}
+                        data-ouia-component-id="low-value"
+                        data-ouia-component-type="outliers-property"
                       />
                     </FormGroup>
                   </SplitItem>
@@ -358,6 +365,8 @@ const MiningSchemaPropertiesEdit = ({
                         className={!enableHighValueComponent ? "mining-schema__edit__form__disabled" : ""}
                         onChange={(value) => setHighValue(toNumberOrUndefined(value))}
                         onBlur={handleSave}
+                        data-ouia-component-id="high-value"
+                        data-ouia-component-type="outliers-property"
                       />
                     </FormGroup>
                   </SplitItem>
@@ -475,7 +484,13 @@ const MiningSchemaPropertiesEdit = ({
           </Form>
         </section>
         <section className="mining-schema__edit__actions">
-          <Button variant="primary" onClick={onClose} icon={<ArrowAltCircleLeftIcon />} iconPosition="left">
+          <Button
+            variant="primary"
+            onClick={onClose}
+            icon={<ArrowAltCircleLeftIcon />}
+            iconPosition="left"
+            ouiaId="back-to-ms-overview"
+          >
             Back
           </Button>
         </section>

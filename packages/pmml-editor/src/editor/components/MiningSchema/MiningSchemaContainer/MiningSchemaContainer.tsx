@@ -13,10 +13,10 @@ import MiningSchemaPropertiesEdit from "../MiningSchemaPropertiesEdit/MiningSche
 import "./MiningSchemaContainer.scss";
 
 import { DataDictionary, FieldName, MiningField, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller";
-import NoMiningSchemaFieldsOptions from "../NoMiningSchemaFieldsOptions/NoMiningSchemaFieldsOptions";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { Interaction } from "../../../types";
+import NoMiningSchemaFieldsOptions from "../NoMiningSchemaFieldsOptions/NoMiningSchemaFieldsOptions";
 
 interface MiningSchemaContainerProps {
   modelIndex: number;
@@ -120,7 +120,12 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
   }, [fields, editingField]);
 
   return (
-    <section className="mining-schema" data-testid="mining-schema-container">
+    <section
+      className="mining-schema"
+      data-testid="mining-schema-container"
+      data-ouia-component-id="mining-container"
+      data-ouia-component-type="editor-container"
+    >
       <MiningSchemaContext.Provider value={editingField}>
         <SwitchTransition mode={"out-in"}>
           <CSSTransition
@@ -143,39 +148,42 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
                     <MiningSchemaAddFields options={fields} onAdd={handleAddFields} isDisabled={isDisabled} />
                   </StackItem>
                   {validations.length > 0 && (
-                    <section className="mining-schema__validation-alert">
+                    <section
+                      className="mining-schema__validation-alert"
+                      data-ouia-component-id="validation-container"
+                      data-ouia-component-type="validation-alerts"
+                    >
                       <Alert variant="warning" isInline={true} title="Some items are invalid and need attention." />
                     </section>
                   )}
                   <StackItem className="mining-schema__fields">
                     <section>
-                      {fields.length === 0 && (
-                        <Bullseye style={{ height: "40vh" }}>
-                          <NoMiningSchemaFieldsOptions />
-                        </Bullseye>
-                      )}
-                      {fields.length > 0 && (
+                      {(miningSchema === undefined || miningSchema?.MiningField.length === 0) && (
                         <>
-                          {miningSchema === undefined ||
-                            (miningSchema?.MiningField.length === 0 && (
-                              <Bullseye style={{ height: "40vh" }}>
-                                <EmptyMiningSchema />
-                              </Bullseye>
-                            ))}
-                          {miningSchema && miningSchema.MiningField.length > 0 && (
-                            <>
-                              <MiningSchemaFields
-                                modelIndex={modelIndex}
-                                dataDictionary={dataDictionary}
-                                fields={miningSchema?.MiningField}
-                                onAddProperties={goToProperties}
-                                onDelete={handleDeleteField}
-                                onPropertyDelete={handlePropertyDelete}
-                                onEdit={handleEditField}
-                                onCancel={handleCancelEditing}
-                              />
-                            </>
+                          {fields.length === 0 && (
+                            <Bullseye style={{ height: "40vh" }}>
+                              <NoMiningSchemaFieldsOptions />
+                            </Bullseye>
+                          )}{" "}
+                          {fields.length > 0 && (
+                            <Bullseye style={{ height: "40vh" }}>
+                              <EmptyMiningSchema />
+                            </Bullseye>
                           )}
+                        </>
+                      )}
+                      {miningSchema && miningSchema.MiningField.length > 0 && (
+                        <>
+                          <MiningSchemaFields
+                            modelIndex={modelIndex}
+                            dataDictionary={dataDictionary}
+                            fields={miningSchema?.MiningField}
+                            onAddProperties={goToProperties}
+                            onDelete={handleDeleteField}
+                            onPropertyDelete={handlePropertyDelete}
+                            onEdit={handleEditField}
+                            onCancel={handleCancelEditing}
+                          />
                         </>
                       )}
                     </section>

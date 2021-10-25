@@ -44,8 +44,8 @@ describe("<DateField> tests", () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(formElement.html).toContain(`<label for="${props.id}">${props.label}</label>`);
-    expect(formElement.html).toContain(`id="${props.id}"`);
+    expect(formElement.html).toContain(`<label for="${props.name}">${props.label}</label>`);
+    expect(formElement.html).toContain(`id="${props.name}"`);
     expect(formElement.html).toContain('type="datetime-local"');
     expect(formElement.html).toContain(`name="${props.name}"`);
     expect(formElement.html).toContain(`min="${formatDate(date)}"`);
@@ -56,6 +56,9 @@ describe("<DateField> tests", () => {
     expect(formElement.html).not.toContain("placeholder");
 
     expect(formElement.ref.binding).toBe(props.name);
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement.writeValueToModelCode).not.toBeUndefined();
   });
 
   it("<DateField> - rendering - disabled", () => {
@@ -70,10 +73,13 @@ describe("<DateField> tests", () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(formElement.html).toContain(`<label for="${props.id}">${props.label}</label>`);
-    expect(formElement.html).toContain(`id="${props.id}"`);
+    expect(formElement.html).toContain(`<label for="${props.name}">${props.label}</label>`);
+    expect(formElement.html).toContain(`id="${props.name}"`);
     expect(formElement.html).toContain('type="datetime-local"');
     expect(formElement.html).toContain(`name="${props.name}"`);
     expect(formElement.html).toContain("disabled");
+
+    expect(formElement.setValueFromModelCode).not.toBeUndefined();
+    expect(formElement.writeValueToModelCode).toBeUndefined();
   });
 });

@@ -15,6 +15,8 @@
  */
 
 import input from "!!raw-loader!../../resources/templates/input.template";
+import inputBindModelData from "!!raw-loader!../../resources/templates/input.setModelData.template";
+import inputWriteModelData from "!!raw-loader!../../resources/templates/input.writeModelData.template";
 import { template } from "underscore";
 import { AbstractFormGroupInputTemplate, FormElementTemplateProps } from "./types";
 
@@ -26,6 +28,6 @@ interface TextFieldProps extends FormElementTemplateProps<string> {
 
 export class TextFieldTemplate extends AbstractFormGroupInputTemplate<TextFieldProps> {
   constructor() {
-    super(template(input));
+    super(template(input), template(inputBindModelData), template(inputWriteModelData));
   }
 }

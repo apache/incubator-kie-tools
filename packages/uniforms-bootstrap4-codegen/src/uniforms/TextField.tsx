@@ -31,7 +31,7 @@ export type TextFieldProps = HTMLFieldProps<
 
 const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
   const properties = {
-    id: props.id,
+    id: props.name,
     name: props.name,
     label: props.label,
     type: props.type ?? "text",

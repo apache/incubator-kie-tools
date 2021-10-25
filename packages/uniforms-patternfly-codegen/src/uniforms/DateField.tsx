@@ -21,6 +21,7 @@ import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { DATE_FUNCTIONS, TIME_FUNCTIONS } from "./staticCode/staticCodeBlocks";
+import { DATE } from "./utils/dataTypes";
 
 export type DateFieldProps = HTMLFieldProps<
   Date,
@@ -35,7 +36,7 @@ export type DateFieldProps = HTMLFieldProps<
 >;
 
 const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
-  const ref: InputReference = getInputReference(props.name);
+  const ref: InputReference = getInputReference(props.name, DATE);
 
   const pfImports = ["DatePicker", "Flex", "FlexItem", "InputGroup", "TimePicker"];
 
@@ -60,7 +61,7 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
     ref.stateName
   }, hours, minutes)}
           style={{ width: '120px' }}
-          defaultTime={parseTime(${ref.stateName})}
+          time={parseTime(${ref.stateName})}
         />
       </InputGroup>
     </FlexItem>
@@ -70,13 +71,13 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
     pfImports,
     inputJsxCode: jsxCode,
     ref,
-    dataType: "Date",
     requiredCode: [DATE_FUNCTIONS, TIME_FUNCTIONS],
     wrapper: {
       id: props.id,
       label: props.label,
       required: props.required,
     },
+    disabled: props.disabled,
   });
 
   useAddFormElementToContext(element);
