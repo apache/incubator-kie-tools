@@ -4,12 +4,12 @@ version: "2.0.0-snapshot"
 
 artifacts:
   - name: jobs-service-inmemory-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/jobs-service-inmemory/2.0.0-SNAPSHOT/jobs-service-inmemory-2.0.0-20211021.035032-85-runner.jar
-    md5: 9477752eb0a3766c508b1e8ee74cad20
+    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/jobs-service-inmemory/2.0.0-SNAPSHOT/jobs-service-inmemory-2.0.0-20211025.030941-89-runner.jar
+    md5: 35d70ba8c612e25bd3d99ff75fd58a1a
 
 packages:
   install:
-  - pam.x86_64
+    - pam.x86_64
 
 execute:
   - script: configure
