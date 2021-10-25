@@ -134,5 +134,8 @@
     "webpack-merge": "^5.7.3",
     "webpack-node-externals": "^3.0.0",
     "zip-webpack-plugin": "^4.0.1"
+  },
+  "resolutions": {
+    "ua-parser-js": "^0.7.30"
   }
 }
