@@ -26,3 +26,9 @@ uberfire-docs/src/main/asciidoc/*.html
 **/node_modules
 **/package-lock.json
 **/dist
+
+# GWT Web built artefacts
+**/org.dashbuilder.DashbuilderAuthoring
+**/gwt-unitCache
+/dashbuilder-authoring/src/main/webapp/WEB-INF/lib/
+/dashbuilder-authoring/src/main/webapp/WEB-INF/classes/
