@@ -47,6 +47,8 @@ import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { useCancelableEffect } from "../common/Hooks";
 import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -362,6 +364,7 @@ function WorkspacesMenuItems(props: {
         resolved={({ workspaceDescriptors, workspaceFiles }) => (
           <>
             {workspaceDescriptors
+              .sort((a, b) => (new Date(a.lastUpdatedDateISO) < new Date(b.lastUpdatedDateISO) ? 1 : -1))
               .filter((descriptor) => descriptor.workspaceId !== props.currentWorkspace.descriptor.workspaceId)
               .map((descriptor) => (
                 <React.Fragment key={descriptor.workspaceId}>
@@ -395,7 +398,10 @@ function WorkspacesMenuItems(props: {
                     >
                       <>
                         <FolderIcon />
-                        &nbsp;&nbsp;{descriptor.name}
+                        &nbsp;&nbsp;
+                        {descriptor.name}
+                        &nbsp;&nbsp;
+                        {descriptor.origin.kind === WorkspaceKind.GIST && <Label>Gist</Label>}
                       </>
                     </MenuItem>
                   )}

@@ -30,37 +30,12 @@ export interface FileInfo {
   path: string;
 }
 
-export interface CreateGistArgs {
-  filename: string;
-  content: string;
-  description: string;
-  isPublic: boolean;
-}
-
-interface UpdateGistArgs {
-  filename: string;
-  content: string;
-}
-
-interface CurrentGist {
-  id: string;
-  filename: string;
-}
-
 export enum UpdateGistErrors {
   INVALID_CURRENT_GIST,
   INVALID_GIST_FILENAME,
 }
 
 export class GithubService {
-  private currentGist: CurrentGist | undefined;
-
-  constructor() {}
-
-  public getCurrentGist(): CurrentGist | undefined {
-    return this.currentGist;
-  }
-
   public isGithub(url: string): boolean {
     return /^(http:\/\/|https:\/\/)?(www\.)?github.com.*$/.test(url);
   }
@@ -170,57 +145,8 @@ export class GithubService {
     const parsedGistId = gistId.split("#").shift()!;
 
     return octokit.gists.get({ gist_id: parsedGistId }).then((response) => {
-      this.currentGist = { filename, id: gistId };
       return (response.data as any).files[filename].content;
     });
-  }
-
-  public createGist(octokit: Octokit, args: CreateGistArgs): Promise<string> {
-    const gistContent: any = {
-      description: args.description,
-      public: args.isPublic,
-      files: {
-        [args.filename]: {
-          content: args.content,
-        },
-      },
-    };
-
-    return octokit.gists
-      .create(gistContent)
-      .then((response) => {
-        const data = response.data as any;
-        this.currentGist = { filename: args.filename, id: data.id };
-        return this.removeCommitHashFromGistRawUrl(data.files[args.filename].raw_url);
-      })
-      .catch((e) => Promise.reject("Not able to create gist on GitHub."));
-  }
-
-  public async updateGist(octokit: Octokit, args: UpdateGistArgs) {
-    const getResponse = await octokit.gists.get({ gist_id: this.currentGist!.id });
-
-    if (!Object.keys((getResponse.data as any).files).includes(this.currentGist!.filename)) {
-      return UpdateGistErrors.INVALID_CURRENT_GIST;
-    }
-
-    if (
-      args.filename !== this.currentGist!.filename &&
-      Object.keys((getResponse.data as any).files).includes(args.filename)
-    ) {
-      return UpdateGistErrors.INVALID_GIST_FILENAME;
-    }
-
-    const updateResponse = await octokit.gists.update({
-      gist_id: this.currentGist!.id,
-      files: {
-        [this.currentGist!.filename]: {
-          content: args.content,
-          filename: args.filename,
-        },
-      },
-    });
-
-    return this.removeCommitHashFromGistRawUrl((updateResponse.data as any).files[args.filename].raw_url);
   }
 
   public async getGistRawUrlFromId(

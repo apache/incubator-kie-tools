@@ -13,6 +13,7 @@ import { EditorPageErrorPage, Props } from "../../editor/EditorPageErrorPage";
 import { extractFileExtension, removeDirectories, removeFileExtension } from "../../common/utils";
 import { BusinessAutomationStudioPage } from "../../home/pageTemplate/BusinessAutomationStudioPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { GIT_DEFAULT_BRANCH } from "../services/GitService";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -85,7 +86,11 @@ export function NewWorkspaceFromUrlPage() {
 
     if (settings.github.service.isGithub(queryParamUrl)) {
       const url = new URL(queryParamUrl);
-      const match = matchPath(url.pathname, { path: "/:org/:repo", exact: true, strict: true });
+      const match = matchPath<{ org: string; repo: string; tree: string }>(url.pathname, {
+        path: "/:org/:repo/(tree)?/:tree?",
+        exact: true,
+        strict: true,
+      });
       if (match) {
         if (!settings.github.token || !settings.github.user) {
           return;
@@ -93,7 +98,7 @@ export function NewWorkspaceFromUrlPage() {
         workspaces
           .createWorkspaceFromGitRepository({
             repositoryUrl: url,
-            sourceBranch: "main",
+            sourceBranch: match?.params.tree ?? GIT_DEFAULT_BRANCH,
             githubSettings: {
               user: {
                 login: settings.github.user.login,

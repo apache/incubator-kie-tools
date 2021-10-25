@@ -18,6 +18,10 @@ import LightningFS from "@isomorphic-git/lightning-fs";
 import git, { STAGE, WORKDIR } from "isomorphic-git";
 import http from "isomorphic-git/http/web";
 
+export const GIST_DEFAULT_BRANCH = "master";
+export const GIST_ORIGIN_REMOTE_NAME = "gist_origin";
+export const GIT_DEFAULT_BRANCH = "main";
+
 export interface CloneArgs {
   fs: LightningFS;
   repositoryUrl: URL;
@@ -43,8 +47,11 @@ export interface CommitArgs {
 
 export interface PushArgs {
   fs: LightningFS;
-  targetBranch: string;
   dir: string;
+  ref?: string;
+  remoteRef?: string;
+  remote: string;
+  force: boolean;
   authInfo: {
     name: string;
     email: string;
@@ -53,8 +60,6 @@ export interface PushArgs {
 }
 
 export class GitService {
-  private readonly GIT_REMOTE_NAME = "origin";
-
   public constructor(private readonly corsProxy: string) {}
 
   public async clone(args: CloneArgs): Promise<void> {
@@ -77,9 +82,26 @@ export class GitService {
     console.timeEnd("GitService#clone");
   }
 
+  public async branch(args: { fs: LightningFS; dir: string; name: string; checkout: boolean }) {
+    await git.branch({
+      fs: args.fs,
+      dir: args.dir,
+      ref: args.name,
+      checkout: args.checkout,
+    });
+  }
+
+  public async addRemote(args: { fs: LightningFS; dir: string; name: string; url: string; force: boolean }) {
+    await git.addRemote({
+      fs: args.fs,
+      dir: args.dir,
+      remote: args.name,
+      url: args.url,
+      force: args.force,
+    });
+  }
+
   public async commit(args: CommitArgs): Promise<void> {
-    console.info("GitService#commit--------begin");
-    console.time("GitService#commit");
     await git.commit({
       fs: args.fs,
       dir: args.dir,
@@ -90,45 +112,45 @@ export class GitService {
       },
       ref: args.targetBranch,
     });
-    console.timeEnd("GitService#commit");
   }
 
-  public async gitPush(args: PushArgs): Promise<void> {
-    console.info("GitService#push--------begin");
-    console.time("GitService#push");
-    const remotes = await git.listRemotes({
+  public async fetch(args: { fs: LightningFS; dir: string; remote: string }) {
+    await git.fetch({
       fs: args.fs,
+      http: http,
+      corsProxy: this.corsProxy,
       dir: args.dir,
+      remote: args.remote,
     });
+  }
 
-    if (remotes.length === 0) {
+  public async push(args: PushArgs): Promise<void> {
+    if ((await git.listRemotes(args)).length === 0) {
       throw new Error("No remote repository found");
     }
 
     await git.push({
       fs: args.fs,
       http: http,
+      corsProxy: this.corsProxy,
       dir: args.dir,
-      ref: args.targetBranch,
-      remote: this.GIT_REMOTE_NAME,
+      ref: args.ref,
+      remoteRef: args.remoteRef,
+      remote: args.remote,
+      force: args.force,
       onAuth: args.authInfo.onAuth,
-      force: false,
     });
-    console.timeEnd("GitService#push");
   }
 
   public async add(args: { fs: LightningFS; dir: string; relativePath: string }) {
-    console.info("GitService#add--------begin");
-    console.time("GitService#add");
     await git.add({
       fs: args.fs,
       dir: args.dir,
       filepath: args.relativePath,
     });
-    console.timeEnd("GitService#add");
   }
 
-  private async gitConfig(fs: LightningFS, dir: string, userName: string, userEmail: string): Promise<void> {
+  public async gitConfig(fs: LightningFS, dir: string, userName: string, userEmail: string): Promise<void> {
     await git.setConfig({
       fs: fs,
       dir: dir,
@@ -149,18 +171,16 @@ export class GitService {
       fs: args.fs,
       dir: args.dir,
       bare: false,
+      defaultBranch: GIT_DEFAULT_BRANCH,
     });
   }
 
   async rm(args: { fs: LightningFS; dir: string; relativePath: string }) {
-    console.info("GitService#rm--------begin");
-    console.time("GitService#rm");
     await git.remove({
       fs: args.fs,
       dir: args.dir,
       filepath: args.relativePath,
     });
-    console.timeEnd("GitService#end");
   }
 
   async isModified(args: { fs: LightningFS; dir: string }) {

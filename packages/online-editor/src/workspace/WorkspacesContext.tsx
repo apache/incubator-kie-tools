@@ -29,6 +29,7 @@ import { removeFileExtension } from "../common/utils";
 import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import LightningFS from "@isomorphic-git/lightning-fs";
+import { GitService } from "./services/GitService";
 
 export const decoder = new TextDecoder("utf-8");
 export const encoder = new TextEncoder();
@@ -86,6 +87,7 @@ export interface LocalFile {
 
 export interface WorkspacesContextType {
   service: WorkspaceService;
+  gitService: GitService;
   descriptorService: WorkspaceDescriptorService;
   fsService: WorkspaceFsService;
 
@@ -112,7 +114,7 @@ export interface WorkspacesContextType {
   getFiles(args: { fs: LightningFS; workspaceId: string }): Promise<WorkspaceFile[]>;
   isModified(args: { fs: LightningFS; workspaceId: string }): Promise<boolean>;
   createSavePoint(args: { fs: LightningFS; workspaceId: string }): Promise<void>;
-  getAbsolutePath(args: { workspaceId: string; relativePath: string }): string;
+  getAbsolutePath(args: { workspaceId: string; relativePath?: string }): string;
   getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }): string;
   deleteWorkspace(args: { workspaceId: string }): Promise<void>;
   renameWorkspace(args: { workspaceId: string; newName: string }): Promise<void>;

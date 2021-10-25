@@ -49,6 +49,7 @@ import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
 import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { ColumnsIcon } from "@patternfly/react-icons/dist/js/icons/columns-icon";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -62,6 +63,9 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
+import { GIST_DEFAULT_BRANCH, GIST_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
+import { GistOrigin, WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -92,6 +96,7 @@ export function EditorToolbar(props: Props) {
   const history = useHistory();
   const workspaces = useWorkspaces();
   const [isShareDropdownOpen, setShareDropdownOpen] = useState(false);
+  const [isSyncDropdownOpen, setSyncDropdownOpen] = useState(false);
   const [isLargeKebabOpen, setLargeKebabOpen] = useState(false);
   const [isSmallKebabOpen, setSmallKebabOpen] = useState(false);
   const [isEmbedModalOpen, setEmbedModalOpen] = useState(false);
@@ -104,17 +109,39 @@ export function EditorToolbar(props: Props) {
   const [isWorkspaceAddFileMenuOpen, setWorkspaceAddFileMenuOpen] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
 
-  const successCreateGistAlert = useAlert(
+  const successfullyCreateGistAlert = useAlert(
     props.alerts,
     useCallback(
-      ({ close }) => (
-        <Alert
-          variant="success"
-          title={i18n.editorPage.alerts.createGist}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      ),
-      [i18n]
+      ({ close }) => {
+        const gistUrl = (workspacePromise.data?.descriptor.origin as GistOrigin).url.toString();
+        return (
+          <Alert
+            variant="success"
+            title={i18n.editorPage.alerts.createGist}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+            actionLinks={<AlertActionLink onClick={() => window.open(gistUrl, "_blank")}>{gistUrl}</AlertActionLink>}
+          />
+        );
+      },
+      [i18n, workspacePromise]
+    )
+  );
+
+  const successfullyUpdateGistAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => {
+        const gistUrl = (workspacePromise.data?.descriptor.origin as GistOrigin).url.toString();
+        return (
+          <Alert
+            variant="success"
+            title={i18n.editorPage.alerts.updateGist}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+            actionLinks={<AlertActionLink onClick={() => window.open(gistUrl, "_blank")}>{gistUrl}</AlertActionLink>}
+          />
+        );
+      },
+      [i18n, workspacePromise]
     )
   );
 
@@ -131,6 +158,7 @@ export function EditorToolbar(props: Props) {
       [i18n]
     )
   );
+
   const requestDownload = useCallback(() => {
     props.editor?.getStateControl().setSavedCommand();
     props.workspaceFile
@@ -222,37 +250,126 @@ export function EditorToolbar(props: Props) {
     });
   }, [props.editor]);
 
+  const updateGist = useCallback(async () => {
+    const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
+    await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId });
+
+    //TODO: Check if there are new changes in the Gist before force-pushing.
+
+    await workspaces.gitService.push({
+      fs,
+      dir: await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId }),
+      remote: GIST_ORIGIN_REMOTE_NAME,
+      remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
+      force: true,
+      authInfo: {
+        name: "Tiago",
+        email: "tfernand+dev@redhat.com", //FIXME: Change this.
+        onAuth: () => ({
+          username: settings.github.user!.login,
+          password: settings.github.token!,
+        }),
+      },
+    });
+
+    successfullyUpdateGistAlert.show();
+  }, [props.workspaceFile, settings.github, workspaces, successfullyUpdateGistAlert]);
+
   const createGist = useCallback(async () => {
     if (props.editor) {
-      const content = await props.workspaceFile.getFileContentsAsString();
-
-      // create gist
       try {
-        const newGistUrl = await settings.github.service.createGist(settings.github.octokit, {
-          filename: props.workspaceFile.name,
-          content: content,
-          description: props.workspaceFile.name,
-          isPublic: true,
+        const gist = await settings.github.octokit.gists.create({
+          description: workspacePromise.data?.descriptor.name ?? "",
+          public: true,
+
+          // This file is used just for creating the Gist. The `push -f` overwrites it.
+          files: { "README.md": { content: "This Gist was created from Business Automation Studio." } },
         });
 
-        successCreateGistAlert.show();
+        if (!gist.data.git_push_url) {
+          throw new Error("Gist creation failed.");
+        }
 
-        history.push({
-          pathname: globals.routes.editor.path({ extension: props.workspaceFile.extension }),
-          search: globals.routes.editor.queryString({ url: newGistUrl }).toString(),
+        await workspaces.descriptorService.turnIntoGist(
+          props.workspaceFile.workspaceId,
+          new URL(gist.data.git_push_url)
+        );
+
+        const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
+        const workspaceRootDirPath = await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
+
+        await workspaces.gitService.addRemote({
+          fs,
+          dir: workspaceRootDirPath,
+          url: gist.data.git_push_url,
+          name: GIST_ORIGIN_REMOTE_NAME,
+          force: true,
         });
+
+        await workspaces.gitService.branch({
+          fs,
+          dir: workspaceRootDirPath,
+          checkout: true,
+          name: GIST_DEFAULT_BRANCH,
+        });
+
+        await workspaces.createSavePoint({
+          fs: fs,
+          workspaceId: props.workspaceFile.workspaceId,
+        });
+
+        await workspaces.gitService.push({
+          fs: fs,
+          dir: workspaceRootDirPath,
+          remote: GIST_ORIGIN_REMOTE_NAME,
+          remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
+          force: true,
+          authInfo: {
+            name: "Tiago",
+            email: "tfernand+dev@redhat.com", //FIXME: Change this.
+            onAuth: () => ({
+              username: settings.github.user!.login,
+              password: settings.github.token!,
+            }),
+          },
+        });
+
+        successfullyCreateGistAlert.show();
+
         return;
       } catch (err) {
-        console.error(err);
         errorAlert.show();
-        return;
+        throw err;
       }
     }
-  }, [errorAlert, successCreateGistAlert, props.workspaceFile, history, globals, settings, props.editor]);
+  }, [
+    props.editor,
+    props.workspaceFile,
+    settings.github,
+    workspacePromise,
+    workspaces,
+    successfullyCreateGistAlert,
+    errorAlert,
+  ]);
 
   const onEmbed = useCallback(() => {
     setEmbedModalOpen(true);
   }, []);
+
+  const isLocalWorkspace = useMemo(
+    () => workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL,
+    [workspacePromise]
+  );
+
+  const workspaceHasNestedDirectories = useMemo(
+    () => workspacePromise.data?.files.filter((f) => f.relativePath !== f.name).length !== 0,
+    [workspacePromise]
+  );
+
+  const canCreateGist = useMemo(
+    () => settings.github.authStatus === AuthStatus.SIGNED_IN && isLocalWorkspace && !workspaceHasNestedDirectories,
+    [isLocalWorkspace, settings.github.authStatus, workspaceHasNestedDirectories]
+  );
 
   const shareDropdownItems = useMemo(
     () => [
@@ -305,26 +422,31 @@ export function EditorToolbar(props: Props) {
           )}
         </React.Fragment>
       </DropdownGroup>,
-      <DropdownGroup key={"github-group"} label={i18n.names.github}>
-        <React.Fragment key={`dropdown-fragment-export-gist`}>
-          <Tooltip
-            data-testid={"gist-it-tooltip"}
-            key={`dropdown-export-gist`}
-            content={<div>{i18n.editorToolbar.gistItTooltip}</div>}
-            trigger={settings.github.authStatus !== AuthStatus.SIGNED_IN ? "mouseenter click" : ""}
-            position="left"
-          >
-            <DropdownItem
-              data-testid={"gist-it-button"}
-              component="button"
-              onClick={createGist}
-              isDisabled={settings.github.authStatus !== AuthStatus.SIGNED_IN}
-            >
-              {i18n.editorToolbar.gistIt}
-            </DropdownItem>
-          </Tooltip>
-        </React.Fragment>
-      </DropdownGroup>,
+      ...(isLocalWorkspace
+        ? [
+            <DropdownGroup key={"github-group"} label={i18n.names.github}>
+              <React.Fragment key={`dropdown-fragment-export-gist`}>
+                <Tooltip
+                  data-testid={"gist-it-tooltip"}
+                  key={`dropdown-export-gist`}
+                  content={<div>{i18n.editorToolbar.cantCreateGistTooltip}</div>}
+                  trigger={!canCreateGist ? "mouseenter click" : ""}
+                  position="left"
+                >
+                  <DropdownItem
+                    icon={<GithubIcon />}
+                    data-testid={"gist-it-button"}
+                    component="button"
+                    onClick={createGist}
+                    isDisabled={!canCreateGist}
+                  >
+                    {i18n.editorToolbar.createGist}
+                  </DropdownItem>
+                </Tooltip>
+              </React.Fragment>
+            </DropdownGroup>,
+          ]
+        : []),
     ],
     [
       onDownload,
@@ -332,10 +454,11 @@ export function EditorToolbar(props: Props) {
       shouldIncludeDownloadSVGDropdownItem,
       downloadSvg,
       downloadWorkspaceZip,
-      i18n,
       shouldIncludeEmbedDropdownItem,
       onEmbed,
-      settings,
+      i18n,
+      workspacePromise,
+      settings.github.authStatus,
       createGist,
     ]
   );
@@ -478,6 +601,11 @@ export function EditorToolbar(props: Props) {
                   </Tooltip>
                 </Title>
               )}
+              {workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST && (
+                <>
+                  <Label>Gist</Label>
+                </>
+              )}
               <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
                 <Title
                   aria-label={"EmbeddedEditorFile name"}
@@ -590,6 +718,43 @@ export function EditorToolbar(props: Props) {
                 <ToolbarItem visibility={hideWhenSmall}>
                   {props.workspaceFile.extension === "dmn" && <KieToolingExtendedServicesButtons />}
                 </ToolbarItem>
+                {workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST && (
+                  <ToolbarItem>
+                    <Dropdown
+                      onSelect={() => setSyncDropdownOpen(false)}
+                      isOpen={isSyncDropdownOpen}
+                      dropdownItems={[
+                        <DropdownGroup key={"sync-gist-dropdown-group"}>
+                          <Tooltip
+                            data-testid={"gist-it-tooltip"}
+                            key={`dropdown-export-gist`}
+                            content={<div>{i18n.editorToolbar.cantUpdateGistTooltip}</div>}
+                            trigger={!workspaceHasNestedDirectories ? "mouseenter click" : ""}
+                            position="left"
+                          >
+                            <DropdownItem
+                              icon={<GithubIcon />}
+                              onClick={updateGist}
+                              isDisabled={workspaceHasNestedDirectories}
+                            >
+                              Update Gist
+                            </DropdownItem>
+                          </Tooltip>
+                        </DropdownGroup>,
+                      ]}
+                      position={DropdownPosition.right}
+                      toggle={
+                        <DropdownToggle
+                          id={"sync-dropdown"}
+                          data-testid={"sync-dropdown"}
+                          onToggle={(isOpen) => setSyncDropdownOpen(isOpen)}
+                        >
+                          Sync
+                        </DropdownToggle>
+                      }
+                    />
+                  </ToolbarItem>
+                )}
                 <ToolbarItem visibility={hideWhenSmall}>
                   <Dropdown
                     onSelect={() => setShareDropdownOpen(false)}
@@ -624,7 +789,10 @@ export function EditorToolbar(props: Props) {
                       ...shareDropdownItems,
                       ...(props.workspaceFile.extension !== "dmn"
                         ? []
-                        : [<KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />]),
+                        : [
+                            <Divider key={"divider-2"} />,
+                            <KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />,
+                          ]),
                     ]}
                   />
                 </ToolbarItem>

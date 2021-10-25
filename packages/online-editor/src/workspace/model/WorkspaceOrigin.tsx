@@ -14,19 +14,29 @@
  * limitations under the License.
  */
 
+import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../services/GitService";
+
 export enum WorkspaceKind {
+  GIST = "GIST",
   GITHUB_REPOSITORY = "GITHUB_REPOSITORY",
   LOCAL = "LOCAL",
 }
 
-export type WorkspaceOrigin = LocalOrigin | GitHubRepositoryOrigin;
+export type WorkspaceOrigin = LocalOrigin | GistOrigin | GitHubRepositoryOrigin;
 
 export interface LocalOrigin {
   kind: WorkspaceKind.LOCAL;
+  branch: typeof GIT_DEFAULT_BRANCH;
 }
 
 export interface GitHubRepositoryOrigin {
   kind: WorkspaceKind.GITHUB_REPOSITORY;
   url: URL;
   branch: string;
+}
+
+export interface GistOrigin {
+  kind: WorkspaceKind.GIST;
+  url: URL;
+  branch: typeof GIST_DEFAULT_BRANCH;
 }

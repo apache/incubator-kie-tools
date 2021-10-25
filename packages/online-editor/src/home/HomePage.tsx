@@ -56,6 +56,8 @@ import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { QueryParams } from "../common/Routes";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { RelativeDate } from "./RelativeDate";
+import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 
 export function HomePage() {
   const globals = useGlobals();
@@ -451,6 +453,8 @@ function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSele
                             <FolderIcon />
                             &nbsp;&nbsp;
                             {workspaceName}
+                            &nbsp;&nbsp;
+                            {workspace.descriptor.origin.kind === WorkspaceKind.GIST && <Label>Gist</Label>}
                           </Text>
                         </TextContent>
                       </CardTitle>

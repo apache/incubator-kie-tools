@@ -23,7 +23,7 @@ import {
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
-import { GitService } from "./services/GitService";
+import { GIT_DEFAULT_BRANCH, GitService } from "./services/GitService";
 import { StorageFile, StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { SUPPORTED_FILES, SUPPORTED_FILES_EDITABLE } from "./SupportedFiles";
@@ -69,7 +69,7 @@ export function WorkspacesContextProvider(props: Props) {
   }, [service]);
 
   const getAbsolutePath = useCallback(
-    (args: { workspaceId: string; relativePath: string }) => service.getAbsolutePath(args),
+    (args: { workspaceId: string; relativePath?: string }) => service.getAbsolutePath(args),
     [service]
   );
 
@@ -114,6 +114,8 @@ export function WorkspacesContextProvider(props: Props) {
 
   const createSavePoint = useCallback(
     async (args: { fs: LightningFS; workspaceId: string }) => {
+      const descriptor = await descriptorService.get(args.workspaceId);
+
       const workspaceRootDirPath = service.getAbsolutePath({ workspaceId: args.workspaceId });
 
       const fileRelativePaths = await gitService.unstagedModifiedFileRelativePaths({
@@ -134,7 +136,7 @@ export function WorkspacesContextProvider(props: Props) {
       await gitService.commit({
         fs: args.fs,
         dir: workspaceRootDirPath,
-        targetBranch: "main", //FIXME: Use current branch whatever it is?
+        targetBranch: descriptor.origin.branch,
         message: "Save point",
         authInfo: {
           name: "Tiago",
@@ -145,7 +147,7 @@ export function WorkspacesContextProvider(props: Props) {
       const workspaceEvent: WorkspaceEvents = { type: "CREATE_SAVE_POINT", workspaceId: args.workspaceId };
       broadcastChannel.postMessage(workspaceEvent);
     },
-    [gitService, service]
+    [descriptorService, gitService, service]
   );
 
   const createWorkspaceFromLocal = useCallback(
@@ -183,7 +185,7 @@ export function WorkspacesContextProvider(props: Props) {
             fs: fs,
             dir: workspaceRootDirPath,
             message: "Initial",
-            targetBranch: "main",
+            targetBranch: GIT_DEFAULT_BRANCH,
             authInfo: {
               name: "Tiago",
               email: "tfernand+dev@redhat.com", //FIXME: Change this.
@@ -393,6 +395,7 @@ export function WorkspacesContextProvider(props: Props) {
     <WorkspacesContext.Provider
       value={{
         service,
+        gitService,
         fsService,
         descriptorService,
         //

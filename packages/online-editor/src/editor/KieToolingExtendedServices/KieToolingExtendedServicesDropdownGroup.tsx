@@ -24,6 +24,7 @@ import { useDmnRunner } from "../DmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieToolingExtendedServices } from "./FeatureDependentOnKieToolingExtendedServices";
 import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
+import { KieToolingExtendedServicesIcon } from "./KieToolingExtendedServicesIcon";
 
 export function KieToolingExtendedServicesDropdownGroup() {
   const { i18n } = useOnlineI18n();
@@ -46,19 +47,16 @@ export function KieToolingExtendedServicesDropdownGroup() {
   }, [dmnRunner, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
 
   return (
-    <DropdownGroup label={i18n.names.kieToolingExtendedServices}>
-      <DropdownItem
-        id="kie-tooling-extended-services-kebab-setup"
-        key={`kie-tooling-extended-services-dropdown-setup`}
-        component={"button"}
-        isDisabled={true}
-        ouiaId="setup-dropdown-button"
+    <>
+      <DropdownGroup
+        key={"dmn-runner-group"}
+        label={
+          <>
+            {i18n.names.dmnRunner}
+            <KieToolingExtendedServicesIcon />
+          </>
+        }
       >
-        {isKieToolingExtendedServicesRunning
-          ? i18n.kieToolingExtendedServices.dropdown.shortConnected(kieToolingExtendedServices.port)
-          : i18n.terms.disconnected}
-      </DropdownItem>
-      <DropdownGroup key={"dmn-runner-group"} label={i18n.names.dmnRunner}>
         <FeatureDependentOnKieToolingExtendedServices isLight={false} position="left">
           <DropdownItem
             id="dmn-runner-kebab-toggle"
@@ -71,9 +69,17 @@ export function KieToolingExtendedServicesDropdownGroup() {
           </DropdownItem>
         </FeatureDependentOnKieToolingExtendedServices>
       </DropdownGroup>
-      <DropdownGroup key={"dmn-dev-sandbox-group"} label={i18n.names.dmnDevSandbox}>
+      <DropdownGroup
+        key={"dmn-dev-sandbox-group"}
+        label={
+          <>
+            {i18n.names.dmnDevSandbox}
+            <KieToolingExtendedServicesIcon />
+          </>
+        }
+      >
         {dmnDevSandboxDropdownItems}
       </DropdownGroup>
-    </DropdownGroup>
+    </>
   );
 }

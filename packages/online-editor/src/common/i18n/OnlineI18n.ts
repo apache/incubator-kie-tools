@@ -70,8 +70,9 @@ interface OnlineDictionary extends ReferenceDictionary {
     copySource: string;
     downloadSVG: string;
     setGitHubToken: string;
-    gistIt: string;
-    gistItTooltip: string;
+    createGist: string;
+    cantCreateGistTooltip: string;
+    cantUpdateGistTooltip: string;
     share: string;
     embed: string;
   };

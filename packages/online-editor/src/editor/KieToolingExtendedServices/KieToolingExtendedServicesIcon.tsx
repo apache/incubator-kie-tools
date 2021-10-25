@@ -16,7 +16,7 @@ export function KieToolingExtendedServicesIcon() {
   const { i18n } = useOnlineI18n();
   const settings = useSettings();
 
-  const onToggleKieToolingExtendedServices = useCallback(() => {
+  const toggleKieToolingExtendedServices = useCallback(() => {
     if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
       settings.open(SettingsTabs.KIE_TOOLING_EXTENDED_SERVICES);
     }
@@ -89,7 +89,7 @@ export function KieToolingExtendedServicesIcon() {
         <DropdownToggle
           id="kie-tooling-extended-services-button"
           toggleIndicator={null}
-          onToggle={onToggleKieToolingExtendedServices}
+          onToggle={toggleKieToolingExtendedServices}
           className="kogito-tooling--masthead-hoverable-dark"
           data-testid="kie-tooling-extended-services-button"
         >
@@ -98,11 +98,6 @@ export function KieToolingExtendedServicesIcon() {
       }
       isPlain={true}
       position={DropdownPosition.right}
-      style={
-        kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING
-          ? { marginRight: "2px", borderBottom: "solid transparent 2px", paddingBottom: 0 }
-          : { marginRight: "2px", borderBottom: "solid var(--pf-global--palette--red-300) 2px", paddingBottom: 0 }
-      }
     />
   );
 }
