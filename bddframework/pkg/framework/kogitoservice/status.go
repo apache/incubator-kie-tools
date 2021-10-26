@@ -16,7 +16,8 @@ package kogitoservice
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/apis"
+
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
@@ -44,7 +45,7 @@ func NewStatusHandler(context operator.Context) StatusHandler {
 }
 
 func (s *statusHandler) HandleStatusUpdate(instance api.KogitoService, err *error) {
-	s.Log.Info("Updating status for Kogito Service")
+	s.Log.Info("Updating status for Kogito Service", "err", err)
 	if statusErr := s.ensureResourcesStatusChanges(instance, *err); statusErr != nil {
 		s.Log.Error(statusErr, "Error while updating Status for Kogito Service")
 		return
@@ -158,8 +159,33 @@ func (s *statusHandler) updateDeploymentStatus(instance api.KogitoService) error
 
 func (s *statusHandler) updateRouteStatus(instance api.KogitoService) error {
 	if s.Client.IsOpenshift() {
+		if instance.GetStatus().GetRouteConditions() == nil {
+			instance.GetStatus().SetRouteConditions(&[]metav1.Condition{})
+		}
+
 		routeHandler := infrastructure.NewRouteHandler(s.Context)
-		route, err := routeHandler.GetHostFromRoute(types.NamespacedName{Name: instance.GetName(), Namespace: instance.GetNamespace()})
+		if instance.GetSpec().IsRouteDisabled() {
+			// update route condition that route was disabled
+			s.Log.Debug("Routes are disabled.")
+			successCondition := s.newFailedCondition(metav1.ConditionFalse, infrastructure.RouteProcessed, "Routes are disabled.")
+			meta.SetStatusCondition(instance.GetStatus().GetRouteConditions(), successCondition)
+			return nil
+		}
+		routeKey := types.NamespacedName{Name: instance.GetName(), Namespace: instance.GetNamespace()}
+		// check if route is successfully created and update runtime conditions with error message
+		if isAdmitted, err := routeHandler.ValidateRouteStatus(routeKey); err != nil {
+			s.Log.Info("Error occured during route creation", "err", err)
+			errCondition := infrastructure.ErrorForRouteCreation(err)
+			failedCondition := s.newFailedCondition(metav1.ConditionTrue, s.errorHandler.GetReasonForError(errCondition), errCondition.Error())
+			meta.SetStatusCondition(instance.GetStatus().GetRouteConditions(), failedCondition)
+			return nil
+
+		} else if isAdmitted {
+			successCondition := s.newFailedCondition(metav1.ConditionFalse, infrastructure.RouteProcessed, "Route admitted.")
+			meta.SetStatusCondition(instance.GetStatus().GetRouteConditions(), successCondition)
+
+		}
+		route, err := routeHandler.GetHostFromRoute(routeKey)
 		if err != nil {
 			return err
 		}

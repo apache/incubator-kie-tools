@@ -15,12 +15,13 @@
 package infrastructure
 
 import (
+	"reflect"
+
 	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	imgv1 "github.com/openshift/api/image/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"reflect"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -113,6 +114,9 @@ func (i *imageStreamReconciler) processDelta(requestedResources map[reflect.Type
 	comparator := i.getComparator()
 	deltaProcessor := NewDeltaProcessor(i.Context)
 	isDeltaProcessed, err := deltaProcessor.ProcessDelta(comparator, requestedResources, deployedResources)
+	if err != nil {
+		return err
+	}
 	if isDeltaProcessed {
 		return ErrorForProcessingImageStreamDelta()
 	}

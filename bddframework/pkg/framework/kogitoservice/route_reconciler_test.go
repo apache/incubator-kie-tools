@@ -15,6 +15,8 @@
 package kogitoservice
 
 import (
+	"testing"
+
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
@@ -22,7 +24,6 @@ import (
 	v1 "github.com/openshift/api/route/v1"
 	"github.com/stretchr/testify/assert"
 	v13 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"testing"
 )
 
 func TestRouteReconciler_K8s(t *testing.T) {
@@ -44,8 +45,29 @@ func TestRouteReconciler_K8s(t *testing.T) {
 	assert.False(t, exists)
 }
 
+func TestRouteReconciler_OpenshiftRouteDisabled(t *testing.T) {
+	ns := t.Name()
+	instance := test.CreateFakeKogitoRuntime(ns)
+	instance.Spec.DisableRoute = true
+	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(instance).Build()
+	context := operator.Context{
+		Client: cli,
+		Log:    test.TestLogger,
+		Scheme: meta.GetRegisteredSchema(),
+	}
+	routeReconciler := newRouteReconciler(context, instance)
+	err := routeReconciler.Reconcile()
+	assert.NoError(t, err)
+
+	route := &v1.Route{ObjectMeta: v13.ObjectMeta{Name: instance.Name, Namespace: instance.Namespace}}
+	exists, err := kubernetes.ResourceC(cli).Fetch(route)
+	assert.NoError(t, err)
+	assert.False(t, exists)
+}
+
 func TestRouteReconciler_Openshift(t *testing.T) {
 	ns := t.Name()
+
 	instance := test.CreateFakeKogitoRuntime(ns)
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(instance).Build()
 	context := operator.Context{
@@ -54,6 +76,7 @@ func TestRouteReconciler_Openshift(t *testing.T) {
 		Scheme: meta.GetRegisteredSchema(),
 	}
 	routeReconciler := newRouteReconciler(context, instance)
+
 	err := routeReconciler.Reconcile()
 	assert.NoError(t, err)
 

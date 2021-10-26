@@ -15,13 +15,14 @@
 package kogitoservice
 
 import (
+	"reflect"
+
 	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	v1 "github.com/openshift/api/route/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"reflect"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -50,6 +51,11 @@ func (i *routeReconciler) Reconcile() error {
 
 	if !i.Client.IsOpenshift() {
 		i.Log.Debug("Skipping route creation. Routes are only created in Openshift env.")
+		return nil
+	}
+
+	if i.instance.GetSpec().IsRouteDisabled() {
+		i.Log.Debug("Skipping route creation. Routes are not enabled.")
 		return nil
 	}
 
@@ -98,5 +104,8 @@ func (i *routeReconciler) getDeployedResources() (map[reflect.Type][]client.Obje
 func (i *routeReconciler) processDelta(requestedResources map[reflect.Type][]client.Object, deployedResources map[reflect.Type][]client.Object) (err error) {
 	comparator := i.routeHandler.GetComparator()
 	_, err = i.deltaProcessor.ProcessDelta(comparator, requestedResources, deployedResources)
+	if err != nil {
+		return err
+	}
 	return
 }
