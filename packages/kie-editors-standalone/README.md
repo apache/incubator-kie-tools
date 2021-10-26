@@ -63,5 +63,14 @@ The returned object will contain the methods needed to manipulate the Editor:
 - `undo(): void`: Undo the last change in the Editor. This will also fire the subscribed callbacks of content changes.
 - `redo(): void`: Redo the last undone change in the Editor. This will also fire the subscribed callbacks of content changes.
 - `close(): void`: Closes the Editor.
-- `getElementPosition(selector: string): Promise<Rect>`: Provides an alternative for extending the standard query selector when the element lives inside a canvas or even a video component. The `selector` parameter must follow the format of “<PROVIDER>:::<SELECT>“, e.g. “Canvas:::MySquare” or “Video:::PresenterHand”. Returns a `Rect` representing the element position.
+- `getElementPosition(selector: string): Promise<Rect>`: Provides an alternative for extending the standard query selector when the element lives inside a canvas or even a video component. The `selector` parameter must follow the format of "\<PROVIDER\>:::\<SELECT\>“, e.g. “Canvas:::MySquare” or “Video:::PresenterHand”. Returns a `Rect` representing the element position.
 - `envelopeApi: MessageBusClientApi<KogitoEditorEnvelopeApi>`: Advanced Editor API. See more details in [MessageBusClientApi](https://github.com/kiegroup/kogito-tooling/blob/main/packages/envelope-bus/src/api/index.ts#L43-L56) and [KogitoEditorEnvelopeApi](https://github.com/kiegroup/kogito-tooling/blob/main/packages/editor/src/api/KogitoEditorEnvelopeApi.ts#L34-L41).
+- `canvas`: Canvas API that exposes methods to manipulate the canvas.
+  - `getNodeIds(): Promise<string[]>`: Returns a Promise containing the ID attributes of all nodes displayed in editors canvas.
+  - `getBackgroundColor(uuid: string): Promise<string>`: Returns a Promise containing the background color of a node with provided UUID.
+  - `setBackgroundColor(uuid: string, backgroundColor: string): Promise<void>`: Sets the background color of a node with provided UUID.
+  - `getBorderColor(uuid: string): Promise<string>`: Returns a Promise containing the border color of a node with provided UUID.
+  - `setBorderColor(uuid: string, borderColor: string): Promise<void>`: Sets the border color of a node with provided UUID.
+  - `getLocation(uuid: string): Promise<number[]>`: Returns a Promise containing the canvas location of a node with provided UUID.
+  - `getAbsoluteLocation(uuid: string): Promise<number[]>`: Returns a Promise containing the window location for a node with provided UUID.
+  - `getDimensions(uuid: string): Promise<number[]>`: Returns a Promise containing the dimensions of a node with provided UUID.
