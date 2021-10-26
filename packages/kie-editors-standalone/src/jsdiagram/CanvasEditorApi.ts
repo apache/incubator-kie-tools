@@ -66,7 +66,7 @@ export interface CanvasEditorApi {
   getLocation(uuid: string): Promise<number[]>;
 
   /**
-   * Returns a window location fo a node with provided UUID.
+   * Returns a window location for a node with provided UUID.
    * Returns an array where first position is X-attribute
    * and second position is Y-attribute in the context of window
    *
