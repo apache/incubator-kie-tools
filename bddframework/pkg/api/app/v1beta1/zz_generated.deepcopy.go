@@ -636,6 +636,17 @@ func (in *KogitoServiceStatus) DeepCopyInto(out *KogitoServiceStatus) {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
+	if in.RouteConditions != nil {
+		in, out := &in.RouteConditions, &out.RouteConditions
+		*out = new([]metav1.Condition)
+		if **in != nil {
+			in, out := *in, *out
+			*out = make([]metav1.Condition, len(*in))
+			for i := range *in {
+				(*in)[i].DeepCopyInto(&(*out)[i])
+			}
+		}
+	}
 	in.CloudEvents.DeepCopyInto(&out.CloudEvents)
 }
 

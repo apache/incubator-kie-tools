@@ -15,7 +15,7 @@
 package v1beta1
 
 import (
-	"github.com/kiegroup/kogito-operator/apis"
+	api "github.com/kiegroup/kogito-operator/apis"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

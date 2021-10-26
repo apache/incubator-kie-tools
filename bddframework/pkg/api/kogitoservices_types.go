@@ -71,6 +71,8 @@ type KogitoServiceSpecInterface interface {
 	SetServiceLabels(labels map[string]string)
 	AddServiceLabel(name, value string)
 	GetRuntime() RuntimeType
+	IsRouteDisabled() bool
+	SetDisableRoute(disableRoute bool)
 	IsInsecureImageRegistry() bool
 	GetPropertiesConfigMap() string
 	GetInfra() []string
@@ -90,6 +92,8 @@ type KogitoServiceStatusInterface interface {
 	SetConditions(conditions *[]metav1.Condition)
 	GetDeploymentConditions() []appsv1.DeploymentCondition
 	SetDeploymentConditions(deploymentConditions []appsv1.DeploymentCondition)
+	GetRouteConditions() *[]metav1.Condition
+	SetRouteConditions(conditions *[]metav1.Condition)
 	GetImage() string
 	SetImage(image string)
 	GetExternalURI() string
