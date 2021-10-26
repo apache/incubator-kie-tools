@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 public abstract class NamedElement extends DMNElement implements HasName {
 
     @Property
-    @FormField(afterElement = "description", type = NameFieldType.class)
+    @FormField(afterElement = "description", type = NameFieldType.class, labelKey = "org.kie.workbench.common.dmn.api.property.dmn.NameHolder.label")
     @Valid
     protected NameHolder nameHolder;
 

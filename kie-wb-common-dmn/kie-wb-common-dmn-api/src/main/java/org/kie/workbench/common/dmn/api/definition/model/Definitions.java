@@ -18,24 +18,33 @@ package org.kie.workbench.common.dmn.api.definition.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.NameFieldType;
+import org.kie.workbench.common.dmn.api.property.dmn.NameHolder;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id")
-public class Definitions extends NamedElement implements DMNPropertySet {
+@FormDefinition(policy = FieldPolicy.ONLY_MARKED,
+        i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.model.Definitions"),
+        startElement = "id")
+public class Definitions extends DMNElement implements DMNPropertySet,
+                                                       HasName {
 
     public static final String DEFAULT_EXPRESSION_LANGUAGE = Namespace.FEEL.getUri();
 
@@ -48,6 +57,11 @@ public class Definitions extends NamedElement implements DMNPropertySet {
     private List<ElementCollection> elementCollection;
     private List<BusinessContextElement> businessContextElement;
     private List<DMNDiagramElement> dmnDiagramElements;
+
+    @Property
+    @FormField(afterElement = "description", labelKey = "nameHolder", type = NameFieldType.class)
+    @Valid
+    protected NameHolder nameHolder;
 
     @Property
     @FormField(afterElement = "nameHolder")
@@ -94,8 +108,8 @@ public class Definitions extends NamedElement implements DMNPropertySet {
                        final String exporter,
                        final String exporterVersion) {
         super(id,
-              description,
-              name);
+              description);
+        this.nameHolder = new NameHolder(name);
         this._import = _import;
         this.itemDefinition = itemDefinition;
         this.drgElement = drgElement;
@@ -112,6 +126,16 @@ public class Definitions extends NamedElement implements DMNPropertySet {
     // -----------------------
     // DMN properties
     // -----------------------
+
+    @Override
+    public Name getName() {
+        return nameHolder.getValue();
+    }
+
+    @Override
+    public void setName(final Name name) {
+        this.nameHolder.setValue(name);
+    }
 
     public List<Import> getImport() {
         if (_import == null) {
@@ -212,6 +236,17 @@ public class Definitions extends NamedElement implements DMNPropertySet {
 
     public void setExporterVersion(final String value) {
         this.exporterVersion = value;
+    }
+
+    // ------------------
+    // Errai Data Binding
+    // ------------------
+    public NameHolder getNameHolder() {
+        return nameHolder;
+    }
+
+    public void setNameHolder(final NameHolder nameHolder) {
+        this.nameHolder = nameHolder;
     }
 
     @Override
