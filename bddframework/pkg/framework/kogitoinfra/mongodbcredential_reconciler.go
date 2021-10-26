@@ -16,7 +16,9 @@ package kogitoinfra
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/apis"
+	"reflect"
+
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
@@ -24,7 +26,6 @@ import (
 	v12 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"reflect"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -34,12 +35,12 @@ const (
 
 type mongoDBCredentialReconciler struct {
 	infraContext
-	mongoDBInstance *mongodb.MongoDB
+	mongoDBInstance *mongodb.MongoDBCommunity
 	runtime         api.RuntimeType
 	secretHandler   infrastructure.SecretHandler
 }
 
-func newMongoDBCredentialReconciler(infraContext infraContext, mongoDBInstance *mongodb.MongoDB, runtime api.RuntimeType) Reconciler {
+func newMongoDBCredentialReconciler(infraContext infraContext, mongoDBInstance *mongodb.MongoDBCommunity, runtime api.RuntimeType) Reconciler {
 	return &mongoDBCredentialReconciler{
 		infraContext:    infraContext,
 		mongoDBInstance: mongoDBInstance,
@@ -170,7 +171,7 @@ func (i *mongoDBCredentialReconciler) createCustomKogitoMongoDBSecret(credential
 	return secret
 }
 
-func (i *mongoDBCredentialReconciler) findMongoDBUserByUsernameAndAuthDatabase(mongoDBInstance *mongodb.MongoDB, username, authDB string) *mongodb.MongoDBUser {
+func (i *mongoDBCredentialReconciler) findMongoDBUserByUsernameAndAuthDatabase(mongoDBInstance *mongodb.MongoDBCommunity, username, authDB string) *mongodb.MongoDBUser {
 	i.Log.Debug("Looking info", "user", username, "password", authDB)
 	for _, user := range mongoDBInstance.Spec.Users {
 		if user.DB == authDB {

@@ -119,7 +119,7 @@ func CreateFakeKogitoMongoDB(namespace string) api.KogitoInfraInterface {
 		Spec: v1beta1.KogitoInfraSpec{
 			Resource: &v1beta1.InfraResource{
 				Kind:       "MongoDB",
-				APIVersion: "mongodb.com/v1",
+				APIVersion: "mongodbcommunity.mongodb.com/v1",
 				Name:       "kogito-mongodb",
 			},
 			InfraProperties: map[string]string{

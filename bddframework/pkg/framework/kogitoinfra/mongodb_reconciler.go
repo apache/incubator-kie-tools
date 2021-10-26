@@ -16,7 +16,8 @@ package kogitoinfra
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/apis"
+
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	mongodb "github.com/kiegroup/kogito-operator/core/infrastructure/mongodb/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -89,7 +90,7 @@ func AppendMongoDBWatchedObjects(b *builder.Builder) *builder.Builder {
 
 // Reconcile reconcile Kogito infra object
 func (i *mongoDBInfraReconciler) Reconcile() (resultErr error) {
-	var mongoDBInstance *mongodb.MongoDB
+	var mongoDBInstance *mongodb.MongoDBCommunity
 	mongoDBHandler := infrastructure.NewMongoDBHandler(i.Context)
 	if !mongoDBHandler.IsMongoDBAvailable() {
 		return errorForResourceAPINotFound(i.instance.GetSpec().GetResource().GetAPIVersion())
@@ -126,7 +127,7 @@ func (i *mongoDBInfraReconciler) Reconcile() (resultErr error) {
 	return resultErr
 }
 
-func (i *mongoDBInfraReconciler) updateMongoDBRuntimePropsInStatus(mongoDBInstance *mongodb.MongoDB, runtime api.RuntimeType) error {
+func (i *mongoDBInfraReconciler) updateMongoDBRuntimePropsInStatus(mongoDBInstance *mongodb.MongoDBCommunity, runtime api.RuntimeType) error {
 	i.Log.Debug("going to Update MongoDB runtime properties in kogito infra instance status", "runtime", runtime)
 	mongoDBConfigReconciler := newMongoDBConfigReconciler(i.infraContext, mongoDBInstance, runtime)
 	if err := mongoDBConfigReconciler.Reconcile(); err != nil {

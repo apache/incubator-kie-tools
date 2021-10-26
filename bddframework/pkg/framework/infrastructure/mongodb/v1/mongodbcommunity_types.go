@@ -16,6 +16,7 @@ package v1
 
 import (
 	appsv1 "k8s.io/api/apps/v1"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
@@ -40,8 +41,8 @@ const (
 	Pending Phase = "Pending"
 )
 
-// MongoDBSpec defines the desired state of MongoDB
-type MongoDBSpec struct {
+// MongoDBCommunitySpec defines the desired state of MongoDB
+type MongoDBCommunitySpec struct {
 	// Members is the number of members in the replica set
 	// +optional
 	Members int `json:"members"`
@@ -51,13 +52,21 @@ type MongoDBSpec struct {
 	// Version defines which version of MongoDB will be used
 	Version string `json:"version"`
 
+	// Arbiters is the number of arbiters (each counted as a member) in the replica set
+	// +optional
+	Arbiters int `json:"arbiters"`
+
 	// FeatureCompatibilityVersion configures the feature compatibility version that will
 	// be set for the deployment
 	// +optional
 	FeatureCompatibilityVersion string `json:"featureCompatibilityVersion,omitempty"`
 
-	// ReplicaSetHorizons allows providing different DNS settings within the
-	// Kubernetes cluster and to the Kubernetes cluster.
+	// ReplicaSetHorizons Add this parameter and values if you need your database
+	// to be accessed outside of Kubernetes. This setting allows you to
+	// provide different DNS settings within the Kubernetes cluster and
+	// to the Kubernetes cluster. The Kubernetes Operator uses split horizon
+	// DNS for replica set members. This feature allows communication both
+	// within the Kubernetes cluster and from outside Kubernetes.
 	// +optional
 	ReplicaSetHorizons ReplicaSetHorizonConfiguration `json:"replicaSetHorizons,omitempty"`
 
@@ -76,21 +85,76 @@ type MongoDBSpec struct {
 	// each data-bearing mongod at runtime. Uses the same structure as the mongod
 	// configuration file: https://docs.mongodb.com/manual/reference/configuration-options/
 	// +kubebuilder:validation:Type=object
+	// +optional
+	// +kubebuilder:pruning:PreserveUnknownFields
+	// +nullable
 	AdditionalMongodConfig MongodConfiguration `json:"additionalMongodConfig,omitempty"`
 }
 
-// ReplicaSetHorizons ...
-type ReplicaSetHorizons map[string]string
-
 // ReplicaSetHorizonConfiguration holds the split horizon DNS settings for
 // replica set members.
-type ReplicaSetHorizonConfiguration []ReplicaSetHorizons
+type ReplicaSetHorizonConfiguration []map[string]string
+
+// CustomRole defines a custom MongoDB role.
+type CustomRole struct {
+	// The name of the role.
+	Role string `json:"role"`
+	// The database of the role.
+	DB string `json:"db"`
+	// The privileges to grant the role.
+	Privileges []Privilege `json:"privileges"`
+	// An array of roles from which this role inherits privileges.
+	// +optional
+	Roles []Role `json:"roles"`
+	// The authentication restrictions the server enforces on the role.
+	// +optional
+	AuthenticationRestrictions []AuthenticationRestriction `json:"authenticationRestrictions,omitempty"`
+}
+
+// Privilege defines the actions a role is allowed to perform on a given resource.
+type Privilege struct {
+	Resource Resource `json:"resource"`
+	Actions  []string `json:"actions"`
+}
+
+// Resource specifies specifies the resources upon which a privilege permits actions.
+// See https://docs.mongodb.com/manual/reference/resource-document for more.
+type Resource struct {
+	// +optional
+	DB *string `json:"db,omitempty"`
+	// +optional
+	Collection *string `json:"collection,omitempty"`
+	// +optional
+	Cluster bool `json:"cluster,omitempty"`
+	// +optional
+	AnyResource bool `json:"anyResource,omitempty"`
+}
+
+// AuthenticationRestriction specifies a list of IP addresses and CIDR ranges users
+// are allowed to connect to or from.
+type AuthenticationRestriction struct {
+	ClientSource  []string `json:"clientSource"`
+	ServerAddress []string `json:"serverAddress"`
+}
 
 // StatefulSetConfiguration holds the optional custom StatefulSet
 // that should be merged into the operator created one.
 type StatefulSetConfiguration struct {
-	// The StatefulSet override options for underlying StatefulSet
-	Spec appsv1.StatefulSetSpec `json:"spec"` // TODO: this pollutes the crd generation
+	// +kubebuilder:pruning:PreserveUnknownFields
+	SpecWrapper StatefulSetSpecWrapper `json:"spec"`
+}
+
+// StatefulSetSpecWrapper is a wrapper around StatefulSetSpec with a custom implementation
+// of MarshalJSON and UnmarshalJSON which delegate to the underlying Spec to avoid CRD pollution.
+type StatefulSetSpecWrapper struct {
+	Spec appsv1.StatefulSetSpec `json:"-"`
+}
+
+// DeepCopy ...
+func (m *StatefulSetSpecWrapper) DeepCopy() *StatefulSetSpecWrapper {
+	return &StatefulSetSpecWrapper{
+		Spec: m.Spec,
+	}
 }
 
 // MongodConfiguration holds the optional mongod configuration
@@ -126,6 +190,7 @@ type MongoDBUser struct {
 	Roles []Role `json:"roles"`
 
 	// ScramCredentialsSecretName appended by string "scram-credentials" is the name of the secret object created by the mongoDB operator for storing SCRAM credentials
+	// +kubebuilder:validation:Pattern=^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
 	ScramCredentialsSecretName string `json:"scramCredentialsSecretName"`
 }
 
@@ -154,6 +219,9 @@ type Security struct {
 	// TLS configuration for both client-server and server-server communication
 	// +optional
 	TLS TLS `json:"tls"`
+	// User-specified custom MongoDB roles that should be configured in the deployment.
+	// +optional
+	Roles []CustomRole `json:"roles,omitempty"`
 }
 
 // TLS is the configuration used to set up TLS encryption
@@ -186,17 +254,26 @@ type LocalObjectReference struct {
 
 // Authentication ...
 type Authentication struct {
-	// Modes is an array specifying which authentication methods should be enabled
+	// Modes is an array specifying which authentication methods should be enabled.
 	Modes []AuthMode `json:"modes"`
+
+	// IgnoreUnknownUsers set to true will ensure any users added manually (not through the CRD)
+	// will not be removed.
+
+	// TODO: defaults will work once we update to v1 CRD.
+
+	// +optional
+	// +kubebuilder:default:=true
+	// +nullable
+	IgnoreUnknownUsers *bool `json:"ignoreUnknownUsers,omitempty"`
 }
 
-// +kubebuilder:validation:Enum=SCRAM
-
 // AuthMode ...
+// +kubebuilder:validation:Enum=SCRAM;SCRAM-SHA-256;SCRAM-SHA-1
 type AuthMode string
 
-// MongoDBStatus defines the observed state of MongoDB
-type MongoDBStatus struct {
+// MongoDBCommunityStatus defines the observed state of MongoDB
+type MongoDBCommunityStatus struct {
 	MongoURI string `json:"mongoUri"`
 	Phase    Phase  `json:"phase"`
 
@@ -206,30 +283,31 @@ type MongoDBStatus struct {
 	Message string `json:"message,omitempty"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
-// MongoDB is the Schema for the mongodbs API
+// +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
-// +kubebuilder:resource:path=mongodb,scope=Namespaced,shortName=mdb
+
+// MongoDBCommunity is the Schema for the mongodbs API
+// +kubebuilder:subresource:status
+// +kubebuilder:resource:path=mongodbcommunity,scope=Namespaced,shortName=mdbc,singular=mongodbcommunity
 // +kubebuilder:printcolumn:name="Phase",type="string",JSONPath=".status.phase",description="Current state of the MongoDB deployment"
 // +kubebuilder:printcolumn:name="Version",type="string",JSONPath=".status.version",description="Version of MongoDB server"
-type MongoDB struct {
+type MongoDBCommunity struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   MongoDBSpec   `json:"spec,omitempty"`
-	Status MongoDBStatus `json:"status,omitempty"`
+	Spec   MongoDBCommunitySpec   `json:"spec,omitempty"`
+	Status MongoDBCommunityStatus `json:"status,omitempty"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
 
-// MongoDBList contains a list of MongoDB
-type MongoDBList struct {
+// MongoDBCommunityList contains a list of MongoDB
+type MongoDBCommunityList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []MongoDB `json:"items"`
+	Items           []MongoDBCommunity `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&MongoDB{}, &MongoDBList{})
+	SchemeBuilder.Register(&MongoDBCommunity{}, &MongoDBCommunityList{})
 }

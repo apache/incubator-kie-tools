@@ -16,15 +16,16 @@ package kogitoinfra
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/apis"
+	"net/url"
+	"reflect"
+
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	mongodb "github.com/kiegroup/kogito-operator/core/infrastructure/mongodb/v1"
 	v12 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"net/url"
-	"reflect"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -34,12 +35,12 @@ const (
 
 type mongoDBConfigReconciler struct {
 	infraContext
-	mongoDBInstance  *mongodb.MongoDB
+	mongoDBInstance  *mongodb.MongoDBCommunity
 	runtime          api.RuntimeType
 	configMapHandler infrastructure.ConfigMapHandler
 }
 
-func newMongoDBConfigReconciler(ctx infraContext, mongoDBInstance *mongodb.MongoDB, runtime api.RuntimeType) Reconciler {
+func newMongoDBConfigReconciler(ctx infraContext, mongoDBInstance *mongodb.MongoDBCommunity, runtime api.RuntimeType) Reconciler {
 	return &mongoDBConfigReconciler{
 		infraContext:     ctx,
 		mongoDBInstance:  mongoDBInstance,

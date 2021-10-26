@@ -47,16 +47,16 @@ const (
 
 var (
 	// MongoDBAPIVersion refers to MongoDB APIVersion
-	MongoDBAPIVersion = mongodb.SchemeGroupVersion.String()
+	MongoDBAPIVersion = mongodb.SchemeBuilder.GroupVersion.String()
 
-	mongoDBServerGroup = mongodb.SchemeGroupVersion.Group
+	mongoDBServerGroup = mongodb.GroupVersion.Group
 )
 
 // MongoDBHandler ...
 type MongoDBHandler interface {
 	IsMongoDBAvailable() bool
 	IsMongoDBOperatorAvailable(namespace string) (bool, error)
-	FetchMongoDBInstance(key types.NamespacedName) (*mongodb.MongoDB, error)
+	FetchMongoDBInstance(key types.NamespacedName) (*mongodb.MongoDBCommunity, error)
 }
 
 type mongoDBHandler struct {
@@ -99,9 +99,9 @@ func (m *mongoDBHandler) IsMongoDBOperatorAvailable(namespace string) (bool, err
 	return false, nil
 }
 
-func (m *mongoDBHandler) FetchMongoDBInstance(key types.NamespacedName) (*mongodb.MongoDB, error) {
+func (m *mongoDBHandler) FetchMongoDBInstance(key types.NamespacedName) (*mongodb.MongoDBCommunity, error) {
 	m.Log.Debug("fetching deployed kogito mongoDB instance")
-	mongoDBInstance := &mongodb.MongoDB{}
+	mongoDBInstance := &mongodb.MongoDBCommunity{}
 	if exists, err := kubernetes.ResourceC(m.Client).FetchWithKey(key, mongoDBInstance); err != nil {
 		m.Log.Error(err, "Error occurs while fetching kogito mongoDB instance")
 		return nil, err
@@ -109,7 +109,6 @@ func (m *mongoDBHandler) FetchMongoDBInstance(key types.NamespacedName) (*mongod
 		m.Log.Debug("Kogito mongoDB instance is not exists")
 		return nil, nil
 	} else {
-		m.Log.Debug("Kogito mongoDB instance found")
 		m.Log.Debug("Kogito mongoDB instance found", "instance", mongoDBInstance)
 		return mongoDBInstance, nil
 	}

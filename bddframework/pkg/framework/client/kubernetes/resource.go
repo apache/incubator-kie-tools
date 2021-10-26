@@ -16,12 +16,13 @@ package kubernetes
 
 import (
 	"fmt"
+	"strings"
+
 	kogitocli "github.com/kiegroup/kogito-operator/core/client"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
-	"strings"
 
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"k8s.io/apimachinery/pkg/util/yaml"
@@ -92,8 +93,19 @@ func (r *resource) CreateForOwner(resource client.Object, owner metav1.Object, s
 func (r *resource) CreateFromYamlContent(yamlFileContent, namespace string, resourceRef client.Object, beforeCreate func(object interface{})) error {
 	docs := strings.Split(yamlFileContent, "---")
 	for _, doc := range docs {
+		if len(doc) <= 0 {
+			log.Debug("Empty content ... Skipping it")
+			continue
+		}
+
+		log.Debug("Create from yaml content", "content", doc)
 		if err := yaml.NewYAMLOrJSONDecoder(strings.NewReader(doc), len([]byte(doc))).Decode(resourceRef); err != nil {
 			return fmt.Errorf("Error while unmarshalling file: %v ", err)
+		}
+
+		if len(resourceRef.GetObjectKind().GroupVersionKind().Kind) <= 0 {
+			log.Error(fmt.Errorf("Error while unmarshalling yaml content"), "Cannot parse yaml content into resources... Skipping it", "content", doc)
+			continue
 		}
 
 		if namespace != "" {

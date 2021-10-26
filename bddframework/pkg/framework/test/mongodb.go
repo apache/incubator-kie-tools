@@ -21,13 +21,13 @@ import (
 )
 
 // CreateFakeMongoDB ...
-func CreateFakeMongoDB(namespace string) *mongodb.MongoDB {
-	return &mongodb.MongoDB{
+func CreateFakeMongoDB(namespace string) *mongodb.MongoDBCommunity {
+	return &mongodb.MongoDBCommunity{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "kogito-mongodb",
 			Namespace: namespace,
 		},
-		Spec: mongodb.MongoDBSpec{
+		Spec: mongodb.MongoDBCommunitySpec{
 			Users: []mongodb.MongoDBUser{
 				{
 					DB:   "admin",
@@ -39,7 +39,7 @@ func CreateFakeMongoDB(namespace string) *mongodb.MongoDB {
 				},
 			},
 		},
-		Status: mongodb.MongoDBStatus{
+		Status: mongodb.MongoDBCommunityStatus{
 			Phase:    mongodb.Running,
 			MongoURI: "http://mongodb-host:27017",
 		},
