@@ -62,7 +62,7 @@ func GetRegisteredSchema() *runtime.Scheme {
 	metav1.AddToGroupVersion(s, prometheus.SchemeGroupVersion)
 	metav1.AddToGroupVersion(s, routev1.GroupVersion)
 	metav1.AddToGroupVersion(s, infinispan.SchemeGroupVersion)
-	metav1.AddToGroupVersion(s, mongodb.SchemeGroupVersion)
+	metav1.AddToGroupVersion(s, mongodb.SchemeBuilder.GroupVersion)
 	metav1.AddToGroupVersion(s, kafka.SchemeGroupVersion)
 	metav1.AddToGroupVersion(s, grafana.GroupVersion)
 	metav1.AddToGroupVersion(s, eventing.SchemeGroupVersion)
