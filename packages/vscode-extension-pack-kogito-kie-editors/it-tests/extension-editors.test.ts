@@ -17,7 +17,7 @@
 import { By, SideBarView, WebView } from "vscode-extension-tester";
 import * as path from "path";
 import { h5ComponentWithText } from "./helpers/CommonLocators";
-import { EditorTabs } from "./helpers/EditorTabs";
+import { EditorTabs } from "./helpers/dmn/EditorTabs";
 import { assertWebElementIsDisplayedEnabled } from "./helpers/CommonAsserts";
 import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
 import BpmnEditorTestHelper, { PaletteCategories } from "./helpers/bpmn/BpmnEditorTestHelper";
@@ -37,6 +37,7 @@ describe("Editors are loading properly", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
   const DEMO_BPMN: string = "demo.bpmn";
   const DEMO_DMN: string = "demo.dmn";
+  const DEMO_EXPRESSION_DMN: string = "demo-expression.dmn";
   const DEMO_SCESIM: string = "demo.scesim";
   const DEMO_PMML: string = "demo.pmml";
 
@@ -139,6 +140,30 @@ describe("Editors are loading properly", () => {
 
     await navigatorPanel.assertDiagramNodeIsPresent("?DemoDecision1");
     await navigatorPanel.assertDiagramNodeIsPresent("?DecisionFinal1");
+
+    await webview.switchBack();
+  });
+
+  it("Check new DMN Expression Editor", async function () {
+    this.timeout(40000);
+    webview = await testHelper.openFileFromSidebar(DEMO_EXPRESSION_DMN);
+    await testHelper.switchWebviewToFrame(webview);
+    const dmnEditorTester = new DmnEditorTestHelper(webview);
+
+    const decisionNavigator = await dmnEditorTester.openDecisionNavigator();
+
+    await decisionNavigator.selectNodeExpression("context demo", "Context");
+    const contextEditor = await dmnEditorTester.getExpressionEditor();
+    await contextEditor.activateBetaVersion();
+    await contextEditor.assertExpressionDetails("context demo", "string");
+
+    await decisionNavigator.selectNodeExpression("function demo", "Function");
+    const functionEditor = await dmnEditorTester.getExpressionEditor();
+    await functionEditor.assertExpressionDetails("function demo", "string");
+
+    await decisionNavigator.selectNodeExpression("decision table demo", "Decision Table");
+    const decisionTableEditor = await dmnEditorTester.getExpressionEditor();
+    await decisionTableEditor.assertExpressionDetails("decision table demo", "string");
 
     await webview.switchBack();
   });

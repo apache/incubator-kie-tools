@@ -21,9 +21,11 @@ import Editor from "../Editor";
 import Element from "../../Element";
 import Locator from "../../Locator";
 import DecisionNavigator from "./DecisionNavigator";
+import DmnExpressionEditor from "./DmnExpressionEditor";
 
 export default class DmnEditor extends Editor {
   private static readonly PALETTE_LOCATOR: By = By.className("kie-palette");
+  private static readonly EXPRESSION_EDITOR_LOCATOR: By = By.id("dmn-expression-editor-container");
   private static readonly SIDE_BAR_LOCATOR: By = By.className("collapsed-docks-bar-E");
   private static readonly LEFT_SIDE_BAR_LOCATOR: By = By.className("collapsed-docks-bar-W");
   private static readonly DECISION_GRAPH_LOCATOR: By = By.id("decision-graphs-content");
@@ -31,6 +33,11 @@ export default class DmnEditor extends Editor {
   public async getDmnPalette(): Promise<DmnPalette> {
     const palette: Element = await this.tools.by(DmnEditor.PALETTE_LOCATOR).getElement();
     return await this.tools.createPageFragment(DmnPalette, palette);
+  }
+
+  public async getExpressionEditor(): Promise<DmnExpressionEditor> {
+    const palette: Element = await this.tools.by(DmnEditor.EXPRESSION_EDITOR_LOCATOR).getElement();
+    return await this.tools.createPageFragment(DmnExpressionEditor, palette);
   }
 
   public async getSideBar(): Promise<DmnSideBar> {
