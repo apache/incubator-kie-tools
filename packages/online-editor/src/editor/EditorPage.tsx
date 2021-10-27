@@ -175,7 +175,7 @@ export function EditorPage(props: Props) {
     { throttle: 200 }
   );
 
-  const onResourceContentRequest = useCallback(
+  const handleResourceContentRequest = useCallback(
     async (request: ResourceContentRequest) => {
       return workspaces.resourceContentGet({
         fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
@@ -187,7 +187,7 @@ export function EditorPage(props: Props) {
     [props.workspaceId, workspaces]
   );
 
-  const onResourceListRequest = useCallback(
+  const handleResourceListRequest = useCallback(
     async (request: ResourceListRequest) => {
       return workspaces.resourceContentList({
         fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
@@ -224,6 +224,33 @@ export function EditorPage(props: Props) {
     return [i18n.terms.validation, i18n.terms.execution];
   }, [i18n]);
 
+  const handleOpenFile = useCallback(
+    async (relativePath: string) => {
+      if (!workspaceFilePromise.data) {
+        return;
+      }
+
+      const file = await workspaces.getFile({
+        fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
+        workspaceId: workspaceFilePromise.data.workspaceId,
+        relativePath,
+      });
+
+      if (!file) {
+        throw new Error(`Can't find ${relativePath} on Workspace '${workspaceFilePromise.data.workspaceId}'`);
+      }
+
+      history.push({
+        pathname: globals.routes.workspaceWithFilePath.path({
+          workspaceId: file.workspaceId,
+          fileRelativePath: file.relativePathWithoutExtension,
+          extension: file.extension,
+        }),
+      });
+    },
+    [workspaceFilePromise, workspaces, history, globals]
+  );
+
   return (
     <BusinessAutomationStudioPage>
       <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
@@ -252,16 +279,15 @@ export function EditorPage(props: Props) {
                       <DmnRunnerDrawer workspaceFile={file} notificationsPanel={notificationsPanel}>
                         {embeddedEditorFile && (
                           <EmbeddedEditor
-                            //FIXME: There's a bug on the PMML Editor that prevents is from working after a setContent call.
-                            key={
-                              embeddedEditorFile.fileExtension === "pmml"
-                                ? embeddedEditorFile.path
-                                : embeddedEditorFile.fileExtension
-                            }
+                            /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
+                             * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
+                             */
+                            key={workspaces.getUniqueFileIdentifier(file)}
                             ref={editorRef}
                             file={embeddedEditorFile}
-                            kogitoWorkspace_resourceContentRequest={onResourceContentRequest}
-                            kogitoWorkspace_resourceListRequest={onResourceListRequest}
+                            kogitoWorkspace_openFile={handleOpenFile}
+                            kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
+                            kogitoWorkspace_resourceListRequest={handleResourceListRequest}
                             kogitoEditor_setContentError={setContentErrorAlert.show}
                             editorEnvelopeLocator={globals.editorEnvelopeLocator}
                             channelType={ChannelType.VSCODE} // TODO CAPONETTO: Changed the channel type to test the Included Models (undo/redo do not work)
