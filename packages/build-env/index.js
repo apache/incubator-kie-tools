@@ -165,12 +165,12 @@ const ENV_VARS = {
   },
   QUARKUS_PLATFORM_version: {
     name: "QUARKUS_PLATFORM_version",
-    default: "2.2.3.Final",
+    default: "2.4.0.Final",
     description: "",
   },
   KOGITO_RUNTIME_version: {
     name: "KOGITO_RUNTIME_version",
-    default: "1.11.1.Final",
+    default: "1.12.0.Final",
     description: "",
   },
 };
