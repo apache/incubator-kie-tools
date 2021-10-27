@@ -35,7 +35,7 @@ import {
   PromiseStateWrapper,
   useCombinedPromiseState,
   useDelay,
-  useDelayedPromiseState,
+  usePromiseState,
 } from "../workspace/hooks/PromiseState";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
@@ -139,7 +139,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
 
   useEffect(() => {
     setMenuHeights({});
-  }, [props.workspace]);
+  }, [props.workspace, filesDropdownMode, activeMenu]);
 
   useEffect(() => {
     if (isFilesDropdownOpen) {
@@ -417,7 +417,7 @@ export function WorkspacesMenuItems(props: {
 export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
   const workspaces = useWorkspaces();
   const imgRef = useRef<HTMLImageElement>(null);
-  const [svg, setSvg] = useDelayedPromiseState<string>(600);
+  const [svg, setSvg] = usePromiseState<string>();
 
   useCancelableEffect(
     useCallback(
@@ -462,7 +462,8 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
         )}
         promise={svg}
         resolved={() => (
-          <img style={{ height: "200px" }} ref={imgRef} alt={"SVG for " + props.workspaceFile.relativePath} />
+          // for some reason, the CardBody adds an extra 6px after the image is loaded. 200 - 6 = 194px.
+          <img style={{ height: "194px" }} ref={imgRef} alt={"SVG for " + props.workspaceFile.relativePath} />
         )}
       />
     </>
