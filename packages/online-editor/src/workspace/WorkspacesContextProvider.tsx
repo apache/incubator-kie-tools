@@ -30,7 +30,6 @@ import { SUPPORTED_FILES, SUPPORTED_FILES_EDITABLE } from "./SupportedFiles";
 import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { SupportedFileExtensions } from "../common/GlobalContext";
 import { extractFileExtension } from "../common/utils";
-import { emptyTemplates } from "./FileTemplates";
 import { join } from "path";
 import git from "isomorphic-git";
 import { WorkspaceEvents } from "./hooks/WorkspaceHooks";
@@ -317,11 +316,7 @@ export function WorkspacesContextProvider(props: Props) {
       workspaceId: string;
       destinationDirRelativePath: string;
       extension: SupportedFileExtensions;
-    }) => {
-      const name = NEW_FILE_DEFAULT_NAME;
-      const content = args.extension in emptyTemplates ? emptyTemplates[args.extension] : emptyTemplates.default;
-      return addFile({ ...args, name, content });
-    },
+    }) => addFile({ ...args, name: NEW_FILE_DEFAULT_NAME, content: "" }),
     [addFile]
   );
 

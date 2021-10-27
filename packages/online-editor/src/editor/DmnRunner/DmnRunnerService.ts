@@ -39,6 +39,10 @@ export class DmnRunnerService {
   }
 
   public async result(payload: DmnRunnerModelPayload): Promise<DmnResult> {
+    if (!this.isPayloadValid(payload)) {
+      return { messages: [] };
+    }
+
     const response = await fetch(this.DMN_RUNNER_DMN_RESULT_URL, {
       method: "POST",
       headers: {
@@ -51,6 +55,10 @@ export class DmnRunnerService {
   }
 
   public async validate(payload: DmnRunnerModelPayload): Promise<[]> {
+    if (!this.isPayloadValid(payload)) {
+      return [];
+    }
+
     const response = await fetch(this.DMN_RUNNER_VALIDATE_URL, {
       method: "POST",
       headers: {
@@ -62,6 +70,10 @@ export class DmnRunnerService {
   }
 
   public async formSchema(payload: DmnRunnerModelPayload): Promise<DmnFormSchema> {
+    if (!this.isPayloadValid(payload)) {
+      return {};
+    }
+
     const response = await fetch(this.DMN_RUNNER_FORM_SCHEMA_URL, {
       method: "POST",
       headers: {
@@ -70,10 +82,18 @@ export class DmnRunnerService {
       body: JSON.stringify(payload),
     });
 
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+
     // The input set property associated with the mainURI is InputSetX, where X is a number not always 1.
     // So replace all occurrences InputSetX -> InputSet to keep compatibility with the current DmnForm.
     const json = await response.json();
     const inputRef = json["$ref"].replace("#/definitions/", "");
     return JSON.parse(JSON.stringify(json).replace(new RegExp(inputRef, "g"), "InputSet"));
+  }
+
+  private isPayloadValid(payload: DmnRunnerModelPayload): boolean {
+    return payload.resources.every((resource) => resource.content !== "");
   }
 }

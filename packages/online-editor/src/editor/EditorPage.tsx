@@ -148,32 +148,53 @@ export function EditorPage(props: Props) {
     lastContent.current = undefined;
   }
 
+  const saveContent = useCallback(async () => {
+    if (!workspaceFilePromise.data) {
+      return;
+    }
+
+    const content = await editor?.getContent();
+    const svgString = await editor?.getPreview();
+
+    lastContent.current = content;
+
+    await workspaces.svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
+
+    await workspaces.updateFile({
+      fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
+      file: workspaceFilePromise.data,
+      getNewContents: () => Promise.resolve(content),
+    });
+    editor?.getStateControl().setSavedCommand();
+  }, [workspaces, editor, workspaceFilePromise]);
+
   useStateControlSubscription(
     editor,
     useCallback(
-      async (isDirty) => {
-        if (!isDirty || !workspaceFilePromise.data) {
+      (isDirty) => {
+        if (!isDirty) {
           return;
         }
 
-        const content = await editor?.getContent();
-        const svgString = await editor?.getPreview();
-
-        lastContent.current = content;
-
-        await workspaces.svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
-
-        await workspaces.updateFile({
-          fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
-          file: workspaceFilePromise.data,
-          getNewContents: () => Promise.resolve(content),
-        });
-        editor?.getStateControl().setSavedCommand();
+        saveContent();
       },
-      [workspaces, editor, workspaceFilePromise]
+      [saveContent]
     ),
     { throttle: 200 }
   );
+
+  useEffect(() => {
+    if (!editor?.isReady || !workspaceFilePromise.data) {
+      return;
+    }
+
+    workspaceFilePromise.data.getFileContentsAsString().then((content) => {
+      if (content !== "") {
+        return;
+      }
+      saveContent();
+    });
+  }, [editor, saveContent, workspaceFilePromise]);
 
   const handleResourceContentRequest = useCallback(
     async (request: ResourceContentRequest) => {
