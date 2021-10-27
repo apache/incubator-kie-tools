@@ -35,6 +35,14 @@ import "./BoxedExpressionEditor.css";
 export interface BoxedExpressionEditorProps {
   /** All expression properties used to define it */
   expressionDefinition: ExpressionProps;
+  /**
+   * A boolean used for making (or not) the clear button available on the root expression
+   * Note that this parameter will be used only for the root expression.
+   *
+   * Each expression (internally) has a `noClearAction` property (ExpressionProps interface).
+   * You can set directly it for enabling or not the clear button for such expression.
+   * */
+  clearSupportedOnRootExpression?: boolean;
   /** PMML parameters */
   pmmlParams?: PMMLParams;
 }
@@ -44,11 +52,17 @@ export const BoxedExpressionEditor: (props: BoxedExpressionEditorProps) => JSX.E
 ) => {
   const [currentlyOpenedHandlerCallback, setCurrentlyOpenedHandlerCallback] = useState(() => _.identity);
   const boxedExpressionEditorRef = useRef<HTMLDivElement>(null);
-  const [expressionDefinition, setExpressionDefinition] = useState(props.expressionDefinition);
+  const [expressionDefinition, setExpressionDefinition] = useState<ExpressionProps>({
+    ...props.expressionDefinition,
+    noClearAction: props.clearSupportedOnRootExpression === false,
+  });
   const [supervisorHash, setSupervisorHash] = useState(hashfy(props.expressionDefinition));
 
   useEffect(() => {
-    setExpressionDefinition(props.expressionDefinition);
+    setExpressionDefinition({
+      ...props.expressionDefinition,
+      noClearAction: props.clearSupportedOnRootExpression === false,
+    });
     setSupervisorHash(hashfy(props.expressionDefinition));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.expressionDefinition]);

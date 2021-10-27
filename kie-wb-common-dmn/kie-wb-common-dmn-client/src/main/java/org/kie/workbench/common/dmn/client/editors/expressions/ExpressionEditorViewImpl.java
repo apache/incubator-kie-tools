@@ -296,9 +296,12 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @Override
     public void activate() {
-        DMNLoader.renderBoxedExpressionEditor(".kie-dmn-new-expression-editor",
-                                              ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef()),
-                                              buildPmmlParams());
+        DMNLoader.renderBoxedExpressionEditor(
+                ".kie-dmn-new-expression-editor",
+                ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef()),
+                hasExpression.isClearSupported(),
+                buildPmmlParams()
+        );
     }
 
     @Override
