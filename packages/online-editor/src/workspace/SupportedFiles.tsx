@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// FIXME: Delete this class. Every file type is supported on Worksapces.
+// FIXME: To discover which files are editable, we have to check for globals.envelopeEditorLocator.mapping.keys()
 export const SUPPORTED_FILES_TECHNICAL = ["wid", "scesim", "java", "xml", "md", "png", "svg"];
 export const SUPPORTED_FILES_EDITABLE = ["dmn", "bpmn", "bpmn2", "pmml"];
 export const SUPPORTED_FILES = [...SUPPORTED_FILES_EDITABLE, ...SUPPORTED_FILES_TECHNICAL];

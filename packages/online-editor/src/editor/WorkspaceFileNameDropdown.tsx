@@ -4,7 +4,6 @@ import { useGlobals } from "../common/GlobalContext";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { join } from "path";
-import { SUPPORTED_FILES_EDITABLE } from "../workspace/SupportedFiles";
 import { Dropdown } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Link } from "react-router-dom";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -31,16 +30,11 @@ import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
 import { ThLargeIcon } from "@patternfly/react-icons/dist/js/icons/th-large-icon";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
-import {
-  PromiseStateWrapper,
-  useCombinedPromiseState,
-  useDelay,
-  usePromiseState,
-} from "../workspace/hooks/PromiseState";
+import { PromiseStateWrapper, useCombinedPromiseState, usePromiseState } from "../workspace/hooks/PromiseState";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
-import { useWorkspacesFiles } from "../workspace/hooks/WorkspacesFiles";
+import { useWorkspacesFilesPromise } from "../workspace/hooks/WorkspacesFiles";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
@@ -49,11 +43,14 @@ import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 
 const ROOT_MENU_ID = "rootMenu";
 
 enum FilesDropdownMode {
-  LIST,
+  LIST_MODELS,
+  LIST_ALL,
   CAROUSEL,
 }
 
@@ -61,7 +58,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
   const workspaces = useWorkspaces();
   const workspaceFileNameRef = useRef<HTMLInputElement>(null);
   const [newFileNameValid, setNewFileNameValid] = useState<boolean>(true);
-  const [filesDropdownMode, setFilesDropdownMode] = useState(FilesDropdownMode.LIST);
+  const [filesDropdownMode, setFilesDropdownMode] = useState(FilesDropdownMode.LIST_MODELS);
 
   const resetWorkspaceFileName = useCallback(() => {
     if (workspaceFileNameRef.current) {
@@ -142,6 +139,10 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
   }, [props.workspace, filesDropdownMode, activeMenu]);
 
   useEffect(() => {
+    setFilesDropdownMode((prev) => (prev === FilesDropdownMode.LIST_ALL ? FilesDropdownMode.LIST_MODELS : prev));
+  }, [activeMenu]);
+
+  useEffect(() => {
     if (isFilesDropdownOpen) {
       return;
     }
@@ -169,7 +170,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
   }, []);
 
   const workspacesMenuItems = useMemo(() => {
-    if (activeMenu !== ROOT_MENU_ID && activeMenu === `dd${props.workspace.descriptor.workspaceId}`) {
+    if (activeMenu === `dd${props.workspace.descriptor.workspaceId}`) {
       return <></>;
     }
 
@@ -277,7 +278,14 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
             <Menu
               style={{
                 boxShadow: "none",
-                minWidth: filesDropdownMode === FilesDropdownMode.CAROUSEL ? "calc(100vw - 16px)" : "400px",
+                minWidth:
+                  filesDropdownMode === FilesDropdownMode.CAROUSEL
+                    ? "calc(100vw - 16px)"
+                    : filesDropdownMode === FilesDropdownMode.LIST_MODELS
+                    ? "400px"
+                    : filesDropdownMode === FilesDropdownMode.LIST_ALL
+                    ? "800px"
+                    : "",
               }}
               id={ROOT_MENU_ID}
               containsDrilldown={true}
@@ -289,7 +297,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
               onGetMenuHeight={setHeight}
             >
               <MenuContent
-                maxMenuHeight={"600px"}
+                maxMenuHeight={"800px"}
                 menuHeight={activeMenu === ROOT_MENU_ID ? undefined : `${menuHeights[activeMenu]}px`}
                 style={{ overflow: "hidden" }}
               >
@@ -332,13 +340,12 @@ export function WorkspacesMenuItems(props: {
   filesDropdownMode: FilesDropdownMode;
   setFilesDropdownMode: React.Dispatch<React.SetStateAction<FilesDropdownMode>>;
 }) {
+  const globals = useGlobals();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
-  const delay = useDelay(1000);
-  const workspaceFiles = useWorkspacesFiles(workspaceDescriptorsPromise.data);
+  const workspaceFilesPromise = useWorkspacesFilesPromise(workspaceDescriptorsPromise.data);
   const combined = useCombinedPromiseState({
     workspaceDescriptors: workspaceDescriptorsPromise,
-    workspaceFiles,
-    delay,
+    workspaceFiles: workspaceFilesPromise,
   });
 
   return (
@@ -380,7 +387,7 @@ export function WorkspacesMenuItems(props: {
                       description={`${workspaceFiles.get(descriptor.workspaceId)!.length} files, ${
                         workspaceFiles
                           .get(descriptor.workspaceId)!
-                          .filter((f) => SUPPORTED_FILES_EDITABLE.includes(f.extension)).length
+                          .filter((f) => [...globals.editorEnvelopeLocator.mapping.keys()].includes(f.extension)).length
                       } models`}
                       direction={"down"}
                       drilldownMenu={
@@ -396,13 +403,11 @@ export function WorkspacesMenuItems(props: {
                         </DrilldownMenu>
                       }
                     >
-                      <>
-                        <FolderIcon />
-                        &nbsp;&nbsp;
-                        {descriptor.name}
-                        &nbsp;&nbsp;
-                        {descriptor.origin.kind === WorkspaceKind.GIST && <Label>Gist</Label>}
-                      </>
+                      <FolderIcon />
+                      &nbsp;&nbsp;
+                      {descriptor.name}
+                      &nbsp;&nbsp;
+                      {descriptor.origin.kind === WorkspaceKind.GIST && <Label>Gist</Label>}
                     </MenuItem>
                   )}
                 </React.Fragment>
@@ -470,19 +475,15 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
   );
 }
 
-export function FilesMenuItems(props: {
-  workspaceDescriptor: WorkspaceDescriptor;
-  workspaceFiles: WorkspaceFile[];
-  currentWorkspaceFile?: WorkspaceFile;
-  onSelectFile: () => void;
-  filesDropdownMode: FilesDropdownMode;
-  setFilesDropdownMode: React.Dispatch<React.SetStateAction<FilesDropdownMode>>;
+function SearchableFilesMenuGroup(props: {
   shouldFocusOnSearch: boolean;
+  filesDropdownMode: FilesDropdownMode;
+  label: string;
+  allFiles: WorkspaceFile[];
+  children: (args: { filteredFiles: WorkspaceFile[] }) => React.ReactNode;
 }) {
   const [search, setSearch] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const history = useHistory();
-  const globals = useGlobals();
 
   useEffect(() => {
     if (props.shouldFocusOnSearch) {
@@ -492,15 +493,72 @@ export function FilesMenuItems(props: {
     }
   }, [props.shouldFocusOnSearch, props.filesDropdownMode]);
 
-  const workspaceFilesToDisplay = useMemo(
+  const filteredFiles = useMemo(
+    () => props.allFiles.filter((file) => file.name.toLowerCase().includes(search.toLowerCase())),
+    [props.allFiles, search]
+  );
+
+  return (
+    <MenuGroup label={props.label}>
+      <MenuInput>
+        <TextInput
+          ref={searchInputRef}
+          value={search}
+          aria-label={"Other files menu items"}
+          iconVariant={"search"}
+          type={"search"}
+          onChange={(value) => setSearch(value)}
+        />
+      </MenuInput>
+      {filteredFiles.length === 0 && (
+        <Bullseye>
+          <EmptyState>
+            <EmptyStateIcon icon={CubesIcon} />
+            <Title headingLevel="h4" size="lg">
+              {`No files match '${search}'.`}
+            </Title>
+          </EmptyState>
+        </Bullseye>
+      )}
+      {filteredFiles.length > 0 && props.children({ filteredFiles })}
+    </MenuGroup>
+  );
+}
+
+export function FilesMenuItems(props: {
+  workspaceDescriptor: WorkspaceDescriptor;
+  workspaceFiles: WorkspaceFile[];
+  currentWorkspaceFile?: WorkspaceFile;
+  onSelectFile: () => void;
+  filesDropdownMode: FilesDropdownMode;
+  setFilesDropdownMode: React.Dispatch<React.SetStateAction<FilesDropdownMode>>;
+  shouldFocusOnSearch: boolean;
+}) {
+  const history = useHistory();
+  const globals = useGlobals();
+
+  const sortedAndFilteredFiles = useMemo(
     () =>
       props.workspaceFiles
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-        //FIXME: This is a very naive search algorithm.
-        .filter((file) => file.name.toLowerCase().includes(search.toLowerCase()))
-        .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension))
         .filter((file) => file.relativePath !== props.currentWorkspaceFile?.relativePath),
-    [props.currentWorkspaceFile, props.workspaceFiles, search]
+    [props.workspaceFiles, props.currentWorkspaceFile]
+  );
+
+  const models = useMemo(
+    () =>
+      sortedAndFilteredFiles.filter((file) =>
+        [...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension)
+      ),
+    [globals, sortedAndFilteredFiles]
+  );
+
+  const otherFiles = useMemo(
+    () =>
+      sortedAndFilteredFiles.filter(
+        (file) => ![...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension)
+      ),
+    [globals, sortedAndFilteredFiles]
   );
 
   return (
@@ -520,78 +578,152 @@ export function FilesMenuItems(props: {
         </SplitItem>
       </Split>
       <Divider component={"li"} />
-      <MenuGroup key={props.workspaceDescriptor.workspaceId} label={`Files in ${props.workspaceDescriptor.name}`}>
-        <MenuInput>
-          <TextInput
-            ref={searchInputRef}
-            value={search}
-            aria-label={"Filter menu items"}
-            iconVariant={"search"}
-            type={"search"}
-            onChange={(value) => setSearch(value)}
-          />
-        </MenuInput>
-        {props.filesDropdownMode === FilesDropdownMode.LIST &&
-          workspaceFilesToDisplay.map((file) => (
-            <FileMenuItem key={file.relativePath} file={file} onSelectFile={props.onSelectFile} />
-          ))}
-      </MenuGroup>
-      {props.filesDropdownMode === FilesDropdownMode.CAROUSEL && (
-        <MenuGroup>
-          <Gallery hasGutter={true}>
-            {workspaceFilesToDisplay.map((file) => (
-              <Card
-                key={file.relativePath}
-                isSelectable={true}
-                isRounded={true}
-                isCompact={true}
-                isHoverable={true}
-                isFullHeight={true}
-                onClick={() => {
-                  history.push({
-                    pathname: globals.routes.workspaceWithFilePath.path({
-                      workspaceId: file.workspaceId,
-                      fileRelativePath: file.relativePathWithoutExtension,
-                      extension: file.extension,
-                    }),
-                  });
 
-                  props.onSelectFile();
-                }}
+      <Split>
+        {(props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ||
+          props.filesDropdownMode === FilesDropdownMode.LIST_ALL) && (
+          <SplitItem style={{ minWidth: "400px" }}>
+            <>
+              <SearchableFilesMenuGroup
+                filesDropdownMode={props.filesDropdownMode}
+                shouldFocusOnSearch={props.shouldFocusOnSearch}
+                label={`Models in '${props.workspaceDescriptor.name}'`}
+                allFiles={models}
               >
-                <CardHeader>
-                  <CardHeaderMain>
-                    <CardTitle>
-                      <Flex flexWrap={{ default: "nowrap" }}>
-                        <FlexItem>
-                          <TextContent>
-                            <Text component={TextVariants.h4}>{file.nameWithoutExtension}</Text>
-                          </TextContent>
-                        </FlexItem>
-                        <FlexItem>
-                          <FileLabel extension={file.extension} />
-                        </FlexItem>
-                      </Flex>
-                    </CardTitle>
-                  </CardHeaderMain>
-                </CardHeader>
-                <CardBody style={{ padding: 0 }}>
-                  <FileSvg workspaceFile={file} />
-                </CardBody>
-              </Card>
-            ))}
-          </Gallery>
-        </MenuGroup>
-      )}
+                {({ filteredFiles }) =>
+                  filteredFiles.map((file) => (
+                    <FileMenuItem key={file.relativePath} file={file} onSelectFile={props.onSelectFile} />
+                  ))
+                }
+              </SearchableFilesMenuGroup>
+              {otherFiles.length > 0 && (
+                <>
+                  <Divider component={"li"} />
+                  <MenuGroup>
+                    <MenuList>
+                      <MenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          props.setFilesDropdownMode((prev) =>
+                            prev === FilesDropdownMode.LIST_MODELS
+                              ? FilesDropdownMode.LIST_ALL
+                              : FilesDropdownMode.LIST_MODELS
+                          );
+                        }}
+                      >
+                        {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS
+                          ? "View other files"
+                          : "Hide other files"}
+                      </MenuItem>
+                    </MenuList>
+                  </MenuGroup>
+                </>
+              )}
+            </>
+          </SplitItem>
+        )}
+
+        {props.filesDropdownMode === FilesDropdownMode.LIST_ALL && (
+          <SplitItem style={{ minWidth: "400px" }}>
+            <SearchableFilesMenuGroup
+              filesDropdownMode={props.filesDropdownMode}
+              shouldFocusOnSearch={props.shouldFocusOnSearch}
+              label={`Other files in '${props.workspaceDescriptor.name}'`}
+              allFiles={otherFiles}
+            >
+              {({ filteredFiles }) =>
+                filteredFiles.map((file) => (
+                  <MenuItem key={file.relativePath}>
+                    <FileName file={file} />
+                  </MenuItem>
+                ))
+              }
+            </SearchableFilesMenuGroup>
+          </SplitItem>
+        )}
+
+        {props.filesDropdownMode === FilesDropdownMode.CAROUSEL && (
+          <SplitItem isFilled={true}>
+            <SearchableFilesMenuGroup
+              filesDropdownMode={props.filesDropdownMode}
+              shouldFocusOnSearch={props.shouldFocusOnSearch}
+              label={`Models in '${props.workspaceDescriptor.name}'`}
+              allFiles={models}
+            >
+              {({ filteredFiles }) => (
+                <Gallery hasGutter={true}>
+                  {filteredFiles.map((file) => (
+                    <Card
+                      key={file.relativePath}
+                      isSelectable={true}
+                      isRounded={true}
+                      isCompact={true}
+                      isHoverable={true}
+                      isFullHeight={true}
+                      onClick={() => {
+                        history.push({
+                          pathname: globals.routes.workspaceWithFilePath.path({
+                            workspaceId: file.workspaceId,
+                            fileRelativePath: file.relativePathWithoutExtension,
+                            extension: file.extension,
+                          }),
+                        });
+
+                        props.onSelectFile();
+                      }}
+                    >
+                      <CardHeader>
+                        <CardHeaderMain>
+                          <CardTitle>
+                            <Flex flexWrap={{ default: "nowrap" }}>
+                              <FlexItem>
+                                <TextContent>
+                                  <Text component={TextVariants.h4}>{file.nameWithoutExtension}</Text>
+                                </TextContent>
+                              </FlexItem>
+                              <FlexItem>
+                                <FileLabel extension={file.extension} />
+                              </FlexItem>
+                            </Flex>
+                          </CardTitle>
+                        </CardHeaderMain>
+                      </CardHeader>
+                      <CardBody style={{ padding: 0 }}>
+                        <FileSvg workspaceFile={file} />
+                      </CardBody>
+                    </Card>
+                  ))}
+                </Gallery>
+              )}
+            </SearchableFilesMenuGroup>
+          </SplitItem>
+        )}
+      </Split>
+    </>
+  );
+}
+
+function FileName(props: { file: WorkspaceFile }) {
+  return (
+    <>
+      <Flex flexWrap={{ default: "nowrap" }}>
+        <FlexItem>{props.file.nameWithoutExtension}</FlexItem>
+        <FlexItem>
+          <FileLabel extension={props.file.extension} />
+        </FlexItem>
+      </Flex>
+      <div className={"pf-c-dropdown__menu-item-description"}>
+        {props.file.relativeDirPath.split("/").join(" > ")}
+        &nbsp;
+      </div>
     </>
   );
 }
 
 export function FileMenuItem(props: { file: WorkspaceFile; onSelectFile: () => void }) {
   const globals = useGlobals();
-  const workspaces = useWorkspaces();
   return (
-    <MenuItem id={workspaces.getUniqueFileIdentifier(props.file)} onClick={props.onSelectFile}>
+    <MenuItem onClick={props.onSelectFile}>
       <Link
         to={globals.routes.workspaceWithFilePath.path({
           workspaceId: props.file.workspaceId,
@@ -599,16 +731,7 @@ export function FileMenuItem(props: { file: WorkspaceFile; onSelectFile: () => v
           extension: props.file.extension,
         })}
       >
-        <Flex flexWrap={{ default: "nowrap" }}>
-          <FlexItem>{props.file.nameWithoutExtension}</FlexItem>
-          <FlexItem>
-            <FileLabel extension={props.file.extension} />
-          </FlexItem>
-        </Flex>
-        <div className={"pf-c-dropdown__menu-item-description"}>
-          {props.file.relativeDirPath.split("/").join(" > ")}
-          &nbsp;
-        </div>
+        <FileName file={props.file} />
       </Link>
     </MenuItem>
   );
@@ -627,13 +750,14 @@ export function FilesDropdownModeIcons(props: {
           aria-label="Switch to list view"
           onClick={(e) => {
             e.stopPropagation();
-            props.setFilesDropdownMode(FilesDropdownMode.LIST);
+            props.setFilesDropdownMode(FilesDropdownMode.LIST_MODELS);
           }}
         >
           <ListIcon />
         </Button>
       )}
-      {props.filesDropdownMode === FilesDropdownMode.LIST && (
+      {(props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ||
+        props.filesDropdownMode === FilesDropdownMode.LIST_ALL) && (
         <Button
           className={"kogito-tooling--masthead-hoverable"}
           variant="plain"

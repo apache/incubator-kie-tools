@@ -4,7 +4,7 @@ import { usePromiseState } from "./PromiseState";
 import { useCallback } from "react";
 import { Holder, useCancelableEffect } from "../../common/Hooks";
 
-export function useWorkspacesFiles(workspaceDescriptors: WorkspaceDescriptor[] | undefined) {
+export function useWorkspacesFilesPromise(workspaceDescriptors: WorkspaceDescriptor[] | undefined) {
   const workspaces = useWorkspaces();
   const [workspacesFilesPromise, setWorkspacesFilesPromise] = usePromiseState<Map<string, WorkspaceFile[]>>();
 
