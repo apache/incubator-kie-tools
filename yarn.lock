@@ -1662,20 +1662,10 @@
     methods "^1.1.2"
     path-to-regexp "^6.1.0"
 
-"@kogito-tooling/bpmn-editor-unpacked@^8.4.2":
-  version "8.4.2"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-8.4.2.tgz#aab1efdad932d9b2501e3252842e9a857276fc96"
-  integrity sha512-YY1H2E/VMjUqE4FY/EZt7QWroVDDxwi5IHDkVUdN+ujUAUwZcnb0Dro5LSjWvo2MbCNc97f4NWkwwuU6wEU9mw==
-
 "@kogito-tooling/bpmn-editor-unpacked@^8.5.0":
   version "8.5.0"
   resolved "https://registry.yarnpkg.com/@kogito-tooling/bpmn-editor-unpacked/-/bpmn-editor-unpacked-8.5.0.tgz#9cc87d9360c9d5f904ab9e5c8c584ed93711e5ee"
   integrity sha512-hNmK41GwuX9AZTUJwu3t44Zgwtm58LUYce6LBW8mtcWU8vV3I3Nsc0Rgf80m4+jhWu7TiSDZku8ijMWl38UNEQ==
-
-"@kogito-tooling/dmn-editor-unpacked@^8.4.2":
-  version "8.4.2"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/dmn-editor-unpacked/-/dmn-editor-unpacked-8.4.2.tgz#75166bffd5fce276ded30e2f489a0cdda52fb00c"
-  integrity sha512-eKkilpMI3fCLn+mg+8D8LzaRpye6lZy+jEukvaH04wibL4PGrBg0oft5t/QY89usd9RkP1tqZ/Ajnb3n2CIBBQ==
 
 "@kogito-tooling/dmn-editor-unpacked@^8.5.0":
   version "8.5.0"
@@ -1686,11 +1676,6 @@
   version "1.11.1-Final"
   resolved "https://registry.yarnpkg.com/@kogito-tooling/jitexecutor-native/-/jitexecutor-native-1.11.1-Final.tgz#a51fd1d7ee76fbe616388a5cbe356b008d603df6"
   integrity sha512-KWsI/95HCr7w2tMleAFyv5E4INGE/U9/IBp1FkxWoxRAeWcrC92cJkH0mnv9Fa5jktbvwPKuXfqh3ZLsbSipgw==
-
-"@kogito-tooling/scesim-editor-unpacked@^8.4.2":
-  version "8.4.2"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/scesim-editor-unpacked/-/scesim-editor-unpacked-8.4.2.tgz#d12de81e3d7a5481fd4de4305eb9c7ac1fe31007"
-  integrity sha512-qdGTaCOcbXk/DZls8A5lfwp37Hf3WufbhIWHSMHw313hvgBkk2612rNWrbQg06UwgNdjYRBm3OY2cTJpGzVH4A==
 
 "@kogito-tooling/scesim-editor-unpacked@^8.5.0":
   version "8.5.0"
