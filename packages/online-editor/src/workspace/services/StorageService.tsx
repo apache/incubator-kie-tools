@@ -15,7 +15,7 @@
  */
 
 import LightningFS from "@isomorphic-git/lightning-fs";
-import { basename, dirname, extname, join, resolve } from "path";
+import { basename, dirname, extname, join, relative, resolve } from "path";
 
 export class EagerStorageFile {
   constructor(private readonly args: { path: string; content: Uint8Array }) {}
@@ -211,22 +211,27 @@ export class StorageService {
     fs: LightningFS;
     startFromDirPath: string;
     shouldExcludeDir: (dirPath: string) => boolean;
-    onVisit: (path: string) => T | undefined;
+    onVisit: (args: { absolutePath: string; relativePath: string }) => Promise<T | undefined>;
+    originalStartingDirPath?: string;
   }): Promise<T[]> {
     const subDirPaths = await args.fs.promises.readdir(args.startFromDirPath);
 
     const files = await Promise.all(
-      subDirPaths.map(async (subDirPath: string) => {
-        const path = resolve(args.startFromDirPath, subDirPath);
-        return !(await args.fs.promises.stat(path)).isDirectory()
-          ? args.onVisit(path)
-          : args.shouldExcludeDir(path)
+      subDirPaths.map(async (subDirPath) => {
+        const absolutePath = resolve(args.startFromDirPath, subDirPath);
+        return !(await args.fs.promises.stat(absolutePath)).isDirectory()
+          ? args.onVisit({
+              absolutePath,
+              relativePath: relative(args.originalStartingDirPath ?? args.startFromDirPath, absolutePath),
+            })
+          : args.shouldExcludeDir(absolutePath)
           ? []
           : this.walk({
               fs: args.fs,
-              startFromDirPath: path,
+              startFromDirPath: absolutePath,
               shouldExcludeDir: args.shouldExcludeDir,
               onVisit: args.onVisit,
+              originalStartingDirPath: args.originalStartingDirPath ?? args.startFromDirPath,
             });
       })
     );

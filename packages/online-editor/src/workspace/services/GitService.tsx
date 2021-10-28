@@ -177,6 +177,14 @@ export class GitService {
     });
   }
 
+  async isIgnored(args: { fs: LightningFS; dir: string; filepath: string }) {
+    return await git.isIgnored({
+      fs: args.fs,
+      dir: args.dir,
+      filepath: args.filepath,
+    });
+  }
+
   async rm(args: { fs: LightningFS; dir: string; relativePath: string }) {
     await git.remove({
       fs: args.fs,
@@ -239,12 +247,6 @@ export class GitService {
     const _WORKDIR = 2;
     const _STAGE = 3;
     const _FILE = 0;
-    console.info(pseudoStatusMatrix);
-    const ret0 = pseudoStatusMatrix.filter((row: any) => row[_WORKDIR] !== row[_STAGE]);
-    console.info(ret0);
-    const ret = ret0.map((row: any) => row[_FILE]);
-    console.info(await git.statusMatrix({ fs: args.fs, dir: args.dir, filepaths: ret }));
-    console.info(ret);
-    return ret;
+    return pseudoStatusMatrix.filter((row: any) => row[_WORKDIR] !== row[_STAGE]).map((row: any) => row[_FILE]);
   }
 }

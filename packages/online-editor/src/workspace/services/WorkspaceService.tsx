@@ -71,17 +71,16 @@ export class WorkspaceService {
   ): Promise<WorkspaceFile[]> {
     const matcher = globPattern ? new Minimatch(globPattern, { dot: true }) : undefined;
     const gitDirPath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
-    const workspaceRootDirPath = this.getAbsolutePath({ workspaceId });
 
     return await this.storageService.walk({
       fs,
       startFromDirPath: this.getAbsolutePath({ workspaceId }),
       shouldExcludeDir: (dirPath) => dirPath === gitDirPath,
-      onVisit: (path) => {
+      onVisit: async ({ absolutePath, relativePath }) => {
         const workspaceFile = new WorkspaceFile({
           workspaceId,
-          relativePath: relative(workspaceRootDirPath, path),
-          getFileContents: () => this.storageService.getFile(fs, path).then((f) => f!.getFileContents()),
+          relativePath,
+          getFileContents: () => this.storageService.getFile(fs, absolutePath).then((f) => f!.getFileContents()),
         });
 
         if (matcher && !matcher.match(workspaceFile.name)) {
@@ -126,7 +125,7 @@ export class WorkspaceService {
       fs,
       startFromDirPath: workspaceRootDirPath,
       shouldExcludeDir: (dirPath) => dirPath === gitDirPath,
-      onVisit: (path) => path,
+      onVisit: async ({ absolutePath }) => absolutePath,
     });
 
     const files = await this.storageService.getFiles(fs, paths);

@@ -162,21 +162,32 @@ export function WorkspacesContextProvider(props: Props) {
         origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
         useInMemoryFs: args.useInMemoryFs,
         storeFiles: async (fs: LightningFS, workspace: WorkspaceDescriptor) => {
-          await storageService.createFiles(
-            fs,
-            args.localFiles
-              .filter((localFile) => localFile.path)
-              .map((localFile) => {
-                const path = service.getAbsolutePath({
-                  workspaceId: workspace.workspaceId,
-                  relativePath: localFile.path,
-                });
+          const files = args.localFiles
+            .filter((file) => !file.path.startsWith(".git/"))
+            .map(
+              (localFile) =>
+                new StorageFile({
+                  path: service.getAbsolutePath({ workspaceId: workspace.workspaceId, relativePath: localFile.path }),
+                  getFileContents: localFile.getFileContents,
+                })
+            );
 
-                return new StorageFile({ path, getFileContents: localFile.getFileContents });
-              })
-          );
+          await storageService.createFiles(fs, files);
 
           const workspaceRootDirPath = await service.getAbsolutePath({ workspaceId: workspace.workspaceId });
+
+          const ignoredPaths = await storageService.walk({
+            fs,
+            shouldExcludeDir: () => false,
+            startFromDirPath: workspaceRootDirPath,
+            onVisit: async ({ absolutePath, relativePath }) => {
+              const isIgnored = await gitService.isIgnored({ fs, dir: workspaceRootDirPath, filepath: relativePath });
+              return isIgnored ? absolutePath : undefined;
+            },
+          });
+
+          await storageService.deleteFiles(fs, ignoredPaths);
+
           await gitService.init({
             fs: fs,
             dir: workspaceRootDirPath,

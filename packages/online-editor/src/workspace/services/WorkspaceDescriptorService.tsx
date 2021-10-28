@@ -28,7 +28,7 @@ export class WorkspaceDescriptorService {
       fs: this.descriptorsFs,
       startFromDirPath: "/",
       shouldExcludeDir: () => false,
-      onVisit: (path) => path,
+      onVisit: async ({ absolutePath }) => absolutePath,
     });
 
     const workspaceDescriptorFiles = await this.storageService.getFiles(

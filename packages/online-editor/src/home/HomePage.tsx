@@ -130,12 +130,10 @@ export function HomePage() {
 
     const preferredName = filesToUpload[0].path.split("/")[0];
 
-    const localFiles: LocalFile[] = filesToUpload
-      .map(
-        // Remove first portion of the path, which is the uploaded directory name.
-        (file) => ({ ...file, path: file.path.substring(file.path.indexOf("/") + 1) })
-      )
-      .filter((file) => !file.path.startsWith(".git/"));
+    const localFiles: LocalFile[] = filesToUpload.map(
+      // Remove first portion of the path, which is the uploaded directory name.
+      (file) => ({ ...file, path: file.path.substring(file.path.indexOf("/") + 1) })
+    );
 
     setUploading(true);
 
