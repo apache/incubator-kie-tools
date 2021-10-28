@@ -52,9 +52,11 @@ const ROOT_MENU_ID = "rootMenu";
 
 enum FilesDropdownMode {
   LIST_MODELS,
-  LIST_ALL,
+  LIST_MODELS_AND_OTHERS,
   CAROUSEL,
 }
+
+const MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX = 400;
 
 export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile: WorkspaceFile }) {
   const workspaces = useWorkspaces();
@@ -141,7 +143,9 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
   }, [props.workspace, filesDropdownMode, activeMenu]);
 
   useEffect(() => {
-    setFilesDropdownMode((prev) => (prev === FilesDropdownMode.LIST_ALL ? FilesDropdownMode.LIST_MODELS : prev));
+    setFilesDropdownMode((prev) =>
+      prev === FilesDropdownMode.LIST_MODELS_AND_OTHERS ? FilesDropdownMode.LIST_MODELS : prev
+    );
   }, [activeMenu]);
 
   useEffect(() => {
@@ -167,8 +171,9 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
   }, []);
 
   const setHeight = useCallback((menuId: string, height: number) => {
+    console.info(menuId, height);
     // do not try to simply this ternary's condition as some heights are 0, resulting in an infinite loop.
-    setMenuHeights((prev) => (prev[menuId] !== undefined ? prev : { ...prev, [menuId]: height }));
+    setMenuHeights((prev) => (prev[menuId] === height ? prev : { ...prev, [menuId]: height }));
   }, []);
 
   const workspacesMenuItems = useMemo(() => {
@@ -281,12 +286,14 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
               style={{
                 boxShadow: "none",
                 minWidth:
-                  filesDropdownMode === FilesDropdownMode.CAROUSEL
+                  activeMenu === ROOT_MENU_ID
+                    ? undefined
+                    : filesDropdownMode === FilesDropdownMode.CAROUSEL
                     ? "calc(100vw - 16px)"
                     : filesDropdownMode === FilesDropdownMode.LIST_MODELS
-                    ? "400px"
-                    : filesDropdownMode === FilesDropdownMode.LIST_ALL
-                    ? "800px"
+                    ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px`
+                    : filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS
+                    ? `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX * 2}px`
                     : "",
               }}
               id={ROOT_MENU_ID}
@@ -583,8 +590,8 @@ export function FilesMenuItems(props: {
 
       <Split>
         {(props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ||
-          props.filesDropdownMode === FilesDropdownMode.LIST_ALL) && (
-          <SplitItem isFilled={true} style={{ minWidth: "400px" }}>
+          props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS) && (
+          <SplitItem isFilled={true} style={{ minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px` }}>
             <>
               <SearchableFilesMenuGroup
                 filesDropdownMode={props.filesDropdownMode}
@@ -608,7 +615,7 @@ export function FilesMenuItems(props: {
                           e.stopPropagation();
                           props.setFilesDropdownMode((prev) =>
                             prev === FilesDropdownMode.LIST_MODELS
-                              ? FilesDropdownMode.LIST_ALL
+                              ? FilesDropdownMode.LIST_MODELS_AND_OTHERS
                               : FilesDropdownMode.LIST_MODELS
                           );
                         }}
@@ -631,8 +638,8 @@ export function FilesMenuItems(props: {
           </SplitItem>
         )}
 
-        {props.filesDropdownMode === FilesDropdownMode.LIST_ALL && (
-          <SplitItem isFilled={true} style={{ minWidth: "400px" }}>
+        {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS && (
+          <SplitItem isFilled={true} style={{ minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px` }}>
             <SearchableFilesMenuGroup
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
@@ -765,7 +772,7 @@ export function FilesDropdownModeIcons(props: {
         </Button>
       )}
       {(props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ||
-        props.filesDropdownMode === FilesDropdownMode.LIST_ALL) && (
+        props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS) && (
         <Button
           className={"kogito-tooling--masthead-hoverable"}
           variant="plain"

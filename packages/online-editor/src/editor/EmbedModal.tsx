@@ -85,6 +85,8 @@ export function EmbedModal(props: {
   const getGithubGistScript = useCallback(
     (libraryName: string) => {
       const gistId = (props.workspace.origin as GistOrigin).url.toString().split("/").pop()!.replace(".git", "");
+      //FIXME: WID Icons won't work because they're not text.
+      //FIXME: We shouldn't have to say the type of the resource right away, the request should know, and we should adapt to what's being requested.
       return `
 <script type="module">
   import {Octokit} from "https://cdn.skypack.dev/@octokit/rest";
