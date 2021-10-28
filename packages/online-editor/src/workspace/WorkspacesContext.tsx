@@ -98,6 +98,7 @@ export interface WorkspacesContextType {
   createWorkspaceFromLocal: (args: {
     useInMemoryFs: boolean;
     localFiles: LocalFile[];
+    preferredName?: string;
   }) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
 
   createWorkspaceFromGitRepository: (args: {

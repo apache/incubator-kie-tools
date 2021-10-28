@@ -59,11 +59,11 @@ export class WorkspaceDescriptorService {
     return this.getWorkspaceDescriptorFromFileContent(await workspaceDescriptorFile.getFileContents());
   }
 
-  public async create(origin: WorkspaceOrigin) {
+  public async create(args: { origin: WorkspaceOrigin; preferredName?: string }) {
     const workspace: WorkspaceDescriptor = {
       workspaceId: this.newWorkspaceId(),
-      name: NEW_WORKSPACE_DEFAULT_NAME,
-      origin,
+      name: args.preferredName ?? NEW_WORKSPACE_DEFAULT_NAME,
+      origin: args.origin,
       createdDateISO: new Date().toISOString(),
       lastUpdatedDateISO: new Date().toISOString(),
     };

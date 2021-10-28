@@ -477,7 +477,7 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
   );
 }
 
-function SearchableFilesMenuGroup(props: {
+export function SearchableFilesMenuGroup(props: {
   shouldFocusOnSearch: boolean;
   filesDropdownMode: FilesDropdownMode;
   label: string;
@@ -584,7 +584,7 @@ export function FilesMenuItems(props: {
       <Split>
         {(props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ||
           props.filesDropdownMode === FilesDropdownMode.LIST_ALL) && (
-          <SplitItem style={{ minWidth: "400px" }}>
+          <SplitItem isFilled={true} style={{ minWidth: "400px" }}>
             <>
               <SearchableFilesMenuGroup
                 filesDropdownMode={props.filesDropdownMode}
@@ -632,7 +632,7 @@ export function FilesMenuItems(props: {
         )}
 
         {props.filesDropdownMode === FilesDropdownMode.LIST_ALL && (
-          <SplitItem style={{ minWidth: "400px" }}>
+          <SplitItem isFilled={true} style={{ minWidth: "400px" }}>
             <SearchableFilesMenuGroup
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
@@ -711,7 +711,7 @@ export function FilesMenuItems(props: {
   );
 }
 
-function FileName(props: { file: WorkspaceFile }) {
+export function FileName(props: { file: WorkspaceFile }) {
   return (
     <>
       <Flex flexWrap={{ default: "nowrap" }}>

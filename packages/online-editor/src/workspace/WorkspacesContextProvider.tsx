@@ -26,10 +26,8 @@ import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
 import { CloneArgs, GIT_DEFAULT_BRANCH, GitService } from "./services/GitService";
 import { StorageFile, StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
-import { SUPPORTED_FILES, SUPPORTED_FILES_EDITABLE } from "./SupportedFiles";
 import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
-import { SupportedFileExtensions } from "../common/GlobalContext";
-import { extractFileExtension } from "../common/utils";
+import { SupportedFileExtensions, useGlobals } from "../common/GlobalContext";
 import { join } from "path";
 import git from "isomorphic-git";
 import { WorkspaceEvents } from "./hooks/WorkspaceHooks";
@@ -50,6 +48,7 @@ interface Props {
 }
 
 export function WorkspacesContextProvider(props: Props) {
+  const globals = useGlobals();
   const storageService = useMemo(() => new StorageService(), []);
   const descriptorService = useMemo(() => new WorkspaceDescriptorService(storageService), [storageService]);
   const fsService = useMemo(() => new WorkspaceFsService(descriptorService), [descriptorService]);
@@ -85,12 +84,14 @@ export function WorkspacesContextProvider(props: Props) {
       useInMemoryFs: boolean;
       storeFiles: (fs: LightningFS, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
       origin: WorkspaceOrigin;
+      preferredName?: string;
     }) => {
       const { workspace, files } = await service.create({
         useInMemoryFs: args.useInMemoryFs,
         storeFiles: args.storeFiles,
         broadcastArgs: { broadcast: true },
         origin: args.origin,
+        preferredName: args.preferredName,
       });
 
       if (files.length <= 0) {
@@ -98,7 +99,7 @@ export function WorkspacesContextProvider(props: Props) {
       }
 
       const suggestedFirstFile = files
-        .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension))
+        .filter((file) => [...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension))
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0];
 
       return { workspace, suggestedFirstFile };
@@ -155,19 +156,20 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createWorkspaceFromLocal = useCallback(
-    async (args: { useInMemoryFs: boolean; localFiles: LocalFile[] }) => {
+    async (args: { useInMemoryFs: boolean; localFiles: LocalFile[]; preferredName?: string }) => {
       return await createWorkspace({
+        preferredName: args.preferredName,
         origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
         useInMemoryFs: args.useInMemoryFs,
         storeFiles: async (fs: LightningFS, workspace: WorkspaceDescriptor) => {
           await storageService.createFiles(
             fs,
             args.localFiles
-              .filter((f) => SUPPORTED_FILES.includes(extractFileExtension(f.path)!))
+              .filter((localFile) => localFile.path)
               .map((localFile) => {
                 const path = service.getAbsolutePath({
                   workspaceId: workspace.workspaceId,
-                  relativePath: localFile.path.substring(localFile.path.indexOf("/") + 1), //FIXME: This doesn't look so good.
+                  relativePath: localFile.path,
                 });
 
                 return new StorageFile({ path, getFileContents: localFile.getFileContents });

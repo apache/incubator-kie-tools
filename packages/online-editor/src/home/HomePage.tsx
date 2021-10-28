@@ -24,7 +24,6 @@ import { LocalFile, useWorkspaces, WorkspaceFile } from "../workspace/Workspaces
 import { BusinessAutomationStudioPage } from "./pageTemplate/BusinessAutomationStudioPage";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
-import { SUPPORTED_FILES_EDITABLE } from "../workspace/SupportedFiles";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { FileLabel } from "../workspace/pages/FileLabel";
@@ -129,10 +128,23 @@ export function HomePage() {
       return;
     }
 
+    const preferredName = filesToUpload[0].path.split("/")[0];
+
+    const localFiles: LocalFile[] = filesToUpload
+      .map(
+        // Remove first portion of the path, which is the uploaded directory name.
+        (file) => ({ ...file, path: file.path.substring(file.path.indexOf("/") + 1) })
+      )
+      .filter((file) => !file.path.startsWith(".git/"));
+
     setUploading(true);
 
     workspaces
-      .createWorkspaceFromLocal({ useInMemoryFs: true, localFiles: filesToUpload })
+      .createWorkspaceFromLocal({
+        useInMemoryFs: true,
+        localFiles,
+        preferredName,
+      })
       .then(({ workspace, suggestedFirstFile }) => {
         if (!suggestedFirstFile) {
           expandWorkspace(workspace.workspaceId);
@@ -340,7 +352,11 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
   const workspacePromise = useWorkspacePromise(props.workspaceId);
 
   const editableFiles = useMemo(() => {
-    return workspacePromise.data?.files.filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension)) ?? [];
+    return (
+      workspacePromise.data?.files.filter((file) =>
+        [...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension)
+      ) ?? []
+    );
   }, [workspacePromise]);
 
   const workspaceName = useMemo(() => {
@@ -559,7 +575,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
     () =>
       (workspacePromise.data?.files ?? [])
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-        .filter((file) => !SUPPORTED_FILES_EDITABLE.includes(file.extension)),
+        .filter((file) => ![...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension)),
     [workspacePromise.data]
   );
 
@@ -567,7 +583,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
     () =>
       (workspacePromise.data?.files ?? [])
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-        .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension)),
+        .filter((file) => [...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension)),
     [workspacePromise]
   );
 

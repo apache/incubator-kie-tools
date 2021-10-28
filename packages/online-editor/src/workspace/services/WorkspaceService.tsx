@@ -17,12 +17,11 @@
 import { encoder, WorkspaceFile } from "../WorkspacesContext";
 import JSZip from "jszip";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
-import { SUPPORTED_FILES_PATTERN } from "../SupportedFiles";
 import { StorageFile, StorageService } from "./StorageService";
 import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
-import { basename, join, relative } from "path";
+import { join, relative } from "path";
 import { Minimatch } from "minimatch";
 import LightningFS from "@isomorphic-git/lightning-fs";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
@@ -41,8 +40,12 @@ export class WorkspaceService {
     storeFiles: (fs: LightningFS, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
     broadcastArgs: { broadcast: boolean };
     origin: WorkspaceOrigin;
+    preferredName?: string;
   }) {
-    const workspace = await this.workspaceDescriptorService.create(args.origin);
+    const workspace = await this.workspaceDescriptorService.create({
+      origin: args.origin,
+      preferredName: args.preferredName,
+    });
 
     const files = await (args.useInMemoryFs
       ? this.fsService.withInMemoryFs(workspace.workspaceId, (fs) => args.storeFiles(fs, workspace))
@@ -118,13 +121,12 @@ export class WorkspaceService {
   public async prepareZip(fs: LightningFS, workspaceId: string): Promise<Blob> {
     const workspaceRootDirPath = this.getAbsolutePath({ workspaceId });
 
-    const matcher = new Minimatch(SUPPORTED_FILES_PATTERN, { dot: true });
     const gitDirPath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
     const paths = await this.storageService.walk({
       fs,
       startFromDirPath: workspaceRootDirPath,
       shouldExcludeDir: (dirPath) => dirPath === gitDirPath,
-      onVisit: (path) => (!matcher.match(basename(path)) ? undefined : path),
+      onVisit: (path) => path,
     });
 
     const files = await this.storageService.getFiles(fs, paths);

@@ -189,29 +189,22 @@ export class GitService {
     console.info("GitService#walk--------begin");
     console.time("GitService#walk");
     const files = await this.unstagedModifiedFileRelativePaths(args);
+
     console.timeEnd("GitService#walk");
     return files.length > 0;
   }
 
   public async unstagedModifiedFileRelativePaths(args: { fs: LightningFS; dir: string }): Promise<string[]> {
+    const cache = {};
     const pseudoStatusMatrix = await git.walk({
+      cache,
       fs: args.fs,
       dir: args.dir,
       trees: [WORKDIR(), STAGE()],
       map: async (filepath, [workdir, stage]) => {
-        // TODO: How to ignore these files?
-        // Ignore ignored files, but only if they are not already tracked.
-        // if (!stage && workdir) {
-        //   if (
-        //       await GitIgnoreManager.isIgnored({
-        //         fs: args.fs,
-        //         dir: args.dir,
-        //         filepath,
-        //       })
-        //   ) {
-        //     return null
-        //   }
-        // }
+        if (!stage && workdir && (await git.isIgnored({ fs: args.fs, dir: args.dir, filepath }))) {
+          return null;
+        }
 
         // match against base paths
         if (filepath.startsWith(".git")) {
@@ -246,6 +239,12 @@ export class GitService {
     const _WORKDIR = 2;
     const _STAGE = 3;
     const _FILE = 0;
-    return pseudoStatusMatrix.filter((row: any) => row[_WORKDIR] !== row[_STAGE]).map((row: any) => row[_FILE]);
+    console.info(pseudoStatusMatrix);
+    const ret0 = pseudoStatusMatrix.filter((row: any) => row[_WORKDIR] !== row[_STAGE]);
+    console.info(ret0);
+    const ret = ret0.map((row: any) => row[_FILE]);
+    console.info(await git.statusMatrix({ fs: args.fs, dir: args.dir, filepaths: ret }));
+    console.info(ret);
+    return ret;
   }
 }
