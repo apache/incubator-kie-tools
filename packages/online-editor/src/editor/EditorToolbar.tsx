@@ -56,9 +56,9 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { AddFileMenu } from "./AddFileMenu";
 import { PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { FileLabel } from "../workspace/pages/FileLabel";
-import { useWorkspaceIsModifiedPromise, useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
+import { useIsWorkspaceModifiedPromise, useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import { WorkspaceFileNameDropdown } from "./WorkspaceFileNameDropdown";
+import { FileSwitcher } from "./FileSwitcher";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
@@ -68,6 +68,7 @@ import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -91,6 +92,78 @@ const hideWhenSmall: ToolbarItemProps["visibility"] = {
   lg: "hidden",
   md: "hidden",
 };
+
+const hideWhenTiny: ToolbarItemProps["visibility"] = {
+  default: "hidden",
+  "2xl": "visible",
+  xl: "visible",
+  lg: "visible",
+  md: "hidden",
+};
+
+function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) {
+  const isWorkspaceModifiedPromise = useIsWorkspaceModifiedPromise(props.workspace);
+
+  const isModifiedText = useMemo(() => {
+    switch (props.workspace.descriptor.origin.kind) {
+      case WorkspaceKind.LOCAL:
+        return "There are new changes since your last download.";
+      case WorkspaceKind.GIST:
+      case WorkspaceKind.GITHUB:
+        return "There are new changes since you last synced.";
+      default:
+        throw new Error();
+    }
+  }, [props.workspace]);
+
+  const isSyncedText = useMemo(() => {
+    switch (props.workspace.descriptor.origin.kind) {
+      case WorkspaceKind.LOCAL:
+        return "All changes were downloaded.";
+      case WorkspaceKind.GIST:
+      case WorkspaceKind.GITHUB:
+        return "All files are synced.";
+      default:
+        throw new Error();
+    }
+  }, [props.workspace]);
+
+  return (
+    <PromiseStateWrapper
+      promise={isWorkspaceModifiedPromise}
+      pending={
+        <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
+          <Tooltip content={"Checking status..."} position={"right"}>
+            <small>
+              <SyncIcon color={"gray"} />
+            </small>
+          </Tooltip>
+        </Title>
+      }
+      resolved={(isModified) => (
+        <>
+          {(isModified && (
+            <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
+              <Tooltip content={isModifiedText} position={"right"}>
+                <small>
+                  <SecurityIcon color={"gray"} />
+                </small>
+              </Tooltip>
+            </Title>
+          )) || (
+            <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
+              <Tooltip content={isSyncedText} position={"right"}>
+                <small>
+                  <CheckCircleIcon color={"green"} />
+                </small>
+              </Tooltip>
+            </Title>
+          )}
+        </>
+      )}
+    />
+  );
+}
 
 export function EditorToolbar(props: Props) {
   const globals = useGlobals();
@@ -131,7 +204,8 @@ export function EditorToolbar(props: Props) {
         );
       },
       [i18n, workspacePromise]
-    )
+    ),
+    { durationInSeconds: 4 }
   );
 
   const loadingGistAlert = useAlert(
@@ -188,7 +262,8 @@ export function EditorToolbar(props: Props) {
         );
       },
       [i18n, workspacePromise]
-    )
+    ),
+    { durationInSeconds: 4 }
   );
 
   const errorAlert = useAlert(
@@ -283,8 +358,10 @@ export function EditorToolbar(props: Props) {
       downloadAllRef.current.href = URL.createObjectURL(zipBlob);
       downloadAllRef.current.click();
     }
-    await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId });
-  }, [props.editor, props.workspaceFile, workspaces]);
+    if (workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL) {
+      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId });
+    }
+  }, [props.editor, props.workspaceFile, workspaces, workspacePromise.data]);
 
   const downloadSvg = useCallback(() => {
     props.editor?.getPreview().then((previewSvg) => {
@@ -300,7 +377,6 @@ export function EditorToolbar(props: Props) {
     try {
       setGistLoading(true);
       const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId });
 
       //TODO: Check if there are new changes in the Gist before force-pushing.
 
@@ -319,6 +395,8 @@ export function EditorToolbar(props: Props) {
           }),
         },
       });
+
+      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId });
     } catch (e) {
       errorAlert.show();
       throw e;
@@ -436,7 +514,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       <DropdownGroup key={"download-group"} label="Download">
         <DropdownItem
           onClick={onDownload}
-          key={"donwload-file-item"}
+          key={"download-file-item"}
           description={`${props.workspaceFile.name} will be downloaded`}
           icon={<DownloadIcon />}
         >
@@ -593,7 +671,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         return;
       }
 
-      await workspaces.renameWorkspace({ workspaceId: workspacePromise.data.descriptor.workspaceId, newName });
+      await workspaces.renameWorkspace({
+        workspaceId: workspacePromise.data.descriptor.workspaceId,
+        newName: newName.trim(),
+      });
     },
     [workspacePromise.data, workspaces, resetWorkspaceName]
   );
@@ -610,8 +691,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     },
     [resetWorkspaceName]
   );
-
-  const workspaceIsModifiedPromise = useWorkspaceIsModifiedPromise(workspacePromise.data);
 
   const deleteFileDropdownItem = useMemo(() => {
     return (
@@ -638,27 +717,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         <>
           <Alerts ref={props.alertsRef} />
           <PageSection type={"nav"} variant={"light"} padding={{ default: "noPadding" }}>
-            {workspacePromise.data && workspacePromise.data.files.length > 1 && (
+            {workspace && workspace.files.length > 1 && (
               <Flex justifyContent={{ default: "justifyContentFlexStart" }}>
                 <FlexItem className={"kogito-tooling--masthead-hoverable"}>
-                  {(workspaceIsModifiedPromise.data && (
-                    <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
-                      <Tooltip content={"There are new changes since your last download."} position={"right"}>
-                        <small>
-                          <SecurityIcon color={"gray"} />
-                        </small>
-                      </Tooltip>
-                    </Title>
-                  )) || (
-                    <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
-                      <Tooltip content={"All changes were downloaded."} position={"right"}>
-                        <small>
-                          <CheckCircleIcon color={"green"} />
-                        </small>
-                      </Tooltip>
-                    </Title>
-                  )}
-                  {workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST && (
+                  <WorkspaceStatusIndicator workspace={workspace} />
+                  {workspace.descriptor.origin.kind === WorkspaceKind.GIST && (
                     <>
                       <Label>Gist</Label>
                     </>
@@ -670,7 +733,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       size={"md"}
                       style={{ fontStyle: "italic" }}
                     >
-                      {workspacePromise.data.descriptor.name}
+                      {workspace.descriptor.name}
                     </Title>
                     <TextInput
                       ref={workspaceNameRef}
@@ -696,12 +759,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 <PageHeaderToolsItem visibility={{ default: "visible" }}>
                   <Flex flexWrap={{ default: "nowrap" }} alignItems={{ default: "alignItemsCenter" }}>
                     <FlexItem>
-                      {workspacePromise.data && (
-                        <WorkspaceFileNameDropdown
-                          workspace={workspacePromise.data}
-                          workspaceFile={props.workspaceFile}
-                        />
-                      )}
+                      <FileSwitcher workspace={workspace} workspaceFile={props.workspaceFile} />
                     </FlexItem>
                     <FlexItem>
                       {(isEdited && (
@@ -735,8 +793,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               <span>
                                 <CheckCircleIcon size={"sm"} />
                               </span>
-                              &nbsp;
-                              <span>Saved</span>
+                              <ToolbarItem visibility={hideWhenTiny}>
+                                &nbsp;
+                                <span>Saved</span>
+                              </ToolbarItem>
                             </Text>
                           </TextContent>
                         </Tooltip>
@@ -782,7 +842,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     <ToolbarItem visibility={hideWhenSmall}>
                       {props.workspaceFile.extension === "dmn" && <KieToolingExtendedServicesButtons />}
                     </ToolbarItem>
-                    {workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST && (
+                    {workspace.descriptor.origin.kind === WorkspaceKind.GIST && (
                       <ToolbarItem>
                         <Dropdown
                           onSelect={() => setSyncDropdownOpen(false)}

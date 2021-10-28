@@ -4,7 +4,7 @@ import { ActiveWorkspace } from "../model/ActiveWorkspace";
 import { usePromiseState } from "./PromiseState";
 import { Holder, useCancelableEffect } from "../../common/Hooks";
 
-export function useWorkspaceIsModifiedPromise(workspace: ActiveWorkspace | undefined) {
+export function useIsWorkspaceModifiedPromise(workspace: ActiveWorkspace | undefined) {
   const workspaces = useWorkspaces();
   const [isModifiedPromise, setModifiedPromise] = usePromiseState<boolean>();
 

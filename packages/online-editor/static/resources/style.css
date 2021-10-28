@@ -616,3 +616,7 @@ section.kogito-tooling--settings-tab {
 #editor-page-masthead-files-dropdown-toggle {
   padding-left: 0;
 }
+
+.pf-c-expandable-section.plain .pf-c-expandable-section__toggle {
+  color: black;
+}

@@ -40,16 +40,10 @@ import {
   DrawerContent,
   DrawerContentBody,
   DrawerHead,
+  DrawerPanelBody,
   DrawerPanelContent,
   DrawerSection,
 } from "@patternfly/react-core/dist/js/components/Drawer";
-import {
-  DataList,
-  DataListCell,
-  DataListItem,
-  DataListItemCells,
-  DataListItemRow,
-} from "@patternfly/react-core/dist/js/components/DataList";
 import { Link } from "react-router-dom";
 import { DeleteDropdownWithConfirmation } from "../editor/DeleteDropdownWithConfirmation";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
@@ -58,6 +52,14 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { RelativeDate } from "./RelativeDate";
 import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import {
+  DataList,
+  DataListCell,
+  DataListItem,
+  DataListItemCells,
+  DataListItemRow,
+} from "@patternfly/react-core/dist/js/components/DataList";
+import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
 
 export function HomePage() {
   const globals = useGlobals();
@@ -552,34 +554,63 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
 export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | undefined; onClose: () => void }) {
   const globals = useGlobals();
   const workspacePromise = useWorkspacePromise(props.workspaceId);
+
+  const otherFiles = useMemo(
+    () =>
+      (workspacePromise.data?.files ?? [])
+        .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
+        .filter((file) => !SUPPORTED_FILES_EDITABLE.includes(file.extension)),
+    [workspacePromise.data]
+  );
+
+  const models = useMemo(
+    () =>
+      (workspacePromise.data?.files ?? [])
+        .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
+        .filter((file) => SUPPORTED_FILES_EDITABLE.includes(file.extension)),
+    [workspacePromise]
+  );
+
   return (
     <DrawerPanelContent isResizable={true} minSize={"40%"} maxSize={"80%"}>
       <DrawerHead>
         <TextContent>
-          <Text component={TextVariants.h3}>{workspacePromise.data?.descriptor.name}</Text>
+          <Text component={TextVariants.h3}>{`Models in '${workspacePromise.data?.descriptor.name}'`}</Text>
         </TextContent>
         <DrawerActions>
           <DrawerCloseButton onClick={props.onClose} />
         </DrawerActions>
       </DrawerHead>
-      <DataList aria-label="files-data-list">
-        {(workspacePromise.data?.files ?? []).map((file) => (
-          <React.Fragment key={file.relativePath}>
-            {!SUPPORTED_FILES_EDITABLE.includes(file.extension) && <FileDataListItem file={file} />}
-            {SUPPORTED_FILES_EDITABLE.includes(file.extension) && (
-              <Link
-                to={globals.routes.workspaceWithFilePath.path({
-                  workspaceId: workspacePromise.data?.descriptor.workspaceId ?? "",
-                  fileRelativePath: file.relativePathWithoutExtension,
-                  extension: file.extension,
-                })}
-              >
-                <FileDataListItem file={file} />
-              </Link>
-            )}
-          </React.Fragment>
-        ))}
-      </DataList>
+      <DrawerPanelBody>
+        <DataList aria-label="models-data-list">
+          {models.map((file) => (
+            <Link
+              key={file.relativePath}
+              to={globals.routes.workspaceWithFilePath.path({
+                workspaceId: workspacePromise.data?.descriptor.workspaceId ?? "",
+                fileRelativePath: file.relativePathWithoutExtension,
+                extension: file.extension,
+              })}
+            >
+              <FileDataListItem file={file} />
+            </Link>
+          ))}
+        </DataList>
+        <br />
+        {otherFiles.length > 0 && (
+          <ExpandableSection
+            toggleTextCollapsed="View other files"
+            toggleTextExpanded="Hide other files"
+            className={"plain"}
+          >
+            <DataList aria-label="other-files-data-list">
+              {otherFiles.map((file) => (
+                <FileDataListItem key={file.relativePath} file={file} />
+              ))}
+            </DataList>
+          </ExpandableSection>
+        )}
+      </DrawerPanelBody>
     </DrawerPanelContent>
   );
 }

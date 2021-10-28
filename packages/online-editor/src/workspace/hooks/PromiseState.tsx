@@ -7,7 +7,10 @@ export type Resolved<T> = { status: PromiseStateStatus.RESOLVED; data: T; error?
 export type Rejected<T> = { status: PromiseStateStatus.REJECTED; data?: undefined; error: string[] };
 export type PromiseState<T> = Resolved<T> | Pending<T> | Rejected<T>;
 export type Unwrapped<T> = { [K in keyof T]: T[K] extends PromiseState<infer U> ? U : never };
-export type NewStateArgs<T> = { data: T; error?: undefined } | { data?: undefined; error: string };
+export type NewStateArgs<T> =
+  | { loading?: false; data: T; error?: undefined }
+  | { loading?: false; data?: undefined; error: string }
+  | { loading: true; data?: undefined; error?: undefined };
 
 export enum PromiseStateStatus {
   PENDING,
@@ -63,6 +66,8 @@ export function usePromiseState<T>(): [PromiseState<T>, (newState: NewStateArgs<
       setState({ status: PromiseStateStatus.REJECTED, error: [newState.error] });
     } else if (newState.data !== undefined) {
       setState({ status: PromiseStateStatus.RESOLVED, data: newState.data });
+    } else if (newState.loading) {
+      setState({ status: PromiseStateStatus.PENDING });
     } else {
       throw new Error("Invalid state");
     }

@@ -45,6 +45,8 @@ import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
+import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -54,7 +56,7 @@ enum FilesDropdownMode {
   CAROUSEL,
 }
 
-export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; workspaceFile: WorkspaceFile }) {
+export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile: WorkspaceFile }) {
   const workspaces = useWorkspaces();
   const workspaceFileNameRef = useRef<HTMLInputElement>(null);
   const [newFileNameValid, setNewFileNameValid] = useState<boolean>(true);
@@ -104,7 +106,7 @@ export function WorkspaceFileNameDropdown(props: { workspace: ActiveWorkspace; w
       await workspaces.renameFile({
         fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         file: props.workspaceFile,
-        newFileName,
+        newFileName: newFileName.trim(),
       });
     },
     [props.workspaceFile, workspaces, resetWorkspaceFileName, newFileNameValid]
@@ -510,7 +512,7 @@ function SearchableFilesMenuGroup(props: {
           onChange={(value) => setSearch(value)}
         />
       </MenuInput>
-      {filteredFiles.length === 0 && (
+      {filteredFiles.length === 0 && search && (
         <Bullseye>
           <EmptyState>
             <EmptyStateIcon icon={CubesIcon} />
@@ -614,6 +616,12 @@ export function FilesMenuItems(props: {
                         {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS
                           ? "View other files"
                           : "Hide other files"}
+                        &nbsp;&nbsp;
+                        {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ? (
+                          <ArrowRightIcon />
+                        ) : (
+                          <ArrowLeftIcon />
+                        )}
                       </MenuItem>
                     </MenuList>
                   </MenuGroup>
