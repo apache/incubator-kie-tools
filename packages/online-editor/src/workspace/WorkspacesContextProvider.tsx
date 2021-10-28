@@ -29,7 +29,6 @@ import { WorkspaceService } from "./services/WorkspaceService";
 import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { SupportedFileExtensions, useGlobals } from "../common/GlobalContext";
 import { join } from "path";
-import git from "isomorphic-git";
 import { WorkspaceEvents } from "./hooks/WorkspaceHooks";
 import { Buffer } from "buffer";
 import LightningFS from "@isomorphic-git/lightning-fs";
@@ -58,16 +57,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
   const svgService = useMemo(() => new WorkspaceSvgService(service), [service]);
 
-  const gitService = useMemo(() => {
-    const instance = new GitService(GIT_CORS_PROXY);
-    // FIXME: easy access to git in the window object.
-    (window as any).git = async (workspaceId: string, prop: unknown, args: any) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return git[prop]({ fs: await service.getWorkspaceFs(workspaceId), ...args });
-    };
-    return instance;
-  }, [service]);
+  const gitService = useMemo(() => new GitService(GIT_CORS_PROXY), [service]);
 
   const getAbsolutePath = useCallback(
     (args: { workspaceId: string; relativePath?: string }) => service.getAbsolutePath(args),
@@ -118,7 +108,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createSavePoint = useCallback(
-    async (args: { fs: LightningFS; workspaceId: string }) => {
+    async (args: { fs: LightningFS; workspaceId: string; gitSettings?: { email: string; name: string } }) => {
       const descriptor = await descriptorService.get(args.workspaceId);
 
       const workspaceRootDirPath = service.getAbsolutePath({ workspaceId: args.workspaceId });
@@ -144,8 +134,8 @@ export function WorkspacesContextProvider(props: Props) {
         targetBranch: descriptor.origin.branch,
         message: "Save point",
         authInfo: {
-          name: "Tiago",
-          email: "tfernand+dev@redhat.com", //FIXME: Change this.
+          name: args.gitSettings?.name ?? "Unknown",
+          email: args.gitSettings?.email ?? "unknown@email.com",
         },
       });
       const broadcastChannel = new BroadcastChannel(args.workspaceId);
@@ -156,7 +146,12 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createWorkspaceFromLocal = useCallback(
-    async (args: { useInMemoryFs: boolean; localFiles: LocalFile[]; preferredName?: string }) => {
+    async (args: {
+      useInMemoryFs: boolean;
+      localFiles: LocalFile[];
+      preferredName?: string;
+      gitSettings?: { email: string; name: string };
+    }) => {
       return await createWorkspace({
         preferredName: args.preferredName,
         origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
@@ -205,8 +200,8 @@ export function WorkspacesContextProvider(props: Props) {
             message: "Initial",
             targetBranch: GIT_DEFAULT_BRANCH,
             authInfo: {
-              name: "Tiago",
-              email: "tfernand+dev@redhat.com", //FIXME: Change this.
+              name: args.gitSettings?.name ?? "Unknown",
+              email: args.gitSettings?.email ?? "unknown@email.com",
             },
           });
 
@@ -220,15 +215,15 @@ export function WorkspacesContextProvider(props: Props) {
   const createWorkspaceFromGitRepository = useCallback(
     async (args: {
       origin: GistOrigin | GitHubOrigin;
-      githubSettings?: { user: { login: string; email: string; name: string }; token: string };
+      gitSettings?: { user: { login: string; email: string; name: string }; token: string };
     }) => {
       let authInfo: CloneArgs["authInfo"];
-      if (args.githubSettings) {
-        const username = args.githubSettings.user.login;
-        const password = args.githubSettings.token;
+      if (args.gitSettings) {
+        const username = args.gitSettings.user.login;
+        const password = args.gitSettings.token;
         authInfo = {
-          name: args.githubSettings.user.name,
-          email: args.githubSettings.user.email,
+          name: args.gitSettings.user.name,
+          email: args.gitSettings.user.email,
           onAuth: () => ({ username, password }),
         };
       }

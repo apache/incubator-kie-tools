@@ -368,7 +368,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
       rejected={() => <>ERROR</>}
       resolved={(workspace) => (
         <>
-          {editableFiles.length === 1 && (
+          {workspace.files.length === 1 && (
             <Card
               isSelected={props.isSelected}
               isSelectable={true}
@@ -448,7 +448,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
               </CardBody>
             </Card>
           )}
-          {(editableFiles.length > 1 || editableFiles.length < 1) && (
+          {(workspace.files.length > 1 || workspace.files.length < 1) && (
             <Card
               isSelected={props.isSelected}
               isSelectable={true}

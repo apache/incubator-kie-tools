@@ -387,8 +387,8 @@ export function EditorToolbar(props: Props) {
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
         force: true,
         authInfo: {
-          name: "Tiago",
-          email: "tfernand+dev@redhat.com", //FIXME: Change this.
+          name: settings.github.user!.name,
+          email: settings.github.user!.email,
           onAuth: () => ({
             username: settings.github.user!.login,
             password: settings.github.token!,
@@ -464,8 +464,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
         force: true,
         authInfo: {
-          name: "Tiago",
-          email: "tfernand+dev@redhat.com", //FIXME: Change this.
+          name: settings.github.user!.name,
+          email: settings.github.user!.email,
           onAuth: () => ({
             username: settings.github.user!.login,
             password: settings.github.token!,

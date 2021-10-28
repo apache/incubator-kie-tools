@@ -215,15 +215,12 @@ export class StorageService {
     originalStartingDirPath?: string;
   }): Promise<T[]> {
     const subDirPaths = await args.fs.promises.readdir(args.startFromDirPath);
-
     const files = await Promise.all(
       subDirPaths.map(async (subDirPath) => {
         const absolutePath = resolve(args.startFromDirPath, subDirPath);
+        const relativePath = relative(args.originalStartingDirPath ?? args.startFromDirPath, absolutePath);
         return !(await args.fs.promises.stat(absolutePath)).isDirectory()
-          ? args.onVisit({
-              absolutePath,
-              relativePath: relative(args.originalStartingDirPath ?? args.startFromDirPath, absolutePath),
-            })
+          ? args.onVisit({ absolutePath, relativePath })
           : args.shouldExcludeDir(absolutePath)
           ? []
           : this.walk({
