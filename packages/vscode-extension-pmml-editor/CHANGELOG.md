@@ -1,3 +1,9 @@
+# 0.14.0 (alpha)
+
+- [KOGITO-2133](https://issues.redhat.com/browse/KOGITO-2133) - [VSCode] Custom editor save issues
+- [FAI-622](https://issues.redhat.com/browse/FAI-622) - ScoreCard: MiningField validation
+- [FAI-579](https://issues.redhat.com/browse/FAI-579) - Mining Schema (PMML Editor test Suite)
+
 # 0.13.0 (alpha)
 
 - [FAI-546](https://issues.redhat.com/browse/FAI-546) - ScoreCard Model Setup Test
