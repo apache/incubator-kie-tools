@@ -140,7 +140,11 @@ export interface WorkspacesContextType {
 
   getFile(args: { fs: LightningFS; workspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined>;
 
-  renameFile(args: { fs: LightningFS; file: WorkspaceFile; newFileName: string }): Promise<WorkspaceFile>;
+  renameFile(args: {
+    fs: LightningFS;
+    file: WorkspaceFile;
+    newFileNameWithoutExtension: string;
+  }): Promise<WorkspaceFile>;
 
   updateFile(args: {
     fs: LightningFS;

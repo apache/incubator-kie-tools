@@ -112,7 +112,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
       await workspaces.renameFile({
         fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         file: props.workspaceFile,
-        newFileName: trimmedNewFileName.trim(),
+        newFileNameWithoutExtension: trimmedNewFileName.trim(),
       });
     },
     [props.workspaceFile, workspaces, resetWorkspaceFileName, newFileNameValid]

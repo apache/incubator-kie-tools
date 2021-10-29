@@ -230,24 +230,28 @@ export class WorkspaceService {
     }
   }
 
-  public async renameFile(
-    fs: LightningFS,
-    file: WorkspaceFile,
-    newFileName: string,
-    broadcastArgs: { broadcast: boolean }
-  ): Promise<WorkspaceFile> {
-    const renamedStorageFile = await this.storageService.renameFile(fs, this.toStorageFile(file), newFileName);
-    const renamedWorkspaceFile = this.toWorkspaceFile(file.workspaceId, renamedStorageFile);
+  public async renameFile(args: {
+    fs: LightningFS;
+    file: WorkspaceFile;
+    newFileNameWithoutExtension: string;
+    broadcastArgs: { broadcast: boolean };
+  }): Promise<WorkspaceFile> {
+    const renamedStorageFile = await this.storageService.renameFile(
+      args.fs,
+      this.toStorageFile(args.file),
+      args.newFileNameWithoutExtension
+    );
+    const renamedWorkspaceFile = this.toWorkspaceFile(args.file.workspaceId, renamedStorageFile);
 
-    if (broadcastArgs.broadcast) {
-      await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);
+    if (args.broadcastArgs.broadcast) {
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(args.file.workspaceId);
 
-      const broadcastChannel1 = new BroadcastChannel(this.getUniqueFileIdentifier(file));
+      const broadcastChannel1 = new BroadcastChannel(this.getUniqueFileIdentifier(args.file));
       const broadcastChannel2 = new BroadcastChannel(this.getUniqueFileIdentifier(renamedWorkspaceFile));
-      const broadcastChannel3 = new BroadcastChannel(file.workspaceId);
+      const broadcastChannel3 = new BroadcastChannel(args.file.workspaceId);
       broadcastChannel1.postMessage({
         type: "RENAME",
-        oldRelativePath: file.relativePath,
+        oldRelativePath: args.file.relativePath,
         newRelativePath: renamedWorkspaceFile.relativePath,
       } as WorkspaceFileEvents);
       broadcastChannel2.postMessage({
@@ -256,7 +260,7 @@ export class WorkspaceService {
       } as WorkspaceFileEvents);
       broadcastChannel3.postMessage({
         type: "RENAME_FILE",
-        oldRelativePath: file.relativePath,
+        oldRelativePath: args.file.relativePath,
         newRelativePath: renamedWorkspaceFile.relativePath,
       } as WorkspaceEvents);
     }

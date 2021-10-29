@@ -50,12 +50,12 @@ export function WorkspacesContextProvider(props: Props) {
   const globals = useGlobals();
   const storageService = useMemo(() => new StorageService(), []);
   const descriptorService = useMemo(() => new WorkspaceDescriptorService(storageService), [storageService]);
+  const svgService = useMemo(() => new WorkspaceSvgService(storageService), [storageService]);
   const fsService = useMemo(() => new WorkspaceFsService(descriptorService), [descriptorService]);
   const service = useMemo(
     () => new WorkspaceService(storageService, descriptorService, fsService),
     [storageService, descriptorService, fsService]
   );
-  const svgService = useMemo(() => new WorkspaceSvgService(service), [service]);
 
   const gitService = useMemo(() => new GitService(GIT_CORS_PROXY), [service]);
 
@@ -94,7 +94,7 @@ export function WorkspacesContextProvider(props: Props) {
 
       return { workspace, suggestedFirstFile };
     },
-    [service]
+    [globals, service]
   );
 
   const isModified = useCallback(
@@ -255,10 +255,17 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const renameFile = useCallback(
-    async (args: { fs: LightningFS; file: WorkspaceFile; newFileName: string }) => {
-      return service.renameFile(args.fs, args.file, args.newFileName, { broadcast: true });
+    async (args: { fs: LightningFS; file: WorkspaceFile; newFileNameWithoutExtension: string }) => {
+      const newFile = service.renameFile({
+        fs: args.fs,
+        file: args.file,
+        newFileNameWithoutExtension: args.newFileNameWithoutExtension,
+        broadcastArgs: { broadcast: true },
+      });
+      await svgService.renameSvg(args.file, args.newFileNameWithoutExtension);
+      return newFile;
     },
-    [service]
+    [service, svgService]
   );
 
   const getFiles = useCallback(
@@ -278,8 +285,9 @@ export function WorkspacesContextProvider(props: Props) {
   const deleteFile = useCallback(
     async (args: { fs: LightningFS; file: WorkspaceFile }) => {
       await service.deleteFile(args.fs, args.file, { broadcast: true });
+      await svgService.deleteSvg(args.file);
     },
-    [service]
+    [service, svgService]
   );
 
   const updateFile = useCallback(
@@ -390,8 +398,9 @@ export function WorkspacesContextProvider(props: Props) {
   const deleteWorkspace = useCallback(
     async (args: { workspaceId: string }) => {
       await service.delete(args.workspaceId, { broadcast: true });
+      await svgService.delete(args.workspaceId);
     },
-    [service]
+    [service, svgService]
   );
 
   const renameWorkspace = useCallback(

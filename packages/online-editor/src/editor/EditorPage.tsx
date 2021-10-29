@@ -149,16 +149,18 @@ export function EditorPage(props: Props) {
   }
 
   const saveContent = useCallback(async () => {
-    if (!workspaceFilePromise.data) {
+    if (!workspaceFilePromise.data || !editor) {
       return;
     }
 
-    const content = await editor?.getContent();
-    const svgString = await editor?.getPreview();
+    const content = await editor.getContent();
+    const svgString = await editor.getPreview();
 
     lastContent.current = content;
 
-    await workspaces.svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
+    if (svgString) {
+      await workspaces.svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
+    }
 
     await workspaces.updateFile({
       fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
