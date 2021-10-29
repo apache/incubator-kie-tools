@@ -15,11 +15,9 @@
  */
 
 import { ContentType } from "@kie-tooling-core/workspace/dist/api";
-import { EditorApi, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tooling-core/editor/dist/api";
+import { EditorApi, KogitoEditorEnvelopeApi } from "@kie-tooling-core/editor/dist/api";
 import { StateControl } from "@kie-tooling-core/editor/dist/channel";
 import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
-import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
-import { Rect } from "@kie-tooling-core/guided-tour/dist/api";
 
 export interface StandaloneEditorApi extends EditorApi {
   subscribeToContentChanges: StateControl["subscribe"];
@@ -40,39 +38,32 @@ export interface Editor {
 }
 
 export const createEditor = (
-  envelopeServer: EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>,
+  envelopeApi: MessageBusClientApi<KogitoEditorEnvelopeApi>,
   stateControl: StateControl,
   listener: (message: MessageEvent) => void,
   iframe: HTMLIFrameElement
-) => {
+): StandaloneEditorApi => {
   return {
-    getElementPosition: (selector: string): Promise<Rect> =>
-      envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(selector),
     undo: () => {
       stateControl.undo();
-      return Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorUndo());
+      return Promise.resolve(envelopeApi.notifications.kogitoEditor_editorUndo());
     },
     redo: () => {
       stateControl.redo();
-      return Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo());
+      return Promise.resolve(envelopeApi.notifications.kogitoEditor_editorRedo());
     },
-    getContent: () => envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
-    getPreview: () => envelopeServer.envelopeApi.requests.kogitoEditor_previewRequest(),
-    setContent: (path: string, content: string) =>
-      envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({
-        path: path,
-        content: content,
-      }),
-    subscribeToContentChanges: (callback: (isDirty: boolean) => void) => stateControl.subscribe(callback),
-    unsubscribeToContentChanges: (callback: (isDirty: boolean) => void) => stateControl.unsubscribe(callback),
-    markAsSaved: () => stateControl.setSavedCommand(),
-    envelopeApi: envelopeServer.envelopeApi,
     close: () => {
       window.removeEventListener("message", listener);
       iframe.remove();
     },
-    validate: () => {
-      return envelopeServer.envelopeApi.requests.kogitoEditor_validate();
-    },
+    getElementPosition: (selector) => envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(selector),
+    getContent: () => envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
+    getPreview: () => envelopeApi.requests.kogitoEditor_previewRequest(),
+    setContent: (path, content) => envelopeApi.requests.kogitoEditor_contentChanged({ path: path, content: content }),
+    subscribeToContentChanges: (callback) => stateControl.subscribe(callback),
+    unsubscribeToContentChanges: (callback) => stateControl.unsubscribe(callback),
+    markAsSaved: () => stateControl.setSavedCommand(),
+    validate: () => envelopeApi.requests.kogitoEditor_validate(),
+    envelopeApi,
   };
 };

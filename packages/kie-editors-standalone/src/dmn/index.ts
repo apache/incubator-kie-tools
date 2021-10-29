@@ -21,6 +21,8 @@ import { KogitoEditorChannelApiImpl } from "../envelope/KogitoEditorChannelApiIm
 import { StateControl } from "@kie-tooling-core/editor/dist/channel";
 import { ContentType } from "@kie-tooling-core/workspace/dist/api";
 import { createEditor, Editor, StandaloneEditorApi } from "../common/Editor";
+import { DmnEditorEnvelopeApi } from "../../../kie-bc-editors/dist/dmn/api/DmnEditorEnvelopeApi";
+import { DmnEditorDiagramApi } from "../jsdiagram/DmnEditorDiagramApi";
 
 declare global {
   interface Window {
@@ -31,7 +33,7 @@ declare global {
 const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boolean, origin?: string) => {
   const defaultOrigin = window.location.protocol === "file:" ? "*" : window.location.origin;
 
-  return new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
+  return new EnvelopeServer<KogitoEditorChannelApi, DmnEditorEnvelopeApi>(
     { postMessage: (message) => iframe.contentWindow?.postMessage(message, "*") },
     origin ?? defaultOrigin,
     (self) => {
@@ -59,7 +61,7 @@ export function open(args: {
   origin?: string;
   onError?: () => any;
   resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
-}): StandaloneEditorApi {
+}): StandaloneEditorApi & DmnEditorDiagramApi {
   const iframe = document.createElement("iframe");
   iframe.srcdoc = bpmnEnvelopeIndex;
   iframe.style.width = "100%";
@@ -101,7 +103,37 @@ export function open(args: {
   args.container.appendChild(iframe);
   envelopeServer.startInitPolling();
 
-  return createEditor(envelopeServer, stateControl, listener, iframe);
+  const editor = createEditor(envelopeServer.envelopeApi, stateControl, listener, iframe);
+
+  return {
+    ...editor,
+    canvas: {
+      getNodeIds: () => {
+        return envelopeServer.envelopeApi.requests.canvas_getNodeIds();
+      },
+      getBackgroundColor: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_getBackgroundColor(uuid);
+      },
+      setBackgroundColor: (uuid: string, backgroundColor: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_setBackgroundColor(uuid, backgroundColor);
+      },
+      getBorderColor: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_getBorderColor(uuid);
+      },
+      setBorderColor: (uuid: string, backgroundColor: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_setBorderColor(uuid, backgroundColor);
+      },
+      getLocation: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_getLocation(uuid);
+      },
+      getAbsoluteLocation: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_getAbsoluteLocation(uuid);
+      },
+      getDimensions: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_getDimensions(uuid);
+      },
+    },
+  };
 }
 
 window.DmnEditor = { open };

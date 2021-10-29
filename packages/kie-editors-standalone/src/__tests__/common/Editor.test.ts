@@ -40,7 +40,7 @@ describe("createEditor", () => {
 
   test("setContent calls envelope with path and content", () => {
     const editor = createEditor(
-      envelopeServer,
+      envelopeServer.envelopeApi,
       stateControl,
       (message) => {
         /**/
