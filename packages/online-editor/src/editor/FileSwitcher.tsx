@@ -47,6 +47,7 @@ import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/compo
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
+import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -416,7 +417,12 @@ export function WorkspacesMenuItems(props: {
                       &nbsp;&nbsp;
                       {descriptor.name}
                       &nbsp;&nbsp;
-                      {descriptor.origin.kind === WorkspaceKind.GIST && <Label>Gist</Label>}
+                      {descriptor.origin.kind === WorkspaceKind.GIST && (
+                        <Label>
+                          <GithubIcon />
+                          &nbsp;&nbsp;Gist
+                        </Label>
+                      )}
                     </MenuItem>
                   )}
                 </React.Fragment>

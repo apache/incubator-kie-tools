@@ -20,6 +20,7 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { LocalFile, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { BusinessAutomationStudioPage } from "./pageTemplate/BusinessAutomationStudioPage";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
@@ -470,7 +471,12 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                             &nbsp;&nbsp;
                             {workspaceName}
                             &nbsp;&nbsp;
-                            {workspace.descriptor.origin.kind === WorkspaceKind.GIST && <Label>Gist</Label>}
+                            {workspace.descriptor.origin.kind === WorkspaceKind.GIST && (
+                              <Label>
+                                <GithubIcon />
+                                &nbsp;&nbsp;Gist
+                              </Label>
+                            )}
                           </Text>
                         </TextContent>
                       </CardTitle>

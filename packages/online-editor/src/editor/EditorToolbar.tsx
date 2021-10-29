@@ -723,7 +723,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   <WorkspaceStatusIndicator workspace={workspace} />
                   {workspace.descriptor.origin.kind === WorkspaceKind.GIST && (
                     <>
-                      <Label>Gist</Label>
+                      <Label>
+                        <GithubIcon />
+                        &nbsp;&nbsp;Gist
+                      </Label>
                     </>
                   )}
                   <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
