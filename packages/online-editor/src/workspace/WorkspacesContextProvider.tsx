@@ -120,11 +120,19 @@ export function WorkspacesContextProvider(props: Props) {
 
       await Promise.all(
         fileRelativePaths.map(async (relativePath) => {
-          await gitService.add({
-            fs: args.fs,
-            dir: workspaceRootDirPath,
-            relativePath,
-          });
+          if (await service.existsFile({ fs: args.fs, workspaceId: args.workspaceId, relativePath })) {
+            await gitService.add({
+              fs: args.fs,
+              dir: workspaceRootDirPath,
+              relativePath,
+            });
+          } else {
+            await gitService.rm({
+              fs: args.fs,
+              dir: workspaceRootDirPath,
+              relativePath,
+            });
+          }
         })
       );
 
@@ -270,13 +278,8 @@ export function WorkspacesContextProvider(props: Props) {
   const deleteFile = useCallback(
     async (args: { fs: LightningFS; file: WorkspaceFile }) => {
       await service.deleteFile(args.fs, args.file, { broadcast: true });
-      await gitService.rm({
-        fs: args.fs,
-        dir: service.getAbsolutePath({ workspaceId: args.file.workspaceId }),
-        relativePath: args.file.relativePath,
-      });
     },
-    [gitService, service]
+    [service]
   );
 
   const updateFile = useCallback(

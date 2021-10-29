@@ -74,14 +74,15 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
 
   const checkNewFileName = useCallback(
     async (newFileNameWithoutExtension: string) => {
-      if (newFileNameWithoutExtension === props.workspaceFile.nameWithoutExtension) {
+      const trimmedNewFileNameWithoutExtension = newFileNameWithoutExtension.trim();
+      if (trimmedNewFileNameWithoutExtension === props.workspaceFile.nameWithoutExtension) {
         setNewFileNameValid(true);
         return;
       }
 
       const newRelativePath = join(
         props.workspaceFile.relativeDirPath,
-        `${newFileNameWithoutExtension}.${props.workspaceFile.extension}`
+        `${trimmedNewFileNameWithoutExtension}.${props.workspaceFile.extension}`
       );
 
       //FIXME: Not ideal using service directly.
@@ -95,27 +96,29 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
     [props.workspaceFile, workspaces.service, workspaces.fsService]
   );
 
-  const onRenameWorkspaceFile = useCallback(
+  const renameWorkspaceFile = useCallback(
     async (newFileName: string | undefined) => {
-      if (!newFileName || !newFileNameValid) {
+      const trimmedNewFileName = newFileName?.trim();
+      if (!trimmedNewFileName || !newFileNameValid) {
         resetWorkspaceFileName();
         return;
       }
 
-      if (newFileName === props.workspaceFile.nameWithoutExtension) {
+      if (trimmedNewFileName === props.workspaceFile.nameWithoutExtension) {
+        resetWorkspaceFileName();
         return;
       }
 
       await workspaces.renameFile({
         fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         file: props.workspaceFile,
-        newFileName: newFileName.trim(),
+        newFileName: trimmedNewFileName.trim(),
       });
     },
     [props.workspaceFile, workspaces, resetWorkspaceFileName, newFileNameValid]
   );
 
-  const onWorkspaceFileNameKeyDown = useCallback(
+  const handleWorkspaceFileNameKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       e.stopPropagation();
       if (newFileNameValid && e.keyCode === 13 /* Enter */) {
@@ -204,7 +207,18 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
             isOpen={isFilesDropdownOpen}
             isPlain={true}
             toggle={
-              <Toggle onToggle={setFilesDropdownOpen} id={"editor-page-masthead-files-dropdown-toggle"}>
+              <Toggle
+                onToggle={(isOpen) =>
+                  setFilesDropdownOpen((prev) => {
+                    if (workspaceFileNameRef.current === document.activeElement) {
+                      return prev;
+                    } else {
+                      return isOpen;
+                    }
+                  })
+                }
+                id={"editor-page-masthead-files-dropdown-toggle"}
+              >
                 <Flex flexWrap={{ default: "nowrap" }} alignItems={{ default: "alignItemsCenter" }}>
                   <FlexItem />
                   <FlexItem>
@@ -262,15 +276,13 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                                 setPopoverVisible(true);
                               }
                             }}
-                            onKeyPress={(e) => e.stopPropagation()}
-                            onKeyUp={(e) => e.stopPropagation()}
-                            onKeyDown={onWorkspaceFileNameKeyDown}
+                            onKeyDown={handleWorkspaceFileNameKeyDown}
                             onChange={checkNewFileName}
                             ref={workspaceFileNameRef}
                             type={"text"}
                             aria-label={"Edit file name"}
                             className={"kogito--editor__toolbar-title"}
-                            onBlur={(e) => onRenameWorkspaceFile(e.target.value)}
+                            onBlur={(e) => renameWorkspaceFile(e.target.value)}
                           />
                         </Tooltip>
                       </div>
