@@ -50,9 +50,13 @@
     <div id="bpmn-editor-container" />
 
     <script>
+      const query = window.location.search;
+      //Получение URL с помощью "const urlParams = new URLSearchParams(queryString);" работает некорректно
+      var encodeFile = query.replace(/^.{3}/, "");
+      var decodeFile = decodeURIComponent(escape(window.atob(encodeFile)));
       const editor = BpmnEditor.open({
         container: document.getElementById("bpmn-editor-container"),
-        initialContent: Promise.resolve(""),
+        initialContent: Promise.resolve(decodeFile),
         readOnly: false,
       });
 

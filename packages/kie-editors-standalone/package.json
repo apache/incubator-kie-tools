@@ -1,16 +1,22 @@
 {
   "name": "@kogito-tooling/kie-editors-standalone",
-  "version": "0.0.0",
+  "version": "0.0.0-3",
   "description": "",
   "license": "Apache-2.0",
   "files": [
-    "dist/common",
     "dist/bpmn",
-    "dist/dmn"
+    "dist/common",
+    "dist/envelope",
+    "dist/fonts",
+    "dist/preprocessor",
+    "dist/resources/bpmn"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "publishConfig": {
+    "registry": "https://repo.micord.ru/repository/npm-private/"
   },
   "dependencies": {
     "@kie-tooling-core/editor": "0.0.0",
