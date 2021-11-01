@@ -18,8 +18,7 @@ import { expect } from "chai";
 import { By, until, WebElement, WebView } from "vscode-extension-tester";
 import { assertWebElementIsDisplayedEnabled } from "../CommonAsserts";
 import { expandedDocksBarE, h3ComponentWithText, tabWithTitle } from "../CommonLocators";
-import { EditorTabs } from "./EditorTabs";
-import ExpressionEditorHelper from "./ExpressionEditorHelper";
+import { EditorTabs } from "../EditorTabs";
 import PropertiesPanelHelper from "./PropertiesPanelHelper";
 import DecisionNavigatorHelper from "./DecisionNavigatorHelper";
 
@@ -69,11 +68,6 @@ export default class DmnEditorTestHelper {
       By.className("docks-item-E-org.kie.dmn.decision.navigator")
     );
     return this.decisionNavigator;
-  }
-
-  public async getExpressionEditor(): Promise<ExpressionEditorHelper> {
-    this.decisionNavigator = await this.webview.findWebElement(By.id("dmn-expression-editor-container"));
-    return new ExpressionEditorHelper(this.decisionNavigator);
   }
 
   /**
