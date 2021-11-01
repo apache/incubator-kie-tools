@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { decoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
@@ -16,12 +16,17 @@ import { SupportedFileExtensions, useGlobals } from "../common/GlobalContext";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { extractFileExtension, removeDirectories, removeFileExtension } from "../common/utils";
+import { AlertsController, useAlert } from "./Alerts/Alerts";
+import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 
 export function NewFileDropdownMenu(props: {
+  alerts: AlertsController | undefined;
   destinationDirPath: string;
   workspaceId: string;
-  onAddFile: (file: WorkspaceFile) => Promise<void>;
+  onAddFile: (file?: WorkspaceFile) => Promise<void>;
 }) {
+  const uploadFileInputRef = useRef<HTMLInputElement>(null);
+
   const [menuDrilledIn, setMenuDrilledIn] = useState<string[]>([]);
   const [drilldownPath, setDrilldownPath] = useState<string[]>([]);
   const [menuHeights, setMenuHeights] = useState<{ [key: string]: number }>({});
@@ -97,12 +102,66 @@ export function NewFileDropdownMenu(props: {
     },
     [props, workspaces]
   );
+
   const addSample = useCallback(
     (extension: SupportedFileExtensions) =>
       importFromUrl(
         `${window.location.origin}${window.location.pathname}${globals.routes.static.sample.path({ type: extension })}`
       ),
     [importFromUrl, globals]
+  );
+
+  const successfullyUploadedAlert = useAlert(
+    props.alerts,
+    useCallback(({ close }, staticArgs: { qtt: number }) => {
+      return (
+        <Alert
+          variant="success"
+          title={`Successfully uploaded ${staticArgs.qtt} file(s).`}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, []),
+    { durationInSeconds: 4 }
+  );
+
+  const handleFileUpload = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const filesToUpload = await Promise.all(
+        Array.from(e.target.files ?? []).map(async (file: File) => {
+          return {
+            path: file.name,
+            content: await new Promise<string>((res) => {
+              const reader = new FileReader();
+              reader.onload = (event: ProgressEvent<FileReader>) =>
+                res(decoder.decode(event.target?.result as ArrayBuffer));
+              reader.readAsArrayBuffer(file);
+            }),
+          };
+        })
+      );
+
+      const uploadedFiles = await Promise.all(
+        filesToUpload.map(async (file) => {
+          return workspaces.addFile({
+            fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
+            workspaceId: props.workspaceId,
+            name: file.path,
+            extension: extractFileExtension(file.path)!,
+            content: file.content,
+            destinationDirRelativePath: props.destinationDirPath,
+          });
+        })
+      );
+
+      const fileToGoTo = uploadedFiles
+        .filter((file) => [...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension))
+        .pop();
+
+      await props.onAddFile(fileToGoTo);
+      successfullyUploadedAlert.show({ qtt: uploadedFiles.length });
+    },
+    [globals, workspaces, props, successfullyUploadedAlert]
   );
 
   return (
@@ -162,7 +221,7 @@ export function NewFileDropdownMenu(props: {
             </b>
           </MenuItem>
           <MenuItem
-            description={"Try model samples"}
+            description={"Try sample models"}
             itemId="samplesItemId"
             direction={"down"}
             drilldownMenu={
@@ -228,11 +287,15 @@ export function NewFileDropdownMenu(props: {
           >
             From URL
           </MenuItem>
-          <MenuItem itemId={"importUploadingItemId"}>
-            Upload... &nbsp;&nbsp;
-            <span style={{ color: "red" }}>
-              <i>{"//TODO"}</i>
-            </span>
+          <MenuItem itemId={"importUploadingItemId"} onClick={() => uploadFileInputRef.current?.click()}>
+            Upload...
+            <input
+              ref={uploadFileInputRef}
+              type="file"
+              multiple={true}
+              style={{ display: "none" }}
+              onChange={handleFileUpload}
+            />
           </MenuItem>
         </MenuList>
       </MenuContent>

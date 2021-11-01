@@ -715,7 +715,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       promise={workspacePromise}
       resolved={(workspace) => (
         <>
-          <Alerts ref={props.alertsRef} />
+          <Alerts ref={props.alertsRef} width={"500px"} />
           <PageSection type={"nav"} variant={"light"} padding={{ default: "noPadding" }}>
             {workspace && workspace.files.length > 1 && (
               <Flex justifyContent={{ default: "justifyContentFlexStart" }} style={{ marginLeft: "16px" }}>
@@ -822,10 +822,15 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         }
                       >
                         <NewFileDropdownMenu
+                          alerts={props.alerts}
                           workspaceId={props.workspaceFile.workspaceId}
                           destinationDirPath={props.workspaceFile.relativeDirPath}
                           onAddFile={async (file) => {
                             setNewFileDropdownMenuOpen(false);
+                            if (!file) {
+                              return;
+                            }
+
                             history.push({
                               pathname: globals.routes.workspaceWithFilePath.path({
                                 workspaceId: file.workspaceId,

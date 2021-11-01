@@ -65,10 +65,6 @@ export function EditorPage(props: Props) {
 
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
 
-  useEffect(() => {
-    alerts?.closeAll();
-  }, [alerts]);
-
   useDmnTour(!editor?.isReady && workspaceFilePromise.data?.extension === "dmn");
 
   const setContentErrorAlert = useAlert(
@@ -186,6 +182,14 @@ export function EditorPage(props: Props) {
   );
 
   useEffect(() => {
+    alerts?.closeAll();
+  }, [alerts]);
+
+  useEffect(() => {
+    setContentErrorAlert.close();
+  }, [uniqueIdentifierOfFile]);
+
+  useEffect(() => {
     if (!editor?.isReady || !workspaceFilePromise.data) {
       return;
     }
@@ -274,6 +278,10 @@ export function EditorPage(props: Props) {
     [workspaceFilePromise, workspaces, history, globals]
   );
 
+  const handleSetContentError = useCallback(() => {
+    setContentErrorAlert.show();
+  }, [setContentErrorAlert]);
+
   return (
     <BusinessAutomationStudioPage>
       <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
@@ -311,7 +319,7 @@ export function EditorPage(props: Props) {
                             kogitoWorkspace_openFile={handleOpenFile}
                             kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
                             kogitoWorkspace_resourceListRequest={handleResourceListRequest}
-                            kogitoEditor_setContentError={setContentErrorAlert.show}
+                            kogitoEditor_setContentError={handleSetContentError}
                             editorEnvelopeLocator={globals.editorEnvelopeLocator}
                             channelType={ChannelType.VSCODE} // TODO CAPONETTO: Changed the channel type to test the Included Models (undo/redo do not work)
                             locale={locale}

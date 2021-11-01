@@ -68,18 +68,18 @@ export function HomePage() {
   const [uploading, setUploading] = useState(false);
   const [filesToUpload, setFilesToUpload] = useState<LocalFile[]>([]);
 
-  const onFolderUpload = useCallback((e) => {
+  const onFolderUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
     e.preventDefault();
 
     setFilesToUpload(
-      [...e.target.files].map((file: File) => {
+      Array.from(e.target.files ?? []).map((file: File) => {
         return {
           path: (file as any).webkitRelativePath,
           getFileContents: () =>
-            new Promise((resolve) => {
+            new Promise<Uint8Array>((res) => {
               const reader = new FileReader();
-              reader.onload = (event: any) => resolve(event.target.result);
+              reader.onload = (event: ProgressEvent<FileReader>) => res(event.target?.result as Uint8Array);
               reader.readAsArrayBuffer(file);
             }),
         };
@@ -538,27 +538,27 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
         </TextContent>
       </CardBody>
       <CardFooter>
-        <Link
-          to={{
-            pathname: globals.routes.importModel.path({}),
-            search: globals.routes.importModel.queryString({
-              url: `${window.location.origin}${window.location.pathname}${globals.routes.static.sample.path({
-                type: props.extension,
-              })}`,
-            }),
-          }}
-        >
-          <Button variant={ButtonVariant.link} style={{ paddingLeft: "2px" }}>
-            Open sample
-          </Button>
-        </Link>
-        <br />
-        <br />
-        <Link to={{ pathname: globals.routes.newModel.path({ extension: props.extension }) }}>
-          <Button isLarge={true} variant={ButtonVariant.secondary}>
-            New {props.title}
-          </Button>
-        </Link>
+        <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+          <Link to={{ pathname: globals.routes.newModel.path({ extension: props.extension }) }}>
+            <Button isLarge={true} variant={ButtonVariant.secondary}>
+              New {props.title}
+            </Button>
+          </Link>
+          <Link
+            to={{
+              pathname: globals.routes.importModel.path({}),
+              search: globals.routes.importModel.queryString({
+                url: `${window.location.origin}${window.location.pathname}${globals.routes.static.sample.path({
+                  type: props.extension,
+                })}`,
+              }),
+            }}
+          >
+            <Button variant={ButtonVariant.link} style={{ paddingLeft: "2px" }}>
+              Try sample
+            </Button>
+          </Link>
+        </Flex>
       </CardFooter>
     </Card>
   );
@@ -573,7 +573,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
       (workspacePromise.data?.files ?? [])
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
         .filter((file) => ![...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension)),
-    [workspacePromise.data]
+    [globals.editorEnvelopeLocator.mapping, workspacePromise.data?.files]
   );
 
   const models = useMemo(
@@ -581,7 +581,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
       (workspacePromise.data?.files ?? [])
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
         .filter((file) => [...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension)),
-    [workspacePromise]
+    [globals.editorEnvelopeLocator.mapping, workspacePromise.data?.files]
   );
 
   return (

@@ -4,8 +4,9 @@ import { AlertGroup } from "@patternfly/react-core/dist/js/components/AlertGroup
 
 type MapValueType<A> = A extends Map<any, infer V> ? V : never;
 
-export type AlertDelegate = (
-  args: { close: () => void; secondsUntilAutoClose?: number } & Partial<AlertAutoCloseArgs>
+export type AlertDelegate<T> = (
+  args: { close: () => void; secondsUntilAutoClose?: number } & Partial<AlertAutoCloseArgs>,
+  staticArgs: T
 ) => React.ReactNode;
 
 export interface AlertAutoCloseArgs {
@@ -14,21 +15,24 @@ export interface AlertAutoCloseArgs {
 
 export interface AlertsController {
   closeAll(): void;
-  show(key: string): void;
+  show(key: string, staticArgs: unknown): void;
   close(key: string): void;
-  set(key: string, alertDelegate: AlertDelegate, autoCloseArgs?: AlertAutoCloseArgs): void;
+  set(key: string, alertDelegate: AlertDelegate<unknown>, autoCloseArgs?: AlertAutoCloseArgs): void;
 }
 
 const AUTO_CLOSE_ALERTS_REFRESH_RATE_IN_MS = 1000;
 
 type AlertControl = {
-  alertDelegate: AlertDelegate;
+  alertDelegate: AlertDelegate<unknown>;
   autoCloseArgs?: AlertAutoCloseArgs;
   isShowing: boolean;
   lastShowedAt?: Date;
+  staticArgs: unknown;
 };
 
-export const Alerts = React.forwardRef<AlertsController>((props: {}, forwardedRef) => {
+type Props = { width: string };
+
+export const Alerts = React.forwardRef<AlertsController, Props>((props, forwardedRef) => {
   const [alerts, setAlerts] = useState(new Map<string, AlertControl>());
   const [autoCloseAlertsControl, setAutoCloseAlertsControl] = useState(
     new Map<string, { secondsLeft: number; interval: ReturnType<typeof setInterval> }>()
@@ -53,9 +57,11 @@ export const Alerts = React.forwardRef<AlertsController>((props: {}, forwardedRe
       close: (key) => {
         setAlerts((prev) => (prev.has(key) ? changeValueForKeys(prev, [key], { isShowing: false }) : prev));
       },
-      show: (key) => {
+      show: (key, staticArgs) => {
         setAlerts((prev) =>
-          prev.has(key) ? changeValueForKeys(prev, [key], { isShowing: true, lastShowedAt: new Date() }) : prev
+          prev.has(key)
+            ? changeValueForKeys(prev, [key], { isShowing: true, lastShowedAt: new Date(), staticArgs })
+            : prev
         );
       },
       set: (key, alertDelegate, autoCloseArgs) => {
@@ -65,6 +71,7 @@ export const Alerts = React.forwardRef<AlertsController>((props: {}, forwardedRe
             alertDelegate,
             isShowing: prev.get(key)?.isShowing ?? false,
             lastShowedAt: prev.get(key)?.lastShowedAt,
+            staticArgs: prev.get(key)?.staticArgs,
             autoCloseArgs,
           });
           return next;
@@ -122,17 +129,21 @@ export const Alerts = React.forwardRef<AlertsController>((props: {}, forwardedRe
 
   return (
     <AlertGroup className={"kogito--alert-container"}>
-      <div style={{ width: "500px" }}>
+      <div style={{ width: props.width }}>
         {[...alerts.entries()]
           .filter(([_, { isShowing }]) => isShowing)
           .sort(([_, a], [__, b]) => a.lastShowedAt!.getTime() - b.lastShowedAt!.getTime()) // show newest at the bottom
-          .map(([key, { alertDelegate, autoCloseArgs }]) => (
+          .map(([key, { alertDelegate, autoCloseArgs, staticArgs }]) => (
             <React.Fragment key={key}>
-              {alertDelegate({
-                close: () => imperativeHandle.close(key),
-                secondsUntilAutoClose: autoCloseAlertsControl.get(key)?.secondsLeft ?? autoCloseArgs?.durationInSeconds,
-                durationInSeconds: autoCloseArgs?.durationInSeconds,
-              })}
+              {alertDelegate(
+                {
+                  close: () => imperativeHandle.close(key),
+                  secondsUntilAutoClose:
+                    autoCloseAlertsControl.get(key)?.secondsLeft ?? autoCloseArgs?.durationInSeconds,
+                  durationInSeconds: autoCloseArgs?.durationInSeconds,
+                },
+                staticArgs
+              )}
               <br />
             </React.Fragment>
           ))}
@@ -141,9 +152,9 @@ export const Alerts = React.forwardRef<AlertsController>((props: {}, forwardedRe
   );
 });
 
-export function useAlert(
+export function useAlert<T = void>(
   alertsController: AlertsController | undefined,
-  delegate: AlertDelegate,
+  delegate: AlertDelegate<T>,
   autoCloseArgs?: AlertAutoCloseArgs
 ) {
   //FIXME: tiago improve that.
@@ -156,7 +167,7 @@ export function useAlert(
   return useMemo(
     () => ({
       close: () => alertsController?.close(key),
-      show: () => alertsController?.show(key),
+      show: (staticArgs: T) => alertsController?.show(key, staticArgs),
     }),
     [alertsController, key]
   );
