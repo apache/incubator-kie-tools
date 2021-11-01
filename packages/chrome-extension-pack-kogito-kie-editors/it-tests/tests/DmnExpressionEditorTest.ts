@@ -31,7 +31,7 @@ beforeEach(async () => {
   tools = await Tools.init(TEST_NAME);
 });
 
-test.skip(TEST_NAME, async () => {
+test(TEST_NAME, async () => {
   const WEB_PAGE =
     "https://github.com/kiegroup/kogito-tooling/tree/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples";
   const EXPECTED_LINK =
