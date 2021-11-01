@@ -63,7 +63,7 @@ export function DmnRunnerContextProvider(props: Props) {
   );
 
   const preparePayload = useCallback(
-    async (formData?: any) => {
+    async (data?: any) => {
       // TODO: Get only the included files, not all dmn files
       const files = (
         await workspaces.getFiles({
@@ -80,7 +80,7 @@ export function DmnRunnerContextProvider(props: Props) {
       return {
         mainURI: props.workspaceFile.relativePath,
         resources: await Promise.all(resourcePromises),
-        context: formData,
+        context: data,
       } as DmnRunnerModelPayload;
     },
     [props.workspaceFile, workspaces]

@@ -165,6 +165,7 @@ export class Grid {
     const subfields = this.bridge.getSubfields();
     const inputs = subfields.reduce(
       (acc: DmnRunnerClause[], fieldName: string) => [...acc, this.deepGenerateBoxed(fieldName)],
+      // { name: "#", width: 60, cellDelegate: () => <p>abc</p> }
       [] as DmnRunnerClause[]
     );
     if (inputs.length > 0) {

@@ -13,17 +13,14 @@ import { DmnGrid } from "./DmnGrid";
 import { DmnRunnerRule, DmnRunnerTabular } from "../boxed";
 import { NotificationSeverity } from "@kie-tooling-core/notifications/dist/api";
 import { dmnAutoTableDictionaries, DmnAutoTableI18nContext, dmnAutoTableI18nDefaults } from "../i18n";
-import { I18nDictionariesProvider, I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
+import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
 import nextId from "react-id-generator";
 import { BoxedExpressionProvider } from "@kogito-tooling/boxed-expression-component/dist/components";
 import { ColumnInstance } from "react-table";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerContentBody,
-  DrawerPanelContent,
-} from "@patternfly/react-core/dist/js/components/Drawer";
+import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
+import { Button } from "@patternfly/react-core";
+import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
@@ -63,6 +60,7 @@ interface Props {
   results?: Array<DecisionResult[] | undefined>;
   formError: boolean;
   setFormError: React.Dispatch<any>;
+  openRowOnForm: (rowIndex: number) => void;
 }
 
 const FORMS_ID = "unitable-forms";
@@ -71,8 +69,7 @@ let grid: DmnGrid | undefined;
 
 export function DmnAutoTable(props: Props) {
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
-
-  const [rowQuantity, setRowQuantity] = useState<number>(1);
+  const [rowQuantity, setRowQuantity] = useState<number>(props.tableData?.length ?? 1);
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
 
   const bridge = useMemo(() => {
@@ -205,14 +202,14 @@ export function DmnAutoTable(props: Props) {
         (acc, i) => (i.insideProperties ? acc + i.insideProperties.length : acc + 1),
         0
       );
+      //       const inputEntries = new Array(inputEntriesLength + 1);
       const inputEntries = new Array(inputEntriesLength);
-      return Array.from(Array(rowQuantity)).map(
-        (e, i) =>
-          ({
-            inputEntries,
-            rowDelegate: getAutoRow(props.tableData[i], i),
-          } as Partial<DmnRunnerRule>)
-      );
+      return Array.from(Array(rowQuantity)).map((e, i) => {
+        return {
+          inputEntries,
+          rowDelegate: getAutoRow(props.tableData[i], i),
+        } as Partial<DmnRunnerRule>;
+      });
     }
     return [] as Partial<DmnRunnerRule>[];
   }, [input, formsDivRendered, getAutoRow, props.tableData, rowQuantity]);
@@ -275,10 +272,10 @@ export function DmnAutoTable(props: Props) {
     errorBoundaryRef.current?.reset();
   }, [bridge]);
 
-  const outputEntries = useMemo(() => {
-    const a = outputRules.reduce((acc, rules) => acc + (rules.outputEntries?.length ?? 0), 0);
-    return a;
-  }, [outputRules]);
+  const outputEntries = useMemo(
+    () => outputRules.reduce((acc, rules) => acc + (rules.outputEntries?.length ?? 0), 0),
+    [outputRules]
+  );
 
   return (
     <>
@@ -320,6 +317,19 @@ export function DmnAutoTable(props: Props) {
                 }
               >
                 <BoxedExpressionProvider expressionDefinition={{ uid: inputUid }} isRunnerTable={true}>
+                  {/*<div style={{ display: "flex", flexDirection: "column", marginTop: "5px", padding: "7px" }}>*/}
+                  {/*  <div style={{ width: "50px", height: "55px", border: "1px solid" }}> # </div>*/}
+                  {/*  <div style={{ width: "50px", height: "56px", border: "1px solid" }}> # </div>*/}
+                  {/*  {Array.from(Array(rowQuantity)).map((e, i) => (*/}
+                  {/*    <div key={i} style={{ width: "50px", height: "62px", border: "1px solid" }}>*/}
+                  {/*      <Button variant={"plain"} onClick={() => props.openRowOnForm(i)}>*/}
+                  {/*        {i + 1}*/}
+                  {/*        <ListIcon />*/}
+                  {/*      </Button>*/}
+                  {/*    </div>*/}
+                  {/*  ))}*/}
+                  {/*</div>*/}
+
                   <DmnRunnerTabular
                     name={"DMN Runner Input"}
                     onRowNumberUpdated={onRowNumberUpdated}

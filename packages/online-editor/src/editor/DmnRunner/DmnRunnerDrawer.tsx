@@ -5,6 +5,7 @@ import { useDmnRunner } from "./DmnRunnerContext";
 import { NotificationsPanelController } from "../NotificationsPanel/NotificationsPanel";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { EditorPageDockDrawerController } from "../EditorPageDockDrawer";
+import { DmnRunnerMode } from "./DmnRunnerStatus";
 
 export function DmnRunnerDrawer(props: {
   workspaceFile: WorkspaceFile;
@@ -14,7 +15,7 @@ export function DmnRunnerDrawer(props: {
 }) {
   const dmnRunner = useDmnRunner();
   return (
-    <Drawer isInline={true} isExpanded={dmnRunner.isDrawerExpanded}>
+    <Drawer isInline={true} isExpanded={dmnRunner.isDrawerExpanded && dmnRunner.mode === DmnRunnerMode.DRAWER}>
       <DrawerContent
         className={
           !dmnRunner.isDrawerExpanded ? "kogito--editor__drawer-content-onClose" : "kogito--editor__drawer-content-open"

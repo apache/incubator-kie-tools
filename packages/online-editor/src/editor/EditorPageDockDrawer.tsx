@@ -18,7 +18,7 @@ import * as React from "react";
 import { PropsWithChildren, useCallback, useContext, useImperativeHandle, useMemo, useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { KeyboardIcon } from "@patternfly/react-icons/dist/js/icons/keyboard-icon";
-import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunner/DmnRunnerStatus";
+import { DmnRunnerMode } from "./DmnRunner/DmnRunnerStatus";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { useDmnRunner } from "./DmnRunner/DmnRunnerContext";
 import { useOnlineI18n } from "../common/i18n";
@@ -27,6 +27,7 @@ import { DmnRunnerTabular } from "./DmnRunner/DmnRunnerTabular";
 import { GlobalContext } from "../common/GlobalContext";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { WorkspaceFile } from "../workspace/WorkspacesContext";
+import { DecisionResult } from "@kogito-tooling/form/dist/dmn";
 
 export enum PanelId {
   DMN_RUNNER_TABULAR = "dmn-runner-tabular",
@@ -59,6 +60,7 @@ export const EditorPageDockDrawer = React.forwardRef<
   const context = useContext(GlobalContext);
   const dmnRunner = useDmnRunner();
   const [panel, setPanel] = useState<PanelId>(PanelId.NONE);
+  const [dmnRunnerResults, setDmnRunnerResults] = useState<Array<DecisionResult[] | undefined>>([]);
 
   useImperativeHandle(
     forwardRef,
@@ -92,18 +94,26 @@ export const EditorPageDockDrawer = React.forwardRef<
     if (dmnRunner.mode === DmnRunnerMode.TABULAR) {
       panelMap.set(
         PanelId.DMN_RUNNER_TABULAR,
-        <DmnRunnerTabular key={PanelId.DMN_RUNNER_TABULAR} setPanelOpen={setPanel} isReady={props.isReady} />
+        <DmnRunnerTabular
+          key={PanelId.DMN_RUNNER_TABULAR}
+          setPanelOpen={setPanel}
+          isReady={props.isReady}
+          dmnRunnerResults={dmnRunnerResults}
+          setDmnRunnerResults={setDmnRunnerResults}
+        />
       );
     }
     return panelMap;
-  }, [props.notificationsPanelRef, props.isReady, notificationsPanelTabNames, dmnRunner.mode]);
+  }, [props.notificationsPanelRef, props.isReady, notificationsPanelTabNames, dmnRunner.mode, dmnRunnerResults]);
 
   return (
     <>
       <Drawer isInline={true} position={"bottom"} isExpanded={panel !== PanelId.NONE}>
         <DrawerContent
           panelContent={
-            <DrawerPanelContent isResizable={true}>{props.isReady && panels.get(panel)}</DrawerPanelContent>
+            <DrawerPanelContent style={{ height: "100%" }} isResizable={true}>
+              {props.isReady && panels.get(panel)}
+            </DrawerPanelContent>
           }
         >
           {props.children}
@@ -252,7 +262,7 @@ export function EditorPageDock(props: EditorPageDockProps) {
 
   return (
     dockProperties && (
-      <>
+      <div>
         <div onClick={onKeyboardIconClick} className={"kogito-tooling--keyboard-shortcuts-icon"}>
           <KeyboardIcon />
         </div>
@@ -270,7 +280,7 @@ export function EditorPageDock(props: EditorPageDockProps) {
               .map(([keys, values]) => renderToggleItem(keys, values))}
           </ToggleGroup>
         </div>
-      </>
+      </div>
     )
   );
 }

@@ -273,6 +273,9 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                             onClick={() => {
                               dmnRunner.setMode(DmnRunnerMode.TABULAR);
                               dmnRunner.setDrawerExpanded(false);
+                              dmnRunner.setTableData((previousTableData: any) => {
+                                return [dmnRunner.formData, ...previousTableData];
+                              });
                               props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
                             }}
                           >

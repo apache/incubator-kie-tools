@@ -15,19 +15,19 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useDmnRunner } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
-import { Button } from "@patternfly/react-core";
 import { DmnAutoTable } from "@kogito-tooling/unitables";
 import { DecisionResult } from "@kogito-tooling/form/dist/dmn";
 import { diff } from "deep-object-diff";
-import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { PanelId } from "../EditorPageDockDrawer";
 
 interface Props {
   isReady?: boolean;
   setPanelOpen: React.Dispatch<React.SetStateAction<PanelId>>;
+  dmnRunnerResults: Array<DecisionResult[] | undefined>;
+  setDmnRunnerResults: React.Dispatch<React.SetStateAction<Array<DecisionResult[] | undefined>>>;
 }
 
 function usePrevious(value: any) {
@@ -42,7 +42,6 @@ function usePrevious(value: any) {
 
 export function DmnRunnerTabular(props: Props) {
   const dmnRunner = useDmnRunner();
-  const [dmnRunnerResults, setDmnRunnerResults] = useState<Array<DecisionResult[] | undefined>>();
 
   const updateDmnRunnerResults = useCallback(
     async (tableData: any[]) => {
@@ -79,7 +78,7 @@ export function DmnRunnerTabular(props: Props) {
             runnerResults.push(result.decisionResults);
           }
         }
-        setDmnRunnerResults(runnerResults);
+        props.setDmnRunnerResults(runnerResults);
       } catch (err) {
         return undefined;
       }
@@ -96,9 +95,10 @@ export function DmnRunnerTabular(props: Props) {
     dmnRunner.setTableData((previousTableData: any) => {
       const newTableData = [...previousTableData];
       const propertiesDifference = diff(
-        previousFormSchema?.definitions?.InputSet?.properties ?? {},
+        (previousFormSchema ?? dmnRunner.formSchema).definitions?.InputSet?.properties ?? {},
         dmnRunner.formSchema?.definitions?.InputSet?.properties ?? {}
       );
+
       return newTableData.map((tableData) => {
         return Object.entries(propertiesDifference).reduce(
           (form, [property, value]) => {
@@ -119,25 +119,27 @@ export function DmnRunnerTabular(props: Props) {
     });
   }, [dmnRunner.formSchema]);
 
+  const openRowOnForm = useCallback(
+    (rowIndex: number) => {
+      dmnRunner.setMode(DmnRunnerMode.DRAWER);
+      console.log(dmnRunner.tableData);
+      dmnRunner.setFormData(dmnRunner.tableData[rowIndex]);
+      dmnRunner.setDrawerExpanded(true);
+      props.setPanelOpen(PanelId.NONE);
+    },
+    [dmnRunner, props]
+  );
+
   return (
-    <div>
-      <Button
-        variant={"plain"}
-        onClick={() => {
-          dmnRunner.setMode(DmnRunnerMode.DRAWER);
-          dmnRunner.setDrawerExpanded(true);
-          props.setPanelOpen(PanelId.NONE);
-        }}
-      >
-        <ListIcon />
-      </Button>
+    <div style={{ height: "100%" }}>
       <DmnAutoTable
         schema={dmnRunner.formSchema}
         tableData={dmnRunner.tableData}
         setTableData={dmnRunner.setTableData}
-        results={dmnRunnerResults}
+        results={props.dmnRunnerResults}
         formError={dmnRunner.formError}
         setFormError={dmnRunner.setFormError}
+        openRowOnForm={openRowOnForm}
       />
     </div>
   );

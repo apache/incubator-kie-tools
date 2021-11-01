@@ -131,7 +131,7 @@ export function DmnRunnerTabular(props: DmnRunnerTabularProps) {
       };
     });
 
-    const outputSection = (props.rules?.[0].outputEntries ?? []).map((outputEntry, outputIndex) => {
+    const outputSection = (props.rules?.[0]?.outputEntries ?? []).map((outputEntry, outputIndex) => {
       if (Array.isArray(outputEntry)) {
         return outputEntry.map((entry, entryIndex) => {
           const columns = Object.keys(entry).map((keys) => {
