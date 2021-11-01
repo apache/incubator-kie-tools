@@ -55,6 +55,7 @@ export type Props = EmbeddedEditorChannelApiOverrides & {
  */
 export type EmbeddedEditorRef = EditorApi & {
   isReady: boolean;
+  iframeRef: React.RefObject<HTMLIFrameElement>;
   getStateControl(): StateControl;
   getEnvelopeServer(): EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
 };
@@ -147,6 +148,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
       }
 
       return {
+        iframeRef,
         isReady: isReady,
         getStateControl: () => stateControl,
         getEnvelopeServer: () => envelopeServer,

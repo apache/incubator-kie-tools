@@ -25,7 +25,6 @@ import { createContext, useContext } from "react";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { basename, extname, parse } from "path";
-import { removeFileExtension } from "../common/utils";
 import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import LightningFS from "@isomorphic-git/lightning-fs";
@@ -62,7 +61,7 @@ export class WorkspaceFile {
   }
 
   get relativePathWithoutExtension() {
-    return removeFileExtension(this.relativePath);
+    return this.relativePath.split(".").slice(0, -1).join(".");
   }
 
   get relativeDirPath() {

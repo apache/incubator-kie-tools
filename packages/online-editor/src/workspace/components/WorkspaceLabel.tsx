@@ -10,7 +10,10 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
   return (
     <>
       {props.descriptor?.origin.kind === WorkspaceKind.GIST && (
-        <Tooltip content={`This Folder is linked to a GitHub Gist. ${props.descriptor?.origin.url}`} position={"right"}>
+        <Tooltip
+          content={`'${props.descriptor?.name}' is linked to a GitHub Gist. ${props.descriptor?.origin.url}`}
+          position={"right"}
+        >
           <Label>
             <GithubIcon />
             &nbsp;&nbsp;Gist
@@ -19,7 +22,7 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
       )}
       {props.descriptor?.origin.kind === WorkspaceKind.LOCAL && (
         <Tooltip
-          content={`This Folder is saved directly in the browser. Incognito windows don't have access to it.`}
+          content={`'${props.descriptor?.name}' is saved directly in the browser. Incognito windows don't have access to it.`}
           position={"right"}
         >
           <Label>

@@ -20,13 +20,15 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { LocalFile, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
+import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { BusinessAutomationStudioPage } from "./pageTemplate/BusinessAutomationStudioPage";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { FileLabel } from "../workspace/components/FileLabel";
+import { isAbsolute } from "path";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
@@ -58,34 +60,15 @@ import {
 } from "@patternfly/react-core/dist/js/components/DataList";
 import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
+import { useDropzone } from "react-dropzone";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { UploadCard } from "./UploadCard";
 
 export function HomePage() {
   const globals = useGlobals();
   const history = useHistory();
-  const workspaces = useWorkspaces();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const [url, setUrl] = useState("");
-  const [uploading, setUploading] = useState(false);
-  const [filesToUpload, setFilesToUpload] = useState<LocalFile[]>([]);
-
-  const onFolderUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation();
-    e.preventDefault();
-
-    setFilesToUpload(
-      Array.from(e.target.files ?? []).map((file: File) => {
-        return {
-          path: (file as any).webkitRelativePath,
-          getFileContents: () =>
-            new Promise<Uint8Array>((res) => {
-              const reader = new FileReader();
-              reader.onload = (event: ProgressEvent<FileReader>) => res(event.target?.result as Uint8Array);
-              reader.readAsArrayBuffer(file);
-            }),
-        };
-      })
-    );
-  }, []);
 
   const queryParams = useQueryParams();
 
@@ -121,44 +104,6 @@ export function HomePage() {
       closeExpandedWorkspace();
     }
   }, [workspaceDescriptorsPromise, closeExpandedWorkspace, expandedWorkspaceId]);
-
-  const createWorkspaceFromUploadedFolder = useCallback(() => {
-    if (filesToUpload.length === 0) {
-      return;
-    }
-
-    const preferredName = filesToUpload[0].path.split("/")[0];
-
-    const localFiles: LocalFile[] = filesToUpload.map(
-      // Remove first portion of the path, which is the uploaded directory name.
-      (file) => ({ ...file, path: file.path.substring(file.path.indexOf("/") + 1) })
-    );
-
-    setUploading(true);
-
-    workspaces
-      .createWorkspaceFromLocal({
-        useInMemoryFs: true,
-        localFiles,
-        preferredName,
-      })
-      .then(({ workspace, suggestedFirstFile }) => {
-        if (!suggestedFirstFile) {
-          expandWorkspace(workspace.workspaceId);
-          return;
-        }
-        history.push({
-          pathname: globals.routes.workspaceWithFilePath.path({
-            workspaceId: workspace.workspaceId,
-            fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-            extension: suggestedFirstFile.extension,
-          }),
-        });
-      })
-      .finally(() => {
-        setUploading(false);
-      });
-  }, [expandWorkspace, filesToUpload, workspaces, history, globals]);
 
   return (
     <BusinessAutomationStudioPage>
@@ -198,39 +143,15 @@ export function HomePage() {
                 minWidths={{ sm: "calc(50% - 16px)", default: "100%" }}
                 style={{ height: "calc(100% - 32px)" }}
               >
-                <Card isFullHeight={true} isLarge={true} isPlain={true}>
-                  <CardTitle>
-                    <TextContent>
-                      <Text component={TextVariants.h2}>Upload</Text>
-                    </TextContent>
-                  </CardTitle>
-                  <CardBody>
-                    <TextContent>
-                      <Text component={TextVariants.p}>Import files from your computer.</Text>
-                    </TextContent>
-                    <br />
-                    <input
-                      type="file"
-                      /* @ts-expect-error directory and webkitdirectory are not available but works*/
-                      webkitdirectory=""
-                      onChange={onFolderUpload}
-                    />
-                  </CardBody>
-                  <CardFooter>
-                    <Button
-                      isLoading={uploading}
-                      variant={filesToUpload.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
-                      onClick={createWorkspaceFromUploadedFolder}
-                    >
-                      Upload
-                    </Button>
-                  </CardFooter>
-                </Card>
+                <UploadCard expandWorkspace={expandWorkspace} />
                 {/*<Divider isVertical={true} />*/}
                 <Card isFullHeight={true} isLarge={true} isPlain={true} isSelected={url.length > 0}>
                   <CardTitle>
                     <TextContent>
-                      <Text component={TextVariants.h2}>From Gist</Text>
+                      <Text component={TextVariants.h2}>
+                        <CodeIcon />
+                        &nbsp;&nbsp;From URL
+                      </Text>
                     </TextContent>
                   </CardTitle>
                   <CardBody>
@@ -538,7 +459,7 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
         </TextContent>
       </CardBody>
       <CardFooter>
-        <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+        <Flex>
           <Link to={{ pathname: globals.routes.newModel.path({ extension: props.extension }) }}>
             <Button isLarge={true} variant={ButtonVariant.secondary}>
               New {props.title}

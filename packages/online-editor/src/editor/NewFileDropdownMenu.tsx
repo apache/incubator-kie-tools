@@ -15,9 +15,9 @@ import {
 import { SupportedFileExtensions, useGlobals } from "../common/GlobalContext";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { extractFileExtension, removeDirectories, removeFileExtension } from "../common/utils";
 import { AlertsController, useAlert } from "./Alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
+import { basename, extname } from "path";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;
@@ -78,20 +78,25 @@ export function NewFileDropdownMenu(props: {
 
   //FIXME: We have to unify this logic with `NewWorkspaceFromUrlPage.tsx`
   const importFromUrl = useCallback(
-    async (url: string) => {
+    async (urlString: string) => {
       setImporting(true);
       try {
-        const response = await fetch(url);
+        const url = new URL(urlString);
+        const extension = extname(url.pathname).replace(".", "");
+        const name = decodeURIComponent(basename(url.pathname, extname(url.pathname)));
+
+        const response = await fetch(urlString);
         if (!response.ok) {
           return;
         }
 
         const content = await response.text();
+
         const file = await workspaces.addFile({
           fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
           workspaceId: props.workspaceId,
-          name: decodeURIComponent(removeFileExtension(removeDirectories(url) ?? "Imported file")),
-          extension: extractFileExtension(url)!,
+          name,
+          extension,
           content,
           destinationDirRelativePath: props.destinationDirPath,
         });
@@ -147,7 +152,7 @@ export function NewFileDropdownMenu(props: {
             fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
             workspaceId: props.workspaceId,
             name: file.path,
-            extension: extractFileExtension(file.path)!,
+            extension: extname(file.path).replace(".", ""),
             content: file.content,
             destinationDirRelativePath: props.destinationDirPath,
           });

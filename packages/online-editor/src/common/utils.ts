@@ -30,20 +30,6 @@ export function extractEditorFileExtensionFromUrl(supportedFileExtensions: strin
   return supportedFileExtensions.indexOf(typeFromUrl!) !== -1 ? typeFromUrl : undefined;
 }
 
-export function removeFileExtension(fileName: string) {
-  const fileExtension = extractFileExtension(fileName);
-
-  if (!fileExtension) {
-    return fileName;
-  }
-
-  return fileName.substr(0, fileName.length - fileExtension.length - 1);
-}
-
-export function removeDirectories(filePath: string) {
-  return filePath.split("/").pop();
-}
-
 // FIXME: remove duplications
 export enum OperatingSystem {
   MACOS = "MACOS",

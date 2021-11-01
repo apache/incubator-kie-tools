@@ -62,7 +62,7 @@ export class WorkspaceDescriptorService {
   public async create(args: { origin: WorkspaceOrigin; preferredName?: string }) {
     const workspace: WorkspaceDescriptor = {
       workspaceId: this.newWorkspaceId(),
-      name: args.preferredName ?? NEW_WORKSPACE_DEFAULT_NAME,
+      name: args.preferredName?.trim() || NEW_WORKSPACE_DEFAULT_NAME,
       origin: args.origin,
       createdDateISO: new Date().toISOString(),
       lastUpdatedDateISO: new Date().toISOString(),
