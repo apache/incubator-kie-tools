@@ -317,27 +317,27 @@ export function DmnAutoTable(props: Props) {
                 }
               >
                 <BoxedExpressionProvider expressionDefinition={{ uid: inputUid }} isRunnerTable={true}>
-                  {/*<div style={{ display: "flex", flexDirection: "column", marginTop: "5px", padding: "7px" }}>*/}
-                  {/*  <div style={{ width: "50px", height: "55px", border: "1px solid" }}> # </div>*/}
-                  {/*  <div style={{ width: "50px", height: "56px", border: "1px solid" }}> # </div>*/}
-                  {/*  {Array.from(Array(rowQuantity)).map((e, i) => (*/}
-                  {/*    <div key={i} style={{ width: "50px", height: "62px", border: "1px solid" }}>*/}
-                  {/*      <Button variant={"plain"} onClick={() => props.openRowOnForm(i)}>*/}
-                  {/*        {i + 1}*/}
-                  {/*        <ListIcon />*/}
-                  {/*      </Button>*/}
-                  {/*    </div>*/}
-                  {/*  ))}*/}
-                  {/*</div>*/}
-
-                  <DmnRunnerTabular
-                    name={"DMN Runner Input"}
-                    onRowNumberUpdated={onRowNumberUpdated}
-                    onColumnsUpdate={onColumnsUpdate}
-                    input={input}
-                    rules={inputRules as DmnRunnerRule[]}
-                    uid={inputUid}
-                  />
+                  <div style={{ display: "flex" }}>
+                    <div style={{ display: "flex", flexDirection: "column", marginTop: "5px", padding: "7px" }}>
+                      <div style={{ width: "50px", height: "55px", border: "1px solid" }}> # </div>
+                      <div style={{ width: "50px", height: "56px", border: "1px solid" }}> # </div>
+                      {Array.from(Array(rowQuantity)).map((e, i) => (
+                        <div key={i} style={{ width: "50px", height: "62px", border: "1px solid" }}>
+                          <Button variant={"plain"} onClick={() => props.openRowOnForm(i)}>
+                            <ListIcon />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                    <DmnRunnerTabular
+                      name={"DMN Runner Input"}
+                      onRowNumberUpdated={onRowNumberUpdated}
+                      onColumnsUpdate={onColumnsUpdate}
+                      input={input}
+                      rules={inputRules as DmnRunnerRule[]}
+                      uid={inputUid}
+                    />
+                  </div>
                 </BoxedExpressionProvider>
               </DrawerContent>
             </Drawer>
