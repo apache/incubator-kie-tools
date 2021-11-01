@@ -26,8 +26,8 @@ import { KieToolingExtendedServicesContextProvider } from "./editor/KieToolingEx
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
 import { HomePage } from "./home/HomePage";
-import { NewWorkspaceWithEmptyFilePage } from "./workspace/pages/NewWorkspaceWithEmptyFilePage";
-import { NewWorkspaceFromUrlPage } from "./workspace/pages/NewWorkspaceFromUrlPage";
+import { NewWorkspaceWithEmptyFilePage } from "./workspace/components/NewWorkspaceWithEmptyFilePage";
+import { NewWorkspaceFromUrlPage } from "./workspace/components/NewWorkspaceFromUrlPage";
 
 export function App() {
   return (

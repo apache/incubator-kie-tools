@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { FileLabel } from "../workspace/pages/FileLabel";
+import { FileLabel } from "../workspace/components/FileLabel";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
@@ -17,7 +17,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { extractFileExtension, removeDirectories, removeFileExtension } from "../common/utils";
 
-export function AddFileMenu(props: {
+export function NewFileDropdownMenu(props: {
   destinationDirPath: string;
   workspaceId: string;
   onAddFile: (file: WorkspaceFile) => Promise<void>;
@@ -125,7 +125,7 @@ export function AddFileMenu(props: {
             description="BPMN files are used to generate business processes"
           >
             <b>
-              <Flex>
+              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                 <FlexItem>Process</FlexItem>
                 <FlexItem>
                   <FileLabel extension={"bpmn"} />
@@ -139,7 +139,7 @@ export function AddFileMenu(props: {
             description="DMN files are used to generate decision models"
           >
             <b>
-              <Flex>
+              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                 <FlexItem>Decision</FlexItem>
                 <FlexItem>
                   <FileLabel extension={"dmn"} />
@@ -153,7 +153,7 @@ export function AddFileMenu(props: {
             description="PMML files are used to generate scorecards"
           >
             <b>
-              <Flex>
+              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                 <FlexItem>Scorecard</FlexItem>
                 <FlexItem>
                   <FileLabel extension={"pmml"} />

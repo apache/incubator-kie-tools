@@ -20,14 +20,13 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { LocalFile, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { BusinessAutomationStudioPage } from "./pageTemplate/BusinessAutomationStudioPage";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
-import { FileLabel } from "../workspace/pages/FileLabel";
+import { FileLabel } from "../workspace/components/FileLabel";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
@@ -50,8 +49,6 @@ import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { QueryParams } from "../common/Routes";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { RelativeDate } from "./RelativeDate";
-import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import {
   DataList,
   DataListCell,
@@ -60,6 +57,7 @@ import {
   DataListItemRow,
 } from "@patternfly/react-core/dist/js/components/DataList";
 import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
+import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 
 export function HomePage() {
   const globals = useGlobals();
@@ -471,12 +469,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                             &nbsp;&nbsp;
                             {workspaceName}
                             &nbsp;&nbsp;
-                            {workspace.descriptor.origin.kind === WorkspaceKind.GIST && (
-                              <Label>
-                                <GithubIcon />
-                                &nbsp;&nbsp;Gist
-                              </Label>
-                            )}
+                            <WorkspaceLabel descriptor={workspacePromise.data?.descriptor} />
                           </Text>
                         </TextContent>
                       </CardTitle>

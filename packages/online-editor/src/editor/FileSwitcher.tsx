@@ -7,7 +7,7 @@ import { join } from "path";
 import { Dropdown } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Link } from "react-router-dom";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { FileLabel } from "../workspace/pages/FileLabel";
+import { FileLabel } from "../workspace/components/FileLabel";
 import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
@@ -41,13 +41,11 @@ import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { useCancelableEffect } from "../common/Hooks";
 import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
-import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
+import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -429,12 +427,7 @@ export function WorkspacesMenuItems(props: {
                       &nbsp;&nbsp;
                       {descriptor.name}
                       &nbsp;&nbsp;
-                      {descriptor.origin.kind === WorkspaceKind.GIST && (
-                        <Label>
-                          <GithubIcon />
-                          &nbsp;&nbsp;Gist
-                        </Label>
-                      )}
+                      <WorkspaceLabel descriptor={descriptor} />
                     </MenuItem>
                   )}
                 </React.Fragment>

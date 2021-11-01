@@ -53,9 +53,9 @@ import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { ColumnsIcon } from "@patternfly/react-icons/dist/js/icons/columns-icon";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { AddFileMenu } from "./AddFileMenu";
+import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 import { PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { FileLabel } from "../workspace/pages/FileLabel";
+import { FileLabel } from "../workspace/components/FileLabel";
 import { useIsWorkspaceModifiedPromise, useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { FileSwitcher } from "./FileSwitcher";
@@ -65,10 +65,10 @@ import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { GIST_DEFAULT_BRANCH, GIST_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
 import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
+import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -181,7 +181,7 @@ export function EditorToolbar(props: Props) {
   const downloadAllRef = useRef<HTMLAnchorElement>(null);
   const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
-  const [isWorkspaceAddFileMenuOpen, setWorkspaceAddFileMenuOpen] = useState(false);
+  const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
   const [isGistLoading, setGistLoading] = useState(false);
 
@@ -718,17 +718,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           <Alerts ref={props.alertsRef} />
           <PageSection type={"nav"} variant={"light"} padding={{ default: "noPadding" }}>
             {workspace && workspace.files.length > 1 && (
-              <Flex justifyContent={{ default: "justifyContentFlexStart" }}>
-                <FlexItem className={"kogito-tooling--masthead-hoverable"}>
-                  <WorkspaceStatusIndicator workspace={workspace} />
-                  {workspace.descriptor.origin.kind === WorkspaceKind.GIST && (
-                    <>
-                      <Label>
-                        <GithubIcon />
-                        &nbsp;&nbsp;Gist
-                      </Label>
-                    </>
-                  )}
+              <Flex justifyContent={{ default: "justifyContentFlexStart" }} style={{ marginLeft: "16px" }}>
+                <FlexItem>
+                  <WorkspaceLabel descriptor={workspace.descriptor} />
                   <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
                     <Title
                       aria-label={"EmbeddedEditorFile name"}
@@ -748,6 +740,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       style={{ fontStyle: "italic" }}
                     />
                   </div>
+                  {workspace.descriptor.origin.kind !== WorkspaceKind.LOCAL && (
+                    <WorkspaceStatusIndicator workspace={workspace} />
+                  )}
                 </FlexItem>
               </Flex>
             )}
@@ -814,10 +809,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     <ToolbarItem>
                       <Dropdown
                         position={"right"}
-                        isOpen={isWorkspaceAddFileMenuOpen}
+                        isOpen={isNewFileDropdownMenuOpen}
                         toggle={
                           <DropdownToggle
-                            onToggle={setWorkspaceAddFileMenuOpen}
+                            onToggle={setNewFileDropdownMenuOpen}
                             isPrimary={true}
                             toggleIndicator={CaretDownIcon}
                           >
@@ -826,11 +821,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                           </DropdownToggle>
                         }
                       >
-                        <AddFileMenu
+                        <NewFileDropdownMenu
                           workspaceId={props.workspaceFile.workspaceId}
                           destinationDirPath={props.workspaceFile.relativeDirPath}
                           onAddFile={async (file) => {
-                            setWorkspaceAddFileMenuOpen(false);
+                            setNewFileDropdownMenuOpen(false);
                             history.push({
                               pathname: globals.routes.workspaceWithFilePath.path({
                                 workspaceId: file.workspaceId,

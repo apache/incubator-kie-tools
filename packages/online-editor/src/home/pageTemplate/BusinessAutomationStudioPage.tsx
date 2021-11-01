@@ -30,8 +30,18 @@ export function BusinessAutomationStudioPage(props: { children?: React.ReactNode
                     style={{ display: "inline" }}
                   />
                   <TextContent>
-                    <Text component={TextVariants.h1} style={{ fontWeight: "lighter", fontSize: "2em" }}>
+                    <Text
+                      component={TextVariants.h1}
+                      style={{ fontWeight: "lighter", fontSize: "2em", display: "inline" }}
+                    >
                       Business Automation Studio
+                    </Text>
+                    &nbsp; &nbsp;
+                    <Text
+                      component={TextVariants.h3}
+                      style={{ fontStyle: "italic", display: "inline", fontWeight: "lighter", color: "gray" }}
+                    >
+                      Online
                     </Text>
                   </TextContent>
                 </Flex>
