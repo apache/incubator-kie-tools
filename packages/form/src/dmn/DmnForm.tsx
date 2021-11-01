@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AutoForm } from "uniforms-patternfly";
+import { AutoForm } from "uniforms-patternfly/dist/es6";
 import { ErrorBoundary } from "../common/ErrorBoundary";
 import { dataPathToFormFieldPath } from "./uniforms/utils";
 import { DmnFormJsonSchemaBridge } from "./uniforms";

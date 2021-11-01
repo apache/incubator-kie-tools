@@ -1,0 +1,33 @@
+{
+  "name": "@kogito-tooling/boxed-expression-component",
+  "version": "0.0.0",
+  "description": "The Boxed Expression editor component provides the possibility to edit the decision logic for decisions and BKMs nodes.",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "source": "dist/index.d.ts",
+  "scripts": {
+    "build:dev": "rimraf dist && yarn copy:css && tsc -p tsconfig.json",
+    "build:prod": "yarn build:dev",
+    "build:watch": "rimraf dist && yarn copy:css && tsc -p tsconfig.json --watch",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
+    "test": "jest --collect-coverage",
+    "lint": "eslint --ext .ts,.tsx,.js ./src/",
+    "type-check": "tsc --noEmit",
+    "quality-checks": "yarn run type-check && yarn run lint && yarn run test"
+  },
+  "dependencies": {
+    "@kogito-tooling/build-env": "0.0.0",
+    "@kie-tooling-core/i18n": "0.0.0",
+    "@kogito-tooling/i18n-common-dictionary": "0.0.0",
+    "@kie-tooling-core/patternfly-base": "0.0.0",
+    "@kie-tooling-core/monaco-editor": "0.0.0",
+    "@kogito-tooling/feel-input-component": "0.0.0",
+    "@types/react-resizable": "^1.7.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-id-generator": "^3.0.1",
+    "react-resizable": "^1.11.0",
+    "react-table": "^7.6.2",
+    "@types/react-table": "^7.0.25"
+  }
+}

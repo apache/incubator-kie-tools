@@ -15,7 +15,8 @@
     "@patternfly/patternfly": "^4.135.2",
     "@patternfly/react-charts": "^6.15.23",
     "@patternfly/react-core": "^4.157.3",
-    "@patternfly/react-icons": "^4.11.17"
+    "@patternfly/react-icons": "^4.11.17",
+    "@patternfly/react-table": "^4.27.15"
   },
   "devDependencies": {
     "@kogito-tooling/build-env": "0.0.0"

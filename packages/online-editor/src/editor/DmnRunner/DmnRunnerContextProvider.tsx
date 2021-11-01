@@ -20,7 +20,7 @@ import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/Kie
 import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
 import { DmnRunnerContext } from "./DmnRunnerContext";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
-import { DmnRunnerStatus } from "./DmnRunnerStatus";
+import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { useOnlineI18n } from "../../common/i18n";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
@@ -50,6 +50,8 @@ export function DmnRunnerContextProvider(props: Props) {
   const [formData, setFormData] = useState<object>({});
   const [formSchema, setFormSchema] = useState<DmnFormSchema | undefined>(undefined);
   const [formError, setFormError] = useState(false);
+  const [mode, setMode] = useState(DmnRunnerMode.DRAWER);
+  const [tableData, setTableData] = useState([{}]);
 
   const status = useMemo(() => {
     return isDrawerExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE;
@@ -190,6 +192,10 @@ export function DmnRunnerContextProvider(props: Props) {
         formError,
         setFormError,
         preparePayload,
+        tableData,
+        setTableData,
+        mode,
+        setMode,
       }}
     >
       {props.children}

@@ -24,7 +24,7 @@ import { useOnlineI18n } from "../common/i18n";
 import { ChannelType } from "@kie-tooling-core/editor/dist/api";
 import { EmbeddedEditor, EmbeddedEditorRef, useStateControlSubscription } from "@kie-tooling-core/editor/dist/embedded";
 import { DmnRunnerContextProvider } from "./DmnRunner/DmnRunnerContextProvider";
-import { NotificationsPanel, NotificationsPanelController } from "./NotificationsPanel/NotificationsPanel";
+import { NotificationsPanelController } from "./NotificationsPanel/NotificationsPanel";
 import { Alert, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxContextProvider";
@@ -44,6 +44,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { EditorPageDockDrawer, EditorPageDockDrawerController } from "./EditorPageDockDrawer";
 
 export interface Props {
   workspaceId: string;
@@ -58,6 +59,7 @@ export function EditorPage(props: Props) {
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
   const [alerts, alertsRef] = useController<AlertsController>();
   const [notificationsPanel, notificationsPanelRef] = useController<NotificationsPanelController>();
+  const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerController>();
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
 
   const lastContent = useRef<string>();
@@ -247,10 +249,6 @@ export function EditorPage(props: Props) {
     }, 200);
   }, [workspaceFilePromise, notificationsPanel, editor, i18n]);
 
-  const notificationsPanelTabNames = useMemo(() => {
-    return [i18n.terms.validation, i18n.terms.execution];
-  }, [i18n]);
-
   const handleOpenFile = useCallback(
     async (relativePath: string) => {
       if (!workspaceFilePromise.data) {
@@ -307,25 +305,36 @@ export function EditorPage(props: Props) {
                     <EditorToolbar workspaceFile={file} editor={editor} alerts={alerts} alertsRef={alertsRef} />
                     <Divider />
                     <PageSection isFilled={true} padding={{ default: "noPadding" }}>
-                      <DmnRunnerDrawer workspaceFile={file} notificationsPanel={notificationsPanel}>
-                        {embeddedEditorFile && (
-                          <EmbeddedEditor
-                            /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
-                             * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
-                             */
-                            key={workspaces.getUniqueFileIdentifier(file)}
-                            ref={editorRef}
-                            file={embeddedEditorFile}
-                            kogitoWorkspace_openFile={handleOpenFile}
-                            kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
-                            kogitoWorkspace_resourceListRequest={handleResourceListRequest}
-                            kogitoEditor_setContentError={handleSetContentError}
-                            editorEnvelopeLocator={globals.editorEnvelopeLocator}
-                            channelType={ChannelType.VSCODE} // TODO CAPONETTO: Changed the channel type to test the Included Models (undo/redo do not work)
-                            locale={locale}
-                          />
-                        )}
-                        <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
+                      <DmnRunnerDrawer
+                        workspaceFile={file}
+                        notificationsPanel={notificationsPanel}
+                        editorPageDock={editorPageDock}
+                      >
+                        <EditorPageDockDrawer
+                          ref={editorPageDockRef}
+                          isReady={editor?.isReady}
+                          workspaceFile={file}
+                          notificationsPanel={notificationsPanel}
+                          notificationsPanelRef={notificationsPanelRef}
+                        >
+                          {embeddedEditorFile && (
+                            <EmbeddedEditor
+                              /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
+                               * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
+                               */
+                              key={workspaces.getUniqueFileIdentifier(file)}
+                              ref={editorRef}
+                              file={embeddedEditorFile}
+                              kogitoWorkspace_openFile={handleOpenFile}
+                              kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
+                              kogitoWorkspace_resourceListRequest={handleResourceListRequest}
+                              kogitoEditor_setContentError={handleSetContentError}
+                              editorEnvelopeLocator={globals.editorEnvelopeLocator}
+                              channelType={ChannelType.VSCODE} // TODO CAPONETTO: Changed the channel type to test the Included Models (undo/redo do not work)
+                              locale={locale}
+                            />
+                          )}
+                        </EditorPageDockDrawer>
                       </DmnRunnerDrawer>
                     </PageSection>
                   </Page>

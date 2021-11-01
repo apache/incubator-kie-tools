@@ -25,8 +25,8 @@
     "@kogito-tooling/uniforms-patternfly-codegen": "0.0.0",
     "inquirer": "^8.1.1",
     "pkg": "^5.1.0",
-    "uniforms": "^3.5.1",
-    "uniforms-bridge-json-schema": "^3.5.1"
+    "uniforms": "^3.5.5",
+    "uniforms-bridge-json-schema": "^3.5.5"
   },
   "devDependencies": {
     "@kogito-tooling/build-env": "0.0.0"

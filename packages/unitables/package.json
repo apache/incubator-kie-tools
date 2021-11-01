@@ -1,0 +1,39 @@
+{
+  "name": "@kogito-tooling/unitables",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "lint": "echo 'Linting....'",
+    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose'",
+    "test:clearCache": "jest --clearCache",
+    "build:dev": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json",
+    "build:prod": "yarn build:dev",
+    "build:watch": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json --watch",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "dependencies": {
+    "@kogito-tooling/boxed-expression-component": "0.0.0",
+    "@kie-tooling-core/i18n": "0.0.0",
+    "@kie-tooling-core/notifications": "0.0.0",
+    "ajv": "^6.12.6",
+    "ajv-errors": "^1.0.1",
+    "uniforms": "^3.5.5",
+    "uniforms-bridge-json-schema": "^3.5.5",
+    "uniforms-patternfly": "^4.7.3",
+    "react-table": "^7.6.2",
+    "@types/react-table": "^7.0.25"
+  },
+  "devDependencies": {
+    "lodash": "^4.14.2"
+  },
+  "files": [
+    "dist"
+  ]
+}

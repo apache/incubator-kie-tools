@@ -1,0 +1,53 @@
+{
+  "name": "dmn-runner-showcase",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "dependencies": {
+    "@kogito-tooling/i18n": "0.11.0",
+    "@kogito-tooling/notifications": "0.11.0",
+    "@kogito-tooling/patternfly-base": "0.11.0",
+    "ajv": "^6.12.6",
+    "ajv-errors": "^1.0.1",
+    "customize-cra": "^1.0.0",
+    "react": "^17.0.2",
+    "react-app-rewired": "^2.1.8",
+    "react-dom": "^17.0.2",
+    "react-scripts": "^4.0.3",
+    "style-loader": "^3.2.1",
+    "uniforms": "^3.5.5",
+    "uniforms-bridge-json-schema": "^3.5.5",
+    "uniforms-patternfly": "^4.7.3"
+  },
+  "devDependencies": {
+    "@types/node": "^15.0.2",
+    "@types/react": "^17.0.5",
+    "@types/react-dom": "^17.0.3",
+    "copy-webpack-plugin": "^9.0.1",
+    "css-loader": "^6.2.0",
+    "cypress": "^8.1.0",
+    "gh-pages": "^3.2.3",
+    "sass": "^1.37.5",
+    "sass-loader": "^12.1.0",
+    "source-map-loader": "^3.0.0",
+    "ts-loader": "^9.2.5",
+    "typescript": "^4.2.4"
+  },
+  "scripts": {
+    "start": "webpack serve --host 0.0.0.0 --env dev",
+    "build:fast": "rimraf dist && webpack --env dev"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "@babel/react"
+    ]
+  }
+}

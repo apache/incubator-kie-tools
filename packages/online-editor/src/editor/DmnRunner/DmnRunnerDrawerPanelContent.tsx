@@ -21,7 +21,8 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { useDmnRunner } from "./DmnRunnerContext";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
-import { DmnRunnerStatus } from "./DmnRunnerStatus";
+import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
+import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { useOnlineI18n } from "../../common/i18n";
 import {
   DecisionResult,
@@ -38,6 +39,8 @@ import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { NotificationsPanelController } from "../NotificationsPanel/NotificationsPanel";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { EditorPageDockDrawerController, PanelId } from "../EditorPageDockDrawer";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -48,6 +51,7 @@ enum ButtonPosition {
 
 interface Props {
   workspaceFile: WorkspaceFile;
+  editorPageDock: EditorPageDockDrawerController | undefined;
   notificationsPanel: NotificationsPanelController | undefined;
 }
 
@@ -187,12 +191,12 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   }, [dmnRunner.formError, dmnRunner.formData, updateDmnRunnerResults, previousFormError]);
 
   const openValidationTab = useCallback(() => {
-    props.notificationsPanel?.open();
+    props.editorPageDock?.open(PanelId.NOTIFICATIONS_PANEL);
     props.notificationsPanel?.setActiveTab(i18n.terms.validation);
   }, [props.notificationsPanel, i18n]);
 
   const openExecutionTab = useCallback(() => {
-    props.notificationsPanel?.open();
+    props.editorPageDock?.open(PanelId.NOTIFICATIONS_PANEL);
     props.notificationsPanel?.setActiveTab(i18n.terms.execution);
   }, [props.notificationsPanel, i18n]);
 
@@ -259,7 +263,24 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
               <Page className={"kogito--editor__dmn-runner-content-page"}>
                 <PageSection className={"kogito--editor__dmn-runner-content-header"}>
                   <TextContent>
-                    <Text component={"h2"}>{i18n.terms.inputs}</Text>
+                    <div style={{ display: "flex" }}>
+                      <Text component={"h2"}>
+                        <>
+                          {i18n.terms.inputs}
+                          <Button
+                            variant={"plain"}
+                            style={{ border: 0, marginLeft: "5px" }}
+                            onClick={() => {
+                              dmnRunner.setMode(DmnRunnerMode.TABULAR);
+                              dmnRunner.setDrawerExpanded(false);
+                              props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
+                            }}
+                          >
+                            <TableIcon />
+                          </Button>
+                        </>
+                      </Text>
+                    </div>
                   </TextContent>
                   {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
                     <DrawerCloseButton

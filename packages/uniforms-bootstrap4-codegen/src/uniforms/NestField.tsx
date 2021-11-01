@@ -15,7 +15,7 @@
  */
 
 import React, { useContext } from "react";
-import { connectField, context, HTMLFieldProps } from "uniforms/es5";
+import { connectField, context, HTMLFieldProps } from "uniforms/cjs";
 import { renderNestedInputFragmentWithContext } from "./rendering/RenderingUtils";
 import { FormElement, FormInput, FormInputContainer } from "../api";
 import { useBootstrapCodegenContext } from "./BootstrapCodeGenContext";

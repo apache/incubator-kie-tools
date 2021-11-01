@@ -1,0 +1,93 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.boxed-expression-editor {
+  background-color: var(--pf-global--BackgroundColor--100);
+  font-family: var(--pf-global--FontFamily--sans-serif);
+  font-size: var(--pf-global--FontSize--md);
+  font-weight: var(--pf-global--FontWeight--normal);
+  line-height: var(--pf-global--LineHeight--md);
+  text-align: left;
+  user-select: none;
+  touch-action: none;
+}
+
+.boxed-expression-editor *,
+.boxed-expression-editor *:after,
+.boxed-expression-editor *:before {
+  box-sizing: border-box;
+}
+
+.boxed-expression-editor a,
+.boxed-expression-editor button {
+  cursor: pointer;
+}
+
+.boxed-expression-editor table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.boxed-expression-editor textarea {
+  outline: none;
+}
+
+.boxed-expression-editor .pf-c-menu__group-title {
+  padding: var(--pf-c-menu__group-title--PaddingTop) var(--pf-c-menu__group-title--PaddingRight)
+    var(--pf-c-menu__group-title--PaddingTop) var(--pf-c-menu__group-title--PaddingLeft);
+  font-weight: var(--pf-c-menu__group-title--FontWeight);
+  color: var(--pf-c-menu__group-title--Color);
+}
+
+.boxed-expression-editor .pf-c-menu__item {
+  color: var(--pf-c-menu__item--Color);
+}
+
+.boxed-expression-editor button,
+.boxed-expression-editor input,
+.boxed-expression-editor optgroup,
+.boxed-expression-editor select,
+.boxed-expression-editor textarea {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: var(--pf-global--LineHeight--md);
+  color: var(--pf-global--Color--100);
+}
+
+.boxed-expression-editor blockquote,
+.boxed-expression-editor dd,
+.boxed-expression-editor dl,
+.boxed-expression-editor dt,
+.boxed-expression-editor fieldset,
+.boxed-expression-editor figure,
+.boxed-expression-editor h1,
+.boxed-expression-editor h2,
+.boxed-expression-editor h3,
+.boxed-expression-editor h4,
+.boxed-expression-editor h5,
+.boxed-expression-editor h6,
+.boxed-expression-editor hr,
+.boxed-expression-editor iframe,
+.boxed-expression-editor legend,
+.boxed-expression-editor li,
+.boxed-expression-editor ol,
+.boxed-expression-editor p,
+.boxed-expression-editor pre,
+.boxed-expression-editor textarea,
+.boxed-expression-editor ul {
+  padding: 0;
+  margin: 0;
+}

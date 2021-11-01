@@ -620,3 +620,20 @@ section.kogito-tooling--settings-tab {
 .pf-c-expandable-section.plain .pf-c-expandable-section__toggle {
   color: black;
 }
+
+.kogito-tooling--keyboard-shortcuts-icon {
+  user-select: none;
+  z-index: 999;
+  left: 0;
+  bottom: 0;
+  position: fixed;
+  padding: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  font-size: 15px;
+  cursor: pointer;
+  line-height: 22px;
+}

@@ -4,9 +4,11 @@ import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core
 import { useDmnRunner } from "./DmnRunnerContext";
 import { NotificationsPanelController } from "../NotificationsPanel/NotificationsPanel";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { EditorPageDockDrawerController } from "../EditorPageDockDrawer";
 
 export function DmnRunnerDrawer(props: {
   workspaceFile: WorkspaceFile;
+  editorPageDock: EditorPageDockDrawerController | undefined;
   notificationsPanel: NotificationsPanelController | undefined;
   children: React.ReactNode;
 }) {
@@ -20,6 +22,7 @@ export function DmnRunnerDrawer(props: {
         panelContent={
           <DmnRunnerDrawerPanelContent
             workspaceFile={props.workspaceFile}
+            editorPageDock={props.editorPageDock}
             notificationsPanel={props.notificationsPanel}
           />
         }

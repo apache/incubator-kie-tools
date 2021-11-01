@@ -1,0 +1,179 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.expression-container .table-component,
+.expression-container .table-component table {
+  font-style: normal;
+  width: 100%;
+}
+
+.expression-container .table-component,
+.expression-container .table-component table,
+.expression-container .table-component table thead,
+.expression-container .table-component table thead tr,
+.expression-container .table-component table tbody,
+.expression-container .table-component table tbody tr {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.expression-container .table-component table thead,
+.expression-container .table-component table tbody {
+  display: table;
+  width: 100%;
+}
+
+/** Table Header rules */
+
+.expression-container .table-component table th {
+  min-height: 55px;
+  position: relative;
+  padding: 0.7em 0;
+  border-style: ridge;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.expression-container .table-component table th.fixed-column {
+  font-weight: 400;
+  min-width: 60px;
+}
+
+.expression-container .table-component table th .data-type {
+  font-style: italic;
+  font-size: smaller;
+}
+
+.expression-container .table-component table th:first-child {
+  padding-left: 1.7em;
+}
+
+.expression-container .table-component table th:not(:first-child) {
+  text-align: center;
+  background-color: #def3ff;
+}
+
+.expression-container .table-component table th.no-clickable-cell:first-of-type .header-cell,
+.expression-container .table-component table th.no-clickable-cell .header-cell-info {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.expression-container .table-component table th:not(.no-clickable-cell) .header-cell-info {
+  cursor: pointer;
+}
+
+.expression-container .table-component table thead tr:not(:first-of-type) {
+  height: 4em;
+}
+
+.expression-container .table-component table thead th,
+.expression-container .table-component table tbody td {
+  border: 1px solid var(--pf-global--palette--black-300);
+}
+
+/** Table Body rules */
+
+.expression-container .table-component table tr {
+  display: flex;
+  border: 0;
+}
+
+.expression-container .table-component table tbody td {
+  border-style: solid;
+  padding: 1.1em 0;
+  text-align: center;
+  overflow: visible;
+}
+
+.expression-container .table-component table tbody td + td {
+  padding: 0;
+}
+
+.expression-container .table-component table tbody td.counter-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 60px;
+}
+
+.expression-container .table-component table tbody .table-row .empty-cell {
+  display: inline-block;
+  box-sizing: border-box;
+  min-width: 60px;
+}
+
+.expression-container .table-component table tbody td.data-cell.has-resizer .logic-type-selector.logic-type-selected {
+  padding: 0.5em 1.2em 0.5em 0.5em;
+}
+
+/** Drawer for resizing columns */
+
+.expression-container .pf-c-drawer__splitter {
+  background-color: inherit;
+}
+
+.expression-container .pf-c-drawer {
+  --pf-c-drawer__splitter--after--BorderLeftWidth: var(--pf-global--BorderWidth--sm);
+  position: absolute;
+  min-width: 10px;
+  max-width: 10px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.expression-container .pf-c-drawer.resizer-disabled * {
+  cursor: not-allowed;
+}
+
+.expression-container .pf-c-drawer.resizer-disabled .pf-c-drawer__splitter {
+  background-color: lightgray;
+}
+
+.expression-container
+  .table-component
+  table
+  .pf-c-drawer.drawer-on-body
+  > .pf-c-drawer__splitter
+  > .pf-c-drawer__splitter-handle {
+  z-index: 1;
+}
+
+/** Text-area used as a cell */
+
+.expression-container .table-component table tbody td textarea {
+  resize: none;
+  border: none;
+}
+
+/** Row-remainder section */
+
+.expression-container .table-component table tbody .table-row .row-remainder-content {
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+/** Hiding popover arrow for the Table Handler */
+
+.boxed-expression-editor .table-handler .pf-c-popover__arrow {
+  display: none;
+}

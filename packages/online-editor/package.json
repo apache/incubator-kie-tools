@@ -20,6 +20,7 @@
     "@kogito-tooling/i18n-common-dictionary": "0.0.0",
     "@kogito-tooling/kie-bc-editors": "0.0.0",
     "@kogito-tooling/pmml-editor": "0.0.0",
+    "@kogito-tooling/unitables": "0.0.0",
     "@octokit/rest": "^18.5.3",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",

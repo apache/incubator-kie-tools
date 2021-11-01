@@ -23,9 +23,9 @@
     "ajv": "^6.12.6",
     "ajv-errors": "^1.0.1",
     "deep-object-diff": "^1.1.0",
-    "uniforms": "^3.5.1",
-    "uniforms-bridge-json-schema": "^3.5.1",
-    "uniforms-patternfly": "^4.6.1"
+    "uniforms": "^3.5.5",
+    "uniforms-bridge-json-schema": "^3.5.5",
+    "uniforms-patternfly": "^4.7.3"
   },
   "devDependencies": {
     "@kogito-tooling/build-env": "0.0.0",

@@ -20,16 +20,18 @@ digraph G {
   "@kie-tooling-core/notifications" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kogito-tooling/backend-extended-services" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kogito-tooling/build-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kogito-tooling/boxed-expression-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kogito-tooling/i18n-common-dictionary" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tooling-core/patternfly-base" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kie-tooling-core/monaco-editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kogito-tooling/feel-input-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "chrome-extension-pack-kogito-kie-editors" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/kie-bc-editors" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kogito-tooling/external-assets-base" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/desktop" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tooling-core/monaco-editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kogito-tooling/i18n-common-dictionary" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kogito-tooling/dmn-dev-sandbox-deployment-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/dmn-dev-sandbox-form-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/dmn-json-schema-generator" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tooling-core/patternfly-base" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kogito-tooling/form" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tooling-core/guided-tour" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tooling-core/keyboard-shortcuts" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -45,6 +47,7 @@ digraph G {
   "@kie-tooling-core/workspace" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kogito-tooling/online-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kogito-tooling/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tooling-core/run-script-if" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "vscode-extension-backend" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "vscode-extension-bpmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -69,6 +72,10 @@ digraph G {
   "@kogito-tooling-examples/webapp" -> "@kogito-tooling/kie-editors-standalone" [ style = "solid", color = "orange" ];
   "@kie-tooling-core/backend" -> "@kie-tooling-core/notifications" [ style = "solid", color = "purple" ];
   "@kogito-tooling/backend-extended-services" -> "@kogito-tooling/build-env" [ style = "dashed", color = "blue" ];
+  "@kogito-tooling/boxed-expression-component" -> "@kogito-tooling/i18n-common-dictionary" [ style = "solid", color = "blue" ];
+  "@kogito-tooling/boxed-expression-component" -> "@kie-tooling-core/patternfly-base" [ style = "solid", color = "blue" ];
+  "@kogito-tooling/boxed-expression-component" -> "@kie-tooling-core/monaco-editor" [ style = "solid", color = "blue" ];
+  "@kogito-tooling/boxed-expression-component" -> "@kogito-tooling/feel-input-component" [ style = "solid", color = "blue" ];
   "@kogito-tooling/build-env" -> "kiegroup/kogito-tooling";
   "@kie-tooling-core/chrome-extension" -> "@kie-tooling-core/editor" [ style = "solid", color = "purple" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tooling-core/chrome-extension" [ style = "solid", color = "black" ];
@@ -91,6 +98,7 @@ digraph G {
   "@kie-tooling-core/envelope-bus" -> "@kogito-tooling/build-env" [ style = "dashed", color = "purple" ];
   "@kogito-tooling/extended-services" -> "@kogito-tooling/build-env" [ style = "dashed", color = "black" ];
   "@kogito-tooling/external-assets-base" -> "@kogito-tooling/build-env" [ style = "dashed", color = "black" ];
+  "@kogito-tooling/feel-input-component" -> "kiegroup/kogito-tooling";
   "@kogito-tooling/form" -> "@kie-tooling-core/notifications" [ style = "solid", color = "blue" ];
   "@kogito-tooling/form" -> "@kogito-tooling/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kogito-tooling/form-generation-tool" -> "@kogito-tooling/uniforms-bootstrap4-codegen" [ style = "solid", color = "blue" ];
@@ -113,6 +121,7 @@ digraph G {
   "@kogito-tooling/online-editor" -> "@kogito-tooling/form" [ style = "solid", color = "black" ];
   "@kogito-tooling/online-editor" -> "@kogito-tooling/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kogito-tooling/online-editor" -> "@kogito-tooling/pmml-editor" [ style = "solid", color = "black" ];
+  "@kogito-tooling/online-editor" -> "@kogito-tooling/unitables" [ style = "solid", color = "black" ];
   "@kogito-tooling/online-editor" -> "@kogito-tooling/extended-services" [ style = "dashed", color = "black" ];
   "@kogito-tooling/online-editor" -> "@kogito-tooling/external-assets-base" [ style = "dashed", color = "black" ];
   "@kie-tooling-core/operating-system" -> "@kogito-tooling/build-env" [ style = "dashed", color = "purple" ];
@@ -124,6 +133,8 @@ digraph G {
   "@kie-tooling-core/run-script-if" -> "@kogito-tooling/build-env" [ style = "dashed", color = "purple" ];
   "@kogito-tooling/uniforms-bootstrap4-codegen" -> "@kogito-tooling/build-env" [ style = "dashed", color = "blue" ];
   "@kogito-tooling/uniforms-patternfly-codegen" -> "@kogito-tooling/build-env" [ style = "dashed", color = "blue" ];
+  "@kogito-tooling/unitables" -> "@kogito-tooling/boxed-expression-component" [ style = "solid", color = "blue" ];
+  "@kogito-tooling/unitables" -> "@kie-tooling-core/notifications" [ style = "solid", color = "blue" ];
   "@kie-tooling-core/vscode-extension" -> "@kie-tooling-core/editor" [ style = "solid", color = "purple" ];
   "vscode-extension-backend" -> "@kie-tooling-core/vscode-extension" [ style = "solid", color = "black" ];
   "vscode-extension-backend" -> "@kogito-tooling/backend-extended-services" [ style = "solid", color = "black" ];
