@@ -225,22 +225,22 @@ export function DmnAutoTable(props: Props) {
         outputEntries: (outputEntries?.[i] as string[]) ?? [],
       }));
       // remove references
-      output.forEach((o, i) => {
-        const filteredOutputEntries = rules[i]?.outputEntries?.filter((outputEntry) => typeof outputEntry === "object");
-        if (filteredOutputEntries?.length ?? 0 > 0) {
-          o.insideProperties = filteredOutputEntries?.reduce((acc: any[], outputEntry) => {
-            if (Array.isArray(outputEntry)) {
-              acc.push([...outputEntry]);
-              return acc;
-            }
-            if (typeof outputEntry === "object") {
-              acc.push(Object.assign({}, outputEntry));
-              return acc;
-            }
-            return [...acc, outputEntry];
-          }, []);
-        }
-      });
+      // output.forEach((o, i) => {
+      //   const filteredOutputEntries = rules[i]?.outputEntries?.filter((outputEntry) => typeof outputEntry === "object");
+      //   if (filteredOutputEntries?.length ?? 0 > 0) {
+      //     o.insideProperties = filteredOutputEntries?.reduce((acc: any[], outputEntry) => {
+      //       if (Array.isArray(outputEntry)) {
+      //         acc.push([...outputEntry]);
+      //         return acc;
+      //       }
+      //       if (typeof outputEntry === "object") {
+      //         acc.push(Object.assign({}, outputEntry));
+      //         return acc;
+      //       }
+      //       return [...acc, outputEntry];
+      //     }, []);
+      //   }
+      // });
       grid?.updateWidth(output, rules);
       return {
         output,

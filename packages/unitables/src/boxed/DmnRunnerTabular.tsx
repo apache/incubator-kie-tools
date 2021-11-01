@@ -131,67 +131,72 @@ export function DmnRunnerTabular(props: DmnRunnerTabularProps) {
       };
     });
 
-    const outputSection = (props.rules?.[0]?.outputEntries ?? []).map((outputEntry, outputIndex) => {
-      if (Array.isArray(outputEntry)) {
-        return outputEntry.map((entry, entryIndex) => {
-          const columns = Object.keys(entry).map((keys) => {
+    let outputSection = undefined;
+    if (props.output !== undefined) {
+      outputSection = (props.rules?.[0]?.outputEntries ?? []).map((outputEntry, outputIndex) => {
+        if (Array.isArray(outputEntry)) {
+          return outputEntry.map((entry, entryIndex) => {
+            const columns = Object.keys(entry).map((keys) => {
+              return {
+                groupType: DecisionTableColumnType.OutputClause,
+                label: `${keys}`,
+                accessor: `output-${keys}-${entryIndex}`,
+                cssClasses: "decision-table--output",
+              } as ColumnInstance;
+            });
             return {
               groupType: DecisionTableColumnType.OutputClause,
-              label: `${keys}`,
-              accessor: `output-${keys}-${entryIndex}`,
+              label: `${props.output?.[outputIndex]?.name}[${entryIndex}]`,
+              accessor: `output-${props.output?.[outputIndex]?.name}[${entryIndex}]`,
+              cssClasses: "decision-table--output",
+              columns: columns,
+              appendColumnsOnChildren: true,
+              dataType: props.output?.[outputIndex]?.dataType,
+            } as ColumnInstance;
+          });
+        }
+        if (outputEntry !== null && typeof outputEntry === "object") {
+          const columns = Object.keys(outputEntry).map((entryKey) => {
+            console.log(props.output);
+            console.log(props.output![outputIndex]);
+            const output = props.output?.[outputIndex]?.insideProperties?.find((i) =>
+              Object.keys(i).find((keys) => keys === entryKey)
+            );
+            return {
+              groupType: DecisionTableColumnType.OutputClause,
+              label: entryKey,
+              width: output[entryKey].width,
+              accessor: `output-${entryKey}`,
               cssClasses: "decision-table--output",
             } as ColumnInstance;
           });
-          return {
-            groupType: DecisionTableColumnType.OutputClause,
-            label: `${props.output?.[outputIndex]?.name}[${entryIndex}]`,
-            accessor: `output-${props.output?.[outputIndex]?.name}[${entryIndex}]`,
-            cssClasses: "decision-table--output",
-            columns: columns,
-            appendColumnsOnChildren: true,
-            dataType: props.output?.[outputIndex]?.dataType,
-          } as ColumnInstance;
-        });
-      }
-      if (outputEntry !== null && typeof outputEntry === "object") {
-        const columns = Object.keys(outputEntry).map((entryKey) => {
-          const output = props.output?.[outputIndex]?.insideProperties?.find((i) =>
-            Object.keys(i).find((keys) => keys === entryKey)
-          );
-          return {
-            groupType: DecisionTableColumnType.OutputClause,
-            label: entryKey,
-            width: output[entryKey].width,
-            accessor: `output-${entryKey}`,
-            cssClasses: "decision-table--output",
-          } as ColumnInstance;
-        });
 
+          return [
+            {
+              groupType: DecisionTableColumnType.OutputClause,
+              label: props.output?.[outputIndex]?.name,
+              accessor: `output-${props.output?.[outputIndex]?.name}`,
+              cssClasses: "decision-table--output",
+              columns: columns,
+              width: props.output?.[outputIndex]?.width,
+              appendColumnsOnChildren: true,
+              dataType: props.output?.[outputIndex]?.dataType,
+            } as ColumnInstance,
+          ];
+        }
         return [
           {
             groupType: DecisionTableColumnType.OutputClause,
             label: props.output?.[outputIndex]?.name,
             accessor: `output-${props.output?.[outputIndex]?.name}`,
-            cssClasses: "decision-table--output",
-            columns: columns,
-            width: props.output?.[outputIndex]?.width,
-            appendColumnsOnChildren: true,
             dataType: props.output?.[outputIndex]?.dataType,
-          } as ColumnInstance,
+            width: props.output?.[outputIndex]?.width,
+            cssClasses: "decision-table--output",
+            appendColumnsOnChildren: true,
+          },
         ];
-      }
-      return [
-        {
-          groupType: DecisionTableColumnType.OutputClause,
-          label: props.output?.[outputIndex]?.name,
-          accessor: `output-${props.output?.[outputIndex]?.name}`,
-          dataType: props.output?.[outputIndex]?.dataType,
-          width: props.output?.[outputIndex]?.width,
-          cssClasses: "decision-table--output",
-          appendColumnsOnChildren: true,
-        },
-      ];
-    });
+      });
+    }
 
     const updatedColumns: ColumnInstance[] = [];
     if (inputSection) {

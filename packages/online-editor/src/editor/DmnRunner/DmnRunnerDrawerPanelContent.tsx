@@ -274,7 +274,10 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                               dmnRunner.setMode(DmnRunnerMode.TABULAR);
                               dmnRunner.setDrawerExpanded(false);
                               dmnRunner.setTableData((previousTableData: any) => {
-                                return [dmnRunner.formData, ...previousTableData];
+                                const filterPrevious = previousTableData.filter(
+                                  (tableData: any) => Object.keys(tableData).length !== 0
+                                );
+                                return [dmnRunner.formData, ...filterPrevious];
                               });
                               props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
                             }}
