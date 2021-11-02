@@ -15,8 +15,6 @@
  */
 
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
-import "@patternfly/react-core/dist/styles/base-no-reset.css";
-import "@patternfly/react-styles/css/components/Drawer/drawer.css";
 import * as _ from "lodash";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
