@@ -141,6 +141,7 @@ describe("Upload file test", () => {
 
     // check model content
     cy.readFile("downloads/testModel.dmn").should(($text) => {
+      expect($text).match(/<\?xml version="1.0" encoding="UTF-8"\?>/);
       expect($text).match(/<dmn:inputData id="[A-Z0-9_-]*" name="Test input data">/);
       expect($text).match(/<dmn:decision id="[A-Z0-9_-]*" name="Test decision node">/);
     });
