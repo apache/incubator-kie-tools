@@ -21,6 +21,7 @@ import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-cor
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { Button } from "@patternfly/react-core";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
+import "./style.css";
 
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
@@ -277,6 +278,71 @@ export function DmnAutoTable(props: Props) {
     [outputRules]
   );
 
+  // "Glue" layout states
+  const inputsTableContainerRef = useRef<HTMLDivElement>(null);
+  const outputsTableContainerRef = useRef<HTMLDivElement>(null);
+  const [inputsTableTotalWidth, setInputsTableContainerTotalWidth] = useState(0);
+  const [outputsTableTotalWidth, setOutputsTableContainerTotalWidth] = useState(9999);
+  const [scrollbarWidth, setScrollbarWidth] = useState(0);
+
+  // Keep panel minimally "glued"
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (inputsTableContainerRef.current) {
+        setInputsTableContainerTotalWidth(
+          Object.values(inputsTableContainerRef.current.childNodes).reduce(
+            (acc, child: HTMLElement) => acc + child.offsetWidth,
+            0
+          )
+        );
+      }
+
+      const outputsTable = outputsTableContainerRef.current?.querySelector(".expression-container-box");
+      if (outputsTable) {
+        const ADJUSTMENT_TO_HIDE_OUTPUTS_LINE_NUMBERS_IN_PX = 59;
+        setOutputsTableContainerTotalWidth(
+          (outputsTable as HTMLElement).offsetWidth - ADJUSTMENT_TO_HIDE_OUTPUTS_LINE_NUMBERS_IN_PX
+        );
+      }
+    }, 100);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Keep scrolls in sync and set scrollbar width
+  useEffect(() => {
+    const content = document.querySelector(".unitables--dmn-runner-drawer .pf-c-drawer__content") as
+      | HTMLElement
+      | undefined;
+
+    const panel = document.querySelector(".unitables--dmn-runner-drawer .pf-c-drawer__panel-main") as
+      | HTMLElement
+      | undefined;
+
+    if (!panel || !content) {
+      return;
+    }
+
+    setScrollbarWidth(content.offsetWidth - content.clientWidth);
+
+    const syncContentScroll = () => (panel.scrollTop = content.scrollTop);
+    const syncPanelScroll = () => (content.scrollTop = panel.scrollTop);
+
+    content.addEventListener("scroll", syncContentScroll);
+    panel.addEventListener("scroll", syncPanelScroll);
+
+    return () => {
+      content.removeEventListener("scroll", syncContentScroll);
+      panel.removeEventListener("scroll", syncPanelScroll);
+    };
+  }, [inputsTableTotalWidth, outputsTableTotalWidth]);
+
+  const handleResize = useCallback(() => {
+    // TODO: detect cases where we can glue Inputs and Outputs together to improve UX
+  }, []);
+
   return (
     <>
       {shouldRender && bridge && inputRules && outputRules && (
@@ -287,42 +353,59 @@ export function DmnAutoTable(props: Props) {
           ctx={DmnAutoTableI18nContext}
         >
           <ErrorBoundary ref={errorBoundaryRef} setHasError={props.setFormError} error={formErrorMessage}>
-            <Drawer isInline={true} isExpanded={true}>
+            <Drawer isInline={true} isExpanded={true} className={"unitables--dmn-runner-drawer"}>
               <DrawerContent
                 panelContent={
-                  <DrawerPanelContent isResizable={true} widths={{ default: "width_100" }}>
-                    {outputEntries > 0 ? (
-                      <BoxedExpressionProvider expressionDefinition={{ uid: outputUid }} isRunnerTable={true}>
-                        <DmnRunnerTabular
-                          name={"DMN Runner Output"}
-                          onRowNumberUpdated={onRowNumberUpdated}
-                          onColumnsUpdate={onColumnsUpdate}
-                          output={output}
-                          rules={outputRules as DmnRunnerRule[]}
-                          uid={outputUid}
-                        />
-                      </BoxedExpressionProvider>
-                    ) : (
-                      <EmptyState>
-                        <EmptyStateIcon icon={CubeIcon} />
-                        <TextContent>
-                          <Text component={"h2"}>Without Responses Yet</Text>
-                        </TextContent>
-                        <EmptyStateBody>
-                          <TextContent>Add decision nodes and fill the input nodes!</TextContent>
-                        </EmptyStateBody>
-                      </EmptyState>
+                  <>
+                    {inputsTableTotalWidth !== 0 && (
+                      <DrawerPanelContent
+                        onResize={handleResize}
+                        isResizable={true}
+                        minSize={`min(${outputsTableTotalWidth + scrollbarWidth}px, 30%)`}
+                        defaultSize={`calc(100vw - ${inputsTableTotalWidth + scrollbarWidth}px)`}
+                      >
+                        <div ref={outputsTableContainerRef}>
+                          {outputEntries > 0 ? (
+                            <BoxedExpressionProvider expressionDefinition={{ uid: outputUid }} isRunnerTable={true}>
+                              <DmnRunnerTabular
+                                name={"DMN Runner Output"}
+                                onRowNumberUpdated={onRowNumberUpdated}
+                                onColumnsUpdate={onColumnsUpdate}
+                                output={output}
+                                rules={outputRules as DmnRunnerRule[]}
+                                uid={outputUid}
+                              />
+                            </BoxedExpressionProvider>
+                          ) : (
+                            <EmptyState>
+                              <EmptyStateIcon icon={CubeIcon} />
+                              <TextContent>
+                                <Text component={"h2"}>Without Responses Yet</Text>
+                              </TextContent>
+                              <EmptyStateBody>
+                                <TextContent>Add decision nodes and fill the input nodes!</TextContent>
+                              </EmptyStateBody>
+                            </EmptyState>
+                          )}
+                        </div>
+                      </DrawerPanelContent>
                     )}
-                  </DrawerPanelContent>
+                  </>
                 }
               >
                 <BoxedExpressionProvider expressionDefinition={{ uid: inputUid }} isRunnerTable={true}>
-                  <div style={{ display: "flex" }}>
-                    <div style={{ display: "flex", flexDirection: "column", marginTop: "5px", padding: "7px" }}>
-                      <div style={{ width: "50px", height: "55px", border: "1px solid" }}> # </div>
-                      <div style={{ width: "50px", height: "56px", border: "1px solid" }}> # </div>
+                  <div style={{ display: "flex" }} ref={inputsTableContainerRef}>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <div style={{ width: "50px", height: "55px", border: "1px solid", visibility: "hidden" }}>
+                        {" "}
+                        #{" "}
+                      </div>
+                      <div style={{ width: "50px", height: "56px", border: "1px solid", visibility: "hidden" }}>
+                        {" "}
+                        #{" "}
+                      </div>
                       {Array.from(Array(rowQuantity)).map((e, i) => (
-                        <div key={i} style={{ width: "50px", height: "62px", border: "1px solid" }}>
+                        <div key={i} style={{ width: "50px", height: "62px", display: "flex", alignItems: "center" }}>
                           <Button variant={"plain"} onClick={() => props.openRowOnForm(i)}>
                             <ListIcon />
                           </Button>
