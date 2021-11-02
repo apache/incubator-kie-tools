@@ -19,6 +19,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { FileLoader, UploadedFile } from "./FileLoader";
 import { ContentType } from "@kie-tooling-core/workspace/dist/api";
 import { Editor, StandaloneEditorApi } from "@kogito-tooling/kie-editors-standalone/dist/common/Editor";
+import { BpmnEditorDiagramApi } from "@kogito-tooling/kie-editors-standalone/dist/jsdiagram/BpmnEditorDiagramApi";
+import { NodeBackgroundHandlerComponent } from "./canvas/NodeBackgroundHandlerComponent";
+import { CanvasNodeComponent } from "./canvas/CanvasNodeComponent";
 
 export interface Props {
   id: string;
@@ -33,11 +36,16 @@ export type InternalProps = Props & {
   defaultModelName?: string;
 };
 
+interface ListProps {
+  nodeIds: string[];
+}
+
 export const EditorComponent = (props: InternalProps) => {
   const [isDirty, setDirty] = useState(false);
-  const editorRef = useRef<StandaloneEditorApi>(null);
+  const editorRef = useRef<StandaloneEditorApi & BpmnEditorDiagramApi>(null);
   const [modelName, setModelName] = useState(props.defaultModelName ?? "new-file");
   const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [nodeIds, setNodeIds] = useState<string[]>([]);
 
   const editorContainerDivRef = useRef<HTMLDivElement>(null);
 
@@ -75,6 +83,26 @@ export const EditorComponent = (props: InternalProps) => {
     const content = await editorRef.current?.getContent();
     setFiles([...files, { name: modelName, value: { path: modelName, type: ContentType.TEXT, content } }]);
     editorRef.current?.markAsSaved();
+  };
+
+  const getNodeIds = async () => {
+    const canvasNodesIds = await editorRef.current?.canvas.getNodeIds();
+    if (canvasNodesIds != undefined) {
+      setNodeIds(canvasNodesIds);
+    } else {
+      setNodeIds([]);
+    }
+  };
+
+  const setBackgroundColor = (targetNode: string, color: string) => {
+    editorRef.current?.canvas.setBackgroundColor(targetNode, color);
+  };
+
+  const getBackgroundColor = (targetNode: string): string => {
+    editorRef.current?.canvas.getBackgroundColor(targetNode).then((backgroundColor) => {
+      return backgroundColor;
+    });
+    return "";
   };
 
   const downloadSvg = () => {
@@ -119,6 +147,29 @@ export const EditorComponent = (props: InternalProps) => {
     </div>
   );
 
+  const CanvasControllerListItem: React.FC<ListProps> = ({ nodeIds }) => {
+    const listItems = nodeIds.map((node, index) => {
+      const nodeColor = getBackgroundColor(node);
+      return (
+        <li key={index.toString()}>
+          <span>{node}</span>
+          <NodeBackgroundHandlerComponent canvas={editorRef.current?.canvas} nodeId={node} />
+          <CanvasNodeComponent canvas={editorRef.current?.canvas} nodeId={node} color={nodeColor} />
+        </li>
+      );
+    });
+    return <ul> {listItems} </ul>;
+  };
+
+  const canvasController = (
+    <div id="canvasController" style={{ flex: "0 1 auto" }}>
+      <button id="getNodeIds" onClick={getNodeIds}>
+        Get node IDs
+      </button>
+      <CanvasControllerListItem nodeIds={nodeIds} />
+    </div>
+  );
+
   return (
     <>
       <FileLoader
@@ -135,6 +186,7 @@ export const EditorComponent = (props: InternalProps) => {
         </div>
       )}
       {buttons}
+      {canvasController}
       <div
         id={props.id}
         data-ouia-component-type="editor"
