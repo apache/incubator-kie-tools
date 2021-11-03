@@ -254,7 +254,7 @@ const MiningSchemaPropertiesEdit = ({
                     name="importance"
                     aria-describedby="Importance"
                     value={importance ?? ""}
-                    data-ouia-component-id="importance"
+                    ouiaId="importance"
                     data-ouia-component-type="double-input"
                     validated={validationsImportance.length === 0 ? "default" : "warning"}
                     onChange={(value) => setImportance(toNumberOrUndefined(value))}
@@ -327,8 +327,7 @@ const MiningSchemaPropertiesEdit = ({
                         className={!enableLowValueComponent ? "mining-schema__edit__form__disabled" : ""}
                         onChange={(value) => setLowValue(toNumberOrUndefined(value))}
                         onBlur={handleSave}
-                        data-ouia-component-id="low-value"
-                        data-ouia-component-type="outliers-property"
+                        ouiaId="low-value"
                       />
                     </FormGroup>
                   </SplitItem>
@@ -365,8 +364,7 @@ const MiningSchemaPropertiesEdit = ({
                         className={!enableHighValueComponent ? "mining-schema__edit__form__disabled" : ""}
                         onChange={(value) => setHighValue(toNumberOrUndefined(value))}
                         onBlur={handleSave}
-                        data-ouia-component-id="high-value"
-                        data-ouia-component-type="outliers-property"
+                        ouiaId="high-value"
                       />
                     </FormGroup>
                   </SplitItem>

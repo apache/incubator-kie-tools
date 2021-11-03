@@ -12,7 +12,7 @@ const EmptyDataDictionary = () => {
   return (
     <EmptyState variant={EmptyStateVariant.large}>
       <EmptyStateIcon icon={BoxesIcon} />
-      <Title headingLevel="h4" size="lg" data-ouia-component-id="no-data-fields-title">
+      <Title headingLevel="h4" size="lg" ouiaId="no-data-fields-title">
         No Data Fields Defined
       </Title>
       <EmptyStateBody>It looks empty here. Start adding fields using the buttons above.</EmptyStateBody>
