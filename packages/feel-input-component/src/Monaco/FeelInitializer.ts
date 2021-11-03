@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as Monaco from "monaco-editor";
+import * as Monaco from "@kie-tooling-core/monaco-editor";
 import "monaco-editor/dev/vs/editor/editor.main.css";
 import { MONACO_FEEL_LANGUAGE, MONACO_FEEL_THEME, feelTheme, feelDefaultSuggestions, feelTokensConfig } from ".";
 

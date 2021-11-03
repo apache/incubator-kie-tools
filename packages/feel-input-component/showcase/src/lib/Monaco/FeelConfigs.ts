@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as Monaco from "monaco-editor";
+import * as Monaco from "@kie-tooling-core/monaco-editor";
 
 export const MONACO_FEEL_LANGUAGE = "feel-language";
 

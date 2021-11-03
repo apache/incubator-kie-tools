@@ -22,7 +22,7 @@ import {
   feelTokensConfig,
   initializeFeelCompletionItemProvider,
 } from "../../";
-import * as Monaco from "monaco-editor";
+import * as Monaco from "@kie-tooling-core/monaco-editor";
 import { SuggestionProvider } from "../../../showcase/src/lib/Monaco/FeelInitializer";
 
 describe("FeelInitializer", () => {

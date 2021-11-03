@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as Monaco from "monaco-editor";
+import * as Monaco from "@kie-tooling-core/monaco-editor";
 
 declare global {
   interface Window {
