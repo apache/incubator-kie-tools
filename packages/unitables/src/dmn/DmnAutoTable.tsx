@@ -90,11 +90,6 @@ export function DmnAutoTable(props: Props) {
 
   const shouldRender = useMemo(() => (input?.length ?? 0) > 0, [input]);
 
-  // columns are saved in the grid instance, so some values can be used to improve re-renders (e.g. cell width)
-  const onColumnsUpdate = useCallback((columns: ColumnInstance[]) => {
-    grid?.setPreviousColumns(columns);
-  }, []);
-
   const handleOperation = useCallback(
     (tableOperation: TableOperation, rowIndex: number) => {
       switch (tableOperation) {
@@ -243,7 +238,7 @@ export function DmnAutoTable(props: Props) {
       //     }, []);
       //   }
       // });
-      grid?.updateWidth(output, rules);
+      grid?.updateWidth(output);
       return {
         output,
         rules,
@@ -251,6 +246,15 @@ export function DmnAutoTable(props: Props) {
     }
     return { output: [], rules: [] };
   }, [rowQuantity, props.results]);
+
+  // columns are saved in the grid instance, so some values can be used to improve re-renders (e.g. cell width)
+  const onColumnsUpdate = useCallback(
+    (columns: ColumnInstance[]) => {
+      grid?.setPreviousColumns(columns);
+      grid?.updateWidth(output);
+    },
+    [output]
+  );
 
   const formErrorMessage = useMemo(
     () => (

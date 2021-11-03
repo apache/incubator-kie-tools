@@ -52,7 +52,7 @@ export class Grid {
     this.columns = [];
   }
 
-  public updateWidth(output: any[], rules: any) {
+  public updateWidth(output: any[]) {
     this.columns?.forEach((column) => {
       if (column.groupType === "input") {
         const inputToUpdate = this.input.find((i) => i.name === column.label);
