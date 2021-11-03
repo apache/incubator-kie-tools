@@ -14,49 +14,6 @@
  * limitations under the License.
  */
 
-export function extractFileExtension(fileName: string) {
-  return fileName.match(/[.]/)
-    ? fileName
-        .split(".")
-        ?.pop()
-        ?.match(/[\w\d]+/)
-        ?.pop()
-    : undefined;
-}
-
-export function extractEditorFileExtensionFromUrl(supportedFileExtensions: string[]): string | undefined {
-  const typeFromUrl = window.location.href.split("?")[0].split("#")?.pop()?.split("/")?.pop();
-
-  return supportedFileExtensions.indexOf(typeFromUrl!) !== -1 ? typeFromUrl : undefined;
-}
-
-// FIXME: remove duplications
-export enum OperatingSystem {
-  MACOS = "MACOS",
-  WINDOWS = "WINDOWS",
-  LINUX = "LINUX",
-}
-
-export function getOperatingSystem() {
-  if (navigator.appVersion.indexOf("Win") !== -1) {
-    return OperatingSystem.WINDOWS;
-  }
-
-  if (navigator.appVersion.indexOf("Mac") !== -1) {
-    return OperatingSystem.MACOS;
-  }
-
-  if (navigator.appVersion.indexOf("X11") !== -1) {
-    return OperatingSystem.LINUX;
-  }
-
-  if (navigator.appVersion.indexOf("Linux") !== -1) {
-    return OperatingSystem.LINUX;
-  }
-
-  return undefined;
-}
-
 export function getCookie(name: string) {
   const value = "; " + document.cookie;
   const parts = value.split("; " + name + "=");

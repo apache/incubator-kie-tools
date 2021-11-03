@@ -20,7 +20,7 @@ import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/M
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Redirect } from "react-router";
 import { useGlobals } from "../common/GlobalContext";
-import { getOperatingSystem, OperatingSystem } from "../common/utils";
+import { getOperatingSystem, OperatingSystem } from "@kie-tooling-core/operating-system";
 import { useOnlineI18n } from "../common/i18n";
 import { Select, SelectDirection, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 

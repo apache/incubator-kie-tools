@@ -17,7 +17,7 @@
 import { Select, SelectDirection, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { OperatingSystem } from "./utils";
+import { OperatingSystem } from "@kie-tooling-core/operating-system";
 import { OnlineI18n } from "./i18n";
 
 interface Props {
@@ -41,10 +41,13 @@ export function SelectOs(props: Props) {
     setSelectIsExpanded(isExpanded);
   }, []);
 
-  const onSelectOperatingSystem = useCallback((e, selection) => {
-    props.onSelect(selection);
-    setSelectIsExpanded(false);
-  }, []);
+  const onSelectOperatingSystem = useCallback(
+    (e, selection) => {
+      props.onSelect(selection);
+      setSelectIsExpanded(false);
+    },
+    [props]
+  );
 
   const availableOperatingSystems = useMemo(
     () =>
@@ -53,7 +56,7 @@ export function SelectOs(props: Props) {
         [OperatingSystem.MACOS, props.i18n?.names.macos ?? MACOS],
         [OperatingSystem.WINDOWS, props.i18n?.names.windows ?? WINDOWS],
       ]),
-    []
+    [props.i18n]
   );
 
   return (

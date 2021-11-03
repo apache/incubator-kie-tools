@@ -38,7 +38,7 @@ import { AnimatedTripleDotLabel } from "../../common/AnimatedTripleDotLabel";
 import { useOnlineI18n } from "../../common/i18n";
 import { I18nHtml, I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { SelectOs } from "../../common/SelectOs";
-import { getOperatingSystem, OperatingSystem } from "../../common/utils";
+import { getOperatingSystem, OperatingSystem } from "@kie-tooling-core/operating-system";
 import { DEVELOPER_SANDBOX_URL } from "../../settings/OpenShiftService";
 import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT } from "./KieToolingExtendedServicesContextProvider";
