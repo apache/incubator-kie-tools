@@ -17,7 +17,7 @@
 import "./Resizer.css";
 import * as React from "react";
 import { applyDOMSupervisor } from "./dom";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useRef, useState } from "react";
 import { BoxedExpressionGlobalContext } from "../../context";
 
 export interface ResizerSupervisorProps {
@@ -27,13 +27,16 @@ export interface ResizerSupervisorProps {
 
 export const ResizerSupervisor: React.FunctionComponent<ResizerSupervisorProps> = ({ children, isRunnerTable }) => {
   const { supervisorHash } = useContext(BoxedExpressionGlobalContext);
+  const [resizerSupervisor, setResizer] = useState<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const id = setTimeout(() => {
-      applyDOMSupervisor(isRunnerTable);
+      if (resizerSupervisor !== null) {
+        applyDOMSupervisor(isRunnerTable, resizerSupervisor);
+      }
     }, 0);
     return () => clearTimeout(id);
-  }, [isRunnerTable, supervisorHash]);
+  }, [isRunnerTable, supervisorHash, resizerSupervisor]);
 
-  return <>{children}</>;
+  return <div ref={(element) => setResizer(element)}>{children}</div>;
 };

@@ -104,7 +104,7 @@ export class Cell {
     }
 
     // sum the colSpan to determine the header size;
-    const headerElements = document.querySelectorAll(".colspan-header");
+    const headerElements = (refSibling as HTMLElement).parentNode?.querySelectorAll(".colspan-header") ?? [];
     const headerSize = Array.from(headerElements).reduce(
       (acc, th: HTMLTableHeaderCellElement) => acc + (th.colSpan || 1),
       0

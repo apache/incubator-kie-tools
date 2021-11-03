@@ -28,15 +28,15 @@ import { DOMSession, Cell } from "../dom";
 
 export let DEFAULT_MIN_WIDTH = 100;
 
-export const applyDOMSupervisor = (isRunnerTable: boolean): void => {
-  new SupervisorExecution(isRunnerTable).execute();
+export const applyDOMSupervisor = (isRunnerTable: boolean, node?: HTMLElement): void => {
+  new SupervisorExecution(isRunnerTable, node).execute();
 };
 
 class SupervisorExecution {
   domSession: DOMSession;
 
-  constructor(private readonly isRunnerTable: boolean) {
-    this.domSession = new DOMSession();
+  constructor(private readonly isRunnerTable: boolean, private readonly node?: HTMLElement) {
+    this.domSession = new DOMSession(node);
   }
 
   execute() {

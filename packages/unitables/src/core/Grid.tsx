@@ -246,11 +246,13 @@ export class Grid {
                 name: decisionName,
                 dataType,
                 insideProperties: data.insideProperties,
+                width: data.insideProperties.reduce((acc: number, column: any) => acc + column.width, 0),
               });
             } else {
               acc.set(decisionName, {
                 name: decisionName,
                 dataType,
+                width: 150,
               });
             }
           });
