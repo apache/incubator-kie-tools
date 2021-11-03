@@ -16,7 +16,8 @@
     "react-dom": "^16.12.0"
   },
   "scripts": {
-    "init": "yarn install --force",
+    "build:all": "yarn run init && npm install lock-treatment-tool --global-style --no-package-lock --no-save && npm run locktt -- && yarn run build:prod",
+    "init": "yarn install",
     "build:fast": "yarn workspaces run build:fast",
     "build:prod": "yarn workspaces run build:prod",
     "locktt": "locktt"
@@ -51,7 +52,6 @@
     "jest-junit": "^9.0.0",
     "jest-webextension-mock": "^3.5.0",
     "lock-treatment-tool": "^0.4.1",
-    "node-sass": "^4.12.0",
     "null-loader": "^3.0.0",
     "prettier": "^1.19.1",
     "style-loader": "^1.0.0",
@@ -60,7 +60,7 @@
     "tslint": "^5.12.1",
     "tslint-config-prettier": "^1.15.0",
     "tslint-react": "^3.6.0",
-    "typescript": "^3.8.3",
+    "typescript": "^4.4.4",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0",
