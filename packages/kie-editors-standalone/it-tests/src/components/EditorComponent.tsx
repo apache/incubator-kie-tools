@@ -20,7 +20,6 @@ import { FileLoader, UploadedFile } from "./FileLoader";
 import { ContentType } from "@kie-tooling-core/workspace/dist/api";
 import { Editor, StandaloneEditorApi } from "@kogito-tooling/kie-editors-standalone/dist/common/Editor";
 import { BpmnEditorDiagramApi } from "@kogito-tooling/kie-editors-standalone/dist/jsdiagram/BpmnEditorDiagramApi";
-import { NodeBackgroundHandlerComponent } from "./canvas/NodeBackgroundHandlerComponent";
 import { CanvasNodeComponent } from "./canvas/CanvasNodeComponent";
 
 export interface Props {
@@ -94,17 +93,6 @@ export const EditorComponent = (props: InternalProps) => {
     }
   };
 
-  const setBackgroundColor = (targetNode: string, color: string) => {
-    editorRef.current?.canvas.setBackgroundColor(targetNode, color);
-  };
-
-  const getBackgroundColor = (targetNode: string): string => {
-    editorRef.current?.canvas.getBackgroundColor(targetNode).then((backgroundColor) => {
-      return backgroundColor;
-    });
-    return "";
-  };
-
   const downloadSvg = () => {
     editorRef.current?.getPreview().then((content) => {
       const elem = window.document.createElement("a");
@@ -149,12 +137,10 @@ export const EditorComponent = (props: InternalProps) => {
 
   const CanvasControllerListItem: React.FC<ListProps> = ({ nodeIds }) => {
     const listItems = nodeIds.map((node, index) => {
-      const nodeColor = getBackgroundColor(node);
       return (
         <li key={index.toString()}>
-          <span>{node}</span>
-          <NodeBackgroundHandlerComponent canvas={editorRef.current?.canvas} nodeId={node} />
-          <CanvasNodeComponent canvas={editorRef.current?.canvas} nodeId={node} color={nodeColor} />
+          <span>Node ID: {node}</span>
+          <CanvasNodeComponent canvas={editorRef.current?.canvas} nodeId={node} />
         </li>
       );
     });

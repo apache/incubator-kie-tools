@@ -19,12 +19,14 @@ import { CanvasEditorApi } from "../../../../dist/jsdiagram/CanvasEditorApi";
 
 export interface Props {
   nodeId: string;
-  color: string;
   canvas: CanvasEditorApi | undefined;
 }
 
 export interface State {
   currentColor: string;
+  currentBorderColor: string;
+  location: number[];
+  absoluteLocation: number[];
 }
 
 export class CanvasNodeComponent extends React.Component<Props, State> {
@@ -32,29 +34,71 @@ export class CanvasNodeComponent extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      currentColor: this.props.color,
+      currentColor: "",
+      currentBorderColor: "",
+      location: [-1, -1],
+      absoluteLocation: [-1, -1],
     };
-    console.log(this.state.currentColor);
   }
 
-  private handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  componentDidMount() {
+    this.props.canvas?.getBackgroundColor(this.props.nodeId).then((backgroundColor) => {
+      this.setState({ currentColor: backgroundColor });
+    });
+
+    this.props.canvas?.getBorderColor(this.props.nodeId).then((borderColor) => {
+      this.setState({ currentBorderColor: borderColor });
+    });
+
+    this.props.canvas?.getLocation(this.props.nodeId).then((nodeLocation) => {
+      this.setState({ location: nodeLocation });
+    });
+
+    this.props.canvas?.getLocation(this.props.nodeId).then((nodeAbsoluteLocation) => {
+      this.setState({ absoluteLocation: nodeAbsoluteLocation });
+    });
+  }
+
+  private handleBackgroundColorSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     this.props.canvas?.setBackgroundColor(this.props.nodeId, this.state.currentColor);
   };
 
-  private handleChange = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+  private handleBackgroundColorChange = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     this.setState({ currentColor: e.target.value });
+  };
+
+  private handleBorderColorSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+    this.props.canvas?.setBorderColor(this.props.nodeId, this.state.currentColor);
+  };
+
+  private handleBorderColorChange = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+    this.setState({ currentBorderColor: e.target.value });
   };
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Set color:
-          <input type="text" value={this.state.currentColor} onChange={this.handleChange} />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
+      <div id="canvasNodeComponent">
+        <form onSubmit={this.handleBackgroundColorSubmit}>
+          <label>
+            <span>Current background color:</span>
+            <input type="text" value={this.state.currentColor} onChange={this.handleBackgroundColorChange} />
+          </label>
+          <input type="submit" value="Set background color" />
+        </form>
+        <form onSubmit={this.handleBorderColorSubmit}>
+          <label>
+            <span>Current border color:</span>
+            <input type="text" value={this.state.currentBorderColor} onChange={this.handleBorderColorChange} />
+          </label>
+          <input type="submit" value="Set border color" />
+        </form>
+        <br />
+        <span>Node location: [ x={this.state.location.toString()}=y ]</span>
+        <br />
+        <span>Node absolute location: [ x={this.state.absoluteLocation.toString()}=y ]</span>
+      </div>
     );
   }
 }
