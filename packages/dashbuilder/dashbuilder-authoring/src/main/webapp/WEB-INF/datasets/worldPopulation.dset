@@ -1,0 +1,20 @@
+{
+    "uuid": "worldResidents",
+    "name": "World Population",
+    "provider": "CSV",
+    "isPublic": true,
+    "filePath": "worldPopulation.csv",
+    "separatorChar": ",",
+    "quoteChar": "\"",
+    "escapeChar": "\\",
+    "datePattern": "MM-dd-yyyy",
+    "numberPattern": "#,###.##",
+    "columns": [
+        {"id": "City / Urban area", "type": "label"},
+        {"id": "Country", "type": "label"},
+        {"id": "Population", "type": "number"},
+        {"id": "Population", "type": "number"},
+        {"id": "Land area", "type": "number"},
+        {"id": "Density", "type": "number"}
+    ]
+}

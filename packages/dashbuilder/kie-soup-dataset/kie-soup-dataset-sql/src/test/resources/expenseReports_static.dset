@@ -1,0 +1,8 @@
+{
+    "uuid": "expense_reports_static",
+    "provider": "SQL",
+    "dataSource": "jdbc:h2:mem:test",
+    "dbTable": "EXPENSE_REPORTS",
+    "cacheEnabled": true,
+    "cacheMaxRows": 1000
+}

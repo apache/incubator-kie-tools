@@ -1,0 +1,7 @@
+{
+    "uuid": "expense_reports_noncached",
+    "provider": "SQL",
+    "dataSource": "jdbc:h2:mem:test",
+    "dbTable": "EXPENSE_REPORTS",
+    "cacheEnabled": false
+}

@@ -1,0 +1,243 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.notification {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  z-index: 100000;
+}
+
+.toolbar {
+  min-height: 30px;
+  margin-top: 0;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  background-color: #f5f5f5;
+  border: 1px solid #e3e3e3;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.uf-drop-target-highlight {
+}
+
+.uf-drop-target-compass {
+}
+
+.statusBar {
+  cursor: default;
+  height: 36px;
+  width: 100%;
+  border-spacing: 0px;
+  background: #c0c0c0;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.uf-activeNavTabs {
+}
+
+.tabCloseButton {
+  float: none;
+  margin: -2px 0 0 10px;
+}
+
+.uf-listbar {
+  -moz-box-shadow: rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+  background: rgb(245, 245, 245) linear-gradient(rgb(255, 255, 255), rgb(230, 230, 230)) repeat-x;
+  border-image-outset: 0px;
+  border-image-repeat: stretch;
+  border-image-slice: 100%;
+  border-image-source: none;
+  border-image-width: 1;
+  border: 1px solid rgba(0, 0, 0, 0.0980392);
+  border-top-width: 0px;
+  border-bottom-color: rgb(179, 179, 179);
+  box-shadow: rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.0470588) 0px 1px 2px 0px;
+  box-sizing: border-box;
+  color: rgb(51, 51, 51);
+  padding-left: 6px;
+  padding-top: 5px;
+  text-shadow: rgba(255, 255, 255, 0.74902) 0px 1px 1px;
+  height: 32px;
+}
+
+.uf-lock-hint {
+  width: 180px;
+  height: 90px;
+  background-color: #ffffff;
+  color: #848484;
+  border: 1px solid;
+  border-color: #848484;
+  text-align: center;
+  font-size: 13px;
+  -webkit-transition: top 0.5s ease-in;
+  -moz-transition: top 0.5s ease-in;
+  -ms-transition: top 0.5s ease-in;
+  -o-transition: top 0.5s ease-in;
+  transition: top 0.5s ease-in;
+}
+
+.uf-scroll-panel {
+  height: 100%;
+  width: 100%;
+}
+
+.show-context {
+  margin-left: 0;
+  -webkit-transition: all 0.7s ease-out;
+  -moz-transition: all 0.7s ease-out;
+  -ms-transition: all 0.7s ease-out;
+  -o-transition: all 0.7s ease-out;
+  transition: all 0.7s ease-out;
+}
+
+@external .navbar-fixed-top, .navbar-fixed-bottom;
+
+.navbar-fixed-top,
+.navbar-fixed-bottom {
+  position: static !important;
+}
+
+/* Styles prefixed with uf- are not obfuscated and can be overridden in application stylesheets. */
+@external .uf-*, .js-*;
+
+/* Maximized panels must have an opaque background. The application can override the default (white) in its own stylesheet.
+   Size and position are handled programmatically in the WorkbenchLayout implementation. */
+.uf-maximized-panel {
+  background-color: #fff;
+}
+
+.uf-split-layout-panel {
+}
+
+.uf-split-layout-panel-hdragger {
+  background-color: #ddd;
+}
+
+.uf-split-layout-panel-hdragger:hover {
+  cursor: col-resize;
+}
+
+.uf-split-layout-panel-vdragger {
+  background-color: #ddd;
+}
+
+.uf-split-layout-panel-vdragger:hover {
+  cursor: row-resize;
+}
+
+.uf-modal {
+}
+
+.uf-no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.uf-perspective-container {
+  height: 100%;
+}
+
+.uf-perspective-row-12 {
+  height: 100%;
+}
+
+.uf-perspective-row-11 {
+  height: 91.66666667%;
+}
+
+.uf-perspective-row-10 {
+  height: 83.33333333%;
+}
+
+.uf-perspective-row-9 {
+  height: 75%;
+}
+
+.uf-perspective-row-8 {
+  height: 66.66666667%;
+}
+
+.uf-perspective-row-7 {
+  height: 58.33333333%;
+}
+
+.uf-perspective-row-6 {
+  height: 50%;
+}
+
+.uf-perspective-row-5 {
+  height: 41.66666667%;
+}
+
+.uf-perspective-row-4 {
+  height: 33.33333333%;
+}
+
+.uf-perspective-row-3 {
+  height: 25%;
+}
+
+.uf-perspective-row-2 {
+  height: 16.66666667%;
+}
+
+.uf-perspective-row-1 {
+  height: 8.33333333%;
+}
+
+.uf-perspective-col {
+  height: 100%;
+}
+
+.uf-perspective-component {
+  height: 100%;
+}
+
+.uf-perspective-rendered-col {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.uf-perspective-rendered-row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.uf-perspective-rendered-container {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+.uf-le-overflow {
+  overflow: auto;
+}
+
+.js-screen-container {
+  display: inline;
+}

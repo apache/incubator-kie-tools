@@ -1,0 +1,13 @@
+.uf-cms-nav-tree-panel {
+  overflow: auto;
+  height: 100%;
+}
+
+.uf-cms-nav-alert-panel {
+  margin: 15px;
+}
+
+.uf-cms-nav-children-panel {
+  margin: 10px 0px 5px 15px;
+  font-size: larger;
+}

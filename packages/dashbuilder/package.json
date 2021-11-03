@@ -1,0 +1,30 @@
+{
+  "name": "@kogito-tooling/dashbuilder",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "files": [
+    "**/dist/*"
+  ],
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
+  },
+  "scripts": {
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "lint": "echo 'Linting'",
+    "install:mvnw": "mvn -N io.takari:maven:wrapper",
+    "dist": "rimraf dist/ && mkdir dist && zip -j dist/dashbuilder_dist.zip ./dashbuilder-authoring/target/dashbuilder-authoring.war ./dashbuilder-authoring/target/dashbuilder-authoring-bootable.jar ./dashbuilder-runtime-parent/dashbuilder-runtime-app/target/dashbuilder-runtime-app-runner.jar",
+    "build:dev:linux": "yarn install:mvnw && mvn clean install -B -ntp -DskipTests -Dgwt.compiler.skip=true",
+    "build:dev:win32": "echo \"Build not supported on Windows\"",
+    "build:dev:darwin": "echo \"Build not supported on macOS\"",
+    "build:dev": "run-script-os",
+    "build:prod:linux": "yarn lint && yarn install:mvnw && mvn clean install -Dfull -B -ntp -DskipTests=$(build-env global.build.test --not) && yarn dist",
+    "build:prod:win32": "echo \"Build not supported on Windows\"",
+    "build:prod:darwin": "echo \"Build not supported on macOS\"",
+    "build:prod": "run-script-os"
+  }
+}

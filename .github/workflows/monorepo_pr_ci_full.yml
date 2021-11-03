@@ -21,6 +21,10 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      - name: "Support longpaths"
+        if: matrix.os == 'windows-latest'
+        run: git config --system core.longpaths true
+
       - name: "Checkout"
         uses: actions/checkout@v2
         with:

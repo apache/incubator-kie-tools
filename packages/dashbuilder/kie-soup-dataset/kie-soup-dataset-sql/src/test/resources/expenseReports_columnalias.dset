@@ -1,0 +1,7 @@
+{
+    "uuid": "expense_reports_columnalias",
+    "provider": "SQL",
+    "dataSource": "jdbc:h2:mem:test",
+    "dbSQL": "SELECT EXPENSES_ID as \"Id\", EMPLOYEE as \"Employee\", AMOUNT as \"Amount\" FROM  EXPENSE_REPORTS",
+    "allColumns": true
+}

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  version="2.5">
+
+  <filter>
+    <filter-name>GzipFilter</filter-name>
+    <filter-class>org.uberfire.backend.server.util.gzip.GzipFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>GzipFilter</filter-name>
+    <url-pattern>*.js</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>GWT Locale Filter</filter-name>
+    <filter-class>org.uberfire.server.locale.GWTLocaleHeaderFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>GWT Locale Filter</filter-name>
+    <url-pattern>/dashbuilder.html</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>ErraiServlet</servlet-name>
+    <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
+
+    <init-param>
+      <param-name>service-locator</param-name>
+      <param-value>org.jboss.errai.cdi.server.CDIServiceLocator</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ErraiServlet</servlet-name>
+    <url-pattern>*.erraiBus</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>UberfireFileDownloadServlet</servlet-name>
+    <servlet-class>org.uberfire.server.FileDownloadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UberfireFileDownloadServlet</servlet-name>
+    <url-pattern>/org.dashbuilder.DashbuilderAuthoring/defaulteditor/download/*</url-pattern>
+  </servlet-mapping>
+
+  <!-- Component assets server -->
+  <servlet>
+    <servlet-name>DashbuilderExternalComponentsServlet</servlet-name>
+    <servlet-class>org.dashbuilder.external.ExternalComponentServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DashbuilderExternalComponentsServlet</servlet-name>
+    <url-pattern>/dashbuilder/component/*</url-pattern>
+  </servlet-mapping>
+  <session-config>
+    <session-timeout>-1</session-timeout>
+  </session-config>
+</web-app>

@@ -1,0 +1,51 @@
+id;office;department;author;date;amount
+1;Barcelona;Engineering;Roxie Foraker;12-11-2012;120.35
+2;Barcelona;Engineering;Roxie Foraker;12-01-2012;1,100.10
+3;Barcelona;Engineering;Roxie Foraker;11-01-2012;900.10
+4;Barcelona;Services;Jamie Gilbeau;10-12-2012;340.34
+5;Barcelona;Services;Jamie Gilbeau;09-15-2012;300.00
+6;Barcelona;Services;Jamie Gilbeau;08-17-2012;152.25
+7;Madrid;Services;Roxie Foraker;07-01-2012;800.80
+8;Madrid;Services;Roxie Foraker;06-01-2012;911.11
+9;Madrid;Sales;Nita Marling;05-11-2012;75.75
+10;Madrid;Sales;Nita Marling;03-11-2012;100.00
+11;Madrid;Sales;Nita Marling;03-16-2012;220.80
+12;Madrid;Sales;Nita Marling;03-02-2012;344.90
+13;Brno;Support;Darryl Innes;02-09-2012;567.89
+14;Brno;Support;Darryl Innes;01-13-2012;400.40
+15;Brno;Support;Darryl Innes;01-11-2012;1,001.90
+16;Brno;Engineering;Julio Burdge;11-02-2011;200.20
+17;Brno;Engineering;Julio Burdge;09-01-2011;159.01
+18;Brno;Engineering;Julio Burdge;08-22-2011;300.00
+19;Brno;Engineering;Julio Burdge;07-23-2011;800.24
+20;Brno;Sales;Neva Hunger;06-11-2011;995.30
+21;Brno;Sales;Neva Hunger;06-11-2011;234.30
+22;Westford;Engineering;Kathrine Janas;05-17-2011;233.49
+23;Westford;Engineering;Kathrine Janas;04-12-2011;1,100.10
+24;Westford;Engineering;Kathrine Janas;03-13-2011;1,402.30
+25;Westford;Engineering;Kathrine Janas;02-13-2011;490.10
+26;Westford;Engineering;Kathrine Janas;02-09-2011;600.34
+27;Westford;Sales;Jerri Preble;12-23-2010;899.03
+28;Westford;Sales;Jerri Preble;11-30-2010;343.45
+29;Westford;Management;Donald M. Stanton;10-29-2010;983.03
+30;Westford;Management;Donald M. Stanton;10-11-2010;43.03
+31;Raleigh;Management;Hannah B. Mackey;09-01-2010;234.34
+32;Raleigh;Management;Hannah B. Mackey;07-02-2010;543.45
+33;Raleigh;Management;Hannah B. Mackey;06-02-2010;193.45
+34;Raleigh;Management;Loretta R. Havens;05-03-2010;992.20
+35;Raleigh;Management;Loretta R. Havens;04-23-2010;494.40
+36;Raleigh;Engineering;Tony L. Crawford;02-18-2010;233.09
+37;Raleigh;Engineering;Tony L. Crawford;02-22-2010;293.49
+38;Raleigh;Engineering;Tony L. Crawford;12-23-2009;401.40
+39;Raleigh;Engineering;Tony L. Crawford;07-19-2009;209.55
+40;Raleigh;Support;Eileen L. Pereira;06-12-2009;300.01
+41;Raleigh;Support;Eileen L. Pereira;06-13-2009;450.60
+42;Raleigh;Support;Eileen L. Pereira;06-14-2009;320.90
+43;Raleigh;Support;Eileen L. Pereira;06-15-2009;303.90
+44;London;Engineering;Alan P. Adamson;06-12-2009;404.30
+45;London;Engineering;Alan P. Adamson;05-12-2009;868.45
+46;London;Engineering;Alan P. Adamson;05-13-2009;333.45
+47;London;Management;Patricia J. Behr;04-14-2009;565.56
+48;London;Management;Patricia J. Behr;03-02-2009;345.45
+49;London;Management;Patricia J. Behr;02-03-2009;700.66
+50;London;Management;Patricia J. Behr;01-04-2009;921.90
