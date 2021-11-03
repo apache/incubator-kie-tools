@@ -268,37 +268,6 @@ export class WorkspaceService {
     return renamedWorkspaceFile;
   }
 
-  public async moveFile(
-    fs: LightningFS,
-    file: WorkspaceFile,
-    newDirPath: string,
-    broadcastArgs: { broadcast: boolean }
-  ): Promise<WorkspaceFile> {
-    //FIXME: I'm not sure this works correctly.
-
-    const movedStorageFile = await this.storageService.renameFile(fs, this.toStorageFile(file), newDirPath);
-    const movedWorkspaceFile = this.toWorkspaceFile(file.workspaceId, movedStorageFile);
-
-    if (broadcastArgs.broadcast) {
-      await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);
-
-      const broadcastChannel1 = new BroadcastChannel(this.getUniqueFileIdentifier(file));
-      const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
-      broadcastChannel1.postMessage({
-        type: "MOVE",
-        oldRelativePath: file.relativePath,
-        newRelativePath: movedWorkspaceFile.relativePath,
-      } as WorkspaceFileEvents);
-      broadcastChannel2.postMessage({
-        type: "MOVE_FILE",
-        oldRelativePath: file.relativePath,
-        newRelativePath: movedWorkspaceFile.relativePath,
-      } as WorkspaceEvents);
-    }
-
-    return movedWorkspaceFile;
-  }
-
   public async existsFile(args: { fs: LightningFS; workspaceId: string; relativePath: string }): Promise<boolean> {
     return this.storageService.exists(args.fs, this.getAbsolutePath(args));
   }

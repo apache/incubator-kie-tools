@@ -157,7 +157,7 @@ export function useAlert<T = void>(
   delegate: AlertDelegate<T>,
   autoCloseArgs?: AlertAutoCloseArgs
 ) {
-  //FIXME: tiago improve that.
+  //FIXME: Use a better mechanism.
   const key = useMemo(() => `${Math.random()}`, []);
 
   useEffect(() => {

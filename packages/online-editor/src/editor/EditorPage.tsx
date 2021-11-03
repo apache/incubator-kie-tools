@@ -236,7 +236,7 @@ export function EditorPage(props: Props) {
       return;
     }
 
-    //FIXME: tiago What to do?
+    //FIXME: Removing this timeout makes the notifications not work some times. Need to investigate.
     setTimeout(() => {
       editor?.validate().then((notifications) => {
         editorPageDock

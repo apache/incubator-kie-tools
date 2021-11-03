@@ -79,7 +79,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   });
 
   const onResize = useCallback((width: number) => {
-    // FIXME: Patternfly bug. The first interaction without resizing the splitter will result in width === 0.
+    // FIXME: PatternFly bug. The first interaction without resizing the splitter will result in width === 0.
     if (width === 0) {
       return;
     }
