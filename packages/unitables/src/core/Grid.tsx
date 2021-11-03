@@ -184,32 +184,75 @@ export class Grid {
     });
   }
 
+  public deepGenerateBoxedOutputs(
+    acc: Map<string, { type?: string; insideProperties?: any; dataType: DataType }>,
+    properties: any
+  ) {
+    return Object.entries(properties).map(([name, property]: [string, any]) => {
+      if (property["x-dmn-type"]) {
+        const dataType = this.getDataTypeProps(property["x-dmn-type"]).dataType;
+        acc.set(name, { type: property.type, dataType });
+        return { name, type: property.type, width: 150 };
+      }
+      const path = property.$ref.split("/").slice(1); // remove #
+      const data = path.reduce((acc: any, property: string) => acc[property], (this.bridge as any).schema);
+      const dataType = this.getDataTypeProps(data["x-dmn-type"]).dataType;
+      if (data.properties) {
+        const insideProperties = this.deepGenerateBoxedOutputs(acc, data.properties);
+        acc.set(name, { type: data.type, insideProperties, dataType });
+      } else {
+        acc.set(name, { type: data.type, dataType });
+      }
+      return { name, dataType: data.type, width: 150 };
+    });
+  }
+
   public generateBoxedOutputs(
     decisionResults: Array<DecisionResult[] | undefined>
   ): [Map<string, DmnRunnerClause>, Result[]] {
     const outputTypeMap = Object.entries((this.bridge as any).schema?.definitions?.OutputSet?.properties ?? []).reduce(
-      (acc: Map<string, DataType>, [name, properties]: [string, any]) => {
+      (
+        acc: Map<string, { type?: string; insideProperties?: any; dataType: DataType }>,
+        [name, properties]: [string, any]
+      ) => {
         if (properties["x-dmn-type"]) {
-          acc.set(name, this.getDataTypeProps(properties["x-dmn-type"]).dataType);
+          const dataType = this.getDataTypeProps(properties["x-dmn-type"]).dataType;
+          acc.set(name, { type: properties.type, dataType });
         } else {
           const path = properties.$ref.split("/").slice(1); // remove #
-          const type = path.reduce((acc: any, property: string) => acc[property], (this.bridge as any).schema);
-          acc.set(name, this.getDataTypeProps(type["x-dmn-type"]).dataType);
+          const data = path.reduce((acc: any, property: string) => acc[property], (this.bridge as any).schema);
+          const dataType = this.getDataTypeProps(data["x-dmn-type"]).dataType;
+          if (data.properties) {
+            const insideProperties = this.deepGenerateBoxedOutputs(acc, data.properties);
+            acc.set(name, { type: data.type, insideProperties, dataType });
+          } else {
+            acc.set(name, { type: data.type, dataType });
+          }
         }
 
         return acc;
       },
-      new Map<string, DataType>()
+      new Map<string, { type?: string; insideProperties?: any; dataType: DataType }>()
     );
 
     const outputSet = decisionResults.reduce(
       (acc: Map<string, DmnRunnerClause>, decisionResult: DecisionResult[] | undefined) => {
         if (decisionResult) {
           decisionResult.forEach(({ decisionName }) => {
-            acc.set(decisionName, {
-              name: decisionName,
-              dataType: outputTypeMap.get(decisionName) ?? DataType.Undefined,
-            });
+            const data = outputTypeMap.get(decisionName);
+            const dataType = data?.dataType ?? DataType.Undefined;
+            if (data?.insideProperties) {
+              acc.set(decisionName, {
+                name: decisionName,
+                dataType,
+                insideProperties: data.insideProperties,
+              });
+            } else {
+              acc.set(decisionName, {
+                name: decisionName,
+                dataType,
+              });
+            }
           });
         }
         return acc;

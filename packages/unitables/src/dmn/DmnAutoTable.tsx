@@ -226,7 +226,26 @@ export function DmnAutoTable(props: Props) {
         outputEntries: (outputEntries?.[i] as string[]) ?? [],
       }));
       // remove references
+
+      // outputEntries.map((outputEntry, rowIndex) => {
+      //   // [value, value, null]
+      //   // [value, value, obj]
+      //   outputEntry.map((response, responseIndex) => {
+      //     if (Array.isArray(response)) {
+      //       output[responseIndex] = Object.assign({}, response)
+      //     }
+      //     if (response !== null && typeof response === "object") {
+      //       output[responseIndex] = Object.assign({}, response)
+      //     }
+      //   })
+      // })
+      //
+      // // iterar sobre todos os outputEntries, procurando um objeto.
+      // // se encotnrar, adicionar como inside properties, no mesmo index dos outputs
+      // // caso o valor seja null, adicionar null para todas as entradas
       // output.forEach((o, i) => {
+      //   o.insideProperties = outputEntries[i];
+      //
       //   const filteredOutputEntries = rules[i]?.outputEntries?.filter((outputEntry) => typeof outputEntry === "object");
       //   if (filteredOutputEntries?.length ?? 0 > 0) {
       //     o.insideProperties = filteredOutputEntries?.reduce((acc: any[], outputEntry) => {

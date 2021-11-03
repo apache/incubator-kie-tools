@@ -157,20 +157,21 @@ export function DmnRunnerTabular(props: DmnRunnerTabularProps) {
         }
         if (outputEntry !== null && typeof outputEntry === "object") {
           const columns = Object.keys(outputEntry).map((entryKey) => {
-            console.log(props.output);
-            console.log(props.output![outputIndex]);
-            const output = props.output?.[outputIndex]?.insideProperties?.find((i) =>
-              Object.keys(i).find((keys) => keys === entryKey)
-            );
+            const output = props.output?.[outputIndex]?.insideProperties?.find((property) => {
+              return Object.values(property).find((value) => {
+                return value === entryKey;
+              });
+            });
             return {
               groupType: DecisionTableColumnType.OutputClause,
               label: entryKey,
-              width: output[entryKey].width,
+              width: output.width,
               accessor: `output-${entryKey}`,
               cssClasses: "decision-table--output",
             } as ColumnInstance;
           });
-
+          const width =
+            columns.reduce((acc, column) => acc + (column.width as number), 0) + 2.22 * (columns.length - 1);
           return [
             {
               groupType: DecisionTableColumnType.OutputClause,
@@ -178,7 +179,7 @@ export function DmnRunnerTabular(props: DmnRunnerTabularProps) {
               accessor: `output-${props.output?.[outputIndex]?.name}`,
               cssClasses: "decision-table--output",
               columns: columns,
-              width: props.output?.[outputIndex]?.width,
+              width,
               appendColumnsOnChildren: true,
               dataType: props.output?.[outputIndex]?.dataType,
             } as ColumnInstance,

@@ -59,7 +59,7 @@ export function BoxedExpressionProvider(props: BoxedExpressionProviderProps) {
           {props.children}
         </div>
       </ResizerSupervisor>
-      <CellSelectionBox />
+      {/*<CellSelectionBox />*/}
     </BoxedExpressionGlobalContext.Provider>
   );
 }
