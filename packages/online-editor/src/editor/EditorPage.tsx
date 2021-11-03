@@ -330,7 +330,7 @@ export function EditorPage(props: Props) {
                               kogitoWorkspace_resourceListRequest={handleResourceListRequest}
                               kogitoEditor_setContentError={handleSetContentError}
                               editorEnvelopeLocator={globals.editorEnvelopeLocator}
-                              channelType={ChannelType.VSCODE} // TODO CAPONETTO: Changed the channel type to test the Included Models (undo/redo do not work)
+                              channelType={ChannelType.VSCODE} // TODO: Change to ONLINE_MULTI_FILE when we upgrade the Editors.
                               locale={locale}
                             />
                           )}

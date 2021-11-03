@@ -28,7 +28,6 @@ import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
 import { FileLabel } from "../workspace/components/FileLabel";
-import { isAbsolute } from "path";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
@@ -60,8 +59,6 @@ import {
 } from "@patternfly/react-core/dist/js/components/DataList";
 import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
-import { useDropzone } from "react-dropzone";
-import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { UploadCard } from "./UploadCard";
 
 export function HomePage() {
