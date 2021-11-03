@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { Nav, NavItem, Title, Card, NavList } from "@patternfly/react-core";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 
 const samplePaths = [
   { fileName: "sample", path: "examples/sample.base64png" },
@@ -32,7 +32,7 @@ const samplePaths = [
  * @param props
  * @constructor
  */
-export function Base64PngGallery(props: { setFile: React.Dispatch<File> }) {
+export function Base64PngGallery(props: { setFile: React.Dispatch<EmbeddedEditorFile> }) {
   // Set the chosen file
   const openSample = useCallback((fileName: string, filePath: string) => {
     props.setFile({
