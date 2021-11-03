@@ -1,0 +1,13 @@
+{
+    "uuid": "custom-test-uuid",
+    "name": "custom data set name",
+    "provider": "CUSTOM",
+    "pushEnabled": false,
+    "pushMaxSize": 10,
+    "isPublic": true,
+    "cacheEnabled": false,
+    "cacheMaxRows": 100,
+    "refreshTime": "1second",
+    "refreshAlways": false,
+    "prop1": "Hello"
+}

@@ -126,7 +126,7 @@ jobs:
       - name: "Pack and publish"
         working-directory: ./.github/supporting-files/publish_jitexecutor_native
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
         run: |
           mv ./dist/linux/jitexecutor-runner-${{ github.event.inputs.kogito_runtime_version }}-runner ./dist/linux/jitexecutor
           mv ./dist/darwin/jitexecutor-runner-${{ github.event.inputs.kogito_runtime_version }}-runner ./dist/darwin/jitexecutor

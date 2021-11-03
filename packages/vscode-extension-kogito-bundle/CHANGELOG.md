@@ -1,3 +1,14 @@
+# 0.14.0 (alpha)
+
+- [KOGITO-2099](https://issues.redhat.com/browse/KOGITO-2099) - Generate a SVG diagram automatically on each BPMN/DMN diagrams save
+- [KOGITO-6083](https://issues.redhat.com/browse/KOGITO-6083) - [DMN Designer] Improve BKM description rendering on documentation tab
+- [KOGITO-5973](https://issues.redhat.com/browse/KOGITO-5973) - Stunner - Create an initial JS / TS API for accessing the canvas and its elements
+- [KOGITO-2133](https://issues.redhat.com/browse/KOGITO-2133) - [VSCode] Custom editor save issues
+- [KOGITO-2553](https://issues.redhat.com/browse/KOGITO-2553) - Editors - Editing the node name and pressing enter to confirm
+- [KOGITO-6033](https://issues.redhat.com/browse/KOGITO-6033) - [DMN Designer] Unreadable data type information in PDF document that shows DMN decision model
+- [KOGITO-6037](https://issues.redhat.com/browse/KOGITO-6037) - [DMN Designer] Background color do not work on DMN Editor (online and VSCode)
+- [KOGITO-6021](https://issues.redhat.com/browse/KOGITO-6021) - [DMN Designer] Multiple DRDs - Renaming a DRD freezes the browser
+
 # 0.13.0 (alpha)
 
 - [KOGITO-5678](https://issues.redhat.com/browse/KOGITO-5678) - Metadata atrribute 'elementname' not present for events, intermediate events & gateways by default

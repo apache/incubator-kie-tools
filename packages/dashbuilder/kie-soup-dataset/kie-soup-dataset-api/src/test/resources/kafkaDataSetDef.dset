@@ -1,0 +1,21 @@
+{
+  "uuid": "expenseReports",
+  "name": "Expense Reports",
+  "provider": "KAFKA",
+  "isPublic": true,
+  "cacheEnabled": false,
+  "cacheMaxRows": 1000,
+  "pushEnabled": true,
+  "pushMaxSize": 1024,
+  "refreshAlways": false,
+  "refreshTime": "2second",
+  "host": "127.0.0.1",
+  "port": 1234, 
+  "target": "CONSUMER",
+  "filter": "testFilter",
+  "clientId": "testClientId",
+  "nodeId": "testNodeId",
+  "topic": "testTopic",
+  "partition": "testPartition",
+  "allColumns": true
+}

@@ -1,0 +1,22 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+
+  <ui:with field="i18n" type="org.dashbuilder.client.widgets.resources.i18n.DataSetEditorConstants"/>
+
+  <ui:style>
+    .valueBox {
+      width: 50px;
+    }
+    .inline {
+      margin-left: 10px;
+    }
+  </ui:style>
+
+  <g:HorizontalPanel ui:field="mainPanel" verticalAlignment="ALIGN_MIDDLE">
+    <b:IntegerBox ui:field="valueBox" addStyleNames="{style.valueBox}"/>
+    <b:ListBox ui:field="intervalType" addStyleNames="{style.inline}"/>
+  </g:HorizontalPanel>
+  
+</ui:UiBinder>

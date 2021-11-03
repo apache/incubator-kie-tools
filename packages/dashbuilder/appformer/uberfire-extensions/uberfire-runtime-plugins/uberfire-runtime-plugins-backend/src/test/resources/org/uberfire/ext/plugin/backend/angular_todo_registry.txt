@@ -1,0 +1,36 @@
+function TodoCtrl($scope) {
+
+    $scope.placeText = "MiscellaneousFeatures";
+
+    $scope.todos = [
+        {text: 'learn angular', done: true},
+        {text: 'build an angular app', done: false}
+    ];
+
+    $scope.addTodo = function () {
+        $scope.todos.push({text: $scope.todoText, done: false});
+        $scope.todoText = '';
+    };
+
+    $scope.remaining = function () {
+        var count = 0;
+        angular.forEach($scope.todos, function (todo) {
+            count += todo.done ? 0 : 1;
+        });
+        return count;
+    };
+
+    $scope.archive = function () {
+        var oldTodos = $scope.todos;
+        $scope.todos = [];
+        angular.forEach(oldTodos, function (todo) {
+            if (!todo.done) {
+                $scope.todos.push(todo);
+            }
+        });
+    };
+
+    $scope.goto = function () {
+        $goToPlace($scope.placeText);
+    };
+}$registerPlugin({id:"Yo",type: "angularjs",template: "\u003cdiv ng-controller\u003d\"TodoCtrl\"\u003e\n    \u003cspan\u003e{{remaining()}} of {{todos.length}} remaining\u003c/span\u003e\n    [ \u003ca href\u003d\"\" ng-click\u003d\"archive()\"\u003earchive\u003c/a\u003e ]\n    \u003cul class\u003d\"unstyled\"\u003e\n        \u003cli ng-repeat\u003d\"todo in todos\"\u003e\n            \u003cinput type\u003d\"checkbox\" ng-model\u003d\"todo.done\"\u003e\n            \u003cspan class\u003d\"done-{{todo.done}}\"\u003e{{todo.text}}\u003c/span\u003e\n        \u003c/li\u003e\n    \u003c/ul\u003e\n    \u003cform ng-submit\u003d\"addTodo()\"\u003e\n        \u003cinput type\u003d\"text\" ng-model\u003d\"todoText\" size\u003d\"30\" placeholder\u003d\"add new todo here\"\u003e\n        \u003cinput class\u003d\"btn-primary\" type\u003d\"submit\" value\u003d\"add\"\u003e\n    \u003c/form\u003e\n    \u003cform ng-submit\u003d\"goto()\"\u003e\n        \u003cinput type\u003d\"text\" ng-model\u003d\"placeText\" size\u003d\"30\" placeholder\u003d\"place to go\"\u003e\n        \u003cinput class\u003d\"btn-primary\" type\u003d\"submit\" value\u003d\"goTo\"\u003e\n    \u003c/form\u003e\n\u003c/div\u003e"});

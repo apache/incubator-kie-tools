@@ -1,0 +1,20 @@
+{
+    "uuid": "filter-test-uuid",
+    "name": "filter data set name",
+    "provider": "BEAN",
+    "pushEnabled": false,
+    "pushMaxSize": 10,
+    "isPublic": true,
+    "cacheEnabled": false,
+    "cacheMaxRows": 100,
+    "refreshTime": "1second",
+    "refreshAlways": false,
+    "generatorClass": "org.dashbuilder.dataprovider.SalesPerYearDataSetGenerator",
+    "generatorParams": [
+        {"param": "multiplier", "value": "1"}
+    ],
+    "filters": [
+        {"column": "month", "function": "EQUALS_TO", "args": ["JANUARY"]},
+        {"column": "amount", "function": "BETWEEN", "args": [0, 100.35]}
+      ]
+}

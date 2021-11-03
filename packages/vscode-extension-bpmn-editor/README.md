@@ -1,6 +1,7 @@
 ## BPMN Editor
 
-![vs-code-support](https://img.shields.io/badge/Visual%20Studio%20Code-1.46.0+-blue.svg) ![github-ci](<https://github.com/kiegroup/kogito-tooling/workflows/CI%20::%20Monorepo%20(full)/badge.svg>)
+![vs-code-support](https://img.shields.io/badge/Visual%20Studio%20Code-1.46.0+-blue.svg)
+![github-ci](https://github.com/kiegroup/kogito-tooling/actions/workflows/monorepo_pr_ci_full.yml/badge.svg)
 
 Create and edit BPMN and BPMN2 files.
 

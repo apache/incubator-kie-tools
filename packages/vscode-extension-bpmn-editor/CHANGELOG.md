@@ -1,3 +1,10 @@
+# 0.14.0 (alpha)
+
+- [KOGITO-2099](https://issues.redhat.com/browse/KOGITO-2099) - Generate a SVG diagram automatically on each BPMN/DMN diagrams save
+- [KOGITO-5973](https://issues.redhat.com/browse/KOGITO-5973) - Stunner - Create an initial JS / TS API for accessing the canvas and its elements
+- [KOGITO-2133](https://issues.redhat.com/browse/KOGITO-2133) - [VSCode] Custom editor save issues
+- [KOGITO-2553](https://issues.redhat.com/browse/KOGITO-2553) - Editors - Editing the node name and pressing enter to confirm
+
 # 0.13.0 (alpha)
 
 - [KOGITO-5678](https://issues.redhat.com/browse/KOGITO-5678) - Metadata atrribute 'elementname' not present for events, intermediate events & gateways by default

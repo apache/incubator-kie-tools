@@ -92,6 +92,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
+      - name: "Support longpaths"
+        if: matrix.os == 'windows-latest'
+        run: git config --system core.longpaths true
+
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
@@ -501,6 +505,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
+      - name: "Support longpaths"
+        if: matrix.os == 'windows-latest'
+        run: git config --system core.longpaths true
+
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
@@ -642,6 +650,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
+      - name: "Support longpaths"
+        if: matrix.os == 'windows-latest'
+        run: git config --system core.longpaths true
+
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
@@ -689,3 +701,82 @@ jobs:
           asset_path: "./packages/extended-services/dist/win32/kie_tooling_extended_services.exe"
           asset_name: "kie_tooling_extended_services_windows_${{ needs.prepare.outputs.version }}.exe"
           asset_content_type: application/octet-stream
+  dashbuilder:
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    strategy:
+      matrix:
+        os: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.prepare.outputs.release_ref }}
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ubuntu-latest
+
+      - name: "Build"
+        shell: bash
+        run: |
+          lerna run build:prod --scope=@kogito-tooling/dashbuilder --include-dependencies --stream
+
+      - name: "Upload DashBuilder Assets"
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          asset_path: ./packages/dashbuilder/dist/dashbuilder_dist.zip
+          asset_name: dashbuilder_dist_${{ needs.prepare.outputs.version }}.zip
+          asset_content_type: application/zip
+
+  dashbuilder_images:
+    env:
+      DASHBUILDER__baseImageRegistry: "quay.io"
+      DASHBUILDER__baseImageAccount: "kogito_tooling_bot"
+      DASHBUILDER_AUTHORING__baseImageName: "dashbuilder-authoring"
+      DASHBUILDER_RUNTIME__baseImageName: "dashbuilder-runtime"
+      DASHBUILDER__baseImageTag: "${{ needs.prepare.outputs.version }}"
+      DASHBUILDER__baseImageBuildTags: "latest ${{ needs.prepare.outputs.version }}"
+
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    steps:
+      - name: "Checkout kogito-tooling"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ needs.prepare.outputs.release_ref }}
+          path: ${{ github.workspace }}/kogito-tooling
+          fetch-depth: 0
+
+      - name: "Setup environment"
+        uses: ./kogito-tooling/.github/actions/setup-env
+        with:
+          path: kogito-tooling
+          os: ubuntu-latest
+
+      - name: "Build Dashbuilder Images"
+        working-directory: ${{ github.workspace }}/kogito-tooling
+        run: |
+          lerna run build:prod --scope=@kogito-tooling/dashbuilder-images --include-dependencies --stream
+
+      - name: "Push dashbuilder-authoring image to quay.io"
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.DASHBUILDER_AUTHORING__baseImageName }}"
+          tags: "${{ env.DASHBUILDER__baseImageBuildTags }}"
+          registry: "${{ env.DASHBUILDER__baseImageRegistry }}/${{ env.DASHBUILDER__baseImageAccount }}"
+          username: "${{ env.DASHBUILDER__baseImageAccount }}"
+          password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
+
+      - name: "Push dashbuilder-runtime image to quay.io"
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.DASHBUILDER_RUNTIME__baseImageName }}"
+          tags: "${{ env.DASHBUILDER__baseImageBuildTags }}"
+          registry: "${{ env.DASHBUILDER__baseImageRegistry }}/${{ env.DASHBUILDER__baseImageAccount }}"
+          username: "${{ env.DASHBUILDER__baseImageAccount }}"
+          password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"

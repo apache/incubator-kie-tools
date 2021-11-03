@@ -1,0 +1,12 @@
+.mapTooltipContainer {
+  min-width: 100px;
+  min-height: 50px;
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  background-color: AliceBlue;
+  border-style: groove;
+  border-radius: 8px;
+  position: absolute;
+  font-size: 10px;
+}

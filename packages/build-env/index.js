@@ -173,6 +173,36 @@ const ENV_VARS = {
     default: "1.12.0.Final",
     description: "",
   },
+  DASHBUILDER__baseImageRegistry: {
+    name: "DASHBUILDER__baseImageRegistry",
+    default: "quay.io",
+    description: "",
+  },
+  DASHBUILDER__baseImageAccount: {
+    name: "DASHBUILDER__baseImageAccount",
+    default: "kogito_tooling_bot",
+    description: "",
+  },
+  DASHBUILDER_RUNTIME__baseImageName: {
+    name: "DASHBUILDER_RUNTIME__baseImageName",
+    default: "dashbuilder-runtime",
+    description: "",
+  },
+  DASHBUILDER_AUTHORING__baseImageName: {
+    name: "DASHBUILDER_AUTHORING__baseImageName",
+    default: "dashbuilder-authoring",
+    description: "",
+  },
+  DASHBUILDER__baseImageTag: {
+    name: "DASHBUILDER__baseImageTag",
+    default: "latest",
+    description: "",
+  },
+  DASHBUILDER__baseImageBuildTags: {
+    name: "DASHBUILDER__baseImageBuildTags",
+    default: "latest",
+    description: "",
+  },
 };
 
 module.exports = {
@@ -246,6 +276,16 @@ module.exports = {
       name: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__baseImageName),
       tag: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__baseImageTag),
       buildTags: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__baseImageBuildTags),
+    },
+  },
+  dashbuilder: {
+    baseImage: {
+      registry: getOrDefault(ENV_VARS.DASHBUILDER__baseImageRegistry),
+      account: getOrDefault(ENV_VARS.DASHBUILDER__baseImageAccount),
+      runtimeName: getOrDefault(ENV_VARS.DASHBUILDER_RUNTIME__baseImageName),
+      authoringName: getOrDefault(ENV_VARS.DASHBUILDER_AUTHORING__baseImageName),
+      tag: getOrDefault(ENV_VARS.DASHBUILDER__baseImageTag),
+      buildTags: getOrDefault(ENV_VARS.DASHBUILDER__baseImageBuildTags),
     },
   },
 

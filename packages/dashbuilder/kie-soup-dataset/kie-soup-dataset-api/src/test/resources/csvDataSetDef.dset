@@ -1,0 +1,43 @@
+{
+  "uuid": "expenseReports",
+  "name": "Expense Reports",
+  "provider": "CSV",
+  "isPublic": true,
+  "cacheEnabled": false,
+  "cacheMaxRows": 1000,
+  "pushEnabled": true,
+  "pushMaxSize": 1024,
+  "refreshAlways": false,
+  "refreshTime": "2second",
+  "filePath": "expenseReports.csv",
+  "separatorChar": 59,
+  "quoteChar": 34,
+  "escapeChar": 92,
+  "datePattern": "MM-dd-yyyy",
+  "numberPattern": "#,###.##",
+  "allColumns": true,
+  "columns": [
+    {
+      "id": "office",
+      "type": "label"
+    },
+    {
+      "id": "department",
+      "type": "label"
+    },
+    {
+      "id": "employee",
+      "type": "label"
+    },
+    {
+      "id": "amount",
+      "type": "number",
+      "pattern": "#,###.##"
+    },
+    {
+      "id": "date",
+      "type": "date",
+      "pattern": "MM-dd-yyyy"
+    }
+  ]
+}
