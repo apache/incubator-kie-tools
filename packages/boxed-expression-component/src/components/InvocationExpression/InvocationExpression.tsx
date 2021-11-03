@@ -29,6 +29,7 @@ import {
   getEntryKey,
   getHandlerConfiguration,
   InvocationProps,
+  LogicType,
   resetEntry,
   TableHeaderVisibility,
 } from "../../api";
@@ -43,144 +44,143 @@ import { hashfy } from "../Resizer";
 const DEFAULT_PARAMETER_NAME = "p-1";
 const DEFAULT_PARAMETER_DATA_TYPE = DataType.Undefined;
 
-export const InvocationExpression: React.FunctionComponent<InvocationProps> = ({
-  bindingEntries,
-  dataType = DEFAULT_PARAMETER_DATA_TYPE,
-  entryInfoWidth = DEFAULT_ENTRY_INFO_MIN_WIDTH,
-  entryExpressionWidth = DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
-  invokedFunction = "",
-  isHeadless,
-  logicType,
-  name = DEFAULT_PARAMETER_NAME,
-  onUpdatingNameAndDataType,
-  onUpdatingRecursiveExpression,
-  uid,
-}: InvocationProps) => {
+export const InvocationExpression: React.FunctionComponent<InvocationProps> = (invocationProps: InvocationProps) => {
   const { i18n } = useBoxedExpressionEditorI18n();
 
-  const storedExpressionDefinition = useRef({} as InvocationProps);
+  const rows = useMemo(() => {
+    return (
+      invocationProps.bindingEntries || [
+        {
+          entryInfo: {
+            name: DEFAULT_PARAMETER_NAME,
+            dataType: DEFAULT_PARAMETER_DATA_TYPE,
+          },
+          entryExpression: {
+            name: DEFAULT_PARAMETER_NAME,
+            dataType: DEFAULT_PARAMETER_DATA_TYPE,
+          },
+          nameAndDataTypeSynchronized: true,
+        } as DataRecord,
+      ]
+    );
+  }, [invocationProps.bindingEntries]);
 
-  const [rows, setRows] = useState(
-    bindingEntries || [
-      {
-        entryInfo: {
-          name: DEFAULT_PARAMETER_NAME,
-          dataType: DEFAULT_PARAMETER_DATA_TYPE,
-        },
-        entryExpression: {
-          name: DEFAULT_PARAMETER_NAME,
-          dataType: DEFAULT_PARAMETER_DATA_TYPE,
-        },
-        nameAndDataTypeSynchronized: true,
-      } as DataRecord,
-    ]
-  );
-
-  const [infoWidth, setInfoWidth] = useState(entryInfoWidth);
-  const [expressionWidth, setExpressionWidth] = useState(entryExpressionWidth);
-  const [functionName, setFunctionName] = useState(invokedFunction);
   const { setSupervisorHash } = useContext(BoxedExpressionGlobalContext);
 
-  useEffect(() => {
-    const [expressionColumn] = columns.current;
+  const spreadInvocationExpressionDefinition = useCallback(
+    (invocationExpressionUpdated?: Partial<InvocationProps>) => {
+      const updatedDefinition: InvocationProps = {
+        uid: invocationProps.uid,
+        logicType: LogicType.Invocation,
+        name: invocationProps.name ?? DEFAULT_PARAMETER_NAME,
+        dataType: invocationProps.dataType ?? DEFAULT_PARAMETER_DATA_TYPE,
+        bindingEntries: rows as ContextEntries,
+        invokedFunction: invocationProps.invokedFunction,
+        entryInfoWidth: invocationProps.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH,
+        entryExpressionWidth: invocationProps.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+        ...invocationExpressionUpdated,
+      };
 
-    const updatedDefinition: InvocationProps = {
-      uid,
-      logicType,
-      name: expressionColumn.label,
-      dataType: expressionColumn.dataType,
-      bindingEntries: rows as ContextEntries,
-      invokedFunction: functionName,
-      entryInfoWidth: infoWidth,
-      entryExpressionWidth: expressionWidth,
-    };
+      const expression = _.omit(updatedDefinition, ["name", "dataType"]);
 
-    const expression = _.omit(updatedDefinition, ["name", "dataType"]);
-
-    if (isHeadless) {
-      onUpdatingRecursiveExpression?.(expression);
-    } else {
-      executeIfExpressionDefinitionChanged(
-        storedExpressionDefinition.current,
-        updatedDefinition,
-        () => {
-          setSupervisorHash(hashfy(expression));
-          window.beeApi?.broadcastInvocationExpressionDefinition?.(updatedDefinition);
-          storedExpressionDefinition.current = updatedDefinition;
-        },
-        ["name", "dataType", "bindingEntries", "invokedFunction", "entryInfoWidth", "entryExpressionWidth"]
-      );
-    }
-  }, [
-    expressionWidth,
-    functionName,
-    infoWidth,
-    isHeadless,
-    logicType,
-    onUpdatingRecursiveExpression,
-    rows,
-    setSupervisorHash,
-    uid,
-  ]);
-
-  const onBlurCallback = useCallback((event) => {
-    setFunctionName(event.target.value);
-  }, []);
-
-  const headerCellElement = (
-    <div className="function-definition-container">
-      <input
-        className="function-definition pf-u-text-truncate"
-        type="text"
-        placeholder={i18n.enterFunction}
-        defaultValue={functionName}
-        onBlur={onBlurCallback}
-      />
-    </div>
+      if (invocationProps.isHeadless) {
+        invocationProps.onUpdatingRecursiveExpression?.(expression);
+      } else {
+        executeIfExpressionDefinitionChanged(
+          invocationProps,
+          updatedDefinition,
+          () => {
+            setSupervisorHash(hashfy(expression));
+            window.beeApi?.broadcastInvocationExpressionDefinition?.(updatedDefinition);
+          },
+          ["name", "dataType", "bindingEntries", "invokedFunction", "entryInfoWidth", "entryExpressionWidth"]
+        );
+      }
+    },
+    [invocationProps, rows, setSupervisorHash]
   );
 
-  const columns = useRef([
-    {
-      label: name,
-      accessor: name,
-      dataType,
-      disableHandlerOnHeader: true,
-      columns: [
-        {
-          headerCellElement,
-          accessor: "functionDefinition",
-          disableHandlerOnHeader: true,
-          columns: [
-            {
-              accessor: "entryInfo",
-              disableHandlerOnHeader: true,
-              width: infoWidth,
-              setWidth: setInfoWidth,
-              minWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
-            },
-            {
-              accessor: "entryExpression",
-              disableHandlerOnHeader: true,
-              width: expressionWidth,
-              setWidth: setExpressionWidth,
-              minWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
-            },
-          ],
-        },
-      ],
+  const onBlurCallback = useCallback(
+    (event) => {
+      spreadInvocationExpressionDefinition({ invokedFunction: event.target.value });
     },
-  ]);
+    [spreadInvocationExpressionDefinition]
+  );
+
+  const headerCellElement = useMemo(
+    () => (
+      <div className="function-definition-container">
+        <input
+          className="function-definition pf-u-text-truncate"
+          type="text"
+          placeholder={i18n.enterFunction}
+          defaultValue={invocationProps.invokedFunction}
+          onBlur={onBlurCallback}
+        />
+      </div>
+    ),
+    [invocationProps.invokedFunction, onBlurCallback, i18n.enterFunction]
+  );
+
+  const setInfoWidth = useCallback(
+    (newInfoWidth) => {
+      spreadInvocationExpressionDefinition({ entryInfoWidth: newInfoWidth });
+    },
+    [spreadInvocationExpressionDefinition]
+  );
+
+  const setExpressionWidth = useCallback(
+    (newEntryExpressionWidth) => {
+      spreadInvocationExpressionDefinition({ entryExpressionWidth: newEntryExpressionWidth });
+    },
+    [spreadInvocationExpressionDefinition]
+  );
+
+  const columns = useMemo(
+    () => [
+      {
+        label: invocationProps.name ?? DEFAULT_PARAMETER_NAME,
+        accessor: invocationProps.name ?? DEFAULT_PARAMETER_NAME,
+        dataType: invocationProps.dataType ?? DEFAULT_PARAMETER_DATA_TYPE,
+        disableHandlerOnHeader: true,
+        columns: [
+          {
+            headerCellElement,
+            accessor: "functionDefinition",
+            disableHandlerOnHeader: true,
+            columns: [
+              {
+                accessor: "entryInfo",
+                disableHandlerOnHeader: true,
+                width: invocationProps.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH,
+                setWidth: setInfoWidth,
+                minWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
+              },
+              {
+                accessor: "entryExpression",
+                disableHandlerOnHeader: true,
+                width: invocationProps.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+                setWidth: setExpressionWidth,
+                minWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    [invocationProps, headerCellElement, setInfoWidth, setExpressionWidth]
+  );
 
   const onColumnsUpdate = useCallback(
     ([expressionColumn]: [ColumnInstance]) => {
-      onUpdatingNameAndDataType?.(expressionColumn.label as string, expressionColumn.dataType);
+      invocationProps.onUpdatingNameAndDataType?.(expressionColumn.label as string, expressionColumn.dataType);
 
-      const [updatedExpressionColumn] = columns.current;
-      updatedExpressionColumn.label = expressionColumn.label as string;
-      updatedExpressionColumn.accessor = expressionColumn.accessor;
-      updatedExpressionColumn.dataType = expressionColumn.dataType;
+      spreadInvocationExpressionDefinition({
+        name: expressionColumn.label as string,
+        dataType: expressionColumn.dataType,
+      });
     },
-    [onUpdatingNameAndDataType]
+    [invocationProps, spreadInvocationExpressionDefinition]
   );
 
   const onRowAdding = useCallback(() => {
@@ -201,47 +201,50 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = ({
     };
   }, [rows]);
 
-  const getHeaderVisibility = useCallback(() => {
-    return isHeadless ? TableHeaderVisibility.SecondToLastLevel : TableHeaderVisibility.Full;
-  }, [isHeadless]);
+  const getHeaderVisibility = useMemo(
+    () => (invocationProps.isHeadless ? TableHeaderVisibility.SecondToLastLevel : TableHeaderVisibility.Full),
+    [invocationProps.isHeadless]
+  );
 
-  const setRowsCallback = useCallback((entries) => setRows(entries), []);
+  const setRowsCallback = useCallback(
+    (entries) => {
+      spreadInvocationExpressionDefinition({ bindingEntries: [...entries] });
+    },
+    [spreadInvocationExpressionDefinition]
+  );
+
   const getRowKeyCallback = useCallback((row) => getEntryKey(row), []);
   const resetEntryCallback = useCallback((row) => resetEntry(row), []);
 
-  return useMemo(
-    () => (
-      <div className={`invocation-expression ${uid}`}>
-        <Table
-          tableId={uid}
-          headerLevels={2}
-          headerVisibility={getHeaderVisibility()}
-          skipLastHeaderGroup
-          defaultCell={{
-            entryInfo: getContextEntryInfoCell(i18n.editParameter),
-            entryExpression: ContextEntryExpressionCell,
-          }}
-          columns={columns.current}
-          rows={rows as DataRecord[]}
-          onColumnsUpdate={onColumnsUpdate}
-          onRowAdding={onRowAdding}
-          onRowsUpdate={setRowsCallback}
-          handlerConfiguration={getHandlerConfiguration(i18n, i18n.parameters)}
-          getRowKey={getRowKeyCallback}
-          resetRowCustomFunction={resetEntryCallback}
-        />
-      </div>
-    ),
-    [
-      getHeaderVisibility,
-      getRowKeyCallback,
-      i18n,
-      onColumnsUpdate,
-      onRowAdding,
-      resetEntryCallback,
-      rows,
-      setRowsCallback,
-      uid,
-    ]
+  const defaultCell = useMemo(
+    () => ({
+      entryInfo: getContextEntryInfoCell(i18n.editParameter),
+      entryExpression: ContextEntryExpressionCell,
+    }),
+    [i18n.editParameter]
+  );
+
+  const handlerConfiguration = useMemo(() => {
+    return getHandlerConfiguration(i18n, i18n.parameters);
+  }, [i18n]);
+
+  return (
+    <div className={`invocation-expression ${invocationProps.uid}`}>
+      <Table
+        tableId={invocationProps.uid}
+        headerLevels={2}
+        headerVisibility={getHeaderVisibility}
+        skipLastHeaderGroup={true}
+        defaultCell={defaultCell}
+        columns={columns}
+        rows={rows as DataRecord[]}
+        onColumnsUpdate={onColumnsUpdate}
+        onRowAdding={onRowAdding}
+        onRowsUpdate={setRowsCallback}
+        handlerConfiguration={handlerConfiguration}
+        getRowKey={getRowKeyCallback}
+        resetRowCustomFunction={resetEntryCallback}
+      />
+    </div>
   );
 };

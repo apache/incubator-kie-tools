@@ -129,6 +129,7 @@ export const RelationExpression: React.FunctionComponent<RelationProps> = (relat
 
   useEffect(() => {
     spreadRelationExpressionDefinition();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows]);
 
   const onColumnsUpdate = useCallback(

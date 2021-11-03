@@ -21,7 +21,7 @@ import { ContextEntries, EntryInfo } from "./ContextEntry";
 import { HitPolicy } from "./HitPolicy";
 import { BuiltinAggregation } from "./BuiltinAggregation";
 import { Annotation, Clause, DecisionTableRule } from "./DecisionTableRule";
-import { FeelFunctionProps, JavaFunctionProps, PmmlFunctionProps } from "./FunctionKind";
+import { FeelFunctionProps, FunctionKind, JavaFunctionProps, PmmlFunctionProps } from "./FunctionKind";
 
 export interface ExpressionProps {
   /** Unique identifier used to identify the expression */
@@ -60,6 +60,8 @@ export interface PMMLLiteralExpressionProps extends ExpressionProps {
   selected?: string;
   /** Label displayed (in italic style) when no options are available */
   noOptionsLabel: string;
+  /** Property used for test purposes only */
+  testId?: string;
 }
 
 export interface RelationProps extends ExpressionProps {

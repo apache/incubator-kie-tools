@@ -59,7 +59,7 @@ export function BoxedExpressionProvider(props: BoxedExpressionProviderProps) {
           {props.children}
         </div>
       </ResizerSupervisor>
-      {/*<CellSelectionBox />*/}
+      {props.isRunnerTable === false && <CellSelectionBox />}
     </BoxedExpressionGlobalContext.Provider>
   );
 }

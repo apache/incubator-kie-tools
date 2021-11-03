@@ -56,7 +56,6 @@ export interface EditableCellProps extends CellProps {
 }
 
 export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly }: EditableCellProps) {
-  const [cellValue, setCellValue] = useState(value);
   const [isSelected, setIsSelected] = useState(false);
   const [mode, setMode] = useState(READ_MODE);
   const [cellHeight, setCellHeight] = useState(CELL_LINE_HEIGHT * 3);
@@ -66,19 +65,13 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
   // Common Handlers =========================================================
 
   useEffect(() => {
-    if (!value) {
+    if (value === "") {
       setPreview("");
     }
     if (textarea.current) {
-      textarea.current.value = value || "";
+      textarea.current.value = value ?? "";
     }
   }, [value]);
-
-  useEffect(() => {
-    if (cellValue !== value) {
-      setCellValue(value);
-    }
-  }, [cellValue, value]);
 
   const triggerReadMode = useCallback(
     (newValue?: string) => {
@@ -86,10 +79,8 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
         return;
       }
 
-      setMode(READ_MODE);
-
       if (value !== newValue) {
-        onCellUpdate(rowIndex, columnId, newValue || value);
+        onCellUpdate(rowIndex, columnId, newValue ?? value);
       }
 
       focusTextArea(textarea.current);
@@ -127,31 +118,28 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
 
   const onTextAreaChange = useCallback(
     (event) => {
-      const newValue: string = event.target.value.trim("") || "";
+      const newValue: string = event.target.value.trim("") ?? "";
       const isPastedValue = newValue.includes("\t") || newValue.includes("\n");
 
       if (textarea.current && isPastedValue) {
         const pasteValue = newValue.slice(value.length);
-        const firstCellValue = firstIterableValue(pasteValue);
-
         paste(pasteValue, textarea.current);
-        setCellValue(firstCellValue);
         triggerReadMode();
         return;
       }
 
-      setCellValue(newValue);
+      onCellUpdate(rowIndex, columnId, newValue ?? value);
       triggerEditMode();
     },
-    [triggerEditMode, value, triggerReadMode]
+    [triggerEditMode, value, triggerReadMode, onCellUpdate, rowIndex, columnId]
   );
 
   // Feel Handlers ===========================================================
 
   const onFeelBlur = useCallback(
     (newValue: string) => {
-      setCellValue(newValue);
       triggerReadMode(newValue);
+      setMode(READ_MODE);
     },
     [triggerReadMode]
   );
@@ -159,7 +147,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
   const previousValue = usePrevious(value);
   const onFeelKeyDown = useCallback(
     (event: Monaco.IKeyboardEvent, newValue: string) => {
-      const key = event?.code.toLowerCase() || "";
+      const key = event?.code.toLowerCase() ?? "";
       const isModKey = event.altKey || event.ctrlKey || event.shiftKey;
       const isEnter = isModKey && key === "enter";
       const isTab = key === "tab";
@@ -170,19 +158,20 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       }
 
       if (isEnter || isTab) {
-        setCellValue(newValue);
         triggerReadMode(newValue);
+        setMode(READ_MODE);
       }
 
       if (isEsc) {
-        setCellValue(newValue);
         triggerReadMode(previousValue);
+        setMode(READ_MODE);
       }
 
       if (isTab) {
         focusNextTextArea(textarea.current);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [triggerReadMode]
   );
 
@@ -201,14 +190,14 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
   }, []);
 
   const textValue = useMemo(() => {
-    if (!cellValue) {
+    if (!value) {
       return "";
     }
-    if (cellValue !== null && typeof cellValue === "object") {
-      return cellValue[columnId];
+    if (value !== null && typeof value === "object") {
+      return value[columnId];
     }
-    return `${cellValue}`;
-  }, [cellValue, columnId]);
+    return `${value}`;
+  }, [value, columnId]);
 
   return (
     <>
@@ -220,6 +209,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       >
         <span className="editable-cell-value" dangerouslySetInnerHTML={{ __html: preview }} />
         <textarea
+          data-testid={"editable-cell-textarea"}
           className="editable-cell-textarea"
           ref={textarea}
           value={textValue}

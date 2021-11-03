@@ -174,6 +174,11 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       if (columnToUpdate) {
         columnToUpdate.width = columnWidth;
       }
+      tableColumns.forEach((tableColumn) => {
+        if (tableColumn.width === undefined) {
+          tableColumn.width = (tableColumn as any).columns.reduce((acc: number, column: any) => acc + column.width, 0);
+        }
+      });
       onColumnsUpdate(tableColumns);
     },
     [onColumnsUpdate, tableColumns]

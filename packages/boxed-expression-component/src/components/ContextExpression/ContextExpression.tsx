@@ -48,39 +48,7 @@ const DEFAULT_CONTEXT_ENTRY_DATA_TYPE = DataType.Undefined;
 
 export const ContextExpression: React.FunctionComponent<ContextProps> = (contextExpression: ContextProps) => {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const [infoWidth, setInfoWidth] = useState(contextExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH);
-  const [expressionWidth, setExpressionWidth] = useState(
-    contextExpression.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH
-  );
   const { setSupervisorHash } = React.useContext(BoxedExpressionGlobalContext);
-
-  const columns = useMemo(
-    () => [
-      {
-        label: contextExpression.name ?? DEFAULT_CONTEXT_ENTRY_NAME,
-        accessor: contextExpression.name ?? DEFAULT_CONTEXT_ENTRY_NAME,
-        dataType: contextExpression.dataType ?? DEFAULT_CONTEXT_ENTRY_DATA_TYPE,
-        disableHandlerOnHeader: true,
-        columns: [
-          {
-            accessor: "entryInfo",
-            disableHandlerOnHeader: true,
-            width: infoWidth,
-            setWidth: setInfoWidth,
-            minWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
-          },
-          {
-            accessor: "entryExpression",
-            disableHandlerOnHeader: true,
-            width: expressionWidth,
-            setWidth: setExpressionWidth,
-            minWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
-          },
-        ],
-      },
-    ],
-    [expressionWidth, infoWidth, contextExpression.name, contextExpression.dataType]
-  );
 
   const rows = useMemo(
     () =>
@@ -97,20 +65,20 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
           nameAndDataTypeSynchronized: true,
         } as DataRecord,
       ],
-    [contextExpression.contextEntries, i18n.editContextEntry]
+    [contextExpression.contextEntries]
   );
 
   const spreadContextExpressionDefinition = useCallback(
     (contextExpressionUpdated: Partial<ContextProps>) => {
-      const updatedDefinition: ContextProps = {
+      const updatedDefinition: Partial<ContextProps> = {
         uid: contextExpression.uid,
         logicType: LogicType.Context,
         name: contextExpression.name ?? DEFAULT_CONTEXT_ENTRY_NAME,
         dataType: contextExpression.dataType ?? DEFAULT_CONTEXT_ENTRY_DATA_TYPE,
         contextEntries: rows as ContextEntries,
         result: contextExpression.result,
-        entryInfoWidth: infoWidth,
-        entryExpressionWidth: expressionWidth,
+        entryInfoWidth: contextExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH,
+        entryExpressionWidth: contextExpression.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
         noClearAction: contextExpression.noClearAction,
         renderResult: contextExpression.renderResult,
         noHandlerMenu: contextExpression.noHandlerMenu,
@@ -125,13 +93,62 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
             contextExpression.onUpdatingRecursiveExpression?.(_.omit(updatedDefinition, ["name", "dataType"]));
           } else {
             setSupervisorHash(hashfy(updatedDefinition));
-            window.beeApi?.broadcastContextExpressionDefinition?.(updatedDefinition);
+            window.beeApi?.broadcastContextExpressionDefinition?.(updatedDefinition as ContextProps);
           }
         },
         ["name", "dataType", "contextEntries", "result", "entryInfoWidth", "entryExpressionWidth"]
       );
     },
-    [expressionWidth, infoWidth, contextExpression, setSupervisorHash, rows]
+    [contextExpression, setSupervisorHash, rows]
+  );
+
+  const setInfoWidth = useCallback(
+    (newInfoWidth) => {
+      spreadContextExpressionDefinition({ entryInfoWidth: newInfoWidth });
+    },
+    [spreadContextExpressionDefinition]
+  );
+
+  const setExpressionWidth = useCallback(
+    (newEntryExpressionWidth) => {
+      spreadContextExpressionDefinition({ entryExpressionWidth: newEntryExpressionWidth });
+    },
+    [spreadContextExpressionDefinition]
+  );
+
+  const columns = useMemo(
+    () => [
+      {
+        label: contextExpression.name ?? DEFAULT_CONTEXT_ENTRY_NAME,
+        accessor: contextExpression.name ?? DEFAULT_CONTEXT_ENTRY_NAME,
+        dataType: contextExpression.dataType ?? DEFAULT_CONTEXT_ENTRY_DATA_TYPE,
+        disableHandlerOnHeader: true,
+        columns: [
+          {
+            accessor: "entryInfo",
+            disableHandlerOnHeader: true,
+            width: contextExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH,
+            setWidth: setInfoWidth,
+            minWidth: DEFAULT_ENTRY_INFO_MIN_WIDTH,
+          },
+          {
+            accessor: "entryExpression",
+            disableHandlerOnHeader: true,
+            width: contextExpression.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+            setWidth: setExpressionWidth,
+            minWidth: DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
+          },
+        ],
+      },
+    ],
+    [
+      contextExpression.entryInfoWidth,
+      contextExpression.entryExpressionWidth,
+      contextExpression.name,
+      contextExpression.dataType,
+      setInfoWidth,
+      setExpressionWidth,
+    ]
   );
 
   const onColumnsUpdate = useCallback(
@@ -211,9 +228,12 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
     return resetEntry(row);
   }, []);
 
-  const onHorizontalResizeStop = useCallback((width: number) => {
-    setExpressionWidth(width);
-  }, []);
+  const onHorizontalResizeStop = useCallback(
+    (width: number) => {
+      setExpressionWidth(width);
+    },
+    [setExpressionWidth]
+  );
 
   const shouldRenderResult = useMemo(() => {
     if (contextExpression.renderResult === undefined) {
@@ -242,7 +262,7 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
           ? [
               <Resizer
                 key="context-result"
-                width={infoWidth}
+                width={contextExpression.entryInfoWidth ?? DEFAULT_ENTRY_INFO_MIN_WIDTH}
                 minWidth={DEFAULT_ENTRY_INFO_MIN_WIDTH}
                 onHorizontalResizeStop={onHorizontalResizeStop}
               >
@@ -250,7 +270,7 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
               </Resizer>,
               <Resizer
                 key="context-expression"
-                width={expressionWidth}
+                width={contextExpression.entryExpressionWidth ?? DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH}
                 minWidth={DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH}
                 onHorizontalResizeStop={onHorizontalResizeStop}
               >

@@ -74,19 +74,19 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
     [literalExpression, spreadLiteralExpressionDefinition]
   );
 
-  const onContentChange = useCallback(
-    (content: string) => {
+  const onHorizontalResizeStop = useCallback(
+    (width) => {
       spreadLiteralExpressionDefinition({
-        content,
+        width,
       });
     },
     [spreadLiteralExpressionDefinition]
   );
 
-  const onHorizontalResizeStop = useCallback(
-    (width) => {
+  const onCellUpdate = useCallback(
+    (_number, _columnId, value) => {
       spreadLiteralExpressionDefinition({
-        width,
+        content: value,
       });
     },
     [spreadLiteralExpressionDefinition]
@@ -121,7 +121,7 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
           value={literalExpression.content ?? ""}
           rowIndex={0}
           columnId={literalExpression.uid ?? "-"}
-          onCellUpdate={(_number, _columnId, value) => onContentChange(value)}
+          onCellUpdate={onCellUpdate}
         />
       </div>
     </div>

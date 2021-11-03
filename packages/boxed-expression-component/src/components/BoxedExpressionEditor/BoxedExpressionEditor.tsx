@@ -15,10 +15,8 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
-// import "@patternfly/react-core/dist/styles/base-no-reset.css";
-// import "@patternfly/react-styles/css/components/Drawer/drawer.css";
-import { executeIfExpressionDefinitionChanged, ExpressionProps, PMMLParams } from "../../api";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ExpressionProps, PMMLParams } from "../../api";
 import {
   boxedExpressionEditorDictionaries,
   BoxedExpressionEditorI18nContext,
@@ -31,37 +29,40 @@ import { ExpressionContainer } from "../ExpressionContainer";
 export interface BoxedExpressionEditorProps {
   /** All expression properties used to define it */
   expressionDefinition: ExpressionProps;
+  /**
+   * A boolean used for making (or not) the clear button available on the root expression
+   * Note that this parameter will be used only for the root expression.
+   *
+   * Each expression (internally) has a `noClearAction` property (ExpressionProps interface).
+   * You can set directly it for enabling or not the clear button for such expression.
+   * */
+  clearSupportedOnRootExpression?: boolean;
   /** PMML parameters */
   pmmlParams?: PMMLParams;
 }
 
 export function BoxedExpressionEditor(props: BoxedExpressionEditorProps) {
-  const [expressionDefinition, setExpressionDefinition] = useState(props.expressionDefinition);
-
-  const onExpressionChange = useCallback((updatedExpression: ExpressionProps) => {
-    setExpressionDefinition(updatedExpression);
-  }, []);
+  const noClearAction = useMemo(
+    () => props.clearSupportedOnRootExpression === false,
+    [props.clearSupportedOnRootExpression]
+  );
+  const [expressionDefinition, setExpressionDefinition] = useState<ExpressionProps>({
+    ...props.expressionDefinition,
+    noClearAction: props.clearSupportedOnRootExpression === false,
+  });
 
   useEffect(() => {
-    executeIfExpressionDefinitionChanged(
-      props.expressionDefinition,
-      expressionDefinition,
-      () => {
-        setExpressionDefinition(props.expressionDefinition);
-      },
-      [
-        "columns",
-        "rows",
-        "bindingEntries",
-        "content",
-        "contextEntries",
-        "renderResult",
-        "result",
-        "functionKind",
-        "formalParameters",
-      ]
-    );
-  }, [expressionDefinition, props.expressionDefinition]);
+    setExpressionDefinition({
+      ...props.expressionDefinition,
+      noClearAction,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.expressionDefinition]);
+
+  const onExpressionChange = useCallback(
+    (updatedExpression: ExpressionProps) => setExpressionDefinition(updatedExpression),
+    []
+  );
 
   return (
     <I18nDictionariesProvider
