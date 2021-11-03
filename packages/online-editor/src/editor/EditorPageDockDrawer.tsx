@@ -17,7 +17,6 @@
 import * as React from "react";
 import { PropsWithChildren, useCallback, useContext, useImperativeHandle, useMemo, useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
-import { KeyboardIcon } from "@patternfly/react-icons/dist/js/icons/keyboard-icon";
 import { DmnRunnerMode } from "./DmnRunner/DmnRunnerStatus";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { useDmnRunner } from "./DmnRunner/DmnRunnerContext";
@@ -141,19 +140,6 @@ export function EditorPageDock(props: EditorPageDockProps) {
   const [currentTab, setCurrentTab] = useState<string>();
   const dmnRunner = useDmnRunner();
 
-  const envelopeKeyboardIcon = useMemo(() => {
-    const envelope = document.getElementById("kogito-iframe");
-    if (envelope) {
-      return (envelope as HTMLIFrameElement).contentDocument?.getElementById(
-        "keyboard-shortcuts-icon"
-      ) as HTMLButtonElement;
-    }
-  }, []);
-
-  const onKeyboardIconClick = useCallback(() => {
-    envelopeKeyboardIcon?.click();
-  }, [envelopeKeyboardIcon]);
-
   const onChange = useCallback((id: string, callback?: () => void) => {
     setCurrentTab((previous: any) => {
       if (previous === id) {
@@ -263,9 +249,6 @@ export function EditorPageDock(props: EditorPageDockProps) {
   return (
     dockProperties && (
       <div>
-        <div onClick={onKeyboardIconClick} className={"kogito-tooling--keyboard-shortcuts-icon"}>
-          <KeyboardIcon />
-        </div>
         <div
           style={{
             borderTop: "rgb(221, 221, 221) solid 1px",

@@ -278,70 +278,18 @@ export function DmnAutoTable(props: Props) {
     [outputRules]
   );
 
-  // "Glue" layout states
-  const inputsTableContainerRef = useRef<HTMLDivElement>(null);
-  const outputsTableContainerRef = useRef<HTMLDivElement>(null);
-  const [inputsTableTotalWidth, setInputsTableContainerTotalWidth] = useState(0);
-  const [outputsTableTotalWidth, setOutputsTableContainerTotalWidth] = useState(9999);
-  const [scrollbarWidth, setScrollbarWidth] = useState(0);
+  const inputsContainerRef = useRef<HTMLDivElement>(null);
+  const outputsContainerRef = useRef<HTMLDivElement>(null);
 
-  // Keep panel minimally "glued"
+  const { drawerPanelDefaultSize, drawerPanelMinSize, drawerPanelMaxSize, forceDrawerPanelRefresh } =
+    useAnchoredDmnRunnerTableDrawerPanel({
+      inputsContainerRef,
+      outputsContainerRef,
+    });
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (inputsTableContainerRef.current) {
-        setInputsTableContainerTotalWidth(
-          Object.values(inputsTableContainerRef.current.childNodes).reduce(
-            (acc, child: HTMLElement) => acc + child.offsetWidth,
-            0
-          )
-        );
-      }
-
-      const outputsTable = outputsTableContainerRef.current?.querySelector(".expression-container-box");
-      if (outputsTable) {
-        const ADJUSTMENT_TO_HIDE_OUTPUTS_LINE_NUMBERS_IN_PX = 59;
-        setOutputsTableContainerTotalWidth(
-          (outputsTable as HTMLElement).offsetWidth - ADJUSTMENT_TO_HIDE_OUTPUTS_LINE_NUMBERS_IN_PX
-        );
-      }
-    }, 100);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  // Keep scrolls in sync and set scrollbar width
-  useEffect(() => {
-    const content = document.querySelector(".unitables--dmn-runner-drawer .pf-c-drawer__content") as
-      | HTMLElement
-      | undefined;
-
-    const panel = document.querySelector(".unitables--dmn-runner-drawer .pf-c-drawer__panel-main") as
-      | HTMLElement
-      | undefined;
-
-    if (!panel || !content) {
-      return;
-    }
-
-    setScrollbarWidth(content.offsetWidth - content.clientWidth);
-
-    const syncContentScroll = () => (panel.scrollTop = content.scrollTop);
-    const syncPanelScroll = () => (content.scrollTop = panel.scrollTop);
-
-    content.addEventListener("scroll", syncContentScroll);
-    panel.addEventListener("scroll", syncPanelScroll);
-
-    return () => {
-      content.removeEventListener("scroll", syncContentScroll);
-      panel.removeEventListener("scroll", syncPanelScroll);
-    };
-  }, [inputsTableTotalWidth, outputsTableTotalWidth]);
-
-  const handleResize = useCallback(() => {
-    // TODO: detect cases where we can glue Inputs and Outputs together to improve UX
-  }, []);
+    forceDrawerPanelRefresh();
+  }, [forceDrawerPanelRefresh, inputRules, outputRules]);
 
   return (
     <>
@@ -357,44 +305,42 @@ export function DmnAutoTable(props: Props) {
               <DrawerContent
                 panelContent={
                   <>
-                    {inputsTableTotalWidth !== 0 && (
-                      <DrawerPanelContent
-                        onResize={handleResize}
-                        isResizable={true}
-                        minSize={`min(${outputsTableTotalWidth + scrollbarWidth}px, 30%)`}
-                        defaultSize={`calc(100vw - ${inputsTableTotalWidth + scrollbarWidth}px)`}
-                      >
-                        <div ref={outputsTableContainerRef}>
-                          {outputEntries > 0 ? (
-                            <BoxedExpressionProvider expressionDefinition={{ uid: outputUid }} isRunnerTable={true}>
-                              <DmnRunnerTabular
-                                name={"DMN Runner Output"}
-                                onRowNumberUpdated={onRowNumberUpdated}
-                                onColumnsUpdate={onColumnsUpdate}
-                                output={output}
-                                rules={outputRules as DmnRunnerRule[]}
-                                uid={outputUid}
-                              />
-                            </BoxedExpressionProvider>
-                          ) : (
-                            <EmptyState>
-                              <EmptyStateIcon icon={CubeIcon} />
-                              <TextContent>
-                                <Text component={"h2"}>Without Responses Yet</Text>
-                              </TextContent>
-                              <EmptyStateBody>
-                                <TextContent>Add decision nodes and fill the input nodes!</TextContent>
-                              </EmptyStateBody>
-                            </EmptyState>
-                          )}
-                        </div>
-                      </DrawerPanelContent>
-                    )}
+                    <DrawerPanelContent
+                      isResizable={true}
+                      minSize={outputEntries > 0 ? drawerPanelMinSize : "30%"}
+                      maxSize={drawerPanelMaxSize}
+                      defaultSize={drawerPanelDefaultSize}
+                    >
+                      <div ref={outputsContainerRef}>
+                        {outputEntries > 0 ? (
+                          <BoxedExpressionProvider expressionDefinition={{ uid: outputUid }} isRunnerTable={true}>
+                            <DmnRunnerTabular
+                              name={"DMN Runner Output"}
+                              onRowNumberUpdated={onRowNumberUpdated}
+                              onColumnsUpdate={onColumnsUpdate}
+                              output={output}
+                              rules={outputRules as DmnRunnerRule[]}
+                              uid={outputUid}
+                            />
+                          </BoxedExpressionProvider>
+                        ) : (
+                          <EmptyState>
+                            <EmptyStateIcon icon={CubeIcon} />
+                            <TextContent>
+                              <Text component={"h2"}>Without Responses Yet</Text>
+                            </TextContent>
+                            <EmptyStateBody>
+                              <TextContent>Add decision nodes and fill the input nodes!</TextContent>
+                            </EmptyStateBody>
+                          </EmptyState>
+                        )}
+                      </div>
+                    </DrawerPanelContent>
                   </>
                 }
               >
                 <BoxedExpressionProvider expressionDefinition={{ uid: inputUid }} isRunnerTable={true}>
-                  <div style={{ display: "flex" }} ref={inputsTableContainerRef}>
+                  <div style={{ display: "flex" }} ref={inputsContainerRef}>
                     <div style={{ display: "flex", flexDirection: "column" }}>
                       <div style={{ width: "50px", height: "55px", border: "1px solid", visibility: "hidden" }}>
                         {" "}
@@ -430,4 +376,162 @@ export function DmnAutoTable(props: Props) {
       <div ref={() => setFormsDivRendered(true)} id={FORMS_ID} />
     </>
   );
+}
+
+function useIntervalUntil(callback: () => Promise<{ shouldStop: boolean; cleanup?: () => void }>, ms: number) {
+  useEffect(() => {
+    let canceled = false;
+    let effectCleanup = () => {};
+    const interval = setInterval(() => {
+      if (canceled) {
+        return;
+      }
+
+      callback().then(({ cleanup, shouldStop }) => {
+        if (canceled) {
+          return;
+        }
+
+        if (shouldStop) {
+          effectCleanup = cleanup ?? effectCleanup;
+          clearInterval(interval);
+        }
+      });
+    }, ms);
+
+    return () => {
+      canceled = true;
+      clearInterval(interval);
+      effectCleanup();
+    };
+  }, [ms, callback]);
+}
+
+function useAnchoredDmnRunnerTableDrawerPanel(args: {
+  inputsContainerRef: React.RefObject<HTMLDivElement>;
+  outputsContainerRef: React.RefObject<HTMLDivElement>;
+}) {
+  const [scrollbarWidth, setScrollbarWidth] = useState(0); // Default size on Chrome.
+  const [drawerPanelMinSize, setDrawerPanelMinSize] = useState<string>();
+  const [drawerPanelDefaultSize, setDrawerPanelDefaultSize] = useState<string>();
+
+  const refreshDrawerPanelDefaultSize = useCallback(() => {
+    if (!args.inputsContainerRef.current) {
+      return { didRefresh: false };
+    }
+
+    const children = Object.values(args.inputsContainerRef.current.childNodes);
+    const newWidth = children.reduce((acc, child: HTMLElement) => acc + child.offsetWidth, 0);
+    const newDefaultSize = `calc(100vw - ${newWidth + scrollbarWidth}px)`;
+
+    setDrawerPanelDefaultSize((prev) => {
+      // This is a nasty trick to force refreshing even when the value is the same.
+      // Alternate with a space at the end of the state.
+      return prev?.endsWith(" ") ? newDefaultSize : newDefaultSize + " ";
+    });
+
+    return { didRefresh: true };
+  }, [args.inputsContainerRef, scrollbarWidth]);
+
+  const refreshDrawerPanelMinSize = useCallback(() => {
+    const outputsTable = args.outputsContainerRef.current?.querySelector(".expression-container-box");
+    if (!outputsTable) {
+      return { didRefresh: false };
+    }
+
+    const ADJUSTMENT_TO_HIDE_OUTPUTS_LINE_NUMBERS_IN_PX = 59;
+    const newTotalWidth = (outputsTable as HTMLElement).offsetWidth - ADJUSTMENT_TO_HIDE_OUTPUTS_LINE_NUMBERS_IN_PX;
+    const newDrawerPanelMinSize = `min(50%, ${newTotalWidth + scrollbarWidth}px)`;
+    setDrawerPanelMinSize((prev) => {
+      // This is a nasty trick to force refreshing even when the value is the same.
+      // Alternate with a space at the end of the state.
+      return prev?.endsWith(" ") ? newDrawerPanelMinSize : newDrawerPanelMinSize + " ";
+    });
+    return { didRefresh: true };
+  }, [args.outputsContainerRef, scrollbarWidth]);
+
+  // Keep panel minimally "glued"
+  useIntervalUntil(
+    useCallback(async () => {
+      const { didRefresh } = refreshDrawerPanelDefaultSize();
+      return { shouldStop: didRefresh };
+    }, [refreshDrawerPanelDefaultSize]),
+    100
+  );
+  useIntervalUntil(
+    useCallback(async () => {
+      const { didRefresh } = refreshDrawerPanelMinSize();
+      return { shouldStop: didRefresh };
+    }, [refreshDrawerPanelMinSize]),
+    100
+  );
+
+  // Recalculate panels position when double-clicking on the resize handle.
+  useIntervalUntil(
+    useCallback(async () => {
+      const resizer = document.querySelector(
+        ".unitables--dmn-runner-drawer .pf-c-drawer__panel .pf-c-drawer__splitter.pf-m-vertical"
+      ) as HTMLElement | undefined;
+
+      if (!resizer) {
+        return { shouldStop: false };
+      }
+
+      resizer.addEventListener("dblclick", refreshDrawerPanelDefaultSize);
+      resizer.addEventListener("dblclick", refreshDrawerPanelMinSize);
+
+      return {
+        shouldStop: true,
+        cleanup: () => {
+          resizer.removeEventListener("dblclick", refreshDrawerPanelDefaultSize);
+          resizer.removeEventListener("dblclick", refreshDrawerPanelMinSize);
+        },
+      };
+    }, [refreshDrawerPanelDefaultSize, refreshDrawerPanelMinSize]),
+    100
+  );
+
+  // Keep scrolls in sync and set scrollbarWidth
+  useEffect(() => {
+    const content = document.querySelector(".unitables--dmn-runner-drawer .pf-c-drawer__content") as
+      | HTMLElement
+      | undefined;
+
+    const panel = document.querySelector(".unitables--dmn-runner-drawer .pf-c-drawer__panel-main") as
+      | HTMLElement
+      | undefined;
+
+    if (!panel || !content) {
+      return;
+    }
+
+    setScrollbarWidth(content.offsetWidth - content.clientWidth);
+
+    const syncContentScroll = () => (panel.scrollTop = content.scrollTop);
+    const syncPanelScroll = () => (content.scrollTop = panel.scrollTop);
+
+    content.addEventListener("scroll", syncContentScroll);
+    panel.addEventListener("scroll", syncPanelScroll);
+
+    return () => {
+      content.removeEventListener("scroll", syncContentScroll);
+      panel.removeEventListener("scroll", syncPanelScroll);
+    };
+  }, [drawerPanelDefaultSize, drawerPanelMinSize]);
+
+  const drawerPanelMaxSize = useMemo(() => {
+    return `max(50%, ${drawerPanelDefaultSize})`;
+  }, [drawerPanelDefaultSize]);
+
+  const forceRefresh = useCallback(() => {
+    refreshDrawerPanelMinSize();
+    refreshDrawerPanelDefaultSize();
+  }, [refreshDrawerPanelMinSize, refreshDrawerPanelDefaultSize]);
+
+  return {
+    drawerPanelDefaultSize,
+    drawerPanelMinSize,
+    drawerPanelMaxSize,
+    forceDrawerPanelRefresh: forceRefresh,
+  };
 }
