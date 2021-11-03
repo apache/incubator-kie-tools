@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { SupportedFileExtensions, useGlobals } from "../common/GlobalContext";
 import { useHistory } from "react-router";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -102,6 +103,10 @@ export function HomePage() {
     }
   }, [workspaceDescriptorsPromise, closeExpandedWorkspace, expandedWorkspaceId]);
 
+  const buildInfo = useMemo(() => {
+    return process.env["WEBPACK_REPLACE__buildInfo"];
+  }, []);
+
   return (
     <BusinessAutomationStudioPage>
       <PageSection>
@@ -188,7 +193,7 @@ export function HomePage() {
           </SplitItem>
         </Split>
       </PageSection>
-      <PageSection variant={"light"} hasOverflowScroll={true}>
+      <PageSection variant={"light"} hasOverflowScroll={true} style={{ paddingBottom: 0 }}>
         <PromiseStateWrapper
           promise={workspaceDescriptorsPromise}
           rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
@@ -243,6 +248,11 @@ export function HomePage() {
           }}
         />
       </PageSection>
+      {buildInfo && (
+        <div className={"kogito-tooling--build-info"}>
+          <Label>{buildInfo}</Label>
+        </div>
+      )}
     </BusinessAutomationStudioPage>
   );
 }

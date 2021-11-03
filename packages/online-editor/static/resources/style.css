@@ -207,7 +207,11 @@
   font-size: 0.8em;
   position: fixed;
   bottom: 10px;
-  right: 10px;
+  z-index: 9999;
+  width: 100%;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
 }
 
 .kogito--code {
