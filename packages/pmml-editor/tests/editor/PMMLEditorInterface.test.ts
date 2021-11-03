@@ -29,7 +29,6 @@ const envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi> =
   channelApi: channelApi,
   operatingSystem: OperatingSystem.LINUX,
   services: {
-    guidedTour: { isEnabled: () => false },
     keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: OperatingSystem.LINUX }),
     i18n: new I18nService(),
   },

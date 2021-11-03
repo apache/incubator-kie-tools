@@ -57,7 +57,6 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
     externalEditorManager: {
       name: "Test Online Editor",
       getLink: jest.fn((path) => `https://external-editor-link/${path}`),
-      listenToComeBack: jest.fn(),
       open: jest.fn(),
     },
     ...ctx,

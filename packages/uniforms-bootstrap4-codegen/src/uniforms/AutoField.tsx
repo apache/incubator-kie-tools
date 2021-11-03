@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { createAutoField } from "uniforms/es5/createAutoField";
+import { createAutoField } from "uniforms/cjs/createAutoField";
 import {
   BoolField,
   CheckBoxGroupField,

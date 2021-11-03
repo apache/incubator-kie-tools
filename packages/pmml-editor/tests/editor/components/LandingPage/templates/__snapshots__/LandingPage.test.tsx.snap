@@ -18,6 +18,9 @@ exports[`LandingPage render::No Models 1`] = `
         >
           <h2
             class="pf-c-title pf-m-3xl"
+            data-ouia-component-id="OUIA-Generated-Title-1"
+            data-ouia-component-type="PF4/Title"
+            data-ouia-safe="true"
           >
             path
           </h2>
@@ -41,6 +44,9 @@ exports[`LandingPage render::No Models 1`] = `
     </div>
     <div
       class="pf-c-toolbar"
+      data-ouia-component-id="OUIA-Generated-Toolbar-1"
+      data-ouia-component-type="PF4/Toolbar"
+      data-ouia-safe="true"
       data-testid="landing-page-toolbar"
       id="landing-page-toolbar"
     >
@@ -64,6 +70,9 @@ exports[`LandingPage render::No Models 1`] = `
                     aria-invalid="false"
                     aria-label="filter models"
                     class="pf-c-form-control"
+                    data-ouia-component-id="OUIA-Generated-TextInputBase-1"
+                    data-ouia-component-type="PF4/TextInput"
+                    data-ouia-safe="true"
                     data-testid="landing-page-toolbar__model-filter"
                     id="model-filter-input"
                     name="model-filter-input"
@@ -147,6 +156,9 @@ exports[`LandingPage render::No Models 1`] = `
           </svg>
           <h4
             class="pf-c-title pf-m-lg"
+            data-ouia-component-id="OUIA-Generated-Title-2"
+            data-ouia-component-type="PF4/Title"
+            data-ouia-safe="true"
           >
             You don't have any PMML Models
           </h4>
@@ -191,6 +203,9 @@ exports[`LandingPage render::With Supported Model 1`] = `
         >
           <h2
             class="pf-c-title pf-m-3xl"
+            data-ouia-component-id="OUIA-Generated-Title-3"
+            data-ouia-component-type="PF4/Title"
+            data-ouia-safe="true"
           >
             path
           </h2>
@@ -214,6 +229,9 @@ exports[`LandingPage render::With Supported Model 1`] = `
     </div>
     <div
       class="pf-c-toolbar"
+      data-ouia-component-id="OUIA-Generated-Toolbar-2"
+      data-ouia-component-type="PF4/Toolbar"
+      data-ouia-safe="true"
       data-testid="landing-page-toolbar"
       id="landing-page-toolbar"
     >
@@ -237,6 +255,9 @@ exports[`LandingPage render::With Supported Model 1`] = `
                     aria-invalid="false"
                     aria-label="filter models"
                     class="pf-c-form-control"
+                    data-ouia-component-id="OUIA-Generated-TextInputBase-2"
+                    data-ouia-component-type="PF4/TextInput"
+                    data-ouia-safe="true"
                     data-testid="landing-page-toolbar__model-filter"
                     id="model-filter-input"
                     name="model-filter-input"

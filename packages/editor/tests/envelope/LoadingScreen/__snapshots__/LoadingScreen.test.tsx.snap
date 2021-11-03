@@ -35,6 +35,9 @@ exports[`LoadingScreen when just made not visible 1`] = `
           </div>
           <h5
             class="pf-c-title pf-m-md"
+            data-ouia-component-id="OUIA-Generated-Title-2"
+            data-ouia-component-type="PF4/Title"
+            data-ouia-safe="true"
           >
             Loading...
           </h5>
@@ -80,6 +83,9 @@ exports[`LoadingScreen when not visible after fadeout delay 1`] = `
           </div>
           <h5
             class="pf-c-title pf-m-md"
+            data-ouia-component-id="OUIA-Generated-Title-3"
+            data-ouia-component-type="PF4/Title"
+            data-ouia-safe="true"
           >
             Loading...
           </h5>
@@ -125,6 +131,9 @@ exports[`LoadingScreen when visible 1`] = `
           </div>
           <h5
             class="pf-c-title pf-m-md"
+            data-ouia-component-id="OUIA-Generated-Title-1"
+            data-ouia-component-type="PF4/Title"
+            data-ouia-safe="true"
           >
             Loading...
           </h5>

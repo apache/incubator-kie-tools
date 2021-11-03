@@ -24,6 +24,9 @@ exports[`EmptyStateNoModels render 1`] = `
     </svg>
     <h4
       class="pf-c-title pf-m-lg"
+      data-ouia-component-id="OUIA-Generated-Title-1"
+      data-ouia-component-type="PF4/Title"
+      data-ouia-safe="true"
     >
       You don't have any PMML Models
     </h4>

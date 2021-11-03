@@ -13,59 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  EMPTY_FILE_BPMN,
-  EMPTY_FILE_DMN,
-  EMPTY_FILE_PMML,
-  EMPTY_FILE_SCESIM,
-  EmbeddedEditorFile,
-  newFile,
-} from "@kie-tooling-core/editor/dist/channel";
-
-describe("EmbeddedEditorFile::Empty defaults", () => {
-  test("dmn", async () => {
-    expect(EMPTY_FILE_DMN.fileName).toEqual("new-file");
-    expect(EMPTY_FILE_DMN.fileExtension).toEqual("dmn");
-    expect(EMPTY_FILE_DMN.isReadOnly).toBeFalsy();
-
-    await EMPTY_FILE_DMN.getFileContents().then((data) => expect(data).toBe(""));
-  });
-
-  test("bpmn", async () => {
-    expect(EMPTY_FILE_BPMN.fileName).toEqual("new-file");
-    expect(EMPTY_FILE_BPMN.fileExtension).toEqual("bpmn");
-    expect(EMPTY_FILE_BPMN.isReadOnly).toBeFalsy();
-
-    await EMPTY_FILE_BPMN.getFileContents().then((data) => expect(data).toBe(""));
-  });
-
-  test("scesim", async () => {
-    expect(EMPTY_FILE_SCESIM.fileName).toEqual("new-file");
-    expect(EMPTY_FILE_SCESIM.fileExtension).toEqual("scesim");
-    expect(EMPTY_FILE_SCESIM.isReadOnly).toBeFalsy();
-
-    await EMPTY_FILE_SCESIM.getFileContents().then((data) => expect(data).toBe(""));
-  });
-
-  test("pmml", async () => {
-    expect(EMPTY_FILE_PMML.fileName).toEqual("new-file");
-    expect(EMPTY_FILE_PMML.fileExtension).toEqual("pmml");
-    expect(EMPTY_FILE_PMML.isReadOnly).toBeFalsy();
-
-    await EMPTY_FILE_PMML.getFileContents().then((data) => expect(data).toBe(""));
-  });
-});
-
-describe("EmbeddedEditorFile::newFile", () => {
-  test("constructor", async () => {
-    const file: EmbeddedEditorFile = newFile("dmn");
-    expect(file.fileName).toEqual("new-file");
-    expect(file.fileExtension).toEqual("dmn");
-    expect(file.isReadOnly).toBeFalsy();
-
-    await file.getFileContents().then((data) => expect(data).toBe(""));
-  });
-});
+import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 
 describe("EmbeddedEditorFile", () => {
   test("With content", async () => {

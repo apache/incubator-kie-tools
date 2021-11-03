@@ -34,9 +34,6 @@ export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType<K
   channelApi: {} as any,
   services: {
     keyboardShortcuts: new DefaultKeyboardShortcutsService({} as any),
-    guidedTour: {
-      isEnabled: () => false,
-    },
     i18n: new I18nService(),
   },
 };

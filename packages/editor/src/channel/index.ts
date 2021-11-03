@@ -14,12 +14,5 @@
  * limitations under the License.
  */
 
-export {
-  EMPTY_FILE_BPMN,
-  EMPTY_FILE_DMN,
-  EMPTY_FILE_PMML,
-  EMPTY_FILE_SCESIM,
-  EmbeddedEditorFile,
-  newFile,
-} from "./EmbeddedEditorFile";
+export { EmbeddedEditorFile } from "./EmbeddedEditorFile";
 export { StateControl } from "./StateControl";

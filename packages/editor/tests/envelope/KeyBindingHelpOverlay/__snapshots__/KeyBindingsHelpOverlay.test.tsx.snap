@@ -97,6 +97,9 @@ exports[`KeyBindingsHelpOverlay minimal setup 1`] = `
               >
                 <h2
                   class=""
+                  data-ouia-component-id="OUIA-Generated-Text-1"
+                  data-ouia-component-type="PF4/Text"
+                  data-ouia-safe="true"
                   data-pf-content="true"
                 >
                   Copy
@@ -113,6 +116,9 @@ exports[`KeyBindingsHelpOverlay minimal setup 1`] = `
                 />
                 <h2
                   class=""
+                  data-ouia-component-id="OUIA-Generated-Text-2"
+                  data-ouia-component-type="PF4/Text"
+                  data-ouia-safe="true"
                   data-pf-content="true"
                 >
                   Help
