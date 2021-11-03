@@ -125,7 +125,6 @@ export function EditorPage(props: Props) {
           setEmbeddedEditorFile({
             path: workspaceFilePromise.data.relativePath,
             getFileContents: workspaceFilePromise.data.getFileContentsAsString,
-            kind: "local",
             isReadOnly: false,
             fileExtension: workspaceFilePromise.data.extension,
             fileName: workspaceFilePromise.data.nameWithoutExtension,
