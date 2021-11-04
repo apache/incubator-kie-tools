@@ -69,12 +69,14 @@ import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
+import { EditorPageDockDrawerController } from "./EditorPageDockDrawer";
 
 export interface Props {
   alerts: AlertsController | undefined;
   alertsRef: (controller: AlertsController) => void;
   editor: EmbeddedEditorRef | undefined;
   workspaceFile: WorkspaceFile;
+  editorPageDock: EditorPageDockDrawerController | undefined;
 }
 
 const showWhenSmall: ToolbarItemProps["visibility"] = {
@@ -843,7 +845,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       </Dropdown>
                     </ToolbarItem>
                     <ToolbarItem visibility={hideWhenSmall}>
-                      {props.workspaceFile.extension === "dmn" && <KieToolingExtendedServicesButtons />}
+                      {props.workspaceFile.extension === "dmn" && (
+                        <KieToolingExtendedServicesButtons editorPageDock={props.editorPageDock} />
+                      )}
                     </ToolbarItem>
                     {workspace.descriptor.origin.kind === WorkspaceKind.GIST && (
                       <ToolbarItem>

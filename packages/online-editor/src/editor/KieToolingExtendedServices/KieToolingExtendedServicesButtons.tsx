@@ -28,8 +28,13 @@ import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesSt
 import { useSettings } from "../../settings/SettingsContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { DmnRunnerMode } from "../DmnRunner/DmnRunnerStatus";
+import { EditorPageDockDrawerController, PanelId } from "../EditorPageDockDrawer";
 
-export function KieToolingExtendedServicesButtons() {
+interface Props {
+  editorPageDock: EditorPageDockDrawerController | undefined;
+}
+
+export function KieToolingExtendedServicesButtons(props: Props) {
   const { i18n } = useOnlineI18n();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const dmnDevSandbox = useDmnDevSandbox();
@@ -40,7 +45,7 @@ export function KieToolingExtendedServicesButtons() {
   const toggleDmnRunnerDrawer = useCallback(() => {
     if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
       if (dmnRunner.mode === DmnRunnerMode.TABULAR) {
-        // open table
+        props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
       } else {
         dmnRunner.setDrawerExpanded((prev) => !prev);
       }

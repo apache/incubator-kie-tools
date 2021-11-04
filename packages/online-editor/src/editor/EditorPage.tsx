@@ -300,7 +300,13 @@ export function EditorPage(props: Props) {
               <DmnRunnerContextProvider workspaceFile={file} editorPageDock={editorPageDock}>
                 <DmnDevSandboxContextProvider workspaceFile={file} alerts={alerts}>
                   <Page>
-                    <EditorToolbar workspaceFile={file} editor={editor} alerts={alerts} alertsRef={alertsRef} />
+                    <EditorToolbar
+                      workspaceFile={file}
+                      editor={editor}
+                      alerts={alerts}
+                      alertsRef={alertsRef}
+                      editorPageDock={editorPageDock}
+                    />
                     <Divider />
                     <PageSection isFilled={true} padding={{ default: "noPadding" }}>
                       <DmnRunnerDrawer workspaceFile={file} editorPageDock={editorPageDock}>
