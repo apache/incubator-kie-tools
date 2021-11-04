@@ -21,7 +21,7 @@ import { useOnlineI18n } from "../../common/i18n";
 import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
 import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
 import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus";
-import { useDmnRunner } from "../DmnRunner/DmnRunnerContext";
+import { useDmnRunner, useDmnRunnerCallbacks } from "../DmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieToolingExtendedServices } from "./FeatureDependentOnKieToolingExtendedServices";
 import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
@@ -41,6 +41,7 @@ export function KieToolingExtendedServicesButtons(props: Props) {
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const dmnDevSandbox = useDmnDevSandbox();
   const dmnRunner = useDmnRunner();
+  const dmnRunnerCallbacks = useDmnRunnerCallbacks();
   const settings = useSettings();
   const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems(props.workspace);
 
@@ -49,13 +50,13 @@ export function KieToolingExtendedServicesButtons(props: Props) {
       if (dmnRunner.mode === DmnRunnerMode.TABULAR) {
         props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
       } else {
-        dmnRunner.setDrawerExpanded((prev) => !prev);
+        dmnRunnerCallbacks.setDrawerExpanded((prev) => !prev);
       }
       return;
     }
     kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     kieToolingExtendedServices.setModalOpen(true);
-  }, [dmnRunner, kieToolingExtendedServices]);
+  }, [dmnRunner.mode, dmnRunnerCallbacks, kieToolingExtendedServices, props.editorPageDock]);
 
   const toggleDmnDevSandboxDropdown = useCallback(
     (isOpen: boolean) => {

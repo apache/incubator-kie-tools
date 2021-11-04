@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useRef } from "react";
-import { useDmnRunner } from "./DmnRunnerContext";
+import { useDmnRunner, useDmnRunnerCallbacks } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DmnAutoTable } from "@kogito-tooling/unitables";
 import { DecisionResult } from "@kogito-tooling/form/dist/dmn";
@@ -42,6 +42,7 @@ function usePrevious(value: any) {
 
 export function DmnRunnerTabular(props: Props) {
   const dmnRunner = useDmnRunner();
+  const dmnRunnerCallbacks = useDmnRunnerCallbacks();
 
   const updateDmnRunnerResults = useCallback(
     async (tableData: any[]) => {
@@ -54,7 +55,7 @@ export function DmnRunnerTabular(props: Props) {
           if (Object.keys(data).length === 0) {
             return;
           }
-          return dmnRunner.preparePayload(data);
+          return dmnRunnerCallbacks.preparePayload(data);
         })
       );
 
@@ -71,7 +72,7 @@ export function DmnRunnerTabular(props: Props) {
         const runnerResults: Array<DecisionResult[] | undefined> = [];
         for (const result of results) {
           if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
-            dmnRunner.setFormError(true);
+            dmnRunnerCallbacks.setFormError(true);
             break;
           }
           if (result) {
@@ -83,7 +84,7 @@ export function DmnRunnerTabular(props: Props) {
         return undefined;
       }
     },
-    [props.isReady, dmnRunner.status, dmnRunner.service]
+    [props.isReady, dmnRunnerCallbacks, dmnRunner.service]
   );
 
   useEffect(() => {
@@ -92,7 +93,7 @@ export function DmnRunnerTabular(props: Props) {
 
   const previousFormSchema: any = usePrevious(dmnRunner.formSchema);
   useEffect(() => {
-    dmnRunner.setTableData((previousTableData: any) => {
+    dmnRunnerCallbacks.setTableData((previousTableData: any) => {
       const newTableData = [...previousTableData];
       const propertiesDifference = diff(
         (previousFormSchema ?? dmnRunner.formSchema).definitions?.InputSet?.properties ?? {},
@@ -117,17 +118,17 @@ export function DmnRunnerTabular(props: Props) {
         );
       });
     });
-  }, [dmnRunner.formSchema]);
+  }, [dmnRunner.formSchema, dmnRunnerCallbacks, previousFormSchema]);
 
   const openRowOnForm = useCallback(
     (rowIndex: number) => {
-      dmnRunner.setMode(DmnRunnerMode.DRAWER);
+      dmnRunnerCallbacks.setMode(DmnRunnerMode.DRAWER);
       console.log(dmnRunner.tableData);
-      dmnRunner.setFormData(dmnRunner.tableData[rowIndex]);
-      dmnRunner.setDrawerExpanded(true);
+      dmnRunnerCallbacks.setFormData(dmnRunner.tableData[rowIndex]);
+      dmnRunnerCallbacks.setDrawerExpanded(true);
       props.setPanelOpen(PanelId.NONE);
     },
-    [dmnRunner, props]
+    [dmnRunner.tableData, dmnRunnerCallbacks]
   );
 
   return (
@@ -135,10 +136,10 @@ export function DmnRunnerTabular(props: Props) {
       <DmnAutoTable
         schema={dmnRunner.formSchema}
         tableData={dmnRunner.tableData}
-        setTableData={dmnRunner.setTableData}
+        setTableData={dmnRunnerCallbacks.setTableData}
         results={props.dmnRunnerResults}
         formError={dmnRunner.formError}
-        setFormError={dmnRunner.setFormError}
+        setFormError={dmnRunnerCallbacks.setFormError}
         openRowOnForm={openRowOnForm}
       />
     </div>

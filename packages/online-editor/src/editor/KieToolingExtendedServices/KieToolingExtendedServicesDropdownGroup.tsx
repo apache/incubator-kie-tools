@@ -20,7 +20,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../common/i18n";
 import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
-import { useDmnRunner } from "../DmnRunner/DmnRunnerContext";
+import { useDmnRunner, useDmnRunnerCallbacks } from "../DmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieToolingExtendedServices } from "./FeatureDependentOnKieToolingExtendedServices";
 import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
@@ -33,6 +33,7 @@ export function KieToolingExtendedServicesDropdownGroup(props: { workspace: Acti
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const dmnRunner = useDmnRunner();
   const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems(props.workspace);
+  const dmnRunnerCallbacks = useDmnRunnerCallbacks();
 
   const isKieToolingExtendedServicesRunning = useMemo(
     () => kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING,
@@ -41,12 +42,12 @@ export function KieToolingExtendedServicesDropdownGroup(props: { workspace: Acti
 
   const onToggleDmnRunner = useCallback(() => {
     if (isKieToolingExtendedServicesRunning) {
-      dmnRunner.setDrawerExpanded((prev) => !prev);
+      dmnRunnerCallbacks.setDrawerExpanded((prev) => !prev);
       return;
     }
     kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     kieToolingExtendedServices.setModalOpen(true);
-  }, [dmnRunner, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
+  }, [dmnRunnerCallbacks, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
 
   return (
     <>

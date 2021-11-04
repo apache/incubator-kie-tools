@@ -15,41 +15,41 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
+import { EditorPageDockDrawerController } from "../EditorPageDockDrawer";
+import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
-import { DmnRunnerContext } from "./DmnRunnerContext";
-import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
+import { DmnRunnerCallbacksContext, DmnRunnerContext } from "./DmnRunnerContext";
+import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
+import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { QueryParams } from "../../common/Routes";
+import { jsonParseWithDate } from "../../common/utils";
+import { usePrevious } from "../../common/Hooks";
 import { useOnlineI18n } from "../../common/i18n";
-import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useHistory } from "react-router";
 import { useGlobals } from "../../common/GlobalContext";
-import { QueryParams } from "../../common/Routes";
-import { usePrevious } from "../../common/Hooks";
-import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
-import { jsonParseWithDate } from "../../common/utils";
-import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
-import { EditorPageDockDrawerController } from "../EditorPageDockDrawer";
+import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { Notification } from "@kie-tooling-core/notifications/dist/api";
 
 interface Props {
-  children: React.ReactNode;
   editorPageDock: EditorPageDockDrawerController | undefined;
   workspaceFile: WorkspaceFile;
 }
 
-export function DmnRunnerContextProvider(props: Props) {
+export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const { i18n } = useOnlineI18n();
   const queryParams = useQueryParams();
   const history = useHistory();
   const globals = useGlobals();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const workspaces = useWorkspaces();
-  const [isDrawerExpanded, setDrawerExpanded] = useState(false);
+
   const [formData, setFormData] = useState<object>({});
-  const [formSchema, setFormSchema] = useState<DmnFormSchema | undefined>(undefined);
   const [formError, setFormError] = useState(false);
+  const [formSchema, setFormSchema] = useState<DmnFormSchema | undefined>(undefined);
+  const [isDrawerExpanded, setDrawerExpanded] = useState(false);
   const [mode, setMode] = useState(DmnRunnerMode.DRAWER);
   const [tableData, setTableData] = useState([{}]);
 
@@ -98,7 +98,7 @@ export function DmnRunnerContextProvider(props: Props) {
       console.error(err);
       setFormError(true);
     }
-  }, [preparePayload, props.workspaceFile, service]);
+  }, [props.workspaceFile.extension, preparePayload, service]);
 
   useEffect(() => {
     if (props.workspaceFile.extension !== "dmn") {
@@ -107,7 +107,7 @@ export function DmnRunnerContextProvider(props: Props) {
     }
 
     updateFormSchema();
-  }, [props.workspaceFile, updateFormSchema]);
+  }, [updateFormSchema, props.workspaceFile.extension]);
 
   const validate = useCallback(async () => {
     if (props.workspaceFile.extension !== "dmn") {
@@ -141,9 +141,9 @@ export function DmnRunnerContextProvider(props: Props) {
     validate();
   }, [validate]);
 
-  useEffect(() => {
-    updateFormSchema();
-  }, [updateFormSchema]);
+  // useEffect(() => {
+  //   updateFormSchema();
+  // }, [updateFormSchema]);
 
   useEffect(() => {
     if (!formSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
@@ -187,25 +187,32 @@ export function DmnRunnerContextProvider(props: Props) {
   }, [prevKieToolingExtendedServicesStatus, kieToolingExtendedServices.status, props.workspaceFile.extension]);
 
   return (
-    <DmnRunnerContext.Provider
-      value={{
-        status,
-        formSchema,
-        isDrawerExpanded,
-        setDrawerExpanded,
-        formData,
-        setFormData,
-        service,
-        formError,
-        setFormError,
-        preparePayload,
-        tableData,
-        setTableData,
-        mode,
-        setMode,
-      }}
-    >
-      {props.children}
-    </DmnRunnerContext.Provider>
+    <>
+      <DmnRunnerContext.Provider
+        value={{
+          formData,
+          formError,
+          formSchema,
+          isDrawerExpanded,
+          mode,
+          status,
+          service,
+          tableData,
+        }}
+      >
+        <DmnRunnerCallbacksContext.Provider
+          value={{
+            preparePayload,
+            setDrawerExpanded,
+            setFormData,
+            setFormError,
+            setMode,
+            setTableData,
+          }}
+        >
+          {props.children}
+        </DmnRunnerCallbacksContext.Provider>
+      </DmnRunnerContext.Provider>
+    </>
   );
 }

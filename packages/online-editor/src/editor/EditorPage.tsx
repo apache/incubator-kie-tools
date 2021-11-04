@@ -23,7 +23,6 @@ import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
 import { ChannelType } from "@kie-tooling-core/editor/dist/api";
 import { EmbeddedEditor, EmbeddedEditorRef, useStateControlSubscription } from "@kie-tooling-core/editor/dist/embedded";
-import { DmnRunnerContextProvider } from "./DmnRunner/DmnRunnerContextProvider";
 import { Alert, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxContextProvider";
@@ -44,6 +43,7 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { EditorPageDockDrawer, EditorPageDockDrawerController } from "./EditorPageDockDrawer";
+import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
 
 export interface Props {
   workspaceId: string;
@@ -297,7 +297,7 @@ export function EditorPage(props: Props) {
           rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
           resolved={(file) => (
             <>
-              <DmnRunnerContextProvider workspaceFile={file} editorPageDock={editorPageDock}>
+              <DmnRunnerProvider workspaceFile={file} editorPageDock={editorPageDock}>
                 <DmnDevSandboxContextProvider workspaceFile={file} alerts={alerts}>
                   <Page>
                     <EditorToolbar
@@ -337,7 +337,7 @@ export function EditorPage(props: Props) {
                     </PageSection>
                   </Page>
                 </DmnDevSandboxContextProvider>
-              </DmnRunnerContextProvider>
+              </DmnRunnerProvider>
               <TextEditorModal
                 editor={editor}
                 workspaceFile={file}
