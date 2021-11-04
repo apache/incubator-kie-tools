@@ -28,6 +28,8 @@ import {
 import { ExpressionContainer } from "../ExpressionContainer";
 import { hashfy, ResizerSupervisor } from "../Resizer";
 import { CellSelectionBox } from "../SelectionBox";
+import "@patternfly/react-styles/css/components/Drawer/drawer.css";
+import "./base-no-reset-wrapped.css";
 import "./BoxedExpressionEditor.css";
 
 export interface BoxedExpressionEditorProps {

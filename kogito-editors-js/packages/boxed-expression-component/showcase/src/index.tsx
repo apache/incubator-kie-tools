@@ -34,6 +34,7 @@ import {
 } from "./lib";
 import { Button, Modal } from "@patternfly/react-core";
 import { CopyIcon, PenIcon } from "@patternfly/react-icons";
+import "./lib/components/BoxedExpressionEditor/base-no-reset-wrapped.css";
 
 export const App: React.FunctionComponent = () => {
   //This definition comes directly from the decision node
