@@ -17,13 +17,13 @@
 import { BpmnEditorChannelApi } from "../../api";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tooling-core/editor/dist/api";
 import { BpmnEditor } from "../BpmnEditor";
-import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-lsp/dist/api";
+import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
 import { BpmnEditorFactory } from "../BpmnEditorFactory";
 import { VsCodeBpmnEditorChannelApi } from "./VsCodeBpmnEditorChannelApi";
 
 export interface CustomWindow extends Window {
   envelope: {
-    lspService: JavaCodeCompletionApi;
+    javaCodeCompletionService: JavaCodeCompletionApi;
   };
 }
 
@@ -32,17 +32,17 @@ declare let window: CustomWindow;
 class JavaCodeCompletionService implements JavaCodeCompletionApi {
   constructor(private readonly envelopeContext: KogitoEditorEnvelopeContextType<VsCodeBpmnEditorChannelApi>) {}
   getAccessors(fqcn: string, query: string) {
-    return this.envelopeContext.channelApi.requests.kogitoLsp_getAccessors(fqcn, query);
+    return this.envelopeContext.channelApi.requests.kogitoJavaCodeCompletion__getAccessors(fqcn, query);
   }
   getClasses(query: string) {
-    return this.envelopeContext.channelApi.requests.kogitoLsp_getClasses(query);
+    return this.envelopeContext.channelApi.requests.kogitoJavaCodeCompletion__getClasses(query);
   }
   isLanguageServerAvailable() {
-    return this.envelopeContext.channelApi.requests.kogitoLsp_isLanguageServerAvailable();
+    return this.envelopeContext.channelApi.requests.kogitoJavaCodeCompletion__isLanguageServerAvailable();
   }
 }
 
-export class VsCodeBpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorChannelApi> {
+export class VsCodeBpmnEditorFactory implements EditorFactory<BpmnEditor, VsCodeBpmnEditorChannelApi> {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
 
   public createEditor(

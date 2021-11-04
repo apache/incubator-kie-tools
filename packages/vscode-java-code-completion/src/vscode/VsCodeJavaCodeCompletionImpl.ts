@@ -15,12 +15,8 @@
  */
 
 import * as vscode from "vscode";
-import {
-  JavaCodeCompletionAccessor,
-  JavaCodeCompletionApi,
-  JavaCodeCompletionClass,
-  JavaCodeCompletionConstants,
-} from "../api";
+import { JavaCodeCompletionAccessor, JavaCodeCompletionApi, JavaCodeCompletionClass } from "../api";
+import { JavaCodeCompletionConstants } from "./JavaCodeCompletionConstants";
 
 export class VsCodeJavaCodeCompletionImpl implements JavaCodeCompletionApi {
   getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {

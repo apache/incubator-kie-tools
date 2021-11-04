@@ -18,7 +18,7 @@ import { JavaCodeCompletionAccessor } from "./JavaCodeCompletionAccessor";
 import { JavaCodeCompletionClass } from "./JavaCodeCompletionClass";
 
 export interface JavaCodeCompletionChannelApi {
-  kogitoLsp_getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]>;
-  kogitoLsp_getClasses(query: string): Promise<JavaCodeCompletionClass[]>;
-  kogitoLsp_isLanguageServerAvailable(): Promise<boolean>;
+  kogitoJavaCodeCompletion__getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]>;
+  kogitoJavaCodeCompletion__getClasses(query: string): Promise<JavaCodeCompletionClass[]>;
+  kogitoJavaCodeCompletion__isLanguageServerAvailable(): Promise<boolean>;
 }

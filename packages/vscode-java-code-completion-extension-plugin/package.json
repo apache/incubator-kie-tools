@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-tooling/vscode-lsp-extension-plugin",
+  "name": "@kogito-tooling/vscode-java-code-completion-extension-plugin",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",

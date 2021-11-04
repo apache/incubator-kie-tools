@@ -17,7 +17,7 @@
 import { DmnEditorChannelApi } from "../../api";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tooling-core/editor/dist/api";
 import { DmnEditor } from "../DmnEditor";
-import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-lsp/dist/api";
+import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
 import { DmnEditorFactory } from "../DmnEditorFactory";
 import { VsCodeDmnEditorChannelApi } from "./VsCodeDmnEditorChannelApi";
 
@@ -32,17 +32,17 @@ declare let window: CustomWindow;
 class JavaCodeCompletionService implements JavaCodeCompletionApi {
   constructor(private readonly envelopeContext: KogitoEditorEnvelopeContextType<VsCodeDmnEditorChannelApi>) {}
   getAccessors(fqcn: string, query: string) {
-    return this.envelopeContext.channelApi.requests.kogitoLsp_getAccessors(fqcn, query);
+    return this.envelopeContext.channelApi.requests.kogitoJavaCodeCompletion__getAccessors(fqcn, query);
   }
   getClasses(query: string) {
-    return this.envelopeContext.channelApi.requests.kogitoLsp_getClasses(query);
+    return this.envelopeContext.channelApi.requests.kogitoJavaCodeCompletion__getClasses(query);
   }
   isLanguageServerAvailable() {
-    return this.envelopeContext.channelApi.requests.kogitoLsp_isLanguageServerAvailable();
+    return this.envelopeContext.channelApi.requests.kogitoJavaCodeCompletion__isLanguageServerAvailable();
   }
 }
 
-export class VsCodeDmnEditorFactory implements EditorFactory<DmnEditor, DmnEditorChannelApi> {
+export class VsCodeDmnEditorFactory implements EditorFactory<DmnEditor, VsCodeDmnEditorChannelApi> {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
 
   public createEditor(
@@ -51,7 +51,7 @@ export class VsCodeDmnEditorFactory implements EditorFactory<DmnEditor, DmnEdito
   ): Promise<DmnEditor> {
     window.envelope = {
       ...(window.envelope ?? {}),
-      ...{ lspService: new JavaCodeCompletionService(ctx) },
+      ...{ javaCodeCompletionService: new JavaCodeCompletionService(ctx) },
     };
 
     const factory = new DmnEditorFactory(this.gwtEditorEnvelopeConfig);

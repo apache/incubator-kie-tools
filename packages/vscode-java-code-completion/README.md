@@ -6,8 +6,8 @@ This package provides a type-safe Java Code Completion library for a Typescript 
 
 Can be installed with `yarn` or `npm`:
 
-- `yarn add @kie-tooling-core/vscode-lsp`
-- `npm install @kie-tooling-core/vscode-lsp`
+- `yarn add @kie-tooling-core/vscode-java-code-completion`
+- `npm install @kie-tooling-core/vscode-java-code-completion`
 
 ## Usage
 
@@ -18,9 +18,9 @@ The library is separated into two submodules:
 
   to use the core:
 
-  - `import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-lsp/dist/api"`
-  - `import { JavaCodeCompletionAccessor } from "@kie-tooling-core/notifications/dist/api"`
-  - `import { JavaCodeCompletionClass } from "@kie-tooling-core/notifications/dist/api"`
+  - `import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-java-code-completion/dist/api"`
+  - `import { JavaCodeCompletionAccessor } from "@kie-tooling-core/vscode-java-code-completion/dist/api"`
+  - `import { JavaCodeCompletionClass } from "@kie-tooling-core/vscode-java-code-completion/dist/api"`
 
 - vscode
 
@@ -29,8 +29,8 @@ The library is separated into two submodules:
   to use the vscode classes:
 
   ```ts
-  import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-lsp/dist/api";
-  import { VsCodeJavaCodeCompletionImpl } from "@kie-tooling-core/i18n/dist/vscode";
+  import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
+  import { VsCodeJavaCodeCompletionImpl } from "@kie-tooling-core/vscode-java-code-completion/dist/vscode";
 
   const api: VsCodeJavaCodeCompletionApi = new VsCodeJavaCodeCompletionImpl();
   ```

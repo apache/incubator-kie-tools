@@ -43,7 +43,6 @@ class JavaEngineTest {
     public void testImportPosition() {
         BuildInformation info = this.javaEngine.buildImportClass(uri, "java.util.");
         int position = info.getPosition();
-        System.out.println(info.getText());
         assertThat(position).isEqualTo(17);
     }
 

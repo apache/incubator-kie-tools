@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { JavaCodeCompletionChannelApi } from "@kie-tooling-core/vscode-lsp/dist/api";
+import { JavaCodeCompletionChannelApi } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
 import { DmnEditorChannelApi } from "../../api";
 
 export interface VsCodeDmnEditorChannelApi extends DmnEditorChannelApi, JavaCodeCompletionChannelApi {}

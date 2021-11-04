@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { JavaCodeCompletionChannelApi } from "@kie-tooling-core/vscode-lsp/dist/api";
+import { JavaCodeCompletionChannelApi } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
 import { BpmnEditorChannelApi } from "../../api";
 
 export interface VsCodeBpmnEditorChannelApi extends BpmnEditorChannelApi, JavaCodeCompletionChannelApi {}

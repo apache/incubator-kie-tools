@@ -31,14 +31,14 @@ module.exports = {
     const path = nodePath.resolve(
       __dirname,
       nodeModulesDir +
-        "/@kogito-tooling/vscode-lsp-extension-plugin/vscode-lsp-extension-plugin-core/target/vscode-lsp-extension-plugin-core.jar"
+        "/@kogito-tooling/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin-core/target/vscode-java-code-completion-extension-plugin-core.jar"
     );
 
     if (!nodeFs.existsSync(path)) {
-      throw new Error(`VSCode LSP Extension Plugin :: path doesn't exist: ${path}`);
+      throw new Error(`VSCode Java Code Completion Extension Plugin :: path doesn't exist: ${path}`);
     }
 
-    console.info(`VSCode LSP Extension Plugin :: path: ${path}`);
+    console.info(`VSCode Java Code Completion Extension Plugin :: path: ${path}`);
 
     return path;
   },

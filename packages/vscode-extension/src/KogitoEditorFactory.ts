@@ -31,7 +31,7 @@ import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentSer
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 import { I18n } from "@kie-tooling-core/i18n/dist/core";
 import { VsCodeI18n } from "./i18n";
-import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-lsp/dist/api";
+import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
 
 export class KogitoEditorFactory {
   constructor(

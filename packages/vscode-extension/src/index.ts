@@ -26,7 +26,7 @@ import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorWebviewProvider } from "./KogitoEditorWebviewProvider";
 import { VsCodeNotificationsApi } from "@kie-tooling-core/notifications/dist/vscode";
-import { VsCodeJavaCodeCompletionImpl } from "@kie-tooling-core/vscode-lsp/dist/vscode";
+import { VsCodeJavaCodeCompletionImpl } from "@kie-tooling-core/vscode-java-code-completion/dist/vscode";
 
 /**
  * Starts a Kogito extension.

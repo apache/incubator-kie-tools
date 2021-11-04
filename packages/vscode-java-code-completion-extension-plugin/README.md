@@ -19,7 +19,7 @@ Once compiled you need to copy the generated JAR in a folder inside the extensio
 ```json
 "contributes": {
     "javaExtensions": [
-      "./server/vscode-lsp-extension-plugin.jar"
+      "./server/vscode-java-code-completion-extension-plugin.jar"
     ],
     ...
 }

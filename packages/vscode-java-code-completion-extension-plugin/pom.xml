@@ -18,11 +18,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.kiegroup.kogito.tooling</groupId>
-  <artifactId>vscode-lsp-extension-plugin</artifactId>
+  <artifactId>vscode-java-code-completion-extension-plugin</artifactId>
   <version>0.0.0</version>
   <packaging>pom</packaging>
-  <name>vscode-lsp-extension-plugin :: parent</name>
-  <description>vscode-lsp-extension-plugin parent</description>
+  <name>vscode-java-code-completion-extension-plugin :: parent</name>
+  <description>vscode-java-code-completion-extension-plugin parent</description>
 
   <prerequisites>
     <maven>3.0</maven>
@@ -206,6 +206,6 @@
     </pluginRepository>
   </pluginRepositories>
   <modules>
-    <module>vscode-lsp-extension-plugin-core</module>
+    <module>vscode-java-code-completion-extension-plugin-core</module>
   </modules>
 </project>

@@ -34,7 +34,7 @@ import {
   JavaCodeCompletionApi,
   JavaCodeCompletionAccessor,
   JavaCodeCompletionClass,
-} from "@kie-tooling-core/vscode-lsp/dist/api";
+} from "@kie-tooling-core/vscode-java-code-completion/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   private readonly decoder = new TextDecoder("utf-8");

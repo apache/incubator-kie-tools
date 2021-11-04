@@ -15,7 +15,7 @@
   "dependencies": {
     "@kie-tooling-core/editor": "0.0.0",
     "@kogito-tooling/pmml-editor-marshaller": "0.0.0",
-    "@kie-tooling-core/vscode-lsp": "0.0.0"
+    "@kie-tooling-core/vscode-java-code-completion": "0.0.0"
   },
   "devDependencies": {
     "@kogito-tooling/build-env": "0.0.0"

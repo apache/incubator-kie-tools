@@ -67,4 +67,6 @@ package-lock.json
 
 **/jitexecutor
 
-**/server
+# Language Server Extension
+packages/vscode-extension-dmn-editor/server
+packages/vscode-extension-bpmn-editor/server
