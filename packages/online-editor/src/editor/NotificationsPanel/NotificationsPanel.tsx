@@ -15,11 +15,10 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { Badge } from "@patternfly/react-core/dist/js/components/Badge";
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { AngleUpIcon } from "@patternfly/react-icons/dist/js/icons/angle-up-icon";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { NotificationPanelTabContent } from "./NotificationsPanelTabContent";
@@ -33,7 +32,7 @@ interface Props {
 export interface NotificationsPanelController {
   getTab: (name: string) => NotificationsApi | undefined;
   setActiveTab: React.Dispatch<React.SetStateAction<string>>;
-  getTotalNotificationsCount: () => number;
+  getOtherTabsCount: (name: string) => number;
 }
 
 export const NotificationsPanel = React.forwardRef<NotificationsPanelController, Props>((props, forwardRef) => {
@@ -42,26 +41,23 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelController,
   const [tabsNotificationsCount, setTabsNotificationsCount] = useState<Map<string, number>>(new Map());
   const tabs: Map<string, React.RefObject<NotificationsApi>> = useMemo(() => new Map(), []);
 
+  const getOtherTabsCount = useCallback(
+    (name: string) => {
+      return [...tabsNotificationsCount.entries()]
+        .filter(([tabName]) => tabName !== name)
+        .reduce((acc, [, count]) => acc + count, 0);
+    },
+    [tabsNotificationsCount]
+  );
+
   useImperativeHandle(
     forwardRef,
     () => ({
       getTab: (name: string) => tabs.get(name)?.current ?? undefined,
-      setActiveTab,
-      getTotalNotificationsCount,
+      setActiveTab: (name: string) => setActiveTab(name),
+      getOtherTabsCount: (name: string) => getOtherTabsCount(name),
     }),
-    [tabs]
-  );
-
-  const getTotalNotificationsCount = useCallback(() => {
-    return [...tabsNotificationsCount.values()].reduce((acc, value) => acc + value, 0);
-  }, [tabsNotificationsCount]);
-
-  // create tabs
-  const setTabsMap = useCallback(
-    (tabsMap: Array<[string, React.RefObject<NotificationsApi>]>) => {
-      tabsMap.forEach(([tabName, tabRef]) => tabs.set(tabName, tabRef));
-    },
-    [tabs]
+    [tabs, getOtherTabsCount]
   );
 
   const tabsMap: Map<string, React.RefObject<NotificationsApi>> = useMemo(
@@ -89,19 +85,42 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelController,
   }, [props.tabNames]);
 
   useEffect(() => {
-    setTabsMap([...tabsMap.entries()]);
-  }, [tabsMap, setTabsMap]);
+    [...tabsMap.entries()].forEach(([tabName, tabRef]) => tabs.set(tabName, tabRef));
+  }, [tabs, tabsMap]);
 
-  const onNotificationsLengthChange = useCallback((name: string, newQtt: number) => {
-    setTabsNotificationsCount((prev) => {
-      const newMap = new Map(prev);
-      if (prev.get(name) !== newQtt) {
-        // totalNotificationsSpanRef.current?.classList.add("kogito--editor__notifications-panel-error-count-updated");
-      }
-      newMap.set(name, newQtt);
-      return newMap;
-    });
+  const hasChanged = useCallback((newMap: Map<string, number>, prevMap: Map<string, number>) => {
+    const newEntries = [...newMap.entries()];
+    const prevEntries = [...prevMap.entries()];
+    const checkAgainst = (entries: [string, number][], map: Map<string, number>) => {
+      return entries.reduce((hasChanged, [key, value]) => {
+        if (map.get(key) !== value) {
+          hasChanged = true;
+        }
+        return hasChanged;
+      }, false);
+    };
+
+    const newCheck = checkAgainst(newEntries, prevMap);
+    const prevCheck = checkAgainst(prevEntries, newMap);
+    return newCheck && prevCheck;
   }, []);
+
+  const onNotificationsLengthChange = useCallback(
+    (name: string, newQtt: number) => {
+      setTabsNotificationsCount((prev) => {
+        const newMap = new Map(prev);
+        if (prev.get(name) !== newQtt) {
+          // totalNotificationsSpanRef.current?.classList.add("kogito--editor__notifications-panel-error-count-updated");
+        }
+        newMap.set(name, newQtt);
+        if (hasChanged(newMap, prev)) {
+          return newMap;
+        }
+        return prev;
+      });
+    },
+    [hasChanged]
+  );
 
   const onSelectTab = useCallback((event, tabName) => {
     setActiveTab(tabName);

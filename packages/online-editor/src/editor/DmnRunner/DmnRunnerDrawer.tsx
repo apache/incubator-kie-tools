@@ -2,7 +2,6 @@ import * as React from "react";
 import { DmnRunnerDrawerPanelContent } from "./DmnRunnerDrawerPanelContent";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { useDmnRunner } from "./DmnRunnerContext";
-import { NotificationsPanelController } from "../NotificationsPanel/NotificationsPanel";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { EditorPageDockDrawerController } from "../EditorPageDockDrawer";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
@@ -10,7 +9,6 @@ import { DmnRunnerMode } from "./DmnRunnerStatus";
 export function DmnRunnerDrawer(props: {
   workspaceFile: WorkspaceFile;
   editorPageDock: EditorPageDockDrawerController | undefined;
-  notificationsPanel: NotificationsPanelController | undefined;
   children: React.ReactNode;
 }) {
   const dmnRunner = useDmnRunner();
@@ -21,11 +19,7 @@ export function DmnRunnerDrawer(props: {
           !dmnRunner.isDrawerExpanded ? "kogito--editor__drawer-content-onClose" : "kogito--editor__drawer-content-open"
         }
         panelContent={
-          <DmnRunnerDrawerPanelContent
-            workspaceFile={props.workspaceFile}
-            editorPageDock={props.editorPageDock}
-            notificationsPanel={props.notificationsPanel}
-          />
+          <DmnRunnerDrawerPanelContent workspaceFile={props.workspaceFile} editorPageDock={props.editorPageDock} />
         }
       >
         <DrawerContentBody className={"kogito--editor__drawer-content-body"}>{props.children}</DrawerContentBody>

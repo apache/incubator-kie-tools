@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { useGlobals } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
@@ -24,7 +24,6 @@ import { useOnlineI18n } from "../common/i18n";
 import { ChannelType } from "@kie-tooling-core/editor/dist/api";
 import { EmbeddedEditor, EmbeddedEditorRef, useStateControlSubscription } from "@kie-tooling-core/editor/dist/embedded";
 import { DmnRunnerContextProvider } from "./DmnRunner/DmnRunnerContextProvider";
-import { NotificationsPanelController } from "./NotificationsPanel/NotificationsPanel";
 import { Alert, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DmnDevSandboxContextProvider } from "./DmnDevSandbox/DmnDevSandboxContextProvider";
@@ -58,7 +57,6 @@ export function EditorPage(props: Props) {
   const { locale, i18n } = useOnlineI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
   const [alerts, alertsRef] = useController<AlertsController>();
-  const [notificationsPanel, notificationsPanelRef] = useController<NotificationsPanelController>();
   const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerController>();
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
 
@@ -241,12 +239,13 @@ export function EditorPage(props: Props) {
     //FIXME: tiago What to do?
     setTimeout(() => {
       editor?.validate().then((notifications) => {
-        notificationsPanel
+        editorPageDock
+          ?.getNotificationsPanel()
           ?.getTab(i18n.terms.validation)
           ?.kogitoNotifications_setNotifications("", Array.isArray(notifications) ? notifications : []);
       });
     }, 200);
-  }, [workspaceFilePromise, notificationsPanel, editor, i18n]);
+  }, [workspaceFilePromise, editor, i18n, editorPageDock]);
 
   const handleOpenFile = useCallback(
     async (relativePath: string) => {
@@ -298,23 +297,17 @@ export function EditorPage(props: Props) {
           rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
           resolved={(file) => (
             <>
-              <DmnRunnerContextProvider workspaceFile={file} notificationsPanel={notificationsPanel}>
+              <DmnRunnerContextProvider workspaceFile={file} editorPageDock={editorPageDock}>
                 <DmnDevSandboxContextProvider workspaceFile={file} alerts={alerts}>
                   <Page>
                     <EditorToolbar workspaceFile={file} editor={editor} alerts={alerts} alertsRef={alertsRef} />
                     <Divider />
                     <PageSection isFilled={true} padding={{ default: "noPadding" }}>
-                      <DmnRunnerDrawer
-                        workspaceFile={file}
-                        notificationsPanel={notificationsPanel}
-                        editorPageDock={editorPageDock}
-                      >
+                      <DmnRunnerDrawer workspaceFile={file} editorPageDock={editorPageDock}>
                         <EditorPageDockDrawer
                           ref={editorPageDockRef}
-                          isReady={editor?.isReady}
+                          isEditorReady={editor?.isReady}
                           workspaceFile={file}
-                          notificationsPanel={notificationsPanel}
-                          notificationsPanelRef={notificationsPanelRef}
                         >
                           {embeddedEditorFile && (
                             <EmbeddedEditor

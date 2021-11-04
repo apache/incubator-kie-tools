@@ -30,12 +30,12 @@ import { QueryParams } from "../../common/Routes";
 import { usePrevious } from "../../common/Hooks";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { jsonParseWithDate } from "../../common/utils";
-import { NotificationsPanelController } from "../NotificationsPanel/NotificationsPanel";
 import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { EditorPageDockDrawerController } from "../EditorPageDockDrawer";
 
 interface Props {
   children: React.ReactNode;
-  notificationsPanel: NotificationsPanelController | undefined;
+  editorPageDock: EditorPageDockDrawerController | undefined;
   workspaceFile: WorkspaceFile;
 }
 
@@ -115,7 +115,7 @@ export function DmnRunnerContextProvider(props: Props) {
     }
 
     if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
-      props.notificationsPanel?.getTab(i18n.terms.validation)?.kogitoNotifications_setNotifications("", []);
+      props.editorPageDock?.setNotifications(i18n.terms.validation, "", []);
       return;
     }
 
@@ -127,8 +127,15 @@ export function DmnRunnerContextProvider(props: Props) {
       severity: validationResult.severity,
       message: `${validationResult.messageType}: ${validationResult.message}`,
     }));
-    props.notificationsPanel?.getTab(i18n.terms.validation)?.kogitoNotifications_setNotifications("", notifications);
-  }, [props.workspaceFile, props.notificationsPanel, kieToolingExtendedServices.status, i18n, preparePayload, service]);
+    props.editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
+  }, [
+    props.workspaceFile,
+    props.editorPageDock,
+    kieToolingExtendedServices.status,
+    preparePayload,
+    service,
+    i18n.terms.validation,
+  ]);
 
   useEffect(() => {
     validate();

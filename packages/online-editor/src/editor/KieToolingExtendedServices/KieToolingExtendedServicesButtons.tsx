@@ -27,6 +27,7 @@ import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExt
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 import { useSettings } from "../../settings/SettingsContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { DmnRunnerMode } from "../DmnRunner/DmnRunnerStatus";
 
 export function KieToolingExtendedServicesButtons() {
   const { i18n } = useOnlineI18n();
@@ -38,7 +39,11 @@ export function KieToolingExtendedServicesButtons() {
 
   const toggleDmnRunnerDrawer = useCallback(() => {
     if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
-      dmnRunner.setDrawerExpanded((prev) => !prev);
+      if (dmnRunner.mode === DmnRunnerMode.TABULAR) {
+        // open table
+      } else {
+        dmnRunner.setDrawerExpanded((prev) => !prev);
+      }
       return;
     }
     kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);

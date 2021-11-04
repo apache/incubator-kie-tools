@@ -37,7 +37,6 @@ import { ErrorBoundary } from "../../common/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import { NotificationsPanelController } from "../NotificationsPanel/NotificationsPanel";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { EditorPageDockDrawerController, PanelId } from "../EditorPageDockDrawer";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
@@ -52,7 +51,6 @@ enum ButtonPosition {
 interface Props {
   workspaceFile: WorkspaceFile;
   editorPageDock: EditorPageDockDrawerController | undefined;
-  notificationsPanel: NotificationsPanelController | undefined;
 }
 
 const DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION = 711;
@@ -131,9 +129,9 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           }));
         }
       );
-      props.notificationsPanel?.getTab(i18n.terms.execution)?.kogitoNotifications_setNotifications("", notifications);
+      props.editorPageDock?.setNotifications(i18n.terms.execution, "", notifications);
     },
-    [props.notificationsPanel, i18n]
+    [props.editorPageDock, i18n.terms.execution]
   );
 
   const updateDmnRunnerResults = useCallback(
@@ -192,13 +190,13 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const openValidationTab = useCallback(() => {
     props.editorPageDock?.open(PanelId.NOTIFICATIONS_PANEL);
-    props.notificationsPanel?.setActiveTab(i18n.terms.validation);
-  }, [props.notificationsPanel, i18n]);
+    props.editorPageDock?.getNotificationsPanel()?.setActiveTab(i18n.terms.validation);
+  }, [props.editorPageDock, i18n]);
 
   const openExecutionTab = useCallback(() => {
     props.editorPageDock?.open(PanelId.NOTIFICATIONS_PANEL);
-    props.notificationsPanel?.setActiveTab(i18n.terms.execution);
-  }, [props.notificationsPanel, i18n]);
+    props.editorPageDock?.getNotificationsPanel()?.setActiveTab(i18n.terms.execution);
+  }, [props.editorPageDock, i18n]);
 
   const drawerErrorMessage = useMemo(
     () => (
