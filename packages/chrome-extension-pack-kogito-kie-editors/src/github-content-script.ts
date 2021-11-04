@@ -16,7 +16,6 @@
 
 import { ChromeRouter } from "./ChromeRouter";
 import { startExtension } from "@kie-tooling-core/chrome-extension";
-import { OnlineEditorManager } from "./OnlineEditorManager";
 
 const resourcesPathPrefix = new ChromeRouter().getResourcesPathPrefix();
 
@@ -24,7 +23,6 @@ startExtension({
   name: "Kogito :: BPMN and DMN editors",
   extensionIconUrl: chrome.extension.getURL("/resources/kie_icon.png"),
   githubAuthTokenCookieName: "github-oauth-token-kie-editors",
-  externalEditorManager: new OnlineEditorManager(),
   editorEnvelopeLocator: {
     targetOrigin: window.location.origin,
     mapping: new Map([
