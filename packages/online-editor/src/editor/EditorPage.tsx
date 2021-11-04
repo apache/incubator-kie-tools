@@ -37,7 +37,7 @@ import { ResourceContentRequest, ResourceListRequest } from "@kie-tooling-core/w
 import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
-import { BusinessAutomationStudioPage } from "../home/pageTemplate/BusinessAutomationStudioPage";
+import { OnlineEditorPage } from "../home/pageTemplate/OnlineEditorPage";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -279,7 +279,7 @@ export function EditorPage(props: Props) {
   }, [setContentErrorAlert]);
 
   return (
-    <BusinessAutomationStudioPage>
+    <OnlineEditorPage>
       <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
         <PromiseStateWrapper
           promise={workspaceFilePromise}
@@ -348,6 +348,6 @@ export function EditorPage(props: Props) {
           )}
         />
       </PageSection>
-    </BusinessAutomationStudioPage>
+    </OnlineEditorPage>
   );
 }

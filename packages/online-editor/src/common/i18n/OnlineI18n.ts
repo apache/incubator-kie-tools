@@ -217,10 +217,6 @@ interface OnlineDictionary extends ReferenceDictionary {
       getHub: string;
       onlineForum: string;
     };
-    header: {
-      title: string;
-      welcomeText: string;
-    };
     bpmnCard: {
       title: string;
       explanation: string;

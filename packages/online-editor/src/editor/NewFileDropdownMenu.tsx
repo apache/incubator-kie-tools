@@ -199,11 +199,11 @@ export function NewFileDropdownMenu(props: {
           <MenuItem
             itemId={"newBpmnItemId"}
             onClick={() => addEmptyFile("bpmn")}
-            description="BPMN files are used to generate business processes"
+            description="BPMN files are used to generate Workflows"
           >
             <b>
               <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-                <FlexItem>Process</FlexItem>
+                <FlexItem>Workflow</FlexItem>
                 <FlexItem>
                   <FileLabel extension={"bpmn"} />
                 </FlexItem>

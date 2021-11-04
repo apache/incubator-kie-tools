@@ -23,7 +23,7 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { BusinessAutomationStudioPage } from "./pageTemplate/BusinessAutomationStudioPage";
+import { OnlineEditorPage } from "./pageTemplate/OnlineEditorPage";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
@@ -108,7 +108,7 @@ export function HomePage() {
   }, []);
 
   return (
-    <BusinessAutomationStudioPage>
+    <OnlineEditorPage>
       <PageSection>
         <Split isWrappable={true} hasGutter={true}>
           <SplitItem isFilled={true}>
@@ -124,7 +124,7 @@ export function HomePage() {
                 minWidths={{ sm: "calc(33% - 16px)", default: "100%" }}
                 style={{ height: "calc(100% - 32px)" }}
               >
-                <NewModelCard title={"Process"} extension={"bpmn"} />
+                <NewModelCard title={"Workflow"} extension={"bpmn"} />
                 {/*<Divider isVertical={true} />*/}
                 <NewModelCard title={"Decision"} extension={"dmn"} />
                 {/*<Divider isVertical={true} />*/}
@@ -213,7 +213,7 @@ export function HomePage() {
           <Label>{buildInfo}</Label>
         </div>
       )}
-    </BusinessAutomationStudioPage>
+    </OnlineEditorPage>
   );
 }
 

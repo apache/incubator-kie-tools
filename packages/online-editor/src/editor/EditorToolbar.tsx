@@ -421,7 +421,7 @@ export function EditorToolbar(props: Props) {
         files: {
           "README.md": {
             content: `
-This Gist was created from Business Automation Studio. 
+This Gist was created from Kogito Tooling .NEW. 
 
 This file is temporary and you should not be seeing it. 
 If you are, it means that creating this Gist failed and it can safely be deleted.

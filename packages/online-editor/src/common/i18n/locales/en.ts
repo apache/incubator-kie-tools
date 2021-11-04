@@ -227,13 +227,9 @@ export const en: OnlineI18n = {
       getHub: `Get ${en_common.names.businessModeler.hub}`,
       onlineForum: "Online forum",
     },
-    header: {
-      title: `Asset Editor for ${en_common.names.kogito} and Process Automation`,
-      welcomeText: `Welcome to ${en_common.names.businessModeler.name}! These simple ${en_common.names.bpmn}, ${en_common.names.dmn} and ${en_common.names.pmml} editors are here to allow you to collaborate quickly\n and to help introduce you to the new tools and capabilities of Process Automation. Feel free to get in touch\n in the forum or review the documentation for more information.`,
-    },
     bpmnCard: {
       title: `Workflow (.${en_common.names.bpmn})`,
-      explanation: `${en_common.names.bpmn} files are used to generate business processes.`,
+      explanation: `${en_common.names.bpmn} files are used to generate Workflows.`,
       createNew: "Create new workflow",
     },
     dmnCard: {

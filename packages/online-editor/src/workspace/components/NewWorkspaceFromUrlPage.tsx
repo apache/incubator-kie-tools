@@ -10,7 +10,7 @@ import { QueryParams } from "../../common/Routes";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useSettings } from "../../settings/SettingsContext";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
-import { BusinessAutomationStudioPage } from "../../home/pageTemplate/BusinessAutomationStudioPage";
+import { OnlineEditorPage } from "../../home/pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { basename } from "path";
 import { WorkspaceKind } from "../model/WorkspaceOrigin";
@@ -146,7 +146,7 @@ export function NewWorkspaceFromUrlPage() {
 
   return (
     <>
-      <BusinessAutomationStudioPage>
+      <OnlineEditorPage>
         {importableUrl.errors && <EditorPageErrorPage path={importableUrl.url} errors={importableUrl.errors} />}
         {importingError && <EditorPageErrorPage path={importableUrl.url.toString()} errors={[importingError]} />}
         {!importableUrl.errors && (
@@ -162,7 +162,7 @@ export function NewWorkspaceFromUrlPage() {
             </Bullseye>
           </PageSection>
         )}
-      </BusinessAutomationStudioPage>
+      </OnlineEditorPage>
     </>
   );
 }
