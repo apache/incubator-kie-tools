@@ -29,9 +29,11 @@ import { useSettings } from "../../settings/SettingsContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { DmnRunnerMode } from "../DmnRunner/DmnRunnerStatus";
 import { EditorPageDockDrawerController, PanelId } from "../EditorPageDockDrawer";
+import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerController | undefined;
+  workspace: ActiveWorkspace | undefined;
 }
 
 export function KieToolingExtendedServicesButtons(props: Props) {
@@ -40,7 +42,7 @@ export function KieToolingExtendedServicesButtons(props: Props) {
   const dmnDevSandbox = useDmnDevSandbox();
   const dmnRunner = useDmnRunner();
   const settings = useSettings();
-  const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems();
+  const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems(props.workspace);
 
   const toggleDmnRunnerDrawer = useCallback(() => {
     if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {

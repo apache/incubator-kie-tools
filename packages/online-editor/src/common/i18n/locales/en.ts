@@ -92,7 +92,7 @@ export const en: OnlineI18n = {
     },
     dropdown: {
       noDeployments: "Your deployments show up here",
-      setupFor: (username: string) => `Setup for ${username}`,
+      connectedTo: (username: string) => `Connected to  '${username}'`,
       item: {
         upTooltip: "This deployment is up and running.",
         downTooltip: "This deployment is not running.",

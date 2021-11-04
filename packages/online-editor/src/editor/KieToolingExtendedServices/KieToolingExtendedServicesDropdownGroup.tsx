@@ -26,12 +26,13 @@ import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExt
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 import { KieToolingExtendedServicesIcon } from "./KieToolingExtendedServicesIcon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 
-export function KieToolingExtendedServicesDropdownGroup() {
+export function KieToolingExtendedServicesDropdownGroup(props: { workspace: ActiveWorkspace | undefined }) {
   const { i18n } = useOnlineI18n();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const dmnRunner = useDmnRunner();
-  const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems();
+  const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems(props.workspace);
 
   const isKieToolingExtendedServicesRunning = useMemo(
     () => kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING,

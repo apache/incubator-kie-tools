@@ -89,7 +89,7 @@ interface OnlineDictionary extends ReferenceDictionary {
     };
     dropdown: {
       noDeployments: string;
-      setupFor: (username: string) => string;
+      connectedTo: (username: string) => string;
       item: {
         upTooltip: string;
         downTooltip: string;

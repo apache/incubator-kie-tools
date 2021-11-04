@@ -846,7 +846,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     </ToolbarItem>
                     <ToolbarItem visibility={hideWhenSmall}>
                       {props.workspaceFile.extension === "dmn" && (
-                        <KieToolingExtendedServicesButtons editorPageDock={props.editorPageDock} />
+                        <KieToolingExtendedServicesButtons
+                          workspace={workspace}
+                          editorPageDock={props.editorPageDock}
+                        />
                       )}
                     </ToolbarItem>
                     {workspace.descriptor.origin.kind === WorkspaceKind.GIST && (
@@ -917,7 +920,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             ? []
                             : [
                                 <Divider key={"divider-2"} />,
-                                <KieToolingExtendedServicesDropdownGroup key="kie-tooling-extended-services-group" />,
+                                <KieToolingExtendedServicesDropdownGroup
+                                  workspace={workspace}
+                                  key="kie-tooling-extended-services-group"
+                                />,
                               ]),
                         ]}
                       />

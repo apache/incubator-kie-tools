@@ -57,7 +57,7 @@ export function WorkspacesContextProvider(props: Props) {
     [storageService, descriptorService, fsService]
   );
 
-  const gitService = useMemo(() => new GitService(GIT_CORS_PROXY), [service]);
+  const gitService = useMemo(() => new GitService(GIT_CORS_PROXY), []);
 
   const getAbsolutePath = useCallback(
     (args: { workspaceId: string; relativePath?: string }) => service.getAbsolutePath(args),

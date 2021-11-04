@@ -7,7 +7,7 @@ import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/di
 import { SettingsButton } from "../../settings/SettingsButton";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { KieToolingExtendedServicesIcon } from "../../editor/KieToolingExtendedServices/KieToolingExtendedServicesIcon";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { OpenshiftDeploymentsDropdown } from "../../editor/DmnDevSandbox/OpenshiftDeploymentsDropdown";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const globals = useGlobals();
@@ -36,12 +36,17 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
           <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
             <FlexItem>
               <PageHeaderToolsItem>
-                <KieToolingExtendedServicesIcon />
+                <OpenshiftDeploymentsDropdown />
               </PageHeaderToolsItem>
             </FlexItem>
             <FlexItem>
               <PageHeaderToolsItem>
                 <SettingsButton />
+              </PageHeaderToolsItem>
+            </FlexItem>
+            <FlexItem>
+              <PageHeaderToolsItem>
+                <KieToolingExtendedServicesIcon />
               </PageHeaderToolsItem>
             </FlexItem>
           </Flex>

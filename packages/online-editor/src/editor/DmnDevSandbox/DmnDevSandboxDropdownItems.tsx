@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DropdownItem, DropdownSeparator } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../common/i18n";
@@ -26,11 +26,13 @@ import {
   useKieToolingExtendedServices,
 } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
-import { DmnDevSandboxDeploymentDropdownItem } from "./DmnDevSandboxDeploymentDropdownItem";
 import { useSettings } from "../../settings/SettingsContext";
 import { SettingsTabs } from "../../settings/SettingsModalBody";
+import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { FileLabel } from "../../workspace/components/FileLabel";
 
-export function useDmnDevSandboxDropdownItems() {
+export function useDmnDevSandboxDropdownItems(workspace: ActiveWorkspace | undefined) {
   const settings = useSettings();
   const { i18n } = useOnlineI18n();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
@@ -60,7 +62,7 @@ export function useDmnDevSandboxDropdownItems() {
   }, [dmnDevSandbox, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
 
   return useMemo(() => {
-    const items = [
+    return [
       <React.Fragment key={"dmndev-sandbox-dropdown-items"}>
         {!isDmnDevSandboxConnected && isKieToolingExtendedServicesRunning && (
           <DropdownItem
@@ -73,69 +75,37 @@ export function useDmnDevSandboxDropdownItems() {
             Setup...
           </DropdownItem>
         )}
-        <FeatureDependentOnKieToolingExtendedServices isLight={false} position="left">
-          <DropdownItem
-            id="dmn-dev-sandbox-deploy-your-model-button"
-            key={`dropdown-dmn-dev-sandbox-deploy`}
-            component={"button"}
-            onClick={onDevSandboxDeploy}
-            isDisabled={isKieToolingExtendedServicesRunning && !isDmnDevSandboxConnected}
-            ouiaId={"deploy-to-dmn-dev-sandbox-dropdown-button"}
-          >
-            {i18n.dmnDevSandbox.common.deployYourModel}
-          </DropdownItem>
-        </FeatureDependentOnKieToolingExtendedServices>
-        {isDmnDevSandboxConnected && (
-          <>
-            <DropdownSeparator key="dropdown-dmn-dev-sandbox-separator-setup" />
+        {workspace && (
+          <FeatureDependentOnKieToolingExtendedServices isLight={false} position="left">
             <DropdownItem
-              key={"dropdown-dmn-dev-sandbox-setup-as"}
+              id="dmn-dev-sandbox-deploy-your-model-button"
+              key={`dropdown-dmn-dev-sandbox-deploy`}
               component={"button"}
-              isDisabled={true}
-              ouiaId={"setup-as-dmn-dev-sandbox-dropdown-button"}
+              onClick={onDevSandboxDeploy}
+              isDisabled={isKieToolingExtendedServicesRunning && !isDmnDevSandboxConnected}
+              ouiaId={"deploy-to-dmn-dev-sandbox-dropdown-button"}
             >
-              {i18n.dmnDevSandbox.dropdown.setupFor(settings.openshift.config.get.namespace)}
+              {workspace.files.length > 1 && (
+                <>
+                  Deploy <b>{`"${workspace.descriptor.name}"`}</b>
+                </>
+              )}
+              {workspace.files.length === 1 && (
+                <Flex flexWrap={{ default: "nowrap" }}>
+                  <FlexItem>
+                    Deploy <b>{`"${workspace.files[0].nameWithoutExtension}"`}</b>
+                  </FlexItem>
+                  <FlexItem>
+                    <b>
+                      <FileLabel extension={workspace.files[0].extension} />
+                    </b>
+                  </FlexItem>
+                </Flex>
+              )}
             </DropdownItem>
-            <DropdownItem
-              id="dmn-dev-sandbox-change-config-button"
-              key={"dropdown-dmn-dev-sandbox-setup"}
-              component={"button"}
-              onClick={onDevSandboxSetup}
-              isDisabled={!isKieToolingExtendedServicesRunning}
-              ouiaId={"setup-dmn-dev-sandbox-dropdown-button"}
-            >
-              {i18n.terms.change}
-            </DropdownItem>
-          </>
+          </FeatureDependentOnKieToolingExtendedServices>
         )}
       </React.Fragment>,
-      <DropdownSeparator key={"dropdown-dmn-dev-sandbox-separator-deployments"} />,
     ];
-
-    if (dmnDevSandbox.deployments.length === 0) {
-      items.push(
-        <DropdownItem key="disabled link" isDisabled>
-          <i>{i18n.dmnDevSandbox.dropdown.noDeployments}</i>
-        </DropdownItem>
-      );
-    } else {
-      dmnDevSandbox.deployments
-        .sort((a, b) => b.creationTimestamp.getTime() - a.creationTimestamp.getTime())
-        .forEach((deployment, i) => {
-          items.push(
-            <DmnDevSandboxDeploymentDropdownItem id={i} key={`deployment_item_${i}`} deployment={deployment} />
-          );
-        });
-    }
-
-    return items;
-  }, [
-    settings.openshift.config.get.namespace,
-    dmnDevSandbox.deployments,
-    i18n,
-    isDmnDevSandboxConnected,
-    isKieToolingExtendedServicesRunning,
-    onDevSandboxDeploy,
-    onDevSandboxSetup,
-  ]);
+  }, [isDmnDevSandboxConnected, isKieToolingExtendedServicesRunning, onDevSandboxDeploy, onDevSandboxSetup, workspace]);
 }
