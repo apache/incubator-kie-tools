@@ -8,6 +8,7 @@ import {
   DrilldownMenu,
   Menu,
   MenuContent,
+  MenuGroup,
   MenuInput,
   MenuItem,
   MenuList,
@@ -199,45 +200,35 @@ export function NewFileDropdownMenu(props: {
           <MenuItem
             itemId={"newBpmnItemId"}
             onClick={() => addEmptyFile("bpmn")}
-            description="BPMN files are used to generate Workflows"
+            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
           >
             <b>
-              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-                <FlexItem>Workflow</FlexItem>
-                <FlexItem>
-                  <FileLabel extension={"bpmn"} />
-                </FlexItem>
-              </Flex>
+              <FileLabel style={{ marginBottom: "4px" }} extension={"bpmn"} />
             </b>
           </MenuItem>
-          <MenuItem
-            itemId={"newDmnItemId"}
-            onClick={() => addEmptyFile("dmn")}
-            description="DMN files are used to generate decision models"
-          >
-            <b>
-              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-                <FlexItem>Decision</FlexItem>
-                <FlexItem>
-                  <FileLabel extension={"dmn"} />
-                </FlexItem>
-              </Flex>
-            </b>
-          </MenuItem>
-          <MenuItem
-            itemId={"newPmmlItemId"}
-            onClick={() => addEmptyFile("pmml")}
-            description="PMML files are used to generate scorecards"
-          >
-            <b>
-              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-                <FlexItem>Scorecard</FlexItem>
-                <FlexItem>
-                  <FileLabel extension={"pmml"} />
-                </FlexItem>
-              </Flex>
-            </b>
-          </MenuItem>
+          <MenuGroup label={" "}>
+            <MenuItem
+              itemId={"newDmnItemId"}
+              onClick={() => addEmptyFile("dmn")}
+              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+            >
+              <b>
+                <FileLabel style={{ marginBottom: "4px" }} extension={"dmn"} />
+              </b>
+            </MenuItem>
+          </MenuGroup>
+          <MenuGroup label={" "}>
+            <MenuItem
+              itemId={"newPmmlItemId"}
+              onClick={() => addEmptyFile("pmml")}
+              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+            >
+              <b>
+                <FileLabel style={{ marginBottom: "4px" }} extension={"pmml"} />
+              </b>
+            </MenuItem>
+          </MenuGroup>
+          <Divider />
           <MenuItem
             description={"Try sample models"}
             itemId="samplesItemId"
@@ -273,7 +264,7 @@ export function NewFileDropdownMenu(props: {
               </DrilldownMenu>
             }
           >
-            <b>Samples</b>
+            Samples
           </MenuItem>
           <Divider />
           <MenuItem

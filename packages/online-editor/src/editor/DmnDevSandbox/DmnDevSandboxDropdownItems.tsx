@@ -31,6 +31,7 @@ import { SettingsTabs } from "../../settings/SettingsModalBody";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { FileLabel } from "../../workspace/components/FileLabel";
+import { OpenshiftIcon } from "@patternfly/react-icons/dist/js/icons/openshift-icon";
 
 export function useDmnDevSandboxDropdownItems(workspace: ActiveWorkspace | undefined) {
   const settings = useSettings();
@@ -78,6 +79,7 @@ export function useDmnDevSandboxDropdownItems(workspace: ActiveWorkspace | undef
         {workspace && (
           <FeatureDependentOnKieToolingExtendedServices isLight={false} position="left">
             <DropdownItem
+              icon={<OpenshiftIcon />}
               id="dmn-dev-sandbox-deploy-your-model-button"
               key={`dropdown-dmn-dev-sandbox-deploy`}
               component={"button"}
@@ -86,9 +88,11 @@ export function useDmnDevSandboxDropdownItems(workspace: ActiveWorkspace | undef
               ouiaId={"deploy-to-dmn-dev-sandbox-dropdown-button"}
             >
               {workspace.files.length > 1 && (
-                <>
-                  Deploy <b>{`"${workspace.descriptor.name}"`}</b>
-                </>
+                <Flex flexWrap={{ default: "nowrap" }}>
+                  <FlexItem>
+                    Deploy <b>{`"${workspace.descriptor.name}"`}</b>
+                  </FlexItem>
+                </Flex>
               )}
               {workspace.files.length === 1 && (
                 <Flex flexWrap={{ default: "nowrap" }}>

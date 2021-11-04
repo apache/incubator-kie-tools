@@ -31,6 +31,7 @@ import {
   ToolbarItemProps,
 } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
+import { SaveIcon } from "@patternfly/react-icons/dist/js/icons/save-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOnlineI18n } from "../common/i18n";
@@ -50,6 +51,7 @@ import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
 import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
+import { ArrowCircleUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-circle-up-icon";
 import { ColumnsIcon } from "@patternfly/react-icons/dist/js/icons/columns-icon";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -70,6 +72,8 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { EditorPageDockDrawerController } from "./EditorPageDockDrawer";
+import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -173,7 +177,8 @@ export function EditorToolbar(props: Props) {
   const history = useHistory();
   const workspaces = useWorkspaces();
   const [isShareDropdownOpen, setShareDropdownOpen] = useState(false);
-  const [isSyncDropdownOpen, setSyncDropdownOpen] = useState(false);
+  const [isSyncGitHubGistDropdownOpen, setSyncGitHubGistDropdownOpen] = useState(false);
+  const [isSyncGitHubRepositoryDropdownOpen, setSyncGitHubRepositoryDropdownOpen] = useState(false);
   const [isLargeKebabOpen, setLargeKebabOpen] = useState(false);
   const [isSmallKebabOpen, setSmallKebabOpen] = useState(false);
   const [isEmbedModalOpen, setEmbedModalOpen] = useState(false);
@@ -185,7 +190,7 @@ export function EditorToolbar(props: Props) {
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
-  const [isGistLoading, setGistLoading] = useState(false);
+  const [isGitHubGistLoading, setGitHubGistLoading] = useState(false);
 
   const successfullyCreateGistAlert = useAlert(
     props.alerts,
@@ -238,12 +243,12 @@ export function EditorToolbar(props: Props) {
   );
 
   useEffect(() => {
-    if (isGistLoading) {
+    if (isGitHubGistLoading) {
       loadingGistAlert.show();
     } else {
       loadingGistAlert.close();
     }
-  }, [isGistLoading, loadingGistAlert]);
+  }, [isGitHubGistLoading, loadingGistAlert]);
 
   const successfullyUpdateGistAlert = useAlert(
     props.alerts,
@@ -375,9 +380,9 @@ export function EditorToolbar(props: Props) {
     });
   }, [props.editor]);
 
-  const updateGist = useCallback(async () => {
+  const updateGitHubGist = useCallback(async () => {
     try {
-      setGistLoading(true);
+      setGitHubGistLoading(true);
       const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
 
       //TODO: Check if there are new changes in the Gist before force-pushing.
@@ -403,16 +408,16 @@ export function EditorToolbar(props: Props) {
       errorAlert.show();
       throw e;
     } finally {
-      setGistLoading(false);
-      setSyncDropdownOpen(false);
+      setGitHubGistLoading(false);
+      setSyncGitHubGistDropdownOpen(false);
     }
 
     successfullyUpdateGistAlert.show();
   }, [successfullyUpdateGistAlert, workspaces, props.workspaceFile, settings.github, errorAlert]);
 
-  const createGist = useCallback(async () => {
+  const createGitHubGist = useCallback(async () => {
     try {
-      setGistLoading(true);
+      setGitHubGistLoading(true);
       const gist = await settings.github.octokit.gists.create({
         description: workspacePromise.data?.descriptor.name ?? "",
         public: true,
@@ -482,11 +487,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       errorAlert.show();
       throw err;
     } finally {
-      setGistLoading(false);
+      setGitHubGistLoading(false);
     }
   }, [props.workspaceFile, settings.github, workspacePromise, workspaces, successfullyCreateGistAlert, errorAlert]);
 
-  const onEmbed = useCallback(() => {
+  const openEmbedModal = useCallback(() => {
     setEmbedModalOpen(true);
   }, []);
 
@@ -495,7 +500,15 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     [workspacePromise]
   );
 
-  const canCreateGist = useMemo(
+  const canCreateGitHubRepository = useMemo(
+    () =>
+      settings.github.authStatus === AuthStatus.SIGNED_IN &&
+      (workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL ||
+        workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST),
+    [workspacePromise, settings.github.authStatus]
+  );
+
+  const canCreateGitHubGist = useMemo(
     () =>
       settings.github.authStatus === AuthStatus.SIGNED_IN &&
       workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL &&
@@ -503,7 +516,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     [workspacePromise, settings.github.authStatus, workspaceHasNestedDirectories]
   );
 
-  const canUpdateGist = useMemo(
+  const canUpdateGitHubGist = useMemo(
     () =>
       settings.github.authStatus === AuthStatus.SIGNED_IN &&
       workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST &&
@@ -551,7 +564,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 key={`dropdown-embed`}
                 data-testid="dropdown-embed"
                 component="button"
-                onClick={onEmbed}
+                onClick={openEmbedModal}
                 icon={<ColumnsIcon />}
               >
                 {i18n.editorToolbar.embed}...
@@ -559,22 +572,42 @@ If you are, it means that creating this Gist failed and it can safely be deleted
             </DropdownGroup>,
           ]
         : []),
-      ...(workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL
+      ...(workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL ||
+      workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST
         ? [
             <DropdownGroup key={"github-group"} label={i18n.names.github}>
               <Tooltip
-                data-testid={"gist-it-tooltip"}
-                key={`dropdown-export-gist`}
-                content={<div>{i18n.editorToolbar.cantCreateGistTooltip}</div>}
-                trigger={!canCreateGist ? "mouseenter click" : ""}
+                data-testid={"create-github-repository-tooltip"}
+                key={`dropdown-create-github-repository`}
+                content={<div>{`You can't create a repository because you're not authenticated with GitHub.`}</div>}
+                trigger={!canCreateGitHubRepository ? "mouseenter click" : ""}
                 position="left"
               >
                 <DropdownItem
                   icon={<GithubIcon />}
-                  data-testid={"gist-it-button"}
+                  data-testid={"create-github-repository-button"}
                   component="button"
-                  onClick={createGist}
-                  isDisabled={!canCreateGist}
+                  onClick={() => {
+                    console.info("Creating GitHub repo...");
+                  }}
+                  isDisabled={!canCreateGitHubRepository}
+                >
+                  Create Repository...
+                </DropdownItem>
+              </Tooltip>
+              <Tooltip
+                data-testid={"create-github-gist-tooltip"}
+                key={`dropdown-create-github-gist`}
+                content={<div>{i18n.editorToolbar.cantCreateGistTooltip}</div>}
+                trigger={!canCreateGitHubGist ? "mouseenter click" : ""}
+                position="left"
+              >
+                <DropdownItem
+                  icon={<GithubIcon />}
+                  data-testid={"create-github-gist-button"}
+                  component="button"
+                  onClick={createGitHubGist}
+                  isDisabled={!canCreateGitHubGist}
                 >
                   {i18n.editorToolbar.createGist}
                 </DropdownItem>
@@ -591,10 +624,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       downloadSvg,
       downloadWorkspaceZip,
       shouldIncludeEmbedDropdownItem,
-      onEmbed,
+      openEmbedModal,
       i18n,
-      canCreateGist,
-      createGist,
+      canCreateGitHubGist,
+      canCreateGitHubRepository,
+      createGitHubGist,
     ]
   );
 
@@ -712,6 +746,29 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     );
   }, [deleteWorkspaceFile, props.workspaceFile]);
 
+  const createSavePointDropdownItem = useMemo(() => {
+    return (
+      <DropdownItem
+        icon={<SaveIcon />}
+        onClick={async () =>
+          workspaces.createSavePoint({
+            fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+            workspaceId: props.workspaceFile.workspaceId,
+          })
+        }
+        description={"Create a save point"}
+      >
+        Commit
+      </DropdownItem>
+    );
+  }, [workspaces, props.workspaceFile]);
+
+  const canUpdateGitHubRepository = useMemo(() => false, []);
+
+  const pushGitHubRepository = useCallback(() => {}, []);
+
+  const fetchGitHubRepository = useCallback(() => {}, []);
+
   return (
     <PromiseStateWrapper
       promise={workspacePromise}
@@ -720,7 +777,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           <Alerts ref={props.alertsRef} width={"500px"} />
           <PageSection type={"nav"} variant={"light"} padding={{ default: "noPadding" }}>
             {workspace && workspace.files.length > 1 && (
-              <Flex justifyContent={{ default: "justifyContentFlexStart" }} style={{ marginLeft: "16px" }}>
+              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }} style={{ marginLeft: "16px" }}>
                 <FlexItem>
                   <WorkspaceLabel descriptor={workspace.descriptor} />
                   <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
@@ -746,6 +803,32 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     <WorkspaceStatusIndicator workspace={workspace} />
                   )}
                 </FlexItem>
+                {/*<Divider inset={{ default: "insetMd" }} isVertical={true} />*/}
+                {workspace.descriptor.origin.kind === WorkspaceKind.GITHUB && (
+                  <FlexItem>
+                    <Toolbar style={{ padding: 0 }}>
+                      <ToolbarItem>
+                        <a
+                          href={`https://vscode.dev/github${workspace.descriptor.origin.url.pathname}`}
+                          target={"_blank"}
+                        >
+                          <Button
+                            variant={ButtonVariant.secondary}
+                            icon={
+                              <img
+                                style={{ width: "14px" }}
+                                alt="vscode-logo-blue"
+                                src={globals.routes.static.images.vscodeLogoBlue.path({})}
+                              />
+                            }
+                          >
+                            {`Open "${workspace.descriptor.name}" in vscode.dev...`}
+                          </Button>
+                        </a>
+                      </ToolbarItem>
+                    </Toolbar>
+                  </FlexItem>
+                )}
               </Flex>
             )}
           </PageSection>
@@ -855,14 +938,14 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     {workspace.descriptor.origin.kind === WorkspaceKind.GIST && (
                       <ToolbarItem>
                         <Dropdown
-                          onSelect={() => setSyncDropdownOpen(false)}
-                          isOpen={isSyncDropdownOpen}
+                          onSelect={() => setSyncGitHubGistDropdownOpen(false)}
+                          isOpen={isSyncGitHubGistDropdownOpen}
                           position={DropdownPosition.right}
                           toggle={
                             <DropdownToggle
                               id={"sync-dropdown"}
                               data-testid={"sync-dropdown"}
-                              onToggle={(isOpen) => setSyncDropdownOpen(isOpen)}
+                              onToggle={(isOpen) => setSyncGitHubGistDropdownOpen(isOpen)}
                             >
                               Sync
                             </DropdownToggle>
@@ -872,11 +955,59 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               <Tooltip
                                 data-testid={"gist-it-tooltip"}
                                 content={<div>{i18n.editorToolbar.cantUpdateGistTooltip}</div>}
-                                trigger={!canUpdateGist ? "mouseenter click" : ""}
+                                trigger={!canUpdateGitHubGist ? "mouseenter click" : ""}
                                 position="left"
                               >
-                                <DropdownItem icon={<GithubIcon />} onClick={updateGist} isDisabled={!canUpdateGist}>
+                                <DropdownItem
+                                  icon={<GithubIcon />}
+                                  onClick={updateGitHubGist}
+                                  isDisabled={!canUpdateGitHubGist}
+                                >
                                   Update Gist
+                                </DropdownItem>
+                              </Tooltip>
+                            </DropdownGroup>,
+                          ]}
+                        />
+                      </ToolbarItem>
+                    )}
+                    {workspace.descriptor.origin.kind === WorkspaceKind.GITHUB && (
+                      <ToolbarItem>
+                        <Dropdown
+                          onSelect={() => setSyncGitHubRepositoryDropdownOpen(false)}
+                          isOpen={isSyncGitHubRepositoryDropdownOpen}
+                          position={DropdownPosition.right}
+                          toggle={
+                            <DropdownToggle
+                              id={"sync-dropdown"}
+                              data-testid={"sync-dropdown"}
+                              onToggle={(isOpen) => setSyncGitHubRepositoryDropdownOpen(isOpen)}
+                            >
+                              Sync
+                            </DropdownToggle>
+                          }
+                          dropdownItems={[
+                            <DropdownGroup key={"sync-gist-dropdown-group"}>
+                              <DropdownItem
+                                icon={<SyncAltIcon />}
+                                onClick={fetchGitHubRepository}
+                                description={"Get new changes made upstream."}
+                              >
+                                Fetch...
+                              </DropdownItem>
+                              <Tooltip
+                                data-testid={"gist-it-tooltip"}
+                                content={<div>{``}</div>}
+                                trigger={!canUpdateGitHubRepository ? "mouseenter click" : ""}
+                                position="left"
+                              >
+                                <DropdownItem
+                                  icon={<ArrowCircleUpIcon />}
+                                  onClick={pushGitHubRepository}
+                                  isDisabled={!canUpdateGitHubRepository}
+                                  description={"Send your changes upstream."}
+                                >
+                                  Push
                                 </DropdownItem>
                               </Tooltip>
                             </DropdownGroup>,
@@ -905,7 +1036,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       <KebabDropdown
                         id={"kebab-lg"}
                         state={[isLargeKebabOpen, setLargeKebabOpen]}
-                        items={[deleteFileDropdownItem]}
+                        items={[deleteFileDropdownItem, <Divider key={"divider-0"} />, createSavePointDropdownItem]}
                       />
                     </ToolbarItem>
                     <ToolbarItem visibility={showWhenSmall} style={{ marginRight: 0 }}>
@@ -914,6 +1045,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         state={[isSmallKebabOpen, setSmallKebabOpen]}
                         items={[
                           deleteFileDropdownItem,
+                          <Divider key={"divider-0"} />,
+                          createSavePointDropdownItem,
                           <Divider key={"divider-1"} />,
                           ...shareDropdownItems,
                           ...(props.workspaceFile.extension !== "dmn"

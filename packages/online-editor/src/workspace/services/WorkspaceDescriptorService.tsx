@@ -100,7 +100,18 @@ export class WorkspaceDescriptorService {
   }
 
   private getWorkspaceDescriptorFromFileContent(workspaceDescriptorFileContent: Uint8Array) {
-    return JSON.parse(decoder.decode(workspaceDescriptorFileContent)) as WorkspaceDescriptor;
+    return JSON.parse(decoder.decode(workspaceDescriptorFileContent), (_key: string, value: any) => {
+      //FIXME: OMG this is ugly
+      if (typeof value === "string") {
+        try {
+          return new URL(value);
+        } catch (e) {
+          return value;
+        }
+      }
+
+      return value;
+    }) as WorkspaceDescriptor;
   }
 
   private toStorageFile(descriptor: WorkspaceDescriptor) {

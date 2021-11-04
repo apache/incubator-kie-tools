@@ -9,9 +9,22 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
   return (
     <>
+      {props.descriptor?.origin.kind === WorkspaceKind.GITHUB && (
+        <Tooltip
+          content={`'${
+            props.descriptor?.name
+          }' is linked to a GitHub Repository. ${props.descriptor?.origin.url.toString()}`}
+          position={"right"}
+        >
+          <Label>
+            <GithubIcon />
+            &nbsp;&nbsp;Repo
+          </Label>
+        </Tooltip>
+      )}
       {props.descriptor?.origin.kind === WorkspaceKind.GIST && (
         <Tooltip
-          content={`'${props.descriptor?.name}' is linked to a GitHub Gist. ${props.descriptor?.origin.url}`}
+          content={`'${props.descriptor?.name}' is linked to a GitHub Gist. ${props.descriptor?.origin.url.toString()}`}
           position={"right"}
         >
           <Label>

@@ -21,7 +21,6 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { OnlineEditorPage } from "./pageTemplate/OnlineEditorPage";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
@@ -32,7 +31,6 @@ import { FileLabel } from "../workspace/components/FileLabel";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
   Drawer,
@@ -62,6 +60,7 @@ import { ExpandableSection } from "@patternfly/react-core/dist/js/components/Exp
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { UploadCard } from "./UploadCard";
 import { ImportFromUrlCard } from "./ImportFromUrlCard";
+import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 
 export function HomePage() {
   const globals = useGlobals();
@@ -145,9 +144,8 @@ export function HomePage() {
                 minWidths={{ sm: "calc(50% - 16px)", default: "100%" }}
                 style={{ height: "calc(100% - 32px)" }}
               >
-                <UploadCard expandWorkspace={expandWorkspace} />
-                {/*<Divider isVertical={true} />*/}
                 <ImportFromUrlCard />
+                <UploadCard expandWorkspace={expandWorkspace} />
               </Gallery>
             </PageSection>
           </SplitItem>
@@ -242,7 +240,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
         [...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension)
       ) ?? []
     );
-  }, [workspacePromise]);
+  }, [globals, workspacePromise.data?.files]);
 
   const workspaceName = useMemo(() => {
     return workspacePromise.data ? workspacePromise.data.descriptor.name : null;
@@ -407,16 +405,7 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
   return (
     <Card isFullHeight={true} isPlain={true} isLarge={true}>
       <CardTitle>
-        <Flex flexWrap={{ default: "nowrap" }}>
-          <FlexItem>
-            <TextContent>
-              <Text component={TextVariants.h2}>{props.title}</Text>
-            </TextContent>
-          </FlexItem>
-          <FlexItem>
-            <FileLabel extension={props.extension} />
-          </FlexItem>
-        </Flex>
+        <FileLabel style={{ fontSize: "0.8em" }} extension={props.extension} />
       </CardTitle>
       <CardBody>
         <TextContent>
@@ -478,6 +467,14 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
         <TextContent>
           <Text component={TextVariants.h3}>{`Models in '${workspacePromise.data?.descriptor.name}'`}</Text>
         </TextContent>
+        {(workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST ||
+          workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB) && (
+          <TextContent>
+            <Text component={TextVariants.small}>
+              <i>{workspacePromise.data?.descriptor.origin.url.toString()}</i>
+            </Text>
+          </TextContent>
+        )}
         <DrawerActions>
           <DrawerCloseButton onClick={props.onClose} />
         </DrawerActions>

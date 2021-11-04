@@ -237,6 +237,7 @@ export function WorkspacesContextProvider(props: Props) {
       }
 
       return await createWorkspace({
+        preferredName: args.origin.url.pathname.substring(1), // Remove slash
         origin: args.origin,
         useInMemoryFs: true,
         storeFiles: async (fs, workspace) => {
