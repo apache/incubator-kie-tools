@@ -36,6 +36,7 @@
 
 .kogito--dmn-form__toolbar-logo {
   cursor: default;
+  display: inline;
 }
 
 .kogito--dmn-form__toolbar-filename {

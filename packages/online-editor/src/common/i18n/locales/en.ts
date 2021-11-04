@@ -97,6 +97,7 @@ export const en: OnlineI18n = {
         upTooltip: "This deployment is up and running.",
         downTooltip: "This deployment is not running.",
         inProgressTooltip: "This deployment is in progress and it will be available shortly.",
+        errorTooltip: "Some unexpected error happened and this deployment is not available.",
         createdAt: (date: string) => `Created at ${date}`,
       },
     },

@@ -18,7 +18,7 @@ import {
   HttpMethod,
   JAVA_RUNTIME_VERSION,
   KOGITO_CREATED_BY,
-  KOGITO_FILENAME,
+  KOGITO_URI,
   Resource,
   ResourceArgs,
   ResourceFetch,
@@ -44,8 +44,9 @@ export interface Deployments {
 }
 
 export interface CreateDeploymentArgs {
-  filename: string;
+  uri: string;
   createdBy: string;
+  baseUrl: string;
 }
 
 export class CreateDeployment extends ResourceFetch {
@@ -63,9 +64,7 @@ export class CreateDeployment extends ResourceFetch {
       apiVersion: apps/v1
       metadata:
         annotations:
-          image.openshift.io/triggers: >-
-            [{"from":{"kind":"ImageStreamTag","name":"${this.args.resourceName}:latest","namespace":"${this.args.namespace}"},"fieldPath":"spec.template.spec.containers[?(@.name==\\"${this.args.resourceName}\\")].image","pause":"false"}]
-          ${KOGITO_FILENAME}: ${this.args.filename}
+          ${KOGITO_URI}: ${this.args.uri}
         name: ${this.args.resourceName}
         namespace: ${this.args.namespace}
         labels:
@@ -90,11 +89,17 @@ export class CreateDeployment extends ResourceFetch {
           spec:
             containers:
               - name: ${this.args.resourceName}
-                image: >-
-                  image-registry.openshift-image-registry.svc:5000/${this.args.namespace}/${this.args.resourceName}:latest
+                image: ${process.env.WEBPACK_REPLACE__dmnDevSandbox_baseImageFullUrl}
                 ports:
                   - containerPort: 8080
                     protocol: TCP
+                env:
+                - name: BASE_URL
+                  value: ${this.args.baseUrl}
+                - name: QUARKUS_PLATFORM_VERSION
+                  value: ${process.env.WEBPACK_REPLACE__quarkusPlatformVersion}
+                - name: KOGITO_RUNTIME_VERSION
+                  value: ${process.env.WEBPACK_REPLACE__kogitoRuntimeVersion}
     `;
   }
 
@@ -137,6 +142,24 @@ export class DeleteDeployment extends ResourceFetch {
   public name(): string {
     return DeleteDeployment.name;
   }
+  public url(): string {
+    return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/deployments/${this.args.resourceName}`;
+  }
+}
+
+export class GetDeployment extends ResourceFetch {
+  protected method(): HttpMethod {
+    return "GET";
+  }
+
+  protected async requestBody(): Promise<string | undefined> {
+    return;
+  }
+
+  public name(): string {
+    return GetDeployment.name;
+  }
+
   public url(): string {
     return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/deployments/${this.args.resourceName}`;
   }

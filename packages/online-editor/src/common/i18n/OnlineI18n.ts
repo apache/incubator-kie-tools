@@ -94,6 +94,7 @@ interface OnlineDictionary extends ReferenceDictionary {
         upTooltip: string;
         downTooltip: string;
         inProgressTooltip: string;
+        errorTooltip: string;
         createdAt: (date: string) => string;
       };
     };

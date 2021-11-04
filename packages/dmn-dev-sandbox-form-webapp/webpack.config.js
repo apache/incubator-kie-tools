@@ -22,9 +22,12 @@ const common = require("../../config/webpack.common.config");
 const buildEnv = require("@kogito-tooling/build-env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
+const { EnvironmentPlugin } = require("webpack");
 
 module.exports = async (env, argv) => {
   const gtmResource = getGtmResource(argv);
+  const onlineEditorUrl = buildEnv.dmnDevSandbox.onlineEditorUrl;
+
   return merge(common(env), {
     entry: {
       index: "./src/index.tsx",
@@ -52,6 +55,9 @@ module.exports = async (env, argv) => {
           { from: "./static/images", to: "./images" },
           { from: "./static/favicon.ico", to: "./favicon.ico" },
         ],
+      }),
+      new EnvironmentPlugin({
+        WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl: onlineEditorUrl,
       }),
     ],
 

@@ -19,15 +19,13 @@ export enum OpenShiftDeployedModelState {
   DOWN = "DOWN",
   IN_PROGRESS = "IN_PROGRESS",
   PREPARING = "PREPARING",
+  ERROR = "ERROR",
 }
 
 export interface OpenShiftDeployedModel {
   resourceName: string;
-  filename: string;
-  urls: {
-    index: string;
-    swaggerUI: string;
-  };
+  uri: string;
+  baseUrl: string;
   creationTimestamp: Date;
   state: OpenShiftDeployedModelState;
 }

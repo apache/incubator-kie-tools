@@ -23,14 +23,14 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AppData } from "./DmnDevSandboxAppDataApi";
+import { FormData } from "./DmnDevSandboxAppDataApi";
 import { fetchDmnResult } from "./DmnDevSandboxRuntimeApi";
 import { DmnFormToolbar } from "./DmnFormToolbar";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { useDmnFormI18n } from "./i18n";
 
 interface Props {
-  appData: AppData;
+  formData: FormData;
 }
 
 enum AlertTypes {
@@ -53,23 +53,10 @@ export function DmnFormPage(props: Props) {
 
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
-  const onOpenSwaggerUI = useCallback(() => {
-    window.open(props.appData.swaggerUIUrl, "_blank");
-  }, [props.appData.swaggerUIUrl]);
-
-  const onOpenOnlineEditor = useCallback(() => {
-    const modelUrl = new URL(props.appData.modelUrl);
-    if (formInputs) {
-      modelUrl.searchParams.append("formInputs", encodeURIComponent(JSON.stringify(formInputs!)));
-    }
-    window.open(modelUrl.toString(), "_blank");
-  }, [formInputs, props.appData.modelUrl]);
-
   const onSubmit = useCallback(async () => {
     try {
       const formOutputs = await fetchDmnResult({
-        formUrl: props.appData.formUrl,
-        modelName: props.appData.modelName,
+        modelName: props.formData.modelName,
         inputs: formInputs,
       });
 
@@ -85,7 +72,7 @@ export function DmnFormPage(props: Props) {
       setOpenAlert(AlertTypes.ERROR);
       console.error(error);
     }
-  }, [formInputs, props.appData.formUrl, props.appData.modelName]);
+  }, [formInputs, props.formData.modelName]);
 
   const pageErrorMessage = useMemo(
     () => (
@@ -126,23 +113,14 @@ export function DmnFormPage(props: Props) {
   useEffect(() => {
     errorBoundaryRef.current?.reset();
     setPageError(false);
-  }, [props.appData.schema]);
+  }, [props.formData.schema]);
 
   useEffect(() => {
     onSubmit();
-  }, []);
+  }, [onSubmit]);
 
   return (
-    <Page
-      data-testid="dmn-form-page"
-      header={
-        <DmnFormToolbar
-          filename={props.appData.filename}
-          onOpenOnlineEditor={onOpenOnlineEditor}
-          onOpenSwaggerUI={onOpenSwaggerUI}
-        />
-      }
-    >
+    <Page data-testid="dmn-form-page" header={<DmnFormToolbar uri={props.formData.uri} />}>
       {openAlert === AlertTypes.ERROR && (
         <div className={"kogito--alert-container"}>
           <Alert
@@ -172,7 +150,7 @@ export function DmnFormPage(props: Props) {
                       setFormData={setFormInputs}
                       formError={formError}
                       setFormError={setFormError}
-                      formSchema={props.appData.schema}
+                      formSchema={props.formData.schema}
                       id={"form"}
                       showInlineError={true}
                       notificationsPanel={false}

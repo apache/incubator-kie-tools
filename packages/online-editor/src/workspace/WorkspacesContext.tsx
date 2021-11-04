@@ -112,7 +112,7 @@ export interface WorkspacesContextType {
     destinationDirRelativePath: string;
     extension: string;
   }): Promise<WorkspaceFile>;
-  prepareZip(args: { fs: LightningFS; workspaceId: string }): Promise<Blob>;
+  prepareZip(args: { fs: LightningFS; workspaceId: string; onlyExtensions?: string[] }): Promise<Blob>;
   getFiles(args: { fs: LightningFS; workspaceId: string }): Promise<WorkspaceFile[]>;
   isModified(args: { fs: LightningFS; workspaceId: string }): Promise<boolean>;
   createSavePoint(args: { fs: LightningFS; workspaceId: string }): Promise<void>;

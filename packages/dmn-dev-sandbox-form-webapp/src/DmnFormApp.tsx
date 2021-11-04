@@ -16,31 +16,17 @@
 
 import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
 import * as React from "react";
-import { useEffect, useState } from "react";
 import { Route, Switch } from "react-router";
-import { HashRouter } from "react-router-dom";
-import { AppData, fetchAppData } from "./DmnDevSandboxAppDataApi";
+import { HashRouter, Redirect } from "react-router-dom";
+import { AppContext } from "./AppContext";
+import { AppContextProvider } from "./AppContextProvider";
 import { DmnFormErrorPage } from "./DmnFormErrorPage";
 import { DmnFormPage } from "./DmnFormPage";
 import { DmnFormI18nContext, dmnFormI18nDefaults, dmnFormI18nDictionaries } from "./i18n";
 import { NoMatchPage } from "./NoMatchPage";
-
-enum AppState {
-  INITIAL,
-  READY,
-}
+import { routes } from "./Routes";
 
 export function DmnFormApp() {
-  const [appData, setAppData] = useState<AppData>();
-  const [appState, setAppState] = useState(AppState.INITIAL);
-
-  useEffect(() => {
-    fetchAppData()
-      .then((appData: AppData) => setAppData(appData))
-      .catch((error: any) => console.error(error))
-      .finally(() => setAppState(AppState.READY));
-  }, []);
-
   return (
     <I18nDictionariesProvider
       defaults={dmnFormI18nDefaults}
@@ -48,14 +34,40 @@ export function DmnFormApp() {
       initialLocale={navigator.language}
       ctx={DmnFormI18nContext}
     >
-      {appState === AppState.READY && (
-        <HashRouter>
-          <Switch>
-            <Route path="/">{appData ? <DmnFormPage appData={appData} /> : <DmnFormErrorPage />}</Route>
-            <Route component={NoMatchPage} />
-          </Switch>
-        </HashRouter>
-      )}
+      <AppContextProvider>
+        <AppContext.Consumer>
+          {(app) =>
+            app.fetchDone && (
+              <HashRouter>
+                <Switch>
+                  {app.data && (
+                    <Route
+                      path={routes.form.path({
+                        filePath: ":filePath*",
+                      })}
+                    >
+                      {({ match }) => {
+                        const formData = app.data!.forms.find((form) => form.uri === `/${match!.params.filePath}`);
+                        return formData ? <DmnFormPage formData={formData} /> : <Redirect to={routes.error.path({})} />;
+                      }}
+                    </Route>
+                  )}
+                  {app.data && (
+                    <Route exact={true} path={routes.root.path({})}>
+                      <Redirect to={routes.form.path({ filePath: app.data.forms[0].uri.slice(1) })} />
+                    </Route>
+                  )}
+                  <Route path={routes.error.path({})}>
+                    <DmnFormErrorPage />
+                  </Route>
+                  {!app.data && <Redirect to={routes.error.path({})} />}
+                  <Route component={NoMatchPage} />
+                </Switch>
+              </HashRouter>
+            )
+          }
+        </AppContext.Consumer>
+      </AppContextProvider>
     </I18nDictionariesProvider>
   );
 }

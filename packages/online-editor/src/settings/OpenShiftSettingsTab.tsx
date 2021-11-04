@@ -66,7 +66,8 @@ export function OpenShiftSettingsTab() {
             </EmptyStateBody>
           </EmptyState>
         )}
-        {settings.openshift.status.get === OpenShiftInstanceStatus.DISCONNECTED && (
+        {(settings.openshift.status.get === OpenShiftInstanceStatus.DISCONNECTED ||
+          settings.openshift.status.get === OpenShiftInstanceStatus.EXPIRED) && (
           <>
             {mode === OpenShiftSettingsTabMode.SIMPLE && <OpenShiftSettingsTabSimpleConfig setMode={setMode} />}
             {mode === OpenShiftSettingsTabMode.WIZARD && <OpenShiftSettingsTabWizardConfig setMode={setMode} />}

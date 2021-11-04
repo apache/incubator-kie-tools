@@ -22,7 +22,7 @@ import { useOnlineI18n } from "../../common/i18n";
 import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { OpenShiftDeployedModel } from "../../settings/OpenShiftDeployedModel";
-import { DeploymentFile, DmnDevSandboxContext } from "./DmnDevSandboxContext";
+import { DmnDevSandboxContext } from "./DmnDevSandboxContext";
 import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus";
 import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandboxModalConfirmDeploy";
 import { useSettings } from "../../settings/SettingsContext";
@@ -98,40 +98,23 @@ export function DmnDevSandboxContextProvider(props: Props) {
         return;
       }
 
-      const prepareFileContents = (getFileContents: () => Promise<string | undefined>) => async () =>
-        ((await getFileContents()) ?? "")
-          .replace(/(\r\n|\n|\r)/gm, "") // Remove line breaks
-          .replace(/("|')/g, '\\"'); // Escape quotes
-
-      const targetFile: DeploymentFile = {
-        path: props.workspaceFile.relativePath,
-        getFileContents: prepareFileContents(props.workspaceFile.getFileContentsAsString),
-      };
-
-      const workspaceFiles = (
-        await workspaces.getFiles({
-          fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
-          workspaceId: props.workspaceFile.workspaceId,
-        })
-      ).filter((f) => f.extension === "dmn" || f.extension === "pmml");
-
-      const relatedFiles: DeploymentFile[] = workspaceFiles
-        .filter((f) => f.relativePath !== targetFile.path)
-        .map((f) => ({
-          path: f.relativePath,
-          getFileContents: prepareFileContents(f.getFileContentsAsString),
-        }));
+      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
+      const zipBlob = await workspaces.prepareZip({
+        fs,
+        workspaceId: props.workspaceFile.workspaceId,
+        onlyExtensions: ["dmn"],
+      });
 
       try {
         await settings.openshift.service.deploy({
-          targetFile: targetFile,
-          relatedFiles: relatedFiles,
+          targetFilePath: props.workspaceFile.relativePath,
+          workspaceZipBlob: zipBlob,
           config: config,
           onlineEditorUrl: (baseUrl) =>
             globals.routes.importModel.url({
               base: process.env.WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl,
               pathParams: {},
-              queryParams: { url: `${baseUrl}/${targetFile.path}` },
+              queryParams: { url: `${baseUrl}/${props.workspaceFile.relativePath}` },
             }),
         });
         deployStartedSuccessAlert.show();

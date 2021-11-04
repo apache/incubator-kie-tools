@@ -11,6 +11,7 @@ import { useKieToolingExtendedServices } from "../editor/KieToolingExtendedServi
 import { useHistory } from "react-router";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { QueryParams } from "../common/Routes";
+import { KieToolingExtendedServicesStatus } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 
 export const KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME =
   "KOGITO-TOOLING-COOKIE__kie-tooling-extended-services--port";
@@ -165,7 +166,11 @@ export function SettingsContextProvider(props: any) {
   //openshift
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const [openshiftConfig, setOpenShiftConfig] = useState(readConfigCookie());
-  const [openshiftStatus, setOpenshiftStatus] = useState(OpenShiftInstanceStatus.UNAVAILABLE);
+  const [openshiftStatus, setOpenshiftStatus] = useState(
+    kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.AVAILABLE
+      ? OpenShiftInstanceStatus.DISCONNECTED
+      : OpenShiftInstanceStatus.UNAVAILABLE
+  );
   const openshiftService = useMemo(
     () => new OpenShiftService(`${kieToolingExtendedServices.baseUrl}/devsandbox`),
     [kieToolingExtendedServices.baseUrl]

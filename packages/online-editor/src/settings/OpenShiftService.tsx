@@ -15,27 +15,27 @@
  */
 
 import { OpenShiftDeployedModel, OpenShiftDeployedModelState } from "./OpenShiftDeployedModel";
-import { Build, Builds, CreateBuild, DeleteBuild, ListBuilds } from "./resources/Build";
-import { CreateBuildConfig, DeleteBuildConfig } from "./resources/BuildConfig";
 import {
   CreateDeployment,
   Deployment,
   DeploymentCondition,
   Deployments,
+  GetDeployment,
   ListDeployments,
 } from "./resources/Deployment";
-import { CreateImageStream, DeleteImageStream } from "./resources/ImageStream";
 import { GetProject } from "./resources/Project";
-import { KOGITO_CREATED_BY, KOGITO_FILENAME, Resource, ResourceFetch } from "./resources/Resource";
+import { KOGITO_CREATED_BY, KOGITO_URI, Resource, ResourceFetch } from "./resources/Resource";
 import { CreateRoute, DeleteRoute, ListRoutes, Route, Routes } from "./resources/Route";
 import { CreateService, DeleteService } from "./resources/Service";
 import { isConfigValid, OpenShiftSettingsConfig } from "./OpenShiftSettingsConfig";
 import { basename } from "path";
-import { DeploymentFile } from "../editor/DmnDevSandbox/DmnDevSandboxContext";
+import { getUploadStatus, postUpload, UploadStatus } from "../editor/DmnDevSandbox/DmnDevSandboxQuarkusAppApi";
 
 export const DEVELOPER_SANDBOX_URL = "https://developers.redhat.com/developer-sandbox";
 export const DEVELOPER_SANDBOX_GET_STARTED_URL = "https://developers.redhat.com/developer-sandbox/get-started";
 export const DEFAULT_CREATED_BY = "online-editor";
+
+const CHECK_UPLOAD_STATUS_POLLING_TIME = 3000;
 
 export class OpenShiftService {
   private readonly RESOURCE_NAME_PREFIX = "dmn-dev-sandbox";
@@ -75,8 +75,12 @@ export class OpenShiftService {
       return [];
     }
 
-    const builds = await this.fetchResource<Builds>(new ListBuilds(commonArgs));
     const routes = await this.fetchResource<Routes>(new ListRoutes(commonArgs));
+    const uploadStatuses = await Promise.all(
+      routes.items
+        .map((route) => this.composeBaseUrl(route))
+        .map(async (url) => ({ url: url, uploadStatus: await getUploadStatus({ baseUrl: url }) }))
+    );
 
     return deployments.items
       .filter(
@@ -86,25 +90,22 @@ export class OpenShiftService {
           routes.items.some((route: Route) => route.metadata.name === deployment.metadata.name)
       )
       .map((deployment: Deployment) => {
-        const build = builds.items.find((build: Build) => build.metadata.name === deployment.metadata.name);
         const route = routes.items.find((route: Route) => route.metadata.name === deployment.metadata.name)!;
         const baseUrl = this.composeBaseUrl(route);
+        const uploadStatus = uploadStatuses.find((status) => status.url === baseUrl)!.uploadStatus;
         return {
           resourceName: deployment.metadata.name,
-          filename: deployment.metadata.annotations[KOGITO_FILENAME],
-          urls: {
-            index: baseUrl,
-            swaggerUI: this.composeSwaggerUIUrl(baseUrl),
-          },
+          uri: deployment.metadata.annotations[KOGITO_URI],
+          baseUrl: baseUrl,
           creationTimestamp: new Date(deployment.metadata.creationTimestamp),
-          state: this.extractDeploymentState(deployment, build),
+          state: this.extractDeploymentStateWithUploadStatus(deployment, uploadStatus),
         };
       });
   }
 
   public async deploy(args: {
-    targetFile: DeploymentFile;
-    relatedFiles: DeploymentFile[];
+    targetFilePath: string;
+    workspaceZipBlob: Blob;
     config: OpenShiftSettingsConfig;
     onlineEditorUrl: (baseUrl: string) => string;
   }): Promise<void> {
@@ -115,44 +116,51 @@ export class OpenShiftService {
       resourceName: `${this.RESOURCE_NAME_PREFIX}-${this.generateRandomId()}`,
     };
 
-    const rollbacks = [
-      new DeleteBuild(commonArgs),
-      new DeleteBuildConfig(commonArgs),
-      new DeleteRoute(commonArgs),
-      new DeleteService(commonArgs),
-      new DeleteImageStream(commonArgs),
-    ];
+    const rollbacks = [new DeleteRoute(commonArgs), new DeleteService(commonArgs)];
 
-    await this.fetchResource(new CreateImageStream(commonArgs));
-    await this.fetchResource(new CreateService(commonArgs), rollbacks.slice(4));
-    const route = await this.fetchResource<Route>(new CreateRoute(commonArgs), rollbacks.slice(3));
+    await this.fetchResource(new CreateService(commonArgs), rollbacks.slice(1));
+    const route = await this.fetchResource<Route>(new CreateRoute(commonArgs), rollbacks.slice(2));
     const baseUrl = this.composeBaseUrl(route);
 
-    const buildConfig = await this.fetchResource(new CreateBuildConfig(commonArgs), rollbacks.slice(2));
-
-    await this.fetchResource(
-      new CreateBuild({
-        ...commonArgs,
-        buildConfigUid: buildConfig.metadata.uid,
-        targetFile: args.targetFile,
-        relatedFiles: args.relatedFiles,
-        urls: {
-          index: baseUrl,
-          swaggerUI: this.composeSwaggerUIUrl(baseUrl),
-          onlineEditor: args.onlineEditorUrl(baseUrl),
-        },
-      }),
-      rollbacks.slice(1)
-    );
-
-    await this.fetchResource(
+    const deployment = await this.fetchResource<Deployment>(
       new CreateDeployment({
         ...commonArgs,
-        filename: basename(args.targetFile.path),
+        uri: args.targetFilePath,
         createdBy: DEFAULT_CREATED_BY,
+        baseUrl: baseUrl,
       }),
       rollbacks
     );
+
+    new Promise<void>((resolve, reject) => {
+      let deploymentState = this.extractDeploymentState(deployment);
+      const interval = setInterval(async () => {
+        if (deploymentState !== OpenShiftDeployedModelState.UP) {
+          const deployment = await this.fetchResource<Deployment>(new GetDeployment(commonArgs));
+          deploymentState = this.extractDeploymentState(deployment);
+        }
+
+        if (deploymentState === OpenShiftDeployedModelState.UP) {
+          try {
+            const uploadStatus = await getUploadStatus({ baseUrl: baseUrl });
+            if (uploadStatus === "NOT_READY") {
+              return;
+            }
+
+            clearInterval(interval);
+
+            if (uploadStatus === "WAITING") {
+              await postUpload({ baseUrl: baseUrl, workspaceZipBlob: args.workspaceZipBlob });
+              resolve();
+            }
+          } catch (e) {
+            console.error(e);
+            reject(e);
+            clearInterval(interval);
+          }
+        }
+      }, CHECK_UPLOAD_STATUS_POLLING_TIME);
+    });
   }
 
   public async fetchResource<T = Resource>(target: ResourceFetch, rollbacks?: ResourceFetch[]): Promise<Readonly<T>> {
@@ -181,27 +189,7 @@ export class OpenShiftService {
     return `https://${route.spec.host}`;
   }
 
-  private composeSwaggerUIUrl(baseUrl: string): string {
-    return `${baseUrl}/q/swagger-ui`;
-  }
-
-  private extractDeploymentState(deployment: Deployment, build: Build | undefined): OpenShiftDeployedModelState {
-    if (!build) {
-      return OpenShiftDeployedModelState.DOWN;
-    }
-
-    if (["New", "Pending"].includes(build.status.phase)) {
-      return OpenShiftDeployedModelState.PREPARING;
-    }
-
-    if (["Failed", "Error", "Cancelled"].includes(build.status.phase)) {
-      return OpenShiftDeployedModelState.DOWN;
-    }
-
-    if (build.status.phase === "Running") {
-      return OpenShiftDeployedModelState.IN_PROGRESS;
-    }
-
+  private extractDeploymentState(deployment: Deployment): OpenShiftDeployedModelState {
     if (!deployment.status.replicas || +deployment.status.replicas === 0) {
       return OpenShiftDeployedModelState.DOWN;
     }
@@ -215,6 +203,27 @@ export class OpenShiftService {
     }
 
     if (!deployment.status.readyReplicas || +deployment.status.readyReplicas === 0) {
+      return OpenShiftDeployedModelState.IN_PROGRESS;
+    }
+
+    return OpenShiftDeployedModelState.UP;
+  }
+
+  private extractDeploymentStateWithUploadStatus(
+    deployment: Deployment,
+    uploadStatus: UploadStatus
+  ): OpenShiftDeployedModelState {
+    const state = this.extractDeploymentState(deployment);
+
+    if (state !== OpenShiftDeployedModelState.UP) {
+      return state;
+    }
+
+    if (uploadStatus === "ERROR") {
+      return OpenShiftDeployedModelState.ERROR;
+    }
+
+    if (uploadStatus !== "UPLOADED") {
       return OpenShiftDeployedModelState.IN_PROGRESS;
     }
 

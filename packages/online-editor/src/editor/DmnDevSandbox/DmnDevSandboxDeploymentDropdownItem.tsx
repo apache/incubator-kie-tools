@@ -19,6 +19,8 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
+import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+import { basename } from "path";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../common/i18n";
@@ -34,7 +36,7 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
 
   const filename = useMemo(() => {
     const maxSize = 25;
-    const originalFilename = props.deployment.filename;
+    const originalFilename = basename(props.deployment.uri);
     const extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
     const name = originalFilename.replace(`.${extension}`, "");
 
@@ -43,7 +45,7 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
     }
 
     return `${name.substring(0, maxSize)}... .${extension}`;
-  }, [props.deployment.filename]);
+  }, [props.deployment.uri]);
 
   const stateIcon = useMemo(() => {
     if (props.deployment.state === OpenShiftDeployedModelState.UP) {
@@ -75,6 +77,21 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
       );
     }
 
+    if (props.deployment.state === OpenShiftDeployedModelState.ERROR) {
+      return (
+        <Tooltip
+          key={`deployment-error-${props.id}`}
+          position="left"
+          content={i18n.dmnDevSandbox.dropdown.item.errorTooltip}
+        >
+          <ExclamationCircleIcon
+            id="dmn-dev-sandbox-deployment-item-error-icon"
+            className="kogito--editor__dmn-dev-sandbox-dropdown-item-status error-icon"
+          />
+        </Tooltip>
+      );
+    }
+
     return (
       <Tooltip
         key={`deployment-down-${props.id}`}
@@ -90,8 +107,8 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
   }, [i18n, props.deployment.state, props.id]);
 
   const onItemClicked = useCallback(() => {
-    window.open(props.deployment.urls.index, "_blank");
-  }, [props.deployment.urls.index]);
+    window.open(`${props.deployment.baseUrl}/#/form/${props.deployment.uri}`, "_blank");
+  }, [props.deployment.baseUrl, props.deployment.uri]);
 
   return (
     <DropdownItem

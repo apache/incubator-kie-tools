@@ -21,7 +21,7 @@ import { StorageFile, StorageService } from "./StorageService";
 import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
-import { join, relative } from "path";
+import { extname, join, relative } from "path";
 import { Minimatch } from "minimatch";
 import LightningFS from "@isomorphic-git/lightning-fs";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
@@ -117,7 +117,7 @@ export class WorkspaceService {
     }
   }
 
-  public async prepareZip(fs: LightningFS, workspaceId: string): Promise<Blob> {
+  public async prepareZip(fs: LightningFS, workspaceId: string, onlyExtensions?: string[]): Promise<Blob> {
     const workspaceRootDirPath = this.getAbsolutePath({ workspaceId });
 
     const gitDirPath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
@@ -128,7 +128,9 @@ export class WorkspaceService {
       onVisit: async ({ absolutePath }) => absolutePath,
     });
 
-    const files = await this.storageService.getFiles(fs, paths);
+    const files = (await this.storageService.getFiles(fs, paths)).filter(
+      (f) => !onlyExtensions || onlyExtensions.includes(extname(f.path).slice(1))
+    );
 
     const zip = new JSZip();
     for (const file of files) {

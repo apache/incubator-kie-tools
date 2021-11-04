@@ -16,7 +16,6 @@
 
 import { I18nHtml } from "@kie-tooling-core/i18n/dist/react-components";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import {
   Dropdown,
   DropdownItem,
@@ -34,32 +33,51 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
+import { basename } from "path";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
+import { useHistory } from "react-router";
+import { useApp } from "./AppContext";
 import { useDmnFormI18n } from "./i18n";
+import { routes } from "./Routes";
 
 interface Props {
-  filename: string;
-  onOpenSwaggerUI: () => void;
-  onOpenOnlineEditor: () => void;
+  uri: string;
 }
 
 export function DmnFormToolbar(props: Props) {
+  const app = useApp();
+  const history = useHistory();
   const { i18n } = useDmnFormI18n();
   const [isLgKebabOpen, setLgKebabOpen] = useState(false);
   const [isSmKebabOpen, setSmKebabOpen] = useState(false);
+  const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
+
+  const onOpenSwaggerUI = useCallback(() => {
+    window.open(routes.swaggerUi.path({}), "_blank");
+  }, []);
+
+  const openForm = useCallback(
+    (uri: string) => {
+      history.push({
+        pathname: routes.form.path({ filePath: uri.slice(1) }),
+      });
+    },
+    [history]
+  );
 
   const filename = useMemo(() => {
+    const fullFilename = basename(props.uri);
     const maxSize = 25;
-    const extension = props.filename.substring(props.filename.lastIndexOf(".") + 1);
-    const name = props.filename.replace(`.${extension}`, "");
+    const extension = fullFilename.substring(fullFilename.lastIndexOf(".") + 1);
+    const name = fullFilename.replace(`.${extension}`, "");
 
     if (name.length < maxSize) {
-      return props.filename;
+      return fullFilename;
     }
 
     return `${name.substring(0, maxSize)}... .${extension}`;
-  }, [props.filename]);
+  }, [props.uri]);
 
   const disclaimer = useMemo(() => {
     return (
@@ -77,29 +95,35 @@ export function DmnFormToolbar(props: Props) {
     );
   }, [i18n]);
 
+  const modelDropdownItems = useMemo(() => {
+    if (!app.data) {
+      return [];
+    }
+
+    return app.data.forms
+      .map((form) => form.uri)
+      .filter((uri) => uri !== props.uri)
+      .sort((a, b) => a.localeCompare(b))
+      .map((uri, idx) => (
+        <DropdownItem
+          id={`dmn-form-toolbar-model-dropdown-item-${idx}`}
+          key={`dmn-form-toolbar-model-dropdown-item-${idx}`}
+          component="button"
+          onClick={() => openForm(uri)}
+        >
+          {basename(uri)}
+        </DropdownItem>
+      ));
+  }, [app.data, openForm, props.uri]);
+
   const dropdownItems = useCallback(
     (dropdownId: string) => [
       <React.Fragment key={`dropdown-${dropdownId}-close`}>
         <DropdownItem
-          id="dmn-dev-sandbox-form-toolbar-kebab-open-online-editor-button"
-          key={`dropdown-${dropdownId}-save`}
-          component={"button"}
-          onClick={props.onOpenOnlineEditor}
-          className={"pf-u-display-none-on-xl"}
-          data-testid={"open-online-editor-button"}
-          ouiaId="open-online-editor-dropdown-button"
-          description={filename}
-        >
-          <Text component={TextVariants.a} className="kogito--dmn-form__toolbar a">
-            {i18n.terms.open}
-            <ExternalLinkAltIcon className="pf-u-mx-sm" />
-          </Text>
-        </DropdownItem>
-        <DropdownItem
           id="dmn-dev-sandbox-form-toolbar-kebab-open-swagger-ui-button"
           key={`dropdown-${dropdownId}-swagger-ui`}
           component={"button"}
-          onClick={props.onOpenSwaggerUI}
+          onClick={onOpenSwaggerUI}
           aria-label={"Swagger UI"}
           data-testid={"open-swagger-ui-button"}
           ouiaId="open-swagger-ui-button"
@@ -111,13 +135,13 @@ export function DmnFormToolbar(props: Props) {
         </DropdownItem>
       </React.Fragment>,
     ],
-    [props.onOpenOnlineEditor, props.onOpenSwaggerUI, filename, i18n]
+    [onOpenSwaggerUI, i18n]
   );
 
   return (
     <PageHeader
       logo={
-        <Brand src="images/dmn_kogito_logo.svg" alt={`dmn kogito logo`} className="kogito--dmn-form__toolbar-logo" />
+        <Brand src={routes.static.images.homeLogo.path({})} alt={"Logo"} className="kogito--dmn-form__toolbar-logo" />
       }
       headerTools={
         <PageHeaderTools>
@@ -132,34 +156,28 @@ export function DmnFormToolbar(props: Props) {
                 sm: "hidden",
               }}
             >
-              <Text data-testid={"text-filename"} className="kogito--dmn-form__toolbar-filename">
-                {filename}
-              </Text>
-            </PageHeaderToolsItem>
-          </PageHeaderToolsGroup>
-          <PageHeaderToolsGroup>
-            <PageHeaderToolsItem
-              visibility={{
-                default: "hidden",
-                "2xl": "visible",
-                xl: "visible",
-                lg: "hidden",
-                md: "hidden",
-                sm: "hidden",
-              }}
-            >
-              <Button
-                id="dmn-dev-sandbox-form-toolbar-open-online-editor-button"
-                variant="tertiary"
-                data-testid="open-online-editor"
-                aria-label={"Open Online Editor"}
-                ouiaId="open-online-editor"
-                icon={<ExternalLinkAltIcon />}
-                iconPosition="right"
-                onClick={props.onOpenOnlineEditor}
-              >
-                {i18n.terms.open}
-              </Button>
+              {app.data!.forms.length === 1 && (
+                <Text data-testid={"text-filename"} className="kogito--dmn-form__toolbar-filename">
+                  {filename}
+                </Text>
+              )}
+              {app.data!.forms.length > 1 && (
+                <Dropdown
+                  onSelect={() => setModelDropdownOpen(false)}
+                  toggle={
+                    <DropdownToggle
+                      id="dmn-dev-sandbox-form-toolbar-model-dropdown-button"
+                      onToggle={(isOpen) => setModelDropdownOpen(isOpen)}
+                      data-testid="dmn-dev-sandbox-form-toolbar-model-dropdown-button"
+                    >
+                      {filename}
+                    </DropdownToggle>
+                  }
+                  isOpen={modelDropdownOpen}
+                  position={DropdownPosition.right}
+                  dropdownItems={modelDropdownItems}
+                />
+              )}
             </PageHeaderToolsItem>
           </PageHeaderToolsGroup>
           <PageHeaderToolsGroup>

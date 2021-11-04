@@ -362,7 +362,8 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const prepareZip = useCallback(
-    (args: { fs: LightningFS; workspaceId: string }) => service.prepareZip(args.fs, args.workspaceId),
+    (args: { fs: LightningFS; workspaceId: string; onlyExtensions?: string[] }) =>
+      service.prepareZip(args.fs, args.workspaceId, args.onlyExtensions),
     [service]
   );
 

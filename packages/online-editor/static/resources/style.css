@@ -552,6 +552,14 @@
   color: var(--pf-global--palette--gold-500);
 }
 
+.error-icon {
+  color: var(--pf-global--danger-color--100);
+}
+
+.error-icon:hover {
+  color: var(--pf-global--danger-color--200);
+}
+
 @-webkit-keyframes rotating /* Safari and Chrome */ {
   from {
     -webkit-transform: rotate(0deg);
