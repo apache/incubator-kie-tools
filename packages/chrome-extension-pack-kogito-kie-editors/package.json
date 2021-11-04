@@ -29,7 +29,7 @@
     "test:it:start:online-editor": "npm --prefix ../online-editor run start",
     "test:it:start": "yarn start",
     "test:it:run": "jest --runInBand -c ./jest.it.config.js",
-    "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test test:it:start:online-editor http-get://localhost:$(build-env onlineEditor.dev.port) test:it:start https-get://localhost:$(build-env chromeExtension.dev.port) test:it:run\""
+    "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test test:it:start:online-editor https-get://localhost:$(build-env onlineEditor.dev.port) test:it:start https-get://localhost:$(build-env chromeExtension.dev.port) test:it:run\""
   },
   "babel": {
     "presets": [

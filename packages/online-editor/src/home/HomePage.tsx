@@ -61,12 +61,12 @@ import {
 import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { UploadCard } from "./UploadCard";
+import { ImportFromUrlCard } from "./ImportFromUrlCard";
 
 export function HomePage() {
   const globals = useGlobals();
   const history = useHistory();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
-  const [url, setUrl] = useState("");
 
   const queryParams = useQueryParams();
 
@@ -147,47 +147,7 @@ export function HomePage() {
               >
                 <UploadCard expandWorkspace={expandWorkspace} />
                 {/*<Divider isVertical={true} />*/}
-                <Card isFullHeight={true} isLarge={true} isPlain={true} isSelected={url.length > 0}>
-                  <CardTitle>
-                    <TextContent>
-                      <Text component={TextVariants.h2}>
-                        <CodeIcon />
-                        &nbsp;&nbsp;From URL
-                      </Text>
-                    </TextContent>
-                  </CardTitle>
-                  <CardBody>
-                    <TextContent>
-                      <Text component={TextVariants.p}>Import files from a GitHub Gist.</Text>
-                    </TextContent>
-                    <br />
-                    <TextInput
-                      isRequired={true}
-                      placeholder={"URL"}
-                      value={url}
-                      onChange={(v) => {
-                        // TODO
-                        // validate URL. if validated, change button to "primary"
-                        setUrl(v);
-                      }}
-                    />
-                  </CardBody>
-                  <CardFooter>
-                    <Button
-                      variant={url.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
-                      onClick={() => {
-                        // TODO
-                        // enable `Enter` key to submit.
-                        history.push({
-                          pathname: globals.routes.importModel.path({}),
-                          search: globals.routes.importModel.queryString({ url: url }),
-                        });
-                      }}
-                    >
-                      Import
-                    </Button>
-                  </CardFooter>
-                </Card>
+                <ImportFromUrlCard />
               </Gallery>
             </PageSection>
           </SplitItem>

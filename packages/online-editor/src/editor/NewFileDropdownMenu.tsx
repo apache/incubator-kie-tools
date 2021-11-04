@@ -13,11 +13,12 @@ import {
   MenuList,
 } from "@patternfly/react-core/dist/js/components/Menu";
 import { SupportedFileExtensions, useGlobals } from "../common/GlobalContext";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { AlertsController, useAlert } from "./Alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { basename, extname } from "path";
+import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
+import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;
@@ -75,11 +76,18 @@ export function NewFileDropdownMenu(props: {
   }, [activeMenu, urlInputRef]);
 
   const [isImporting, setImporting] = useState(false);
+  const [importingError, setImportingError] = useState<string>();
 
   //FIXME: We have to unify this logic with `NewWorkspaceFromUrlPage.tsx`
   const importFromUrl = useCallback(
-    async (urlString: string) => {
+    async (urlString?: string) => {
+      if (!urlString) {
+        return;
+      }
+
       setImporting(true);
+      setImportingError(undefined);
+
       try {
         const url = new URL(urlString);
         const extension = extname(url.pathname).replace(".", "");
@@ -87,6 +95,7 @@ export function NewFileDropdownMenu(props: {
 
         const response = await fetch(urlString);
         if (!response.ok) {
+          setImportingError(`${response.status}${response.statusText ? `- ${response.statusText}` : ""}`);
           return;
         }
 
@@ -101,6 +110,8 @@ export function NewFileDropdownMenu(props: {
           destinationDirRelativePath: props.destinationDirPath,
         });
         await props.onAddFile(file);
+      } catch (e) {
+        setImportingError(e.toString());
       } finally {
         setImporting(false);
       }
@@ -168,6 +179,8 @@ export function NewFileDropdownMenu(props: {
     },
     [globals, workspaces, props, successfullyUploadedAlert]
   );
+
+  const [url, setUrl] = useState("");
 
   return (
     <Menu
@@ -271,18 +284,23 @@ export function NewFileDropdownMenu(props: {
                 <MenuItem direction="up">Back</MenuItem>
                 <Divider />
                 <MenuInput>
-                  <TextInput ref={urlInputRef} placeholder={"URL"} />
+                  <ImportFromUrlForm
+                    importingError={importingError}
+                    allowedTypes={[UrlType.FILE, UrlType.GIST_FILE, UrlType.GITHUB_FILE]}
+                    urlInputRef={urlInputRef}
+                    url={url}
+                    onChange={(url) => {
+                      setUrl(url);
+                      setImportingError(undefined);
+                    }}
+                    onSubmit={() => importFromUrl(url)}
+                  />
                 </MenuInput>
                 <MenuInput>
                   <Button
-                    variant={ButtonVariant.primary}
+                    variant={url.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
                     isLoading={isImporting}
-                    onClick={() => {
-                      const url = urlInputRef.current?.value;
-                      if (url) {
-                        return importFromUrl(url);
-                      }
-                    }}
+                    onClick={() => importFromUrl(url)}
                   >
                     Import
                   </Button>
