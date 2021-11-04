@@ -24,4 +24,3 @@ Feature: Kogito-jobs-service-postgresql feature.
       | QUARKUS_DATASOURCE_PASSWORD  | s3cr3t                                   |
     Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/jobs-service-postgresql-runner.jar
     And container log should contain Datasource '<default>': The connection attempt failed
-    And container log should contain Failed to start application (with profile prod)
