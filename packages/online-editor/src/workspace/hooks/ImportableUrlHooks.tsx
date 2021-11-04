@@ -54,7 +54,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
   const globals = useGlobals();
 
   const ifAllowed = (url: ImportableUrl): ImportableUrl => {
-    if (!allowedUrlTypes?.includes(url.type)) {
+    if (allowedUrlTypes && !allowedUrlTypes.includes(url.type)) {
       return { type: UrlType.INVALID, errors: ["URL not allowed"], url: url.url.toString() };
     }
 
