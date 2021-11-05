@@ -166,13 +166,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
         setDmnRunnerResults(undefined);
       }
     },
-    [
-      dmnRunner.service,
-      dmnRunner.status,
-      dmnRunnerCallbacks.setFormError,
-      dmnRunnerCallbacks.preparePayload,
-      setExecutionNotifications,
-    ]
+    [dmnRunner.service, dmnRunner.status, dmnRunnerCallbacks, setExecutionNotifications]
   );
 
   // Update outputs column on form change

@@ -186,30 +186,36 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
   }, [prevKieToolingExtendedServicesStatus, kieToolingExtendedServices.status, props.workspaceFile.extension]);
 
+  const dmnRunnerCallbacks = useMemo(
+    () => ({
+      preparePayload,
+      setDrawerExpanded,
+      setFormData,
+      setFormError,
+      setMode,
+      setTableData,
+    }),
+    [preparePayload]
+  );
+
+  const dmnRunner = useMemo(
+    () => ({
+      formData,
+      formError,
+      formSchema,
+      isDrawerExpanded,
+      mode,
+      status,
+      service,
+      tableData,
+    }),
+    [formData, formError, formSchema, isDrawerExpanded, mode, service, status, tableData]
+  );
+
   return (
     <>
-      <DmnRunnerContext.Provider
-        value={{
-          formData,
-          formError,
-          formSchema,
-          isDrawerExpanded,
-          mode,
-          status,
-          service,
-          tableData,
-        }}
-      >
-        <DmnRunnerCallbacksContext.Provider
-          value={{
-            preparePayload,
-            setDrawerExpanded,
-            setFormData,
-            setFormError,
-            setMode,
-            setTableData,
-          }}
-        >
+      <DmnRunnerContext.Provider value={dmnRunner}>
+        <DmnRunnerCallbacksContext.Provider value={dmnRunnerCallbacks}>
           {props.children}
         </DmnRunnerCallbacksContext.Provider>
       </DmnRunnerContext.Provider>
