@@ -97,7 +97,8 @@ export const en: OnlineI18n = {
         upTooltip: "This deployment is up and running.",
         downTooltip: "This deployment is not running.",
         inProgressTooltip: "This deployment is in progress and it will be available shortly.",
-        errorTooltip: "Some unexpected error happened and this deployment is not available.",
+        errorTooltip:
+          "Some unexpected error happened during the deploy process. Check the logs in your instance for further information.",
         createdAt: (date: string) => `Created at ${date}`,
       },
     },
@@ -117,7 +118,8 @@ export const en: OnlineI18n = {
     alerts: {
       deployStartedError:
         "Something went wrong when creating your deployment. Please check your configuration and try again.",
-      deployStartedSuccess: "Your deployment has been successfully started and it will be available shortly.",
+      deployStartedSuccess:
+        "Your deployment has been successfully started and it will be available shortly. Please do not close your browser tab until this operation is completed.",
     },
     introduction: {
       explanation: `Deploy your decision models to a cloud instance on ${en_common.names.devSandbox} and share with others.`,

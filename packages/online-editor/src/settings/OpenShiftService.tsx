@@ -28,7 +28,6 @@ import { KOGITO_CREATED_BY, KOGITO_URI, Resource, ResourceFetch } from "./resour
 import { CreateRoute, DeleteRoute, ListRoutes, Route, Routes } from "./resources/Route";
 import { CreateService, DeleteService } from "./resources/Service";
 import { isConfigValid, OpenShiftSettingsConfig } from "./OpenShiftSettingsConfig";
-import { basename } from "path";
 import { getUploadStatus, postUpload, UploadStatus } from "../editor/DmnDevSandbox/DmnDevSandboxQuarkusAppApi";
 
 export const DEVELOPER_SANDBOX_URL = "https://developers.redhat.com/developer-sandbox";

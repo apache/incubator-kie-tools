@@ -23,7 +23,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
@@ -37,6 +39,7 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.runtime.Startup;
+import org.apache.commons.io.FileUtils;
 import org.jboss.logging.Logger;
 import org.kie.kogito.form.FormSchemaService;
 import org.kie.kogito.model.Data;
@@ -48,10 +51,11 @@ public class UploadServiceImpl implements UploadService {
 
     private static final Logger LOGGER = Logger.getLogger(UploadServiceImpl.class);
 
-    private static final String TMP_FOLDER = "/tmp";
+    private static final String WORK_FOLDER = "/tmp/kogito";
+    private static final String UNZIP_FOLDER = Paths.get(WORK_FOLDER, "unzip").toString();
     private static final String META_INF_RESOURCES_FOLDER = "src/main/resources/META-INF/resources";
     private static final String STATUS_FILE = "status.txt";
-    private static final String UPLOAD_FILE = "file.zip";
+    private static final String UPLOADED_ZIP_FILE = "file.zip";
     private static final String DATA_JSON_FILE = "data.json";
     private static final String BASE_URL = System.getenv("BASE_URL");
     private static final int UPLOAD_TIMEOUT_MS = 1000 * 60 * 10; // 10 minutes
@@ -68,7 +72,14 @@ public class UploadServiceImpl implements UploadService {
     @PostConstruct
     public void postConstruct() {
         LOGGER.info("PostConstruct");
-        statusFile = Paths.get(TMP_FOLDER, STATUS_FILE).toFile();
+
+        var workFolder = new File(WORK_FOLDER);
+        workFolder.mkdirs();
+
+        var unzipFolder = new File(UNZIP_FOLDER);
+        unzipFolder.mkdirs();
+
+        statusFile = Paths.get(WORK_FOLDER, STATUS_FILE).toFile();
 
         if (!statusFile.exists()) {
             updateStatus(UploadStatus.WAITING);
@@ -105,21 +116,33 @@ public class UploadServiceImpl implements UploadService {
         LOGGER.info("Uploading file");
         cancelTimer();
 
-        var zipPath = Paths.get(META_INF_RESOURCES_FOLDER, UPLOAD_FILE);
+        var zipPath = Paths.get(WORK_FOLDER, UPLOADED_ZIP_FILE);
         try {
             Files.copy(inputStream, zipPath, StandardCopyOption.REPLACE_EXISTING);
-            var filePaths = zipService.unzip(zipPath.toString(), META_INF_RESOURCES_FOLDER);
+            var filePaths = zipService.unzip(zipPath.toString(), UNZIP_FOLDER);
             writeData(filePaths);
             updateStatus(UploadStatus.UPLOADED);
         } catch (Exception e) {
-            LOGGER.error("Error when uploading file", e);
+            LOGGER.error("Error when processing the uploaded file", e);
             updateStatus(UploadStatus.ERROR);
         }
     }
 
     private void writeData(final List<String> filePaths) throws IOException {
-        var forms = formSchemaService.generate(META_INF_RESOURCES_FOLDER, filePaths);
+        var forms = formSchemaService.generate(UNZIP_FOLDER, filePaths);
         var data = new Data(BASE_URL, forms);
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(UNZIP_FOLDER))) {
+            for (Path path : stream) {
+                var sourceFile = path.toFile();
+                var targetFile = Paths.get(META_INF_RESOURCES_FOLDER, sourceFile.getName()).toFile();
+                if (sourceFile.isDirectory()) {
+                    FileUtils.moveDirectory(sourceFile, targetFile);
+                } else {
+                    FileUtils.moveFile(sourceFile, targetFile);
+                }
+            }
+        }
 
         var mapper = new ObjectMapper();
         try (var writer = new BufferedWriter(new FileWriter(Paths.get(META_INF_RESOURCES_FOLDER, DATA_JSON_FILE).toString()))) {

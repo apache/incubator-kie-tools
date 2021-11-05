@@ -26,6 +26,6 @@ WORKDIR /tmp/kogito/dmn-dev-sandbox-quarkus/
 
 RUN ./mvnw clean package -B -ntp -Dmaven.test.skip -DQUARKUS_PLATFORM_VERSION=${QUARKUS_PLATFORM_VERSION} -DKOGITO_RUNTIME_VERSION=${KOGITO_RUNTIME_VERSION} \
     && mv ~/.m2 /tmp/kogito \
-    && chmod -R 775 .
+    && chmod -R 775 /tmp/kogito
 
 ENTRYPOINT ./mvnw quarkus:dev -Ddebug=false -Dmaven.repo.local=/tmp/kogito/.m2/repository -DQUARKUS_PLATFORM_VERSION=${QUARKUS_PLATFORM_VERSION} -DKOGITO_RUNTIME_VERSION=${KOGITO_RUNTIME_VERSION}
