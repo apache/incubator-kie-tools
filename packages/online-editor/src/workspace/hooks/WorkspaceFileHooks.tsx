@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
 import { Holder, useCancelableEffect } from "../../common/Hooks";
 import { usePromiseState } from "./PromiseState";
+import { WorkspaceEvents } from "./WorkspaceHooks";
 
 export function useWorkspaceFilePromise(workspaceId: string | undefined, relativePath: string | undefined) {
   const workspaces = useWorkspaces();
@@ -59,6 +60,15 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
           }
           if (data.type === "UPDATE" || data.type === "DELETE" || data.type === "ADD") {
             refresh(workspaceId, data.relativePath, canceled);
+          }
+        };
+
+        console.info("Subscribing to " + workspaceId);
+        const broadcastChannel2 = new BroadcastChannel(workspaceId);
+        broadcastChannel2.onmessage = ({ data }: MessageEvent<WorkspaceEvents>) => {
+          console.info(`EVENT::WORKSPACE: ${JSON.stringify(data)}`);
+          if (data.type === "PULL") {
+            refresh(workspaceId, relativePath, canceled);
           }
         };
 

@@ -161,6 +161,8 @@ export interface WorkspacesContextType {
     content: string;
     extension: string;
   }): Promise<WorkspaceFile>;
+
+  pull(args: { fs: LightningFS; workspaceId: string }): Promise<void>;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);

@@ -39,7 +39,7 @@ export interface CommitArgs {
   message: string;
   targetBranch: string;
   dir: string;
-  authInfo: {
+  author: {
     name: string;
     email: string;
   };
@@ -109,20 +109,34 @@ export class GitService {
       dir: args.dir,
       message: args.message,
       author: {
-        name: args.authInfo.name,
-        email: args.authInfo.email,
+        name: args.author.name,
+        email: args.author.email,
       },
       ref: args.targetBranch,
     });
   }
 
-  public async fetch(args: { fs: LightningFS; dir: string; remote: string }) {
-    await git.fetch({
+  public async pull(args: {
+    fs: LightningFS;
+    dir: string;
+    ref: string;
+    author: {
+      name: string;
+      email: string;
+    };
+    authInfo?: {
+      onAuth: () => { username: string; password: string };
+    };
+  }) {
+    await git.pull({
       fs: args.fs,
       http: http,
       corsProxy: this.corsProxy,
       dir: args.dir,
-      remote: args.remote,
+      ref: args.ref,
+      singleBranch: true,
+      author: args.author,
+      onAuth: args.authInfo?.onAuth,
     });
   }
 

@@ -173,7 +173,6 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
   }, []);
 
   const setHeight = useCallback((menuId: string, height: number) => {
-    console.info(menuId, height);
     // do not try to simply this ternary's condition as some heights are 0, resulting in an infinite loop.
     setMenuHeights((prev) => (prev[menuId] === height ? prev : { ...prev, [menuId]: height }));
   }, []);

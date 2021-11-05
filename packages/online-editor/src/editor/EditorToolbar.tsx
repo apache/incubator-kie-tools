@@ -767,7 +767,86 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
   const pushGitHubRepository = useCallback(() => {}, []);
 
-  const fetchGitHubRepository = useCallback(() => {}, []);
+  const pullingAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB) {
+          return <></>;
+        }
+
+        return (
+          <Alert
+            variant="info"
+            title={
+              <>
+                <Spinner size={"sm"} />
+                &nbsp;&nbsp; {`Pulling from '${workspacePromise.data?.descriptor.origin.url}'...`}
+              </>
+            }
+          />
+        );
+      },
+      [workspacePromise]
+    )
+  );
+
+  const pullSuccessAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB) {
+          return <></>;
+        }
+
+        return <Alert variant="success" title={`Pulled from '${workspacePromise.data?.descriptor.origin.url}'`} />;
+      },
+      [workspacePromise]
+    ),
+    { durationInSeconds: 4 }
+  );
+
+  const pullErrorAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB) {
+          return <></>;
+        }
+
+        return (
+          <Alert
+            variant="danger"
+            title={`Error pulling from '${workspacePromise.data?.descriptor.origin.url}'`}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        );
+      },
+      [workspacePromise]
+    )
+  );
+
+  const pullGitHubRepository = useCallback(async () => {
+    pullingAlert.show();
+    await workspaces.createSavePoint({
+      fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+      workspaceId: props.workspaceFile.workspaceId,
+    });
+
+    try {
+      await workspaces.pull({
+        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+        workspaceId: props.workspaceFile.workspaceId,
+      });
+      pullSuccessAlert.show();
+    } catch (e) {
+      console.error(e);
+      pullErrorAlert.show();
+      // TODO: Lock workspace and give the user an option to start from another fresh one with a new branch.
+    } finally {
+      pullingAlert.close();
+    }
+  }, [pullingAlert, workspaces, props.workspaceFile.workspaceId, pullSuccessAlert, pullErrorAlert]);
 
   return (
     <PromiseStateWrapper
@@ -990,7 +1069,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             <DropdownGroup key={"sync-gist-dropdown-group"}>
                               <DropdownItem
                                 icon={<SyncAltIcon />}
-                                onClick={fetchGitHubRepository}
+                                onClick={pullGitHubRepository}
                                 description={"Get new changes made upstream."}
                               >
                                 Fetch...

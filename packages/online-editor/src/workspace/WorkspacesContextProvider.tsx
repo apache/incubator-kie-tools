@@ -36,6 +36,7 @@ import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorServic
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
+import { WorkspaceFileEvents } from "./hooks/WorkspaceFileHooks";
 
 const GIT_CORS_PROXY = "https://cors.isomorphic-git.org"; // TODO CAPONETTO: Deploy our own proxy (https://github.com/isomorphic-git/cors-proxy)
 
@@ -107,6 +108,26 @@ export function WorkspacesContextProvider(props: Props) {
     [gitService, service]
   );
 
+  const pull = useCallback(
+    async (args: { fs: LightningFS; workspaceId: string }) => {
+      const workspace = await descriptorService.get(args.workspaceId);
+      await gitService.pull({
+        fs: args.fs,
+        dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
+        ref: workspace.origin.branch,
+        author: {
+          name: "Unknown",
+          email: "unknown@email.com",
+        },
+      });
+
+      const broadcastChannel2 = new BroadcastChannel(args.workspaceId);
+      const workspaceEvent: WorkspaceEvents = { type: "PULL", workspaceId: args.workspaceId };
+      broadcastChannel2.postMessage(workspaceEvent);
+    },
+    [descriptorService, gitService, service]
+  );
+
   const createSavePoint = useCallback(
     async (args: { fs: LightningFS; workspaceId: string; gitSettings?: { email: string; name: string } }) => {
       const descriptor = await descriptorService.get(args.workspaceId);
@@ -141,7 +162,7 @@ export function WorkspacesContextProvider(props: Props) {
         dir: workspaceRootDirPath,
         targetBranch: descriptor.origin.branch,
         message: "Save point",
-        authInfo: {
+        author: {
           name: args.gitSettings?.name ?? "Unknown",
           email: args.gitSettings?.email ?? "unknown@email.com",
         },
@@ -207,7 +228,7 @@ export function WorkspacesContextProvider(props: Props) {
             dir: workspaceRootDirPath,
             message: "Initial",
             targetBranch: GIT_DEFAULT_BRANCH,
-            authInfo: {
+            author: {
               name: args.gitSettings?.name ?? "Unknown",
               email: args.gitSettings?.email ?? "unknown@email.com",
             },
@@ -431,6 +452,7 @@ export function WorkspacesContextProvider(props: Props) {
         getAbsolutePath,
         getUniqueFileIdentifier,
         createSavePoint,
+        pull,
         getFiles,
         isModified,
         //
