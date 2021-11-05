@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useContext } from "react";
 import { OpenShiftDeployedModel } from "../../settings/OpenShiftDeployedModel";
-import { OpenShiftSettingsConfig } from "../../settings/OpenShiftSettingsConfig";
+import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 export interface DeploymentFile {
   path: string;
@@ -31,7 +31,7 @@ export interface DmnDevSandboxContextType {
   setDeployments: React.Dispatch<OpenShiftDeployedModel[]>;
   setDropdownOpen: React.Dispatch<boolean>;
   setConfirmDeployModalOpen: React.Dispatch<boolean>;
-  onDeploy: (config: OpenShiftSettingsConfig) => Promise<void>;
+  deploy: (workspaceFile: WorkspaceFile) => Promise<boolean>;
 }
 
 export const DmnDevSandboxContext = React.createContext<DmnDevSandboxContextType>({

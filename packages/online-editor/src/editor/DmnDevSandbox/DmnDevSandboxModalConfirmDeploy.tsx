@@ -14,19 +14,54 @@
  * limitations under the License.
  */
 
+import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import * as React from "react";
 import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../../common/i18n";
+import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { AlertsController, useAlert } from "../Alerts/Alerts";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
-import { useSettings } from "../../settings/SettingsContext";
 
-export function DmnDevSandboxModalConfirmDeploy() {
+interface Props {
+  workspaceFile: WorkspaceFile;
+  alerts: AlertsController | undefined;
+}
+
+export function DmnDevSandboxModalConfirmDeploy(props: Props) {
   const dmnDevSandboxContext = useDmnDevSandbox();
   const { i18n } = useOnlineI18n();
-  const settings = useSettings();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
+
+  const deployStartedErrorAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => (
+        <Alert
+          variant="danger"
+          title={i18n.dmnDevSandbox.alerts.deployStartedError}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      ),
+      [i18n]
+    )
+  );
+
+  const deployStartedSuccessAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => (
+        <Alert
+          className={"kogito--alert"}
+          variant="info"
+          title={i18n.dmnDevSandbox.alerts.deployStartedSuccess}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      ),
+      [i18n]
+    )
+  );
 
   const onConfirm = useCallback(async () => {
     if (isConfirmLoading) {
@@ -34,11 +69,17 @@ export function DmnDevSandboxModalConfirmDeploy() {
     }
 
     setConfirmLoading(true);
-    await dmnDevSandboxContext.onDeploy(settings.openshift.config.get);
+    const deployStarted = await dmnDevSandboxContext.deploy(props.workspaceFile);
     setConfirmLoading(false);
 
     dmnDevSandboxContext.setConfirmDeployModalOpen(false);
-  }, [settings.openshift.config, dmnDevSandboxContext, isConfirmLoading]);
+
+    if (deployStarted) {
+      deployStartedSuccessAlert.show();
+    } else {
+      deployStartedErrorAlert.show();
+    }
+  }, [isConfirmLoading, dmnDevSandboxContext, props.workspaceFile, deployStartedSuccessAlert, deployStartedErrorAlert]);
 
   const onCancel = useCallback(() => {
     dmnDevSandboxContext.setConfirmDeployModalOpen(false);

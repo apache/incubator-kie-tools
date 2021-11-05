@@ -14,33 +14,26 @@
  * limitations under the License.
  */
 
-import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useGlobals } from "../../common/GlobalContext";
-import { useOnlineI18n } from "../../common/i18n";
 import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { OpenShiftDeployedModel } from "../../settings/OpenShiftDeployedModel";
 import { DmnDevSandboxContext } from "./DmnDevSandboxContext";
 import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus";
-import { DmnDevSandboxModalConfirmDeploy } from "./DmnDevSandboxModalConfirmDeploy";
 import { useSettings } from "../../settings/SettingsContext";
-import { isConfigValid, OpenShiftSettingsConfig } from "../../settings/OpenShiftSettingsConfig";
-import { AlertsController, useAlert } from "../Alerts/Alerts";
+import { isConfigValid } from "../../settings/OpenShiftSettingsConfig";
 import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 interface Props {
   children: React.ReactNode;
-  workspaceFile: WorkspaceFile;
-  alerts: AlertsController | undefined;
 }
 
 const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
 
 export function DmnDevSandboxContextProvider(props: Props) {
   const settings = useSettings();
-  const { i18n } = useOnlineI18n();
   const globals = useGlobals();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const workspaces = useWorkspaces();
@@ -48,35 +41,6 @@ export function DmnDevSandboxContextProvider(props: Props) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
   const [deployments, setDeployments] = useState([] as OpenShiftDeployedModel[]);
-
-  const deployStartedErrorAlert = useAlert(
-    props.alerts,
-    useCallback(
-      ({ close }) => (
-        <Alert
-          variant="danger"
-          title={i18n.dmnDevSandbox.alerts.deployStartedError}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      ),
-      [i18n]
-    )
-  );
-
-  const deployStartedSuccessAlert = useAlert(
-    props.alerts,
-    useCallback(
-      ({ close }) => (
-        <Alert
-          className={"kogito--alert"}
-          variant="info"
-          title={i18n.dmnDevSandbox.alerts.deployStartedSuccess}
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      ),
-      [i18n]
-    )
-  );
 
   const onDisconnect = useCallback(
     (closeModals: boolean) => {
@@ -91,45 +55,43 @@ export function DmnDevSandboxContextProvider(props: Props) {
     [settings.openshift.status]
   );
 
-  const onDeploy = useCallback(
-    async (config: OpenShiftSettingsConfig) => {
-      if (!(isConfigValid(config) && (await settings.openshift.service.isConnectionEstablished(config)))) {
-        deployStartedErrorAlert.show();
-        return;
+  const deploy = useCallback(
+    async (workspaceFile: WorkspaceFile) => {
+      if (
+        !(
+          isConfigValid(settings.openshift.config.get) &&
+          (await settings.openshift.service.isConnectionEstablished(settings.openshift.config.get))
+        )
+      ) {
+        return false;
       }
 
-      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
+      const fs = await workspaces.fsService.getWorkspaceFs(workspaceFile.workspaceId);
       const zipBlob = await workspaces.prepareZip({
         fs,
-        workspaceId: props.workspaceFile.workspaceId,
+        workspaceId: workspaceFile.workspaceId,
         onlyExtensions: ["dmn"],
       });
 
       try {
         await settings.openshift.service.deploy({
-          targetFilePath: props.workspaceFile.relativePath,
+          targetFilePath: workspaceFile.relativePath,
           workspaceZipBlob: zipBlob,
-          config: config,
+          config: settings.openshift.config.get,
           onlineEditorUrl: (baseUrl) =>
             globals.routes.importModel.url({
               base: process.env.WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl,
               pathParams: {},
-              queryParams: { url: `${baseUrl}/${props.workspaceFile.relativePath}` },
+              queryParams: { url: `${baseUrl}/${workspaceFile.relativePath}` },
             }),
         });
-        deployStartedSuccessAlert.show();
+        return true;
       } catch (error) {
-        deployStartedErrorAlert.show();
+        console.error(error);
+        return false;
       }
     },
-    [
-      settings.openshift.service,
-      props.workspaceFile,
-      workspaces,
-      deployStartedSuccessAlert,
-      deployStartedErrorAlert,
-      globals,
-    ]
+    [settings.openshift.config.get, settings.openshift.service, workspaces, globals.routes.importModel]
   );
 
   useEffect(() => {
@@ -190,11 +152,10 @@ export function DmnDevSandboxContextProvider(props: Props) {
         setDeployments,
         setDropdownOpen,
         setConfirmDeployModalOpen,
-        onDeploy,
+        deploy,
       }}
     >
       {props.children}
-      <DmnDevSandboxModalConfirmDeploy />
     </DmnDevSandboxContext.Provider>
   );
 }

@@ -28,6 +28,7 @@ import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider
 import { HomePage } from "./home/HomePage";
 import { NewWorkspaceWithEmptyFilePage } from "./workspace/components/NewWorkspaceWithEmptyFilePage";
 import { NewWorkspaceFromUrlPage } from "./workspace/components/NewWorkspaceFromUrlPage";
+import { DmnDevSandboxContextProvider } from "./editor/DmnDevSandbox/DmnDevSandboxContextProvider";
 
 export function App() {
   return (
@@ -38,6 +39,7 @@ export function App() {
         [KieToolingExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
         [WorkspacesContextProvider, {}],
+        [DmnDevSandboxContextProvider, {}],
         [RoutesSwitch, {}]
       )}
     </HashRouter>

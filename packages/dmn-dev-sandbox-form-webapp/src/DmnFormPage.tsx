@@ -43,7 +43,7 @@ const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
 export function DmnFormPage(props: Props) {
   const { i18n, locale } = useDmnFormI18n();
-  const [formInputs, setFormInputs] = useState();
+  const [formInputs, setFormInputs] = useState({});
   const [formOutputs, setFormOutputs] = useState<DecisionResult[]>();
   const [formOutputDiffs, setFormOutputDiffs] = useState<object[]>();
   const [formError, setFormError] = useState(false);
