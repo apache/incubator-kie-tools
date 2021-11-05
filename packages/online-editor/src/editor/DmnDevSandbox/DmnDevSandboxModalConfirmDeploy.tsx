@@ -75,6 +75,7 @@ export function DmnDevSandboxModalConfirmDeploy(props: Props) {
     dmnDevSandboxContext.setConfirmDeployModalOpen(false);
 
     if (deployStarted) {
+      dmnDevSandboxContext.setDeploymentsDropdownOpen(true);
       deployStartedSuccessAlert.show();
     } else {
       deployStartedErrorAlert.show();

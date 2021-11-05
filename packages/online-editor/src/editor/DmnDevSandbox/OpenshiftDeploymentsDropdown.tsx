@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { useSettings } from "../../settings/SettingsContext";
 import { useOnlineI18n } from "../../common/i18n";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
@@ -24,8 +24,6 @@ export function OpenshiftDeploymentsDropdown() {
   const settings = useSettings();
   const { i18n } = useOnlineI18n();
   const dmnDevSandbox = useDmnDevSandbox();
-
-  const [isOpen, setOpen] = useState(false);
 
   const isDmnDevSandboxConnected = useMemo(
     () => settings.openshift.status.get === OpenShiftInstanceStatus.CONNECTED,
@@ -102,13 +100,16 @@ export function OpenshiftDeploymentsDropdown() {
       >
         <Dropdown
           position={"right"}
-          onSelect={() => setOpen(false)}
+          onSelect={() => dmnDevSandbox.setDeploymentsDropdownOpen(false)}
           toggle={
-            <DropdownToggle toggleIndicator={null} onToggle={(isOpen) => setOpen(isDmnDevSandboxConnected && isOpen)}>
+            <DropdownToggle
+              toggleIndicator={null}
+              onToggle={(isOpen) => dmnDevSandbox.setDeploymentsDropdownOpen(isDmnDevSandboxConnected && isOpen)}
+            >
               <OpenshiftIcon color={!isDmnDevSandboxConnected ? "gray" : undefined} />
             </DropdownToggle>
           }
-          isOpen={isOpen}
+          isOpen={dmnDevSandbox.isDeploymentsDropdownOpen}
           isPlain={true}
           dropdownItems={[
             <DropdownGroup key={"openshift-deployments-group"} label={"OpenShift deployments"}>

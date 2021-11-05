@@ -27,16 +27,19 @@ export interface DeploymentFile {
 export interface DmnDevSandboxContextType {
   deployments: OpenShiftDeployedModel[];
   isDropdownOpen: boolean;
+  isDeploymentsDropdownOpen: boolean;
   isConfirmDeployModalOpen: boolean;
-  setDeployments: React.Dispatch<OpenShiftDeployedModel[]>;
-  setDropdownOpen: React.Dispatch<boolean>;
-  setConfirmDeployModalOpen: React.Dispatch<boolean>;
+  setDeployments: React.Dispatch<React.SetStateAction<OpenShiftDeployedModel[]>>;
+  setDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setDeploymentsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setConfirmDeployModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   deploy: (workspaceFile: WorkspaceFile) => Promise<boolean>;
 }
 
 export const DmnDevSandboxContext = React.createContext<DmnDevSandboxContextType>({
   deployments: [],
   isDropdownOpen: false,
+  isDeploymentsDropdownOpen: false,
   isConfirmDeployModalOpen: false,
 } as any);
 

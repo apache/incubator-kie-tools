@@ -39,6 +39,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
   const workspaces = useWorkspaces();
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
   const [deployments, setDeployments] = useState([] as OpenShiftDeployedModel[]);
 
@@ -148,10 +149,12 @@ export function DmnDevSandboxContextProvider(props: Props) {
       value={{
         deployments,
         isDropdownOpen,
+        isDeploymentsDropdownOpen,
         isConfirmDeployModalOpen,
         setDeployments,
         setDropdownOpen,
         setConfirmDeployModalOpen,
+        setDeploymentsDropdownOpen,
         deploy,
       }}
     >
