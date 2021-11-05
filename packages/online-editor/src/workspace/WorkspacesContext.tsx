@@ -102,8 +102,18 @@ export interface WorkspacesContextType {
 
   createWorkspaceFromGitRepository: (args: {
     origin: GistOrigin | GitHubOrigin;
-    githubSettings?: { user: { login: string; email: string; name: string }; token: string };
+    gitConfig?: { email: string; name: string };
+    authInfo?: {
+      username: string;
+      password: string;
+    };
   }) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
+
+  pull(args: {
+    fs: LightningFS;
+    workspaceId: string;
+    authInfo?: { username: string; password: string };
+  }): Promise<void>;
 
   // edit workspace
   addEmptyFile(args: {
@@ -161,8 +171,6 @@ export interface WorkspacesContextType {
     content: string;
     extension: string;
   }): Promise<WorkspaceFile>;
-
-  pull(args: { fs: LightningFS; workspaceId: string }): Promise<void>;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);

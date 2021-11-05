@@ -192,6 +192,17 @@ export function EditorToolbar(props: Props) {
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
   const [isGitHubGistLoading, setGitHubGistLoading] = useState(false);
 
+  const githubAuthInfo = useMemo(() => {
+    if (settings.github.authStatus !== AuthStatus.SIGNED_IN) {
+      return undefined;
+    }
+
+    return {
+      username: settings.github.user!.login,
+      password: settings.github.token!,
+    };
+  }, [settings.github]);
+
   const successfullyCreateGistAlert = useAlert(
     props.alerts,
     useCallback(
@@ -382,6 +393,10 @@ export function EditorToolbar(props: Props) {
 
   const updateGitHubGist = useCallback(async () => {
     try {
+      if (!githubAuthInfo) {
+        return;
+      }
+
       setGitHubGistLoading(true);
       const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
 
@@ -393,14 +408,7 @@ export function EditorToolbar(props: Props) {
         remote: GIST_ORIGIN_REMOTE_NAME,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
         force: true,
-        authInfo: {
-          name: settings.github.user!.name,
-          email: settings.github.user!.email,
-          onAuth: () => ({
-            username: settings.github.user!.login,
-            password: settings.github.token!,
-          }),
-        },
+        authInfo: githubAuthInfo,
       });
 
       await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId });
@@ -413,10 +421,13 @@ export function EditorToolbar(props: Props) {
     }
 
     successfullyUpdateGistAlert.show();
-  }, [successfullyUpdateGistAlert, workspaces, props.workspaceFile, settings.github, errorAlert]);
+  }, [successfullyUpdateGistAlert, workspaces, props.workspaceFile.workspaceId, githubAuthInfo, errorAlert]);
 
   const createGitHubGist = useCallback(async () => {
     try {
+      if (!githubAuthInfo) {
+        return;
+      }
       setGitHubGistLoading(true);
       const gist = await settings.github.octokit.gists.create({
         description: workspacePromise.data?.descriptor.name ?? "",
@@ -470,14 +481,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         remote: GIST_ORIGIN_REMOTE_NAME,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
         force: true,
-        authInfo: {
-          name: settings.github.user!.name,
-          email: settings.github.user!.email,
-          onAuth: () => ({
-            username: settings.github.user!.login,
-            password: settings.github.token!,
-          }),
-        },
+        authInfo: githubAuthInfo,
       });
 
       successfullyCreateGistAlert.show();
@@ -489,7 +493,15 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     } finally {
       setGitHubGistLoading(false);
     }
-  }, [props.workspaceFile, settings.github, workspacePromise, workspaces, successfullyCreateGistAlert, errorAlert]);
+  }, [
+    settings.github.octokit,
+    workspacePromise,
+    workspaces,
+    props.workspaceFile.workspaceId,
+    githubAuthInfo,
+    successfullyCreateGistAlert,
+    errorAlert,
+  ]);
 
   const openEmbedModal = useCallback(() => {
     setEmbedModalOpen(true);
@@ -763,9 +775,98 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     );
   }, [workspaces, props.workspaceFile]);
 
-  const canUpdateGitHubRepository = useMemo(() => false, []);
+  const canUpdateGitHubRepository = useMemo(async () => githubAuthInfo, [githubAuthInfo]);
 
-  const pushGitHubRepository = useCallback(() => {}, []);
+  const pushingAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB) {
+          return <></>;
+        }
+
+        return (
+          <Alert
+            variant="info"
+            title={
+              <>
+                <Spinner size={"sm"} />
+                &nbsp;&nbsp; {`Pushing to '${workspacePromise.data?.descriptor.origin.url}'...`}
+              </>
+            }
+          />
+        );
+      },
+      [workspacePromise]
+    )
+  );
+
+  const pushSuccessAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB) {
+          return <></>;
+        }
+
+        return <Alert variant="success" title={`Pushed to '${workspacePromise.data?.descriptor.origin.url}'`} />;
+      },
+      [workspacePromise]
+    ),
+    { durationInSeconds: 4 }
+  );
+
+  const pushErrorAlert = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB) {
+          return <></>;
+        }
+
+        return (
+          <Alert
+            variant="danger"
+            title={`Error pushing to '${workspacePromise.data?.descriptor.origin.url}'`}
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        );
+      },
+      [workspacePromise]
+    )
+  );
+
+  const pushGitHubRepository = useCallback(async () => {
+    if (!githubAuthInfo) {
+      return;
+    }
+
+    pushingAlert.show();
+    try {
+      const workspaceId = props.workspaceFile.workspaceId;
+      await workspaces.createSavePoint({
+        fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
+        workspaceId: workspaceId,
+      });
+
+      const workspace = await workspaces.descriptorService.get(workspaceId);
+      await workspaces.gitService.push({
+        fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
+        dir: await workspaces.service.getAbsolutePath({ workspaceId }),
+        ref: workspace.origin.branch,
+        remote: GIST_ORIGIN_REMOTE_NAME,
+        remoteRef: `refs/heads/${workspace.origin.branch}`,
+        force: false,
+        authInfo: githubAuthInfo,
+      });
+      pushSuccessAlert.show();
+    } catch (e) {
+      console.error(e);
+      pushErrorAlert.show();
+    } finally {
+      pushingAlert.close();
+    }
+  }, [githubAuthInfo, props.workspaceFile, pushErrorAlert, pushSuccessAlert, pushingAlert, workspaces]);
 
   const pullingAlert = useAlert(
     props.alerts,
@@ -837,7 +938,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       await workspaces.pull({
         fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
+        authInfo: githubAuthInfo,
       });
+
       pullSuccessAlert.show();
     } catch (e) {
       console.error(e);
@@ -846,7 +949,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     } finally {
       pullingAlert.close();
     }
-  }, [pullingAlert, workspaces, props.workspaceFile.workspaceId, pullSuccessAlert, pullErrorAlert]);
+  }, [pullingAlert, workspaces, props.workspaceFile.workspaceId, githubAuthInfo, pullSuccessAlert, pullErrorAlert]);
 
   return (
     <PromiseStateWrapper

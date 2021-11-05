@@ -124,7 +124,6 @@ export function SettingsContextProvider(props: any) {
           const response = await octokit.users.getAuthenticated();
           await delay(1000);
           setGitHubOctokit(octokit);
-          setGitHubAuthStatus(AuthStatus.SIGNED_IN);
           setGitHubToken(token);
           setGitHubUser({
             login: response.data.login,
@@ -132,6 +131,7 @@ export function SettingsContextProvider(props: any) {
             email: response.data.email ?? "",
           });
           setGitHubScopes(response.headers["x-oauth-scopes"]?.split(", ") ?? []);
+          setGitHubAuthStatus(AuthStatus.SIGNED_IN);
           setCookie(GITHUB_AUTH_TOKEN_COOKIE_NAME, token);
         } catch (e) {
           await delay(1000);

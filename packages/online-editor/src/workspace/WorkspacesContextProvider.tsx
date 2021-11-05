@@ -23,7 +23,7 @@ import {
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
-import { CloneArgs, GIT_DEFAULT_BRANCH, GitService } from "./services/GitService";
+import { GIT_DEFAULT_BRANCH, GitService } from "./services/GitService";
 import { StorageFile, StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
@@ -36,7 +36,6 @@ import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorServic
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
-import { WorkspaceFileEvents } from "./hooks/WorkspaceFileHooks";
 
 const GIT_CORS_PROXY = "https://cors.isomorphic-git.org"; // TODO CAPONETTO: Deploy our own proxy (https://github.com/isomorphic-git/cors-proxy)
 
@@ -129,7 +128,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createSavePoint = useCallback(
-    async (args: { fs: LightningFS; workspaceId: string; gitSettings?: { email: string; name: string } }) => {
+    async (args: { fs: LightningFS; workspaceId: string; gitConfig?: { email: string; name: string } }) => {
       const descriptor = await descriptorService.get(args.workspaceId);
 
       const workspaceRootDirPath = service.getAbsolutePath({ workspaceId: args.workspaceId });
@@ -163,8 +162,8 @@ export function WorkspacesContextProvider(props: Props) {
         targetBranch: descriptor.origin.branch,
         message: "Save point",
         author: {
-          name: args.gitSettings?.name ?? "Unknown",
-          email: args.gitSettings?.email ?? "unknown@email.com",
+          name: args.gitConfig?.name ?? "Unknown",
+          email: args.gitConfig?.email ?? "unknown@email.com",
         },
       });
       const broadcastChannel = new BroadcastChannel(args.workspaceId);
@@ -179,7 +178,7 @@ export function WorkspacesContextProvider(props: Props) {
       useInMemoryFs: boolean;
       localFiles: LocalFile[];
       preferredName?: string;
-      gitSettings?: { email: string; name: string };
+      gitConfig?: { email: string; name: string };
     }) => {
       return await createWorkspace({
         preferredName: args.preferredName,
@@ -229,8 +228,8 @@ export function WorkspacesContextProvider(props: Props) {
             message: "Initial",
             targetBranch: GIT_DEFAULT_BRANCH,
             author: {
-              name: args.gitSettings?.name ?? "Unknown",
-              email: args.gitSettings?.email ?? "unknown@email.com",
+              name: args.gitConfig?.name ?? "Unknown",
+              email: args.gitConfig?.email ?? "unknown@email.com",
             },
           });
 
@@ -244,19 +243,12 @@ export function WorkspacesContextProvider(props: Props) {
   const createWorkspaceFromGitRepository = useCallback(
     async (args: {
       origin: GistOrigin | GitHubOrigin;
-      gitSettings?: { user: { login: string; email: string; name: string }; token: string };
+      gitConfig?: { email: string; name: string };
+      authInfo?: {
+        username: string;
+        password: string;
+      };
     }) => {
-      let authInfo: CloneArgs["authInfo"];
-      if (args.gitSettings) {
-        const username = args.gitSettings.user.login;
-        const password = args.gitSettings.token;
-        authInfo = {
-          name: args.gitSettings.user.name,
-          email: args.gitSettings.user.email,
-          onAuth: () => ({ username, password }),
-        };
-      }
-
       return await createWorkspace({
         preferredName: args.origin.url.pathname.substring(1), // Remove slash
         origin: args.origin,
@@ -266,7 +258,8 @@ export function WorkspacesContextProvider(props: Props) {
             fs,
             dir: service.getAbsolutePath({ workspaceId: workspace.workspaceId }),
             repositoryUrl: args.origin.url,
-            authInfo,
+            gitConfig: args.gitConfig,
+            authInfo: args.authInfo,
             sourceBranch: args.origin.branch,
           });
           return service.getFilesWithLazyContent(fs, workspace.workspaceId);

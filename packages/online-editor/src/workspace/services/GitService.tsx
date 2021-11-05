@@ -20,6 +20,7 @@ import http from "isomorphic-git/http/web";
 
 export const GIST_DEFAULT_BRANCH = "master";
 export const GIST_ORIGIN_REMOTE_NAME = "origin";
+export const GIT_ORIGIN_REMOTE_NAME = "origin";
 export const GIT_DEFAULT_BRANCH = "main";
 
 export interface CloneArgs {
@@ -27,10 +28,13 @@ export interface CloneArgs {
   repositoryUrl: URL;
   sourceBranch: string;
   dir: string;
-  authInfo?: {
+  gitConfig?: {
     name: string;
     email: string;
-    onAuth: () => { username: string; password: string };
+  };
+  authInfo?: {
+    username: string;
+    password: string;
   };
 }
 
@@ -53,9 +57,8 @@ export interface PushArgs {
   remote: string;
   force: boolean;
   authInfo: {
-    name: string;
-    email: string;
-    onAuth: () => { username: string; password: string };
+    username: string;
+    password: string;
   };
 }
 
@@ -75,11 +78,11 @@ export class GitService {
       noTags: true,
       depth: 1,
       ref: args.sourceBranch,
-      onAuth: args.authInfo?.onAuth,
+      onAuth: () => args.authInfo,
     });
 
-    if (args.authInfo) {
-      await this.gitConfig(args.fs, args.dir, args.authInfo.name, args.authInfo.email);
+    if (args.gitConfig) {
+      await this.setupGitConfig(args.fs, args.dir, args.gitConfig);
     }
     console.timeEnd("GitService#clone");
   }
@@ -154,7 +157,7 @@ export class GitService {
       remoteRef: args.remoteRef,
       remote: args.remote,
       force: args.force,
-      onAuth: args.authInfo.onAuth,
+      onAuth: () => args.authInfo,
     });
   }
 
@@ -166,19 +169,19 @@ export class GitService {
     });
   }
 
-  public async gitConfig(fs: LightningFS, dir: string, userName: string, userEmail: string): Promise<void> {
+  public async setupGitConfig(fs: LightningFS, dir: string, config: { name: string; email: string }): Promise<void> {
     await git.setConfig({
       fs: fs,
       dir: dir,
       path: "user.name",
-      value: userName,
+      value: config.name,
     });
 
     await git.setConfig({
       fs: fs,
       dir: dir,
       path: "user.email",
-      value: userEmail,
+      value: config.email,
     });
   }
 

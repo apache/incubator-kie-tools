@@ -8,7 +8,7 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { QueryParams } from "../../common/Routes";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
-import { useSettings } from "../../settings/SettingsContext";
+import { AuthStatus, useSettings } from "../../settings/SettingsContext";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
 import { OnlineEditorPage } from "../../home/pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -60,10 +60,13 @@ export function NewWorkspaceFromUrlPage() {
 
         // github
         if (importableUrl.type === UrlType.GITHUB) {
-          const githubSettings =
-            settings.github.user && settings.github.token
-              ? { user: settings.github.user, token: settings.github.token }
-              : undefined;
+          let githubAuthInfo;
+          let gitConfig;
+
+          if (settings.github.authStatus === AuthStatus.SIGNED_IN) {
+            githubAuthInfo = { username: settings.github.user!.login, password: settings.github.token! };
+            gitConfig = { name: settings.github.user!.name, email: settings.github.user!.email };
+          }
 
           const { workspace, suggestedFirstFile } = await workspaces.createWorkspaceFromGitRepository({
             origin: {
@@ -71,7 +74,8 @@ export function NewWorkspaceFromUrlPage() {
               url: importableUrl.url,
               branch: importableUrl.branch ?? GIT_DEFAULT_BRANCH,
             },
-            githubSettings,
+            gitConfig: gitConfig,
+            authInfo: githubAuthInfo,
           });
 
           if (!suggestedFirstFile) {
