@@ -309,6 +309,20 @@ export function DmnForm(props: Props) {
   );
 
   useEffect(() => {
+    props.setFormError((previousFormError: boolean) => {
+      if (!previousFormError && formModel && Object.keys(formModel).length > 0) {
+        const newFormData = cloneDeep(formModel);
+        contextPath.forEach((path) => {
+          const pathCopy = [...path];
+          handleContextPath(newFormData, pathCopy, "parse");
+        });
+        props.setFormData(newFormData);
+      }
+      return false;
+    });
+  }, [contextPath, formModel, handleContextPath]);
+
+  useEffect(() => {
     const form: DmnFormData = cloneDeep(props.formSchema ?? {});
     if (Object.keys(form).length > 0) {
       formPreprocessing(form);
@@ -316,23 +330,14 @@ export function DmnForm(props: Props) {
     try {
       const bridge = validator.getBridge(form);
       setJsonSchemaBridge((previousBridge) => {
-        props.setFormError((previousFormError: boolean) => {
+        if (formModel) {
           const newFormModel = removeDeletedPropertiesAndAddDefaultValues(formModel, bridge, previousBridge);
-          if (!previousFormError && Object.keys(newFormModel).length > 0) {
-            const newFormData = cloneDeep(newFormModel);
-            contextPath.forEach((path) => {
-              const pathCopy = [...path];
-              handleContextPath(newFormData, pathCopy, "parse");
-            });
-            props.setFormData(newFormData);
-            if (Object.keys(diff(formModel ?? {}, newFormModel ?? {})).length > 0) {
-              setFormModel(newFormModel);
-            } else {
-              setFormModel(formModel);
-            }
+          if (Object.keys(diff(formModel ?? {}, newFormModel ?? {})).length > 0) {
+            setFormModel(newFormModel);
+          } else {
+            setFormModel(formModel);
           }
-          return false;
-        });
+        }
         return bridge;
       });
 
@@ -353,14 +358,12 @@ export function DmnForm(props: Props) {
 
   // on first render, if model is undefined adds a value on it.
   useEffect(() => {
-    if (!formModel) {
-      const newFormModel = cloneDeep(props.formData);
-      contextPath.forEach((path) => {
-        const pathCopy = [...path];
-        handleContextPath(newFormModel, pathCopy, "stringify");
-      });
-      setFormModel(newFormModel);
-    }
+    const newFormModel = cloneDeep(props.formData);
+    contextPath.forEach((path) => {
+      const pathCopy = [...path];
+      handleContextPath(newFormModel, pathCopy, "stringify");
+    });
+    setFormModel(newFormModel);
   }, []);
 
   const onSubmit = useCallback(
