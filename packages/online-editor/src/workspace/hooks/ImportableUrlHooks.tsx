@@ -73,18 +73,32 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
   }
 
   if (url.host === "github.com") {
-    const match = matchPath<{ org: string; repo: string; tree: string }>(url.pathname, {
-      path: "/:org/:repo/(tree)?/:tree?",
+    const defaultBranchMatch = matchPath<{ org: string; repo: string }>(url.pathname, {
+      path: "/:org/:repo",
       exact: true,
       strict: true,
       sensitive: false,
     });
 
-    if (!match) {
-      return { type: UrlType.INVALID, errors: ["Unsupported GitHub URL"], url: urlString };
+    const customBranchMatch = matchPath<{ org: string; repo: string; tree: string }>(url.pathname, {
+      path: "/:org/:repo/tree/:tree",
+      exact: true,
+      strict: true,
+      sensitive: false,
+    });
+
+    if (defaultBranchMatch) {
+      return ifAllowed({ type: UrlType.GITHUB, url });
     }
 
-    return ifAllowed({ type: UrlType.GITHUB, url, branch: match?.params.tree });
+    if (customBranchMatch) {
+      const branch = customBranchMatch.params.tree;
+      const customBranchUrl = new URL(urlString);
+      customBranchUrl.pathname = customBranchUrl.pathname.replace(`/tree/${branch}`, "");
+      return ifAllowed({ type: UrlType.GITHUB, url: customBranchUrl, branch });
+    }
+
+    return { type: UrlType.INVALID, errors: ["Unsupported GitHub URL"], url: urlString };
   }
 
   if (url.host === "gist.github.com") {

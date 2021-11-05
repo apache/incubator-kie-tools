@@ -60,7 +60,7 @@ export function EmbedModal(props: {
 }) {
   const [embedCode, setEmbedCode] = useState("");
   const [contentSource, setContentSource] = useState(
-    props.workspace.origin.kind === WorkspaceKind.GIST ? ContentSource.GIST : ContentSource.CURRENT_CONTENT
+    props.workspace.origin.kind === WorkspaceKind.GITHUB_GIST ? ContentSource.GIST : ContentSource.CURRENT_CONTENT
   );
   const [editorContent, setEditorContent] = useState("");
   const { i18n } = useOnlineI18n();
@@ -71,7 +71,7 @@ export function EmbedModal(props: {
     }
   }, [props.workspaceFile, props.isOpen]);
 
-  const isGist = useMemo(() => props.workspace.origin.kind === WorkspaceKind.GIST, [props.workspace]);
+  const isGist = useMemo(() => props.workspace.origin.kind === WorkspaceKind.GITHUB_GIST, [props.workspace]);
 
   const getCurrentContentScript = useCallback((content: string, libraryName: string) => {
     const fileContent = content.replace(/(\r\n|\n|\r)/gm, "");

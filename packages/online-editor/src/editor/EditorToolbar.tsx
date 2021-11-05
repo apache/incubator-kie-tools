@@ -114,7 +114,7 @@ function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) {
     switch (props.workspace.descriptor.origin.kind) {
       case WorkspaceKind.LOCAL:
         return "There are new changes since your last download.";
-      case WorkspaceKind.GIST:
+      case WorkspaceKind.GITHUB_GIST:
       case WorkspaceKind.GITHUB:
         return "There are new changes since you last synced.";
       default:
@@ -126,7 +126,7 @@ function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) {
     switch (props.workspace.descriptor.origin.kind) {
       case WorkspaceKind.LOCAL:
         return "All changes were downloaded.";
-      case WorkspaceKind.GIST:
+      case WorkspaceKind.GITHUB_GIST:
       case WorkspaceKind.GITHUB:
         return "All files are synced.";
       default:
@@ -196,7 +196,7 @@ export function EditorToolbar(props: Props) {
     props.alerts,
     useCallback(
       ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIST) {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB_GIST) {
           return <></>;
         }
 
@@ -219,7 +219,7 @@ export function EditorToolbar(props: Props) {
     props.alerts,
     useCallback(
       ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIST) {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB_GIST) {
           return <></>;
         }
 
@@ -254,7 +254,7 @@ export function EditorToolbar(props: Props) {
     props.alerts,
     useCallback(
       ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIST) {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB_GIST) {
           return <></>;
         }
 
@@ -504,7 +504,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     () =>
       settings.github.authStatus === AuthStatus.SIGNED_IN &&
       (workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL ||
-        workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST),
+        workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST),
     [workspacePromise, settings.github.authStatus]
   );
 
@@ -519,7 +519,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   const canUpdateGitHubGist = useMemo(
     () =>
       settings.github.authStatus === AuthStatus.SIGNED_IN &&
-      workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST &&
+      workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST &&
       !workspaceHasNestedDirectories,
     [workspacePromise, settings.github.authStatus, workspaceHasNestedDirectories]
   );
@@ -573,7 +573,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           ]
         : []),
       ...(workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL ||
-      workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST
+      workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST
         ? [
             <DropdownGroup key={"github-group"} label={i18n.names.github}>
               <Tooltip
@@ -809,7 +809,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     <Toolbar style={{ padding: 0 }}>
                       <ToolbarItem>
                         <a
-                          href={`https://vscode.dev/github${workspace.descriptor.origin.url.pathname}`}
+                          href={`https://vscode.dev/github${workspace.descriptor.origin.url.pathname}/tree/${workspace.descriptor.origin.branch}`}
                           target={"_blank"}
                         >
                           <Button
@@ -935,7 +935,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         />
                       )}
                     </ToolbarItem>
-                    {workspace.descriptor.origin.kind === WorkspaceKind.GIST && (
+                    {workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST && (
                       <ToolbarItem>
                         <Dropdown
                           onSelect={() => setSyncGitHubGistDropdownOpen(false)}

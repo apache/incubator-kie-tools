@@ -91,7 +91,7 @@ export class WorkspaceDescriptorService {
       this.toStorageFile({
         ...(await this.get(workspaceId)),
         origin: {
-          kind: WorkspaceKind.GIST,
+          kind: WorkspaceKind.GITHUB_GIST,
           url: gistUrl,
           branch: GIST_DEFAULT_BRANCH,
         },

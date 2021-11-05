@@ -1,6 +1,7 @@
 import { WorkspaceKind } from "../model/WorkspaceOrigin";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
+import { CodeBranchIcon } from "@patternfly/react-icons/dist/js/icons/code-branch-icon";
 import { PendingIcon } from "@patternfly/react-icons/dist/js/icons/pending-icon";
 import * as React from "react";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
@@ -16,13 +17,20 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
           }' is linked to a GitHub Repository. ${props.descriptor?.origin.url.toString()}`}
           position={"right"}
         >
-          <Label>
-            <GithubIcon />
-            &nbsp;&nbsp;Repo
-          </Label>
+          <>
+            <Label>
+              <GithubIcon />
+              &nbsp;&nbsp;Repo
+            </Label>
+            &nbsp;&nbsp;
+            <Label>
+              <CodeBranchIcon />
+              &nbsp;&nbsp;{props.descriptor?.origin.branch}
+            </Label>
+          </>
         </Tooltip>
       )}
-      {props.descriptor?.origin.kind === WorkspaceKind.GIST && (
+      {props.descriptor?.origin.kind === WorkspaceKind.GITHUB_GIST && (
         <Tooltip
           content={`'${props.descriptor?.name}' is linked to a GitHub Gist. ${props.descriptor?.origin.url.toString()}`}
           position={"right"}

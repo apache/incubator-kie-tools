@@ -93,7 +93,7 @@ export function NewWorkspaceFromUrlPage() {
           importableUrl.url.hash = "";
 
           const { workspace, suggestedFirstFile } = await workspaces.createWorkspaceFromGitRepository({
-            origin: { kind: WorkspaceKind.GIST, url: importableUrl.url, branch: GIST_DEFAULT_BRANCH },
+            origin: { kind: WorkspaceKind.GITHUB_GIST, url: importableUrl.url, branch: GIST_DEFAULT_BRANCH },
           });
 
           if (!suggestedFirstFile) {

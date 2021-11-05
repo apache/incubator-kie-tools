@@ -467,7 +467,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
         <TextContent>
           <Text component={TextVariants.h3}>{`Models in '${workspacePromise.data?.descriptor.name}'`}</Text>
         </TextContent>
-        {(workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIST ||
+        {(workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST ||
           workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB) && (
           <TextContent>
             <Text component={TextVariants.small}>
