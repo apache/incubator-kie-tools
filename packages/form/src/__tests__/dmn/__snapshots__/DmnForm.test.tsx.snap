@@ -516,7 +516,7 @@ exports[`DmnForm tests should validate the formData - invalid 1`] = `
         class="pf-c-form__group-control"
       >
         <input
-          aria-invalid="false"
+          aria-invalid="true"
           class="pf-c-form-control"
           data-ouia-component-id="OUIA-Generated-TextInputBase-19"
           data-ouia-component-type="PF4/TextInput"
@@ -527,7 +527,13 @@ exports[`DmnForm tests should validate the formData - invalid 1`] = `
           type="text"
           value="p"
         />
-        
+        <div
+          aria-live="polite"
+          class="pf-c-form__helper-text pf-m-error"
+          id="uniforms-0004-0005-helper"
+        >
+          should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)
+        </div>
       </div>
     </div>
     <div
@@ -566,13 +572,25 @@ exports[`DmnForm tests should validate the formData - invalid 1`] = `
         
       </div>
     </div>
+    <div
+      style="background-color: rgba(255, 85, 0, 0.2); border: 1px solid rgb(255, 85, 0); border-radius: 7px; margin: 20px 0px; padding: 10px;"
+    >
+      <ul>
+        <li
+          style="margin: 3px;"
+        >
+          should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)
+        </li>
+      </ul>
+    </div>
     <div>
       <button
-        aria-disabled="false"
-        class="pf-c-button pf-m-primary"
+        aria-disabled="true"
+        class="pf-c-button pf-m-primary pf-m-disabled"
         data-ouia-component-id="OUIA-Generated-Button-primary-5"
         data-ouia-component-type="PF4/Button"
         data-ouia-safe="true"
+        disabled=""
         type="submit"
       >
         Submit
@@ -852,7 +870,7 @@ exports[`DmnForm tests shouldn't submit the formData 1`] = `
         class="pf-c-form__group-control"
       >
         <input
-          aria-invalid="false"
+          aria-invalid="true"
           class="pf-c-form-control"
           data-ouia-component-id="OUIA-Generated-TextInputBase-11"
           data-ouia-component-type="PF4/TextInput"
@@ -863,7 +881,13 @@ exports[`DmnForm tests shouldn't submit the formData 1`] = `
           type="text"
           value="p"
         />
-        
+        <div
+          aria-live="polite"
+          class="pf-c-form__helper-text pf-m-error"
+          id="uniforms-0002-0005-helper"
+        >
+          should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)
+        </div>
       </div>
     </div>
     <div
@@ -902,13 +926,25 @@ exports[`DmnForm tests shouldn't submit the formData 1`] = `
         
       </div>
     </div>
+    <div
+      style="background-color: rgba(255, 85, 0, 0.2); border: 1px solid rgb(255, 85, 0); border-radius: 7px; margin: 20px 0px; padding: 10px;"
+    >
+      <ul>
+        <li
+          style="margin: 3px;"
+        >
+          should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)
+        </li>
+      </ul>
+    </div>
     <div>
       <button
-        aria-disabled="false"
-        class="pf-c-button pf-m-primary"
+        aria-disabled="true"
+        class="pf-c-button pf-m-primary pf-m-disabled"
         data-ouia-component-id="OUIA-Generated-Button-primary-3"
         data-ouia-component-type="PF4/Button"
         data-ouia-safe="true"
+        disabled=""
         type="submit"
       >
         Submit

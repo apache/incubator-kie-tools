@@ -123,7 +123,7 @@ describe("DmnForm tests", () => {
       formRef.current?.submit();
     });
 
-    expect(onValidate).toHaveBeenCalledTimes(1);
+    expect(onValidate).toHaveBeenCalledTimes(2);
   });
 
   it("should have placeholder", () => {
