@@ -64,7 +64,7 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
-import { GIST_DEFAULT_BRANCH, GIST_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
+import { GIST_DEFAULT_BRANCH, GIST_ORIGIN_REMOTE_NAME, GIT_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
 import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
@@ -114,7 +114,7 @@ export function EditorToolbar(props: Props) {
   const workspaces = useWorkspaces();
   const [isShareDropdownOpen, setShareDropdownOpen] = useState(false);
   const [isSyncGitHubGistDropdownOpen, setSyncGitHubGistDropdownOpen] = useState(false);
-  const [isSyncGitHubRepositoryDropdownOpen, setSyncGitHubRepositoryDropdownOpen] = useState(false);
+  const [isSyncGitRepositoryDropdownOpen, setSyncGitRepositoryDropdownOpen] = useState(false);
   const [isLargeKebabOpen, setLargeKebabOpen] = useState(false);
   const [isSmallKebabOpen, setSmallKebabOpen] = useState(false);
   const [isEmbedModalOpen, setEmbedModalOpen] = useState(false);
@@ -448,7 +448,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     [workspacePromise]
   );
 
-  const canCreateGitHubRepository = useMemo(
+  const canCreateGitRepository = useMemo(
     () =>
       settings.github.authStatus === AuthStatus.SIGNED_IN &&
       (workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL ||
@@ -528,7 +528,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 data-testid={"create-github-repository-tooltip"}
                 key={`dropdown-create-github-repository`}
                 content={<div>{`You can't create a repository because you're not authenticated with GitHub.`}</div>}
-                trigger={!canCreateGitHubRepository ? "mouseenter click" : ""}
+                trigger={!canCreateGitRepository ? "mouseenter click" : ""}
                 position="left"
               >
                 <DropdownItem
@@ -538,7 +538,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   onClick={() => {
                     console.info("Creating GitHub repo...");
                   }}
-                  isDisabled={!canCreateGitHubRepository}
+                  isDisabled={!canCreateGitRepository}
                 >
                   Create Repository...
                 </DropdownItem>
@@ -575,7 +575,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       openEmbedModal,
       i18n,
       canCreateGitHubGist,
-      canCreateGitHubRepository,
+      canCreateGitRepository,
       createGitHubGist,
     ]
   );
@@ -712,7 +712,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     );
   }, [workspaces, props.workspaceFile]);
 
-  const canUpdateGitHubRepository = useMemo(async () => githubAuthInfo, [githubAuthInfo]);
+  const canUpdateGitRepository = useMemo(() => githubAuthInfo, [githubAuthInfo]);
 
   const pushingAlert = useAlert(
     props.alerts,
@@ -812,10 +812,52 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     { durationInSeconds: 4 }
   );
 
-  const pullErrorAlert = useAlert(
+  const pushNewBranch = useCallback(
+    async (newBranchName: string) => {
+      if (!githubAuthInfo || !workspacePromise.data) {
+        return;
+      }
+
+      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
+      const workspaceRootDirPath = await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
+
+      await workspaces.createSavePoint({
+        fs: fs,
+        workspaceId: props.workspaceFile.workspaceId,
+      });
+
+      await workspaces.gitService.branch({
+        fs,
+        dir: workspaceRootDirPath,
+        checkout: false,
+        name: newBranchName,
+      });
+
+      await workspaces.gitService.push({
+        fs: fs,
+        dir: workspaceRootDirPath,
+        remote: GIT_ORIGIN_REMOTE_NAME,
+        remoteRef: `refs/heads/${newBranchName}`,
+        ref: newBranchName,
+        force: false,
+        authInfo: githubAuthInfo,
+      });
+
+      history.push({
+        pathname: globals.routes.importModel.path({}),
+        search: globals.routes.importModel.queryString({
+          //FIXME: This will only work for GitHub.
+          url: `${workspacePromise.data.descriptor.origin.url}/tree/${newBranchName}`,
+        }),
+      });
+    },
+    [githubAuthInfo, globals, history, props.workspaceFile.workspaceId, workspacePromise, workspaces]
+  );
+
+  const pullErrorAlert = useAlert<{ newBranchName: string }>(
     props.alerts,
     useCallback(
-      ({ close }) => {
+      ({ close }, { newBranchName }) => {
         if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
           return <></>;
         }
@@ -825,38 +867,77 @@ If you are, it means that creating this Gist failed and it can safely be deleted
             variant="danger"
             title={`Error pulling from '${workspacePromise.data?.descriptor.origin.url}'`}
             actionClose={<AlertActionCloseButton onClose={close} />}
-          />
+            actionLinks={
+              <AlertActionLink onClick={() => pushNewBranch(newBranchName)}>
+                {`Switch to '${newBranchName}'`}
+              </AlertActionLink>
+            }
+          >
+            This usually happens when your branch has conflicts with the upstream branch.
+            <br />
+            <br />
+            You can still save your work to a new branch.
+          </Alert>
         );
       },
-      [workspacePromise]
+      [pushNewBranch, workspacePromise]
     )
   );
 
-  const pullGitHubRepository = useCallback(async () => {
-    pullingAlert.show();
-    await workspaces.createSavePoint({
-      fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
-      workspaceId: props.workspaceFile.workspaceId,
-    });
+  const pullGitRepository = useCallback(
+    async (args: { showAlerts: boolean }) => {
+      pullingAlert.close();
+      pullErrorAlert.close();
+      pullSuccessAlert.close();
 
-    try {
-      await workspaces.pull({
+      if (args.showAlerts) {
+        pullingAlert.show();
+      }
+      await workspaces.createSavePoint({
         fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
-        authInfo: githubAuthInfo,
       });
 
-      pullSuccessAlert.show();
-    } catch (e) {
-      console.error(e);
-      pullErrorAlert.show();
-      // TODO: Lock workspace and give the user an option to start from another fresh one with a new branch.
-    } finally {
-      pullingAlert.close();
-    }
-  }, [pullingAlert, workspaces, props.workspaceFile.workspaceId, githubAuthInfo, pullSuccessAlert, pullErrorAlert]);
+      try {
+        await workspaces.pull({
+          fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+          workspaceId: props.workspaceFile.workspaceId,
+          authInfo: githubAuthInfo,
+        });
 
-  const pushGitHubRepository = useCallback(async () => {
+        if (args.showAlerts) {
+          pullSuccessAlert.show();
+        }
+      } catch (e) {
+        console.error(e);
+        if (args.showAlerts) {
+          const randomString = (Math.random() + 1).toString(36).substring(7);
+          const newBranchName = `${workspacePromise.data?.descriptor.origin.branch}-${randomString}`;
+          pullErrorAlert.show({ newBranchName });
+        }
+        // TODO: Lock workspace and give the user an option to start from another fresh one with a new branch.
+      } finally {
+        if (args.showAlerts) {
+          pullingAlert.close();
+        }
+      }
+    },
+    [
+      pullingAlert,
+      pullErrorAlert,
+      pullSuccessAlert,
+      workspaces,
+      props.workspaceFile.workspaceId,
+      githubAuthInfo,
+      workspacePromise,
+    ]
+  );
+
+  const pushGitRepository = useCallback(async () => {
+    pushingAlert.close();
+    pushErrorAlert.close();
+    pushSuccessAlert.close();
+
     if (!githubAuthInfo) {
       return;
     }
@@ -879,8 +960,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         force: false,
         authInfo: githubAuthInfo,
       });
+      await pullGitRepository({ showAlerts: false });
       pushSuccessAlert.show();
-      await pullGitHubRepository();
     } catch (e) {
       console.error(e);
       pushErrorAlert.show();
@@ -888,7 +969,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       pushingAlert.close();
     }
   }, [
-    pullGitHubRepository,
+    pullGitRepository,
     githubAuthInfo,
     props.workspaceFile,
     pushErrorAlert,
@@ -953,7 +1034,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                 />
                               }
                             >
-                              {`Open "${workspace.descriptor.name}" in vscode.dev...`}
+                              {`Open "${workspace.descriptor.name}"`}
                             </Button>
                           </a>
                         </ToolbarItem>
@@ -1105,14 +1186,14 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     {workspace.descriptor.origin.kind === WorkspaceKind.GIT && (
                       <ToolbarItem>
                         <Dropdown
-                          onSelect={() => setSyncGitHubRepositoryDropdownOpen(false)}
-                          isOpen={isSyncGitHubRepositoryDropdownOpen}
+                          onSelect={() => setSyncGitRepositoryDropdownOpen(false)}
+                          isOpen={isSyncGitRepositoryDropdownOpen}
                           position={DropdownPosition.right}
                           toggle={
                             <DropdownToggle
                               id={"sync-dropdown"}
                               data-testid={"sync-dropdown"}
-                              onToggle={(isOpen) => setSyncGitHubRepositoryDropdownOpen(isOpen)}
+                              onToggle={(isOpen) => setSyncGitRepositoryDropdownOpen(isOpen)}
                             >
                               Sync
                             </DropdownToggle>
@@ -1121,22 +1202,24 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             <DropdownGroup key={"sync-gist-dropdown-group"}>
                               <DropdownItem
                                 icon={<SyncAltIcon />}
-                                onClick={pullGitHubRepository}
-                                description={"Get new changes made upstream."}
+                                onClick={() => pullGitRepository({ showAlerts: true })}
+                                description={`Get new changes made upstream at '${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}'.`}
                               >
-                                Fetch...
+                                Pull
                               </DropdownItem>
                               <Tooltip
                                 data-testid={"gist-it-tooltip"}
-                                content={<div>{``}</div>}
-                                trigger={!canUpdateGitHubRepository ? "mouseenter click" : ""}
+                                content={
+                                  <div>{`You need to be signed in with GitHub to push to this repository.`}</div>
+                                }
+                                trigger={!canUpdateGitRepository ? "mouseenter click" : ""}
                                 position="left"
                               >
                                 <DropdownItem
                                   icon={<ArrowCircleUpIcon />}
-                                  onClick={pushGitHubRepository}
-                                  isDisabled={!canUpdateGitHubRepository}
-                                  description={"Send your changes upstream."}
+                                  onClick={pushGitRepository}
+                                  isDisabled={!canUpdateGitRepository}
+                                  description={`Send your changes upstream to '${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}'.`}
                                 >
                                   Push
                                 </DropdownItem>

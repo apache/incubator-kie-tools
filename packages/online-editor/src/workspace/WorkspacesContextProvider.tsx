@@ -365,25 +365,6 @@ export function WorkspacesContextProvider(props: Props) {
     [service]
   );
 
-  // const syncWorkspace = useCallback(async () => {
-  //   if (!active) {
-  //     throw new Error("No active workspace");
-  //   }
-  //
-  //   if (active.descriptor.origin.kind === WorkspaceKind.GITHUB_REPOSITORY) {
-  //     const origin = active.descriptor.origin as GitHubRepositoryOrigin;
-  //     const fileHandler = new GitRepositoryFileHandler({
-  //       authInfo: authInfo,
-  //       repositoryUrl: origin.url,
-  //       sourceBranch: origin.branch,
-  //       gitService: gitService,
-  //       workspaceService: workspaceService,
-  //       storageService: storageService,
-  //     });
-  //     await fileHandler.sync(active.descriptor);
-  //   }
-  // }, [active, authInfo, gitService, storageService, workspaceService]);
-
   const resourceContentGet = useCallback(
     async (args: { fs: LightningFS; workspaceId: string; relativePath: string; opts?: ResourceContentOptions }) => {
       const file = await service.getFile(args);
