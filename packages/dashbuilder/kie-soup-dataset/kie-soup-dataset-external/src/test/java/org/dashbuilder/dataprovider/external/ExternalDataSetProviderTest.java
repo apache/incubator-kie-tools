@@ -36,25 +36,34 @@ import org.junit.Test;
 
 public class ExternalDataSetProviderTest {
 
+    private static String DEF_NAME = "def";
+    private static String DEF_UUID = "ds1";
+    private static String DEF_NAME_URL_PROP = "dashbuilder.dataset." + DEF_NAME + ".url";
+    private static String DEF_UUID_URL_PROP = "dashbuilder.dataset." + DEF_UUID + ".url";
     private ExternalDataSetProvider provider;
     private ExternalDataSetDef def;
     private String dataset2Url;
+    private String dataset3Url;
     private Scheduler scheduler;
 
     @Before
     public void setup() {
-        
+        System.clearProperty(DEF_NAME_URL_PROP);
+        System.clearProperty(DEF_UUID_URL_PROP);
         scheduler = DataSetCore.get().getScheduler();
         scheduler.init(10);
-        
+
         provider = new ExternalDataSetProvider(ExternalDataSetCaller.get(),
                 DataSetCore.get().getStaticDataSetProvider(),
                 scheduler);
         var datasetUrl = this.getClass().getResource("/dataset.json").toExternalForm();
         dataset2Url = this.getClass().getResource("/dataset2.json").toExternalForm();
-        def = (ExternalDataSetDef) DataSetDefFactory.newExternalDataSetDef().uuid("dataset").url(datasetUrl).buildDef();
+        dataset3Url = this.getClass().getResource("/dataset3.json").toExternalForm();
+        def = (ExternalDataSetDef) DataSetDefFactory.newExternalDataSetDef().name(DEF_NAME).uuid(DEF_UUID).url(
+                datasetUrl)
+                .buildDef();
     }
-    
+
     @After
     public void shutdown() {
         scheduler.unscheduleAll();
@@ -137,36 +146,60 @@ public class ExternalDataSetProviderTest {
         dataset = provider.lookupDataSet(def, lookup);
         dataSet1Check(dataset);
     }
-    
+
     @Test
     public void testCacheScheduler() throws Exception {
         provider.staticDataSetProvider.removeDataSet(def.getUUID());
         def.setCacheEnabled(true);
         def.setRefreshTime("1 second");
-        
+
         provider.lookupDataSet(def, null);
-        
+
         var taskKey = DataSetInvalidationTask.key(def);
         var task = scheduler.getTaskByKey(taskKey);
         var ds = provider.staticDataSetProvider.lookupDataSet(def, null);
         assertNotNull(task);
         assertNotNull(ds);
-        
+
         Thread.sleep(1100);
-        
+
         ds = provider.staticDataSetProvider.lookupDataSet(def, null);
         assertNull(ds);
     }
-    
+
     @Test
     public void testNoCache() throws Exception {
         provider.lookupDataSet(def, null);
-        
+
         var taskKey = DataSetInvalidationTask.key(def);
         var task = scheduler.getTaskByKey(taskKey);
         var ds = provider.staticDataSetProvider.lookupDataSet(def, null);
         assertNull(task);
         assertNull(ds);
+    }
+
+    @Test
+    public void testUrlSetByUUIDProperty() throws Exception {
+        System.setProperty(DEF_UUID_URL_PROP, dataset3Url);
+        var ds = provider.lookupDataSet(def, null);
+        
+        assertEquals(1, ds.getRowCount());
+        assertEquals(1, ds.getColumns().size());
+    }
+    
+    @Test
+    public void testUrlSetByNameProperty() throws Exception {
+        System.setProperty(DEF_NAME_URL_PROP, dataset3Url);
+        var ds = provider.lookupDataSet(def, null);
+        
+        assertEquals(1, ds.getRowCount());
+        assertEquals(1, ds.getColumns().size());
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testNoUrlSetException() throws Exception {
+        def.setUrl(null);
+        provider.lookupDataSet(def, null);
     }
 
     private void dataSet1Check(DataSet dataset) {

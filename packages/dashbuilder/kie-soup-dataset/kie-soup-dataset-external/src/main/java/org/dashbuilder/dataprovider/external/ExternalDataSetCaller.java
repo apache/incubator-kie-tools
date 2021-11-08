@@ -40,6 +40,8 @@ public class ExternalDataSetCaller {
 
     private static final String METADATA_URI = "metadata";
 
+    private static final String DATASET_URL_PROP = "dashbuilder.dataset.%s.url";
+
     private ExternalDataSetParser parser;
 
     public ExternalDataSetCaller() {
@@ -56,14 +58,15 @@ public class ExternalDataSetCaller {
     }
 
     public DataSetMetadata retrieveMetadata(ExternalDataSetDef def) {
-        var metaUrl = def.getUrl().endsWith("/") ? def.getUrl() : def.getUrl() + "/";
+        var defUrl = getUrl(def);
+        var metaUrl = defUrl.endsWith("/") ? defUrl : defUrl + "/";
         URL url;
         try {
             url = URI.create(metaUrl).resolve(METADATA_URI).toURL();
         } catch (IOException e) {
-            throw new IllegalArgumentException("Invalid definition URL " + def.getUrl(), e);
+            throw new IllegalArgumentException("Invalid definition URL " + defUrl, e);
         }
-        
+
         var json = getUrlContent(def, url);
         return parser.parseMetadata(json);
 
@@ -71,10 +74,11 @@ public class ExternalDataSetCaller {
 
     public DataSet retrieveDataSet(ExternalDataSetDef def) {
         URL url;
+        var defUrl = getUrl(def);
         try {
-            url = new URL(def.getUrl());
+            url = new URL(defUrl);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Invalid definition URL " + def.getUrl(), e);
+            throw new IllegalArgumentException("Invalid definition URL " + defUrl, e);
         }
 
         var json = getUrlContent(def, url);
@@ -94,7 +98,7 @@ public class ExternalDataSetCaller {
             var httpConn = (HttpURLConnection) conn;
             ExternalDataSetSecurityStore.get(def).ifPresent(secInfo -> addSecurity(httpConn, secInfo));
         }
-        
+
         try {
             var response = new String(conn.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
             checkResponse(def, conn);
@@ -129,6 +133,28 @@ public class ExternalDataSetCaller {
         if (secInfo.getType() == SecurityType.TOKEN) {
             conn.setRequestProperty(AUTHORIZATION_HEADER, BEARER + " " + secInfo.getToken());
         }
+    }
+
+    protected String getUrl(ExternalDataSetDef def) {
+        var uuidProp = String.format(DATASET_URL_PROP, def.getUUID());
+        var nameProp = String.format(DATASET_URL_PROP, def.getName());
+        var urlByDefUUID = System.getProperty(uuidProp);
+        var urlByDefName = System.getProperty(nameProp);
+
+        if (urlByDefUUID != null) {
+            return urlByDefUUID;
+        }
+
+        if (urlByDefName != null) {
+            return urlByDefName;
+        }
+
+        if (def.getUrl() != null) {
+            return def.getUrl();
+        }
+
+        throw new IllegalArgumentException("URL for DataSet definition " + def.getName() + "not set.");
+
     }
 
 }
