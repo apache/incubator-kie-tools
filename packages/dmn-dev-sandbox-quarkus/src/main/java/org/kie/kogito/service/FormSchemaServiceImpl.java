@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +45,11 @@ public class FormSchemaServiceImpl implements FormSchemaService {
     @Override
     public List<Form> generate(final String resourcesFolderPath, final List<String> filePaths) throws FileNotFoundException {
         var dmnRuntime = buildRuntime(filePaths);
-        var oasResult = DMNOASGeneratorFactory.generator(dmnRuntime.getModels()).build();
-        return dmnRuntime.getModels()
+        var dmnModels = dmnRuntime.getModels().stream()
+                .sorted(Comparator.comparing(DMNModel::getName))
+                .collect(Collectors.toList());
+        var oasResult = DMNOASGeneratorFactory.generator(dmnModels).build();
+        return dmnModels
                 .stream()
                 .map(dmnModel -> {
                     var resourcesFolder = Paths.get(resourcesFolderPath).toAbsolutePath();
