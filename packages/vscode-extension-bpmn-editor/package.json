@@ -117,8 +117,5 @@
         ]
       }
     ]
-  },
-  "extensionDependencies": [
-    "redhat.java"
-  ]
+  }
 }
