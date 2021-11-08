@@ -50,7 +50,9 @@ public class FormSchemaServiceImpl implements FormSchemaService {
                 .map(dmnModel -> {
                     var resourcesFolder = Paths.get(resourcesFolderPath).toAbsolutePath();
                     var modelFullPath = Paths.get(dmnModel.getResource().getSourcePath());
-                    return new Form(modelFullPath.toString().replace(resourcesFolder.toString(), ""),
+                    return new Form(modelFullPath.toString()
+                                            .replace(resourcesFolder.toString(), "")
+                                            .replace("\\", "/"),
                                     dmnModel.getName(),
                                     formSchema(dmnModel, oasResult));
                 })
@@ -67,7 +69,7 @@ public class FormSchemaServiceImpl implements FormSchemaService {
         return jsNode;
     }
 
-    private DMNRuntime buildRuntime(List<String> filePaths) throws FileNotFoundException {
+    private DMNRuntime buildRuntime(final List<String> filePaths) throws FileNotFoundException {
         Map<String, Resource> resources = new HashMap<>();
         for (String filePath : filePaths) {
             var dmnFile = new File(filePath);
