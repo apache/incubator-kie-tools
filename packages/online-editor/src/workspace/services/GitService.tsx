@@ -219,11 +219,7 @@ export class GitService {
   }
 
   async hasLocalChanges(args: { fs: LightningFS; dir: string }) {
-    console.info("GitService#walk--------begin");
-    console.time("GitService#walk");
     const files = await this.unstagedModifiedFileRelativePaths(args);
-
-    console.timeEnd("GitService#walk");
     return files.length > 0;
   }
 
