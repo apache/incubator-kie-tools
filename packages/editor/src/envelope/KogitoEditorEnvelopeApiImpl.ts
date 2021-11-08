@@ -117,7 +117,7 @@ export class KogitoEditorEnvelopeApiImpl<
   }
 
   public kogitoEditor_contentRequest() {
-    return this.editor.getContent().then((content) => ({ content: content }));
+    return this.editor.getContent().then((content) => ({ content: sanitize(content) }));
   }
 
   public kogitoEditor_previewRequest() {
@@ -182,4 +182,8 @@ export class KogitoEditorEnvelopeApiImpl<
       this.registerDefaultShortcuts(initArgs);
     });
   }
+}
+
+function sanitize(str: string): string {
+  return str.replace(/[\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069]/gu, "");
 }
