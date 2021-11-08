@@ -80,7 +80,12 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
         };
       });
 
-      const preferredName = uploadedRootDirs.size === 1 ? [...uploadedRootDirs][0] : undefined;
+      const preferredName =
+        uploadedRootDirs.size !== 1
+          ? undefined
+          : [...uploadedRootDirs][0] === localFiles[0].path
+          ? undefined
+          : [...uploadedRootDirs][0];
 
       setUploading(type);
 
