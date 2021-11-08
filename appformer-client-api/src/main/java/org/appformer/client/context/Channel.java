@@ -25,7 +25,8 @@ public enum Channel {
     VSCODE("VSCODE"),
     GITHUB("GITHUB"),
     DESKTOP("DESKTOP"),
-    EMBEDDED("EMBEDDED");
+    EMBEDDED("EMBEDDED"),
+    ONLINE_MULTI_FILE("ONLINE_MULTI_FILE");
 
     private final String name;
 

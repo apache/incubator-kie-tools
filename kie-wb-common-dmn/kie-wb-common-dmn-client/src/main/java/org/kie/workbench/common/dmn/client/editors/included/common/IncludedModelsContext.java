@@ -28,6 +28,7 @@ import org.appformer.client.context.EditorContextProvider;
 import static java.util.Arrays.asList;
 import static org.appformer.client.context.Channel.DEFAULT;
 import static org.appformer.client.context.Channel.EMBEDDED;
+import static org.appformer.client.context.Channel.ONLINE_MULTI_FILE;
 import static org.appformer.client.context.Channel.VSCODE;
 
 @ApplicationScoped
@@ -37,7 +38,7 @@ public class IncludedModelsContext {
 
     private Boolean isIncludedModelChannel;
 
-    private final List<Channel> INCLUDED_MODEL_CHANNELS = asList(DEFAULT, VSCODE, EMBEDDED);
+    private final List<Channel> INCLUDED_MODEL_CHANNELS = asList(DEFAULT, VSCODE, EMBEDDED, ONLINE_MULTI_FILE);
 
     public IncludedModelsContext() {
         this(null); // CDI proxy
