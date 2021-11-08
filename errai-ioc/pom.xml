@@ -11,7 +11,7 @@
   <parent>
     <groupId>org.kie.kogito</groupId>
     <artifactId>kogito-editors-java</artifactId>
-    <version>8.5.1-SNAPSHOT</version>
+    <version>8.5.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
