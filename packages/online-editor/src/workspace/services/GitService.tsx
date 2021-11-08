@@ -117,6 +117,14 @@ export class GitService {
       },
       ref: args.targetBranch,
     });
+
+    await git.writeRef({
+      fs: args.fs,
+      dir: args.dir,
+      ref: "HEAD",
+      force: true,
+      value: args.targetBranch,
+    });
   }
 
   public async pull(args: {
