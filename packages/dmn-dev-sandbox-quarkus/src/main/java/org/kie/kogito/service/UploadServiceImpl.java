@@ -41,7 +41,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.runtime.Startup;
 import org.apache.commons.io.FileUtils;
 import org.jboss.logging.Logger;
-import org.kie.kogito.form.FormSchemaService;
 import org.kie.kogito.model.Data;
 import org.kie.kogito.model.UploadStatus;
 
@@ -132,21 +131,24 @@ public class UploadServiceImpl implements UploadService {
         var forms = formSchemaService.generate(UNZIP_FOLDER, filePaths);
         var data = new Data(BASE_URL, forms);
 
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(UNZIP_FOLDER))) {
-            for (Path path : stream) {
-                var sourceFile = path.toFile();
-                var targetFile = Paths.get(META_INF_RESOURCES_FOLDER, sourceFile.getName()).toFile();
-                if (sourceFile.isDirectory()) {
-                    FileUtils.moveDirectory(sourceFile, targetFile);
-                } else {
-                    FileUtils.moveFile(sourceFile, targetFile);
-                }
-            }
-        }
-
         var mapper = new ObjectMapper();
         try (var writer = new BufferedWriter(new FileWriter(Paths.get(META_INF_RESOURCES_FOLDER, DATA_JSON_FILE).toString()))) {
             writer.write(mapper.writeValueAsString(data));
+        }
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(UNZIP_FOLDER))) {
+            for (Path path : stream) {
+                var source = path.toFile();
+                var target = Paths.get(META_INF_RESOURCES_FOLDER, source.getName()).toFile();
+                if (target.exists()) {
+                    continue;
+                }
+                if (source.isDirectory()) {
+                    FileUtils.moveDirectory(source, target);
+                } else {
+                    FileUtils.moveFile(source, target);
+                }
+            }
         }
     }
 

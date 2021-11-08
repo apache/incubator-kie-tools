@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.form;
+package org.kie.kogito.service;
 
 import java.io.File;
 import java.io.FileNotFoundException;

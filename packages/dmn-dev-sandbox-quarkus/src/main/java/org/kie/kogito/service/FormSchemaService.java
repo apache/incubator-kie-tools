@@ -14,28 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.form;
+package org.kie.kogito.service;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.FileNotFoundException;
+import java.util.List;
 
-import org.kie.api.io.Resource;
+import org.kie.kogito.model.Form;
 
-public class ResolveByKey {
+public interface FormSchemaService {
 
-    private final Map<String, Resource> resources;
-
-    public ResolveByKey(Map<String, Resource> resources) {
-        this.resources = new HashMap<>(resources);
-    }
-
-    public Reader readerByKey(final String key) {
-        try {
-            return resources.get(key).getReader();
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to operate ValidatorImportReaderResolver", e);
-        }
-    }
+    List<Form> generate(String resourcesFolderPath, List<String> filePaths) throws FileNotFoundException;
 }

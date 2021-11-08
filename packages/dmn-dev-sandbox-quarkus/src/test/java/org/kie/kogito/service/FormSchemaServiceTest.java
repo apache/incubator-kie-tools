@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.kogito;
+package org.kie.kogito.service;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.form.FormSchemaService;
-import org.kie.kogito.form.FormSchemaServiceImpl;
 import org.kie.kogito.model.Form;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FormSchemaServiceTest {
 
@@ -54,14 +54,15 @@ public class FormSchemaServiceTest {
 
         assertEquals(2, forms.size());
 
-        assertEquals("/model/loan.dmn", forms.get(0).getUri());
-        assertEquals("/model/traffic.dmn", forms.get(1).getUri());
+        final Optional<Form> loan = forms.stream().filter(f -> f.getUri().equals("/model/loan.dmn")).findFirst();
+        assertTrue(loan.isPresent());
+        assertEquals("loan_pre_qualification", loan.get().getModelName());
+        assertJsonEquals(expectedLoanSchema, loan.get().getSchema());
 
-        assertEquals("loan_pre_qualification", forms.get(0).getModelName());
-        assertEquals("Traffic Violation", forms.get(1).getModelName());
-
-        assertJsonEquals(expectedLoanSchema, forms.get(0).getSchema());
-        assertJsonEquals(expectedTrafficSchema, forms.get(1).getSchema());
+        final Optional<Form> trafficViolation = forms.stream().filter(f -> f.getUri().equals("/model/traffic.dmn")).findFirst();
+        assertTrue(trafficViolation.isPresent());
+        assertEquals("Traffic Violation", trafficViolation.get().getModelName());
+        assertJsonEquals(expectedTrafficSchema, trafficViolation.get().getSchema());
     }
 
     private void assertJsonEquals(final ObjectNode expected, final ObjectNode actual) throws JsonProcessingException {
