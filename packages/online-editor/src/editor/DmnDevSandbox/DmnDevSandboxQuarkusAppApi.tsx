@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export type UploadStatus = "NOT_READY" | "WAITING" | "UPLOADED" | "ERROR";
+export type UploadStatus = "NOT_READY" | "WAITING" | "UPLOADING" | "UPLOADED" | "ERROR";
 
 const UPLOAD_ENDPOINT = "/upload";
 const UPLOAD_STATUS_ENDPOINT = `${UPLOAD_ENDPOINT}/status`;

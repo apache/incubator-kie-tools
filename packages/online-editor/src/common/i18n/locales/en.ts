@@ -113,13 +113,13 @@ export const en: OnlineI18n = {
     },
     confirmModal: {
       title: "Deploy",
-      body: "Are you sure you want to deploy this diagram on your instance? This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.",
+      body: "Are you sure you want to deploy your model to your instance? This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.",
     },
     alerts: {
       deployStartedError:
         "Something went wrong when creating your deployment. Please check your configuration and try again.",
       deployStartedSuccess:
-        "Your deployment has been successfully started and it will be available shortly. Please do not close your browser tab until this operation is completed.",
+        "Your deployment has been successfully started and will be available shortly. Please do not close your browser tab until this operation is completed.",
     },
     introduction: {
       explanation: `Deploy your decision models to a cloud instance on ${en_common.names.devSandbox} and share with others.`,

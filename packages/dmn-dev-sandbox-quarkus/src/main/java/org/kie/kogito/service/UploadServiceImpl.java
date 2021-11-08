@@ -112,8 +112,13 @@ public class UploadServiceImpl implements UploadService {
 
     @Override
     public void upload(final InputStream inputStream) {
+        if (getStatus() != UploadStatus.WAITING) {
+            return;
+        }
+
         LOGGER.info("Uploading file");
         cancelTimer();
+        updateStatus(UploadStatus.UPLOADING);
 
         var zipPath = Paths.get(WORK_FOLDER, UPLOADED_ZIP_FILE);
         try {
@@ -128,31 +133,40 @@ public class UploadServiceImpl implements UploadService {
     }
 
     private void writeData(final List<String> filePaths) throws IOException {
+        if (getStatus() != UploadStatus.UPLOADING) {
+            return;
+        }
+
+        LOGGER.info("Writing data");
         var forms = formSchemaService.generate(UNZIP_FOLDER, filePaths);
         var data = new Data(BASE_URL, forms);
-
-        var mapper = new ObjectMapper();
-        try (var writer = new BufferedWriter(new FileWriter(Paths.get(META_INF_RESOURCES_FOLDER, DATA_JSON_FILE).toString()))) {
-            writer.write(mapper.writeValueAsString(data));
-        }
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(UNZIP_FOLDER))) {
             for (Path path : stream) {
                 var source = path.toFile();
                 var target = Paths.get(META_INF_RESOURCES_FOLDER, source.getName()).toFile();
-                if (target.exists()) {
+                if (!source.exists() || target.exists()) {
                     continue;
                 }
                 if (source.isDirectory()) {
-                    FileUtils.moveDirectory(source, target);
+                    FileUtils.copyDirectory(source, target);
                 } else {
-                    FileUtils.moveFile(source, target);
+                    FileUtils.copyFile(source, target);
                 }
             }
+        }
+
+        var mapper = new ObjectMapper();
+        try (var writer = new BufferedWriter(new FileWriter(Paths.get(META_INF_RESOURCES_FOLDER, DATA_JSON_FILE).toString()))) {
+            writer.write(mapper.writeValueAsString(data));
         }
     }
 
     private void updateStatus(final UploadStatus status) {
+        if (getStatus() == status) {
+            LOGGER.info("The upload status is already " + status);
+            return;
+        }
         try (var writer = new BufferedWriter(new FileWriter(statusFile.getAbsolutePath()))) {
             writer.write(status.name());
             LOGGER.info("UploadStatus updated to " + status);

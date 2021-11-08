@@ -18,6 +18,7 @@ package org.kie.kogito.model;
 
 public enum UploadStatus {
     WAITING,
+    UPLOADING,
     UPLOADED,
     ERROR
 }
