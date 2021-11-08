@@ -3,10 +3,12 @@ import { useCallback } from "react";
 import { ActiveWorkspace } from "../model/ActiveWorkspace";
 import { usePromiseState } from "./PromiseState";
 import { Holder, useCancelableEffect } from "../../common/Hooks";
+import { WorkspaceKind } from "../model/WorkspaceOrigin";
+import { GIT_ORIGIN_REMOTE_NAME } from "../services/GitService";
 
-export function useIsWorkspaceModifiedPromise(workspace: ActiveWorkspace | undefined) {
+export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefined) {
   const workspaces = useWorkspaces();
-  const [isModifiedPromise, setModifiedPromise] = usePromiseState<boolean>();
+  const [isModifiedPromise, setModifiedPromise] = usePromiseState<{ hasLocalChanges: boolean; isSynced: boolean }>();
 
   const refresh = useCallback(
     async (canceled: Holder<boolean>) => {
@@ -14,7 +16,7 @@ export function useIsWorkspaceModifiedPromise(workspace: ActiveWorkspace | undef
         return;
       }
 
-      const isModified = await workspaces.isModified({
+      const hasLocalChanges = await workspaces.hasLocalChanges({
         fs: await workspaces.fsService.getWorkspaceFs(workspace.descriptor.workspaceId),
         workspaceId: workspace.descriptor.workspaceId,
       });
@@ -22,7 +24,34 @@ export function useIsWorkspaceModifiedPromise(workspace: ActiveWorkspace | undef
         return;
       }
 
-      setModifiedPromise({ data: isModified });
+      if (workspace.descriptor.origin.kind === WorkspaceKind.LOCAL) {
+        setModifiedPromise({ data: { hasLocalChanges, isSynced: true } });
+        return;
+      }
+
+      if (
+        workspace.descriptor.origin.kind === WorkspaceKind.GIT ||
+        workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST
+      ) {
+        const head = await workspaces.gitService.resolveRef({
+          fs: await workspaces.fsService.getWorkspaceFs(workspace.descriptor.workspaceId),
+          dir: await workspaces.getAbsolutePath({ workspaceId: workspace.descriptor.workspaceId }),
+          ref: "HEAD",
+        });
+
+        const remote = await workspaces.gitService.resolveRef({
+          fs: await workspaces.fsService.getWorkspaceFs(workspace.descriptor.workspaceId),
+          dir: await workspaces.getAbsolutePath({ workspaceId: workspace.descriptor.workspaceId }),
+          ref: `${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}`,
+        });
+
+        if (canceled.get()) {
+          return;
+        }
+
+        setModifiedPromise({ data: { hasLocalChanges, isSynced: head === remote } });
+        return;
+      }
     },
     [workspace, workspaces, setModifiedPromise]
   );

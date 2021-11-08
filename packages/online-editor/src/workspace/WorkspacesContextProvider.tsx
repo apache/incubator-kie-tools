@@ -97,9 +97,9 @@ export function WorkspacesContextProvider(props: Props) {
     [globals, service]
   );
 
-  const isModified = useCallback(
+  const hasLocalChanges = useCallback(
     async (args: { fs: LightningFS; workspaceId: string }) => {
-      return await gitService.isModified({
+      return await gitService.hasLocalChanges({
         fs: args.fs,
         dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
       });
@@ -137,6 +137,11 @@ export function WorkspacesContextProvider(props: Props) {
         fs: args.fs,
         dir: workspaceRootDirPath,
       });
+
+      if (fileRelativePaths.length === 0) {
+        console.info("Nothing to commit.");
+        return;
+      }
 
       await Promise.all(
         fileRelativePaths.map(async (relativePath) => {
@@ -447,7 +452,7 @@ export function WorkspacesContextProvider(props: Props) {
       createSavePoint,
       pull,
       getFiles,
-      isModified,
+      hasLocalChanges,
       //
       addEmptyFile,
       addFile,
@@ -471,7 +476,7 @@ export function WorkspacesContextProvider(props: Props) {
       getFiles,
       getUniqueFileIdentifier,
       gitService,
-      isModified,
+      hasLocalChanges,
       prepareZip,
       pull,
       renameFile,

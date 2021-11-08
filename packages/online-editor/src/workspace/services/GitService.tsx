@@ -210,7 +210,7 @@ export class GitService {
     });
   }
 
-  async isModified(args: { fs: LightningFS; dir: string }) {
+  async hasLocalChanges(args: { fs: LightningFS; dir: string }) {
     console.info("GitService#walk--------begin");
     console.time("GitService#walk");
     const files = await this.unstagedModifiedFileRelativePaths(args);
@@ -265,5 +265,13 @@ export class GitService {
     const _STAGE = 3;
     const _FILE = 0;
     return pseudoStatusMatrix.filter((row: any) => row[_WORKDIR] !== row[_STAGE]).map((row: any) => row[_FILE]);
+  }
+
+  public async resolveRef(args: { fs: LightningFS; dir: string; ref: string }) {
+    return git.resolveRef({
+      fs: args.fs,
+      dir: args.dir,
+      ref: args.ref,
+    });
   }
 }

@@ -773,38 +773,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     )
   );
 
-  const pushGitHubRepository = useCallback(async () => {
-    if (!githubAuthInfo) {
-      return;
-    }
-
-    pushingAlert.show();
-    try {
-      const workspaceId = props.workspaceFile.workspaceId;
-      await workspaces.createSavePoint({
-        fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
-        workspaceId: workspaceId,
-      });
-
-      const workspace = await workspaces.descriptorService.get(workspaceId);
-      await workspaces.gitService.push({
-        fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
-        dir: await workspaces.service.getAbsolutePath({ workspaceId }),
-        ref: workspace.origin.branch,
-        remote: GIST_ORIGIN_REMOTE_NAME,
-        remoteRef: `refs/heads/${workspace.origin.branch}`,
-        force: false,
-        authInfo: githubAuthInfo,
-      });
-      pushSuccessAlert.show();
-    } catch (e) {
-      console.error(e);
-      pushErrorAlert.show();
-    } finally {
-      pushingAlert.close();
-    }
-  }, [githubAuthInfo, props.workspaceFile, pushErrorAlert, pushSuccessAlert, pushingAlert, workspaces]);
-
   const pullingAlert = useAlert(
     props.alerts,
     useCallback(
@@ -887,6 +855,47 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       pullingAlert.close();
     }
   }, [pullingAlert, workspaces, props.workspaceFile.workspaceId, githubAuthInfo, pullSuccessAlert, pullErrorAlert]);
+
+  const pushGitHubRepository = useCallback(async () => {
+    if (!githubAuthInfo) {
+      return;
+    }
+
+    pushingAlert.show();
+    try {
+      const workspaceId = props.workspaceFile.workspaceId;
+      await workspaces.createSavePoint({
+        fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
+        workspaceId: workspaceId,
+      });
+
+      const workspace = await workspaces.descriptorService.get(workspaceId);
+      await workspaces.gitService.push({
+        fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
+        dir: await workspaces.service.getAbsolutePath({ workspaceId }),
+        ref: workspace.origin.branch,
+        remote: GIST_ORIGIN_REMOTE_NAME,
+        remoteRef: `refs/heads/${workspace.origin.branch}`,
+        force: false,
+        authInfo: githubAuthInfo,
+      });
+      pushSuccessAlert.show();
+      await pullGitHubRepository();
+    } catch (e) {
+      console.error(e);
+      pushErrorAlert.show();
+    } finally {
+      pushingAlert.close();
+    }
+  }, [
+    pullGitHubRepository,
+    githubAuthInfo,
+    props.workspaceFile,
+    pushErrorAlert,
+    pushSuccessAlert,
+    pushingAlert,
+    workspaces,
+  ]);
 
   const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
 

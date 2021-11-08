@@ -1,5 +1,6 @@
 import { ActiveWorkspace } from "../model/ActiveWorkspace";
-import { useIsWorkspaceModifiedPromise } from "../hooks/WorkspaceHooks";
+import { useWorkspaceGitStatusPromise } from "../hooks/WorkspaceHooks";
+import * as React from "react";
 import { useMemo } from "react";
 import { WorkspaceKind } from "../model/WorkspaceOrigin";
 import { PromiseStateWrapper } from "../hooks/PromiseState";
@@ -8,12 +9,11 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import { SecurityIcon } from "@patternfly/react-icons/dist/js/icons/security-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import * as React from "react";
 
 export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) {
-  const isWorkspaceModifiedPromise = useIsWorkspaceModifiedPromise(props.workspace);
+  const workspaceGitStatusPromise = useWorkspaceGitStatusPromise(props.workspace);
 
-  const isModifiedText = useMemo(() => {
+  const outOfSyncText = useMemo(() => {
     switch (props.workspace.descriptor.origin.kind) {
       case WorkspaceKind.LOCAL:
         return "There are new changes since your last download.";
@@ -25,7 +25,7 @@ export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) 
     }
   }, [props.workspace]);
 
-  const isSyncedText = useMemo(() => {
+  const syncedText = useMemo(() => {
     switch (props.workspace.descriptor.origin.kind) {
       case WorkspaceKind.LOCAL:
         return "All changes were downloaded.";
@@ -39,7 +39,7 @@ export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) 
 
   return (
     <PromiseStateWrapper
-      promise={isWorkspaceModifiedPromise}
+      promise={workspaceGitStatusPromise}
       pending={
         <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
           <Tooltip content={"Checking status..."} position={"right"}>
@@ -49,11 +49,11 @@ export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) 
           </Tooltip>
         </Title>
       }
-      resolved={(isModified) => (
+      resolved={({ hasLocalChanges, isSynced }) => (
         <>
-          {(isModified && (
+          {(!isSynced && (
             <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
-              <Tooltip content={isModifiedText} position={"right"}>
+              <Tooltip content={outOfSyncText} position={"right"}>
                 <small>
                   <SecurityIcon color={"gray"} />
                 </small>
@@ -61,9 +61,18 @@ export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) 
             </Title>
           )) || (
             <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
-              <Tooltip content={isSyncedText} position={"right"}>
+              <Tooltip content={syncedText} position={"right"}>
                 <small>
                   <CheckCircleIcon color={"green"} />
+                </small>
+              </Tooltip>
+            </Title>
+          )}
+          {hasLocalChanges && (
+            <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
+              <Tooltip content={"You have local changes."} position={"right"}>
+                <small>
+                  <i>M</i>
                 </small>
               </Tooltip>
             </Title>
