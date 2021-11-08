@@ -29,6 +29,41 @@ export function NewWorkspaceFromUrlPage() {
     return queryParams.get(QueryParams.URL);
   }, [queryParams]);
 
+  const importGitWorkspace: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
+    async (args) => {
+      let res;
+      try {
+        res = await workspaces.createWorkspaceFromGitRepository(args);
+      } catch (e) {
+        try {
+          res = await workspaces.createWorkspaceFromGitRepository({
+            ...args,
+            origin: { ...args.origin, branch: "master" },
+          });
+        } catch (ee) {
+          throw new Error(ee);
+        }
+      }
+
+      const { workspace, suggestedFirstFile } = res;
+
+      if (!suggestedFirstFile) {
+        history.replace({ pathname: globals.routes.home.path({}) });
+        return res;
+      }
+
+      history.replace({
+        pathname: globals.routes.workspaceWithFilePath.path({
+          workspaceId: workspace.workspaceId,
+          fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
+          extension: suggestedFirstFile.extension,
+        }),
+      });
+      return res;
+    },
+    [globals, history, workspaces]
+  );
+
   const createWorkspaceForFile = useCallback(
     (file: LocalFile) => {
       workspaces
@@ -53,42 +88,62 @@ export function NewWorkspaceFromUrlPage() {
 
   useEffect(() => {
     async function run() {
+      let githubAuthInfo;
+      let gitConfig;
+
+      if (settings.github.authStatus === AuthStatus.SIGNED_IN) {
+        githubAuthInfo = { username: settings.github.user!.login, password: settings.github.token! };
+        gitConfig = { name: settings.github.user!.name, email: settings.github.user!.email };
+      }
+
+      // try to import the URL as a git repository first
       try {
-        if (importableUrl.errors) {
+        const url = new URL(queryParamUrl!);
+        if (url.host !== window.location.host) {
+          await importGitWorkspace({
+            origin: {
+              kind: WorkspaceKind.GIT,
+              url,
+              branch: GIT_DEFAULT_BRANCH,
+            },
+            gitConfig,
+          });
+
+          return;
+        } else {
+          // ignore and continue
+        }
+      } catch (e) {
+        console.error(e);
+        // ignore error and continue
+      }
+
+      // proceed normally
+      try {
+        if (importableUrl.error) {
+          setImportingError(importableUrl.error);
           return;
         }
 
         // github
         if (importableUrl.type === UrlType.GITHUB) {
-          let githubAuthInfo;
-          let gitConfig;
-
-          if (settings.github.authStatus === AuthStatus.SIGNED_IN) {
-            githubAuthInfo = { username: settings.github.user!.login, password: settings.github.token! };
-            gitConfig = { name: settings.github.user!.name, email: settings.github.user!.email };
-          }
-
-          const { workspace, suggestedFirstFile } = await workspaces.createWorkspaceFromGitRepository({
+          await importGitWorkspace({
             origin: {
-              kind: WorkspaceKind.GITHUB,
+              kind: WorkspaceKind.GIT,
               url: importableUrl.url,
               branch: importableUrl.branch ?? GIT_DEFAULT_BRANCH,
             },
-            gitConfig: gitConfig,
+            gitConfig,
             authInfo: githubAuthInfo,
           });
-
-          if (!suggestedFirstFile) {
-            history.replace({ pathname: globals.routes.home.path({}) });
-            return;
-          }
-
-          history.replace({
-            pathname: globals.routes.workspaceWithFilePath.path({
-              workspaceId: workspace.workspaceId,
-              fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-              extension: suggestedFirstFile.extension,
-            }),
+        } else if (importableUrl.type === UrlType.GIT) {
+          await importGitWorkspace({
+            origin: {
+              kind: WorkspaceKind.GIT,
+              url: importableUrl.url,
+              branch: GIT_DEFAULT_BRANCH,
+            },
+            gitConfig,
           });
         }
 
@@ -146,14 +201,22 @@ export function NewWorkspaceFromUrlPage() {
     }
 
     run();
-  }, [createWorkspaceForFile, globals, history, importableUrl, settings.github, workspaces]);
+  }, [
+    createWorkspaceForFile,
+    globals,
+    history,
+    importGitWorkspace,
+    importableUrl,
+    queryParamUrl,
+    settings.github,
+    workspaces,
+  ]);
 
   return (
     <>
       <OnlineEditorPage>
-        {importableUrl.errors && <EditorPageErrorPage path={importableUrl.url} errors={importableUrl.errors} />}
         {importingError && <EditorPageErrorPage path={importableUrl.url.toString()} errors={[importingError]} />}
-        {!importableUrl.errors && (
+        {!importingError && (
           <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
             <Bullseye>
               <TextContent>
@@ -161,7 +224,7 @@ export function NewWorkspaceFromUrlPage() {
                   <Spinner />
                 </Bullseye>
                 <br />
-                <Text component={TextVariants.p}>{`Importing workspace from '${importableUrl.url.toString()}'`}</Text>
+                <Text component={TextVariants.p}>{`Importing workspace from '${queryParamUrl}'`}</Text>
               </TextContent>
             </Bullseye>
           </PageSection>

@@ -253,7 +253,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
       rejected={() => <>ERROR</>}
       resolved={(workspace) => (
         <>
-          {workspace.files.length === 1 && (
+          {(editableFiles.length === 1 && workspace.descriptor.origin.kind === WorkspaceKind.LOCAL && (
             <Card
               isSelected={props.isSelected}
               isSelectable={true}
@@ -332,8 +332,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                 </TextContent>
               </CardBody>
             </Card>
-          )}
-          {(workspace.files.length > 1 || workspace.files.length < 1) && (
+          )) || (
             <Card
               isSelected={props.isSelected}
               isSelectable={true}
@@ -468,7 +467,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
           <Text component={TextVariants.h3}>{`Models in '${workspacePromise.data?.descriptor.name}'`}</Text>
         </TextContent>
         {(workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST ||
-          workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB) && (
+          workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GIT) && (
           <TextContent>
             <Text component={TextVariants.small}>
               <i>{workspacePromise.data?.descriptor.origin.url.toString()}</i>

@@ -44,7 +44,6 @@ import { EmbedModal } from "./EmbedModal";
 import { Alerts, AlertsController, useAlert } from "./Alerts/Alerts";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { SecurityIcon } from "@patternfly/react-icons/dist/js/icons/security-icon";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
@@ -58,7 +57,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 import { PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { FileLabel } from "../workspace/components/FileLabel";
-import { useIsWorkspaceModifiedPromise, useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
+import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { FileSwitcher } from "./FileSwitcher";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
@@ -69,11 +68,12 @@ import { GIST_DEFAULT_BRANCH, GIST_ORIGIN_REMOTE_NAME } from "../workspace/servi
 import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
-import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { EditorPageDockDrawerController } from "./EditorPageDockDrawer";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
+import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -106,70 +106,6 @@ const hideWhenTiny: ToolbarItemProps["visibility"] = {
   lg: "visible",
   md: "hidden",
 };
-
-function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) {
-  const isWorkspaceModifiedPromise = useIsWorkspaceModifiedPromise(props.workspace);
-
-  const isModifiedText = useMemo(() => {
-    switch (props.workspace.descriptor.origin.kind) {
-      case WorkspaceKind.LOCAL:
-        return "There are new changes since your last download.";
-      case WorkspaceKind.GITHUB_GIST:
-      case WorkspaceKind.GITHUB:
-        return "There are new changes since you last synced.";
-      default:
-        throw new Error();
-    }
-  }, [props.workspace]);
-
-  const isSyncedText = useMemo(() => {
-    switch (props.workspace.descriptor.origin.kind) {
-      case WorkspaceKind.LOCAL:
-        return "All changes were downloaded.";
-      case WorkspaceKind.GITHUB_GIST:
-      case WorkspaceKind.GITHUB:
-        return "All files are synced.";
-      default:
-        throw new Error();
-    }
-  }, [props.workspace]);
-
-  return (
-    <PromiseStateWrapper
-      promise={isWorkspaceModifiedPromise}
-      pending={
-        <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
-          <Tooltip content={"Checking status..."} position={"right"}>
-            <small>
-              <SyncIcon color={"gray"} />
-            </small>
-          </Tooltip>
-        </Title>
-      }
-      resolved={(isModified) => (
-        <>
-          {(isModified && (
-            <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
-              <Tooltip content={isModifiedText} position={"right"}>
-                <small>
-                  <SecurityIcon color={"gray"} />
-                </small>
-              </Tooltip>
-            </Title>
-          )) || (
-            <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
-              <Tooltip content={isSyncedText} position={"right"}>
-                <small>
-                  <CheckCircleIcon color={"green"} />
-                </small>
-              </Tooltip>
-            </Title>
-          )}
-        </>
-      )}
-    />
-  );
-}
 
 export function EditorToolbar(props: Props) {
   const globals = useGlobals();
@@ -761,6 +697,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   const createSavePointDropdownItem = useMemo(() => {
     return (
       <DropdownItem
+        key={"commit-dropdown-item"}
         icon={<SaveIcon />}
         onClick={async () =>
           workspaces.createSavePoint({
@@ -781,7 +718,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     props.alerts,
     useCallback(
       ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB) {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
           return <></>;
         }
 
@@ -805,7 +742,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     props.alerts,
     useCallback(
       ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB) {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
           return <></>;
         }
 
@@ -820,7 +757,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     props.alerts,
     useCallback(
       ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB) {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
           return <></>;
         }
 
@@ -872,7 +809,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     props.alerts,
     useCallback(
       ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB) {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
           return <></>;
         }
 
@@ -896,7 +833,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     props.alerts,
     useCallback(
       ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB) {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
           return <></>;
         }
 
@@ -911,7 +848,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     props.alerts,
     useCallback(
       ({ close }) => {
-        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB) {
+        if (workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GIT) {
           return <></>;
         }
 
@@ -951,6 +888,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     }
   }, [pullingAlert, workspaces, props.workspaceFile.workspaceId, githubAuthInfo, pullSuccessAlert, pullErrorAlert]);
 
+  const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
+
   return (
     <PromiseStateWrapper
       promise={workspacePromise}
@@ -986,31 +925,32 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   )}
                 </FlexItem>
                 {/*<Divider inset={{ default: "insetMd" }} isVertical={true} />*/}
-                {workspace.descriptor.origin.kind === WorkspaceKind.GITHUB && (
-                  <FlexItem>
-                    <Toolbar style={{ padding: 0 }}>
-                      <ToolbarItem>
-                        <a
-                          href={`https://vscode.dev/github${workspace.descriptor.origin.url.pathname}/tree/${workspace.descriptor.origin.branch}`}
-                          target={"_blank"}
-                        >
-                          <Button
-                            variant={ButtonVariant.secondary}
-                            icon={
-                              <img
-                                style={{ width: "14px" }}
-                                alt="vscode-logo-blue"
-                                src={globals.routes.static.images.vscodeLogoBlue.path({})}
-                              />
-                            }
+                {workspace.descriptor.origin.kind === WorkspaceKind.GIT &&
+                  workspaceImportableUrl.type === UrlType.GITHUB && (
+                    <FlexItem>
+                      <Toolbar style={{ padding: 0 }}>
+                        <ToolbarItem>
+                          <a
+                            href={`https://vscode.dev/github${workspace.descriptor.origin.url.pathname}/tree/${workspace.descriptor.origin.branch}`}
+                            target={"_blank"}
                           >
-                            {`Open "${workspace.descriptor.name}" in vscode.dev...`}
-                          </Button>
-                        </a>
-                      </ToolbarItem>
-                    </Toolbar>
-                  </FlexItem>
-                )}
+                            <Button
+                              variant={ButtonVariant.secondary}
+                              icon={
+                                <img
+                                  style={{ width: "14px" }}
+                                  alt="vscode-logo-blue"
+                                  src={globals.routes.static.images.vscodeLogoBlue.path({})}
+                                />
+                              }
+                            >
+                              {`Open "${workspace.descriptor.name}" in vscode.dev...`}
+                            </Button>
+                          </a>
+                        </ToolbarItem>
+                      </Toolbar>
+                    </FlexItem>
+                  )}
               </Flex>
             )}
           </PageSection>
@@ -1153,7 +1093,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         />
                       </ToolbarItem>
                     )}
-                    {workspace.descriptor.origin.kind === WorkspaceKind.GITHUB && (
+                    {workspace.descriptor.origin.kind === WorkspaceKind.GIT && (
                       <ToolbarItem>
                         <Dropdown
                           onSelect={() => setSyncGitHubRepositoryDropdownOpen(false)}

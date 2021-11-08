@@ -426,39 +426,63 @@ export function WorkspacesContextProvider(props: Props) {
     [service]
   );
 
-  return (
-    <WorkspacesContext.Provider
-      value={{
-        service,
-        gitService,
-        fsService,
-        svgService,
-        descriptorService,
-        //
-        resourceContentGet,
-        resourceContentList,
-        //
-        createWorkspaceFromLocal,
-        createWorkspaceFromGitRepository,
-        renameWorkspace,
-        deleteWorkspace,
-        prepareZip,
-        getAbsolutePath,
-        getUniqueFileIdentifier,
-        createSavePoint,
-        pull,
-        getFiles,
-        isModified,
-        //
-        addEmptyFile,
-        addFile,
-        renameFile,
-        updateFile,
-        deleteFile,
-        getFile,
-      }}
-    >
-      {props.children}
-    </WorkspacesContext.Provider>
+  const value = useMemo(
+    () => ({
+      service,
+      gitService,
+      fsService,
+      svgService,
+      descriptorService,
+      //
+      resourceContentGet,
+      resourceContentList,
+      //
+      createWorkspaceFromLocal,
+      createWorkspaceFromGitRepository,
+      renameWorkspace,
+      deleteWorkspace,
+      prepareZip,
+      getAbsolutePath,
+      getUniqueFileIdentifier,
+      createSavePoint,
+      pull,
+      getFiles,
+      isModified,
+      //
+      addEmptyFile,
+      addFile,
+      renameFile,
+      updateFile,
+      deleteFile,
+      getFile,
+    }),
+    [
+      addEmptyFile,
+      addFile,
+      createSavePoint,
+      createWorkspaceFromGitRepository,
+      createWorkspaceFromLocal,
+      deleteFile,
+      deleteWorkspace,
+      descriptorService,
+      fsService,
+      getAbsolutePath,
+      getFile,
+      getFiles,
+      getUniqueFileIdentifier,
+      gitService,
+      isModified,
+      prepareZip,
+      pull,
+      renameFile,
+      renameWorkspace,
+      resourceContentGet,
+      resourceContentList,
+      service,
+      svgService,
+      updateFile,
+    ]
   );
+
+  return <WorkspacesContext.Provider value={value}>{props.children}</WorkspacesContext.Provider>;
 }

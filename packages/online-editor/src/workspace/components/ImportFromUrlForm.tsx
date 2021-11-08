@@ -22,13 +22,13 @@ export function ImportFromUrlForm(props: {
       e.preventDefault();
       e.stopPropagation();
 
-      if (importableUrl.errors) {
+      if (importableUrl.error) {
         return;
       }
 
       props.onSubmit();
     },
-    [importableUrl.errors, props]
+    [importableUrl.error, props]
   );
 
   const validatedOption = useMemo(() => {
@@ -36,16 +36,16 @@ export function ImportFromUrlForm(props: {
       return ValidatedOptions.default;
     }
 
-    if (importableUrl.errors || props.importingError) {
+    if (importableUrl.error || props.importingError) {
       return ValidatedOptions.error;
     }
 
     return ValidatedOptions.success;
-  }, [props.url, props.importingError, importableUrl.errors]);
+  }, [props.url, props.importingError, importableUrl.error]);
 
   const displayError = useMemo(() => {
-    if (importableUrl.errors) {
-      return importableUrl.errors.join("\n");
+    if (importableUrl.error) {
+      return importableUrl.error;
     }
 
     if (props.importingError) {
@@ -53,7 +53,7 @@ export function ImportFromUrlForm(props: {
     }
 
     return "";
-  }, [importableUrl.errors, props.importingError]);
+  }, [importableUrl.error, props.importingError]);
 
   return (
     <Form onSubmit={onSubmit}>

@@ -3,6 +3,7 @@ import { matchPath } from "react-router";
 import { extname } from "path";
 
 export enum UrlType {
+  GIT,
   GITHUB,
   GIST,
   GIST_FILE,
@@ -15,38 +16,43 @@ export enum UrlType {
 export type ImportableUrl =
   | {
       type: UrlType.ZIP;
-      errors?: undefined;
+      error?: undefined;
       url: URL;
     }
   | {
       type: UrlType.FILE;
-      errors?: undefined;
+      error?: undefined;
+      url: URL;
+    }
+  | {
+      type: UrlType.GIT;
+      error?: undefined;
       url: URL;
     }
   | {
       type: UrlType.GIST;
-      errors?: undefined;
+      error?: undefined;
       url: URL;
     }
   | {
       type: UrlType.GIST_FILE;
-      errors?: undefined;
+      error?: undefined;
       url: URL;
     }
   | {
       type: UrlType.GITHUB_FILE;
-      errors?: undefined;
+      error?: undefined;
       url: URL;
     }
   | {
       type: UrlType.GITHUB;
-      errors?: undefined;
+      error?: undefined;
       url: URL;
       branch?: string;
     }
   | {
       type: UrlType.INVALID;
-      errors: string[];
+      error: string;
       url: string;
     };
 
@@ -55,21 +61,21 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
 
   const ifAllowed = (url: ImportableUrl): ImportableUrl => {
     if (allowedUrlTypes && !allowedUrlTypes.includes(url.type)) {
-      return { type: UrlType.INVALID, errors: ["URL not allowed"], url: url.url.toString() };
+      return { type: UrlType.INVALID, error: "URL not allowed", url: url.url.toString() };
     }
 
     return url;
   };
 
   if (!urlString) {
-    return { type: UrlType.INVALID, errors: ["Empty URL"], url: "" };
+    return { type: UrlType.INVALID, error: "Empty URL", url: "" };
   }
 
   let url: URL;
   try {
     url = new URL(urlString);
   } catch (e) {
-    return { type: UrlType.INVALID, errors: ["Invalid URL"], url: urlString };
+    return { type: UrlType.INVALID, error: "Invalid URL", url: urlString };
   }
 
   if (url.host === "github.com") {
@@ -98,7 +104,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return ifAllowed({ type: UrlType.GITHUB, url: customBranchUrl, branch });
     }
 
-    return { type: UrlType.INVALID, errors: ["Unsupported GitHub URL"], url: urlString };
+    return { type: UrlType.INVALID, error: "Unsupported GitHub URL", url: urlString };
   }
 
   if (url.host === "gist.github.com") {
@@ -109,7 +115,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
     });
 
     if (!match) {
-      return { type: UrlType.INVALID, errors: ["Unsupported Gist URL"], url: urlString };
+      return { type: UrlType.INVALID, error: "Unsupported Gist URL", url: urlString };
     }
 
     return ifAllowed({ type: UrlType.GIST, url });
@@ -117,15 +123,19 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
 
   const extension = extname(url.pathname).replace(".", "");
   if (!extension) {
-    return { type: UrlType.INVALID, errors: [`Can't determine file extension from URL`], url: urlString };
+    return { type: UrlType.INVALID, error: `Can't determine file extension from URL`, url: urlString };
   }
 
   // if (extension === "zip") {
   //   return ifAllowed({ type: UrlType.ZIP, url });
   // }
 
+  if (extension === "git") {
+    return ifAllowed({ type: UrlType.GIT, url });
+  }
+
   if (![...globals.editorEnvelopeLocator.mapping.keys()].includes(extension)) {
-    return { type: UrlType.INVALID, errors: [`Unsupported extension '${extension}'`], url: urlString };
+    return { type: UrlType.INVALID, error: `Unsupported extension '${extension}'`, url: urlString };
   }
 
   return ifAllowed({ type: UrlType.FILE, url });

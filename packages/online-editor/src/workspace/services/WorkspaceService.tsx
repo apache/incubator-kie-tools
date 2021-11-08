@@ -47,21 +47,26 @@ export class WorkspaceService {
       preferredName: args.preferredName,
     });
 
-    const files = await (args.useInMemoryFs
-      ? this.fsService.withInMemoryFs(workspace.workspaceId, (fs) => args.storeFiles(fs, workspace))
-      : args.storeFiles(await this.fsService.getWorkspaceFs(workspace.workspaceId), workspace));
+    try {
+      const files = await (args.useInMemoryFs
+        ? this.fsService.withInMemoryFs(workspace.workspaceId, (fs) => args.storeFiles(fs, workspace))
+        : args.storeFiles(await this.fsService.getWorkspaceFs(workspace.workspaceId), workspace));
 
-    if (args.broadcastArgs.broadcast) {
-      const broadcastChannel1 = new BroadcastChannel("workspaces");
-      const broadcastChannel2 = new BroadcastChannel(workspace.workspaceId);
-      broadcastChannel1.postMessage({
-        type: "ADD_WORKSPACE",
-        workspaceId: workspace.workspaceId,
-      } as WorkspacesEvents);
-      broadcastChannel2.postMessage({ type: "ADD", workspaceId: workspace.workspaceId } as WorkspaceEvents);
+      if (args.broadcastArgs.broadcast) {
+        const broadcastChannel1 = new BroadcastChannel("workspaces");
+        const broadcastChannel2 = new BroadcastChannel(workspace.workspaceId);
+        broadcastChannel1.postMessage({
+          type: "ADD_WORKSPACE",
+          workspaceId: workspace.workspaceId,
+        } as WorkspacesEvents);
+        broadcastChannel2.postMessage({ type: "ADD", workspaceId: workspace.workspaceId } as WorkspaceEvents);
+      }
+
+      return { workspace, files };
+    } catch (e) {
+      await this.workspaceDescriptorService.delete(workspace.workspaceId);
+      throw e;
     }
-
-    return { workspace, files };
   }
 
   public async getFilesWithLazyContent(
