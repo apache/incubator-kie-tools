@@ -19,7 +19,7 @@ envs:
   description: "If set to true, ensures that the bash scripts are executed with the -x option, printing the commands and their arguments as they are executed. Also debug JVM initialization."
 - name: "RUNTIME_TYPE"
   example: "springboot"
-  description: "Defines the runtime type of your kogito application. Allowed values are 'springboot' or 'quarkus'. Default value is quarkus."
+  description: "Defines the runtime type of your kogito application. Allowed values are 'springboot' or 'quarkus'. Default value is quarkus. Applies only at build time, except for binary builds, for runtime and binary builds, it is populated during runtime by identifying the runtime type based on the provided application jar."
 - name: NATIVE
   example: true
   description: If set to true, perform a native build. Only supported for RUNTIME_TYPE is 'quarkus'.

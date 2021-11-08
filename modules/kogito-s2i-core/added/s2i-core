@@ -211,16 +211,35 @@ function copy_kogito_app() {
 
 function get_runtime_type() {
     allowed_runtime_values=("$QUARKUS_RUNTIME_TYPE" "$SPRINGBOOT_RUNTIME_TYPE")
-    local runtime_type="${RUNTIME_TYPE:-$QUARKUS_RUNTIME_TYPE}"
+    local runtime_type="${QUARKUS_RUNTIME_TYPE}"
+
+    jar_2_inspect="${KOGITO_HOME}/bin/*.jar"
+    quarkus_main_class="io.quarkus.bootstrap.runner.QuarkusEntryPoint"
+    spring_main_class="org.springframework.boot.loader.JarLauncher"
+    if [ -f ${jar_2_inspect} ]; then
+        log_info "---> Binary build, trying to detect runtime type based on the provided application jar."
+        zipgrep "$quarkus_main_class" $jar_2_inspect > /dev/null
+        if [ $? = 0 ]; then
+            RUNTIME_TYPE="${QUARKUS_RUNTIME_TYPE}"
+        else
+            zipgrep "$spring_main_class" $jar_2_inspect > /dev/null
+            if [ $? = 0 ]; then
+                RUNTIME_TYPE="${SPRINGBOOT_RUNTIME_TYPE}"
+            fi
+        fi
+    fi
+
+    if [ "${RUNTIME_TYPE}x" = "x" ]; then
+        RUNTIME_TYPE=${RUNTIME_TYPE:-${runtime_type}}
+    fi
 
     if [[ ! "${allowed_runtime_values[*]}" =~ ${RUNTIME_TYPE} ]]; then
         log_warning "RUNTIME_TYPE ${RUNTIME_TYPE} is not allowed, the allowed types are [${allowed_runtime_values[*]}]. Application might fail"
     fi
 
-    log_info "---> Setting RUNTIME_TYPE to ${runtime_type}"
-    echo "${runtime_type}"
+    log_info "----> Setting RUNTIME_TYPE to ${RUNTIME_TYPE}"
+    echo "${RUNTIME_TYPE}"
 }
-
 
 function get_quarkus_version() {
     log_info "Trying to retrieve Quarkus version from org.kie.kogito:kogito-build-parent:${KOGITO_VERSION}"

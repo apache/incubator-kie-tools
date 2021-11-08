@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 export KOGITO_HOME=$BATS_TMPDIR/kogito_home
-mkdir -p "${KOGITO_HOME}"/launch/
+mkdir -p "${KOGITO_HOME}"/{bin,launch}
 
 cp $BATS_TEST_DIRNAME/../../../kogito-logging/added/logging.sh "${KOGITO_HOME}"/launch/
 cp $BATS_TEST_DIRNAME/../../../kogito-persistence/added/kogito-persistence.sh "${KOGITO_HOME}"/launch/
@@ -299,12 +299,11 @@ teardown() {
     echo "status= $status"
     [ "$status" -eq 0 ]
     [ "${lines[0]}" = "---> Installing common application binaries" ]
-    [ "${lines[1]}" = "'target/app.jar' -> '"${KOGITO_HOME}"/bin'" ]
+    [ "${lines[1]}" = "'target/app.jar' -> '"${KOGITO_HOME}"/bin/app.jar'" ]
 }
 
 @test "test copy_kogito_app default quarkus java build no jar file present" {
     NATIVE="false"
-    mkdir "${KOGITO_HOME}"/bin
     touch target/app-runner.jar
     mkdir target/lib
     touch target/lib/{lib.jar,lib1.jar}
@@ -323,7 +322,6 @@ teardown() {
 
 @test "test copy_kogito_app default quarkus java build uberJar runner file present" {
     NATIVE="false"
-    mkdir "${KOGITO_HOME}"/bin
     touch target/app-runner.jar
 
     run copy_kogito_app
@@ -338,9 +336,7 @@ teardown() {
 }
 
 @test "test copy_kogito_app default quarkus native builds file present" {
-
     NATIVE="true"
-    mkdir "${KOGITO_HOME}"/bin
     touch target/app-runner
     mkdir target/lib
     touch target/lib/{lib.jar,lib1.jar}
@@ -407,5 +403,27 @@ teardown() {
 
     echo "result= ${lines[@]}"
     [ "${lines[0]}" = "---> Generating quarkus project structure for project..." ]
+}
+
+@test "test get_runtime_type to make sure it returns the expected runtime_type for Quarkus using binary build" {
+    echo "Main-Class: io.quarkus.bootstrap.runner.QuarkusEntryPoint" > /tmp/MANIFEST.MF
+    jar -0 --create --file $KOGITO_HOME/bin/my-app.jar -m /tmp/MANIFEST.MF
+
+    run get_runtime_type
+
+    echo "result: ${lines[@]}"
+    [ "${lines[2]}" = "quarkus" ]
+}
+
+@test "test get_runtime_type to make sure it returns the expected runtime_type for Springboot binary build" {
+    echo "Main-Class: org.springframework.boot.loader.JarLauncher" > /tmp/MANIFEST.MF
+    echo "public void hello(){}" > /tmp/hello.java
+    jar -0 --create --file $KOGITO_HOME/bin/my-app.jar -m /tmp/MANIFEST.MF
+    jar -0 --create --file /tmp/my-app.jar -m /tmp/MANIFEST.MF
+
+    run get_runtime_type
+
+    echo "result: ${lines[@]}"
+    [ "${lines[2]}" = "springboot" ]
 }
 

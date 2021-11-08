@@ -12,4 +12,5 @@ packages:
     - shadow-utils
     - tar
     - gzip
+    - unzip
 
