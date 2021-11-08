@@ -1,4 +1,4 @@
-# LSP Extension Plugin
+# VSCode Java Code Completion Extension Plugin
 
 ## Installation
 

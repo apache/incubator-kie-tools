@@ -137,13 +137,13 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     this.notificationsApi.kogitoNotifications_removeNotifications(path);
   }
 
-  public kogitoLsp_getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {
+  public kogitoJavaCodeCompletion_getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {
     return this.javaCodeCompletionApi.getAccessors(fqcn, query);
   }
-  public kogitoLsp_getClasses(query: string): Promise<JavaCodeCompletionClass[]> {
+  public kogitoJavaCodeCompletion_getClasses(query: string): Promise<JavaCodeCompletionClass[]> {
     return this.javaCodeCompletionApi.getClasses(query);
   }
-  public kogitoLsp_isLanguageServerAvailable(): Promise<boolean> {
+  public kogitoJavaCodeCompletion_isLanguageServerAvailable(): Promise<boolean> {
     return this.javaCodeCompletionApi.isLanguageServerAvailable();
   }
 }

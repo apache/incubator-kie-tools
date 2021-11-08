@@ -23,7 +23,7 @@ import { VsCodeDmnEditorChannelApi } from "./VsCodeDmnEditorChannelApi";
 
 export interface CustomWindow extends Window {
   envelope: {
-    lspService: JavaCodeCompletionApi;
+    javaCodeCompletionService: JavaCodeCompletionApi;
   };
 }
 

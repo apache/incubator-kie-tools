@@ -28,6 +28,9 @@
     }
   },
   "contributes": {
+    "javaExtensions": [
+      "./server/vscode-java-code-completion-extension-plugin.jar"
+    ],
     "configuration": {
       "title": "BPMN/DMN Test Configuration",
       "properties": {
@@ -165,6 +168,7 @@
     "@kie-tooling-core/vscode-extension": "0.0.0",
     "@kogito-tooling/kie-bc-editors": "0.0.0",
     "@kogito-tooling/pmml-editor": "0.0.0",
+    "@kogito-tooling/vscode-java-code-completion-extension-plugin": "0.0.0",
     "minimatch": "^3.0.4"
   },
   "devDependencies": {

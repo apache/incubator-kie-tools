@@ -70,3 +70,4 @@ package-lock.json
 # Language Server Extension
 packages/vscode-extension-dmn-editor/server
 packages/vscode-extension-bpmn-editor/server
+packages/vscode-extension-pack-kogito-kie-editors/server

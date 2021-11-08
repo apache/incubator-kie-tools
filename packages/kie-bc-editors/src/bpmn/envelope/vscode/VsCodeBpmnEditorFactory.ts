@@ -51,7 +51,7 @@ export class VsCodeBpmnEditorFactory implements EditorFactory<BpmnEditor, VsCode
   ): Promise<BpmnEditor> {
     window.envelope = {
       ...(window.envelope ?? {}),
-      ...{ lspService: new JavaCodeCompletionService(ctx) },
+      ...{ javaCodeCompletionService: new JavaCodeCompletionService(ctx) },
     };
 
     const factory = new BpmnEditorFactory(this.gwtEditorEnvelopeConfig);

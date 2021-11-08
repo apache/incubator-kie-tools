@@ -16,7 +16,7 @@
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
-const vscodeLspExtensionPlugin = require("@kogito-tooling/vscode-java-code-completion-extension-plugin");
+const vscodeJavaCodeCompletionExtensionPlugin = require("@kogito-tooling/vscode-java-code-completion-extension-plugin");
 const { merge } = require("webpack-merge");
 const common = require("../../config/webpack.common.config");
 
@@ -66,7 +66,7 @@ module.exports = async (env) => [
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: vscodeLspExtensionPlugin.path(),
+            from: vscodeJavaCodeCompletionExtensionPlugin.path(),
             to: "server/",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },

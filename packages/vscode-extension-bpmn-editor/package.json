@@ -24,7 +24,7 @@
     "@kie-tooling-core/vscode-extension": "0.0.0",
     "@kogito-tooling/external-assets-base": "0.0.0",
     "@kogito-tooling/kie-bc-editors": "0.0.0",
-    "@kogito-tooling/vscode-java-code-completion-extension-plugin": "^0.0.0"
+    "@kogito-tooling/vscode-java-code-completion-extension-plugin": "0.0.0"
   },
   "devDependencies": {
     "@kogito-tooling/bpmn-editor-unpacked": "^8.5.1",
