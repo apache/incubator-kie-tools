@@ -9,14 +9,17 @@ import { useMemo } from "react";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
+import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 
 export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
+  const workspaceImportableUrl = useImportableUrl(props.descriptor?.origin.url?.toString());
+
   const gitLabel = useMemo(() => {
     if (props.descriptor?.origin.kind !== WorkspaceKind.GIT) {
       return <></>;
     }
 
-    if (props.descriptor?.origin.url.toString().includes("github")) {
+    if (workspaceImportableUrl.type === UrlType.GITHUB) {
       return (
         <Label>
           <GithubIcon />
@@ -38,7 +41,8 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
         </Label>
       );
     }
-  }, [props.descriptor]);
+  }, [props.descriptor, workspaceImportableUrl]);
+
   return (
     <>
       {props.descriptor?.origin.kind === WorkspaceKind.GIT && (

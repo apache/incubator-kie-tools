@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { QueryParams } from "../../common/Routes";
+import { QueryParams } from "../../navigation/Routes";
 import { useQueryParam } from "../../queryParams/QueryParamsContext";
 import { AuthStatus, useSettings } from "../../settings/SettingsContext";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";

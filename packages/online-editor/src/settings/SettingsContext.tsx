@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { getCookie, setCookie } from "../common/utils";
+import { getCookie, setCookie } from "../cookies";
 import { Octokit } from "@octokit/rest";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
@@ -10,7 +10,7 @@ import { OpenShiftService } from "./OpenShiftService";
 import { useKieToolingExtendedServices } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { useHistory } from "react-router";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { QueryParams } from "../common/Routes";
+import { QueryParams } from "../navigation/Routes";
 import { KieToolingExtendedServicesStatus } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 
 export const KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME =

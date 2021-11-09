@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getCookie, setCookie } from "../../common/utils";
+import { getCookie, setCookie } from "../../cookies";
 import { KieToolingExtendedServicesBridge } from "./KieToolingExtendedServicesBridge";
 import { DependentFeature, KieToolingExtendedServicesContext } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";

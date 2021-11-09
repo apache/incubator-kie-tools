@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useContext, useMemo } from "react";
-import { routes } from "./Routes";
+import { routes } from "../navigation/Routes";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
 
 export type SupportedFileExtensions = "bpmn" | "bpmn2" | "dmn" | "pmml";

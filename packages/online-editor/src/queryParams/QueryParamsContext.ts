@@ -1,6 +1,6 @@
 import { useLocation } from "react-router";
 import { useMemo } from "react";
-import { newQueryParamsImpl, QueryParamsImpl } from "../common/Routes";
+import { newQueryParamsImpl, QueryParamsImpl } from "../navigation/Routes";
 
 export function useQueryParams(): QueryParamsImpl<string> {
   const location = useLocation();

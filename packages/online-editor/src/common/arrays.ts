@@ -14,23 +14,6 @@
  * limitations under the License.
  */
 
-export function getCookie(name: string) {
-  const value = "; " + document.cookie;
-  const parts = value.split("; " + name + "=");
-
-  if (parts.length === 2) {
-    return parts.pop()!.split(";").shift();
-  }
-}
-
-export function setCookie(name: string, value: string) {
-  const date = new Date();
-
-  date.setTime(date.getTime() + 10 * 365 * 24 * 60 * 60); // expires in 10 years
-
-  document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
-}
-
 export function flatten(obj: object): object {
   return Object.entries(obj).reduce((acc, [key, value]) => {
     if (value && typeof value === "object") {

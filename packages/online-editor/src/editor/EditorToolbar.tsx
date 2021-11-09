@@ -75,6 +75,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 import { SettingsTabs } from "../settings/SettingsModalBody";
+import { useBlockingHistoryWhen } from "../navigation/Hooks";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -128,6 +129,8 @@ export function EditorToolbar(props: Props) {
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
   const [isGitHubGistLoading, setGitHubGistLoading] = useState(false);
+
+  const { blockingHistory, navigation } = useBlockingHistoryWhen(true);
 
   const githubAuthInfo = useMemo(() => {
     if (settings.github.authStatus !== AuthStatus.SIGNED_IN) {
@@ -616,15 +619,15 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       })
       .pop();
 
-    if (!nextFile) {
-      history.push({ pathname: globals.routes.home.path({}) });
-      return;
-    }
-
     await workspaces.deleteFile({
       fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
       file: props.workspaceFile,
     });
+
+    if (!nextFile) {
+      history.push({ pathname: globals.routes.home.path({}) });
+      return;
+    }
 
     history.push({
       pathname: globals.routes.workspaceWithFilePath.path({
@@ -997,6 +1000,14 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   ]);
 
   const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
+
+  useEffect(() => {
+    if (navigation.isBlocked) {
+      unsavedAlert.show();
+    } else {
+      unsavedAlert.close();
+    }
+  }, [unsavedAlert, navigation]);
 
   return (
     <PromiseStateWrapper

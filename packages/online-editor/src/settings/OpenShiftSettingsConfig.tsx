@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getCookie, setCookie } from "../common/utils";
+import { getCookie, setCookie } from "../cookies";
 import {
   OPENSHIFT_HOST_COOKIE_NAME,
   OPENSHIFT_NAMESPACE_COOKIE_NAME,
