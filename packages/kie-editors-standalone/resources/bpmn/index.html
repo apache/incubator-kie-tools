@@ -52,8 +52,9 @@
     <script>
       const query = window.location.search;
       //Получение URL с помощью "const urlParams = new URLSearchParams(queryString);" работает некорректно
-      var encodeFile = query.replace(/^.{3}/, "");
-      var decodeFile = decodeURIComponent(escape(window.atob(encodeFile)));
+      var encodeFile = query.split("?q=")[1].split("&roles=");
+      var decodeFile = atob(encodeFile[0]);
+
       const editor = BpmnEditor.open({
         container: document.getElementById("bpmn-editor-container"),
         initialContent: Promise.resolve(decodeFile),
