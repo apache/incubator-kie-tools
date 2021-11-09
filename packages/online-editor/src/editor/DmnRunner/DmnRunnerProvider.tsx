@@ -205,7 +205,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       service,
       status,
     }),
-    [data, error, schema, isExpanded, mode, service, status, data]
+    [data, error, schema, isExpanded, mode, service, status, dataIndex]
   );
 
   return (

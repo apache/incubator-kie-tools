@@ -40,6 +40,7 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -235,13 +236,38 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     setDrawerError(false);
   }, [dmnRunner.schema]);
 
-  const setFormData = useCallback((newFormData) => {
-    dmnRunnerCallbacks.setData((previousData: any) => {
-      const newData = [...previousData];
-      newData[dmnRunner.dataIndex] = newFormData;
-      return newData;
-    });
+  const setFormData = useCallback(
+    (newFormData) => {
+      dmnRunnerCallbacks.setData((previousData: any) => {
+        const newData = [...previousData];
+        newData[dmnRunner.dataIndex] = newFormData;
+        return newData;
+      });
+    },
+    [dmnRunner.dataIndex, dmnRunnerCallbacks]
+  );
+
+  const [selectedRow, selectRow] = useState<any>(null);
+  const [rowSelectionIsOpen, openRowSelection] = useState<boolean>(false);
+
+  const onSelectRow = useCallback((event, selection) => {
+    selectRow(selection);
+    openRowSelection(false);
   }, []);
+
+  const rowOptions = useMemo(() => {
+    return dmnRunner.data.map((d, i) => (
+      <SelectOption key={i} value={`Data ${i + 1}`} onClick={() => dmnRunnerCallbacks.setDataIndex(i)} />
+    ));
+  }, [dmnRunner.data]);
+
+  useEffect(() => {
+    selectRow(`Data ${dmnRunner.dataIndex + 1}`);
+  }, [dmnRunner.dataIndex, dmnRunnerCallbacks]);
+
+  const formData = useMemo(() => {
+    return dmnRunner.data[dmnRunner.dataIndex];
+  }, [dmnRunner.data, dmnRunner.dataIndex]);
 
   return (
     <DrawerPanelContent
@@ -286,6 +312,19 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                           </Button>
                         </>
                       </Text>
+                      <div style={{ width: "140px" }}>
+                        <Select
+                          variant={SelectVariant.single}
+                          aria-label="Select Input"
+                          onToggle={() => openRowSelection(true)}
+                          onSelect={onSelectRow}
+                          selections={selectedRow}
+                          isOpen={rowSelectionIsOpen}
+                          aria-labelledby={"select-tabular-line"}
+                        >
+                          {rowOptions}
+                        </Select>
+                      </div>
                     </div>
                   </TextContent>
                   {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
@@ -299,7 +338,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                 <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
                   <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
                     <DmnForm
-                      formData={dmnRunner.data[dmnRunner.dataIndex]}
+                      formData={formData}
                       setFormData={setFormData}
                       formError={dmnRunner.error}
                       setFormError={dmnRunnerCallbacks.setError}
