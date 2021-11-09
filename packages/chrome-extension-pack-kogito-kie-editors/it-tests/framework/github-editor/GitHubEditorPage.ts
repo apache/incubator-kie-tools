@@ -18,8 +18,6 @@ import { By } from "selenium-webdriver";
 import EditorPage from "../editor/EditorPage";
 import Element from "../Element";
 import FullScreenPage from "../fullscreen-editor/FullScreenPage";
-import Locator from "../Locator";
-import OnlineEditorPage from "../online-editor/OnlineEditorPage";
 
 export default class GitHubEditorPage extends EditorPage {
   private static readonly SEE_AS_SOURCE_BUTTON_LOCATOR = By.xpath("//button[@data-testid='see-as-source-button']");
