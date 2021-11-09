@@ -3,12 +3,12 @@ import { DmnRunnerDrawerPanelContent } from "./DmnRunnerDrawerPanelContent";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { useDmnRunner } from "./DmnRunnerContext";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
-import { EditorPageDockDrawerController } from "../EditorPageDockDrawer";
+import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 
 export function DmnRunnerDrawer(props: {
   workspaceFile: WorkspaceFile;
-  editorPageDock: EditorPageDockDrawerController | undefined;
+  editorPageDock: EditorPageDockDrawerRef | undefined;
   children: React.ReactNode;
 }) {
   const dmnRunner = useDmnRunner();

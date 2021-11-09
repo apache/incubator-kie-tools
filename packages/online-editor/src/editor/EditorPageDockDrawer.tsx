@@ -20,14 +20,14 @@ import { ToggleGroup } from "@patternfly/react-core/dist/js/components/ToggleGro
 import { DmnRunnerMode } from "./DmnRunner/DmnRunnerStatus";
 import { useDmnRunner } from "./DmnRunner/DmnRunnerContext";
 import { useOnlineI18n } from "../common/i18n";
-import { NotificationsPanel, NotificationsPanelController } from "./NotificationsPanel/NotificationsPanel";
+import { NotificationsPanel, NotificationsPanelRef } from "./NotificationsPanel/NotificationsPanel";
 import { DmnRunnerTabular } from "./DmnRunner/DmnRunnerTabular";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { WorkspaceFile } from "../workspace/WorkspacesContext";
 import { DecisionResult } from "@kogito-tooling/form/dist/dmn";
 import {
   NotificationsPanelDockToggle,
-  NotificationsPanelDockToggleController,
+  NotificationsPanelDockToggleRef,
 } from "./NotificationsPanel/NotificationsPanelDockToggle";
 import { DmnRunnerDockToggle } from "./DmnRunner/DmnRunnerDockToggle";
 import { useController } from "../common/Hooks";
@@ -44,23 +44,23 @@ interface EditorPageDockDrawerProps {
   workspaceFile: WorkspaceFile;
 }
 
-export interface EditorPageDockDrawerController {
+export interface EditorPageDockDrawerRef {
   open: (panel: PanelId) => void;
   close: () => void;
-  getNotificationsPanel: () => NotificationsPanelController | undefined;
+  getNotificationsPanel: () => NotificationsPanelRef | undefined;
   setNotifications: (tabName: string, path: string, notifications: Notification[]) => void;
 }
 
 export const EditorPageDockDrawer = React.forwardRef<
-  EditorPageDockDrawerController,
+  EditorPageDockDrawerRef,
   PropsWithChildren<EditorPageDockDrawerProps>
 >((props, forwardRef) => {
   const { i18n } = useOnlineI18n();
   const dmnRunner = useDmnRunner();
   const [panel, setPanel] = useState<PanelId>(PanelId.NONE);
   const [dmnRunnerResults, setDmnRunnerResults] = useState<Array<DecisionResult[] | undefined>>([]);
-  const [notificationsToggle, notificationsToggleRef] = useController<NotificationsPanelDockToggleController>();
-  const [notificationsPanel, notificationsPanelRef] = useController<NotificationsPanelController>();
+  const [notificationsToggle, notificationsToggleRef] = useController<NotificationsPanelDockToggleRef>();
+  const [notificationsPanel, notificationsPanelRef] = useController<NotificationsPanelRef>();
 
   const notificationsPanelTabNames = useMemo(() => {
     if (props.workspaceFile.extension.toLowerCase() === "dmn") {

@@ -69,7 +69,7 @@ import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
-import { EditorPageDockDrawerController } from "./EditorPageDockDrawer";
+import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
@@ -81,7 +81,7 @@ export interface Props {
   alertsRef: (controller: AlertsController) => void;
   editor: EmbeddedEditorRef | undefined;
   workspaceFile: WorkspaceFile;
-  editorPageDock: EditorPageDockDrawerController | undefined;
+  editorPageDock: EditorPageDockDrawerRef | undefined;
 }
 
 const showWhenSmall: ToolbarItemProps["visibility"] = {

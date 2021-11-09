@@ -25,11 +25,11 @@ interface Props {
   onChange: (id: PanelId) => void;
 }
 
-export interface NotificationsPanelDockToggleController {
+export interface NotificationsPanelDockToggleRef {
   setNotificationsCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export const NotificationsPanelDockToggle = React.forwardRef<NotificationsPanelDockToggleController, Props>(
+export const NotificationsPanelDockToggle = React.forwardRef<NotificationsPanelDockToggleRef, Props>(
   (props, forwardRef) => {
     const [notificationsCount, setNotificationsCount] = useState<number>(0);
     const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLElement>) => {

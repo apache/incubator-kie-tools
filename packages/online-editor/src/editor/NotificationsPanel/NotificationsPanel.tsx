@@ -29,13 +29,13 @@ interface Props {
   tabNames: string[];
 }
 
-export interface NotificationsPanelController {
+export interface NotificationsPanelRef {
   getTab: (name: string) => NotificationsApi | undefined;
   setActiveTab: React.Dispatch<React.SetStateAction<string>>;
   getOtherTabsCount: (name: string) => number;
 }
 
-export const NotificationsPanel = React.forwardRef<NotificationsPanelController, Props>((props, forwardRef) => {
+export const NotificationsPanel = React.forwardRef<NotificationsPanelRef, Props>((props, forwardRef) => {
   const { i18n } = useOnlineI18n();
   const [activeTab, setActiveTab] = useState<string | undefined>();
   const [tabsNotificationsCount, setTabsNotificationsCount] = useState<Map<string, number>>(new Map());

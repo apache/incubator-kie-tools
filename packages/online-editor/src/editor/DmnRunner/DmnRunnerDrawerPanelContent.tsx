@@ -38,7 +38,7 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
-import { EditorPageDockDrawerController, PanelId } from "../EditorPageDockDrawer";
+import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
@@ -50,7 +50,7 @@ enum ButtonPosition {
 
 interface Props {
   workspaceFile: WorkspaceFile;
-  editorPageDock: EditorPageDockDrawerController | undefined;
+  editorPageDock: EditorPageDockDrawerRef | undefined;
 }
 
 const DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION = 711;

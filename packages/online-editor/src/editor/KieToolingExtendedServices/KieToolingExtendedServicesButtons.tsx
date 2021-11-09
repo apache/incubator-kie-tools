@@ -28,11 +28,11 @@ import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesSt
 import { useSettings } from "../../settings/SettingsContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { DmnRunnerMode } from "../DmnRunner/DmnRunnerStatus";
-import { EditorPageDockDrawerController, PanelId } from "../EditorPageDockDrawer";
+import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 
 interface Props {
-  editorPageDock: EditorPageDockDrawerController | undefined;
+  editorPageDock: EditorPageDockDrawerRef | undefined;
   workspace: ActiveWorkspace | undefined;
 }
 

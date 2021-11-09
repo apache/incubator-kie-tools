@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
-import { EditorPageDockDrawerController } from "../EditorPageDockDrawer";
+import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
@@ -34,7 +34,7 @@ import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/Kie
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 
 interface Props {
-  editorPageDock: EditorPageDockDrawerController | undefined;
+  editorPageDock: EditorPageDockDrawerRef | undefined;
   workspaceFile: WorkspaceFile;
 }
 

@@ -42,7 +42,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { EditorPageDockDrawer, EditorPageDockDrawerController } from "./EditorPageDockDrawer";
+import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
 
 export interface Props {
@@ -57,7 +57,7 @@ export function EditorPage(props: Props) {
   const { locale, i18n } = useOnlineI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
   const [alerts, alertsRef] = useController<AlertsController>();
-  const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerController>();
+  const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
 
   const lastContent = useRef<string>();
