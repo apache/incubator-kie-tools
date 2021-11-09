@@ -92,9 +92,6 @@ public class NavigateToDRGEditorCommand extends BaseNavigateCommand implements V
                 editor.setExitCommand(() -> navigateToExpressionEditor(hasExpression,
                                                                        hasName));
                 addExpressionEditorToCanvasWidget();
-
-                editor.getView().activate();
-
                 return CanvasCommandResultBuilder.SUCCESS;
             }
         };

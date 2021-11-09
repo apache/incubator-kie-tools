@@ -80,9 +80,6 @@ public class NavigateToExpressionEditorCommand extends BaseNavigateCommand imple
                 editor.setExitCommand(() -> navigateToDRGEditor(hasExpression,
                                                                 hasName));
                 addExpressionEditorToCanvasWidget();
-
-                editor.getView().activate();
-
                 return CanvasCommandResultBuilder.SUCCESS;
             }
 

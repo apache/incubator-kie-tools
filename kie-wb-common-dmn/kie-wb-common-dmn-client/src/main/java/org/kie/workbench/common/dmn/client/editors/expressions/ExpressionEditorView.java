@@ -68,8 +68,6 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
 
     void setExpressionTypeText(final Optional<Expression> expression);
 
-    void activate();
-
     void refresh();
 
     void setFocus();

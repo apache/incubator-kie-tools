@@ -504,37 +504,27 @@ public class ExpressionEditorViewImplTest {
 
         view.onTryIt(event);
 
-        verify(view).renderNewBoxedExpression();
-        verify(view).toggleBoxedExpression(true);
+        verify(view).toggleLegacyExpressionEditor(false);
+        verify(view).toggleBetaBoxedExpressionEditor(true);
         verify(event).preventDefault();
         verify(event).stopPropagation();
     }
 
     @Test
-    public void testOnSwitchBack() {
+    public void testEditingExpression() {
         final ClickEvent event = mock(ClickEvent.class);
         view.setExpression(NODE_UUID,
                            hasExpression,
                            Optional.of(HasName.NOP),
                            false);
 
-        view.onSwitchBack(event);
-
-        verify(view).renderOldBoxedExpression();
-        verify(view).toggleBoxedExpression(false);
-        verify(event).preventDefault();
-        verify(event).stopPropagation();
+        verify(view).toggleLegacyExpressionEditor(true);
+        verify(view).toggleBetaBoxedExpressionEditor(false);
     }
 
     @Test
     public void testToggleBoxedExpressionAndEnableIt() {
-        view.toggleBoxedExpression(true);
+        view.toggleBetaBoxedExpressionEditor(true);
         verify(betaBoxedExpressionToggle.classList).toggle(ENABLED_BETA_CSS_CLASS, true);
-    }
-
-    @Test
-    public void testToggleBoxedExpressionAndDisableIt() {
-        view.toggleBoxedExpression(false);
-        verify(betaBoxedExpressionToggle.classList).toggle(ENABLED_BETA_CSS_CLASS, false);
     }
 }

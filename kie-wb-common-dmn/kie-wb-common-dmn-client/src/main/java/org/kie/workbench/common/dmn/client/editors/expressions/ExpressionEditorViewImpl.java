@@ -295,16 +295,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     @Override
-    public void activate() {
-        DMNLoader.renderBoxedExpressionEditor(
-                ".kie-dmn-new-expression-editor",
-                ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef()),
-                hasExpression.isClearSupported(),
-                buildPmmlParams()
-        );
-    }
-
-    @Override
     public void setReturnToLinkText(final String text) {
         returnToLink.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToLink, text));
     }
@@ -314,6 +304,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                               final HasExpression hasExpression,
                               final Optional<HasName> hasName,
                               final boolean isOnlyVisualChangeAllowed) {
+        toggleBetaBoxedExpressionEditor(false);
+        toggleLegacyExpressionEditor(true);
         this.nodeUUID = nodeUUID;
         this.hasExpression = hasExpression;
         this.hasName = hasName;
@@ -346,9 +338,14 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @EventHandler("try-it")
     public void onTryIt(final ClickEvent event) {
-        activate();
-        renderNewBoxedExpression();
-        toggleBoxedExpression(true);
+        DMNLoader.renderBoxedExpressionEditor(
+                ".kie-dmn-new-expression-editor",
+                ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef()),
+                hasExpression.isClearSupported(),
+                buildPmmlParams()
+        );
+        toggleLegacyExpressionEditor(false);
+        toggleBetaBoxedExpressionEditor(true);
         preventDefault(event);
     }
 
@@ -358,8 +355,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                 .get()
                 .removeExpressionGrid(nodeUUID);
         setExpression(nodeUUID, hasExpression, hasName, isOnlyVisualChangeAllowed);
-        renderOldBoxedExpression();
-        toggleBoxedExpression(false);
+        toggleLegacyExpressionEditor(true);
+        toggleBetaBoxedExpressionEditor(false);
         preventDefault(event);
     }
 
@@ -431,16 +428,14 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         ExpressionModelFiller.fillDecisionTableExpression((DecisionTable) hasExpression.getExpression(), decisionTableProps);
     }
 
-    void renderNewBoxedExpression() {
-        toggleEditorsVisibility();
-    }
-
-    void renderOldBoxedExpression() {
-        toggleEditorsVisibility();
-    }
-
-    void toggleBoxedExpression(final boolean enabled) {
+    void toggleBetaBoxedExpressionEditor(final boolean enabled) {
         betaBoxedExpressionToggle.classList.toggle(ENABLED_BETA_CSS_CLASS, enabled);
+        newBoxedExpression.classList.toggle("hidden", !enabled);
+    }
+
+    void toggleLegacyExpressionEditor(final boolean enabled) {
+        dmnExpressionType.classList.toggle("hidden", !enabled);
+        dmnExpressionEditor.classList.toggle("hidden", !enabled);
     }
 
     private void preventDefault(final ClickEvent event) {
@@ -503,12 +498,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           commandBuilder.build());
         }
-    }
-
-    private void toggleEditorsVisibility() {
-        dmnExpressionType.classList.toggle("hidden");
-        dmnExpressionEditor.classList.toggle("hidden");
-        newBoxedExpression.classList.toggle("hidden");
     }
 
     private PMMLParam[] buildPmmlParams() {
