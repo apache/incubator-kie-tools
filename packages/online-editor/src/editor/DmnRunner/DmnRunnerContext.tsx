@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
+import { DmnSchema } from "@kogito-tooling/form/dist/dmn";
 import * as React from "react";
 import { useContext } from "react";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 
 export interface DmnRunnerContextType {
-  formData: any;
-  formError: boolean;
-  formSchema?: DmnFormSchema;
-  isDrawerExpanded: boolean;
+  data: Array<object>;
+  dataIndex: number;
+  error: boolean;
+  isExpanded: boolean;
   mode: DmnRunnerMode;
+  schema?: DmnSchema;
   service: DmnRunnerService;
   status: DmnRunnerStatus;
-  tableData: any;
 }
 
 export interface DmnRunnerCallbacksContextType {
   preparePayload: (formData?: any) => Promise<DmnRunnerModelPayload>;
-  setDrawerExpanded: React.Dispatch<React.SetStateAction<boolean>>;
-  setFormData: React.Dispatch<React.SetStateAction<object>>;
-  setFormError: React.Dispatch<React.SetStateAction<boolean>>;
+  setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+  setError: React.Dispatch<React.SetStateAction<boolean>>;
+  setDataIndex: React.Dispatch<React.SetStateAction<number>>;
   setMode: React.Dispatch<DmnRunnerMode>;
-  setTableData: React.Dispatch<React.SetStateAction<any>>;
+  setData: React.Dispatch<React.SetStateAction<any>>;
 }
 
 export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({} as any);

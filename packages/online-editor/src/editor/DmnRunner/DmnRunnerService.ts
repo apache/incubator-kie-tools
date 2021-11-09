@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DmnFormSchema, DmnResult } from "@kogito-tooling/form/dist/dmn";
+import { DmnSchema, DmnResult } from "@kogito-tooling/form/dist/dmn";
 
 export interface DmnRunnerModelResource {
   URI: string;
@@ -69,7 +69,7 @@ export class DmnRunnerService {
     return await response.json();
   }
 
-  public async formSchema(payload: DmnRunnerModelPayload): Promise<DmnFormSchema> {
+  public async formSchema(payload: DmnRunnerModelPayload): Promise<DmnSchema> {
     if (!this.isPayloadValid(payload)) {
       return {};
     }

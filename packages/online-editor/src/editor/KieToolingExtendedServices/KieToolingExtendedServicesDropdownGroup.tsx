@@ -42,7 +42,7 @@ export function KieToolingExtendedServicesDropdownGroup(props: { workspace: Acti
 
   const onToggleDmnRunner = useCallback(() => {
     if (isKieToolingExtendedServicesRunning) {
-      dmnRunnerCallbacks.setDrawerExpanded((prev) => !prev);
+      dmnRunnerCallbacks.setExpanded((prev) => !prev);
       return;
     }
     kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
@@ -68,7 +68,7 @@ export function KieToolingExtendedServicesDropdownGroup(props: { workspace: Acti
             onClick={onToggleDmnRunner}
             ouiaId="toggle-dmn-runner-dropdown-button"
           >
-            <Text>{dmnRunner.isDrawerExpanded ? i18n.terms.close : i18n.terms.open}</Text>
+            <Text>{dmnRunner.isExpanded ? i18n.terms.close : i18n.terms.open}</Text>
           </DropdownItem>
         </FeatureDependentOnKieToolingExtendedServices>
       </DropdownGroup>

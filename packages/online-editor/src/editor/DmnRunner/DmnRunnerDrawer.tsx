@@ -13,10 +13,10 @@ export function DmnRunnerDrawer(props: {
 }) {
   const dmnRunner = useDmnRunner();
   return (
-    <Drawer isInline={true} isExpanded={dmnRunner.isDrawerExpanded && dmnRunner.mode === DmnRunnerMode.DRAWER}>
+    <Drawer isInline={true} isExpanded={dmnRunner.isExpanded && dmnRunner.mode === DmnRunnerMode.DRAWER}>
       <DrawerContent
         className={
-          !dmnRunner.isDrawerExpanded ? "kogito--editor__drawer-content-onClose" : "kogito--editor__drawer-content-open"
+          !dmnRunner.isExpanded ? "kogito--editor__drawer-content-onClose" : "kogito--editor__drawer-content-open"
         }
         panelContent={
           <DmnRunnerDrawerPanelContent workspaceFile={props.workspaceFile} editorPageDock={props.editorPageDock} />

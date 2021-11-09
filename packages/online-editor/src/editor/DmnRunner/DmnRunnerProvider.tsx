@@ -18,7 +18,6 @@ import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
-import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerCallbacksContext, DmnRunnerContext } from "./DmnRunnerContext";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
@@ -32,6 +31,7 @@ import { useHistory } from "react-router";
 import { useGlobals } from "../../common/GlobalContext";
 import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
+import { DmnSchema } from "@kogito-tooling/form/dist/dmn";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
@@ -46,16 +46,16 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const workspaces = useWorkspaces();
 
-  const [formData, setFormData] = useState<object>({});
-  const [formError, setFormError] = useState(false);
-  const [formSchema, setFormSchema] = useState<DmnFormSchema | undefined>(undefined);
-  const [isDrawerExpanded, setDrawerExpanded] = useState(false);
+  const [error, setError] = useState(false);
+  const [schema, setSchema] = useState<DmnSchema | undefined>(undefined);
+  const [isExpanded, setExpanded] = useState(false);
   const [mode, setMode] = useState(DmnRunnerMode.DRAWER);
-  const [tableData, setTableData] = useState([{}]);
+  const [data, setData] = useState([{}]);
+  const [dataIndex, setDataIndex] = useState<number>(0);
 
   const status = useMemo(() => {
-    return isDrawerExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE;
-  }, [isDrawerExpanded]);
+    return isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE;
+  }, [isExpanded]);
 
   const service = useMemo(
     () => new DmnRunnerService(kieToolingExtendedServices.baseUrl),
@@ -93,16 +93,16 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
 
     try {
       const payload = await preparePayload();
-      setFormSchema(await service.formSchema(payload));
+      setSchema(await service.formSchema(payload));
     } catch (err) {
       console.error(err);
-      setFormError(true);
+      setError(true);
     }
   }, [props.workspaceFile.extension, preparePayload, service]);
 
   useEffect(() => {
     if (props.workspaceFile.extension !== "dmn") {
-      setDrawerExpanded(false);
+      setExpanded(false);
       return;
     }
 
@@ -141,18 +141,14 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     validate();
   }, [validate]);
 
-  // useEffect(() => {
-  //   updateFormSchema();
-  // }, [updateFormSchema]);
-
   useEffect(() => {
-    if (!formSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
+    if (!schema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
       return;
     }
 
     try {
-      setFormData(jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!));
-      setDrawerExpanded(true);
+      setData([jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!)]);
+      setExpanded(true);
     } catch (e) {
       console.error(`Cannot parse "${QueryParams.DMN_RUNNER_FORM_INPUTS}"`, e);
     } finally {
@@ -161,7 +157,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         search: globals.routes.editor.queryArgs(queryParams).without(QueryParams.DMN_RUNNER_FORM_INPUTS).toString(),
       });
     }
-  }, [formSchema, history, globals.routes, queryParams]);
+  }, [schema, history, globals.routes, queryParams]);
 
   const prevKieToolingExtendedServicesStatus = usePrevious(kieToolingExtendedServices.status);
   useEffect(() => {
@@ -175,41 +171,41 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       prevKieToolingExtendedServicesStatus !== KieToolingExtendedServicesStatus.RUNNING &&
       kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING
     ) {
-      setDrawerExpanded(true);
+      setExpanded(true);
     }
 
     if (
       kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.STOPPED ||
       kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.NOT_RUNNING
     ) {
-      setDrawerExpanded(false);
+      setExpanded(false);
     }
   }, [prevKieToolingExtendedServicesStatus, kieToolingExtendedServices.status, props.workspaceFile.extension]);
 
   const dmnRunnerCallbacks = useMemo(
     () => ({
       preparePayload,
-      setDrawerExpanded,
-      setFormData,
-      setFormError,
+      setData,
+      setDataIndex,
+      setExpanded,
+      setError,
       setMode,
-      setTableData,
     }),
     [preparePayload]
   );
 
   const dmnRunner = useMemo(
     () => ({
-      formData,
-      formError,
-      formSchema,
-      isDrawerExpanded,
+      data,
+      dataIndex,
+      error,
+      isExpanded,
       mode,
-      status,
+      schema,
       service,
-      tableData,
+      status,
     }),
-    [formData, formError, formSchema, isDrawerExpanded, mode, service, status, tableData]
+    [data, error, schema, isExpanded, mode, service, status, data]
   );
 
   return (

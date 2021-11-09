@@ -146,7 +146,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
         const result = await dmnRunner.service.result(payload);
 
         if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
-          dmnRunnerCallbacks.setFormError(true);
+          dmnRunnerCallbacks.setError(true);
           return;
         }
 
@@ -171,23 +171,23 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   // Update outputs column on form change
   useEffect(() => {
-    updateDmnRunnerResults(dmnRunner.formData);
-  }, [dmnRunner.formData, updateDmnRunnerResults]);
+    updateDmnRunnerResults(dmnRunner.data[dmnRunner.dataIndex]);
+  }, [dmnRunner.data, dmnRunner.dataIndex, updateDmnRunnerResults]);
 
-  const previousFormError = usePrevious(dmnRunner.formError);
+  const previousFormError = usePrevious(dmnRunner.error);
   useEffect(() => {
-    if (dmnRunner.formError) {
+    if (dmnRunner.error) {
       // if there is an error generating the form, the last form data is submitted
-      updateDmnRunnerResults(dmnRunner.formData);
+      updateDmnRunnerResults(dmnRunner.data[dmnRunner.dataIndex]);
     } else if (previousFormError) {
       setTimeout(() => {
         formRef.current?.submit();
-        Object.keys(dmnRunner.formData ?? {}).forEach((propertyName) => {
-          formRef.current?.change(propertyName, dmnRunner.formData?.[propertyName]);
+        Object.keys(dmnRunner.data[dmnRunner.dataIndex] ?? {}).forEach((propertyName) => {
+          formRef.current?.change(propertyName, (dmnRunner.data[dmnRunner.dataIndex] as any)?.[propertyName]);
         });
       }, 0);
     }
-  }, [dmnRunner.formError, dmnRunner.formData, updateDmnRunnerResults, previousFormError]);
+  }, [dmnRunner.error, dmnRunner.data, dmnRunner.dataIndex, updateDmnRunnerResults, previousFormError]);
 
   const openValidationTab = useCallback(() => {
     props.editorPageDock?.open(PanelId.NOTIFICATIONS_PANEL);
@@ -233,7 +233,15 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   useEffect(() => {
     errorBoundaryRef.current?.reset();
     setDrawerError(false);
-  }, [dmnRunner.formSchema]);
+  }, [dmnRunner.schema]);
+
+  const setFormData = useCallback((newFormData) => {
+    dmnRunnerCallbacks.setData((previousData: any) => {
+      const newData = [...previousData];
+      newData[dmnRunner.dataIndex] = newFormData;
+      return newData;
+    });
+  }, []);
 
   return (
     <DrawerPanelContent
@@ -271,13 +279,6 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                             style={{ border: 0, marginLeft: "5px" }}
                             onClick={() => {
                               dmnRunnerCallbacks.setMode(DmnRunnerMode.TABULAR);
-                              dmnRunnerCallbacks.setDrawerExpanded(false);
-                              dmnRunnerCallbacks.setTableData((previousTableData: any) => {
-                                const filterPrevious = previousTableData.filter(
-                                  (tableData: any) => Object.keys(tableData).length !== 0
-                                );
-                                return [dmnRunner.formData, ...filterPrevious];
-                              });
                               props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
                             }}
                           >
@@ -290,7 +291,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                   {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
                     <DrawerCloseButton
                       onClick={(e: any) => {
-                        dmnRunnerCallbacks.setDrawerExpanded(false);
+                        dmnRunnerCallbacks.setExpanded(false);
                       }}
                     />
                   )}
@@ -298,11 +299,11 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                 <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
                   <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
                     <DmnForm
-                      formData={dmnRunner.formData}
-                      setFormData={dmnRunnerCallbacks.setFormData}
-                      formError={dmnRunner.formError}
-                      setFormError={dmnRunnerCallbacks.setFormError}
-                      formSchema={dmnRunner.formSchema}
+                      formData={dmnRunner.data[dmnRunner.dataIndex]}
+                      setFormData={setFormData}
+                      formError={dmnRunner.error}
+                      setFormError={dmnRunnerCallbacks.setError}
+                      formSchema={dmnRunner.schema}
                       id={"form"}
                       formRef={formRef}
                       showInlineError={true}
@@ -332,7 +333,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                     <Text component={"h2"}>{i18n.terms.outputs}</Text>
                   </TextContent>
                   {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
-                    <DrawerCloseButton onClick={(e: any) => dmnRunnerCallbacks.setDrawerExpanded(false)} />
+                    <DrawerCloseButton onClick={(e: any) => dmnRunnerCallbacks.setExpanded(false)} />
                   )}
                 </PageSection>
                 <div className={"kogito--editor__dmn-runner-drawer-content-body"}>

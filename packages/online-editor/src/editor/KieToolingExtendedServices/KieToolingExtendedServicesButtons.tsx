@@ -50,7 +50,7 @@ export function KieToolingExtendedServicesButtons(props: Props) {
       if (dmnRunner.mode === DmnRunnerMode.TABULAR) {
         props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
       } else {
-        dmnRunnerCallbacks.setDrawerExpanded((prev) => !prev);
+        dmnRunnerCallbacks.setExpanded((prev) => !prev);
       }
       return;
     }
@@ -101,7 +101,7 @@ export function KieToolingExtendedServicesButtons(props: Props) {
         <Button
           variant={ButtonVariant.control}
           onClick={toggleDmnRunnerDrawer}
-          className={dmnRunner.isDrawerExpanded ? "pf-m-active" : ""}
+          className={dmnRunner.isExpanded ? "pf-m-active" : ""}
           data-testid={"dmn-runner-button"}
         >
           {i18n.terms.run}

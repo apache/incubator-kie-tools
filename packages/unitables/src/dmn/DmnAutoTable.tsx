@@ -56,12 +56,12 @@ export interface DmnResult {
 
 interface Props {
   schema: any;
-  tableData?: any;
-  setTableData?: React.Dispatch<React.SetStateAction<any>>;
+  data?: Array<object>;
+  setData?: React.Dispatch<React.SetStateAction<any>>;
   results?: Array<DecisionResult[] | undefined>;
-  formError: boolean;
-  setFormError: React.Dispatch<any>;
-  openRowOnForm: (rowIndex: number) => void;
+  error: boolean;
+  setError: React.Dispatch<any>;
+  openRow: (rowIndex: number) => void;
 }
 
 const FORMS_ID = "unitable-forms";
@@ -69,8 +69,12 @@ const FORMS_ID = "unitable-forms";
 let grid: DmnGrid | undefined;
 
 export function DmnAutoTable(props: Props) {
-  const errorBoundaryRef = useRef<ErrorBoundary>(null);
-  const [rowQuantity, setRowQuantity] = useState<number>(props.tableData?.length ?? 1);
+  const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
+  const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
+  const dmnAutoTableErrorBoundaryRef = useRef<ErrorBoundary>(null);
+  const [rowQuantity, setRowQuantity] = useState<number>(props.data?.length ?? 1);
+  const [outputError, setOutputError] = useState<boolean>(false);
+  const [dmnAutoTableError, setDmnAutoTableError] = useState<boolean>(false);
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
 
   const bridge = useMemo(() => {
@@ -94,38 +98,38 @@ export function DmnAutoTable(props: Props) {
     (tableOperation: TableOperation, rowIndex: number) => {
       switch (tableOperation) {
         case TableOperation.RowInsertAbove:
-          props.setTableData?.((previousTableData: any) => {
-            return [...previousTableData.slice(0, rowIndex), {}, ...previousTableData.slice(rowIndex)];
+          props.setData?.((previousData: any) => {
+            return [...previousData.slice(0, rowIndex), {}, ...previousData.slice(rowIndex)];
           });
           break;
         case TableOperation.RowInsertBelow:
-          props.setTableData?.((previousTableData: any) => {
-            return [...previousTableData.slice(0, rowIndex + 1), {}, ...previousTableData.slice(rowIndex + 1)];
+          props.setData?.((previousData: any) => {
+            return [...previousData.slice(0, rowIndex + 1), {}, ...previousData.slice(rowIndex + 1)];
           });
           break;
         case TableOperation.RowDelete:
-          props.setTableData?.((previousTableData: any) => {
-            return [...previousTableData.slice(0, rowIndex), ...previousTableData.slice(rowIndex + 1)];
+          props.setData?.((previousData: any) => {
+            return [...previousData.slice(0, rowIndex), ...previousData.slice(rowIndex + 1)];
           });
           break;
         case TableOperation.RowClear:
-          props.setTableData?.((previousTableData: any) => {
-            const newTableData = [...previousTableData];
-            newTableData[rowIndex] = {};
-            return newTableData;
+          props.setData?.((previousData: any) => {
+            const newdata = [...previousData];
+            newdata[rowIndex] = {};
+            return newdata;
           });
           break;
         case TableOperation.RowDuplicate:
-          props.setTableData?.((previousTableData: any) => {
+          props.setData?.((previousData: any) => {
             return [
-              ...previousTableData.slice(0, rowIndex + 1),
-              previousTableData[rowIndex],
-              ...previousTableData.slice(rowIndex + 1),
+              ...previousData.slice(0, rowIndex + 1),
+              previousData[rowIndex],
+              ...previousData.slice(rowIndex + 1),
             ];
           });
       }
     },
-    [props.setTableData]
+    [props.setData]
   );
 
   const onRowNumberUpdated = useCallback(
@@ -140,24 +144,24 @@ export function DmnAutoTable(props: Props) {
 
   const onSubmit = useCallback(
     (model: any, index) => {
-      props.setTableData?.((previousTableData: any) => {
-        const newTableData = [...previousTableData];
-        newTableData[index] = model;
-        return newTableData;
+      props.setData?.((previousData: any) => {
+        const newdata = [...previousData];
+        newdata[index] = model;
+        return newdata;
       });
     },
-    [props.setTableData]
+    [props.setData]
   );
 
   const onValidate = useCallback(
     (model: any, error: any, index) => {
-      props.setTableData?.((previousTableData: any) => {
-        const newTableData = [...previousTableData];
-        newTableData[index] = model;
-        return newTableData;
+      props.setData?.((previousData: any) => {
+        const newdata = [...previousData];
+        newdata[index] = model;
+        return newdata;
       });
     },
-    [props.setTableData]
+    [props.setData]
   );
 
   // every input row is managed by an AutoRow. Each row is a form, and inside of it, cell are auto generated
@@ -203,12 +207,12 @@ export function DmnAutoTable(props: Props) {
       return Array.from(Array(rowQuantity)).map((e, i) => {
         return {
           inputEntries,
-          rowDelegate: getAutoRow(props.tableData[i], i),
+          rowDelegate: getAutoRow(props.data?.[i], i),
         } as Partial<DmnRunnerRule>;
       });
     }
     return [] as Partial<DmnRunnerRule>[];
-  }, [input, formsDivRendered, getAutoRow, props.tableData, rowQuantity]);
+  }, [input, formsDivRendered, getAutoRow, props.data, rowQuantity]);
 
   const outputUid = useMemo(() => nextId(), []);
   const { output, rules: outputRules } = useMemo(() => {
@@ -256,7 +260,41 @@ export function DmnAutoTable(props: Props) {
     [output]
   );
 
-  const formErrorMessage = useMemo(
+  const errorMessage = useMemo(
+    () => (
+      <div>
+        <EmptyState>
+          <EmptyStateIcon icon={ExclamationIcon} />
+          <TextContent>
+            <Text component={"h2"}>Error</Text>
+          </TextContent>
+          <EmptyStateBody>
+            <p>An error has happened</p>
+          </EmptyStateBody>
+        </EmptyState>
+      </div>
+    ),
+    []
+  );
+
+  const outputErrorMessage = useMemo(
+    () => (
+      <div>
+        <EmptyState>
+          <EmptyStateIcon icon={ExclamationIcon} />
+          <TextContent>
+            <Text component={"h2"}>Error</Text>
+          </TextContent>
+          <EmptyStateBody>
+            <p>An error has happened</p>
+          </EmptyStateBody>
+        </EmptyState>
+      </div>
+    ),
+    []
+  );
+
+  const dmnAutoTableErrorMessage = useMemo(
     () => (
       <div>
         <EmptyState>
@@ -275,8 +313,16 @@ export function DmnAutoTable(props: Props) {
 
   // Resets the ErrorBoundary everytime the FormSchema is updated
   useEffect(() => {
-    errorBoundaryRef.current?.reset();
+    inputErrorBoundaryRef.current?.reset();
   }, [bridge]);
+
+  useEffect(() => {
+    outputErrorBoundaryRef.current?.reset();
+  }, [output]);
+
+  useEffect(() => {
+    dmnAutoTableErrorBoundaryRef.current?.reset();
+  }, [bridge, output]);
 
   const outputEntries = useMemo(
     () => outputRules.reduce((acc, rules) => acc + (rules.outputEntries?.length ?? 0), 0),
@@ -305,77 +351,98 @@ export function DmnAutoTable(props: Props) {
           initialLocale={navigator.language}
           ctx={DmnAutoTableI18nContext}
         >
-          <ErrorBoundary ref={errorBoundaryRef} setHasError={props.setFormError} error={formErrorMessage}>
-            <Drawer isInline={true} isExpanded={true} className={"unitables--dmn-runner-drawer"}>
-              <DrawerContent
-                panelContent={
-                  <>
-                    <DrawerPanelContent
-                      isResizable={true}
-                      minSize={outputEntries > 0 ? drawerPanelMinSize : "30%"}
-                      maxSize={drawerPanelMaxSize}
-                      defaultSize={drawerPanelDefaultSize}
-                    >
-                      <div ref={outputsContainerRef}>
-                        {outputEntries > 0 ? (
-                          <BoxedExpressionProvider expressionDefinition={{ uid: outputUid }} isRunnerTable={true}>
-                            <DmnRunnerTabular
-                              name={"DMN Runner Output"}
-                              onRowNumberUpdated={onRowNumberUpdated}
-                              onColumnsUpdate={onColumnsUpdate}
-                              output={output}
-                              rules={outputRules as DmnRunnerRule[]}
-                              uid={outputUid}
-                            />
-                          </BoxedExpressionProvider>
-                        ) : (
-                          <EmptyState>
-                            <EmptyStateIcon icon={CubeIcon} />
-                            <TextContent>
-                              <Text component={"h2"}>Without Responses Yet</Text>
-                            </TextContent>
-                            <EmptyStateBody>
-                              <TextContent>Add decision nodes and fill the input nodes!</TextContent>
-                            </EmptyStateBody>
-                          </EmptyState>
-                        )}
-                      </div>
-                    </DrawerPanelContent>
-                  </>
-                }
-              >
-                <BoxedExpressionProvider expressionDefinition={{ uid: inputUid }} isRunnerTable={true}>
-                  <div style={{ display: "flex" }} ref={inputsContainerRef}>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                      <div style={{ width: "50px", height: "55px", border: "1px solid", visibility: "hidden" }}>
-                        {" "}
-                        #{" "}
-                      </div>
-                      <div style={{ width: "50px", height: "56px", border: "1px solid", visibility: "hidden" }}>
-                        {" "}
-                        #{" "}
-                      </div>
-                      {Array.from(Array(rowQuantity)).map((e, i) => (
-                        <div key={i} style={{ width: "50px", height: "62px", display: "flex", alignItems: "center" }}>
-                          <Button variant={"plain"} onClick={() => props.openRowOnForm(i)}>
-                            <ListIcon />
-                          </Button>
+          {dmnAutoTableError ? (
+            dmnAutoTableError
+          ) : (
+            <ErrorBoundary
+              ref={dmnAutoTableErrorBoundaryRef}
+              setHasError={setDmnAutoTableError}
+              error={dmnAutoTableErrorMessage}
+            >
+              <Drawer isInline={true} isExpanded={true} className={"unitables--dmn-runner-drawer"}>
+                <DrawerContent
+                  panelContent={
+                    <>
+                      <DrawerPanelContent
+                        isResizable={true}
+                        minSize={outputEntries > 0 ? drawerPanelMinSize : "30%"}
+                        maxSize={drawerPanelMaxSize}
+                        defaultSize={drawerPanelDefaultSize}
+                      >
+                        <div ref={outputsContainerRef}>
+                          {outputError ? (
+                            outputError
+                          ) : outputEntries > 0 ? (
+                            <ErrorBoundary
+                              ref={outputErrorBoundaryRef}
+                              setHasError={setOutputError}
+                              error={outputErrorMessage}
+                            >
+                              <BoxedExpressionProvider expressionDefinition={{ uid: outputUid }} isRunnerTable={true}>
+                                <DmnRunnerTabular
+                                  name={"DMN Runner Output"}
+                                  onRowNumberUpdated={onRowNumberUpdated}
+                                  onColumnsUpdate={onColumnsUpdate}
+                                  output={output}
+                                  rules={outputRules as DmnRunnerRule[]}
+                                  uid={outputUid}
+                                />
+                              </BoxedExpressionProvider>
+                            </ErrorBoundary>
+                          ) : (
+                            <EmptyState>
+                              <EmptyStateIcon icon={CubeIcon} />
+                              <TextContent>
+                                <Text component={"h2"}>Without Responses Yet</Text>
+                              </TextContent>
+                              <EmptyStateBody>
+                                <TextContent>Add decision nodes and fill the input nodes!</TextContent>
+                              </EmptyStateBody>
+                            </EmptyState>
+                          )}
                         </div>
-                      ))}
-                    </div>
-                    <DmnRunnerTabular
-                      name={"DMN Runner Input"}
-                      onRowNumberUpdated={onRowNumberUpdated}
-                      onColumnsUpdate={onColumnsUpdate}
-                      input={input}
-                      rules={inputRules as DmnRunnerRule[]}
-                      uid={inputUid}
-                    />
-                  </div>
-                </BoxedExpressionProvider>
-              </DrawerContent>
-            </Drawer>
-          </ErrorBoundary>
+                      </DrawerPanelContent>
+                    </>
+                  }
+                >
+                  <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={errorMessage}>
+                    <BoxedExpressionProvider expressionDefinition={{ uid: inputUid }} isRunnerTable={true}>
+                      <div style={{ display: "flex" }} ref={inputsContainerRef}>
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                          <div style={{ width: "50px", height: "55px", border: "1px solid", visibility: "hidden" }}>
+                            {" "}
+                            #{" "}
+                          </div>
+                          <div style={{ width: "50px", height: "56px", border: "1px solid", visibility: "hidden" }}>
+                            {" "}
+                            #{" "}
+                          </div>
+                          {Array.from(Array(rowQuantity)).map((e, i) => (
+                            <div
+                              key={i}
+                              style={{ width: "50px", height: "62px", display: "flex", alignItems: "center" }}
+                            >
+                              <Button variant={"plain"} onClick={() => props.openRow(i)}>
+                                <ListIcon />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                        <DmnRunnerTabular
+                          name={"DMN Runner Input"}
+                          onRowNumberUpdated={onRowNumberUpdated}
+                          onColumnsUpdate={onColumnsUpdate}
+                          input={input}
+                          rules={inputRules as DmnRunnerRule[]}
+                          uid={inputUid}
+                        />
+                      </div>
+                    </BoxedExpressionProvider>
+                  </ErrorBoundary>
+                </DrawerContent>
+              </Drawer>
+            </ErrorBoundary>
+          )}
         </I18nDictionariesProvider>
       )}
       <div ref={() => setFormsDivRendered(true)} id={FORMS_ID} />

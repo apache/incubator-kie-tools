@@ -72,7 +72,7 @@ export function DmnRunnerTabular(props: Props) {
         const runnerResults: Array<DecisionResult[] | undefined> = [];
         for (const result of results) {
           if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
-            dmnRunnerCallbacks.setFormError(true);
+            dmnRunnerCallbacks.setError(true);
             break;
           }
           if (result) {
@@ -88,16 +88,16 @@ export function DmnRunnerTabular(props: Props) {
   );
 
   useEffect(() => {
-    updateDmnRunnerResults(dmnRunner.tableData);
-  }, [dmnRunner.tableData]);
+    updateDmnRunnerResults(dmnRunner.data);
+  }, [dmnRunner.data]);
 
-  const previousFormSchema: any = usePrevious(dmnRunner.formSchema);
+  const previousFormSchema: any = usePrevious(dmnRunner.schema);
   useEffect(() => {
-    dmnRunnerCallbacks.setTableData((previousTableData: any) => {
+    dmnRunnerCallbacks.setData((previousTableData: any) => {
       const newTableData = [...previousTableData];
       const propertiesDifference = diff(
-        (previousFormSchema ?? dmnRunner.formSchema).definitions?.InputSet?.properties ?? {},
-        dmnRunner.formSchema?.definitions?.InputSet?.properties ?? {}
+        (previousFormSchema ?? dmnRunner.schema).definitions?.InputSet?.properties ?? {},
+        dmnRunner.schema?.definitions?.InputSet?.properties ?? {}
       );
 
       return newTableData.map((tableData) => {
@@ -118,29 +118,27 @@ export function DmnRunnerTabular(props: Props) {
         );
       });
     });
-  }, [dmnRunner.formSchema, dmnRunnerCallbacks, previousFormSchema]);
+  }, [dmnRunner.schema, dmnRunnerCallbacks, previousFormSchema]);
 
-  const openRowOnForm = useCallback(
+  const openRow = useCallback(
     (rowIndex: number) => {
       dmnRunnerCallbacks.setMode(DmnRunnerMode.DRAWER);
-      console.log(dmnRunner.tableData);
-      dmnRunnerCallbacks.setFormData(dmnRunner.tableData[rowIndex]);
-      dmnRunnerCallbacks.setDrawerExpanded(true);
+      dmnRunnerCallbacks.setDataIndex(rowIndex);
       props.setPanelOpen(PanelId.NONE);
     },
-    [dmnRunner.tableData, dmnRunnerCallbacks]
+    [dmnRunnerCallbacks]
   );
 
   return (
     <div style={{ height: "100%" }}>
       <DmnAutoTable
-        schema={dmnRunner.formSchema}
-        tableData={dmnRunner.tableData}
-        setTableData={dmnRunnerCallbacks.setTableData}
+        schema={dmnRunner.schema}
+        data={dmnRunner.data}
+        setData={dmnRunnerCallbacks.setData}
         results={props.dmnRunnerResults}
-        formError={dmnRunner.formError}
-        setFormError={dmnRunnerCallbacks.setFormError}
-        openRowOnForm={openRowOnForm}
+        error={dmnRunner.error}
+        setError={dmnRunnerCallbacks.setError}
+        openRow={openRow}
       />
     </div>
   );
