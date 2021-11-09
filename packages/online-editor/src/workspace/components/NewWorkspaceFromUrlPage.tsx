@@ -2,12 +2,12 @@ import { encoder, LocalFile, useWorkspaces } from "../WorkspacesContext";
 import { useGlobals } from "../../common/GlobalContext";
 import { useHistory } from "react-router";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { QueryParams } from "../../common/Routes";
-import { useQueryParams } from "../../queryParams/QueryParamsContext";
+import { useQueryParam } from "../../queryParams/QueryParamsContext";
 import { AuthStatus, useSettings } from "../../settings/SettingsContext";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
 import { OnlineEditorPage } from "../../home/pageTemplate/OnlineEditorPage";
@@ -22,12 +22,10 @@ export function NewWorkspaceFromUrlPage() {
   const globals = useGlobals();
   const history = useHistory();
   const settings = useSettings();
-  const queryParams = useQueryParams();
   const [importingError, setImportingError] = useState("");
 
-  const queryParamUrl = useMemo(() => {
-    return queryParams.get(QueryParams.URL);
-  }, [queryParams]);
+  const queryParamUrl = useQueryParam(QueryParams.URL);
+  const queryParamBranch = useQueryParam(QueryParams.BRANCH);
 
   const importGitWorkspace: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
     async (args) => {
@@ -35,6 +33,11 @@ export function NewWorkspaceFromUrlPage() {
       try {
         res = await workspaces.createWorkspaceFromGitRepository(args);
       } catch (e) {
+        if (queryParamBranch) {
+          // If a branch is specified, we don't want to attempt `master`.
+          throw e;
+        }
+
         try {
           res = await workspaces.createWorkspaceFromGitRepository({
             ...args,
@@ -61,7 +64,7 @@ export function NewWorkspaceFromUrlPage() {
       });
       return res;
     },
-    [globals, history, workspaces]
+    [globals, history, workspaces, queryParamBranch]
   );
 
   const createWorkspaceForFile = useCallback(
@@ -104,7 +107,7 @@ export function NewWorkspaceFromUrlPage() {
             origin: {
               kind: WorkspaceKind.GIT,
               url,
-              branch: GIT_DEFAULT_BRANCH,
+              branch: queryParamBranch ?? GIT_DEFAULT_BRANCH,
             },
             gitConfig,
           });
@@ -131,7 +134,7 @@ export function NewWorkspaceFromUrlPage() {
             origin: {
               kind: WorkspaceKind.GIT,
               url: importableUrl.url,
-              branch: importableUrl.branch ?? GIT_DEFAULT_BRANCH,
+              branch: queryParamBranch ?? importableUrl.branch ?? GIT_DEFAULT_BRANCH,
             },
             gitConfig,
             authInfo: githubAuthInfo,
@@ -207,6 +210,7 @@ export function NewWorkspaceFromUrlPage() {
     history,
     importGitWorkspace,
     importableUrl,
+    queryParamBranch,
     queryParamUrl,
     settings.github,
     workspaces,

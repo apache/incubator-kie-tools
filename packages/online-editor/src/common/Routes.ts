@@ -19,6 +19,7 @@ const IS_HASH_ROUTER = true;
 export enum QueryParams {
   SETTINGS = "settings",
   URL = "url",
+  BRANCH = "branch",
   DMN_RUNNER_FORM_INPUTS = "formInputs",
   EXPAND = "expand",
 }
@@ -125,7 +126,7 @@ export const routes = {
   }>(({ extension }) => `/new/${extension}`),
 
   importModel: new Route<{
-    queryParams: QueryParams.URL | QueryParams.DMN_RUNNER_FORM_INPUTS;
+    queryParams: QueryParams.URL | QueryParams.DMN_RUNNER_FORM_INPUTS | QueryParams.BRANCH;
   }>(() => `/import`),
 
   workspaceWithFilePath: new Route<{

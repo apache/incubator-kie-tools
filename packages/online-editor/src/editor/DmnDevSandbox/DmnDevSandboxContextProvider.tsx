@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useGlobals } from "../../common/GlobalContext";
 import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
@@ -144,21 +144,20 @@ export function DmnDevSandboxContextProvider(props: Props) {
     deployments.length,
   ]);
 
-  return (
-    <DmnDevSandboxContext.Provider
-      value={{
-        deployments,
-        isDropdownOpen,
-        isDeploymentsDropdownOpen,
-        isConfirmDeployModalOpen,
-        setDeployments,
-        setDropdownOpen,
-        setConfirmDeployModalOpen,
-        setDeploymentsDropdownOpen,
-        deploy,
-      }}
-    >
-      {props.children}
-    </DmnDevSandboxContext.Provider>
+  const value = useMemo(
+    () => ({
+      deployments,
+      isDropdownOpen,
+      isDeploymentsDropdownOpen,
+      isConfirmDeployModalOpen,
+      setDeployments,
+      setDropdownOpen,
+      setConfirmDeployModalOpen,
+      setDeploymentsDropdownOpen,
+      deploy,
+    }),
+    [deploy, deployments, isConfirmDeployModalOpen, isDeploymentsDropdownOpen, isDropdownOpen]
   );
+
+  return <DmnDevSandboxContext.Provider value={value}>{props.children}</DmnDevSandboxContext.Provider>;
 }

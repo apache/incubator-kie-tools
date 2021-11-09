@@ -43,17 +43,16 @@ export function GlobalContextProvider(props: { children: React.ReactNode }) {
     []
   );
 
-  return (
-    <GlobalContext.Provider
-      value={{
-        editorEnvelopeLocator,
-        routes,
-        isChrome: !!window.chrome,
-      }}
-    >
-      {props.children}
-    </GlobalContext.Provider>
+  const value = useMemo(
+    () => ({
+      editorEnvelopeLocator,
+      routes,
+      isChrome: !!window.chrome,
+    }),
+    [editorEnvelopeLocator]
   );
+
+  return <GlobalContext.Provider value={value}>{props.children}</GlobalContext.Provider>;
 }
 
 export function useGlobals() {

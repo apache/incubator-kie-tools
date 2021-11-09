@@ -45,7 +45,7 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Link } from "react-router-dom";
 import { DeleteDropdownWithConfirmation } from "../editor/DeleteDropdownWithConfirmation";
-import { useQueryParams } from "../queryParams/QueryParamsContext";
+import { useQueryParam } from "../queryParams/QueryParamsContext";
 import { QueryParams } from "../common/Routes";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { RelativeDate } from "./RelativeDate";
@@ -66,12 +66,7 @@ export function HomePage() {
   const globals = useGlobals();
   const history = useHistory();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
-
-  const queryParams = useQueryParams();
-
-  const expandedWorkspaceId = useMemo(() => {
-    return queryParams.get(QueryParams.EXPAND);
-  }, [queryParams]);
+  const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
 
   const closeExpandedWorkspace = useCallback(() => {
     history.replace({ pathname: globals.routes.home.path({}) });

@@ -17,7 +17,6 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "../../common/utils";
-import { useWorkspaces } from "../../workspace/WorkspacesContext";
 import { KieToolingExtendedServicesBridge } from "./KieToolingExtendedServicesBridge";
 import { DependentFeature, KieToolingExtendedServicesContext } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
@@ -97,22 +96,25 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
     return () => window.clearInterval(detectKieToolingExtendedServices);
   }, [status, bridge, version]);
 
+  const value = useMemo(
+    () => ({
+      status,
+      port,
+      baseUrl,
+      version,
+      outdated,
+      isModalOpen,
+      installTriggeredBy,
+      setStatus,
+      setModalOpen,
+      setInstallTriggeredBy,
+      saveNewPort,
+    }),
+    [baseUrl, installTriggeredBy, isModalOpen, outdated, port, saveNewPort, status, version]
+  );
+
   return (
-    <KieToolingExtendedServicesContext.Provider
-      value={{
-        status,
-        port,
-        baseUrl,
-        version,
-        outdated,
-        isModalOpen,
-        installTriggeredBy,
-        setStatus,
-        setModalOpen,
-        setInstallTriggeredBy,
-        saveNewPort,
-      }}
-    >
+    <KieToolingExtendedServicesContext.Provider value={value}>
       {props.children}
       <KieToolingExtendedServicesModal />
     </KieToolingExtendedServicesContext.Provider>

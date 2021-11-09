@@ -74,6 +74,7 @@ import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
+import { SettingsTabs } from "../settings/SettingsModalBody";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -712,7 +713,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     );
   }, [workspaces, props.workspaceFile]);
 
-  const canUpdateGitRepository = useMemo(() => githubAuthInfo, [githubAuthInfo]);
+  const canPushToGitRepository = useMemo(() => githubAuthInfo, [githubAuthInfo]);
 
   const pushingAlert = useAlert(
     props.alerts,
@@ -818,40 +819,45 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         return;
       }
 
-      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-      const workspaceRootDirPath = await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
+      try {
+        pushingAlert.show();
+        const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
+        const workspaceRootDirPath = await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
 
-      await workspaces.createSavePoint({
-        fs: fs,
-        workspaceId: props.workspaceFile.workspaceId,
-      });
+        await workspaces.createSavePoint({
+          fs: fs,
+          workspaceId: props.workspaceFile.workspaceId,
+        });
 
-      await workspaces.gitService.branch({
-        fs,
-        dir: workspaceRootDirPath,
-        checkout: false,
-        name: newBranchName,
-      });
+        await workspaces.gitService.branch({
+          fs,
+          dir: workspaceRootDirPath,
+          checkout: false,
+          name: newBranchName,
+        });
 
-      await workspaces.gitService.push({
-        fs: fs,
-        dir: workspaceRootDirPath,
-        remote: GIT_ORIGIN_REMOTE_NAME,
-        remoteRef: `refs/heads/${newBranchName}`,
-        ref: newBranchName,
-        force: false,
-        authInfo: githubAuthInfo,
-      });
+        await workspaces.gitService.push({
+          fs: fs,
+          dir: workspaceRootDirPath,
+          remote: GIT_ORIGIN_REMOTE_NAME,
+          remoteRef: `refs/heads/${newBranchName}`,
+          ref: newBranchName,
+          force: false,
+          authInfo: githubAuthInfo,
+        });
 
-      history.push({
-        pathname: globals.routes.importModel.path({}),
-        search: globals.routes.importModel.queryString({
-          //FIXME: This will only work for GitHub.
-          url: `${workspacePromise.data.descriptor.origin.url}/tree/${newBranchName}`,
-        }),
-      });
+        history.push({
+          pathname: globals.routes.importModel.path({}),
+          search: globals.routes.importModel.queryString({
+            url: `${workspacePromise.data.descriptor.origin.url}`,
+            branch: newBranchName,
+          }),
+        });
+      } finally {
+        pushingAlert.close();
+      }
     },
-    [githubAuthInfo, globals, history, props.workspaceFile.workspaceId, workspacePromise, workspaces]
+    [githubAuthInfo, globals, history, props.workspaceFile.workspaceId, workspacePromise, workspaces, pushingAlert]
   );
 
   const pullErrorAlert = useAlert<{ newBranchName: string }>(
@@ -868,23 +874,35 @@ If you are, it means that creating this Gist failed and it can safely be deleted
             title={`Error pulling from '${workspacePromise.data?.descriptor.origin.url}'`}
             actionClose={<AlertActionCloseButton onClose={close} />}
             actionLinks={
-              <AlertActionLink onClick={() => pushNewBranch(newBranchName)}>
-                {`Switch to '${newBranchName}'`}
-              </AlertActionLink>
+              <>
+                {canPushToGitRepository && (
+                  <AlertActionLink onClick={() => pushNewBranch(newBranchName)}>
+                    {`Switch to '${newBranchName}'`}
+                  </AlertActionLink>
+                )}
+
+                {!canPushToGitRepository && (
+                  <AlertActionLink onClick={() => settings.open(SettingsTabs.GITHUB)}>
+                    {`Configure GitHub token...`}
+                  </AlertActionLink>
+                )}
+              </>
             }
           >
             This usually happens when your branch has conflicts with the upstream branch.
             <br />
             <br />
-            You can still save your work to a new branch.
+            {canPushToGitRepository && `You can still save your work to a new branch`}
+            {!canPushToGitRepository &&
+              `To be able to save your work on a new branch, please authenticate with GitHub.`}
           </Alert>
         );
       },
-      [pushNewBranch, workspacePromise]
+      [canPushToGitRepository, pushNewBranch, settings, workspacePromise]
     )
   );
 
-  const pullGitRepository = useCallback(
+  const pullFromGitRepository = useCallback(
     async (args: { showAlerts: boolean }) => {
       pullingAlert.close();
       pullErrorAlert.close();
@@ -933,7 +951,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     ]
   );
 
-  const pushGitRepository = useCallback(async () => {
+  const pushToGitRepository = useCallback(async () => {
     pushingAlert.close();
     pushErrorAlert.close();
     pushSuccessAlert.close();
@@ -960,7 +978,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         force: false,
         authInfo: githubAuthInfo,
       });
-      await pullGitRepository({ showAlerts: false });
+      await pullFromGitRepository({ showAlerts: false });
       pushSuccessAlert.show();
     } catch (e) {
       console.error(e);
@@ -969,7 +987,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       pushingAlert.close();
     }
   }, [
-    pullGitRepository,
+    pullFromGitRepository,
     githubAuthInfo,
     props.workspaceFile,
     pushErrorAlert,
@@ -1202,7 +1220,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             <DropdownGroup key={"sync-gist-dropdown-group"}>
                               <DropdownItem
                                 icon={<SyncAltIcon />}
-                                onClick={() => pullGitRepository({ showAlerts: true })}
+                                onClick={() => pullFromGitRepository({ showAlerts: true })}
                                 description={`Get new changes made upstream at '${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}'.`}
                               >
                                 Pull
@@ -1212,13 +1230,13 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                 content={
                                   <div>{`You need to be signed in with GitHub to push to this repository.`}</div>
                                 }
-                                trigger={!canUpdateGitRepository ? "mouseenter click" : ""}
+                                trigger={!canPushToGitRepository ? "mouseenter click" : ""}
                                 position="left"
                               >
                                 <DropdownItem
                                   icon={<ArrowCircleUpIcon />}
-                                  onClick={pushGitRepository}
-                                  isDisabled={!canUpdateGitRepository}
+                                  onClick={pushToGitRepository}
+                                  isDisabled={!canPushToGitRepository}
                                   description={`Send your changes upstream to '${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}'.`}
                                 >
                                   Push
