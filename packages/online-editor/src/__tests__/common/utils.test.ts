@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { jsonParseWithDate } from "../../common/utils";
+import { jsonParseWithDate } from "../../common/arrays";
 
 describe("utils::jsonParseWithDate", () => {
   it("should parse JSON strings with dates properly", () => {
