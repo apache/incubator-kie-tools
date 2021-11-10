@@ -17,6 +17,7 @@ package org.dashbuilder.dataset.def;
 
 import org.dashbuilder.dataset.impl.BeanDataSetDefBuilderImpl;
 import org.dashbuilder.dataset.impl.CSVDataSetDefBuilderImpl;
+import org.dashbuilder.dataset.impl.ExternalDataSetDefBuilderImpl;
 import org.dashbuilder.dataset.impl.KafkaDataSetDefBuilderImpl;
 import org.dashbuilder.dataset.impl.PrometheusDataSetDefBuilderImpl;
 import org.dashbuilder.dataset.impl.SQLDataSetDefBuilderImpl;
@@ -49,5 +50,10 @@ public final class DataSetDefFactory {
 
     public static KafkaDataSetDefBuilderImpl newKafkaDataSetDef() {
         return new KafkaDataSetDefBuilderImpl();
+    }
+    
+    
+    public static ExternalDataSetDefBuilderImpl newExternalDataSetDef() {
+        return new ExternalDataSetDefBuilderImpl();
     }
 }

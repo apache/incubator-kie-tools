@@ -15,8 +15,24 @@
  */
 package org.dashbuilder.client.widgets.dataset.explorer;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import static org.dashbuilder.dataprovider.DataSetProviderType.BEAN;
+import static org.dashbuilder.dataprovider.DataSetProviderType.CSV;
+import static org.dashbuilder.dataprovider.DataSetProviderType.EXTERNAL;
+import static org.dashbuilder.dataprovider.DataSetProviderType.KAFKA;
+import static org.dashbuilder.dataprovider.DataSetProviderType.PROMETHEUS;
+import static org.dashbuilder.dataprovider.DataSetProviderType.SQL;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
 import org.dashbuilder.client.widgets.common.DataSetEditorPlugin;
 import org.dashbuilder.dataprovider.DataSetProviderType;
@@ -28,19 +44,8 @@ import org.dashbuilder.dataset.events.DataSetDefRemovedEvent;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.UberView;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-import static org.dashbuilder.dataprovider.DataSetProviderType.*;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * <p>Data Set Explorer widget.</p>
@@ -61,7 +66,8 @@ public class DataSetExplorer implements IsWidget {
                                                               CSV,
                                                               SQL,
                                                               PROMETHEUS,
-                                                              KAFKA);
+                                                              KAFKA,
+                                                              EXTERNAL);
 
     Instance<DataSetPanel> panelInstances;
     DataSetClientServices clientServices;

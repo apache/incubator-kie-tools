@@ -30,19 +30,19 @@ public interface DataSetClientImages extends ClientBundle {
 
     @Source("images/csv_icon_32.png")
     DataResource csvIcon32();
-    
+
     @Source("images/java_icon_160.png")
     DataResource javaIcon160();
 
     @Source("images/java_icon_32.png")
     DataResource javaIcon32();
-    
+
     @Source("images/sql_icon_160.png")
     DataResource sqlIcon160();
 
     @Source("images/sql_icon_32.png")
     DataResource sqlIcon32();
-    
+
     @Source("images/excel_icon.png")
     DataResource excelIcon();
 
@@ -60,7 +60,7 @@ public interface DataSetClientImages extends ClientBundle {
 
     @Source("images/number_icon_32_V3.png")
     DataResource numberIcon32V3();
-    
+
     @Source("images/text_icon_16.png")
     DataResource textIcon16();
 
@@ -87,10 +87,16 @@ public interface DataSetClientImages extends ClientBundle {
 
     @Source("images/prometheus_icon_32.png")
     DataResource prometheusIcon32();
-    
+
     @Source("images/kafka_icon_160.png")
     DataResource kafkaIcon160();
 
     @Source("images/kafka_icon_32.png")
     DataResource kafkaIcon32();
+
+    @Source("images/external_icon_160.png")
+    DataResource externalIcon160();
+
+    @Source("images/external_icon_32.png")
+    DataResource externalIcon32();
 }
