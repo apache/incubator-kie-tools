@@ -225,9 +225,15 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
             isOpen={typeSelectIsOpen}
             placeholderText={"Select a type"}
             isDisabled={enabledTypeOptionsCount === 1}
+            ouiaId="constraints-type"
           >
             {typeOptions.map((item, index) => (
-              <SelectOption key={index} value={item.value} isDisabled={item.disabled}>
+              <SelectOption
+                key={index}
+                value={item.value}
+                isDisabled={item.disabled}
+                data-ouia-component-type="select-option"
+              >
                 {item.label}
               </SelectOption>
             ))}
