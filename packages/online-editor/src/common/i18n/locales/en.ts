@@ -59,9 +59,10 @@ export const en: OnlineI18n = {
       invalidGistFilename: "Invalid filename. This gist already has a file with this name.",
       error: `An error occurred trying to perform the last operation. Check if your ${en_common.names.github} token is still valid and try again later.`,
       unsaved: {
-        title: "Unsaved changes will be lost",
-        message: "Click Save to download your progress before closing.",
-        closeWithoutSaving: "Close without saving",
+        titleLocal: "You have new changes since your last download.",
+        titleGit: "You have new changes since your last push.",
+        proceedAnyway: "Proceed anyway",
+        message: "Your files are temporarily persisted on your browser, but may be erased before you come back.",
       },
     },
   },

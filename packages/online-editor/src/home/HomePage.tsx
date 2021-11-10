@@ -66,6 +66,7 @@ import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
 import { Alerts, AlertsController } from "../editor/Alerts/Alerts";
 import { useController } from "../common/Hooks";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 
 export function HomePage() {
   const globals = useGlobals();
@@ -468,87 +469,96 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
   const [alerts, alertsRef] = useController<AlertsController>();
 
   return (
-    <PromiseStateWrapper
-      promise={workspacePromise}
-      resolved={(workspace) => (
-        <DrawerPanelContent isResizable={true} minSize={"40%"} maxSize={"80%"}>
-          <Alerts width={"100%"} ref={alertsRef} />
-          <DrawerHead>
-            <Flex>
-              <FlexItem>
-                <TextContent>
-                  <Text component={TextVariants.h3}>{`Models in '${workspacePromise.data?.descriptor.name}'`}</Text>
-                </TextContent>
-              </FlexItem>
-              <FlexItem>
-                <Dropdown
-                  isPlain={true}
-                  position={"left"}
-                  isOpen={isNewFileDropdownMenuOpen}
-                  toggle={
-                    <DropdownToggle
-                      className={"kogito-tooling--masthead-hoverable"}
-                      toggleIndicator={null}
-                      onToggle={setNewFileDropdownMenuOpen}
-                    >
-                      <PlusIcon />
-                    </DropdownToggle>
-                  }
-                >
-                  <NewFileDropdownMenu
-                    alerts={alerts}
-                    workspaceId={workspace.descriptor.workspaceId}
-                    destinationDirPath={""}
-                    onAddFile={async () => setNewFileDropdownMenuOpen(false)}
-                  />
-                </Dropdown>
-              </FlexItem>
-            </Flex>
-            {(workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST ||
-              workspace.descriptor.origin.kind === WorkspaceKind.GIT) && (
-              <TextContent>
-                <Text component={TextVariants.small}>
-                  <i>{workspace.descriptor.origin.url.toString()}</i>
-                </Text>
-              </TextContent>
-            )}
-            <DrawerActions>
-              <DrawerCloseButton onClick={props.onClose} />
-            </DrawerActions>
-          </DrawerHead>
+    <DrawerPanelContent isResizable={true} minSize={"40%"} maxSize={"80%"}>
+      <PromiseStateWrapper
+        promise={workspacePromise}
+        pending={
           <DrawerPanelBody>
-            <DataList aria-label="models-data-list">
-              {models.map((file) => (
-                <Link
-                  key={file.relativePath}
-                  to={globals.routes.workspaceWithFilePath.path({
-                    workspaceId: workspace.descriptor.workspaceId ?? "",
-                    fileRelativePath: file.relativePathWithoutExtension,
-                    extension: file.extension,
-                  })}
-                >
-                  <FileDataListItem file={file} />
-                </Link>
-              ))}
-            </DataList>
-            <br />
-            {otherFiles.length > 0 && (
-              <ExpandableSection
-                toggleTextCollapsed="View other files"
-                toggleTextExpanded="Hide other files"
-                className={"plain"}
-              >
-                <DataList aria-label="other-files-data-list">
-                  {otherFiles.map((file) => (
-                    <FileDataListItem key={file.relativePath} file={file} />
-                  ))}
-                </DataList>
-              </ExpandableSection>
-            )}
+            <Bullseye>
+              <Spinner />
+            </Bullseye>
           </DrawerPanelBody>
-        </DrawerPanelContent>
-      )}
-    />
+        }
+        resolved={(workspace) => (
+          <>
+            <Alerts width={"100%"} ref={alertsRef} />
+            <DrawerHead>
+              <Flex>
+                <FlexItem>
+                  <TextContent>
+                    <Text component={TextVariants.h3}>{`Models in '${workspacePromise.data?.descriptor.name}'`}</Text>
+                  </TextContent>
+                </FlexItem>
+                <FlexItem>
+                  <Dropdown
+                    isPlain={true}
+                    position={"left"}
+                    isOpen={isNewFileDropdownMenuOpen}
+                    toggle={
+                      <DropdownToggle
+                        className={"kogito-tooling--masthead-hoverable"}
+                        toggleIndicator={null}
+                        onToggle={setNewFileDropdownMenuOpen}
+                      >
+                        <PlusIcon />
+                      </DropdownToggle>
+                    }
+                  >
+                    <NewFileDropdownMenu
+                      alerts={alerts}
+                      workspaceId={workspace.descriptor.workspaceId}
+                      destinationDirPath={""}
+                      onAddFile={async () => setNewFileDropdownMenuOpen(false)}
+                    />
+                  </Dropdown>
+                </FlexItem>
+              </Flex>
+              {(workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST ||
+                workspace.descriptor.origin.kind === WorkspaceKind.GIT) && (
+                <TextContent>
+                  <Text component={TextVariants.small}>
+                    <i>{workspace.descriptor.origin.url.toString()}</i>
+                  </Text>
+                </TextContent>
+              )}
+              <DrawerActions>
+                <DrawerCloseButton onClick={props.onClose} />
+              </DrawerActions>
+            </DrawerHead>
+            <DrawerPanelBody>
+              <DataList aria-label="models-data-list">
+                {models.map((file) => (
+                  <Link
+                    key={file.relativePath}
+                    to={globals.routes.workspaceWithFilePath.path({
+                      workspaceId: workspace.descriptor.workspaceId ?? "",
+                      fileRelativePath: file.relativePathWithoutExtension,
+                      extension: file.extension,
+                    })}
+                  >
+                    <FileDataListItem file={file} />
+                  </Link>
+                ))}
+              </DataList>
+              <br />
+              {otherFiles.length > 0 && (
+                <ExpandableSection
+                  toggleTextCollapsed="View other files"
+                  toggleTextExpanded="Hide other files"
+                  className={"plain"}
+                >
+                  <DataList aria-label="other-files-data-list">
+                    {otherFiles.map((file) => (
+                      <FileDataListItem key={file.relativePath} file={file} />
+                    ))}
+                  </DataList>
+                </ExpandableSection>
+              )}
+            </DrawerPanelBody>
+          </>
+        )}
+      />
+    </DrawerPanelContent>
   );
 }
 

@@ -75,7 +75,8 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 import { SettingsTabs } from "../settings/SettingsModalBody";
-import { useBlockingHistoryWhen } from "../navigation/Hooks";
+import { Location } from "history";
+import { useNavigationBlockersBypass, useNavigationStatusToggle, useNavigationStatus } from "../navigation/Hooks";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -129,8 +130,6 @@ export function EditorToolbar(props: Props) {
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
   const [isGitHubGistLoading, setGitHubGistLoading] = useState(false);
-
-  const { blockingHistory, navigation } = useBlockingHistoryWhen(true);
 
   const githubAuthInfo = useMemo(() => {
     if (settings.github.authStatus !== AuthStatus.SIGNED_IN) {
@@ -235,53 +234,6 @@ export function EditorToolbar(props: Props) {
         />
       ),
       [i18n]
-    )
-  );
-
-  const requestDownload = useCallback(() => {
-    props.editor?.getStateControl().setSavedCommand();
-    props.workspaceFile
-      .getFileContents()
-      .then((content) => {
-        if (downloadRef.current) {
-          const fileBlob = new Blob([content], { type: "text/plain" });
-          downloadRef.current.href = URL.createObjectURL(fileBlob);
-          downloadRef.current.click();
-        }
-      })
-      .then(() => {
-        history.push({ pathname: globals.routes.home.path({}) });
-      });
-  }, [props.editor, props.workspaceFile, history, globals.routes.home]);
-
-  const closeWithoutSaving = useCallback(() => {
-    history.push({ pathname: globals.routes.home.path({}) });
-  }, [globals, history]);
-
-  const unsavedAlert = useAlert(
-    props.alerts,
-    useCallback(
-      ({ close }) => (
-        <Alert
-          data-testid="unsaved-alert"
-          variant="warning"
-          title={i18n.editorPage.alerts.unsaved.title}
-          actionClose={<AlertActionCloseButton data-testid="unsaved-alert-close-button" onClose={close} />}
-          actionLinks={
-            <>
-              <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestDownload}>
-                {i18n.terms.save}
-              </AlertActionLink>
-              <AlertActionLink data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
-                {i18n.editorPage.alerts.unsaved.closeWithoutSaving}
-              </AlertActionLink>
-            </>
-          }
-        >
-          <p>{i18n.editorPage.alerts.unsaved.message}</p>
-        </Alert>
-      ),
-      [i18n, requestDownload, closeWithoutSaving]
     )
   );
 
@@ -999,15 +951,103 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     workspaces,
   ]);
 
-  const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
+  const navigationStatus = useNavigationStatus();
+  const navigationBlockersBypass = useNavigationBlockersBypass();
+  const navigationStatusToggle = useNavigationStatusToggle();
+  const confirmNavigationAlert = useAlert<{ lastBlockedLocation: Location }>(
+    props.alerts,
+    useCallback(
+      (_, { lastBlockedLocation }) => (
+        <Alert
+          data-testid="unsaved-alert"
+          variant="warning"
+          title={
+            workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL
+              ? i18n.editorPage.alerts.unsaved.titleLocal
+              : i18n.editorPage.alerts.unsaved.titleGit
+          }
+          actionClose={
+            <AlertActionCloseButton data-testid="unsaved-alert-close-button" onClose={navigationStatusToggle.unblock} />
+          }
+          actionLinks={
+            <>
+              <Divider inset={{ default: "insetMd" }} />
+              <br />
+              {(workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL && (
+                <AlertActionLink
+                  data-testid="unsaved-alert-save-button"
+                  onClick={() => {
+                    navigationStatusToggle.unblock();
+                    return downloadWorkspaceZip();
+                  }}
+                  style={{ fontWeight: "bold" }}
+                >
+                  {`${i18n.terms.download} '${workspacePromise.data?.descriptor.name}'`}
+                </AlertActionLink>
+              )) || (
+                <>
+                  {!canPushToGitRepository && (
+                    <AlertActionLink onClick={() => settings.open(SettingsTabs.GITHUB)}>
+                      {`Configure GitHub token...`}
+                    </AlertActionLink>
+                  )}
+                  {canPushToGitRepository && (
+                    <AlertActionLink
+                      onClick={() => {
+                        navigationStatusToggle.unblock();
+                        return pushToGitRepository();
+                      }}
+                      style={{ fontWeight: "bold" }}
+                    >
+                      {`Push to '${GIT_ORIGIN_REMOTE_NAME}/${workspacePromise.data?.descriptor.origin.branch}'`}
+                    </AlertActionLink>
+                  )}
+                </>
+              )}
+              <br />
+              <br />
+              <AlertActionLink
+                data-testid="unsaved-alert-close-without-save-button"
+                onClick={() =>
+                  navigationBlockersBypass.execute(() => {
+                    history.push(lastBlockedLocation);
+                  })
+                }
+              >
+                {i18n.editorPage.alerts.unsaved.proceedAnyway}
+              </AlertActionLink>
+              <br />
+              <br />
+            </>
+          }
+        >
+          <br />
+          <p>{i18n.editorPage.alerts.unsaved.message}</p>
+        </Alert>
+      ),
+      [
+        canPushToGitRepository,
+        downloadWorkspaceZip,
+        history,
+        i18n,
+        navigationStatusToggle,
+        navigationBlockersBypass,
+        pushToGitRepository,
+        settings,
+        workspacePromise,
+      ]
+    )
+  );
 
   useEffect(() => {
-    if (navigation.isBlocked) {
-      unsavedAlert.show();
+    if (navigationStatus.lastBlockedLocation) {
+      confirmNavigationAlert.show({ lastBlockedLocation: navigationStatus.lastBlockedLocation });
     } else {
-      unsavedAlert.close();
+      confirmNavigationAlert.close();
     }
-  }, [unsavedAlert, navigation]);
+  }, [confirmNavigationAlert, navigationStatus]);
+
+  const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
 
   return (
     <PromiseStateWrapper
@@ -1039,9 +1079,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       style={{ fontStyle: "italic" }}
                     />
                   </div>
-                  {workspace.descriptor.origin.kind !== WorkspaceKind.LOCAL && (
-                    <WorkspaceStatusIndicator workspace={workspace} />
-                  )}
+                  <WorkspaceStatusIndicator workspace={workspace} />
                 </FlexItem>
                 {/*<Divider inset={{ default: "insetMd" }} isVertical={true} />*/}
                 {workspace.descriptor.origin.kind === WorkspaceKind.GIT &&

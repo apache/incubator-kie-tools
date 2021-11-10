@@ -12,6 +12,8 @@ export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefi
 
   const refresh = useCallback(
     async (canceled: Holder<boolean>) => {
+      setModifiedPromise({ loading: true });
+
       if (!workspace) {
         return;
       }

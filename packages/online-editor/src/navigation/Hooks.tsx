@@ -15,36 +15,32 @@
  */
 
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router";
+import { useContext, useEffect, useMemo } from "react";
+import { BlockerDelegate, NavigationBlockerContext, NavigationStatusContext } from "./NavigationContextProvider";
 
-export function useBlockingHistoryWhen(shouldBlock: boolean) {
-  const history = useHistory();
-  const [navigation, setNavigation] = useState({ isBlocked: false });
+function useNavigationBlockerContext() {
+  return useContext(NavigationBlockerContext);
+}
 
-  const blockingHistory = useMemo(() => {
-    return new Proxy<typeof history>(history, {
-      get: (target: any, name) => {
-        if (typeof target[name] !== "function") {
-          return target[name];
-        }
+export function useNavigationStatus() {
+  return useContext(NavigationStatusContext);
+}
 
-        if (!shouldBlock) {
-          return target[name];
-        }
+export function useNavigationBlockersBypass() {
+  const { bypass } = useNavigationBlockerContext();
+  return useMemo(() => ({ execute: bypass }), [bypass]);
+}
 
-        return () => {
-          setNavigation({ isBlocked: true });
-        };
-      },
-    });
-  }, [history, shouldBlock]);
+export function useNavigationStatusToggle() {
+  const { unblock } = useNavigationBlockerContext();
+  return useMemo(() => ({ unblock }), [unblock]);
+}
+
+export function useNavigationBlocker(key: string, blocker: BlockerDelegate) {
+  const { addBlocker, removeBlocker } = useNavigationBlockerContext();
 
   useEffect(() => {
-    if (!shouldBlock) {
-      setNavigation({ isBlocked: true });
-    }
-  }, [shouldBlock]);
-
-  return { blockingHistory, navigation };
+    addBlocker(key, blocker);
+    return () => removeBlocker(key);
+  }, [addBlocker, removeBlocker, key, blocker]);
 }

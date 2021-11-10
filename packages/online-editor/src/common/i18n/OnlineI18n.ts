@@ -57,9 +57,10 @@ interface OnlineDictionary extends ReferenceDictionary {
       invalidGistFilename: string;
       error: string;
       unsaved: {
-        title: string;
         message: string;
-        closeWithoutSaving: string;
+        titleLocal: string;
+        titleGit: string;
+        proceedAnyway: string;
       };
     };
   };

@@ -29,6 +29,7 @@ import { HomePage } from "./home/HomePage";
 import { NewWorkspaceWithEmptyFilePage } from "./workspace/components/NewWorkspaceWithEmptyFilePage";
 import { NewWorkspaceFromUrlPage } from "./workspace/components/NewWorkspaceFromUrlPage";
 import { DmnDevSandboxContextProvider } from "./editor/DmnDevSandbox/DmnDevSandboxContextProvider";
+import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
 
 export function App() {
   return (
@@ -40,6 +41,7 @@ export function App() {
         [SettingsContextProvider, {}],
         [WorkspacesContextProvider, {}],
         [DmnDevSandboxContextProvider, {}],
+        [NavigationContextProvider, {}],
         [RoutesSwitch, {}]
       )}
     </HashRouter>
