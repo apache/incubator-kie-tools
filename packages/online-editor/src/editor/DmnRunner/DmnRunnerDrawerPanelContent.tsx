@@ -255,11 +255,13 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     openRowSelection(false);
   }, []);
 
-  const rowOptions = useMemo(() => {
-    return dmnRunner.data.map((d, i) => (
-      <SelectOption key={i} value={`Data ${i + 1}`} onClick={() => dmnRunnerCallbacks.setDataIndex(i)} />
-    ));
-  }, [dmnRunner.data]);
+  const rowOptions = useMemo(
+    () =>
+      dmnRunner.data.map((d, i) => (
+        <SelectOption key={i} value={`Data ${i + 1}`} onClick={() => dmnRunnerCallbacks.setDataIndex(i)} />
+      )),
+    [dmnRunner.data]
+  );
 
   useEffect(() => {
     selectRow(`Data ${dmnRunner.dataIndex + 1}`);
@@ -316,7 +318,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                         <Select
                           variant={SelectVariant.single}
                           aria-label="Select Input"
-                          onToggle={() => openRowSelection(true)}
+                          onToggle={() => openRowSelection((prevState) => !prevState)}
                           onSelect={onSelectRow}
                           selections={selectedRow}
                           isOpen={rowSelectionIsOpen}
@@ -338,6 +340,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                 <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
                   <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
                     <DmnForm
+                      name={selectedRow}
                       formData={formData}
                       setFormData={setFormData}
                       formError={dmnRunner.error}

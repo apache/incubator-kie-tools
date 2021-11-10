@@ -76,8 +76,9 @@ interface DmnDeepProperty {
 }
 
 interface CommonProps {
-  formData: any;
-  setFormData: React.Dispatch<any>;
+  name?: string;
+  formData: object;
+  setFormData: React.Dispatch<object>;
   formError: boolean;
   setFormError: React.Dispatch<any>;
   formSchema?: any;
@@ -364,7 +365,7 @@ export function DmnForm(props: Props) {
       handleContextPath(newFormModel, pathCopy, "stringify");
     });
     setFormModel(newFormModel);
-  }, []);
+  }, [props.name]);
 
   const onSubmit = useCallback(
     (model) => {
