@@ -36,7 +36,7 @@ export interface DmnRunnerCallbacksContextType {
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   setDataIndex: React.Dispatch<React.SetStateAction<number>>;
-  setMode: React.Dispatch<DmnRunnerMode>;
+  setMode: React.Dispatch<React.SetStateAction<DmnRunnerMode>>;
   setData: React.Dispatch<React.SetStateAction<any>>;
 }
 

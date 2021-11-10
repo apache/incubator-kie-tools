@@ -22,6 +22,7 @@ import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { Button } from "@patternfly/react-core";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import "./style.css";
+import cloneDeep from "lodash/cloneDeep";
 
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
@@ -55,18 +56,16 @@ export interface DmnResult {
 }
 
 interface Props {
-  schema: any;
+  schema: object;
   data?: Array<object>;
-  setData?: React.Dispatch<React.SetStateAction<any>>;
+  setData?: React.Dispatch<React.SetStateAction<Array<object>>>;
   results?: Array<DecisionResult[] | undefined>;
   error: boolean;
-  setError: React.Dispatch<any>;
+  setError: React.Dispatch<React.SetStateAction<boolean>>;
   openRow: (rowIndex: number) => void;
 }
 
 const FORMS_ID = "unitable-forms";
-
-let grid: DmnGrid | undefined;
 
 export function DmnAutoTable(props: Props) {
   const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
@@ -76,20 +75,20 @@ export function DmnAutoTable(props: Props) {
   const [outputError, setOutputError] = useState<boolean>(false);
   const [dmnAutoTableError, setDmnAutoTableError] = useState<boolean>(false);
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
+  const rowsRef = useMemo(() => new Map<number, React.RefObject<HTMLFormElement> | null>(), []);
+  const [rowsModel, setRowsModel] = useState<Array<object>>();
 
   const bridge = useMemo(() => {
     return new DmnValidator().getBridge(props.schema ?? {});
   }, [props.schema]);
 
-  // grid is a singleton
-  grid = useMemo(() => {
-    return bridge ? (grid ? grid : new DmnGrid(bridge)) : undefined;
-  }, [bridge]);
+  const grid = useRef<DmnGrid>();
+  grid.current = bridge ? (grid.current ? grid.current : new DmnGrid(bridge)) : undefined;
 
   // grid should be updated everytime the bridge is updated
   const { input } = useMemo(() => {
-    grid?.updateBridge(bridge);
-    return { input: grid?.getInput() };
+    grid.current?.updateBridge(bridge);
+    return { input: grid.current?.getInput() };
   }, [bridge]);
 
   const shouldRender = useMemo(() => (input?.length ?? 0) > 0, [input]);
@@ -98,28 +97,49 @@ export function DmnAutoTable(props: Props) {
     (tableOperation: TableOperation, rowIndex: number) => {
       switch (tableOperation) {
         case TableOperation.RowInsertAbove:
+          setRowsModel?.((previousData: any) => {
+            return [...previousData.slice(0, rowIndex), {}, ...previousData.slice(rowIndex)];
+          });
           props.setData?.((previousData: any) => {
             return [...previousData.slice(0, rowIndex), {}, ...previousData.slice(rowIndex)];
           });
           break;
         case TableOperation.RowInsertBelow:
+          setRowsModel?.((previousData: any) => {
+            return [...previousData.slice(0, rowIndex + 1), {}, ...previousData.slice(rowIndex + 1)];
+          });
           props.setData?.((previousData: any) => {
             return [...previousData.slice(0, rowIndex + 1), {}, ...previousData.slice(rowIndex + 1)];
           });
           break;
         case TableOperation.RowDelete:
+          setRowsModel?.((previousData: any) => {
+            return [...previousData.slice(0, rowIndex), ...previousData.slice(rowIndex + 1)];
+          });
           props.setData?.((previousData: any) => {
             return [...previousData.slice(0, rowIndex), ...previousData.slice(rowIndex + 1)];
           });
           break;
         case TableOperation.RowClear:
+          setRowsModel?.((previousData: any) => {
+            const newData = [...previousData];
+            newData[rowIndex] = {};
+            return newData;
+          });
           props.setData?.((previousData: any) => {
-            const newdata = [...previousData];
-            newdata[rowIndex] = {};
-            return newdata;
+            const newData = [...previousData];
+            newData[rowIndex] = {};
+            return newData;
           });
           break;
         case TableOperation.RowDuplicate:
+          setRowsModel?.((previousData: any) => {
+            return [
+              ...previousData.slice(0, rowIndex + 1),
+              previousData[rowIndex],
+              ...previousData.slice(rowIndex + 1),
+            ];
+          });
           props.setData?.((previousData: any) => {
             return [
               ...previousData.slice(0, rowIndex + 1),
@@ -145,9 +165,9 @@ export function DmnAutoTable(props: Props) {
   const onSubmit = useCallback(
     (model: any, index) => {
       props.setData?.((previousData: any) => {
-        const newdata = [...previousData];
-        newdata[index] = model;
-        return newdata;
+        const newData = [...previousData];
+        newData[index] = model;
+        return newData;
       });
     },
     [props.setData]
@@ -155,26 +175,42 @@ export function DmnAutoTable(props: Props) {
 
   const onValidate = useCallback(
     (model: any, error: any, index) => {
-      props.setData?.((previousData: any) => {
-        const newdata = [...previousData];
-        newdata[index] = model;
-        return newdata;
+      props.setData?.((previousModel: any) => {
+        const newData = [...previousModel];
+        newData[index] = model;
+        return newData;
       });
     },
     [props.setData]
   );
 
+  // generate models on first render
+  useEffect(() => {
+    const newRowsModel = cloneDeep(props.data);
+    setRowsModel(newRowsModel);
+  }, []);
+
+  useEffect(() => {
+    if (rowsModel) {
+      const newData = [...rowsModel];
+      props.setData?.(newData);
+    }
+  }, [rowsModel]);
+
   // every input row is managed by an AutoRow. Each row is a form, and inside of it, cell are auto generated
   // using the uniforms library
   const getAutoRow = useCallback(
-    (data, rowIndex: number) =>
-      ({ children }: any) =>
-        (
+    (rowIndex: number) =>
+      ({ children }: React.PropsWithChildren<any>) => {
+        const ref = React.createRef<HTMLFormElement>();
+        rowsRef.set(rowIndex, ref);
+        return (
           <AutoRow
+            ref={ref}
             schema={bridge}
             autosave={true}
             autosaveDelay={1000}
-            model={data}
+            model={rowsModel?.[rowIndex]}
             onSubmit={(model: any) => onSubmit(model, rowIndex)}
             onValidate={(model: any, error: any) => onValidate(model, error, rowIndex)}
             placeholder={true}
@@ -191,8 +227,9 @@ export function DmnAutoTable(props: Props) {
               )}
             </UniformsContext.Consumer>
           </AutoRow>
-        ),
-    [bridge, onSubmit, onValidate]
+        );
+      },
+    [bridge, onSubmit, onValidate, rowsRef, rowsModel]
   );
 
   const inputUid = useMemo(() => nextId(), []);
@@ -202,47 +239,28 @@ export function DmnAutoTable(props: Props) {
         (acc, i) => (i.insideProperties ? acc + i.insideProperties.length : acc + 1),
         0
       );
-      //       const inputEntries = new Array(inputEntriesLength + 1);
       const inputEntries = new Array(inputEntriesLength);
       return Array.from(Array(rowQuantity)).map((e, i) => {
         return {
           inputEntries,
-          rowDelegate: getAutoRow(props.data?.[i], i),
+          rowDelegate: getAutoRow(i),
         } as Partial<DmnRunnerRule>;
       });
     }
     return [] as Partial<DmnRunnerRule>[];
-  }, [input, formsDivRendered, getAutoRow, props.data, rowQuantity]);
+  }, [input, formsDivRendered, getAutoRow, rowQuantity]);
 
   const outputUid = useMemo(() => nextId(), []);
   const { output, rules: outputRules } = useMemo(() => {
     const filteredResults = props.results?.filter((result) => result !== undefined);
-    if (grid && filteredResults) {
-      const [outputSet, outputEntries] = grid.generateBoxedOutputs(filteredResults);
+    if (grid.current && filteredResults) {
+      const [outputSet, outputEntries] = grid.current.generateBoxedOutputs(filteredResults);
       const output: any[] = Array.from(outputSet.values());
 
       const rules: Partial<DmnRunnerRule>[] = Array.from(Array(rowQuantity)).map((e, i) => ({
         outputEntries: (outputEntries?.[i] as string[]) ?? [],
       }));
-      // output.forEach((o, i) => {
-      //   o.insideProperties = outputEntries[i];
-      //
-      //   const filteredOutputEntries = rules[i]?.outputEntries?.filter((outputEntry) => typeof outputEntry === "object");
-      //   if (filteredOutputEntries?.length ?? 0 > 0) {
-      //     o.insideProperties = filteredOutputEntries?.reduce((acc: any[], outputEntry) => {
-      //       if (Array.isArray(outputEntry)) {
-      //         acc.push([...outputEntry]);
-      //         return acc;
-      //       }
-      //       if (typeof outputEntry === "object") {
-      //         acc.push(Object.assign({}, outputEntry));
-      //         return acc;
-      //       }
-      //       return [...acc, outputEntry];
-      //     }, []);
-      //   }
-      // });
-      grid?.updateWidth(output);
+      grid.current?.updateWidth(output);
       return {
         output,
         rules,
@@ -254,8 +272,8 @@ export function DmnAutoTable(props: Props) {
   // columns are saved in the grid instance, so some values can be used to improve re-renders (e.g. cell width)
   const onColumnsUpdate = useCallback(
     (columns: ColumnInstance[]) => {
-      grid?.setPreviousColumns(columns);
-      grid?.updateWidth(output);
+      grid.current?.setPreviousColumns(columns);
+      grid.current?.updateWidth(output);
     },
     [output]
   );
@@ -422,7 +440,13 @@ export function DmnAutoTable(props: Props) {
                               key={i}
                               style={{ width: "50px", height: "62px", display: "flex", alignItems: "center" }}
                             >
-                              <Button variant={"plain"} onClick={() => props.openRow(i)}>
+                              <Button
+                                variant={"plain"}
+                                onClick={() => {
+                                  rowsRef.get(i)?.current?.submit();
+                                  props.openRow(i);
+                                }}
+                              >
                                 <ListIcon />
                               </Button>
                             </div>

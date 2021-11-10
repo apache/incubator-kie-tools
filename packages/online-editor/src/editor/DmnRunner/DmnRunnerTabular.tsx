@@ -50,14 +50,7 @@ export function DmnRunnerTabular(props: Props) {
         return;
       }
 
-      const payloads = await Promise.all(
-        tableData.map((data) => {
-          if (Object.keys(data).length === 0) {
-            return;
-          }
-          return dmnRunnerCallbacks.preparePayload(data);
-        })
-      );
+      const payloads = await Promise.all(tableData.map((data) => dmnRunnerCallbacks.preparePayload(data)));
 
       try {
         const results = await Promise.all(
@@ -91,6 +84,7 @@ export function DmnRunnerTabular(props: Props) {
     updateDmnRunnerResults(dmnRunner.data);
   }, [dmnRunner.data]);
 
+  // TODO: move to DmnAutoTable , and edit rowsModel
   const previousFormSchema: any = usePrevious(dmnRunner.schema);
   useEffect(() => {
     dmnRunnerCallbacks.setData((previousTableData: any) => {
@@ -132,7 +126,7 @@ export function DmnRunnerTabular(props: Props) {
   return (
     <div style={{ height: "100%" }}>
       <DmnAutoTable
-        schema={dmnRunner.schema}
+        schema={dmnRunner.schema as any}
         data={dmnRunner.data}
         setData={dmnRunnerCallbacks.setData}
         results={props.dmnRunnerResults}
