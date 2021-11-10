@@ -76,7 +76,8 @@ import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatu
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 import { SettingsTabs } from "../settings/SettingsModalBody";
 import { Location } from "history";
-import { useNavigationBlockersBypass, useNavigationStatusToggle, useNavigationStatus } from "../navigation/Hooks";
+import { useNavigationBlockersBypass, useNavigationStatus, useNavigationStatusToggle } from "../navigation/Hooks";
+import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -1049,6 +1050,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
   const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
 
+  const [isVsCodeDropdownOpen, setVsCodeDropdownOpen] = useState(false);
+
   return (
     <PromiseStateWrapper
       promise={workspacePromise}
@@ -1087,23 +1090,45 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     <FlexItem>
                       <Toolbar style={{ padding: 0 }}>
                         <ToolbarItem>
-                          <a
-                            href={`https://vscode.dev/github${workspace.descriptor.origin.url.pathname}/tree/${workspace.descriptor.origin.branch}`}
-                            target={"_blank"}
-                          >
-                            <Button
-                              variant={ButtonVariant.secondary}
-                              icon={
-                                <img
-                                  style={{ width: "14px" }}
-                                  alt="vscode-logo-blue"
-                                  src={globals.routes.static.images.vscodeLogoBlue.path({})}
-                                />
-                              }
-                            >
-                              {`Open "${workspace.descriptor.name}"`}
-                            </Button>
-                          </a>
+                          <Dropdown
+                            onSelect={() => setVsCodeDropdownOpen(false)}
+                            toggle={
+                              <DropdownToggle toggleIndicator={null} onToggle={setVsCodeDropdownOpen}>
+                                <Button
+                                  variant={ButtonVariant.link}
+                                  icon={
+                                    <img
+                                      style={{ width: "14px" }}
+                                      alt="vscode-logo-blue"
+                                      src={globals.routes.static.images.vscodeLogoBlue.path({})}
+                                    />
+                                  }
+                                >
+                                  {`Open "${workspace.descriptor.name}"`}
+                                  &nbsp; &nbsp;
+                                  <CaretDownIcon />
+                                </Button>
+                              </DropdownToggle>
+                            }
+                            isOpen={isVsCodeDropdownOpen}
+                            isPlain
+                            dropdownItems={[
+                              <DropdownGroup key={"open-in-vscode"}>
+                                <a
+                                  href={`https://vscode.dev/github${workspace.descriptor.origin.url.pathname}/tree/${workspace.descriptor.origin.branch}`}
+                                  target={"_blank"}
+                                >
+                                  <DropdownItem icon={<ExternalLinkAltIcon />}>vscode.dev</DropdownItem>
+                                </a>
+                                {/*<a*/}
+                                {/*  href={`vscode://vscode.git/clone?url=${workspace.descriptor.origin.url.toString()}&branch=${workspace.descriptor.origin.branch}`}*/}
+                                {/*  target={"_blank"}*/}
+                                {/*>*/}
+                                {/*  <DropdownItem icon={<ExternalLinkAltIcon />}>VS Code Desktop</DropdownItem>*/}
+                                {/*</a>*/}
+                              </DropdownGroup>,
+                            ]}
+                          />
                         </ToolbarItem>
                       </Toolbar>
                     </FlexItem>
