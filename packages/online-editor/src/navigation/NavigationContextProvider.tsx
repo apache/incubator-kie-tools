@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { Location } from "history";
 
@@ -29,19 +29,23 @@ export interface NavigationBlockerContextType {
   bypass: (callback: () => void) => void;
 }
 
-export interface NavigationStatusContextType {
+export interface NavigationStatus {
   blockers: Map<string, BlockerDelegate>;
   lastBlockedLocation: Location | undefined;
   bypassBlockers: boolean;
 }
 
+export interface NavigationStatusHelpers {
+  shouldBlockNavigationTo: (location: Location) => boolean;
+}
+
 export const NavigationBlockerContext = React.createContext<NavigationBlockerContextType>({} as any);
-export const NavigationStatusContext = React.createContext<NavigationStatusContextType>({} as any);
+export const NavigationStatusContext = React.createContext<NavigationStatus & NavigationStatusHelpers>({} as any);
 
 export function NavigationContextProvider(props: { children: React.ReactNode }) {
   const history = useHistory();
 
-  const [status, setStatus] = useState<NavigationStatusContextType>({
+  const [status, setStatus] = useState<NavigationStatus>({
     blockers: new Map(),
     lastBlockedLocation: undefined,
     bypassBlockers: false,
@@ -81,6 +85,15 @@ export function NavigationContextProvider(props: { children: React.ReactNode }) 
     []
   );
 
+  const shouldBlockNavigationTo = useCallback(
+    (location: Location) => {
+      return [...status.blockers.values()].reduce((acc, blockerDelegate) => {
+        return acc || blockerDelegate({ location });
+      }, false);
+    },
+    [status.blockers]
+  );
+
   useEffect(() => {
     const cleanup = history.block((location, action) => {
       // history.replace is usually necessary for plumbing, so no reason to block.
@@ -94,11 +107,7 @@ export function NavigationContextProvider(props: { children: React.ReactNode }) 
         return;
       }
 
-      const shouldBlock = [...status.blockers.values()].reduce((acc, blockerDelegate) => {
-        return acc || blockerDelegate({ location });
-      }, false);
-
-      if (!shouldBlock) {
+      if (!shouldBlockNavigationTo(location)) {
         return;
       }
 
@@ -109,11 +118,19 @@ export function NavigationContextProvider(props: { children: React.ReactNode }) 
     return () => {
       cleanup();
     };
-  }, [blockerCtx, history, status.blockers, status.bypassBlockers]);
+  }, [blockerCtx, history, shouldBlockNavigationTo, status.bypassBlockers]);
+
+  const statusCtx = useMemo(
+    () => ({
+      ...status,
+      shouldBlockNavigationTo,
+    }),
+    [status, shouldBlockNavigationTo]
+  );
 
   return (
     <NavigationBlockerContext.Provider value={blockerCtx}>
-      <NavigationStatusContext.Provider value={status}>
+      <NavigationStatusContext.Provider value={statusCtx}>
         <>{props.children}</>
       </NavigationStatusContext.Provider>
     </NavigationBlockerContext.Provider>
