@@ -29,9 +29,12 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DeleteNodeConfirmation;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl.KogitoKeyPress;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
@@ -95,6 +98,10 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
         SessionSingletonCommandsFactory.createOrPut(this, sessionmanager);
     }
 
+    void setCanvasCommandFactory(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
+        this.canvasCommandFactory = canvasCommandFactory;
+    }
+
     public static DeleteSelectionSessionCommand getInstance(SessionManager sessionManager) {
         return SessionSingletonCommandsFactory.getInstanceDelete(null, null, null, null, sessionManager, null);
     }
@@ -111,19 +118,35 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
 
     @Override
     public void bind(final EditorSession session) {
+        superBind(session);
+        session.getKeyboardControl().addKeyShortcutCallback(getShortcutCallback(KEY_BACKSPACE));
+        session.getKeyboardControl().addKeyShortcutCallback(getShortcutCallback(DELETE));
+        session.getKeyboardControl().addKeyShortcutCallback(getOnKeyDownEvent());
+        setCanvasCommandFactory(this.loadCanvasFactory(canvasCommandFactoryInstance, definitionUtils));
+    }
+
+    KeyboardControl.KeyShortcutCallback getOnKeyDownEvent() {
+        return this::onKeyDownEvent;
+    }
+
+    void superBind(final EditorSession session) {
         super.bind(session);
-        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{KEY_BACKSPACE}, "Edit | Delete selection", () -> {
-            if (isEnabled()) {
+    }
+
+    KogitoKeyPress getShortcutCallback(final Key keyBackspace) {
+        return new KogitoKeyPress(new Key[]{keyBackspace}, "Edit | Delete selection", () -> {
+            if (isEnabled() && isEventHandlesEnabled()) {
                 execute();
             }
-        }));
-        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{DELETE}, "Edit | Delete selection", () -> {
-            if (isEnabled()) {
-                execute();
-            }
-        }));
-        session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
-        this.canvasCommandFactory = this.loadCanvasFactory(canvasCommandFactoryInstance, definitionUtils);
+        });
+    }
+
+    boolean isEventHandlesEnabled() {
+        final Canvas canvas = getSession().getCanvasHandler().getCanvas();
+        if (canvas instanceof AbstractCanvas) {
+            return ((AbstractCanvas) canvas).isEventHandlesEnabled();
+        }
+        return true;
     }
 
     @Override
@@ -191,7 +214,7 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
     }
 
     protected void onKeyDownEvent(final Key... keys) {
-        if (isEnabled()) {
+        if (isEnabled() && isEventHandlesEnabled()) {
             handleDelete(keys);
         }
     }

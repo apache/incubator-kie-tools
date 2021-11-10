@@ -139,4 +139,9 @@ public abstract class LienzoCanvas<V extends LienzoCanvasView>
     ViewEventHandlerManager getEventHandlerManager() {
         return eventHandlerManager;
     }
+
+    @Override
+    public boolean isEventHandlesEnabled() {
+        return getEventHandlerManager().isEnabled();
+    }
 }

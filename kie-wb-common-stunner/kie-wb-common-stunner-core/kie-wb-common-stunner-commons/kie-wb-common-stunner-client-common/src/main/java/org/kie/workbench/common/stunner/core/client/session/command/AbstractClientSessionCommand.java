@@ -49,7 +49,7 @@ public abstract class AbstractClientSessionCommand<S extends ClientSession> impl
         this.session = session;
     }
 
-    protected CanvasCommandFactory<AbstractCanvasHandler> loadCanvasFactory(
+    public CanvasCommandFactory<AbstractCanvasHandler> loadCanvasFactory(
             final ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance,
             final DefinitionUtils definitionUtils) {
         final Diagram diagram = session.getCanvasHandler().getDiagram();

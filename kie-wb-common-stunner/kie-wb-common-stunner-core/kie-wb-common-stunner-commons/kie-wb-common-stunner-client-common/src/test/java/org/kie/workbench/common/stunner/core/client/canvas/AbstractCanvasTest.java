@@ -262,6 +262,11 @@ public class AbstractCanvasTest {
         }
 
         @Override
+        public boolean isEventHandlesEnabled() {
+            return true;
+        }
+
+        @Override
         public boolean supports(ViewEventType type) {
             return false;
         }

@@ -353,7 +353,7 @@ public class ViewEventHandlerManager {
         }
     }
 
-    private boolean isEnabled() {
+    public boolean isEnabled() {
         return this.enabled;
     }
 
