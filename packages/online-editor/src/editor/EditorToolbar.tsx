@@ -669,7 +669,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     );
   }, [workspaces, props.workspaceFile]);
 
-  const canPushToGitRepository = useMemo(() => githubAuthInfo, [githubAuthInfo]);
+  const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
 
   const pushingAlert = useAlert(
     props.alerts,
@@ -986,24 +986,14 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   {`${i18n.terms.download} '${workspacePromise.data?.descriptor.name}'`}
                 </AlertActionLink>
               )) || (
-                <>
-                  {!canPushToGitRepository && (
-                    <AlertActionLink onClick={() => settings.open(SettingsTabs.GITHUB)}>
-                      {`Configure GitHub token...`}
-                    </AlertActionLink>
-                  )}
-                  {canPushToGitRepository && (
-                    <AlertActionLink
-                      onClick={() => {
-                        navigationStatusToggle.unblock();
-                        return pushToGitRepository();
-                      }}
-                      style={{ fontWeight: "bold" }}
-                    >
-                      {`Push to '${GIT_ORIGIN_REMOTE_NAME}/${workspacePromise.data?.descriptor.origin.branch}'`}
-                    </AlertActionLink>
-                  )}
-                </>
+                <PushToGitHubAlertActionLinks
+                  canPush={canPushToGitRepository}
+                  remoteRef={`${GIT_ORIGIN_REMOTE_NAME}/${workspacePromise.data?.descriptor.origin.branch}`}
+                  onPush={() => {
+                    navigationStatusToggle.unblock();
+                    return pushToGitRepository();
+                  }}
+                />
               )}
               <br />
               <br />
@@ -1114,6 +1104,25 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             isPlain
                             dropdownItems={[
                               <DropdownGroup key={"open-in-vscode"}>
+                                {navigationStatus.shouldBlockNavigationTo({ pathname: "__external" }) && (
+                                  <>
+                                    <Alert
+                                      isInline={true}
+                                      variant={"warning"}
+                                      title={"You have new changes to push"}
+                                      actionLinks={
+                                        <PushToGitHubAlertActionLinks
+                                          canPush={canPushToGitRepository}
+                                          remoteRef={`${GIT_ORIGIN_REMOTE_NAME}/${workspacePromise.data?.descriptor.origin.branch}`}
+                                          onPush={pushToGitRepository}
+                                        />
+                                      }
+                                    >
+                                      {`Opening '${workspace.descriptor.name}' on vscode.dev won't show your latest changes.`}
+                                    </Alert>
+                                    <Divider />
+                                  </>
+                                )}
                                 <a
                                   href={`https://vscode.dev/github${workspace.descriptor.origin.url.pathname}/tree/${workspace.descriptor.origin.branch}`}
                                   target={"_blank"}
@@ -1125,6 +1134,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                     vscode.dev
                                   </DropdownItem>
                                 </a>
+                                <Divider />
                                 <a
                                   href={`vscode://vscode.git/clone?url=${workspace.descriptor.origin.url.toString()}`}
                                   target={"_blank"}
@@ -1395,6 +1405,25 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         </>
       )}
     />
+  );
+}
+
+export function PushToGitHubAlertActionLinks(props: { canPush: boolean; onPush: () => void; remoteRef: string }) {
+  const settings = useSettings();
+
+  return (
+    <>
+      {!props.canPush && (
+        <AlertActionLink onClick={() => settings.open(SettingsTabs.GITHUB)}>
+          {`Configure GitHub token...`}
+        </AlertActionLink>
+      )}
+      {props.canPush && (
+        <AlertActionLink onClick={props.onPush} style={{ fontWeight: "bold" }}>
+          {`Push to '${props.remoteRef}'`}
+        </AlertActionLink>
+      )}
+    </>
   );
 }
 

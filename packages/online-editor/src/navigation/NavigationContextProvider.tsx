@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
-import { Location } from "history";
+import { Location, LocationDescriptorObject } from "history";
 
 export type BlockerDelegate = (args: { location: Location }) => boolean;
 
@@ -36,7 +36,7 @@ export interface NavigationStatus {
 }
 
 export interface NavigationStatusHelpers {
-  shouldBlockNavigationTo: (location: Location) => boolean;
+  shouldBlockNavigationTo: (location: LocationDescriptorObject) => boolean;
 }
 
 export const NavigationBlockerContext = React.createContext<NavigationBlockerContextType>({} as any);
