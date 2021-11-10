@@ -17,7 +17,7 @@
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { PrEditorsApp } from "./PrEditorsApp";
-import { createAndGetMainContainer, removeAllChildren } from "../../utils";
+import { createAndGetMainContainer, openRepoInExternalEditorContainer, removeAllChildren } from "../../utils";
 import { Globals, Main } from "../common/Main";
 import {
   KOGITO_IFRAME_CONTAINER_PR_CLASS,
@@ -26,6 +26,8 @@ import {
 } from "../../constants";
 import { Dependencies } from "../../Dependencies";
 import { PrInfo } from "./IsolatedPrEditor";
+import { OpenInExternalEditorButton } from "../openRepoInExternalEditor/OpenInExternalEditorButton";
+import { GitHubPageType } from "../../github/GitHubPageType";
 
 export function renderPrEditorsApp(args: Globals & { contentPath: string }) {
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
@@ -44,6 +46,10 @@ export function renderPrEditorsApp(args: Globals & { contentPath: string }) {
       externalEditorManager={args.externalEditorManager}
     >
       <PrEditorsApp prInfo={parsePrInfo(args.dependencies)} contentPath={args.contentPath} />
+      {ReactDOM.createPortal(
+        <OpenInExternalEditorButton className={"btn btn-sm"} pageType={GitHubPageType.PR_FILES_OR_COMMITS} />,
+        openRepoInExternalEditorContainer(args.id, args.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()!)
+      )}
     </Main>,
     createAndGetMainContainer(args.id, args.dependencies.all.body()),
     () => args.logger.log("Mounted.")

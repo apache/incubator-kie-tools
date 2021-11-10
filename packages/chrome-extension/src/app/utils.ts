@@ -18,6 +18,7 @@ import {
   KOGITO_IFRAME_FULLSCREEN_CONTAINER_CLASS,
   KOGITO_MAIN_CONTAINER_CLASS,
   KOGITO_MENU_CONTAINER_CLASS,
+  KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS,
 } from "./constants";
 import { Logger } from "../Logger";
 
@@ -100,6 +101,19 @@ export function kogitoMenuContainer(id: string, container: HTMLElement) {
 
   if (!element()) {
     container.insertAdjacentHTML("beforebegin", `<div class="${KOGITO_MENU_CONTAINER_CLASS} ${id} Header-item"></div>`);
+  }
+
+  return element();
+}
+
+export function openRepoInExternalEditorContainer(id: string, container: HTMLElement) {
+  const element = () => document.querySelector(`.${KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS}.${id}`)!;
+
+  if (!element()) {
+    container.insertAdjacentHTML(
+      "beforeend",
+      `<div class="${KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS} ${id}"></div>`
+    );
   }
 
   return element();

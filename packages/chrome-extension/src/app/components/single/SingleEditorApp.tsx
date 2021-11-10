@@ -98,12 +98,12 @@ export function SingleEditorApp(props: {
 
   const openExternalEditor = useCallback(() => {
     props.getFileContents().then((fileContent) => {
-      globals.externalEditorManager?.open(props.getFileName(), fileContent!, props.readonly);
+      globals.externalEditorManager?.open?.(props.getFileName(), fileContent!, props.readonly);
     });
   }, [globals.externalEditorManager]);
 
   const linkToExternalEditor = useMemo(() => {
-    return globals.externalEditorManager?.getLink(
+    return globals.externalEditorManager?.getLink?.(
       `${props.fileInfo.org}/${props.fileInfo.repo}/${props.fileInfo.gitRef}/${props.fileInfo.path}`
     );
   }, [globals.externalEditorManager]);

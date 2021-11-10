@@ -105,7 +105,7 @@
 .kogito-menu-icon {
   cursor: pointer;
   margin-left: 16px;
-  width: 25px;
+  height: 20px;
   filter: grayscale(1);
 }
 
@@ -199,4 +199,14 @@ b.icon.tick:before {
 b.icon.cross:before {
   content: "❌";
   font-size: 0.6em;
+}
+
+.kogito-open-repo-in-external-editor-container-container a {
+  display: flex !important;
+  align-items: center;
+}
+
+.kogito-open-repo-in-external-editor-container-container a img {
+  height: 1em;
+  margin-right: 8px;
 }

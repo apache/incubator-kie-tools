@@ -96,7 +96,7 @@ export function IsolatedPrEditor(props: {
   }, [fileStatusOnPr]);
 
   const openExternalEditor = useCallback(() => {
-    getFileContents().then((fileContent) => globals.externalEditorManager?.open(filePath, fileContent!, true));
+    getFileContents().then((fileContent) => globals.externalEditorManager?.open?.(filePath, fileContent!, true));
   }, [globals.externalEditorManager, filePath, getFileContents]);
 
   const repoInfo = useMemo(() => {
@@ -146,7 +146,7 @@ export function IsolatedPrEditor(props: {
           )
         )}
 
-      {globals.externalEditorManager &&
+      {globals.externalEditorManager?.open &&
         ReactDOM.createPortal(
           <a className={"pl-5 dropdown-item btn-link"} onClick={openExternalEditor}>
             {i18n.openIn(globals.externalEditorManager.name)}

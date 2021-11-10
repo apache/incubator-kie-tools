@@ -23,6 +23,13 @@ startExtension({
   name: "Kogito :: BPMN and DMN editors",
   extensionIconUrl: chrome.extension.getURL("/resources/kie_icon.png"),
   githubAuthTokenCookieName: "github-oauth-token-kie-editors",
+  externalEditorManager: {
+    name: ".NEW",
+    getImportRepoUrl: (repoUrl) => {
+      //FIXME: The paths are duplicated from `online-editor`.
+      return `${process.env.WEBPACK_REPLACE__onlineEditor_url}/#/import?url=${repoUrl}`;
+    },
+  },
   editorEnvelopeLocator: {
     targetOrigin: window.location.origin,
     mapping: new Map([

@@ -17,7 +17,9 @@
 export interface ExternalEditorManager {
   name: string;
 
-  open(filePath: string, fileContent: string, readonly: boolean): void;
+  open?: (filePath: string, fileContent: string, readonly: boolean) => void;
 
-  getLink(filePath: string): string;
+  getImportRepoUrl?: (repoUrl: string) => string;
+
+  getLink?: (filePath: string) => string;
 }
