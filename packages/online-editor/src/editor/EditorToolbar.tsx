@@ -1118,14 +1118,24 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                   href={`https://vscode.dev/github${workspace.descriptor.origin.url.pathname}/tree/${workspace.descriptor.origin.branch}`}
                                   target={"_blank"}
                                 >
-                                  <DropdownItem icon={<ExternalLinkAltIcon />}>vscode.dev</DropdownItem>
+                                  <DropdownItem
+                                    icon={<ExternalLinkAltIcon />}
+                                    description={`The '${workspace.descriptor.origin.branch}' branch will be opened.`}
+                                  >
+                                    vscode.dev
+                                  </DropdownItem>
                                 </a>
-                                {/*<a*/}
-                                {/*  href={`vscode://vscode.git/clone?url=${workspace.descriptor.origin.url.toString()}&branch=${workspace.descriptor.origin.branch}`}*/}
-                                {/*  target={"_blank"}*/}
-                                {/*>*/}
-                                {/*  <DropdownItem icon={<ExternalLinkAltIcon />}>VS Code Desktop</DropdownItem>*/}
-                                {/*</a>*/}
+                                <a
+                                  href={`vscode://vscode.git/clone?url=${workspace.descriptor.origin.url.toString()}`}
+                                  target={"_blank"}
+                                >
+                                  <DropdownItem
+                                    icon={<ExternalLinkAltIcon />}
+                                    description={"The default branch will be opened."}
+                                  >
+                                    VS Code Desktop
+                                  </DropdownItem>
+                                </a>
                               </DropdownGroup>,
                             ]}
                           />
