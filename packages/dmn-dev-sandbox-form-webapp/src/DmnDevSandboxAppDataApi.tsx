@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
+import { DmnSchema } from "@kogito-tooling/form/dist/dmn";
 import { routes } from "./Routes";
 
 export interface FormData {
   uri: string;
   modelName: string;
-  schema: DmnFormSchema;
+  schema: DmnSchema;
 }
 
 export interface AppData {
