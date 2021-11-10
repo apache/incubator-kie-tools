@@ -17,12 +17,14 @@ public class DataSetEditorDriverFactory {
     final BeanDataSetDefAttributesDriver beanDataSetDefAttributesDriver = GWT.create(BeanDataSetDefAttributesDriver.class);
     final PrometheusDataSetDefAttributesDriver prometheusSearchDataSetDefAttributesDriver = GWT.create(PrometheusDataSetDefAttributesDriver.class);
     final KafkaDataSetDefAttributesDriver kafkaSearchDataSetDefAttributesDriver = GWT.create(KafkaDataSetDefAttributesDriver.class);
+    final ExternalDataSetDefAttributesDriver externalSearchDataSetDefAttributesDriver = GWT.create(ExternalDataSetDefAttributesDriver.class);
     final CSVDataSetDefAttributesDriver csvDataSetDefAttributesDriver = GWT.create(CSVDataSetDefAttributesDriver.class);
     final SQLDataSetDefDriver sqlDataSetDefDriver = GWT.create(SQLDataSetDefDriver.class);
     final BeanDataSetDefDriver beanDataSetDefDriver = GWT.create(BeanDataSetDefDriver.class);
     final CSVDataSetDefDriver csvDataSetDefDriver = GWT.create(CSVDataSetDefDriver.class);
     final PrometheusDataSetDefDriver prometheusSearchDataSetDefDriver = GWT.create(PrometheusDataSetDefDriver.class);
     final KafkaDataSetDefDriver kafkaSearchDataSetDefDriver = GWT.create(KafkaDataSetDefDriver.class);
+    final ExternalDataSetDefDriver externalSearchDataSetDefDriver = GWT.create(ExternalDataSetDefDriver.class);
     final DataColumnDefDriver dataColumnDefDriver = GWT.create(DataColumnDefDriver.class);
 
     @Produces
@@ -89,4 +91,14 @@ public class DataSetEditorDriverFactory {
     public KafkaDataSetDefDriver kafkaDataSetDefDriver() {
         return kafkaSearchDataSetDefDriver;
     }
+    
+    @Produces
+    public ExternalDataSetDefAttributesDriver externalDataSetDefAttributesDriver() {
+        return externalSearchDataSetDefAttributesDriver;
+    }
+    
+    @Produces
+    public ExternalDataSetDefDriver externalDataSetDefDriver() {
+        return externalSearchDataSetDefDriver;
+    }    
 }

@@ -32,10 +32,10 @@ public class PrometheusDefJSONMarshaller implements DataSetDefJSONMarshallerExt<
 
     @Override
     public void fromJson(PrometheusDataSetDef def, JsonObject json) {
-        String serverUrl = json.getString(SERVER_URL);
-        String query = json.getString(QUERY);
-        String user = json.getString(USER);
-        String password = json.getString(PASSWORD);
+        var serverUrl = json.getString(SERVER_URL);
+        var query = json.getString(QUERY);
+        var user = json.getString(USER);
+        var password = json.getString(PASSWORD);
 
         if (!isBlank(serverUrl)) {
             def.setServerUrl(serverUrl);

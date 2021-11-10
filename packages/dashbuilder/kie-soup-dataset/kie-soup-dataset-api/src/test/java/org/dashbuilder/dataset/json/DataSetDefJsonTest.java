@@ -14,25 +14,10 @@
 */
 package org.dashbuilder.dataset.json;
 
-import org.apache.commons.io.IOUtils;
-import org.dashbuilder.dataprovider.DataSetProvider;
-import org.dashbuilder.dataprovider.DataSetProviderRegistry;
-import org.dashbuilder.dataprovider.DataSetProviderType;
-import org.dashbuilder.dataprovider.DefaultProviderType;
-import org.dashbuilder.dataset.ColumnType;
-import org.dashbuilder.dataset.def.BeanDataSetDef;
-import org.dashbuilder.dataset.def.CSVDataSetDef;
-import org.dashbuilder.dataset.def.DataColumnDef;
-import org.dashbuilder.dataset.def.DataSetDef;
-import org.dashbuilder.dataset.def.KafkaDataSetDef;
-import org.dashbuilder.dataset.def.KafkaDataSetDef.MetricsTarget;
-import org.dashbuilder.dataset.filter.ColumnFilter;
-import org.dashbuilder.dataset.filter.CoreFunctionFilter;
-import org.dashbuilder.dataset.filter.CoreFunctionType;
-import org.dashbuilder.dataset.filter.DataSetFilter;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -44,7 +29,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import org.apache.commons.io.IOUtils;
+import org.dashbuilder.dataprovider.DataSetProvider;
+import org.dashbuilder.dataprovider.DataSetProviderRegistry;
+import org.dashbuilder.dataprovider.DataSetProviderType;
+import org.dashbuilder.dataprovider.DefaultProviderType;
+import org.dashbuilder.dataset.ColumnType;
+import org.dashbuilder.dataset.def.BeanDataSetDef;
+import org.dashbuilder.dataset.def.CSVDataSetDef;
+import org.dashbuilder.dataset.def.DataColumnDef;
+import org.dashbuilder.dataset.def.DataSetDef;
+import org.dashbuilder.dataset.def.ExternalDataSetDef;
+import org.dashbuilder.dataset.def.KafkaDataSetDef;
+import org.dashbuilder.dataset.def.KafkaDataSetDef.MetricsTarget;
+import org.dashbuilder.dataset.filter.ColumnFilter;
+import org.dashbuilder.dataset.filter.CoreFunctionFilter;
+import org.dashbuilder.dataset.filter.CoreFunctionType;
+import org.dashbuilder.dataset.filter.DataSetFilter;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class DataSetDefJsonTest {
 
@@ -54,6 +57,7 @@ public class DataSetDefJsonTest {
     private static final String EXPENSES_DEF_PATH = "expenseReports.dset";
     private static final String CSV_DEF_PATH = "csvDataSetDef.dset";
     private static final String KAFKA_DEF_PATH = "kafkaDataSetDef.dset";
+    private static final String EXTERNAL_DEF_PATH = "externalDataSetDef.dset";
     private static final String CUSTOM_DEF_PATH = "customDataSetDef.dset";
 
     private static final DataSetProviderType CUSTOM_PROVIDER_TYPE = new DefaultProviderType("CUSTOM");
@@ -78,7 +82,9 @@ public class DataSetDefJsonTest {
                 case "SQL":
                     return DataSetProviderType.SQL;
                 case "KAFKA":
-                    return DataSetProviderType.KAFKA;                    
+                    return DataSetProviderType.KAFKA;
+                case "EXTERNAL":
+                    return DataSetProviderType.EXTERNAL;
                 case "CUSTOM":
                     return CUSTOM_PROVIDER_TYPE;
             }
@@ -169,6 +175,14 @@ public class DataSetDefJsonTest {
         assertEquals("testNodeId", def.getNodeId());
         assertEquals("testTopic", def.getTopic());
         assertEquals("testPartition", def.getPartition());
+    }
+    
+    @Test
+    public void testExternal() throws Exception {
+        var json = getFileAsString(EXTERNAL_DEF_PATH);
+        var def = (ExternalDataSetDef) jsonMarshaller.fromJson(json);
+        assertEquals("http://datasets.com/dataset", def.getUrl());
+        assertEquals(true, def.isDynamic());
     }
 
     @Test

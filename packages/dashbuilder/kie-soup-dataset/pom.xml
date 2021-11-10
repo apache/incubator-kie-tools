@@ -80,6 +80,7 @@
     <module>kie-soup-dataset-csv</module>
     <module>kie-soup-dataset-prometheus</module>
     <module>kie-soup-dataset-kafka</module>
+    <module>kie-soup-dataset-external</module>
   </modules>
 
 
