@@ -327,7 +327,7 @@ export function EditorPage(props: Props) {
                             kogitoWorkspace_resourceListRequest={handleResourceListRequest}
                             kogitoEditor_setContentError={handleSetContentError}
                             editorEnvelopeLocator={globals.editorEnvelopeLocator}
-                            channelType={ChannelType.VSCODE} // TODO: Change to ONLINE_MULTI_FILE when we upgrade the Editors.
+                            channelType={ChannelType.ONLINE_MULTI_FILE}
                             locale={locale}
                           />
                         )}
