@@ -847,7 +847,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
             This usually happens when your branch has conflicts with the upstream branch.
             <br />
             <br />
-            {canPushToGitRepository && `You can still save your work to a new branch`}
+            {canPushToGitRepository && `You can still save your work to a new branch.`}
             {!canPushToGitRepository &&
               `To be able to save your work on a new branch, please authenticate with GitHub.`}
           </Alert>
