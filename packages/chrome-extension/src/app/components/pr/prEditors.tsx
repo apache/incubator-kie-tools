@@ -21,6 +21,7 @@ import { createAndGetMainContainer, openRepoInExternalEditorContainer, removeAll
 import { Globals, Main } from "../common/Main";
 import {
   KOGITO_IFRAME_CONTAINER_PR_CLASS,
+  KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS,
   KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS,
 } from "../../constants";
@@ -95,4 +96,10 @@ function cleanup(id: string) {
   Array.from(document.querySelectorAll(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}.${id}`)).forEach((e) => {
     removeAllChildren(e);
   });
+
+  Array.from(document.querySelectorAll(`.${KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS}.${id}`)).forEach(
+    (e) => {
+      removeAllChildren(e);
+    }
+  );
 }
