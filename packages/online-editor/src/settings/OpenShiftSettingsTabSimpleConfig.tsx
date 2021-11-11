@@ -25,7 +25,7 @@ import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { useSettings } from "./SettingsContext";
+import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { useOnlineI18n } from "../common/i18n";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { EMPTY_CONFIG, isConfigValid, OpenShiftSettingsConfig, saveConfigCookie } from "./OpenShiftSettingsConfig";
@@ -44,30 +44,31 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
 }) {
   const { i18n } = useOnlineI18n();
   const settings = useSettings();
-  const [config, setConfig] = useState(settings.openshift.config.get);
+  const settingsDispatch = useSettingsDispatch();
+  const [config, setConfig] = useState(settings.openshift.config);
   const [isConfigValidated, setConfigValidated] = useState(FormValiationOptions.INITIAL);
   const [isConnecting, setConnecting] = useState(false);
 
   useEffect(() => {
-    setConfig(settings.openshift.config.get);
+    setConfig(settings.openshift.config);
     setConfigValidated(
-      settings.openshift.status.get === OpenShiftInstanceStatus.EXPIRED
+      settings.openshift.status === OpenShiftInstanceStatus.EXPIRED
         ? FormValiationOptions.CONFIG_EXPIRED
         : FormValiationOptions.INITIAL
     );
-  }, [settings.openshift.config.get, settings.openshift.status.get]);
+  }, [settings.openshift.config, settings.openshift.status]);
 
   const resetConfig = useCallback(
     (config: OpenShiftSettingsConfig) => {
       setConfigValidated(
-        settings.openshift.status.get === OpenShiftInstanceStatus.EXPIRED && config !== EMPTY_CONFIG
+        settings.openshift.status === OpenShiftInstanceStatus.EXPIRED && config !== EMPTY_CONFIG
           ? FormValiationOptions.CONFIG_EXPIRED
           : FormValiationOptions.INITIAL
       );
       setConnecting(false);
       setConfig(config);
     },
-    [settings.openshift.status.get]
+    [settings.openshift.status]
   );
 
   const onConnect = useCallback(async () => {
@@ -81,12 +82,12 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
     }
 
     setConnecting(true);
-    const isConfigOk = await settings.openshift.service.onCheckConfig(config);
+    const isConfigOk = await settingsDispatch.openshift.service.onCheckConfig(config);
 
     if (isConfigOk) {
       saveConfigCookie(config);
-      settings.openshift.config.set(config);
-      settings.openshift.status.set(OpenShiftInstanceStatus.CONNECTED);
+      settingsDispatch.openshift.setConfig(config);
+      settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.CONNECTED);
     }
 
     setConnecting(false);
@@ -97,7 +98,7 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
     }
 
     resetConfig(config);
-  }, [config, isConnecting, resetConfig, settings.openshift.service]);
+  }, [config, isConnecting, resetConfig, settingsDispatch.openshift]);
 
   const onClearHost = useCallback(() => setConfig({ ...config, host: "" }), [config]);
   const onClearNamespace = useCallback(() => setConfig({ ...config, namespace: "" }), [config]);

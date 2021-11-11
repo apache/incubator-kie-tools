@@ -37,7 +37,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOnlineI18n } from "../common/i18n";
 import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/KieToolingExtendedServicesButtons";
 import { useGlobals } from "../common/GlobalContext";
-import { AuthStatus, useSettings } from "../settings/SettingsContext";
+import { AuthStatus, useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
 import { useHistory } from "react-router";
 import { EmbedModal } from "./EmbedModal";
@@ -114,6 +114,7 @@ const hideWhenTiny: ToolbarItemProps["visibility"] = {
 export function EditorToolbar(props: Props) {
   const globals = useGlobals();
   const settings = useSettings();
+  const settingsDispatch = useSettingsDispatch();
   const history = useHistory();
   const workspaces = useWorkspaces();
   const [isShareDropdownOpen, setShareDropdownOpen] = useState(false);
@@ -322,7 +323,7 @@ export function EditorToolbar(props: Props) {
         return;
       }
       setGitHubGistLoading(true);
-      const gist = await settings.github.octokit.gists.create({
+      const gist = await settingsDispatch.github.octokit.gists.create({
         description: workspacePromise.data?.descriptor.name ?? "",
         public: true,
 
@@ -387,7 +388,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       setGitHubGistLoading(false);
     }
   }, [
-    settings.github.octokit,
+    settingsDispatch.github.octokit,
     workspacePromise,
     workspaces,
     props.workspaceFile.workspaceId,
@@ -839,7 +840,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 )}
 
                 {!canPushToGitRepository && (
-                  <AlertActionLink onClick={() => settings.open(SettingsTabs.GITHUB)}>
+                  <AlertActionLink onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
                     {`Configure GitHub token...`}
                   </AlertActionLink>
                 )}
@@ -855,7 +856,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           </Alert>
         );
       },
-      [canPushToGitRepository, pushNewBranch, settings, workspacePromise]
+      [canPushToGitRepository, pushNewBranch, settingsDispatch, workspacePromise]
     )
   );
 
@@ -1410,12 +1411,12 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 }
 
 export function PushToGitHubAlertActionLinks(props: { canPush: boolean; onPush: () => void; remoteRef: string }) {
-  const settings = useSettings();
+  const settingsDispatch = useSettingsDispatch();
 
   return (
     <>
       {!props.canPush && (
-        <AlertActionLink onClick={() => settings.open(SettingsTabs.GITHUB)}>
+        <AlertActionLink onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
           {`Configure GitHub token...`}
         </AlertActionLink>
       )}

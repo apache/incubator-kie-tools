@@ -22,7 +22,7 @@ import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/
 import { OpenShiftDeployedModel } from "../../settings/OpenShiftDeployedModel";
 import { DmnDevSandboxContext } from "./DmnDevSandboxContext";
 import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus";
-import { useSettings } from "../../settings/SettingsContext";
+import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { isConfigValid } from "../../settings/OpenShiftSettingsConfig";
 import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 
@@ -34,6 +34,7 @@ const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
 
 export function DmnDevSandboxContextProvider(props: Props) {
   const settings = useSettings();
+  const settingsDispatch = useSettingsDispatch();
   const globals = useGlobals();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const workspaces = useWorkspaces();
@@ -45,7 +46,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
 
   const onDisconnect = useCallback(
     (closeModals: boolean) => {
-      settings.openshift.status.set(OpenShiftInstanceStatus.DISCONNECTED);
+      settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.DISCONNECTED);
       setDropdownOpen(false);
       setDeployments([]);
 
@@ -53,15 +54,15 @@ export function DmnDevSandboxContextProvider(props: Props) {
         setConfirmDeployModalOpen(false);
       }
     },
-    [settings.openshift.status]
+    [settingsDispatch.openshift]
   );
 
   const deploy = useCallback(
     async (workspaceFile: WorkspaceFile) => {
       if (
         !(
-          isConfigValid(settings.openshift.config.get) &&
-          (await settings.openshift.service.isConnectionEstablished(settings.openshift.config.get))
+          isConfigValid(settings.openshift.config) &&
+          (await settingsDispatch.openshift.service.isConnectionEstablished(settings.openshift.config))
         )
       ) {
         return false;
@@ -75,10 +76,10 @@ export function DmnDevSandboxContextProvider(props: Props) {
       });
 
       try {
-        await settings.openshift.service.deploy({
+        await settingsDispatch.openshift.service.deploy({
           targetFilePath: workspaceFile.relativePath,
           workspaceZipBlob: zipBlob,
-          config: settings.openshift.config.get,
+          config: settings.openshift.config,
           onlineEditorUrl: (baseUrl) =>
             globals.routes.importModel.url({
               base: process.env.WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl,
@@ -92,7 +93,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
         return false;
       }
     },
-    [settings.openshift.config.get, settings.openshift.service, workspaces, globals.routes.importModel]
+    [settings.openshift.config, settingsDispatch.openshift.service, workspaces, globals.routes.importModel]
   );
 
   useEffect(() => {
@@ -101,31 +102,31 @@ export function DmnDevSandboxContextProvider(props: Props) {
       return;
     }
 
-    if (!isConfigValid(settings.openshift.config.get)) {
+    if (!isConfigValid(settings.openshift.config)) {
       if (deployments.length > 0) {
         setDeployments([]);
       }
       return;
     }
 
-    if (settings.openshift.status.get === OpenShiftInstanceStatus.DISCONNECTED) {
-      settings.openshift.service
-        .isConnectionEstablished(settings.openshift.config.get)
+    if (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED) {
+      settingsDispatch.openshift.service
+        .isConnectionEstablished(settings.openshift.config)
         .then((isConfigOk: boolean) => {
-          settings.openshift.status.set(
+          settingsDispatch.openshift.setStatus(
             isConfigOk ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.EXPIRED
           );
-          return isConfigOk ? settings.openshift.service.loadDeployments(settings.openshift.config.get) : [];
+          return isConfigOk ? settingsDispatch.openshift.service.loadDeployments(settings.openshift.config) : [];
         })
         .then((deployments) => setDeployments(deployments))
         .catch((error) => console.error(error));
       return;
     }
 
-    if (settings.openshift.status.get === OpenShiftInstanceStatus.CONNECTED) {
+    if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED) {
       const loadDeploymentsTask = setInterval(() => {
-        settings.openshift.service
-          .loadDeployments(settings.openshift.config.get)
+        settingsDispatch.openshift.service
+          .loadDeployments(settings.openshift.config)
           .then((deployments) => setDeployments(deployments))
           .catch((error) => {
             setDeployments([]);
@@ -137,11 +138,11 @@ export function DmnDevSandboxContextProvider(props: Props) {
     }
   }, [
     onDisconnect,
-    settings.openshift.config,
-    settings.openshift.status,
-    settings.openshift.service,
+    settings.openshift,
+    settingsDispatch.openshift.service,
     kieToolingExtendedServices.status,
     deployments.length,
+    settingsDispatch.openshift,
   ]);
 
   const value = useMemo(

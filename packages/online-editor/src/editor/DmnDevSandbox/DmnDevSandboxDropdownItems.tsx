@@ -26,7 +26,7 @@ import {
   useKieToolingExtendedServices,
 } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
-import { useSettings } from "../../settings/SettingsContext";
+import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { SettingsTabs } from "../../settings/SettingsModalBody";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -35,6 +35,7 @@ import { OpenshiftIcon } from "@patternfly/react-icons/dist/js/icons/openshift-i
 
 export function useDmnDevSandboxDropdownItems(workspace: ActiveWorkspace | undefined) {
   const settings = useSettings();
+  const settingsDispatch = useSettingsDispatch();
   const { i18n } = useOnlineI18n();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const dmnDevSandbox = useDmnDevSandbox();
@@ -45,13 +46,13 @@ export function useDmnDevSandboxDropdownItems(workspace: ActiveWorkspace | undef
   );
 
   const isDmnDevSandboxConnected = useMemo(
-    () => settings.openshift.status.get === OpenShiftInstanceStatus.CONNECTED,
+    () => settings.openshift.status === OpenShiftInstanceStatus.CONNECTED,
     [settings.openshift.status]
   );
 
   const onDevSandboxSetup = useCallback(() => {
-    settings.open(SettingsTabs.OPENSHIFT);
-  }, [settings]);
+    settingsDispatch.open(SettingsTabs.OPENSHIFT);
+  }, [settingsDispatch]);
 
   const onDevSandboxDeploy = useCallback(() => {
     if (isKieToolingExtendedServicesRunning) {

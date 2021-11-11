@@ -1,7 +1,7 @@
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import * as React from "react";
 import { GitHubSettingsTab } from "./GitHubSettingsTab";
-import { useSettings } from "./SettingsContext";
+import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { OpenShiftSettingsTab } from "./OpenShiftSettingsTab";
 import { KieToolingExtendedServicesSettingsTab } from "./KieToolingExtendedServicesSettingsTab";
 
@@ -13,11 +13,12 @@ export enum SettingsTabs {
 
 export function SettingsModalBody() {
   const settings = useSettings();
+  const settingsDispatch = useSettingsDispatch();
 
   return (
     <Tabs
       activeKey={settings.activeTab}
-      onSelect={(e, k) => settings.open(k as SettingsTabs)}
+      onSelect={(e, k) => settingsDispatch.open(k as SettingsTabs)}
       isVertical={false}
       isBox={false}
     >

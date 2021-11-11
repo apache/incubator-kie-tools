@@ -4,7 +4,7 @@ import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { useSettings } from "./SettingsContext";
+import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { useKieToolingExtendedServices } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContext";
@@ -12,15 +12,16 @@ import { KieToolingExtendedServicesStatus } from "../editor/KieToolingExtendedSe
 
 export function KieToolingExtendedServicesSettingsTab() {
   const settings = useSettings();
+  const settingsDispatch = useSettingsDispatch();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
-  const [port, setPort] = useState(settings.kieToolingExtendedServices.port.get);
+  const [port, setPort] = useState(settings.kieToolingExtendedServices.port);
 
   const onSubmit = useCallback(
     (e: any) => {
       e.preventDefault();
-      settings.kieToolingExtendedServices.port.set(port);
+      settingsDispatch.kieToolingExtendedServices.setPort(port);
     },
-    [settings, port]
+    [settingsDispatch, port]
   );
 
   return (

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { useSettings } from "../../settings/SettingsContext";
+import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { useOnlineI18n } from "../../common/i18n";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
 import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus";
@@ -22,17 +22,18 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 
 export function OpenshiftDeploymentsDropdown() {
   const settings = useSettings();
+  const settingsDispatch = useSettingsDispatch();
   const { i18n } = useOnlineI18n();
   const dmnDevSandbox = useDmnDevSandbox();
 
   const isDmnDevSandboxConnected = useMemo(
-    () => settings.openshift.status.get === OpenShiftInstanceStatus.CONNECTED,
+    () => settings.openshift.status === OpenShiftInstanceStatus.CONNECTED,
     [settings.openshift.status]
   );
 
   const openOpenShiftSettings = useCallback(() => {
-    settings.open(SettingsTabs.OPENSHIFT);
-  }, [settings]);
+    settingsDispatch.open(SettingsTabs.OPENSHIFT);
+  }, [settingsDispatch]);
 
   const items = useMemo(() => {
     const common = isDmnDevSandboxConnected
@@ -46,7 +47,7 @@ export function OpenshiftDeploymentsDropdown() {
             ouiaId={"setup-as-dmn-dev-sandbox-dropdown-button"}
             description={"Change..."}
           >
-            {i18n.dmnDevSandbox.dropdown.connectedTo(settings.openshift.config.get.namespace)}
+            {i18n.dmnDevSandbox.dropdown.connectedTo(settings.openshift.config.namespace)}
           </DropdownItem>,
           <DropdownSeparator key={"dropdown-dmn-dev-sandbox-separator-deployments-2"} />,
         ]
@@ -87,7 +88,7 @@ export function OpenshiftDeploymentsDropdown() {
     i18n,
     isDmnDevSandboxConnected,
     openOpenShiftSettings,
-    settings.openshift.config.get.namespace,
+    settings.openshift.config.namespace,
   ]);
 
   return (

@@ -35,44 +35,52 @@ interface GithubUser {
 }
 
 export interface SettingsContextType {
-  open: (activeTab?: SettingsTabs) => void;
-  close: () => void;
   isOpen: boolean;
   activeTab: SettingsTabs;
   openshift: {
-    service: OpenShiftService;
-    status: {
-      get: OpenShiftInstanceStatus;
-      set: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
-    };
-    config: {
-      get: OpenShiftSettingsConfig;
-      set: React.Dispatch<React.SetStateAction<OpenShiftSettingsConfig>>;
-    };
+    status: OpenShiftInstanceStatus;
+    config: OpenShiftSettingsConfig;
   };
   kieToolingExtendedServices: {
-    port: {
-      get: string;
-      set: React.Dispatch<React.SetStateAction<string>>;
-    };
+    port: string;
   };
   github: {
-    authService: { reset: () => void; authenticate: (token: string) => Promise<void> };
-    authStatus: AuthStatus;
-    octokit: Octokit;
     token?: string;
     user?: GithubUser;
     scopes?: string[];
+    authStatus: AuthStatus;
   };
   general: {
-    guidedTourEnabled: {
-      get: boolean;
-      set: React.Dispatch<React.SetStateAction<boolean>>;
+    guidedTour: {
+      isEnabled: boolean;
+    };
+  };
+}
+
+export interface SettingsDispatchContextType {
+  open: (activeTab?: SettingsTabs) => void;
+  close: () => void;
+  openshift: {
+    service: OpenShiftService;
+    setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
+    setConfig: React.Dispatch<React.SetStateAction<OpenShiftSettingsConfig>>;
+  };
+  kieToolingExtendedServices: {
+    setPort: React.Dispatch<React.SetStateAction<string>>;
+  };
+  github: {
+    authService: { reset: () => void; authenticate: (token: string) => Promise<void> };
+    octokit: Octokit;
+  };
+  general: {
+    guidedTour: {
+      setEnabled: React.Dispatch<React.SetStateAction<boolean>>;
     };
   };
 }
 
 export const SettingsContext = React.createContext<SettingsContextType>({} as any);
+export const SettingsDispatchContext = React.createContext<SettingsDispatchContextType>({} as any);
 
 export function SettingsContextProvider(props: any) {
   const queryParams = useQueryParams();
@@ -111,7 +119,7 @@ export function SettingsContextProvider(props: any) {
     return {
       reset: () => {
         setGitHubOctokit(new Octokit());
-        setGitHubAuthStatus(AuthStatus.SIGNED_OUT);
+        setGitHubAuthStatus(AuthStatus.LOADING);
         setGitHubToken(undefined);
         setGitHubUser(undefined);
         setGitHubScopes(undefined);
@@ -176,77 +184,86 @@ export function SettingsContextProvider(props: any) {
     [kieToolingExtendedServices.baseUrl]
   );
 
-  const value = useMemo(() => {
+  const dispatch = useMemo(() => {
     return {
       open,
       close,
+      openshift: {
+        service: openshiftService,
+        setStatus: setOpenshiftStatus,
+        setConfig: setOpenShiftConfig,
+      },
+      github: {
+        authService: githubAuthService,
+        octokit: githubOctokit,
+      },
+      kieToolingExtendedServices: {
+        setPort: kieToolingExtendedServices.saveNewPort,
+      },
+      general: {
+        guidedTour: {
+          setEnabled: setGuidedTourEnabled,
+        },
+      },
+    };
+  }, [close, githubAuthService, githubOctokit, kieToolingExtendedServices.saveNewPort, open, openshiftService]);
+
+  const value = useMemo(() => {
+    return {
       isOpen,
       activeTab,
       openshift: {
-        service: openshiftService,
-        status: {
-          get: openshiftStatus,
-          set: setOpenshiftStatus,
-        },
-        config: {
-          get: openshiftConfig,
-          set: setOpenShiftConfig,
-        },
+        status: openshiftStatus,
+        config: openshiftConfig,
       },
       github: {
-        octokit: githubOctokit,
         authStatus: githubAuthStatus,
         token: githubToken,
         user: githubUser,
         scopes: githubScopes,
-        authService: githubAuthService,
       },
       kieToolingExtendedServices: {
-        port: {
-          get: kieToolingExtendedServices.port,
-          set: kieToolingExtendedServices.saveNewPort,
-        },
+        port: kieToolingExtendedServices.port,
       },
       general: {
-        guidedTourEnabled: {
-          get: isGuidedTourEnabled,
-          set: setGuidedTourEnabled,
+        guidedTour: {
+          isEnabled: isGuidedTourEnabled,
         },
       },
     };
   }, [
     activeTab,
-    close,
-    githubAuthService,
     githubAuthStatus,
-    githubOctokit,
     githubScopes,
     githubToken,
     githubUser,
     isGuidedTourEnabled,
     isOpen,
     kieToolingExtendedServices.port,
-    kieToolingExtendedServices.saveNewPort,
-    open,
     openshiftConfig,
-    openshiftService,
     openshiftStatus,
   ]);
 
   return (
     <SettingsContext.Provider value={value}>
-      {props.children}
-      <Modal title="Settings" isOpen={isOpen} onClose={close} variant={ModalVariant.large}>
-        <div style={{ height: "calc(100vh * 0.5)" }} className={"kogito-tooling--setings-modal-content"}>
-          <SettingsModalBody />
-        </div>
-      </Modal>
+      <SettingsDispatchContext.Provider value={dispatch}>
+        {githubAuthStatus !== AuthStatus.LOADING && <>{props.children}</>}
+        <Modal title="Settings" isOpen={isOpen} onClose={close} variant={ModalVariant.large}>
+          <div style={{ height: "calc(100vh * 0.5)" }} className={"kogito-tooling--setings-modal-content"}>
+            <SettingsModalBody />
+          </div>
+        </Modal>
+      </SettingsDispatchContext.Provider>
     </SettingsContext.Provider>
   );
 }
 
 export function useSettings() {
   return useContext(SettingsContext);
+}
+
+export function useSettingsDispatch() {
+  return useContext(SettingsDispatchContext);
 }
 
 function getBooleanCookieInitialValue<T>(name: string, defaultValue: boolean) {

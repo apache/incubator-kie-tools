@@ -30,7 +30,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useKieToolingExtendedServices } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { useOnlineI18n } from "../common/i18n";
-import { useSettings } from "./SettingsContext";
+import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import {
   isConfigValid,
   isHostValid,
@@ -56,7 +56,8 @@ export function OpenShiftSettingsTabWizardConfig(props: {
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const { i18n } = useOnlineI18n();
   const settings = useSettings();
-  const [config, setConfig] = useState(settings.openshift.config.get);
+  const settingsDispatch = useSettingsDispatch();
+  const [config, setConfig] = useState(settings.openshift.config);
   const [isConfigValidated, setConfigValidated] = useState(false);
   const [isSaveLoading, setSaveLoading] = useState(false);
   const [isConnectLoading, setConnectLoading] = useState(false);
@@ -85,8 +86,8 @@ export function OpenShiftSettingsTabWizardConfig(props: {
     if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
       return;
     }
-    setConfig(settings.openshift.config.get);
-  }, [settings.openshift.config.get, kieToolingExtendedServices.status]);
+    setConfig(settings.openshift.config);
+  }, [settings.openshift.config, kieToolingExtendedServices.status]);
 
   const onClose = useCallback(() => {
     props.setMode(OpenShiftSettingsTabMode.SIMPLE);
@@ -115,11 +116,11 @@ export function OpenShiftSettingsTabWizardConfig(props: {
     async ({ id }) => {
       if (id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
-        setConfigValidated(await settings.openshift.service.onCheckConfig(config));
+        setConfigValidated(await settingsDispatch.openshift.service.onCheckConfig(config));
         setConnectLoading(false);
       }
     },
-    [config, settings.openshift.service]
+    [config, settingsDispatch.openshift.service]
   );
 
   const onFinish = useCallback(async () => {
@@ -129,11 +130,11 @@ export function OpenShiftSettingsTabWizardConfig(props: {
 
     setSaveLoading(true);
 
-    const isConfigOk = await settings.openshift.service.onCheckConfig(config);
+    const isConfigOk = await settingsDispatch.openshift.service.onCheckConfig(config);
     if (isConfigOk) {
-      settings.openshift.config.set(config);
+      settingsDispatch.openshift.setConfig(config);
       saveConfigCookie(config);
-      settings.openshift.status.set(OpenShiftInstanceStatus.CONNECTED);
+      settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.CONNECTED);
     }
 
     setConfigValidated(isConfigOk);
@@ -144,7 +145,7 @@ export function OpenShiftSettingsTabWizardConfig(props: {
     }
 
     resetConfig(config);
-  }, [config, isSaveLoading, resetConfig, settings.openshift]);
+  }, [config, isSaveLoading, resetConfig, settingsDispatch.openshift]);
 
   const wizardSteps = useMemo(
     () => [

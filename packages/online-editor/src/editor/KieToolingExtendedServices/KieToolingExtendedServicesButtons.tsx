@@ -73,9 +73,9 @@ export function KieToolingExtendedServicesButtons(props: Props) {
   const isDevSandboxEnabled = useMemo(() => {
     return (
       kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING &&
-      settings.openshift.status.get === OpenShiftInstanceStatus.CONNECTED
+      settings.openshift.status === OpenShiftInstanceStatus.CONNECTED
     );
-  }, [kieToolingExtendedServices.status, settings.openshift.status.get]);
+  }, [kieToolingExtendedServices.status, settings.openshift.status]);
 
   return (
     <>

@@ -29,6 +29,7 @@
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
     "@kie/npm-treatment-tool": "^1.1.1",
+    "@simbathesailor/use-what-changed": "^2.0.0",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
     "@testing-library/react-hooks": "^5.1.2",

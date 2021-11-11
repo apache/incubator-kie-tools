@@ -27,23 +27,24 @@ import { KogitoGuidedTour } from "@kie-tooling-core/guided-tour/dist/channel";
 import { DemoMode, SubTutorialMode, Tutorial } from "@kie-tooling-core/guided-tour/dist/api";
 import { OnlineI18n, useOnlineI18n } from "../common/i18n";
 import { I18nHtml } from "@kie-tooling-core/i18n/dist/react-components";
-import { useSettings } from "../settings/SettingsContext";
+import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 
 export function useDmnTour(shouldShow: boolean) {
   const { i18n } = useOnlineI18n();
   const settings = useSettings();
+  const settingsDispatch = useSettingsDispatch();
 
   useEffect(() => {
-    if (!settings.general.guidedTourEnabled.get || shouldShow) {
+    if (!settings.general.guidedTour.isEnabled || shouldShow) {
       return;
     }
 
     const guidedTour = KogitoGuidedTour.getInstance();
-    guidedTour.setup(() => settings.general.guidedTourEnabled.set(false));
-  }, [shouldShow, settings]);
+    guidedTour.setup(() => settingsDispatch.general.guidedTour.setEnabled(false));
+  }, [shouldShow, settings, settingsDispatch]);
 
   useEffect(() => {
-    if (shouldShow && settings.general.guidedTourEnabled.get) {
+    if (shouldShow && settings.general.guidedTour.isEnabled) {
       const guidedTour = KogitoGuidedTour.getInstance();
       const tutorial = getOnlineEditorTutorial(i18n);
 

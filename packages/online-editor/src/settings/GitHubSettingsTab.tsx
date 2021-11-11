@@ -10,7 +10,7 @@ import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { AuthStatus, useSettings } from "./SettingsContext";
+import { AuthStatus, useSettings, useSettingsDispatch } from "./SettingsContext";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useOnlineI18n } from "../common/i18n";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
@@ -40,6 +40,7 @@ export interface GitHubOAuthResponse {
 
 export function GitHubSettingsTab() {
   const settings = useSettings();
+  const settingsDispatch = useSettingsDispatch();
   const { i18n } = useOnlineI18n();
 
   const [githubSignInOption, setGitHubSignInOption] = useState(GitHubSignInOption.PERSONAL_ACCESS_TOKEN);
@@ -101,18 +102,18 @@ export function GitHubSettingsTab() {
     (e) => {
       const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
       setPotentialGitHubToken(token);
-      settings.github.authService
+      settingsDispatch.github.authService
         .authenticate(token)
         .then(() => setIsGitHubTokenValid(true))
         .catch((e) => setIsGitHubTokenValid(false));
     },
-    [settings.github.authService]
+    [settingsDispatch.github.authService]
   );
 
   const onSignOutFromGitHub = useCallback(() => {
-    settings.github.authService.reset();
+    settingsDispatch.github.authService.reset();
     setPotentialGitHubToken(undefined);
-  }, [settings.github.authService]);
+  }, [settingsDispatch.github.authService]);
 
   return (
     <Page>

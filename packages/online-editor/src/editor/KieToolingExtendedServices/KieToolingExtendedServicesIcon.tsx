@@ -8,24 +8,24 @@ import { ConnectedIcon } from "@patternfly/react-icons/dist/js/icons/connected-i
 import { DisconnectedIcon } from "@patternfly/react-icons/dist/js/icons/disconnected-icon";
 import { useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { useOnlineI18n } from "../../common/i18n";
-import { useSettings } from "../../settings/SettingsContext";
+import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { SettingsTabs } from "../../settings/SettingsModalBody";
 
 export function KieToolingExtendedServicesIcon() {
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const { i18n } = useOnlineI18n();
-  const settings = useSettings();
+  const settingsDispatch = useSettingsDispatch();
 
   const toggleKieToolingExtendedServices = useCallback(() => {
     if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
-      settings.open(SettingsTabs.KIE_TOOLING_EXTENDED_SERVICES);
+      settingsDispatch.open(SettingsTabs.KIE_TOOLING_EXTENDED_SERVICES);
     }
 
     if (!kieToolingExtendedServices.outdated) {
       return;
     }
     kieToolingExtendedServices.setModalOpen(true);
-  }, [settings, kieToolingExtendedServices]);
+  }, [settingsDispatch, kieToolingExtendedServices]);
 
   const dropdownToggleIcon = useMemo(
     () => (

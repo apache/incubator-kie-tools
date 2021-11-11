@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useCallback, useState } from "react";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { useSettings } from "./SettingsContext";
+import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
@@ -19,24 +19,25 @@ export enum OpenShiftSettingsTabMode {
 
 export function OpenShiftSettingsTab() {
   const settings = useSettings();
+  const settingsDispatch = useSettingsDispatch();
 
   const [mode, setMode] = useState(OpenShiftSettingsTabMode.SIMPLE);
 
   const onDisconnect = useCallback(() => {
-    settings.openshift.status.set(OpenShiftInstanceStatus.DISCONNECTED);
+    settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.DISCONNECTED);
     const newConfig = {
-      namespace: settings.openshift.config.get.namespace,
-      host: settings.openshift.config.get.host,
+      namespace: settings.openshift.config.namespace,
+      host: settings.openshift.config.host,
       token: "",
     };
-    settings.openshift.config.set(newConfig);
+    settingsDispatch.openshift.setConfig(newConfig);
     saveConfigCookie(newConfig);
-  }, [settings.openshift]);
+  }, [settings.openshift.config, settingsDispatch.openshift]);
 
   return (
     <Page>
       <PageSection>
-        {settings.openshift.status.get === OpenShiftInstanceStatus.CONNECTED && (
+        {settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && (
           <EmptyState>
             <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
             <TextContent>
@@ -49,15 +50,15 @@ export function OpenShiftSettingsTab() {
               <br />
               <TextContent>
                 <b>Token: </b>
-                <i>{obfuscate(settings.openshift.config.get.token)}</i>
+                <i>{obfuscate(settings.openshift.config.token)}</i>
               </TextContent>
               <TextContent>
                 <b>Host: </b>
-                <i>{settings.openshift.config.get.host}</i>
+                <i>{settings.openshift.config.host}</i>
               </TextContent>
               <TextContent>
                 <b>Namespace (project): </b>
-                <i>{settings.openshift.config.get.namespace}</i>
+                <i>{settings.openshift.config.namespace}</i>
               </TextContent>
               <br />
               <Button variant={ButtonVariant.tertiary} onClick={onDisconnect}>
@@ -66,8 +67,8 @@ export function OpenShiftSettingsTab() {
             </EmptyStateBody>
           </EmptyState>
         )}
-        {(settings.openshift.status.get === OpenShiftInstanceStatus.DISCONNECTED ||
-          settings.openshift.status.get === OpenShiftInstanceStatus.EXPIRED) && (
+        {(settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED ||
+          settings.openshift.status === OpenShiftInstanceStatus.EXPIRED) && (
           <>
             {mode === OpenShiftSettingsTabMode.SIMPLE && <OpenShiftSettingsTabSimpleConfig setMode={setMode} />}
             {mode === OpenShiftSettingsTabMode.WIZARD && <OpenShiftSettingsTabWizardConfig setMode={setMode} />}
