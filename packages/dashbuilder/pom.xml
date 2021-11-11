@@ -737,7 +737,7 @@
               </configuration>
             </execution>
             <execution>
-              <id>ban-blacklisted-dependencies</id>
+              <id>ban-denylisted-dependencies</id>
               <phase>validate</phase>
               <goals>
                 <goal>enforce</goal>
@@ -746,7 +746,7 @@
                 <rules>
                   <bannedDependencies>
                     <excludes combine.children="append">
-                      <!-- Ban blacklisted logging deps (we only use SLF4J 
+                      <!-- Ban denylisted logging deps (we only use SLF4J 
                         + Logback) -->
                       <!-- In case of transitive dependency, exclude it and 
                         use 'org.slf4j:jcl-over-slf4j' instead -->
