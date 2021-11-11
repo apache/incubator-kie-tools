@@ -124,7 +124,7 @@ export const routes = {
 
   static: {
     images: {
-      homeLogo: new Route<{}>(() => `images/BusinessModeler_Logo_38x38.svg`),
+      kieHorizontalLogoReverse: new Route<{}>(() => `images/kie_horizontal_rgb_fullcolor_reverse.svg`),
     },
   },
 };

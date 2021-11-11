@@ -28,7 +28,7 @@ import {
   PageHeaderToolsGroup,
   PageHeaderToolsItem,
 } from "@patternfly/react-core/dist/js/components/Page";
-import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
@@ -40,6 +40,7 @@ import { useHistory } from "react-router";
 import { useApp } from "./AppContext";
 import { useDmnFormI18n } from "./i18n";
 import { routes } from "./Routes";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 interface Props {
   uri: string;
@@ -141,7 +142,20 @@ export function DmnFormToolbar(props: Props) {
   return (
     <PageHeader
       logo={
-        <Brand src={routes.static.images.homeLogo.path({})} alt={"Logo"} className="kogito--dmn-form__toolbar-logo" />
+        <Flex alignItems={{ default: "alignItemsCenter" }}>
+          <FlexItem style={{ display: "flex", alignItems: "center" }}>
+            <Brand
+              src={routes.static.images.kieHorizontalLogoReverse.path({})}
+              alt={"Logo"}
+              style={{ display: "inline", height: "38px" }}
+            />
+          </FlexItem>
+          <FlexItem style={{ display: "flex", alignItems: "center" }}>
+            <TextContent>
+              <Text component={TextVariants.h3}>Sandbox</Text>
+            </TextContent>
+          </FlexItem>
+        </Flex>
       }
       headerTools={
         <PageHeaderTools>

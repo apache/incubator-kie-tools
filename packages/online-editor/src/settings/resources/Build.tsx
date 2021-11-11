@@ -118,7 +118,7 @@ export class CreateBuild extends ResourceFetch {
             kind: ImageStreamTag
             name: ${this.args.resourceName}:latest
         triggeredBy:
-          - message: Triggered by Kogito Tooling .NEW (REST API)
+          - message: Triggered by KIE Sandbox (REST API)
         strategy:
           dockerStrategy:
               noCache: true

@@ -88,7 +88,7 @@ module.exports = async (env, argv) => {
           { from: "./static/resources", to: "./resources" },
           { from: "./static/images", to: "./images" },
           { from: "./static/samples", to: "./samples" },
-          { from: "./static/favicon.ico", to: "./favicon.ico" },
+          { from: "./static/favicon.svg", to: "./favicon.svg" },
           {
             from: externalAssets.dmnEditorPath(),
             to: "./gwt-editors/dmn",

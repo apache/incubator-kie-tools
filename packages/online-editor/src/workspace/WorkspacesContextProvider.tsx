@@ -165,7 +165,7 @@ export function WorkspacesContextProvider(props: Props) {
         fs: args.fs,
         dir: workspaceRootDirPath,
         targetBranch: descriptor.origin.branch,
-        message: "Save point",
+        message: "Changes from KIE Sandbox",
         author: {
           name: args.gitConfig?.name ?? "Unknown",
           email: args.gitConfig?.email ?? "unknown@email.com",
