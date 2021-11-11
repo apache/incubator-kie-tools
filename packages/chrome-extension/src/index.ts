@@ -144,16 +144,16 @@ export function discoverCurrentGitHubPageType() {
     return GitHubPageType.CAN_OPEN_REPO_IN_EXTERNAL_EDITOR;
   }
 
-  if (pathnameMatches(`.*/.*/pull/[0-9]+.*`)) {
-    return GitHubPageType.PR_HOME;
-  }
-
   if (pathnameMatches(`.*/.*/pull/[0-9]+/files.*`)) {
     return GitHubPageType.PR_FILES_OR_COMMITS;
   }
 
   if (pathnameMatches(`.*/.*/pull/[0-9]+/commits.*`)) {
     return GitHubPageType.PR_FILES_OR_COMMITS;
+  }
+
+  if (pathnameMatches(`.*/.*/pull/[0-9]+.*`)) {
+    return GitHubPageType.PR_HOME;
   }
 
   return GitHubPageType.ANY;
