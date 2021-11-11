@@ -1053,7 +1053,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           <Alerts ref={props.alertsRef} width={"500px"} />
           <PageSection type={"nav"} variant={"light"} padding={{ default: "noPadding" }}>
             {workspace && workspace.files.length > 1 && (
-              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }} style={{ marginLeft: "16px" }}>
+              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                 <FlexItem>
                   <Button
                     className={"kogito-tooling--masthead-hoverable"}
