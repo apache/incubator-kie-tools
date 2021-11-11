@@ -1,10 +1,23 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TableOperation } from "@kogito-tooling/boxed-expression-component/dist/api";
 import { DmnValidator } from "./DmnValidator";
-import { AutoRow } from "../core";
-import { createPortal } from "react-dom";
-import { context as UniformsContext } from "uniforms";
 import { ErrorBoundary } from "../common/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
@@ -23,6 +36,8 @@ import { Button } from "@patternfly/react-core";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import "./style.css";
 import cloneDeep from "lodash/cloneDeep";
+import { DmnAutoRow, FORMS_ID } from "./DmnAutoRow";
+import { diff } from "deep-object-diff";
 
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
@@ -65,8 +80,6 @@ interface Props {
   openRow: (rowIndex: number) => void;
 }
 
-const FORMS_ID = "unitable-forms";
-
 export function DmnAutoTable(props: Props) {
   const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
@@ -76,7 +89,7 @@ export function DmnAutoTable(props: Props) {
   const [dmnAutoTableError, setDmnAutoTableError] = useState<boolean>(false);
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
   const rowsRef = useMemo(() => new Map<number, React.RefObject<HTMLFormElement> | null>(), []);
-  const [rowsModel, setRowsModel] = useState<Array<object>>();
+  const [rowsModel, setRowsModel] = useState<Array<object>>([{}]);
 
   const bridge = useMemo(() => {
     return new DmnValidator().getBridge(props.schema ?? {});
@@ -98,54 +111,42 @@ export function DmnAutoTable(props: Props) {
       switch (tableOperation) {
         case TableOperation.RowInsertAbove:
           setRowsModel?.((previousData: any) => {
-            return [...previousData.slice(0, rowIndex), {}, ...previousData.slice(rowIndex)];
-          });
-          props.setData?.((previousData: any) => {
-            return [...previousData.slice(0, rowIndex), {}, ...previousData.slice(rowIndex)];
+            const updatedData = [...previousData.slice(0, rowIndex), {}, ...previousData.slice(rowIndex)];
+            props.setData?.([...updatedData]);
+            return updatedData;
           });
           break;
         case TableOperation.RowInsertBelow:
           setRowsModel?.((previousData: any) => {
-            return [...previousData.slice(0, rowIndex + 1), {}, ...previousData.slice(rowIndex + 1)];
-          });
-          props.setData?.((previousData: any) => {
-            return [...previousData.slice(0, rowIndex + 1), {}, ...previousData.slice(rowIndex + 1)];
+            const updatedData = [...previousData.slice(0, rowIndex + 1), {}, ...previousData.slice(rowIndex + 1)];
+            props.setData?.([...updatedData]);
+            return updatedData;
           });
           break;
         case TableOperation.RowDelete:
           setRowsModel?.((previousData: any) => {
-            return [...previousData.slice(0, rowIndex), ...previousData.slice(rowIndex + 1)];
-          });
-          props.setData?.((previousData: any) => {
-            return [...previousData.slice(0, rowIndex), ...previousData.slice(rowIndex + 1)];
+            const updatedData = [...previousData.slice(0, rowIndex), ...previousData.slice(rowIndex + 1)];
+            props.setData?.([...updatedData]);
+            return updatedData;
           });
           break;
         case TableOperation.RowClear:
           setRowsModel?.((previousData: any) => {
-            const newData = [...previousData];
-            newData[rowIndex] = {};
-            return newData;
-          });
-          props.setData?.((previousData: any) => {
-            const newData = [...previousData];
-            newData[rowIndex] = {};
-            return newData;
+            const updatedData = [...previousData];
+            updatedData[rowIndex] = {};
+            props.setData?.([...updatedData]);
+            return updatedData;
           });
           break;
         case TableOperation.RowDuplicate:
           setRowsModel?.((previousData: any) => {
-            return [
+            const updatedData = [
               ...previousData.slice(0, rowIndex + 1),
               previousData[rowIndex],
               ...previousData.slice(rowIndex + 1),
             ];
-          });
-          props.setData?.((previousData: any) => {
-            return [
-              ...previousData.slice(0, rowIndex + 1),
-              previousData[rowIndex],
-              ...previousData.slice(rowIndex + 1),
-            ];
+            props.setData?.([...updatedData]);
+            return updatedData;
           });
       }
     },
@@ -162,75 +163,22 @@ export function DmnAutoTable(props: Props) {
     [handleOperation]
   );
 
-  const onSubmit = useCallback(
-    (model: any, index) => {
-      props.setData?.((previousData: any) => {
-        const newData = [...previousData];
-        newData[index] = model;
-        return newData;
-      });
-    },
-    [props.setData]
-  );
-
-  const onValidate = useCallback(
-    (model: any, error: any, index) => {
-      props.setData?.((previousModel: any) => {
-        const newData = [...previousModel];
-        newData[index] = model;
-        return newData;
-      });
-    },
-    [props.setData]
-  );
+  const setModel = useCallback((model: any, index) => {
+    setRowsModel((previousModel: any) => {
+      const newData = [...previousModel];
+      newData[index] = model;
+      props.setData?.([...newData]);
+      return newData;
+    });
+  }, []);
 
   // generate models on first render
   useEffect(() => {
-    const newRowsModel = cloneDeep(props.data);
-    setRowsModel(newRowsModel);
-  }, []);
-
-  useEffect(() => {
-    if (rowsModel) {
-      const newData = [...rowsModel];
-      props.setData?.(newData);
+    if (props.data) {
+      const newRowsModel = cloneDeep(props.data);
+      setRowsModel(newRowsModel);
     }
-  }, [rowsModel]);
-
-  // every input row is managed by an AutoRow. Each row is a form, and inside of it, cell are auto generated
-  // using the uniforms library
-  const getAutoRow = useCallback(
-    (rowIndex: number) =>
-      ({ children }: React.PropsWithChildren<any>) => {
-        const ref = React.createRef<HTMLFormElement>();
-        rowsRef.set(rowIndex, ref);
-        return (
-          <AutoRow
-            ref={ref}
-            schema={bridge}
-            autosave={true}
-            autosaveDelay={1000}
-            model={rowsModel?.[rowIndex]}
-            onSubmit={(model: any) => onSubmit(model, rowIndex)}
-            onValidate={(model: any, error: any) => onValidate(model, error, rowIndex)}
-            placeholder={true}
-          >
-            <UniformsContext.Consumer>
-              {(ctx: any) => (
-                <>
-                  {createPortal(
-                    <form id={`dmn-auto-form-${rowIndex}`} onSubmit={(data) => ctx?.onSubmit(data)} />,
-                    document.getElementById(FORMS_ID)!
-                  )}
-                  {children}
-                </>
-              )}
-            </UniformsContext.Consumer>
-          </AutoRow>
-        );
-      },
-    [bridge, onSubmit, onValidate, rowsRef, rowsModel]
-  );
+  }, []);
 
   const inputUid = useMemo(() => nextId(), []);
   const inputRules: Partial<DmnRunnerRule>[] = useMemo(() => {
@@ -240,15 +188,19 @@ export function DmnAutoTable(props: Props) {
         0
       );
       const inputEntries = new Array(inputEntriesLength);
-      return Array.from(Array(rowQuantity)).map((e, i) => {
+      return Array.from(Array(rowQuantity)).map((e, rowIndex) => {
         return {
           inputEntries,
-          rowDelegate: getAutoRow(i),
+          rowDelegate: ({ children }: PropsWithChildren<any>) => (
+            <DmnAutoRow rowIndex={rowIndex} model={rowsModel[rowIndex]} bridge={bridge} setModel={setModel}>
+              {children}
+            </DmnAutoRow>
+          ),
         } as Partial<DmnRunnerRule>;
       });
     }
     return [] as Partial<DmnRunnerRule>[];
-  }, [input, formsDivRendered, getAutoRow, rowQuantity]);
+  }, [input, formsDivRendered, rowQuantity]);
 
   const outputUid = useMemo(() => nextId(), []);
   const { output, rules: outputRules } = useMemo(() => {
@@ -360,6 +312,15 @@ export function DmnAutoTable(props: Props) {
     forceDrawerPanelRefresh();
   }, [forceDrawerPanelRefresh, inputRules, outputRules]);
 
+  const updateDataWithModel = useCallback(
+    (rowIndex: number) => {
+      props.setData?.([...rowsModel]);
+      // rowsRef.get(rowIndex)?.current?.submit();
+      props.openRow(rowIndex);
+    },
+    [props.setData, props.openRow, rowsModel]
+  );
+
   return (
     <>
       {shouldRender && bridge && inputRules && outputRules && (
@@ -440,13 +401,7 @@ export function DmnAutoTable(props: Props) {
                               key={i}
                               style={{ width: "50px", height: "62px", display: "flex", alignItems: "center" }}
                             >
-                              <Button
-                                variant={"plain"}
-                                onClick={() => {
-                                  rowsRef.get(i)?.current?.submit();
-                                  props.openRow(i);
-                                }}
-                              >
+                              <Button variant={"plain"} onClick={() => updateDataWithModel(i)}>
                                 <ListIcon />
                               </Button>
                             </div>

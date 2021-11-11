@@ -286,7 +286,7 @@ export function DmnForm(props: Props) {
   );
 
   const removeDeletedPropertiesAndAddDefaultValues = useCallback(
-    (model: any, bridge: any, previousBridge?: any) => {
+    (model: object, bridge: DmnFormJsonSchemaBridge, previousBridge?: DmnFormJsonSchemaBridge) => {
       const propertiesDifference = diff(
         previousBridge?.schema?.definitions?.InputSet?.properties ?? {},
         bridge?.schema?.definitions?.InputSet?.properties ?? {}
