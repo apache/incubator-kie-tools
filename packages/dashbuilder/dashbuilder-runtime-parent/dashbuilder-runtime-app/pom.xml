@@ -12,9 +12,13 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.dashbuilder</groupId>
+  <parent>
+    <groupId>org.dashbuilder</groupId>
+    <artifactId>dashbuilder-runtime-parent</artifactId>
+    <version>0.0.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
   <artifactId>dashbuilder-runtime-app</artifactId>
-  <version>0.0.0</version>
   <name>Dashbuilder Runtime - App</name>
   <description>Dashbuilder Runtime App for running standalone dashboards</description>
   <properties>
@@ -30,6 +34,8 @@
     <quarkus-plugin.version>2.2.2.Final</quarkus-plugin.version>
     <quarkus.platform.version>2.2.2.Final</quarkus.platform.version>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+    <!--  Need to sync with Quarkus resteasy version -->
+    <resteasy.version>4.7.0.Final</resteasy.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -47,12 +53,15 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-multipart-provider</artifactId>
+        <version>${resteasy.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
-
   <dependencies>
-
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
@@ -196,6 +205,10 @@
 
     <!-- Quarkus -->
     <dependency>
+      <groupId>jakarta.resource</groupId>
+      <artifactId>jakarta.resource-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-arc</artifactId>
     </dependency>
@@ -287,7 +300,7 @@
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-dataset-kafka</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-dataset-external</artifactId>
@@ -360,7 +373,7 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>${project.artifactId}</finalName>  
+    <finalName>${project.artifactId}</finalName>
     <plugins>
       <plugin>
         <groupId>io.quarkus</groupId>
@@ -441,14 +454,32 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ban-denylisted-dependencies</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>ban-duplicated-classes</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>enforce-plugin-versions</id>
+            <phase>none</phase>
+          </execution> 
+        </executions>
+      </plugin>
     </plugins>
   </build>
-<profiles>
+  <profiles>
     <profile>
-        <id>native</id>
-        <properties>
-            <quarkus.package.type>native</quarkus.package.type>
-        </properties>
+      <id>native</id>
+      <properties>
+        <quarkus.package.type>native</quarkus.package.type>
+      </properties>
     </profile>
-</profiles>
+  </profiles>
 </project>
