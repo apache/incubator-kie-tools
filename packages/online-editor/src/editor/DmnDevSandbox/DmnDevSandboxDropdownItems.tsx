@@ -32,6 +32,8 @@ import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { OpenshiftIcon } from "@patternfly/react-icons/dist/js/icons/openshift-icon";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export function useDmnDevSandboxDropdownItems(workspace: ActiveWorkspace | undefined) {
   const settings = useSettings();
@@ -66,17 +68,6 @@ export function useDmnDevSandboxDropdownItems(workspace: ActiveWorkspace | undef
   return useMemo(() => {
     return [
       <React.Fragment key={"dmndev-sandbox-dropdown-items"}>
-        {!isDmnDevSandboxConnected && isKieToolingExtendedServicesRunning && (
-          <DropdownItem
-            id="dmn-dev-sandbox-setup-button"
-            key={`dropdown-dmn-dev-sandbox-setup`}
-            component={"button"}
-            onClick={onDevSandboxSetup}
-            ouiaId={"setup-dmn-dev-sandbox-dropdown-button"}
-          >
-            Setup...
-          </DropdownItem>
-        )}
         {workspace && (
           <FeatureDependentOnKieToolingExtendedServices isLight={false} position="left">
             <DropdownItem
@@ -109,6 +100,22 @@ export function useDmnDevSandboxDropdownItems(workspace: ActiveWorkspace | undef
               )}
             </DropdownItem>
           </FeatureDependentOnKieToolingExtendedServices>
+        )}
+        {!isDmnDevSandboxConnected && isKieToolingExtendedServicesRunning && (
+          <>
+            <Divider />
+            <DropdownItem
+              id="dmn-dev-sandbox-setup-button"
+              key={`dropdown-dmn-dev-sandbox-setup`}
+              component={"button"}
+              onClick={onDevSandboxSetup}
+              ouiaId={"setup-dmn-dev-sandbox-dropdown-button"}
+            >
+              <Button isInline={true} variant={ButtonVariant.link}>
+                Setup...
+              </Button>
+            </DropdownItem>
+          </>
         )}
       </React.Fragment>,
     ];

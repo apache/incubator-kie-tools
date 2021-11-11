@@ -52,7 +52,7 @@ export function GitHubSettingsTab() {
   }, [isGitHubTokenValid]);
 
   const githubTokenHelperText = useMemo(() => {
-    return isGitHubTokenValid ? undefined : "Invalid token.";
+    return isGitHubTokenValid ? undefined : "Invalid token. Check if it has the 'repo' scope.";
   }, [isGitHubTokenValid]);
 
   /** UNCOMMENT FOR OAUTH WEB WORKFLOW WITH GITHUB **/
@@ -260,6 +260,7 @@ export function GitHubSettingsTab() {
                       validated={githubTokenValidated}
                       label={"Token"}
                       fieldId={"github-pat"}
+                      helperText={"Your token must include the 'repo' scope."}
                     >
                       <InputGroup>
                         <TextInput

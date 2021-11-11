@@ -119,11 +119,11 @@ export function SettingsContextProvider(props: any) {
     return {
       reset: () => {
         setGitHubOctokit(new Octokit());
-        setGitHubAuthStatus(AuthStatus.LOADING);
         setGitHubToken(undefined);
         setGitHubUser(undefined);
         setGitHubScopes(undefined);
         setCookie(GITHUB_AUTH_TOKEN_COOKIE_NAME, "");
+        setGitHubAuthStatus(AuthStatus.SIGNED_OUT);
       },
       authenticate: async (token: string) => {
         try {
@@ -131,6 +131,11 @@ export function SettingsContextProvider(props: any) {
           const octokit = new Octokit({ auth: token });
           const response = await octokit.users.getAuthenticated();
           await delay(1000);
+          const scopes = response.headers["x-oauth-scopes"]?.split(", ") ?? [];
+          if (!scopes.includes("repo")) {
+            throw new Error("Token doesn't have 'repo' scope.");
+          }
+
           setGitHubOctokit(octokit);
           setGitHubToken(token);
           setGitHubUser({
@@ -138,11 +143,10 @@ export function SettingsContextProvider(props: any) {
             name: response.data.name ?? "",
             email: response.data.email ?? "",
           });
-          setGitHubScopes(response.headers["x-oauth-scopes"]?.split(", ") ?? []);
-          setGitHubAuthStatus(AuthStatus.SIGNED_IN);
+          setGitHubScopes(scopes);
           setCookie(GITHUB_AUTH_TOKEN_COOKIE_NAME, token);
+          setGitHubAuthStatus(AuthStatus.SIGNED_IN);
         } catch (e) {
-          await delay(1000);
           setGitHubAuthStatus(AuthStatus.SIGNED_OUT);
           throw e;
         }

@@ -32,6 +32,7 @@ import {
 } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import { SaveIcon } from "@patternfly/react-icons/dist/js/icons/save-icon";
+import { AngleLeftIcon } from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOnlineI18n } from "../common/i18n";
@@ -1054,6 +1055,14 @@ If you are, it means that creating this Gist failed and it can safely be deleted
             {workspace && workspace.files.length > 1 && (
               <Flex justifyContent={{ default: "justifyContentSpaceBetween" }} style={{ marginLeft: "16px" }}>
                 <FlexItem>
+                  <Button
+                    className={"kogito-tooling--masthead-hoverable"}
+                    variant={ButtonVariant.plain}
+                    onClick={() => history.push({ pathname: globals.routes.home.path({}) })}
+                  >
+                    <AngleLeftIcon />
+                  </Button>
+                  &nbsp;&nbsp;
                   <WorkspaceLabel descriptor={workspace.descriptor} />
                   <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
                     <Title
@@ -1126,7 +1135,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                   </>
                                 )}
                                 <a
-                                  href={`https://vscode.dev/github${workspace.descriptor.origin.url.pathname}/tree/${workspace.descriptor.origin.branch}`}
+                                  href={`https://vscode.dev/github${
+                                    workspace.descriptor.origin.url.pathname.endsWith(".git")
+                                      ? workspace.descriptor.origin.url.pathname.replace(".git", "")
+                                      : workspace.descriptor.origin.url.pathname
+                                  }/tree/${workspace.descriptor.origin.branch}`}
                                   target={"_blank"}
                                 >
                                   <DropdownItem
@@ -1284,13 +1297,25 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                 trigger={!canUpdateGitHubGist ? "mouseenter click" : ""}
                                 position="left"
                               >
-                                <DropdownItem
-                                  icon={<GithubIcon />}
-                                  onClick={updateGitHubGist}
-                                  isDisabled={!canUpdateGitHubGist}
-                                >
-                                  Update Gist
-                                </DropdownItem>
+                                <>
+                                  <DropdownItem
+                                    icon={<GithubIcon />}
+                                    onClick={updateGitHubGist}
+                                    isDisabled={!canUpdateGitHubGist}
+                                  >
+                                    Update Gist
+                                  </DropdownItem>
+                                  {!canPushToGitRepository && (
+                                    <>
+                                      <Divider />
+                                      <DropdownItem onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
+                                        <Button isInline={true} variant={ButtonVariant.link}>
+                                          Configure GitHub token...
+                                        </Button>
+                                      </DropdownItem>
+                                    </>
+                                  )}
+                                </>
                               </Tooltip>
                             </DropdownGroup>,
                           ]}
@@ -1329,14 +1354,26 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                 trigger={!canPushToGitRepository ? "mouseenter click" : ""}
                                 position="left"
                               >
-                                <DropdownItem
-                                  icon={<ArrowCircleUpIcon />}
-                                  onClick={pushToGitRepository}
-                                  isDisabled={!canPushToGitRepository}
-                                  description={`Send your changes upstream to '${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}'.`}
-                                >
-                                  Push
-                                </DropdownItem>
+                                <>
+                                  <DropdownItem
+                                    icon={<ArrowCircleUpIcon />}
+                                    onClick={pushToGitRepository}
+                                    isDisabled={!canPushToGitRepository}
+                                    description={`Send your changes upstream to '${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}'.`}
+                                  >
+                                    Push
+                                  </DropdownItem>
+                                  {!canPushToGitRepository && (
+                                    <>
+                                      <Divider />
+                                      <DropdownItem onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
+                                        <Button isInline={true} variant={ButtonVariant.link}>
+                                          Configure GitHub token...
+                                        </Button>
+                                      </DropdownItem>
+                                    </>
+                                  )}
+                                </>
                               </Tooltip>
                             </DropdownGroup>,
                           ]}
