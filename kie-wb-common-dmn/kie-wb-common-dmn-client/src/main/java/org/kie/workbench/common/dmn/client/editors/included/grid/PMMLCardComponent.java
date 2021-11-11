@@ -51,12 +51,14 @@ public class PMMLCardComponent extends BaseCardComponent<PMMLIncludedModelActive
     }
 
     @PostConstruct
+    @Override
     public void init() {
         contentView.init(this);
     }
 
+    @Override
     protected void refreshView() {
-        contentView.setPath(getTruncatedSubTitle());
+        super.refreshView();
         contentView.setModelCount(getModelCount());
     }
 

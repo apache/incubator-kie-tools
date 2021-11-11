@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.included.common;
+package org.kie.workbench.common.dmn.client.common;
 
 import java.util.List;
 import java.util.Objects;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.appformer.client.context.Channel;
@@ -31,33 +30,36 @@ import static org.appformer.client.context.Channel.EMBEDDED;
 import static org.appformer.client.context.Channel.ONLINE_MULTI_FILE;
 import static org.appformer.client.context.Channel.VSCODE;
 
-@ApplicationScoped
-public class IncludedModelsContext {
+/**
+ * Scope of this Helper class is to retrieve and check the current Channel where the editor lives.
+ */
+public class KogitoChannelHelper {
 
     private final EditorContextProvider contextProvider;
 
-    private Boolean isIncludedModelChannel;
-
-    private final List<Channel> INCLUDED_MODEL_CHANNELS = asList(DEFAULT, VSCODE, EMBEDDED, ONLINE_MULTI_FILE);
-
-    public IncludedModelsContext() {
+    public KogitoChannelHelper() {
         this(null); // CDI proxy
     }
 
     @Inject
-    public IncludedModelsContext(final EditorContextProvider contextProvider) {
+    public KogitoChannelHelper(final EditorContextProvider contextProvider) {
         this.contextProvider = contextProvider;
     }
 
-    public boolean isIncludedModelChannel() {
-
-        if (isIncludedModelChannel == null) {
-            isIncludedModelChannel = INCLUDED_MODEL_CHANNELS.stream().anyMatch(channel -> {
-                final Channel currentChannel = contextProvider.getChannel();
-                return Objects.equals(currentChannel, channel);
-            });
-        }
-
-        return isIncludedModelChannel;
+    public boolean isCurrentChannelEnabled(Channel channel) {
+        return Objects.equals(contextProvider.getChannel(), channel);
     }
+
+    public boolean isCurrentChannelEnabled(List<Channel> enabledChannels) {
+        return enabledChannels.stream().anyMatch(this::isCurrentChannelEnabled);
+    }
+
+    public boolean isIncludedModelEnabled() {
+        return isCurrentChannelEnabled(asList(DEFAULT, EMBEDDED, ONLINE_MULTI_FILE, VSCODE));
+    }
+
+    public boolean isIncludedModelLinkEnabled() {
+        return isCurrentChannelEnabled(asList(ONLINE_MULTI_FILE, VSCODE));
+    }
+
 }

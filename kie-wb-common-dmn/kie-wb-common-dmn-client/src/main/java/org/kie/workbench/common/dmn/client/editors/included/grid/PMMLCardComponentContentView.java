@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.included.grid;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLParagraphElement;
@@ -34,9 +35,11 @@ public class PMMLCardComponentContentView extends BaseCardComponentContentView i
 
     @Inject
     public PMMLCardComponentContentView(final HTMLParagraphElement path,
+                                        final HTMLAnchorElement pathLink,
                                         final @Named("span") HTMLElement modelCount,
                                         final HTMLButtonElement removeButton) {
         super(path,
+              pathLink,
               removeButton);
         this.modelCount = modelCount;
     }

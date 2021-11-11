@@ -31,11 +31,11 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocusUtils;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
-import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsContext;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
@@ -95,7 +95,7 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final CanvasFileExport canvasFileExport,
                             final Promises promises,
                             final IncludedModelsPage includedModelsPage,
-                            final IncludedModelsContext includedModelContext,
+                            final KogitoChannelHelper kogitoChannelHelper,
                             final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
                             final DRDNameChanger drdNameChanger,
                             final ReadOnlyProvider readOnlyProvider,
@@ -123,7 +123,7 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               canvasFileExport,
               promises,
               includedModelsPage,
-              includedModelContext,
+              kogitoChannelHelper,
               guidedTourBridgeInitializer,
               drdNameChanger);
         this.readOnlyProvider = readOnlyProvider;
@@ -150,7 +150,7 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
             dataTypesPage.onFocus();
             dataTypesPage.enableShortcuts();
             lazyCanvasFocusUtils.releaseFocus();
-            if (includedModelContext.isIncludedModelChannel()) {
+            if (kogitoChannelHelper.isIncludedModelEnabled()) {
                 includedModelsPage.reload();
             }
             getView().hideBusyIndicator();

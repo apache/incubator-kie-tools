@@ -56,6 +56,7 @@ public class PMMLCardComponentTest extends BaseCardComponentTest<PMMLCardCompone
 
     @Test
     public void testRefreshView() {
+        final DMNCardsGridComponent gridMock = mock(DMNCardsGridComponent.class);
         final PMMLIncludedModelActiveRecord includedModel = mock(PMMLIncludedModelActiveRecord.class);
         final String path = "/bla/bla/bla/111111111111111222222222222222333333333333333444444444444444/file.dmn";
         final int modelCount = 12;
@@ -63,6 +64,8 @@ public class PMMLCardComponentTest extends BaseCardComponentTest<PMMLCardCompone
         when(includedModel.getNamespace()).thenReturn(path);
         when(includedModel.getModelCount()).thenReturn(modelCount);
         doReturn(includedModel).when(card).getIncludedModel();
+        doReturn(gridMock).when(card).getGrid();
+        doReturn(false).when(gridMock).presentPathAsLink();
 
         card.refreshView();
 

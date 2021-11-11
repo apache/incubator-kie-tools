@@ -24,11 +24,11 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.docks.navigator.included.components.DecisionComponents;
 import org.kie.workbench.common.dmn.client.docks.navigator.tree.DecisionNavigatorTreePresenter;
-import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsContext;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
@@ -67,7 +67,7 @@ public class DecisionNavigatorPresenterTest {
     private TranslationService translationService;
 
     @Mock
-    private IncludedModelsContext includedModelContext;
+    private KogitoChannelHelper kogitoChannelHelper;
 
     @Mock
     private DecisionNavigatorItemsProvider navigatorItemsProvider;
@@ -84,7 +84,7 @@ public class DecisionNavigatorPresenterTest {
                                                        decisionComponents,
                                                        decisionNavigatorObserver,
                                                        translationService,
-                                                       includedModelContext,
+                                                       kogitoChannelHelper,
                                                        navigatorItemsProvider,
                                                        dmnDiagramsSession));
     }
@@ -111,7 +111,7 @@ public class DecisionNavigatorPresenterTest {
     public void testSetupViewWhenChannelIsVSCodeOrDefault() {
         final DecisionNavigatorTreePresenter.View treeView = mock(DecisionNavigatorTreePresenter.View.class);
         final DecisionComponents.View decisionComponentsView = mock(DecisionComponents.View.class);
-        when(includedModelContext.isIncludedModelChannel()).thenReturn(true);
+        when(kogitoChannelHelper.isIncludedModelEnabled()).thenReturn(true);
         when(treePresenter.getView()).thenReturn(treeView);
         when(decisionComponents.getView()).thenReturn(decisionComponentsView);
 
@@ -127,7 +127,7 @@ public class DecisionNavigatorPresenterTest {
     public void testSetupViewWhenChannelIsNotVSCodeOrDefault() {
         final DecisionNavigatorTreePresenter.View treeView = mock(DecisionNavigatorTreePresenter.View.class);
         final DecisionComponents.View decisionComponentsView = mock(DecisionComponents.View.class);
-        when(includedModelContext.isIncludedModelChannel()).thenReturn(false);
+        when(kogitoChannelHelper.isIncludedModelEnabled()).thenReturn(false);
         when(treePresenter.getView()).thenReturn(treeView);
         when(decisionComponents.getView()).thenReturn(decisionComponentsView);
 

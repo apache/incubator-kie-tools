@@ -51,12 +51,14 @@ public class DMNCardComponent extends BaseCardComponent<DMNIncludedModelActiveRe
     }
 
     @PostConstruct
+    @Override
     public void init() {
         contentView.init(this);
     }
 
+    @Override
     protected void refreshView() {
-        contentView.setPath(getTruncatedSubTitle());
+        super.refreshView();
         contentView.setDataTypesCount(getDataTypesCount());
         contentView.setDrgElementsCount(getDrgElementsCount());
     }

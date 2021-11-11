@@ -35,7 +35,7 @@ public class DMNCardComponentContentViewTest extends BaseCardComponentContentVie
 
     @Override
     protected DMNCardComponentContentView getCardView() {
-        return new DMNCardComponentContentView(path, dataTypesCount, drgElementsCount, removeButton);
+        return new DMNCardComponentContentView(path, pathLink, dataTypesCount, drgElementsCount, removeButton);
     }
 
     @Test

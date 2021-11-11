@@ -28,11 +28,11 @@ import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
+import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
-import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsContext;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
@@ -106,11 +106,11 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     protected final CanvasFileExport canvasFileExport;
     protected final Promises promises;
     protected final IncludedModelsPage includedModelsPage;
-    protected final IncludedModelsContext includedModelContext;
+    protected final KogitoChannelHelper kogitoChannelHelper;
     protected final GuidedTourBridgeInitializer guidedTourBridgeInitializer;
     protected final DRDNameChanger drdNameChanger;
 
-    public AbstractDMNDiagramEditor(final View view,
+    protected AbstractDMNDiagramEditor(final View view,
                                     final MultiPageEditorContainerView containerView,
                                     final StunnerEditor stunnerEditor,
                                     final DMNEditorSearchIndex editorSearchIndex,
@@ -131,7 +131,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
                                     final CanvasFileExport canvasFileExport,
                                     final Promises promises,
                                     final IncludedModelsPage includedModelsPage,
-                                    final IncludedModelsContext includedModelContext,
+                                    final KogitoChannelHelper kogitoChannelHelper,
                                     final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
                                     final DRDNameChanger drdNameChanger) {
         super(view, containerView);
@@ -154,7 +154,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         this.canvasFileExport = canvasFileExport;
         this.promises = promises;
         this.includedModelsPage = includedModelsPage;
-        this.includedModelContext = includedModelContext;
+        this.kogitoChannelHelper = kogitoChannelHelper;
         this.guidedTourBridgeInitializer = guidedTourBridgeInitializer;
         this.drdNameChanger = drdNameChanger;
     }
@@ -262,7 +262,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         addDocumentationPage(diagram);
         getBaseEditorView().hideBusyIndicator();
         getWidget().getMultiPage().addPage(dataTypesPage);
-        if (includedModelContext.isIncludedModelChannel()) {
+        if (kogitoChannelHelper.isIncludedModelEnabled()) {
             getWidget().getMultiPage().addPage(includedModelsPage);
         }
         setupEditorSearchIndex();

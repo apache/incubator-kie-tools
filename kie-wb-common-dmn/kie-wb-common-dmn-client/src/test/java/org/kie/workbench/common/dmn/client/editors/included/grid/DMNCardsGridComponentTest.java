@@ -20,10 +20,13 @@ import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
+import org.appformer.kogito.bridge.client.workspace.WorkspaceService;
+import org.assertj.core.api.Assertions;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.DefaultIncludedModelActiveRecord;
@@ -35,6 +38,7 @@ import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -60,6 +64,12 @@ public class DMNCardsGridComponentTest {
     @Mock
     private DMNCardsEmptyStateView emptyStateView;
 
+    @Mock
+    private WorkspaceService workspaceService;
+
+    @Mock
+    private KogitoChannelHelper kogitoChannelHelper;
+
     private DMNCardsGridComponent grid;
 
     @Before
@@ -69,7 +79,9 @@ public class DMNCardsGridComponentTest {
                                          defaultCardComponent,
                                          cardsGridComponent,
                                          pageState,
-                                         emptyStateView);
+                                         emptyStateView,
+                                         workspaceService,
+                                         kogitoChannelHelper);
     }
 
     @Test
@@ -116,5 +128,22 @@ public class DMNCardsGridComponentTest {
         verify(card2).setup(grid, includedModel2);
         verify(card3).setup(grid, includedModel3);
         verify(cardsGridComponent).setupCards(asList(card1, card2, card3));
+    }
+
+    @Test
+    public void testPresentPathAsLink() {
+        doReturn(true).when(kogitoChannelHelper).isIncludedModelLinkEnabled();
+        Assertions.assertThat(grid.presentPathAsLink()).isTrue();
+
+        doReturn(false).when(kogitoChannelHelper).isIncludedModelLinkEnabled();
+        Assertions.assertThat(grid.presentPathAsLink()).isFalse();
+    }
+
+    @Test
+    public void testOpenPathLink() {
+        final String file = "file://xyz";
+        grid.openPathLink(file);
+
+        verify(workspaceService).openFile(file);
     }
 }

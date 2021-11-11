@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.included.grid;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLParagraphElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -29,21 +30,31 @@ public abstract class BaseCardComponentContentView implements BaseCardComponent.
     @DataField("path")
     private final HTMLParagraphElement path;
 
+    @DataField("path-link")
+    private final HTMLAnchorElement pathLink;
+
     @DataField("remove-button")
     private final HTMLButtonElement removeButton;
 
     private BaseCardComponent presenter;
 
     @Inject
-    public BaseCardComponentContentView(final HTMLParagraphElement path,
-                                        final HTMLButtonElement removeButton) {
+    protected BaseCardComponentContentView(final HTMLParagraphElement path,
+                                           final HTMLAnchorElement pathLink,
+                                           final HTMLButtonElement removeButton) {
         this.path = path;
+        this.pathLink = pathLink;
         this.removeButton = removeButton;
     }
 
     @Override
     public void init(final BaseCardComponent presenter) {
         this.presenter = presenter;
+    }
+
+    @EventHandler("path-link")
+    public void onPathLinkClick(final ClickEvent e) {
+        presenter.openPathLink();
     }
 
     @EventHandler("remove-button")
@@ -53,6 +64,13 @@ public abstract class BaseCardComponentContentView implements BaseCardComponent.
 
     @Override
     public void setPath(final String path) {
+        this.pathLink.style.display = "none";
         this.path.textContent = path;
+    }
+
+    @Override
+    public void setPathLink(final String path) {
+        this.path.style.display = "none";
+        this.pathLink.textContent = path;
     }
 }

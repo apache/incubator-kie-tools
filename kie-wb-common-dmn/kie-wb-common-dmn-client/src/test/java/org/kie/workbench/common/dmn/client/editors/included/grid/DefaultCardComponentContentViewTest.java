@@ -24,6 +24,6 @@ public class DefaultCardComponentContentViewTest extends BaseCardComponentConten
 
     @Override
     protected DefaultCardComponentContentView getCardView() {
-        return new DefaultCardComponentContentView(path, removeButton);
+        return new DefaultCardComponentContentView(path, pathLink, removeButton);
     }
 }

@@ -30,11 +30,11 @@ import elemental2.dom.DomGlobal.SetTimeoutCallbackFn;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.docks.navigator.included.components.DecisionComponents;
 import org.kie.workbench.common.dmn.client.docks.navigator.tree.DecisionNavigatorTreePresenter;
-import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsContext;
 import org.uberfire.client.mvp.AbstractActivity;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
@@ -57,9 +57,7 @@ public class DecisionNavigatorPresenter extends AbstractActivity {
 
     private DecisionNavigatorObserver decisionNavigatorObserver;
 
-    private TranslationService translationService;
-
-    private IncludedModelsContext includedModelContext;
+    private KogitoChannelHelper kogitoChannelHelper;
 
     private DecisionNavigatorItemsProvider navigatorItemsProvider;
 
@@ -73,15 +71,14 @@ public class DecisionNavigatorPresenter extends AbstractActivity {
                                       final DecisionComponents decisionComponents,
                                       final DecisionNavigatorObserver decisionNavigatorObserver,
                                       final TranslationService translationService,
-                                      final IncludedModelsContext includedModelContext,
+                                      final KogitoChannelHelper kogitoChannelHelper,
                                       final DecisionNavigatorItemsProvider navigatorItemsProvider,
                                       final DMNDiagramsSession dmnDiagramsSession) {
         this.view = view;
         this.treePresenter = treePresenter;
         this.decisionComponents = decisionComponents;
         this.decisionNavigatorObserver = decisionNavigatorObserver;
-        this.translationService = translationService;
-        this.includedModelContext = includedModelContext;
+        this.kogitoChannelHelper = kogitoChannelHelper;
         this.navigatorItemsProvider = navigatorItemsProvider;
         this.dmnDiagramsSession = dmnDiagramsSession;
     }
@@ -132,7 +129,7 @@ public class DecisionNavigatorPresenter extends AbstractActivity {
 
     void setupView() {
         view.setupMainTree(treePresenter.getView());
-        if (includedModelContext.isIncludedModelChannel()) {
+        if (kogitoChannelHelper.isIncludedModelEnabled()) {
             view.showDecisionComponentsContainer();
             view.setupDecisionComponents(decisionComponents.getView());
         } else {

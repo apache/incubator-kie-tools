@@ -23,7 +23,9 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
+import org.appformer.kogito.bridge.client.workspace.WorkspaceService;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPageState;
@@ -46,19 +48,27 @@ public class DMNCardsGridComponent {
 
     private final DMNCardsEmptyStateView emptyStateView;
 
+    private final WorkspaceService workspaceService;
+
+    private final KogitoChannelHelper kogitoChannelHelper;
+
     @Inject
     public DMNCardsGridComponent(final ManagedInstance<DMNCardComponent> dmnCardComponent,
                                  final ManagedInstance<PMMLCardComponent> pmmlCardComponent,
                                  final ManagedInstance<DefaultCardComponent> defaultCardComponent,
                                  final CardsGridComponent cardsGridComponent,
                                  final IncludedModelsPageState pageState,
-                                 final DMNCardsEmptyStateView emptyStateView) {
+                                 final DMNCardsEmptyStateView emptyStateView,
+                                 final WorkspaceService workspaceService,
+                                 final KogitoChannelHelper kogitoChannelHelper) {
         this.dmnCardComponent = dmnCardComponent;
         this.pmmlCardComponent = pmmlCardComponent;
         this.defaultCardComponent = defaultCardComponent;
         this.cardsGridComponent = cardsGridComponent;
         this.pageState = pageState;
         this.emptyStateView = emptyStateView;
+        this.workspaceService = workspaceService;
+        this.kogitoChannelHelper = kogitoChannelHelper;
     }
 
     @PostConstruct
@@ -72,6 +82,14 @@ public class DMNCardsGridComponent {
 
     public HTMLElement getElement() {
         return cardsGridComponent.getElement();
+    }
+
+    public boolean presentPathAsLink() {
+        return kogitoChannelHelper.isIncludedModelLinkEnabled();
+    }
+
+    public void openPathLink(final String pathLink) {
+        workspaceService.openFile(pathLink);
     }
 
     private List<CardComponent> cards(final List<BaseIncludedModelActiveRecord> includes) {

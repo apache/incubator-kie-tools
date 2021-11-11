@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.included.grid;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLParagraphElement;
@@ -37,10 +38,12 @@ public class DMNCardComponentContentView extends BaseCardComponentContentView im
 
     @Inject
     public DMNCardComponentContentView(final HTMLParagraphElement path,
+                                       final HTMLAnchorElement pathLink,
                                        final @Named("span") HTMLElement dataTypesCount,
                                        final @Named("span") HTMLElement drgElementsCount,
                                        final HTMLButtonElement removeButton) {
         super(path,
+              pathLink,
               removeButton);
         this.dataTypesCount = dataTypesCount;
         this.drgElementsCount = drgElementsCount;

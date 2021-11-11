@@ -32,7 +32,7 @@ public class PMMLCardComponentContentViewTest extends BaseCardComponentContentVi
 
     @Override
     protected PMMLCardComponentContentView getCardView() {
-        return new PMMLCardComponentContentView(path, modelCount, removeButton);
+        return new PMMLCardComponentContentView(path, pathLink, modelCount, removeButton);
     }
 
     @Test

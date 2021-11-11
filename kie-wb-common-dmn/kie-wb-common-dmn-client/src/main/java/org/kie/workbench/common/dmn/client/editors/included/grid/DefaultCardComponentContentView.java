@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.included.grid;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLParagraphElement;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -29,8 +30,10 @@ public class DefaultCardComponentContentView extends BaseCardComponentContentVie
 
     @Inject
     public DefaultCardComponentContentView(final HTMLParagraphElement path,
+                                           final HTMLAnchorElement pathLink,
                                            final HTMLButtonElement removeButton) {
         super(path,
+              pathLink,
               removeButton);
     }
 }

@@ -23,7 +23,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 
 import com.google.gwt.dom.client.Style.HasCssName;
-import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
@@ -59,13 +58,13 @@ public abstract class BaseCardComponent<R extends BaseIncludedModelActiveRecord,
 
     protected DMNCardsGridComponent grid;
 
-    public BaseCardComponent(final V contentView,
-                             final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent,
-                             final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                             final SessionManager sessionManager,
-                             final ImportRecordEngine recordEngine,
-                             final DMNIncludeModelsClient client,
-                             final Event<RefreshDataTypesListEvent> refreshDataTypesListEvent) {
+    protected BaseCardComponent(final V contentView,
+                                final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent,
+                                final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                final SessionManager sessionManager,
+                                final ImportRecordEngine recordEngine,
+                                final DMNIncludeModelsClient client,
+                                final Event<RefreshDataTypesListEvent> refreshDataTypesListEvent) {
         this.contentView = contentView;
         this.refreshDecisionComponentsEvent = refreshDecisionComponentsEvent;
         this.sessionCommandManager = sessionCommandManager;
@@ -88,7 +87,11 @@ public abstract class BaseCardComponent<R extends BaseIncludedModelActiveRecord,
     }
 
     protected void refreshView() {
-        contentView.setPath(getTruncatedSubTitle());
+        if (getGrid().presentPathAsLink() && !isEmpty(getIncludedModel().getPath())) {
+            contentView.setPathLink(getTruncatedSubTitle());
+        } else {
+            contentView.setPath(getTruncatedSubTitle());
+        }
     }
 
     @Override
@@ -166,11 +169,15 @@ public abstract class BaseCardComponent<R extends BaseIncludedModelActiveRecord,
         return grid;
     }
 
+    public void openPathLink() {
+        getGrid().openPathLink(getIncludedModel().getPath());
+    }
+
     public interface ContentView extends UberElemental<BaseCardComponent>,
                                          IsElement {
 
-        void onRemoveButtonClick(final ClickEvent e);
-
         void setPath(final String path);
+
+        void setPathLink(final String path);
     }
 }

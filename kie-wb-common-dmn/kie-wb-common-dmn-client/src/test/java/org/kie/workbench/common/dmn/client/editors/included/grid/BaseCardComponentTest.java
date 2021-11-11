@@ -48,7 +48,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -123,15 +125,37 @@ public abstract class BaseCardComponentTest<C extends BaseCardComponent<R, V>, V
 
     @Test
     public void testRefreshView() {
+        final DMNCardsGridComponent gridMock = mock(DMNCardsGridComponent.class);
         final BaseIncludedModelActiveRecord includedModel = prepareIncludedModelMock();
         final String path = "/bla/bla/bla/111111111111111222222222222222333333333333333444444444444444/file.dmn";
+        final String expectedPathReference = "...111111222222222222222333333333333333444444444444444/file.dmn";
 
         when(includedModel.getNamespace()).thenReturn(path);
         doReturn(includedModel).when(card).getIncludedModel();
 
+        doReturn(gridMock).when(card).getGrid();
+        when(gridMock.presentPathAsLink()).thenReturn(false);
+
         card.refreshView();
 
-        verify(cardView).setPath("...111111222222222222222333333333333333444444444444444/file.dmn");
+        verify(cardView, times(1)).setPath(expectedPathReference);
+
+        reset(cardView);
+
+        when(gridMock.presentPathAsLink()).thenReturn(true);
+
+        card.refreshView();
+
+        verify(cardView, times(1)).setPath(expectedPathReference);
+
+        reset(cardView);
+
+        when(gridMock.presentPathAsLink()).thenReturn(true);
+        when(includedModel.getPath()).thenReturn(path);
+
+        card.refreshView();
+
+        verify(cardView, times(1)).setPathLink(expectedPathReference);
     }
 
     @Test
@@ -298,5 +322,21 @@ public abstract class BaseCardComponentTest<C extends BaseCardComponent<R, V>, V
         assertEquals(recordEngine, command.getRecordEngine());
         assertEquals(refreshDataTypesListEvent, command.getRefreshDataTypesListEvent());
         assertEquals(expectedIncludedModel, command.getIncludedModel());
+    }
+
+    @Test
+    public void testOpenLinkFullPath() {
+        final DMNCardsGridComponent gridMock = mock(DMNCardsGridComponent.class);
+        final BaseIncludedModelActiveRecord includedModel = prepareIncludedModelMock();
+        final String expected = "/src/path/kie/dmn";
+
+        doReturn(gridMock).when(card).getGrid();
+        when(gridMock.presentPathAsLink()).thenReturn(true);
+        doReturn(includedModel).when(card).getIncludedModel();
+        when(includedModel.getPath()).thenReturn(expected);
+
+        card.openPathLink();
+
+        verify(gridMock, times(1)).openPathLink(expected);
     }
 }
