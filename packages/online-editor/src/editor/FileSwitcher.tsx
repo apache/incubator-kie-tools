@@ -297,7 +297,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                 boxShadow: "none",
                 minWidth:
                   activeMenu === ROOT_MENU_ID
-                    ? undefined
+                    ? "400px"
                     : filesDropdownMode === FilesDropdownMode.CAROUSEL
                     ? "calc(100vw - 16px)"
                     : filesDropdownMode === FilesDropdownMode.LIST_MODELS
@@ -495,6 +495,7 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
 }
 
 export function SearchableFilesMenuGroup(props: {
+  maxHeight: string;
   shouldFocusOnSearch: boolean;
   filesDropdownMode: FilesDropdownMode;
   label: string;
@@ -539,7 +540,9 @@ export function SearchableFilesMenuGroup(props: {
           </EmptyState>
         </Bullseye>
       )}
-      {filteredFiles.length > 0 && props.children({ filteredFiles })}
+      <div style={{ maxHeight: props.maxHeight, overflowY: "auto" }}>
+        {filteredFiles.length > 0 && props.children({ filteredFiles })}
+      </div>
     </MenuGroup>
   );
 }
@@ -604,6 +607,7 @@ export function FilesMenuItems(props: {
           <SplitItem isFilled={true} style={{ minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px` }}>
             <>
               <SearchableFilesMenuGroup
+                maxHeight={"500px"}
                 filesDropdownMode={props.filesDropdownMode}
                 shouldFocusOnSearch={props.shouldFocusOnSearch}
                 label={`Models in '${props.workspaceDescriptor.name}'`}
@@ -651,6 +655,7 @@ export function FilesMenuItems(props: {
         {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS && (
           <SplitItem isFilled={true} style={{ minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px` }}>
             <SearchableFilesMenuGroup
+              maxHeight={"500px"}
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
               label={`Other files in '${props.workspaceDescriptor.name}'`}
@@ -670,13 +675,14 @@ export function FilesMenuItems(props: {
         {props.filesDropdownMode === FilesDropdownMode.CAROUSEL && (
           <SplitItem isFilled={true}>
             <SearchableFilesMenuGroup
+              maxHeight={"500px"}
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
               label={`Models in '${props.workspaceDescriptor.name}'`}
               allFiles={models}
             >
               {({ filteredFiles }) => (
-                <Gallery hasGutter={true}>
+                <Gallery hasGutter={true} style={{ padding: "8px" }}>
                   {filteredFiles.map((file) => (
                     <Card
                       key={file.relativePath}
