@@ -107,6 +107,7 @@ describe("New file test", () => {
 
       // open and close PMML Outputs modal
       cy.get("[data-title='Outputs']").click();
+      cy.get("[data-ouia-component-id='outputs-overview']").scrollTo("center");
       cy.get("[data-ouia-component-id='no-outputs-title']").should("be.visible");
       cy.get("[data-title='OutputsModalClose']").click();
     });
