@@ -99,6 +99,7 @@ export function KieToolingExtendedServicesButtons(props: Props) {
       </FeatureDependentOnKieToolingExtendedServices>
       <FeatureDependentOnKieToolingExtendedServices isLight={true} position="bottom">
         <Button
+          id="dmn-runner-button"
           variant={ButtonVariant.control}
           onClick={toggleDmnRunnerDrawer}
           className={dmnRunner.isExpanded ? "pf-m-active" : ""}

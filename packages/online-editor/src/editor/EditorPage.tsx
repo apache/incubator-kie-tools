@@ -59,13 +59,14 @@ export function EditorPage(props: Props) {
   const [alerts, alertsRef] = useController<AlertsController>();
   const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
+  const [fileBroken, setFileBroken] = useState(false);
 
   const lastContent = useRef<string>();
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
 
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
 
-  useDmnTour(!editor?.isReady && workspaceFilePromise.data?.extension === "dmn");
+  useDmnTour(!!editor?.isReady && workspaceFilePromise.data?.extension === "dmn" && !fileBroken);
 
   const setContentErrorAlert = useAlert(
     alerts,
@@ -185,6 +186,7 @@ export function EditorPage(props: Props) {
   }, [alerts]);
 
   useEffect(() => {
+    setFileBroken(false);
     setContentErrorAlert.close();
   }, [uniqueIdentifierOfFile]);
 
@@ -275,6 +277,7 @@ export function EditorPage(props: Props) {
   );
 
   const handleSetContentError = useCallback(() => {
+    setFileBroken(true);
     setContentErrorAlert.show();
   }, [setContentErrorAlert]);
 

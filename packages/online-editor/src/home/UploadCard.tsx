@@ -162,7 +162,7 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
           )}
         </div>
       )}
-      <input {...getInputProps()} />
+      <input id={"upload-field"} {...getInputProps()} />
       <Card isFullHeight={true} isLarge={true} isPlain={true}>
         <CardTitle>
           <TextContent>

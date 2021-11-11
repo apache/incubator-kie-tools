@@ -49,7 +49,11 @@ export function ImportFromUrlCard() {
         <ImportFromUrlForm url={url} onChange={setUrl} onSubmit={importFromUrl} />
       </CardBody>
       <CardFooter>
-        <Button variant={url.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary} onClick={importFromUrl}>
+        <Button
+          variant={url.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
+          onClick={importFromUrl}
+          ouiaId="import-from-url-button"
+        >
           {buttonLabel}
         </Button>
       </CardFooter>

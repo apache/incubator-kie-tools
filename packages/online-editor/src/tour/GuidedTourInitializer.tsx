@@ -56,7 +56,7 @@ export function useDmnTour(shouldShow: boolean) {
 function getOnlineEditorTutorial(i18n: OnlineI18n) {
   function dismissAndStartDmnRunner(props: any) {
     props.dismiss();
-    (document.getElementsByClassName("kogito--dmn-runner-button") as HTMLCollectionOf<HTMLButtonElement>)?.[0]?.click();
+    (document.getElementById("dmn-runner-button") as HTMLButtonElement)?.click();
   }
 
   return new Tutorial("DMN Online Editor Tutorial", [

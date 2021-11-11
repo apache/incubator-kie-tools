@@ -330,9 +330,9 @@ export function EditorToolbar(props: Props) {
         files: {
           "README.md": {
             content: `
-This Gist was created from Kogito Tooling .NEW. 
+This Gist was created from Kogito Tooling .NEW.
 
-This file is temporary and you should not be seeing it. 
+This file is temporary and you should not be seeing it.
 If you are, it means that creating this Gist failed and it can safely be deleted.
 `,
           },
@@ -437,6 +437,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           key={"download-file-item"}
           description={`${props.workspaceFile.name} will be downloaded`}
           icon={<DownloadIcon />}
+          ouiaId="download-file-dropdown-button"
         >
           Current file
         </DropdownItem>

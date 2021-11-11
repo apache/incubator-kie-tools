@@ -21,25 +21,19 @@ describe("Open from source test", () => {
     "https://raw.githubusercontent.com/kiegroup/kogito-tooling/main/packages/online-editor/it-tests/fixtures/";
 
   beforeEach(() => {
-    cy.visit(`http://localhost:${buildEnv.onlineEditor.dev.port}/`);
+    cy.visit(`https://localhost:${buildEnv.onlineEditor.dev.port}/`);
   });
 
   it("should open BPMN file from GitHub url", () => {
     // open BPMN file from github url
-    cy.get("[data-ouia-component-id='open-from-source-button']").should("be.disabled");
-    cy.get("[data-ouia-component-id='url-input']").type(SAMPLES_URL + "testProcess.bpmn");
-    cy.get("[data-ouia-component-id='url-input']").should("have.value", SAMPLES_URL + "testProcess.bpmn");
-    cy.get("[data-ouia-component-id='open-from-source-button']", { timeout: 15000 }).should("be.enabled");
-    cy.get("[data-ouia-component-id='open-from-source-button']").click();
+    cy.get("[data-ouia-component-id='import-from-url-button']").should("be.enabled");
+    cy.get("[data-ouia-component-id='import-url-form-input']").type(SAMPLES_URL + "testProcess.bpmn");
+    cy.get("[data-ouia-component-id='import-url-form-input']").should("have.value", SAMPLES_URL + "testProcess.bpmn");
+    cy.get("[data-ouia-component-id='import-from-url-button']", { timeout: 15000 }).should("be.enabled");
+    cy.get("[data-ouia-component-id='import-from-url-button']").click();
 
     // wait until loading dialog disappears
     cy.loadEditor();
-
-    // check editor logo
-    cy.get("[class='pf-c-brand']").within(($logo) => {
-      expect($logo.attr("src")).contain("bpmn");
-      expect($logo.attr("alt")).contain("bpmn");
-    });
 
     // check editor title name
     cy.get("[aria-label='Edit file name']").should("have.value", "testProcess");
@@ -63,20 +57,14 @@ describe("Open from source test", () => {
 
   it("should open DMN file from GitHub url", () => {
     // open DMN file from github url
-    cy.get("[data-ouia-component-id='open-from-source-button']").should("be.disabled");
-    cy.get("[data-ouia-component-id='url-input']").type(SAMPLES_URL + "testModel.dmn");
-    cy.get("[data-ouia-component-id='url-input']").should("have.value", SAMPLES_URL + "testModel.dmn");
-    cy.get("[data-ouia-component-id='open-from-source-button']", { timeout: 15000 }).should("be.enabled");
-    cy.get("[data-ouia-component-id='open-from-source-button']").click();
+    cy.get("[data-ouia-component-id='import-from-url-button']").should("be.enabled");
+    cy.get("[data-ouia-component-id='import-url-form-input']").type(SAMPLES_URL + "testModel.dmn");
+    cy.get("[data-ouia-component-id='import-url-form-input']").should("have.value", SAMPLES_URL + "testModel.dmn");
+    cy.get("[data-ouia-component-id='import-from-url-button']", { timeout: 15000 }).should("be.enabled");
+    cy.get("[data-ouia-component-id='import-from-url-button']").click();
 
     // wait until loading dialog disappears
     cy.loadEditor();
-
-    // check editor logo
-    cy.get("[class='pf-c-brand']").within(($logo) => {
-      expect($logo.attr("src")).contain("dmn");
-      expect($logo.attr("alt")).contain("dmn");
-    });
 
     // check editor title name
     cy.get("[aria-label='Edit file name']").should("have.value", "testModel");
@@ -92,7 +80,7 @@ describe("Open from source test", () => {
       cy.get("[data-title='Properties']").click();
 
       // open decision navigator and check nodes
-      cy.get("[data-ouia-component-id='collapsed-docks-bar-W'] > button").click();
+      cy.get("[data-title='Decision Navigator']").click();
       cy.get("li[data-i18n-prefix='DecisionNavigatorTreeView.']").should(($nodes) => {
         expect($nodes).length(2);
         expect($nodes.eq(0)).attr("title", "Test model");
@@ -103,21 +91,15 @@ describe("Open from source test", () => {
 
   it("should open PMML file from GitHub url", () => {
     // open PMML file from github url
-    cy.get("[data-ouia-component-id='open-from-source-button']").should("be.disabled");
-    cy.get("[data-ouia-component-id='url-input']").type(SAMPLES_URL + "testScoreCard.pmml");
-    cy.get("[data-ouia-component-id='url-input']").should("have.value", SAMPLES_URL + "testScoreCard.pmml");
-    cy.get("[data-ouia-component-id='open-from-source-button']", { timeout: 15000 }).should("be.enabled");
-    cy.get("[data-ouia-component-id='open-from-source-button']").click();
+    cy.get("[data-ouia-component-id='import-from-url-button']").should("be.enabled");
+    cy.get("[data-ouia-component-id='import-url-form-input']").type(SAMPLES_URL + "testScoreCard.pmml");
+    cy.get("[data-ouia-component-id='import-url-form-input']").should("have.value", SAMPLES_URL + "testScoreCard.pmml");
+    cy.get("[data-ouia-component-id='import-from-url-button']", { timeout: 15000 }).should("be.enabled");
+    cy.get("[data-ouia-component-id='import-from-url-button']").click();
 
     // load pmml editor
     cy.getEditor().within(() => {
       cy.get("[data-testid='editor-page']", { timeout: 60000 }).should("be.visible");
-    });
-
-    // check editor logo
-    cy.get("[class='pf-c-brand']").within(($logo) => {
-      expect($logo.attr("src")).contain("pmml");
-      expect($logo.attr("alt")).contain("pmml");
     });
 
     // check editor title name

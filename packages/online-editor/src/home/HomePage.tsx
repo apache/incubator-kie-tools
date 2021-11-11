@@ -421,7 +421,7 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
       <CardFooter>
         <Flex>
           <Link to={{ pathname: globals.routes.newModel.path({ extension: props.extension }) }}>
-            <Button isLarge={true} variant={ButtonVariant.secondary}>
+            <Button isLarge={true} variant={ButtonVariant.secondary} ouiaId={`new-${props.extension}-button`}>
               New {props.title}
             </Button>
           </Link>
@@ -435,7 +435,11 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
               }),
             }}
           >
-            <Button variant={ButtonVariant.link} style={{ paddingLeft: "2px" }}>
+            <Button
+              variant={ButtonVariant.link}
+              style={{ paddingLeft: "2px" }}
+              ouiaId={`try-${props.extension}-sample-button`}
+            >
               Try sample
             </Button>
           </Link>

@@ -18,7 +18,7 @@ import * as buildEnv from "@kogito-tooling/build-env";
 
 describe("New file test", () => {
   beforeEach(() => {
-    cy.visit(`http://localhost:${buildEnv.onlineEditor.dev.port}/`);
+    cy.visit(`https://localhost:${buildEnv.onlineEditor.dev.port}/`);
   });
 
   it("should create new empty BPMN", () => {
@@ -28,27 +28,21 @@ describe("New file test", () => {
     // wait until loading dialog disappears
     cy.loadEditor();
 
-    // check editor logo
-    cy.get("[class='pf-c-brand']").within(($logo) => {
-      expect($logo.attr("src")).contain("bpmn");
-      expect($logo.attr("alt")).contain("bpmn");
-    });
-
     // check editor title name
-    cy.get("[aria-label='Edit file name']").should("have.value", "new-file");
+    cy.get("[aria-label='Edit file name']").should("have.value", "Untitled");
 
     cy.getEditor().within(() => {
       // open properties panel and check values
       cy.get("[data-title='Properties']").click();
-      cy.get("[name$='diagramSet.name']").should("have.value", "new-file");
+      cy.get("[name$='diagramSet.name']").should("have.value", "Untitled");
       cy.get("[name$='diagramSet.packageProperty']").should("have.value", "com.example");
-      cy.get("[name$='diagramSet.id']").should("have.value", "new-file");
+      cy.get("[name$='diagramSet.id']").should("have.value", "Untitled");
 
       // open diagram panel and check nodes
       cy.get("[data-title='Explore Diagram']").click();
       cy.get("a.gwt-Anchor").should(($nodes) => {
         expect($nodes).length(1);
-        expect($nodes.eq(0)).text("new-file");
+        expect($nodes.eq(0)).text("Untitled");
       });
     });
   });
@@ -60,32 +54,23 @@ describe("New file test", () => {
     // wait until loading dialog disappears
     cy.loadEditor();
 
-    // check editor logo
-    cy.get("[class='pf-c-brand']").within(($logo) => {
-      expect($logo.attr("src")).contain("dmn");
-      expect($logo.attr("alt")).contain("dmn");
-    });
-
     // check editor title name
-    cy.get("[aria-label='Edit file name']").should("have.value", "new-file");
+    cy.get("[aria-label='Edit file name']").should("have.value", "Untitled");
 
     // close DMN guided tour dialog
     cy.get("[data-ouia-component-id='dmn-guided-tour'] button[aria-label='Close']").click();
 
     cy.getEditor().within(() => {
       // open Decision navigator and check nodes
-      cy.get("[data-ouia-component-id='collapsed-docks-bar-W'] > button").click();
+      cy.get("[data-title='Decision Navigator']").click();
       cy.get("li[data-i18n-prefix='DecisionNavigatorTreeView.']").should(($nodes) => {
         expect($nodes).length(1);
-        expect($nodes.eq(0)).attr("title", "new-file");
+        expect($nodes.eq(0)).attr("title", "Untitled");
       });
-
-      // close Decision navigator
-      cy.get("[data-ouia-component-id='expanded-docks-bar-W'] > div > button ").click();
 
       // open properties panel, check values and close panel
       cy.get("[data-title='Properties']").click();
-      cy.get("[name$='definitions.nameHolder']").should("have.value", "new-file");
+      cy.get("[name$='definitions.nameHolder']").should("have.value", "Untitled");
       cy.get("[data-title='Properties']").click();
 
       // open Data Types tab and check there is no item
@@ -103,14 +88,8 @@ describe("New file test", () => {
       cy.get("[data-testid='editor-page']", { timeout: 60000 }).should("be.visible");
     });
 
-    // check editor logo
-    cy.get("[class='pf-c-brand']").within(($logo) => {
-      expect($logo.attr("src")).contain("pmml");
-      expect($logo.attr("alt")).contain("pmml");
-    });
-
     // check editor title name
-    cy.get("[aria-label='Edit file name']").should("have.value", "new-file");
+    cy.get("[aria-label='Edit file name']").should("have.value", "Untitled");
 
     cy.getEditor().within(() => {
       // check no characteristics are defined

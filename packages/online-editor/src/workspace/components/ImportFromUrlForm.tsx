@@ -67,6 +67,7 @@ export function ImportFromUrlForm(props: {
         <TextInput
           ref={props.urlInputRef}
           id={"import-url-form-input"}
+          ouiaId={"import-url-form-input"}
           validated={validatedOption}
           isRequired={true}
           placeholder={"URL"}
