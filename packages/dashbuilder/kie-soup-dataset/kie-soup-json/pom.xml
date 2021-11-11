@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.kie.soup</groupId>
     <artifactId>kie-soup-dataset</artifactId>
-    <version>0.0.0</version>
+    <version>0.14.1</version>
   </parent>
 
   <artifactId>kie-soup-json</artifactId>

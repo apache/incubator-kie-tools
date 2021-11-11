@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-workbench</artifactId>
-    <version>0.0.0</version>
+    <version>0.14.1</version>
   </parent>
 
   <artifactId>uberfire-workbench-processors-tests</artifactId>

@@ -19,7 +19,7 @@
 
   <groupId>org.kie.kogito</groupId>
   <artifactId>dmn-json-schema-generator</artifactId>
-  <version>0.0.0</version>
+  <version>0.14.1</version>
   <packaging>jar</packaging>
 
   <name>DMN Form Schema Generator</name>
