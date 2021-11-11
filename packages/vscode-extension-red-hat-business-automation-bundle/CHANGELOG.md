@@ -1,7 +1,7 @@
 # 0.14.1 (alpha)
 
 - [KOGITO-6226](https://issues.redhat.com/browse/KOGITO-6226) - Editor content sanitization
-- [KOGITO-6223](https://issues.redhat.com/browse/KOGITO-6223) - Avoid the activation of Boxed Expression Editor during Diagram -> Expression Editor navigation
+- [KOGITO-6233](https://issues.redhat.com/browse/KOGITO-6233) - [DMN Designer] User changes are lost
 
 # 0.14.0 (alpha)
 
