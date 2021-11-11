@@ -1090,29 +1090,24 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   workspaceImportableUrl.type === UrlType.GITHUB && (
                     <FlexItem>
                       <Toolbar style={{ padding: 0 }}>
-                        <ToolbarItem>
+                        <ToolbarItem style={{ marginRight: 0 }}>
                           <Dropdown
+                            isPlain={true}
                             onSelect={() => setVsCodeDropdownOpen(false)}
+                            isOpen={isVsCodeDropdownOpen}
                             toggle={
                               <DropdownToggle toggleIndicator={null} onToggle={setVsCodeDropdownOpen}>
-                                <Button
-                                  variant={ButtonVariant.link}
-                                  icon={
-                                    <img
-                                      style={{ width: "14px" }}
-                                      alt="vscode-logo-blue"
-                                      src={globals.routes.static.images.vscodeLogoBlue.path({})}
-                                    />
-                                  }
-                                >
-                                  {`Open "${workspace.descriptor.name}"`}
-                                  &nbsp; &nbsp;
-                                  <CaretDownIcon />
-                                </Button>
+                                <img
+                                  style={{ width: "14px" }}
+                                  alt="vscode-logo-blue"
+                                  src={globals.routes.static.images.vscodeLogoBlue.path({})}
+                                />
+                                &nbsp; &nbsp;
+                                {`Open "${workspace.descriptor.name}"`}
+                                &nbsp; &nbsp;
+                                <CaretDownIcon />
                               </DropdownToggle>
                             }
-                            isOpen={isVsCodeDropdownOpen}
-                            isPlain
                             dropdownItems={[
                               <DropdownGroup key={"open-in-vscode"}>
                                 {navigationStatus.shouldBlockNavigationTo({ pathname: "__external" }) && (
@@ -1134,33 +1129,27 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                     <Divider />
                                   </>
                                 )}
-                                <a
+                                <DropdownItem
                                   href={`https://vscode.dev/github${
                                     workspace.descriptor.origin.url.pathname.endsWith(".git")
                                       ? workspace.descriptor.origin.url.pathname.replace(".git", "")
                                       : workspace.descriptor.origin.url.pathname
                                   }/tree/${workspace.descriptor.origin.branch}`}
                                   target={"_blank"}
+                                  icon={<ExternalLinkAltIcon />}
+                                  description={`The '${workspace.descriptor.origin.branch}' branch will be opened.`}
                                 >
-                                  <DropdownItem
-                                    icon={<ExternalLinkAltIcon />}
-                                    description={`The '${workspace.descriptor.origin.branch}' branch will be opened.`}
-                                  >
-                                    vscode.dev
-                                  </DropdownItem>
-                                </a>
+                                  vscode.dev
+                                </DropdownItem>
                                 <Divider />
-                                <a
+                                <DropdownItem
                                   href={`vscode://vscode.git/clone?url=${workspace.descriptor.origin.url.toString()}`}
                                   target={"_blank"}
+                                  icon={<ExternalLinkAltIcon />}
+                                  description={"The default branch will be opened."}
                                 >
-                                  <DropdownItem
-                                    icon={<ExternalLinkAltIcon />}
-                                    description={"The default branch will be opened."}
-                                  >
-                                    VS Code Desktop
-                                  </DropdownItem>
-                                </a>
+                                  VS Code Desktop
+                                </DropdownItem>
                               </DropdownGroup>,
                             ]}
                           />
