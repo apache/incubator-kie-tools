@@ -7,6 +7,7 @@ import { StorageFile, StorageService } from "./StorageService";
 import { decoder, encoder } from "../WorkspacesContext";
 import { WorkspaceKind, WorkspaceOrigin } from "../model/WorkspaceOrigin";
 import { GIST_DEFAULT_BRANCH } from "./GitService";
+import { jsonParseWithUrl } from "../../common/JsonParse";
 
 const WORKSPACE_DESCRIPTORS_FS_NAME = "workspaces";
 const NEW_WORKSPACE_DEFAULT_NAME = `Untitled Folder`;
@@ -37,7 +38,7 @@ export class WorkspaceDescriptorService {
     );
 
     return workspaceDescriptorFiles.map((workspaceDescriptorFile) =>
-      this.getWorkspaceDescriptorFromFileContent(workspaceDescriptorFile.content)
+      jsonParseWithUrl(decoder.decode(workspaceDescriptorFile.content))
     );
   }
 
@@ -56,7 +57,7 @@ export class WorkspaceDescriptorService {
     if (!workspaceDescriptorFile) {
       throw new Error(`Workspace not found (${workspaceId})`);
     }
-    return this.getWorkspaceDescriptorFromFileContent(await workspaceDescriptorFile.getFileContents());
+    return jsonParseWithUrl(decoder.decode(await workspaceDescriptorFile.getFileContents()));
   }
 
   public async create(args: { origin: WorkspaceOrigin; preferredName?: string }) {
@@ -97,21 +98,6 @@ export class WorkspaceDescriptorService {
         },
       })
     );
-  }
-
-  private getWorkspaceDescriptorFromFileContent(workspaceDescriptorFileContent: Uint8Array) {
-    return JSON.parse(decoder.decode(workspaceDescriptorFileContent), (_key: string, value: any) => {
-      //FIXME: OMG this is ugly
-      if (typeof value === "string") {
-        try {
-          return new URL(value);
-        } catch (e) {
-          return value;
-        }
-      }
-
-      return value;
-    }) as WorkspaceDescriptor;
   }
 
   private toStorageFile(descriptor: WorkspaceDescriptor) {

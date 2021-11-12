@@ -23,7 +23,7 @@ import { DmnRunnerCallbacksContext, DmnRunnerContext } from "./DmnRunnerContext"
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
 import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { QueryParams } from "../../navigation/Routes";
-import { jsonParseWithDate } from "../../common/arrays";
+import { jsonParseWithDate } from "../../common/JsonParse";
 import { usePrevious } from "../../common/Hooks";
 import { useOnlineI18n } from "../../common/i18n";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
