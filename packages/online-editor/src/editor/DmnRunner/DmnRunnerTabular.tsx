@@ -15,12 +15,13 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useDmnRunner, useDmnRunnerCallbacks } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DmnAutoTable } from "@kogito-tooling/unitables";
 import { DecisionResult } from "@kogito-tooling/form/dist/dmn";
 import { PanelId } from "../EditorPageDockDrawer";
+import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tooling-core/keyboard-shortcuts/dist/channel";
 
 interface Props {
   isReady?: boolean;
@@ -80,6 +81,11 @@ export function DmnRunnerTabular(props: Props) {
       props.setPanelOpen(PanelId.NONE);
     },
     [dmnRunnerCallbacks]
+  );
+
+  useElementsThatStopKeyboardEventsPropagation(
+    window,
+    useMemo(() => [".unitables--dmn-runner-drawer"], [])
   );
 
   return (
