@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.forms.client.fields.colorPicker;
+package org.kie.workbench.common.stunner.forms.client.fields.colorpicker;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -56,6 +56,6 @@ public class ColorPickerFieldRenderer extends FieldRenderer<ColorPickerFieldDefi
 
     @Override
     protected void setReadOnly(boolean readOnly) {
-
+        colorPicker.setReadOnly(readOnly);
     }
 }

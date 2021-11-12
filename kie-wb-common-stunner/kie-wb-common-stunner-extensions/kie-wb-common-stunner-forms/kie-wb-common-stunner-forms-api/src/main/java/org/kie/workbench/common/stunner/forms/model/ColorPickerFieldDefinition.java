@@ -29,9 +29,10 @@ import org.kie.workbench.common.stunner.forms.meta.definition.ColorPicker;
 public class ColorPickerFieldDefinition extends AbstractFieldDefinition {
 
     public static final ColorPickerFieldType FIELD_TYPE = new ColorPickerFieldType();
+    public static final String COLOR_REGEXP = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$";
 
     @ColorPicker
-    @Pattern(regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$", message = "Invalid color code")
+    @Pattern(regexp = COLOR_REGEXP, message = "Invalid color code")
     private String defaultValue;
 
     public ColorPickerFieldDefinition() {
