@@ -64,7 +64,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
 
   const preparePayload = useCallback(
     async (data?: any) => {
-      // TODO: Get only the included files, not all dmn files
       const files = (
         await workspaces.getFiles({
           fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),

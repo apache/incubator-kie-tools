@@ -295,8 +295,6 @@ export function EditorToolbar(props: Props) {
       setGitHubGistLoading(true);
       const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
 
-      //TODO: Check if there are new changes in the Gist before force-pushing.
-
       await workspaces.gitService.push({
         fs,
         dir: await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId }),
@@ -892,7 +890,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           const newBranchName = `${workspacePromise.data?.descriptor.origin.branch}-${randomString}`;
           pullErrorAlert.show({ newBranchName });
         }
-        // TODO: Lock workspace and give the user an option to start from another fresh one with a new branch.
       } finally {
         if (args.showAlerts) {
           pullingAlert.close();

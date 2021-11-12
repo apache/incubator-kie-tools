@@ -85,17 +85,15 @@ export function EmbedModal(props: {
   const getGithubGistScript = useCallback(
     (libraryName: string) => {
       const gistId = (props.workspace.origin as GistOrigin).url.toString().split("/").pop()!.replace(".git", "");
-      //FIXME: WID Icons won't work because they're not text.
-      //FIXME: We shouldn't have to say the type of the resource right away, the request should know, and we should adapt to what's being requested.
       return `
 <script type="module">
   import {Octokit} from "https://cdn.skypack.dev/@octokit/rest";
   async function main() {
     const gist = await new Octokit().gists.get({ gist_id: "${gistId}" });
-    ${libraryName}.open({ 
-      container: document.body, 
-      readOnly: true, 
-      initialContent: await fetch(gist.data.files["${props.workspaceFile.relativePath}"].raw_url).then(r => r.text()), 
+    ${libraryName}.open({
+      container: document.body,
+      readOnly: true,
+      initialContent: await fetch(gist.data.files["${props.workspaceFile.relativePath}"].raw_url).then(r => r.text()),
       origin: "*",
       resources: new Map([...Object.keys(gist.data.files)].map(n => ([n, { contentType: "text", content: fetch(gist.data.files[n].raw_url).then(r => r.text()) }])))
     });
