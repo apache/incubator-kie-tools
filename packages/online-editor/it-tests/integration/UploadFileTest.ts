@@ -240,6 +240,11 @@ describe("Upload file test", () => {
     // rename score card
     cy.get("[aria-label='Edit file name']").focus().wait(1000).clear().type("testScoreCardEdited").type("{enter}");
 
+    // wait for reload
+    cy.getEditor().within(() => {
+      cy.get("[data-testid='editor-page']", { timeout: 60000 }).should("be.visible");
+    });
+
     // save and download score card
     cy.get("[data-ouia-component-id='kebab-sm']").click();
     cy.get("[data-ouia-component-id='download-file-dropdown-button']").click();
