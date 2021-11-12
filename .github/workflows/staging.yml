@@ -371,7 +371,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
-          asset_path: ./packages/dashbuilder/dist/dashbuilder_dist.zip
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/dashbuilder/dist/dashbuilder_dist.zip
           asset_name: STAGING_dashbuilder_dist_${{ needs.create_release.outputs.tag }}.zip
           asset_content_type: application/zip
 
