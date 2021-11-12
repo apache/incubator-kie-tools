@@ -34,6 +34,8 @@ public interface DataSetProviderType<T extends DataSetDef> {
     PrometheusProviderType PROMETHEUS = new PrometheusProviderType();
     
     KafkaProviderType KAFKA = new KafkaProviderType();
+    
+    ExternalProviderType EXTERNAL = new ExternalProviderType();
 
     /**
      * The type's name. It must be unique and do not clash with other existing types.

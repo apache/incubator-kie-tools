@@ -25,6 +25,8 @@ import org.dashbuilder.backend.services.dataset.provider.RuntimeSQLDataSourceLoc
 import org.dashbuilder.dataprovider.StaticDataSetProvider;
 import org.dashbuilder.dataprovider.csv.CSVDataSetProvider;
 import org.dashbuilder.dataprovider.csv.CSVFileStorage;
+import org.dashbuilder.dataprovider.external.ExternalDataSetCaller;
+import org.dashbuilder.dataprovider.external.ExternalDataSetProvider;
 import org.dashbuilder.dataprovider.kafka.KafkaDataSetProvider;
 import org.dashbuilder.dataprovider.prometheus.PrometheusDataSetProvider;
 import org.dashbuilder.dataprovider.sql.SQLDataSetProvider;
@@ -81,9 +83,25 @@ public class DataSetServicesProducer {
 
     @Produces
     @ApplicationScoped
-    public DataSetDefRegistry produceDataSetDefRegistry(RuntimeDataSetProviderRegistry providerRegistry) {
+    public ExternalDataSetProvider produceExternalProvider(StaticDataSetProvider staticDataSetProvider,
+                                                           Scheduler scheduler) {
+        var caller = ExternalDataSetCaller.get();
+        return new ExternalDataSetProvider(caller, staticDataSetProvider, scheduler);
+    }
+
+    @Produces
+    @ApplicationScoped
+    public Scheduler produceScheduler() {
         var scheduler = new Scheduler();
         scheduler.init(10);
+        return scheduler;
+    }
+
+    @Produces
+    @ApplicationScoped
+    public DataSetDefRegistry produceDataSetDefRegistry(RuntimeDataSetProviderRegistry providerRegistry,
+                                                        Scheduler scheduler) {
+
         return new DataSetDefRegistryImpl(providerRegistry, scheduler);
     }
 

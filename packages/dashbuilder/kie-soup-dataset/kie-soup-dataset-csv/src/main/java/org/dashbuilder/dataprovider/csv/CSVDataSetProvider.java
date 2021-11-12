@@ -74,11 +74,12 @@ public class CSVDataSetProvider implements DataSetProvider, DataSetDefRegistryLi
 
     public DataSet lookupDataSet(DataSetDef def, DataSetLookup lookup) throws Exception {
         // Look first into the static data set provider since CSV data set are statically registered once loaded.
-        DataSet dataSet = staticDataSetProvider.lookupDataSet(def.getUUID(), null);
+        var dataSet = staticDataSetProvider.lookupDataSet(def.getUUID(), null);
 
         // If the lookup request is in test mode or the data set not exists or is outdated then load from the CSV file
-        CSVDataSetDef csvDef = (CSVDataSetDef) def;
-        if ((lookup != null && lookup.testMode()) || dataSet == null || hasCSVFileChanged(dataSet, csvDef)) {
+        var csvDef = (CSVDataSetDef) def;
+        var isTest = lookup != null && lookup.testMode();
+        if (isTest || dataSet == null || hasCSVFileChanged(dataSet, csvDef)) {
             CSVParser csvParser = new CSVParser(csvDef, csvStorage);
             dataSet = csvParser.load();
             dataSet.setUUID(def.getUUID());

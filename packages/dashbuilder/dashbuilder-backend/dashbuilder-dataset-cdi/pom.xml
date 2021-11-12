@@ -95,7 +95,12 @@
     <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-dataset-kafka</artifactId>
-    </dependency>    
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-dataset-external</artifactId>
+    </dependency>        
 
     <dependency>
       <groupId>org.uberfire</groupId>

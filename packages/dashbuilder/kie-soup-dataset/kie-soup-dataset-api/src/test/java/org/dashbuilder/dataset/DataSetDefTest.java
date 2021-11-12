@@ -17,6 +17,7 @@ package org.dashbuilder.dataset;
 import org.dashbuilder.dataset.def.BeanDataSetDef;
 import org.dashbuilder.dataset.def.CSVDataSetDef;
 import org.dashbuilder.dataset.def.DataSetDefFactory;
+import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -57,6 +58,18 @@ public class DataSetDefTest {
             .datePattern("MM-dd-yyyy")
             .buildDef();
 
+    ExternalDataSetDef externalDef = (ExternalDataSetDef) DataSetDefFactory.newExternalDataSetDef()
+            .uuid("external")
+            .name("external dataset")
+            .url("http://datasets.com/dataset")
+            .buildDef();
+    
+    ExternalDataSetDef externalDef2 = (ExternalDataSetDef) DataSetDefFactory.newExternalDataSetDef()
+            .uuid("external")
+            .name("external dataset")
+            .url("http://datasets.com/dataset")
+            .buildDef();
+
     @Test
     public void testEquals() throws Exception {
         assertTrue(beanDef1.equals(beanDef2));
@@ -74,5 +87,12 @@ public class DataSetDefTest {
         System.out.println(csvDef1.hashCode());
         System.out.println(csvDef1.toString());
         assertEquals(csvDef1.hashCode(), csvDef1.clone().hashCode());
+    }
+    
+    @Test
+    public void testExternalHashCode() throws Exception {
+        assertEquals(externalDef.hashCode(), externalDef2.clone().hashCode());
+        externalDef.setUrl("http://otherurl.com");
+        assertNotEquals(externalDef.hashCode(), externalDef2.clone().hashCode());
     }
 }

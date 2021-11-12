@@ -15,6 +15,9 @@
  */
 package org.dashbuilder.dataset.json;
 
+import java.util.Optional;
+import java.util.function.Consumer;
+
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.json.JsonObject;
@@ -35,5 +38,5 @@ public interface DataSetDefJSONMarshallerExt<T extends DataSetDef> {
      * Writes into the given json object the status of the data set def instance.
      */
     void toJson(T dataSetDef, JsonObject jsonObject);
-
+    
 }

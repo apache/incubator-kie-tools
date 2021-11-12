@@ -1,3 +1,8 @@
+# 0.14.1 (alpha)
+
+- [KOGITO-6226](https://issues.redhat.com/browse/KOGITO-6226) - Editor content sanitization
+- [KOGITO-6233](https://issues.redhat.com/browse/KOGITO-6233) - [DMN Designer] User changes are lost
+
 # 0.14.0 (alpha)
 
 - [KOGITO-2099](https://issues.redhat.com/browse/KOGITO-2099) - Generate a SVG diagram automatically on each BPMN/DMN diagrams save

@@ -17,9 +17,10 @@ package org.dashbuilder.client.widgets.dataset.editor;
 
 import static org.dashbuilder.dataprovider.DataSetProviderType.BEAN;
 import static org.dashbuilder.dataprovider.DataSetProviderType.CSV;
+import static org.dashbuilder.dataprovider.DataSetProviderType.EXTERNAL;
+import static org.dashbuilder.dataprovider.DataSetProviderType.KAFKA;
 import static org.dashbuilder.dataprovider.DataSetProviderType.PROMETHEUS;
 import static org.dashbuilder.dataprovider.DataSetProviderType.SQL;
-import static org.dashbuilder.dataprovider.DataSetProviderType.KAFKA;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -123,7 +124,7 @@ public class DataSetDefProviderTypeEditor implements IsWidget,
     /**
      * The provider types supported by this editor
      */
-    DataSetProviderType[] CORE_TYPES = new DataSetProviderType[]{BEAN, CSV, SQL, PROMETHEUS, KAFKA};
+    DataSetProviderType[] CORE_TYPES = new DataSetProviderType[]{BEAN, CSV, SQL, PROMETHEUS, KAFKA, EXTERNAL};
 
     protected Collection<ImageListEditor<DataSetProviderType>.Entry> getDefaultEntries() {
         final DataSetProviderType[] providerTypes = CORE_TYPES;
@@ -172,6 +173,9 @@ public class DataSetDefProviderTypeEditor implements IsWidget,
         if (KAFKA.equals(type)) {
             return DataSetEditorConstants.INSTANCE.kafka();
         }
+        if (EXTERNAL.equals(type)) {
+            return DataSetEditorConstants.INSTANCE.external();
+        }        
         return null;
     }
 
@@ -209,7 +213,10 @@ public class DataSetDefProviderTypeEditor implements IsWidget,
         }
         if (KAFKA.equals(type)) {
             return DataSetClientResources.INSTANCE.images().kafkaIcon160().getSafeUri();
-        }    
+        }
+        if (EXTERNAL.equals(type)) {
+            return DataSetClientResources.INSTANCE.images().externalIcon160().getSafeUri();
+        }          
         return null;
     }
 }

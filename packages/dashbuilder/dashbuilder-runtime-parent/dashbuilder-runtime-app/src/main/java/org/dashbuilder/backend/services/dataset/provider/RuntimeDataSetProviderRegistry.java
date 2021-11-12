@@ -31,6 +31,7 @@ import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 @ApplicationScoped
 public class RuntimeDataSetProviderRegistry extends DataSetProviderRegistryImpl {
 
+    // TODO: These manual registraion could be remove
     @Inject
     StaticDataSetProvider staticDataSetProvider;
 

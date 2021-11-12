@@ -1,3 +1,7 @@
+# 0.14.1 (alpha)
+
+- [KOGITO-6226](https://issues.redhat.com/browse/KOGITO-6226) - Editor content sanitization
+
 # 0.14.0 (alpha)
 
 - [KOGITO-2133](https://issues.redhat.com/browse/KOGITO-2133) - [VSCode] Custom editor save issues

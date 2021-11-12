@@ -189,4 +189,9 @@ public interface DataSetEditorConstants extends Messages {
     String remoteQueryPlaceHolder();
     String remoteSqlSource();
     String remoteSqlDatasource();
+    
+    String external_URL_placeholder();
+    String external_URL_description();
+    String external_URL();
+    String external();
 }
