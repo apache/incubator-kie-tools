@@ -6,7 +6,7 @@ import DexieBackend from "@isomorphic-git/lightning-fs/src/DexieBackend";
 import { StorageFile, StorageService } from "./StorageService";
 import { decoder, encoder } from "../WorkspacesContext";
 import { WorkspaceKind, WorkspaceOrigin } from "../model/WorkspaceOrigin";
-import { GIST_DEFAULT_BRANCH } from "./GitService";
+import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "./GitService";
 import { jsonParseWithUrl } from "../../common/JsonParse";
 
 const WORKSPACE_DESCRIPTORS_FS_NAME = "workspaces";
@@ -95,6 +95,20 @@ export class WorkspaceDescriptorService {
           kind: WorkspaceKind.GITHUB_GIST,
           url: gistUrl,
           branch: GIST_DEFAULT_BRANCH,
+        },
+      })
+    );
+  }
+
+  public async turnIntoGit(workspaceId: string, url: URL) {
+    await this.storageService.updateFile(
+      this.descriptorsFs,
+      this.toStorageFile({
+        ...(await this.get(workspaceId)),
+        origin: {
+          kind: WorkspaceKind.GIT,
+          url,
+          branch: GIT_DEFAULT_BRANCH,
         },
       })
     );

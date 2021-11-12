@@ -52,7 +52,7 @@ export interface CommitArgs {
 export interface PushArgs {
   fs: LightningFS;
   dir: string;
-  ref?: string;
+  ref: string;
   remoteRef?: string;
   remote: string;
   force: boolean;
@@ -107,6 +107,10 @@ export class GitService {
   }
 
   public async commit(args: CommitArgs): Promise<void> {
+    if (args.author) {
+      await this.setupGitConfig(args.fs, args.dir, args.author);
+    }
+
     await git.commit({
       fs: args.fs,
       dir: args.dir,

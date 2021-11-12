@@ -79,6 +79,8 @@ import { SettingsTabs } from "../settings/SettingsModalBody";
 import { Location } from "history";
 import { useNavigationBlockersBypass, useNavigationStatus, useNavigationStatusToggle } from "../navigation/Hooks";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
+import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
+import { useGitHubAuthInfo } from "../github/Hooks";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -134,16 +136,7 @@ export function EditorToolbar(props: Props) {
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
   const [isGitHubGistLoading, setGitHubGistLoading] = useState(false);
 
-  const githubAuthInfo = useMemo(() => {
-    if (settings.github.authStatus !== AuthStatus.SIGNED_IN) {
-      return undefined;
-    }
-
-    return {
-      username: settings.github.user!.login,
-      password: settings.github.token!,
-    };
-  }, [settings.github]);
+  const githubAuthInfo = useGitHubAuthInfo();
 
   const successfullyCreateGistAlert = useAlert(
     props.alerts,
@@ -272,9 +265,9 @@ export function EditorToolbar(props: Props) {
       downloadAllRef.current.click();
     }
     if (workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL) {
-      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId });
+      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId, gitConfig: githubAuthInfo });
     }
-  }, [props.editor, props.workspaceFile, workspaces, workspacePromise.data]);
+  }, [props.editor, props.workspaceFile, workspaces, workspacePromise.data, githubAuthInfo]);
 
   const downloadSvg = useCallback(() => {
     props.editor?.getPreview().then((previewSvg) => {
@@ -299,12 +292,13 @@ export function EditorToolbar(props: Props) {
         fs,
         dir: await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId }),
         remote: GIST_ORIGIN_REMOTE_NAME,
+        ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
         force: true,
         authInfo: githubAuthInfo,
       });
 
-      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId });
+      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId, gitConfig: githubAuthInfo });
     } catch (e) {
       errorAlert.show();
       throw e;
@@ -366,12 +360,14 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       await workspaces.createSavePoint({
         fs: fs,
         workspaceId: props.workspaceFile.workspaceId,
+        gitConfig: githubAuthInfo,
       });
 
       await workspaces.gitService.push({
         fs: fs,
         dir: workspaceRootDirPath,
         remote: GIST_ORIGIN_REMOTE_NAME,
+        ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
         force: true,
         authInfo: githubAuthInfo,
@@ -408,8 +404,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   const canCreateGitRepository = useMemo(
     () =>
       settings.github.authStatus === AuthStatus.SIGNED_IN &&
-      (workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL ||
-        workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST),
+      workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL,
     [workspacePromise, settings.github.authStatus]
   );
 
@@ -428,6 +423,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       !workspaceHasNestedDirectories,
     [workspacePromise, settings.github.authStatus, workspaceHasNestedDirectories]
   );
+
+  const [isCreateGitHubRepositoryModalOpen, setCreateGitHubRepositoryModalOpen] = useState(false);
 
   const shareDropdownItems = useMemo(
     () => [
@@ -493,9 +490,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   icon={<GithubIcon />}
                   data-testid={"create-github-repository-button"}
                   component="button"
-                  onClick={() => {
-                    console.info("Creating GitHub repo...");
-                  }}
+                  onClick={() => setCreateGitHubRepositoryModalOpen(true)}
                   isDisabled={!canCreateGitRepository}
                 >
                   Create Repository...
@@ -661,6 +656,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           workspaces.createSavePoint({
             fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
             workspaceId: props.workspaceFile.workspaceId,
+            gitConfig: githubAuthInfo,
           })
         }
         description={"Create a save point"}
@@ -668,7 +664,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         Commit
       </DropdownItem>
     );
-  }, [workspaces, props.workspaceFile]);
+  }, [workspaces, props.workspaceFile, githubAuthInfo]);
 
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
 
@@ -784,6 +780,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         await workspaces.createSavePoint({
           fs: fs,
           workspaceId: props.workspaceFile.workspaceId,
+          gitConfig: githubAuthInfo,
         });
 
         await workspaces.gitService.branch({
@@ -871,6 +868,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       await workspaces.createSavePoint({
         fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
+        gitConfig: githubAuthInfo,
       });
 
       try {
@@ -922,6 +920,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       await workspaces.createSavePoint({
         fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
         workspaceId: workspaceId,
+        gitConfig: githubAuthInfo,
       });
 
       const workspace = await workspaces.descriptorService.get(workspaceId);
@@ -1024,7 +1023,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         navigationStatusToggle,
         navigationBlockersBypass,
         pushToGitRepository,
-        settings,
         workspacePromise,
       ]
     )
@@ -1041,6 +1039,20 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
 
   const [isVsCodeDropdownOpen, setVsCodeDropdownOpen] = useState(false);
+
+  const createRepositorySuccessAlert = useAlert<{ url: string }>(
+    props.alerts,
+    useCallback(({ close }, { url }) => {
+      return (
+        <Alert
+          variant="success"
+          title={`GitHub repository created.`}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+          actionLinks={<AlertActionLink onClick={() => window.open(url, "_blank")}>{url}</AlertActionLink>}
+        />
+      );
+    }, [])
+  );
 
   return (
     <PromiseStateWrapper
@@ -1422,6 +1434,14 @@ If you are, it means that creating this Gist failed and it can safely be deleted
             workspaceFile={props.workspaceFile}
             isOpen={isEmbedModalOpen}
             onClose={() => setEmbedModalOpen(false)}
+          />
+          <CreateGitHubRepositoryModal
+            workspace={workspace.descriptor}
+            isOpen={isCreateGitHubRepositoryModalOpen}
+            onClose={() => setCreateGitHubRepositoryModalOpen(false)}
+            onSuccess={({ url }) => {
+              createRepositorySuccessAlert.show({ url });
+            }}
           />
           <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
           <a ref={downloadRef} />

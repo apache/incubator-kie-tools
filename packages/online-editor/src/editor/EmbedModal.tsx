@@ -162,60 +162,63 @@ export function EmbedModal(props: {
 
   return (
     <Modal
-      variant={ModalVariant.small}
+      variant={ModalVariant.medium}
       aria-label={"Embed the editor and content in your page"}
       isOpen={props.isOpen}
       onClose={props.onClose}
       title={i18n.embedModal.title}
       description={i18n.embedModal.description}
     >
-      <Radio
-        aria-label="Current content source option"
-        id={"current-content"}
-        isChecked={contentSource === ContentSource.CURRENT_CONTENT}
-        name={"Current content"}
-        label={i18n.embedModal.source.current.label}
-        description={i18n.embedModal.source.current.description}
-        onChange={() => setContentSource(ContentSource.CURRENT_CONTENT)}
-      />
-      <Tooltip
-        aria-label={"Only available when editing a file from a GitHub gist"}
-        content={<p>{i18n.embedModal.source.gist.tooltip}</p>}
-        trigger={!isGist ? "mouseenter click" : ""}
-      >
+      <div style={{ padding: "0 16px 0 16px" }}>
         <Radio
-          aria-label="GitHub gist source option"
-          id={"github-gist"}
-          isDisabled={!isGist}
-          name={"GitHub gist"}
-          label={i18n.embedModal.source.gist.label}
-          isChecked={contentSource === ContentSource.GIST}
-          description={i18n.embedModal.source.gist.description}
-          onChange={() => setContentSource(ContentSource.GIST)}
+          aria-label="Current content source option"
+          id={"current-content"}
+          isChecked={contentSource === ContentSource.CURRENT_CONTENT}
+          name={"Current content"}
+          label={i18n.embedModal.source.current.label}
+          description={i18n.embedModal.source.current.description}
+          onChange={() => setContentSource(ContentSource.CURRENT_CONTENT)}
         />
-      </Tooltip>
-      <br />
-      <Stack hasGutter={true}>
-        <StackItem>
-          <TextContent>
-            <Text component={TextVariants.h4}>{i18n.embedModal.embedCode}</Text>
-          </TextContent>
-        </StackItem>
-        <StackItem>
-          <ClipboardCopy
-            isCode={true}
-            clickTip={"Copied"}
-            hoverTip={"Copy"}
-            variant={ClipboardCopyVariant.expansion}
-            aria-label={"Embed code"}
-          >
-            {embedCode
-              .split("\n")
-              .map((line) => line.trim())
-              .join("")}
-          </ClipboardCopy>
-        </StackItem>
-      </Stack>
+        <br />
+        <Tooltip
+          aria-label={"Only available when editing a file from a GitHub gist"}
+          content={<p>{i18n.embedModal.source.gist.tooltip}</p>}
+          trigger={!isGist ? "mouseenter click" : ""}
+        >
+          <Radio
+            aria-label="GitHub gist source option"
+            id={"github-gist"}
+            isDisabled={!isGist}
+            name={"GitHub gist"}
+            label={i18n.embedModal.source.gist.label}
+            isChecked={contentSource === ContentSource.GIST}
+            description={i18n.embedModal.source.gist.description}
+            onChange={() => setContentSource(ContentSource.GIST)}
+          />
+        </Tooltip>
+        <br />
+        <Stack hasGutter={true}>
+          <StackItem>
+            <TextContent>
+              <Text component={TextVariants.h4}>{i18n.embedModal.embedCode}</Text>
+            </TextContent>
+          </StackItem>
+          <StackItem>
+            <ClipboardCopy
+              isCode={true}
+              clickTip={"Copied"}
+              hoverTip={"Copy"}
+              variant={ClipboardCopyVariant.expansion}
+              aria-label={"Embed code"}
+            >
+              {embedCode
+                .split("\n")
+                .map((line) => line.trim())
+                .join("")}
+            </ClipboardCopy>
+          </StackItem>
+        </Stack>
+      </div>
     </Modal>
   );
 }

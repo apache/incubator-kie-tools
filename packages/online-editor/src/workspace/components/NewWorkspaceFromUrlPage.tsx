@@ -16,12 +16,13 @@ import { basename } from "path";
 import { WorkspaceKind } from "../model/WorkspaceOrigin";
 import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../services/GitService";
 import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
+import { useGitHubAuthInfo } from "../../github/Hooks";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
   const globals = useGlobals();
   const history = useHistory();
-  const settings = useSettings();
+  const githubAuthInfo = useGitHubAuthInfo();
   const [importingError, setImportingError] = useState("");
 
   const queryParamUrl = useQueryParam(QueryParams.URL);
@@ -91,14 +92,6 @@ export function NewWorkspaceFromUrlPage() {
 
   useEffect(() => {
     async function run() {
-      let githubAuthInfo;
-      let gitConfig;
-
-      if (settings.github.authStatus === AuthStatus.SIGNED_IN) {
-        githubAuthInfo = { username: settings.github.user!.login, password: settings.github.token! };
-        gitConfig = { name: settings.github.user!.name, email: settings.github.user!.email };
-      }
-
       // try to import the URL as a git repository first
       try {
         const url = new URL(queryParamUrl!);
@@ -109,7 +102,7 @@ export function NewWorkspaceFromUrlPage() {
               url,
               branch: queryParamBranch ?? GIT_DEFAULT_BRANCH,
             },
-            gitConfig,
+            gitConfig: githubAuthInfo,
           });
 
           return;
@@ -136,7 +129,7 @@ export function NewWorkspaceFromUrlPage() {
               url: importableUrl.url,
               branch: queryParamBranch ?? importableUrl.branch ?? GIT_DEFAULT_BRANCH,
             },
-            gitConfig,
+            gitConfig: githubAuthInfo,
             authInfo: githubAuthInfo,
           });
         } else if (importableUrl.type === UrlType.GIT) {
@@ -146,7 +139,7 @@ export function NewWorkspaceFromUrlPage() {
               url: importableUrl.url,
               branch: GIT_DEFAULT_BRANCH,
             },
-            gitConfig,
+            gitConfig: githubAuthInfo,
           });
         }
 
@@ -212,7 +205,7 @@ export function NewWorkspaceFromUrlPage() {
     importableUrl,
     queryParamBranch,
     queryParamUrl,
-    settings.github,
+    githubAuthInfo,
     workspaces,
   ]);
 

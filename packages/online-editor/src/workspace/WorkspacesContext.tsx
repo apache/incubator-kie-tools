@@ -125,7 +125,11 @@ export interface WorkspacesContextType {
   prepareZip(args: { fs: LightningFS; workspaceId: string; onlyExtensions?: string[] }): Promise<Blob>;
   getFiles(args: { fs: LightningFS; workspaceId: string }): Promise<WorkspaceFile[]>;
   hasLocalChanges(args: { fs: LightningFS; workspaceId: string }): Promise<boolean>;
-  createSavePoint(args: { fs: LightningFS; workspaceId: string }): Promise<void>;
+  createSavePoint(args: {
+    fs: LightningFS;
+    workspaceId: string;
+    gitConfig?: { email: string; name: string };
+  }): Promise<void>;
   getAbsolutePath(args: { workspaceId: string; relativePath?: string }): string;
   getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }): string;
   deleteWorkspace(args: { workspaceId: string }): Promise<void>;

@@ -230,7 +230,7 @@ export function WorkspacesContextProvider(props: Props) {
           await gitService.commit({
             fs: fs,
             dir: workspaceRootDirPath,
-            message: "Initial",
+            message: "Initial commit from KIE Sandbox",
             targetBranch: GIT_DEFAULT_BRANCH,
             author: {
               name: args.gitConfig?.name ?? "Unknown",
