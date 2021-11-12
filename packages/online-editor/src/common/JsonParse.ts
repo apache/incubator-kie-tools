@@ -23,7 +23,10 @@ export function jsonParseWithDate(json: string): object {
 
 export function jsonParseWithUrl<T>(json: string): T {
   return JSON.parse(json, (_key: string, value: any) => {
-    const regexUrl = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g;
-    return typeof value === "string" && regexUrl.test(value) ? new URL(value) : value;
+    try {
+      return new URL(value);
+    } catch (e) {
+      return value;
+    }
   }) as T;
 }
