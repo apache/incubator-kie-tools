@@ -283,73 +283,67 @@ export function EditorPage(props: Props) {
 
   return (
     <OnlineEditorPage>
-      <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
-        <PromiseStateWrapper
-          promise={workspaceFilePromise}
-          pending={
-            <Bullseye>
-              <TextContent>
-                <Bullseye>
-                  <Spinner />
-                </Bullseye>
-                <br />
-                <Text component={TextVariants.p}>{`Loading...`}</Text>
-              </TextContent>
-            </Bullseye>
-          }
-          rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
-          resolved={(file) => (
-            <>
-              <DmnRunnerProvider workspaceFile={file} editorPageDock={editorPageDock}>
-                <Page>
-                  <EditorToolbar
-                    workspaceFile={file}
-                    editor={editor}
-                    alerts={alerts}
-                    alertsRef={alertsRef}
-                    editorPageDock={editorPageDock}
-                  />
-                  <Divider />
-                  <PageSection isFilled={true} padding={{ default: "noPadding" }}>
-                    <DmnRunnerDrawer workspaceFile={file} editorPageDock={editorPageDock}>
-                      <EditorPageDockDrawer
-                        ref={editorPageDockRef}
-                        isEditorReady={editor?.isReady}
-                        workspaceFile={file}
-                      >
-                        {embeddedEditorFile && (
-                          <EmbeddedEditor
-                            /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
-                             * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
-                             */
-                            key={workspaces.getUniqueFileIdentifier(file)}
-                            ref={editorRef}
-                            file={embeddedEditorFile}
-                            kogitoWorkspace_openFile={handleOpenFile}
-                            kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
-                            kogitoWorkspace_resourceListRequest={handleResourceListRequest}
-                            kogitoEditor_setContentError={handleSetContentError}
-                            editorEnvelopeLocator={globals.editorEnvelopeLocator}
-                            channelType={ChannelType.ONLINE_MULTI_FILE}
-                            locale={locale}
-                          />
-                        )}
-                      </EditorPageDockDrawer>
-                    </DmnRunnerDrawer>
-                  </PageSection>
-                </Page>
-              </DmnRunnerProvider>
-              <TextEditorModal
-                editor={editor}
-                workspaceFile={file}
-                refreshEditor={refreshEditor}
-                isOpen={isTextEditorModalOpen}
-              />
-              <DmnDevSandboxModalConfirmDeploy workspaceFile={file} alerts={alerts} />
-            </>
-          )}
-        />
-      </PageSection>
+      <PromiseStateWrapper
+        promise={workspaceFilePromise}
+        pending={
+          <Bullseye>
+            <TextContent>
+              <Bullseye>
+                <Spinner />
+              </Bullseye>
+              <br />
+              <Text component={TextVariants.p}>{`Loading...`}</Text>
+            </TextContent>
+          </Bullseye>
+        }
+        rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
+        resolved={(file) => (
+          <>
+            <DmnRunnerProvider workspaceFile={file} editorPageDock={editorPageDock}>
+              <Page>
+                <EditorToolbar
+                  workspaceFile={file}
+                  editor={editor}
+                  alerts={alerts}
+                  alertsRef={alertsRef}
+                  editorPageDock={editorPageDock}
+                />
+                <Divider />
+                <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
+                  <DmnRunnerDrawer workspaceFile={file} editorPageDock={editorPageDock}>
+                    <EditorPageDockDrawer ref={editorPageDockRef} isEditorReady={editor?.isReady} workspaceFile={file}>
+                      {embeddedEditorFile && (
+                        <EmbeddedEditor
+                          /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
+                           * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
+                           */
+                          key={workspaces.getUniqueFileIdentifier(file)}
+                          ref={editorRef}
+                          file={embeddedEditorFile}
+                          kogitoWorkspace_openFile={handleOpenFile}
+                          kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
+                          kogitoWorkspace_resourceListRequest={handleResourceListRequest}
+                          kogitoEditor_setContentError={handleSetContentError}
+                          editorEnvelopeLocator={globals.editorEnvelopeLocator}
+                          channelType={ChannelType.ONLINE_MULTI_FILE}
+                          locale={locale}
+                        />
+                      )}
+                    </EditorPageDockDrawer>
+                  </DmnRunnerDrawer>
+                </PageSection>
+              </Page>
+            </DmnRunnerProvider>
+            <TextEditorModal
+              editor={editor}
+              workspaceFile={file}
+              refreshEditor={refreshEditor}
+              isOpen={isTextEditorModalOpen}
+            />
+            <DmnDevSandboxModalConfirmDeploy workspaceFile={file} alerts={alerts} />
+          </>
+        )}
+      />
     </OnlineEditorPage>
   );
 }

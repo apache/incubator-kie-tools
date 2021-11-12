@@ -39,12 +39,13 @@ import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
+import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -306,15 +307,22 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
               <Page className={"kogito--editor__dmn-runner-content-page"}>
                 <PageSection className={"kogito--editor__dmn-runner-content-header"}>
                   <Flex
+                    flexWrap={{ default: "nowrap" }}
                     style={{ width: "100%" }}
                     justifyContent={{ default: "justifyContentSpaceBetween" }}
                     alignItems={{ default: "alignItemsCenter" }}
                   >
                     <FlexItem>
                       {dmnRunner.data.length <= 1 ? (
-                        <TextContent>
-                          <Text component={"h3"}>{i18n.terms.inputs}</Text>
-                        </TextContent>
+                        <Button
+                          variant={ButtonVariant.plain}
+                          className={"kogito-tooling--masthead-hoverable"}
+                          style={{ cursor: "default" }}
+                        >
+                          <TextContent>
+                            <Text component={"h3"}>{i18n.terms.inputs}</Text>
+                          </TextContent>
+                        </Button>
                       ) : (
                         <div>
                           <Dropdown
@@ -341,34 +349,38 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       )}
                     </FlexItem>
                     <FlexItem>
-                      <Tooltip content={"Create new Input"}>
-                        <Button
-                          style={{ paddingRight: "8px", paddingLeft: "8px" }}
-                          variant={"plain"}
-                          onClick={() => {
-                            dmnRunnerCallbacks.setData((previousData: Array<object>) => {
-                              const newData = [...previousData, {}];
-                              dmnRunnerCallbacks.setDataIndex(newData.length - 1);
-                              selectRow(`Row ${newData.length - 1}`);
-                              return newData;
-                            });
-                          }}
-                        >
-                          <PlusIcon />
-                        </Button>
-                      </Tooltip>
-                      <Tooltip content={"Open DMN Runner Tabular"}>
-                        <Button
-                          style={{ paddingRight: "8px", paddingLeft: "8px" }}
-                          variant={"plain"}
-                          onClick={() => {
-                            dmnRunnerCallbacks.setMode(DmnRunnerMode.TABULAR);
-                            props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
-                          }}
-                        >
-                          <TableIcon />
-                        </Button>
-                      </Tooltip>
+                      <ToolbarItem>
+                        <Tooltip content={"Add new input row"}>
+                          <Button
+                            className={"kogito-tooling--masthead-hoverable"}
+                            variant={ButtonVariant.plain}
+                            onClick={() => {
+                              dmnRunnerCallbacks.setData((previousData: Array<object>) => {
+                                const newData = [...previousData, {}];
+                                dmnRunnerCallbacks.setDataIndex(newData.length - 1);
+                                selectRow(`Row ${newData.length - 1}`);
+                                return newData;
+                              });
+                            }}
+                          >
+                            <PlusIcon />
+                          </Button>
+                        </Tooltip>
+                      </ToolbarItem>
+                      <ToolbarItem>
+                        <Tooltip content={"Switch to table view"}>
+                          <Button
+                            className={"kogito-tooling--masthead-hoverable"}
+                            variant={ButtonVariant.plain}
+                            onClick={() => {
+                              dmnRunnerCallbacks.setMode(DmnRunnerMode.TABULAR);
+                              props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
+                            }}
+                          >
+                            <TableIcon />
+                          </Button>
+                        </Tooltip>
+                      </ToolbarItem>
                     </FlexItem>
                   </Flex>
                   {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (

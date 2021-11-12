@@ -38,6 +38,8 @@ import "./style.css";
 import { DmnAutoRow, DmnAutoRowApi } from "./DmnAutoRow";
 import { diff } from "deep-object-diff";
 import { DmnTableJsonSchemaBridge } from "./DmnTableJsonSchemaBridge";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
@@ -432,22 +434,31 @@ export function DmnAutoTable(props: Props) {
                       <div style={{ display: "flex" }} ref={inputsContainerRef}>
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <div style={{ width: "50px", height: "55px", border: "1px solid", visibility: "hidden" }}>
-                            {" "}
-                            #{" "}
+                            {" # "}
                           </div>
                           <div style={{ width: "50px", height: "56px", border: "1px solid", visibility: "hidden" }}>
-                            {" "}
-                            #{" "}
+                            {" # "}
                           </div>
                           {Array.from(Array(rowQuantity)).map((e, i) => (
-                            <div
-                              key={i}
-                              style={{ width: "50px", height: "62px", display: "flex", alignItems: "center" }}
-                            >
-                              <Button variant={"plain"} onClick={() => updateDataWithModel(i)}>
-                                <ListIcon />
-                              </Button>
-                            </div>
+                            <Tooltip key={i} content={`Open row ${i + 1} in the form view`}>
+                              <div
+                                style={{
+                                  width: "50px",
+                                  height: "62px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  paddingTop: "8px",
+                                }}
+                              >
+                                <Button
+                                  className={"kogito-tooling--masthead-hoverable"}
+                                  variant={ButtonVariant.plain}
+                                  onClick={() => updateDataWithModel(i)}
+                                >
+                                  <ListIcon />
+                                </Button>
+                              </div>
+                            </Tooltip>
                           ))}
                         </div>
                         <DmnRunnerTabular

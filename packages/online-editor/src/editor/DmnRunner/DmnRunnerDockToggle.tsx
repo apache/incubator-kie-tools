@@ -17,6 +17,8 @@
 import { ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import * as React from "react";
 import { PanelId } from "../EditorPageDockDrawer";
+import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
+import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 
 interface Props {
   isSelected: boolean;
@@ -35,7 +37,14 @@ export function DmnRunnerDockToggle(props: Props) {
       buttonId={PanelId.DMN_RUNNER_TABULAR}
       isSelected={props.isSelected}
       onChange={() => props.onChange(PanelId.DMN_RUNNER_TABULAR)}
-      text={<div style={{ display: "flex" }}>DMN Runner</div>}
+      text={
+        <div style={{ display: "flex" }}>
+          <div style={{ paddingRight: "5px", width: "30px" }}>
+            <TableIcon />
+          </div>
+          Run
+        </div>
+      }
     />
   );
 }
