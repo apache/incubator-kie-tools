@@ -51,7 +51,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
 
   public kogitoWorkspace_openFile(path: string) {
     this.workspaceApi.kogitoWorkspace_openFile(
-      __path.isAbsolute(path) ? path : __path.join(__path.dirname(this.editor.document.uri.fsPath), path)
+      __path.isAbsolute(path) ? path : __path.join(__path.dirname(this.editor.document.uri.path), path)
     );
   }
 
