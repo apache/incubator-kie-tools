@@ -182,6 +182,9 @@ export function DmnAutoTable(props: Props) {
   const previousBridge: DmnTableJsonSchemaBridge | undefined = usePrevious(bridge);
   useEffect(() => {
     props.setData((previousModelData: any) => {
+      if (previousBridge === undefined) {
+        return previousModelData;
+      }
       const newModelData = [...previousModelData];
       const propertiesDifference = diff(
         ((previousBridge as DmnTableJsonSchemaBridge | undefined)?.schema ?? {}).definitions?.InputSet?.properties ??

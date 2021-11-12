@@ -40,7 +40,11 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -250,22 +254,26 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   const [selectedRow, selectRow] = useState<any>(null);
   const [rowSelectionIsOpen, openRowSelection] = useState<boolean>(false);
 
-  const onSelectRow = useCallback((event, selection) => {
-    selectRow(selection);
+  const onSelectRow = useCallback((event) => {
     openRowSelection(false);
   }, []);
 
   const rowOptions = useMemo(
     () =>
-      dmnRunner.data.map((d, i) => (
-        <SelectOption key={i} value={`Data ${i + 1}`} onClick={() => dmnRunnerCallbacks.setDataIndex(i)} />
+      dmnRunner.data.map((_, rowIndex) => (
+        <DropdownItem
+          component={"button"}
+          key={rowIndex}
+          onClick={() => {
+            selectRow(`Row ${rowIndex + 1}`);
+            dmnRunnerCallbacks.setDataIndex(rowIndex);
+          }}
+        >
+          Row {rowIndex + 1}
+        </DropdownItem>
       )),
     [dmnRunner.data]
   );
-
-  useEffect(() => {
-    selectRow(`Data ${dmnRunner.dataIndex + 1}`);
-  }, [dmnRunner.dataIndex, dmnRunnerCallbacks]);
 
   const formData = useMemo(() => {
     return dmnRunner.data[dmnRunner.dataIndex];
@@ -297,38 +305,72 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
             >
               <Page className={"kogito--editor__dmn-runner-content-page"}>
                 <PageSection className={"kogito--editor__dmn-runner-content-header"}>
-                  <TextContent>
-                    <div style={{ display: "flex" }}>
-                      <Text component={"h2"}>
-                        <>
-                          {i18n.terms.inputs}
-                          <Button
-                            variant={"plain"}
-                            style={{ border: 0, marginLeft: "5px" }}
-                            onClick={() => {
-                              dmnRunnerCallbacks.setMode(DmnRunnerMode.TABULAR);
-                              props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
-                            }}
-                          >
-                            <TableIcon />
-                          </Button>
-                        </>
-                      </Text>
-                      <div style={{ width: "140px" }}>
-                        <Select
-                          variant={SelectVariant.single}
-                          aria-label="Select Input"
-                          onToggle={() => openRowSelection((prevState) => !prevState)}
-                          onSelect={onSelectRow}
-                          selections={selectedRow}
-                          isOpen={rowSelectionIsOpen}
-                          aria-labelledby={"select-tabular-line"}
+                  <Flex
+                    style={{ width: "100%" }}
+                    justifyContent={{ default: "justifyContentSpaceBetween" }}
+                    alignItems={{ default: "alignItemsCenter" }}
+                  >
+                    <FlexItem>
+                      {dmnRunner.data.length <= 1 ? (
+                        <TextContent>
+                          <Text component={"h3"}>{i18n.terms.inputs}</Text>
+                        </TextContent>
+                      ) : (
+                        <div>
+                          <Dropdown
+                            className={"kogito-tooling--masthead-hoverable"}
+                            isPlain={true}
+                            aria-label="Select Row Input"
+                            toggle={
+                              <DropdownToggle
+                                toggleIndicator={null}
+                                onToggle={() => openRowSelection((prevState) => !prevState)}
+                              >
+                                <TextContent>
+                                  <Text component={"h3"}>
+                                    {i18n.terms.inputs} (Row {dmnRunner.dataIndex + 1}) <CaretDownIcon />
+                                  </Text>
+                                </TextContent>
+                              </DropdownToggle>
+                            }
+                            onSelect={onSelectRow}
+                            dropdownItems={rowOptions}
+                            isOpen={rowSelectionIsOpen}
+                          />
+                        </div>
+                      )}
+                    </FlexItem>
+                    <FlexItem>
+                      <Tooltip content={"Create new Input"}>
+                        <Button
+                          style={{ paddingRight: "8px", paddingLeft: "8px" }}
+                          variant={"plain"}
+                          onClick={() => {
+                            dmnRunnerCallbacks.setData((previousData: Array<object>) => {
+                              const newData = [...previousData, {}];
+                              dmnRunnerCallbacks.setDataIndex(newData.length - 1);
+                              selectRow(`Row ${newData.length - 1}`);
+                              return newData;
+                            });
+                          }}
                         >
-                          {rowOptions}
-                        </Select>
-                      </div>
-                    </div>
-                  </TextContent>
+                          <PlusIcon />
+                        </Button>
+                      </Tooltip>
+                      <Tooltip content={"Open DMN Runner Tabular"}>
+                        <Button
+                          style={{ paddingRight: "8px", paddingLeft: "8px" }}
+                          variant={"plain"}
+                          onClick={() => {
+                            dmnRunnerCallbacks.setMode(DmnRunnerMode.TABULAR);
+                            props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
+                          }}
+                        >
+                          <TableIcon />
+                        </Button>
+                      </Tooltip>
+                    </FlexItem>
+                  </Flex>
                   {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
                     <DrawerCloseButton
                       onClick={(e: any) => {
@@ -372,7 +414,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
               <Page className={"kogito--editor__dmn-runner-content-page"}>
                 <PageSection className={"kogito--editor__dmn-runner-content-header"}>
                   <TextContent>
-                    <Text component={"h2"}>{i18n.terms.outputs}</Text>
+                    <Text component={"h3"}>{i18n.terms.outputs}</Text>
                   </TextContent>
                   {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
                     <DrawerCloseButton onClick={(e: any) => dmnRunnerCallbacks.setExpanded(false)} />
