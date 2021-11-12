@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-export const DEFAULT_MIN_WIDTH = 100;
-
 /*
  * Returns a valid width value.
  */
+import { DEFAULT_MIN_WIDTH } from "../dom";
+
 export const widthValue = (width: number | string | undefined | null): number => {
   return Math.max(Math.round(parseFloat(width + "")), DEFAULT_MIN_WIDTH);
 };

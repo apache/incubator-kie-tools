@@ -27,6 +27,8 @@ export interface TableProps {
   getColumnPrefix?: (groupType?: string) => string;
   /** Optional label, that may depend on column, to be used for the popover that appears when clicking on column header */
   editColumnLabel?: string | { [groupType: string]: string };
+  /** Option to enable or disable header edits */
+  editableHeader?: boolean;
   /** Top-left cell custom content */
   controllerCell?: string | JSX.Element;
   /** For each column there is a default component to be used to render the related cell */
@@ -38,9 +40,14 @@ export interface TableProps {
   /** Table's cells */
   rows: DataRecord[];
   /** Function to be executed when columns are modified */
-  onColumnsUpdate?: (columns: ReactTableColumn[]) => void;
+  onColumnsUpdate?: (columns: ReactTableColumn[], operation?: TableOperation, columnIndex?: number) => void;
   /** Function to be executed when one or more rows are modified */
-  onRowsUpdate?: (rows: DataRecord[]) => void;
+  onRowsUpdate?: (
+    rows: DataRecord[],
+    operation?: TableOperation,
+    rowIndex?: number,
+    columns?: ReactTableColumn[]
+  ) => void;
   /** Function to be executed when adding a new row to the table */
   onRowAdding?: () => DataRecord;
   /** Custom configuration for the table handler */
@@ -57,6 +64,8 @@ export interface TableProps {
   getColumnKey?: (column: ReactTableColumn) => string;
   /** Custom function called for manually resetting a row */
   resetRowCustomFunction?: (row: DataRecord) => DataRecord;
+  /** Disable/Enable cell edits. Enabled by default */
+  readOnlyCells?: boolean;
 }
 
 /** Possible status for the visibility of the Table's Header */
@@ -116,7 +125,7 @@ export type Columns = Column[];
 
 export interface CellProps {
   /** Cell's row properties */
-  row: { index: number };
+  rowIndex: number;
   /** Cell's column properties */
-  column: { id: string };
+  columnId: string;
 }

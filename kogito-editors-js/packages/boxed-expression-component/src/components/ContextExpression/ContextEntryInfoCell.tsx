@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { CellProps, ContextEntries } from "../../api";
+import { CellProps, ContextEntries, ContextEntryRecord, EntryInfo, ExpressionProps } from "../../api";
 import * as React from "react";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useMemo } from "react";
 import { DataRecord } from "react-table";
 import { ContextEntryInfo } from "./ContextEntryInfo";
 import * as _ from "lodash";
@@ -29,39 +29,31 @@ export interface ContextEntryInfoCellProps extends CellProps {
 
 export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellProps> = ({
   data,
-  row: { index },
+  rowIndex,
   onRowUpdate,
   editInfoPopoverLabel,
 }) => {
-  const contextEntry = data[index];
-
-  const entryInfo = useRef(contextEntry.entryInfo);
-  const entryExpression = useRef(contextEntry.entryExpression);
-
-  useEffect(() => {
-    entryInfo.current = contextEntry.entryInfo;
-  }, [contextEntry.entryInfo]);
-  useEffect(() => {
-    entryExpression.current = contextEntry.entryExpression;
-  }, [contextEntry.entryExpression]);
+  const contextEntry: ContextEntryRecord = useMemo(() => data[rowIndex], [data, rowIndex]);
+  const entryInfo: EntryInfo = useMemo(() => contextEntry.entryInfo, [contextEntry.entryInfo]);
+  const entryExpression: ExpressionProps = useMemo(() => contextEntry.entryExpression, [contextEntry.entryExpression]);
 
   const onContextEntryUpdate = useCallback(
     (name, dataType) => {
-      const updatedExpression = { ...entryExpression.current };
+      const updatedExpression = { ...entryExpression };
       if (contextEntry.nameAndDataTypeSynchronized && _.size(name) && _.size(dataType)) {
         updatedExpression.name = name;
         updatedExpression.dataType = dataType;
       }
-      onRowUpdate(index, { ...contextEntry, entryExpression: updatedExpression, entryInfo: { name, dataType } });
+      onRowUpdate(rowIndex, { ...contextEntry, entryExpression: updatedExpression, entryInfo: { name, dataType } });
     },
-    [contextEntry, index, onRowUpdate]
+    [entryExpression, contextEntry, rowIndex, onRowUpdate]
   );
 
   return (
     <div className="context-entry-info-cell">
       <ContextEntryInfo
-        name={entryInfo.current.name}
-        dataType={entryInfo.current.dataType}
+        name={entryInfo.name}
+        dataType={entryInfo.dataType}
         onContextEntryUpdate={onContextEntryUpdate}
         editInfoPopoverLabel={editInfoPopoverLabel}
       />

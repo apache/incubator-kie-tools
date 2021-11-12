@@ -21,7 +21,7 @@ const fakeCells = [fakeCell(0), fakeCell(2), fakeCell(4), fakeCell(8)];
 describe("ResizerSupervisorDOM", () => {
   describe("applyDOMSupervisor", () => {
     beforeEach(() => {
-      applyDOMSupervisor();
+      applyDOMSupervisor(false);
     });
 
     it("refreshes cell widths as parents", () => {

@@ -59,7 +59,7 @@ describe("ListExpression tests", () => {
     expect(container.querySelector(".list-expression .table-component.id1 td.data-cell .list-expression")).toBeTruthy();
     expect(
       container.querySelector(
-        ".list-expression .table-component.id2 tbody td.data-cell .literal-expression .literal-expression-body textarea"
+        ".list-expression .table-component tbody td.data-cell .literal-expression .literal-expression-body textarea"
       )
     ).toBeEmpty();
   });

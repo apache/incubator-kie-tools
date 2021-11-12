@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { DataType } from "../api";
-import { TableResizerProps } from "react-table";
 import * as React from "react";
+import { DataType } from "./api";
+import { TableResizerProps } from "react-table";
 
 // Extending react-table definitions with missing and custom properties
 declare module "react-table" {
@@ -34,21 +34,9 @@ declare module "react-table" {
     };
   }
 
-  export interface TableOptions {
+  export interface TableOptions<D extends object> {
     onCellUpdate: (rowIndex: number, columnId: string, value: string) => void;
     onRowUpdate: (rowIndex: number, updatedRow: DataRecord) => void;
-    getThProps: (
-      column: ColumnInstance,
-      columnIndex: number
-    ) => {
-      onContextMenu: (event: ContextMenuEvent) => void;
-    };
-    getTdProps: (
-      columnIndex: number,
-      rowIndex: number
-    ) => {
-      onContextMenu: (event: ContextMenuEvent) => void;
-    };
   }
 
   export interface ColumnInstance {

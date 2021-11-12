@@ -60,6 +60,8 @@ export interface PMMLLiteralExpressionProps extends ExpressionProps {
   selected?: string;
   /** Label displayed (in italic style) when no options are available */
   noOptionsLabel: string;
+  /** Property used for test purposes only */
+  testId?: string;
 }
 
 export interface RelationProps extends ExpressionProps {

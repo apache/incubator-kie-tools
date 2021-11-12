@@ -31,8 +31,7 @@ import * as _ from "lodash";
 
 describe("FunctionExpression tests", () => {
   const documentName = "document";
-  const model = "model";
-  const parametersFromModel: EntryInfo[] = [{ name: "p-1", dataType: DataType.Number }];
+  const modelName = "model";
 
   test("should show a table with two levels visible header, with one row and one column", () => {
     const { container } = render(
@@ -79,7 +78,9 @@ describe("FunctionExpression tests", () => {
 
     expect(mockedBroadcastDefinition).toHaveBeenLastCalledWith({
       dataType: DataType.Undefined,
-      expression: expect.objectContaining({}),
+      expression: {
+        logicType: LogicType.LiteralExpression,
+      },
       formalParameters: [],
       functionKind: "FEEL",
       logicType: "Function",
@@ -369,23 +370,49 @@ describe("FunctionExpression tests", () => {
 
     test("should populate parameters list with parameters related to selected PMML model", async () => {
       const mockedBroadcastDefinition = jest.fn();
-      mockBroadcastDefinition(mockedBroadcastDefinition);
 
-      const { baseElement, container } = render(
-        usingTestingBoxedExpressionI18nContext(
-          wrapComponentInContext(
-            <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Pmml} formalParameters={[]} />
-          )
-        ).wrapper
+      let props: FunctionProps = {
+        logicType: LogicType.Function,
+        functionKind: FunctionKind.Pmml,
+        formalParameters: [],
+      };
+
+      const mockBroadcastDefinition = () => {
+        window.beeApi = _.extend(window.beeApi || {}, {
+          broadcastFunctionExpressionDefinition: (definition: FunctionProps) => {
+            props = {
+              ...props,
+              ...definition,
+            };
+            mockedBroadcastDefinition(definition);
+          },
+        });
+      };
+      mockBroadcastDefinition();
+
+      const screen = render(
+        usingTestingBoxedExpressionI18nContext(wrapComponentInContext(<FunctionExpression {...props} />)).wrapper
       );
-      await openPMMLLiteralExpressionSelector(container, 0);
-      await selectPMMLElement(baseElement, documentName);
-      await openPMMLLiteralExpressionSelector(container, 1);
-      await selectPMMLElement(baseElement, model);
+
+      await act(async () => {
+        fireEvent.click(screen.container.querySelectorAll(".pmml-literal-expression button")[0]! as HTMLElement);
+        fireEvent.click(await screen.findByTestId("pmml-selector-document"));
+        fireEvent.click(await screen.findByTestId("pmml-document"));
+      });
+
+      screen.rerender(
+        usingTestingBoxedExpressionI18nContext(wrapComponentInContext(<FunctionExpression {...props} />)).wrapper
+      );
+      await act(async () => {
+        fireEvent.click(screen.container.querySelectorAll(".pmml-literal-expression button")[1]! as HTMLElement);
+        fireEvent.click(await screen.findByTestId("pmml-selector-model"));
+        fireEvent.click(await screen.findByTestId("pmml-model"));
+      });
 
       expect(mockedBroadcastDefinition).toHaveBeenLastCalledWith(
         expect.objectContaining({
-          formalParameters: parametersFromModel,
+          document: documentName,
+          model: modelName,
         })
       );
     });
@@ -427,22 +454,6 @@ describe("FunctionExpression tests", () => {
     expect(container.querySelectorAll(entriesSelector)).toHaveLength(2);
     expect(container.querySelectorAll(entriesSelector)[0]).toContainHTML(firstEntry);
     expect(container.querySelectorAll(entriesSelector)[1]).toContainHTML(secondEntry);
-  }
-
-  async function openPMMLLiteralExpressionSelector(container: Element, position: number) {
-    await act(async () => {
-      (container.querySelectorAll(".pmml-literal-expression button")[position]! as HTMLElement).click();
-      await flushPromises();
-      jest.runAllTimers();
-    });
-  }
-
-  async function selectPMMLElement(baseElement: Element, element: string) {
-    await act(async () => {
-      (baseElement.querySelector(`[data-ouia-component-id='${element}']`) as HTMLButtonElement).click();
-      await flushPromises();
-      jest.runAllTimers();
-    });
   }
 });
 

@@ -48,6 +48,6 @@ jobs:
         run: |
           cd ${{ github.workspace }}/.github/supporting-files/publish-artifacts-npm/scesim-editor-unpacked
           cp -r ${{ github.workspace }}/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime ./target/scesim
-          npm version ${{ steps.editors_version_npm.outputs.version }}
+          lerna version ${{ steps.editors_version_npm.outputs.version }} --no-push --no-git-tag-version --exact --yes
           echo "//registry.npmjs.org/:_authToken=${{ secrets.KIEGROUP_NPM_TOKEN }}" > ~/.npmrc
           npm publish --access public --tag snapshot

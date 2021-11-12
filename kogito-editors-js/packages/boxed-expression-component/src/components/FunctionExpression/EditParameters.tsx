@@ -35,38 +35,36 @@ export const EditParameters: React.FunctionComponent<EditParametersProps> = ({ p
   const { i18n } = useBoxedExpressionEditorI18n();
 
   const addParameter = useCallback(() => {
-    setParameters((parameters) => [
+    setParameters([
       ...parameters,
       {
         name: generateNextAvailableEntryName(parameters, "p"),
         dataType: DataType.Undefined,
       },
     ]);
-  }, [setParameters]);
+  }, [parameters, setParameters]);
 
   const onNameChange = useCallback(
-    (index: number) => (event: ChangeEvent<HTMLInputElement>) =>
-      setParameters((parameters) => {
-        parameters[index].name = event.target.value;
-        return [...parameters];
-      }),
-    [setParameters]
+    (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
+      const parametersCopy = [...parameters].map((parameter) => Object.assign({}, parameter));
+      parametersCopy[index].name = event.target.value;
+      setParameters([...parametersCopy]);
+    },
+    [parameters, setParameters]
   );
 
   const onDataTypeChange = useCallback(
     (index: number) => (dataType: DataType) => {
-      setParameters((parameters) => {
-        parameters[index].dataType = dataType;
-        return [...parameters];
-      });
+      const parametersCopy = [...parameters].map((parameter) => Object.assign({}, parameter));
+      parametersCopy[index].dataType = dataType;
+      setParameters([...parametersCopy]);
     },
-    [setParameters]
+    [parameters, setParameters]
   );
 
   const onParameterRemove = useCallback(
-    (index: number) => () =>
-      setParameters((parameters) => [...parameters.slice(0, index), ...parameters.slice(index + 1)]),
-    [setParameters]
+    (index: number) => () => setParameters([...parameters.slice(0, index), ...parameters.slice(index + 1)]),
+    [parameters, setParameters]
   );
 
   return (

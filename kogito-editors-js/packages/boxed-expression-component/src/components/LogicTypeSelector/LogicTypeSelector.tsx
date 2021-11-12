@@ -16,7 +16,7 @@
 
 import "./LogicTypeSelector.css";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import {
   ContextProps,
   DataType,
@@ -69,27 +69,27 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
   onLogicTypeResetting,
   onUpdatingNameAndDataType,
   getPlacementRef,
-  isHeadless = false,
+  isHeadless,
   onUpdatingRecursiveExpression,
 }) => {
   const { i18n } = useBoxedExpressionEditorI18n();
 
   const globalContext = useContext(BoxedExpressionGlobalContext);
 
-  const expression = _.extend(selectedExpression, {
-    uid: selectedExpression.uid || nextId(),
-    isHeadless,
-    onUpdatingNameAndDataType,
-    onUpdatingRecursiveExpression,
-  });
+  const expression = useMemo(() => {
+    return {
+      ...selectedExpression,
+      uid: selectedExpression.uid ?? nextId(),
+      isHeadless: isHeadless ?? false,
+      onUpdatingNameAndDataType,
+      onUpdatingRecursiveExpression,
+    };
+  }, [selectedExpression, isHeadless, onUpdatingNameAndDataType, onUpdatingRecursiveExpression]);
 
-  const isLogicTypeSelected = (logicType?: LogicType) => !_.isEmpty(logicType) && logicType !== LogicType.Undefined;
-
-  const [logicTypeSelected, setLogicTypeSelected] = useState(isLogicTypeSelected(expression.logicType));
-
-  useEffect(() => {
-    setLogicTypeSelected(isLogicTypeSelected(selectedExpression.logicType));
-  }, [selectedExpression.logicType]);
+  const isLogicTypeSelected = useMemo(
+    () => selectedExpression.logicType && selectedExpression.logicType !== LogicType.Undefined,
+    [selectedExpression.logicType]
+  );
 
   const {
     contextMenuRef,
@@ -123,7 +123,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
     }
     // logicType is enough for deciding when to re-execute this function
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [expression.logicType]);
+  }, [expression]);
 
   const getSelectableLogicTypes = useCallback(
     () =>
@@ -151,14 +151,13 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
 
   const onLogicTypeSelect = useCallback(
     (event?: React.MouseEvent, itemId?: string | number) => {
-      setLogicTypeSelected(true);
       const selectedLogicType = itemId as LogicType;
       onLogicTypeUpdating(selectedLogicType);
     },
     [onLogicTypeUpdating]
   );
 
-  const buildLogicSelectorMenu = useCallback(
+  const buildLogicSelectorMenu = useMemo(
     () => (
       <PopoverMenu
         title={i18n.selectLogicType}
@@ -177,12 +176,11 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
   );
 
   const executeClearAction = useCallback(() => {
-    setLogicTypeSelected(false);
     setContextMenuVisibility(false);
     onLogicTypeResetting();
   }, [onLogicTypeResetting, setContextMenuVisibility]);
 
-  const buildContextMenu = useCallback(
+  const buildContextMenu = useMemo(
     () => (
       <div
         className="context-menu-container no-table-context-menu"
@@ -194,7 +192,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
         <Menu className="table-handler-menu">
           <MenuGroup label={(expression?.logicType ?? LogicType.Undefined).toLocaleUpperCase()}>
             <MenuList>
-              <MenuItem isDisabled={!logicTypeSelected} onClick={executeClearAction}>
+              <MenuItem isDisabled={!isLogicTypeSelected} onClick={executeClearAction}>
                 {i18n.clear}
               </MenuItem>
             </MenuList>
@@ -202,7 +200,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
         </Menu>
       </div>
     ),
-    [contextMenuYPos, contextMenuXPos, expression.logicType, logicTypeSelected, executeClearAction, i18n.clear]
+    [contextMenuYPos, contextMenuXPos, expression.logicType, isLogicTypeSelected, executeClearAction, i18n.clear]
   );
 
   const shouldClearContextMenuBeOpened = useMemo(() => {
@@ -215,12 +213,12 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
 
   return (
     <div
-      className={`logic-type-selector ${logicTypeSelected ? "logic-type-selected" : "logic-type-not-present"}`}
+      className={`logic-type-selector ${isLogicTypeSelected ? "logic-type-selected" : "logic-type-not-present"}`}
       ref={contextMenuRef}
     >
-      {logicTypeSelected ? renderExpression : i18n.selectExpression}
-      {!logicTypeSelected ? buildLogicSelectorMenu() : null}
-      {shouldClearContextMenuBeOpened ? buildContextMenu() : null}
+      {isLogicTypeSelected ? renderExpression : i18n.selectExpression}
+      {!isLogicTypeSelected && buildLogicSelectorMenu}
+      {shouldClearContextMenuBeOpened && buildContextMenu}
     </div>
   );
 };

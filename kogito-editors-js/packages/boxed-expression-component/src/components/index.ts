@@ -17,3 +17,4 @@
 import "./index.css";
 export * from "./BoxedExpressionEditor";
 export * from "./ExpressionContainer";
+export * from "./Table";

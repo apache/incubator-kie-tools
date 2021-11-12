@@ -20,8 +20,6 @@ import { LogicType } from "../../../api";
 import * as React from "react";
 import { PMMLLiteralExpression } from "../../../components/LiteralExpression";
 
-jest.useFakeTimers();
-
 describe("PMMLLiteralExpression tests", () => {
   test("should show noOptionsLabel when no options are available", async () => {
     const noOptionsLabel = "no options label";

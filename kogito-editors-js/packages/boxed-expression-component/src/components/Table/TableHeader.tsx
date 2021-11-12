@@ -28,7 +28,7 @@ export interface TableHeaderProps {
   /** Table instance */
   tableInstance: TableInstance;
   /** Rows instance */
-  tableRows: React.MutableRefObject<DataRecord[]>;
+  tableRows: DataRecord[];
   /** Function to be executed when one or more rows are modified */
   onRowsUpdate: (rows: DataRecord[]) => void;
   /** Optional label, that may depend on column, to be used for the popover that appears when clicking on column header */
@@ -40,9 +40,13 @@ export interface TableHeaderProps {
   /** Custom function for getting column key prop, and avoid using the column index */
   getColumnKey: (column: Column) => string;
   /** Columns instance */
-  tableColumns: React.MutableRefObject<Column[]>;
+  tableColumns: Column[];
   /** Function to be executed when columns are modified */
   onColumnsUpdate: (columns: Column[]) => void;
+  /** Th props */
+  thProps: (column: ColumnInstance) => any;
+  /** Option to enable or disable header edits */
+  editableHeader: boolean;
 }
 
 export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
@@ -55,6 +59,8 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   getColumnKey,
   tableColumns,
   onColumnsUpdate,
+  thProps,
+  editableHeader,
 }) => {
   const getColumnLabel: (groupType: string) => string | undefined = useCallback(
     (groupType) => {
@@ -71,7 +77,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   const updateColumnNameInRows = useCallback(
     (prevColumnName: string, newColumnName: string) =>
       onRowsUpdate(
-        _.map(tableRows.current, (tableCells) => {
+        _.map(tableRows, (tableCells) => {
           const assignedCellValue = tableCells[prevColumnName]!;
           delete tableCells[prevColumnName];
           tableCells[newColumnName] = assignedCellValue;
@@ -91,16 +97,16 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
     (column, columnIndex) => {
       return ({ name = "", dataType }) => {
         const prevColumnName = column.label as string;
-        let columnToUpdate = tableColumns.current[columnIndex] as ColumnInstance;
+        let columnToUpdate = tableColumns[columnIndex] as ColumnInstance;
         if (column.depth > 0) {
           const parentName = column.parent!.id;
-          const parentColumns = (_.find(tableColumns.current, { accessor: parentName }) as ColumnInstance).columns;
+          const parentColumns = (_.find(tableColumns, { accessor: parentName }) as ColumnInstance).columns;
           columnToUpdate = _.find(parentColumns, { accessor: prevColumnName })!;
         }
         columnToUpdate.label = name;
         columnToUpdate.accessor = name;
         columnToUpdate.dataType = dataType as DataType;
-        onColumnsUpdate([...tableColumns.current]);
+        onColumnsUpdate([...tableColumns]);
         if (name !== prevColumnName) {
           updateColumnNameInRows(prevColumnName, name);
         }
@@ -118,9 +124,9 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   const renderCountColumn = useCallback(
     (column: ColumnInstance, columnIndex: number) => (
       <Th
-        {...column.getHeaderProps()}
+        {...(column.getHeaderProps() as any)}
         className="fixed-column no-clickable-cell"
-        key={computeColumnKey(column, columnIndex)}
+        key={computeColumnKey(column, columnIndex) as any}
       >
         <div className="header-cell" data-ouia-component-type="expression-column-header">
           {column.label}
@@ -158,15 +164,22 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   const onHorizontalResizeStop = useCallback(
     (column, columnWidth) => {
       const columnToBeFound = column.placeholderOf || column;
-      let columnToUpdate = _.find(tableColumns.current, getColumnSearchPredicate(columnToBeFound)) as ColumnInstance;
+      let columnToUpdate = _.find(tableColumns, getColumnSearchPredicate(columnToBeFound)) as ColumnInstance;
       if (column.parent) {
         columnToUpdate = _.find(
-          getColumnsAtLastLevel(tableColumns.current),
+          getColumnsAtLastLevel(tableColumns),
           getColumnSearchPredicate(column)
         ) as ColumnInstance;
       }
-      columnToUpdate.width = columnWidth;
-      onColumnsUpdate(tableColumns.current);
+      if (columnToUpdate) {
+        columnToUpdate.width = columnWidth;
+      }
+      tableColumns.forEach((tableColumn) => {
+        if (tableColumn.width === undefined) {
+          tableColumn.width = (tableColumn as any).columns.reduce((acc: number, column: any) => acc + column.width, 0);
+        }
+      });
+      onColumnsUpdate(tableColumns);
     },
     [onColumnsUpdate, tableColumns]
   );
@@ -177,9 +190,8 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
         ...column.getHeaderProps(),
         style: {},
       };
-      const thProps = tableInstance.getThProps(column, columnIndex);
       const width = column.width || DEFAULT_MIN_WIDTH;
-      const isColspan = column.columns?.length > 0 || false;
+      const isColspan = (column.columns?.length ?? 0) > 0 || false;
 
       const getCssClass = () => {
         const cssClasses = [];
@@ -190,6 +202,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
           cssClasses.push("colspan-header");
         }
         if (column.placeholderOf) {
+          cssClasses.push("colspan-header");
           cssClasses.push(column.placeholderOf.cssClasses);
           cssClasses.push(column.placeholderOf.groupType);
         }
@@ -199,10 +212,10 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       };
 
       return (
-        <Th {...headerProps} {...thProps} className={getCssClass()} key={computeColumnKey(column, columnIndex)}>
+        <Th {...headerProps} {...thProps(column)} className={getCssClass()} key={computeColumnKey(column, columnIndex)}>
           <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
             <div className="header-cell" data-ouia-component-type="expression-column-header">
-              {column.dataType ? (
+              {column.dataType && editableHeader ? (
                 <EditExpressionMenu
                   title={getColumnLabel(column.groupType)}
                   selectedExpressionName={column.label}
@@ -222,11 +235,12 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
     },
     [
       computeColumnKey,
+      editableHeader,
       getColumnLabel,
       onColumnNameOrDataTypeUpdate,
       onHorizontalResizeStop,
       renderHeaderCellInfo,
-      tableInstance,
+      thProps,
     ]
   );
 
@@ -269,14 +283,18 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
     [renderColumn, tableInstance.headerGroups]
   );
 
-  switch (headerVisibility) {
-    case TableHeaderVisibility.Full:
-      return <Thead noWrap>{renderHeaderGroups}</Thead>;
-    case TableHeaderVisibility.LastLevel:
-      return <Thead noWrap>{renderAtLevelInHeaderGroups(-1)}</Thead>;
-    case TableHeaderVisibility.SecondToLastLevel:
-      return <Thead noWrap>{renderAtLevelInHeaderGroups(-2)}</Thead>;
-    default:
-      return null;
-  }
+  const header = useMemo(() => {
+    switch (headerVisibility) {
+      case TableHeaderVisibility.Full:
+        return <Thead noWrap>{renderHeaderGroups}</Thead>;
+      case TableHeaderVisibility.LastLevel:
+        return <Thead noWrap>{renderAtLevelInHeaderGroups(-1)}</Thead>;
+      case TableHeaderVisibility.SecondToLastLevel:
+        return <Thead noWrap>{renderAtLevelInHeaderGroups(-2)}</Thead>;
+      default:
+        return null;
+    }
+  }, [headerVisibility, renderHeaderGroups, renderAtLevelInHeaderGroups]);
+
+  return <>{header}</>;
 };

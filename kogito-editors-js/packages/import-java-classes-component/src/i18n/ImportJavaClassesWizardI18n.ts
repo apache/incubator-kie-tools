@@ -17,7 +17,7 @@
 import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
-interface ImportJavaClassesWizardDictionary extends ReferenceDictionary<ImportJavaClassesWizardDictionary | unknown> {
+interface ImportJavaClassesWizardDictionary extends ReferenceDictionary {
   modalButton: {
     text: string;
   };

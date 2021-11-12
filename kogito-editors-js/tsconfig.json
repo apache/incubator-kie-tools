@@ -16,6 +16,7 @@
     "declaration": true,
     "declarationMap": true,
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "sourceMap": true
   }
 }

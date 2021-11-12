@@ -16,7 +16,7 @@
 
 import * as Monaco from "monaco-editor";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { FeelEditorService, SuggestionProvider } from "../Monaco";
 
 export interface FeelInputProps {
@@ -30,75 +30,56 @@ export interface FeelInputProps {
   options?: Monaco.editor.IStandaloneEditorConstructionOptions;
 }
 
-export const FeelInput: React.FunctionComponent<FeelInputProps> = ({
-  enabled,
-  value,
-  suggestionProvider,
-  onBlur,
-  onLoad,
-  onKeyDown,
-  onChange,
-  options,
-}: FeelInputProps) => {
-  const monacoContainer = useRef<HTMLDivElement>(null);
+export interface FeelInputRef {
+  setMonacoValue: (newValue: string) => void;
+}
 
-  const editorService = useCallback(() => FeelEditorService.getEditorBuilder(suggestionProvider), [suggestionProvider]);
-  const dispose = useCallback(() => FeelEditorService.dispose(), []);
-  const isInitialized = useCallback(() => FeelEditorService.isInitialized(), []);
+export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
+  ({ enabled, value, suggestionProvider, onBlur, onLoad, onKeyDown, onChange, options }, forwardRef) => {
+    const monacoContainer = useRef<HTMLDivElement>(null);
 
-  const calculatePosition = useCallback((value: string) => {
-    const lines = value.split("\n");
-    const lineNumber = lines.length;
-    const column = lines[lineNumber - 1].length + 1;
+    const calculatePosition = useCallback((value: string) => {
+      const lines = value.split("\n");
+      const lineNumber = lines.length;
+      const column = lines[lineNumber - 1].length + 1;
+      return { lineNumber, column };
+    }, []);
 
-    return { lineNumber, column };
-  }, []);
+    useEffect(() => {
+      if (enabled) {
+        const editor = FeelEditorService.getEditorBuilder(suggestionProvider)
+          .withDomElement(monacoContainer.current!)
+          .withOnBlur(onBlur)
+          .withOnChange(onChange)
+          .withOptions(options)
+          .withOnKeyDown(onKeyDown)
+          .createEditor();
 
-  const colorizeOnLoad = useCallback(() => {
-    if (!value || !onLoad) {
-      return;
-    }
-    editorService().withDomElement(monacoContainer.current!).colorize(value).then(onLoad);
-  }, [editorService, value, onLoad]);
-
-  const initializeEditor = useCallback(
-    (value: string) => {
-      const editor = editorService()
-        .withDomElement(monacoContainer.current!)
-        .withOnBlur(onBlur)
-        .withOnChange(onChange)
-        .withOptions(options)
-        .withOnKeyDown(onKeyDown)
-        .createEditor();
-
-      editor.setValue(value);
-      editor.setPosition(calculatePosition(value));
-      editor.focus();
-    },
-    [monacoContainer, calculatePosition, editorService, onBlur, onChange, options, onKeyDown]
-  );
-
-  useEffect(() => {
-    if (enabled) {
-      if (!isInitialized()) {
-        initializeEditor(value || "");
+        editor.setValue(value ?? "");
+        editor.setPosition(calculatePosition(value ?? ""));
+        editor.focus();
       }
-      return;
-    }
 
-    colorizeOnLoad();
+      if (value !== undefined && onLoad !== undefined) {
+        FeelEditorService.getEditorBuilder(suggestionProvider)
+          .withDomElement(monacoContainer.current!)
+          .colorize(value)
+          .then(onLoad);
+      }
 
-    if (isInitialized()) {
-      dispose();
-    }
-  }, [enabled, initializeEditor, colorizeOnLoad, dispose, isInitialized, value]);
+      return () => {
+        FeelEditorService.dispose();
+      };
+    }, [enabled, suggestionProvider, value, calculatePosition, options, onLoad, onChange, onKeyDown, onBlur]);
 
-  return useMemo(
-    () => (
+    useImperativeHandle(forwardRef, () => ({
+      setMonacoValue: (newValue: string) => FeelEditorService.getStandaloneEditor()?.setValue(newValue),
+    }));
+
+    return (
       <div className="feel-input">
-        <div ref={monacoContainer}></div>
+        <div ref={monacoContainer} />
       </div>
-    ),
-    [monacoContainer]
-  );
-};
+    );
+  }
+);

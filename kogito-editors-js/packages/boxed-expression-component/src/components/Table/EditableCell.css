@@ -27,6 +27,7 @@
   position: relative;
 }
 
+.expression-container .editable-cell:active,
 .expression-container .editable-cell.editable-cell--selected,
 .expression-container .editable-cell.editable-cell--edit-mode {
   border: 2px solid #438cb1;

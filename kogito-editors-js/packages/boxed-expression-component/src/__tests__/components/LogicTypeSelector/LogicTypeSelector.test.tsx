@@ -89,28 +89,33 @@ describe("Logic type selection", () => {
 
   test("should reset the selection, when logic type is selected and clear button gets clicked", async () => {
     const expression = { name: "Test", logicType: LogicType.LiteralExpression, dataType: DataType.Undefined };
+    const onLogicTypeResetting = jest.fn().mockImplementation(() => {
+      expression.logicType = LogicType.Undefined;
+    });
 
-    const { baseElement } = render(
-      usingTestingBoxedExpressionI18nContext(
-        <LogicTypeSelector
-          selectedExpression={expression}
-          getPlacementRef={() => document.body as HTMLDivElement}
-          onLogicTypeResetting={_.identity}
-          onLogicTypeUpdating={_.identity}
-        />
-      ).wrapper
-    );
+    const logicTypeSelector = usingTestingBoxedExpressionI18nContext(
+      <LogicTypeSelector
+        selectedExpression={expression}
+        getPlacementRef={() => document.body as HTMLDivElement}
+        onLogicTypeResetting={onLogicTypeResetting}
+        onLogicTypeUpdating={_.identity}
+      />
+    ).wrapper;
 
-    await triggerContextMenu(baseElement as HTMLElement, ".logic-type-selector");
+    const screen = render(logicTypeSelector);
+
+    await triggerContextMenu(screen.baseElement as HTMLElement, ".logic-type-selector");
 
     act(() => {
-      const clearButtonElement = baseElement.querySelector(".context-menu-container button")!;
+      const clearButtonElement = screen.baseElement.querySelector(".context-menu-container button")!;
       const clearButton = clearButtonElement as HTMLButtonElement;
       clearButton.click();
     });
 
-    expect(baseElement.querySelector(".logic-type-selector")).toBeTruthy();
-    expect(baseElement.querySelector(".logic-type-selector")).toHaveClass("logic-type-not-present");
+    screen.rerender(logicTypeSelector);
+
+    expect(screen.baseElement.querySelector(".logic-type-selector")).toBeTruthy();
+    expect(screen.baseElement.querySelector(".logic-type-selector")).toHaveClass("logic-type-not-present");
   });
 });
 

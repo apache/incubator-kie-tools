@@ -16,7 +16,7 @@
 
 import "./ContextEntryExpressionCell.css";
 import * as React from "react";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback } from "react";
 import { CellProps, ContextEntries, DataType, ExpressionProps } from "../../api";
 import { DataRecord } from "react-table";
 import { ContextEntryExpression } from "./ContextEntryExpression";
@@ -29,47 +29,28 @@ export interface ContextEntryExpressionCellProps extends CellProps {
 
 export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExpressionCellProps> = ({
   data,
-  row: { index },
+  rowIndex,
   onRowUpdate,
 }) => {
-  const contextEntry = data[index];
+  const onUpdatingRecursiveExpression = useCallback(
+    (expression: ExpressionProps) => {
+      const updatedEntryInfo = { ...data[rowIndex].entryInfo };
+      if (data[rowIndex].nameAndDataTypeSynchronized && _.size(expression.name) && _.size(expression.dataType)) {
+        updatedEntryInfo.name = expression.name as string;
+        updatedEntryInfo.dataType = expression.dataType as DataType;
+      }
 
-  const entryInfo = useRef(contextEntry.entryInfo);
-
-  const entryExpression = useRef({
-    uid: contextEntry.entryExpression.uid,
-    ...contextEntry.entryExpression,
-  } as ExpressionProps);
-
-  useEffect(() => {
-    entryInfo.current = contextEntry.entryInfo;
-  }, [contextEntry.entryInfo]);
-
-  useEffect(() => {
-    entryExpression.current = contextEntry.entryExpression;
-    onRowUpdate(index, { ...contextEntry, entryInfo: entryInfo.current, entryExpression: entryExpression.current });
-    // Every time, for an expression, its logic type changes, it means that corresponding entry has been just updated
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contextEntry.entryExpression.logicType]);
-
-  const onUpdatingRecursiveExpression = useCallback((expression: ExpressionProps) => {
-    entryExpression.current = { ...expression };
-    const updatedEntryInfo = { ...entryInfo.current };
-    if (contextEntry.nameAndDataTypeSynchronized && _.size(expression.name) && _.size(expression.dataType)) {
-      updatedEntryInfo.name = expression.name as string;
-      updatedEntryInfo.dataType = expression.dataType as DataType;
-    }
-    onRowUpdate(index, { ...contextEntry, entryInfo: updatedEntryInfo, entryExpression: expression });
-    // Callback should never change
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      onRowUpdate(rowIndex, { ...data[rowIndex], entryInfo: updatedEntryInfo, entryExpression: expression });
+    },
+    [onRowUpdate, data, rowIndex]
+  );
 
   return (
     <div className="context-entry-expression-cell">
       <ContextEntryExpression
-        expression={entryExpression.current}
+        expression={data[rowIndex].entryExpression}
         onUpdatingRecursiveExpression={onUpdatingRecursiveExpression}
-        onExpressionResetting={contextEntry.onExpressionResetting}
+        onExpressionResetting={data[rowIndex].onExpressionResetting}
       />
     </div>
   );

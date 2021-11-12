@@ -25,22 +25,33 @@ import { DOMSession, Cell } from "../dom";
  * new width information across React components once users commit an action.
  * =============================================================================
  */
-export const applyDOMSupervisor = (): void => {
-  new SupervisorExecution().execute();
+
+export let DEFAULT_MIN_WIDTH = 100;
+
+export const applyDOMSupervisor = (isRunnerTable: boolean, node?: HTMLElement): void => {
+  new SupervisorExecution(isRunnerTable, node).execute();
 };
 
 class SupervisorExecution {
   domSession: DOMSession;
 
-  constructor() {
-    this.domSession = new DOMSession();
+  constructor(private readonly isRunnerTable: boolean, private readonly node?: HTMLElement) {
+    this.domSession = new DOMSession(node);
   }
 
   execute() {
     const cells = this.domSession.getCells().sort((c1, c2) => c2.depth - c1.depth);
 
     cells.forEach(this.refreshWidthAsParent);
-    cells.forEach(this.refreshWidthAsLastGroupColumn);
+    if (this.isRunnerTable) {
+      DEFAULT_MIN_WIDTH = 150;
+      const properties = { originalIndex: 0, cellIndex: 0 };
+      for (properties.originalIndex; properties.originalIndex < cells.length; properties.originalIndex++) {
+        this.refreshWidthAsLastGroupColumnRunner(cells[properties.originalIndex], properties);
+      }
+    } else {
+      cells.forEach(this.refreshWidthAsLastGroupColumn);
+    }
     cells.sort((c1, c2) => c1.depth - c2.depth).forEach(this.refreshWidthAsLastColumn);
   }
 
@@ -50,6 +61,11 @@ class SupervisorExecution {
 
   private refreshWidthAsLastColumn(cell: Cell) {
     cell.refreshWidthAsLastColumn();
+  }
+
+  private refreshWidthAsLastGroupColumnRunner(cell: Cell, properties: any) {
+    cell.refreshWidthAsLastGroupColumnRunner(properties);
+    properties.cellIndex++;
   }
 
   private refreshWidthAsLastGroupColumn(cell: Cell) {

@@ -1,5 +1,10 @@
 {
   "extends": "../../tsconfig.json",
   "exclude": ["./**/node_modules", "./**/test-setup"],
-  "include": ["src"]
+  "include": ["src"],
+  "compilerOptions": {
+    "outDir": "dist",
+    "sourceMap": true,
+    "target": "es6"
+  }
 }

@@ -37,8 +37,8 @@ describe("ContextEntryInfoCell tests", () => {
       usingTestingBoxedExpressionI18nContext(
         <ContextEntryInfoCell
           data={[{ entryInfo: { name, dataType }, entryExpression: emptyExpression }]}
-          row={{ index: 0 }}
-          column={{ id: "col1" }}
+          rowIndex={0}
+          columnId={"col1"}
           onRowUpdate={_.identity}
           editInfoPopoverLabel="Edit entry"
         />
@@ -63,8 +63,8 @@ describe("ContextEntryInfoCell tests", () => {
       usingTestingBoxedExpressionI18nContext(
         <ContextEntryInfoCell
           data={[{ entryInfo: { name, dataType }, entryExpression: emptyExpression }]}
-          row={{ index: 0 }}
-          column={{ id: "col1" }}
+          rowIndex={0}
+          columnId={"col1"}
           onRowUpdate={mockedOnRowUpdate}
           editInfoPopoverLabel="Edit entry"
         />

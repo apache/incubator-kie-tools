@@ -34,62 +34,56 @@ export interface TableBodyProps {
   getColumnKey: (column: Column) => string;
   /** Function to be executed when columns are modified */
   onColumnsUpdate?: (columns: Column[]) => void;
+  /** Td props */
+  tdProps: (cellIndex: number, rowIndex: number) => any;
 }
 
 export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   tableInstance,
   children,
-  headerVisibility = TableHeaderVisibility.Full,
+  headerVisibility,
   getRowKey,
   getColumnKey,
   onColumnsUpdate,
+  tdProps,
 }) => {
-  const getWidth = useCallback((column: IColumn): number => {
-    if (typeof column?.width === "number") {
-      return column?.width;
-    }
-    return DEFAULT_MIN_WIDTH;
-  }, []);
-
-  const setWidth = useCallback(
-    (column: IColumn, width: number, cellIndex: number) => {
-      column?.setWidth?.(width);
-      tableInstance.allColumns[cellIndex].width = width;
-    },
-    [tableInstance.allColumns]
-  );
-
-  const onResize = useCallback(
-    (column: IColumn, width: number, cellIndex: number) => {
-      if (column.setWidth) {
-        setWidth(column, width, cellIndex);
-        onColumnsUpdate?.(tableInstance.columns);
-      }
-    },
-    [onColumnsUpdate, setWidth, tableInstance.columns]
-  );
-
-  const getElement = useCallback((cell) => {
-    return <>{cell.render("Cell")}</>;
-  }, []);
+  const headerVisibilityMemo = useMemo(() => headerVisibility ?? TableHeaderVisibility.Full, [headerVisibility]);
 
   const renderCell = useCallback(
-    (cellIndex: number, cell: Cell, rowIndex: number) => {
-      const cellType = cellIndex === 0 ? "counter-cell" : "data-cell";
+    (cellIndex: number, cell: Cell, rowIndex: number, inAForm: boolean) => {
+      let cellType = cellIndex === 0 ? "counter-cell" : "data-cell";
       const column = tableInstance.allColumns[cellIndex] as unknown as IColumn;
+      const width = typeof column?.width === "number" ? column?.width : DEFAULT_MIN_WIDTH;
 
+      const onResize = (width: number) => {
+        if (column.setWidth) {
+          column.setWidth(width);
+          tableInstance.allColumns[cellIndex].width = width;
+          onColumnsUpdate?.(tableInstance.columns);
+        }
+      };
       const cellTemplate =
         cellIndex === 0 ? (
           <>{rowIndex + 1}</>
         ) : (
-          <Resizer width={getWidth(column)} onHorizontalResizeStop={(width) => onResize(column, width, cellIndex)}>
-            {getElement(cell)}
+          <Resizer width={width} onHorizontalResizeStop={onResize}>
+            <>
+              {inAForm && typeof (cell.column as any)?.cellDelegate === "function"
+                ? (cell.column as any)?.cellDelegate(`dmn-auto-form-${rowIndex}`)
+                : cell.render("Cell")}
+            </>
           </Resizer>
         );
 
+      if (typeof (cell.column as any)?.cellDelegate === "function") {
+        cellType += " input";
+      }
+
+      const tdProp = tdProps(cellIndex, rowIndex);
+
       return (
         <Td
-          {...tableInstance.getTdProps(cellIndex, rowIndex)}
+          {...tdProp}
           key={`${getColumnKey(cell.column)}-${cellIndex}`}
           data-ouia-component-id={"expression-column-" + cellIndex}
           className={`${cellType}`}
@@ -98,24 +92,31 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
         </Td>
       );
     },
-    [getColumnKey, getElement, getWidth, onResize, tableInstance]
+    [getColumnKey, onColumnsUpdate, tableInstance, tdProps]
   );
 
   const renderBodyRow = useCallback(
     (row: Row, rowIndex: number) => {
+      tableInstance.prepareRow(row);
       const rowProps = { ...row.getRowProps(), style: {} };
+      const RowDelegate = (row.original as any).rowDelegate;
       return (
-        <Tr
-          className="table-row"
-          {...rowProps}
-          key={`${getRowKey(row)}-${rowIndex}`}
-          ouiaId={"expression-row-" + rowIndex}
-        >
-          {row.cells.map((cell: Cell, cellIndex: number) => renderCell(cellIndex, cell, rowIndex))}
-        </Tr>
+        <React.Fragment key={`${getRowKey(row)}-${rowIndex}`}>
+          {RowDelegate ? (
+            <RowDelegate>
+              <Tr className="table-row" {...rowProps} ouiaId={"expression-row-" + rowIndex}>
+                {row.cells.map((cell: Cell, cellIndex: number) => renderCell(cellIndex, cell, rowIndex, true))}
+              </Tr>
+            </RowDelegate>
+          ) : (
+            <Tr className="table-row" {...rowProps} ouiaId={"expression-row-" + rowIndex}>
+              {row.cells.map((cell: Cell, cellIndex: number) => renderCell(cellIndex, cell, rowIndex, false))}
+            </Tr>
+          )}
+        </React.Fragment>
       );
     },
-    [getRowKey, renderCell]
+    [getRowKey, renderCell, tableInstance]
   );
 
   const renderAdditiveRow = useMemo(
@@ -138,13 +139,10 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
 
   return (
     <Tbody
-      className={`${headerVisibility === TableHeaderVisibility.None ? "missing-header" : ""}`}
-      {...tableInstance.getTableBodyProps()}
+      className={`${headerVisibilityMemo === TableHeaderVisibility.None ? "missing-header" : ""}`}
+      {...(tableInstance.getTableBodyProps() as any)}
     >
-      {tableInstance.rows.map((row: Row, rowIndex: number) => {
-        tableInstance.prepareRow(row);
-        return renderBodyRow(row, rowIndex);
-      })}
+      {tableInstance.rows.map((row: Row, rowIndex: number) => renderBodyRow(row, rowIndex))}
       {children ? renderAdditiveRow : null}
     </Tbody>
   );

@@ -47,7 +47,7 @@ export const PMMLLiteralExpression: React.FunctionComponent<PMMLLiteralExpressio
 
   const getOptions = useCallback(() => {
     return _.map(props.getOptions(), (key) => (
-      <SelectOption key={key} value={key} data-ouia-component-id={key}>
+      <SelectOption data-testid={`pmml-${key}`} key={key} value={key} data-ouia-component-id={key}>
         {key}
       </SelectOption>
     ));
@@ -71,6 +71,7 @@ export const PMMLLiteralExpression: React.FunctionComponent<PMMLLiteralExpressio
       onSelect={onSelect}
       isOpen={selectOpen}
       selections={getSelection()}
+      data-testid={props.testId}
     >
       {getOptions()}
     </Select>

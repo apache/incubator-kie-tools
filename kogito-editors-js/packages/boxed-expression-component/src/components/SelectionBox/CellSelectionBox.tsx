@@ -18,7 +18,7 @@ import _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo, useRef } from "react";
 import { SelectionBox, SelectionRect } from ".";
-import { CELL_CSS_SELECTOR } from "../Resizer/dom/DOMSession";
+import { CELL_CSS_SELECTOR } from "../Resizer";
 import { paste } from "../Table/common";
 import "./CellSelectionBox.css";
 

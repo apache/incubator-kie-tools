@@ -21,6 +21,8 @@ export const CELL_CSS_SELECTOR = ".react-resizable";
 export class DOMSession {
   private cells: Cell[] | undefined;
 
+  constructor(private readonly node?: HTMLElement) {}
+
   getCells(): Cell[] {
     if (this.cells === undefined) {
       this.cells = this.buildCells();
@@ -30,7 +32,7 @@ export class DOMSession {
 
   private buildCells() {
     const cells: Cell[] = [];
-    this.fetchCellElements(document.body).forEach((cellElement) => {
+    this.fetchCellElements(this.node ?? document.body).forEach((cellElement) => {
       this.buildCell(cellElement, cells, 0);
     });
     return cells;

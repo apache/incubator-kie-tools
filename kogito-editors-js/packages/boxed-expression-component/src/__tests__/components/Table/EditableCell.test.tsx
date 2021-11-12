@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { fireEvent, render } from "@testing-library/react";
+import { act, fireEvent, render } from "@testing-library/react";
 import * as _ from "lodash";
 import * as React from "react";
 import { EditableCell, EDIT_MODE, READ_MODE } from "../../../components/Table";
@@ -31,7 +31,7 @@ describe("EditableCell", () => {
     beforeEach(() => {
       container = render(
         usingTestingBoxedExpressionI18nContext(
-          <EditableCell value={initialValue} row={{ index: 0 }} column={{ id: "col1" }} onCellUpdate={_.identity} />
+          <EditableCell value={initialValue} rowIndex={0} columnId={"col1"} onCellUpdate={_.identity} />
         ).wrapper
       ).container;
     });
@@ -50,7 +50,7 @@ describe("EditableCell", () => {
     beforeEach(() => {
       container = render(
         usingTestingBoxedExpressionI18nContext(
-          <EditableCell value={"value"} row={{ index: 0 }} column={{ id: "col1" }} onCellUpdate={_.identity} />
+          <EditableCell value={"value"} rowIndex={0} columnId={"col1"} onCellUpdate={_.identity} />
         ).wrapper
       ).container;
 
@@ -66,7 +66,7 @@ describe("EditableCell", () => {
     beforeEach(() => {
       container = render(
         usingTestingBoxedExpressionI18nContext(
-          <EditableCell value={"value"} row={{ index: 0 }} column={{ id: "col1" }} onCellUpdate={_.identity} />
+          <EditableCell value={"value"} rowIndex={0} columnId={"col1"} onCellUpdate={_.identity} />
         ).wrapper
       ).container;
     });
@@ -82,7 +82,7 @@ describe("EditableCell", () => {
     beforeEach(() => {
       container = render(
         usingTestingBoxedExpressionI18nContext(
-          <EditableCell value={"value"} row={{ index: 0 }} column={{ id: "col1" }} onCellUpdate={_.identity} />
+          <EditableCell value={"value"} rowIndex={0} columnId={"col1"} onCellUpdate={_.identity} />
         ).wrapper
       ).container;
 
@@ -108,25 +108,27 @@ describe("EditableCell", () => {
     };
     const mockedOnCellUpdate = jest.fn(onCellUpdate);
 
-    beforeEach(() => {
-      container = render(
+    test("triggers the onCellUpdate function", () => {
+      const { getByTestId } = render(
         usingTestingBoxedExpressionI18nContext(
           <EditableCell
             value={value}
-            row={{ index: rowIndex }}
-            column={{ id: columnId }}
+            rowIndex={rowIndex}
+            columnId={columnId}
             onCellUpdate={mockedOnCellUpdate}
+            readOnly={false}
           />
         ).wrapper
-      ).container;
+      );
 
-      fireEvent.change(container.querySelector("textarea") as HTMLTextAreaElement, {
-        target: { value: `${newValue}</>` },
+      const textArea = getByTestId("editable-cell-textarea");
+      act(() => {
+        fireEvent.change(textArea, {
+          target: { value: `${newValue}` },
+        });
       });
-      // onblur is triggered by Monaco (mock), and the new value relies on Monaco implementation
-    });
 
-    test("triggers the onCellUpdate function", () => {
+      // triggers the textarea onChange method
       expect(mockedOnCellUpdate).toHaveBeenCalled();
       expect(mockedOnCellUpdate).toHaveBeenCalledWith(rowIndex, columnId, newValue);
     });

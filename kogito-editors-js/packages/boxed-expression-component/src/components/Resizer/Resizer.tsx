@@ -20,8 +20,8 @@ import { useCallback, useContext, useLayoutEffect, useMemo, useState } from "rea
 import { ResizableBox } from "react-resizable";
 import { v4 as uuid } from "uuid";
 import { BoxedExpressionGlobalContext } from "../../context";
-import { DEFAULT_MIN_WIDTH, widthValue as commonWidthValue } from "./common";
-import { Cell, DOMSession } from "./dom";
+import { widthValue as commonWidthValue } from "./common";
+import { Cell, DEFAULT_MIN_WIDTH, DOMSession } from "./dom";
 import "./Resizer.css";
 
 export interface ResizerProps {
@@ -44,7 +44,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
    */
 
   const [resizerWidth, setResizerWidth] = useState(width);
-  const [initalResizerWidth, setInitialResizerWidth] = useState(0);
+  const [initialResizerWidth, setInitialResizerWidth] = useState(0);
   const [cells, setCells] = useState<Cell[]>([]);
   const { setSupervisorHash } = useContext(BoxedExpressionGlobalContext);
 
@@ -97,7 +97,11 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     const isCellParent = (cell: Cell) => cell.element?.contains(currentCell.element);
     const containsCurrent = (cell: Cell) => {
       const cellRect = cell.getRect();
-      return cellRect.x <= currentRect.x && cellRect.right >= currentRect.right;
+      // Rounding errors
+      return (
+        +Number(cellRect.x).toFixed(3) <= +Number(currentRect.x).toFixed(3) &&
+        +Number(cellRect.right).toFixed(3) >= +Number(currentRect.right).toFixed(3)
+      );
     };
     const isLastGroupColumn = (cell: Cell) => {
       if (!currentCell.isColSpanHeader()) {
@@ -158,17 +162,17 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     (_, data) => {
       const newResizerWidth = parseInt(data.size.width + "");
       cells.forEach((cell) => {
-        const delta = newResizerWidth - initalResizerWidth;
-        const celllElement = cell.element;
+        const delta = newResizerWidth - initialResizerWidth;
+        const cellElement = cell.element;
         const isSameCell = cell.getId() === id;
 
         if (!isSameCell) {
-          const cellInitialWidth = parseInt(celllElement.dataset.initialWidth + "");
-          celllElement.style.width = cellInitialWidth + delta + "px";
+          const cellInitialWidth = parseInt(cellElement.dataset.initialWidth + "");
+          cellElement.style.width = cellInitialWidth + delta + "px";
         }
       });
     },
-    [cells, id, initalResizerWidth]
+    [cells, id, initialResizerWidth]
   );
 
   const onResizeStop = useCallback(
@@ -176,38 +180,35 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       const newResizerWidth = widthValue(data.size.width);
 
       cells.forEach((cell) => {
-        const delta = newResizerWidth - initalResizerWidth;
+        const delta = newResizerWidth - initialResizerWidth;
         const cellInitialWidth = widthValue(cell.element.dataset.initialWidth);
         cell.setWidth(cellInitialWidth + delta);
       });
 
       setSupervisorHash("-");
     },
-    [cells, initalResizerWidth, setSupervisorHash, widthValue]
+    [cells, initialResizerWidth, setSupervisorHash, widthValue]
   );
 
-  return useMemo(() => {
-    return (
-      <ResizableBox
-        className={resizerClassName}
-        width={resizerWidth}
-        minConstraints={[resizerMinWidth, 0]}
-        height={0}
-        axis="x"
-        onResize={onResize}
-        onResizeStop={onResizeStop}
-        onResizeStart={onResizeStart}
-        handle={
-          <div className="pf-c-drawer">
-            <div className="pf-c-drawer__splitter pf-m-vertical">
-              <div className="pf-c-drawer__splitter-handle"></div>
-            </div>
+  return (
+    <ResizableBox
+      className={resizerClassName}
+      width={resizerWidth}
+      minConstraints={[resizerMinWidth, 0]}
+      height={0}
+      axis="x"
+      onResize={onResize}
+      onResizeStop={onResizeStop}
+      onResizeStart={onResizeStart}
+      handle={
+        <div className="pf-c-drawer">
+          <div className="pf-c-drawer__splitter pf-m-vertical">
+            <div className="pf-c-drawer__splitter-handle" />
           </div>
-        }
-      >
-        {children}
-      </ResizableBox>
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resizerClassName, onResize, onResizeStop, onResizeStart, children]);
+        </div>
+      }
+    >
+      {children}
+    </ResizableBox>
+  );
 };

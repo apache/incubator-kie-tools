@@ -16,7 +16,7 @@
 
 import "./LiteralExpression.css";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback } from "react";
 import {
   DataType,
   executeIfExpressionDefinitionChanged,
@@ -28,130 +28,102 @@ import { EditExpressionMenu, EXPRESSION_NAME } from "../EditExpressionMenu";
 import { Resizer } from "../Resizer";
 import { EditableCell } from "../Table";
 
-export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> = ({
-  uid,
-  content = "",
-  dataType = DataType.Undefined,
-  name = EXPRESSION_NAME,
-  onUpdatingNameAndDataType,
-  isHeadless = false,
-  onUpdatingRecursiveExpression,
-  width,
-}: LiteralExpressionProps) => {
-  const HEADER_WIDTH = 250;
+const HEADER_WIDTH = 250;
 
-  const storedExpressionDefinition = useRef({} as LiteralExpressionProps);
-  const [expressionName, setExpressionName] = useState<string>(name);
-  const [expressionDataType, setExpressionDataType] = useState<DataType>(dataType);
-  const literalExpressionContent = useRef<string>(content);
-  const literalExpressionWidth = useRef<number>(width || HEADER_WIDTH);
+export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> = (
+  literalExpression: LiteralExpressionProps
+) => {
+  const spreadLiteralExpressionDefinition = useCallback(
+    (literalExpressionUpdate?: Partial<LiteralExpressionProps>) => {
+      const expressionDefinition: LiteralExpressionProps = {
+        uid: literalExpression.uid,
+        name: literalExpression.name ?? EXPRESSION_NAME,
+        dataType: literalExpression.dataType ?? DataType.Undefined,
+        logicType: LogicType.LiteralExpression,
+        content: literalExpression.content ?? "",
+        ...(!literalExpression.isHeadless && literalExpression.width !== HEADER_WIDTH
+          ? { width: literalExpression.width }
+          : {}),
+        ...literalExpressionUpdate,
+      };
 
-  const spreadLiteralExpressionDefinition = useCallback(() => {
-    const expressionDefinition: LiteralExpressionProps = {
-      uid,
-      name: expressionName,
-      dataType: expressionDataType,
-      logicType: LogicType.LiteralExpression,
-      content: literalExpressionContent.current,
-      ...(!isHeadless && literalExpressionWidth.current !== HEADER_WIDTH
-        ? { width: literalExpressionWidth.current }
-        : {}),
-    };
-
-    if (isHeadless) {
-      onUpdatingRecursiveExpression?.(expressionDefinition);
-    } else {
       executeIfExpressionDefinitionChanged(
-        storedExpressionDefinition.current,
+        literalExpression,
         expressionDefinition,
         () => {
-          window.beeApi?.broadcastLiteralExpressionDefinition?.(expressionDefinition);
-          storedExpressionDefinition.current = expressionDefinition;
+          if (literalExpression.isHeadless) {
+            literalExpression.onUpdatingRecursiveExpression?.(expressionDefinition);
+          } else {
+            window.beeApi?.broadcastLiteralExpressionDefinition?.(expressionDefinition);
+          }
         },
         ["name", "dataType", "content", "width"]
       );
-    }
-  }, [expressionDataType, expressionName, isHeadless, onUpdatingRecursiveExpression, uid]);
+    },
+    [literalExpression]
+  );
 
   const onExpressionUpdate = useCallback(
     ({ dataType = DataType.Undefined, name = EXPRESSION_NAME }: ExpressionProps) => {
-      setExpressionName(name);
-      setExpressionDataType(dataType);
-      onUpdatingNameAndDataType?.(name, dataType);
-      spreadLiteralExpressionDefinition();
+      literalExpression.onUpdatingNameAndDataType?.(name, dataType);
+      spreadLiteralExpressionDefinition({
+        name,
+        dataType,
+      });
     },
-    [onUpdatingNameAndDataType, spreadLiteralExpressionDefinition]
-  );
-
-  const onContentChange = useCallback(
-    (value: string) => {
-      literalExpressionContent.current = value;
-      spreadLiteralExpressionDefinition();
-    },
-    [spreadLiteralExpressionDefinition]
+    [literalExpression, spreadLiteralExpressionDefinition]
   );
 
   const onHorizontalResizeStop = useCallback(
     (width) => {
-      literalExpressionWidth.current = width;
-      spreadLiteralExpressionDefinition();
+      spreadLiteralExpressionDefinition({
+        width,
+      });
     },
     [spreadLiteralExpressionDefinition]
   );
 
-  const renderElementWithResizeHandler = useCallback(
-    (element) => (
-      <Resizer
-        width={literalExpressionWidth.current}
-        minWidth={HEADER_WIDTH}
-        onHorizontalResizeStop={onHorizontalResizeStop}
-      >
-        {element}
-      </Resizer>
-    ),
-    [onHorizontalResizeStop]
+  const onCellUpdate = useCallback(
+    (_number, _columnId, value) => {
+      spreadLiteralExpressionDefinition({
+        content: value,
+      });
+    },
+    [spreadLiteralExpressionDefinition]
   );
-
-  const renderLiteralExpressionHeader = useMemo(() => {
-    return (
-      <div className="literal-expression-header">
-        {renderElementWithResizeHandler(
-          <EditExpressionMenu
-            selectedExpressionName={expressionName}
-            selectedDataType={expressionDataType}
-            onExpressionUpdate={onExpressionUpdate}
-          >
-            <div className="expression-info">
-              <p className="expression-name pf-u-text-truncate">{expressionName}</p>
-              <p className="expression-data-type pf-u-text-truncate">({expressionDataType})</p>
-            </div>
-          </EditExpressionMenu>
-        )}
-      </div>
-    );
-  }, [expressionDataType, expressionName, onExpressionUpdate, renderElementWithResizeHandler]);
-
-  const getBodyContent = useMemo(
-    () => (
-      <EditableCell
-        value={literalExpressionContent.current}
-        row={{ index: 0 }}
-        column={{ id: uid ?? "-" }}
-        onCellUpdate={(_number, _columnId, value) => onContentChange(value)}
-      />
-    ),
-    [onContentChange, uid]
-  );
-
-  useEffect(() => {
-    /** Function executed only the first time the component is loaded */
-    spreadLiteralExpressionDefinition();
-  }, [spreadLiteralExpressionDefinition]);
 
   return (
     <div className="literal-expression">
-      {!isHeadless ? renderLiteralExpressionHeader : null}
-      <div className="literal-expression-body">{getBodyContent}</div>
+      {!literalExpression.isHeadless && (
+        <div className="literal-expression-header">
+          <Resizer
+            width={literalExpression.width ?? HEADER_WIDTH}
+            minWidth={HEADER_WIDTH}
+            onHorizontalResizeStop={onHorizontalResizeStop}
+          >
+            <EditExpressionMenu
+              selectedExpressionName={literalExpression.name ?? EXPRESSION_NAME}
+              selectedDataType={literalExpression.dataType ?? DataType.Undefined}
+              onExpressionUpdate={onExpressionUpdate}
+            >
+              <div className="expression-info">
+                <p className="expression-name pf-u-text-truncate">{literalExpression.name ?? EXPRESSION_NAME}</p>
+                <p className="expression-data-type pf-u-text-truncate">
+                  ({literalExpression.dataType ?? DataType.Undefined})
+                </p>
+              </div>
+            </EditExpressionMenu>
+          </Resizer>
+        </div>
+      )}
+      <div className="literal-expression-body">
+        <EditableCell
+          value={literalExpression.content ?? ""}
+          rowIndex={0}
+          columnId={literalExpression.uid ?? "-"}
+          onCellUpdate={onCellUpdate}
+        />
+      </div>
     </div>
   );
 };

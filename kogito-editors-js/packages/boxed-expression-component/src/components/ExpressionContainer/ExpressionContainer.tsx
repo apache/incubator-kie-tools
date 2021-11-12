@@ -28,13 +28,16 @@ export interface ExpressionContainerProps {
 }
 
 export const ExpressionContainer: (props: ExpressionContainerProps) => JSX.Element = ({
-  onExpressionChange,
   selectedExpression,
+  onExpressionChange,
 }: ExpressionContainerProps) => {
   const expressionContainerRef = useRef<HTMLDivElement>(null);
 
   const updateExpressionNameAndDataType = useCallback(
     (updatedName, updatedDataType) => {
+      if (selectedExpression.name === updatedName && selectedExpression.dataType === updatedDataType) {
+        return;
+      }
       onExpressionChange?.({
         ...selectedExpression,
         name: updatedName,
