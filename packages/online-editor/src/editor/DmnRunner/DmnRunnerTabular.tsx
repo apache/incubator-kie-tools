@@ -15,12 +15,11 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect } from "react";
 import { useDmnRunner, useDmnRunnerCallbacks } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DmnAutoTable } from "@kogito-tooling/unitables";
 import { DecisionResult } from "@kogito-tooling/form/dist/dmn";
-import { diff } from "deep-object-diff";
 import { PanelId } from "../EditorPageDockDrawer";
 
 interface Props {
@@ -28,16 +27,6 @@ interface Props {
   setPanelOpen: React.Dispatch<React.SetStateAction<PanelId>>;
   dmnRunnerResults: Array<DecisionResult[] | undefined>;
   setDmnRunnerResults: React.Dispatch<React.SetStateAction<Array<DecisionResult[] | undefined>>>;
-}
-
-function usePrevious(value: any) {
-  const ref = useRef();
-
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-
-  return ref.current;
 }
 
 export function DmnRunnerTabular(props: Props) {
@@ -83,36 +72,6 @@ export function DmnRunnerTabular(props: Props) {
   useEffect(() => {
     updateDmnRunnerResults(dmnRunner.data);
   }, [dmnRunner.data]);
-
-  // TODO: move to DmnAutoTable , and edit rowsModel
-  const previousFormSchema: any = usePrevious(dmnRunner.schema);
-  useEffect(() => {
-    dmnRunnerCallbacks.setData((previousTableData: any) => {
-      const newTableData = [...previousTableData];
-      const propertiesDifference = diff(
-        (previousFormSchema ?? dmnRunner.schema).definitions?.InputSet?.properties ?? {},
-        dmnRunner.schema?.definitions?.InputSet?.properties ?? {}
-      );
-
-      return newTableData.map((tableData) => {
-        return Object.entries(propertiesDifference).reduce(
-          (form, [property, value]) => {
-            if (Object.keys(form).length === 0) {
-              return form;
-            }
-            if (!value || value.type || value.$ref) {
-              delete (form as any)[property];
-            }
-            if (value?.["x-dmn-type"]) {
-              (form as any)[property] = undefined;
-            }
-            return form;
-          },
-          { ...tableData }
-        );
-      });
-    });
-  }, [dmnRunner.schema, dmnRunnerCallbacks, previousFormSchema]);
 
   const openRow = useCallback(
     (rowIndex: number) => {

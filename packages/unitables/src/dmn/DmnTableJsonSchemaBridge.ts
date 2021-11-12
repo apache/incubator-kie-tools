@@ -25,6 +25,9 @@ export class DmnTableJsonSchemaBridge extends JSONSchemaBridge {
     if (!field.type && field["x-dmn-type"] === "FEEL:context") {
       field.placeholder = `{ "x": <value> }`;
     }
+    if (!field.type) {
+      field.type = "string";
+    }
     return field;
   }
 }

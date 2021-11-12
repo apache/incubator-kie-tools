@@ -35,9 +35,9 @@ import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { Button } from "@patternfly/react-core";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import "./style.css";
-import cloneDeep from "lodash/cloneDeep";
-import { DmnAutoRow, FORMS_ID } from "./DmnAutoRow";
+import { DmnAutoRow, DmnAutoRowApi } from "./DmnAutoRow";
 import { diff } from "deep-object-diff";
+import { DmnTableJsonSchemaBridge } from "./DmnTableJsonSchemaBridge";
 
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
@@ -72,13 +72,25 @@ export interface DmnResult {
 
 interface Props {
   schema: object;
-  data?: Array<object>;
-  setData?: React.Dispatch<React.SetStateAction<Array<object>>>;
+  data: Array<object>;
+  setData: React.Dispatch<React.SetStateAction<Array<object>>>;
   results?: Array<DecisionResult[] | undefined>;
   error: boolean;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   openRow: (rowIndex: number) => void;
 }
+
+function usePrevious(value: any) {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+}
+
+export const FORMS_ID = "unitables-forms";
 
 export function DmnAutoTable(props: Props) {
   const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
@@ -88,8 +100,7 @@ export function DmnAutoTable(props: Props) {
   const [outputError, setOutputError] = useState<boolean>(false);
   const [dmnAutoTableError, setDmnAutoTableError] = useState<boolean>(false);
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
-  const rowsRef = useMemo(() => new Map<number, React.RefObject<HTMLFormElement> | null>(), []);
-  const [rowsModel, setRowsModel] = useState<Array<object>>([{}]);
+  const rowsRef = useMemo(() => new Map<number, React.RefObject<DmnAutoRowApi> | null>(), []);
 
   const bridge = useMemo(() => {
     return new DmnValidator().getBridge(props.schema ?? {});
@@ -110,42 +121,38 @@ export function DmnAutoTable(props: Props) {
     (tableOperation: TableOperation, rowIndex: number) => {
       switch (tableOperation) {
         case TableOperation.RowInsertAbove:
-          setRowsModel?.((previousData: any) => {
+          props.setData?.((previousData: any) => {
             const updatedData = [...previousData.slice(0, rowIndex), {}, ...previousData.slice(rowIndex)];
-            props.setData?.([...updatedData]);
             return updatedData;
           });
           break;
         case TableOperation.RowInsertBelow:
-          setRowsModel?.((previousData: any) => {
+          props.setData?.((previousData: any) => {
             const updatedData = [...previousData.slice(0, rowIndex + 1), {}, ...previousData.slice(rowIndex + 1)];
-            props.setData?.([...updatedData]);
             return updatedData;
           });
           break;
         case TableOperation.RowDelete:
-          setRowsModel?.((previousData: any) => {
+          props.setData?.((previousData: any) => {
             const updatedData = [...previousData.slice(0, rowIndex), ...previousData.slice(rowIndex + 1)];
-            props.setData?.([...updatedData]);
             return updatedData;
           });
           break;
         case TableOperation.RowClear:
-          setRowsModel?.((previousData: any) => {
+          props.setData?.((previousData: any) => {
             const updatedData = [...previousData];
             updatedData[rowIndex] = {};
-            props.setData?.([...updatedData]);
             return updatedData;
           });
+          rowsRef.get(rowIndex)?.current?.reset();
           break;
         case TableOperation.RowDuplicate:
-          setRowsModel?.((previousData: any) => {
+          props.setData?.((previousData: any) => {
             const updatedData = [
               ...previousData.slice(0, rowIndex + 1),
               previousData[rowIndex],
               ...previousData.slice(rowIndex + 1),
             ];
-            props.setData?.([...updatedData]);
             return updatedData;
           });
       }
@@ -163,22 +170,44 @@ export function DmnAutoTable(props: Props) {
     [handleOperation]
   );
 
-  const setModel = useCallback((model: any, index) => {
-    setRowsModel((previousModel: any) => {
-      const newData = [...previousModel];
+  const onModelUpdate = useCallback((model: any, index) => {
+    props.setData?.((previousData) => {
+      const newData = [...previousData];
       newData[index] = model;
-      props.setData?.([...newData]);
       return newData;
     });
   }, []);
 
-  // generate models on first render
+  // Compare bridge with previousBridge and erase data from deleted input nodes
+  const previousBridge: DmnTableJsonSchemaBridge | undefined = usePrevious(bridge);
   useEffect(() => {
-    if (props.data) {
-      const newRowsModel = cloneDeep(props.data);
-      setRowsModel(newRowsModel);
-    }
-  }, []);
+    props.setData((previousModelData: any) => {
+      const newModelData = [...previousModelData];
+      const propertiesDifference = diff(
+        ((previousBridge as DmnTableJsonSchemaBridge | undefined)?.schema ?? {}).definitions?.InputSet?.properties ??
+          {},
+        bridge.schema?.definitions?.InputSet?.properties ?? {}
+      );
+
+      return newModelData.map((modelData) => {
+        return Object.entries(propertiesDifference).reduce(
+          (row, [property, value]) => {
+            if (Object.keys(row).length === 0) {
+              return row;
+            }
+            if (!value || value.type || value.$ref) {
+              delete (row as any)[property];
+            }
+            if (value?.["x-dmn-type"]) {
+              (row as any)[property] = undefined;
+            }
+            return row;
+          },
+          { ...modelData }
+        );
+      });
+    });
+  }, [bridge, previousBridge]);
 
   const inputUid = useMemo(() => nextId(), []);
   const inputRules: Partial<DmnRunnerRule>[] = useMemo(() => {
@@ -187,15 +216,26 @@ export function DmnAutoTable(props: Props) {
         (acc, i) => (i.insideProperties ? acc + i.insideProperties.length : acc + 1),
         0
       );
-      const inputEntries = new Array(inputEntriesLength);
+      const inputEntries = Array.from(Array(inputEntriesLength));
       return Array.from(Array(rowQuantity)).map((e, rowIndex) => {
         return {
           inputEntries,
-          rowDelegate: ({ children }: PropsWithChildren<any>) => (
-            <DmnAutoRow rowIndex={rowIndex} model={rowsModel[rowIndex]} bridge={bridge} setModel={setModel}>
-              {children}
-            </DmnAutoRow>
-          ),
+          rowDelegate: ({ children }: PropsWithChildren<any>) => {
+            const dmnAutoRowRef = React.createRef<DmnAutoRowApi>();
+            rowsRef.set(rowIndex, dmnAutoRowRef);
+            return (
+              <DmnAutoRow
+                ref={dmnAutoRowRef}
+                formId={FORMS_ID}
+                rowIndex={rowIndex}
+                model={props.data[rowIndex]}
+                jsonSchemaBridge={bridge}
+                onModelUpdate={(model) => onModelUpdate(model, rowIndex)}
+              >
+                {children}
+              </DmnAutoRow>
+            );
+          },
         } as Partial<DmnRunnerRule>;
       });
     }
@@ -314,11 +354,11 @@ export function DmnAutoTable(props: Props) {
 
   const updateDataWithModel = useCallback(
     (rowIndex: number) => {
-      props.setData?.([...rowsModel]);
+      // props.setData?.([...rowsModel]);
       // rowsRef.get(rowIndex)?.current?.submit();
       props.openRow(rowIndex);
     },
-    [props.setData, props.openRow, rowsModel]
+    [props.setData, props.openRow]
   );
 
   return (

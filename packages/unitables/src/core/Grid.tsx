@@ -235,7 +235,7 @@ export class Grid {
       new Map<string, { type?: string; insideProperties?: any; dataType: DataType }>()
     );
 
-    const outputSet = decisionResults.reduce(
+    const outputMap = decisionResults.reduce(
       (acc: Map<string, DmnRunnerClause>, decisionResult: DecisionResult[] | undefined) => {
         if (decisionResult) {
           decisionResult.forEach(({ decisionName }) => {
@@ -264,7 +264,16 @@ export class Grid {
 
     const outputEntries = decisionResults.reduce((acc: Result[], decisionResult: DecisionResult[] | undefined) => {
       if (decisionResult) {
-        const outputResults = decisionResult.map(({ result }) => {
+        const outputResults = decisionResult.map(({ result, decisionName }) => {
+          if (result === null || typeof result !== "object") {
+            const dmnRunnerClause = outputMap.get(decisionName)!;
+            if (dmnRunnerClause.insideProperties) {
+              return dmnRunnerClause.insideProperties.reduce((acc, insideProperty) => {
+                acc[insideProperty.name] = "null";
+                return acc;
+              }, {} as { [x: string]: any });
+            }
+          }
           if (result === null) {
             return "null";
           }
@@ -291,6 +300,6 @@ export class Grid {
       return acc;
     }, []);
 
-    return [outputSet, outputEntries];
+    return [outputMap, outputEntries];
   }
 }
