@@ -43,7 +43,7 @@ describe("utils::jsonParseWithDate", () => {
 });
 
 describe("utils::jsonParseWithUrl", () => {
-  it("should parse JSON strings with dates properly", () => {
+  it("should parse JSON strings with URLs properly", () => {
     const myObject = {
       myNumber: 1,
       myString: "myValue",
