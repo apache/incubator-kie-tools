@@ -79,7 +79,6 @@ export function NewFileDropdownMenu(props: {
   const [isImporting, setImporting] = useState(false);
   const [importingError, setImportingError] = useState<string>();
 
-  //FIXME: We have to unify this logic with `NewWorkspaceFromUrlPage.tsx`
   const importFromUrl = useCallback(
     async (urlString?: string) => {
       if (!urlString) {
