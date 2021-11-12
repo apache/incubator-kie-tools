@@ -171,6 +171,8 @@ export interface WorkspacesContextType {
     content: string;
     extension: string;
   }): Promise<WorkspaceFile>;
+
+  existsFile(args: { fs: LightningFS; workspaceId: string; relativePath: string }): Promise<boolean>;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);

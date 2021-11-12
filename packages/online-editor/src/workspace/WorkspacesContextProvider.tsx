@@ -349,6 +349,11 @@ export function WorkspacesContextProvider(props: Props) {
     [service]
   );
 
+  const existsFile = useCallback(
+    async (args: { fs: LightningFS; workspaceId: string; relativePath: string }) => await service.existsFile(args),
+    [service]
+  );
+
   const addEmptyFile = useCallback(
     async (args: {
       fs: LightningFS;
@@ -437,6 +442,7 @@ export function WorkspacesContextProvider(props: Props) {
       //
       addEmptyFile,
       addFile,
+      existsFile,
       renameFile,
       updateFile,
       deleteFile,
@@ -445,6 +451,7 @@ export function WorkspacesContextProvider(props: Props) {
     [
       addEmptyFile,
       addFile,
+      existsFile,
       createSavePoint,
       createWorkspaceFromGitRepository,
       createWorkspaceFromLocal,

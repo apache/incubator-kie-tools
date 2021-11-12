@@ -83,15 +83,14 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
         `${trimmedNewFileNameWithoutExtension}.${props.workspaceFile.extension}`
       );
 
-      //FIXME: Not ideal using service directly.
-      const exists = await workspaces.service.existsFile({
+      const exists = await workspaces.existsFile({
         fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         relativePath: newRelativePath,
       });
       setNewFileNameValid(!exists);
     },
-    [props.workspaceFile, workspaces.service, workspaces.fsService]
+    [props.workspaceFile, workspaces]
   );
 
   const renameWorkspaceFile = useCallback(
