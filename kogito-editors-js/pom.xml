@@ -15,7 +15,18 @@
   <description>React/TS/JS-based-components for the Kogito editors</description>
 
   <properties>
-    <sonar.skip>true</sonar.skip>
+    <sonar.sources>${project.basedir}/packages</sonar.sources>
+    <sonar.inclusions>packages/*/src/**</sonar.inclusions>
+    <sonar.exclusions>**/__mocks__/**,**/mocks/**,**/tests/utils/**,**/index.tsx,*.js</sonar.exclusions>
+    <sonar.test.inclusions>**/*test.ts,**/*test.tsx</sonar.test.inclusions>
+    <sonar.javascript.lcov.reportPaths>
+      packages/boxed-expression-component/coverage/lcov.info,
+      packages/dmn-loader/coverage/lcov.info,
+      packages/feel-input-component/coverage/lcov.info,
+      packages/hello-world-component/coverage/lcov.info,
+      packages/import-java-classes-component/coverage/lcov.info,
+    </sonar.javascript.lcov.reportPaths>
+
   </properties>
 
   <build>
