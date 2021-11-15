@@ -18,7 +18,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito</groupId>
   <artifactId>kie-wb-common-bom</artifactId>
-  <version>8.5.2-SNAPSHOT</version>
+  <version>8.5.4-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Kie-wb-common BOM</name>
