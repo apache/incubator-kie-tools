@@ -394,7 +394,7 @@ fi
 echo "-------- Delete stucked namespaces"
 ${SCRIPT_DIR}/clean-stuck-namespaces.sh
 
-if [ "${ENABLE_CLEAN_CLUSTER}" = "true" ]; then
+if [ "${KEEP_NAMESPACE}" = "false" ] && [ "${ENABLE_CLEAN_CLUSTER}" = "true" ]; then
   clean_cluster
 fi
 
