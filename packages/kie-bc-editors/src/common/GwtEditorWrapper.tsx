@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { getGuidedTourElementPosition, GwtEditor } from "./GwtAppFormerApi";
+import { getGuidedTourElementPosition, getMyGuidedMethod, GwtEditor } from "./GwtAppFormerApi";
 import { Editor, KogitoEditorChannelApi } from "@kie-tooling-core/editor/dist/api";
 import { editors } from "./GwtEditorMapping";
 import { XmlFormatter } from "./XmlFormatter";
@@ -83,7 +83,13 @@ export class GwtEditorWrapper implements Editor {
   }
 
   public getElementPosition(selector: string) {
+    console.log("log GwtEditorWrapper");
     return Promise.resolve(getGuidedTourElementPosition(selector));
+  }
+
+  myMethodInGuided(): Promise<number | undefined> {
+    console.log("log method GwtEditorWrapper");
+    return Promise.resolve(getMyGuidedMethod());
   }
 
   public setContent(path: string, content: string) {

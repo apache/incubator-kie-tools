@@ -65,6 +65,11 @@ export class KogitoEditor implements EditorApi {
     )
   ) {}
 
+  public myMethodInGuided() {
+    console.log("log Method KogitoEditors");
+    return this.envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourGetMyMethod();
+  }
+
   public getElementPosition(selector: string) {
     return this.envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(selector);
   }

@@ -159,6 +159,8 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
         setContent: (path, content) =>
           envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ path, content }),
         validate: () => envelopeServer.envelopeApi.requests.kogitoEditor_validate(),
+        myMethodInGuided: () =>
+          Promise.resolve(envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourGetMyMethod()),
       };
     },
     [envelopeServer, stateControl, isReady]

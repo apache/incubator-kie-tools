@@ -74,5 +74,9 @@ export const createEditor = (
     validate: () => {
       return envelopeServer.envelopeApi.requests.kogitoEditor_validate();
     },
+    myMethodInGuided: () => {
+      console.log("log editor");
+      return Promise.resolve(envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourGetMyMethod());
+    },
   };
 };

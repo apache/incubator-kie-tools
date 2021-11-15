@@ -19,6 +19,7 @@ import { KeyboardShortcutsEnvelopeApi } from "@kie-tooling-core/keyboard-shortcu
 import { GuidedTourEnvelopeApi } from "@kie-tooling-core/guided-tour/dist/api";
 import { I18nEnvelopeApi } from "@kie-tooling-core/i18n/dist/api";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
+import { GuidedTourMyMethod } from "@kie-tooling-core/guided-tour/src/api/GuidedTourMyMethod";
 
 export interface Association {
   origin: string;
@@ -42,7 +43,11 @@ export interface EditorInitArgs {
   channel: ChannelType;
 }
 
-export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, GuidedTourEnvelopeApi, I18nEnvelopeApi {
+export interface KogitoEditorEnvelopeApi
+  extends KeyboardShortcutsEnvelopeApi,
+    GuidedTourEnvelopeApi,
+    I18nEnvelopeApi,
+    GuidedTourMyMethod {
   kogitoEditor_contentChanged(content: EditorContent): Promise<void>;
   kogitoEditor_editorUndo(): void;
   kogitoEditor_editorRedo(): void;
