@@ -31,7 +31,10 @@ func registerGraphQLSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^GraphQL request on service "([^"]*)" is successful using access token "([^"]*)" within (\d+) minutes with path "([^"]*)" and query:$`, data.graphqlRequestOnServiceIsSuccessfulUsingAccessTokenWithinMinutesWithPathAndQuery)
 	ctx.Step(`^GraphQL request on Data Index service returns ProcessInstances processName "([^"]*)" within (\d+) minutes$`, data.graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWithinMinutes)
 	ctx.Step(`^GraphQL request on Data Index service returns (\d+) (?:instance|instances) of process with name "([^"]*)" within (\d+) minutes$`, data.graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWithinMinutes)
+	ctx.Step(`^GraphQL request on Data Index service returns (\d+) (?:instance|instances) of process with id "([^"]*)" within (\d+) minutes$`, data.graphqlRequestOnDataIndexReturnsInstancesOfProcessWithIDWithinMinutes)
 	ctx.Step(`^GraphQL request on Data Index service returns Jobs ID "([^"]*)" within (\d+) minutes$`, data.graphqlRequestOnDataIndexReturnsJobsIDWithinMinutes)
+
+	ctx.Step(`^GraphQL request on Data Index service getting instances of process with id "([^"]*)" fails within (\d+) minutes$`, data.graphqlRequestOnDataIndexGettingProcessWithIDFailsWithinMinutes)
 }
 
 func (data *Data) graphqlRequestOnServiceIsSuccessfulWithinMinutesWithPathAndQuery(serviceName string, timeoutInMin int, path string, query *godog.DocString) error {
@@ -78,14 +81,25 @@ func (data *Data) graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWit
 }
 
 func (data *Data) graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWithinMinutes(processInstances int, processName string, timeoutInMin int) error {
-	serviceName := kogitosupportingservice.DefaultDataIndexName
 	pageSize := 1000
-	preProcessedQuery := strings.ReplaceAll(getProcessInstancesIDByNameQuery, "$name", processName)
+	preProcessedQuery := strings.ReplaceAll(getProcessInstancesIDByProcessNameQuery, "$name", processName)
 	preProcessedQuery = strings.ReplaceAll(preProcessedQuery, "$limit", strconv.Itoa(pageSize))
+	return graphqlRequestOnDataIndexReturnsInstancesOfProcessWithinMinutes(data.Namespace, preProcessedQuery, processInstances, pageSize, timeoutInMin)
+}
+
+func (data *Data) graphqlRequestOnDataIndexReturnsInstancesOfProcessWithIDWithinMinutes(processInstances int, processID string, timeoutInMin int) error {
+	pageSize := 1000
+	preProcessedQuery := strings.ReplaceAll(getProcessInstancesIDByProcessIDQuery, "$id", processID)
+	preProcessedQuery = strings.ReplaceAll(preProcessedQuery, "$limit", strconv.Itoa(pageSize))
+	return graphqlRequestOnDataIndexReturnsInstancesOfProcessWithinMinutes(data.Namespace, preProcessedQuery, processInstances, pageSize, timeoutInMin)
+}
+
+func graphqlRequestOnDataIndexReturnsInstancesOfProcessWithinMinutes(namespace string, processQuery string, processInstances, pageSize, timeoutInMin int) error {
+	serviceName := kogitosupportingservice.DefaultDataIndexName
 	path := "graphql"
 
-	framework.GetLogger(data.Namespace).Debug("graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWithinMinutes", "service", serviceName, "path", path, "query", preProcessedQuery, "timeout", timeoutInMin)
-	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
+	framework.GetLogger(namespace).Debug("graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWithinMinutes", "service", serviceName, "path", path, "query", processQuery, "timeout", timeoutInMin)
+	uri, err := framework.WaitAndRetrieveEndpointURI(namespace, serviceName)
 	if err != nil {
 		return err
 	}
@@ -94,7 +108,7 @@ func (data *Data) graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWith
 
 	startTime := time.Now()
 
-	err = framework.WaitForSuccessfulGraphQLRequestUsingPagination(data.Namespace, uri, path, preProcessedQuery, timeoutInMin, pageSize, processInstances, &response,
+	err = framework.WaitForSuccessfulGraphQLRequestUsingPagination(namespace, uri, path, processQuery, timeoutInMin, pageSize, processInstances, &response,
 		func(response interface{}) (bool, error) {
 			resp := response.(*GraphqlDataIndexProcessInstancesIDQueryResponse)
 			allQueriedProcessInstances.ProcessInstances = append(allQueriedProcessInstances.ProcessInstances, resp.ProcessInstances...)
@@ -102,7 +116,7 @@ func (data *Data) graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWith
 		},
 		func() (bool, error) {
 			queried := len(allQueriedProcessInstances.ProcessInstances)
-			framework.GetLogger(data.Namespace).Info("Queried records", "got", queried, "expected", processInstances)
+			framework.GetLogger(namespace).Info("Queried records", "got", queried, "expected", processInstances)
 			conditionMet := queried == processInstances
 			if !conditionMet { // delete all results so we can start again
 				allQueriedProcessInstances.ProcessInstances = nil
@@ -112,7 +126,7 @@ func (data *Data) graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWith
 
 	duration := time.Since(startTime)
 	// TODO include reporting
-	framework.GetLogger(data.Namespace).Info(fmt.Sprintf("%d process instances retrieved from Data Index after %s", processInstances, duration))
+	framework.GetLogger(namespace).Info(fmt.Sprintf("%d process instances retrieved from Data Index after %s", processInstances, duration))
 
 	return err
 }
@@ -137,4 +151,17 @@ func (data *Data) graphqlRequestOnDataIndexReturnsJobsIDWithinMinutes(id string,
 		}
 		return false, nil
 	})
+}
+
+func (data *Data) graphqlRequestOnDataIndexGettingProcessWithIDFailsWithinMinutes(processName string, timeoutInMin int) error {
+	serviceName := kogitosupportingservice.DefaultDataIndexName
+	query := getProcessInstancesNameQuery
+	path := "graphql"
+
+	framework.GetLogger(data.Namespace).Debug("graphqlProcessNameRequestOnDataIndexIsSuccessfulWithinMinutes", "service", serviceName, "path", path, "query", query, "timeout", timeoutInMin)
+	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+	return framework.WaitForFailingGraphQLRequest(data.Namespace, uri, path, query, timeoutInMin)
 }

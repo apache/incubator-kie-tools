@@ -143,3 +143,17 @@ func IsMongoDBAvailable(namespace string) bool {
 	}
 	return infrastructure.NewMongoDBHandler(context).IsMongoDBAvailable()
 }
+
+// SetMongoDBReplicas sets the number of replicas for an MongoDB instance
+func SetMongoDBReplicas(namespace, name string, nbPods int) error {
+	GetLogger(namespace).Info("Set MongoDB props for", "name", name, "replica number", nbPods)
+	statefulset, err := GetStatefulSet(namespace, name)
+	if err != nil {
+		return err
+	} else if statefulset == nil {
+		return fmt.Errorf("No Mongodb StatefulSet found with name %s in namespace %s", name, namespace)
+	}
+	replicas := int32(nbPods)
+	statefulset.Spec.Replicas = &replicas
+	return UpdateObject(statefulset)
+}

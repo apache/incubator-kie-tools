@@ -89,6 +89,20 @@ func WaitForSuccessfulGraphQLRequestUsingAccessToken(namespace, uri, path, query
 		})
 }
 
+// WaitForFailingGraphQLRequest waits for an GraphQL request to be fail
+func WaitForFailingGraphQLRequest(namespace, uri, path, query string, timeoutInMin int) error {
+	return WaitForFailingGraphQLRequestUsingAccessToken(namespace, uri, path, query, graphQLNoAuthToken, timeoutInMin)
+}
+
+// WaitForFailingGraphQLRequestUsingAccessToken waits for an GraphQL request using access token to be fail
+func WaitForFailingGraphQLRequestUsingAccessToken(namespace, uri, path, query, accessToken string, timeoutInMin int) error {
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("GraphQL query %s on path '%s' using '%s' access token to be failing", query, path, accessToken), timeoutInMin,
+		func() (bool, error) {
+			success, err := IsGraphQLRequestSuccessful(namespace, uri, path, query, accessToken, nil)
+			return !success || err != nil, nil
+		})
+}
+
 // ExecuteGraphQLRequestWithLogging executes a GraphQL query
 func ExecuteGraphQLRequestWithLogging(namespace, uri, path, query, bearerToken string, response interface{}) error {
 	return ExecuteGraphQLRequestWithLoggingOption(namespace, uri, path, query, bearerToken, response, true)

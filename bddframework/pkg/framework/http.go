@@ -319,6 +319,16 @@ func DoesHTTPResponseContain(namespace string, requestInfo HTTPRequestInfo, resp
 	return strings.Contains(resultBody, responseContent), nil
 }
 
+// DoesNotHTTPResponseContain checks whether the response of an http request does not contain a certain string
+func DoesNotHTTPResponseContain(namespace string, requestInfo HTTPRequestInfo, responseContent string) (bool, error) {
+	resultBody, err := ExecuteHTTPRequestWithStringResponse(namespace, requestInfo)
+	if err != nil {
+		return false, err
+	}
+
+	return !strings.Contains(resultBody, responseContent), nil
+}
+
 // NewGETHTTPRequestInfo constructor creates a new HTTPRequestInfo struct with the GET HTTP method
 func NewGETHTTPRequestInfo(uri, path string) HTTPRequestInfo {
 	return HTTPRequestInfo{

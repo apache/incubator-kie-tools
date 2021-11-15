@@ -30,6 +30,7 @@ func registerHTTPSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^HTTP GET request on service "([^"]*)" using access token "([^"]*)" with path "([^"]*)" is successful within (\d+) minutes$`, data.httpGetRequestOnServiceUsingAccessTokenWithPathIsSuccessfulWithinMinutes)
 	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should return an array of size (\d+) within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldReturnAnArrayofSizeWithinMinutes)
 	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should contain a string "([^"]*)" within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldContainAstringWithinMinutes)
+	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should not contain a string "([^"]*)" within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldNotContainAstringWithinMinutes)
 	ctx.Step(`^HTTP POST request on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestOnServiceWithPathAndBody)
 	ctx.Step(`^HTTP POST request on service "([^"]*)" is successful within (\d+) minutes with path "([^"]*)" and body:$`, data.httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody)
 	ctx.Step(`^HTTP POST request on service "([^"]*)" is successful within (\d+) minutes with path "([^"]*)", headers "([^"]*)" and body:$`, data.httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathHeadersAndBody)
@@ -165,6 +166,21 @@ func (data *Data) httpGetRequestOnServiceWithPathShouldContainAstringWithinMinut
 	return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("GET request on path %s to return response content '%s'", path, responseContent), timeoutInMin,
 		func() (bool, error) {
 			return framework.DoesHTTPResponseContain(data.Namespace, requestInfo, responseContent)
+		})
+}
+
+func (data *Data) httpGetRequestOnServiceWithPathShouldNotContainAstringWithinMinutes(serviceName, path, responseContent string, timeoutInMin int) error {
+	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+
+	path = data.ResolveWithScenarioContext(path)
+	requestInfo := framework.NewGETHTTPRequestInfo(uri, path)
+	responseContent = data.ResolveWithScenarioContext(responseContent)
+	return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("GET request on path %s to not contain response content '%s'", path, responseContent), timeoutInMin,
+		func() (bool, error) {
+			return framework.DoesNotHTTPResponseContain(data.Namespace, requestInfo, responseContent)
 		})
 }
 

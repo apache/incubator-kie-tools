@@ -22,9 +22,16 @@ var (
 	  }
 	}
   `
-	getProcessInstancesIDByNameQuery = `
+	getProcessInstancesIDByProcessNameQuery = `
 	{
 	  ProcessInstances(where: {processName: {equal: "$name"}}, pagination: {offset: $offset, limit: $limit}) {
+		id
+	  }
+	}
+  `
+	getProcessInstancesIDByProcessIDQuery = `
+	{
+	  ProcessInstances(where: {processId: {equal: "$id"}}, pagination: {offset: $offset, limit: $limit}) {
 		id
 	  }
 	}

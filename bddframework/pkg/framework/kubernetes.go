@@ -16,10 +16,11 @@ package framework
 
 import (
 	"fmt"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 	"strings"
 	"sync"
 	"time"
+
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	rbac "k8s.io/api/rbac/v1"
 
@@ -30,6 +31,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	k8sv1beta1 "k8s.io/api/extensions/v1beta1"
 	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -60,7 +62,7 @@ func InitKubeClient(scheme *runtime.Scheme) error {
 
 // WaitForPodsWithLabel waits for pods with specific label to be available and running
 func WaitForPodsWithLabel(namespace, labelName, labelValue string, numberOfPods, timeoutInMin int) error {
-	return WaitForOnOpenshift(namespace, fmt.Sprintf("Pods with label name '%s' and value '%s' available and running", labelName, labelValue), timeoutInMin,
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("%d Pods with label name '%s' and value '%s' available and running", numberOfPods, labelName, labelValue), timeoutInMin,
 		func() (bool, error) {
 			pods, err := GetPodsWithLabels(namespace, map[string]string{labelName: labelValue})
 			if err != nil || (len(pods.Items) != numberOfPods) {
@@ -300,6 +302,17 @@ func checkAllPodsContainingTextInLog(namespace string, pods []corev1.Pod, contai
 func isPodContainingTextInLog(namespace string, pod *corev1.Pod, containerName, text string) (bool, error) {
 	log, err := kubernetes.PodC(kubeClient).GetLogs(namespace, pod.GetName(), containerName)
 	return strings.Contains(log, text), err
+}
+
+// GetStatefulSet returns the given StatefulSet
+func GetStatefulSet(namespace, name string) (*apps.StatefulSet, error) {
+	statefulset := &apps.StatefulSet{}
+	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: name, Namespace: namespace}, statefulset); err != nil && !errors.IsNotFound(err) {
+		return nil, fmt.Errorf("Error while trying to look for Infinispan %s: %v ", name, err)
+	} else if errors.IsNotFound(err) || !exists {
+		return nil, nil
+	}
+	return statefulset, nil
 }
 
 // IsCrdAvailable returns whether the crd is available on cluster

@@ -61,3 +61,72 @@ Feature: Kogito Trusty
       """
 
     Then HTTP GET request on service "trusty" with path "/executions" should contain a string "DECISION" within 3 minutes
+
+#####
+
+  @failover
+  @events
+  @kafka
+  @infinispan
+  Scenario: Test Trusty service failover with Infinispan
+    Given Infinispan instance "kogito-infinispan" is deployed with configuration:
+      | username | developer |
+      | password | mypass    |
+    And Install Infinispan Kogito Infra "infinispan" targeting service "kogito-infinispan" within 5 minutes
+    And Kafka instance "kogito-kafka" is deployed
+    And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
+    And Install Kogito Trusty with 1 replicas with configuration:
+      | config | infra | infinispan |
+      | config | infra | kafka      |
+    And Local example service "dmn-tracing-quarkus" is built by Maven and deployed to runtime registry
+    And Deploy quarkus example service "dmn-tracing-quarkus" from runtime registry with configuration:
+      | config | infra | kafka |
+    And Kogito Runtime "dmn-tracing-quarkus" has 1 pods running within 10 minutes
+
+    When HTTP POST request on service "dmn-tracing-quarkus" is successful within 2 minutes with path "LoanEligibility" and body:
+      """json
+      {
+      "Bribe": 100,
+      "Client": {
+        "age": 45,
+        "existing payments": 2000,
+        "salary": 2000
+      },
+      "Loan": {
+        "duration": 40,
+        "installment": 1000
+      },
+      "SupremeDirector": "yes"
+      }
+      """
+
+    And HTTP GET request on service "trusty" with path "/executions" should contain a string "DECISION" within 3 minutes
+
+    And Scale Infinispan instance "kogito-infinispan" to 0 pods within 2 minutes
+    And HTTP GET request on service "trusty" with path "executions" fails within 2 minutes
+
+    And Scale Infinispan instance "kogito-infinispan" to 1 pods within 2 minutes
+    
+    And HTTP GET request on service "trusty" with path "/executions" should not contain a string "DECISION" within 3 minutes
+
+    And HTTP POST request on service "dmn-tracing-quarkus" is successful within 2 minutes with path "LoanEligibility" and body:
+      """json
+      {
+      "Bribe": 100,
+      "Client": {
+        "age": 45,
+        "existing payments": 2000,
+        "salary": 2000
+      },
+      "Loan": {
+        "duration": 40,
+        "installment": 1000
+      },
+      "SupremeDirector": "yes"
+      }
+      """
+    
+    Then HTTP GET request on service "trusty" with path "/executions" should contain a string "DECISION" within 3 minutes
+    
+
+## Trusty tests will be implemented as part of https://issues.redhat.com/browse/KOGITO-6156

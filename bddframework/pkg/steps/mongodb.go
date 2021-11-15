@@ -32,6 +32,8 @@ func registerMongoDBSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^MongoDB Operator is deployed$`, data.mongoDbOperatorIsDeployed)
 	ctx.Step(`^MongoDB instance "([^"]*)" has (\d+) (?:pod|pods) running within (\d+) (?:minute|minutes)$`, data.mongodbInstanceHasPodsRunningWithinMinutes)
 	ctx.Step(`^MongoDB instance "([^"]*)" is deployed with configuration:$`, data.mongodbInstanceIsDeployedWithConfiguration)
+
+	ctx.Step(`^Scale MongoDB instance "([^"]*)" to (\d+) pods within (\d+) minutes$`, data.scaleMongoDBInstanceToPodsWithinMinutes)
 }
 
 func (data *Data) mongoDbOperatorIsDeployed() error {
@@ -66,4 +68,12 @@ func (data *Data) mongodbInstanceIsDeployedWithConfiguration(name string, table 
 	}
 
 	return framework.WaitForPodsWithLabel(data.Namespace, "app", name+"-svc", 1, 3)
+}
+
+func (data *Data) scaleMongoDBInstanceToPodsWithinMinutes(name string, nbPods, timeoutInMin int) error {
+	err := framework.SetMongoDBReplicas(data.Namespace, name, nbPods)
+	if err != nil {
+		return err
+	}
+	return framework.WaitForPodsWithLabel(data.Namespace, "app", name+"-svc", nbPods, timeoutInMin)
 }
