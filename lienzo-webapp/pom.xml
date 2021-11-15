@@ -230,23 +230,6 @@
 							<modules>
 								<module>org.kie.lienzo.LienzoShowcase</module>
 							</modules>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>gwt-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<goals>
-									<goal>compile</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<runTarget>LienzoShowcase.html</runTarget>
-							<modules>
-								<module>org.kie.lienzo.LienzoShowcase</module>
-							</modules>
 							<logLevel>INFO</logLevel>
 							<noServer>false</noServer>
 							<extraJvmArgs>-Xmx2048m -XX:CompileThreshold=7000 -Djava.io.tmpdir=${project.build.directory}
