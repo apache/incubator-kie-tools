@@ -16,14 +16,14 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useGlobals } from "../../common/GlobalContext";
-import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
-import { OpenShiftDeployedModel } from "../../settings/OpenShiftDeployedModel";
+import { useGlobals } from "../../globalCtx/GlobalContext";
+import { useKieToolingExtendedServices } from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { OpenShiftDeployedModel } from "../../openshift/OpenShiftDeployedModel";
 import { DmnDevSandboxContext } from "./DmnDevSandboxContext";
-import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus";
+import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
-import { isConfigValid } from "../../settings/OpenShiftSettingsConfig";
+import { isConfigValid } from "../../openshift/OpenShiftSettingsConfig";
 import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 interface Props {

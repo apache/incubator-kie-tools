@@ -26,9 +26,14 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
-import { useOnlineI18n } from "../common/i18n";
-import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
-import { EMPTY_CONFIG, isConfigValid, OpenShiftSettingsConfig, saveConfigCookie } from "./OpenShiftSettingsConfig";
+import { useOnlineI18n } from "../i18n";
+import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
+import {
+  EMPTY_CONFIG,
+  isConfigValid,
+  OpenShiftSettingsConfig,
+  saveConfigCookie,
+} from "../openshift/OpenShiftSettingsConfig";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { OpenShiftSettingsTabMode } from "./OpenShiftSettingsTab";
 

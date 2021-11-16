@@ -16,11 +16,11 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getCookie, setCookie } from "../../cookies";
+import { getCookie, setCookie } from "../cookies";
 import { KieToolingExtendedServicesBridge } from "./KieToolingExtendedServicesBridge";
 import { DependentFeature, KieToolingExtendedServicesContext } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
-import { KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME } from "../../settings/SettingsContext";
+import { KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME } from "../settings/SettingsContext";
 import { KieToolingExtendedServicesModal } from "./KieToolingExtendedServicesModal";
 
 interface Props {

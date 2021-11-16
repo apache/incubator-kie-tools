@@ -16,7 +16,7 @@
 
 import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
 import { decoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { useGlobals } from "../common/GlobalContext";
+import { useGlobals } from "../globalCtx/GlobalContext";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { join } from "path";
@@ -54,7 +54,7 @@ import { useWorkspacesFilesPromise } from "../workspace/hooks/WorkspacesFiles";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { useCancelableEffect } from "../common/Hooks";
+import { useCancelableEffect } from "../reactExt/Hooks";
 import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";

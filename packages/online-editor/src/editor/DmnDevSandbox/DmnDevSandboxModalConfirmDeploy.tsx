@@ -19,9 +19,9 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import * as React from "react";
 import { useCallback, useState } from "react";
-import { useOnlineI18n } from "../../common/i18n";
+import { useOnlineI18n } from "../../i18n";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
-import { AlertsController, useAlert } from "../Alerts/Alerts";
+import { AlertsController, useAlert } from "../../alerts/Alerts";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
 
 interface Props {

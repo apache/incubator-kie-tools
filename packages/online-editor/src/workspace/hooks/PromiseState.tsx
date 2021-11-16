@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { useCancelableEffect } from "../../common/Hooks";
+import { useCancelableEffect } from "../../reactExt/Hooks";
 
 export type Pending<T> = { status: PromiseStateStatus.PENDING; data?: undefined; error?: undefined };
 export type Resolved<T> = { status: PromiseStateStatus.RESOLVED; data: T; error?: undefined };

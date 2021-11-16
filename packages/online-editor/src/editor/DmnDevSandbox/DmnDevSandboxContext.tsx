@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { OpenShiftDeployedModel } from "../../settings/OpenShiftDeployedModel";
+import { OpenShiftDeployedModel } from "../../openshift/OpenShiftDeployedModel";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 export interface DeploymentFile {

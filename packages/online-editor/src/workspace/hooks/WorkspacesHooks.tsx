@@ -17,7 +17,7 @@
 import { useWorkspaces } from "../WorkspacesContext";
 import { useCallback } from "react";
 import { usePromiseState } from "./PromiseState";
-import { Holder, useCancelableEffect } from "../../common/Hooks";
+import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 
 export function useWorkspaceDescriptorsPromise() {
@@ -58,7 +58,7 @@ export function useWorkspaceDescriptorsPromise() {
       ({ canceled }) => {
         const broadcastChannel = new BroadcastChannel("workspaces");
         broadcastChannel.onmessage = ({ data }) => {
-          console.info(`EVENT::WORKSPACES: ${JSON.stringify(data)}`);
+          console.debug(`EVENT::WORKSPACES: ${JSON.stringify(data)}`);
           refresh(canceled);
         };
 

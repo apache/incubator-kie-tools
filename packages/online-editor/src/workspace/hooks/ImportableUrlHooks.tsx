@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useGlobals } from "../../common/GlobalContext";
+import { useGlobals } from "../../globalCtx/GlobalContext";
 import { matchPath } from "react-router";
 import { extname } from "path";
 import { useMemo } from "react";

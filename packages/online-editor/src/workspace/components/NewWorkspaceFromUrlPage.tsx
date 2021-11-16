@@ -15,7 +15,7 @@
  */
 
 import { encoder, LocalFile, useWorkspaces } from "../WorkspacesContext";
-import { useGlobals } from "../../common/GlobalContext";
+import { useGlobals } from "../../globalCtx/GlobalContext";
 import { useHistory } from "react-router";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
@@ -24,9 +24,8 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { QueryParams } from "../../navigation/Routes";
 import { useQueryParam } from "../../queryParams/QueryParamsContext";
-import { AuthStatus, useSettings } from "../../settings/SettingsContext";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
-import { OnlineEditorPage } from "../../home/pageTemplate/OnlineEditorPage";
+import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { basename } from "path";
 import { WorkspaceKind } from "../model/WorkspaceOrigin";

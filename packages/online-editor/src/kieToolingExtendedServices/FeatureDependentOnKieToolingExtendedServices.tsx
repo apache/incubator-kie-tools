@@ -16,7 +16,7 @@
 
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import * as React from "react";
-import { useOnlineI18n } from "../../common/i18n";
+import { useOnlineI18n } from "../i18n";
 import { useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 

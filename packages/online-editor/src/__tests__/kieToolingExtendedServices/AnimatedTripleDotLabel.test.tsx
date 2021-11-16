@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { render, waitFor } from "@testing-library/react";
-import { AnimatedTripleDotLabel } from "../../common/AnimatedTripleDotLabel";
+import { AnimatedTripleDotLabel } from "../../kieToolingExtendedServices/AnimatedTripleDotLabel";
 
 describe("AnimatedTripleDotLabel", () => {
   test("should be valid", async () => {

@@ -18,7 +18,7 @@ import { Select, SelectDirection, SelectOption, SelectVariant } from "@patternfl
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { OperatingSystem } from "@kie-tooling-core/operating-system";
-import { OnlineI18n } from "./i18n";
+import { OnlineI18n } from "../i18n";
 
 interface Props {
   i18n?: OnlineI18n;

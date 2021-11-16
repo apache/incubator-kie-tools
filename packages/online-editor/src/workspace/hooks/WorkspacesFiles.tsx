@@ -18,7 +18,7 @@ import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
 import { usePromiseState } from "./PromiseState";
 import { useCallback } from "react";
-import { Holder, useCancelableEffect } from "../../common/Hooks";
+import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 
 export function useWorkspacesFilesPromise(workspaceDescriptors: WorkspaceDescriptor[] | undefined) {
   const workspaces = useWorkspaces();

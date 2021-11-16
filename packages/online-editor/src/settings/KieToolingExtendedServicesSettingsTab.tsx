@@ -23,8 +23,8 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { useKieToolingExtendedServices } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { useKieToolingExtendedServices } from "../kieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { KieToolingExtendedServicesStatus } from "../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
 
 export function KieToolingExtendedServicesSettingsTab() {
   const settings = useSettings();

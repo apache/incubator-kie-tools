@@ -29,9 +29,9 @@ import {
   MenuItem,
   MenuList,
 } from "@patternfly/react-core/dist/js/components/Menu";
-import { SupportedFileExtensions, useGlobals } from "../common/GlobalContext";
+import { SupportedFileExtensions, useGlobals } from "../globalCtx/GlobalContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { AlertsController, useAlert } from "./Alerts/Alerts";
+import { AlertsController, useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { basename, extname } from "path";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";

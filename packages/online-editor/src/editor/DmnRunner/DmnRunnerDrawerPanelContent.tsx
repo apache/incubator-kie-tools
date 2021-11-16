@@ -23,7 +23,7 @@ import { useDmnRunner, useDmnRunnerCallbacks } from "./DmnRunnerContext";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
-import { useOnlineI18n } from "../../common/i18n";
+import { useOnlineI18n } from "../../i18n";
 import {
   DecisionResult,
   DecisionResultMessage,
@@ -32,8 +32,8 @@ import {
   DmnResult,
   extractDifferences,
 } from "@kogito-tooling/form/dist/dmn";
-import { usePrevious } from "../../common/Hooks";
-import { ErrorBoundary } from "../../common/ErrorBoundary";
+import { usePrevious } from "../../reactExt/Hooks";
+import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";

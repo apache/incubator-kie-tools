@@ -19,9 +19,9 @@ import { useCallback, useMemo, useState } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Redirect } from "react-router";
-import { useGlobals } from "../common/GlobalContext";
+import { useGlobals } from "../globalCtx/GlobalContext";
 import { getOperatingSystem, OperatingSystem } from "@kie-tooling-core/operating-system";
-import { useOnlineI18n } from "../common/i18n";
+import { useOnlineI18n } from "../i18n";
 import { Select, SelectDirection, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 
 enum ModalState {

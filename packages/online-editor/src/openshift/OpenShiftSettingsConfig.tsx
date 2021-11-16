@@ -19,7 +19,7 @@ import {
   OPENSHIFT_HOST_COOKIE_NAME,
   OPENSHIFT_NAMESPACE_COOKIE_NAME,
   OPENSHIFT_TOKEN_COOKIE_NAME,
-} from "./SettingsContext";
+} from "../settings/SettingsContext";
 
 export interface OpenShiftSettingsConfig {
   namespace: string;

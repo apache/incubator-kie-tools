@@ -17,9 +17,9 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
-import { useOnlineI18n } from "../../common/i18n";
+import { useOnlineI18n } from "../../i18n";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
-import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus";
+import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { SettingsTabs } from "../../settings/SettingsModalBody";
 import {
   Dropdown,

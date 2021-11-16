@@ -18,7 +18,7 @@ import { useWorkspaces } from "../WorkspacesContext";
 import { useCallback } from "react";
 import { ActiveWorkspace } from "../model/ActiveWorkspace";
 import { usePromiseState } from "./PromiseState";
-import { Holder, useCancelableEffect } from "../../common/Hooks";
+import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 import { WorkspaceKind } from "../model/WorkspaceOrigin";
 import { GIT_ORIGIN_REMOTE_NAME } from "../services/GitService";
 
@@ -139,7 +139,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
 
         const broadcastChannel = new BroadcastChannel(workspaceId);
         broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceEvents>) => {
-          console.info(`EVENT::WORKSPACE: ${JSON.stringify(data)}`);
+          console.debug(`EVENT::WORKSPACE: ${JSON.stringify(data)}`);
           return refresh(canceled);
         };
 

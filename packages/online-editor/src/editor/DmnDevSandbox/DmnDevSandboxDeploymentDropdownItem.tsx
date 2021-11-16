@@ -23,8 +23,8 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { basename } from "path";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { useOnlineI18n } from "../../common/i18n";
-import { OpenShiftDeployedModel, OpenShiftDeployedModelState } from "../../settings/OpenShiftDeployedModel";
+import { useOnlineI18n } from "../../i18n";
+import { OpenShiftDeployedModel, OpenShiftDeployedModelState } from "../../openshift/OpenShiftDeployedModel";
 
 interface Props {
   id: number;

@@ -17,6 +17,7 @@
 import * as React from "react";
 import { useContext, useEffect, useMemo } from "react";
 import { BlockerDelegate, NavigationBlockerContext, NavigationStatusContext } from "./NavigationContextProvider";
+import { routes } from "./Routes";
 
 function useNavigationBlockerContext() {
   return useContext(NavigationBlockerContext);
@@ -43,4 +44,8 @@ export function useNavigationBlocker(key: string, blocker: BlockerDelegate) {
     addBlocker(key, blocker);
     return () => removeBlocker(key);
   }, [addBlocker, removeBlocker, key, blocker]);
+}
+
+export function useRoutes() {
+  return useMemo(() => routes, []);
 }

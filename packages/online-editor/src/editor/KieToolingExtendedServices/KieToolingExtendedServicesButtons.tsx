@@ -17,14 +17,17 @@
 import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { useOnlineI18n } from "../../common/i18n";
+import { useOnlineI18n } from "../../i18n";
 import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
 import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
-import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus";
+import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useDmnRunner, useDmnRunnerCallbacks } from "../DmnRunner/DmnRunnerContext";
-import { FeatureDependentOnKieToolingExtendedServices } from "./FeatureDependentOnKieToolingExtendedServices";
-import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
+import { FeatureDependentOnKieToolingExtendedServices } from "../../kieToolingExtendedServices/FeatureDependentOnKieToolingExtendedServices";
+import {
+  DependentFeature,
+  useKieToolingExtendedServices,
+} from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { useSettings } from "../../settings/SettingsContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { DmnRunnerMode } from "../DmnRunner/DmnRunnerStatus";

@@ -22,7 +22,7 @@ import { useDropzone } from "react-dropzone";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { useGlobals } from "../common/GlobalContext";
+import { useGlobals } from "../globalCtx/GlobalContext";
 import { useHistory } from "react-router";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";

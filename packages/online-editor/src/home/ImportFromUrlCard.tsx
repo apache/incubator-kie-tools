@@ -20,7 +20,7 @@ import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { useGlobals } from "../common/GlobalContext";
+import { useGlobals } from "../globalCtx/GlobalContext";
 import { useHistory } from "react-router";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";

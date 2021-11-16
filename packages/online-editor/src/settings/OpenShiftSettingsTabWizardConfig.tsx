@@ -28,8 +28,8 @@ import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/exter
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useKieToolingExtendedServices } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { useOnlineI18n } from "../common/i18n";
+import { useKieToolingExtendedServices } from "../kieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { useOnlineI18n } from "../i18n";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import {
   isConfigValid,
@@ -38,11 +38,11 @@ import {
   isTokenValid,
   OpenShiftSettingsConfig,
   saveConfigCookie,
-} from "./OpenShiftSettingsConfig";
-import { KieToolingExtendedServicesStatus } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesStatus";
-import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "./OpenShiftService";
+} from "../openshift/OpenShiftSettingsConfig";
+import { KieToolingExtendedServicesStatus } from "../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "../openshift/OpenShiftService";
 import { OpenShiftSettingsTabMode } from "./OpenShiftSettingsTab";
-import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
+import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
 
 enum WizardStepIds {
   NAMESPACE = "NAMESPACE",

@@ -19,7 +19,7 @@ import { PropsWithChildren, useCallback, useImperativeHandle, useMemo, useState 
 import { ToggleGroup } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { DmnRunnerMode } from "./DmnRunner/DmnRunnerStatus";
 import { useDmnRunner } from "./DmnRunner/DmnRunnerContext";
-import { useOnlineI18n } from "../common/i18n";
+import { useOnlineI18n } from "../i18n";
 import { NotificationsPanel, NotificationsPanelRef } from "./NotificationsPanel/NotificationsPanel";
 import { DmnRunnerTabular } from "./DmnRunner/DmnRunnerTabular";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
@@ -30,7 +30,7 @@ import {
   NotificationsPanelDockToggleRef,
 } from "./NotificationsPanel/NotificationsPanelDockToggle";
 import { DmnRunnerDockToggle } from "./DmnRunner/DmnRunnerDockToggle";
-import { useController } from "../common/Hooks";
+import { useController } from "../reactExt/Hooks";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 
 export enum PanelId {

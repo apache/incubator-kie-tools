@@ -17,15 +17,14 @@
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { useOnlineI18n } from "../../common/i18n";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
-import { OpenShiftInstanceStatus } from "../../settings/OpenShiftInstanceStatus";
-import { FeatureDependentOnKieToolingExtendedServices } from "../KieToolingExtendedServices/FeatureDependentOnKieToolingExtendedServices";
+import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
+import { FeatureDependentOnKieToolingExtendedServices } from "../../kieToolingExtendedServices/FeatureDependentOnKieToolingExtendedServices";
 import {
   DependentFeature,
   useKieToolingExtendedServices,
-} from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
+} from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { SettingsTabs } from "../../settings/SettingsModalBody";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
@@ -38,7 +37,6 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 export function useDmnDevSandboxDropdownItems(workspace: ActiveWorkspace | undefined) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
-  const { i18n } = useOnlineI18n();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const dmnDevSandbox = useDmnDevSandbox();
 

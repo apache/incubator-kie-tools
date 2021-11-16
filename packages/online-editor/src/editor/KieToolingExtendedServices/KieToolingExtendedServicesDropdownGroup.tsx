@@ -18,13 +18,16 @@ import { DropdownGroup, DropdownItem } from "@patternfly/react-core/dist/js/comp
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { useOnlineI18n } from "../../common/i18n";
+import { useOnlineI18n } from "../../i18n";
 import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
 import { useDmnRunner, useDmnRunnerCallbacks } from "../DmnRunner/DmnRunnerContext";
-import { FeatureDependentOnKieToolingExtendedServices } from "./FeatureDependentOnKieToolingExtendedServices";
-import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
-import { KieToolingExtendedServicesIcon } from "./KieToolingExtendedServicesIcon";
+import { FeatureDependentOnKieToolingExtendedServices } from "../../kieToolingExtendedServices/FeatureDependentOnKieToolingExtendedServices";
+import {
+  DependentFeature,
+  useKieToolingExtendedServices,
+} from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { KieToolingExtendedServicesIcon } from "../../kieToolingExtendedServices/KieToolingExtendedServicesIcon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 

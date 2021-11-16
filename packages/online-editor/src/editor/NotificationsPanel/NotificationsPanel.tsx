@@ -23,7 +23,7 @@ import { AngleUpIcon } from "@patternfly/react-icons/dist/js/icons/angle-up-icon
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { NotificationPanelTabContent } from "./NotificationsPanelTabContent";
 import { NotificationsApi } from "@kie-tooling-core/notifications/dist/api";
-import { useOnlineI18n } from "../../common/i18n";
+import { useOnlineI18n } from "../../i18n";
 
 interface Props {
   tabNames: string[];

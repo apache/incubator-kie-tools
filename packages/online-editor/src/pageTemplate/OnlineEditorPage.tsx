@@ -17,13 +17,13 @@
 import { Page, PageHeaderToolsItem } from "@patternfly/react-core/dist/js/components/Page";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import * as React from "react";
-import { useGlobals } from "../../common/GlobalContext";
+import { useGlobals } from "../globalCtx/GlobalContext";
 import { useHistory } from "react-router";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
-import { SettingsButton } from "../../settings/SettingsButton";
+import { SettingsButton } from "../settings/SettingsButton";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { KieToolingExtendedServicesIcon } from "../../editor/KieToolingExtendedServices/KieToolingExtendedServicesIcon";
-import { OpenshiftDeploymentsDropdown } from "../../editor/DmnDevSandbox/OpenshiftDeploymentsDropdown";
+import { KieToolingExtendedServicesIcon } from "../kieToolingExtendedServices/KieToolingExtendedServicesIcon";
+import { OpenshiftDeploymentsDropdown } from "../editor/DmnDevSandbox/OpenshiftDeploymentsDropdown";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {

@@ -20,7 +20,7 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { SupportedFileExtensions, useGlobals } from "../common/GlobalContext";
+import { SupportedFileExtensions, useGlobals } from "../globalCtx/GlobalContext";
 import { useHistory } from "react-router";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import {
@@ -38,7 +38,7 @@ import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { OnlineEditorPage } from "./pageTemplate/OnlineEditorPage";
+import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
@@ -64,7 +64,7 @@ import { DeleteDropdownWithConfirmation } from "../editor/DeleteDropdownWithConf
 import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
 import { QueryParams } from "../navigation/Routes";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { RelativeDate } from "./RelativeDate";
+import { RelativeDate } from "../dates/RelativeDate";
 import {
   DataList,
   DataListCell,
@@ -80,8 +80,8 @@ import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
-import { Alerts, AlertsController } from "../editor/Alerts/Alerts";
-import { useController } from "../common/Hooks";
+import { Alerts, AlertsController } from "../alerts/Alerts";
+import { useController } from "../reactExt/Hooks";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 
 export function HomePage() {

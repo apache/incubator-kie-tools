@@ -18,7 +18,6 @@ import { ToggleGroupItem } from "@patternfly/react-core/dist/js/components/Toggl
 import * as React from "react";
 import { PanelId } from "../EditorPageDockDrawer";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 
 interface Props {
   isSelected: boolean;

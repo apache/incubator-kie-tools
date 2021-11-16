@@ -23,7 +23,7 @@ import {
   EmptyStateSecondaryActions,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { useGlobals } from "./common/GlobalContext";
+import { useGlobals } from "./globalCtx/GlobalContext";
 import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 

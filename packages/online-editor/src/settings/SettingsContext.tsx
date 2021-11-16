@@ -20,14 +20,14 @@ import { getCookie, setCookie } from "../cookies";
 import { Octokit } from "@octokit/rest";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
-import { OpenShiftSettingsConfig, readConfigCookie } from "./OpenShiftSettingsConfig";
-import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
-import { OpenShiftService } from "./OpenShiftService";
-import { useKieToolingExtendedServices } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { OpenShiftSettingsConfig, readConfigCookie } from "../openshift/OpenShiftSettingsConfig";
+import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
+import { OpenShiftService } from "../openshift/OpenShiftService";
+import { useKieToolingExtendedServices } from "../kieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { useHistory } from "react-router";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { QueryParams } from "../navigation/Routes";
-import { KieToolingExtendedServicesStatus } from "../editor/KieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { KieToolingExtendedServicesStatus } from "../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
 
 export const KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME =
   "KOGITO-TOOLING-COOKIE__kie-tooling-extended-services--port";

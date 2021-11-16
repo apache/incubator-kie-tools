@@ -17,7 +17,7 @@
 import { ActiveWorkspace } from "../model/ActiveWorkspace";
 import { useWorkspaceGitStatusPromise } from "../hooks/WorkspaceHooks";
 import * as React from "react";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { WorkspaceKind } from "../model/WorkspaceOrigin";
 import { PromiseStateWrapper } from "../hooks/PromiseState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
@@ -25,10 +25,10 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import { SecurityIcon } from "@patternfly/react-icons/dist/js/icons/security-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import { usePrevious } from "../../common/Hooks";
+import { usePrevious } from "../../reactExt/Hooks";
 import { useNavigationBlocker } from "../../navigation/Hooks";
 import { matchPath } from "react-router";
-import { useGlobals } from "../../common/GlobalContext";
+import { useGlobals } from "../../globalCtx/GlobalContext";
 
 function Indicator(props: { workspace: ActiveWorkspace; isSynced: boolean; hasLocalChanges: boolean }) {
   return (

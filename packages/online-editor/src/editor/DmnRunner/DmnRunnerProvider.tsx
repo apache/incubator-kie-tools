@@ -21,15 +21,15 @@ import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace/Workspace
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerCallbacksContext, DmnRunnerContext } from "./DmnRunnerContext";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
-import { KieToolingExtendedServicesStatus } from "../KieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { QueryParams } from "../../navigation/Routes";
-import { jsonParseWithDate } from "../../common/JsonParse";
-import { usePrevious } from "../../common/Hooks";
-import { useOnlineI18n } from "../../common/i18n";
+import { jsonParseWithDate } from "../../json/JsonParse";
+import { usePrevious } from "../../reactExt/Hooks";
+import { useOnlineI18n } from "../../i18n";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useHistory } from "react-router";
-import { useGlobals } from "../../common/GlobalContext";
-import { useKieToolingExtendedServices } from "../KieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { useGlobals } from "../../globalCtx/GlobalContext";
+import { useKieToolingExtendedServices } from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { DmnSchema } from "@kogito-tooling/form/dist/dmn";
 

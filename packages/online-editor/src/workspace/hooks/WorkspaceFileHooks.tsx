@@ -16,7 +16,7 @@
 
 import { useCallback } from "react";
 import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
-import { Holder, useCancelableEffect } from "../../common/Hooks";
+import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 import { usePromiseState } from "./PromiseState";
 import { WorkspaceEvents } from "./WorkspaceHooks";
 
@@ -67,10 +67,10 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
 
         const uniqueFileIdentifier = workspaces.getUniqueFileIdentifier({ workspaceId, relativePath });
 
-        console.info("Subscribing to " + uniqueFileIdentifier);
+        console.debug("Subscribing to " + uniqueFileIdentifier);
         const broadcastChannel = new BroadcastChannel(uniqueFileIdentifier);
         broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileEvents>) => {
-          console.info(`EVENT::WORKSPACE_FILE: ${JSON.stringify(data)}`);
+          console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(data)}`);
           if (data.type === "MOVE" || data.type == "RENAME") {
             refresh(workspaceId, data.newRelativePath, canceled);
           }
@@ -79,17 +79,17 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
           }
         };
 
-        console.info("Subscribing to " + workspaceId);
+        console.debug("Subscribing to " + workspaceId);
         const broadcastChannel2 = new BroadcastChannel(workspaceId);
         broadcastChannel2.onmessage = ({ data }: MessageEvent<WorkspaceEvents>) => {
-          console.info(`EVENT::WORKSPACE: ${JSON.stringify(data)}`);
+          console.debug(`EVENT::WORKSPACE: ${JSON.stringify(data)}`);
           if (data.type === "PULL") {
             refresh(workspaceId, relativePath, canceled);
           }
         };
 
         return () => {
-          console.info("Unsubscribing to " + uniqueFileIdentifier);
+          console.debug("Unsubscribing to " + uniqueFileIdentifier);
           broadcastChannel.close();
         };
       },

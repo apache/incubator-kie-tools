@@ -18,7 +18,7 @@ import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
-import { useOnlineI18n } from "../../common/i18n";
+import { useOnlineI18n } from "../../i18n";
 import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 

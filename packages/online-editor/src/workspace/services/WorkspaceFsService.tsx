@@ -43,8 +43,7 @@ export class WorkspaceFsService {
 
   private async createInMemoryWorkspaceFs(workspaceId: string) {
     const readEntireFs = async (dexieBackend: DexieBackend) => {
-      console.info("MEM :: Reading FS to memory");
-      console.time("MEM :: Reading FS to memory");
+      console.debug("MEM :: Reading FS to memory");
       await dexieBackend._dexie.open();
       const keys = await dexieBackend._dexie.table(dexieBackend._storename).toCollection().keys();
       const data = await dexieBackend.readFileBulk(keys);
@@ -52,7 +51,6 @@ export class WorkspaceFsService {
       for (let i = 0; i < data.length; i++) {
         fsAsMapConstructorParameter[i] = [keys[i], data[i]];
       }
-      console.timeEnd("MEM :: Reading FS to memory");
       return fsAsMapConstructorParameter;
     };
 
@@ -69,10 +67,8 @@ export class WorkspaceFsService {
         setTimeout(async () => {
           const inodeBulk = Array.from(inMemoryBackend.fs.keys());
           const dataBulk = Array.from(inMemoryBackend.fs.values());
-          console.info("MEM :: Flushing in memory FS");
-          console.time("MEM :: Flushing in memory FS");
+          console.debug("MEM :: Flushing in memory FS");
           await dexieBackend.writeFileBulk(inodeBulk, dataBulk);
-          console.timeEnd("MEM :: Flushing in memory FS");
           res();
         }, 500); // necessary to wait for debounce of 500ms (This is hardcoded on LightningFS).
       });

@@ -25,7 +25,7 @@ import { BookOpenIcon } from "@patternfly/react-icons/dist/js/icons/book-open-ic
 import { TrophyIcon } from "@patternfly/react-icons/dist/js/icons/trophy-icon";
 import { KogitoGuidedTour } from "@kie-tooling-core/guided-tour/dist/channel";
 import { DemoMode, SubTutorialMode, Tutorial } from "@kie-tooling-core/guided-tour/dist/api";
-import { OnlineI18n, useOnlineI18n } from "../common/i18n";
+import { OnlineI18n, useOnlineI18n } from "../i18n";
 import { I18nHtml } from "@kie-tooling-core/i18n/dist/react-components";
 import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 

@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { url } from "inspector";
-import { jsonParseWithDate, jsonParseWithUrl } from "../../common/JsonParse";
+import { jsonParseWithDate, jsonParseWithUrl } from "../../json/JsonParse";
 
 describe("utils::jsonParseWithDate", () => {
   it("should parse JSON strings with dates properly", () => {

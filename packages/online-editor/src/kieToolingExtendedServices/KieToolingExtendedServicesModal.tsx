@@ -34,16 +34,16 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { AnimatedTripleDotLabel } from "../../common/AnimatedTripleDotLabel";
-import { useOnlineI18n } from "../../common/i18n";
+import { AnimatedTripleDotLabel } from "./AnimatedTripleDotLabel";
+import { useOnlineI18n } from "../i18n";
 import { I18nHtml, I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
-import { SelectOs } from "../../common/SelectOs";
+import { SelectOs } from "../os/SelectOs";
 import { getOperatingSystem, OperatingSystem } from "@kie-tooling-core/operating-system";
-import { DEVELOPER_SANDBOX_URL } from "../../settings/OpenShiftService";
+import { DEVELOPER_SANDBOX_URL } from "../openshift/OpenShiftService";
 import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT } from "./KieToolingExtendedServicesContextProvider";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
-import { useGlobals } from "../../common/GlobalContext";
+import { useGlobals } from "../globalCtx/GlobalContext";
 
 enum ModalPage {
   INITIAL,

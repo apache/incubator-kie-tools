@@ -27,7 +27,7 @@ import { GIT_DEFAULT_BRANCH, GitService } from "./services/GitService";
 import { StorageFile, StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
-import { SupportedFileExtensions, useGlobals } from "../common/GlobalContext";
+import { SupportedFileExtensions, useGlobals } from "../globalCtx/GlobalContext";
 import { join } from "path";
 import { WorkspaceEvents } from "./hooks/WorkspaceHooks";
 import { Buffer } from "buffer";
@@ -139,7 +139,7 @@ export function WorkspacesContextProvider(props: Props) {
       });
 
       if (fileRelativePaths.length === 0) {
-        console.info("Nothing to commit.");
+        console.debug("Nothing to commit.");
         return;
       }
 

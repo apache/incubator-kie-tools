@@ -23,9 +23,9 @@ import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesSt
 import { ConnectedIcon } from "@patternfly/react-icons/dist/js/icons/connected-icon";
 import { DisconnectedIcon } from "@patternfly/react-icons/dist/js/icons/disconnected-icon";
 import { useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
-import { useOnlineI18n } from "../../common/i18n";
-import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
-import { SettingsTabs } from "../../settings/SettingsModalBody";
+import { useOnlineI18n } from "../i18n";
+import { useSettingsDispatch } from "../settings/SettingsContext";
+import { SettingsTabs } from "../settings/SettingsModalBody";
 
 export function KieToolingExtendedServicesIcon() {
   const kieToolingExtendedServices = useKieToolingExtendedServices();

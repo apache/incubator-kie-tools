@@ -18,14 +18,14 @@ import * as React from "react";
 import { useCallback, useState } from "react";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
-import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
+import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { OpenShiftSettingsTabSimpleConfig } from "./OpenShiftSettingsTabSimpleConfig";
 import { obfuscate } from "./GitHubSettingsTab";
-import { saveConfigCookie } from "./OpenShiftSettingsConfig";
+import { saveConfigCookie } from "../openshift/OpenShiftSettingsConfig";
 import { OpenShiftSettingsTabWizardConfig } from "./OpenShiftSettingsTabWizardConfig";
 
 export enum OpenShiftSettingsTabMode {
