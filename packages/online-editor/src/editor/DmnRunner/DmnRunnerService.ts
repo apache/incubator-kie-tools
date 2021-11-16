@@ -89,8 +89,12 @@ export class DmnRunnerService {
     // The input set property associated with the mainURI is InputSetX, where X is a number not always 1.
     // So replace all occurrences InputSetX -> InputSet to keep compatibility with the current DmnForm.
     const json = await response.json();
-    const inputRef = json["$ref"].replace("#/definitions/", "");
-    return JSON.parse(JSON.stringify(json).replace(new RegExp(inputRef, "g"), "InputSet"));
+    const refIndex = json["$ref"].replace("#/definitions/InputSet", "");
+    return JSON.parse(
+      JSON.stringify(json)
+        .replace(new RegExp(`InputSet${refIndex}`, "g"), "InputSet")
+        .replace(new RegExp(`OutputSet${refIndex}`, "g"), "OutputSet")
+    );
   }
 
   private isPayloadValid(payload: DmnRunnerModelPayload): boolean {
