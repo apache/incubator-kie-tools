@@ -21,7 +21,7 @@ export const names = {
     name: "Business Modeler",
     desktop: "Business Modeler Desktop Preview",
     hub: "Business Modeler Hub Preview",
-    online: "Business Automation Studio",
+    online: "KIE Sandbox",
   },
   chrome: "Chrome",
   chromeExtensionName: "BPMN, DMN & Test Scenario Editor for GitHub",
