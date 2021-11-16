@@ -26,7 +26,7 @@
     "@kogito-tooling/kie-bc-editors": "0.0.0"
   },
   "devDependencies": {
-    "@kogito-tooling/bpmn-editor-unpacked": "^8.5.2",
+    "@kogito-tooling/bpmn-editor-unpacked": "^8.5.3",
     "@kogito-tooling/build-env": "0.0.0"
   },
   "icon": "icon.png",
