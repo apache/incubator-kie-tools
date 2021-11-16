@@ -5184,6 +5184,19 @@ index ca97d8f..903b055 100644
  .expression-container .decision-table-expression table thead th.output {
    background-color: #bee1f4;
  }
+diff --git a/node_modules/boxed-expression-component/src/components/InvocationExpression/InvocationExpression.tsx b/node_modules/boxed-expression-component/src/components/InvocationExpression/InvocationExpression.tsx
+index 52b3796..6ac385f 100644
+--- a/node_modules/boxed-expression-component/src/components/InvocationExpression/InvocationExpression.tsx
++++ b/node_modules/boxed-expression-component/src/components/InvocationExpression/InvocationExpression.tsx
+@@ -243,7 +243,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = (i
+         skipLastHeaderGroup={true}
+         defaultCell={defaultCell}
+         columns={columns}
+-        rows={(rows ?? []) as DataRecord[]}
++        rows={(rows ?? []) as unknown as DataRecord[]}
+         onColumnsUpdate={onColumnsUpdate}
+         onRowAdding={onRowAdding}
+         onRowsUpdate={setRowsCallback}
 diff --git a/node_modules/boxed-expression-component/src/components/Table/EditableCell.tsx b/node_modules/boxed-expression-component/src/components/Table/EditableCell.tsx
 index 28b5000..3f9cc29 100644
 --- a/node_modules/boxed-expression-component/src/components/Table/EditableCell.tsx
