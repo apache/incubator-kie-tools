@@ -63,8 +63,8 @@ jobs:
       DASHBUILDER__baseImageAccount: "kogito_tooling_bot"
       DASHBUILDER_AUTHORING__baseImageName: "dashbuilder-authoring"
       DASHBUILDER_RUNTIME__baseImageName: "dashbuilder-runtime"
-      DASHBUILDER__baseImageTag: "${{ needs.prepare.outputs.version }}-prerelease"
-      DASHBUILDER__baseImageBuildTags: "latest ${{ needs.prepare.outputs.version }}-prerelease"
+      DASHBUILDER__baseImageTag: "${{ needs.create_release.outputs.tag }}-prerelease"
+      DASHBUILDER__baseImageBuildTags: "${{ needs.create_release.outputs.tag }}-prerelease"
 
     strategy:
       matrix:
@@ -371,8 +371,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_asset_url }}
-          asset_path: ./packages/dashbuilder/dist/dashbuilder_dist.zip
-          asset_name: STAGING_dashbuilder_dist_${{ needs.prepare.outputs.version }}.zip
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/dashbuilder/dist/dashbuilder_dist.zip
+          asset_name: STAGING_dashbuilder_dist_${{ needs.create_release.outputs.tag }}.zip
           asset_content_type: application/zip
 
       - name: "STAGING Push dashbuilder-authoring image to quay.io"
