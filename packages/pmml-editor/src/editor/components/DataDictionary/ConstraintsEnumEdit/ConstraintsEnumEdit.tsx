@@ -82,7 +82,7 @@ const ConstraintsEnumEdit = (props: ConstraintsEnumEditProps) => {
             />
           </StackItem>
           <StackItem>
-            <Button variant={ButtonVariant.secondary} onClick={addOne}>
+            <Button variant={ButtonVariant.secondary} onClick={addOne} ouiaId="add-another-value">
               Add another value
             </Button>
           </StackItem>
@@ -179,10 +179,17 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
       className={`constraints-enum__item ${enumsCount === 1 ? "constraints-enum__item--sort-disabled" : ""}`}
       tabIndex={20 + position}
       ref={enumRef}
+      data-ouia-component-id={`val-${position}`}
     >
       <Flex>
         <FlexItem>
-          <Button variant="plain" aria-label="Drag to sort" component={"span"} isDisabled={enumsCount === 1}>
+          <Button
+            variant="plain"
+            aria-label="Drag to sort"
+            component={"span"}
+            isDisabled={enumsCount === 1}
+            ouiaId="drag-it"
+          >
             <GripVerticalIcon />
           </Button>
         </FlexItem>
@@ -199,10 +206,16 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
             onKeyDown={handleTabNavigation}
             autoComplete="off"
             validated={validations.current.length > 0 ? "warning" : "default"}
+            data-ouia-component-type="value-name"
           />
         </FlexItem>
         <FlexItem align={{ default: "alignRight" }}>
-          <Button variant={ButtonVariant.plain} onClick={handleDelete} isDisabled={enumsCount === 1}>
+          <Button
+            variant={ButtonVariant.plain}
+            onClick={handleDelete}
+            isDisabled={enumsCount === 1}
+            ouiaId="delete-item"
+          >
             <TrashIcon />
           </Button>
         </FlexItem>

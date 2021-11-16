@@ -222,6 +222,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                       icon={<BoltIcon />}
                       iconPosition="left"
                       isDisabled={editing !== undefined || sorting}
+                      ouiaId="add-multiple-data-type"
                     >
                       Add Multiple Data Types
                     </Button>
@@ -233,6 +234,7 @@ const DataDictionaryContainer = (props: DataDictionaryContainerProps) => {
                       icon={<SortIcon />}
                       iconPosition="left"
                       isDisabled={editing !== undefined}
+                      ouiaId="order-toggle"
                     >
                       {sorting ? "End Ordering" : "Order"}
                     </Button>
