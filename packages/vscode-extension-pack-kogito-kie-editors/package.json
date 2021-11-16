@@ -168,10 +168,10 @@
     "minimatch": "^3.0.4"
   },
   "devDependencies": {
-    "@kogito-tooling/bpmn-editor-unpacked": "^8.5.2",
+    "@kogito-tooling/bpmn-editor-unpacked": "^8.5.3",
     "@kogito-tooling/build-env": "0.0.0",
-    "@kogito-tooling/dmn-editor-unpacked": "^8.5.2",
+    "@kogito-tooling/dmn-editor-unpacked": "^8.5.3",
     "@kogito-tooling/external-assets-base": "0.0.0",
-    "@kogito-tooling/scesim-editor-unpacked": "^8.5.2"
+    "@kogito-tooling/scesim-editor-unpacked": "^8.5.3"
   }
 }
