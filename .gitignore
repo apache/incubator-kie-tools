@@ -57,6 +57,10 @@ package-lock.json
 **/mvnw.cmd
 **/.mvn
 
+## boxed-expression-component & feel-input-component
+packages/boxed-expression-component/src
+packages/feel-input-component/src
+
 # Eclipse, Netbeans and IntelliJ files
 **/nbproject
 **/*.ipr
