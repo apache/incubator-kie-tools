@@ -143,6 +143,7 @@ export function EditorToolbar(props: Props) {
   const [isGitHubGistLoading, setGitHubGistLoading] = useState(false);
 
   const githubAuthInfo = useGitHubAuthInfo();
+  const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
 
   const successfullyCreateGistAlert = useAlert(
     props.alerts,
@@ -519,11 +520,22 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   {i18n.editorToolbar.createGist}
                 </DropdownItem>
               </Tooltip>
+              {!canPushToGitRepository && (
+                <>
+                  <Divider />
+                  <DropdownItem onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
+                    <Button isInline={true} variant={ButtonVariant.link}>
+                      Configure GitHub token...
+                    </Button>
+                  </DropdownItem>
+                </>
+              )}
             </DropdownGroup>,
           ]
         : []),
     ],
     [
+      canPushToGitRepository,
       onDownload,
       workspacePromise,
       props.workspaceFile,
@@ -671,8 +683,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       </DropdownItem>
     );
   }, [workspaces, props.workspaceFile, githubAuthInfo]);
-
-  const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
 
   const pushingAlert = useAlert(
     props.alerts,
