@@ -64,7 +64,7 @@ jobs:
       DASHBUILDER_AUTHORING__baseImageName: "dashbuilder-authoring"
       DASHBUILDER_RUNTIME__baseImageName: "dashbuilder-runtime"
       DASHBUILDER__baseImageTag: "${{ needs.create_release.outputs.tag }}-prerelease"
-      DASHBUILDER__baseImageBuildTags: "latest ${{ needs.create_release.outputs.tag }}-prerelease"
+      DASHBUILDER__baseImageBuildTags: "${{ needs.create_release.outputs.tag }}-prerelease"
 
     strategy:
       matrix:
