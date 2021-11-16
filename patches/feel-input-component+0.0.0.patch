@@ -11,6 +11,19 @@ index b915b46..5b43099 100644
  import * as React from "react";
  import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
  import { FeelEditorService, SuggestionProvider } from "../Monaco";
+diff --git a/node_modules/feel-input-component/src/Monaco/FeelConfigs.ts b/node_modules/feel-input-component/src/Monaco/FeelConfigs.ts
+index 684b391..994f939 100644
+--- a/node_modules/feel-input-component/src/Monaco/FeelConfigs.ts
++++ b/node_modules/feel-input-component/src/Monaco/FeelConfigs.ts
+@@ -14,7 +14,7 @@
+  * limitations under the License.
+  */
+ 
+-import * as Monaco from "monaco-editor";
++import * as Monaco from "@kie-tooling-core/monaco-editor";
+ 
+ export const MONACO_FEEL_LANGUAGE = "feel-language";
+ 
 diff --git a/node_modules/feel-input-component/src/Monaco/FeelEditorService.ts b/node_modules/feel-input-component/src/Monaco/FeelEditorService.ts
 index 6dca54a..8c99c52 100644
 --- a/node_modules/feel-input-component/src/Monaco/FeelEditorService.ts
