@@ -26,9 +26,8 @@ import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import { SecurityIcon } from "@patternfly/react-icons/dist/js/icons/security-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { usePrevious } from "../../reactExt/Hooks";
-import { useNavigationBlocker } from "../../navigation/Hooks";
+import { useNavigationBlocker, useRoutes } from "../../navigation/Hooks";
 import { matchPath } from "react-router";
-import { useGlobals } from "../../globalCtx/GlobalContext";
 
 function Indicator(props: { workspace: ActiveWorkspace; isSynced: boolean; hasLocalChanges: boolean }) {
   return (
@@ -69,7 +68,7 @@ function Indicator(props: { workspace: ActiveWorkspace; isSynced: boolean; hasLo
 }
 
 export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) {
-  const globals = useGlobals();
+  const routes = useRoutes();
   const workspaceGitStatusPromise = useWorkspaceGitStatusPromise(props.workspace);
 
   const isEverythingPersistedByTheUser = useMemo(() => {
@@ -102,7 +101,7 @@ export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) 
           strict: true,
           exact: true,
           sensitive: false,
-          path: globals.routes.workspaceWithFilePath.path({
+          path: routes.workspaceWithFilePath.path({
             workspaceId: ":workspaceId",
             fileRelativePath: ":fileRelativePath",
             extension: ":extension",
@@ -115,7 +114,7 @@ export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) 
 
         return !isEverythingPersistedByTheUser;
       },
-      [globals, isEverythingPersistedByTheUser, props.workspace.descriptor.workspaceId]
+      [routes, isEverythingPersistedByTheUser, props.workspace.descriptor.workspaceId]
     )
   );
 

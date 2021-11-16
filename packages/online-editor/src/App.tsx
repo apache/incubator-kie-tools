@@ -18,7 +18,10 @@ import * as React from "react";
 import { useMemo } from "react";
 import { Redirect, Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
-import { GlobalContextProvider, useGlobals } from "./globalCtx/GlobalContext";
+import {
+  EditorEnvelopeLocatorContextProvider,
+  useEditorEnvelopeLocator,
+} from "./envelopeLocator/EditorEnvelopeLocatorContext";
 import { EditorPage } from "./editor/EditorPage";
 import { OnlineI18nContextProvider } from "./i18n";
 import { NoMatchPage } from "./NoMatchPage";
@@ -30,13 +33,14 @@ import { NewWorkspaceWithEmptyFilePage } from "./workspace/components/NewWorkspa
 import { NewWorkspaceFromUrlPage } from "./workspace/components/NewWorkspaceFromUrlPage";
 import { DmnDevSandboxContextProvider } from "./editor/DmnDevSandbox/DmnDevSandboxContextProvider";
 import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
+import { useRoutes } from "./navigation/Hooks";
 
 export function App() {
   return (
     <HashRouter>
       {nest(
         [OnlineI18nContextProvider, {}],
-        [GlobalContextProvider, {}],
+        [EditorEnvelopeLocatorContextProvider, {}],
         [KieToolingExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
         [WorkspacesContextProvider, {}],
@@ -49,26 +53,27 @@ export function App() {
 }
 
 function RoutesSwitch() {
-  const globals = useGlobals();
+  const routes = useRoutes();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
 
   const supportedExtensions = useMemo(
-    () => Array.from(globals.editorEnvelopeLocator.mapping.keys()).join("|"),
-    [globals.editorEnvelopeLocator]
+    () => Array.from(editorEnvelopeLocator.mapping.keys()).join("|"),
+    [editorEnvelopeLocator]
   );
 
   return (
     <Switch>
-      <Route path={globals.routes.editor.path({ extension: `:extension(${supportedExtensions})` })}>
-        {({ match }) => <Redirect to={globals.routes.newModel.path({ extension: match!.params.extension! })} />}
+      <Route path={routes.editor.path({ extension: `:extension(${supportedExtensions})` })}>
+        {({ match }) => <Redirect to={routes.newModel.path({ extension: match!.params.extension! })} />}
       </Route>
-      <Route path={globals.routes.newModel.path({ extension: `:extension(${supportedExtensions})` })}>
+      <Route path={routes.newModel.path({ extension: `:extension(${supportedExtensions})` })}>
         {({ match }) => <NewWorkspaceWithEmptyFilePage extension={match!.params.extension!} />}
       </Route>
-      <Route path={globals.routes.importModel.path({})}>
+      <Route path={routes.importModel.path({})}>
         <NewWorkspaceFromUrlPage />
       </Route>
       <Route
-        path={globals.routes.workspaceWithFilePath.path({
+        path={routes.workspaceWithFilePath.path({
           workspaceId: ":workspaceId",
           fileRelativePath: `:fileRelativePath*`,
           extension: `:extension(${supportedExtensions})`,
@@ -81,7 +86,7 @@ function RoutesSwitch() {
           />
         )}
       </Route>
-      <Route exact={true} path={globals.routes.home.path({})}>
+      <Route exact={true} path={routes.home.path({})}>
         <HomePage />
       </Route>
       <Route component={NoMatchPage} />

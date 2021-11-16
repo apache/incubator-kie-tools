@@ -20,22 +20,22 @@ import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { useGlobals } from "../globalCtx/GlobalContext";
+import { useRoutes } from "../navigation/Hooks";
 import { useHistory } from "react-router";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 
 export function ImportFromUrlCard() {
-  const globals = useGlobals();
+  const routes = useRoutes();
   const history = useHistory();
   const [url, setUrl] = useState("");
 
   const importFromUrl = useCallback(() => {
     history.push({
-      pathname: globals.routes.importModel.path({}),
-      search: globals.routes.importModel.queryString({ url: url }),
+      pathname: routes.importModel.path({}),
+      search: routes.importModel.queryString({ url: url }),
     });
-  }, [history, globals, url]);
+  }, [history, routes, url]);
 
   const importableUrl = useImportableUrl(url);
 

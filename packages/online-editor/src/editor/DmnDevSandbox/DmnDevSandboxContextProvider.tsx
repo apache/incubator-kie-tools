@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useGlobals } from "../../globalCtx/GlobalContext";
+import { useRoutes } from "../../navigation/Hooks";
 import { useKieToolingExtendedServices } from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { OpenShiftDeployedModel } from "../../openshift/OpenShiftDeployedModel";
@@ -35,7 +35,7 @@ const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
 export function DmnDevSandboxContextProvider(props: Props) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
-  const globals = useGlobals();
+  const routes = useRoutes();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const workspaces = useWorkspaces();
 
@@ -81,7 +81,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
           workspaceZipBlob: zipBlob,
           config: settings.openshift.config,
           onlineEditorUrl: (baseUrl) =>
-            globals.routes.importModel.url({
+            routes.importModel.url({
               base: process.env.WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl,
               pathParams: {},
               queryParams: { url: `${baseUrl}/${workspaceFile.relativePath}` },
@@ -93,7 +93,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
         return false;
       }
     },
-    [settings.openshift.config, settingsDispatch.openshift.service, workspaces, globals.routes.importModel]
+    [settings.openshift.config, settingsDispatch.openshift.service, workspaces, routes.importModel]
   );
 
   useEffect(() => {

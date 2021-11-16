@@ -43,7 +43,7 @@ import { DEVELOPER_SANDBOX_URL } from "../openshift/OpenShiftService";
 import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
 import { KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT } from "./KieToolingExtendedServicesContextProvider";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
-import { useGlobals } from "../globalCtx/GlobalContext";
+import { useRoutes } from "../navigation/Hooks";
 
 enum ModalPage {
   INITIAL,
@@ -56,7 +56,7 @@ const FEDORA_APP_INDICATOR_LIB = "dnf install libappindicator-gtk3";
 
 export function KieToolingExtendedServicesModal() {
   const { i18n } = useOnlineI18n();
-  const globals = useGlobals();
+  const routes = useRoutes();
   const [operatingSystem, setOperatingSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
   const [modalPage, setModalPage] = useState<ModalPage>(ModalPage.INITIAL);
   const kieToolingExtendedServices = useKieToolingExtendedServices();
@@ -722,7 +722,7 @@ export function KieToolingExtendedServicesModal() {
               <div className="pf-u-w-75 pf-u-p-sm">
                 <img
                   className="pf-u-h-100"
-                  src={globals.routes.static.images.dmnRunnerGif.path({})}
+                  src={routes.static.images.dmnRunnerGif.path({})}
                   alt={"DMN Runner usage"}
                   width={"100%"}
                 />
@@ -752,7 +752,7 @@ export function KieToolingExtendedServicesModal() {
               <div className="pf-u-w-75">
                 <img
                   className="pf-u-h-100"
-                  src={globals.routes.static.images.dmnDevSandboxGif.path({})}
+                  src={routes.static.images.dmnDevSandboxGif.path({})}
                   alt={"DMN Dev Sandbox usage"}
                   width={"100%"}
                 />

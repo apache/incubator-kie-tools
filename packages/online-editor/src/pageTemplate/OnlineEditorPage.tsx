@@ -17,7 +17,7 @@
 import { Page, PageHeaderToolsItem } from "@patternfly/react-core/dist/js/components/Page";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import * as React from "react";
-import { useGlobals } from "../globalCtx/GlobalContext";
+import { useRoutes } from "../navigation/Hooks";
 import { useHistory } from "react-router";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { SettingsButton } from "../settings/SettingsButton";
@@ -27,8 +27,8 @@ import { OpenshiftDeploymentsDropdown } from "../editor/DmnDevSandbox/OpenshiftD
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
-  const globals = useGlobals();
   const history = useHistory();
+  const routes = useRoutes();
 
   return (
     <Page
@@ -37,13 +37,13 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
           <MastheadMain>
             <PageHeaderToolsItem className={"pf-l-flex"}>
               <MastheadBrand
-                onClick={() => history.push({ pathname: globals.routes.home.path({}) })}
+                onClick={() => history.push({ pathname: routes.home.path({}) })}
                 style={{ textDecoration: "none" }}
               >
                 <Flex alignItems={{ default: "alignItemsCenter" }}>
                   <FlexItem style={{ display: "flex", alignItems: "center" }}>
                     <Brand
-                      src={globals.routes.static.images.kieHorizontalLogoReverse.path({})}
+                      src={routes.static.images.kieHorizontalLogoReverse.path({})}
                       alt={"Logo"}
                       style={{ display: "inline", height: "38px" }}
                     />

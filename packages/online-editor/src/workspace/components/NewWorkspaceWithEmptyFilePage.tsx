@@ -18,7 +18,7 @@ import { useWorkspaces } from "../WorkspacesContext";
 import * as React from "react";
 import { useEffect } from "react";
 import { useHistory } from "react-router";
-import { useGlobals } from "../../globalCtx/GlobalContext";
+import { useRoutes } from "../../navigation/Hooks";
 import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -28,7 +28,7 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
   const workspaces = useWorkspaces();
   const history = useHistory();
-  const globals = useGlobals();
+  const routes = useRoutes();
 
   useEffect(() => {
     workspaces
@@ -43,14 +43,14 @@ export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
       )
       .then((file) => {
         history.replace({
-          pathname: globals.routes.workspaceWithFilePath.path({
+          pathname: routes.workspaceWithFilePath.path({
             workspaceId: file.workspaceId,
             fileRelativePath: file.relativePathWithoutExtension,
             extension: file.extension,
           }),
         });
       });
-  }, [globals, history, props.extension, workspaces]);
+  }, [routes, history, props.extension, workspaces]);
 
   return (
     <OnlineEditorPage>

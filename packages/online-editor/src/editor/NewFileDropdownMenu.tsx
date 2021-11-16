@@ -29,13 +29,14 @@ import {
   MenuItem,
   MenuList,
 } from "@patternfly/react-core/dist/js/components/Menu";
-import { SupportedFileExtensions, useGlobals } from "../globalCtx/GlobalContext";
+import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { AlertsController, useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { basename, extname } from "path";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
+import { useRoutes } from "../navigation/Hooks";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;
@@ -68,7 +69,8 @@ export function NewFileDropdownMenu(props: {
   }, []);
 
   const workspaces = useWorkspaces();
-  const globals = useGlobals();
+  const routes = useRoutes();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
 
   const addEmptyFile = useCallback(
     async (extension: SupportedFileExtensions) => {
@@ -138,9 +140,9 @@ export function NewFileDropdownMenu(props: {
   const addSample = useCallback(
     (extension: SupportedFileExtensions) =>
       importFromUrl(
-        `${window.location.origin}${window.location.pathname}${globals.routes.static.sample.path({ type: extension })}`
+        `${window.location.origin}${window.location.pathname}${routes.static.sample.path({ type: extension })}`
       ),
-    [importFromUrl, globals]
+    [importFromUrl, routes]
   );
 
   const successfullyUploadedAlert = useAlert(
@@ -187,13 +189,13 @@ export function NewFileDropdownMenu(props: {
       );
 
       const fileToGoTo = uploadedFiles
-        .filter((file) => [...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension))
+        .filter((file) => [...editorEnvelopeLocator.mapping.keys()].includes(file.extension))
         .pop();
 
       await props.onAddFile(fileToGoTo);
       successfullyUploadedAlert.show({ qtt: uploadedFiles.length });
     },
-    [globals, workspaces, props, successfullyUploadedAlert]
+    [editorEnvelopeLocator, workspaces, props, successfullyUploadedAlert]
   );
 
   const [url, setUrl] = useState("");

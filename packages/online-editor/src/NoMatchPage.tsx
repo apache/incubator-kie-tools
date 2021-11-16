@@ -23,17 +23,17 @@ import {
   EmptyStateSecondaryActions,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { useGlobals } from "./globalCtx/GlobalContext";
+import { useRoutes } from "./navigation/Hooks";
 import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 
 export function NoMatchPage() {
-  const globals = useGlobals();
+  const routes = useRoutes();
   const history = useHistory();
 
   const returnHome = useCallback(() => {
-    history.push({ pathname: globals.routes.home.path({}) });
-  }, [history, globals.routes]);
+    history.push({ pathname: routes.home.path({}) });
+  }, [history, routes]);
 
   return (
     <Bullseye>

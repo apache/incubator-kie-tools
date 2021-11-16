@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { useGlobals } from "../../globalCtx/GlobalContext";
 import { matchPath } from "react-router";
 import { extname } from "path";
 import { useMemo } from "react";
+import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
 
 export enum UrlType {
   GIT,
@@ -74,7 +74,7 @@ export type ImportableUrl =
     };
 
 export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]): ImportableUrl {
-  const globals = useGlobals();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
 
   return useMemo(() => {
     const ifAllowed = (url: ImportableUrl): ImportableUrl => {
@@ -152,10 +152,10 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return ifAllowed({ type: UrlType.GIT, url });
     }
 
-    if (![...globals.editorEnvelopeLocator.mapping.keys()].includes(extension)) {
+    if (![...editorEnvelopeLocator.mapping.keys()].includes(extension)) {
       return { type: UrlType.INVALID, error: `Unsupported extension '${extension}'`, url: urlString };
     }
 
     return ifAllowed({ type: UrlType.FILE, url });
-  }, [globals, urlString, allowedUrlTypes]);
+  }, [editorEnvelopeLocator, urlString, allowedUrlTypes]);
 }

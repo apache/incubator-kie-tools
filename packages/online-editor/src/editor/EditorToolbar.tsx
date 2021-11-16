@@ -37,7 +37,12 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOnlineI18n } from "../i18n";
 import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/KieToolingExtendedServicesButtons";
-import { useGlobals } from "../globalCtx/GlobalContext";
+import {
+  useNavigationBlockersBypass,
+  useNavigationStatus,
+  useNavigationStatusToggle,
+  useRoutes,
+} from "../navigation/Hooks";
 import { AuthStatus, useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
 import { useHistory } from "react-router";
@@ -77,10 +82,10 @@ import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatu
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 import { SettingsTabs } from "../settings/SettingsModalBody";
 import { Location } from "history";
-import { useNavigationBlockersBypass, useNavigationStatus, useNavigationStatusToggle } from "../navigation/Hooks";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
 import { useGitHubAuthInfo } from "../github/Hooks";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -115,7 +120,8 @@ const hideWhenTiny: ToolbarItemProps["visibility"] = {
 };
 
 export function EditorToolbar(props: Props) {
-  const globals = useGlobals();
+  const routes = useRoutes();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const history = useHistory();
@@ -555,7 +561,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
     if (workspacePromise.data.files.length === 1) {
       await workspaces.deleteWorkspace({ workspaceId: props.workspaceFile.workspaceId });
-      history.push({ pathname: globals.routes.home.path({}) });
+      history.push({ pathname: routes.home.path({}) });
       return;
     }
 
@@ -563,7 +569,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       .filter((f) => {
         return (
           f.relativePath !== props.workspaceFile.relativePath &&
-          Array.from(globals.editorEnvelopeLocator.mapping.keys()).includes(f.extension)
+          Array.from(editorEnvelopeLocator.mapping.keys()).includes(f.extension)
         );
       })
       .pop();
@@ -574,18 +580,18 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     });
 
     if (!nextFile) {
-      history.push({ pathname: globals.routes.home.path({}) });
+      history.push({ pathname: routes.home.path({}) });
       return;
     }
 
     history.push({
-      pathname: globals.routes.workspaceWithFilePath.path({
+      pathname: routes.workspaceWithFilePath.path({
         workspaceId: nextFile.workspaceId,
         fileRelativePath: nextFile.relativePathWithoutExtension,
         extension: nextFile.extension,
       }),
     });
-  }, [globals, history, workspacePromise.data, props.workspaceFile, workspaces]);
+  }, [routes, history, workspacePromise.data, props.workspaceFile, workspaces, editorEnvelopeLocator]);
 
   const workspaceNameRef = useRef<HTMLInputElement>(null);
 
@@ -801,8 +807,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         });
 
         history.push({
-          pathname: globals.routes.importModel.path({}),
-          search: globals.routes.importModel.queryString({
+          pathname: routes.importModel.path({}),
+          search: routes.importModel.queryString({
             url: `${workspacePromise.data.descriptor.origin.url}`,
             branch: newBranchName,
           }),
@@ -811,7 +817,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         pushingAlert.close();
       }
     },
-    [githubAuthInfo, globals, history, props.workspaceFile.workspaceId, workspacePromise, workspaces, pushingAlert]
+    [githubAuthInfo, routes, history, props.workspaceFile.workspaceId, workspacePromise, workspaces, pushingAlert]
   );
 
   const pullErrorAlert = useAlert<{ newBranchName: string }>(
@@ -1067,7 +1073,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   <Button
                     className={"kogito-tooling--masthead-hoverable"}
                     variant={ButtonVariant.plain}
-                    onClick={() => history.push({ pathname: globals.routes.home.path({}) })}
+                    onClick={() => history.push({ pathname: routes.home.path({}) })}
                   >
                     <AngleLeftIcon />
                   </Button>
@@ -1109,7 +1115,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                 <img
                                   style={{ width: "14px" }}
                                   alt="vscode-logo-blue"
-                                  src={globals.routes.static.images.vscodeLogoBlue.path({})}
+                                  src={routes.static.images.vscodeLogoBlue.path({})}
                                 />
                                 &nbsp; &nbsp;
                                 {`Open "${workspace.descriptor.name}"`}
@@ -1254,7 +1260,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             }
 
                             history.push({
-                              pathname: globals.routes.workspaceWithFilePath.path({
+                              pathname: routes.workspaceWithFilePath.path({
                                 workspaceId: file.workspaceId,
                                 fileRelativePath: file.relativePathWithoutExtension,
                                 extension: file.extension,

@@ -27,7 +27,7 @@ import { GIT_DEFAULT_BRANCH, GitService } from "./services/GitService";
 import { StorageFile, StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
-import { SupportedFileExtensions, useGlobals } from "../globalCtx/GlobalContext";
+import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { join } from "path";
 import { WorkspaceEvents } from "./hooks/WorkspaceHooks";
 import { Buffer } from "buffer";
@@ -47,7 +47,7 @@ interface Props {
 }
 
 export function WorkspacesContextProvider(props: Props) {
-  const globals = useGlobals();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const storageService = useMemo(() => new StorageService(), []);
   const descriptorService = useMemo(() => new WorkspaceDescriptorService(storageService), [storageService]);
   const svgService = useMemo(() => new WorkspaceSvgService(storageService), [storageService]);
@@ -89,12 +89,12 @@ export function WorkspacesContextProvider(props: Props) {
       }
 
       const suggestedFirstFile = files
-        .filter((file) => [...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension))
+        .filter((file) => [...editorEnvelopeLocator.mapping.keys()].includes(file.extension))
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0];
 
       return { workspace, suggestedFirstFile };
     },
-    [globals, service]
+    [editorEnvelopeLocator, service]
   );
 
   const hasLocalChanges = useCallback(

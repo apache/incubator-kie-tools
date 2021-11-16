@@ -16,7 +16,7 @@
 
 import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
 import { decoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { useGlobals } from "../globalCtx/GlobalContext";
+import { useRoutes } from "../navigation/Hooks";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { join } from "path";
@@ -62,6 +62,7 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -374,7 +375,7 @@ export function WorkspacesMenuItems(props: {
   filesDropdownMode: FilesDropdownMode;
   setFilesDropdownMode: React.Dispatch<React.SetStateAction<FilesDropdownMode>>;
 }) {
-  const globals = useGlobals();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const workspaceFilesPromise = useWorkspacesFilesPromise(workspaceDescriptorsPromise.data);
   const combined = useCombinedPromiseState({
@@ -421,7 +422,7 @@ export function WorkspacesMenuItems(props: {
                       description={`${workspaceFiles.get(descriptor.workspaceId)!.length} files, ${
                         workspaceFiles
                           .get(descriptor.workspaceId)!
-                          .filter((f) => [...globals.editorEnvelopeLocator.mapping.keys()].includes(f.extension)).length
+                          .filter((f) => [...editorEnvelopeLocator.mapping.keys()].includes(f.extension)).length
                       } models`}
                       direction={"down"}
                       drilldownMenu={
@@ -572,7 +573,8 @@ export function FilesMenuItems(props: {
   shouldFocusOnSearch: boolean;
 }) {
   const history = useHistory();
-  const globals = useGlobals();
+  const routes = useRoutes();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
 
   const sortedAndFilteredFiles = useMemo(
     () =>
@@ -583,19 +585,13 @@ export function FilesMenuItems(props: {
   );
 
   const models = useMemo(
-    () =>
-      sortedAndFilteredFiles.filter((file) =>
-        [...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension)
-      ),
-    [globals, sortedAndFilteredFiles]
+    () => sortedAndFilteredFiles.filter((file) => [...editorEnvelopeLocator.mapping.keys()].includes(file.extension)),
+    [editorEnvelopeLocator, sortedAndFilteredFiles]
   );
 
   const otherFiles = useMemo(
-    () =>
-      sortedAndFilteredFiles.filter(
-        (file) => ![...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension)
-      ),
-    [globals, sortedAndFilteredFiles]
+    () => sortedAndFilteredFiles.filter((file) => ![...editorEnvelopeLocator.mapping.keys()].includes(file.extension)),
+    [editorEnvelopeLocator, sortedAndFilteredFiles]
   );
 
   return (
@@ -708,7 +704,7 @@ export function FilesMenuItems(props: {
                       isFullHeight={true}
                       onClick={() => {
                         history.push({
-                          pathname: globals.routes.workspaceWithFilePath.path({
+                          pathname: routes.workspaceWithFilePath.path({
                             workspaceId: file.workspaceId,
                             fileRelativePath: file.relativePathWithoutExtension,
                             extension: file.extension,
@@ -767,11 +763,11 @@ export function FileName(props: { file: WorkspaceFile }) {
 }
 
 export function FileMenuItem(props: { file: WorkspaceFile; onSelectFile: () => void }) {
-  const globals = useGlobals();
+  const routes = useRoutes();
   return (
     <MenuItem onClick={props.onSelectFile}>
       <Link
-        to={globals.routes.workspaceWithFilePath.path({
+        to={routes.workspaceWithFilePath.path({
           workspaceId: props.file.workspaceId,
           fileRelativePath: props.file.relativePathWithoutExtension,
           extension: props.file.extension,

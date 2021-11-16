@@ -15,7 +15,7 @@
  */
 
 import { encoder, LocalFile, useWorkspaces } from "../WorkspacesContext";
-import { useGlobals } from "../../globalCtx/GlobalContext";
+import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
@@ -35,7 +35,7 @@ import { useGitHubAuthInfo } from "../../github/Hooks";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
-  const globals = useGlobals();
+  const routes = useRoutes();
   const history = useHistory();
   const githubAuthInfo = useGitHubAuthInfo();
   const [importingError, setImportingError] = useState("");
@@ -67,12 +67,12 @@ export function NewWorkspaceFromUrlPage() {
       const { workspace, suggestedFirstFile } = res;
 
       if (!suggestedFirstFile) {
-        history.replace({ pathname: globals.routes.home.path({}) });
+        history.replace({ pathname: routes.home.path({}) });
         return res;
       }
 
       history.replace({
-        pathname: globals.routes.workspaceWithFilePath.path({
+        pathname: routes.workspaceWithFilePath.path({
           workspaceId: workspace.workspaceId,
           fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
           extension: suggestedFirstFile.extension,
@@ -80,7 +80,7 @@ export function NewWorkspaceFromUrlPage() {
       });
       return res;
     },
-    [globals, history, workspaces, queryParamBranch]
+    [routes, history, workspaces, queryParamBranch]
   );
 
   const createWorkspaceForFile = useCallback(
@@ -92,7 +92,7 @@ export function NewWorkspaceFromUrlPage() {
             return;
           }
           history.replace({
-            pathname: globals.routes.workspaceWithFilePath.path({
+            pathname: routes.workspaceWithFilePath.path({
               workspaceId: workspace.workspaceId,
               fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
               extension: suggestedFirstFile.extension,
@@ -100,7 +100,7 @@ export function NewWorkspaceFromUrlPage() {
           });
         });
     },
-    [globals, history, workspaces]
+    [routes, history, workspaces]
   );
 
   const importableUrl = useImportableUrl(queryParamUrl);
@@ -167,12 +167,12 @@ export function NewWorkspaceFromUrlPage() {
           });
 
           if (!suggestedFirstFile) {
-            history.replace({ pathname: globals.routes.home.path({}) });
+            history.replace({ pathname: routes.home.path({}) });
             return;
           }
 
           history.replace({
-            pathname: globals.routes.workspaceWithFilePath.path({
+            pathname: routes.workspaceWithFilePath.path({
               workspaceId: workspace.workspaceId,
               fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
               extension: suggestedFirstFile.extension,
@@ -214,7 +214,7 @@ export function NewWorkspaceFromUrlPage() {
     run();
   }, [
     createWorkspaceForFile,
-    globals,
+    routes,
     history,
     importGitWorkspace,
     importableUrl,

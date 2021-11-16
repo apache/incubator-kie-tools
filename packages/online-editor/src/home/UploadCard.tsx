@@ -22,7 +22,7 @@ import { useDropzone } from "react-dropzone";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { useGlobals } from "../globalCtx/GlobalContext";
+import { useRoutes } from "../navigation/Hooks";
 import { useHistory } from "react-router";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
@@ -37,7 +37,7 @@ enum UploadType {
   DND,
 }
 export function UploadCard(props: { expandWorkspace: (workspaceId: string) => void }) {
-  const globals = useGlobals();
+  const routes = useRoutes();
   const history = useHistory();
   const workspaces = useWorkspaces();
 
@@ -117,7 +117,7 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
         }
 
         history.push({
-          pathname: globals.routes.workspaceWithFilePath.path({
+          pathname: routes.workspaceWithFilePath.path({
             workspaceId: workspace.workspaceId,
             fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
             extension: suggestedFirstFile.extension,
@@ -127,7 +127,7 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
         setUploading(UploadType.NONE);
       }
     },
-    [props, workspaces, history, globals]
+    [props, workspaces, history, routes]
   );
 
   const { acceptedFiles, getRootProps, getInputProps, isDragActive, draggedFiles } = useDropzone({

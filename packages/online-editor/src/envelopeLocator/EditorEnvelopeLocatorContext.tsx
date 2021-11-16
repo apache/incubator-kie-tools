@@ -16,21 +16,13 @@
 
 import * as React from "react";
 import { useContext, useMemo } from "react";
-import { routes } from "../navigation/Routes";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
 
 export type SupportedFileExtensions = "bpmn" | "bpmn2" | "dmn" | "pmml";
 
-//FIXME: We should really not have a "global" context.
-export interface GlobalContextType {
-  routes: typeof routes;
-  editorEnvelopeLocator: EditorEnvelopeLocator;
-  isChrome: boolean;
-}
+export const EditorEnvelopeLocatorContext = React.createContext<EditorEnvelopeLocator>({} as any);
 
-export const GlobalContext = React.createContext<GlobalContextType>({} as any);
-
-export function GlobalContextProvider(props: { children: React.ReactNode }) {
+export function EditorEnvelopeLocatorContextProvider(props: { children: React.ReactNode }) {
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () => ({
       targetOrigin: window.location.origin,
@@ -44,18 +36,11 @@ export function GlobalContextProvider(props: { children: React.ReactNode }) {
     []
   );
 
-  const value = useMemo(
-    () => ({
-      editorEnvelopeLocator,
-      routes,
-      isChrome: !!window.chrome,
-    }),
-    [editorEnvelopeLocator]
-  );
+  const value = useMemo(() => editorEnvelopeLocator, [editorEnvelopeLocator]);
 
-  return <GlobalContext.Provider value={value}>{props.children}</GlobalContext.Provider>;
+  return <EditorEnvelopeLocatorContext.Provider value={value}>{props.children}</EditorEnvelopeLocatorContext.Provider>;
 }
 
-export function useGlobals() {
-  return useContext(GlobalContext);
+export function useEditorEnvelopeLocator() {
+  return useContext(EditorEnvelopeLocatorContext);
 }

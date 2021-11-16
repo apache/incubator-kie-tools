@@ -20,7 +20,7 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { SupportedFileExtensions, useGlobals } from "../globalCtx/GlobalContext";
+import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { useHistory } from "react-router";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import {
@@ -83,9 +83,10 @@ import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
 import { Alerts, AlertsController } from "../alerts/Alerts";
 import { useController } from "../reactExt/Hooks";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { useRoutes } from "../navigation/Hooks";
 
 export function HomePage() {
-  const globals = useGlobals();
+  const routes = useRoutes();
   const history = useHistory();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
@@ -93,10 +94,10 @@ export function HomePage() {
 
   const closeExpandedWorkspace = useCallback(() => {
     history.replace({
-      pathname: globals.routes.home.path({}),
+      pathname: routes.home.path({}),
       search: queryParams.without(QueryParams.EXPAND).toString(),
     });
-  }, [history, globals, queryParams]);
+  }, [history, routes, queryParams]);
 
   const expandWorkspace = useCallback(
     (workspaceId: string) => {
@@ -107,11 +108,11 @@ export function HomePage() {
       }
 
       history.replace({
-        pathname: globals.routes.home.path({}),
-        search: globals.routes.home.queryString({ expand }),
+        pathname: routes.home.path({}),
+        search: routes.home.queryString({ expand }),
       });
     },
-    [closeExpandedWorkspace, history, globals, expandedWorkspaceId]
+    [closeExpandedWorkspace, history, routes, expandedWorkspaceId]
   );
 
   useEffect(() => {
@@ -249,7 +250,8 @@ export function WorkspaceLoadingCard() {
 }
 
 export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSelect: () => void }) {
-  const globals = useGlobals();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
+  const routes = useRoutes();
   const history = useHistory();
   const workspaces = useWorkspaces();
   const [isHovered, setHovered] = useState(false);
@@ -258,10 +260,10 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
   const editableFiles = useMemo(() => {
     return (
       workspacePromise.data?.files.filter((file) =>
-        [...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension)
+        [...editorEnvelopeLocator.mapping.keys()].includes(file.extension)
       ) ?? []
     );
-  }, [globals, workspacePromise.data?.files]);
+  }, [editorEnvelopeLocator, workspacePromise.data?.files]);
 
   const workspaceName = useMemo(() => {
     return workspacePromise.data ? workspacePromise.data.descriptor.name : null;
@@ -285,7 +287,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
               style={{ cursor: "pointer" }}
               onClick={() => {
                 history.push({
-                  pathname: globals.routes.workspaceWithFilePath.path({
+                  pathname: routes.workspaceWithFilePath.path({
                     workspaceId: editableFiles[0].workspaceId,
                     fileRelativePath: editableFiles[0].relativePathWithoutExtension,
                     extension: editableFiles[0].extension,
@@ -295,7 +297,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
             >
               <CardHeader>
                 <Link
-                  to={globals.routes.workspaceWithFilePath.path({
+                  to={routes.workspaceWithFilePath.path({
                     workspaceId: editableFiles[0].workspaceId,
                     fileRelativePath: editableFiles[0].relativePathWithoutExtension,
                     extension: editableFiles[0].extension,
@@ -420,7 +422,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
 }
 
 export function NewModelCard(props: { title: string; extension: SupportedFileExtensions }) {
-  const globals = useGlobals();
+  const routes = useRoutes();
 
   return (
     <Card isFullHeight={true} isPlain={true} isLarge={true}>
@@ -436,16 +438,16 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
       </CardBody>
       <CardFooter>
         <Flex>
-          <Link to={{ pathname: globals.routes.newModel.path({ extension: props.extension }) }}>
+          <Link to={{ pathname: routes.newModel.path({ extension: props.extension }) }}>
             <Button isLarge={true} variant={ButtonVariant.secondary} ouiaId={`new-${props.extension}-button`}>
               New {props.title}
             </Button>
           </Link>
           <Link
             to={{
-              pathname: globals.routes.importModel.path({}),
-              search: globals.routes.importModel.queryString({
-                url: `${window.location.origin}${window.location.pathname}${globals.routes.static.sample.path({
+              pathname: routes.importModel.path({}),
+              search: routes.importModel.queryString({
+                url: `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
                   type: props.extension,
                 })}`,
               }),
@@ -466,23 +468,24 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
 }
 
 export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | undefined; onClose: () => void }) {
-  const globals = useGlobals();
+  const routes = useRoutes();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const workspacePromise = useWorkspacePromise(props.workspaceId);
 
   const otherFiles = useMemo(
     () =>
       (workspacePromise.data?.files ?? [])
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-        .filter((file) => ![...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension)),
-    [globals.editorEnvelopeLocator.mapping, workspacePromise.data?.files]
+        .filter((file) => ![...editorEnvelopeLocator.mapping.keys()].includes(file.extension)),
+    [editorEnvelopeLocator.mapping, workspacePromise.data?.files]
   );
 
   const models = useMemo(
     () =>
       (workspacePromise.data?.files ?? [])
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-        .filter((file) => [...globals.editorEnvelopeLocator.mapping.keys()].includes(file.extension)),
-    [globals.editorEnvelopeLocator.mapping, workspacePromise.data?.files]
+        .filter((file) => [...editorEnvelopeLocator.mapping.keys()].includes(file.extension)),
+    [editorEnvelopeLocator.mapping, workspacePromise.data?.files]
   );
 
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
@@ -550,7 +553,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                 {models.map((file) => (
                   <Link
                     key={file.relativePath}
-                    to={globals.routes.workspaceWithFilePath.path({
+                    to={routes.workspaceWithFilePath.path({
                       workspaceId: workspace.descriptor.workspaceId ?? "",
                       fileRelativePath: file.relativePathWithoutExtension,
                       extension: file.extension,

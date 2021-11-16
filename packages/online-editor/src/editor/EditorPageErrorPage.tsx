@@ -22,7 +22,7 @@ import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Tex
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { useGlobals } from "../globalCtx/GlobalContext";
+import { useRoutes } from "../navigation/Hooks";
 import { useHistory } from "react-router";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 
@@ -32,13 +32,13 @@ export interface Props {
 }
 
 export function EditorPageErrorPage(props: Props) {
-  const globals = useGlobals();
+  const routes = useRoutes();
   const history = useHistory();
   const [showDetails, setShowDetails] = useState(false);
 
   const returnHome = useCallback(() => {
-    history.push({ pathname: globals.routes.home.path({}) });
-  }, [history, globals.routes]);
+    history.push({ pathname: routes.home.path({}) });
+  }, [history, routes]);
 
   const detailsString = useMemo(() => {
     return props.errors.join("\n");

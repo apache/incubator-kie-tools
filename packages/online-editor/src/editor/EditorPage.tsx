@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { useGlobals } from "../globalCtx/GlobalContext";
+import { useRoutes } from "../navigation/Hooks";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../i18n";
@@ -44,6 +44,7 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 
 export interface Props {
   workspaceId: string;
@@ -51,7 +52,8 @@ export interface Props {
 }
 
 export function EditorPage(props: Props) {
-  const globals = useGlobals();
+  const routes = useRoutes();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const history = useHistory();
   const workspaces = useWorkspaces();
   const { locale, i18n } = useOnlineI18n();
@@ -95,14 +97,14 @@ export function EditorPage(props: Props) {
     }
 
     history.replace({
-      pathname: globals.routes.workspaceWithFilePath.path({
+      pathname: routes.workspaceWithFilePath.path({
         workspaceId: workspaceFilePromise.data.workspaceId,
         fileRelativePath: workspaceFilePromise.data.relativePathWithoutExtension,
         extension: workspaceFilePromise.data.extension,
       }),
       search: queryParams.toString(),
     });
-  }, [history, globals, workspaceFilePromise, queryParams]);
+  }, [history, routes, workspaceFilePromise, queryParams]);
 
   // update EmbeddedEditorFile, but only if content is different than what was saved
   useCancelableEffect(
@@ -266,14 +268,14 @@ export function EditorPage(props: Props) {
       }
 
       history.push({
-        pathname: globals.routes.workspaceWithFilePath.path({
+        pathname: routes.workspaceWithFilePath.path({
           workspaceId: file.workspaceId,
           fileRelativePath: file.relativePathWithoutExtension,
           extension: file.extension,
         }),
       });
     },
-    [workspaceFilePromise, workspaces, history, globals]
+    [workspaceFilePromise, workspaces, history, routes]
   );
 
   const handleSetContentError = useCallback(() => {
@@ -324,7 +326,7 @@ export function EditorPage(props: Props) {
                           kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
                           kogitoWorkspace_resourceListRequest={handleResourceListRequest}
                           kogitoEditor_setContentError={handleSetContentError}
-                          editorEnvelopeLocator={globals.editorEnvelopeLocator}
+                          editorEnvelopeLocator={editorEnvelopeLocator}
                           channelType={ChannelType.ONLINE_MULTI_FILE}
                           locale={locale}
                         />

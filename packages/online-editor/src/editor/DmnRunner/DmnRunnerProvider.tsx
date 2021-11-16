@@ -28,7 +28,7 @@ import { usePrevious } from "../../reactExt/Hooks";
 import { useOnlineI18n } from "../../i18n";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useHistory } from "react-router";
-import { useGlobals } from "../../globalCtx/GlobalContext";
+import { useRoutes } from "../../navigation/Hooks";
 import { useKieToolingExtendedServices } from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { DmnSchema } from "@kogito-tooling/form/dist/dmn";
@@ -42,7 +42,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const { i18n } = useOnlineI18n();
   const queryParams = useQueryParams();
   const history = useHistory();
-  const globals = useGlobals();
+  const routes = useRoutes();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const workspaces = useWorkspaces();
 
@@ -152,11 +152,11 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       console.error(`Cannot parse "${QueryParams.DMN_RUNNER_FORM_INPUTS}"`, e);
     } finally {
       history.replace({
-        pathname: globals.routes.editor.path({ extension: "dmn" }),
-        search: globals.routes.editor.queryArgs(queryParams).without(QueryParams.DMN_RUNNER_FORM_INPUTS).toString(),
+        pathname: routes.editor.path({ extension: "dmn" }),
+        search: routes.editor.queryArgs(queryParams).without(QueryParams.DMN_RUNNER_FORM_INPUTS).toString(),
       });
     }
-  }, [schema, history, globals.routes, queryParams]);
+  }, [schema, history, routes, queryParams]);
 
   const prevKieToolingExtendedServicesStatus = usePrevious(kieToolingExtendedServices.status);
   useEffect(() => {
