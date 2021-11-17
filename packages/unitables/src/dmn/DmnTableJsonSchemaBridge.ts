@@ -15,6 +15,7 @@
  */
 
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema/esm";
+import { SelectDirection } from "@patternfly/react-core/dist/js/components/Select";
 
 export class DmnTableJsonSchemaBridge extends JSONSchemaBridge {
   public getProps(name: string, props: Record<string, any> = {}) {
@@ -37,6 +38,8 @@ export class DmnTableJsonSchemaBridge extends JSONSchemaBridge {
     }
     if (field.type === "string" && field.enum) {
       field.placeholder = "Select...";
+      field.direction = SelectDirection.up;
+      field.menuAppendTo = document.body;
     }
     if (!field.type && field["x-dmn-type"] === "FEEL:context") {
       field.placeholder = `{ "x": <value> }`;
