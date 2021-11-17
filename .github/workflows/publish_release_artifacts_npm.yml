@@ -52,6 +52,6 @@ jobs:
       - name: Publish Boxed Expression Component
         run: |
           cd ${{ github.workspace }}/kogito-editors-js/
-          npm version ${{ steps.release_tag.outputs.tag }}
+          lerna version ${{ steps.release_tag.outputs.tag }} --no-push --no-git-tag-version --exact --yes
           echo "//registry.npmjs.org/:_authToken=${{ secrets.KIEGROUP_NPM_TOKEN }}" > ~/.npmrc
           lerna exec 'npm publish --access public' --scope=boxed-expression-component --include-dependencies --stream
