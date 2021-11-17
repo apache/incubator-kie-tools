@@ -114,7 +114,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                           displayName: displayName === "" ? undefined : displayName,
                         })
                       }
-                      data-ouia-component-id="display-name"
+                      ouiaId="display-name"
                     />
                   </FormGroup>
                 </StackItem>
@@ -195,7 +195,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                           missingValue: missingValue === "" ? undefined : missingValue,
                         })
                       }
-                      data-ouia-component-id="missing-value"
+                      ouiaId="missing-value"
                     />
                   </FormGroup>
                 </StackItem>
@@ -219,7 +219,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                           invalidValue: invalidValue === "" ? undefined : invalidValue,
                         })
                       }
-                      data-ouia-component-id="invalid-value"
+                      ouiaId="invalid-value"
                     />
                   </FormGroup>
                 </StackItem>

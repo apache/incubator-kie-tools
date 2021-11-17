@@ -172,9 +172,9 @@ describe("Data Fields Test", () => {
     cy.ouiaId("outputs-overview")
       .should("be.visible")
       .within(() => {
-        cy.ouiaType("select-output-field-type").click();
+        cy.ouiaId("select-output-field-type").click();
         cy.ouiaType("select-option").contains("integer").click();
-        cy.ouiaType("set-output-field-name").type("{selectall}{del}output");
+        cy.ouiaId("set-output-field-name").type("{selectall}{del}output");
       });
     cy.ouiaId("outputs-toolbar").click();
     cy.get("button[data-title='OutputsModalClose']").click();

@@ -188,7 +188,7 @@ const RangeEdit = (props: RangeEditProps) => {
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 1}
               autoComplete="off"
-              data-ouia-component-id="start-value"
+              ouiaId="start-value"
             />
           </FormGroup>
           <FormGroup fieldId={`start-included-${index}`} className="constraints__include-range">
@@ -201,7 +201,7 @@ const RangeEdit = (props: RangeEditProps) => {
               onChange={handleRangeChange}
               onClick={saveChange}
               tabIndex={(index + 1) * 10 + 3}
-              data-ouia-component-id="is-start-included"
+              ouiaId="is-start-included"
             />
           </FormGroup>
         </SplitItem>
@@ -221,7 +221,7 @@ const RangeEdit = (props: RangeEditProps) => {
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 2}
               autoComplete="off"
-              data-ouia-component-id="end-value"
+              ouiaId="end-value"
             />
           </FormGroup>
           <FormGroup fieldId={`end-included-${index}`} className="constraints__include-range">
@@ -234,7 +234,7 @@ const RangeEdit = (props: RangeEditProps) => {
               onChange={handleRangeChange}
               onClick={saveChange}
               tabIndex={(index + 1) * 10 + 4}
-              data-ouia-component-id="is-end-included"
+              ouiaId="is-end-included"
             />
           </FormGroup>
         </SplitItem>
