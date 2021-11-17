@@ -142,12 +142,8 @@ export class WorkspaceService {
       zip.file(relative(workspaceRootDirPath, file.path), file.content);
     }
 
-    console.time(`WorkspaceService#prepareZip#generateAsync--${workspaceId}`);
-    const blob = await zip.generateAsync({ type: "blob" });
-    console.timeEnd(`WorkspaceService#prepareZip#generateAsync--${workspaceId}`);
-    return blob;
+    return await zip.generateAsync({ type: "blob" });
   }
-  //
 
   public async createOrOverwriteFile(
     fs: LightningFS,

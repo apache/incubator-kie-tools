@@ -96,7 +96,6 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
         return;
       }
 
-      console.time(`WorkspaceHooks#workspacePromise--${workspaceId}`);
       const descriptor = await workspaces.descriptorService.get(workspaceId);
       if (canceled.get()) {
         return;
@@ -116,7 +115,6 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
       }
 
       setWorkspacePromise({ data: { descriptor, files } });
-      console.timeEnd(`WorkspaceHooks#workspacePromise--${workspaceId}`);
     },
     [setWorkspacePromise, workspaceId, workspaces]
   );
