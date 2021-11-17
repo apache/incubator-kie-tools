@@ -35,6 +35,8 @@ const PropertiesLabels = (props: PropertiesLabelsProps) => {
         color="cyan"
         closeBtnProps={{ className: "ignore-onclickoutside" }}
         onClose={editingIndex !== undefined ? () => onPropertyDelete?.(updatedField, editingIndex) : undefined}
+        data-ouia-component-id={name}
+        data-ouia-component-type="data-props-label"
       >
         <strong>{name}:</strong>
         &nbsp;

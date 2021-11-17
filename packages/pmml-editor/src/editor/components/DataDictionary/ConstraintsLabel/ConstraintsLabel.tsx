@@ -90,7 +90,13 @@ const ConstraintsLabel = (props: ConstraintsLabelProps) => {
       {!missingRequiredConstraints && dataType.constraints && (
         <>
           {validations.length > 0 && (
-            <ValidationIndicatorLabel validations={validations} onClose={onClose} cssClass="constraints-label">
+            <ValidationIndicatorLabel
+              validations={validations}
+              onClose={onClose}
+              cssClass="constraints-label"
+              data-ouia-component-id="invalid-constraints"
+              data-ouia-component-type="data-props-label"
+            >
               <>
                 <strong>Constraints:</strong>&nbsp;
                 <span>{constraintValue}</span>
@@ -98,7 +104,13 @@ const ConstraintsLabel = (props: ConstraintsLabelProps) => {
             </ValidationIndicatorLabel>
           )}
           {validations.length === 0 && (
-            <Label color="cyan" className="constraints-label" onClose={onClose}>
+            <Label
+              color="cyan"
+              className="constraints-label"
+              onClose={onClose}
+              data-ouia-component-id="constraints"
+              data-ouia-component-type="data-props-label"
+            >
               <strong>Constraints:</strong>&nbsp;
               <span>{constraintValue}</span>
             </Label>

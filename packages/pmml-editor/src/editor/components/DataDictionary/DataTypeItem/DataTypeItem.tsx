@@ -323,6 +323,8 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                             event.preventDefault();
                             handleConstraints();
                           }}
+                          data-ouia-component-id="edit-props"
+                          data-ouia-component-type="link-label"
                         >
                           Edit Properties
                         </Label>
@@ -363,10 +365,20 @@ const DataTypeItem = (props: DataTypeItemProps) => {
               <span className="data-type-item__name">{name}</span>
             </SplitItem>
             <SplitItem isFilled={true}>
-              <Label color="blue" className="data-type-item__type-label">
+              <Label
+                color="blue"
+                className="data-type-item__type-label"
+                data-ouia-component-id={typeSelection}
+                data-ouia-component-type="data-type-label"
+              >
                 {typeSelection}
               </Label>{" "}
-              <Label color="blue" className="data-type-item__type-label">
+              <Label
+                color="blue"
+                className="data-type-item__type-label"
+                data-ouia-component-id={optypeSelection}
+                data-ouia-component-type="data-optype-label"
+              >
                 {optypeSelection}
               </Label>{" "}
               <PropertiesLabels dataType={dataType} />

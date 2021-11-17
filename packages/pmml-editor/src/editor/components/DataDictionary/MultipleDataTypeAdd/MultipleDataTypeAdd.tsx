@@ -77,6 +77,7 @@ const MultipleDataTypeAdd = ({ onAdd, onCancel }: MultipleDataTypeAddProps) => {
             >
               <TextArea
                 className="data-dictionary__multiple-data-types"
+                data-ouia-component-id="multiple-data-types"
                 value={input}
                 onChange={handleInputChange}
                 name="data-types"
@@ -86,10 +87,10 @@ const MultipleDataTypeAdd = ({ onAdd, onCancel }: MultipleDataTypeAddProps) => {
               />
             </FormGroup>
             <ActionGroup>
-              <Button variant="primary" type="submit">
+              <Button variant="primary" type="submit" ouiaId="add-them">
                 Add Them
               </Button>
-              <Button variant="link" onClick={() => onCancel()}>
+              <Button variant="link" ouiaId="cancel" onClick={() => onCancel()}>
                 Never mind
               </Button>
             </ActionGroup>
