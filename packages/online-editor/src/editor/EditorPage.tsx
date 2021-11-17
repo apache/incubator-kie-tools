@@ -61,14 +61,14 @@ export function EditorPage(props: Props) {
   const [alerts, alertsRef] = useController<AlertsController>();
   const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
   const [isTextEditorModalOpen, setTextEditorModalOpen] = useState(false);
-  const [fileBroken, setFileBroken] = useState(false);
+  const [isFileBroken, setFileBroken] = useState(false);
 
   const lastContent = useRef<string>();
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
 
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
 
-  useDmnTour(!!editor?.isReady && workspaceFilePromise.data?.extension === "dmn" && !fileBroken);
+  useDmnTour(!!editor?.isReady && workspaceFilePromise.data?.extension === "dmn" && !isFileBroken);
 
   const setContentErrorAlert = useAlert(
     alerts,
@@ -123,9 +123,11 @@ export function EditorPage(props: Props) {
             return;
           }
 
+          lastContent.current = content;
+
           setEmbeddedEditorFile({
             path: workspaceFilePromise.data.relativePath,
-            getFileContents: workspaceFilePromise.data.getFileContentsAsString,
+            getFileContents: async () => content,
             isReadOnly: false,
             fileExtension: workspaceFilePromise.data.extension,
             fileName: workspaceFilePromise.data.nameWithoutExtension,
