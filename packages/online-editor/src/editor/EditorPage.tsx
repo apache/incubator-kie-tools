@@ -154,13 +154,15 @@ export function EditorPage(props: Props) {
     }
 
     const content = await editor.getContent();
-    const svgString = await editor.getPreview();
+    // FIXME: Uncomment when KOGITO-6181 is fixed
+    // const svgString = await editor.getPreview();
 
     lastContent.current = content;
 
-    if (svgString) {
-      await workspaces.svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
-    }
+    // FIXME: Uncomment when KOGITO-6181 is fixed
+    // if (svgString) {
+    //   await workspaces.svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
+    // }
 
     await workspaces.updateFile({
       fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),

@@ -217,7 +217,7 @@ export function NewFileDropdownMenu(props: {
           <MenuItem
             itemId={"newBpmnItemId"}
             onClick={() => addEmptyFile("bpmn")}
-            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+            description="BPMN files are used to generate business workflows."
           >
             <b>
               <FileLabel style={{ marginBottom: "4px" }} extension={"bpmn"} />
@@ -227,7 +227,7 @@ export function NewFileDropdownMenu(props: {
             <MenuItem
               itemId={"newDmnItemId"}
               onClick={() => addEmptyFile("dmn")}
-              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+              description="DMN files are used to generate decision models"
             >
               <b>
                 <FileLabel style={{ marginBottom: "4px" }} extension={"dmn"} />
@@ -238,7 +238,7 @@ export function NewFileDropdownMenu(props: {
             <MenuItem
               itemId={"newPmmlItemId"}
               onClick={() => addEmptyFile("pmml")}
-              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+              description="PMML files are used to generate scorecards"
             >
               <b>
                 <FileLabel style={{ marginBottom: "4px" }} extension={"pmml"} />
@@ -254,7 +254,10 @@ export function NewFileDropdownMenu(props: {
               <DrilldownMenu id={"samplesMenu"}>
                 <MenuItem direction="up">Back</MenuItem>
                 <Divider />
-                <MenuItem onClick={() => addSample("bpmn")} description="Lorem ipsum dolor sit amet">
+                <MenuItem
+                  onClick={() => addSample("bpmn")}
+                  description="BPMN files are used to generate business workflows."
+                >
                   <Flex>
                     <FlexItem>Sample</FlexItem>
                     <FlexItem>
@@ -262,7 +265,7 @@ export function NewFileDropdownMenu(props: {
                     </FlexItem>
                   </Flex>
                 </MenuItem>
-                <MenuItem onClick={() => addSample("dmn")} description="Ipsum lorem dolor amet sit">
+                <MenuItem onClick={() => addSample("dmn")} description="DMN files are used to generate decision models">
                   <Flex>
                     <FlexItem>Sample</FlexItem>
                     <FlexItem>
@@ -270,7 +273,7 @@ export function NewFileDropdownMenu(props: {
                     </FlexItem>
                   </Flex>
                 </MenuItem>
-                <MenuItem onClick={() => addSample("pmml")} description="Sit lorem amet dolor ipsum">
+                <MenuItem onClick={() => addSample("pmml")} description="PMML files are used to generate scorecards">
                   <Flex>
                     <FlexItem>Sample</FlexItem>
                     <FlexItem>

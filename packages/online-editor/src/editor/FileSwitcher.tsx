@@ -602,13 +602,14 @@ export function FilesMenuItems(props: {
             All
           </MenuItem>
         </SplitItem>
-        <SplitItem>
-          <FilesDropdownModeIcons
-            filesDropdownMode={props.filesDropdownMode}
-            setFilesDropdownMode={props.setFilesDropdownMode}
-          />
-          &nbsp; &nbsp;
-        </SplitItem>
+        {/* FIXME: Uncomment when KOGITO-6181 is fixed */}
+        {/*<SplitItem>*/}
+        {/*  <FilesDropdownModeIcons*/}
+        {/*    filesDropdownMode={props.filesDropdownMode}*/}
+        {/*    setFilesDropdownMode={props.setFilesDropdownMode}*/}
+        {/*  />*/}
+        {/*  &nbsp; &nbsp;*/}
+        {/*</SplitItem>*/}
       </Split>
       <Divider component={"li"} />
 

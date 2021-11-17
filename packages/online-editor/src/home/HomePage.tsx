@@ -145,11 +145,21 @@ export function HomePage() {
                 minWidths={{ sm: "calc(33% - 16px)", default: "100%" }}
                 style={{ height: "calc(100% - 32px)" }}
               >
-                <NewModelCard title={"Workflow"} extension={"bpmn"} />
-                {/*<Divider isVertical={true} />*/}
-                <NewModelCard title={"Decision"} extension={"dmn"} />
-                {/*<Divider isVertical={true} />*/}
-                <NewModelCard title={"Scorecard"} extension={"pmml"} />
+                <NewModelCard
+                  title={"Workflow"}
+                  extension={"bpmn"}
+                  description={"BPMN files are used to generate business workflows."}
+                />
+                <NewModelCard
+                  title={"Decision"}
+                  extension={"dmn"}
+                  description={"DMN files are used to generate decision models"}
+                />
+                <NewModelCard
+                  title={"Scorecard"}
+                  extension={"pmml"}
+                  description={"PMML files are used to generate scorecards"}
+                />
               </Gallery>
             </PageSection>
           </SplitItem>
@@ -421,7 +431,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
   );
 }
 
-export function NewModelCard(props: { title: string; extension: SupportedFileExtensions }) {
+export function NewModelCard(props: { title: string; extension: SupportedFileExtensions; description: string }) {
   const routes = useRoutes();
 
   return (
@@ -431,9 +441,7 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
       </CardTitle>
       <CardBody>
         <TextContent>
-          <Text component={TextVariants.p}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. ... Maecenas efficitur, elit quis
-          </Text>
+          <Text component={TextVariants.p}>{props.description}</Text>
         </TextContent>
       </CardBody>
       <CardFooter>
