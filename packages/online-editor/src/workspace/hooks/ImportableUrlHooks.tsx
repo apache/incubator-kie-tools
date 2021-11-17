@@ -55,11 +55,17 @@ export type ImportableUrl =
       type: UrlType.GIST_FILE;
       error?: undefined;
       url: URL;
+      gistId: string;
+      fileName: string;
     }
   | {
       type: UrlType.GITHUB_FILE;
       error?: undefined;
       url: URL;
+      org: string;
+      repo: string;
+      branch: string;
+      filePath: string;
     }
   | {
       type: UrlType.GITHUB;
@@ -96,7 +102,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return { type: UrlType.INVALID, error: "Invalid URL", url: urlString };
     }
 
-    if (url.host === "github.com") {
+    if (url.host === "github.com" || url.host === "raw.githubusercontent.com") {
       const defaultBranchMatch = matchPath<{ org: string; repo: string }>(url.pathname, {
         path: "/:org/:repo",
         exact: true,
@@ -122,18 +128,78 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
         return ifAllowed({ type: UrlType.GITHUB, url: customBranchUrl, branch });
       }
 
+      const gitHubFileMatch = matchPath<{ org: string; repo: string; tree: string; path: string }>(url.pathname, {
+        path: "/:org/:repo/blob/:tree/:path*",
+        exact: true,
+        strict: true,
+        sensitive: false,
+      });
+
+      if (gitHubFileMatch) {
+        return ifAllowed({
+          type: UrlType.GITHUB_FILE,
+          url: url,
+          org: gitHubFileMatch.params.org,
+          repo: gitHubFileMatch.params.repo,
+          branch: gitHubFileMatch.params.tree,
+          filePath: gitHubFileMatch.params.path,
+        });
+      }
+
+      const gitHubRawFileMatch = matchPath<{ org: string; repo: string; tree: string; path: string }>(url.pathname, {
+        path: "/:org/:repo/:tree/:path*",
+        exact: true,
+        strict: true,
+        sensitive: false,
+      });
+
+      if (gitHubRawFileMatch) {
+        return ifAllowed({
+          type: UrlType.GITHUB_FILE,
+          url: url,
+          org: gitHubRawFileMatch.params.org,
+          repo: gitHubRawFileMatch.params.repo,
+          branch: gitHubRawFileMatch.params.tree,
+          filePath: gitHubRawFileMatch.params.path,
+        });
+      }
+
       return { type: UrlType.INVALID, error: "Unsupported GitHub URL", url: urlString };
     }
 
-    if (url.host === "gist.github.com") {
-      const match = matchPath<{ org: string; repo: string; tree: string }>(url.pathname, {
+    if (url.host === "gist.github.com" || url.host === "gist.githubusercontent.com") {
+      const gistMatch = matchPath<{ user: string; gistId: string }>(url.pathname, {
         path: "/:user/:gistId",
         exact: true,
         strict: true,
       });
 
-      if (!match) {
+      const rawGistMatch = matchPath<{ user: string; gistId: string; fileId: string; fileName: string }>(url.pathname, {
+        path: "/:user/:gistId/raw/:fileId/:fileName",
+        exact: true,
+        strict: true,
+      });
+
+      if (!gistMatch && !rawGistMatch) {
         return { type: UrlType.INVALID, error: "Unsupported Gist URL", url: urlString };
+      }
+
+      if (gistMatch && url.hash) {
+        return ifAllowed({
+          type: UrlType.GIST_FILE,
+          url: url,
+          gistId: gistMatch.params.gistId,
+          fileName: url.hash.replace("#file-", "").replace(/-([^-]*)$/, ".$1"),
+        });
+      }
+
+      if (rawGistMatch) {
+        return ifAllowed({
+          type: UrlType.GIST_FILE,
+          url: url,
+          gistId: rawGistMatch.params.gistId,
+          fileName: rawGistMatch.params.fileName,
+        });
       }
 
       return ifAllowed({ type: UrlType.GIST, url });

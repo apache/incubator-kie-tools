@@ -32,12 +32,14 @@ import { WorkspaceKind } from "../model/WorkspaceOrigin";
 import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../services/GitService";
 import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 import { useGitHubAuthInfo } from "../../github/Hooks";
+import { useSettingsDispatch } from "../../settings/SettingsContext";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
   const routes = useRoutes();
   const history = useHistory();
   const githubAuthInfo = useGitHubAuthInfo();
+  const settingsDispatch = useSettingsDispatch();
   const [importingError, setImportingError] = useState("");
 
   const queryParamUrl = useQueryParam(QueryParams.URL);
@@ -107,26 +109,30 @@ export function NewWorkspaceFromUrlPage() {
 
   useEffect(() => {
     async function run() {
-      // try to import the URL as a git repository first
-      try {
-        const url = new URL(queryParamUrl!);
-        if (url.host !== window.location.host) {
-          await importGitWorkspace({
-            origin: {
-              kind: WorkspaceKind.GIT,
-              url,
-              branch: queryParamBranch ?? GIT_DEFAULT_BRANCH,
-            },
-            gitConfig: githubAuthInfo,
-          });
+      const singleFile = [UrlType.FILE, UrlType.GIST_FILE, UrlType.GITHUB_FILE].includes(importableUrl.type);
 
-          return;
-        } else {
-          // ignore and continue
+      if (!singleFile) {
+        // try to import the URL as a git repository first
+        try {
+          const url = new URL(queryParamUrl!);
+          if (url.host !== window.location.host) {
+            await importGitWorkspace({
+              origin: {
+                kind: WorkspaceKind.GIT,
+                url,
+                branch: queryParamBranch ?? GIT_DEFAULT_BRANCH,
+              },
+              gitConfig: githubAuthInfo,
+            });
+
+            return;
+          } else {
+            // ignore and continue
+          }
+        } catch (e) {
+          console.error(e);
+          // ignore error and continue
         }
-      } catch (e) {
-        console.error(e);
-        // ignore error and continue
       }
 
       // proceed normally
@@ -181,8 +187,31 @@ export function NewWorkspaceFromUrlPage() {
         }
 
         // any
-        else if (importableUrl.type === UrlType.FILE) {
-          const response = await fetch(importableUrl.url.toString());
+        else if (singleFile) {
+          let rawUrl = importableUrl.url as URL;
+
+          if (importableUrl.type === UrlType.GITHUB_FILE) {
+            const res = await settingsDispatch.github.octokit.repos.getContent({
+              repo: importableUrl.repo,
+              owner: importableUrl.org,
+              ref: importableUrl.branch,
+              path: importableUrl.filePath,
+              headers: {
+                "If-None-Match": "",
+              },
+            });
+            rawUrl = new URL((res.data as any).download_url);
+          }
+
+          if (importableUrl.type === UrlType.GIST_FILE) {
+            const { data } = await settingsDispatch.github.octokit.gists.get({ gist_id: importableUrl.gistId });
+            const fileName =
+              Object.keys(data.files!).find((k) => k.toLowerCase() === importableUrl.fileName.toLowerCase()) ??
+              Object.keys(data.files!)[0];
+            rawUrl = new URL((data as any).files[fileName].raw_url);
+          }
+
+          const response = await fetch(rawUrl.toString());
           if (!response.ok) {
             setImportingError(`${response.status}${response.statusText ? `- ${response.statusText}` : ""}`);
             return;
@@ -191,7 +220,7 @@ export function NewWorkspaceFromUrlPage() {
           const content = await response.text();
 
           await createWorkspaceForFile({
-            path: basename(importableUrl.url.pathname),
+            path: basename(decodeURIComponent(rawUrl.pathname)),
             getFileContents: () => Promise.resolve(encoder.encode(content)),
           });
         }
@@ -222,6 +251,7 @@ export function NewWorkspaceFromUrlPage() {
     queryParamUrl,
     githubAuthInfo,
     workspaces,
+    settingsDispatch,
   ]);
 
   return (
