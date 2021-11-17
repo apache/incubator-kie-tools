@@ -84,7 +84,7 @@ export function NewWorkspaceFromUrlPage() {
   );
 
   const createWorkspaceForFile = useCallback(
-    (file: LocalFile) => {
+    async (file: LocalFile) => {
       workspaces
         .createWorkspaceFromLocal({ useInMemoryFs: false, localFiles: [file] })
         .then(({ workspace, suggestedFirstFile }) => {
