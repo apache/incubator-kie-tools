@@ -134,7 +134,7 @@ export class Grid {
       case "date":
         return { dataType: DataType.Date, width: 180 };
       case "date and time":
-        return { dataType: DataType.DateTime, width: 282 };
+        return { dataType: DataType.DateTime, width: 296 };
       case "days and time duration":
         return { dataType: DataType.DateTimeDuration, width: 150 };
       case "number":
