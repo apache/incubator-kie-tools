@@ -118,7 +118,15 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       return;
     }
 
-    const payload = await preparePayload(props.workspaceFile);
+    const payload: DmnRunnerModelPayload = {
+      mainURI: props.workspaceFile.relativePath,
+      resources: [
+        {
+          URI: props.workspaceFile.relativePath,
+          content: decoder.decode(await props.workspaceFile.getFileContents()),
+        },
+      ],
+    };
     const validationResults = await service.validate(payload);
     const notifications: Notification[] = validationResults.map((validationResult: any) => ({
       type: "PROBLEM",
@@ -127,14 +135,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       message: `${validationResult.messageType}: ${validationResult.message}`,
     }));
     props.editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
-  }, [
-    props.workspaceFile,
-    props.editorPageDock,
-    kieToolingExtendedServices.status,
-    preparePayload,
-    service,
-    i18n.terms.validation,
-  ]);
+  }, [props.workspaceFile, props.editorPageDock, kieToolingExtendedServices.status, service, i18n.terms.validation]);
 
   useEffect(() => {
     validate();
