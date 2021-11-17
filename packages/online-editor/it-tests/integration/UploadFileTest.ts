@@ -21,9 +21,7 @@ describe("Upload file test", () => {
     cy.visit(`https://localhost:${buildEnv.onlineEditor.dev.port}/`);
   });
 
-  // TODO: Revisit / re-enable this test when KOGITO-6181 is fixed,
-  // and when the rename operation no longer throws errors on the console
-  it.skip("should upload BPMN file", () => {
+  it("should upload BPMN file", () => {
     // upload bpmn file from fixtures directory by drag and drop
     cy.get("#upload-field").attachFile("testProcess.bpmn", { subjectType: "drag-n-drop" });
 
@@ -91,8 +89,7 @@ describe("Upload file test", () => {
     });
   });
 
-  // TODO: Revisit / re-enable this test when the rename operation no longer throws errors on the console
-  it.skip("should upload DMN file", () => {
+  it("should upload DMN file", () => {
     // upload dmn file from fixtures directory by drag and drop
     cy.get("#upload-field").attachFile("testModel.dmn", { subjectType: "drag-n-drop" });
 
