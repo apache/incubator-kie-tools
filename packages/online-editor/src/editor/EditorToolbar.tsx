@@ -1089,6 +1089,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   </Button>
                   &nbsp;&nbsp;
                   <WorkspaceLabel descriptor={workspace.descriptor} />
+                  &nbsp;&nbsp;
                   <div data-testid={"toolbar-title-workspace"} className={"kogito--editor__toolbar-name-container"}>
                     <Title
                       aria-label={"EmbeddedEditorFile name"}

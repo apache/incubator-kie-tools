@@ -139,12 +139,12 @@ export function EditorPage(props: Props) {
   );
 
   // auto-save
-  const uniqueIdentifierOfFile = workspaceFilePromise.data
+  const uniqueFileId = workspaceFilePromise.data
     ? workspaces.getUniqueFileIdentifier(workspaceFilePromise.data)
     : undefined;
 
-  const prev = usePrevious(uniqueIdentifierOfFile);
-  if (prev !== uniqueIdentifierOfFile) {
+  const prevUniqueFileId = usePrevious(uniqueFileId);
+  if (prevUniqueFileId !== uniqueFileId) {
     lastContent.current = undefined;
   }
 
@@ -194,7 +194,7 @@ export function EditorPage(props: Props) {
   useEffect(() => {
     setFileBroken(false);
     setContentErrorAlert.close();
-  }, [uniqueIdentifierOfFile]);
+  }, [uniqueFileId]);
 
   useEffect(() => {
     if (!editor?.isReady || !workspaceFilePromise.data) {
