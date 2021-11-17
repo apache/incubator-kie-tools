@@ -40,6 +40,7 @@ import { diff } from "deep-object-diff";
 import { DmnTableJsonSchemaBridge } from "./DmnTableJsonSchemaBridge";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { DmnSchema } from "@kogito-tooling/form/dist/dmn";
 
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
@@ -73,17 +74,17 @@ export interface DmnResult {
 }
 
 interface Props {
-  schema: object;
-  data: Array<object>;
-  setData: React.Dispatch<React.SetStateAction<Array<object>>>;
+  jsonSchema: DmnSchema;
+  inputRows: Array<object>;
+  setInputRows: React.Dispatch<React.SetStateAction<Array<object>>>;
   results?: Array<DecisionResult[] | undefined>;
   error: boolean;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   openRow: (rowIndex: number) => void;
 }
 
-function usePrevious(value: any) {
-  const ref = useRef();
+function usePrevious<T>(value: T) {
+  const ref = useRef<T>();
 
   useEffect(() => {
     ref.current = value;
@@ -98,15 +99,15 @@ export function DmnAutoTable(props: Props) {
   const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const dmnAutoTableErrorBoundaryRef = useRef<ErrorBoundary>(null);
-  const [rowQuantity, setRowQuantity] = useState<number>(props.data?.length ?? 1);
+  const [rowCount, setRowCount] = useState<number>(props.inputRows?.length ?? 1);
   const [outputError, setOutputError] = useState<boolean>(false);
   const [dmnAutoTableError, setDmnAutoTableError] = useState<boolean>(false);
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
   const rowsRef = useMemo(() => new Map<number, React.RefObject<DmnAutoRowApi> | null>(), []);
 
   const bridge = useMemo(() => {
-    return new DmnValidator().getBridge(props.schema ?? {});
-  }, [props.schema]);
+    return new DmnValidator().getBridge(props.jsonSchema ?? {});
+  }, [props.jsonSchema]);
 
   const grid = useRef<DmnGrid>();
   grid.current = bridge ? (grid.current ? grid.current : new DmnGrid(bridge)) : undefined;
@@ -123,25 +124,25 @@ export function DmnAutoTable(props: Props) {
     (tableOperation: TableOperation, rowIndex: number) => {
       switch (tableOperation) {
         case TableOperation.RowInsertAbove:
-          props.setData?.((previousData: any) => {
+          props.setInputRows?.((previousData: any) => {
             const updatedData = [...previousData.slice(0, rowIndex), {}, ...previousData.slice(rowIndex)];
             return updatedData;
           });
           break;
         case TableOperation.RowInsertBelow:
-          props.setData?.((previousData: any) => {
+          props.setInputRows?.((previousData: any) => {
             const updatedData = [...previousData.slice(0, rowIndex + 1), {}, ...previousData.slice(rowIndex + 1)];
             return updatedData;
           });
           break;
         case TableOperation.RowDelete:
-          props.setData?.((previousData: any) => {
+          props.setInputRows?.((previousData: any) => {
             const updatedData = [...previousData.slice(0, rowIndex), ...previousData.slice(rowIndex + 1)];
             return updatedData;
           });
           break;
         case TableOperation.RowClear:
-          props.setData?.((previousData: any) => {
+          props.setInputRows?.((previousData: any) => {
             const updatedData = [...previousData];
             updatedData[rowIndex] = {};
             return updatedData;
@@ -149,7 +150,7 @@ export function DmnAutoTable(props: Props) {
           rowsRef.get(rowIndex)?.current?.reset();
           break;
         case TableOperation.RowDuplicate:
-          props.setData?.((previousData: any) => {
+          props.setInputRows?.((previousData: any) => {
             const updatedData = [
               ...previousData.slice(0, rowIndex + 1),
               previousData[rowIndex],
@@ -159,12 +160,12 @@ export function DmnAutoTable(props: Props) {
           });
       }
     },
-    [props.setData]
+    [props.setInputRows]
   );
 
   const onRowNumberUpdated = useCallback(
     (rowQtt: number, operation?: TableOperation, rowIndex?: number) => {
-      setRowQuantity(rowQtt);
+      setRowCount(rowQtt);
       if (operation !== undefined && rowIndex !== undefined) {
         handleOperation(operation, rowIndex);
       }
@@ -173,7 +174,7 @@ export function DmnAutoTable(props: Props) {
   );
 
   const onModelUpdate = useCallback((model: any, index) => {
-    props.setData?.((previousData) => {
+    props.setInputRows?.((previousData) => {
       const newData = [...previousData];
       newData[index] = model;
       return newData;
@@ -183,7 +184,7 @@ export function DmnAutoTable(props: Props) {
   // Compare bridge with previousBridge and erase data from deleted input nodes
   const previousBridge: DmnTableJsonSchemaBridge | undefined = usePrevious(bridge);
   useEffect(() => {
-    props.setData((previousModelData: any) => {
+    props.setInputRows((previousModelData: any) => {
       if (previousBridge === undefined) {
         return previousModelData;
       }
@@ -222,7 +223,7 @@ export function DmnAutoTable(props: Props) {
         0
       );
       const inputEntries = Array.from(Array(inputEntriesLength));
-      return Array.from(Array(rowQuantity)).map((e, rowIndex) => {
+      return Array.from(Array(rowCount)).map((e, rowIndex) => {
         return {
           inputEntries,
           rowDelegate: ({ children }: PropsWithChildren<any>) => {
@@ -233,7 +234,7 @@ export function DmnAutoTable(props: Props) {
                 ref={dmnAutoRowRef}
                 formId={FORMS_ID}
                 rowIndex={rowIndex}
-                model={props.data[rowIndex]}
+                model={props.inputRows[rowIndex]}
                 jsonSchemaBridge={bridge}
                 onModelUpdate={(model) => onModelUpdate(model, rowIndex)}
               >
@@ -245,7 +246,7 @@ export function DmnAutoTable(props: Props) {
       });
     }
     return [] as Partial<DmnRunnerRule>[];
-  }, [input, formsDivRendered, rowQuantity]);
+  }, [input, formsDivRendered, rowCount]);
 
   const outputUid = useMemo(() => nextId(), []);
   const { output, rules: outputRules } = useMemo(() => {
@@ -254,7 +255,7 @@ export function DmnAutoTable(props: Props) {
       const [outputSet, outputEntries] = grid.current.generateBoxedOutputs(filteredResults);
       const output: any[] = Array.from(outputSet.values());
 
-      const rules: Partial<DmnRunnerRule>[] = Array.from(Array(rowQuantity)).map((e, i) => ({
+      const rules: Partial<DmnRunnerRule>[] = Array.from(Array(rowCount)).map((e, i) => ({
         outputEntries: (outputEntries?.[i] as string[]) ?? [],
       }));
       grid.current?.updateWidth(output);
@@ -264,7 +265,7 @@ export function DmnAutoTable(props: Props) {
       };
     }
     return { output: [], rules: [] };
-  }, [rowQuantity, props.results]);
+  }, [rowCount, props.results]);
 
   // columns are saved in the grid instance, so some values can be used to improve re-renders (e.g. cell width)
   const onColumnsUpdate = useCallback(
@@ -273,57 +274,6 @@ export function DmnAutoTable(props: Props) {
       grid.current?.updateWidth(output);
     },
     [output]
-  );
-
-  const errorMessage = useMemo(
-    () => (
-      <div>
-        <EmptyState>
-          <EmptyStateIcon icon={ExclamationIcon} />
-          <TextContent>
-            <Text component={"h2"}>Error</Text>
-          </TextContent>
-          <EmptyStateBody>
-            <p>An error has happened</p>
-          </EmptyStateBody>
-        </EmptyState>
-      </div>
-    ),
-    []
-  );
-
-  const outputErrorMessage = useMemo(
-    () => (
-      <div>
-        <EmptyState>
-          <EmptyStateIcon icon={ExclamationIcon} />
-          <TextContent>
-            <Text component={"h2"}>Error</Text>
-          </TextContent>
-          <EmptyStateBody>
-            <p>An error has happened</p>
-          </EmptyStateBody>
-        </EmptyState>
-      </div>
-    ),
-    []
-  );
-
-  const dmnAutoTableErrorMessage = useMemo(
-    () => (
-      <div>
-        <EmptyState>
-          <EmptyStateIcon icon={ExclamationIcon} />
-          <TextContent>
-            <Text component={"h2"}>Error</Text>
-          </TextContent>
-          <EmptyStateBody>
-            <p>An error has happened</p>
-          </EmptyStateBody>
-        </EmptyState>
-      </div>
-    ),
-    []
   );
 
   // Resets the ErrorBoundary everytime the FormSchema is updated
@@ -359,11 +309,11 @@ export function DmnAutoTable(props: Props) {
 
   const updateDataWithModel = useCallback(
     (rowIndex: number) => {
-      // props.setData?.([...rowsModel]);
+      // props.setInputRows?.([...rowsModel]);
       // rowsRef.get(rowIndex)?.current?.submit();
       props.openRow(rowIndex);
     },
-    [props.setData, props.openRow]
+    [props.setInputRows, props.openRow]
   );
 
   return (
@@ -381,7 +331,7 @@ export function DmnAutoTable(props: Props) {
             <ErrorBoundary
               ref={dmnAutoTableErrorBoundaryRef}
               setHasError={setDmnAutoTableError}
-              error={dmnAutoTableErrorMessage}
+              error={<DmnAutoTableError />}
             >
               <Drawer isInline={true} isExpanded={true} className={"unitables--dmn-runner-drawer"}>
                 <DrawerContent
@@ -400,7 +350,7 @@ export function DmnAutoTable(props: Props) {
                             <ErrorBoundary
                               ref={outputErrorBoundaryRef}
                               setHasError={setOutputError}
-                              error={outputErrorMessage}
+                              error={<OutputError />}
                             >
                               <BoxedExpressionProvider expressionDefinition={{ uid: outputUid }} isRunnerTable={true}>
                                 <DmnRunnerTabular
@@ -429,7 +379,7 @@ export function DmnAutoTable(props: Props) {
                     </>
                   }
                 >
-                  <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={errorMessage}>
+                  <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={<InputError />}>
                     <BoxedExpressionProvider expressionDefinition={{ uid: inputUid }} isRunnerTable={true}>
                       <div style={{ display: "flex" }} ref={inputsContainerRef}>
                         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -439,7 +389,7 @@ export function DmnAutoTable(props: Props) {
                           <div style={{ width: "50px", height: "56px", border: "1px solid", visibility: "hidden" }}>
                             {" # "}
                           </div>
-                          {Array.from(Array(rowQuantity)).map((e, i) => (
+                          {Array.from(Array(rowCount)).map((e, i) => (
                             <Tooltip key={i} content={`Open row ${i + 1} in the form view`}>
                               <div
                                 style={{
@@ -480,6 +430,54 @@ export function DmnAutoTable(props: Props) {
       )}
       <div ref={() => setFormsDivRendered(true)} id={FORMS_ID} />
     </>
+  );
+}
+
+function InputError() {
+  return (
+    <div>
+      <EmptyState>
+        <EmptyStateIcon icon={ExclamationIcon} />
+        <TextContent>
+          <Text component={"h2"}>Error</Text>
+        </TextContent>
+        <EmptyStateBody>
+          <p>An error has happened while trying to show your inputs</p>
+        </EmptyStateBody>
+      </EmptyState>
+    </div>
+  );
+}
+
+function OutputError() {
+  return (
+    <div>
+      <EmptyState>
+        <EmptyStateIcon icon={ExclamationIcon} />
+        <TextContent>
+          <Text component={"h2"}>Error</Text>
+        </TextContent>
+        <EmptyStateBody>
+          <p>An error has happened while trying to show your outputs</p>
+        </EmptyStateBody>
+      </EmptyState>
+    </div>
+  );
+}
+
+function DmnAutoTableError() {
+  return (
+    <div>
+      <EmptyState>
+        <EmptyStateIcon icon={ExclamationIcon} />
+        <TextContent>
+          <Text component={"h2"}>Error</Text>
+        </TextContent>
+        <EmptyStateBody>
+          <p>An error has happened on the DMN Runner Table</p>
+        </EmptyStateBody>
+      </EmptyState>
+    </div>
   );
 }
 

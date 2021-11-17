@@ -20,6 +20,6 @@ export enum DmnRunnerStatus {
 }
 
 export enum DmnRunnerMode {
-  DRAWER,
-  TABULAR,
+  FORM,
+  TABLE,
 }

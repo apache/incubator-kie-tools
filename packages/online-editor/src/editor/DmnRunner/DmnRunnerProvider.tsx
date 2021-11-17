@@ -19,7 +19,7 @@ import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "re
 import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
-import { DmnRunnerCallbacksContext, DmnRunnerContext } from "./DmnRunnerContext";
+import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
 import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { QueryParams } from "../../navigation/Routes";
@@ -47,11 +47,11 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const workspaces = useWorkspaces();
 
   const [error, setError] = useState(false);
-  const [schema, setSchema] = useState<DmnSchema | undefined>(undefined);
+  const [jsonSchema, setJsonSchema] = useState<DmnSchema | undefined>(undefined);
   const [isExpanded, setExpanded] = useState(false);
-  const [mode, setMode] = useState(DmnRunnerMode.DRAWER);
-  const [data, setData] = useState([{}]);
-  const [dataIndex, setDataIndex] = useState<number>(0);
+  const [mode, setMode] = useState(DmnRunnerMode.FORM);
+  const [inputRows, setInputRows] = useState([{}]);
+  const [currentInputRowIndex, setCurrentInputRowIndex] = useState<number>(0);
 
   const status = useMemo(() => {
     return isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE;
@@ -92,7 +92,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
 
     try {
       const payload = await preparePayload();
-      setSchema(await service.formSchema(payload));
+      setJsonSchema(await service.formSchema(payload));
     } catch (err) {
       console.error(err);
       setError(true);
@@ -141,12 +141,12 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   }, [validate]);
 
   useEffect(() => {
-    if (!schema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
+    if (!jsonSchema || !queryParams.has(QueryParams.DMN_RUNNER_FORM_INPUTS)) {
       return;
     }
 
     try {
-      setData([jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!)]);
+      setInputRows([jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!)]);
       setExpanded(true);
     } catch (e) {
       console.error(`Cannot parse "${QueryParams.DMN_RUNNER_FORM_INPUTS}"`, e);
@@ -156,7 +156,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         search: routes.editor.queryArgs(queryParams).without(QueryParams.DMN_RUNNER_FORM_INPUTS).toString(),
       });
     }
-  }, [schema, history, routes, queryParams]);
+  }, [jsonSchema, history, routes, queryParams]);
 
   const prevKieToolingExtendedServicesStatus = usePrevious(kieToolingExtendedServices.status);
   useEffect(() => {
@@ -181,11 +181,11 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
   }, [prevKieToolingExtendedServicesStatus, kieToolingExtendedServices.status, props.workspaceFile.extension]);
 
-  const dmnRunnerCallbacks = useMemo(
+  const dmnRunnerDispatch = useMemo(
     () => ({
       preparePayload,
-      setData,
-      setDataIndex,
+      setInputRows,
+      setCurrentInputRowIndex,
       setExpanded,
       setError,
       setMode,
@@ -193,27 +193,27 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     [preparePayload]
   );
 
-  const dmnRunner = useMemo(
+  const dmnRunnerState = useMemo(
     () => ({
-      data,
-      dataIndex,
+      inputRows,
+      currentInputRowIndex,
       error,
       isExpanded,
       mode,
-      schema,
+      jsonSchema,
       service,
       status,
     }),
-    [data, error, schema, isExpanded, mode, service, status, dataIndex]
+    [inputRows, error, jsonSchema, isExpanded, mode, service, status, currentInputRowIndex]
   );
 
   return (
     <>
-      <DmnRunnerContext.Provider value={dmnRunner}>
-        <DmnRunnerCallbacksContext.Provider value={dmnRunnerCallbacks}>
+      <DmnRunnerStateContext.Provider value={dmnRunnerState}>
+        <DmnRunnerDispatchContext.Provider value={dmnRunnerDispatch}>
           {props.children}
-        </DmnRunnerCallbacksContext.Provider>
-      </DmnRunnerContext.Provider>
+        </DmnRunnerDispatchContext.Provider>
+      </DmnRunnerStateContext.Provider>
     </>
   );
 }

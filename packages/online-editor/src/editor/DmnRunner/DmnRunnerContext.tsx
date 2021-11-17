@@ -21,12 +21,12 @@ import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 
 export interface DmnRunnerContextType {
-  data: Array<object>;
-  dataIndex: number;
+  inputRows: Array<object>;
+  currentInputRowIndex: number;
   error: boolean;
   isExpanded: boolean;
   mode: DmnRunnerMode;
-  schema?: DmnSchema;
+  jsonSchema?: DmnSchema;
   service: DmnRunnerService;
   status: DmnRunnerStatus;
 }
@@ -35,18 +35,18 @@ export interface DmnRunnerCallbacksContextType {
   preparePayload: (formData?: any) => Promise<DmnRunnerModelPayload>;
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
-  setDataIndex: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentInputRowIndex: React.Dispatch<React.SetStateAction<number>>;
   setMode: React.Dispatch<React.SetStateAction<DmnRunnerMode>>;
-  setData: React.Dispatch<React.SetStateAction<any>>;
+  setInputRows: React.Dispatch<React.SetStateAction<any>>;
 }
 
-export const DmnRunnerContext = React.createContext<DmnRunnerContextType>({} as any);
-export const DmnRunnerCallbacksContext = React.createContext<DmnRunnerCallbacksContextType>({} as any);
+export const DmnRunnerStateContext = React.createContext<DmnRunnerContextType>({} as any);
+export const DmnRunnerDispatchContext = React.createContext<DmnRunnerCallbacksContextType>({} as any);
 
-export function useDmnRunner() {
-  return useContext(DmnRunnerContext);
+export function useDmnRunnerState() {
+  return useContext(DmnRunnerStateContext);
 }
 
-export function useDmnRunnerCallbacks() {
-  return useContext(DmnRunnerCallbacksContext);
+export function useDmnRunnerDispatch() {
+  return useContext(DmnRunnerDispatchContext);
 }

@@ -18,7 +18,7 @@ import * as React from "react";
 import { PropsWithChildren, useCallback, useImperativeHandle, useMemo, useState } from "react";
 import { ToggleGroup } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { DmnRunnerMode } from "./DmnRunner/DmnRunnerStatus";
-import { useDmnRunner } from "./DmnRunner/DmnRunnerContext";
+import { useDmnRunnerState } from "./DmnRunner/DmnRunnerContext";
 import { useOnlineI18n } from "../i18n";
 import { NotificationsPanel, NotificationsPanelRef } from "./NotificationsPanel/NotificationsPanel";
 import { DmnRunnerTabular } from "./DmnRunner/DmnRunnerTabular";
@@ -56,7 +56,7 @@ export const EditorPageDockDrawer = React.forwardRef<
   PropsWithChildren<EditorPageDockDrawerProps>
 >((props, forwardRef) => {
   const { i18n } = useOnlineI18n();
-  const dmnRunner = useDmnRunner();
+  const dmnRunnerState = useDmnRunnerState();
   const [panel, setPanel] = useState<PanelId>(PanelId.NONE);
   const [dmnRunnerResults, setDmnRunnerResults] = useState<Array<DecisionResult[] | undefined>>([]);
   const [notificationsToggle, notificationsToggleRef] = useController<NotificationsPanelDockToggleRef>();
@@ -130,7 +130,7 @@ export const EditorPageDockDrawer = React.forwardRef<
         }}
       >
         <ToggleGroup>
-          {dmnRunner.mode === DmnRunnerMode.TABULAR && (
+          {dmnRunnerState.mode === DmnRunnerMode.TABLE && (
             <DmnRunnerDockToggle
               isSelected={panel === PanelId.DMN_RUNNER_TABULAR}
               onChange={(id) => onDockChange(id)}

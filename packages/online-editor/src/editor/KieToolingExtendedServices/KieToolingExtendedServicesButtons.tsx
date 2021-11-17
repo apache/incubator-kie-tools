@@ -21,7 +21,7 @@ import { useOnlineI18n } from "../../i18n";
 import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
 import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
-import { useDmnRunner, useDmnRunnerCallbacks } from "../DmnRunner/DmnRunnerContext";
+import { useDmnRunnerState, useDmnRunnerDispatch } from "../DmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieToolingExtendedServices } from "../../kieToolingExtendedServices/FeatureDependentOnKieToolingExtendedServices";
 import {
   DependentFeature,
@@ -43,23 +43,23 @@ export function KieToolingExtendedServicesButtons(props: Props) {
   const { i18n } = useOnlineI18n();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const dmnDevSandbox = useDmnDevSandbox();
-  const dmnRunner = useDmnRunner();
-  const dmnRunnerCallbacks = useDmnRunnerCallbacks();
+  const dmnRunnerState = useDmnRunnerState();
+  const dmnRunnerDispatch = useDmnRunnerDispatch();
   const settings = useSettings();
   const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems(props.workspace);
 
   const toggleDmnRunnerDrawer = useCallback(() => {
     if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
-      if (dmnRunner.mode === DmnRunnerMode.TABULAR) {
+      if (dmnRunnerState.mode === DmnRunnerMode.TABLE) {
         props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
       } else {
-        dmnRunnerCallbacks.setExpanded((prev) => !prev);
+        dmnRunnerDispatch.setExpanded((prev) => !prev);
       }
       return;
     }
     kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     kieToolingExtendedServices.setModalOpen(true);
-  }, [dmnRunner.mode, dmnRunnerCallbacks, kieToolingExtendedServices, props.editorPageDock]);
+  }, [dmnRunnerState.mode, dmnRunnerDispatch, kieToolingExtendedServices, props.editorPageDock]);
 
   const toggleDmnDevSandboxDropdown = useCallback(
     (isOpen: boolean) => {
@@ -105,7 +105,7 @@ export function KieToolingExtendedServicesButtons(props: Props) {
           id="dmn-runner-button"
           variant={ButtonVariant.control}
           onClick={toggleDmnRunnerDrawer}
-          className={dmnRunner.isExpanded ? "pf-m-active" : ""}
+          className={dmnRunnerState.isExpanded ? "pf-m-active" : ""}
           data-testid={"dmn-runner-button"}
         >
           {i18n.terms.run}

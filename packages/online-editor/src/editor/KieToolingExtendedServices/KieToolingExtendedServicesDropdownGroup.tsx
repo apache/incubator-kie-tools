@@ -20,7 +20,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
-import { useDmnRunner, useDmnRunnerCallbacks } from "../DmnRunner/DmnRunnerContext";
+import { useDmnRunnerState, useDmnRunnerDispatch } from "../DmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieToolingExtendedServices } from "../../kieToolingExtendedServices/FeatureDependentOnKieToolingExtendedServices";
 import {
   DependentFeature,
@@ -34,9 +34,9 @@ import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 export function KieToolingExtendedServicesDropdownGroup(props: { workspace: ActiveWorkspace | undefined }) {
   const { i18n } = useOnlineI18n();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
-  const dmnRunner = useDmnRunner();
+  const dmnRunnerState = useDmnRunnerState();
   const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems(props.workspace);
-  const dmnRunnerCallbacks = useDmnRunnerCallbacks();
+  const dmnRunnerDispatch = useDmnRunnerDispatch();
 
   const isKieToolingExtendedServicesRunning = useMemo(
     () => kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING,
@@ -45,12 +45,12 @@ export function KieToolingExtendedServicesDropdownGroup(props: { workspace: Acti
 
   const onToggleDmnRunner = useCallback(() => {
     if (isKieToolingExtendedServicesRunning) {
-      dmnRunnerCallbacks.setExpanded((prev) => !prev);
+      dmnRunnerDispatch.setExpanded((prev) => !prev);
       return;
     }
     kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     kieToolingExtendedServices.setModalOpen(true);
-  }, [dmnRunnerCallbacks, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
+  }, [dmnRunnerDispatch, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
 
   return (
     <>
@@ -71,7 +71,7 @@ export function KieToolingExtendedServicesDropdownGroup(props: { workspace: Acti
             onClick={onToggleDmnRunner}
             ouiaId="toggle-dmn-runner-dropdown-button"
           >
-            <Text>{dmnRunner.isExpanded ? i18n.terms.close : i18n.terms.open}</Text>
+            <Text>{dmnRunnerState.isExpanded ? i18n.terms.close : i18n.terms.open}</Text>
           </DropdownItem>
         </FeatureDependentOnKieToolingExtendedServices>
       </DropdownGroup>
