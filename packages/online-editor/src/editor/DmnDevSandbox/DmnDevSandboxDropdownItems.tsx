@@ -105,7 +105,6 @@ export function useDmnDevSandboxDropdownItems(workspace: ActiveWorkspace | undef
             <DropdownItem
               id="dmn-dev-sandbox-setup-button"
               key={`dropdown-dmn-dev-sandbox-setup`}
-              component={"button"}
               onClick={onDevSandboxSetup}
               ouiaId={"setup-dmn-dev-sandbox-dropdown-button"}
             >

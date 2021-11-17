@@ -131,7 +131,7 @@ export function NewFileDropdownMenu(props: {
       } catch (e) {
         setImportingError(e.toString());
       } finally {
-        setImporting(false);
+        // setImporting(false);
       }
     },
     [props, workspaces]
