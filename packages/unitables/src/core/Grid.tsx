@@ -16,108 +16,84 @@
 
 import { joinName } from "uniforms";
 import * as React from "react";
+import { PropsWithChildren, useCallback, useEffect, useMemo, useRef } from "react";
 import { AutoField } from "./AutoField";
 import { DataType } from "@kogito-tooling/boxed-expression-component/dist/api";
-import { DmnRunnerClause } from "../boxed";
-import { DecisionResult, Result } from "../dmn";
+import { DmnRunnerRule } from "../boxed";
+import { DecisionResult, DmnSchemaProperties, DmnValidator, FORMS_ID, Result } from "../dmn";
 import { ColumnInstance } from "react-table";
 import { DmnTableJsonSchemaBridge } from "../dmn/DmnTableJsonSchemaBridge";
+import { DmnAutoRow, DmnAutoRowApi } from "../dmn/DmnAutoRow";
+import { diff } from "deep-object-diff";
 
-export class Grid {
-  private input: DmnRunnerClause[];
-  private columns: ColumnInstance[];
+interface InputField {
+  dataType: DataType;
+  width: number;
+  name: string;
+  cellDelegate: (formId: string) => React.ReactNode;
+}
 
-  constructor(private bridge: DmnTableJsonSchemaBridge) {
-    this.input = this.generateBoxedInputs();
-  }
+interface InputWithInsideProperties extends InputField {
+  insideProperties: Array<InputField>;
+}
 
-  public updateBridge(bridge: DmnTableJsonSchemaBridge) {
-    this.bridge = bridge;
-    this.input = this.generateBoxedInputs();
-    this.columns?.map((column) => {
-      if (column.groupType === "input") {
-        const inputToUpdate = this.input.find((e) => e.name === column.label);
-        if (inputToUpdate?.insideProperties && column?.columns) {
-          inputToUpdate.insideProperties.forEach((insideProperty) => {
-            const columnFound = column.columns?.find((nestedColumn) => nestedColumn.label === insideProperty.name);
-            if (columnFound) {
-              insideProperty.width = columnFound.width;
-            }
-          });
-        }
-        if (inputToUpdate) {
-          inputToUpdate.width = column.width;
-        }
-      }
-    });
-  }
+type InputFields = InputField | InputWithInsideProperties;
 
-  public getBridge() {
-    return this.bridge;
-  }
+export function isInputWithInsideProperties(toBeDetermined: InputFields): toBeDetermined is InputWithInsideProperties {
+  return (toBeDetermined as InputWithInsideProperties).insideProperties !== undefined;
+}
 
-  public getInput() {
-    return this.input;
-  }
+interface OutputField {
+  dataType: DataType;
+  width?: number;
+  name: string;
+}
 
-  public setPreviousColumns(columns: ColumnInstance[]) {
-    this.columns = columns;
-  }
+interface OutputTypesField extends OutputField {
+  type: string;
+}
 
-  public resetColumns() {
-    this.columns = [];
-  }
+interface OutputWithInsideProperties extends OutputTypesField {
+  insideProperties: Array<OutputTypesField>;
+}
 
-  public updateWidth(output: any[]) {
-    this.columns?.forEach((column) => {
-      if (column.groupType === "input") {
-        const inputToUpdate = this.input.find((i) => i.name === column.label);
-        if (inputToUpdate?.insideProperties && column?.columns) {
-          inputToUpdate.insideProperties.forEach((insideProperty) => {
-            const columnFound = column.columns?.find((nestedColumn) => nestedColumn.label === insideProperty.name);
-            if (columnFound) {
-              insideProperty.width = columnFound.width;
-            }
-          });
-        }
-        if (inputToUpdate) {
-          inputToUpdate.width = column.width;
-        }
-      }
-      if (column.groupType === "output") {
-        const outputToUpdate = output.find((e) => e.name === column.label);
-        if (outputToUpdate?.insideProperties && column?.columns) {
-          (outputToUpdate.insideProperties as any[]).forEach((insideProperty) => {
-            if (insideProperty !== null && typeof insideProperty === "object") {
-              Object.keys(insideProperty).map((insidePropertyKey) => {
-                const columnFound = column.columns?.find((nestedColumn) => nestedColumn.label === insidePropertyKey);
-                if (columnFound) {
-                  insideProperty[insidePropertyKey] = {
-                    value: insideProperty[insidePropertyKey],
-                    width: columnFound.width,
-                  };
-                }
-              });
-            } else if (insideProperty) {
-              const columnFound = column.columns?.find((nestedColumn) => nestedColumn.label === insideProperty.name);
-              if (columnFound) {
-                insideProperty.width = columnFound.width;
-              }
-            }
-          });
-        }
-        if (outputToUpdate) {
-          outputToUpdate.width = column.width;
-        }
-      }
-    });
-  }
+type OutputTypesFields = OutputTypesField | OutputWithInsideProperties;
+type OutputFields = OutputField | OutputWithInsideProperties;
+type OutputTypesAndNormalFields = OutputTypesFields | OutputFields;
 
-  public removeInputName(fullName: string) {
+export function isOutputWithInsideProperties(
+  toBeDetermined: OutputTypesAndNormalFields
+): toBeDetermined is OutputWithInsideProperties {
+  return (toBeDetermined as OutputWithInsideProperties).insideProperties !== undefined;
+}
+
+export function usePrevious<T>(value: T) {
+  const ref = useRef<T>();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+}
+
+export function useGrid(
+  jsonSchema: object,
+  results: Array<DecisionResult[] | undefined> | undefined,
+  inputRows: Array<object>,
+  setInputRows: React.Dispatch<React.SetStateAction<Array<object>>>,
+  rowCount: number,
+  formsDivRendered: boolean,
+  rowsRef: Map<number, React.RefObject<DmnAutoRowApi> | null>,
+  columnCache: React.MutableRefObject<ColumnInstance[]>,
+  defaultModel: React.MutableRefObject<Array<object>>,
+  defaultValues: object
+) {
+  const removeInputName = useCallback((fullName: string) => {
     return fullName.match(/\./) ? fullName.split(".").slice(1).join("-") : fullName;
-  }
+  }, []);
 
-  public getDataTypeProps(type: string | undefined) {
+  const getDataTypeProps = useCallback((type: string | undefined) => {
     let extractedType = (type ?? "").split("FEEL:").pop();
     if ((extractedType?.length ?? 0) > 1) {
       extractedType = (type ?? "").split(":").pop()?.split("}").join("").trim();
@@ -148,116 +124,288 @@ export class Grid {
       default:
         return { dataType: (extractedType as DataType) ?? DataType.Undefined, width: 150 };
     }
-  }
+  }, []);
 
-  public deepGenerateBoxed(fieldName: any, parentName = ""): any {
-    const joinedName = joinName(parentName, fieldName);
-    const field = this.bridge.getField(joinedName);
+  const deepGenerateInputFields = useCallback(
+    (jsonSchemaBridge: DmnTableJsonSchemaBridge, fieldName: any, parentName = ""): InputFields | undefined => {
+      const joinedName = joinName(parentName, fieldName);
+      if (jsonSchemaBridge) {
+        const field = jsonSchemaBridge.getField(joinedName);
 
-    if (field.type === "object") {
-      const insideProperties = this.bridge.getSubfields(joinedName).reduce((acc: any[], subField: string) => {
-        const field = this.deepGenerateBoxed(subField, joinedName);
-        if (field.insideProperties) {
-          return [...acc, ...field.insideProperties];
+        if (field.type === "object") {
+          const insideProperties: Array<InputField> = jsonSchemaBridge
+            .getSubfields(joinedName)
+            .reduce((acc: Array<InputField>, subField: string) => {
+              const field = deepGenerateInputFields(
+                jsonSchemaBridge,
+                subField,
+                joinedName
+              ) as InputWithInsideProperties;
+              if (field && field.insideProperties) {
+                return [...acc, ...field.insideProperties];
+              }
+              return [...acc, field];
+            }, []);
+          return {
+            ...getDataTypeProps(field["x-dmn-type"]),
+            insideProperties,
+            name: joinedName,
+            width: insideProperties.reduce((acc, insideProperty) => acc + insideProperty.width, 0),
+          } as InputWithInsideProperties;
         }
-        return [...acc, field];
-      }, []);
-      return {
-        ...this.getDataTypeProps(field["x-dmn-type"]),
-        insideProperties,
-        name: joinedName,
-        width: insideProperties.reduce((acc, insideProperty) => acc + insideProperty.width, 0),
-      };
-    }
-    return {
-      ...this.getDataTypeProps(field["x-dmn-type"]),
-      name: this.removeInputName(joinedName),
-      cellDelegate: (formId: any) => <AutoField key={joinedName} name={joinedName} form={formId} />,
-    };
-  }
+        return {
+          ...getDataTypeProps(field["x-dmn-type"]),
+          name: removeInputName(joinedName),
+          cellDelegate: (formId: string) => <AutoField key={joinedName} name={joinedName} form={formId} />,
+        } as InputField;
+      }
+    },
+    [getDataTypeProps, removeInputName]
+  );
 
-  public generateBoxedInputs(): DmnRunnerClause[] {
-    let myGrid: DmnRunnerClause[] = [];
-    const subfields = this.bridge.getSubfields();
-    const inputs = subfields.reduce(
-      (acc: DmnRunnerClause[], fieldName: string) => [...acc, this.deepGenerateBoxed(fieldName)],
-      // { name: "#", width: 60, cellDelegate: () => <p>abc</p> }
-      [] as DmnRunnerClause[]
+  const generateInputFields = useCallback(
+    (jsonSchemaBridge: DmnTableJsonSchemaBridge) => {
+      const subfields = jsonSchemaBridge?.getSubfields();
+      return (
+        subfields?.reduce((acc: Array<InputFields>, fieldName: string) => {
+          const generateInputFields = deepGenerateInputFields(jsonSchemaBridge, fieldName);
+          if (generateInputFields) {
+            return [...acc, generateInputFields];
+          }
+        }, [] as Array<InputFields>) ?? []
+      );
+    },
+    [deepGenerateInputFields]
+  );
+
+  // when update schema, re-create the json schema and generate the new inputs using the saved columns properties
+  const jsonSchemaBridge = useMemo(() => {
+    return new DmnValidator().getBridge(jsonSchema ?? {});
+  }, [jsonSchema]);
+  const previousBridge = usePrevious(jsonSchemaBridge);
+
+  const inputs = useMemo(() => {
+    const newInputs = generateInputFields(jsonSchemaBridge);
+    columnCache.current?.map((column) => {
+      if (column.groupType === "input") {
+        const inputToUpdate = newInputs.find((e) => e.name === column.label);
+        if (inputToUpdate && isInputWithInsideProperties(inputToUpdate) && column?.columns) {
+          inputToUpdate.insideProperties.forEach((insideProperty) => {
+            const columnFound = column.columns?.find((nestedColumn) => nestedColumn.label === insideProperty.name);
+            if (columnFound && columnFound.width) {
+              insideProperty.width = columnFound.width as number;
+            }
+          });
+        }
+        if (inputToUpdate && column.width) {
+          inputToUpdate.width = column.width as number;
+        }
+      }
+    });
+    return newInputs;
+  }, [columnCache, generateInputFields, jsonSchemaBridge]);
+
+  useEffect(() => {
+    if (previousBridge === undefined) {
+      return;
+    }
+    setInputRows((previousData) => {
+      const newData = [...previousData];
+      const propertiesDifference = diff(
+        (previousBridge.schema ?? {}).definitions?.InputSet?.properties ?? {},
+        jsonSchemaBridge.schema?.definitions?.InputSet?.properties ?? {}
+      );
+
+      const updatedData = newData.map((data) => {
+        return Object.entries(propertiesDifference).reduce(
+          (row, [property, value]) => {
+            if (Object.keys(row).length === 0) {
+              return row;
+            }
+            if (!value || value.type || value.$ref) {
+              delete (row as any)[property];
+            }
+            if (value?.["x-dmn-type"]) {
+              (row as any)[property] = undefined;
+            }
+            return row;
+          },
+          { ...defaultValues, ...data }
+        );
+      });
+
+      defaultModel.current = updatedData;
+      return updatedData;
+    });
+  }, [defaultModel, defaultValues, jsonSchemaBridge, previousBridge, setInputRows]);
+
+  const updateWidth = useCallback(
+    (output: any[]) => {
+      columnCache.current?.forEach((column) => {
+        if (column.groupType === "input") {
+          const inputToUpdate = inputs.find((i) => i.name === column.label);
+          if (inputToUpdate && isInputWithInsideProperties(inputToUpdate) && column?.columns) {
+            inputToUpdate.insideProperties.forEach((insideProperty) => {
+              const columnFound = column.columns?.find((nestedColumn) => nestedColumn.label === insideProperty.name);
+              if (columnFound && columnFound.width) {
+                insideProperty.width = columnFound.width as number;
+              }
+            });
+          }
+          if (inputToUpdate && column.width) {
+            inputToUpdate.width = column.width as number;
+          }
+        }
+        if (column.groupType === "output") {
+          const outputToUpdate = output.find((e) => e.name === column.label);
+          if (outputToUpdate?.insideProperties && column?.columns) {
+            (outputToUpdate.insideProperties as any[]).forEach((insideProperty) => {
+              if (insideProperty !== null && typeof insideProperty === "object") {
+                Object.keys(insideProperty).map((insidePropertyKey) => {
+                  const columnFound = column.columns?.find((nestedColumn) => nestedColumn.label === insidePropertyKey);
+                  if (columnFound) {
+                    insideProperty[insidePropertyKey] = {
+                      value: insideProperty[insidePropertyKey],
+                      width: columnFound.width,
+                    };
+                  }
+                });
+              } else if (insideProperty) {
+                const columnFound = column.columns?.find((nestedColumn) => nestedColumn.label === insideProperty.name);
+                if (columnFound) {
+                  insideProperty.width = columnFound.width;
+                }
+              }
+            });
+          }
+          if (outputToUpdate) {
+            outputToUpdate.width = column.width;
+          }
+        }
+      });
+    },
+    [columnCache, inputs]
+  );
+
+  const onModelUpdate = useCallback(
+    (model: object, index) => {
+      setInputRows?.((previousData) => {
+        const newData = [...previousData];
+        newData[index] = model;
+        return newData;
+      });
+    },
+    [setInputRows]
+  );
+
+  const inputRules: Partial<DmnRunnerRule>[] = useMemo(() => {
+    if (jsonSchemaBridge === undefined || !formsDivRendered) {
+      return [] as Partial<DmnRunnerRule>[];
+    }
+    const inputEntriesLength = inputs.reduce(
+      (length, input) => (isInputWithInsideProperties(input) ? length + input.insideProperties.length : length + 1),
+      0
     );
-    if (inputs.length > 0) {
-      myGrid = inputs;
-    }
-    return myGrid;
-  }
+    const inputEntries = Array.from(Array(inputEntriesLength));
+    return Array.from(Array(rowCount)).map((e, rowIndex) => {
+      return {
+        inputEntries,
+        rowDelegate: ({ children }: PropsWithChildren<any>) => {
+          const dmnAutoRowRef = React.createRef<DmnAutoRowApi>();
+          rowsRef.set(rowIndex, dmnAutoRowRef);
+          return (
+            <DmnAutoRow
+              ref={dmnAutoRowRef}
+              formId={FORMS_ID}
+              rowIndex={rowIndex}
+              model={defaultModel.current[rowIndex]}
+              jsonSchemaBridge={jsonSchemaBridge}
+              onModelUpdate={(model) => onModelUpdate(model, rowIndex)}
+            >
+              {children}
+            </DmnAutoRow>
+          );
+        },
+      } as Partial<DmnRunnerRule>;
+    });
+  }, [jsonSchemaBridge, formsDivRendered, inputs, rowCount, rowsRef, onModelUpdate]);
 
-  private deepFlattenOutput(acc: any, entry: string, value: object) {
+  const deepFlattenOutput = useCallback((acc: any, entry: string, value: object) => {
     return Object.entries(value).map(([deepEntry, deepValue]) => {
       if (typeof deepValue === "object" && deepValue !== null) {
-        this.deepFlattenOutput(acc, deepEntry, deepValue);
+        deepFlattenOutput(acc, deepEntry, deepValue);
       }
       acc[`${entry}-${deepEntry}`] = deepValue;
       return acc;
     });
-  }
+  }, []);
 
-  public deepGenerateBoxedOutputs(
-    acc: Map<string, { type?: string; insideProperties?: any; dataType: DataType }>,
-    properties: any
-  ) {
-    return Object.entries(properties).map(([name, property]: [string, any]) => {
-      if (property["x-dmn-type"]) {
-        const dataType = this.getDataTypeProps(property["x-dmn-type"]).dataType;
-        acc.set(name, { type: property.type, dataType });
-        return { name, type: property.type, width: 150 };
-      }
-      const path = property.$ref.split("/").slice(1); // remove #
-      const data = path.reduce((acc: any, property: string) => acc[property], (this.bridge as any).schema);
-      const dataType = this.getDataTypeProps(data["x-dmn-type"]).dataType;
-      if (data.properties) {
-        const insideProperties = this.deepGenerateBoxedOutputs(acc, data.properties);
-        acc.set(name, { type: data.type, insideProperties, dataType });
-      } else {
-        acc.set(name, { type: data.type, dataType });
-      }
-      return { name, dataType: data.type, width: 150 };
-    });
-  }
-
-  public generateBoxedOutputs(
-    decisionResults: Array<DecisionResult[] | undefined>
-  ): [Map<string, DmnRunnerClause>, Result[]] {
-    const outputTypeMap = Object.entries((this.bridge as any).schema?.definitions?.OutputSet?.properties ?? []).reduce(
-      (
-        acc: Map<string, { type?: string; insideProperties?: any; dataType: DataType }>,
-        [name, properties]: [string, any]
-      ) => {
-        if (properties["x-dmn-type"]) {
-          const dataType = this.getDataTypeProps(properties["x-dmn-type"]).dataType;
-          acc.set(name, { type: properties.type, dataType });
-        } else {
-          const path = properties.$ref.split("/").slice(1); // remove #
-          const data = path.reduce((acc: any, property: string) => acc[property], (this.bridge as any).schema);
-          const dataType = this.getDataTypeProps(data["x-dmn-type"]).dataType;
-          if (data.properties) {
-            const insideProperties = this.deepGenerateBoxedOutputs(acc, data.properties);
-            acc.set(name, { type: data.type, insideProperties, dataType });
-          } else {
-            acc.set(name, { type: data.type, dataType });
-          }
+  const deepGenerateOutputTypesMapFields = useCallback(
+    (
+      outputTypeMap: Map<string, OutputTypesFields>,
+      properties: DmnSchemaProperties[],
+      jsonSchemaBridge: DmnTableJsonSchemaBridge
+    ) => {
+      return Object.entries(properties).map(([name, property]: [string, DmnSchemaProperties]) => {
+        if (property["x-dmn-type"]) {
+          const dataType = getDataTypeProps(property["x-dmn-type"]).dataType;
+          outputTypeMap.set(name, { type: property.type, dataType, name });
+          return { name, type: property.type, width: 150, dataType };
         }
+        const path: string[] = property.$ref.split("/").slice(1); // remove #
+        const data = path.reduce(
+          (acc: { [x: string]: object }, property: string) => acc[property],
+          jsonSchemaBridge.schema
+        );
+        const dataType = getDataTypeProps(data["x-dmn-type"]).dataType;
+        if (data.properties) {
+          const insideProperties = deepGenerateOutputTypesMapFields(outputTypeMap, data.properties, jsonSchemaBridge);
+          outputTypeMap.set(name, { type: data.type, insideProperties, dataType, name });
+        } else {
+          outputTypeMap.set(name, { type: data.type, dataType, name });
+        }
+        return { name, dataType: data.type, width: 150 } as OutputTypesField;
+      });
+    },
+    [getDataTypeProps]
+  );
 
-        return acc;
-      },
-      new Map<string, { type?: string; insideProperties?: any; dataType: DataType }>()
-    );
+  const { outputs, outputRules } = useMemo(() => {
+    const decisionResults = results?.filter((result) => result !== undefined);
+    if (jsonSchemaBridge === undefined || decisionResults === undefined) {
+      return { outputs: [] as OutputFields[], outputRules: [] as Partial<DmnRunnerRule>[] };
+    }
 
+    // generate a map that contains output types
+    const outputTypeMap = Object.entries(
+      (jsonSchemaBridge as any).schema?.definitions?.OutputSet?.properties ?? []
+    ).reduce((outputTypeMap: Map<string, OutputTypesFields>, [name, properties]: [string, DmnSchemaProperties]) => {
+      if (properties["x-dmn-type"]) {
+        const dataType = getDataTypeProps(properties["x-dmn-type"]).dataType;
+        outputTypeMap.set(name, { type: properties.type, dataType, name });
+      } else {
+        const path = properties.$ref.split("/").slice(1); // remove #
+        const data = path.reduce((acc: any, property: string) => acc[property], (jsonSchemaBridge as any).schema);
+        const dataType = getDataTypeProps(data["x-dmn-type"]).dataType;
+        if (data.properties) {
+          const insideProperties = deepGenerateOutputTypesMapFields(outputTypeMap, data.properties, jsonSchemaBridge);
+          outputTypeMap.set(name, { type: data.type, insideProperties, dataType, name });
+        } else {
+          outputTypeMap.set(name, { type: data.type, dataType, name });
+        }
+      }
+
+      return outputTypeMap;
+    }, new Map<string, OutputFields>());
+
+    // generate outputs
     const outputMap = decisionResults.reduce(
-      (acc: Map<string, DmnRunnerClause>, decisionResult: DecisionResult[] | undefined) => {
+      (acc: Map<string, OutputFields>, decisionResult: DecisionResult[] | undefined) => {
         if (decisionResult) {
           decisionResult.forEach(({ decisionName }) => {
             const data = outputTypeMap.get(decisionName);
             const dataType = data?.dataType ?? DataType.Undefined;
-            if (data?.insideProperties) {
+            if (data && isOutputWithInsideProperties(data)) {
               acc.set(decisionName, {
                 name: decisionName,
                 dataType,
@@ -275,15 +423,15 @@ export class Grid {
         }
         return acc;
       },
-      new Map<string, DmnRunnerClause>()
+      new Map<string, OutputFields>()
     );
 
     const outputEntries = decisionResults.reduce((acc: Result[], decisionResult: DecisionResult[] | undefined) => {
       if (decisionResult) {
         const outputResults = decisionResult.map(({ result, decisionName }) => {
           if (result === null || typeof result !== "object") {
-            const dmnRunnerClause = outputMap.get(decisionName)!;
-            if (dmnRunnerClause.insideProperties) {
+            const dmnRunnerClause = outputMap.get(decisionName);
+            if (dmnRunnerClause && isOutputWithInsideProperties(dmnRunnerClause)) {
               return dmnRunnerClause.insideProperties.reduce((acc, insideProperty) => {
                 acc[insideProperty.name] = "null";
                 return acc;
@@ -302,7 +450,7 @@ export class Grid {
           if (typeof result === "object") {
             return Object.entries(result).reduce((acc: any, [entry, value]) => {
               if (typeof value === "object" && value !== null) {
-                this.deepFlattenOutput(acc, entry, value);
+                deepFlattenOutput(acc, entry, value);
               } else {
                 acc[entry] = value;
               }
@@ -316,6 +464,22 @@ export class Grid {
       return acc;
     }, []);
 
-    return [outputMap, outputEntries];
-  }
+    const outputRules: Partial<DmnRunnerRule>[] = Array.from(Array(rowCount)).map((e, i) => ({
+      outputEntries: (outputEntries?.[i] as string[]) ?? [],
+    }));
+
+    const outputs = Array.from(outputMap.values());
+    updateWidth(outputs);
+    return { outputs, outputRules };
+  }, [
+    deepFlattenOutput,
+    deepGenerateOutputTypesMapFields,
+    getDataTypeProps,
+    jsonSchemaBridge,
+    results,
+    rowCount,
+    updateWidth,
+  ]);
+
+  return { jsonSchemaBridge, inputs, inputRules, outputs, outputRules, updateWidth };
 }

@@ -31,11 +31,11 @@ interface Props {
 
 export interface DmnAutoRowApi {
   submit: () => void;
-  reset: () => void;
+  reset: (defaultValues?: object) => void;
 }
 
 export const DmnAutoRow = React.forwardRef<DmnAutoRowApi, PropsWithChildren<Props>>((props, forwardRef) => {
-  const [model, setModel] = useState<object>({});
+  const [model, setModel] = useState<object>(props.model);
   const autoRowRef = useRef<HTMLFormElement>(null);
 
   const onSubmit = useCallback((model: object) => {
@@ -48,48 +48,9 @@ export const DmnAutoRow = React.forwardRef<DmnAutoRowApi, PropsWithChildren<Prop
     props.onModelUpdate(model);
   }, []);
 
-  const getDefaultValueByType = useCallback((type, defaultValues: { [x: string]: any }, property: string) => {
-    if (type === "object") {
-      defaultValues[`${property}`] = {};
-    }
-    if (type === "array") {
-      defaultValues[`${property}`] = [];
-    }
-    if (type === "boolean") {
-      defaultValues[`${property}`] = false;
-    }
-    return defaultValues;
-  }, []);
-
-  const getDefaultValues = useCallback(
-    () =>
-      Object.keys(props.jsonSchemaBridge?.schema?.properties ?? {}).reduce((defaultValues, property) => {
-        if (Object.hasOwnProperty.call(props.jsonSchemaBridge?.schema?.properties[property], "$ref")) {
-          const refPath = props.jsonSchemaBridge?.schema?.properties[property].$ref!.split("/").pop() ?? "";
-          return getDefaultValueByType(
-            props.jsonSchemaBridge?.schema?.definitions?.[refPath].type,
-            defaultValues,
-            property
-          );
-        }
-        return getDefaultValueByType(
-          props.jsonSchemaBridge?.schema?.properties?.[property]?.type,
-          defaultValues,
-          property
-        );
-      }, {} as { [x: string]: any }),
-    []
-  );
-
-  useEffect(() => {
-    const defaultValues = getDefaultValues();
-    setModel({ ...defaultValues, ...props.model });
-    props.onModelUpdate({ ...defaultValues, ...props.model });
-  }, []);
-
   useImperativeHandle(forwardRef, () => ({
     submit: () => autoRowRef.current?.submit(),
-    reset: () => setModel(getDefaultValues()),
+    reset: (defaultValues?: object) => setModel({ ...defaultValues }),
   }));
 
   return (
