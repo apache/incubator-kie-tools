@@ -578,7 +578,7 @@ jobs:
 
       - name: "Build"
         run: |
-          lerna run build:prod --stream --no-private
+          lerna run build:prod --stream --no-private --concurrency 1
 
       - name: "Publish packages to the NPM registry"
         env:
