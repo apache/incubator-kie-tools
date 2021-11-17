@@ -26,7 +26,7 @@
     "ajv-errors": "^1.0.1",
     "uniforms": "^3.5.5",
     "uniforms-bridge-json-schema": "^3.5.5",
-    "uniforms-patternfly": "^4.7.3",
+    "uniforms-patternfly": "^4.7.4",
     "react-table": "^7.6.2",
     "@types/react-table": "^7.0.25",
     "lodash": "^4.17.21"

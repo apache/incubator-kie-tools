@@ -17,7 +17,7 @@
     "style-loader": "^3.2.1",
     "uniforms": "^3.5.5",
     "uniforms-bridge-json-schema": "^3.5.5",
-    "uniforms-patternfly": "^4.7.3"
+    "uniforms-patternfly": "^4.7.4"
   },
   "devDependencies": {
     "@types/node": "^15.0.2",
