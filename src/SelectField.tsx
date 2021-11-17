@@ -1,14 +1,15 @@
-import React, { Ref, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Checkbox,
   CheckboxProps,
   Radio,
   RadioProps,
   Select,
-  SelectProps,
+  SelectDirection,
   SelectOption,
-  SelectVariant,
   SelectOptionObject,
+  SelectProps,
+  SelectVariant
 } from '@patternfly/react-core';
 import { connectField, FieldProps, filterDOMProps } from 'uniforms';
 
@@ -53,6 +54,8 @@ type SelectInputProps = FieldProps<
     disabled?: boolean;
     error?: boolean;
     transform?: (value?: string) => string;
+    direction: SelectDirection;
+    menuAppendTo: HTMLElement;
   }
 >;
 
@@ -199,6 +202,8 @@ function SelectField(props: SelectFieldProps) {
       onToggle={() => setExpanded(!expanded)}
       onSelect={handleSelect}
       value={props.value || (props.fieldType === Array ? [] : undefined)}
+      menuAppendTo={props.menuAppendTo}
+      direction={props.direction}
     >
       {selectedOptions}
     </Select>
