@@ -236,7 +236,7 @@ export function NewWorkspaceFromUrlPage() {
                   <Spinner />
                 </Bullseye>
                 <br />
-                <Text component={TextVariants.p}>{`Importing workspace from '${queryParamUrl}'`}</Text>
+                <Text component={TextVariants.p}>{`Importing from '${queryParamUrl}'`}</Text>
               </TextContent>
             </Bullseye>
           </PageSection>
