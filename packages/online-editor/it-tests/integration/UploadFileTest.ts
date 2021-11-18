@@ -76,7 +76,9 @@ describe("Upload file test", () => {
     cy.get("[aria-label='Edit file name']").focus().wait(1000).clear().type("testProcessEdited").type("{enter}");
 
     // wait until loading dialog disappears
-    cy.loadEditor();
+    cy.getEditor().within(() => {
+      cy.get("[data-testid='loading-screen-div']", { timeout: 60000 }).should("not.exist");
+    });
 
     // save and download process
     cy.get("[data-ouia-component-id='kebab-sm']").click();
@@ -139,7 +141,9 @@ describe("Upload file test", () => {
     cy.get("[aria-label='Edit file name']").focus().wait(1000).clear().type("testModelEdited").type("{enter}");
 
     // wait until loading dialog disappears
-    cy.loadEditor();
+    cy.getEditor().within(() => {
+      cy.get("[data-testid='loading-screen-div']", { timeout: 60000 }).should("not.exist");
+    });
 
     // save and download model
     cy.get("[data-ouia-component-id='kebab-sm']").click();
