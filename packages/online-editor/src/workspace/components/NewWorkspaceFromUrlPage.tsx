@@ -195,7 +195,7 @@ export function NewWorkspaceFromUrlPage() {
               repo: importableUrl.repo,
               owner: importableUrl.org,
               ref: importableUrl.branch,
-              path: importableUrl.filePath,
+              path: decodeURIComponent(importableUrl.filePath),
               headers: {
                 "If-None-Match": "",
               },
