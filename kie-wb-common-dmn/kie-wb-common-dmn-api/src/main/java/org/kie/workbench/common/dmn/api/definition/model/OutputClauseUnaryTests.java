@@ -29,6 +29,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -54,7 +55,7 @@ public class OutputClauseUnaryTests extends DMNModelInstrumentedBase implements 
     protected Id id;
 
     @Property
-    @FormField(labelKey = "text")
+    @FormField(labelKey = "text", type=TextAreaFieldType.class)
     protected Text text;
 
     protected ConstraintType constraintType;
