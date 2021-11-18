@@ -476,14 +476,9 @@
 
 .kogito--editor__notifications-panel-icon-position {
   right: 0;
-  top: 0;
+  top: 4px;
   position: absolute;
-  display: flex;
-  width: 50px;
-  height: 40px;
-  justify-content: space-around;
-  align-items: center;
-  padding: 7px;
+  padding: 8px;
   z-index: 999;
   user-select: none;
 }
@@ -631,4 +626,8 @@ section.kogito-tooling--settings-tab {
 
 .pf-c-expandable-section.plain .pf-c-expandable-section__toggle {
   color: black;
+}
+
+.kogito-tooling--problems-tab-content {
+  overflow: auto;
 }

@@ -24,6 +24,7 @@ import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-
 import { NotificationPanelTabContent } from "./NotificationsPanelTabContent";
 import { NotificationsApi } from "@kie-tooling-core/notifications/dist/api";
 import { useOnlineI18n } from "../../i18n";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 
 interface Props {
   tabNames: string[];
@@ -143,20 +144,21 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelRef, Props>
   return (
     <>
       <div className={"kogito--editor__notifications-panel-icon-position"}>
-        <div onClick={() => onRetractAll()}>
-          <Tooltip content={i18n.notificationsPanel.tooltip.retractAll}>
+        <Tooltip content={i18n.notificationsPanel.tooltip.retractAll}>
+          <Button variant={ButtonVariant.plain} onClick={onRetractAll} className={"kogito-tooling--masthead-hoverable"}>
             <AngleUpIcon />
-          </Tooltip>
-        </div>
-        <div onClick={() => onExpandAll()}>
-          <Tooltip content={i18n.notificationsPanel.tooltip.expandAll}>
+          </Button>
+        </Tooltip>
+        <Tooltip content={i18n.notificationsPanel.tooltip.expandAll}>
+          <Button variant={ButtonVariant.plain} onClick={onExpandAll} className={"kogito-tooling--masthead-hoverable"}>
             <AngleDownIcon />
-          </Tooltip>
-        </div>
+          </Button>
+        </Tooltip>
       </div>
-      <Tabs activeKey={activeTab} onSelect={onSelectTab}>
+      <Tabs activeKey={activeTab} onSelect={onSelectTab} style={{ overflow: "initial" }}>
         {[...tabsMap.entries()].map(([tabName, tabRef], index) => (
           <Tab
+            className={"kogito-tooling--problems-tab-content"}
             key={`tab-${index}`}
             eventKey={tabName}
             title={
