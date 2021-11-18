@@ -15,23 +15,33 @@
  */
 
 import * as React from "react";
-import { useCallback, useImperativeHandle, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { PanelId } from "../EditorPageDockDrawer";
+import { Notification } from "@kie-tooling-core/notifications/dist/api";
 
 interface Props {
   isSelected: boolean;
   onChange: (id: PanelId) => void;
 }
 
+interface NotificationsWithPath {
+  path: string;
+  notifications: Notification[];
+}
+
 export interface NotificationsPanelDockToggleRef {
-  setNotificationsCount: React.Dispatch<React.SetStateAction<number>>;
+  getNotifications: () => Map<string, NotificationsWithPath>;
+  setNewNotifications: (tabName: string, notificationsWithPath: NotificationsWithPath) => void;
+  deleteNotificationsFromTab: (tabName: string) => void;
 }
 
 export const NotificationsPanelDockToggle = React.forwardRef<NotificationsPanelDockToggleRef, Props>(
   (props, forwardRef) => {
     const [notificationsCount, setNotificationsCount] = useState<number>(0);
+    const notifications = useMemo<Map<string, NotificationsWithPath>>(() => new Map(), []);
+
     const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLElement>) => {
       e.preventDefault();
       e.stopPropagation();
@@ -40,12 +50,34 @@ export const NotificationsPanelDockToggle = React.forwardRef<NotificationsPanelD
       updatedResult?.classList.remove("kogito--editor__notifications-panel-error-count-updated");
     }, []);
 
+    const setNewNotifications = useCallback(
+      (tabName: string, notificationsWithPath: NotificationsWithPath) => {
+        notifications.set(tabName, notificationsWithPath);
+        setNotificationsCount(
+          Array.from(notifications.values()).reduce((count, { notifications }) => count + notifications.length, 0)
+        );
+      },
+      [notifications]
+    );
+
+    const deleteNotificationsFromTab = useCallback(
+      (tabName: string) => {
+        notifications.delete(tabName);
+        setNotificationsCount(
+          Array.from(notifications.values()).reduce((count, { notifications }) => count + notifications.length, 0)
+        );
+      },
+      [notifications]
+    );
+
     useImperativeHandle(
       forwardRef,
       () => ({
-        setNotificationsCount,
+        getNotifications: () => notifications,
+        setNewNotifications,
+        deleteNotificationsFromTab,
       }),
-      [setNotificationsCount]
+      [deleteNotificationsFromTab, notifications, setNewNotifications]
     );
 
     return (

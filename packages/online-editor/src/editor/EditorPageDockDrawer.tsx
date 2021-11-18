@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { PropsWithChildren, useCallback, useImperativeHandle, useMemo, useState } from "react";
+import { PropsWithChildren, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { ToggleGroup } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { DmnRunnerMode } from "./DmnRunner/DmnRunnerStatus";
 import { useDmnRunnerState } from "./DmnRunner/DmnRunnerContext";
@@ -63,11 +63,33 @@ export const EditorPageDockDrawer = React.forwardRef<
   const [notificationsPanel, notificationsPanelRef] = useController<NotificationsPanelRef>();
 
   const notificationsPanelTabNames = useMemo(() => {
-    if (props.workspaceFile.extension.toLowerCase() === "dmn") {
+    if (
+      props.workspaceFile.extension.toLowerCase() === "dmn" &&
+      dmnRunnerState.isExpanded &&
+      dmnRunnerState.mode === DmnRunnerMode.FORM
+    ) {
       return [i18n.terms.validation, i18n.terms.execution];
     }
     return [i18n.terms.validation];
-  }, [props.workspaceFile.extension, i18n.terms.validation, i18n.terms.execution]);
+  }, [
+    props.workspaceFile.extension,
+    dmnRunnerState.isExpanded,
+    dmnRunnerState.mode,
+    i18n.terms.validation,
+    i18n.terms.execution,
+  ]);
+
+  useEffect(() => {
+    if (!notificationsPanelTabNames.includes(i18n.terms.execution)) {
+      notificationsToggle?.deleteNotificationsFromTab(i18n.terms.execution);
+    }
+    if (notificationsPanel && notificationsToggle) {
+      const notifications = notificationsToggle.getNotifications();
+      notifications.forEach((value, tabName) => {
+        notificationsPanel.getTab(tabName)?.kogitoNotifications_setNotifications(value.path, value.notifications);
+      });
+    }
+  }, [i18n.terms.execution, notificationsPanel, notificationsPanelTabNames, notificationsToggle]);
 
   const onDockChange = useCallback((id: PanelId) => {
     setPanel((previous) => {
@@ -78,20 +100,23 @@ export const EditorPageDockDrawer = React.forwardRef<
     });
   }, []);
 
+  const setNotifications = useCallback(
+    (tabName: string, path: string, notifications: Notification[]) => {
+      notificationsToggle?.setNewNotifications(tabName, { path, notifications });
+      notificationsPanel?.getTab(tabName)?.kogitoNotifications_setNotifications(path, notifications);
+    },
+    [notificationsPanel, notificationsToggle]
+  );
+
   useImperativeHandle(
     forwardRef,
     () => ({
       open: (panel: PanelId) => setPanel(panel),
       close: () => setPanel(PanelId.NONE),
       getNotificationsPanel: () => notificationsPanel,
-      setNotifications: (tabName: string, path: string, notifications: Notification[]) => {
-        notificationsPanel?.getTab(tabName)?.kogitoNotifications_setNotifications(path, notifications);
-        notificationsToggle?.setNotificationsCount(
-          (notificationsPanel?.getOtherTabsCount(tabName) ?? 0) + notifications.length
-        );
-      },
+      setNotifications,
     }),
-    [notificationsPanel, notificationsToggle]
+    [notificationsPanel, setNotifications]
   );
 
   return (

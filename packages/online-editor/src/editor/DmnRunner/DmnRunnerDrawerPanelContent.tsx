@@ -19,7 +19,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
-import { useDmnRunnerState, useDmnRunnerDispatch } from "./DmnRunnerContext";
+import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
@@ -177,8 +177,16 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   // Update outputs column on form change
   useEffect(() => {
-    updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]);
-  }, [dmnRunnerState.inputRows, dmnRunnerState.currentInputRowIndex, updateDmnRunnerResults]);
+    if (dmnRunnerState.isExpanded && dmnRunnerState.mode === DmnRunnerMode.FORM) {
+      updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]);
+    }
+  }, [
+    dmnRunnerState.inputRows,
+    dmnRunnerState.currentInputRowIndex,
+    updateDmnRunnerResults,
+    dmnRunnerState.isExpanded,
+    dmnRunnerState.mode,
+  ]);
 
   const previousFormError = usePrevious(dmnRunnerState.error);
   useEffect(() => {

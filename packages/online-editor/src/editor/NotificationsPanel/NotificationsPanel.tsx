@@ -33,7 +33,6 @@ interface Props {
 export interface NotificationsPanelRef {
   getTab: (name: string) => NotificationsApi | undefined;
   setActiveTab: React.Dispatch<React.SetStateAction<string>>;
-  getOtherTabsCount: (name: string) => number;
 }
 
 export const NotificationsPanel = React.forwardRef<NotificationsPanelRef, Props>((props, forwardRef) => {
@@ -42,23 +41,13 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelRef, Props>
   const [tabsNotificationsCount, setTabsNotificationsCount] = useState<Map<string, number>>(new Map());
   const tabs: Map<string, React.RefObject<NotificationsApi>> = useMemo(() => new Map(), []);
 
-  const getOtherTabsCount = useCallback(
-    (name: string) => {
-      return [...tabsNotificationsCount.entries()]
-        .filter(([tabName]) => tabName !== name)
-        .reduce((acc, [, count]) => acc + count, 0);
-    },
-    [tabsNotificationsCount]
-  );
-
   useImperativeHandle(
     forwardRef,
     () => ({
       getTab: (name: string) => tabs.get(name)?.current ?? undefined,
       setActiveTab: (name: string) => setActiveTab(name),
-      getOtherTabsCount: (name: string) => getOtherTabsCount(name),
     }),
-    [tabs, getOtherTabsCount]
+    [tabs]
   );
 
   const tabsMap: Map<string, React.RefObject<NotificationsApi>> = useMemo(
@@ -110,9 +99,6 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelRef, Props>
     (name: string, newQtt: number) => {
       setTabsNotificationsCount((prev) => {
         const newMap = new Map(prev);
-        if (prev.get(name) !== newQtt) {
-          // totalNotificationsSpanRef.current?.classList.add("kogito--editor__notifications-panel-error-count-updated");
-        }
         newMap.set(name, newQtt);
         if (hasChanged(newMap, prev)) {
           return newMap;
