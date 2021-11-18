@@ -100,12 +100,15 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
         `${trimmedNewFileNameWithoutExtension}.${props.workspaceFile.extension}`
       );
 
-      const exists = await workspaces.existsFile({
+      const hasConflictingFileName = await workspaces.existsFile({
         fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         relativePath: newRelativePath,
       });
-      setNewFileNameValid(!exists);
+
+      const hasForbiddenCharacters = !/^[\w\d_.\-()\s]+$/gi.test(newFileNameWithoutExtension);
+
+      setNewFileNameValid(!hasConflictingFileName && !hasForbiddenCharacters);
     },
     [props.workspaceFile, workspaces]
   );
@@ -272,7 +275,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                         <Tooltip
                           content={
                             <Text component={TextVariants.p}>
-                              {`A file already exists at this location. Please choose a different name.`}
+                              {`A file already exists at this location or this name has invalid characters. Please choose a different name.`}
                             </Text>
                           }
                           position={"bottom"}

@@ -43,6 +43,7 @@ import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHoo
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
@@ -84,6 +85,8 @@ import { Alerts, AlertsController } from "../alerts/Alerts";
 import { useController } from "../reactExt/Hooks";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useRoutes } from "../navigation/Hooks";
+import { ErrorBoundary } from "../reactExt/ErrorBoundary";
+import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -211,11 +214,13 @@ export function HomePage() {
                           .sort((a, b) => (new Date(a.lastUpdatedDateISO) < new Date(b.lastUpdatedDateISO) ? 1 : -1))
                           .map((workspace) => (
                             <StackItem key={workspace.workspaceId}>
-                              <WorkspaceCard
-                                workspaceId={workspace.workspaceId}
-                                onSelect={() => expandWorkspace(workspace.workspaceId)}
-                                isSelected={workspace.workspaceId === expandedWorkspaceId}
-                              />
+                              <ErrorBoundary error={<WorkspaceCardError workspace={workspace} />}>
+                                <WorkspaceCard
+                                  workspaceId={workspace.workspaceId}
+                                  onSelect={() => expandWorkspace(workspace.workspaceId)}
+                                  isSelected={workspace.workspaceId === expandedWorkspaceId}
+                                />
+                              </ErrorBoundary>
                             </StackItem>
                           ))}
                       </Stack>
@@ -255,6 +260,41 @@ export function WorkspaceLoadingCard() {
         <br />
         <Skeleton fontSize={"sm"} width={"70%"} />
       </CardBody>
+    </Card>
+  );
+}
+
+export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
+  const workspaces = useWorkspaces();
+  return (
+    <Card isSelected={false} isSelectable={true} isHoverable={true} isCompact={true}>
+      <CardHeader>
+        <CardHeaderMain>
+          <Flex>
+            <FlexItem>
+              <CardTitle>
+                <TextContent>
+                  <Text component={TextVariants.h3}>
+                    <ExclamationTriangleIcon />
+                    &nbsp;&nbsp;
+                    {`There was an error obtaining information for '${props.workspace.workspaceId}'`}
+                  </Text>
+                </TextContent>
+              </CardTitle>
+            </FlexItem>
+          </Flex>
+        </CardHeaderMain>
+        <CardActions>
+          <DeleteDropdownWithConfirmation
+            onDelete={() => workspaces.deleteWorkspace({ workspaceId: props.workspace.workspaceId })}
+            item={
+              <>
+                Delete <b>{`"${props.workspace.name}"`}</b>
+              </>
+            }
+          />
+        </CardActions>
+      </CardHeader>
     </Card>
   );
 }

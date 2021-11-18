@@ -24,7 +24,7 @@ interface State {
 interface Props {
   children: React.ReactNode;
   error: React.ReactNode;
-  setHasError: React.Dispatch<boolean>;
+  setHasError?: React.Dispatch<boolean>;
 }
 
 export class ErrorBoundary extends React.Component<Props, State> {
@@ -34,12 +34,12 @@ export class ErrorBoundary extends React.Component<Props, State> {
   }
 
   public reset() {
-    this.props.setHasError(false);
+    this.props.setHasError?.(false);
     this.setState({ hasError: false });
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    this.props.setHasError(true);
+    this.props.setHasError?.(true);
     console.error("Error", error, errorInfo);
   }
 
