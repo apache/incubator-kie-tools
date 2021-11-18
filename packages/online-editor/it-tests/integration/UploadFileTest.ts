@@ -21,7 +21,7 @@ describe("Upload file test", () => {
     cy.visit(`https://localhost:${buildEnv.onlineEditor.dev.port}/`);
   });
 
-  it("should upload BPMN file", () => {
+  it.skip("should upload BPMN file", () => {
     // upload bpmn file from fixtures directory by drag and drop
     cy.get("#upload-field").attachFile("testProcess.bpmn", { subjectType: "drag-n-drop" });
 
@@ -91,7 +91,7 @@ describe("Upload file test", () => {
     });
   });
 
-  it("should upload DMN file", () => {
+  it.skip("should upload DMN file", () => {
     // upload dmn file from fixtures directory by drag and drop
     cy.get("#upload-field").attachFile("testModel.dmn", { subjectType: "drag-n-drop" });
 
@@ -178,7 +178,7 @@ describe("Upload file test", () => {
     cy.get("[data-ouia-component-id='set-content-error-alert']").should("be.visible");
   });
 
-  it("should upload PMML file", () => {
+  it.skip("should upload PMML file", () => {
     // upload pmml file from fixtures directory by drag and drop
     cy.get("#upload-field").attachFile("testScoreCard.pmml", { subjectType: "drag-n-drop" });
 
