@@ -289,6 +289,20 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     return dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex];
   }, [dmnRunnerState.inputRows, dmnRunnerState.currentInputRowIndex]);
 
+  const onAddNewRow = useCallback(() => {
+    dmnRunnerDispatch.setInputRows((previousData: Array<object>) => {
+      const newData = [...previousData, {}];
+      dmnRunnerDispatch.setCurrentInputRowIndex(newData.length - 1);
+      selectRow(`Row ${newData.length}`);
+      return newData;
+    });
+  }, [dmnRunnerDispatch]);
+
+  const onChangeToTableView = useCallback(() => {
+    dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
+    props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
+  }, [dmnRunnerDispatch, props.editorPageDock]);
+
   return (
     <DrawerPanelContent
       id={"kogito-panel-content"}
@@ -364,14 +378,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                           <Button
                             className={"kogito-tooling--masthead-hoverable"}
                             variant={ButtonVariant.plain}
-                            onClick={() => {
-                              dmnRunnerDispatch.setInputRows((previousData: Array<object>) => {
-                                const newData = [...previousData, {}];
-                                dmnRunnerDispatch.setCurrentInputRowIndex(newData.length - 1);
-                                selectRow(`Row ${newData.length - 1}`);
-                                return newData;
-                              });
-                            }}
+                            onClick={onAddNewRow}
                           >
                             <PlusIcon />
                           </Button>
@@ -382,10 +389,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                           <Button
                             className={"kogito-tooling--masthead-hoverable"}
                             variant={ButtonVariant.plain}
-                            onClick={() => {
-                              dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
-                              props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
-                            }}
+                            onClick={onChangeToTableView}
                           >
                             <TableIcon />
                           </Button>
