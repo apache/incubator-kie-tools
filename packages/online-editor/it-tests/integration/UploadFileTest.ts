@@ -75,9 +75,9 @@ describe("Upload file test", () => {
     // rename process
     cy.get("[aria-label='Edit file name']").focus().wait(1000).clear().type("testProcessEdited").type("{enter}");
 
-    // wait until loading dialog disappears
+    // wait until the Properties tab is visible
     cy.getEditor().within(() => {
-      cy.get("[data-testid='loading-screen-div']", { timeout: 60000 }).should("not.exist");
+      cy.get("[data-title='Properties']", { timeout: 60000 }).should("be.visible");
     });
 
     // save and download process
@@ -140,9 +140,9 @@ describe("Upload file test", () => {
     // rename model
     cy.get("[aria-label='Edit file name']").focus().wait(1000).clear().type("testModelEdited").type("{enter}");
 
-    // wait until loading dialog disappears
+    // wait until the Properties tab is visible
     cy.getEditor().within(() => {
-      cy.get("[data-testid='loading-screen-div']", { timeout: 60000 }).should("not.exist");
+      cy.get("[data-title='Properties']", { timeout: 60000 }).should("be.visible");
     });
 
     // save and download model
