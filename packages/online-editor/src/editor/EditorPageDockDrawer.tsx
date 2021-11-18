@@ -32,6 +32,8 @@ import {
 import { DmnRunnerDockToggle } from "./DmnRunner/DmnRunnerDockToggle";
 import { useController } from "../reactExt/Hooks";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
+import { useKieToolingExtendedServices } from "../kieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { KieToolingExtendedServicesStatus } from "../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
 
 export enum PanelId {
   DMN_RUNNER_TABULAR = "dmn-runner-tabular",
@@ -119,6 +121,28 @@ export const EditorPageDockDrawer = React.forwardRef<
     [notificationsPanel, setNotifications]
   );
 
+  const kieToolingExtendedServices = useKieToolingExtendedServices();
+  const notificationsPanelIsDisabled = useMemo(() => {
+    return (
+      props.workspaceFile.extension.toLowerCase() === "bpmn" ||
+      (props.workspaceFile.extension.toLowerCase() === "dmn" &&
+        kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING)
+    );
+  }, [kieToolingExtendedServices.status, props.workspaceFile.extension]);
+
+  const notificationsPanelDisabledReason = useMemo(() => {
+    if (props.workspaceFile.extension.toLowerCase() === "bpmn") {
+      return "BPMN Editor doesn't have access to Problems tab";
+    }
+    if (
+      props.workspaceFile.extension.toLowerCase() === "dmn" &&
+      kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING
+    ) {
+      return "In order to have access to Problems tab you need to use the KIE Tooling Extended Services";
+    }
+    return "";
+  }, [kieToolingExtendedServices.status, props.workspaceFile.extension]);
+
   return (
     <>
       <Drawer isInline={true} position={"bottom"} isExpanded={panel !== PanelId.NONE}>
@@ -164,6 +188,8 @@ export const EditorPageDockDrawer = React.forwardRef<
             />
           )}
           <NotificationsPanelDockToggle
+            isDisabled={notificationsPanelIsDisabled}
+            disabledReason={notificationsPanelDisabledReason}
             ref={notificationsToggleRef}
             isSelected={panel === PanelId.NOTIFICATIONS_PANEL}
             onChange={(id) => onDockChange(id)}
