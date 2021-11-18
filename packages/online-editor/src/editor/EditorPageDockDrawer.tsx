@@ -47,7 +47,8 @@ interface EditorPageDockDrawerProps {
 }
 
 export interface EditorPageDockDrawerRef {
-  open: (panel: PanelId) => void;
+  open: (panelId: PanelId) => void;
+  toggle: (panelId: PanelId) => void;
   close: () => void;
   getNotificationsPanel: () => NotificationsPanelRef | undefined;
   setNotifications: (tabName: string, path: string, notifications: Notification[]) => void;
@@ -93,10 +94,10 @@ export const EditorPageDockDrawer = React.forwardRef<
     }
   }, [i18n.terms.execution, notificationsPanel, notificationsPanelTabNames, notificationsToggle]);
 
-  const onDockChange = useCallback((id: PanelId) => {
-    setPanel((previous) => {
-      if (previous !== id) {
-        return id;
+  const onToggle = useCallback((panel: PanelId) => {
+    setPanel((currentPanel) => {
+      if (currentPanel !== panel) {
+        return panel;
       }
       return PanelId.NONE;
     });
@@ -113,12 +114,13 @@ export const EditorPageDockDrawer = React.forwardRef<
   useImperativeHandle(
     forwardRef,
     () => ({
-      open: (panel: PanelId) => setPanel(panel),
+      open: (panelId: PanelId) => setPanel(panelId),
+      toggle: (panelId: PanelId) => onToggle(panelId),
       close: () => setPanel(PanelId.NONE),
       getNotificationsPanel: () => notificationsPanel,
       setNotifications,
     }),
-    [notificationsPanel, setNotifications]
+    [notificationsPanel, onToggle, setNotifications]
   );
 
   const kieToolingExtendedServices = useKieToolingExtendedServices();
@@ -155,7 +157,7 @@ export const EditorPageDockDrawer = React.forwardRef<
                     {panel === PanelId.NOTIFICATIONS_PANEL && (
                       <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
                     )}
-                    {panel === PanelId.DMN_RUNNER_TABULAR && (
+                    {panel === PanelId.DMN_RUNNER_TABULAR && dmnRunnerState.mode === DmnRunnerMode.TABLE && (
                       <DmnRunnerTabular
                         setPanelOpen={setPanel}
                         isReady={props.isEditorReady}
@@ -182,17 +184,14 @@ export const EditorPageDockDrawer = React.forwardRef<
       >
         <ToggleGroup>
           {dmnRunnerState.mode === DmnRunnerMode.TABLE && (
-            <DmnRunnerDockToggle
-              isSelected={panel === PanelId.DMN_RUNNER_TABULAR}
-              onChange={(id) => onDockChange(id)}
-            />
+            <DmnRunnerDockToggle isSelected={panel === PanelId.DMN_RUNNER_TABULAR} onChange={(id) => onToggle(id)} />
           )}
           <NotificationsPanelDockToggle
             isDisabled={notificationsPanelIsDisabled}
             disabledReason={notificationsPanelDisabledReason}
             ref={notificationsToggleRef}
             isSelected={panel === PanelId.NOTIFICATIONS_PANEL}
-            onChange={(id) => onDockChange(id)}
+            onChange={(id) => onToggle(id)}
           />
         </ToggleGroup>
       </div>

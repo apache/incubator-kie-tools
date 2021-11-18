@@ -213,12 +213,12 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   ]);
 
   const openValidationTab = useCallback(() => {
-    props.editorPageDock?.open(PanelId.NOTIFICATIONS_PANEL);
+    props.editorPageDock?.toggle(PanelId.NOTIFICATIONS_PANEL);
     props.editorPageDock?.getNotificationsPanel()?.setActiveTab(i18n.terms.validation);
   }, [props.editorPageDock, i18n]);
 
   const openExecutionTab = useCallback(() => {
-    props.editorPageDock?.open(PanelId.NOTIFICATIONS_PANEL);
+    props.editorPageDock?.toggle(PanelId.NOTIFICATIONS_PANEL);
     props.editorPageDock?.getNotificationsPanel()?.setActiveTab(i18n.terms.execution);
   }, [props.editorPageDock, i18n]);
 
@@ -308,7 +308,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const onChangeToTableView = useCallback(() => {
     dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
-    props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
+    props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABULAR);
   }, [dmnRunnerDispatch, props.editorPageDock]);
 
   return (

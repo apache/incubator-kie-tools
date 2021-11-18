@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownPosition,
+  DropdownToggle,
+  DropdownToggleAction,
+} from "@patternfly/react-core/dist/js/components/Dropdown";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
 import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
-import { useDmnRunnerState, useDmnRunnerDispatch } from "../DmnRunner/DmnRunnerContext";
+import { useDmnRunnerDispatch, useDmnRunnerState } from "../DmnRunner/DmnRunnerContext";
 import { FeatureDependentOnKieToolingExtendedServices } from "../../kieToolingExtendedServices/FeatureDependentOnKieToolingExtendedServices";
 import {
   DependentFeature,
@@ -29,10 +35,11 @@ import {
 } from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
 import { useSettings } from "../../settings/SettingsContext";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { DmnRunnerMode } from "../DmnRunner/DmnRunnerStatus";
 import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
+import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
+import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
@@ -51,7 +58,7 @@ export function KieToolingExtendedServicesButtons(props: Props) {
   const toggleDmnRunnerDrawer = useCallback(() => {
     if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
       if (dmnRunnerState.mode === DmnRunnerMode.TABLE) {
-        props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
+        props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABULAR);
       } else {
         dmnRunnerDispatch.setExpanded((prev) => !prev);
       }
@@ -80,9 +87,11 @@ export function KieToolingExtendedServicesButtons(props: Props) {
     );
   }, [kieToolingExtendedServices.status, settings.openshift.status]);
 
+  const [runModeOpen, setRunModeOpen] = useState<boolean>(false);
+
   return (
     <>
-      <FeatureDependentOnKieToolingExtendedServices isLight={true} position="bottom">
+      <FeatureDependentOnKieToolingExtendedServices isLight={true} position="top">
         <Dropdown
           className={isDevSandboxEnabled ? "pf-m-active" : ""}
           onSelect={() => dmnDevSandbox.setDropdownOpen(false)}
@@ -100,16 +109,59 @@ export function KieToolingExtendedServicesButtons(props: Props) {
           dropdownItems={dmnDevSandboxDropdownItems}
         />
       </FeatureDependentOnKieToolingExtendedServices>
-      <FeatureDependentOnKieToolingExtendedServices isLight={true} position="bottom">
-        <Button
-          id="dmn-runner-button"
-          variant={ButtonVariant.control}
-          onClick={toggleDmnRunnerDrawer}
-          className={dmnRunnerState.isExpanded ? "pf-m-active" : ""}
-          data-testid={"dmn-runner-button"}
-        >
-          {i18n.terms.run}
-        </Button>
+      {"  "}
+      <FeatureDependentOnKieToolingExtendedServices isLight={true} position="top">
+        <Dropdown
+          onSelect={() => setRunModeOpen(!runModeOpen)}
+          toggle={
+            <DropdownToggle
+              splitButtonItems={[
+                <DropdownToggleAction
+                  key={"dmn-runner-run-button"}
+                  id="dmn-runner-button"
+                  onClick={toggleDmnRunnerDrawer}
+                  className={dmnRunnerState.isExpanded ? "pf-m-active" : ""}
+                  data-testid={"dmn-runner-button"}
+                >
+                  {i18n.terms.run}
+                </DropdownToggleAction>,
+              ]}
+              splitButtonVariant="action"
+              onToggle={(isOpen) => setRunModeOpen(isOpen)}
+            />
+          }
+          isOpen={runModeOpen}
+          dropdownItems={[
+            <DropdownItem
+              key={"form-view"}
+              component={"button"}
+              icon={<ListIcon />}
+              onClick={() => {
+                if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
+                  dmnRunnerDispatch.setMode(DmnRunnerMode.FORM);
+                  props.editorPageDock?.close();
+                  dmnRunnerDispatch.setExpanded(true);
+                }
+              }}
+            >
+              as Form
+            </DropdownItem>,
+            <DropdownItem
+              key={"table-view"}
+              component={"button"}
+              icon={<TableIcon />}
+              onClick={() => {
+                if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
+                  dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
+                  props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
+                  dmnRunnerDispatch.setExpanded(true);
+                }
+              }}
+            >
+              as Table
+            </DropdownItem>,
+          ]}
+        />
       </FeatureDependentOnKieToolingExtendedServices>
     </>
   );
