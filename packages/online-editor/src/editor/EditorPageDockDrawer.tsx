@@ -124,23 +124,25 @@ export const EditorPageDockDrawer = React.forwardRef<
       <Drawer isInline={true} position={"bottom"} isExpanded={panel !== PanelId.NONE}>
         <DrawerContent
           panelContent={
-            <DrawerPanelContent style={{ height: "100%" }} isResizable={true}>
-              {props.isEditorReady && (
-                <>
-                  {panel === PanelId.NOTIFICATIONS_PANEL && (
-                    <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
-                  )}
-                  {panel === PanelId.DMN_RUNNER_TABULAR && (
-                    <DmnRunnerTabular
-                      setPanelOpen={setPanel}
-                      isReady={props.isEditorReady}
-                      dmnRunnerResults={dmnRunnerResults}
-                      setDmnRunnerResults={setDmnRunnerResults}
-                    />
-                  )}
-                </>
-              )}
-            </DrawerPanelContent>
+            panel !== PanelId.NONE && (
+              <DrawerPanelContent style={{ height: "100%" }} isResizable={true}>
+                {props.isEditorReady && (
+                  <>
+                    {panel === PanelId.NOTIFICATIONS_PANEL && (
+                      <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
+                    )}
+                    {panel === PanelId.DMN_RUNNER_TABULAR && (
+                      <DmnRunnerTabular
+                        setPanelOpen={setPanel}
+                        isReady={props.isEditorReady}
+                        dmnRunnerResults={dmnRunnerResults}
+                        setDmnRunnerResults={setDmnRunnerResults}
+                      />
+                    )}
+                  </>
+                )}
+              </DrawerPanelContent>
+            )
           }
         >
           {props.children}
