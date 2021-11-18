@@ -2,6 +2,7 @@
   "name": "@kogito-tooling/dashbuilder",
   "version": "0.0.0",
   "description": "",
+  "private": true,
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
