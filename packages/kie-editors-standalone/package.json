@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/kie-editors-standalone",
-  "version": "0.0.0",
+  "version": "0.15.0",
   "description": "",
   "license": "Apache-2.0",
   "files": [
@@ -13,14 +13,14 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kie-tooling-core/editor": "0.0.0",
-    "@kogito-tooling/kie-bc-editors": "0.0.0"
+    "@kie-tooling-core/editor": "0.15.0",
+    "@kogito-tooling/kie-bc-editors": "0.15.0"
   },
   "devDependencies": {
     "@kogito-tooling/bpmn-editor-unpacked": "^8.5.3",
-    "@kogito-tooling/build-env": "0.0.0",
+    "@kogito-tooling/build-env": "0.15.0",
     "@kogito-tooling/dmn-editor-unpacked": "^8.5.3",
-    "@kogito-tooling/external-assets-base": "0.0.0"
+    "@kogito-tooling/external-assets-base": "0.15.0"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",

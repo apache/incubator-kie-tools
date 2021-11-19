@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/hub",
-  "version": "0.0.0",
+  "version": "0.15.0",
   "private": true,
   "description": "",
   "license": "Apache-2.0",
@@ -11,9 +11,9 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kie-tooling-core/patternfly-base": "0.0.0",
-    "@kogito-tooling/desktop": "0.0.0",
-    "@kogito-tooling/i18n-common-dictionary": "0.0.0",
+    "@kie-tooling-core/patternfly-base": "0.15.0",
+    "@kogito-tooling/desktop": "0.15.0",
+    "@kogito-tooling/i18n-common-dictionary": "0.15.0",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
     "electron": "^12.0.11",
@@ -21,7 +21,7 @@
     "react-router-dom": "^5.2.1"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
+    "@kogito-tooling/build-env": "0.15.0"
   },
   "scripts": {
     "start": "electron dist",

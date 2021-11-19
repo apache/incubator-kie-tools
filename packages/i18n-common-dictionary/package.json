@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/i18n-common-dictionary",
-  "version": "0.0.0",
+  "version": "0.15.0",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -19,10 +19,10 @@
     "build:prod": "yarn lint && rimraf dist && tsc -p tsconfig.prod.json && yarn test"
   },
   "dependencies": {
-    "@kie-tooling-core/i18n": "0.0.0"
+    "@kie-tooling-core/i18n": "0.15.0"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
+    "@kogito-tooling/build-env": "0.15.0"
   },
   "babel": {
     "presets": [

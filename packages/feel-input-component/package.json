@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/feel-input-component",
-  "version": "0.0.0",
+  "version": "0.15.0",
   "description": "FEEL (Friendly Enough Expression Language) input component (with code-completion/highlight support)",
   "license": "Apache-2.0",
   "main": "dist/index.js",
@@ -13,15 +13,15 @@
     "build:prod": "rimraf dist src && yarn copy:src && yarn lint && tsc -p tsconfig.prod.json && yarn test"
   },
   "dependencies": {
-    "@kie-tooling-core/editor": "0.0.0",
-    "@kie-tooling-core/monaco-editor": "0.0.0",
-    "@kie-tooling-core/i18n": "0.0.0",
-    "@kogito-tooling/i18n-common-dictionary": "0.0.0",
+    "@kie-tooling-core/editor": "0.15.0",
+    "@kie-tooling-core/i18n": "0.15.0",
+    "@kie-tooling-core/monaco-editor": "0.15.0",
+    "@kogito-tooling/i18n-common-dictionary": "0.15.0",
     "feel-input-component": "0.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
+    "@kogito-tooling/build-env": "0.15.0"
   }
 }

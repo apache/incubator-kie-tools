@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.dashbuilder</groupId>
     <artifactId>dashbuilder-renderers</artifactId>
-    <version>0.0.0</version>
+    <version>0.15.0</version>
   </parent>
 
   <artifactId>dashbuilder-renderer-default</artifactId>

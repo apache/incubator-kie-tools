@@ -19,7 +19,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito</groupId>
   <artifactId>dmn-dev-sandbox-quarkus</artifactId>
-  <version>0.0.0</version>
+  <version>0.15.0</version>
 
   <properties>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
