@@ -21,7 +21,7 @@ describe("Upload file test", () => {
     cy.visit(`https://localhost:${buildEnv.onlineEditor.dev.port}/`);
   });
 
-  it.skip("should upload BPMN file", () => {
+  it("should upload BPMN file", () => {
     // upload bpmn file from fixtures directory by drag and drop
     cy.get("#upload-field").attachFile("testProcess.bpmn", { subjectType: "drag-n-drop" });
 
@@ -72,26 +72,21 @@ describe("Upload file test", () => {
       });
     });
 
-    // rename process
-    cy.get("[aria-label='Edit file name']").focus().wait(1000).clear().type("testProcessEdited").type("{enter}");
+    // wait for autosave
+    cy.wait(1000);
 
-    // wait until the Properties tab is visible
-    cy.getEditor().within(() => {
-      cy.get("[data-title='Properties']", { timeout: 60000 }).should("be.visible");
-    });
-
-    // save and download process
+    // download process
     cy.get("[data-ouia-component-id='kebab-sm']").click();
     cy.get("[data-ouia-component-id='download-file-dropdown-button']").click();
 
     // check process content
-    cy.readFile("downloads/testProcessEdited.bpmn").should(($text) => {
+    cy.readFile("downloads/testProcess.bpmn").should(($text) => {
       expect($text).match(/<bpmn2:endEvent id="[A-Z0-9_-]*" name="End test node">/);
       expect($text).match(/<bpmn2:startEvent id="[A-Z0-9_-]*" name="Start test node">/);
     });
   });
 
-  it.skip("should upload DMN file", () => {
+  it("should upload DMN file", () => {
     // upload dmn file from fixtures directory by drag and drop
     cy.get("#upload-field").attachFile("testModel.dmn", { subjectType: "drag-n-drop" });
 
@@ -137,20 +132,15 @@ describe("Upload file test", () => {
       });
     });
 
-    // rename model
-    cy.get("[aria-label='Edit file name']").focus().wait(1000).clear().type("testModelEdited").type("{enter}");
+    // wait for autosave
+    cy.wait(1000);
 
-    // wait until the Properties tab is visible
-    cy.getEditor().within(() => {
-      cy.get("[data-title='Properties']", { timeout: 60000 }).should("be.visible");
-    });
-
-    // save and download model
+    // download model
     cy.get("[data-ouia-component-id='kebab-sm']").click();
     cy.get("[data-ouia-component-id='download-file-dropdown-button']").click();
 
     // check model content
-    cy.readFile("downloads/testModelEdited.dmn").should(($text) => {
+    cy.readFile("downloads/testModel.dmn").should(($text) => {
       expect($text).match(/<dmn:inputData id="[A-Z0-9_-]*" name="Test input data">/);
       expect($text).match(/<dmn:decision id="[A-Z0-9_-]*" name="Test decision node">/);
     });
@@ -178,7 +168,7 @@ describe("Upload file test", () => {
     cy.get("[data-ouia-component-id='set-content-error-alert']").should("be.visible");
   });
 
-  it.skip("should upload PMML file", () => {
+  it("should upload PMML file", () => {
     // upload pmml file from fixtures directory by drag and drop
     cy.get("#upload-field").attachFile("testScoreCard.pmml", { subjectType: "drag-n-drop" });
 
@@ -239,20 +229,15 @@ describe("Upload file test", () => {
       });
     });
 
-    // rename score card
-    cy.get("[aria-label='Edit file name']").focus().wait(1000).clear().type("testScoreCardEdited").type("{enter}");
+    // wait for autosave
+    cy.wait(1000);
 
-    // wait for reload
-    cy.getEditor().within(() => {
-      cy.get("[data-testid='editor-page']", { timeout: 60000 }).should("be.visible");
-    });
-
-    // save and download score card
+    // download score card
     cy.get("[data-ouia-component-id='kebab-sm']").click();
     cy.get("[data-ouia-component-id='download-file-dropdown-button']").click();
 
     // check score card content
-    cy.readFile("downloads/testScoreCardEdited.pmml").should(($text) => {
+    cy.readFile("downloads/testScoreCard.pmml").should(($text) => {
       expect($text).contains('<Characteristic name="Test Characteristic" reasonCode="3" baselineScore="22"/>');
       expect($text).contains('<Characteristic name="Second Test Characteristic" reasonCode="4" baselineScore="47"/>');
     });
