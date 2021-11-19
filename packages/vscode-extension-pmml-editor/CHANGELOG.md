@@ -1,3 +1,7 @@
+# 0.15.0 (alpha)
+
+- _(No new features)_
+
 # 0.14.1 (alpha)
 
 - [KOGITO-6226](https://issues.redhat.com/browse/KOGITO-6226) - Editor content sanitization
