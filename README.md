@@ -29,7 +29,7 @@ To start building the KIE Tooling Core project, you're going to need:
 - Java `11`
 - Go `1.16`
 
-*nix users will also need:
+\*nix users will also need:
 
 - `lib-gtk-3-dev`
 - `appindicator3-0.1` (`libappindicator3-dev` and `gir1.2-appindicator3-0.1`)
