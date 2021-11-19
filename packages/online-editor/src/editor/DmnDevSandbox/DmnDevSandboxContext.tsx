@@ -16,36 +16,30 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { DeployedModel } from "./DeployedModel";
-import { DmnDevSandboxConnectionConfig, EMPTY_CONFIG } from "./DmnDevSandboxConnectionConfig";
-import { DmnDevSandboxInstanceStatus } from "./DmnDevSandboxInstanceStatus";
+import { OpenShiftDeployedModel } from "../../openshift/OpenShiftDeployedModel";
+import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+
+export interface DeploymentFile {
+  path: string;
+  getFileContents: () => Promise<string>;
+}
 
 export interface DmnDevSandboxContextType {
-  deployments: DeployedModel[];
-  currentConfig: DmnDevSandboxConnectionConfig;
-  instanceStatus: DmnDevSandboxInstanceStatus;
+  deployments: OpenShiftDeployedModel[];
   isDropdownOpen: boolean;
-  isConfigModalOpen: boolean;
-  isConfigWizardOpen: boolean;
+  isDeploymentsDropdownOpen: boolean;
   isConfirmDeployModalOpen: boolean;
-  setDeployments: React.Dispatch<DeployedModel[]>;
-  setInstanceStatus: React.Dispatch<DmnDevSandboxInstanceStatus>;
-  setDropdownOpen: React.Dispatch<boolean>;
-  setConfigModalOpen: React.Dispatch<boolean>;
-  setConfigWizardOpen: React.Dispatch<boolean>;
-  setConfirmDeployModalOpen: React.Dispatch<boolean>;
-  onDeploy: (config: DmnDevSandboxConnectionConfig) => Promise<void>;
-  onCheckConfig: (config: DmnDevSandboxConnectionConfig, persist: boolean) => Promise<boolean>;
-  onResetConfig: () => void;
+  setDeployments: React.Dispatch<React.SetStateAction<OpenShiftDeployedModel[]>>;
+  setDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setDeploymentsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setConfirmDeployModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  deploy: (workspaceFile: WorkspaceFile) => Promise<boolean>;
 }
 
 export const DmnDevSandboxContext = React.createContext<DmnDevSandboxContextType>({
   deployments: [],
-  currentConfig: EMPTY_CONFIG,
-  instanceStatus: DmnDevSandboxInstanceStatus.UNAVAILABLE,
   isDropdownOpen: false,
-  isConfigModalOpen: false,
-  isConfigWizardOpen: false,
+  isDeploymentsDropdownOpen: false,
   isConfirmDeployModalOpen: false,
 } as any);
 

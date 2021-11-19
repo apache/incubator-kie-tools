@@ -98,30 +98,15 @@ export function SingleEditorApp(props: {
 
   const openExternalEditor = useCallback(() => {
     props.getFileContents().then((fileContent) => {
-      globals.externalEditorManager?.open(props.getFileName(), fileContent!, props.readonly);
+      globals.externalEditorManager?.open?.(props.getFileName(), fileContent!, props.readonly);
     });
   }, [globals.externalEditorManager]);
 
   const linkToExternalEditor = useMemo(() => {
-    return globals.externalEditorManager?.getLink(
+    return globals.externalEditorManager?.getLink?.(
       `${props.fileInfo.org}/${props.fileInfo.repo}/${props.fileInfo.gitRef}/${props.fileInfo.path}`
     );
   }, [globals.externalEditorManager]);
-
-  useEffect(() => {
-    const listener = globals.externalEditorManager?.listenToComeBack(
-      (fileName) => {
-        globals.dependencies.all.edit__githubFileNameInput()!.value = fileName;
-      },
-      (content) => {
-        isolatedEditor?.setContent(content);
-      }
-    );
-
-    return () => {
-      listener?.stopListening();
-    };
-  }, [globals.externalEditorManager, isolatedEditor]);
 
   const onEditorReady = useCallback(() => {
     setTextModeAvailable(true);

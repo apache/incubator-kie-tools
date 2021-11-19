@@ -32,6 +32,7 @@ export enum ChannelType {
   DESKTOP = "DESKTOP",
   EMBEDDED = "EMBEDDED",
   OTHER = "OTHER",
+  ONLINE_MULTI_FILE = "ONLINE_MULTI_FILE",
 }
 
 export interface EditorInitArgs {

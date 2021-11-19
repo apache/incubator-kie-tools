@@ -83,7 +83,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                 data-testid="characteristics-toolbar__add-characteristic"
                 variant="primary"
                 onClick={() => onAddCharacteristic()}
-                data-ouia-component-id="add-characteristic"
+                ouiaId="add-characteristic"
               >
                 Add Characteristic
               </Button>

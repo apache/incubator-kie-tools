@@ -1,0 +1,34 @@
+{
+  "name": "@kogito-tooling/boxed-expression-component",
+  "version": "0.0.0",
+  "description": "The Boxed Expression editor component provides the possibility to edit the decision logic for decisions and BKMs nodes.",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "copy:src": "copyfiles -u 5 \"../../node_modules/boxed-expression-component/src/**/*\" src/",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
+    "build:dev": "rimraf dist src && yarn copy:src && yarn copy:css && tsc -p tsconfig.dev.json",
+    "build:prod": "rimraf dist src && yarn copy:src && yarn copy:css && yarn lint && tsc -p tsconfig.prod.json && yarn test"
+  },
+  "dependencies": {
+    "@kie-tooling-core/i18n": "0.0.0",
+    "@kie-tooling-core/patternfly-base": "0.0.0",
+    "@kie-tooling-core/monaco-editor": "0.0.0",
+    "@kogito-tooling/i18n-common-dictionary": "0.0.0",
+    "@kogito-tooling/feel-input-component": "0.0.0",
+    "boxed-expression-component": "0.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-id-generator": "^3.0.1",
+    "react-resizable": "^1.11.0",
+    "react-table": "^7.6.2"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0",
+    "@types/react-resizable": "^1.7.2",
+    "@types/react-table": "^7.0.25"
+  }
+}

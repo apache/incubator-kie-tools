@@ -15,7 +15,7 @@
  */
 
 import React, { useContext } from "react";
-import { connectField, context, HTMLFieldProps } from "uniforms/es5";
+import { connectField, context, HTMLFieldProps } from "uniforms/cjs";
 import { renderNestedInputFragmentWithContext } from "./rendering/RenderingUtils";
 import { getInputReference, renderField } from "./utils/Utils";
 import { InputReference, InputsContainer } from "../api";

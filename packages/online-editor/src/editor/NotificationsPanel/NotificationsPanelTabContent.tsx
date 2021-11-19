@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { Notification, NotificationsApi, NotificationSeverity } from "@kie-tooling-core/notifications/dist/api";
@@ -33,10 +49,7 @@ function variant(severity: NotificationSeverity) {
   }
 }
 
-export const RefForwardingNotificationPanelTabContent: React.RefForwardingComponent<NotificationsApi, Props> = (
-  props,
-  forwardingRef
-) => {
+export const NotificationPanelTabContent = React.forwardRef<NotificationsApi, Props>((props, forwardedRef) => {
   const [tabNotifications, setTabNotifications] = useState<Notification[]>([]);
 
   const createNotification = useCallback(
@@ -60,7 +73,7 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
     });
   }, []);
 
-  useImperativeHandle(forwardingRef, () => ({
+  useImperativeHandle(forwardedRef, () => ({
     kogitoNotifications_createNotification: createNotification,
     kogitoNotifications_setNotifications: setNotifications,
     kogitoNotifications_removeNotifications: removeNotifications,
@@ -120,9 +133,7 @@ export const RefForwardingNotificationPanelTabContent: React.RefForwardingCompon
       )}
     </>
   );
-};
-
-export const NotificationPanelTabContent = React.forwardRef(RefForwardingNotificationPanelTabContent);
+});
 
 interface NotificationDrawerGroupProps {
   path: string;
@@ -131,7 +142,7 @@ interface NotificationDrawerGroupProps {
   setAllExpanded: React.Dispatch<boolean | undefined>;
 }
 
-function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
+export function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const onExpand = useCallback(() => {
     setIsExpanded((prevExpanded) => !prevExpanded);

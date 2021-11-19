@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,565 +14,645 @@
  * limitations under the License.
  */
 
-import { File as UploadFile, newFile } from "@kie-tooling-core/editor/dist/channel";
-import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Card, CardBody, CardHeader, CardFooter } from "@patternfly/react-core/dist/js/components/Card";
-import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { FileUpload } from "@patternfly/react-core/dist/js/components/FileUpload";
-import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import {
-  Page,
-  PageHeader,
-  PageHeaderTools,
-  PageHeaderToolsGroup,
-  PageSection,
-  PageHeaderToolsItem,
-} from "@patternfly/react-core/dist/js/components/Page";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
-import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons/outlined-question-circle-icon";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { useHistory } from "react-router";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import {
+  Card,
+  CardActions,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  CardHeaderMain,
+  CardTitle,
+} from "@patternfly/react-core/dist/js/components/Card";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
+import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
+import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
+import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
+import { TaskIcon } from "@patternfly/react-icons/dist/js/icons/task-icon";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
+import { FileLabel } from "../workspace/components/FileLabel";
+import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
+import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
+import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import {
+  Drawer,
+  DrawerActions,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerContentBody,
+  DrawerHead,
+  DrawerPanelBody,
+  DrawerPanelContent,
+  DrawerSection,
+} from "@patternfly/react-core/dist/js/components/Drawer";
 import { Link } from "react-router-dom";
-import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
-import { GlobalContext } from "../common/GlobalContext";
-import { extractFileExtension, removeFileExtension } from "../common/utils";
-import { useOnlineI18n } from "../common/i18n";
+import { DeleteDropdownWithConfirmation } from "../editor/DeleteDropdownWithConfirmation";
+import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
+import { QueryParams } from "../navigation/Routes";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { RelativeDate } from "../dates/RelativeDate";
+import {
+  DataList,
+  DataListCell,
+  DataListItem,
+  DataListItemCells,
+  DataListItemRow,
+} from "@patternfly/react-core/dist/js/components/DataList";
+import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
+import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
+import { UploadCard } from "./UploadCard";
+import { ImportFromUrlCard } from "./ImportFromUrlCard";
+import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
+import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
+import { Alerts, AlertsController } from "../alerts/Alerts";
+import { useController } from "../reactExt/Hooks";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { useRoutes } from "../navigation/Hooks";
+import { ErrorBoundary } from "../reactExt/ErrorBoundary";
+import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
 
-interface Props {
-  onFileOpened: (file: UploadFile) => void;
-}
-
-enum InputFileUrlState {
-  INITIAL,
-  INVALID_URL,
-  INVALID_EXTENSION,
-  NOT_FOUND_URL,
-  CORS_NOT_AVAILABLE,
-  INVALID_GIST,
-  INVALID_GIST_EXTENSION,
-  VALIDATING,
-  VALID,
-}
-
-interface InputFileUrlStateType {
-  urlValidation: InputFileUrlState;
-  urlToOpen: string | undefined;
-}
-
-export function HomePage(props: Props) {
-  const context = useContext(GlobalContext);
+export function HomePage() {
+  const routes = useRoutes();
   const history = useHistory();
-  const { i18n } = useOnlineI18n();
+  const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
+  const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
+  const queryParams = useQueryParams();
 
-  const [uploadedFileName, setUploadedFileName] = useState("");
-  const [isUploadRejected, setIsUploadRejected] = useState(false);
-
-  const [inputFileUrl, setInputFileUrl] = useState("");
-  const [inputFileUrlState, setInputFileUrlState] = useState<InputFileUrlStateType>({
-    urlValidation: InputFileUrlState.INITIAL,
-    urlToOpen: undefined,
-  });
-
-  const onFileUpload = useCallback(
-    (
-      file: File,
-      fileName: string,
-      e:
-        | React.DragEvent<HTMLElement>
-        | React.ChangeEvent<HTMLTextAreaElement>
-        | React.MouseEvent<HTMLButtonElement, MouseEvent>
-    ) => {
-      e.stopPropagation();
-      e.preventDefault();
-
-      setUploadedFileName(fileName);
-      setIsUploadRejected(false);
-
-      const fileExtension = extractFileExtension(fileName);
-      if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
-        return;
-      }
-
-      props.onFileOpened({
-        isReadOnly: false,
-        fileExtension,
-        fileName: removeFileExtension(fileName),
-        getFileContents: () =>
-          new Promise<string | undefined>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (event: any) => resolve(event.target.result as string);
-            reader.readAsText(file);
-          }),
-      });
-      history.replace(context.routes.editor.url({ type: fileExtension }));
-    },
-    [context, history]
-  );
-
-  const onDropRejected = useCallback(() => setIsUploadRejected(true), []);
-
-  const createEmptyFile = useCallback(
-    (fileExtension: string) => {
-      props.onFileOpened(newFile(fileExtension));
-      history.replace(context.routes.editor.url({ type: fileExtension }));
-    },
-    [context, history]
-  );
-
-  const createEmptyBpmnFile = useCallback(() => {
-    createEmptyFile("bpmn");
-  }, [createEmptyFile]);
-
-  const createEmptyDmnFile = useCallback(() => {
-    createEmptyFile("dmn");
-  }, [createEmptyFile]);
-
-  const createEmptyPmmlFile = useCallback(() => {
-    createEmptyFile("pmml");
-  }, [createEmptyFile]);
-
-  const trySample = useCallback(
-    (fileExtension: string) => {
-      const fileName = "sample";
-      const filePath = `samples/${fileName}.${fileExtension}`;
-      props.onFileOpened({
-        isReadOnly: false,
-        fileExtension: fileExtension,
-        fileName: fileName,
-        getFileContents: () => fetch(filePath).then((response) => response.text()),
-      });
-      history.replace(context.routes.editor.url({ type: fileExtension }));
-    },
-    [context, history]
-  );
-
-  const tryBpmnSample = useCallback(() => {
-    trySample("bpmn");
-  }, [trySample]);
-
-  const tryDmnSample = useCallback(() => {
-    trySample("dmn");
-  }, [trySample]);
-
-  const tryPmmlSample = useCallback(() => {
-    trySample("pmml");
-  }, [trySample]);
-
-  const validateUrl = useCallback(async () => {
-    if (inputFileUrl.trim() === "") {
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.INITIAL,
-        urlToOpen: undefined,
-      });
-      return;
-    }
-
-    let url: URL;
-    try {
-      url = new URL(inputFileUrl);
-    } catch (e) {
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.INVALID_URL,
-        urlToOpen: undefined,
-      });
-      return;
-    }
-
-    if (context.githubService.isGist(inputFileUrl)) {
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.VALIDATING,
-        urlToOpen: undefined,
-      });
-
-      const gistId = context.githubService.isGistDefault(inputFileUrl)
-        ? context.githubService.extractGistId(inputFileUrl)
-        : context.githubService.extractGistIdFromRawUrl(inputFileUrl);
-
-      const gistFileName = context.githubService.isGistDefault(inputFileUrl)
-        ? context.githubService.extractGistFilename(inputFileUrl)
-        : context.githubService.extractGistFilenameFromRawUrl(inputFileUrl);
-
-      let rawUrl: string;
-      try {
-        rawUrl = await context.githubService.getGistRawUrlFromId(gistId, gistFileName);
-      } catch (e) {
-        setInputFileUrlState({
-          urlValidation: InputFileUrlState.INVALID_GIST,
-          urlToOpen: undefined,
-        });
-        return;
-      }
-
-      const gistExtension = extractFileExtension(new URL(rawUrl).pathname);
-      if (gistExtension && context.editorEnvelopeLocator.mapping.has(gistExtension)) {
-        setInputFileUrlState({
-          urlValidation: InputFileUrlState.VALID,
-          urlToOpen: rawUrl,
-        });
-        return;
-      }
-
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.INVALID_GIST_EXTENSION,
-        urlToOpen: undefined,
-      });
-      return;
-    }
-
-    const fileExtension = extractFileExtension(url.pathname);
-    if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.INVALID_EXTENSION,
-        urlToOpen: undefined,
-      });
-      return;
-    }
-
-    setInputFileUrlState({
-      urlValidation: InputFileUrlState.VALIDATING,
-      urlToOpen: undefined,
+  const closeExpandedWorkspace = useCallback(() => {
+    history.replace({
+      pathname: routes.home.path({}),
+      search: queryParams.without(QueryParams.EXPAND).toString(),
     });
-    if (context.githubService.isGithub(inputFileUrl)) {
-      try {
-        const rawUrl = await context.githubService.getGithubRawUrl(inputFileUrl);
-        setInputFileUrlState({
-          urlValidation: InputFileUrlState.VALID,
-          urlToOpen: rawUrl,
-        });
-        return;
-      } catch (err) {
-        setInputFileUrlState({
-          urlValidation: InputFileUrlState.NOT_FOUND_URL,
-          urlToOpen: undefined,
-        });
-        return;
-      }
-    }
+  }, [history, routes, queryParams]);
 
-    try {
-      if ((await fetch(inputFileUrl)).ok) {
-        setInputFileUrlState({
-          urlValidation: InputFileUrlState.VALID,
-          urlToOpen: inputFileUrl,
-        });
+  const expandWorkspace = useCallback(
+    (workspaceId: string) => {
+      const expand = workspaceId !== expandedWorkspaceId ? workspaceId : undefined;
+      if (!expand) {
+        closeExpandedWorkspace();
         return;
       }
 
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.NOT_FOUND_URL,
-        urlToOpen: undefined,
+      history.replace({
+        pathname: routes.home.path({}),
+        search: routes.home.queryString({ expand }),
       });
-    } catch (e) {
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.CORS_NOT_AVAILABLE,
-        urlToOpen: undefined,
-      });
-    }
-  }, [context.editorEnvelopeLocator.mapping, context.githubService, inputFileUrl]);
+    },
+    [closeExpandedWorkspace, history, routes, expandedWorkspaceId]
+  );
 
   useEffect(() => {
-    validateUrl();
-  }, [validateUrl]);
+    if (
+      workspaceDescriptorsPromise.data &&
+      !workspaceDescriptorsPromise.data.map((f) => f.workspaceId).includes(expandedWorkspaceId!)
+    ) {
+      closeExpandedWorkspace();
+    }
+  }, [workspaceDescriptorsPromise, closeExpandedWorkspace, expandedWorkspaceId]);
 
-  const inputFileFromUrlChanged = useCallback((fileUrl: string) => {
-    setInputFileUrl(fileUrl);
+  const buildInfo = useMemo(() => {
+    return process.env["WEBPACK_REPLACE__buildInfo"];
   }, []);
 
-  const isUrlInputTextValid = useMemo(
-    () =>
-      inputFileUrlState.urlValidation === InputFileUrlState.VALID ||
-      inputFileUrlState.urlValidation === InputFileUrlState.INITIAL ||
-      inputFileUrlState.urlValidation === InputFileUrlState.VALIDATING,
-    [inputFileUrlState]
-  );
-
-  const urlCanBeOpen = useMemo(() => inputFileUrlState.urlValidation === InputFileUrlState.VALID, [inputFileUrlState]);
-
-  const onInputFileFromUrlBlur = useCallback(() => {
-    if (inputFileUrl.trim() === "") {
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.INITIAL,
-        urlToOpen: undefined,
-      });
-    }
-  }, [inputFileUrl]);
-
-  const openFileFromUrl = useCallback(() => {
-    if (urlCanBeOpen && inputFileUrlState.urlToOpen) {
-      const fileExtension = extractFileExtension(new URL(inputFileUrlState.urlToOpen).pathname);
-      // FIXME: KOGITO-1202
-      window.location.href = `?file=${inputFileUrlState.urlToOpen}#/editor/${fileExtension}`;
-    }
-  }, [inputFileUrl, inputFileUrlState, urlCanBeOpen, inputFileUrlState]);
-
-  const helperMessageForInputFileFromUrlState = useMemo(() => {
-    switch (inputFileUrlState.urlValidation) {
-      case InputFileUrlState.VALIDATING:
-        return <AnimatedTripleDotLabel label={i18n.homePage.openUrl.validating} />;
-      default:
-        return "";
-    }
-  }, [inputFileUrlState, i18n]);
-
-  const helperInvalidMessageForInputFileFromUrlState = useMemo(() => {
-    switch (inputFileUrlState.urlValidation) {
-      case InputFileUrlState.INVALID_GIST_EXTENSION:
-        return i18n.homePage.openUrl.invalidGistExtension;
-      case InputFileUrlState.INVALID_EXTENSION:
-        return i18n.homePage.openUrl.invalidExtension;
-      case InputFileUrlState.INVALID_GIST:
-        return i18n.homePage.openUrl.invalidGist;
-      case InputFileUrlState.INVALID_URL:
-        return i18n.homePage.openUrl.invalidUrl;
-      case InputFileUrlState.NOT_FOUND_URL:
-        return i18n.homePage.openUrl.notFoundUrl;
-      case InputFileUrlState.CORS_NOT_AVAILABLE:
-        return i18n.homePage.openUrl.corsNotAvailable;
-      default:
-        return "";
-    }
-  }, [inputFileUrlState, i18n]);
-
-  const externalFileFormSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-      openFileFromUrl();
-    },
-    [inputFileUrl]
-  );
-
-  const logoProps = {
-    href: window.location.href.split("?")[0].split("#")[0],
-  };
-
-  const linkDropdownItems = [
-    <DropdownItem key="github-chrome-extension-dropdown-link">
-      <Link to={context.routes.downloadHub.url({})}>{i18n.homePage.dropdown.getHub}</Link>
-    </DropdownItem>,
-  ];
-
-  const userDropdownItems = [
-    <DropdownItem key="">
-      <a href={"https://groups.google.com/forum/#!forum/kogito-development"} target={"_blank"}>
-        {i18n.homePage.dropdown.onlineForum}
-        <ExternalLinkAltIcon className="pf-u-mx-sm" />
-      </a>
-    </DropdownItem>,
-  ];
-
-  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [isLinkDropdownOpen, setIsLinkDropdownOpen] = useState(false);
-
-  const headerToolbar = (
-    <PageHeaderTools>
-      <PageHeaderToolsGroup>
-        <PageHeaderToolsItem className="pf-u-display-none pf-u-display-flex-on-lg">
-          <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
-            {i18n.homePage.dropdown.getHub}
-          </Link>
-        </PageHeaderToolsItem>
-        <PageHeaderToolsItem className="pf-u-display-none-on-lg">
-          <Dropdown
-            isPlain={true}
-            position="right"
-            isOpen={isLinkDropdownOpen}
-            toggle={
-              <DropdownToggle
-                toggleIndicator={null}
-                onToggle={setIsLinkDropdownOpen}
-                aria-label="External links to hub"
+  return (
+    <OnlineEditorPage>
+      <PageSection>
+        <Split isWrappable={true} hasGutter={true}>
+          <SplitItem isFilled={true}>
+            <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
+              <TextContent>
+                <Text component={TextVariants.h1}>Create</Text>
+              </TextContent>
+              <br />
+              <Divider inset={{ default: "insetXl" }} />
+              <Gallery
+                hasGutter={true}
+                // 16px is the "Gutter" width.
+                minWidths={{ sm: "calc(33% - 16px)", default: "100%" }}
+                style={{ height: "calc(100% - 32px)" }}
               >
-                <ExternalLinkAltIcon />
-              </DropdownToggle>
-            }
-            dropdownItems={linkDropdownItems}
-          />
-        </PageHeaderToolsItem>
-        <PageHeaderToolsItem>
-          <Dropdown
-            isPlain={true}
-            position="right"
-            isOpen={isUserDropdownOpen}
-            toggle={
-              <DropdownToggle toggleIndicator={null} onToggle={setIsUserDropdownOpen} aria-label="Links">
-                <OutlinedQuestionCircleIcon />
-              </DropdownToggle>
-            }
-            dropdownItems={userDropdownItems}
-          />
-        </PageHeaderToolsItem>
-      </PageHeaderToolsGroup>
-    </PageHeaderTools>
+                <NewModelCard
+                  title={"Workflow"}
+                  extension={"bpmn"}
+                  description={"BPMN files are used to generate business workflows."}
+                />
+                <NewModelCard
+                  title={"Decision"}
+                  extension={"dmn"}
+                  description={"DMN files are used to generate decision models"}
+                />
+                <NewModelCard
+                  title={"Scorecard"}
+                  extension={"pmml"}
+                  description={"PMML files are used to generate scorecards"}
+                />
+              </Gallery>
+            </PageSection>
+          </SplitItem>
+          <SplitItem isFilled={true}>
+            <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
+              <TextContent>
+                <Text component={TextVariants.h1}>Import</Text>
+              </TextContent>
+              <br />
+              <Divider inset={{ default: "insetXl" }} />
+              <Gallery
+                hasGutter={true}
+                // 16px is the "Gutter" width.
+                minWidths={{ sm: "calc(50% - 16px)", default: "100%" }}
+                style={{ height: "calc(100% - 32px)" }}
+              >
+                <ImportFromUrlCard />
+                <UploadCard expandWorkspace={expandWorkspace} />
+              </Gallery>
+            </PageSection>
+          </SplitItem>
+        </Split>
+      </PageSection>
+      <PageSection isFilled={true} variant={"light"} hasOverflowScroll={true} style={{ paddingBottom: 0 }}>
+        <PromiseStateWrapper
+          promise={workspaceDescriptorsPromise}
+          rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
+          resolved={(workspaceDescriptors) => {
+            return (
+              <Drawer isExpanded={!!expandedWorkspaceId} isInline={true}>
+                <DrawerSection>
+                  <TextContent>
+                    <Text component={TextVariants.h1}>Recent models</Text>
+                  </TextContent>
+                  <br />
+                </DrawerSection>
+                <DrawerContent
+                  panelContent={
+                    <WorkspacesListDrawerPanelContent
+                      workspaceId={expandedWorkspaceId}
+                      onClose={closeExpandedWorkspace}
+                    />
+                  }
+                >
+                  <DrawerContentBody>
+                    {workspaceDescriptors.length > 0 && (
+                      <Stack hasGutter={true} style={{ padding: "10px" }}>
+                        {workspaceDescriptors
+                          .sort((a, b) => (new Date(a.lastUpdatedDateISO) < new Date(b.lastUpdatedDateISO) ? 1 : -1))
+                          .map((workspace) => (
+                            <StackItem key={workspace.workspaceId}>
+                              <ErrorBoundary error={<WorkspaceCardError workspace={workspace} />}>
+                                <WorkspaceCard
+                                  workspaceId={workspace.workspaceId}
+                                  onSelect={() => expandWorkspace(workspace.workspaceId)}
+                                  isSelected={workspace.workspaceId === expandedWorkspaceId}
+                                />
+                              </ErrorBoundary>
+                            </StackItem>
+                          ))}
+                      </Stack>
+                    )}
+                    {workspaceDescriptors.length === 0 && (
+                      <Bullseye>
+                        <EmptyState>
+                          <EmptyStateIcon icon={CubesIcon} />
+                          <Title headingLevel="h4" size="lg">
+                            {`Nothing here`}
+                          </Title>
+                          <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
+                        </EmptyState>
+                      </Bullseye>
+                    )}
+                  </DrawerContentBody>
+                </DrawerContent>
+              </Drawer>
+            );
+          }}
+        />
+      </PageSection>
+      {buildInfo && (
+        <div className={"kogito-tooling--build-info"}>
+          <Label>{buildInfo}</Label>
+        </div>
+      )}
+    </OnlineEditorPage>
   );
+}
 
-  const Header = (
-    <PageHeader
-      logo={<Brand src={"images/BusinessModeler_Logo_38x389.svg"} alt="Logo" />}
-      logoProps={logoProps}
-      headerTools={headerToolbar}
-    />
+export function WorkspaceLoadingCard() {
+  return (
+    <Card>
+      <CardBody>
+        <Skeleton fontSize={"sm"} width={"40%"} />
+        <br />
+        <Skeleton fontSize={"sm"} width={"70%"} />
+      </CardBody>
+    </Card>
   );
+}
+
+export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
+  const workspaces = useWorkspaces();
+  return (
+    <Card isSelected={false} isSelectable={true} isHoverable={true} isCompact={true}>
+      <CardHeader>
+        <CardHeaderMain>
+          <Flex>
+            <FlexItem>
+              <CardTitle>
+                <TextContent>
+                  <Text component={TextVariants.h3}>
+                    <ExclamationTriangleIcon />
+                    &nbsp;&nbsp;
+                    {`There was an error obtaining information for '${props.workspace.workspaceId}'`}
+                  </Text>
+                </TextContent>
+              </CardTitle>
+            </FlexItem>
+          </Flex>
+        </CardHeaderMain>
+        <CardActions>
+          <DeleteDropdownWithConfirmation
+            onDelete={() => workspaces.deleteWorkspace({ workspaceId: props.workspace.workspaceId })}
+            item={
+              <>
+                Delete <b>{`"${props.workspace.name}"`}</b>
+              </>
+            }
+          />
+        </CardActions>
+      </CardHeader>
+    </Card>
+  );
+}
+
+export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSelect: () => void }) {
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
+  const routes = useRoutes();
+  const history = useHistory();
+  const workspaces = useWorkspaces();
+  const [isHovered, setHovered] = useState(false);
+  const workspacePromise = useWorkspacePromise(props.workspaceId);
+
+  const editableFiles = useMemo(() => {
+    return (
+      workspacePromise.data?.files.filter((file) =>
+        [...editorEnvelopeLocator.mapping.keys()].includes(file.extension)
+      ) ?? []
+    );
+  }, [editorEnvelopeLocator, workspacePromise.data?.files]);
+
+  const workspaceName = useMemo(() => {
+    return workspacePromise.data ? workspacePromise.data.descriptor.name : null;
+  }, [workspacePromise.data]);
 
   return (
-    <Page header={Header} className="kogito--editor-landing">
-      <PageSection variant="dark" className="kogito--editor-landing__title-section pf-u-p-2xl-on-lg">
+    <PromiseStateWrapper
+      promise={workspacePromise}
+      pending={<WorkspaceLoadingCard />}
+      rejected={() => <>ERROR</>}
+      resolved={(workspace) => (
+        <>
+          {(editableFiles.length === 1 && workspace.descriptor.origin.kind === WorkspaceKind.LOCAL && (
+            <Card
+              isSelected={props.isSelected}
+              isSelectable={true}
+              onMouseOver={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+              isHoverable={true}
+              isCompact={true}
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                history.push({
+                  pathname: routes.workspaceWithFilePath.path({
+                    workspaceId: editableFiles[0].workspaceId,
+                    fileRelativePath: editableFiles[0].relativePathWithoutExtension,
+                    extension: editableFiles[0].extension,
+                  }),
+                });
+              }}
+            >
+              <CardHeader>
+                <Link
+                  to={routes.workspaceWithFilePath.path({
+                    workspaceId: editableFiles[0].workspaceId,
+                    fileRelativePath: editableFiles[0].relativePathWithoutExtension,
+                    extension: editableFiles[0].extension,
+                  })}
+                >
+                  <CardHeaderMain>
+                    <Flex>
+                      <FlexItem>
+                        <CardTitle>
+                          <TextContent>
+                            <Text component={TextVariants.h3}>
+                              <TaskIcon />
+                              &nbsp;&nbsp;
+                              {editableFiles[0].nameWithoutExtension}
+                            </Text>
+                          </TextContent>
+                        </CardTitle>
+                      </FlexItem>
+                      <FlexItem>
+                        <b>
+                          <FileLabel extension={editableFiles[0].extension} />
+                        </b>
+                      </FlexItem>
+                    </Flex>
+                  </CardHeaderMain>
+                </Link>
+                <CardActions>
+                  {isHovered && (
+                    <DeleteDropdownWithConfirmation
+                      onDelete={() => workspaces.deleteWorkspace({ workspaceId: props.workspaceId })}
+                      item={
+                        <Flex flexWrap={{ default: "nowrap" }}>
+                          <FlexItem>
+                            Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
+                          </FlexItem>
+                          <FlexItem>
+                            <b>
+                              <FileLabel extension={editableFiles[0].extension} />
+                            </b>
+                          </FlexItem>
+                        </Flex>
+                      }
+                    />
+                  )}
+                </CardActions>
+              </CardHeader>
+              <CardBody>
+                <TextContent>
+                  <Text component={TextVariants.p}>
+                    <b>{`Created: `}</b>
+                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.createdDateISO ?? "")} />
+                    <b>{`, Last updated: `}</b>
+                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.lastUpdatedDateISO ?? "")} />
+                  </Text>
+                </TextContent>
+              </CardBody>
+            </Card>
+          )) || (
+            <Card
+              isSelected={props.isSelected}
+              isSelectable={true}
+              onMouseOver={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+              isHoverable={true}
+              isCompact={true}
+              style={{ cursor: "pointer" }}
+              onClick={props.onSelect}
+            >
+              <CardHeader>
+                <CardHeaderMain>
+                  <Flex>
+                    <FlexItem>
+                      <CardTitle>
+                        <TextContent>
+                          <Text component={TextVariants.h3}>
+                            <FolderIcon />
+                            &nbsp;&nbsp;
+                            {workspaceName}
+                            &nbsp;&nbsp;
+                            <WorkspaceLabel descriptor={workspacePromise.data?.descriptor} />
+                          </Text>
+                        </TextContent>
+                      </CardTitle>
+                    </FlexItem>
+                    <FlexItem>
+                      <Text component={TextVariants.p}>
+                        {`${workspace.files.length} files, ${editableFiles?.length} models`}
+                      </Text>
+                    </FlexItem>
+                  </Flex>
+                </CardHeaderMain>
+
+                <CardActions>
+                  {isHovered && (
+                    <DeleteDropdownWithConfirmation
+                      onDelete={() => workspaces.deleteWorkspace({ workspaceId: props.workspaceId })}
+                      item={
+                        <>
+                          Delete <b>{`"${workspacePromise.data?.descriptor.name}"`}</b>
+                        </>
+                      }
+                    />
+                  )}
+                </CardActions>
+              </CardHeader>
+              <CardBody>
+                <TextContent>
+                  <Text component={TextVariants.p}>
+                    <b>{`Created: `}</b>
+                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.createdDateISO ?? "")} />
+                    <b>{`, Last updated: `}</b>
+                    <RelativeDate date={new Date(workspacePromise.data?.descriptor.lastUpdatedDateISO ?? "")} />
+                  </Text>
+                </TextContent>
+              </CardBody>
+            </Card>
+          )}
+        </>
+      )}
+    />
+  );
+}
+
+export function NewModelCard(props: { title: string; extension: SupportedFileExtensions; description: string }) {
+  const routes = useRoutes();
+
+  return (
+    <Card isFullHeight={true} isPlain={true} isLarge={true}>
+      <CardTitle>
+        <FileLabel style={{ fontSize: "0.8em" }} extension={props.extension} />
+      </CardTitle>
+      <CardBody>
         <TextContent>
-          <Title size="3xl" headingLevel="h1">
-            {i18n.homePage.header.title}
-          </Title>
-          <Text>{i18n.homePage.header.welcomeText}</Text>
-          <Text component={TextVariants.small} className="pf-u-text-align-right">
-            {`${i18n.terms.poweredBy} `}
-            <Brand
-              src={"images/kogito_logo_white.png"}
-              alt="Kogito Logo"
-              style={{ height: "1em", verticalAlign: "text-bottom" }}
-            />
-          </Text>
+          <Text component={TextVariants.p}>{props.description}</Text>
         </TextContent>
-      </PageSection>
-      <PageSection className="pf-u-px-2xl-on-lg">
-        <Gallery hasGutter={true} className="kogito--editor-landing__gallery">
-          <Card>
-            <CardHeader>
-              <Title headingLevel="h2" size="2xl">
-                {i18n.homePage.bpmnCard.title}
-              </Title>
-            </CardHeader>
-            <CardBody isFilled={false}>{i18n.homePage.bpmnCard.explanation}</CardBody>
-            <CardBody isFilled={true}>
-              <Button variant="link" isInline={true} onClick={tryBpmnSample} ouiaId="try-bpmn-sample-button">
-                {i18n.homePage.trySample}
-              </Button>
-            </CardBody>
-            <CardFooter>
-              <Button variant="secondary" onClick={createEmptyBpmnFile} ouiaId="new-bpmn-button">
-                {i18n.homePage.bpmnCard.createNew}
-              </Button>
-            </CardFooter>
-          </Card>
-          <Card>
-            <CardHeader>
-              <Title headingLevel="h2" size="2xl">
-                {i18n.homePage.dmnCard.title}
-              </Title>
-            </CardHeader>
-            <CardBody isFilled={false}>{i18n.homePage.dmnCard.explanation}</CardBody>
-            <CardBody isFilled={true}>
-              <Button variant="link" isInline={true} onClick={tryDmnSample} ouiaId="try-dmn-sample-button">
-                {i18n.homePage.trySample}
-              </Button>
-            </CardBody>
-            <CardFooter>
-              <Button variant="secondary" onClick={createEmptyDmnFile} ouiaId="new-dmn-button">
-                {i18n.homePage.dmnCard.createNew}
-              </Button>
-            </CardFooter>
-          </Card>
-          <Card>
-            <CardHeader>
-              <Title headingLevel="h2" size="2xl">
-                {i18n.homePage.pmmlCard.title}
-              </Title>
-            </CardHeader>
-            <CardBody isFilled={false}>{i18n.homePage.pmmlCard.explanation}</CardBody>
-            <CardBody isFilled={true}>
-              <Button variant="link" isInline={true} onClick={tryPmmlSample} ouiaId="try-pmml-sample-button">
-                {i18n.homePage.trySample}
-              </Button>
-            </CardBody>
-            <CardFooter>
-              <Button variant="secondary" onClick={createEmptyPmmlFile} ouiaId="new-pmml-button">
-                {i18n.homePage.pmmlCard.createNew}
-              </Button>
-            </CardFooter>
-          </Card>
-          <Card>
-            <CardHeader>
-              <Title headingLevel="h2" size="2xl">
-                {i18n.homePage.uploadFile.header}
-              </Title>
-            </CardHeader>
-            <CardBody>{i18n.homePage.uploadFile.body}</CardBody>
-            <CardFooter>
-              <Form>
-                <FormGroup
-                  fieldId={"file-upload-field"}
-                  helperText={i18n.homePage.uploadFile.helperText}
-                  helperTextInvalid={i18n.homePage.uploadFile.helperInvalidText}
-                  validated={isUploadRejected ? "error" : "default"}
+      </CardBody>
+      <CardFooter>
+        <Flex>
+          <Link to={{ pathname: routes.newModel.path({ extension: props.extension }) }}>
+            <Button isLarge={true} variant={ButtonVariant.secondary} ouiaId={`new-${props.extension}-button`}>
+              New {props.title}
+            </Button>
+          </Link>
+          <Link
+            to={{
+              pathname: routes.importModel.path({}),
+              search: routes.importModel.queryString({
+                url: `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
+                  type: props.extension,
+                })}`,
+              }),
+            }}
+          >
+            <Button
+              variant={ButtonVariant.link}
+              style={{ paddingLeft: "2px" }}
+              ouiaId={`try-${props.extension}-sample-button`}
+            >
+              Try sample
+            </Button>
+          </Link>
+        </Flex>
+      </CardFooter>
+    </Card>
+  );
+}
+
+export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | undefined; onClose: () => void }) {
+  const routes = useRoutes();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
+  const workspacePromise = useWorkspacePromise(props.workspaceId);
+
+  const otherFiles = useMemo(
+    () =>
+      (workspacePromise.data?.files ?? [])
+        .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
+        .filter((file) => ![...editorEnvelopeLocator.mapping.keys()].includes(file.extension)),
+    [editorEnvelopeLocator.mapping, workspacePromise.data?.files]
+  );
+
+  const models = useMemo(
+    () =>
+      (workspacePromise.data?.files ?? [])
+        .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
+        .filter((file) => [...editorEnvelopeLocator.mapping.keys()].includes(file.extension)),
+    [editorEnvelopeLocator.mapping, workspacePromise.data?.files]
+  );
+
+  const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
+  const [alerts, alertsRef] = useController<AlertsController>();
+
+  return (
+    <DrawerPanelContent isResizable={true} minSize={"40%"} maxSize={"80%"}>
+      <PromiseStateWrapper
+        promise={workspacePromise}
+        pending={
+          <DrawerPanelBody>
+            <Bullseye>
+              <Spinner />
+            </Bullseye>
+          </DrawerPanelBody>
+        }
+        resolved={(workspace) => (
+          <>
+            <Alerts width={"100%"} ref={alertsRef} />
+            <DrawerHead>
+              <Flex>
+                <FlexItem>
+                  <TextContent>
+                    <Text component={TextVariants.h3}>{`Models in '${workspacePromise.data?.descriptor.name}'`}</Text>
+                  </TextContent>
+                </FlexItem>
+                <FlexItem>
+                  <Dropdown
+                    isPlain={true}
+                    position={"left"}
+                    isOpen={isNewFileDropdownMenuOpen}
+                    toggle={
+                      <DropdownToggle
+                        className={"kogito-tooling--masthead-hoverable"}
+                        toggleIndicator={null}
+                        onToggle={setNewFileDropdownMenuOpen}
+                      >
+                        <PlusIcon />
+                      </DropdownToggle>
+                    }
+                  >
+                    <NewFileDropdownMenu
+                      alerts={alerts}
+                      workspaceId={workspace.descriptor.workspaceId}
+                      destinationDirPath={""}
+                      onAddFile={async () => setNewFileDropdownMenuOpen(false)}
+                    />
+                  </Dropdown>
+                </FlexItem>
+              </Flex>
+              {(workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST ||
+                workspace.descriptor.origin.kind === WorkspaceKind.GIT) && (
+                <TextContent>
+                  <Text component={TextVariants.small}>
+                    <i>{workspace.descriptor.origin.url.toString()}</i>
+                  </Text>
+                </TextContent>
+              )}
+              <DrawerActions>
+                <DrawerCloseButton onClick={props.onClose} />
+              </DrawerActions>
+            </DrawerHead>
+            <DrawerPanelBody>
+              <DataList aria-label="models-data-list">
+                {models.map((file) => (
+                  <Link
+                    key={file.relativePath}
+                    to={routes.workspaceWithFilePath.path({
+                      workspaceId: workspace.descriptor.workspaceId ?? "",
+                      fileRelativePath: file.relativePathWithoutExtension,
+                      extension: file.extension,
+                    })}
+                  >
+                    <FileDataListItem file={file} />
+                  </Link>
+                ))}
+              </DataList>
+              <br />
+              {otherFiles.length > 0 && (
+                <ExpandableSection
+                  toggleTextCollapsed="View other files"
+                  toggleTextExpanded="Hide other files"
+                  className={"plain"}
                 >
-                  <FileUpload
-                    id={"file-upload-field"}
-                    filenamePlaceholder={i18n.homePage.uploadFile.placeholder}
-                    filename={uploadedFileName}
-                    onChange={onFileUpload}
-                    dropzoneProps={{
-                      accept: [...context.editorEnvelopeLocator.mapping.keys()].map((ext) => "." + ext).join(", "),
-                      onDropRejected,
-                    }}
-                    validated={isUploadRejected ? "error" : "default"}
-                  />
-                </FormGroup>
-              </Form>
-            </CardFooter>
-          </Card>
-          <Card>
-            <CardHeader>
-              <Title headingLevel="h2" size="2xl">
-                {i18n.homePage.openUrl.openFromSource}
-              </Title>
-            </CardHeader>
-            <CardBody isFilled={false}>{i18n.homePage.openUrl.description}</CardBody>
-            <CardBody isFilled={true}>
-              <Form onSubmit={externalFileFormSubmit} disabled={!isUrlInputTextValid} spellCheck={false}>
-                <FormGroup
-                  label="URL"
-                  fieldId="url-text-input"
-                  data-testid="url-form-input"
-                  validated={isUrlInputTextValid ? "default" : "error"}
-                  helperText={helperMessageForInputFileFromUrlState}
-                  helperTextInvalid={helperInvalidMessageForInputFileFromUrlState}
-                >
-                  <TextInput
-                    isRequired={true}
-                    onBlur={onInputFileFromUrlBlur}
-                    validated={isUrlInputTextValid ? "default" : "error"}
-                    autoComplete={"off"}
-                    value={inputFileUrl}
-                    onChange={inputFileFromUrlChanged}
-                    type="url"
-                    data-testid="url-text-input"
-                    id="url-text-input"
-                    name="urlText"
-                    aria-describedby="url-text-input-helper"
-                    data-ouia-component-id="url-input"
-                  />
-                </FormGroup>
-              </Form>
-            </CardBody>
-            <CardFooter>
-              <Button
-                variant="secondary"
-                onClick={openFileFromUrl}
-                isDisabled={!urlCanBeOpen}
-                data-testid="open-url-button"
-                ouiaId="open-from-source-button"
-              >
-                {i18n.homePage.openUrl.openFromSource}
-              </Button>
-            </CardFooter>
-          </Card>
-        </Gallery>
-        <div className={"kogito-tooling--build-info"}>{process.env["WEBPACK_REPLACE__buildInfo"]}</div>
-      </PageSection>
-    </Page>
+                  <DataList aria-label="other-files-data-list">
+                    {otherFiles.map((file) => (
+                      <FileDataListItem key={file.relativePath} file={file} />
+                    ))}
+                  </DataList>
+                </ExpandableSection>
+              )}
+            </DrawerPanelBody>
+          </>
+        )}
+      />
+    </DrawerPanelContent>
+  );
+}
+
+export function FileDataListItem(props: { file: WorkspaceFile }) {
+  return (
+    <DataListItem>
+      <DataListItemRow>
+        <DataListItemCells
+          dataListCells={[
+            <DataListCell key="link" isFilled={false}>
+              <Flex flexWrap={{ default: "nowrap" }}>
+                <FlexItem>{props.file.nameWithoutExtension}</FlexItem>
+                <FlexItem>
+                  <FileLabel extension={props.file.extension} />
+                </FlexItem>
+              </Flex>
+              <TextContent>
+                <Text component={TextVariants.small}>{props.file.relativeDirPath.split("/").join(" > ")}</Text>
+              </TextContent>
+            </DataListCell>,
+          ]}
+        />
+      </DataListItemRow>
+    </DataListItem>
   );
 }

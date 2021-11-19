@@ -14,86 +14,88 @@
  * limitations under the License.
  */
 
-import { File } from "@kie-tooling-core/editor/dist/channel";
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
-import { Route, Switch } from "react-router";
+import { useMemo } from "react";
+import { Redirect, Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
-import { GithubService } from "./common/GithubService";
-import { GlobalContext } from "./common/GlobalContext";
-import { Routes } from "./common/Routes";
+import {
+  EditorEnvelopeLocatorContextProvider,
+  useEditorEnvelopeLocator,
+} from "./envelopeLocator/EditorEnvelopeLocatorContext";
 import { EditorPage } from "./editor/EditorPage";
-import { DownloadHubModal } from "./home/DownloadHubModal";
-import { HomePage } from "./home/HomePage";
+import { OnlineI18nContextProvider } from "./i18n";
 import { NoMatchPage } from "./NoMatchPage";
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
-import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
-import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
+import { KieToolingExtendedServicesContextProvider } from "./kieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
+import { SettingsContextProvider } from "./settings/SettingsContext";
+import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
+import { HomePage } from "./home/HomePage";
+import { NewWorkspaceWithEmptyFilePage } from "./workspace/components/NewWorkspaceWithEmptyFilePage";
+import { NewWorkspaceFromUrlPage } from "./workspace/components/NewWorkspaceFromUrlPage";
+import { DmnDevSandboxContextProvider } from "./editor/DmnDevSandbox/DmnDevSandboxContextProvider";
+import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
+import { useRoutes } from "./navigation/Hooks";
 
-interface Props {
-  file: File;
-  readonly: boolean;
-  external: boolean;
-  senderTabId?: string;
-  githubService: GithubService;
-  editorEnvelopeLocator: EditorEnvelopeLocator;
+export function App() {
+  return (
+    <HashRouter>
+      {nest(
+        [OnlineI18nContextProvider, {}],
+        [EditorEnvelopeLocatorContextProvider, {}],
+        [KieToolingExtendedServicesContextProvider, {}],
+        [SettingsContextProvider, {}],
+        [WorkspacesContextProvider, {}],
+        [DmnDevSandboxContextProvider, {}],
+        [NavigationContextProvider, {}],
+        [RoutesSwitch, {}]
+      )}
+    </HashRouter>
+  );
 }
 
-export function App(props: Props) {
-  const [file, setFile] = useState(props.file);
-  const routes = useMemo(() => new Routes(), []);
+function RoutesSwitch() {
+  const routes = useRoutes();
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
 
-  const onFileOpened = useCallback((fileOpened) => {
-    setFile(fileOpened);
-  }, []);
-
-  const onFileNameChanged = useCallback(
-    (fileName: string, fileExtension: string) => {
-      setFile({
-        isReadOnly: false,
-        fileExtension,
-        fileName,
-        getFileContents: file.getFileContents,
-      });
-    },
-    [file]
+  const supportedExtensions = useMemo(
+    () => Array.from(editorEnvelopeLocator.mapping.keys()).join("|"),
+    [editorEnvelopeLocator]
   );
 
   return (
-    <I18nDictionariesProvider
-      defaults={onlineI18nDefaults}
-      dictionaries={onlineI18nDictionaries}
-      initialLocale={navigator.language}
-      ctx={OnlineI18nContext}
-    >
-      <GlobalContext.Provider
-        value={{
-          file,
-          routes,
-          editorEnvelopeLocator: props.editorEnvelopeLocator,
-          readonly: props.readonly,
-          external: props.external,
-          senderTabId: props.senderTabId,
-          githubService: props.githubService,
-          isChrome: !!window.chrome,
-        }}
+    <Switch>
+      <Route path={routes.editor.path({ extension: `:extension(${supportedExtensions})` })}>
+        {({ match }) => <Redirect to={routes.newModel.path({ extension: match!.params.extension! })} />}
+      </Route>
+      <Route path={routes.newModel.path({ extension: `:extension(${supportedExtensions})` })}>
+        {({ match }) => <NewWorkspaceWithEmptyFilePage extension={match!.params.extension!} />}
+      </Route>
+      <Route path={routes.importModel.path({})}>
+        <NewWorkspaceFromUrlPage />
+      </Route>
+      <Route
+        path={routes.workspaceWithFilePath.path({
+          workspaceId: ":workspaceId",
+          fileRelativePath: `:fileRelativePath*`,
+          extension: `:extension(${supportedExtensions})`,
+        })}
       >
-        <HashRouter>
-          <Switch>
-            <Route path={routes.editor.url({ type: ":type" })}>
-              <EditorPage onFileNameChanged={onFileNameChanged} />
-            </Route>
-            <Route exact={true} path={routes.home.url({})}>
-              <HomePage onFileOpened={onFileOpened} />
-            </Route>
-            <Route exact={true} path={routes.downloadHub.url({})}>
-              <HomePage onFileOpened={onFileOpened} />
-              <DownloadHubModal />
-            </Route>
-            <Route component={NoMatchPage} />
-          </Switch>
-        </HashRouter>
-      </GlobalContext.Provider>
-    </I18nDictionariesProvider>
+        {({ match }) => (
+          <EditorPage
+            workspaceId={match!.params.workspaceId!}
+            fileRelativePath={`${match!.params.fileRelativePath}.${match!.params.extension}`}
+          />
+        )}
+      </Route>
+      <Route exact={true} path={routes.home.path({})}>
+        <HomePage />
+      </Route>
+      <Route component={NoMatchPage} />
+    </Switch>
   );
+}
+
+function nest(...components: Array<[(...args: any[]) => any, object]>) {
+  return components.reduceRight((acc, [Component, props]) => {
+    return <Component {...props}>{acc}</Component>;
+  }, <></>);
 }

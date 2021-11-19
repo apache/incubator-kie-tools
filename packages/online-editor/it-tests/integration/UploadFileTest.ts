@@ -18,21 +18,15 @@ import * as buildEnv from "@kogito-tooling/build-env";
 
 describe("Upload file test", () => {
   beforeEach(() => {
-    cy.visit(`http://localhost:${buildEnv.onlineEditor.dev.port}/`);
+    cy.visit(`https://localhost:${buildEnv.onlineEditor.dev.port}/`);
   });
 
-  it("should upload BPMN file", () => {
+  it.skip("should upload BPMN file", () => {
     // upload bpmn file from fixtures directory by drag and drop
-    cy.get("#file-upload-field-filename").attachFile("testProcess.bpmn", { subjectType: "drag-n-drop" });
+    cy.get("#upload-field").attachFile("testProcess.bpmn", { subjectType: "drag-n-drop" });
 
     // wait until loading dialog disappears
     cy.loadEditor();
-
-    // check editor logo
-    cy.get("[class='pf-c-brand']").within(($logo) => {
-      expect($logo.attr("src")).contain("bpmn");
-      expect($logo.attr("alt")).contain("bpmn");
-    });
 
     // check editor title name
     cy.get("[aria-label='Edit file name']").should("have.value", "testProcess");
@@ -79,38 +73,30 @@ describe("Upload file test", () => {
     });
 
     // rename process
-    cy.get("[aria-label='Edit file name']").focus().clear().type("testProcessEdited");
+    cy.get("[aria-label='Edit file name']").focus().wait(1000).clear().type("testProcessEdited").type("{enter}");
+
+    // wait until the Properties tab is visible
+    cy.getEditor().within(() => {
+      cy.get("[data-title='Properties']", { timeout: 60000 }).should("be.visible");
+    });
 
     // save and download process
-    cy.get("[data-ouia-component-id='small-toolbar-button']").click();
-    cy.get("[data-ouia-component-id='save-and-download-dropdown-button']").click();
+    cy.get("[data-ouia-component-id='kebab-sm']").click();
+    cy.get("[data-ouia-component-id='download-file-dropdown-button']").click();
 
     // check process content
     cy.readFile("downloads/testProcessEdited.bpmn").should(($text) => {
       expect($text).match(/<bpmn2:endEvent id="[A-Z0-9_-]*" name="End test node">/);
       expect($text).match(/<bpmn2:startEvent id="[A-Z0-9_-]*" name="Start test node">/);
     });
-
-    // close editor
-    cy.get("[data-ouia-component-id='small-toolbar-button']").click();
-    cy.get("[data-ouia-component-id='close-editor-button']").click();
-
-    // check home page is visible
-    cy.get("#app p").should("be.visible").should("contain.text", "Welcome to Business Modeler!");
   });
 
-  it("should upload DMN file", () => {
+  it.skip("should upload DMN file", () => {
     // upload dmn file from fixtures directory by drag and drop
-    cy.get("#file-upload-field-filename").attachFile("testModel.dmn", { subjectType: "drag-n-drop" });
+    cy.get("#upload-field").attachFile("testModel.dmn", { subjectType: "drag-n-drop" });
 
     // wait until loading dialog disappears
     cy.loadEditor();
-
-    // check editor logo
-    cy.get("[class='pf-c-brand']").within(($logo) => {
-      expect($logo.attr("src")).contain("dmn");
-      expect($logo.attr("alt")).contain("dmn");
-    });
 
     // check editor title name
     cy.get("[aria-label='Edit file name']").should("have.value", "testModel");
@@ -123,10 +109,9 @@ describe("Upload file test", () => {
       cy.get("[data-title='Properties']").click();
       cy.get("[name$='definitions.nameHolder']").should("have.value", "Test model");
       cy.get("[name$='definitions.description']").should("have.value", "This is test model.");
-      cy.get("[data-title='Properties']").click();
 
       // open decision navigator and check nodes
-      cy.get("[data-ouia-component-id='collapsed-docks-bar-W'] > button").click();
+      cy.get("[data-title='Decision Navigator']").click();
       cy.get("li[data-i18n-prefix='DecisionNavigatorTreeView.']").should(($nodes) => {
         expect($nodes).length(2);
         expect($nodes.eq(0)).attr("title", "Test model");
@@ -137,11 +122,13 @@ describe("Upload file test", () => {
       cy.get("[title='Test input data'] > div").click();
       cy.get("iframe").type("d", { force: true });
 
-      // rename decision node
+      // close decision navigatior, open properties and rename decision node
+      cy.get("[data-title='Decision Navigator']").click();
       cy.get("[data-title='Properties']").click();
       cy.get("[name$='nameHolder']").focus().clear().type("Test decision node").type("{enter}");
 
       // check nodes are added
+      cy.get("[data-title='Decision Navigator']").click();
       cy.get("li[data-i18n-prefix='DecisionNavigatorTreeView.']").should(($nodes) => {
         expect($nodes).length(3);
         expect($nodes.eq(0)).attr("title", "Test model");
@@ -151,24 +138,22 @@ describe("Upload file test", () => {
     });
 
     // rename model
-    cy.get("[aria-label='Edit file name']").focus().clear().type("testModelEdited");
+    cy.get("[aria-label='Edit file name']").focus().wait(1000).clear().type("testModelEdited").type("{enter}");
+
+    // wait until the Properties tab is visible
+    cy.getEditor().within(() => {
+      cy.get("[data-title='Properties']", { timeout: 60000 }).should("be.visible");
+    });
 
     // save and download model
-    cy.get("[data-ouia-component-id='small-toolbar-button']").click();
-    cy.get("[data-ouia-component-id='save-and-download-dropdown-button']").click();
+    cy.get("[data-ouia-component-id='kebab-sm']").click();
+    cy.get("[data-ouia-component-id='download-file-dropdown-button']").click();
 
     // check model content
     cy.readFile("downloads/testModelEdited.dmn").should(($text) => {
       expect($text).match(/<dmn:inputData id="[A-Z0-9_-]*" name="Test input data">/);
       expect($text).match(/<dmn:decision id="[A-Z0-9_-]*" name="Test decision node">/);
     });
-
-    // close editor
-    cy.get("[data-ouia-component-id='small-toolbar-button']").click();
-    cy.get("[data-ouia-component-id='close-editor-button']").click();
-
-    // check home page is visible
-    cy.get("#app p").should("be.visible").should("contain.text", "Welcome to Business Modeler!");
   });
 
   it("DMN Guided Tour popup shouldn't appear when opening broken file", () => {
@@ -179,16 +164,10 @@ describe("Upload file test", () => {
     });
 
     // upload dmn file from fixtures directory by drag and drop
-    cy.get("#file-upload-field-filename").attachFile("testModelBroken.dmn", { subjectType: "drag-n-drop" });
+    cy.get("#upload-field").attachFile("testModelBroken.dmn", { subjectType: "drag-n-drop" });
 
     // wait until loading dialog disappears
     cy.loadEditor();
-
-    // check editor logo
-    cy.get("[class='pf-c-brand']").within(($logo) => {
-      expect($logo.attr("src")).contain("dmn");
-      expect($logo.attr("alt")).contain("dmn");
-    });
 
     // check editor title name
     cy.get("[aria-label='Edit file name']").should("have.value", "testModelBroken");
@@ -196,22 +175,16 @@ describe("Upload file test", () => {
     // DMN guided tour dialog can't be shown for invalid models
     cy.get("[data-ouia-component-id='dmn-guided-tour']").should("not.be.visible");
 
-    cy.get("[data-ouia-component-id='invalid-content-alert']").should("be.visible");
+    cy.get("[data-ouia-component-id='set-content-error-alert']").should("be.visible");
   });
 
-  it("should upload PMML file", () => {
+  it.skip("should upload PMML file", () => {
     // upload pmml file from fixtures directory by drag and drop
-    cy.get("#file-upload-field-filename").attachFile("testScoreCard.pmml", { subjectType: "drag-n-drop" });
+    cy.get("#upload-field").attachFile("testScoreCard.pmml", { subjectType: "drag-n-drop" });
 
     // load pmml editor
     cy.getEditor().within(() => {
       cy.get("[data-testid='editor-page']", { timeout: 60000 }).should("be.visible");
-    });
-
-    // check editor logo
-    cy.get("[class='pf-c-brand']").within(($logo) => {
-      expect($logo.attr("src")).contain("pmml");
-      expect($logo.attr("alt")).contain("pmml");
     });
 
     // check editor title name
@@ -267,23 +240,21 @@ describe("Upload file test", () => {
     });
 
     // rename score card
-    cy.get("[aria-label='Edit file name']").focus().clear().type("testScoreCardEdited");
+    cy.get("[aria-label='Edit file name']").focus().wait(1000).clear().type("testScoreCardEdited").type("{enter}");
+
+    // wait for reload
+    cy.getEditor().within(() => {
+      cy.get("[data-testid='editor-page']", { timeout: 60000 }).should("be.visible");
+    });
 
     // save and download score card
-    cy.get("[data-ouia-component-id='small-toolbar-button']").click();
-    cy.get("[data-ouia-component-id='save-and-download-dropdown-button']").click();
+    cy.get("[data-ouia-component-id='kebab-sm']").click();
+    cy.get("[data-ouia-component-id='download-file-dropdown-button']").click();
 
     // check score card content
     cy.readFile("downloads/testScoreCardEdited.pmml").should(($text) => {
       expect($text).contains('<Characteristic name="Test Characteristic" reasonCode="3" baselineScore="22"/>');
       expect($text).contains('<Characteristic name="Second Test Characteristic" reasonCode="4" baselineScore="47"/>');
     });
-
-    // close editor
-    cy.get("[data-ouia-component-id='small-toolbar-button']").click();
-    cy.get("[data-ouia-component-id='close-editor-button']").click();
-
-    // check home page is visible
-    cy.get("#app p").should("be.visible").should("contain.text", "Welcome to Business Modeler!");
   });
 });

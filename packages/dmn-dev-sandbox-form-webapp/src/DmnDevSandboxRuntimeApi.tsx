@@ -15,15 +15,15 @@
  */
 
 import { DecisionResult } from "@kogito-tooling/form/dist/dmn";
+import { routes } from "./Routes";
 
 export interface FetchDmnResultArgs {
-  formUrl: string;
   modelName: string;
   inputs: any;
 }
 
 export async function fetchDmnResult(args: FetchDmnResultArgs): Promise<DecisionResult[]> {
-  const response = await fetch(`${args.formUrl}/${args.modelName}/dmnresult`, {
+  const response = await fetch(routes.dmnResult.path({ modelName: args.modelName }), {
     method: "POST",
     headers: {
       Accept: "application/json",

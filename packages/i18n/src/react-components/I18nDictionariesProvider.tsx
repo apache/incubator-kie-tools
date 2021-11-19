@@ -43,9 +43,14 @@ export const I18nDictionariesProvider = <D extends ReferenceDictionary>(props: I
     [i18n]
   );
 
-  return (
-    <props.ctx.Provider value={{ locale, setLocale: setNewLocale, i18n: i18n.getCurrent() }}>
-      {props.children}
-    </props.ctx.Provider>
+  const value = useMemo(
+    () => ({
+      locale,
+      setLocale: setNewLocale,
+      i18n: i18n.getCurrent(),
+    }),
+    [i18n, locale, setNewLocale]
   );
+
+  return <props.ctx.Provider value={value}>{props.children}</props.ctx.Provider>;
 };

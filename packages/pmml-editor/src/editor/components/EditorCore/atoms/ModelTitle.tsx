@@ -139,7 +139,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
                     placeholder={MODEL_NAME_NOT_SET}
                     onChange={setTitle}
                     onBlur={onCommitAndClose}
-                    data-ouia-component-id="set-model-name"
+                    ouiaId="set-model-name"
                   />
                 )}
               </FormGroup>

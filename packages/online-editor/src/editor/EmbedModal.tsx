@@ -15,16 +15,17 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
-import { useOnlineI18n } from "../common/i18n";
-import { useFileUrl } from "../common/Hooks";
-import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
-import { GlobalContext } from "../common/GlobalContext";
+import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { useOnlineI18n } from "../i18n";
+import { WorkspaceFile } from "../workspace/WorkspacesContext";
+import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
+import { GistOrigin, WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
 type SupportedStandaloneEditorFileExtensions = "bpmn" | "bpmn2" | "dmn";
 type StandaloneEditorLibraryName = "BpmnEditor" | "DmnEditor";
@@ -51,57 +52,63 @@ enum ContentSource {
   GIST,
 }
 
-interface Props {
+export function EmbedModal(props: {
+  workspace: WorkspaceDescriptor;
+  workspaceFile: WorkspaceFile;
   isOpen: boolean;
   onClose: () => void;
-  editor?: EmbeddedEditorRef;
-  fileExtension: string;
-}
-
-export function EmbedModal(props: Props) {
-  const context = useContext(GlobalContext);
+}) {
   const [embedCode, setEmbedCode] = useState("");
-  const [contentSource, setContentSource] = useState(ContentSource.CURRENT_CONTENT);
+  const [contentSource, setContentSource] = useState(
+    props.workspace.origin.kind === WorkspaceKind.GITHUB_GIST ? ContentSource.GIST : ContentSource.CURRENT_CONTENT
+  );
+  const [editorContent, setEditorContent] = useState("");
   const { i18n } = useOnlineI18n();
-  const fileUrl = useFileUrl();
 
-  const isGist = useMemo(() => context.githubService.isGist(fileUrl), [fileUrl, context]);
+  useEffect(() => {
+    if (props.isOpen) {
+      props.workspaceFile.getFileContentsAsString().then(setEditorContent);
+    }
+  }, [props.workspaceFile, props.isOpen]);
 
-  const isSupportedStandaloneEditorFileExtensions = useCallback(
-    (toBeDetermined: string): toBeDetermined is SupportedStandaloneEditorFileExtensions => {
-      return toBeDetermined === "bpmn" || toBeDetermined === "bpmn2" || toBeDetermined === "dmn";
-    },
-    []
-  );
+  const isGist = useMemo(() => props.workspace.origin.kind === WorkspaceKind.GITHUB_GIST, [props.workspace]);
 
-  const getCurrentContentScript = useCallback(
-    async (libraryName: string) => {
-      const editorContent = ((await props.editor?.getContent()) ?? "").replace(/(\r\n|\n|\r)/gm, "");
-      return `
-    <script>
-      ${libraryName}.open({container: document.body, readOnly: true, initialContent: '${editorContent}', origin: "*" })
-    </script>`;
-    },
-    [props.editor]
-  );
+  const getCurrentContentScript = useCallback((content: string, libraryName: string) => {
+    const fileContent = content.replace(/(\r\n|\n|\r)/gm, "");
+    return `
+<script>
+  ${libraryName}.open({container: document.body, readOnly: true, initialContent: '${fileContent}', origin: "*" })
+</script>
+`;
+  }, []);
 
   const getGithubGistScript = useCallback(
     (libraryName: string) => {
+      const gistId = (props.workspace.origin as GistOrigin).url.toString().split("/").pop()!.replace(".git", "");
       return `
-    <script>
-      fetch("${fileUrl}")
-        .then(response => response.text())
-        .then(content => ${libraryName}.open({container: document.body, readOnly: true, initialContent: content, origin: "*" }))
-    </script>`;
+<script type="module">
+  import {Octokit} from "https://cdn.skypack.dev/@octokit/rest";
+  async function main() {
+    const gist = await new Octokit().gists.get({ gist_id: "${gistId}" });
+    ${libraryName}.open({
+      container: document.body,
+      readOnly: true,
+      initialContent: await fetch(gist.data.files["${props.workspaceFile.relativePath}"].raw_url).then(r => r.text()),
+      origin: "*",
+      resources: new Map([...Object.keys(gist.data.files)].map(n => ([n, { contentType: "text", content: fetch(gist.data.files[n].raw_url).then(r => r.text()) }])))
+    });
+  }
+  main();
+</script>
+`;
     },
-    [fileUrl]
+    [props.workspace, props.workspaceFile]
   );
 
-  const getStandaloneEditorIframeSrcdoc = useCallback((script: string, scriptUrl: string) => {
+  const getStandaloneEditorIframeSrcdoc = useCallback((contentScript: string, standaloneEditorLibraryUrl: string) => {
     return `<!DOCTYPE html>
     <html lang="en">
     <head>
-      <script src="${scriptUrl}"></script>
       <title></title>
       <style>
         html,
@@ -114,93 +121,103 @@ export function EmbedModal(props: Props) {
           width: 100%;
         }
       </style>
+      <script src="${standaloneEditorLibraryUrl}"></script>
     </head>
     <body>
-      ${script}
+      ${contentScript}
     </body>
     </html>`;
   }, []);
 
-  const getStandaloneEditorIframeOuterHtml = useCallback(async () => {
-    if (!isSupportedStandaloneEditorFileExtensions(props.fileExtension)) {
-      return "";
+  useEffect(() => {
+    if (
+      props.workspaceFile.extension !== "bpmn" &&
+      props.workspaceFile.extension !== "bpmn2" &&
+      props.workspaceFile.extension !== "dmn"
+    ) {
+      return;
     }
 
     const iframe = document.createElement("iframe");
     iframe.width = "100%";
     iframe.height = "100%";
-    const { libraryName, scriptUrl } = editorStandaloneClassMapping.get(props.fileExtension)!;
+    iframe.style.border = "0";
+    const { libraryName, scriptUrl } = editorStandaloneClassMapping.get(props.workspaceFile.extension)!;
 
     const script =
       contentSource === ContentSource.CURRENT_CONTENT
-        ? await getCurrentContentScript(libraryName)
+        ? getCurrentContentScript(editorContent, libraryName)
         : getGithubGistScript(libraryName);
 
     iframe.srcdoc = getStandaloneEditorIframeSrcdoc(script, scriptUrl);
-    return iframe.outerHTML;
+    setEmbedCode(iframe.outerHTML);
   }, [
-    props.isOpen,
-    props.fileExtension,
     contentSource,
-    getGithubGistScript,
+    editorContent,
     getCurrentContentScript,
+    getGithubGistScript,
     getStandaloneEditorIframeSrcdoc,
-    isSupportedStandaloneEditorFileExtensions,
+    props.workspaceFile,
   ]);
-
-  useEffect(() => {
-    getStandaloneEditorIframeOuterHtml().then((outerHtml) => setEmbedCode(outerHtml));
-  }, [getStandaloneEditorIframeOuterHtml]);
 
   return (
     <Modal
-      variant={ModalVariant.small}
+      variant={ModalVariant.medium}
       aria-label={"Embed the editor and content in your page"}
       isOpen={props.isOpen}
       onClose={props.onClose}
       title={i18n.embedModal.title}
       description={i18n.embedModal.description}
-      actions={[
-        <Button key="cancel" variant="link" onClick={props.onClose}>
-          {i18n.terms.close}
-        </Button>,
-      ]}
     >
-      <Radio
-        aria-label="Current content source option"
-        id={"current-content"}
-        isChecked={contentSource === ContentSource.CURRENT_CONTENT}
-        name={"Current content"}
-        label={i18n.embedModal.source.current.label}
-        description={i18n.embedModal.source.current.description}
-        onChange={() => setContentSource(ContentSource.CURRENT_CONTENT)}
-      />
-      <Tooltip
-        aria-label={"Only available when editing a file from a GitHub gist"}
-        content={<p>{i18n.embedModal.source.gist.tooltip}</p>}
-        trigger={!isGist ? "mouseenter click" : ""}
-      >
+      <div style={{ padding: "0 16px 0 16px" }}>
         <Radio
-          aria-label="GitHub gist source option"
-          id={"github-gist"}
-          isDisabled={!isGist}
-          name={"GitHub gist"}
-          label={i18n.embedModal.source.gist.label}
-          isChecked={contentSource === ContentSource.GIST}
-          description={i18n.embedModal.source.gist.description}
-          onChange={() => setContentSource(ContentSource.GIST)}
+          aria-label="Current content source option"
+          id={"current-content"}
+          isChecked={contentSource === ContentSource.CURRENT_CONTENT}
+          name={"Current content"}
+          label={i18n.embedModal.source.current.label}
+          description={i18n.embedModal.source.current.description}
+          onChange={() => setContentSource(ContentSource.CURRENT_CONTENT)}
         />
-      </Tooltip>
-      <br />
-      <div className={"kogito--editor__embed-modal-embed-code"}>
-        <p className={"kogito--editor__embed-modal-embed-code-items"}>{i18n.embedModal.embedCode}</p>
-        <ClipboardCopy
-          className={"kogito--editor__embed-modal-embed-code-items"}
-          aria-label={"Embed code"}
-          type={"text"}
+        <br />
+        <Tooltip
+          aria-label={"Only available when editing a file from a GitHub gist"}
+          content={<p>{i18n.embedModal.source.gist.tooltip}</p>}
+          trigger={!isGist ? "mouseenter click" : ""}
         >
-          {embedCode}
-        </ClipboardCopy>
+          <Radio
+            aria-label="GitHub gist source option"
+            id={"github-gist"}
+            isDisabled={!isGist}
+            name={"GitHub gist"}
+            label={i18n.embedModal.source.gist.label}
+            isChecked={contentSource === ContentSource.GIST}
+            description={i18n.embedModal.source.gist.description}
+            onChange={() => setContentSource(ContentSource.GIST)}
+          />
+        </Tooltip>
+        <br />
+        <Stack hasGutter={true}>
+          <StackItem>
+            <TextContent>
+              <Text component={TextVariants.h4}>{i18n.embedModal.embedCode}</Text>
+            </TextContent>
+          </StackItem>
+          <StackItem>
+            <ClipboardCopy
+              isCode={true}
+              clickTip={"Copied"}
+              hoverTip={"Copy"}
+              variant={ClipboardCopyVariant.expansion}
+              aria-label={"Embed code"}
+            >
+              {embedCode
+                .split("\n")
+                .map((line) => line.trim())
+                .join("")}
+            </ClipboardCopy>
+          </StackItem>
+        </Stack>
       </div>
     </Modal>
   );

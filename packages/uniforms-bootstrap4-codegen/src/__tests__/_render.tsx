@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { render } from "@testing-library/react";
-import { context, Context } from "uniforms/es5";
+import { context, Context } from "uniforms/cjs";
 import createContext from "./_createContext";
 import { BootstrapCodeGenContext, bootstrapCodeGenContext } from "../uniforms/BootstrapCodeGenContext";
 import { FormElement, FormInput } from "../api";

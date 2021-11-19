@@ -18,18 +18,25 @@ import { DropdownGroup, DropdownItem } from "@patternfly/react-core/dist/js/comp
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { useOnlineI18n } from "../../common/i18n";
+import { useOnlineI18n } from "../../i18n";
 import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
-import { useDmnRunner } from "../DmnRunner/DmnRunnerContext";
-import { FeatureDependentOnKieToolingExtendedServices } from "./FeatureDependentOnKieToolingExtendedServices";
-import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
+import { useDmnRunnerState, useDmnRunnerDispatch } from "../DmnRunner/DmnRunnerContext";
+import { FeatureDependentOnKieToolingExtendedServices } from "../../kieToolingExtendedServices/FeatureDependentOnKieToolingExtendedServices";
+import {
+  DependentFeature,
+  useKieToolingExtendedServices,
+} from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { KieToolingExtendedServicesIcon } from "../../kieToolingExtendedServices/KieToolingExtendedServicesIcon";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 
-export function KieToolingExtendedServicesDropdownGroup() {
+export function KieToolingExtendedServicesDropdownGroup(props: { workspace: ActiveWorkspace | undefined }) {
   const { i18n } = useOnlineI18n();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
-  const dmnRunner = useDmnRunner();
-  const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems();
+  const dmnRunnerState = useDmnRunnerState();
+  const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems(props.workspace);
+  const dmnRunnerDispatch = useDmnRunnerDispatch();
 
   const isKieToolingExtendedServicesRunning = useMemo(
     () => kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING,
@@ -37,29 +44,25 @@ export function KieToolingExtendedServicesDropdownGroup() {
   );
 
   const onToggleDmnRunner = useCallback(() => {
-    kieToolingExtendedServices.closeDmnTour();
     if (isKieToolingExtendedServicesRunning) {
-      dmnRunner.setDrawerExpanded(!dmnRunner.isDrawerExpanded);
+      dmnRunnerDispatch.setExpanded((prev) => !prev);
       return;
     }
     kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
     kieToolingExtendedServices.setModalOpen(true);
-  }, [dmnRunner, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
+  }, [dmnRunnerDispatch, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
 
   return (
-    <DropdownGroup label={i18n.names.kieToolingExtendedServices}>
-      <DropdownItem
-        id="kie-tooling-extended-services-kebab-setup"
-        key={`kie-tooling-extended-services-dropdown-setup`}
-        component={"button"}
-        isDisabled={true}
-        ouiaId="setup-dropdown-button"
+    <>
+      <DropdownGroup
+        key={"dmn-runner-group"}
+        label={
+          <>
+            {"Run"}
+            <KieToolingExtendedServicesIcon />
+          </>
+        }
       >
-        {isKieToolingExtendedServicesRunning
-          ? i18n.kieToolingExtendedServices.dropdown.shortConnected(kieToolingExtendedServices.port)
-          : i18n.terms.disconnected}
-      </DropdownItem>
-      <DropdownGroup key={"dmn-runner-group"} label={i18n.names.dmnRunner}>
         <FeatureDependentOnKieToolingExtendedServices isLight={false} position="left">
           <DropdownItem
             id="dmn-runner-kebab-toggle"
@@ -68,13 +71,22 @@ export function KieToolingExtendedServicesDropdownGroup() {
             onClick={onToggleDmnRunner}
             ouiaId="toggle-dmn-runner-dropdown-button"
           >
-            <Text>{dmnRunner.isDrawerExpanded ? i18n.terms.close : i18n.terms.open}</Text>
+            <Text>{dmnRunnerState.isExpanded ? i18n.terms.close : i18n.terms.open}</Text>
           </DropdownItem>
         </FeatureDependentOnKieToolingExtendedServices>
       </DropdownGroup>
-      <DropdownGroup key={"dmn-dev-sandbox-group"} label={i18n.names.dmnDevSandbox}>
-        {dmnDevSandboxDropdownItems()}
+      <Divider key={"divider-kie-extended-service-dropdown-items"} />
+      <DropdownGroup
+        key={"dmn-dev-sandbox-group"}
+        label={
+          <>
+            {"Try on OpenShift"}
+            <KieToolingExtendedServicesIcon />
+          </>
+        }
+      >
+        {dmnDevSandboxDropdownItems}
       </DropdownGroup>
-    </DropdownGroup>
+    </>
   );
 }

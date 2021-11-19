@@ -29,7 +29,7 @@ export const AttributeToolbar = (props: AttributeToolbarProps) => {
   return (
     <Split>
       <SplitItem isFilled={true}>
-        <Title size="lg" headingLevel="h1" data-ouia-component-id="characteristic-navigation">
+        <Title size="lg" headingLevel="h1" ouiaId="characteristic-navigation">
           <a
             onClick={(e) => {
               e.preventDefault();

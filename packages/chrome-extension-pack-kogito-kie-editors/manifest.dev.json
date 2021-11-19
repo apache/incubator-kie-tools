@@ -9,12 +9,6 @@
       "js": ["content_scripts/github.js"],
       "matches": ["https://*.github.com/*"],
       "all_frames": true
-    },
-    {
-      "run_at": "document_idle",
-      "js": ["content_scripts/online-editor.js"],
-      "matches": ["http://localhost/*"],
-      "all_frames": true
     }
   ],
   "icons": { "16": "resources/icon_16.png", "48": "resources/icon_48.png", "128": "resources/icon_128.png" },

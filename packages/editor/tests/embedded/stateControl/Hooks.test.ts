@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { act, renderHook } from "@testing-library/react-hooks";
 import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
 import { StateControl } from "@kie-tooling-core/editor/dist/channel";
@@ -25,6 +26,7 @@ describe("useDirtyState", () => {
   beforeEach(() => {
     stateControl = new StateControl();
     editorRef = {
+      iframeRef: React.createRef(),
       isReady: true,
       getStateControl: () => stateControl,
       getEnvelopeServer: () => ({} as any),

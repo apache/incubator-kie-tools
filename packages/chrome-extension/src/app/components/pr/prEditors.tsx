@@ -17,15 +17,18 @@
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { PrEditorsApp } from "./PrEditorsApp";
-import { createAndGetMainContainer, removeAllChildren } from "../../utils";
+import { createAndGetMainContainer, openRepoInExternalEditorContainer, removeAllChildren } from "../../utils";
 import { Globals, Main } from "../common/Main";
 import {
   KOGITO_IFRAME_CONTAINER_PR_CLASS,
+  KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS,
   KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
   KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS,
 } from "../../constants";
 import { Dependencies } from "../../Dependencies";
 import { PrInfo } from "./IsolatedPrEditor";
+import { OpenInExternalEditorButton } from "../openRepoInExternalEditor/OpenInExternalEditorButton";
+import { GitHubPageType } from "../../github/GitHubPageType";
 
 export function renderPrEditorsApp(args: Globals & { contentPath: string }) {
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
@@ -44,6 +47,10 @@ export function renderPrEditorsApp(args: Globals & { contentPath: string }) {
       externalEditorManager={args.externalEditorManager}
     >
       <PrEditorsApp prInfo={parsePrInfo(args.dependencies)} contentPath={args.contentPath} />
+      {ReactDOM.createPortal(
+        <OpenInExternalEditorButton className={"btn btn-sm"} pageType={GitHubPageType.PR_FILES_OR_COMMITS} />,
+        openRepoInExternalEditorContainer(args.id, args.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()!)
+      )}
     </Main>,
     createAndGetMainContainer(args.id, args.dependencies.all.body()),
     () => args.logger.log("Mounted.")
@@ -89,4 +96,10 @@ function cleanup(id: string) {
   Array.from(document.querySelectorAll(`.${KOGITO_TOOLBAR_CONTAINER_PR_CLASS}.${id}`)).forEach((e) => {
     removeAllChildren(e);
   });
+
+  Array.from(document.querySelectorAll(`.${KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS}.${id}`)).forEach(
+    (e) => {
+      removeAllChildren(e);
+    }
+  );
 }

@@ -16,7 +16,7 @@
 
 import { EditorEnvelopeLocator, ChannelType } from "../../api";
 import * as React from "react";
-import { File } from "../../channel";
+import { EmbeddedEditorFile } from "../../channel";
 import { EmbeddedEditor, Props as EmbeddedEditorProps } from "./EmbeddedEditor";
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -33,7 +33,7 @@ type EmbeddedViewerChannelApiOverrides = Partial<
 >;
 
 export type Props = EmbeddedViewerChannelApiOverrides & {
-  file: File;
+  file: EmbeddedEditorFile;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   channelType: ChannelType;
   locale: string;

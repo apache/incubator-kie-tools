@@ -59,7 +59,7 @@ const ENV_VARS = {
   },
   CHROME_EXTENSION__onlineEditorUrl: {
     name: "CHROME_EXTENSION__onlineEditorUrl",
-    default: "http://localhost:9001",
+    default: "https://localhost:9001",
     description: "",
   },
   CHROME_EXTENSION__manifestFile: {
@@ -139,7 +139,7 @@ const ENV_VARS = {
   },
   DMN_DEV_SANDBOX__onlineEditorUrl: {
     name: "DMN_DEV_SANDBOX__onlineEditorUrl",
-    default: "http://0.0.0.0:9001",
+    default: "https://0.0.0.0:9001",
     description: "",
   },
   DMN_DEV_SANDBOX__gtmId: {
@@ -165,12 +165,12 @@ const ENV_VARS = {
   },
   QUARKUS_PLATFORM_version: {
     name: "QUARKUS_PLATFORM_version",
-    default: "2.2.3.Final",
+    default: "2.4.0.Final",
     description: "",
   },
   KOGITO_RUNTIME_version: {
     name: "KOGITO_RUNTIME_version",
-    default: "1.11.1.Final",
+    default: "1.12.0.Final",
     description: "",
   },
   DASHBUILDER__baseImageRegistry: {

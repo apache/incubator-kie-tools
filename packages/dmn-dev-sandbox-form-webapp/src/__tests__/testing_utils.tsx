@@ -16,6 +16,7 @@
 
 import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tooling-core/i18n/dist/react-components";
 import * as React from "react";
+import { AppContext, AppContextType } from "../AppContext";
 import { DmnFormI18n, DmnFormI18nContext, dmnFormI18nDefaults, dmnFormI18nDictionaries } from "../i18n";
 
 export function usingTestingDmnFormI18nContext(
@@ -36,5 +37,17 @@ export function usingTestingDmnFormI18nContext(
         {usedCtx.children}
       </I18nDictionariesProvider>
     ),
+  };
+}
+
+export function usingTestingAppContext(children: React.ReactElement, ctx?: Partial<AppContextType>) {
+  const usedCtx: AppContextType = {
+    fetchDone: true,
+    ...ctx,
+  };
+
+  return {
+    ctx: usedCtx,
+    wrapper: <AppContext.Provider value={usedCtx}>{children}</AppContext.Provider>,
   };
 }

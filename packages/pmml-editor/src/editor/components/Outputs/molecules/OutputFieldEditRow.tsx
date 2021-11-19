@@ -189,7 +189,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                       });
                     }
                   }}
-                  data-ouia-component-type="set-output-field-name"
+                  ouiaId="set-output-field-name"
                 />
               </FormGroup>
             </SplitItem>
@@ -199,7 +199,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                 fieldId="output-dataType-helper"
                 style={{ width: "12em" }}
                 isRequired={true}
-                data-ouia-component-type="select-output-field-type"
+                data-ouia-component-id="select-output-field-type"
               >
                 <Select
                   id="output-dataType"

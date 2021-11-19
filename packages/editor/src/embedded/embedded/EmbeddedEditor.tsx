@@ -26,7 +26,7 @@ import { useGuidedTourPositionProvider } from "@kie-tooling-core/guided-tour/dis
 import type * as CSS from "csstype";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useRef, useState } from "react";
-import { File, StateControl } from "../../channel";
+import { EmbeddedEditorFile, StateControl } from "../../channel";
 import { useEffectAfterFirstRender } from "../common";
 import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
 import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
@@ -44,7 +44,7 @@ type EmbeddedEditorChannelApiOverrides = Partial<
 >;
 
 export type Props = EmbeddedEditorChannelApiOverrides & {
-  file: File;
+  file: EmbeddedEditorFile;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   channelType: ChannelType;
   locale: string;
@@ -55,6 +55,7 @@ export type Props = EmbeddedEditorChannelApiOverrides & {
  */
 export type EmbeddedEditorRef = EditorApi & {
   isReady: boolean;
+  iframeRef: React.RefObject<HTMLIFrameElement>;
   getStateControl(): StateControl;
   getEnvelopeServer(): EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
 };
@@ -147,6 +148,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
       }
 
       return {
+        iframeRef,
         isReady: isReady,
         getStateControl: () => stateControl,
         getEnvelopeServer: () => envelopeServer,

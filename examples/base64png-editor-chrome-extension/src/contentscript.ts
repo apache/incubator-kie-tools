@@ -29,7 +29,7 @@ const resourcesPathPrefix = process.env["WEBPACK_REPLACE__targetOrigin"];
  */
 startExtension({
   name: "Kogito Base64 PNG React Editor",
-  extensionIconUrl: chrome.extension.getURL("/resources/kie-icon.png"),
+  extensionIconUrl: chrome.extension.getURL("/resources/kie_icon_rgb_fullcolor_default.svg"),
   githubAuthTokenCookieName: "github-oauth-token-base64-editors",
   editorEnvelopeLocator: {
     targetOrigin: window.location.origin,

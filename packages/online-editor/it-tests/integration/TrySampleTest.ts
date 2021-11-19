@@ -18,7 +18,7 @@ import * as buildEnv from "@kogito-tooling/build-env";
 
 describe("Try sample test", () => {
   beforeEach(() => {
-    cy.visit(`http://localhost:${buildEnv.onlineEditor.dev.port}/`);
+    cy.visit(`https://localhost:${buildEnv.onlineEditor.dev.port}/`);
   });
 
   it("should create BPMN sample", () => {
@@ -28,14 +28,8 @@ describe("Try sample test", () => {
     // wait until loading dialog disappears
     cy.loadEditor();
 
-    // check editor logo
-    cy.get("[class='pf-c-brand']").within(($logo) => {
-      expect($logo.attr("src")).contain("bpmn");
-      expect($logo.attr("alt")).contain("bpmn");
-    });
-
     // check editor title name
-    cy.get("[aria-label='Edit file name']").should("have.value", "sample");
+    cy.get("[aria-label='Edit file name']").should("have.value", "Sample");
 
     cy.getEditor().within(() => {
       // open properties panel and check values
@@ -67,21 +61,15 @@ describe("Try sample test", () => {
     // wait until loading dialog disappears
     cy.loadEditor();
 
-    // check editor logo
-    cy.get("[class='pf-c-brand']").within(($logo) => {
-      expect($logo.attr("src")).contain("dmn");
-      expect($logo.attr("alt")).contain("dmn");
-    });
-
     // check editor title name
-    cy.get("[aria-label='Edit file name']").should("have.value", "sample");
+    cy.get("[aria-label='Edit file name']").should("have.value", "Sample");
 
     // close DMN guided tour dialog
     cy.get("[data-ouia-component-id='dmn-guided-tour'] button[aria-label='Close']").click();
 
     cy.getEditor().within(() => {
       // open Decision navigator and check nodes
-      cy.get("[data-ouia-component-id='collapsed-docks-bar-W'] > button").click();
+      cy.get("[data-title='Decision Navigator']").click();
       cy.get("[data-i18n-prefix='DecisionNavigatorTreeView.']").should(($nodes) => {
         expect($nodes).length(21);
         expect($nodes.eq(0)).not.attr("title");
@@ -106,9 +94,6 @@ describe("Try sample test", () => {
         expect($nodes.eq(19)).attr("title", "Function");
         expect($nodes.eq(20)).attr("title", "Requested Product");
       });
-
-      // close Decision navigator
-      cy.get("[data-ouia-component-id='expanded-docks-bar-W'] > div > button ").click();
 
       // open properties panel, check values and close panel
       cy.get("[data-title='Properties']").click();
@@ -148,14 +133,8 @@ describe("Try sample test", () => {
       cy.get("[data-testid='editor-page']", { timeout: 60000 }).should("be.visible");
     });
 
-    // check editor logo
-    cy.get("[class='pf-c-brand']").within(($logo) => {
-      expect($logo.attr("src")).contain("pmml");
-      expect($logo.attr("alt")).contain("pmml");
-    });
-
     // check editor title name
-    cy.get("[aria-label='Edit file name']").should("have.value", "sample");
+    cy.get("[aria-label='Edit file name']").should("have.value", "Sample");
 
     cy.getEditor().within(() => {
       // check characteristics

@@ -18,7 +18,7 @@ import * as buildEnv from "@kogito-tooling/build-env";
 
 describe("DMN Guided Tour Test", () => {
   beforeEach(() => {
-    cy.visit(`http://localhost:${buildEnv.onlineEditor.dev.port}/`);
+    cy.visit(`https://localhost:${buildEnv.onlineEditor.dev.port}/`);
   });
 
   it("follow first guided tour instruction", () => {
@@ -27,12 +27,6 @@ describe("DMN Guided Tour Test", () => {
 
     // wait until loading dialog disappears
     cy.loadEditor();
-
-    // check editor logo
-    cy.get("[class='pf-c-brand']").within(($logo) => {
-      expect($logo.attr("src")).contain("dmn");
-      expect($logo.attr("alt")).contain("dmn");
-    });
 
     // start the guided tour
     cy.get("[data-ouia-component-id='dmn-guided-tour']").contains("Take tour").click();

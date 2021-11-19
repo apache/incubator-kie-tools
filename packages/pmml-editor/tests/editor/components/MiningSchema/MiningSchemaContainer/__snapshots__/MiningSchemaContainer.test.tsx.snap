@@ -15,6 +15,9 @@ exports[`MiningSchemaContainer MiningField:Render 1`] = `
     >
       <h4
         class="pf-c-title pf-m-xl"
+        data-ouia-component-id="OUIA-Generated-Title-1"
+        data-ouia-component-type="PF4/Title"
+        data-ouia-safe="true"
       >
         Add Fields
       </h4>
@@ -257,6 +260,9 @@ exports[`MiningSchemaContainer MiningField:Render::WithNoDataFields 1`] = `
     >
       <h4
         class="pf-c-title pf-m-xl"
+        data-ouia-component-id="OUIA-Generated-Title-2"
+        data-ouia-component-type="PF4/Title"
+        data-ouia-safe="true"
       >
         Add Fields
       </h4>

@@ -46,6 +46,8 @@ module.exports = {
         path.resolve(__dirname, nodeModulesDir + "/@patternfly/react-core/dist/styles/assets/pficon"),
         path.resolve(__dirname, nodeModulesDir + "/@patternfly/patternfly/assets/fonts"),
         path.resolve(__dirname, nodeModulesDir + "/@patternfly/patternfly/assets/pficon"),
+        path.resolve(__dirname, nodeModulesDir + "/monaco-editor/esm/vs/base/browser/ui/codicons/codicon"),
+        path.resolve(__dirname, nodeModulesDir + "/monaco-editor/dev/vs/base/browser/ui/codicons/codicon"),
       ],
       use: {
         loader: "file-loader",

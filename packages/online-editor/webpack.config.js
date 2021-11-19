@@ -24,6 +24,7 @@ const { EnvironmentPlugin } = require("webpack");
 const buildEnv = require("@kogito-tooling/build-env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
+const { ProvidePlugin } = require("webpack");
 
 module.exports = async (env, argv) => {
   const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs();
@@ -49,6 +50,7 @@ module.exports = async (env, argv) => {
       "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
       "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
       "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
+      "broadcast-channel-single-tab-polyfill": "./src/polyfill/BroadcastChannelSingleTab.ts",
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -78,13 +80,15 @@ module.exports = async (env, argv) => {
         WEBPACK_REPLACE__kieToolingExtendedServicesCompatibleVersion: kieToolingExtendedServices_compatibleVersion,
         WEBPACK_REPLACE__dmnDevSandbox_baseImageFullUrl: `${dmnDevSandbox_baseImageRegistry}/${dmnDevSandbox_baseImageAccount}/${dmnDevSandbox_baseImageName}:${dmnDevSandbox_baseImageTag}`,
         WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl: dmnDevSandbox_onlineEditorUrl,
+        WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.quarkusPlatform.version,
+        WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.kogitoRuntime.version,
       }),
       new CopyPlugin({
         patterns: [
           { from: "./static/resources", to: "./resources" },
           { from: "./static/images", to: "./images" },
           { from: "./static/samples", to: "./samples" },
-          { from: "./static/favicon.ico", to: "./favicon.ico" },
+          { from: "./static/favicon.svg", to: "./favicon.svg" },
           {
             from: externalAssets.dmnEditorPath(),
             to: "./gwt-editors/dmn",
@@ -107,6 +111,9 @@ module.exports = async (env, argv) => {
           },
         ],
       }),
+      new ProvidePlugin({
+        Buffer: ["buffer", "Buffer"],
+      }),
     ],
     resolve: {
       alias: {
@@ -120,6 +127,7 @@ module.exports = async (env, argv) => {
       rules: [...patternflyBase.webpackModuleRules],
     },
     devServer: {
+      https: true,
       historyApiFallback: false,
       disableHostCheck: true,
       watchContentBase: true,

@@ -40,6 +40,7 @@ package-lock.json
 **/it-tests/**/videos
 **/it-tests/**/screenshots
 **/it-tests/**/results
+**/it-tests/**/downloads
 
 ## online-editor
 **/videos/
@@ -55,6 +56,10 @@ package-lock.json
 **/mvnw
 **/mvnw.cmd
 **/.mvn
+
+## boxed-expression-component & feel-input-component
+packages/boxed-expression-component/src
+packages/feel-input-component/src
 
 # Eclipse, Netbeans and IntelliJ files
 **/nbproject

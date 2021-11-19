@@ -281,7 +281,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                               algorithmName: algorithmName === "" ? undefined : algorithmName,
                             });
                           }}
-                          data-ouia-component-id="algorithm"
+                          ouiaId="algorithm"
                         />
                       </FormGroup>
                     </LevelItem>
@@ -295,7 +295,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                             onCommit({ initialScore: initialScore });
                           }}
                           type="number"
-                          data-ouia-component-id="initial-score"
+                          ouiaId="initial-score"
                         />
                       </FormGroup>
                     </LevelItem>
@@ -367,7 +367,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                           type="number"
                           validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
                           isDisabled={props.isBaselineScoreDisabled}
-                          data-ouia-component-id="baseline-score"
+                          ouiaId="baseline-score"
                         />
                       </FormGroup>
                     </LevelItem>

@@ -22,9 +22,6 @@ interface ChromeExtensionDictionary extends ReferenceDictionary {
   fullScreen: string;
   reset: string;
   note: string;
-  tree: {
-    openInOnlineEditor: string;
-  };
   single: {
     exitFullScreen: string;
     editorToolbar: {

@@ -24,14 +24,14 @@ import {
 } from "@kie-tooling-core/workspace/dist/api";
 import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tooling-core/editor/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tooling-core/guided-tour/dist/api";
-import { File, StateControl } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile, StateControl } from "@kie-tooling-core/editor/dist/channel";
 import { Minimatch } from "minimatch";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   constructor(
     private readonly stateControl: StateControl,
-    private readonly file: File,
+    private readonly file: EmbeddedEditorFile,
     private readonly locale: string,
     private readonly overrides: Partial<KogitoEditorChannelApi>,
     private readonly resources?: Map<string, { contentType: ContentType; content: Promise<string> }>

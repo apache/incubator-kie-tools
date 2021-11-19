@@ -1,0 +1,30 @@
+{
+  "name": "@kogito-tooling/dmn-dev-sandbox-quarkus",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
+  },
+  "scripts": {
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "lint": "echo 'Linting'",
+    "quarkus:dev": "run-script-os",
+    "quarkus:dev:win32": "mvn clean package quarkus:dev -B -ntp `-DskipTests `-DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "quarkus:dev:darwin:linux": "mvn clean package quarkus:dev -B -ntp -DskipTests -DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "install:mvnw": "run-script-os",
+    "install:mvnw:win32": "yarn powershell mvn -N io.takari:maven:wrapper `-DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "install:mvnw:darwin:linux": "mvn -N io.takari:maven:wrapper -DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "build:dev:win32": "yarn install:mvnw && yarn powershell mvn clean install -B -ntp `-DskipTests `-DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "build:dev:darwin:linux": "yarn install:mvnw && mvn clean install -B -ntp -DskipTests -DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "build:dev": "run-script-os",
+    "build:prod:win32": "yarn install:mvnw && yarn powershell mvn clean install -B -ntp `-DskipTests=$(build-env global.build.test --not) `-DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "build:prod:darwin:linux": "yarn install:mvnw && mvn clean install -B -ntp -DskipTests=$(build-env global.build.test --not) -DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "build:prod": "yarn lint && run-script-os"
+  }
+}

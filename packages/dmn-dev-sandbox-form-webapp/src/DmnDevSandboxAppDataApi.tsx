@@ -14,18 +14,35 @@
  * limitations under the License.
  */
 
-import { DmnFormSchema } from "@kogito-tooling/form/dist/dmn";
+import { DmnSchema } from "@kogito-tooling/form/dist/dmn";
+import { routes } from "./Routes";
+
+export interface FormData {
+  uri: string;
+  modelName: string;
+  schema: DmnSchema;
+}
 
 export interface AppData {
-  filename: string;
-  modelName: string;
-  schema: DmnFormSchema;
-  formUrl: string;
-  modelUrl: string;
-  swaggerUIUrl: string;
+  baseUrl: string;
+  forms: FormData[];
 }
 
 export async function fetchAppData(): Promise<AppData> {
-  const response = await fetch("/data.json");
-  return (await response.json()) as AppData;
+  const response = await fetch(routes.dataJson.path({}));
+  const appData = (await response.json()) as AppData;
+
+  return {
+    ...appData,
+    // The input set property associated with the mainURI is InputSetX, where X is a number not always 1.
+    // So replace all occurrences InputSetX -> InputSet to keep compatibility with the current DmnForm.
+    forms: appData.forms.map((form: any) => {
+      const inputRef = form.schema["$ref"].replace("#/definitions/", "");
+      const schema = JSON.parse(JSON.stringify(form.schema).replace(new RegExp(inputRef, "g"), "InputSet"));
+      return {
+        ...form,
+        schema: schema,
+      };
+    }),
+  };
 }

@@ -17,33 +17,34 @@
 import { render } from "@testing-library/react";
 import * as React from "react";
 import { DmnFormToolbar } from "../DmnFormToolbar";
-import { usingTestingDmnFormI18nContext } from "./testing_utils";
-
-const onOpenOnlineEditor = jest.fn(() => null);
-const onOpenSwaggerUI = jest.fn(() => null);
+import { usingTestingAppContext, usingTestingDmnFormI18nContext } from "./testing_utils";
 
 describe("DmnFormToolbar", () => {
   it("should truncate the filename when it is too large", () => {
+    const uri = "/a_really_really_really_really_large_filename_for_my_model.dmn";
     const { getByTestId } = render(
       usingTestingDmnFormI18nContext(
-        <DmnFormToolbar
-          filename={"a_really_really_really_really_large_filename_for_my_model.dmn"}
-          onOpenOnlineEditor={onOpenOnlineEditor}
-          onOpenSwaggerUI={onOpenSwaggerUI}
-        />
+        usingTestingAppContext(<DmnFormToolbar uri={uri} />, {
+          data: {
+            baseUrl: "",
+            forms: [{ uri: uri, modelName: "myModel", schema: {} }],
+          },
+        }).wrapper
       ).wrapper
     );
     expect(getByTestId("text-filename")).toHaveTextContent("a_really_really_really_re... .dmn");
   });
 
   it("should not truncate the filename when it is small enough", () => {
+    const uri = "/my_model.dmn";
     const { getByTestId } = render(
       usingTestingDmnFormI18nContext(
-        <DmnFormToolbar
-          filename={"my_model.dmn"}
-          onOpenOnlineEditor={onOpenOnlineEditor}
-          onOpenSwaggerUI={onOpenSwaggerUI}
-        />
+        usingTestingAppContext(<DmnFormToolbar uri={uri} />, {
+          data: {
+            baseUrl: "",
+            forms: [{ uri: uri, modelName: "myModel", schema: {} }],
+          },
+        }).wrapper
       ).wrapper
     );
     expect(getByTestId("text-filename")).toHaveTextContent("my_model.dmn");

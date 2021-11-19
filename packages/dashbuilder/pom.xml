@@ -90,10 +90,6 @@
     <version.clean.plugin>3.1.0</version.clean.plugin>
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <version.resources.plugin>3.2.0</version.resources.plugin>
-    <version.frontend-maven-plugin>1.8.0</version.frontend-maven-plugin>
-    <version.node>v12.16.2</version.node>
-    <version.npm>6.14.4</version.npm>
-    <version.yarn>v1.22.4</version.yarn>
     <version.war.plugin>3.2.3</version.war.plugin>
     <version.checkstyle.plugin>3.1.1</version.checkstyle.plugin>
     <version.checkstyle>8.34</version.checkstyle>
@@ -102,6 +98,7 @@
     <version.site.plugin>3.8.2</version.site.plugin>
     <version.antrun.plugin>1.8</version.antrun.plugin>
     <version.javadoc.plugin>3.1.1</version.javadoc.plugin>
+    <version.exec-maven-plugin>3.0.0</version.exec-maven-plugin>
   </properties>
 
   <dependencyManagement>
@@ -1085,14 +1082,9 @@
           </configuration>
         </plugin>
         <plugin>
-          <groupId>com.github.eirslett</groupId>
-          <artifactId>frontend-maven-plugin</artifactId>
-          <version>${version.frontend-maven-plugin}</version>
-          <configuration>
-            <nodeVersion>${version.node}</nodeVersion>
-            <npmVersion>${version.npm}</npmVersion>
-            <yarnVersion>${version.yarn}</yarnVersion>
-          </configuration>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>${version.exec-maven-plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

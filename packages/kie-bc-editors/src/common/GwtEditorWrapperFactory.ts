@@ -126,7 +126,7 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
             envelopeContext.channelApi.notifications.kogitoGuidedTour_guidedTourRegisterTutorial(tutorial);
           },
           isEnabled(): boolean {
-            return envelopeContext.services.guidedTour.isEnabled();
+            return true;
           },
         },
         resourceContentEditorService: {

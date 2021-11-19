@@ -27,7 +27,7 @@ import { Logger } from "./Logger";
 import { Globals } from "./app/components/common/Main";
 import { ExternalEditorManager } from "./ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./app/components/common/ChromeResourceContentService";
-import { addExternalEditorLinks } from "./app/components/tree/externalEditorLinkManager";
+import { renderOpenRepoInExternalEditorApp } from "./app/components/openRepoInExternalEditor/openRepoInExternalEditorApp";
 
 /**
  * Starts a Kogito extension.
@@ -65,68 +65,40 @@ export function startExtension(args: {
   setTimeout(runInit, 0);
 }
 
-function init(args: Globals) {
-  args.logger.log(`---`);
-  args.logger.log(`Starting GitHub extension.`);
+function init(globals: Globals) {
+  globals.logger.log(`---`);
+  globals.logger.log(`Starting GitHub extension.`);
 
-  unmountPreviouslyRenderedFeatures(args.id, args.logger, args.dependencies);
+  unmountPreviouslyRenderedFeatures(globals.id, globals.logger, globals.dependencies);
 
   const fileInfo = extractFileInfoFromUrl();
   const pageType = discoverCurrentGitHubPageType();
 
   if (pageType === GitHubPageType.ANY) {
-    args.logger.log(`This GitHub page is not supported.`);
+    globals.logger.log(`This GitHub page is not supported.`);
     return;
   }
 
   if (pageType === GitHubPageType.EDIT) {
-    renderSingleEditorApp({
-      id: args.id,
-      logger: args.logger,
-      dependencies: args.dependencies,
-      editorEnvelopeLocator: args.editorEnvelopeLocator,
-      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
-      extensionIconUrl: args.extensionIconUrl,
-      externalEditorManager: args.externalEditorManager,
-      resourceContentServiceFactory: args.resourceContentServiceFactory,
-      fileInfo: fileInfo,
-    });
+    renderSingleEditorApp({ ...globals, fileInfo });
   } else if (pageType === GitHubPageType.VIEW) {
-    renderSingleEditorReadonlyApp({
-      id: args.id,
-      logger: args.logger,
-      dependencies: args.dependencies,
-      editorEnvelopeLocator: args.editorEnvelopeLocator,
-      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
-      extensionIconUrl: args.extensionIconUrl,
-      fileInfo: fileInfo,
-      resourceContentServiceFactory: args.resourceContentServiceFactory,
-      externalEditorManager: args.externalEditorManager,
+    renderSingleEditorReadonlyApp({ ...globals, fileInfo });
+  } else if (pageType === GitHubPageType.PR_FILES_OR_COMMITS) {
+    renderPrEditorsApp({ ...globals, contentPath: fileInfo.path });
+  } else if (pageType === GitHubPageType.PR_HOME) {
+    renderOpenRepoInExternalEditorApp({
+      ...globals,
+      pageType,
+      className: "btn btn-sm",
+      container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()!,
     });
-  } else if (pageType === GitHubPageType.PR) {
-    renderPrEditorsApp({
-      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
-      id: args.id,
-      logger: args.logger,
-      dependencies: args.dependencies,
-      editorEnvelopeLocator: args.editorEnvelopeLocator,
-      extensionIconUrl: args.extensionIconUrl,
-      resourceContentServiceFactory: args.resourceContentServiceFactory,
-      externalEditorManager: args.externalEditorManager,
-      contentPath: fileInfo.path,
+  } else if (pageType === GitHubPageType.CAN_OPEN_REPO_IN_EXTERNAL_EDITOR) {
+    renderOpenRepoInExternalEditorApp({
+      ...globals,
+      pageType,
+      className: "btn ml-2 d-none d-md-block",
+      container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoFilesList()!,
     });
-  } else if (pageType === GitHubPageType.TREE) {
-    addExternalEditorLinks({
-      githubAuthTokenCookieName: args.githubAuthTokenCookieName,
-      id: args.id,
-      logger: args.logger,
-      editorEnvelopeLocator: args.editorEnvelopeLocator,
-      extensionIconUrl: args.extensionIconUrl,
-      resourceContentServiceFactory: args.resourceContentServiceFactory,
-      externalEditorManager: args.externalEditorManager,
-      dependencies: args.dependencies,
-    });
-    return;
   } else {
     throw new Error(`Unknown GitHubPageType ${pageType}`);
   }
@@ -153,29 +125,35 @@ function unmountPreviouslyRenderedFeatures(id: string, logger: Logger, dependenc
   }
 }
 
-function uriMatches(regex: string) {
+function pathnameMatches(regex: string) {
   return !!window.location.pathname.match(new RegExp(regex));
 }
 
 export function discoverCurrentGitHubPageType() {
-  if (uriMatches(`.*/.*/edit/.*`)) {
+  if (pathnameMatches(`.*/.*/edit/.*`)) {
     return GitHubPageType.EDIT;
   }
 
-  if (uriMatches(`.*/.*/blob/.*`)) {
+  if (pathnameMatches(`.*/.*/blob/.*`)) {
     return GitHubPageType.VIEW;
   }
 
-  if (uriMatches(`.*/.*/pull/[0-9]+/files.*`)) {
-    return GitHubPageType.PR;
+  const isOrgSlashRepo = window.location.pathname.split("/").length === 3;
+
+  if (pathnameMatches(`/.*/.*/tree/.*`) || isOrgSlashRepo) {
+    return GitHubPageType.CAN_OPEN_REPO_IN_EXTERNAL_EDITOR;
   }
 
-  if (uriMatches(`.*/.*/pull/[0-9]+/commits.*`)) {
-    return GitHubPageType.PR;
+  if (pathnameMatches(`.*/.*/pull/[0-9]+/files.*`)) {
+    return GitHubPageType.PR_FILES_OR_COMMITS;
   }
 
-  if (uriMatches(`.*/.*/tree/.*`) || uriMatches(`/.*/.*/?$`)) {
-    return GitHubPageType.TREE;
+  if (pathnameMatches(`.*/.*/pull/[0-9]+/commits.*`)) {
+    return GitHubPageType.PR_FILES_OR_COMMITS;
+  }
+
+  if (pathnameMatches(`.*/.*/pull/[0-9]+.*`)) {
+    return GitHubPageType.PR_HOME;
   }
 
   return GitHubPageType.ANY;

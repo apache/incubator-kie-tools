@@ -104,7 +104,6 @@ describe("GwtEditorWrapperFactory", () => {
         channelApi: channelApiMock,
         services: {
           keyboardShortcuts: {} as any,
-          guidedTour: {} as any,
           i18n: new I18nService(),
         },
       },

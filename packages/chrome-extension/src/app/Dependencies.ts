@@ -53,15 +53,12 @@ export class Dependencies {
     },
   };
 
-  public readonly treeView = {
-    repositoryContainer: () => {
-      return document.querySelector("div.repository-content") as HTMLElement | null;
+  public readonly openRepoInExternalEditor = {
+    buttonContainerOnRepoFilesList: () => {
+      return document.querySelector(".file-navigation") as HTMLElement | null;
     },
-
-    linksToFiles: () => {
-      return Array.from(
-        document.querySelectorAll('div[role="grid"] > div[role="row"] > div[role="rowheader"] > span > a[href*=blob]')
-      ) as HTMLAnchorElement[];
+    buttonContainerOnPrs: () => {
+      return document.querySelector(".gh-header-actions") as HTMLElement | null;
     },
   };
 

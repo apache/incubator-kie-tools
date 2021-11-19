@@ -19,10 +19,10 @@ import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
 import { useCallback, useRef, useState } from "react";
 import { Nav, NavItem, NavList, TextInput } from "@patternfly/react-core";
 import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
-import { File } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
 
 function extractFileExtension(fileName: string) {
-  return fileName.match(/[\.]/)
+  return fileName.match(/[.]/)
     ? fileName
         .split(".")
         ?.pop()
@@ -42,8 +42,8 @@ function removeFileExtension(fileName: string) {
 interface Props {
   editor?: EmbeddedEditorRef;
   editorEnvelopeLocator: EditorEnvelopeLocator;
-  file: File;
-  setFile: React.Dispatch<File>;
+  file: EmbeddedEditorFile;
+  setFile: React.Dispatch<EmbeddedEditorFile>;
   fileExtension: string;
   accept: string;
 }

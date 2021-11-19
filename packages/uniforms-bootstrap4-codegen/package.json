@@ -21,7 +21,7 @@
     "lodash": "^4.17.21",
     "prettier": "^2.2.1",
     "underscore": "^1.13.1",
-    "uniforms": "^3.5.1"
+    "uniforms": "^3.5.5"
   },
   "devDependencies": {
     "@kogito-tooling/build-env": "0.0.0"

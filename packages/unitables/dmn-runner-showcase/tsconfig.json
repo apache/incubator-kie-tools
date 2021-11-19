@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.json",
+  "exclude": ["./**/node_modules", "./**/test-setup"],
+  "include": ["src"],
+  "compilerOptions": {
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": false,
+    "noEmit": false,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "strict": false,
+    "declaration": true,
+    "declarationMap": true,
+    "target": "es6"
+  }
+}
