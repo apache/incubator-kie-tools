@@ -58,12 +58,12 @@ export const PingPongReactImpl = React.forwardRef<PingPongApi, Props>((props, fo
 
   // Function to be called when pressing the 'Ping others!' button.
   const ping = useCallback(() => {
-    props.channelApi.notifications.pingPongView__ping(props.initArgs.name);
+    props.channelApi.notifications.pingPongView__ping.send(props.initArgs.name);
   }, []);
 
   // Subscribes to messages sent to `pingPongView__ping`.
   // Notice how this listens to messages received BY the Channel.
-  useSubscription(props.channelApi, "pingPongView__ping", (pingSource) => {
+  useSubscription(props.channelApi.notifications.pingPongView__ping, (pingSource) => {
     // If this instance sent the PING, we ignore it.
     if (pingSource === props.initArgs.name) {
       return;
@@ -73,11 +73,11 @@ export const PingPongReactImpl = React.forwardRef<PingPongApi, Props>((props, fo
     setLog((prevLog) => [...prevLog, { line: `PING from '${pingSource}'.`, time: getCurrentTime() }]);
 
     // Acknowledges the PING message by sending back a PONG message.
-    props.channelApi.notifications.pingPongView__pong(props.initArgs.name, pingSource);
+    props.channelApi.notifications.pingPongView__pong.send(props.initArgs.name, pingSource);
   });
 
   // Subscribes to messages sent to `pingPongView__pong`.
-  useSubscription(props.channelApi, "pingPongView__pong", (pongSource: string, replyingTo: string) => {
+  useSubscription(props.channelApi.notifications.pingPongView__pong, (pongSource: string, replyingTo: string) => {
     // If this instance sent the PONG, or if this PONG was not meant to this instance, we ignore it.
     if (pongSource === props.initArgs.name || replyingTo !== props.initArgs.name) {
       return;

@@ -14,57 +14,113 @@
  * limitations under the License.
  */
 
-import { useEffect } from "react";
-import { ApiDefinition, MessageBusClientApi, NotificationPropertyNames, SubscriptionCallback } from "../api";
+import * as React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  ApiDefinition,
+  NotificationConsumer,
+  NotificationPropertyNames,
+  SharedValueConsumer,
+  SubscriptionCallback,
+} from "../api";
 import { EnvelopeServer } from "../channel";
 
 export function useConnectedEnvelopeServer<Api extends ApiDefinition<Api>>(
   envelopeServer: EnvelopeServer<Api, any>,
-  api: Api
+  apiImpl: Api
 ) {
   useEffect(() => {
-    const listener = (msg: MessageEvent) => envelopeServer.receive(msg.data, api);
+    const listener = (msg: MessageEvent) => envelopeServer.receive(msg.data, apiImpl);
     window.addEventListener("message", listener, false);
-    envelopeServer.startInitPolling();
+    envelopeServer.startInitPolling(apiImpl);
 
     return () => {
       envelopeServer.stopInitPolling();
       window.removeEventListener("message", listener);
     };
-  }, [envelopeServer, api]);
+  }, [envelopeServer, apiImpl]);
 }
 
 export function useSubscription<Api extends ApiDefinition<Api>, M extends NotificationPropertyNames<Api>>(
-  bus: MessageBusClientApi<Api>,
-  method: M,
+  notificationConsumer: NotificationConsumer<Api[M]>,
   callback: SubscriptionCallback<Api, M>
 ) {
   useEffect(() => {
-    const subscription = bus.subscribe(method, callback);
+    const subscription = notificationConsumer.subscribe(callback);
     return () => {
-      bus.unsubscribe(method, subscription);
+      notificationConsumer.unsubscribe(subscription);
     };
-  }, [bus, method, callback]);
+  }, [notificationConsumer, callback]);
 }
 
 export function useSubscriptionOnce<Api extends ApiDefinition<Api>, M extends NotificationPropertyNames<Api>>(
-  bus: MessageBusClientApi<Api>,
-  method: M,
+  notificationConsumer: NotificationConsumer<Api[M]>,
   callback: SubscriptionCallback<Api, M>
 ) {
   useEffect(() => {
     let unsubscribed = false;
 
-    const subscription = bus.subscribe(method, (...args) => {
+    const subscription = notificationConsumer.subscribe((...args) => {
       callback(...args);
       unsubscribed = true;
-      bus.unsubscribe(method, subscription);
+      notificationConsumer.unsubscribe(subscription);
     });
 
     return () => {
       if (!unsubscribed) {
-        bus.unsubscribe(method, subscription);
+        notificationConsumer.unsubscribe(subscription);
       }
     };
-  }, [bus, method, callback]);
+  }, [callback]);
+}
+
+export function useSharedValue<T>(
+  sharedValue: SharedValueConsumer<T> | undefined
+): [T | undefined, React.Dispatch<React.SetStateAction<T>>] {
+  const [value, setValue] = useState<T>();
+
+  useEffect(() => {
+    if (!sharedValue) {
+      return;
+    }
+
+    const subscription = sharedValue.subscribe((newValue) => setValue(newValue));
+    return () => sharedValue.unsubscribe(subscription);
+  }, [sharedValue]);
+
+  // keep the same reference, like React does
+  const sharedValueRef = useRef(sharedValue);
+  const ret__setValue = useCallback((t: T) => {
+    sharedValueRef.current?.set(t);
+  }, []);
+
+  // update the ref value when the sharedValue changes
+  useEffect(() => {
+    sharedValueRef.current = sharedValue;
+  }, [sharedValue]);
+
+  return [value, ret__setValue];
+}
+
+export function useBoundSharedValue<T>(
+  sharedValue: SharedValueConsumer<T> | undefined,
+  value: T | undefined,
+  setValue: React.Dispatch<React.SetStateAction<T>>
+) {
+  useEffect(() => {
+    if (!sharedValue) {
+      return;
+    }
+
+    const subscription = sharedValue.subscribe((newValue) => setValue(newValue));
+    return () => sharedValue.unsubscribe(subscription);
+  }, [sharedValue]);
+
+  useEffect(() => {
+    if (!value) {
+      return;
+    }
+
+    sharedValue?.set(value);
+  }, [value]);
 }

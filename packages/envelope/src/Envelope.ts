@@ -61,6 +61,7 @@ export class Envelope<
     });
 
     this.envelopeBusController.startListening(api);
+
     return this.envelopeBusController;
   }
 }

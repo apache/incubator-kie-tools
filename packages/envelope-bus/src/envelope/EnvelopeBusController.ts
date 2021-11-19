@@ -51,11 +51,13 @@ export class EnvelopeBusController<
       return;
     }
 
+    this.manager.currentApiImpl = apiImpl;
     this.eventListener = (event: any) => this.receive(event.data, apiImpl);
     window.addEventListener("message", this.eventListener);
   }
 
   public stopListening() {
+    this.manager.currentApiImpl = undefined;
     window.removeEventListener("message", this.eventListener);
   }
 

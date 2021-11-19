@@ -61,7 +61,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand(MARK_ALL_AS_COMPLETED_COMMAND_ID, () => {
-      envelopeApi?.notifications.todoList__markAllAsCompleted();
+      envelopeApi?.notifications.todoList__markAllAsCompleted.send();
     })
   );
 

@@ -108,7 +108,7 @@ export class TodoListWebview {
     );
 
     // Starts polling using the initPolling method so that the Envelope can connect with the EnvelopeServer
-    envelopeServer.startInitPolling();
+    envelopeServer.startInitPolling(this.api);
 
     // Returns the MessageBusClient instance so that the containing VS Code Extension can communicate with the Envelope.
     return envelopeServer.manager.clientApi;

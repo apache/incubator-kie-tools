@@ -82,7 +82,7 @@ export class KogitoEditorFactory {
 
     this.editorStore.addAsActive(editor);
     editor.startListening(editorChannelApi);
-    editor.startInitPolling();
+    editor.startInitPolling(editorChannelApi);
     editor.setupPanelActiveStatusChange();
     editor.setupPanelOnDidDispose();
     editor.setupWebviewContent();

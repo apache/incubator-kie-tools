@@ -46,7 +46,7 @@ beforeEach(() => {
 
 describe("PMMLEditorInterface", () => {
   test("Mount", () => {
-    expect(channelApi.notifications.kogitoEditor_ready).toBeCalled();
+    expect(channelApi.notifications.kogitoEditor_ready.send).toBeCalled();
   });
 
   test("getContent", async () => {

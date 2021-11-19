@@ -16,8 +16,7 @@
 
 import {
   ApiDefinition,
-  ApiNotifications,
-  ApiRequests,
+  ApiSharedValueConsumers,
   ArgsType,
   EnvelopeBusMessage,
   EnvelopeBusMessagePurpose,
@@ -25,74 +24,90 @@ import {
   MessageBusClientApi,
   MessageBusServer,
   NotificationCallback,
+  NotificationConsumer,
   NotificationPropertyNames,
+  RequestConsumer,
   RequestPropertyNames,
+  SharedValueConsumer,
+  SharedValueProviderPropertyNames,
 } from "../api";
+
+type Func = (...args: any[]) => any;
+interface StoredPromise {
+  resolve: (arg: unknown) => void;
+  reject: (arg: unknown) => void;
+}
 
 export class EnvelopeBusMessageManager<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>
 > {
-  private readonly callbacks = new Map<string, { resolve: (arg: unknown) => void; reject: (arg: unknown) => void }>();
+  private readonly requestCallbacks = new Map<string, StoredPromise>();
 
-  private readonly remoteSubscriptions: Array<NotificationPropertyNames<ApiToProvide>> = [];
+  private readonly localNotificationsSubscriptions = new Map<NotificationPropertyNames<ApiToConsume>, Func[]>();
+  private readonly remoteNotificationsSubscriptions: Array<NotificationPropertyNames<ApiToProvide>> = [];
 
-  private readonly localSubscriptions = new Map<NotificationPropertyNames<ApiToConsume>, Function[]>();
+  private readonly localSharedValueSubscriptions = new Map<
+    SharedValueProviderPropertyNames<ApiToProvide> | SharedValueProviderPropertyNames<ApiToConsume>,
+    Func[]
+  >();
+  private readonly localSharedValuesStore = new Map<
+    SharedValueProviderPropertyNames<ApiToProvide> | SharedValueProviderPropertyNames<ApiToConsume>,
+    ApiToProvide[keyof ApiToProvide] | ApiToConsume[keyof ApiToConsume]
+  >();
 
   private requestIdCounter: number;
+  public currentApiImpl?: ApiToProvide;
 
-  public clientApi: MessageBusClientApi<ApiToConsume> = (() => {
-    const requestsCache = new Map<
-      RequestPropertyNames<ApiToConsume>,
-      (...args: ArgsType<ApiToConsume[keyof ApiToConsume]>) => Promise<any>
-    >();
+  public clientApi: MessageBusClientApi<ApiToConsume> = {
+    requests: cachedProxy(
+      new Map<RequestPropertyNames<ApiToConsume>, RequestConsumer<ApiToConsume[keyof ApiToConsume]>>(),
+      {
+        get:
+          (target, name) =>
+          (...args) =>
+            this.request(name, ...args),
+      }
+    ),
+    notifications: cachedProxy(
+      new Map<NotificationPropertyNames<ApiToConsume>, NotificationConsumer<ApiToConsume[keyof ApiToConsume]>>(),
+      {
+        get: (target, name) => ({
+          subscribe: (callback) => this.subscribeToNotification(name, callback),
+          unsubscribe: (callback) => this.unsubscribeFromNotification(name, callback),
+          send: (...args) => this.notify(name, ...args),
+        }),
+      }
+    ),
+    shared: cachedProxy(
+      new Map<SharedValueProviderPropertyNames<ApiToConsume>, SharedValueConsumer<ApiToConsume[keyof ApiToConsume]>>(),
+      {
+        get: (target, name) => ({
+          set: (value) => this.setSharedValue(name, value),
+          subscribe: (callback) => this.subscribeToSharedValue(name, callback, { owned: false }),
+          unsubscribe: (callback) => this.unsubscribeFromSharedValue(name, callback),
+        }),
+      }
+    ),
+  };
 
-    const notificationsCache = new Map<
-      NotificationPropertyNames<ApiToConsume>,
-      (...args: ArgsType<ApiToConsume[keyof ApiToConsume]>) => void
-    >();
-
-    const requests: ApiRequests<ApiToConsume> = new Proxy<ApiRequests<ApiToConsume>>({} as ApiRequests<ApiToConsume>, {
-      set: (target, name, value) => {
-        requestsCache.set(name as RequestPropertyNames<ApiToConsume>, value);
-        return true;
-      },
-      get: (target, name) => {
-        const method = name as RequestPropertyNames<ApiToConsume>;
-        return (
-          requestsCache.get(method) ??
-          requestsCache.set(method, (...args) => this.request(method, ...args) as Promise<any>).get(method)
-        );
-      },
-    });
-
-    const notifications = new Proxy<ApiNotifications<ApiToConsume>>({} as ApiNotifications<ApiToConsume>, {
-      set: (target, name, value) => {
-        notificationsCache.set(name as NotificationPropertyNames<ApiToConsume>, value);
-        return true;
-      },
-      get: (target, name) => {
-        const method = name as NotificationPropertyNames<ApiToConsume>;
-        return (
-          notificationsCache.get(method) ??
-          notificationsCache.set(method, (...args) => this.notify(method, ...args)).get(method)
-        );
-      },
-    });
-
-    const clientApi: MessageBusClientApi<ApiToConsume> = {
-      requests,
-      notifications,
-      subscribe: (m, a) => this.subscribe(m, a),
-      unsubscribe: (m, a) => this.unsubscribe(m, a),
-    };
-
-    return clientApi;
-  })();
+  public shared: ApiSharedValueConsumers<ApiToProvide> = cachedProxy(
+    new Map<SharedValueProviderPropertyNames<ApiToProvide>, SharedValueConsumer<ApiToProvide[keyof ApiToProvide]>>(),
+    {
+      get: (target, name) => ({
+        set: (value) => this.setSharedValue(name, value),
+        subscribe: (callback) => this.subscribeToSharedValue(name, callback, { owned: true }),
+        unsubscribe: (callback) => this.unsubscribeFromSharedValue(name, callback),
+      }),
+    }
+  );
 
   public get server(): MessageBusServer<ApiToProvide, ApiToConsume> {
     return {
-      receive: (m, apiImpl) => this.receive(m, apiImpl),
+      receive: (m, apiImpl) => {
+        console.info(m);
+        this.receive(m, apiImpl);
+      },
     };
   }
 
@@ -106,38 +121,93 @@ export class EnvelopeBusMessageManager<
     this.requestIdCounter = 0;
   }
 
-  private subscribe<M extends NotificationPropertyNames<ApiToConsume>>(
+  private setSharedValue<
+    M extends SharedValueProviderPropertyNames<ApiToProvide> | SharedValueProviderPropertyNames<ApiToConsume>
+  >(method: M, value: any) {
+    this.localSharedValuesStore.set(method, value);
+    this.localSharedValueSubscriptions.get(method)?.forEach((callback) => callback(value));
+    this.send({
+      type: method,
+      purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+      data: value,
+    });
+  }
+
+  private subscribeToSharedValue<
+    M extends SharedValueProviderPropertyNames<ApiToProvide> | SharedValueProviderPropertyNames<ApiToConsume>
+  >(method: M, callback: Func, config: { owned: boolean }) {
+    const activeSubscriptions = this.localSharedValueSubscriptions.get(method) ?? [];
+    this.localSharedValueSubscriptions.set(method, [...activeSubscriptions, callback]);
+    if (config.owned || this.localSharedValuesStore.get(method)) {
+      callback(this.getCurrentStoredSharedValueOrDefault(method, this.currentApiImpl));
+    } else {
+      this.send({
+        type: method,
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_GET_DEFAULT,
+        data: [],
+      });
+    }
+    return callback;
+  }
+
+  private unsubscribeFromSharedValue<
+    M extends SharedValueProviderPropertyNames<ApiToProvide> | SharedValueProviderPropertyNames<ApiToConsume>
+  >(name: M, callback: any) {
+    const activeSubscriptions = this.localSharedValueSubscriptions.get(name);
+    if (!activeSubscriptions) {
+      return;
+    }
+
+    const index = activeSubscriptions.indexOf(callback);
+    if (index < 0) {
+      return;
+    }
+
+    activeSubscriptions.splice(index, 1);
+  }
+
+  private getCurrentStoredSharedValueOrDefault<
+    M extends SharedValueProviderPropertyNames<ApiToProvide> | SharedValueProviderPropertyNames<ApiToConsume>
+  >(method: M, apiImpl?: ApiToProvide) {
+    const m = method as SharedValueProviderPropertyNames<ApiToProvide>;
+    return (
+      this.localSharedValuesStore.get(m) ??
+      this.localSharedValuesStore.set(m, apiImpl?.[m]?.apply(apiImpl).defaultValue).get(method)
+    );
+  }
+
+  private subscribeToNotification<M extends NotificationPropertyNames<ApiToConsume>>(
     method: M,
     callback: (...args: ArgsType<ApiToConsume[M]>) => void
   ) {
-    const activeSubscriptions = this.localSubscriptions.get(method) ?? [];
-    this.localSubscriptions.set(method, [...activeSubscriptions, callback]);
+    const activeSubscriptions = this.localNotificationsSubscriptions.get(method) ?? [];
+    this.localNotificationsSubscriptions.set(method, [...activeSubscriptions, callback]);
     this.send({
       type: method,
-      purpose: EnvelopeBusMessagePurpose.SUBSCRIPTION,
+      purpose: EnvelopeBusMessagePurpose.NOTIFICATION_SUBSCRIPTION,
       data: [],
     });
     return callback;
   }
 
-  private unsubscribe<M extends NotificationPropertyNames<ApiToConsume>>(
+  private unsubscribeFromNotification<M extends NotificationPropertyNames<ApiToConsume>>(
     method: M,
     callback: NotificationCallback<ApiToConsume, M>
   ) {
-    const values = this.localSubscriptions.get(method);
-    if (!values) {
+    const activeSubscriptions = this.localNotificationsSubscriptions.get(method);
+    if (!activeSubscriptions) {
       return;
     }
 
-    const index = values.indexOf(callback);
+    const index = activeSubscriptions.indexOf(callback);
     if (index < 0) {
       return;
     }
 
-    values.splice(index, 1);
+    activeSubscriptions.splice(index, 1);
     this.send({
       type: method,
-      purpose: EnvelopeBusMessagePurpose.UNSUBSCRIPTION,
+      purpose: EnvelopeBusMessagePurpose.NOTIFICATION_UNSUBSCRIPTION,
       data: [],
     });
   }
@@ -153,7 +223,7 @@ export class EnvelopeBusMessageManager<
     });
 
     return new Promise<any>((resolve, reject) => {
-      this.callbacks.set(requestId, { resolve, reject });
+      this.requestCallbacks.set(requestId, { resolve, reject });
     }) as ReturnType<ApiToConsume[M]>;
 
     //TODO: Setup timeout to avoid memory leaks
@@ -197,12 +267,12 @@ export class EnvelopeBusMessageManager<
       throw new Error("Cannot acknowledge a response without a requestId");
     }
 
-    const callback = this.callbacks.get(response.requestId);
+    const callback = this.requestCallbacks.get(response.requestId);
     if (!callback) {
       throw new Error("Callback not found for " + response);
     }
 
-    this.callbacks.delete(response.requestId);
+    this.requestCallbacks.delete(response.requestId);
 
     if (!response.error) {
       callback.resolve(response.data);
@@ -216,6 +286,8 @@ export class EnvelopeBusMessageManager<
     message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume> | FunctionPropertyNames<ApiToProvide>>,
     apiImpl: ApiToProvide
   ) {
+    this.currentApiImpl = apiImpl;
+
     if (message.purpose === EnvelopeBusMessagePurpose.RESPONSE) {
       // We can only receive responses for the API we consume.
       this.callback(message as EnvelopeBusMessage<unknown, RequestPropertyNames<ApiToConsume>>);
@@ -247,7 +319,7 @@ export class EnvelopeBusMessageManager<
       const method = message.type as NotificationPropertyNames<ApiToProvide>;
       apiImpl[method]?.apply(apiImpl, message.data);
 
-      if (this.remoteSubscriptions.indexOf(method) >= 0) {
+      if (this.remoteNotificationsSubscriptions.indexOf(method) >= 0) {
         this.send({
           type: method,
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
@@ -257,29 +329,47 @@ export class EnvelopeBusMessageManager<
 
       // We can only receive notifications from subscriptions of the API we consume.
       const localSubscriptionMethod = message.type as NotificationPropertyNames<ApiToConsume>;
-      (this.localSubscriptions.get(localSubscriptionMethod) ?? []).forEach((callback) => {
+      this.localNotificationsSubscriptions.get(localSubscriptionMethod)?.forEach((callback) => {
         callback(...(message.data as any[]));
       });
 
       return;
     }
 
-    if (message.purpose === EnvelopeBusMessagePurpose.SUBSCRIPTION) {
+    if (message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION_SUBSCRIPTION) {
       // We can only receive subscriptions for methods of the API we provide.
       const method = message.type as NotificationPropertyNames<ApiToProvide>;
-      if (this.remoteSubscriptions.indexOf(method) < 0) {
-        this.remoteSubscriptions.push(method);
+      if (this.remoteNotificationsSubscriptions.indexOf(method) < 0) {
+        this.remoteNotificationsSubscriptions.push(method);
       }
       return;
     }
 
-    if (message.purpose === EnvelopeBusMessagePurpose.UNSUBSCRIPTION) {
+    if (message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION_UNSUBSCRIPTION) {
       // We can only receive unsubscriptions for methods of the API we provide.
       const method = message.type as NotificationPropertyNames<ApiToProvide>;
-      const index = this.remoteSubscriptions.indexOf(method);
+      const index = this.remoteNotificationsSubscriptions.indexOf(method);
       if (index >= 0) {
-        this.remoteSubscriptions.splice(index, 1);
+        this.remoteNotificationsSubscriptions.splice(index, 1);
       }
+      return;
+    }
+
+    if (message.purpose === EnvelopeBusMessagePurpose.SHARED_VALUE_GET_DEFAULT) {
+      const method = message.type as SharedValueProviderPropertyNames<ApiToProvide>;
+      this.send({
+        type: method,
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+        data: this.getCurrentStoredSharedValueOrDefault(method, apiImpl),
+      });
+      return;
+    }
+
+    if (message.purpose === EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE) {
+      const method = message.type as SharedValueProviderPropertyNames<ApiToProvide>;
+      const subscriptions = this.localSharedValueSubscriptions.get(method);
+      this.localSharedValuesStore.set(method, message.data as any);
+      subscriptions?.forEach((callback) => callback(message.data));
       return;
     }
   }
@@ -287,4 +377,16 @@ export class EnvelopeBusMessageManager<
   public getNextRequestId() {
     return `${this.name}_${this.requestIdCounter++}`;
   }
+}
+
+function cachedProxy<T extends object, K extends keyof T, V>(cache: Map<K, V>, p: { get(target: T, p: keyof T): V }) {
+  return new Proxy<T>({} as T, {
+    set: (target, name, value) => {
+      cache.set(name as K, value);
+      return true;
+    },
+    get: (target, name) => {
+      return cache.get(name as K) ?? cache.set(name as K, p.get?.(target, name as K)).get(name as K);
+    },
+  });
 }

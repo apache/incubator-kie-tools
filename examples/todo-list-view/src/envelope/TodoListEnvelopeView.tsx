@@ -49,7 +49,7 @@ export const TodoListEnvelopeView = React.forwardRef<TodoListEnvelopeViewApi, Pr
       if (i >= 0) {
         itemsCopy.splice(i, 1);
         setItems(itemsCopy);
-        props.channelApi.notifications.todoList__itemRemoved(item.label);
+        props.channelApi.notifications.todoList__itemRemoved.send(item.label);
       }
     },
     [items]

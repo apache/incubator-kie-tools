@@ -89,12 +89,12 @@ export class KogitoEditorEnvelopeApiImpl<
 
     await this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
-      .catch((e) => this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError(editorContent))
+      .catch((e) => this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError.send(editorContent))
       .finally(() => this.args.view().setLoadingFinished());
 
     this.registerDefaultShortcuts(initArgs);
 
-    this.args.envelopeContext.channelApi.notifications.kogitoEditor_ready();
+    this.args.envelopeContext.channelApi.notifications.kogitoEditor_ready.send();
   };
 
   public kogitoEditor_contentChanged = (editorContent: EditorContent) => {
@@ -102,7 +102,7 @@ export class KogitoEditorEnvelopeApiImpl<
     return this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
       .catch((e) => {
-        this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError(editorContent);
+        this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError.send(editorContent);
         throw e;
       })
       .finally(() => this.args.view().setLoadingFinished());
@@ -159,7 +159,7 @@ export class KogitoEditorEnvelopeApiImpl<
       `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.redo}`,
       async () => {
         this.editor.redo();
-        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate(
+        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate.send(
           StateControlCommand.REDO
         );
       }
@@ -169,7 +169,7 @@ export class KogitoEditorEnvelopeApiImpl<
       `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.undo}`,
       async () => {
         this.editor.undo();
-        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate(
+        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate.send(
           StateControlCommand.UNDO
         );
       }

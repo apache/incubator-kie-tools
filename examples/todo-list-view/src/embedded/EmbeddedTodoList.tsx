@@ -58,7 +58,7 @@ export const EmbeddedTodoList = React.forwardRef<TodoListApi, Props>((props, for
     (envelopeServer: EnvelopeServer<TodoListChannelApi, TodoListEnvelopeApi>): TodoListApi => ({
       addItem: (item) => envelopeServer.envelopeApi.requests.todoList__addItem(item),
       getItems: () => envelopeServer.envelopeApi.requests.todoList__getItems(),
-      markAllAsCompleted: () => envelopeServer.envelopeApi.notifications.todoList__markAllAsCompleted(),
+      markAllAsCompleted: () => envelopeServer.envelopeApi.notifications.todoList__markAllAsCompleted.send(),
     }),
     []
   );

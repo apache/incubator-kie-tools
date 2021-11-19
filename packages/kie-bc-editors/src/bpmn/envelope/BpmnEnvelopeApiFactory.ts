@@ -40,7 +40,7 @@ export class BpmnEditorEnvelopeApiImpl
   }
 
   public myBpmnEnvelopeMethod() {
-    this.bpmnArgs.envelopeContext.channelApi.notifications.myBpmnChannelMethod();
+    this.bpmnArgs.envelopeContext.channelApi.notifications.myBpmnChannelMethod.send();
     const editor = this.bpmnArgs.view().getEditor();
     const ret = editor?.myBpmnMethod() ?? "bpmn-specific--default";
     return Promise.resolve(ret);

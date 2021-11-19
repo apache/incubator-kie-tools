@@ -16,7 +16,7 @@
 
 import bpmnEnvelopeIndex from "!!raw-loader!../../dist/resources/bpmn/bpmnEnvelopeIndex.html";
 import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
-import { ChannelType, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tooling-core/editor/dist/api";
+import { ChannelType, KogitoEditorChannelApi } from "@kie-tooling-core/editor/dist/api";
 import { KogitoEditorChannelApiImpl } from "../envelope/KogitoEditorChannelApiImpl";
 import { StateControl } from "@kie-tooling-core/editor/dist/channel";
 import { ContentType } from "@kie-tooling-core/workspace/dist/api";
@@ -74,34 +74,34 @@ export function open(args: {
 
   let receivedSetContentError = false;
 
+  const channelApi = new KogitoEditorChannelApiImpl(
+    stateControl,
+    {
+      fileName: "",
+      fileExtension: "bpmn",
+      getFileContents: () => Promise.resolve(args.initialContent),
+      isReadOnly: args.readOnly ?? false,
+    },
+    "en-US",
+    {
+      kogitoEditor_setContentError() {
+        if (!receivedSetContentError) {
+          args.onError?.();
+          receivedSetContentError = true;
+        }
+      },
+    },
+    args.resources
+  );
+
   const listener = (message: MessageEvent) => {
-    envelopeServer.receive(
-      message.data,
-      new KogitoEditorChannelApiImpl(
-        stateControl,
-        {
-          fileName: "",
-          fileExtension: "bpmn",
-          getFileContents: () => Promise.resolve(args.initialContent),
-          isReadOnly: args.readOnly ?? false,
-        },
-        "en-US",
-        {
-          kogitoEditor_setContentError() {
-            if (!receivedSetContentError) {
-              args.onError?.();
-              receivedSetContentError = true;
-            }
-          },
-        },
-        args.resources
-      )
-    );
+    envelopeServer.receive(message.data, channelApi);
   };
+
   window.addEventListener("message", listener);
 
   args.container.appendChild(iframe);
-  envelopeServer.startInitPolling();
+  envelopeServer.startInitPolling(channelApi);
 
   const editor = createEditor(envelopeServer.envelopeApi, stateControl, listener, iframe);
 

@@ -40,7 +40,7 @@ export class DmnEditorEnvelopeApiImpl
   }
 
   public myDmnEnvelopeMethod() {
-    this.dmnArgs.envelopeContext.channelApi.notifications.myDmnChannelMethod();
+    this.dmnArgs.envelopeContext.channelApi.notifications.myDmnChannelMethod.send();
     const editor = this.dmnArgs.view().getEditor();
     const ret = editor?.myDmnMethod() ?? "dmn-specific--default";
     return Promise.resolve(ret);

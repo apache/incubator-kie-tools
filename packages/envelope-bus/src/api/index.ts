@@ -19,6 +19,10 @@ export type NotificationCallback<
   M extends NotificationPropertyNames<ApiToConsume>
 > = (...args: ArgsType<ApiToConsume[M]>) => void;
 
+export type SharedValueProviderPropertyNames<T extends ApiDefinition<T>> = {
+  [K in keyof T]: ReturnType<T[K]> extends SharedValueProvider<any> ? K : never;
+}[keyof T];
+
 export type NotificationPropertyNames<T extends ApiDefinition<T>> = {
   [K in keyof T]: ReturnType<T[K]> extends void ? K : never;
 }[keyof T];
@@ -27,9 +31,23 @@ export type RequestPropertyNames<T extends ApiDefinition<T>> = {
   [K in keyof T]: ReturnType<T[K]> extends Promise<any> ? K : never;
 }[keyof T];
 
-export type FunctionPropertyNames<T extends ApiDefinition<T>> = NotificationPropertyNames<T> | RequestPropertyNames<T>;
+export interface SharedValueConsumer<T> {
+  subscribe(callback: (newValue: T) => void): (newValue: T) => any;
+  unsubscribe(subscription: (newValue: T) => void): void;
+  set(t: T): void;
+}
 
-export type ApiDefinition<T> = { [P in keyof T]: (...a: any) => Promise<any> | void };
+export interface SharedValueProvider<T> {
+  defaultValue: T;
+}
+
+export type FunctionPropertyNames<T extends ApiDefinition<T>> =
+  | SharedValueProviderPropertyNames<T>
+  | NotificationPropertyNames<T>
+  | RequestPropertyNames<T>;
+
+export type ApiDefinition<T> = { [P in keyof T]: (...a: any) => Promise<any> | SharedValueProvider<any> | void };
+
 export type ArgsType<T> = T extends (...args: infer A) => any ? A : never;
 
 export type SubscriptionCallback<Api extends ApiDefinition<Api>, M extends NotificationPropertyNames<Api>> = (
@@ -38,21 +56,39 @@ export type SubscriptionCallback<Api extends ApiDefinition<Api>, M extends Notif
 
 export type ApiRequests<T extends ApiDefinition<T>> = Pick<T, RequestPropertyNames<T>>;
 
-export type ApiNotifications<T extends ApiDefinition<T>> = Pick<T, NotificationPropertyNames<T>>;
+export type ApiNotificationConsumers<T extends ApiDefinition<T>> = Pick<
+  WithNotificationConsumers<T>,
+  NotificationPropertyNames<T>
+>;
+
+export type ApiSharedValueConsumers<T extends ApiDefinition<T>> = Pick<
+  WithSharedValueConsumers<T>,
+  SharedValueProviderPropertyNames<T>
+>;
+
+export type WithSharedValueConsumers<T extends ApiDefinition<T>> = {
+  [K in keyof T]: ReturnType<T[K]> extends SharedValueProvider<infer U> ? SharedValueConsumer<U> : never;
+};
+
+export interface NotificationConsumer<N> {
+  subscribe(callback: (...newValue: ArgsType<N>) => void): (...newValue: ArgsType<N>) => any;
+  unsubscribe(subscription: (...newValue: ArgsType<N>) => void): void;
+  send(...args: ArgsType<N>): void;
+}
+export type WithNotificationConsumers<T extends ApiDefinition<T>> = {
+  [K in keyof T]: ReturnType<T[K]> extends void ? NotificationConsumer<T[K]> : never;
+};
+
+export type WithRequestConsumers<T extends ApiDefinition<T>> = {
+  [K in keyof T]: ReturnType<T[K]> extends void ? RequestConsumer<T[K]> : never;
+};
+
+export type RequestConsumer<T extends () => any> = (...args: ArgsType<T>) => ReturnType<T>;
 
 export interface MessageBusClientApi<Api extends ApiDefinition<Api>> {
   requests: ApiRequests<Api>;
-  notifications: ApiNotifications<Api>;
-
-  subscribe<Method extends NotificationPropertyNames<Api>>(
-    method: Method,
-    callback: SubscriptionCallback<Api, Method>
-  ): SubscriptionCallback<Api, Method>;
-
-  unsubscribe<Method extends NotificationPropertyNames<Api>>(
-    method: Method,
-    callback: SubscriptionCallback<Api, Method>
-  ): void;
+  notifications: ApiNotificationConsumers<Api>;
+  shared: ApiSharedValueConsumers<Api>;
 }
 
 export interface MessageBusServer<
@@ -79,9 +115,11 @@ export interface EnvelopeBusMessage<D, T> {
 export enum EnvelopeBusMessagePurpose {
   REQUEST = "request",
   RESPONSE = "response",
-  SUBSCRIPTION = "subscription",
-  UNSUBSCRIPTION = "unsubscription",
+  NOTIFICATION_SUBSCRIPTION = "subscription",
+  NOTIFICATION_UNSUBSCRIPTION = "unsubscription",
   NOTIFICATION = "notification",
+  SHARED_VALUE_GET_DEFAULT = "shared-value-get-default",
+  SHARED_VALUE_UPDATE = "shared-value-update",
 }
 
 export enum EnvelopeBusMessageDirectSender {
