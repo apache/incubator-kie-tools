@@ -93,7 +93,8 @@ export function DmnAutoTable(props: Props) {
   const [dmnAutoTableError, setDmnAutoTableError] = useState<boolean>(false);
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
   const rowsRef = useMemo(() => new Map<number, React.RefObject<DmnAutoRowApi> | null>(), []);
-  const columnsCache = useRef<ColumnInstance[]>([]);
+  const inputColumnsCache = useRef<ColumnInstance[]>([]);
+  const outputColumnsCache = useRef<ColumnInstance[]>([]);
 
   const getDefaultValueByType = useCallback((type, defaultValues: { [x: string]: any }, property: string) => {
     if (type === "object") {
@@ -125,6 +126,9 @@ export function DmnAutoTable(props: Props) {
   );
 
   const defaultModel = useRef<Array<object>>(props.inputRows.map((inputRow) => ({ ...defaultValues, ...inputRow })));
+  useEffect(() => {
+    defaultModel.current = props.inputRows.map((inputRow) => ({ ...defaultValues, ...inputRow }));
+  }, [defaultValues, props.inputRows]);
 
   const { jsonSchemaBridge, inputs, inputRules, outputs, outputRules, updateWidth } = useGrid(
     props.jsonSchema,
@@ -134,7 +138,8 @@ export function DmnAutoTable(props: Props) {
     rowCount,
     formsDivRendered,
     rowsRef,
-    columnsCache,
+    inputColumnsCache,
+    outputColumnsCache,
     defaultModel,
     defaultValues
   );
@@ -210,12 +215,20 @@ export function DmnAutoTable(props: Props) {
   );
 
   // columns are saved in the grid instance, so some values can be used to improve re-renders (e.g. cell width)
-  const onColumnsUpdate = useCallback(
+  const onInputColumnsUpdate = useCallback(
     (columns: ColumnInstance[]) => {
-      columnsCache.current = columns;
+      inputColumnsCache.current = columns;
       updateWidth(outputs);
     },
-    [outputs]
+    [outputs, updateWidth]
+  );
+
+  const onOutputColumnsUpdate = useCallback(
+    (columns: ColumnInstance[]) => {
+      outputColumnsCache.current = columns;
+      updateWidth(outputs);
+    },
+    [outputs, updateWidth]
   );
 
   const inputUid = useMemo(() => nextId(), []);
@@ -254,8 +267,6 @@ export function DmnAutoTable(props: Props) {
 
   const updateDataWithModel = useCallback(
     (rowIndex: number) => {
-      // props.setInputRows?.([...rowsModel]);
-      // rowsRef.get(rowIndex)?.current?.submit();
       props.openRow(rowIndex);
     },
     [props.setInputRows, props.openRow]
@@ -301,7 +312,7 @@ export function DmnAutoTable(props: Props) {
                                 <DmnRunnerTable
                                   name={"DMN Runner Output"}
                                   onRowNumberUpdated={onRowNumberUpdated}
-                                  onColumnsUpdate={onColumnsUpdate}
+                                  onColumnsUpdate={onOutputColumnsUpdate}
                                   output={outputs as DmnRunnerClause[]}
                                   rules={outputRules as DmnRunnerRule[]}
                                   uid={outputUid}
@@ -359,7 +370,7 @@ export function DmnAutoTable(props: Props) {
                         <DmnRunnerTable
                           name={"DMN Runner Input"}
                           onRowNumberUpdated={onRowNumberUpdated}
-                          onColumnsUpdate={onColumnsUpdate}
+                          onColumnsUpdate={onInputColumnsUpdate}
                           input={inputs}
                           rules={inputRules as DmnRunnerRule[]}
                           uid={inputUid}

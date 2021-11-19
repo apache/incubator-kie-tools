@@ -85,7 +85,8 @@ export function useGrid(
   rowCount: number,
   formsDivRendered: boolean,
   rowsRef: Map<number, React.RefObject<DmnAutoRowApi> | null>,
-  columnCache: React.MutableRefObject<ColumnInstance[]>,
+  inputColumnsCache: React.MutableRefObject<ColumnInstance[]>,
+  outputColumnsCache: React.MutableRefObject<ColumnInstance[]>,
   defaultModel: React.MutableRefObject<Array<object>>,
   defaultValues: object
 ) {
@@ -186,7 +187,7 @@ export function useGrid(
 
   const inputs = useMemo(() => {
     const newInputs = generateInputFields(jsonSchemaBridge);
-    columnCache.current?.map((column) => {
+    inputColumnsCache.current?.map((column) => {
       if (column.groupType === "input") {
         const inputToUpdate = newInputs.find((e) => e.name === column.label);
         if (inputToUpdate && isInputWithInsideProperties(inputToUpdate) && column?.columns) {
@@ -196,14 +197,23 @@ export function useGrid(
               insideProperty.width = columnFound.width as number;
             }
           });
+        } else if (inputToUpdate && isInputWithInsideProperties(inputToUpdate) && column.width) {
+          inputToUpdate.insideProperties.forEach((insideProperty) => {
+            const width = (column.width as number) / inputToUpdate.insideProperties.length;
+            if (width < 150) {
+              insideProperty.width = 150;
+            } else {
+              insideProperty.width = width;
+            }
+          });
         }
-        if (inputToUpdate && column.width) {
+        if (inputToUpdate && column.width && column.width > inputToUpdate.width) {
           inputToUpdate.width = column.width as number;
         }
       }
     });
     return newInputs;
-  }, [columnCache, generateInputFields, jsonSchemaBridge]);
+  }, [inputColumnsCache, generateInputFields, jsonSchemaBridge]);
 
   useEffect(() => {
     if (previousBridge === undefined) {
@@ -241,7 +251,7 @@ export function useGrid(
 
   const updateWidth = useCallback(
     (output: any[]) => {
-      columnCache.current?.forEach((column) => {
+      inputColumnsCache.current?.forEach((column) => {
         if (column.groupType === "input") {
           const inputToUpdate = inputs.find((i) => i.name === column.label);
           if (inputToUpdate && isInputWithInsideProperties(inputToUpdate) && column?.columns) {
@@ -256,6 +266,9 @@ export function useGrid(
             inputToUpdate.width = column.width as number;
           }
         }
+      });
+
+      outputColumnsCache.current?.forEach((column) => {
         if (column.groupType === "output") {
           const outputToUpdate = output.find((e) => e.name === column.label);
           if (outputToUpdate?.insideProperties && column?.columns) {
@@ -284,7 +297,7 @@ export function useGrid(
         }
       });
     },
-    [columnCache, inputs]
+    [inputColumnsCache, outputColumnsCache, inputs]
   );
 
   const onModelUpdate = useCallback(
@@ -328,7 +341,7 @@ export function useGrid(
         },
       } as Partial<DmnRunnerRule>;
     });
-  }, [jsonSchemaBridge, formsDivRendered, inputs, rowCount, rowsRef, onModelUpdate]);
+  }, [jsonSchemaBridge, formsDivRendered, inputs, rowCount, rowsRef, defaultModel, onModelUpdate]);
 
   const deepFlattenOutput = useCallback((acc: any, entry: string, value: object) => {
     return Object.entries(value).map(([deepEntry, deepValue]) => {

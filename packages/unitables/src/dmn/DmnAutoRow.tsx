@@ -38,6 +38,10 @@ export const DmnAutoRow = React.forwardRef<DmnAutoRowApi, PropsWithChildren<Prop
   const [model, setModel] = useState<object>(props.model);
   const autoRowRef = useRef<HTMLFormElement>(null);
 
+  useEffect(() => {
+    setModel(props.model);
+  }, [props.model]);
+
   const onSubmit = useCallback((model: object) => {
     setModel(model);
     props.onModelUpdate(model);
