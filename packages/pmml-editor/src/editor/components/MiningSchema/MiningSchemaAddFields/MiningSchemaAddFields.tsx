@@ -15,7 +15,8 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { v4 as uuid } from "uuid";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import {
@@ -36,6 +37,10 @@ const MiningSchemaAddFields = ({ options, onAdd, isDisabled }: MiningSchemaAddFi
   const [isOpen, setIsOpen] = useState(false);
   const [selectOptions, setSelectOptions] = useState<Array<{ value: string; disabled: boolean }>>([]);
   const [selected, setSelected] = useState<string[]>([]);
+  /* setting up a dynamic key for the Select component to fix PF issue with refreshing SelectOptions
+  upon changes. See https://issues.redhat.com/browse/FAI-682 for more details.
+   */
+  const [selectKey, setSelectKey] = useState(uuid());
 
   const onToggle = (openStatus: boolean) => {
     setIsOpen(openStatus);
@@ -74,6 +79,7 @@ const MiningSchemaAddFields = ({ options, onAdd, isDisabled }: MiningSchemaAddFi
         disabled: option.isSelected,
       }))
     );
+    setSelectKey(uuid());
   }, [options]);
 
   return (
@@ -81,6 +87,7 @@ const MiningSchemaAddFields = ({ options, onAdd, isDisabled }: MiningSchemaAddFi
       <Split hasGutter={true}>
         <SplitItem isFilled={true}>
           <Select
+            key={selectKey}
             variant={SelectVariant.typeaheadMulti}
             typeAheadAriaLabel="Select fields"
             onToggle={onToggle}
