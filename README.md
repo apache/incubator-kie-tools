@@ -29,6 +29,15 @@ To start building the KIE Tooling Core project, you're going to need:
 - Java `11`
 - Go `1.16`
 
+\*nix users will also need:
+
+- `lib-gtk-3-dev`
+- `appindicator3-0.1` (`libappindicator3-dev` and `gir1.2-appindicator3-0.1`)
+
+Users of Fedora or RHEL will also need to add an additional repository:
+
+`sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm`
+
 After installing the tools above, you'll need to download the dependencies and link the packages locally. Simply run:
 
 - `yarn bootstrap`
