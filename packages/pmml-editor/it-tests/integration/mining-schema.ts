@@ -82,8 +82,7 @@ describe("Mining Schema Test", () => {
     cy.ouiaId("editor-close").click();
   });
 
-  // FIXME: TIAGO: Upgrading PF introduced this bug. It's necessary to open the Select twice to see the options disabled.
-  it.skip("Define field", () => {
+  it("Define field", () => {
     cy.newButtonPMML().click();
     cy.buttonDataDictionary().click();
 
