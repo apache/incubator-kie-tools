@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { PingPongApi, PingPongChannelApi, PingPongEnvelopeApi } from "../../api";
 import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
 import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tooling-core/envelope/dist/embedded";
@@ -44,7 +44,15 @@ export const EmbeddedIFramePingPong = React.forwardRef((props: Props, forwardedR
         { name: props.name }
       );
     },
-    []
+    [props.name]
+  );
+
+  const config = useMemo(
+    () => ({
+      containerType: ContainerType.IFRAME,
+      envelopePath: props.mapping.envelopePath,
+    }),
+    [props.mapping.envelopePath]
   );
 
   return (
@@ -54,7 +62,7 @@ export const EmbeddedIFramePingPong = React.forwardRef((props: Props, forwardedR
       origin={props.targetOrigin}
       refDelegate={refDelegate}
       pollInit={pollInit}
-      config={{ containerType: ContainerType.IFRAME, envelopePath: props.mapping.envelopePath }}
+      config={config}
     />
   );
 });

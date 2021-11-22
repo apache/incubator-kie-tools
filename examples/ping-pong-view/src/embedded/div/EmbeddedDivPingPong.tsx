@@ -15,12 +15,12 @@
  */
 
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { PingPongApi, PingPongChannelApi, PingPongEnvelopeApi } from "../../api";
 import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
-import { init, PingPongFactory } from "../../envelope";
-import { EnvelopeBusMessage } from "@kie-tooling-core/envelope-bus/dist/api";
+import * as PingPongEnvelope from "../../envelope";
+import { PingPongFactory } from "../../envelope";
 import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tooling-core/envelope/dist/embedded";
 
 export type Props = {
@@ -41,14 +41,10 @@ export const EmbeddedDivPingPong = React.forwardRef((props: Props, forwardedRef:
       envelopeServer: EnvelopeServer<PingPongChannelApi, PingPongEnvelopeApi>,
       container: () => HTMLDivElement | HTMLIFrameElement
     ) => {
-      init({
+      PingPongEnvelope.init({
         config: { containerType: ContainerType.DIV, envelopeId: envelopeServer.id },
         container: container(),
-        bus: {
-          postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, transfer?: any) {
-            window.postMessage(message, "*", transfer);
-          },
-        },
+        bus: { postMessage: (message, targetOrigin, transfer) => window.postMessage(message, "*", transfer) },
         pingPongViewFactory: props.pingPongViewFactory,
       });
 
@@ -57,6 +53,13 @@ export const EmbeddedDivPingPong = React.forwardRef((props: Props, forwardedRef:
         { name: props.name }
       );
     },
+    [props.name, props.pingPongViewFactory]
+  );
+
+  const config: { containerType: ContainerType.DIV } = useMemo(
+    () => ({
+      containerType: ContainerType.DIV,
+    }),
     []
   );
 
@@ -67,7 +70,7 @@ export const EmbeddedDivPingPong = React.forwardRef((props: Props, forwardedRef:
       origin={props.targetOrigin}
       refDelegate={refDelegate}
       pollInit={pollInit}
-      config={{ containerType: ContainerType.DIV }}
+      config={config}
     />
   );
 });
