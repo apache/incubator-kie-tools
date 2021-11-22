@@ -494,5 +494,16 @@ export function useGrid(
     updateWidth,
   ]);
 
-  return { jsonSchemaBridge, inputs, inputRules, outputs, outputRules, updateWidth };
+  const useGridObject = useMemo(() => {
+    return {
+      jsonSchemaBridge,
+      inputs,
+      inputRules,
+      outputs,
+      outputRules,
+      updateWidth,
+    };
+  }, [inputRules, inputs, jsonSchemaBridge, outputRules, outputs, updateWidth]);
+
+  return useGridObject;
 }

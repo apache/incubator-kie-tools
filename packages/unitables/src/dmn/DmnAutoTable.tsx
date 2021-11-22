@@ -269,7 +269,7 @@ export function DmnAutoTable(props: Props) {
     (rowIndex: number) => {
       props.openRow(rowIndex);
     },
-    [props.setInputRows, props.openRow]
+    [props.openRow]
   );
 
   return (
