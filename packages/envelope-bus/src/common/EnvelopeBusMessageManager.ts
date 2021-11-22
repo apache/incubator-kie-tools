@@ -42,7 +42,7 @@ export class EnvelopeBusMessageManager<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>
 > {
-  private readonly requestCallbacks = new Map<string, StoredPromise>();
+  private readonly requestHandlers = new Map<string, StoredPromise>();
 
   private readonly localNotificationsSubscriptions = new Map<NotificationPropertyNames<ApiToConsume>, Func[]>();
   private readonly remoteNotificationsSubscriptions: Array<NotificationPropertyNames<ApiToProvide>> = [];
@@ -63,10 +63,9 @@ export class EnvelopeBusMessageManager<
     requests: cachedProxy(
       new Map<RequestPropertyNames<ApiToConsume>, RequestConsumer<ApiToConsume[keyof ApiToConsume]>>(),
       {
-        get:
-          (target, name) =>
-          (...args) =>
-            this.request(name, ...args),
+        get: (target, name) => {
+          return (...args) => this.request(name, ...args);
+        },
       }
     ),
     notifications: cachedProxy(
@@ -223,7 +222,7 @@ export class EnvelopeBusMessageManager<
     });
 
     return new Promise<any>((resolve, reject) => {
-      this.requestCallbacks.set(requestId, { resolve, reject });
+      this.requestHandlers.set(requestId, { resolve, reject });
     }) as ReturnType<ApiToConsume[M]>;
 
     //TODO: Setup timeout to avoid memory leaks
@@ -267,12 +266,12 @@ export class EnvelopeBusMessageManager<
       throw new Error("Cannot acknowledge a response without a requestId");
     }
 
-    const callback = this.requestCallbacks.get(response.requestId);
+    const callback = this.requestHandlers.get(response.requestId);
     if (!callback) {
       throw new Error("Callback not found for " + response);
     }
 
-    this.requestCallbacks.delete(response.requestId);
+    this.requestHandlers.delete(response.requestId);
 
     if (!response.error) {
       callback.resolve(response.data);
