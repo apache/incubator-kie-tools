@@ -41,13 +41,13 @@ export class DmnEditorEnvelopeApiImpl
 
   public myDmnEnvelopeMethod() {
     this.dmnArgs.envelopeContext.channelApi.notifications.myDmnChannelMethod.send();
-    const editor = this.dmnArgs.view().getEditor();
+    const editor = this.view().getEditor();
     const ret = editor?.myDmnMethod() ?? "dmn-specific--default";
     return Promise.resolve(ret);
   }
 
   public async canvas_getNodeIds() {
-    const editor = this.dmnArgs.view().getEditor();
+    const editor = this.view().getEditor();
     if (!editor) {
       throw new Error("Editor not found.");
     }
@@ -55,7 +55,7 @@ export class DmnEditorEnvelopeApiImpl
   }
 
   public async canvas_getBackgroundColor(uuid: string) {
-    const editor = this.dmnArgs.view().getEditor();
+    const editor = this.view().getEditor();
     if (!editor) {
       throw new Error("Editor not found.");
     }
@@ -63,7 +63,7 @@ export class DmnEditorEnvelopeApiImpl
   }
 
   public async canvas_setBackgroundColor(uuid: string, backgroundColor: string) {
-    const editor = this.dmnArgs.view().getEditor();
+    const editor = this.view().getEditor();
     if (!editor) {
       throw new Error("Editor not found.");
     }
@@ -71,7 +71,7 @@ export class DmnEditorEnvelopeApiImpl
   }
 
   public async canvas_getBorderColor(uuid: string) {
-    const editor = this.dmnArgs.view().getEditor();
+    const editor = this.view().getEditor();
     if (!editor) {
       throw new Error("Editor not found.");
     }
@@ -79,7 +79,7 @@ export class DmnEditorEnvelopeApiImpl
   }
 
   public async canvas_setBorderColor(uuid: string, borderColor: string) {
-    const editor = this.dmnArgs.view().getEditor();
+    const editor = this.view().getEditor();
     if (!editor) {
       throw new Error("Editor not found.");
     }
@@ -87,7 +87,7 @@ export class DmnEditorEnvelopeApiImpl
   }
 
   public async canvas_getLocation(uuid: string) {
-    const editor = this.dmnArgs.view().getEditor();
+    const editor = this.view().getEditor();
     if (!editor) {
       throw new Error("Editor not found.");
     }
@@ -95,7 +95,7 @@ export class DmnEditorEnvelopeApiImpl
   }
 
   public async canvas_getAbsoluteLocation(uuid: string) {
-    const editor = this.dmnArgs.view().getEditor();
+    const editor = this.view().getEditor();
     if (!editor) {
       throw new Error("Editor not found.");
     }
@@ -103,7 +103,7 @@ export class DmnEditorEnvelopeApiImpl
   }
 
   public async canvas_getDimensions(uuid: string) {
-    const editor = this.dmnArgs.view().getEditor();
+    const editor = this.view().getEditor();
     if (!editor) {
       throw new Error("Editor not found.");
     }

@@ -22,7 +22,7 @@ import { DEFAULT_RECT } from "@kie-tooling-core/guided-tour/dist/api";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import "./styles.scss";
 import { Base64PngEdit, Base64PngStateControl } from "./Base64PngStateControl";
-import { KogitoEditorChannelApi } from "@kie-tooling-core/editor/src/api";
+import { KogitoEditorChannelApi } from "@kie-tooling-core/editor/dist/api";
 
 const INITIAL_CONTRAST = "100";
 const INITIAL_BRIGHTNESS = "100";

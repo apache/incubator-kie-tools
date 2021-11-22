@@ -23,7 +23,7 @@ export interface EnvelopeApiFactoryArgs<
   ViewType,
   ContextType
 > {
-  view: () => ViewType;
+  viewDelegate: () => Promise<() => ViewType>;
   envelopeContext: ContextType;
   envelopeBusController: EnvelopeBusController<ApiToProvide, ApiToConsume>;
 }

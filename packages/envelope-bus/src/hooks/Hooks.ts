@@ -71,7 +71,7 @@ export function useSubscriptionOnce<Api extends ApiDefinition<Api>, M extends No
         notificationConsumer.unsubscribe(subscription);
       }
     };
-  }, [callback]);
+  }, [callback, notificationConsumer]);
 }
 
 export function useSharedValue<T>(
@@ -102,10 +102,10 @@ export function useSharedValue<T>(
   return [value, ret__setValue];
 }
 
-export function useBoundSharedValue<T>(
-  sharedValue: SharedValueConsumer<T> | undefined,
-  value: T | undefined,
-  setValue: React.Dispatch<React.SetStateAction<T>>
+export function useStateAsSharedValue<T>(
+  value: T,
+  setValue: React.Dispatch<React.SetStateAction<T>>,
+  sharedValue: SharedValueConsumer<T> | undefined
 ) {
   useEffect(() => {
     if (!sharedValue) {
@@ -114,13 +114,9 @@ export function useBoundSharedValue<T>(
 
     const subscription = sharedValue.subscribe((newValue) => setValue(newValue));
     return () => sharedValue.unsubscribe(subscription);
-  }, [sharedValue]);
+  }, [setValue, sharedValue]);
 
   useEffect(() => {
-    if (!value) {
-      return;
-    }
-
     sharedValue?.set(value);
-  }, [value]);
+  }, [sharedValue, value]);
 }
