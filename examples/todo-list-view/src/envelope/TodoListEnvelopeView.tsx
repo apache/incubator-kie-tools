@@ -85,7 +85,7 @@ export const TodoListEnvelopeView = React.forwardRef<TodoListEnvelopeViewApi, Pr
     [items]
   );
 
-  const [newItemToAdd, _] = useSharedValue(props.channelApi.shared.todoList__potentialNewItem);
+  const [potentialNewItem, _] = useSharedValue(props.channelApi.shared.todoList__potentialNewItem);
 
   return (
     <>
@@ -99,7 +99,7 @@ export const TodoListEnvelopeView = React.forwardRef<TodoListEnvelopeViewApi, Pr
 
           <h2>{`Here's your 'To do' list:`}</h2>
 
-          {(items.length <= 0 && !newItemToAdd && (
+          {(items.length <= 0 && !potentialNewItem && (
             <>
               <p>Nothing to do 😎</p>
             </>
@@ -136,9 +136,9 @@ export const TodoListEnvelopeView = React.forwardRef<TodoListEnvelopeViewApi, Pr
                   </a>
                 </li>
               ))}
-              {newItemToAdd && (
+              {potentialNewItem && (
                 <li key={"new-item"} className={"todo-list--list-items"} style={{ color: "gray" }}>
-                  <i>{newItemToAdd}</i>
+                  <i>{potentialNewItem}</i>
                 </li>
               )}
             </ol>
