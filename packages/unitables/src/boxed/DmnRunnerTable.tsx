@@ -17,6 +17,7 @@
 import * as React from "react";
 import { useCallback, useLayoutEffect, useMemo } from "react";
 import { ColumnInstance, DataRecord } from "react-table";
+import "@kogito-tooling/boxed-expression-component";
 import {
   ExpressionProps,
   GroupOperations,
