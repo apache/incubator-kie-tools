@@ -20,7 +20,7 @@ In this example, we will use the JSON Schema to describe our desired data format
 
 ```shell
 npm install uniforms@3.5.1
-npm install uniforms-json-schema-bridge@3.5.1
+npm install uniforms-bridge-json-schema@3.5.1
 npm install uniforms-patternfly
 npm install @patternfly/react-core @patternfly/react-icons
 ```
