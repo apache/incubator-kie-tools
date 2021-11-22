@@ -35,11 +35,11 @@ interface ApiToConsume {
 
 let sentMessages: Array<EnvelopeBusMessage<unknown, any>>;
 let envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>;
-let api: ApiToProvide;
+let apiImpl: ApiToProvide;
 
 beforeEach(() => {
   sentMessages = [];
-  api = {
+  apiImpl = {
     setText: jest.fn(),
     someRequest: jest.fn(() => Promise.resolve("a string")),
   };
@@ -65,7 +65,7 @@ describe("startInitPolling", () => {
   test("polls for init response", async () => {
     jest.spyOn(envelopeServer, "stopInitPolling");
 
-    envelopeServer.startInitPolling(api);
+    envelopeServer.startInitPolling(apiImpl);
     expect(envelopeServer.initPolling).toBeTruthy();
     expect(envelopeServer.initPollingTimeout).toBeTruthy();
 
@@ -88,7 +88,7 @@ describe("startInitPolling", () => {
     jest.spyOn(envelopeServer, "stopInitPolling");
     EnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS = 200;
 
-    envelopeServer.startInitPolling(api);
+    envelopeServer.startInitPolling(apiImpl);
     expect(envelopeServer.initPolling).toBeTruthy();
     expect(envelopeServer.initPollingTimeout).toBeTruthy();
 
@@ -112,9 +112,9 @@ describe("receive", () => {
         requestId: "any",
         type: "someRequest",
         data: [],
-        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_BUS_CONTROLLER,
+        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_CLIENT,
       },
-      api
+      apiImpl
     );
 
     expect(receive).not.toBeCalled();
@@ -130,9 +130,9 @@ describe("receive", () => {
         requestId: "any",
         type: "someRequest",
         data: [],
-        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_BUS_CONTROLLER,
+        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_CLIENT,
       },
-      api
+      apiImpl
     );
 
     expect(receive).not.toBeCalled();
@@ -146,15 +146,15 @@ describe("receive", () => {
         requestId: "any",
         type: "someRequest",
         data: ["param1"],
-        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_BUS_CONTROLLER,
+        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_CLIENT,
       },
-      api
+      apiImpl
     );
 
     await delay(0);
 
     expect(sentMessages.length).toStrictEqual(1);
-    expect(api.someRequest).toBeCalledWith("param1");
+    expect(apiImpl.someRequest).toBeCalledWith("param1");
   });
 
   test("any notification with different targetEnvelopeServerId", () => {
@@ -164,12 +164,12 @@ describe("receive", () => {
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "setText",
         data: ["some text"],
-        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_BUS_CONTROLLER,
+        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_CLIENT,
       },
-      api
+      apiImpl
     );
 
-    expect(api.setText).not.toBeCalled();
+    expect(apiImpl.setText).not.toBeCalled();
   });
 
   test("any notification with the same targetEnvelopeServerId", () => {
@@ -179,12 +179,12 @@ describe("receive", () => {
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "setText",
         data: ["some text"],
-        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_BUS_CONTROLLER,
+        directSender: EnvelopeBusMessageDirectSender.ENVELOPE_CLIENT,
       },
-      api
+      apiImpl
     );
 
-    expect(api.setText).toBeCalledWith("some text");
+    expect(apiImpl.setText).toBeCalledWith("some text");
   });
 
   test("any request from another EnvelopeServer", async () => {
@@ -197,19 +197,19 @@ describe("receive", () => {
         data: ["param1"],
         directSender: EnvelopeBusMessageDirectSender.ENVELOPE_SERVER,
       },
-      api
+      apiImpl
     );
 
     await delay(0);
 
     expect(sentMessages.length).toStrictEqual(0);
-    expect(api.someRequest).not.toHaveBeenCalled();
+    expect(apiImpl.someRequest).not.toHaveBeenCalled();
   });
 });
 
 async function incomingMessage(
   message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>
 ) {
-  envelopeServer.receive(message, api);
+  envelopeServer.receive(message, apiImpl);
   await delay(0); // waits for next event loop iteration
 }

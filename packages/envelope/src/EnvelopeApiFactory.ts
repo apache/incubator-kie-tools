@@ -15,7 +15,7 @@
  */
 
 import { ApiDefinition } from "@kie-tooling-core/envelope-bus/dist/api";
-import { EnvelopeBusController } from "@kie-tooling-core/envelope-bus/dist/envelope";
+import { EnvelopeClient } from "@kie-tooling-core/envelope-bus/dist/envelope";
 
 export interface EnvelopeApiFactoryArgs<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
@@ -25,7 +25,7 @@ export interface EnvelopeApiFactoryArgs<
 > {
   viewDelegate: () => Promise<() => ViewType>;
   envelopeContext: ContextType;
-  envelopeBusController: EnvelopeBusController<ApiToProvide, ApiToConsume>;
+  envelopeClient: EnvelopeClient<ApiToProvide, ApiToConsume>;
 }
 
 export interface EnvelopeApiFactory<

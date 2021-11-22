@@ -23,7 +23,7 @@ declare global {
 /**
  * This method is called when the Envelope starts, creating an applications that's actually an
  * instance of TodoListViewEnvelope. This TodoListViewEnvelope Envelope will start listening to messages coming
- * from the Channel to start the View. Once the EnvelopeBusController is properly associated, the View renders.
+ * from the Channel to start the View. Once the EnvelopeClient is properly associated, the View renders.
  */
 TodoListViewEnvelope.init({
   container: document.getElementById("envelope-app")!,

@@ -38,14 +38,14 @@ export class TodoListEnvelopeApiImpl implements TodoListEnvelopeApi {
   /**
    * Inits the Todo List View.
    *
-   * Calling envelopeBusController.associate is mandatory if this Envelope will send messages
+   * Calling envelopeClient.associate is mandatory if this Envelope will send messages
    * back to the Editor (which is almost always the case).
    *
    * @param association
    * @param initArgs Initial arguments of this Envelope. The `user` object is only for example purposes.
    */
   public async todoList__init(association: Association, initArgs: TodoListInitArgs) {
-    this.args.envelopeBusController.associate(association.origin, association.envelopeServerId);
+    this.args.envelopeClient.associate(association.origin, association.envelopeServerId);
     this.view = await this.args.viewDelegate();
     this.view().setUser(initArgs.user);
   }

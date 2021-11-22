@@ -137,7 +137,7 @@ export const TodoListEnvelopeView = React.forwardRef<TodoListEnvelopeViewApi, Pr
                 </li>
               ))}
               {potentialNewItem && (
-                <li key={"new-item"} className={"todo-list--list-items"} style={{ color: "gray" }}>
+                <li key={"potential-new-item"} className={"todo-list--list-items"} style={{ color: "gray" }}>
                   <i>{potentialNewItem}</i>
                 </li>
               )}

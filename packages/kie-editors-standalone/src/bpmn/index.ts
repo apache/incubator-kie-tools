@@ -74,7 +74,7 @@ export function open(args: {
 
   let receivedSetContentError = false;
 
-  const channelApi = new KogitoEditorChannelApiImpl(
+  const channelApiImpl = new KogitoEditorChannelApiImpl(
     stateControl,
     {
       fileName: "",
@@ -95,13 +95,13 @@ export function open(args: {
   );
 
   const listener = (message: MessageEvent) => {
-    envelopeServer.receive(message.data, channelApi);
+    envelopeServer.receive(message.data, channelApiImpl);
   };
 
   window.addEventListener("message", listener);
 
   args.container.appendChild(iframe);
-  envelopeServer.startInitPolling(channelApi);
+  envelopeServer.startInitPolling(channelApiImpl);
 
   const editor = createEditor(envelopeServer.envelopeApi, stateControl, listener, iframe);
 

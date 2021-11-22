@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusController } from "@kie-tooling-core/envelope-bus/dist/envelope";
+import { EnvelopeClient } from "@kie-tooling-core/envelope-bus/dist/envelope";
 import {
   EnvelopeBusMessage,
   EnvelopeBusMessageDirectSender,
@@ -31,20 +31,20 @@ interface ApiToProvide {
   someNotification(): void;
 }
 
-let api: ApiToProvide;
-let envelopeBus: EnvelopeBusController<ApiToProvide, ApiToConsume>;
+let apiImpl: ApiToProvide;
+let envelopeClient: EnvelopeClient<ApiToProvide, ApiToConsume>;
 let sentMessages: Array<[EnvelopeBusMessage<any, any>, string]>;
 
 beforeEach(() => {
   sentMessages = [];
-  api = {
-    init: async () => envelopeBus.associate("my-origin", "my-envelope-id"),
+  apiImpl = {
+    init: async () => envelopeClient.associate("my-origin", "my-envelope-id"),
     someNotification: jest.fn(),
   };
 });
 
 const createEnvelopeBus = (envelopeId?: string) => {
-  return new EnvelopeBusController<ApiToProvide, ApiToConsume>(
+  return new EnvelopeClient<ApiToProvide, ApiToConsume>(
     {
       postMessage<D, T>(message: EnvelopeBusMessage<D, T>, targetOrigin?: string, _?: any): void {
         sentMessages.push([message as any, targetOrigin!]);
@@ -55,7 +55,7 @@ const createEnvelopeBus = (envelopeId?: string) => {
 };
 
 afterEach(() => {
-  envelopeBus.stopListening();
+  envelopeClient.stopListening();
 });
 
 const delay = (ms: number) => {
@@ -64,72 +64,72 @@ const delay = (ms: number) => {
 
 describe("new instance", () => {
   beforeEach(async () => {
-    envelopeBus = createEnvelopeBus();
+    envelopeClient = createEnvelopeBus();
   });
 
   test("does nothing", () => {
     expect(sentMessages.length).toEqual(0);
-    expect(envelopeBus.targetOrigin).toBe(undefined);
+    expect(envelopeClient.targetOrigin).toBe(undefined);
   });
 });
 
 describe("event listening", () => {
   beforeEach(async () => {
-    envelopeBus = createEnvelopeBus();
+    envelopeClient = createEnvelopeBus();
   });
 
   test("activates when requested", async () => {
-    spyOn(envelopeBus, "receive");
-    envelopeBus.startListening(api);
+    spyOn(envelopeClient, "receive");
+    envelopeClient.startListening(apiImpl);
 
     await incomingMessage("a-message");
-    expect(envelopeBus.receive).toHaveBeenCalledTimes(1);
+    expect(envelopeClient.receive).toHaveBeenCalledTimes(1);
   });
 
   test("deactivates when requested", async () => {
-    spyOn(envelopeBus, "receive");
-    envelopeBus.startListening(api);
-    envelopeBus.stopListening();
+    spyOn(envelopeClient, "receive");
+    envelopeClient.startListening(apiImpl);
+    envelopeClient.stopListening();
 
     await incomingMessage("a-message");
-    expect(envelopeBus.receive).toHaveBeenCalledTimes(0);
+    expect(envelopeClient.receive).toHaveBeenCalledTimes(0);
   });
 
   test("activation is idempotent", async () => {
-    spyOn(envelopeBus, "receive");
-    envelopeBus.startListening(api);
-    envelopeBus.startListening(api);
+    spyOn(envelopeClient, "receive");
+    envelopeClient.startListening(apiImpl);
+    envelopeClient.startListening(apiImpl);
 
     await incomingMessage("a-message");
-    expect(envelopeBus.receive).toHaveBeenCalledTimes(1);
+    expect(envelopeClient.receive).toHaveBeenCalledTimes(1);
   });
 
   test("deactivation is idempotent", async () => {
-    spyOn(envelopeBus, "receive");
-    envelopeBus.startListening(api);
-    envelopeBus.stopListening();
-    envelopeBus.stopListening();
+    spyOn(envelopeClient, "receive");
+    envelopeClient.startListening(apiImpl);
+    envelopeClient.stopListening();
+    envelopeClient.stopListening();
 
     await incomingMessage("a-message");
-    expect(envelopeBus.receive).toHaveBeenCalledTimes(0);
+    expect(envelopeClient.receive).toHaveBeenCalledTimes(0);
   });
 
   test("deactivation does not fail when not started", async () => {
-    spyOn(envelopeBus, "receive");
-    envelopeBus.stopListening();
+    spyOn(envelopeClient, "receive");
+    envelopeClient.stopListening();
 
     await incomingMessage("a-message");
-    expect(envelopeBus.receive).toHaveBeenCalledTimes(0);
+    expect(envelopeClient.receive).toHaveBeenCalledTimes(0);
   });
 });
 
 describe("receive without envelopeId", () => {
   beforeEach(async () => {
-    envelopeBus = createEnvelopeBus();
+    envelopeClient = createEnvelopeBus();
   });
 
   beforeEach(async () => {
-    envelopeBus.startListening(api);
+    envelopeClient.startListening(apiImpl);
     await incomingMessage({
       requestId: "any",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
@@ -142,7 +142,7 @@ describe("receive without envelopeId", () => {
   });
 
   afterEach(() => {
-    envelopeBus.stopListening();
+    envelopeClient.stopListening();
   });
 
   test("direct notification", async () => {
@@ -154,7 +154,7 @@ describe("receive without envelopeId", () => {
       directSender: EnvelopeBusMessageDirectSender.ENVELOPE_SERVER,
     });
 
-    expect(api.someNotification).not.toHaveBeenCalled();
+    expect(apiImpl.someNotification).not.toHaveBeenCalled();
   });
 
   test("subscription notification", async () => {
@@ -167,7 +167,7 @@ describe("receive without envelopeId", () => {
       directSender: EnvelopeBusMessageDirectSender.ENVELOPE_SERVER,
     });
 
-    expect(api.someNotification).not.toHaveBeenCalled();
+    expect(apiImpl.someNotification).not.toHaveBeenCalled();
   });
 
   test("without targetEnvelopeId", async () => {
@@ -178,28 +178,28 @@ describe("receive without envelopeId", () => {
       directSender: EnvelopeBusMessageDirectSender.ENVELOPE_SERVER,
     });
 
-    expect(api.someNotification).toHaveBeenCalled();
+    expect(apiImpl.someNotification).toHaveBeenCalled();
   });
 
-  test("from another EnvelopeBusController", async () => {
+  test("from another EnvelopeClient", async () => {
     await incomingMessage({
       data: [],
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "someNotification",
-      directSender: EnvelopeBusMessageDirectSender.ENVELOPE_BUS_CONTROLLER,
+      directSender: EnvelopeBusMessageDirectSender.ENVELOPE_CLIENT,
     });
 
-    expect(api.someNotification).not.toHaveBeenCalled();
+    expect(apiImpl.someNotification).not.toHaveBeenCalled();
   });
 });
 
 describe("receive with envelopeId", () => {
   beforeEach(async () => {
-    envelopeBus = createEnvelopeBus("my-envelope-id");
+    envelopeClient = createEnvelopeBus("my-envelope-id");
   });
 
   beforeEach(async () => {
-    envelopeBus.startListening(api);
+    envelopeClient.startListening(apiImpl);
     await incomingMessage({
       requestId: "any",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
@@ -212,7 +212,7 @@ describe("receive with envelopeId", () => {
   });
 
   afterEach(() => {
-    envelopeBus.stopListening();
+    envelopeClient.stopListening();
   });
 
   test("direct notification", async () => {
@@ -224,7 +224,7 @@ describe("receive with envelopeId", () => {
       directSender: EnvelopeBusMessageDirectSender.ENVELOPE_SERVER,
     });
 
-    expect(api.someNotification).toHaveBeenCalled();
+    expect(apiImpl.someNotification).toHaveBeenCalled();
   });
 
   test("subscription notification", async () => {
@@ -237,7 +237,7 @@ describe("receive with envelopeId", () => {
       directSender: EnvelopeBusMessageDirectSender.ENVELOPE_SERVER,
     });
 
-    expect(api.someNotification).not.toHaveBeenCalled();
+    expect(apiImpl.someNotification).not.toHaveBeenCalled();
   });
 
   test("notification to another envelope", async () => {
@@ -249,7 +249,7 @@ describe("receive with envelopeId", () => {
       directSender: EnvelopeBusMessageDirectSender.ENVELOPE_SERVER,
     });
 
-    expect(api.someNotification).not.toHaveBeenCalled();
+    expect(apiImpl.someNotification).not.toHaveBeenCalled();
   });
 
   test("without targetEnvelopeId", async () => {
@@ -260,29 +260,29 @@ describe("receive with envelopeId", () => {
       directSender: EnvelopeBusMessageDirectSender.ENVELOPE_SERVER,
     });
 
-    expect(api.someNotification).not.toHaveBeenCalled();
+    expect(apiImpl.someNotification).not.toHaveBeenCalled();
   });
 
-  test("from another EnvelopeBusController", async () => {
+  test("from another EnvelopeClient", async () => {
     await incomingMessage({
       data: [],
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "someNotification",
-      directSender: EnvelopeBusMessageDirectSender.ENVELOPE_BUS_CONTROLLER,
+      directSender: EnvelopeBusMessageDirectSender.ENVELOPE_CLIENT,
     });
 
-    expect(api.someNotification).not.toHaveBeenCalled();
+    expect(apiImpl.someNotification).not.toHaveBeenCalled();
   });
 });
 
 describe("send without being associated", () => {
   beforeEach(async () => {
-    envelopeBus = createEnvelopeBus();
+    envelopeClient = createEnvelopeBus();
   });
 
   test("throws error", () => {
     expect(() =>
-      envelopeBus.send({
+      envelopeClient.send({
         data: "anything",
         requestId: "some-id",
         purpose: EnvelopeBusMessagePurpose.RESPONSE,

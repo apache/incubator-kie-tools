@@ -39,10 +39,6 @@ export function TodoListViewPage() {
     window.alert(`Item '${item}' removed successfully!`);
   }, []);
 
-  const defaultPotentialNewItem = useCallback(() => {
-    return { defaultValue: "" };
-  }, []);
-
   useStateAsSharedValue(
     newItem,
     setNewItem,
@@ -52,9 +48,9 @@ export function TodoListViewPage() {
   const apiImpl = useMemo(() => {
     return {
       todoList__itemRemoved: handleItemRemoved,
-      todoList__potentialNewItem: defaultPotentialNewItem,
+      todoList__potentialNewItem: () => ({ defaultValue: "" }),
     };
-  }, [defaultPotentialNewItem, handleItemRemoved]);
+  }, [handleItemRemoved]);
 
   return (
     <Page>

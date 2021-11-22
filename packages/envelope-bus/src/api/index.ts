@@ -123,7 +123,7 @@ export enum EnvelopeBusMessagePurpose {
 }
 
 export enum EnvelopeBusMessageDirectSender {
-  ENVELOPE_BUS_CONTROLLER = "envelopeBusController",
+  ENVELOPE_CLIENT = "envelopeClient",
   ENVELOPE_SERVER = "envelopeServer",
 }
 

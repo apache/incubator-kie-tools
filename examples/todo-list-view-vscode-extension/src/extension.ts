@@ -51,20 +51,20 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  // Will store the active envelopeApi.
-  let envelopeApi: MessageBusClientApi<TodoListEnvelopeApi> | undefined;
+  // Will store the active envelopeApiImpl.
+  let envelopeApiImpl: MessageBusClientApi<TodoListEnvelopeApi> | undefined;
 
   context.subscriptions.push(
     vscode.commands.registerCommand(OPEN_TODO_LIST_VIEW_COMMAND_ID, () => {
-      envelopeApi = todoListWebview.open("todo-list-view", {
-        onClose: () => (envelopeApi = undefined),
+      envelopeApiImpl = todoListWebview.open("todo-list-view", {
+        onClose: () => (envelopeApiImpl = undefined),
       });
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand(MARK_ALL_AS_COMPLETED_COMMAND_ID, () => {
-      envelopeApi?.notifications.todoList__markAllAsCompleted.send();
+      envelopeApiImpl?.notifications.todoList__markAllAsCompleted.send();
     })
   );
 
@@ -83,8 +83,8 @@ export function activate(context: vscode.ExtensionContext) {
 
       const items = selectedText.split("\n");
 
-      if (envelopeApi) {
-        addItems(items, envelopeApi);
+      if (envelopeApiImpl) {
+        addItems(items, envelopeApiImpl);
         return;
       }
 
@@ -98,7 +98,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       await vscode.commands.executeCommand(OPEN_TODO_LIST_VIEW_COMMAND_ID);
-      addItems(items, envelopeApi);
+      addItems(items, envelopeApiImpl);
     })
   );
 

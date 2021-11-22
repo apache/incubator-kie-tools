@@ -15,7 +15,7 @@
  */
 
 import { ApiDefinition, EnvelopeBus } from "@kie-tooling-core/envelope-bus/dist/api";
-import { EnvelopeBusController } from "@kie-tooling-core/envelope-bus/dist/envelope";
+import { EnvelopeClient } from "@kie-tooling-core/envelope-bus/dist/envelope";
 import { EnvelopeApiFactory } from "./EnvelopeApiFactory";
 import { ContainerType } from "./api";
 
@@ -37,14 +37,14 @@ export class Envelope<
   constructor(
     bus: EnvelopeBus,
     config: EnvelopeDivConfig | EnvelopeIFrameConfig = { containerType: ContainerType.IFRAME },
-    private readonly envelopeBusController = new EnvelopeBusController<ApiToProvide, ApiToConsume>(
+    private readonly envelopeClient = new EnvelopeClient<ApiToProvide, ApiToConsume>(
       bus,
       config.containerType === ContainerType.DIV ? config.envelopeId : undefined
     )
   ) {}
 
   public get channelApi() {
-    return this.envelopeBusController.channelApi;
+    return this.envelopeClient.channelApi;
   }
 
   public async start(
@@ -52,14 +52,14 @@ export class Envelope<
     envelopeContext: ContextType,
     apiFactory: EnvelopeApiFactory<ApiToProvide, ApiToConsume, ViewType, ContextType>
   ) {
-    const api = apiFactory.create({
+    const apiImpl = apiFactory.create({
       viewDelegate,
       envelopeContext,
-      envelopeBusController: this.envelopeBusController,
+      envelopeClient: this.envelopeClient,
     });
 
-    this.envelopeBusController.startListening(api);
+    this.envelopeClient.startListening(apiImpl);
 
-    return this.envelopeBusController;
+    return this.envelopeClient;
   }
 }
