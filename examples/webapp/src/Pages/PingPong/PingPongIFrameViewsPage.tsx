@@ -28,7 +28,7 @@ export function PingPongIFrameViewsPage() {
   const [lastPing, setLastPing] = useState<string>("-");
   const [lastPong, setLastPong] = useState<string>("-");
 
-  const api: PingPongChannelApi = useMemo(() => {
+  const apiImpl: PingPongChannelApi = useMemo(() => {
     return {
       pingPongView__ping(source: string) {
         pings++;
@@ -39,7 +39,15 @@ export function PingPongIFrameViewsPage() {
         setLastPong(source);
       },
     };
-  }, [pings, pongs]);
+  }, []);
+
+  const mapping = useMemo(
+    () => ({
+      title: "Ping-Pong Page in React",
+      envelopePath: "envelope/ping-pong-view-react-impl.html",
+    }),
+    []
+  );
 
   return (
     <Page>
@@ -48,28 +56,28 @@ export function PingPongIFrameViewsPage() {
         <div className={"webapp--page-ping-pong-view"}>
           <PageSection>
             <EmbeddedIFramePingPong
-              {...api}
+              apiImpl={apiImpl}
               name={"React 1"}
               targetOrigin={window.location.origin}
-              mapping={{ title: "Ping-Pong Page in React", envelopePath: "envelope/ping-pong-view-react-impl.html" }}
+              mapping={mapping}
             />
           </PageSection>
 
           <PageSection>
             <EmbeddedIFramePingPong
-              {...api}
+              apiImpl={apiImpl}
               name={"React 2"}
               targetOrigin={window.location.origin}
-              mapping={{ title: "Ping-Pong Page in React", envelopePath: "envelope/ping-pong-view-react-impl.html" }}
+              mapping={mapping}
             />
           </PageSection>
 
           <PageSection>
             <EmbeddedIFramePingPong
-              {...api}
+              apiImpl={apiImpl}
               name={"React 3"}
               targetOrigin={window.location.origin}
-              mapping={{ title: "Ping-Pong Page in React", envelopePath: "envelope/ping-pong-view-react-impl.html" }}
+              mapping={mapping}
             />
           </PageSection>
         </div>

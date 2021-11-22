@@ -15,25 +15,26 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { PingPongApi, PingPongChannelApi, PingPongEnvelopeApi } from "../../api";
 import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
-import { EmbeddedEnvelopeFactory } from "@kie-tooling-core/envelope/dist/embedded";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
 import { init, PingPongFactory } from "../../envelope";
 import { EnvelopeBusMessage } from "@kie-tooling-core/envelope-bus/dist/api";
+import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tooling-core/envelope/dist/embedded";
 
-export type Props = PingPongChannelApi & {
+export type Props = {
   mapping: {
     title: string;
   };
+  apiImpl: PingPongChannelApi;
   targetOrigin: string;
   name: string;
   pingPongViewFactory: PingPongFactory;
 };
 
 export const EmbeddedDivPingPong = React.forwardRef((props: Props, forwardedRef: React.Ref<PingPongApi>) => {
-  const refDelegate = useCallback((envelopeServer): PingPongApi => ({}), []);
+  const refDelegate = useCallback((): PingPongApi => ({}), []);
 
   const pollInit = useCallback(
     (
@@ -59,15 +60,19 @@ export const EmbeddedDivPingPong = React.forwardRef((props: Props, forwardedRef:
     []
   );
 
-  const EmbeddedEnvelope = useMemo(() => {
-    return EmbeddedEnvelopeFactory({
-      api: props,
-      origin: props.targetOrigin,
-      refDelegate,
-      pollInit,
-      config: { containerType: ContainerType.DIV },
-    });
-  }, []);
-
-  return <EmbeddedEnvelope ref={forwardedRef} />;
+  return (
+    <EmbeddedDivPingPongEnvelope
+      ref={forwardedRef}
+      apiImpl={props.apiImpl}
+      origin={props.targetOrigin}
+      refDelegate={refDelegate}
+      pollInit={pollInit}
+      config={{ containerType: ContainerType.DIV }}
+    />
+  );
 });
+
+const EmbeddedDivPingPongEnvelope =
+  React.forwardRef<PingPongApi, EmbeddedEnvelopeProps<PingPongChannelApi, PingPongEnvelopeApi, PingPongApi>>(
+    RefForwardingEmbeddedEnvelope
+  );

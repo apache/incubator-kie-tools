@@ -114,7 +114,7 @@ export function useStateAsSharedValue<T>(
 
     const subscription = sharedValue.subscribe((newValue) => setValue(newValue));
     return () => sharedValue.unsubscribe(subscription);
-  }, [setValue, sharedValue]);
+  }, [sharedValue, setValue]);
 
   useEffect(() => {
     sharedValue?.set(value);

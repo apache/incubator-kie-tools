@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Nav, NavItem, NavList, Page, PageSection, Title } from "@patternfly/react-core";
 import { EmbeddedTodoList, EmbeddedTodoListRef } from "@kogito-tooling-examples/todo-list-view/dist/embedded";
 import { useStateAsSharedValue } from "@kie-tooling-core/envelope-bus/dist/hooks";
@@ -49,6 +49,13 @@ export function TodoListViewPage() {
     embeddedTodoListRef.current?.envelopeServer.shared.todoList__potentialNewItem
   );
 
+  const apiImpl = useMemo(() => {
+    return {
+      todoList__itemRemoved: handleItemRemoved,
+      todoList__potentialNewItem: defaultPotentialNewItem,
+    };
+  }, [defaultPotentialNewItem, handleItemRemoved]);
+
   return (
     <Page>
       <div className={"webapp--page-main-div"}>
@@ -80,8 +87,7 @@ export function TodoListViewPage() {
             ref={embeddedTodoListRef}
             targetOrigin={window.location.origin}
             envelopePath={"envelope/todo-list-view.html"}
-            todoList__itemRemoved={handleItemRemoved}
-            todoList__potentialNewItem={defaultPotentialNewItem}
+            apiImpl={apiImpl}
           />
         </PageSection>
       </div>

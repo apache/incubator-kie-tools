@@ -18,16 +18,17 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
 import { TodoListApi, TodoListChannelApi, TodoListEnvelopeApi } from "../api";
-import { EmbeddedEnvelopeFactory } from "@kie-tooling-core/envelope/dist/embedded";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
+import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tooling-core/envelope/dist/embedded";
 
 export type EmbeddedTodoListRef = TodoListApi & {
   envelopeServer: EnvelopeServer<TodoListChannelApi, TodoListEnvelopeApi>;
 };
 
-export type Props = TodoListChannelApi & {
+export type Props = {
   targetOrigin: string;
   envelopePath: string;
+  apiImpl: TodoListChannelApi;
 };
 
 /**
@@ -68,20 +69,24 @@ export const EmbeddedTodoList = React.forwardRef<EmbeddedTodoListRef, Props>((pr
     []
   );
 
-  /*
-   * Creates an instance of EmbeddedEnvelope.
-   *
-   * This abstracts the EnvelopeServer creation and its lifecycle handling, allowing the EmbeddedTodoList to be simpler.
-   */
-  const EmbeddedEnvelope = useMemo(() => {
-    return EmbeddedEnvelopeFactory({
-      api: props,
-      origin: props.targetOrigin,
-      refDelegate,
-      pollInit,
-      config: { containerType: ContainerType.IFRAME, envelopePath: props.envelopePath },
-    });
-  }, []);
+  const config = useMemo(() => {
+    return { containerType: ContainerType.IFRAME, envelopePath: props.envelopePath };
+  }, [props.envelopePath]);
 
-  return <EmbeddedEnvelope ref={forwardedRef} />;
+  return (
+    <EmbeddedTodoListEnvelope
+      ref={forwardedRef}
+      apiImpl={props.apiImpl}
+      origin={props.targetOrigin}
+      refDelegate={refDelegate}
+      pollInit={pollInit}
+      config={config}
+    />
+  );
 });
+
+const EmbeddedTodoListEnvelope =
+  React.forwardRef<
+    EmbeddedTodoListRef,
+    EmbeddedEnvelopeProps<TodoListChannelApi, TodoListEnvelopeApi, EmbeddedTodoListRef>
+  >(RefForwardingEmbeddedEnvelope);

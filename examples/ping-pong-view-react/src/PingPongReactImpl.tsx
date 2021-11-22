@@ -59,33 +59,45 @@ export const PingPongReactImpl = React.forwardRef<PingPongApi, Props>((props, fo
   // Function to be called when pressing the 'Ping others!' button.
   const ping = useCallback(() => {
     props.channelApi.notifications.pingPongView__ping.send(props.initArgs.name);
-  }, []);
+  }, [props.channelApi, props.initArgs.name]);
 
   // Subscribes to messages sent to `pingPongView__ping`.
   // Notice how this listens to messages received BY the Channel.
-  useSubscription(props.channelApi.notifications.pingPongView__ping, (pingSource) => {
-    // If this instance sent the PING, we ignore it.
-    if (pingSource === props.initArgs.name) {
-      return;
-    }
+  useSubscription(
+    props.channelApi.notifications.pingPongView__ping,
+    useCallback(
+      (pingSource) => {
+        // If this instance sent the PING, we ignore it.
+        if (pingSource === props.initArgs.name) {
+          return;
+        }
 
-    // Updates the log to show a feedback that a PING message was observed.
-    setLog((prevLog) => [...prevLog, { line: `PING from '${pingSource}'.`, time: getCurrentTime() }]);
+        // Updates the log to show a feedback that a PING message was observed.
+        setLog((prevLog) => [...prevLog, { line: `PING from '${pingSource}'.`, time: getCurrentTime() }]);
 
-    // Acknowledges the PING message by sending back a PONG message.
-    props.channelApi.notifications.pingPongView__pong.send(props.initArgs.name, pingSource);
-  });
+        // Acknowledges the PING message by sending back a PONG message.
+        props.channelApi.notifications.pingPongView__pong.send(props.initArgs.name, pingSource);
+      },
+      [props.channelApi, props.initArgs.name]
+    )
+  );
 
   // Subscribes to messages sent to `pingPongView__pong`.
-  useSubscription(props.channelApi.notifications.pingPongView__pong, (pongSource: string, replyingTo: string) => {
-    // If this instance sent the PONG, or if this PONG was not meant to this instance, we ignore it.
-    if (pongSource === props.initArgs.name || replyingTo !== props.initArgs.name) {
-      return;
-    }
+  useSubscription(
+    props.channelApi.notifications.pingPongView__pong,
+    useCallback(
+      (pongSource: string, replyingTo: string) => {
+        // If this instance sent the PONG, or if this PONG was not meant to this instance, we ignore it.
+        if (pongSource === props.initArgs.name || replyingTo !== props.initArgs.name) {
+          return;
+        }
 
-    // Updates the log to show a feedback that a PONG message was observed.
-    setLog((prevLog) => [...prevLog, { line: `PONG from '${pongSource}'.`, time: getCurrentTime() }]);
-  });
+        // Updates the log to show a feedback that a PONG message was observed.
+        setLog((prevLog) => [...prevLog, { line: `PONG from '${pongSource}'.`, time: getCurrentTime() }]);
+      },
+      [props.initArgs.name]
+    )
+  );
 
   // This effect simply keeps appending a dot to the log so that users have a sense of time passing.
   useLayoutEffect(() => {
