@@ -7,7 +7,7 @@
   "source": "src/index.tsx",
   "scripts": {
     "build:dev": "webpack --config webpack.development.js",
-    "build:prod": "webpack --config webpack.production.js",
+    "build:prod": "yarn test && webpack --config webpack.production.js",
     "build:watch": "webpack --config webpack.development.js --watch",
     "lint": "eslint --ext .ts,.tsx,.js ./src/",
     "test": "jest --collect-coverage",
