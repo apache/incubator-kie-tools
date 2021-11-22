@@ -67,9 +67,4 @@ export class PMMLEditorInterface implements Editor {
   public async validate(): Promise<Notification[]> {
     return Promise.resolve(this.self.validate());
   }
-
-  myMethodInGuided(): Promise<number | undefined> {
-    console.log("log method PmmlEditorInterface");
-    return Promise.resolve(99);
-  }
 }

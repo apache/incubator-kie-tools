@@ -18,7 +18,7 @@ import { Rect } from "@kie-tooling-core/guided-tour/dist/api";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 
 declare global {
-  //Exposed API of AppFormeGrwt
+  //Exposed API of AppFormerGwt
   interface Window {
     gwtEditorBeans: Map<string, { get(): GwtEditor }>;
     appFormerGwtFinishedLoading: () => any;
@@ -35,13 +35,7 @@ export const getGuidedTourElementPosition = (selector: string) => {
   );
 };
 
-export const getMyGuidedMethod = () => {
-  console.log("log myGuidedMethod GwtAppFormerApi");
-  return window.JsInterop__Envelope__GuidedTour__GuidedTourCustomSelectorPositionProvider.getInstance().myMethodInGuided();
-};
-
 interface GuidedTourCustomSelectorPositionProvider {
-  myMethodInGuided(): Promise<number | undefined>;
   getPosition(querySelector: string): Rect;
   getInstance(): GuidedTourCustomSelectorPositionProvider;
 }

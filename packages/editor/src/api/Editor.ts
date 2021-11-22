@@ -41,5 +41,4 @@ export interface EditorApi {
   undo(): Promise<void>;
   redo(): Promise<void>;
   validate(): Promise<Notification[]>;
-  myMethodInGuided(): Promise<number | undefined>;
 }

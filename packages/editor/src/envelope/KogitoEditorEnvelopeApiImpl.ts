@@ -124,11 +124,6 @@ export class KogitoEditorEnvelopeApiImpl<
     return this.editor.getPreview().then((previewSvg) => previewSvg ?? "");
   }
 
-  kogitoGuidedTour_guidedTourGetMyMethod(): Promise<number | undefined> {
-    console.log("log Method KogitoEditorEnvelopeApiImpl");
-    return Promise.resolve(this.editor.myMethodInGuided());
-  }
-
   public kogitoGuidedTour_guidedTourElementPositionRequest = async (selector: string) => {
     console.log("log KogitoEditorEnvelopeApiImpl");
     return this.editor.getElementPosition(selector).then((rect) => rect ?? DEFAULT_RECT);
