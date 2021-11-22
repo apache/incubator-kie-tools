@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { init } from "@kogito-tooling-examples/todo-list-view/dist/envelope";
+import * as TodoListViewEnvelope from "@kogito-tooling-examples/todo-list-view/dist/envelope";
 
 declare global {
   export const acquireVsCodeApi: any;
@@ -25,7 +25,7 @@ declare global {
  * instance of TodoListViewEnvelope. This TodoListViewEnvelope Envelope will start listening to messages coming
  * from the Channel to start the View. Once the EnvelopeBusController is properly associated, the View renders.
  */
-init({
+TodoListViewEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
 });
