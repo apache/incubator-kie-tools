@@ -85,7 +85,7 @@ export const TodoListEnvelopeView = React.forwardRef<TodoListEnvelopeViewApi, Pr
     [items]
   );
 
-  const [newItemToAdd, _] = useSharedValue(props.channelApi.shared.todoList__newItemToAdd);
+  const [newItemToAdd, _] = useSharedValue(props.channelApi.shared.todoList__potentialNewItem);
 
   return (
     <>

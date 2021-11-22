@@ -21,5 +21,5 @@ import { SharedValueProvider } from "@kie-tooling-core/envelope-bus/dist/api";
  */
 export interface TodoListChannelApi {
   todoList__itemRemoved(item: string): void;
-  todoList__newItemToAdd(): SharedValueProvider<string>;
+  todoList__potentialNewItem(): SharedValueProvider<string>;
 }

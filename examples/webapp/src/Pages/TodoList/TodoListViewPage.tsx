@@ -17,18 +17,18 @@
 import * as React from "react";
 import { useCallback, useRef, useState } from "react";
 import { Nav, NavItem, NavList, Page, PageSection, Title } from "@patternfly/react-core";
-import { EmbeddedTodoList, TodoListEnvelopeRef } from "@kogito-tooling-examples/todo-list-view/dist/embedded";
+import { EmbeddedTodoList, EmbeddedTodoListRef } from "@kogito-tooling-examples/todo-list-view/dist/embedded";
 import { useStateAsSharedValue } from "@kie-tooling-core/envelope-bus/dist/hooks";
 
 export function TodoListViewPage() {
-  const todoListViewRef = useRef<TodoListEnvelopeRef>(null);
+  const embeddedTodoListRef = useRef<EmbeddedTodoListRef>(null);
 
   const [newItem, setNewItem] = useState("");
   const addItem = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (newItem.length > 0) {
-        todoListViewRef.current?.addItem(newItem);
+        embeddedTodoListRef.current?.addItem(newItem);
         setNewItem("");
       }
     },
@@ -39,11 +39,15 @@ export function TodoListViewPage() {
     window.alert(`Item '${item}' removed successfully!`);
   }, []);
 
-  const newItemToAddDefaultValue = useCallback(() => {
+  const defaultPotentialNewItem = useCallback(() => {
     return { defaultValue: "" };
   }, []);
 
-  useStateAsSharedValue(newItem, setNewItem, todoListViewRef.current?.envelopeServer.shared.todoList__newItemToAdd);
+  useStateAsSharedValue(
+    newItem,
+    setNewItem,
+    embeddedTodoListRef.current?.envelopeServer.shared.todoList__potentialNewItem
+  );
 
   return (
     <Page>
@@ -56,7 +60,7 @@ export function TodoListViewPage() {
               </Title>
             </div>
             <NavList>
-              <NavItem onClick={todoListViewRef.current?.markAllAsCompleted}>Mark all as completed</NavItem>
+              <NavItem onClick={embeddedTodoListRef.current?.markAllAsCompleted}>Mark all as completed</NavItem>
               <NavItem>
                 <form onSubmit={addItem}>
                   <input
@@ -73,11 +77,11 @@ export function TodoListViewPage() {
         </div>
         <PageSection>
           <EmbeddedTodoList
-            ref={todoListViewRef}
+            ref={embeddedTodoListRef}
             targetOrigin={window.location.origin}
             envelopePath={"envelope/todo-list-view.html"}
             todoList__itemRemoved={handleItemRemoved}
-            todoList__newItemToAdd={newItemToAddDefaultValue}
+            todoList__potentialNewItem={defaultPotentialNewItem}
           />
         </PageSection>
       </div>
