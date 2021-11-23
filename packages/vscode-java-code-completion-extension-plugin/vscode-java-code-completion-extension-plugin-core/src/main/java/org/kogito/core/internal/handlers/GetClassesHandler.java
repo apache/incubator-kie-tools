@@ -42,7 +42,7 @@ public class GetClassesHandler extends Handler<List<GetClassesResult>> {
         checkParameters(arguments);
         String completeText = (String) arguments.get(0);
         BuildInformation buildInformation = javaEngine.buildImportClass(this.autocompleteHandler.getUri(), completeText);
-        List<CompletionItem> items = this.autocompleteHandler.handle(arguments, buildInformation);
+        List<CompletionItem> items = this.autocompleteHandler.handle("GetClassesHandler", arguments, buildInformation);
         List<GetClassesResult> completedClasses = this.transformCompletionItemsToResult(items);
         return CompletableFuture.supplyAsync(() -> completedClasses);
     }

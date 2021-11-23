@@ -47,7 +47,7 @@ public class AutocompleteHandler {
         this.activationChecker = activationChecker;
     }
 
-    public List<CompletionItem> handle(List<Object> arguments, BuildInformation buildInformation) {
+    public List<CompletionItem> handle(String identifier, BuildInformation buildInformation) {
 
         JDTLanguageServer languageServer = (JDTLanguageServer) JavaLanguageServerPlugin.getInstance().getProtocol();
 
@@ -111,7 +111,7 @@ public class AutocompleteHandler {
 
             return items;
         } catch (Exception e) {
-            JavaLanguageServerPlugin.logException("Problem ", e);
+            JavaLanguageServerPlugin.logException("Problem with " + identifier, e);
             return Collections.emptyList();
         }
     }

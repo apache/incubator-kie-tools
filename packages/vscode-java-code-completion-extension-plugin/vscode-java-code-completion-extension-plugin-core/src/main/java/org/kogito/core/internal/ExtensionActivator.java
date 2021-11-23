@@ -27,21 +27,12 @@ import org.osgi.framework.BundleContext;
 
 public class ExtensionActivator implements BundleActivator {
 
-//    private static final String LOGBACK_CONFIG_FILE_PROPERTY = "logback.configurationFile";
-//    private static final String LOGBACK_DEFAULT_FILENAME = "logback.xml";
-
-    // The plug-in ID
     public static final String PLUGIN_ID = "kogito-plugin.core";
 
-    // The shared instance
     private static ExtensionActivator plugin;
 
     public void start(BundleContext context) throws Exception {
-//        LogToFile.log("Plugin Started");
         plugin = this;
-//
-//        File configFile = new File(LOGBACK_DEFAULT_FILENAME);
-//        System.setProperty(LOGBACK_CONFIG_FILE_PROPERTY, configFile.getAbsolutePath());
     }
 
     public void stop(BundleContext context) throws Exception {

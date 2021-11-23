@@ -47,7 +47,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
                                                                           parameters.getFqcn(),
                                                                           parameters.getQuery());
         JavaLanguageServerPlugin.logInfo(buildInformation.getText());
-        List<CompletionItem> items = this.autocompleteHandler.handle(arguments, buildInformation);
+        List<CompletionItem> items = this.autocompleteHandler.handle("GetAccessorsHandler", arguments, buildInformation);
         List<GetPublicResult> completedClasses = this.transformCompletionItemsToResult(parameters.getFqcn(), items);
         return CompletableFuture.supplyAsync(() -> completedClasses);
     }
