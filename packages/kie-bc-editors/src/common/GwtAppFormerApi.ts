@@ -29,7 +29,6 @@ declare global {
 }
 
 export const getGuidedTourElementPosition = (selector: string) => {
-  console.log("log GwtAppFormerApi");
   return window.JsInterop__Envelope__GuidedTour__GuidedTourCustomSelectorPositionProvider.getInstance().getPosition(
     selector
   );

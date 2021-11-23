@@ -125,7 +125,6 @@ export class KogitoEditorEnvelopeApiImpl<
   }
 
   public kogitoGuidedTour_guidedTourElementPositionRequest = async (selector: string) => {
-    console.log("log KogitoEditorEnvelopeApiImpl");
     return this.editor.getElementPosition(selector).then((rect) => rect ?? DEFAULT_RECT);
   };
 

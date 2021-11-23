@@ -1,14 +1,11 @@
 {
   "name": "@kogito-tooling/kie-editors-standalone",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "license": "Apache-2.0",
   "files": [
     "dist/bpmn",
     "dist/common",
-    "dist/envelope",
-    "dist/fonts",
-    "dist/preprocessor",
     "dist/resources/bpmn"
   ],
   "repository": {

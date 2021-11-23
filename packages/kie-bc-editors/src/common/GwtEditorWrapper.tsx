@@ -83,7 +83,6 @@ export class GwtEditorWrapper implements Editor {
   }
 
   public getElementPosition(selector: string) {
-    console.log("log GwtEditorWrapper");
     return Promise.resolve(getGuidedTourElementPosition(selector));
   }
 
