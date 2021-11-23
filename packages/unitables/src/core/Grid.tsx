@@ -67,6 +67,10 @@ export function isOutputWithInsideProperties(
   return (toBeDetermined as OutputWithInsideProperties).insideProperties !== undefined;
 }
 
+const CELL_MINIMUM_WIDTH = 150;
+const DEFAULT_DATE_TIME_CELL_WDITH = 296;
+const DEFAULT_DATE_CELL_WIDTH = 180;
+
 export function usePrevious<T>(value: T) {
   const ref = useRef<T>();
 
@@ -101,29 +105,29 @@ export function useGrid(
     }
     switch (extractedType) {
       case "<Undefined>":
-        return { dataType: DataType.Undefined, width: 150 };
+        return { dataType: DataType.Undefined, width: CELL_MINIMUM_WIDTH };
       case "Any":
-        return { dataType: DataType.Any, width: 150 };
+        return { dataType: DataType.Any, width: CELL_MINIMUM_WIDTH };
       case "boolean":
-        return { dataType: DataType.Boolean, width: 150 };
+        return { dataType: DataType.Boolean, width: CELL_MINIMUM_WIDTH };
       case "context":
-        return { dataType: DataType.Context, width: 150 };
+        return { dataType: DataType.Context, width: CELL_MINIMUM_WIDTH };
       case "date":
-        return { dataType: DataType.Date, width: 180 };
+        return { dataType: DataType.Date, width: DEFAULT_DATE_CELL_WIDTH };
       case "date and time":
-        return { dataType: DataType.DateTime, width: 296 };
+        return { dataType: DataType.DateTime, width: DEFAULT_DATE_TIME_CELL_WDITH };
       case "days and time duration":
-        return { dataType: DataType.DateTimeDuration, width: 150 };
+        return { dataType: DataType.DateTimeDuration, width: CELL_MINIMUM_WIDTH };
       case "number":
-        return { dataType: DataType.Number, width: 150 };
+        return { dataType: DataType.Number, width: CELL_MINIMUM_WIDTH };
       case "string":
-        return { dataType: DataType.String, width: 150 };
+        return { dataType: DataType.String, width: CELL_MINIMUM_WIDTH };
       case "time":
-        return { dataType: DataType.Time, width: 150 };
+        return { dataType: DataType.Time, width: CELL_MINIMUM_WIDTH };
       case "years and months duration":
-        return { dataType: DataType.YearsMonthsDuration, width: 150 };
+        return { dataType: DataType.YearsMonthsDuration, width: CELL_MINIMUM_WIDTH };
       default:
-        return { dataType: (extractedType as DataType) ?? DataType.Undefined, width: 150 };
+        return { dataType: (extractedType as DataType) ?? DataType.Undefined, width: CELL_MINIMUM_WIDTH };
     }
   }, []);
 
@@ -200,8 +204,8 @@ export function useGrid(
         } else if (inputToUpdate && isInputWithInsideProperties(inputToUpdate) && column.width) {
           inputToUpdate.insideProperties.forEach((insideProperty) => {
             const width = (column.width as number) / inputToUpdate.insideProperties.length;
-            if (width < 150) {
-              insideProperty.width = 150;
+            if (width < CELL_MINIMUM_WIDTH) {
+              insideProperty.width = CELL_MINIMUM_WIDTH;
             } else {
               insideProperty.width = width;
             }
@@ -363,7 +367,7 @@ export function useGrid(
         if (property["x-dmn-type"]) {
           const dataType = getDataTypeProps(property["x-dmn-type"]).dataType;
           outputTypeMap.set(name, { type: property.type, dataType, name });
-          return { name, type: property.type, width: 150, dataType };
+          return { name, type: property.type, width: CELL_MINIMUM_WIDTH, dataType };
         }
         const path: string[] = property.$ref.split("/").slice(1); // remove #
         const data = path.reduce(
@@ -377,7 +381,7 @@ export function useGrid(
         } else {
           outputTypeMap.set(name, { type: data.type, dataType, name });
         }
-        return { name, dataType: data.type, width: 150 } as OutputTypesField;
+        return { name, dataType: data.type, width: CELL_MINIMUM_WIDTH } as OutputTypesField;
       });
     },
     [getDataTypeProps]
@@ -429,7 +433,7 @@ export function useGrid(
               acc.set(decisionName, {
                 name: decisionName,
                 dataType,
-                width: 150,
+                width: CELL_MINIMUM_WIDTH,
               });
             }
           });
@@ -494,7 +498,7 @@ export function useGrid(
     updateWidth,
   ]);
 
-  const useGridObject = useMemo(() => {
+  return useMemo(() => {
     return {
       jsonSchemaBridge,
       inputs,
@@ -504,6 +508,4 @@ export function useGrid(
       updateWidth,
     };
   }, [inputRules, inputs, jsonSchemaBridge, outputRules, outputs, updateWidth]);
-
-  return useGridObject;
 }
