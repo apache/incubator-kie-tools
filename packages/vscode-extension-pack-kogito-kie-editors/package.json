@@ -29,7 +29,7 @@
   },
   "contributes": {
     "javaExtensions": [
-      "./server/vscode-java-code-completion-extension-plugin.jar"
+      "./server/vscode-java-code-completion-extension-plugin-core.jar"
     ],
     "configuration": {
       "title": "BPMN/DMN Test Configuration",
