@@ -100,7 +100,7 @@ To interact with Kogito images, you would need to install the needed dependencie
 * Optional dependencies:
     * [source-to-image](https://github.com/openshift/source-to-image)
         * used to perform local s2i images using some of the [builder images](#builder-images)
-    * [GraalVM 21.1.0](https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-21.1.0) Java 11 or higher
+    * [GraalVM 21.3.0](https://github.com/graalvm/graalvm-ce-builds/releases/tag/vm-21.3.0) Java 11 or higher
         * Useful to test Kogito apps on native mode before create a Container image with it.
     * [OpenShift Cli](https://docs.openshift.com/container-platform/4.3/cli_reference/openshift_cli/getting-started-cli.html)
         
@@ -154,9 +154,9 @@ When `RUNTIME_TYPE` quarkus is chosen, the Builder Image allows you to create a 
 
 The Kogito Builder Image is equipped with the following components:
 
- * GraalVM 21.1.0-java11
+ * GraalVM 21.3.0-java11
  * OpenJDK 11.0.6
- * Maven 3.6.2
+ * Maven 3.8.1
  
 For more information about what is installed on this image, take a look [here](kogito-builder-overrides.yaml) in the
 **modules.install** section. 

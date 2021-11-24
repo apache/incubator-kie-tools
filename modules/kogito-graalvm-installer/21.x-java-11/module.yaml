@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.graalvm.installer
-version: "21.1.0-java-11"
+version: "21.3.0-java-11"
 
 envs:
   - name: "JAVA_HOME"
@@ -9,17 +9,17 @@ envs:
     value: "/usr/share/graalvm"
   #version without prefix ce
   - name: "GRAALVM_VERSION"
-    value: "21.1.0"
+    value: "21.3.0"
   - name: "GRAALVM_JAVA_VERSION"
     value: "11"
 
 artifacts:
-- name: graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-  url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-  md5: eac80a467219fc9f3496a7393c2863d2
-- name: native-image-installable-svm-java11-linux-amd64-21.1.0.jar
-  url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/native-image-installable-svm-java11-linux-amd64-21.1.0.jar
-  md5: 2e7d52eb8f2066594ada7b6a1f52be96
+- name: graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
+  url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-linux-amd64-21.3.0.tar.gz
+  md5: 0813eeb5ccc5b29789f66950360b0b2d
+- name: native-image-installable-svm-java11-linux-amd64-21.3.0.jar
+  url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/native-image-installable-svm-java11-linux-amd64-21.3.0.jar
+  md5: f6283764854911654af182af3e94749c
 
 execute:
 - script: configure
