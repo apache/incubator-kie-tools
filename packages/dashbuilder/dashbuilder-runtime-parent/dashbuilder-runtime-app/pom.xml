@@ -34,7 +34,7 @@
     <quarkus-plugin.version>2.2.2.Final</quarkus-plugin.version>
     <quarkus.platform.version>2.2.2.Final</quarkus.platform.version>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
-    <!--  Need to sync with Quarkus resteasy version -->
+    <!-- Need to sync with Quarkus resteasy version -->
     <resteasy.version>4.7.0.Final</resteasy.version>
   </properties>
   <dependencyManagement>
@@ -52,6 +52,11 @@
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-client</artifactId>
+        <version>${resteasy.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
@@ -235,6 +240,15 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi</artifactId>
+    </dependency>
+    <!-- Needed for remote dataset -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client-jackson</artifactId>
     </dependency>
     <!-- Quarkus DataSource Support -->
     <dependency>
@@ -469,7 +483,7 @@
           <execution>
             <id>enforce-plugin-versions</id>
             <phase>none</phase>
-          </execution> 
+          </execution>
         </executions>
       </plugin>
     </plugins>

@@ -23,19 +23,26 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "query-definition")
 public class QueryDefinition {
 
     @XmlElement(name = "query-name")
+    @JsonProperty("query-name")
     private String name;
     @XmlElement(name = "query-source")
+    @JsonProperty("query-source")
     private String source;
     @XmlElement(name = "query-expression")
+    @JsonProperty("query-expression")
     private String expression;
     @XmlElement(name = "query-target")
+    @JsonProperty("query-target")
     private String target;
     @XmlElement(name = "query-columns")
+    @JsonProperty("query-columns")
     private Map<String, String> columns;
 
     public QueryDefinition() {

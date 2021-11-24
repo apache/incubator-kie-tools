@@ -22,15 +22,20 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "query-param")
 public class QueryParam {
 
     @XmlElement(name = "cond-column")
+    @JsonProperty("cond-column")
     private String column;
     @XmlElement(name = "cond-operator")
+    @JsonProperty("cond-operator")
     private String operator;
     @XmlElement(name = "cond-values")
+    @JsonProperty("cond-values")
     private List<?> value;
 
     public QueryParam() {
@@ -70,10 +75,10 @@ public class QueryParam {
     @Override
     public String toString() {
         return "QueryParam{" +
-               ((column != null) ? "column='" + column + "\'," : "") +
-               " operator='" + operator + '\'' +
-               ", value=" + value +
-               '}';
+                ((column != null) ? "column='" + column + "\'," : "") +
+                " operator='" + operator + '\'' +
+                ", value=" + value +
+                '}';
     }
 
 }
