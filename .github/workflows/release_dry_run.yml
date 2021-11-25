@@ -8,6 +8,7 @@ on:
     branches: "**"
     paths:
       - ".github/workflows/release*"
+      - ".github/actions/**"
 
 jobs:
   dry_run:
