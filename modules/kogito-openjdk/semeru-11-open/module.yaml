@@ -1,0 +1,28 @@
+schema_version: 1
+
+name: org.kie.kogito.openjdk
+description: "Installs the JDK for OpenJ9 11."
+version: semeru-11-open
+
+labels:
+- name: "org.jboss.product"
+  value: "openjdk"
+- name: "org.jboss.product.version"
+  value: "11"
+- name: "org.jboss.product.openjdk.version"
+  value: "11"
+
+envs:
+- name: "JAVA_HOME"
+  value: "/usr/lib/jvm/ibm-semeru-open-11-jdk"
+- name: "JAVA_VENDOR"
+  value: "IBM"
+- name: "JAVA_VERSION"
+  value: "11"
+
+packages:
+  install:
+  - ibm-semeru-open-11-jdk
+
+execute:
+- script: configure.sh
