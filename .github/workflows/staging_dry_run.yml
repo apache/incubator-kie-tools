@@ -1,0 +1,19 @@
+name: "Staging :: Dry Run"
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 15 * * *" # 3pm UTC everyday
+  pull_request:
+    branches: "**"
+    paths:
+      - ".github/workflows/staging*"
+      - ".github/actions/**"
+
+jobs:
+  dry_run:
+    uses: kiegroup/kogito-tooling/.github/workflows/staging_build.yml@main
+    with:
+      dry_run: true
+    secrets:
+      kogito_tooling_bot_token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}

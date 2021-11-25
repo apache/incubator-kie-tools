@@ -1,0 +1,66 @@
+name: "Release :: Publish"
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        type: string
+        required: true
+      runners:
+        type: string
+        required: true
+        default: '{"dmn_dev_sandbox_image":"true","online_editor":"true","chrome_extension":"true","vscode_extensions_dev":"true","vscode_extensions_prod":"true","desktop":"true","hub":"true","npm_packages":"true","standalone_editors_cdn":"true","extended_services":"true","dashbuilder":"true","dashbuilder_images":"true"}'
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_asset_url: ${{ fromJSON(steps.fetch_release_for_tag.outputs.data).upload_url }}
+      download_asset_url: ${{ steps.download_asset_url.outputs.download_url }}
+      release_ref: ${{ fromJSON(steps.fetch_release_for_tag.outputs.data).target_commitish }}
+    steps:
+      - name: "Fetch release for ${{ github.event.inputs.tag }}"
+        uses: octokit/request-action@v2.1.0
+        id: fetch_release_for_tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          route: GET /repos/{repo}/releases/tags/{tag}
+          repo: ${{ github.repository }}
+          tag: ${{ github.event.inputs.tag }}
+
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ fromJSON(steps.fetch_release_for_tag.outputs.data).target_commitish }}
+
+      - name: "Check `tag` against `(lerna.json).version`"
+        shell: bash
+        run: |
+          [ "${{ github.event.inputs.tag }}" == "$(node -p "require('./lerna.json').version")" ]
+
+      - name: "Generate download URL for Release assets"
+        id: download_asset_url
+        shell: python
+        run: |
+          print('::set-output name=download_url::' + '${{ fromJSON(steps.fetch_release_for_tag.outputs.data).html_url }}'.replace('/tag/', '/download/'));
+
+  build_and_publish:
+    needs: [prepare]
+    uses: kiegroup/kogito-tooling/.github/workflows/release_build.yml@main
+    with:
+      dry_run: false
+      tag: ${{ github.event.inputs.tag }}
+      release_ref: ${{ steps.prepare.outputs.release_ref }}
+      download_asset_url: ${{ needs.prepare.outputs.download_asset_url }}
+      upload_asset_url: ${{ needs.prepare.outputs.upload_asset_url }}
+      runners: ${{ github.event.inputs.runners }}
+    secrets:
+      kogito_tooling_bot_token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+      quay_registry_password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
+      google_developer_console_client_id: ${{ secrets.GOOGLE_DEVELOPER_CONSOLE_CLIENT_ID }}
+      google_developer_console_client_secret: ${{ secrets.GOOGLE_DEVELOPER_CONSOLE_CLIENT_SECRET }}
+      google_developer_console_refresh_token: ${{ secrets.GOOGLE_DEVELOPER_CONSOLE_REFRESH_TOKEN }}
+      chrome_extension_id: ${{ secrets.CHROME_EXTENSION_ID }}
+      kiegroup_npm_token: ${{ secrets.KIEGROUP_NPM_TOKEN }}
