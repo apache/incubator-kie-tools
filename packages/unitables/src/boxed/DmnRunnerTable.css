@@ -14,64 +14,53 @@
  * limitations under the License.
  */
 
-.expression-container .decision-table-expression {
+.expression-container .dmn-runner-table {
   width: 100%;
 }
 
-.expression-container .decision-table-expression .selected-hit-policy {
+.expression-container .dmn-runner-table .selected-hit-policy {
   cursor: pointer;
 }
 
-.expression-container .decision-table-expression table thead tr:first-child {
+.expression-container .dmn-runner-table table thead tr:first-child {
   border-top: 2px solid #d2d2d2;
   overflow: visible !important;
 }
-.expression-container .decision-table-expression table thead tr:first-child th {
+.expression-container .dmn-runner-table table thead tr:first-child th {
   border-top: none;
 }
-.expression-container .decision-table-expression table thead tr:first-child th .pf-c-drawer {
+.expression-container .dmn-runner-table table thead tr:first-child th .pf-c-drawer {
   display: none;
 }
 
-.expression-container .decision-table-expression table thead tr:last-child th.decision-table--input .react-resizable,
-.expression-container
-  .decision-table-expression
-  table
-  thead
-  tr:last-child
-  th.decision-table--annotation
-  .react-resizable {
+.expression-container .dmn-runner-table table thead tr:last-child th.decision-table--input .react-resizable,
+.expression-container .dmn-runner-table table thead tr:last-child th.decision-table--annotation .react-resizable {
   height: 108px !important;
   top: -66px;
   padding: 40px 0;
   cursor: unset;
 }
 
-.expression-container .decision-table-expression table thead th.input,
-.expression-container .decision-table-expression table thead th.input.decision-table--input .react-resizable {
+.expression-container .dmn-runner-table table thead th.input,
+.expression-container .dmn-runner-table table thead th.input.decision-table--input .react-resizable {
   background-color: #def3ff;
 }
 
-.expression-container .decision-table-expression table thead th::first-child th {
+.expression-container .dmn-runner-table table thead th::first-child th {
   border-right-color: #def3ff;
   border-bottom-color: #def3ff;
 }
 
-.expression-container .decision-table-expression table thead th.output {
+.expression-container .dmn-runner-table table thead th.output {
   background-color: #bee1f4;
 }
 
-.expression-container .decision-table-expression table thead th.annotation,
-.expression-container .decision-table-expression table thead th.annotation.decision-table--annotation .react-resizable {
+.expression-container .dmn-runner-table table thead th.annotation,
+.expression-container .dmn-runner-table table thead th.annotation.decision-table--annotation .react-resizable {
   background-color: #ffffff;
 }
 
-.expression-container
-  .decision-table-expression
-  table
-  thead
-  th.annotation.decision-table--annotation
-  .header-cell-info {
+.expression-container .dmn-runner-table table thead th.annotation.decision-table--annotation .header-cell-info {
   width: 95%;
 }
 
@@ -114,8 +103,8 @@
   transition: background-color 0.1s ease;
 }
 
-.expression-container .decision-table-expression table thead tr:last-child th.decision-table--input::after,
-.expression-container .decision-table-expression table thead tr:last-child th.decision-table--annotation::after {
+.expression-container .dmn-runner-table table thead tr:last-child th.decision-table--input::after,
+.expression-container .dmn-runner-table table thead tr:last-child th.decision-table--annotation::after {
   content: "";
   position: absolute;
   border: unset;
