@@ -31,6 +31,7 @@ import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentSer
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 import { I18n } from "@kie-tooling-core/i18n/dist/core";
 import { VsCodeI18n } from "./i18n";
+import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
 
 export class KogitoEditorFactory {
   constructor(
@@ -41,6 +42,7 @@ export class KogitoEditorFactory {
     private readonly workspaceApi: WorkspaceApi,
     private readonly backendProxy: BackendProxy,
     private readonly notificationsApi: NotificationsApi,
+    private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     private readonly viewType: string,
     private readonly i18n: I18n<VsCodeI18n>
   ) {}
@@ -76,6 +78,7 @@ export class KogitoEditorFactory {
       this.workspaceApi,
       this.backendProxy,
       this.notificationsApi,
+      this.javaCodeCompletionApi,
       this.viewType,
       this.i18n
     );

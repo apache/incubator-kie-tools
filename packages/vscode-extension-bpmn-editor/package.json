@@ -23,7 +23,8 @@
     "@kie-tooling-core/patternfly-base": "0.0.0",
     "@kie-tooling-core/vscode-extension": "0.0.0",
     "@kogito-tooling/external-assets-base": "0.0.0",
-    "@kogito-tooling/kie-bc-editors": "0.0.0"
+    "@kogito-tooling/kie-bc-editors": "0.0.0",
+    "@kogito-tooling/vscode-java-code-completion-extension-plugin": "0.0.0"
   },
   "devDependencies": {
     "@kogito-tooling/bpmn-editor-unpacked": "^8.5.3",
@@ -47,6 +48,9 @@
     }
   },
   "contributes": {
+    "javaExtensions": [
+      "./server/vscode-java-code-completion-extension-plugin-core.jar"
+    ],
     "customEditors": [
       {
         "viewType": "kieKogitoWebviewEditorsBpmn",

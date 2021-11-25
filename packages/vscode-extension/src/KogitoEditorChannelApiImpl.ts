@@ -20,16 +20,21 @@ import {
   ResourceContentRequest,
   ResourceContentService,
   ResourceListRequest,
+  WorkspaceApi,
 } from "@kie-tooling-core/workspace/dist/api";
 import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tooling-core/editor/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tooling-core/guided-tour/dist/api";
-import { WorkspaceApi } from "@kie-tooling-core/workspace/dist/api";
 import * as __path from "path";
 import * as vscode from "vscode";
 import { KogitoEditor } from "./KogitoEditor";
 import { Notification, NotificationsApi } from "@kie-tooling-core/notifications/dist/api";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tooling-core/i18n/dist/core";
+import {
+  JavaCodeCompletionApi,
+  JavaCodeCompletionAccessor,
+  JavaCodeCompletionClass,
+} from "@kie-tooling-core/vscode-java-code-completion/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   private readonly decoder = new TextDecoder("utf-8");
@@ -40,6 +45,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     private readonly workspaceApi: WorkspaceApi,
     private readonly backendProxy: BackendProxy,
     private readonly notificationsApi: NotificationsApi,
+    private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     private readonly viewType: string,
     private readonly i18n: I18n<VsCodeI18n>,
     private initialBackup = editor.document.initialBackup
@@ -129,5 +135,15 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
 
   public kogitoNotifications_removeNotifications(path: string): void {
     this.notificationsApi.kogitoNotifications_removeNotifications(path);
+  }
+
+  public kogitoJavaCodeCompletion_getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {
+    return this.javaCodeCompletionApi.getAccessors(fqcn, query);
+  }
+  public kogitoJavaCodeCompletion_getClasses(query: string): Promise<JavaCodeCompletionClass[]> {
+    return this.javaCodeCompletionApi.getClasses(query);
+  }
+  public kogitoJavaCodeCompletion_isLanguageServerAvailable(): Promise<boolean> {
+    return this.javaCodeCompletionApi.isLanguageServerAvailable();
   }
 }

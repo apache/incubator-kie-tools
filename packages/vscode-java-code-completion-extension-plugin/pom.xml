@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2021 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.github.kiegroup.kogito.tooling</groupId>
+  <artifactId>vscode-java-code-completion-extension-plugin</artifactId>
+  <version>0.0.0</version>
+  <packaging>pom</packaging>
+  <name>vscode-java-code-completion-extension-plugin :: parent</name>
+  <description>vscode-java-code-completion-extension-plugin parent</description>
+
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <tycho.version>2.3.0</tycho.version>
+    <tycho.extras.version>${tycho.version}</tycho.extras.version>
+    <tycho.scmUrl>scm:git:https://github.com/kiegroup/kogito-tooling.git</tycho.scmUrl>
+    <tycho.generateSourceReferences>true</tycho.generateSourceReferences>
+    <jdt.ls.version>1.5.0.20211019160210</jdt.ls.version>
+
+    <tycho.test.platformArgs />
+    <tycho.test.jvmArgs>-Xmx512m ${tycho.test.platformArgs}</tycho.test.jvmArgs>
+
+
+    <!-- Code coverage -->
+    <jacoco.version>0.7.9</jacoco.version>
+    <coverage.filter>org.eclipse.jdt.ls.*</coverage.filter>
+    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+    <jacoco.destFile>${project.build.directory}/jacoco.exec</jacoco.destFile>
+    <sonar.jacoco.reportPath>${jacoco.destFile}</sonar.jacoco.reportPath>
+
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+
+  </properties>
+  <repositories>
+    <repository>
+      <id>2021-09</id>
+      <layout>p2</layout>
+      <url>http://download.eclipse.org/releases/2021-09/</url>
+    </repository>
+    <repository>
+      <id>jdt.ls.p2</id>
+      <layout>p2</layout>
+      <url>http://download.eclipse.org/jdtls/snapshots/repository/latest/</url>
+    </repository>
+    <repository>
+      <id>jdt.ls.maven</id>
+      <url>https://repo.eclipse.org/content/repositories/jdtls-releases/</url>
+    </repository>
+  </repositories>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <resolver>p2</resolver>
+          <target>
+            <artifact>
+              <groupId>org.eclipse.jdt.ls</groupId>
+              <artifactId>org.eclipse.jdt.ls.tp</artifactId>
+              <version>${jdt.ls.version}</version>
+            </artifact>
+          </target>
+          <resolver>p2</resolver>
+          <pomDependencies>consider</pomDependencies>
+          <ignoreTychoRepositories>true</ignoreTychoRepositories>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <compilerArgument>-err:-forbidden</compilerArgument>
+          <useProjectSettings>false</useProjectSettings>
+        </configuration>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-packaging-plugin</artifactId>
+          <version>${tycho.version}</version>
+          <configuration>
+            <format>yyyyMMdd-HHmm</format>
+            <sourceReferences>
+              <generate>${tycho.generateSourceReferences}</generate>
+            </sourceReferences>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.eclipse.tycho.extras</groupId>
+              <artifactId>tycho-sourceref-jgit</artifactId>
+              <version>${tycho.extras.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-surefire-plugin</artifactId>
+          <version>${tycho.version}</version>
+          <configuration>
+            <useUIHarness>false</useUIHarness>
+            <argLine>${tycho.test.jvmArgs}</argLine>
+            <!-- kill test JVM if tests take more than 1 minute (60 seconds) to finish -->
+            <forkedProcessTimeoutInSeconds>60</forkedProcessTimeoutInSeconds>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+  <profiles>
+    <profile>
+      <id>macosx</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <tycho.test.platformArgs>-XstartOnFirstThread</tycho.test.platformArgs>
+      </properties>
+    </profile>
+    <profile>
+      <id>plugin</id>
+      <activation>
+        <!-- Enable jacoco only on plugin projects -->
+        <file>
+          <exists>META-INF/MANIFEST.MF</exists>
+        </file>
+      </activation>
+      <properties>
+        <jacoco.destFile>${project.basedir}/../target/jacoco.exec</jacoco.destFile>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>tycho-source-plugin</artifactId>
+            <version>${tycho.version}</version>
+            <executions>
+              <execution>
+                <id>attach-source</id>
+                <goals>
+                  <goal>plugin-source</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                  <includes>
+                    <include>${coverage.filter}</include>
+                  </includes>
+                  <!-- Merge reports from all executions -->
+                  <append>true</append>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>cbi-release</id>
+      <url>https://repo.eclipse.org/content/repositories/cbi-releases/</url>
+    </pluginRepository>
+  </pluginRepositories>
+  <modules>
+    <module>vscode-java-code-completion-extension-plugin-core</module>
+  </modules>
+</project>

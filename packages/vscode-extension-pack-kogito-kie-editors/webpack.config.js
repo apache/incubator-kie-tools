@@ -19,6 +19,7 @@ const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("../../config/webpack.common.config");
 const externalAssets = require("@kogito-tooling/external-assets-base");
+const vscodeJavaCodeCompletionExtensionPlugin = require("@kogito-tooling/vscode-java-code-completion-extension-plugin");
 
 module.exports = async (env) => [
   merge(common(env), {
@@ -72,6 +73,11 @@ module.exports = async (env) => [
           {
             from: externalAssets.scesimEditorPath(),
             to: "webview/editors/scesim",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
+          {
+            from: vscodeJavaCodeCompletionExtensionPlugin.path(),
+            to: "server/",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
         ],
