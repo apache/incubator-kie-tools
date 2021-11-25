@@ -156,6 +156,9 @@
   </dependencies>
 
   <properties>
+    <!-- Overriding version that comes from kie-parent to enable the 'npx' goal. -->
+    <version.frontend-maven-plugin>1.12.0</version.frontend-maven-plugin>
+
     <!-- For kie-parent and modules in kie-bom, kie-soup-bom, drools-bom, jbpm-bom and kie-dmn-bom -->
     <version.org.kie>7.58.0.Final</version.org.kie>
 
