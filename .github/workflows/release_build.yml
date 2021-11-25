@@ -1,47 +1,49 @@
-name: "Release"
+name: "Release :: Build"
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
+      dry_run:
+        type: boolean
+        required: true
+        default: true
       tag:
-        description: "Tag"
+        type: string
+        required: false
+        default: "0.0.0"
+      release_ref:
+        type: string
+        required: false
+        default: "main"
+      download_asset_url:
+        type: string
+        required: false
+        default: ""
+      upload_asset_url:
+        type: string
+        required: false
+        default: ""
+      runners:
+        type: string
+        required: false
+        default: '{"dmn_dev_sandbox_image":"false","online_editor":"false","chrome_extension":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","hub":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false"}'
+    secrets:
+      kogito_tooling_bot_token:
         required: true
-      dmn_dev_sandbox_image:
-        description: "DMN Dev Sandbox Image"
-        default: "true"
-        required: true
-      online_editor:
-        description: "Online Editor"
-        default: "true"
-        required: true
-      chrome_extension:
-        description: "Chrome Extension"
-        default: "true"
-        required: true
-      vscode_extensions_dev:
-        description: "VS Code Extensions (dev)"
-        default: "true"
-        required: true
-      vscode_extensions_prod:
-        description: "VS Code Extensions (prod)"
-        default: "true"
-        required: true
-      desktop:
-        description: "Desktop"
-        default: "true"
-        required: true
-      hub:
-        description: "Hub"
-        default: "true"
-        required: true
-      npm_packages:
-        description: "NPM packages"
-        default: "true"
-        required: true
-      standalone_editors_cdn:
-        description: "Standalone Editors CDN"
-        default: "true"
-        required: true
+      github_token:
+        required: false
+      quay_registry_password:
+        required: false
+      google_developer_console_client_id:
+        required: false
+      google_developer_console_client_secret:
+        required: false
+      google_developer_console_refresh_token:
+        required: false
+      chrome_extension_id:
+        required: false
+      kiegroup_npm_token:
+        required: false
 
 env:
   KOGITO_TOOLING_BUILD_lint: "false"
@@ -50,56 +52,73 @@ env:
   KOGITO_TOOLING_BUILD_docker: "true"
 
 jobs:
-  prepare:
+  extract_runners:
     runs-on: ubuntu-latest
+
     outputs:
-      upload_asset_url: ${{ fromJSON(steps.fetch_release_for_tag.outputs.data).upload_url }}
-      download_asset_url: ${{ steps.download_asset_url.outputs.download_url }}
-      release_ref: ${{ fromJSON(steps.fetch_release_for_tag.outputs.data).target_commitish }}
-      version: ${{ github.event.inputs.tag }}
+      dmn_dev_sandbox_image: ${{ steps.set_runners.outputs.dmn_dev_sandbox_image }}
+      online_editor: ${{ steps.set_runners.outputs.online_editor }}
+      chrome_extension: ${{ steps.set_runners.outputs.chrome_extension }}
+      vscode_extensions_dev: ${{ steps.set_runners.outputs.vscode_extensions_dev }}
+      vscode_extensions_prod: ${{ steps.set_runners.outputs.vscode_extensions_prod }}
+      desktop: ${{ steps.set_runners.outputs.desktop }}
+      hub: ${{ steps.set_runners.outputs.hub }}
+      npm_packages: ${{ steps.set_runners.outputs.npm_packages }}
+      standalone_editors_cdn: ${{ steps.set_runners.outputs.standalone_editors_cdn }}
+      extended_services: ${{ steps.set_runners.outputs.extended_services }}
+      dashbuilder: ${{ steps.set_runners.outputs.dashbuilder }}
+      dashbuilder_images: ${{ steps.set_runners.outputs.dashbuilder_images }}
+
     steps:
-      - name: "Fetch release for ${{ github.event.inputs.tag }}"
-        uses: octokit/request-action@v2.1.0
-        id: fetch_release_for_tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          route: GET /repos/{repo}/releases/tags/{tag}
-          repo: ${{ github.repository }}
-          tag: ${{ github.event.inputs.tag }}
-
-      - name: "Checkout"
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ fromJSON(steps.fetch_release_for_tag.outputs.data).target_commitish }}
-
-      - name: "Check `tag` against `(lerna.json).version`"
+      - name: "Set Runners"
+        id: set_runners
         shell: bash
         run: |
-          [ "${{ github.event.inputs.tag }}" == "$(node -p "require('./lerna.json').version")" ]
+          echo "::set-output name=dmn_dev_sandbox_image::${{ fromJSON(inputs.runners).dmn_dev_sandbox_image }}"
+          echo "::set-output name=online_editor::${{ fromJSON(inputs.runners).online_editor }}"
+          echo "::set-output name=chrome_extension::${{ fromJSON(inputs.runners).chrome_extension }}"
+          echo "::set-output name=vscode_extensions_dev::${{ fromJSON(inputs.runners).vscode_extensions_dev }}"
+          echo "::set-output name=vscode_extensions_prod::${{ fromJSON(inputs.runners).vscode_extensions_prod }}"
+          echo "::set-output name=desktop::${{ fromJSON(inputs.runners).desktop }}"
+          echo "::set-output name=hub::${{ fromJSON(inputs.runners).hub }}"
+          echo "::set-output name=npm_packages::${{ fromJSON(inputs.runners).npm_packages }}"
+          echo "::set-output name=standalone_editors_cdn::${{ fromJSON(inputs.runners).standalone_editors_cdn }}"
+          echo "::set-output name=extended_services::${{ fromJSON(inputs.runners).extended_services }}"
+          echo "::set-output name=dashbuilder::${{ fromJSON(inputs.runners).dashbuilder }}"
+          echo "::set-output name=dashbuilder_images::${{ fromJSON(inputs.runners).dashbuilder_images }}"
 
-      - name: "Generate download URL for Release assets"
-        id: download_asset_url
-        shell: python
+      - name: "Print Runners"
+        shell: bash
         run: |
-          print('::set-output name=download_url::' + '${{ fromJSON(steps.fetch_release_for_tag.outputs.data).html_url }}'.replace('/tag/', '/download/'));
+          echo "dmn_dev_sandbox_image: ${{ steps.set_runners.outputs.dmn_dev_sandbox_image }}"
+          echo "online_editor: ${{ steps.set_runners.outputs.online_editor }}"
+          echo "chrome_extension: ${{ steps.set_runners.outputs.chrome_extension }}"
+          echo "vscode_extensions_dev: ${{ steps.set_runners.outputs.vscode_extensions_dev }}"
+          echo "vscode_extensions_prod: ${{ steps.set_runners.outputs.vscode_extensions_prod }}"
+          echo "desktop: ${{ steps.set_runners.outputs.desktop }}"
+          echo "hub: ${{ steps.set_runners.outputs.hub }}"
+          echo "npm_packages: ${{ steps.set_runners.outputs.npm_packages }}"
+          echo "standalone_editors_cdn: ${{ steps.set_runners.outputs.standalone_editors_cdn }}"
+          echo "extended_services: ${{ steps.set_runners.outputs.extended_services }}"
+          echo "dashbuilder: ${{ steps.set_runners.outputs.dashbuilder }}"
+          echo "dashbuilder_images: ${{ steps.set_runners.outputs.dashbuilder_images }}"
 
   hub:
-    if: ${{ github.event.inputs.hub == 'true' }}
+    if: ${{ needs.extract_runners.outputs.hub == 'true' }}
     runs-on: ${{ matrix.os }}
-    needs: [prepare]
+    needs: [extract_runners]
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-      - name: "Support longpaths"
+      - name: "Support longpaths (Windows only)"
         if: matrix.os == 'windows-latest'
         run: git config --system core.longpaths true
 
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release_ref }}
+          ref: ${{ inputs.release_ref }}
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -112,25 +131,25 @@ jobs:
           lerna run build:prod --scope=@kogito-tooling/hub --include-dependencies --stream
 
       - name: "Upload Hub App for Linux (Ubuntu only)"
-        if: matrix.os == 'ubuntu-latest'
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
-          asset_name: business_modeler_hub_preview_linux_${{ needs.prepare.outputs.version }}.tar.gz
+          asset_name: business_modeler_hub_preview_linux_${{ inputs.tag }}.tar.gz
           asset_content_type: application/tar+gzip
 
       - name: "Upload Hub App for macOS (macOS only)"
-        if: matrix.os == 'macos-latest'
+        if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/hub/out/Business Modeler Hub Preview-darwin-x64.zip
-          asset_name: business_modeler_hub_preview_macos_${{ needs.prepare.outputs.version }}.zip
+          asset_name: business_modeler_hub_preview_macos_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
       - name: "Compress Hub App (Windows only)"
@@ -138,14 +157,14 @@ jobs:
         run: "Compress-Archive -Path \"packages\\hub\\out\\Business Modeler Hub Preview-win32-x64\" -DestinationPath \"packages\\hub\\out\\Business Modeler Hub Preview-win32-x64.zip\""
 
       - name: "Upload Hub App for Windows (Windows only)"
-        if: matrix.os == 'windows-latest'
+        if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          upload_url: ${{ inputs.upload_asset_url }}
           asset_path: "./packages/hub/out/Business Modeler Hub Preview-win32-x64.zip"
-          asset_name: "business_modeler_hub_preview_windows_${{ needs.prepare.outputs.version }}.zip"
+          asset_name: "business_modeler_hub_preview_windows_${{ inputs.tag }}.zip"
           asset_content_type: application/zip
 
   dmn_dev_sandbox_image:
@@ -153,19 +172,19 @@ jobs:
       DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
       DMN_DEV_SANDBOX__baseImageAccount: "kogito_tooling_bot"
       DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
-      DMN_DEV_SANDBOX__baseImageTag: "${{ needs.prepare.outputs.version }}"
-      DMN_DEV_SANDBOX__baseImageBuildTags: "latest ${{ needs.prepare.outputs.version }}"
+      DMN_DEV_SANDBOX__baseImageTag: "${{ inputs.tag }}"
+      DMN_DEV_SANDBOX__baseImageBuildTags: "latest ${{ inputs.tag }}"
       DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
       DMN_DEV_SANDBOX__gtmId: "GTM-PMJ42HB"
 
-    if: ${{ always() && github.event.inputs.dmn_dev_sandbox_image == 'true' }}
+    if: ${{ always() && needs.extract_runners.outputs.dmn_dev_sandbox_image == 'true' }}
     runs-on: ubuntu-latest
-    needs: [prepare]
+    needs: [extract_runners]
     steps:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release_ref }}
+          ref: ${{ inputs.release_ref }}
           path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
 
@@ -188,41 +207,42 @@ jobs:
           lerna run build:prod --scope=@kogito-tooling/dmn-dev-sandbox-deployment-base-image --include-dependencies --stream
 
       - name: "Push dmn-dev-sandbox-deployment-base-image to quay.io"
+        if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
           image: "${{ env.DMN_DEV_SANDBOX__baseImageName }}"
           tags: "${{ env.DMN_DEV_SANDBOX__baseImageBuildTags }}"
           registry: "${{ env.DMN_DEV_SANDBOX__baseImageRegistry }}/${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
           username: "${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
-          password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
+          password: "${{ secrets.quay_registry_password }}"
 
   online_editor:
     env:
-      ONLINE_EDITOR__downloadHubUrlLinux: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_linux_${{ needs.prepare.outputs.version }}.tar.gz"
-      ONLINE_EDITOR__downloadHubUrlMacOs: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_macos_${{ needs.prepare.outputs.version }}.zip"
-      ONLINE_EDITOR__downloadHubUrlWindows: "${{ needs.prepare.outputs.download_asset_url }}/business_modeler_hub_preview_windows_${{ needs.prepare.outputs.version }}.zip"
+      ONLINE_EDITOR__downloadHubUrlLinux: "${{ inputs.download_asset_url }}/business_modeler_hub_preview_linux_${{ inputs.tag }}.tar.gz"
+      ONLINE_EDITOR__downloadHubUrlMacOs: "${{ inputs.download_asset_url }}/business_modeler_hub_preview_macos_${{ inputs.tag }}.zip"
+      ONLINE_EDITOR__downloadHubUrlWindows: "${{ inputs.download_asset_url }}/business_modeler_hub_preview_windows_${{ inputs.tag }}.zip"
       ONLINE_EDITOR__buildInfo: ""
-      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ needs.prepare.outputs.version }}/kie_tooling_extended_services_linux_${{ needs.prepare.outputs.version }}.tar.gz"
-      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ needs.prepare.outputs.version }}/kie_tooling_extended_services_macos_${{ needs.prepare.outputs.version }}.dmg"
-      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ needs.prepare.outputs.version }}/kie_tooling_extended_services_windows_${{ needs.prepare.outputs.version }}.exe"
-      ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion: "${{ needs.prepare.outputs.version }}"
+      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ inputs.tag }}/kie_tooling_extended_services_linux_${{ inputs.tag }}.tar.gz"
+      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ inputs.tag }}/kie_tooling_extended_services_macos_${{ inputs.tag }}.dmg"
+      ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ inputs.tag }}/kie_tooling_extended_services_windows_${{ inputs.tag }}.exe"
+      ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
       ONLINE_EDITOR__gtmId: "GTM-PQGMKNW"
       DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
       DMN_DEV_SANDBOX__baseImageAccount: "kogito_tooling_bot"
       DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
-      DMN_DEV_SANDBOX__baseImageTag: "${{ needs.prepare.outputs.version }}"
-      DMN_DEV_SANDBOX__baseImageBuildTags: "latest ${{ needs.prepare.outputs.version }}"
+      DMN_DEV_SANDBOX__baseImageTag: "${{ inputs.tag }}"
+      DMN_DEV_SANDBOX__baseImageBuildTags: "latest ${{ inputs.tag }}"
       DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
       DMN_DEV_SANDBOX__gtmId: "GTM-PMJ42HB"
 
-    if: ${{ always() && github.event.inputs.online_editor == 'true' && (needs.hub.result == 'success' || needs.hub.result == 'skipped') }}
+    if: ${{ always() && needs.extract_runners.outputs.online_editor == 'true' && (needs.hub.result == 'success' || needs.hub.result == 'skipped') && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.dmn_dev_sandbox_image.result == 'success' || needs.dmn_dev_sandbox_image.result == 'skipped') }}
     runs-on: ubuntu-latest
-    needs: [prepare, dmn_dev_sandbox_image, hub, extended_services]
+    needs: [extract_runners, dmn_dev_sandbox_image, hub, extended_services]
     steps:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release_ref }}
+          ref: ${{ inputs.release_ref }}
           path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
 
@@ -231,7 +251,7 @@ jobs:
         with:
           path: ${{ github.workspace }}/kogito-online
           fetch-depth: 0
-          token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+          token: ${{ secrets.kogito_tooling_bot_token }}
           repository: kiegroup/kogito-online
           ref: gh-pages
 
@@ -259,10 +279,11 @@ jobs:
           lerna run build:prod --scope=@kogito-tooling/online-editor --include-dependencies --stream
 
       - name: "Deploy to GitHub Pages (kogito-online)"
+        if: ${{ !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kogito-online
         shell: bash
         env:
-          EDITORS_DIR: ./editors/${{ needs.prepare.outputs.version }}
+          EDITORS_DIR: ./editors/${{ inputs.tag }}
         run: |
           echo "Reset deployment dir"
           shopt -s extglob
@@ -275,7 +296,7 @@ jobs:
           cp -r ${{ github.workspace }}/kogito-tooling/node_modules/@kogito-tooling/bpmn-editor-unpacked/target/bpmn $EDITORS_DIR
           cp -r ${{ github.workspace }}/kogito-tooling/node_modules/@kogito-tooling/scesim-editor-unpacked/target/scesim $EDITORS_DIR
           rm -rf ./editors/latest
-          ln -s ${{ needs.prepare.outputs.version }} ./editors/latest
+          ln -s ${{ inputs.tag }} ./editors/latest
 
           echo "Copy Online Editor resources"
           rm -rf ./gwt-editors
@@ -285,23 +306,24 @@ jobs:
 
           echo "Commit changes and push"
           git add .
-          git commit -m "Deploy ${{ needs.prepare.outputs.version }} (Editors + Online Editor)"
+          git commit -m "Deploy ${{ inputs.tag }} (Editors + Online Editor)"
           git push origin gh-pages
 
   chrome_extension:
     env:
       CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
-      CHROME_EXTENSION__routerRelativePath: "kogito-online/chrome-extension/${{ needs.prepare.outputs.version }}"
+      CHROME_EXTENSION__routerRelativePath: "kogito-online/chrome-extension/${{ inputs.tag }}"
       CHROME_EXTENSION__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
       CHROME_EXTENSION__manifestFile: "manifest.prod.json"
-    if: ${{ always() && github.event.inputs.chrome_extension == 'true' && (needs.online_editor.result == 'success' || needs.online_editor.result == 'skipped') }}
+
+    if: ${{ always() && needs.extract_runners.outputs.chrome_extension == 'true' && (needs.online_editor.result == 'success' || needs.online_editor.result == 'skipped') }}
     runs-on: ubuntu-latest
-    needs: [prepare, online_editor]
+    needs: [extract_runners, online_editor]
     steps:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release_ref }}
+          ref: ${{ inputs.release_ref }}
           path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
 
@@ -310,7 +332,7 @@ jobs:
         with:
           path: ${{ github.workspace }}/kogito-online
           fetch-depth: 0
-          token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+          token: ${{ secrets.kogito_tooling_bot_token }}
           repository: kiegroup/kogito-online
           ref: gh-pages
 
@@ -331,21 +353,23 @@ jobs:
           lerna run build:prod --scope=chrome-extension-pack-kogito-kie-editors --include-dependencies --stream
 
       - name: "Upload Chrome Extension"
+        if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ needs.prepare.outputs.version }}.zip
-          asset_name: chrome_extension_${{ needs.prepare.outputs.version }}.zip
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip
+          asset_name: chrome_extension_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
       - name: "Deploy to GitHub Pages (kogito-online)"
+        if: ${{ !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kogito-online
         shell: bash
         env:
-          EDITORS_DIR: ./editors/${{ needs.prepare.outputs.version }}
-          CHROME_EXTENSION_DIR: ./chrome-extension/${{ needs.prepare.outputs.version }}
+          EDITORS_DIR: ./editors/${{ inputs.tag }}
+          CHROME_EXTENSION_DIR: ./chrome-extension/${{ inputs.tag }}
         run: |
           echo "Copy Chrome Extension resources"
           rm -rf $CHROME_EXTENSION_DIR
@@ -357,42 +381,46 @@ jobs:
 
           echo "Commit changes and push"
           git add .
-          git commit -m "Deploy ${{ needs.prepare.outputs.version }} (Chrome Extension)"
+          git commit -m "Deploy ${{ inputs.tag }} (Chrome Extension)"
           git push origin gh-pages
 
       - name: "Upload Chrome Extension to the Chrome Store"
+        if: ${{ !inputs.dry_run }}
         id: update_extension
         run: |
-          access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.GOOGLE_DEVELOPER_CONSOLE_CLIENT_ID }}&client_secret=${{ secrets.GOOGLE_DEVELOPER_CONSOLE_CLIENT_SECRET }}&refresh_token=${{ secrets.GOOGLE_DEVELOPER_CONSOLE_REFRESH_TOKEN }}&grant_type=refresh_token" | jq -r '.access_token')
-          uploadResponse=$(curl -X PUT -sS "https://www.googleapis.com/upload/chromewebstore/v1.1/items/${{ secrets.CHROME_EXTENSION_ID }}" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -T ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ needs.prepare.outputs.version }}.zip)
+          access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.google_developer_console_client_id }}&client_secret=${{ secrets.google_developer_console_client_secret }}&refresh_token=${{ secrets.google_developer_console_refresh_token }}&grant_type=refresh_token" | jq -r '.access_token')
+          uploadResponse=$(curl -X PUT -sS "https://www.googleapis.com/upload/chromewebstore/v1.1/items/${{ secrets.chrome_extension_id }}" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -T ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip)
           echo "$uploadResponse"
           echo ::set-output name=upload_status::$(echo "$uploadResponse" | jq -r '.uploadState')
 
       - name: "Check Upload"
+        if: ${{ !inputs.dry_run }}
         run: |
           [ "${{ steps.update_extension.outputs.upload_status }}" == 'SUCCESS' ]
 
       - name: "Publish Chrome Extension for users"
+        if: ${{ !inputs.dry_run }}
         id: publish_extension
         run: |
-          access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.GOOGLE_DEVELOPER_CONSOLE_CLIENT_ID }}&client_secret=${{ secrets.GOOGLE_DEVELOPER_CONSOLE_CLIENT_SECRET }}&refresh_token=${{ secrets.GOOGLE_DEVELOPER_CONSOLE_REFRESH_TOKEN }}&grant_type=refresh_token" | jq -r '.access_token')
-          publishResponse=$(curl -X POST -sS "https://www.googleapis.com/chromewebstore/v1.1/items/${{ secrets.CHROME_EXTENSION_ID }}/publish" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -H "Content-Length:0")
+          access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.google_developer_console_client_id }}&client_secret=${{ secrets.google_developer_console_client_secret }}&refresh_token=${{ secrets.google_developer_console_refresh_token }}&grant_type=refresh_token" | jq -r '.access_token')
+          publishResponse=$(curl -X POST -sS "https://www.googleapis.com/chromewebstore/v1.1/items/${{ secrets.chrome_extension_id }}/publish" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -H "Content-Length:0")
           echo "$publishResponse"
           echo ::set-output name=publish_status::$(echo "$publishResponse" | jq -r '.status | .[0]')
 
       - name: "Check Publish"
+        if: ${{ !inputs.dry_run }}
         run: |
           [ "${{ steps.publish_extension.outputs.publish_status }}" == 'OK' ] || [ "${{ steps.publish_extension.outputs.publish_status }}" == 'PUBLISHED_WITH_FRICTION_WARNING' ]
 
   vscode_extensions_dev:
-    if: ${{ github.event.inputs.vscode_extensions_dev == 'true' }}
+    if: ${{ needs.extract_runners.outputs.vscode_extensions_dev == 'true' }}
     runs-on: ubuntu-latest
-    needs: [prepare]
+    needs: [extract_runners]
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release_ref }}
+          ref: ${{ inputs.release_ref }}
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -404,34 +432,36 @@ jobs:
           lerna run build:prod --scope=vscode-extension-pack-kogito-kie-editors --scope=vscode-extension-backend --include-dependencies --stream
 
       - name: "Upload VS Code Extension (dev) (Ubuntu only)"
+        if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
-          asset_path: ./packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ needs.prepare.outputs.version }}.vsix
-          asset_name: vscode_extension_dev_${{ needs.prepare.outputs.version }}.vsix
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ inputs.tag }}.vsix
+          asset_name: vscode_extension_dev_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "Upload VS Code Extension Backend (dev) (Ubuntu only)"
+        if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
-          asset_path: ./packages/vscode-extension-backend/dist/vscode-extension-backend_${{ needs.prepare.outputs.version }}.vsix
-          asset_name: vscode_extension_backend_dev_${{ needs.prepare.outputs.version }}.vsix
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-backend/dist/vscode-extension-backend_${{ inputs.tag }}.vsix
+          asset_name: vscode_extension_backend_dev_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
   vscode_extensions_prod:
-    if: ${{ github.event.inputs.vscode_extensions_prod == 'true' }}
+    if: ${{ needs.extract_runners.outputs.vscode_extensions_prod == 'true' }}
     runs-on: ubuntu-latest
-    needs: [prepare]
+    needs: [extract_runners]
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release_ref }}
+          ref: ${{ inputs.release_ref }}
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -448,71 +478,76 @@ jobs:
             --scope=vscode-extension-red-hat-business-automation-bundle
 
       - name: "Upload VS Code Extension - BPMN Editor (prod)"
+        if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
-          asset_path: ./packages/vscode-extension-bpmn-editor/dist/vscode_extension_bpmn_editor_${{ needs.prepare.outputs.version }}.vsix
-          asset_name: vscode_extension_bpmn_editor_${{ needs.prepare.outputs.version }}.vsix
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-bpmn-editor/dist/vscode_extension_bpmn_editor_${{ inputs.tag }}.vsix
+          asset_name: vscode_extension_bpmn_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "Upload VS Code Extension - DMN Editor (prod)"
+        if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
-          asset_path: ./packages/vscode-extension-dmn-editor/dist/vscode_extension_dmn_editor_${{ needs.prepare.outputs.version }}.vsix
-          asset_name: vscode_extension_dmn_editor_${{ needs.prepare.outputs.version }}.vsix
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-dmn-editor/dist/vscode_extension_dmn_editor_${{ inputs.tag }}.vsix
+          asset_name: vscode_extension_dmn_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "Upload VS Code Extension - PMML Editor (prod)"
+        if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
-          asset_path: ./packages/vscode-extension-pmml-editor/dist/vscode_extension_pmml_editor_${{ needs.prepare.outputs.version }}.vsix
-          asset_name: vscode_extension_pmml_editor_${{ needs.prepare.outputs.version }}.vsix
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-pmml-editor/dist/vscode_extension_pmml_editor_${{ inputs.tag }}.vsix
+          asset_name: vscode_extension_pmml_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "Upload VS Code Extension - Kogito Bundle (prod)"
+        if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
-          asset_path: ./packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${{ needs.prepare.outputs.version }}.vsix
-          asset_name: vscode_extension_kogito_bundle_${{ needs.prepare.outputs.version }}.vsix
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${{ inputs.tag }}.vsix
+          asset_name: vscode_extension_kogito_bundle_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "Upload VS Code Extension - Red Hat Business Automation Bundle (prod)"
+        if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
-          asset_path: ./packages/vscode-extension-red-hat-business-automation-bundle/dist/vscode_extension_red_hat_business_automation_bundle_${{ needs.prepare.outputs.version }}.vsix
-          asset_name: vscode_extension_red_hat_business_automation_bundle_${{ needs.prepare.outputs.version }}.vsix
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-red-hat-business-automation-bundle/dist/vscode_extension_red_hat_business_automation_bundle_${{ inputs.tag }}.vsix
+          asset_name: vscode_extension_red_hat_business_automation_bundle_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
   desktop:
-    if: ${{ github.event.inputs.desktop == 'true' }}
+    if: ${{ needs.extract_runners.outputs.desktop == 'true' }}
     runs-on: ${{ matrix.os }}
-    needs: [prepare]
+    needs: [extract_runners]
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-      - name: "Support longpaths"
+      - name: "Support longpaths (Windows only)"
         if: matrix.os == 'windows-latest'
         run: git config --system core.longpaths true
 
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release_ref }}
+          ref: ${{ inputs.release_ref }}
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -525,25 +560,25 @@ jobs:
           lerna run build:prod --scope=@kogito-tooling/desktop --include-dependencies --stream
 
       - name: "Upload Desktop App for Linux (Ubuntu only)"
-        if: matrix.os == 'ubuntu-latest'
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
-          asset_name: business_modeler_preview_linux_${{ needs.prepare.outputs.version }}.tar.gz
+          asset_name: business_modeler_preview_linux_${{ inputs.tag }}.tar.gz
           asset_content_type: application/tar+gzip
 
       - name: "Upload Desktop App for macOS (macOS only)"
-        if: matrix.os == 'macos-latest'
+        if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/desktop/out/Business Modeler Preview-darwin-x64.zip
-          asset_name: business_modeler_preview_macos_${{ needs.prepare.outputs.version }}.zip
+          asset_name: business_modeler_preview_macos_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
       - name: "Compress Desktop App (Windows only)"
@@ -551,25 +586,25 @@ jobs:
         run: "Compress-Archive -Path \"packages\\desktop\\out\\Business Modeler Preview-win32-x64\" -DestinationPath \"packages\\desktop\\out\\Business Modeler Preview-win32-x64.zip\""
 
       - name: "Upload Desktop App for Windows (Windows only)"
-        if: matrix.os == 'windows-latest'
+        if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          upload_url: ${{ inputs.upload_asset_url }}
           asset_path: "./packages/desktop/out/Business Modeler Preview-win32-x64.zip"
-          asset_name: "business_modeler_preview_windows_${{ needs.prepare.outputs.version }}.zip"
+          asset_name: "business_modeler_preview_windows_${{ inputs.tag }}.zip"
           asset_content_type: application/zip
 
   npm_packages:
-    if: ${{ github.event.inputs.npm_packages == 'true' }}
+    if: ${{ needs.extract_runners.outputs.npm_packages == 'true' }}
     runs-on: ubuntu-latest
-    needs: [prepare]
+    needs: [extract_runners]
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release_ref }}
+          ref: ${{ inputs.release_ref }}
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -581,21 +616,22 @@ jobs:
           lerna run build:prod --stream --no-private --concurrency 1
 
       - name: "Publish packages to the NPM registry"
+        if: ${{ !inputs.dry_run }}
         env:
-          NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.kiegroup_npm_token }}
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
           lerna exec 'npm publish --access public' --stream --no-private
 
   standalone_editors_cdn:
-    if: ${{ always() && github.event.inputs.standalone_editors_cdn == 'true' && (needs.chrome_extension.result == 'success' || needs.chrome_extension.result == 'skipped') }}
+    if: ${{ always() && needs.extract_runners.outputs.standalone_editors_cdn == 'true' && (needs.chrome_extension.result == 'success' || needs.chrome_extension.result == 'skipped') }}
     runs-on: ubuntu-latest
-    needs: [prepare, chrome_extension]
+    needs: [extract_runners, chrome_extension]
     steps:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release_ref }}
+          ref: ${{ inputs.release_ref }}
           path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
 
@@ -604,7 +640,7 @@ jobs:
         with:
           path: ${{ github.workspace }}/kogito-online
           fetch-depth: 0
-          token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+          token: ${{ secrets.kogito_tooling_bot_token }}
           repository: kiegroup/kogito-online
           ref: gh-pages
 
@@ -625,10 +661,11 @@ jobs:
           lerna run build:prod --scope=@kogito-tooling/kie-editors-standalone --include-dependencies --stream
 
       - name: "Deploy to GitHub Pages (kogito-online)"
+        if: ${{ !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kogito-online
         shell: bash
         env:
-          STANDALONE_EDITORS_DIR: ./standalone/${{ needs.prepare.outputs.version }}
+          STANDALONE_EDITORS_DIR: ./standalone/${{ inputs.tag }}
         run: |
           echo "Copy Chrome Extension resources"
           rm -rf $STANDALONE_EDITORS_DIR
@@ -638,26 +675,25 @@ jobs:
 
           echo "Commit changes and push"
           git add .
-          git commit -m "Deploy ${{ needs.prepare.outputs.version }} (Standalone Editors)"
+          git commit -m "Deploy ${{ inputs.tag }} (Standalone Editors)"
           git push origin gh-pages
 
   extended_services:
-    # This should've been its own input, but GitHub limits the amount of inputs to 10.
-    if: ${{ github.event.inputs.online_editor == 'true' }}
+    if: ${{ needs.extract_runners.outputs.extended_services == 'true' }}
     runs-on: ${{ matrix.os }}
-    needs: [prepare]
+    needs: [extract_runners]
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-      - name: "Support longpaths"
+      - name: "Support longpaths (Windows only)"
         if: matrix.os == 'windows-latest'
         run: git config --system core.longpaths true
 
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release_ref }}
+          ref: ${{ inputs.release_ref }}
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -670,45 +706,47 @@ jobs:
           lerna run build:prod --scope=@kogito-tooling/extended-services --include-dependencies --stream
 
       - name: "Upload Extended Services for Linux (Ubuntu only)"
-        if: matrix.os == 'ubuntu-latest'
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/extended-services/dist/linux/kie_tooling_extended_services.tar.gz
-          asset_name: kie_tooling_extended_services_linux_${{ needs.prepare.outputs.version }}.tar.gz
+          asset_name: kie_tooling_extended_services_linux_${{ inputs.tag }}.tar.gz
           asset_content_type: application/tar+gzip
 
       - name: "Upload Extended Services for macOS (macOS only)"
-        if: matrix.os == 'macos-latest'
+        if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/extended-services/dist/darwin/Kogito.dmg
-          asset_name: kie_tooling_extended_services_macos_${{ needs.prepare.outputs.version }}.dmg
+          asset_name: kie_tooling_extended_services_macos_${{ inputs.tag }}.dmg
           asset_content_type: application/octet-stream
 
       - name: "Upload Extended Services for Windows (Windows only)"
-        if: matrix.os == 'windows-latest'
+        if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          upload_url: ${{ inputs.upload_asset_url }}
           asset_path: "./packages/extended-services/dist/win32/kie_tooling_extended_services.exe"
-          asset_name: "kie_tooling_extended_services_windows_${{ needs.prepare.outputs.version }}.exe"
+          asset_name: "kie_tooling_extended_services_windows_${{ inputs.tag }}.exe"
           asset_content_type: application/octet-stream
+
   dashbuilder:
+    if: ${{ needs.extract_runners.outputs.dashbuilder == 'true' }}
     runs-on: ubuntu-latest
-    needs: [prepare]
+    needs: [extract_runners]
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release_ref }}
+          ref: ${{ inputs.release_ref }}
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -721,13 +759,14 @@ jobs:
           lerna run build:prod --scope=@kogito-tooling/dashbuilder --include-dependencies --stream
 
       - name: "Upload DashBuilder Assets"
+        if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          upload_url: ${{ needs.prepare.outputs.upload_asset_url }}
+          upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/dashbuilder/dist/dashbuilder_dist.zip
-          asset_name: dashbuilder_dist_${{ needs.prepare.outputs.version }}.zip
+          asset_name: dashbuilder_dist_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
   dashbuilder_images:
@@ -736,16 +775,17 @@ jobs:
       DASHBUILDER__baseImageAccount: "kogito_tooling_bot"
       DASHBUILDER_AUTHORING__baseImageName: "dashbuilder-authoring"
       DASHBUILDER_RUNTIME__baseImageName: "dashbuilder-runtime"
-      DASHBUILDER__baseImageTag: "${{ needs.prepare.outputs.version }}"
-      DASHBUILDER__baseImageBuildTags: "latest ${{ needs.prepare.outputs.version }}"
+      DASHBUILDER__baseImageTag: "${{ inputs.tag }}"
+      DASHBUILDER__baseImageBuildTags: "latest ${{ inputs.tag }}"
 
+    if: ${{ needs.extract_runners.outputs.dashbuilder_images == 'true' }}
     runs-on: ubuntu-latest
-    needs: [prepare]
+    needs: [extract_runners]
     steps:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.prepare.outputs.release_ref }}
+          ref: ${{ inputs.release_ref }}
           path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
 
@@ -761,19 +801,21 @@ jobs:
           lerna run build:prod --scope=@kogito-tooling/dashbuilder-images --include-dependencies --stream
 
       - name: "Push dashbuilder-authoring image to quay.io"
+        if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
           image: "${{ env.DASHBUILDER_AUTHORING__baseImageName }}"
           tags: "${{ env.DASHBUILDER__baseImageBuildTags }}"
           registry: "${{ env.DASHBUILDER__baseImageRegistry }}/${{ env.DASHBUILDER__baseImageAccount }}"
           username: "${{ env.DASHBUILDER__baseImageAccount }}"
-          password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
+          password: "${{ secrets.quay_registry_password }}"
 
       - name: "Push dashbuilder-runtime image to quay.io"
+        if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
           image: "${{ env.DASHBUILDER_RUNTIME__baseImageName }}"
           tags: "${{ env.DASHBUILDER__baseImageBuildTags }}"
           registry: "${{ env.DASHBUILDER__baseImageRegistry }}/${{ env.DASHBUILDER__baseImageAccount }}"
           username: "${{ env.DASHBUILDER__baseImageAccount }}"
-          password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
+          password: "${{ secrets.quay_registry_password }}"

@@ -1,0 +1,65 @@
+name: "Staging :: Publish"
+
+on:
+  push:
+    branches: ["**-prerelease"]
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_asset_url: ${{ steps.create_release_draft.outputs.upload_url }}
+      html_url: ${{ steps.create_release_draft.outputs.html_url }}
+      id: ${{ steps.create_release_draft.outputs.id }}
+      tag: ${{ steps.release_draft_tag.outputs.tag }}
+      commit_sha: ${{ steps.release_draft_tag.outputs.commit_sha }}
+      download_asset_url: ${{ steps.release_json_ext.outputs.download_url }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+
+      - name: "Parse `tag`"
+        id: release_draft_tag
+        shell: bash
+        # This bash script returns the `tag` name for the release.
+        # Will match "/refs/{tags,heads}/{tag}-prerelease"
+        run: |
+          echo ::set-output name=tag::$(node -p "'${{ github.ref }}'.match(/^.*\/(.+)-prerelease$/)[1]")
+          echo ::set-output name=commit_sha::$(git rev-parse HEAD)
+
+      - name: "Check `tag` against `lerna.json.version`"
+        shell: bash
+        run: |
+          [ "${{ steps.release_draft_tag.outputs.tag }}" == "$(node -p "require('./lerna.json').version")" ]
+
+      - name: "Create Release (draft)"
+        id: create_release_draft
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.release_draft_tag.outputs.tag }}
+          release_name: ${{ steps.release_draft_tag.outputs.tag }} (alpha)
+          commitish: ${{ github.ref }}
+          draft: true
+          prerelease: true
+
+      - name: "Generate download URL for Release assets"
+        id: release_json_ext
+        shell: python
+        run: |
+          print('::set-output name=download_url::' + '${{ steps.create_release_draft.outputs.html_url }}'.replace('/tag/', '/download/'));
+
+  build_and_publish:
+    needs: [create_release]
+    uses: kiegroup/kogito-tooling/.github/workflows/staging_build.yml@main
+    with:
+      dry_run: false
+      tag: ${{ needs.create_release.outputs.tag }}
+      commit_sha: ${{ needs.create_release.outputs.commit_sha }}
+      download_asset_url: ${{ needs.create_release.outputs.download_asset_url }}
+      upload_asset_url: ${{ needs.create_release.outputs.upload_asset_url }}
+    secrets:
+      kogito_tooling_bot_token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+      quay_registry_password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
