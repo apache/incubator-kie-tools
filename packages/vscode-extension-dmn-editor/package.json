@@ -60,7 +60,7 @@
       }
     ],
     "configuration": {
-      "title": "DMN",
+      "title": "DMN Editor",
       "properties": {
         "kogito.dmn.runOnSave": {
           "type": [
@@ -68,6 +68,20 @@
             "null"
           ],
           "description": "Execute a command on each save operation of the DMN file."
+        },
+        "kogito.dmn.filenameTemplate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Filename template to be used when generating SVG files (defaults to '{filename}-svg.{ext})."
+        },
+        "kogito.dmn.filePath": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Where to save generated SVG files (defaults to current path)."
         }
       }
     },

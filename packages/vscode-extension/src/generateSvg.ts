@@ -44,8 +44,19 @@ export async function generateSvg(args: {
   }
 
   const parsedPath = __path.parse(editor.document.uri.fsPath);
-  const svgFileName = `${parsedPath.name}-svg.svg`;
-  const svgUri = editor.document.uri.with({ path: __path.join(parsedPath.dir, svgFileName) });
+  const fileExtension = parsedPath.ext.split('.').pop();
+
+  const svgFilenameTemplateId = `kogito.${fileExtension}.filenameTemplate`;
+  const svgFilePathId = `kogito.${fileExtension}.filePath`;
+
+  const svgFilenameTemplate = vscode.workspace.getConfiguration().get(svgFilenameTemplateId, "{filename}-svg.{ext}");
+  const svgFilePath = vscode.workspace.getConfiguration().get(svgFilePathId, "./");
+
+  const svgFileName = svgFilenameTemplate.replace("{filename}", parsedPath.name).replace("{ext}", "svg");
+  const svgUri = editor.document.uri.with({ path: __path.resolve(parsedPath.dir, svgFilePath, svgFileName) });
+
+  console.log({ svgFileName, svgUri, fileExtension, svgFilenameTemplateId, svgFilePathId, svgFilenameTemplate, svgFilePath });
+
   await vscode.workspace.fs.writeFile(svgUri, encoder.encode(previewSvg));
 
   if (args.displayNotification) {

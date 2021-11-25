@@ -29,7 +29,7 @@
   },
   "contributes": {
     "configuration": {
-      "title": "BPMN/DMN Test Configuration",
+      "title": "Kogito Tooling Dev Test Configuration",
       "properties": {
         "kogito.bpmn.runOnSave": {
           "type": [
@@ -46,6 +46,26 @@
           ],
           "default": "extension.kogito.silentlyGenerateSvg",
           "description": "Execute a command on each save operation of the DMN file"
+        },
+        "kogito.bpmn.filenameTemplate": {
+          "type": "string",
+          "default": "{filename}-svg.{ext}",
+          "description": "Filename template to be used when generating SVG files (defaults to '{filename}-svg.{ext})."
+        },
+        "kogito.dmn.filenameTemplate": {
+          "type": "string",
+          "default": "{filename}-svg.{ext}",
+          "description": "Filename template to be used when generating SVG files (defaults to '{filename}-svg.{ext})."
+        },
+        "kogito.bpmn.filePath": {
+          "type": "string",
+          "default": "./",
+          "description": "Where to save generated SVG files (defaults to same path as .bpmn file)."
+        },
+        "kogito.dmn.filePath": {
+          "type": "string",
+          "default": "./",
+          "description": "Where to save generated SVG files (defaults to same path as .dmn file)."
         }
       }
     },
