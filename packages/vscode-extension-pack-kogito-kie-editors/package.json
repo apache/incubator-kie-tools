@@ -32,40 +32,34 @@
       "title": "Kogito Tooling Dev Test Configuration",
       "properties": {
         "kogito.bpmn.runOnSave": {
-          "type": [
-            "string",
-            "null"
-          ],
+          "type": "string",
           "default": "extension.kogito.silentlyGenerateSvg",
-          "description": "Execute a command on each save operation of the BPMN file."
+          "markdownDescription": "Execute a command on each save operation of the BPMN file."
         },
         "kogito.dmn.runOnSave": {
-          "type": [
-            "string",
-            "null"
-          ],
+          "type": "string",
           "default": "extension.kogito.silentlyGenerateSvg",
-          "description": "Execute a command on each save operation of the DMN file"
+          "markdownDescription": "Execute a command on each save operation of the DMN file"
         },
         "kogito.bpmn.filenameTemplate": {
           "type": "string",
-          "default": "{filename}-svg.{ext}",
-          "description": "Filename template to be used when generating SVG files (defaults to '{filename}-svg.{ext})."
+          "default": "${fileBasenameNoExtension}-svg.svg",
+          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}-svg.svg`)."
         },
         "kogito.dmn.filenameTemplate": {
           "type": "string",
-          "default": "{filename}-svg.{ext}",
-          "description": "Filename template to be used when generating SVG files (defaults to '{filename}-svg.{ext})."
+          "default": "${fileBasenameNoExtension}-svg.svg",
+          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}-svg.svg`)."
         },
         "kogito.bpmn.filePath": {
           "type": "string",
-          "default": "./",
-          "description": "Where to save generated SVG files (defaults to same path as .bpmn file)."
+          "default": "${fileDirname}",
+          "markdownDescription": "Where to save generated SVG files (defaults to same path as .bpmn file: `${fileDirname}`)."
         },
         "kogito.dmn.filePath": {
           "type": "string",
-          "default": "./",
-          "description": "Where to save generated SVG files (defaults to same path as .dmn file)."
+          "default": "${fileDirname}",
+          "markdownDescription": "Where to save generated SVG files (defaults to same path as .dmn file: `${fileDirname}`)."
         }
       }
     },

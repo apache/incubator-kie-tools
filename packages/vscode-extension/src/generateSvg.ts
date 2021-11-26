@@ -23,6 +23,15 @@ import { I18n } from "@kie-tooling-core/i18n/dist/core";
 
 const encoder = new TextEncoder();
 
+type FilePathToken = "workspaceFolder" | "fileDirname" | "fileExtname" | "fileBasename" | "fileBasenameNoExtension";
+
+function tokenReplace(tokens: Record<string, string | undefined>, text: string) {
+  return Object.entries(tokens).reduce<string>(
+    (result, [token, value]) => result.replace(RegExp(`\\$\{${token}}`, "ig"), value ?? ""),
+    text
+  );
+}
+
 export async function generateSvg(args: {
   editorStore: KogitoEditorStore;
   workspaceApi: WorkspaceApi;
@@ -43,19 +52,28 @@ export async function generateSvg(args: {
     return;
   }
 
+  const workspace = vscode.workspace.workspaceFolders?.length ? vscode.workspace.workspaceFolders[0] : null;
   const parsedPath = __path.parse(editor.document.uri.fsPath);
-  const fileExtension = parsedPath.ext.split('.').pop();
 
-  const svgFilenameTemplateId = `kogito.${fileExtension}.filenameTemplate`;
-  const svgFilePathId = `kogito.${fileExtension}.filePath`;
+  const mappedTokens: Record<FilePathToken, string | undefined> = {
+    workspaceFolder: workspace?.uri.fsPath,
+    fileDirname: parsedPath.dir,
+    fileExtname: parsedPath.ext,
+    fileBasename: parsedPath.base,
+    fileBasenameNoExtension: parsedPath.name,
+  };
 
-  const svgFilenameTemplate = vscode.workspace.getConfiguration().get(svgFilenameTemplateId, "{filename}-svg.{ext}");
-  const svgFilePath = vscode.workspace.getConfiguration().get(svgFilePathId, "./");
+  const svgFilenameTemplateId = tokenReplace(mappedTokens, "kogito${fileExtname}.filenameTemplate");
+  const svgFilePathTemplateId = tokenReplace(mappedTokens, "kogito${fileExtname}.filePath");
 
-  const svgFileName = svgFilenameTemplate.replace("{filename}", parsedPath.name).replace("{ext}", "svg");
-  const svgUri = editor.document.uri.with({ path: __path.resolve(parsedPath.dir, svgFilePath, svgFileName) });
+  const svgFilenameTemplate = vscode.workspace
+    .getConfiguration()
+    .get(svgFilenameTemplateId, "${fileBasenameNoExtension}-svg.svg");
+  const svgFilePathTemplate = vscode.workspace.getConfiguration().get(svgFilePathTemplateId, "${fileDirname}");
 
-  console.log({ svgFileName, svgUri, fileExtension, svgFilenameTemplateId, svgFilePathId, svgFilenameTemplate, svgFilePath });
+  const svgFileName = tokenReplace(mappedTokens, svgFilenameTemplate);
+  const svgFilePath = tokenReplace(mappedTokens, svgFilePathTemplate);
+  const svgUri = editor.document.uri.with({ path: __path.resolve(svgFilePath, svgFileName) });
 
   await vscode.workspace.fs.writeFile(svgUri, encoder.encode(previewSvg));
 
