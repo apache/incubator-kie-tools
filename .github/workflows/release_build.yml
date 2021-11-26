@@ -29,7 +29,7 @@ on:
         default: '{"dmn_dev_sandbox_image":"false","online_editor":"false","chrome_extension":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","hub":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false"}'
     secrets:
       kogito_tooling_bot_token:
-        required: true
+        required: false
       github_token:
         required: false
       quay_registry_password:
@@ -247,6 +247,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Checkout kogito-online"
+        if: ${{ !inputs.dry_run }}
         uses: actions/checkout@v2
         with:
           path: ${{ github.workspace }}/kogito-online
@@ -328,6 +329,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Checkout kogito-online"
+        if: ${{ !inputs.dry_run }}
         uses: actions/checkout@v2
         with:
           path: ${{ github.workspace }}/kogito-online
@@ -636,6 +638,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Checkout kogito-online"
+        if: ${{ !inputs.dry_run }}
         uses: actions/checkout@v2
         with:
           path: ${{ github.workspace }}/kogito-online
