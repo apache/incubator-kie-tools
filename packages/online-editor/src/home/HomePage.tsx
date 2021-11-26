@@ -163,6 +163,11 @@ export function HomePage() {
                   extension={"pmml"}
                   description={"PMML files are used to generate scorecards"}
                 />
+                <NewModelCard
+                  title={"Serverless Workflow"}
+                  extension={"json"}
+                  description={"Serverless Workflow files"}
+                />
               </Gallery>
             </PageSection>
           </SplitItem>

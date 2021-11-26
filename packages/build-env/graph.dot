@@ -51,6 +51,7 @@ digraph G {
   "@kogito-tooling/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kogito-tooling/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tooling-core/run-script-if" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kogito-tooling/serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-backend" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "vscode-extension-bpmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-dmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -134,6 +135,8 @@ digraph G {
   "@kogito-tooling/pmml-editor" -> "@kogito-tooling/pmml-editor-marshaller" [ style = "solid", color = "blue" ];
   "@kogito-tooling/pmml-editor-marshaller" -> "@kogito-tooling/build-env" [ style = "dashed", color = "blue" ];
   "@kie-tooling-core/run-script-if" -> "@kogito-tooling/build-env" [ style = "dashed", color = "purple" ];
+  "@kogito-tooling/serverless-workflow-editor" -> "@kie-tooling-core/editor" [ style = "solid", color = "blue" ];
+  "@kogito-tooling/serverless-workflow-editor" -> "@kie-tooling-core/monaco-editor" [ style = "solid", color = "blue" ];
   "@kogito-tooling/uniforms-bootstrap4-codegen" -> "@kogito-tooling/build-env" [ style = "dashed", color = "blue" ];
   "@kogito-tooling/uniforms-patternfly-codegen" -> "@kogito-tooling/build-env" [ style = "dashed", color = "blue" ];
   "@kogito-tooling/unitables" -> "@kogito-tooling/boxed-expression-component" [ style = "solid", color = "blue" ];
