@@ -24,13 +24,13 @@ DMN files must be inside a `src/` folder on your Workspace to be visible on the 
 
 ### Settings
 
-| Setting                       | Description                                              | Default value                        |
-| ----------------------------- | -------------------------------------------------------- | ------------------------------------ |
-| `kogito.dmn.runOnSave`        | Execute a command on each save operation of the DMN file | _empty_                              |
-| `kogito.dmn.filenameTemplate` | Filename template to be used when generating SVG files   | `${fileBasenameNoExtension}-svg.svg` |
-| `kogito.dmn.filePath`         | Where to save generated SVG files                        | `${fileDirname}`                     |
+| Setting                          | Description                                              | Default value                        |
+| -------------------------------- | -------------------------------------------------------- | ------------------------------------ |
+| `kogito.dmn.runOnSave`           | Execute a command on each save operation of the DMN file | _empty_                              |
+| `kogito.dmn.svgFilenameTemplate` | Filename template to be used when generating SVG files   | `${fileBasenameNoExtension}-svg.svg` |
+| `kogito.dmn.svgFilePath`         | Where to save generated SVG files                        | `${fileDirname}`                     |
 
-The `kogito.dmn.filenameTemplate` and `kogito.dmn.filePath` settings accept the following variables as tokens:
+The `kogito.dmn.svgFilenameTemplate` and `kogito.dmn.svgFilePath` settings accept the following variables as tokens:
 
 | Variable                       | Example                                   |
 | ------------------------------ | ----------------------------------------- |

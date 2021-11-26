@@ -17,13 +17,13 @@ Create and edit BPMN and BPMN2 files.
 
 ### Settings
 
-| Setting                        | Description                                               | Default value                        |
-| ------------------------------ | --------------------------------------------------------- | ------------------------------------ |
-| `kogito.bpmn.runOnSave`        | Execute a command on each save operation of the BPMN file | _empty_                              |
-| `kogito.bpmn.filenameTemplate` | Filename template to be used when generating SVG files    | `${fileBasenameNoExtension}-svg.svg` |
-| `kogito.bpmn.filePath`         | Where to save generated SVG files                         | `${fileDirname}`                     |
+| Setting                           | Description                                               | Default value                        |
+| --------------------------------- | --------------------------------------------------------- | ------------------------------------ |
+| `kogito.bpmn.runOnSave`           | Execute a command on each save operation of the BPMN file | _empty_                              |
+| `kogito.bpmn.svgFilenameTemplate` | Filename template to be used when generating SVG files    | `${fileBasenameNoExtension}-svg.svg` |
+| `kogito.bpmn.svgFilePath`         | Where to save generated SVG files                         | `${fileDirname}`                     |
 
-The `kogito.bpmn.filenameTemplate` and `kogito.bpmn.filePath` settings accept the following variables as tokens:
+The `kogito.bpmn.svgFilenameTemplate` and `kogito.bpmn.svgFilePath` settings accept the following variables as tokens:
 
 | Variable                       | Example                                   |
 | ------------------------------ | ----------------------------------------- |

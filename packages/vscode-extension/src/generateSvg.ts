@@ -23,12 +23,18 @@ import { I18n } from "@kie-tooling-core/i18n/dist/core";
 
 const encoder = new TextEncoder();
 
-type FilePathToken = "workspaceFolder" | "fileDirname" | "fileExtname" | "fileBasename" | "fileBasenameNoExtension";
+type SettingsValueInterpolationToken =
+  | "${workspaceFolder}"
+  | "${fileDirname}"
+  | "${fileExtname}"
+  | "${fileBasename}"
+  | "${fileBasenameNoExtension}";
 
-function tokenReplace(tokens: Record<string, string | undefined>, text: string) {
-  return Object.entries(tokens).reduce<string>(
-    (result, [token, value]) => result.replace(RegExp(`\\$\{${token}}`, "ig"), value ?? ""),
-    text
+function interpolateSettingsValue(args: { tokens: Record<string, string | undefined>; value: string }) {
+  const { tokens, value } = args;
+  return Object.entries(tokens).reduce(
+    (result, [tokenName, tokenValue]) => result.replaceAll(tokenName, tokenValue ?? ""),
+    value
   );
 }
 
@@ -55,24 +61,37 @@ export async function generateSvg(args: {
   const workspace = vscode.workspace.workspaceFolders?.length ? vscode.workspace.workspaceFolders[0] : null;
   const parsedPath = __path.parse(editor.document.uri.fsPath);
 
-  const mappedTokens: Record<FilePathToken, string | undefined> = {
-    workspaceFolder: workspace?.uri.fsPath,
-    fileDirname: parsedPath.dir,
-    fileExtname: parsedPath.ext,
-    fileBasename: parsedPath.base,
-    fileBasenameNoExtension: parsedPath.name,
+  const tokens: Record<SettingsValueInterpolationToken, string | undefined> = {
+    "${workspaceFolder}": workspace?.uri.fsPath,
+    "${fileDirname}": parsedPath.dir,
+    "${fileExtname}": parsedPath.ext,
+    "${fileBasename}": parsedPath.base,
+    "${fileBasenameNoExtension}": parsedPath.name,
   };
 
-  const svgFilenameTemplateId = tokenReplace(mappedTokens, "kogito${fileExtname}.filenameTemplate");
-  const svgFilePathTemplateId = tokenReplace(mappedTokens, "kogito${fileExtname}.filePath");
+  const fileExtensionNoDot = parsedPath.ext.replace(".", "");
 
-  const svgFilenameTemplate = vscode.workspace
-    .getConfiguration()
-    .get(svgFilenameTemplateId, "${fileBasenameNoExtension}-svg.svg");
-  const svgFilePathTemplate = vscode.workspace.getConfiguration().get(svgFilePathTemplateId, "${fileDirname}");
+  const svgFilenameTemplateId = `kogito.${fileExtensionNoDot}.svgFilenameTemplate`;
+  const svgFilePathTemplateId = `kogito.${fileExtensionNoDot}.svgFilePath`;
 
-  const svgFileName = tokenReplace(mappedTokens, svgFilenameTemplate);
-  const svgFilePath = tokenReplace(mappedTokens, svgFilePathTemplate);
+  const svgFilenameTemplate = vscode.workspace.getConfiguration().get(svgFilenameTemplateId, "");
+  const svgFilePathTemplate = vscode.workspace.getConfiguration().get(svgFilePathTemplateId, "");
+
+  if (__path.parse(svgFilenameTemplate).dir) {
+    vscode.window.showErrorMessage(
+      `The kogito.${fileExtensionNoDot}.svgFilenameTemplate setting should be a valid filename, without a path prefix. Current value: ${svgFilenameTemplate}`
+    );
+    return;
+  }
+
+  const svgFileName = interpolateSettingsValue({
+    tokens,
+    value: svgFilenameTemplate.length ? svgFilenameTemplate : "${fileBasenameNoExtension}-svg.svg",
+  });
+  const svgFilePath = interpolateSettingsValue({
+    tokens,
+    value: svgFilePathTemplate.length ? svgFilePathTemplate : "${fileDirname}",
+  });
   const svgUri = editor.document.uri.with({ path: __path.resolve(svgFilePath, svgFileName) });
 
   await vscode.workspace.fs.writeFile(svgUri, encoder.encode(previewSvg));

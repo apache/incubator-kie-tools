@@ -65,12 +65,12 @@
           "type": "string",
           "markdownDescription": "Execute a command on each save operation of the BPMN file."
         },
-        "kogito.bpmn.filenameTemplate": {
+        "kogito.bpmn.svgFilenameTemplate": {
           "type": "string",
           "default": "${fileBasenameNoExtension}-svg.svg",
           "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}-svg.svg`)."
         },
-        "kogito.bpmn.filePath": {
+        "kogito.bpmn.svgFilePath": {
           "type": "string",
           "default": "${fileDirname}",
           "markdownDescription": "Where to save generated SVG files (defaults to same path as .bpmn file: `${fileDirname}`)."

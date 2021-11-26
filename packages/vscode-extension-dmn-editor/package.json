@@ -66,12 +66,12 @@
           "type": "string",
           "markdownDescription": "Execute a command on each save operation of the DMN file"
         },
-        "kogito.dmn.filenameTemplate": {
+        "kogito.dmn.svgFilenameTemplate": {
           "type": "string",
           "default": "${fileBasenameNoExtension}-svg.svg",
           "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}-svg.svg`)."
         },
-        "kogito.dmn.filePath": {
+        "kogito.dmn.svgFilePath": {
           "type": "string",
           "default": "${fileDirname}",
           "markdownDescription": "Where to save generated SVG files (defaults to same path as .dmn file: `${fileDirname}`)."

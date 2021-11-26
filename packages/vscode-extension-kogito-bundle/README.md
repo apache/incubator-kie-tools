@@ -20,24 +20,3 @@ Create and edit BPMN, DMN and SceSim files.
 ### Editing a new DMN file
 
 ![alt](./gifs/dmn.gif?raw=true)
-
-### Settings
-
-| Setting                        | Description                                               | Default value                        |
-| ------------------------------ | --------------------------------------------------------- | ------------------------------------ |
-| `kogito.bpmn.runOnSave`        | Execute a command on each save operation of the BPMN file | _empty_                              |
-| `kogito.dmn.runOnSave`         | Execute a command on each save operation of the DMN file  | _empty_                              |
-| `kogito.bpmn.filenameTemplate` | Filename template to be used when generating SVG files    | `${fileBasenameNoExtension}-svg.svg` |
-| `kogito.dmn.filenameTemplate`  | Filename template to be used when generating SVG files    | `${fileBasenameNoExtension}-svg.svg` |
-| `kogito.bpmn.filePath`         | Where to save generated SVG files                         | `${fileDirname}`                     |
-| `kogito.dmn.filePath`          | Where to save generated SVG files                         | `${fileDirname}`                     |
-
-The `kogito.{bpmn|dmn}.filenameTemplate` and `kogito.{bpmn|dmn}.filePath` settings accept the following variables as tokens:
-
-| Variable                       | Example                                   |
-| ------------------------------ | ----------------------------------------- |
-| **${workspaceFolder}**         | `/home/your-username/your-project`        |
-| **${fileDirname}**             | `/home/your-username/your-project/folder` |
-| **${fileExtname}**             | `.ext`                                    |
-| **${fileBasename}**            | `file.ext`                                |
-| **${fileBasenameNoExtension}** | `file`                                    |
