@@ -54,6 +54,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.L
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.LiteralProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PmmlFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Row;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -131,9 +132,11 @@ public class ExpressionModelFillerTest {
     @Test
     public void testFillRelationExpression() {
         final Relation relationExpression = new Relation();
+        final String firstColumnId = "Column Id";
         final String firstColumnName = "Column Name";
         final String firstColumnDataType = BuiltInType.BOOLEAN.asQName().getLocalPart();
         final double firstColumnWidth = 200d;
+        final String secondColumnId = "Another Column Name";
         final String secondColumnName = "Another Column Name";
         final String secondColumnDataType = BuiltInType.DATE.asQName().getLocalPart();
         final double secondColumnWidth = 315d;
@@ -141,8 +144,8 @@ public class ExpressionModelFillerTest {
         final String secondCell = "second cell";
         final String thirdCell = "third cell";
         final String fourthCell = "fourth cell";
-        final Column[] columns = new Column[]{new Column(firstColumnName, firstColumnDataType, firstColumnWidth), new Column(secondColumnName, secondColumnDataType, secondColumnWidth)};
-        final String[][] rows = new String[][]{new String[]{firstCell, secondCell}, new String[]{thirdCell, fourthCell}};
+        final Column[] columns = new Column[]{new Column(firstColumnId, firstColumnName, firstColumnDataType, firstColumnWidth), new Column(secondColumnId, secondColumnName, secondColumnDataType, secondColumnWidth)};
+        final Row[] rows = new Row[]{new Row("first-row", new String[]{firstCell, secondCell}), new Row("second-id", new String[]{thirdCell, fourthCell})};
         final RelationProps relationProps = new RelationProps(EXPRESSION_NAME, DATA_TYPE, columns, rows);
 
         ExpressionModelFiller.fillRelationExpression(relationExpression, relationProps);
@@ -274,21 +277,24 @@ public class ExpressionModelFillerTest {
     @Test
     public void testFillDecisionTableExpression() {
         final DecisionTable decisionTableExpression = new DecisionTable();
+        final String annotationId = "Annotation id";
         final String annotationName = "Annotation name";
         final double annotationWidth = 456d;
-        final Annotation[] annotations = new Annotation[]{new Annotation(annotationName, annotationWidth)};
+        final Annotation[] annotations = new Annotation[]{new Annotation(annotationId, annotationName, annotationWidth)};
+        final String inputId = "Input id";
         final String inputColumn = "Input column";
         final String inputDataType = BuiltInType.DATE_TIME.asQName().getLocalPart();
         final double inputWidth = 123d;
-        final Clause[] input = new Clause[]{new Clause(inputColumn, inputDataType, inputWidth)};
+        final Clause[] input = new Clause[]{new Clause(inputId, inputColumn, inputDataType, inputWidth)};
+        final String outputId = "Output id";
         final String outputColumn = "Output column";
         final String outputDataType = BuiltInType.STRING.asQName().getLocalPart();
         final double outputWidth = 223d;
-        final Clause[] output = new Clause[]{new Clause(outputColumn, outputDataType, outputWidth)};
+        final Clause[] output = new Clause[]{new Clause(outputId, outputColumn, outputDataType, outputWidth)};
         final String inputValue = "input value";
         final String outputValue = "output value";
         final String annotationValue = "annotation value";
-        DecisionTableRule[] rules = new DecisionTableRule[]{new DecisionTableRule(new String[]{inputValue}, new String[]{outputValue}, new String[]{annotationValue})};
+        DecisionTableRule[] rules = new DecisionTableRule[]{new DecisionTableRule("rule-1", new String[]{inputValue}, new String[]{outputValue}, new String[]{annotationValue})};
         final DecisionTableProps decisionTableProps = new DecisionTableProps(EXPRESSION_NAME, DATA_TYPE, HitPolicy.COLLECT.value(), BuiltinAggregator.MAX.getCode(), annotations, input, output, rules);
 
         ExpressionModelFiller.fillDecisionTableExpression(decisionTableExpression, decisionTableProps);

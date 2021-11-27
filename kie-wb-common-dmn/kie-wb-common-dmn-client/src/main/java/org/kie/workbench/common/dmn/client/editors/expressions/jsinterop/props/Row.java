@@ -19,17 +19,13 @@ package org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props;
 import jsinterop.annotations.JsType;
 
 @JsType
-public class Column {
+public class Row {
 
     public final String id;
-    public final String name;
-    public final String dataType;
-    public final Double width;
+    public final String[] cells;
 
-    public Column(final String id, final String name, final String dataType, final Double width) {
+    public Row(final String id, final String[] cells) {
         this.id = id;
-        this.name = name;
-        this.dataType = dataType;
-        this.width = width;
+        this.cells = cells;
     }
 }

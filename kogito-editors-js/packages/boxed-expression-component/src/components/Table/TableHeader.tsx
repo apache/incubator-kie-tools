@@ -18,7 +18,7 @@ import { Th, Thead, Tr } from "@patternfly/react-table";
 import * as _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { Column, ColumnInstance, DataRecord, HeaderGroup, TableInstance } from "react-table";
+import { Column, ColumnInstance, HeaderGroup, TableInstance } from "react-table";
 import { DataType, TableHeaderVisibility } from "../../api";
 import { EditExpressionMenu, EditTextInline } from "../EditExpressionMenu";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
@@ -27,10 +27,6 @@ import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./Table";
 export interface TableHeaderProps {
   /** Table instance */
   tableInstance: TableInstance;
-  /** Rows instance */
-  tableRows: DataRecord[];
-  /** Function to be executed when one or more rows are modified */
-  onRowsUpdate: (rows: DataRecord[]) => void;
   /** Optional label, that may depend on column, to be used for the popover that appears when clicking on column header */
   editColumnLabel?: string | { [groupType: string]: string };
   /** The way in which the header will be rendered */
@@ -51,8 +47,6 @@ export interface TableHeaderProps {
 
 export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   tableInstance,
-  tableRows,
-  onRowsUpdate,
   editColumnLabel,
   headerVisibility = TableHeaderVisibility.Full,
   skipLastHeaderGroup,
@@ -74,19 +68,6 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
     [editColumnLabel]
   );
 
-  const updateColumnNameInRows = useCallback(
-    (prevColumnName: string, newColumnName: string) =>
-      onRowsUpdate(
-        _.map(tableRows, (tableCells) => {
-          const assignedCellValue = tableCells[prevColumnName]!;
-          delete tableCells[prevColumnName];
-          tableCells[newColumnName] = assignedCellValue;
-          return tableCells;
-        })
-      ),
-    [onRowsUpdate, tableRows]
-  );
-
   /**
    * Currently, column rename/type update is supported only for the first and the second level of the header
    */
@@ -96,44 +77,29 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   ) => ({ name, dataType }: { name?: string; dataType?: DataType }) => void = useCallback(
     (column, columnIndex) => {
       return ({ name = "", dataType }) => {
-        const prevColumnName = column.label as string;
         let columnToUpdate = tableColumns[columnIndex] as ColumnInstance;
         if (column.depth > 0) {
-          const parentName = column.parent!.id;
-          const parentColumns = (_.find(tableColumns, { accessor: parentName }) as ColumnInstance).columns;
-          columnToUpdate = _.find(parentColumns, { accessor: prevColumnName })!;
+          const columnsBelongingToParent = (_.find(tableColumns, { accessor: column.parent!.id }) as ColumnInstance)
+            .columns;
+          columnToUpdate = _.find(columnsBelongingToParent, { accessor: column.id })!;
         }
         columnToUpdate.label = name;
-        columnToUpdate.accessor = name;
         columnToUpdate.dataType = dataType as DataType;
         onColumnsUpdate([...tableColumns]);
-        if (name !== prevColumnName) {
-          updateColumnNameInRows(prevColumnName, name);
-        }
       };
     },
-    [onColumnsUpdate, tableColumns, updateColumnNameInRows]
-  );
-
-  const computeColumnKey = useCallback(
-    (column: ColumnInstance, columnIndex: number) =>
-      `${getColumnKey(column)}-${column.parent?.id || ""}-${columnIndex}`,
-    [getColumnKey]
+    [onColumnsUpdate, tableColumns]
   );
 
   const renderCountColumn = useCallback(
-    (column: ColumnInstance, columnIndex: number) => (
-      <Th
-        {...(column.getHeaderProps() as any)}
-        className="fixed-column no-clickable-cell"
-        key={computeColumnKey(column, columnIndex) as any}
-      >
+    (column: ColumnInstance) => (
+      <Th {...column.getHeaderProps()} className="fixed-column no-clickable-cell" key={getColumnKey(column)}>
         <div className="header-cell" data-ouia-component-type="expression-column-header">
           {column.label}
         </div>
       </Th>
     ),
-    [computeColumnKey]
+    [getColumnKey]
   );
 
   const renderCellInfoLabel = useCallback(
@@ -146,7 +112,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
           />
         );
       }
-      return <p className="pf-u-text-truncate">{column.label}</p>;
+      return <p className="pf-u-text-truncate label">{column.label}</p>;
     },
     [onColumnNameOrDataTypeUpdate]
   );
@@ -212,7 +178,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       };
 
       return (
-        <Th {...headerProps} {...thProps(column)} className={getCssClass()} key={computeColumnKey(column, columnIndex)}>
+        <Th {...headerProps} {...thProps(column)} className={getCssClass()} key={getColumnKey(column)}>
           <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
             <div className="header-cell" data-ouia-component-type="expression-column-header">
               {column.dataType && editableHeader ? (
@@ -221,7 +187,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
                   selectedExpressionName={column.label}
                   selectedDataType={column.dataType}
                   onExpressionUpdate={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
-                  key={computeColumnKey(column, columnIndex)}
+                  key={getColumnKey(column)}
                 >
                   {renderHeaderCellInfo(column, columnIndex)}
                 </EditExpressionMenu>
@@ -234,7 +200,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       );
     },
     [
-      computeColumnKey,
+      getColumnKey,
       editableHeader,
       getColumnLabel,
       onColumnNameOrDataTypeUpdate,
@@ -246,7 +212,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
 
   const renderColumn = useCallback(
     (column: ColumnInstance, columnIndex: number) =>
-      column.isCountColumn ? renderCountColumn(column, columnIndex) : renderResizableHeaderCell(column, columnIndex),
+      column.isCountColumn ? renderCountColumn(column) : renderResizableHeaderCell(column, columnIndex),
     [renderCountColumn, renderResizableHeaderCell]
   );
 

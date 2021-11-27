@@ -20,11 +20,13 @@ import jsinterop.annotations.JsType;
 
 @JsType
 public class Clause {
+    public final String id;
     public final String name;
     public final String dataType;
     public final Double width;
 
-    public Clause(final String name, final String dataType, final Double width) {
+    public Clause(final String id, final String name, final String dataType, final Double width) {
+        this.id = id;
         this.name = name;
         this.dataType = dataType;
         this.width = width;

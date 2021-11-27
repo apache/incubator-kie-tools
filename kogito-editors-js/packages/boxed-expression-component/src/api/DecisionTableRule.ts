@@ -17,6 +17,8 @@
 import { DataType } from "./DataType";
 
 export interface Clause {
+  /** Clause identifier */
+  id: string;
   /** Clause name */
   name: string;
   /** Clause data type */
@@ -26,6 +28,8 @@ export interface Clause {
 }
 
 export interface Annotation {
+  /** Annotation identifier */
+  id: string;
   /** Annotation name */
   name: string;
   /** Annotation width */
@@ -33,6 +37,8 @@ export interface Annotation {
 }
 
 export interface DecisionTableRule {
+  /** Rule identifier */
+  id: string;
   /** Values for the input columns */
   inputEntries: string[];
   /** Values for the output columns */

@@ -17,6 +17,7 @@
 import * as React from "react";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import * as _ from "lodash";
+import { useBoxedExpressionEditorI18n } from "../../i18n";
 
 export interface EditTextInlineProps {
   /** Text value */
@@ -26,14 +27,14 @@ export interface EditTextInlineProps {
 }
 
 export const EditTextInline: React.FunctionComponent<EditTextInlineProps> = ({ onTextChange, value }) => {
+  const { i18n } = useBoxedExpressionEditorI18n();
+
   const [toggle, setToggle] = useState(true);
 
   const onValueBlur = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const changedText = event.target.value;
-      if (_.size(changedText.trim())) {
-        onTextChange(changedText);
-      }
+      onTextChange(changedText);
       setToggle(true);
     },
     [onTextChange]
@@ -60,9 +61,15 @@ export const EditTextInline: React.FunctionComponent<EditTextInlineProps> = ({ o
     []
   );
 
+  const getTextStyle = useMemo(() => {
+    if (_.isEmpty(value)) {
+      return { fontStyle: "italic" };
+    }
+  }, [value]);
+
   return toggle ? (
-    <p className="pf-u-text-truncate" onClick={onClick}>
-      {value}
+    <p className="pf-u-text-truncate" style={getTextStyle} onClick={onClick}>
+      {value || i18n.enterText}
     </p>
   ) : (
     <input

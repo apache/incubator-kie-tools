@@ -21,7 +21,6 @@
   display: -moz-box;
   display: -ms-flexbox;
   display: -webkit-flex;
-  min-width: 15em;
   min-height: 4em;
   overflow: hidden;
   transition: background-color 0.1s ease;
@@ -34,6 +33,7 @@
 .expression-container .logic-type-selector.logic-type-not-present {
   cursor: pointer;
   justify-content: center;
+  min-width: 15em;
 }
 
 .expression-container .logic-type-selector.logic-type-selected {

@@ -27,7 +27,7 @@ describe("DecisionTableExpression tests", () => {
   test("should show a table with three columns: input, output and annotation, and one row", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        wrapComponentInContext(<DecisionTableExpression logicType={LogicType.DecisionTable} />)
+        wrapComponentInContext(<DecisionTableExpression uid="decision-node-id" logicType={LogicType.DecisionTable} />)
       ).wrapper
     );
 
@@ -51,7 +51,7 @@ describe("DecisionTableExpression tests", () => {
   test("should show as default hit policy, unique", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        wrapComponentInContext(<DecisionTableExpression logicType={LogicType.DecisionTable} />)
+        wrapComponentInContext(<DecisionTableExpression uid="decision-node-id" logicType={LogicType.DecisionTable} />)
       ).wrapper
     );
 
@@ -62,7 +62,11 @@ describe("DecisionTableExpression tests", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         wrapComponentInContext(
-          <DecisionTableExpression logicType={LogicType.DecisionTable} hitPolicy={HitPolicy.First} />
+          <DecisionTableExpression
+            uid="decision-node-id"
+            logicType={LogicType.DecisionTable}
+            hitPolicy={HitPolicy.First}
+          />
         )
       ).wrapper
     );
@@ -73,7 +77,7 @@ describe("DecisionTableExpression tests", () => {
   test("should show as default a row, with empty values, except for input column, whose value is dash symbol", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        wrapComponentInContext(<DecisionTableExpression logicType={LogicType.DecisionTable} />)
+        wrapComponentInContext(<DecisionTableExpression uid="decision-node-id" logicType={LogicType.DecisionTable} />)
       ).wrapper
     );
 
@@ -93,18 +97,21 @@ describe("DecisionTableExpression tests", () => {
     const inputName = "input name";
     const outputName = "output name";
     const annotationName = "annotation name";
-    const input = [{ name: inputName, dataType: DataType.Undefined }];
-    const output = [{ name: outputName, dataType: DataType.Undefined }];
-    const annotations = [{ name: annotationName }];
+    const input = [{ id: "input", name: inputName, dataType: DataType.Undefined }];
+    const output = [{ id: "output", name: outputName, dataType: DataType.Undefined }];
+    const annotations = [{ id: "annotation", name: annotationName }];
     const inputEntry = "input entry";
     const outputEntry = "output entry";
     const annotation = "annotation";
-    const rules = [{ inputEntries: [inputEntry], outputEntries: [outputEntry], annotationEntries: [annotation] }];
+    const rules = [
+      { id: "rule-1", inputEntries: [inputEntry], outputEntries: [outputEntry], annotationEntries: [annotation] },
+    ];
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         wrapComponentInContext(
           <DecisionTableExpression
+            uid="decision-node-id"
             logicType={LogicType.DecisionTable}
             input={input}
             output={output}
@@ -141,7 +148,9 @@ describe("DecisionTableExpression tests", () => {
     mockBroadcastDefinition(mockedBroadcastDefinition);
     const { container, baseElement } = render(
       wrapComponentInContext(
-        usingTestingBoxedExpressionI18nContext(<DecisionTableExpression logicType={LogicType.DecisionTable} />).wrapper
+        usingTestingBoxedExpressionI18nContext(
+          <DecisionTableExpression uid="decision-node-id" logicType={LogicType.DecisionTable} />
+        ).wrapper
       )
     );
 
@@ -157,16 +166,16 @@ describe("DecisionTableExpression tests", () => {
     expect(mockedBroadcastDefinition).toHaveBeenLastCalledWith(
       expect.objectContaining({
         rules: [
-          {
+          expect.objectContaining({
             inputEntries: ["-"],
             outputEntries: [""],
             annotationEntries: [""],
-          },
-          {
+          }),
+          expect.objectContaining({
             inputEntries: ["-"],
             outputEntries: [""],
             annotationEntries: [""],
-          },
+          }),
         ],
       })
     );

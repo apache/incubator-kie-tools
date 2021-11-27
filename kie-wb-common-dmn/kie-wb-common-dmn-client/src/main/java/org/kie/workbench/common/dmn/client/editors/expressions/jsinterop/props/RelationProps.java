@@ -23,9 +23,9 @@ import static org.kie.workbench.common.dmn.client.editors.expressions.types.Expr
 @JsType
 public class RelationProps extends ExpressionProps{
     public final Column[] columns;
-    public final String[][] rows;
+    public final Row[] rows;
 
-    public RelationProps(final String name, final String dataType, final Column[] columns, final String[][] rows) {
+    public RelationProps(final String name, final String dataType, final Column[] columns, final Row[] rows) {
         super(name, dataType, RELATION.getText());
         this.columns = columns;
         this.rows = rows;

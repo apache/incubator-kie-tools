@@ -25,6 +25,7 @@ import {
   LiteralExpressionProps,
   RelationProps,
 } from "./ExpressionProps";
+import { v4 as uuid } from "uuid";
 
 export {};
 
@@ -71,4 +72,11 @@ export const executeIfExpressionDefinitionChanged = (
   if (!_.isEqualWith(prevDef, updatedDef, customizer)) {
     functionToExecute();
   }
+};
+
+/**
+ * Generates an UUID with a format similar to _6EFDBCB4-F4AF-4E9A-9A66-2A9F24185674
+ */
+export const generateUuid = () => {
+  return `_${uuid()}`.toLocaleUpperCase();
 };

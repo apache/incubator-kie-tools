@@ -44,6 +44,7 @@ import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClauseText;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QNameHolder;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
@@ -65,6 +66,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.L
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.LiteralProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PmmlFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Row;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 import static org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocument.VARIABLE_DOCUMENT;
@@ -207,12 +209,13 @@ public class ExpressionModelFiller {
 
     private static Collection<List> rowsConvertForRelationExpression(final RelationProps relationProps, final Relation relationExpression) {
         return Arrays
-                .stream(Optional.ofNullable(relationProps.rows).orElse(new String[0][]))
+                .stream(Optional.ofNullable(relationProps.rows).orElse(new Row[0]))
                 .map(row -> {
                     final List list = new List();
+                    list.setId(new Id(row.id));
                     list.getExpression().addAll(
                             IntStream.range(0, Optional.ofNullable(relationProps.columns).orElse(new Column[0]).length).mapToObj(columnIndex -> {
-                                final String cell = row.length <= columnIndex ? "" : row[columnIndex];
+                                final String cell = row.cells.length <= columnIndex ? "" : row.cells[columnIndex];
                                 final LiteralExpression wrappedExpression = new LiteralExpression();
                                 wrappedExpression.setText(new Text(cell));
                                 return HasExpression.wrap(relationExpression, wrappedExpression);
@@ -228,6 +231,7 @@ public class ExpressionModelFiller {
                 .stream(Optional.ofNullable(relationProps.columns).orElse(new Column[0]))
                 .map(column -> {
                     final InformationItem informationItem = new InformationItem();
+                    informationItem.setId(new Id(column.id));
                     informationItem.setName(new Name(column.name));
                     informationItem.setTypeRef(BuiltInTypeUtils
                                                        .findBuiltInTypeByName(column.dataType)
@@ -319,6 +323,7 @@ public class ExpressionModelFiller {
                 .stream(Optional.ofNullable(decisionTableProps.rules).orElse(new DecisionTableRule[0]))
                 .map(rule -> {
                     final DecisionRule decisionRule = new DecisionRule();
+                    decisionRule.setId(new Id(rule.id));
                     decisionRule.getAnnotationEntry().addAll(Arrays.stream(rule.annotationEntries).map(annotationEntry -> {
                         final RuleAnnotationClauseText ruleAnnotationClauseText = new RuleAnnotationClauseText();
                         ruleAnnotationClauseText.setText(new Text(annotationEntry));
@@ -344,6 +349,7 @@ public class ExpressionModelFiller {
                 .stream(Optional.ofNullable(decisionTableProps.input).orElse(new Clause[0]))
                 .map(input -> {
                     final InputClause inputClause = new InputClause();
+                    inputClause.setId(new Id(input.id));
                     inputClause.getInputExpression().setText(new Text(input.name));
                     inputClause.getInputExpression().setTypeRefHolder(
                             new QNameHolder(
@@ -362,6 +368,7 @@ public class ExpressionModelFiller {
                 .stream(Optional.ofNullable(decisionTableProps.output).orElse(new Clause[0]))
                 .map(output -> {
                     final OutputClause outputClause = new OutputClause();
+                    outputClause.setId(new Id(output.id));
                     outputClause.setName(output.name);
                     outputClause.setTypeRef(BuiltInTypeUtils
                                                     .findBuiltInTypeByName(output.dataType)
@@ -377,6 +384,7 @@ public class ExpressionModelFiller {
                 .stream(Optional.ofNullable(decisionTableProps.annotations).orElse(new Annotation[0]))
                 .map(annotation -> {
                     final RuleAnnotationClause ruleAnnotationClause = new RuleAnnotationClause();
+                    ruleAnnotationClause.setId(new Id(annotation.id));
                     ruleAnnotationClause.setName(new Name(annotation.name));
                     return ruleAnnotationClause;
                 })

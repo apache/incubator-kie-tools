@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { DataType, TableHandlerConfiguration, TableOperation } from "../../api";
+import { DataType, generateUuid, TableHandlerConfiguration, TableOperation } from "../../api";
 import * as _ from "lodash";
 import { Column, ColumnInstance, DataRecord } from "react-table";
 import { Popover } from "@patternfly/react-core";
@@ -122,7 +122,7 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
   const generateNextAvailableColumnName: (lastIndex: number, groupType?: string) => string = useCallback(
     (lastIndex, groupType) => {
       const candidateName = `${getColumnPrefix(groupType)}${lastIndex}`;
-      const columnWithCandidateName = _.find(getColumnsAtLastLevel(tableColumns), { accessor: candidateName });
+      const columnWithCandidateName = _.find(getColumnsAtLastLevel(tableColumns), { label: candidateName });
       return columnWithCandidateName ? generateNextAvailableColumnName(lastIndex + 1, groupType) : candidateName;
     },
     [getColumnPrefix, tableColumns]
@@ -141,7 +141,7 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
     const nextAvailableColumnName = generateNextAvailableColumnName(columnsLength, groupType);
 
     return {
-      accessor: nextAvailableColumnName,
+      accessor: generateUuid(),
       label: nextAvailableColumnName,
       ...(selectedColumn.dataType ? { dataType: DataType.Undefined } : {}),
       inlineEditable: selectedColumn.inlineEditable,
@@ -215,6 +215,14 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
     [appendOnColumnChildren, generateNextAvailableColumn, selectedColumn, tableColumns, updateColumnsThenRows]
   );
 
+  const generateRow = useCallback(() => {
+    const row = onRowAdding();
+    if (_.isEmpty(row.id)) {
+      row.id = generateUuid();
+    }
+    return row;
+  }, [onRowAdding]);
+
   const handlingOperation = useCallback(
     (tableOperation: TableOperation) => {
       switch (tableOperation) {
@@ -229,14 +237,14 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
           break;
         case TableOperation.RowInsertAbove:
           onRowsUpdate(
-            insertBefore(tableRows.current, selectedRowIndex, onRowAdding()),
+            insertBefore(tableRows.current, selectedRowIndex, generateRow()),
             TableOperation.RowInsertAbove,
             selectedRowIndex
           );
           break;
         case TableOperation.RowInsertBelow:
           onRowsUpdate(
-            insertAfter(tableRows.current, selectedRowIndex, onRowAdding()),
+            insertAfter(tableRows.current, selectedRowIndex, generateRow()),
             TableOperation.RowInsertBelow,
             selectedRowIndex
           );
@@ -257,7 +265,7 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
       setShowTableHandler(false);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [updateTargetColumns, onRowAdding, onRowsUpdate, selectedRowIndex, setShowTableHandler, tableRows]
+    [updateTargetColumns, generateRow, onRowsUpdate, selectedRowIndex, setShowTableHandler, tableRows]
   );
 
   const getHandlerConfiguration = useMemo(() => {

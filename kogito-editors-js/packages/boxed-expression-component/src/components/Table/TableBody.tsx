@@ -84,7 +84,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
       return (
         <Td
           {...tdProp}
-          key={`${getColumnKey(cell.column)}-${cellIndex}`}
+          key={`${rowIndex}-${getColumnKey(cell.column)}-${cellIndex}`}
           data-ouia-component-id={"expression-column-" + cellIndex}
           className={`${cellType}`}
         >
@@ -101,7 +101,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
       const rowProps = { ...row.getRowProps(), style: {} };
       const RowDelegate = (row.original as any).rowDelegate;
       return (
-        <React.Fragment key={`${getRowKey(row)}-${rowIndex}`}>
+        <React.Fragment key={`${getRowKey(row)}`}>
           {RowDelegate ? (
             <RowDelegate>
               <Tr className="table-row" {...rowProps} ouiaId={"expression-row-" + rowIndex}>

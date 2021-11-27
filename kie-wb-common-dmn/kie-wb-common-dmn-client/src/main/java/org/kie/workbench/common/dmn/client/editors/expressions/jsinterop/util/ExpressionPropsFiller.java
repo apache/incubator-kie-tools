@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Annotation;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Clause;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Column;
@@ -50,6 +51,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.L
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.LiteralProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PmmlFunctionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.Row;
 
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.UNDEFINED;
 
@@ -116,22 +118,24 @@ public class ExpressionPropsFiller {
                 .mapToObj(index -> {
                     final InformationItem informationItem = relationExpression.getColumn().get(index);
                     final Double columnWidth = relationExpression.getComponentWidths().get(index + 1);
-                    return new Column(informationItem.getName().getValue(), informationItem.getTypeRef().getLocalPart(), columnWidth);
+                    return new Column(informationItem.getId().getValue(), informationItem.getName().getValue(), informationItem.getTypeRef().getLocalPart(), columnWidth);
                 })
                 .toArray(Column[]::new);
     }
 
-    private static String[][] rowsConvertForRelationProps(final Relation relationExpression) {
+    private static Row[] rowsConvertForRelationProps(final Relation relationExpression) {
         return relationExpression
                 .getRow()
                 .stream()
-                .map(list -> list
-                        .getExpression()
-                        .stream()
-                        .map(wrappedLiteralExpression -> ((LiteralExpression) wrappedLiteralExpression.getExpression()).getText().getValue())
-                        .toArray(String[]::new)
+                .map(list -> {
+                         final String[] cells = list
+                                 .getExpression()
+                                 .stream()
+                                 .map(wrappedLiteralExpression -> ((LiteralExpression) wrappedLiteralExpression.getExpression()).getText().getValue()).toArray(String[]::new);
+                         return new Row(list.getId().getValue(), cells);
+                     }
                 )
-                .toArray(String[][]::new);
+                .toArray(Row[]::new);
     }
 
     private static ExpressionProps[] itemsConvertForListProps(final List listExpression) {
@@ -201,6 +205,7 @@ public class ExpressionPropsFiller {
                 .getRule()
                 .stream()
                 .map(rule -> new DecisionTableRule(
+                        rule.getId().getValue(),
                         rule.getInputEntry().stream().map(inputEntry -> inputEntry.getText().getValue()).toArray(String[]::new),
                         rule.getOutputEntry().stream().map(outputEntry -> outputEntry.getText().getValue()).toArray(String[]::new),
                         rule.getAnnotationEntry().stream().map(annotationClauseText -> annotationClauseText.getText().getValue()).toArray(String[]::new)))
@@ -211,10 +216,11 @@ public class ExpressionPropsFiller {
         return IntStream.range(0, decisionTableExpression.getInput().size())
                 .mapToObj(index -> {
                     final InputClause inputClause = decisionTableExpression.getInput().get(index);
+                    final String id = inputClause.getId().getValue();
                     final String name = inputClause.getInputExpression().getText().getValue();
                     final String dataType = inputClause.getInputExpression().getTypeRefHolder().getValue().getLocalPart();
                     final Double width = decisionTableExpression.getComponentWidths().get(index + 1);
-                    return new Clause(name, dataType, width);
+                    return new Clause(id, name, dataType, width);
                 })
                 .toArray(Clause[]::new);
     }
@@ -223,14 +229,15 @@ public class ExpressionPropsFiller {
         return IntStream.range(0, decisionTableExpression.getOutput().size())
                 .mapToObj(index -> {
                     final OutputClause outputClause = decisionTableExpression.getOutput().get(index);
+                    final String id = outputClause.getId().getValue();
                     final String name = outputClause.getName();
                     final String dataType = outputClause.getTypeRef().getLocalPart();
                     final Double width = decisionTableExpression.getComponentWidths().get(decisionTableExpression.getInput().size() + index + 1);
                     // When output clause is empty, then we should use expression name and dataType for it
                     if (name == null) {
-                        return new Clause(expressionName, expressionDataType, width);
+                        return new Clause(id, expressionName, expressionDataType, width);
                     }
-                    return new Clause(name, dataType, width);
+                    return new Clause(id, name, dataType, width);
                 })
                 .toArray(Clause[]::new);
     }
@@ -241,7 +248,9 @@ public class ExpressionPropsFiller {
                     final RuleAnnotationClause ruleAnnotationClause = decisionTableExpression.getAnnotations().get(index);
                     final Double width = decisionTableExpression.getComponentWidths()
                             .get(decisionTableExpression.getInput().size() + decisionTableExpression.getOutput().size() + index + 1);
-                    return new Annotation(ruleAnnotationClause.getName().getValue(), width);
+                    final String annotationId = Optional.ofNullable(ruleAnnotationClause.getId()).orElse(new Id()).getValue();
+                    final String annotationName = ruleAnnotationClause.getName().getValue();
+                    return new Annotation(annotationId, annotationName, width);
                 })
                 .toArray(Annotation[]::new);
     }

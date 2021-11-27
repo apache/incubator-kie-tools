@@ -20,10 +20,12 @@ import jsinterop.annotations.JsType;
 
 @JsType
 public class Annotation {
+    public final String id;
     public final String name;
     public final Double width;
 
-    public Annotation(final String name, final Double width) {
+    public Annotation(final String id, final String name, final Double width) {
+        this.id = id;
         this.name = name;
         this.width = width;
     }

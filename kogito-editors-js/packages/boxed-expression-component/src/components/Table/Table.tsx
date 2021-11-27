@@ -29,7 +29,7 @@ import {
 } from "react-table";
 import { TableComposable } from "@patternfly/react-table";
 import { v4 as uuid } from "uuid";
-import { TableHeaderVisibility, TableOperation, TableProps } from "../../api";
+import { generateUuid, TableHeaderVisibility, TableOperation, TableProps } from "../../api";
 import { BoxedExpressionGlobalContext } from "../../context";
 import { PASTE_OPERATION, pasteOnTable } from "./common";
 import { EditableCell } from "./EditableCell";
@@ -136,7 +136,16 @@ export const Table: React.FunctionComponent<TableProps> = ({
     [generateNumberOfRowsSubColumnRecursively, headerLevels]
   );
 
-  const tableRows = useRef<DataRecord[]>(rows);
+  const evaluateRows = useCallback((rows: DataRecord[]) => {
+    return _.map(rows, (row) => {
+      if (_.isEmpty(row.id)) {
+        row.id = generateUuid();
+      }
+      return row;
+    });
+  }, []);
+
+  const tableRows = useRef<DataRecord[]>(evaluateRows(rows));
   const [showTableHandler, setShowTableHandler] = useState(false);
   const [tableHandlerTarget, setTableHandlerTarget] = useState(document.body);
   const [tableHandlerAllowedOperations, setTableHandlerAllowedOperations] = useState(
@@ -340,7 +349,14 @@ export const Table: React.FunctionComponent<TableProps> = ({
 
   const onGetRowKey = useCallback(
     (row: Row) => {
-      return getRowKey ? getRowKey(row) : row.id;
+      if (getRowKey) {
+        return getRowKey(row);
+      } else {
+        if (row.original) {
+          return (row.original as Row).id;
+        }
+        return row.id;
+      }
     },
     [getRowKey]
   );
@@ -358,8 +374,6 @@ export const Table: React.FunctionComponent<TableProps> = ({
           editColumnLabel={editColumnLabel}
           headerVisibility={headerVisibility}
           skipLastHeaderGroup={skipLastHeaderGroup}
-          tableRows={rows}
-          onRowsUpdate={onRowsUpdateCallback}
           tableColumns={tableColumns}
           getColumnKey={onGetColumnKey}
           onColumnsUpdate={onColumnsUpdateCallback}

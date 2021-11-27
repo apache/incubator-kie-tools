@@ -36,6 +36,7 @@ import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClauseText;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
@@ -101,12 +102,14 @@ public class ExpressionPropsFillerTest {
     @Test
     public void testFillRelationProps() {
         final Relation relationExpression = new Relation();
+        final String firstColumnId = "First Column id";
         final String firstColumnName = "First Column";
         final QName firstColumnDataType = BuiltInType.BOOLEAN.asQName();
-        relationExpression.getColumn().add(new InformationItem(null, null, new Name(firstColumnName), firstColumnDataType));
+        relationExpression.getColumn().add(new InformationItem(new Id(firstColumnId), null, new Name(firstColumnName), firstColumnDataType));
+        final String secondColumnId = "Second Column id";
         final String secondColumnName = "Second Column";
         final QName secondColumnDataType = BuiltInType.NUMBER.asQName();
-        relationExpression.getColumn().add(new InformationItem(null, null, new Name(secondColumnName), secondColumnDataType));
+        relationExpression.getColumn().add(new InformationItem(new Id(secondColumnId), null, new Name(secondColumnName), secondColumnDataType));
         final String firstCellValue = "first cell value";
         final String secondCellValue = "second cell value";
         relationExpression.getRow().add(buildListWithTwoLiteralExpressions(firstCellValue, secondCellValue));
@@ -128,9 +131,9 @@ public class ExpressionPropsFillerTest {
         assertThat(((RelationProps) expressionProps).rows)
                 .isNotNull()
                 .hasSize(1);
-        assertThat(((RelationProps) expressionProps).rows[0]).hasSize(2);
-        assertThat(((RelationProps) expressionProps).rows[0][0]).isEqualTo(firstCellValue);
-        assertThat(((RelationProps) expressionProps).rows[0][1]).isEqualTo(secondCellValue);
+        assertThat(((RelationProps) expressionProps).rows[0].cells).hasSize(2);
+        assertThat(((RelationProps) expressionProps).rows[0].cells[0]).isEqualTo(firstCellValue);
+        assertThat(((RelationProps) expressionProps).rows[0].cells[1]).isEqualTo(secondCellValue);
     }
 
     @Test

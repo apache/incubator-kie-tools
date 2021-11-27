@@ -35,6 +35,7 @@ import {
 import { Button, Modal } from "@patternfly/react-core";
 import { CopyIcon, PenIcon } from "@patternfly/react-icons";
 import "./lib/components/BoxedExpressionEditor/base-no-reset-wrapped.css";
+import ReactJson from "react-json-view";
 
 export const App: React.FunctionComponent = () => {
   //This definition comes directly from the decision node
@@ -145,7 +146,9 @@ export const App: React.FunctionComponent = () => {
           />
         </div>
 
-        <pre>{JSON.stringify(expressionDefinition, null, 2)}</pre>
+        <pre>
+          <ReactJson src={expressionDefinition} name={false} />
+        </pre>
       </div>
 
       <Modal

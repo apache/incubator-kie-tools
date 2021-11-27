@@ -16,7 +16,7 @@
 
 import * as _ from "lodash";
 import * as React from "react";
-import { PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { PropsWithChildren, useCallback, useContext, useMemo, useRef } from "react";
 import { ColumnInstance, DataRecord } from "react-table";
 import {
   Annotation,
@@ -26,6 +26,7 @@ import {
   DecisionTableProps,
   DecisionTableRule,
   executeIfExpressionDefinitionChanged,
+  generateUuid,
   GroupOperations,
   HitPolicy,
   LogicType,
@@ -106,54 +107,60 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     return editColumnLabel;
   }, [i18n.editClause.input, i18n.editClause.output]);
 
-  const columns = useMemo(() => {
-    const inputColumns = (decisionTable.input ?? [{ name: "input-1", dataType: DataType.Undefined }])?.map(
-      (inputClause) =>
-        ({
-          label: inputClause.name,
-          accessor: inputClause.name,
-          dataType: inputClause.dataType,
-          width: inputClause.width,
-          groupType: DecisionTableColumnType.InputClause,
-          cssClasses: "decision-table--input",
-        } as ColumnInstance)
-    );
-    const outputColumns = (
+  const columns = useMemo<ColumnInstance[]>(() => {
+    const inputColumns = _.chain(decisionTable.input ?? [{ name: "input-1", dataType: DataType.Undefined }])
+      .map(
+        (inputClause: Clause) =>
+          ({
+            accessor: inputClause.id ?? generateUuid(),
+            label: inputClause.name,
+            dataType: inputClause.dataType,
+            width: inputClause.width,
+            groupType: DecisionTableColumnType.InputClause,
+            cssClasses: "decision-table--input",
+          } as ColumnInstance)
+      )
+      .value();
+    const outputColumns = _.chain(
       decisionTable.output ?? [{ name: DECISION_NODE_DEFAULT_NAME, dataType: DataType.Undefined }]
-    )?.map(
-      (outputClause) =>
-        ({
-          label: outputClause.name,
-          accessor: outputClause.name,
-          dataType: outputClause.dataType,
-          width: outputClause.width,
-          groupType: DecisionTableColumnType.OutputClause,
-          cssClasses: "decision-table--output",
-        } as ColumnInstance)
-    );
-    const annotationColumns = (decisionTable.annotations ?? [{ name: "annotation-1" }])?.map(
-      (annotation) =>
-        ({
-          label: annotation.name,
-          accessor: annotation.name,
-          width: annotation.width,
-          inlineEditable: true,
-          groupType: DecisionTableColumnType.Annotation,
-          cssClasses: "decision-table--annotation",
-        } as ColumnInstance)
-    );
+    )
+      .map(
+        (outputClause: Clause) =>
+          ({
+            accessor: outputClause.id ?? generateUuid(),
+            label: outputClause.name,
+            dataType: outputClause.dataType,
+            width: outputClause.width,
+            groupType: DecisionTableColumnType.OutputClause,
+            cssClasses: "decision-table--output",
+          } as ColumnInstance)
+      )
+      .value();
+    const annotationColumns = _.chain(decisionTable.annotations ?? [{ name: "annotation-1" }])
+      .map(
+        (annotation: Annotation) =>
+          ({
+            accessor: annotation.id ?? generateUuid(),
+            label: annotation.name,
+            width: annotation.width,
+            inlineEditable: true,
+            groupType: DecisionTableColumnType.Annotation,
+            cssClasses: "decision-table--annotation",
+          } as ColumnInstance)
+      )
+      .value();
 
     const inputSection = {
       groupType: DecisionTableColumnType.InputClause,
-      label: "Input",
       accessor: "Input",
+      label: "Input",
       cssClasses: "decision-table--input",
       columns: inputColumns,
     };
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
+      accessor: decisionTable.uid,
       label: decisionTable.name ?? DECISION_NODE_DEFAULT_NAME,
-      accessor: decisionTable.name ?? DECISION_NODE_DEFAULT_NAME,
       dataType: decisionTable.dataType ?? DataType.Undefined,
       cssClasses: "decision-table--output",
       columns: outputColumns,
@@ -161,15 +168,16 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     };
     const annotationSection = {
       groupType: DecisionTableColumnType.Annotation,
-      label: "Annotations",
       accessor: "Annotations",
+      label: "Annotations",
       cssClasses: "decision-table--annotation",
       columns: annotationColumns,
       inlineEditable: true,
     };
 
-    return [inputSection, outputSection, annotationSection];
+    return [inputSection, outputSection, annotationSection] as ColumnInstance[];
   }, [
+    decisionTable.uid,
     decisionTable.annotations,
     decisionTable.dataType,
     decisionTable.input,
@@ -181,14 +189,23 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     () =>
       (
         decisionTable.rules ?? [
-          { inputEntries: [DASH_SYMBOL], outputEntries: [EMPTY_SYMBOL], annotationEntries: [EMPTY_SYMBOL] },
+          {
+            id: generateUuid(),
+            inputEntries: [DASH_SYMBOL],
+            outputEntries: [EMPTY_SYMBOL],
+            annotationEntries: [EMPTY_SYMBOL],
+          },
         ]
       ).map((rule) => {
         const rowArray = [...rule.inputEntries, ...rule.outputEntries, ...rule.annotationEntries];
-        return getColumnsAtLastLevel(columns).reduce((tableRow: DataRecord, column, columnIndex: number) => {
-          tableRow[column.accessor] = rowArray[columnIndex] || EMPTY_SYMBOL;
-          return tableRow;
-        }, {});
+        const tableRow = _.chain(getColumnsAtLastLevel(columns))
+          .reduce((tableRow: DataRecord, column, columnIndex: number) => {
+            tableRow[column.accessor] = rowArray[columnIndex] || EMPTY_SYMBOL;
+            return tableRow;
+          }, {})
+          .value();
+        tableRow.id = rule.id;
+        return tableRow;
       }),
     [columns, decisionTable.rules]
   );
@@ -196,25 +213,43 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   const spreadDecisionTableExpressionDefinition = useCallback(
     (updatedDecisionTable?: Partial<DecisionTableProps>, updatedColumns?: any, updatedRows?: Array<object>) => {
       const groupedColumns = _.groupBy(getColumnsAtLastLevel(updatedColumns ?? columns), (column) => column.groupType);
-      const input: Clause[] = _.map(groupedColumns[DecisionTableColumnType.InputClause], (inputClause) => ({
-        name: inputClause.accessor,
-        dataType: inputClause.dataType,
-        width: inputClause.width,
-      }));
-      const output: Clause[] = _.map(groupedColumns[DecisionTableColumnType.OutputClause], (outputClause) => ({
-        name: outputClause.accessor,
-        dataType: outputClause.dataType,
-        width: outputClause.width,
-      }));
-      const annotations: Annotation[] = _.map(groupedColumns[DecisionTableColumnType.Annotation], (annotation) => ({
-        name: annotation.accessor,
-        width: annotation.width,
-      }));
-      const rules: DecisionTableRule[] = _.map(updatedRows ?? rows, (row: DataRecord) => ({
-        inputEntries: _.map(input, (inputClause) => row[inputClause.name] as string),
-        outputEntries: _.map(output, (outputClause) => row[outputClause.name] as string),
-        annotationEntries: _.map(annotations, (annotation) => row[annotation.name] as string),
-      }));
+      const input: Clause[] = _.chain(groupedColumns[DecisionTableColumnType.InputClause])
+        .map((inputClause) => ({
+          id: inputClause.accessor,
+          name: inputClause.label as string,
+          dataType: inputClause.dataType,
+          width: inputClause.width,
+        }))
+        .value();
+      const output: Clause[] = _.chain(groupedColumns[DecisionTableColumnType.OutputClause])
+        .map((outputClause) => ({
+          id: outputClause.accessor,
+          name: outputClause.label as string,
+          dataType: outputClause.dataType,
+          width: outputClause.width,
+        }))
+        .value();
+      const annotations: Annotation[] = _.chain(groupedColumns[DecisionTableColumnType.Annotation])
+        .map((annotation) => ({
+          id: annotation.accessor,
+          name: annotation.label as string,
+          width: annotation.width,
+        }))
+        .value();
+      const rules: DecisionTableRule[] = _.chain(updatedRows ?? rows)
+        .map((row: DataRecord) => ({
+          id: row.id as string,
+          inputEntries: _.chain(input)
+            .map((inputClause) => row[inputClause.id] as string)
+            .value(),
+          outputEntries: _.chain(output)
+            .map((outputClause) => row[outputClause.id] as string)
+            .value(),
+          annotationEntries: _.chain(annotations)
+            .map((annotation) => row[annotation.id] as string)
+            .value(),
+        }))
+        .value();
 
       const updatedDefinition: Partial<DecisionTableProps> = {
         uid: decisionTable.uid,
@@ -299,8 +334,8 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
 
   const fillMissingCellValues = useCallback(
     (updatedRows: DataRecord[]) =>
-      updatedRows.map((row) =>
-        getColumnsAtLastLevel(columns).reduce((filledRow: DataRecord, column: ColumnInstance) => {
+      updatedRows.map((row) => {
+        const updatedRow = getColumnsAtLastLevel(columns).reduce((filledRow: DataRecord, column: ColumnInstance) => {
           if (_.isNil(row[column.accessor])) {
             filledRow[column.accessor] =
               column.groupType === DecisionTableColumnType.InputClause ? DASH_SYMBOL : EMPTY_SYMBOL;
@@ -308,8 +343,10 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
             filledRow[column.accessor] = row[column.accessor];
           }
           return filledRow;
-        }, {})
-      ),
+        }, {});
+        updatedRow.id = row.id;
+        return updatedRow;
+      }),
     [columns]
   );
 

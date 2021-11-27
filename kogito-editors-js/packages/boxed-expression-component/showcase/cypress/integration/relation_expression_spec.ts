@@ -21,6 +21,39 @@ describe("Relation Expression Tests", () => {
     cy.visit("/");
   });
 
+  const relationColumns = (size: number) => {
+    const columns = new Array(size);
+    for (let index = 0; index < size; index++) {
+      columns[index] = { id: `column-${index}`, name: `column-${index}`, dataType: "<Undefined>", width: 150 };
+    }
+
+    return columns;
+  };
+
+  const relationRows = (columnSize: number, rowSize: number) => {
+    const rows = new Array(rowSize);
+    for (let rowIndex = 0; rowIndex < rowSize; rowIndex++) {
+      const row = { id: `row-${rowIndex}`, cells: new Array(columnSize) };
+      for (let columnIndex = 0; columnIndex < columnSize; columnIndex++) {
+        row.cells[columnIndex] = `row ${rowIndex} column ${columnIndex}`;
+      }
+      rows[rowIndex] = row;
+    }
+    return rows;
+  };
+
+  const relation = (columnSize: number, rowSize: number) => {
+    return {
+      name: "Expression Name",
+      dataType: "<Undefined>",
+      uid: "id1",
+      isHeadless: false,
+      logicType: "Relation",
+      columns: relationColumns(columnSize),
+      rows: relationRows(columnSize, rowSize),
+    };
+  };
+
   it("Define 50x50 Relation expression", () => {
     // Entry point for each new expression
     cy.ouiaId("expression-container").click();
@@ -31,35 +64,41 @@ describe("Relation Expression Tests", () => {
     // Define 50x50 Relation
     cy.ouiaId("edit-expression-json").click();
 
-    const relationColumns = new Array(50);
-    for (let index = 0; index < 50; index++) {
-      relationColumns[index] = { name: `column-${index}`, dataType: "<Undefined>", width: 150 };
-    }
-
-    const relationRows = new Array(50);
-    for (let rowIndex = 0; rowIndex < 50; rowIndex++) {
-      const row = new Array(50);
-      for (let columnIndex = 0; columnIndex < 50; columnIndex++) {
-        row[columnIndex] = `row ${rowIndex} column ${columnIndex}`;
-      }
-      relationRows[rowIndex] = row;
-    }
-
-    const bigRelation = {
-      name: "Expression Name",
-      dataType: "<Undefined>",
-      uid: "id1",
-      isHeadless: false,
-      logicType: "Relation",
-      columns: relationColumns,
-      rows: relationRows,
-    };
-
     cy.ouiaId("typed-expression-json").clear();
-    cy.ouiaId("typed-expression-json").invoke("val", JSON.stringify(bigRelation)).type(" ");
+    cy.ouiaId("typed-expression-json")
+      .invoke("val", JSON.stringify(relation(50, 50)))
+      .type(" ");
 
     cy.ouiaId("confirm-expression-json").click();
 
     cy.ouiaId("expression-grid-table").should("contain.text", "row 49 column 49");
+  });
+
+  it("Insert bellow", () => {
+    // Entry point for each new expression
+    cy.ouiaId("expression-container").click();
+
+    // Define new expression as Relation
+    cy.ouiaId("expression-popover-menu").contains("Relation").click({ force: true });
+
+    // Define 50x50 Relation
+    cy.ouiaId("edit-expression-json").click();
+
+    cy.ouiaId("typed-expression-json").clear();
+    cy.ouiaId("typed-expression-json")
+      .invoke("val", JSON.stringify(relation(3, 3)))
+      .type(" ");
+
+    cy.ouiaId("confirm-expression-json").click();
+
+    cy.ouiaId("expression-grid-table").contains("row 1 column 1").rightclick();
+    cy.ouiaId("expression-table-handler-menu").contains("Insert below").click({ force: true });
+
+    cy.ouiaId("expression-row-2").within(($row) => {
+      cy.ouiaId("expression-column-0").should("have.text", "3");
+      cy.ouiaId("expression-column-1").should("have.text", "");
+      cy.ouiaId("expression-column-2").should("have.text", "");
+      cy.ouiaId("expression-column-3").should("have.text", "");
+    });
   });
 });
