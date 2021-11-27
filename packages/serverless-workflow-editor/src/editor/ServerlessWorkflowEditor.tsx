@@ -115,7 +115,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
       automaticLayout: true,
     });
 
-    monacoInstance.getModel()?.onDidChangeContent((event) => {
+    monacoInstance.getModel()?.onDidChangeContent((event: monaco.editor.IModelContentChangedEvent) => {
       setContent(monacoInstance.getValue());
     });
 

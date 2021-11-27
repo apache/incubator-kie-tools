@@ -50,6 +50,7 @@ module.exports = async (env, argv) => {
       "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
       "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
       "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
+      "serverless-workflow-envelope": "./src/envelope/ServerlessWorkflowEditorEnvelopeApp.ts",
       "broadcast-channel-single-tab-polyfill": "./src/polyfill/BroadcastChannelSingleTab.ts",
     },
     plugins: [
@@ -99,6 +100,7 @@ module.exports = async (env, argv) => {
             to: "./gwt-editors/bpmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
+          { from: "./static/envelope/serverless-workflow-envelope.html", to: "./serverless-workflow-envelope.html" },
           { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
           { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
           { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
