@@ -38,7 +38,7 @@ enum DecisionTableColumnType {
 const DASH_SYMBOL = "-";
 const EMPTY_SYMBOL = "";
 
-export interface DmnRunnerTabularProps extends ExpressionProps {
+export interface DmnRunnerTableProps extends ExpressionProps {
   /** Input columns definition */
   input?: DmnRunnerClause[];
   /** Output columns definition */
@@ -50,7 +50,7 @@ export interface DmnRunnerTabularProps extends ExpressionProps {
   onColumnsUpdate: (columns: ColumnInstance[]) => void;
 }
 
-export function DmnRunnerTabular(props: DmnRunnerTabularProps) {
+export function DmnRunnerTable(props: DmnRunnerTableProps) {
   const { i18n } = useDmnAutoTableI18n();
 
   const getColumnPrefix = useCallback((groupType?: string) => {
@@ -299,7 +299,7 @@ export function DmnRunnerTabular(props: DmnRunnerTabularProps) {
     <div className="expression-container">
       <div className="expression-name-and-logic-type" />
       <div className="expression-container-box" data-ouia-component-id="expression-container">
-        <div className={`decision-table-expression ${props.uid}`}>
+        <div className={`dmn-runner-table ${props.uid}`}>
           <div className={`logic-type-selector logic-type-selected`}>
             <Table
               editableHeader={false}

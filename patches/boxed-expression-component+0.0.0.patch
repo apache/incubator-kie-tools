@@ -5167,23 +5167,6 @@ index 9d31ad8..c0bef9c 100644
  import * as React from "react";
  import { useCallback, useEffect, useMemo, useState } from "react";
  import { ExpressionProps, PMMLParams } from "../../api";
-diff --git a/node_modules/boxed-expression-component/src/components/DecisionTableExpression/DecisionTableExpression.css b/node_modules/boxed-expression-component/src/components/DecisionTableExpression/DecisionTableExpression.css
-index ca97d8f..903b055 100644
---- a/node_modules/boxed-expression-component/src/components/DecisionTableExpression/DecisionTableExpression.css
-+++ b/node_modules/boxed-expression-component/src/components/DecisionTableExpression/DecisionTableExpression.css
-@@ -68,12 +68,6 @@
-   z-index: 1;
- }
- 
--.expression-container .decision-table-expression table tr th.colspan-header.input .header-cell,
--.expression-container .decision-table-expression table tr th.colspan-header.annotation .header-cell,
--.expression-container .decision-table-expression table thead th.colspan-header::after {
--  display: none;
--}
--
- .expression-container .decision-table-expression table thead th.output {
-   background-color: #bee1f4;
- }
 diff --git a/node_modules/boxed-expression-component/src/components/InvocationExpression/InvocationExpression.tsx b/node_modules/boxed-expression-component/src/components/InvocationExpression/InvocationExpression.tsx
 index 52b3796..6ac385f 100644
 --- a/node_modules/boxed-expression-component/src/components/InvocationExpression/InvocationExpression.tsx

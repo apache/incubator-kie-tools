@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./DmnRunnerTabular";
+export * from "./DmnRunnerTable";
 export * from "./DmnRunnerTableTypes";

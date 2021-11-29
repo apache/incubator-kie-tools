@@ -23,7 +23,7 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { DmnGrid } from "./DmnGrid";
-import { DmnRunnerRule, DmnRunnerTabular } from "../boxed";
+import { DmnRunnerRule, DmnRunnerTable } from "../boxed";
 import { NotificationSeverity } from "@kie-tooling-core/notifications/dist/api";
 import { dmnAutoTableDictionaries, DmnAutoTableI18nContext, dmnAutoTableI18nDefaults } from "../i18n";
 import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
@@ -353,7 +353,7 @@ export function DmnAutoTable(props: Props) {
                               error={<OutputError />}
                             >
                               <BoxedExpressionProvider expressionDefinition={{ uid: outputUid }} isRunnerTable={true}>
-                                <DmnRunnerTabular
+                                <DmnRunnerTable
                                   name={"DMN Runner Output"}
                                   onRowNumberUpdated={onRowNumberUpdated}
                                   onColumnsUpdate={onColumnsUpdate}
@@ -411,7 +411,7 @@ export function DmnAutoTable(props: Props) {
                             </Tooltip>
                           ))}
                         </div>
-                        <DmnRunnerTabular
+                        <DmnRunnerTable
                           name={"DMN Runner Input"}
                           onRowNumberUpdated={onRowNumberUpdated}
                           onColumnsUpdate={onColumnsUpdate}
