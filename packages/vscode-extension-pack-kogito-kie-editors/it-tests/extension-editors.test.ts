@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { By, SideBarView, WebView } from "vscode-extension-tester";
+import { By, EditorView, InputBox, SideBarView, TextEditor, WebView } from "vscode-extension-tester";
 import * as path from "path";
 import { h5ComponentWithText } from "./helpers/CommonLocators";
 import { EditorTabs } from "./helpers/EditorTabs";
@@ -32,11 +32,13 @@ import {
 } from "./helpers/bpmn/BpmnLocators";
 import DecisionNavigatorHelper from "./helpers/dmn/DecisionNavigatorHelper";
 import { PropertiesPanelSection } from "./helpers/bpmn/PropertiesPanelHelper";
+import { TextEdit } from "vscode";
 
 describe("Editors are loading properly", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
   const DEMO_BPMN: string = "demo.bpmn";
   const DEMO_DMN: string = "demo.dmn";
+  const DEMO_DMN_SCESIM: string = "demo-dmn.scesim";
   const DEMO_SCESIM: string = "demo.scesim";
   const DEMO_PMML: string = "demo.pmml";
 
@@ -155,6 +157,34 @@ describe("Editors are loading properly", () => {
     await scesimEditorTester.openTestTools();
 
     await webview.switchBack();
+  });
+
+  /**
+   * As the opened sceism file is empty, a prompt to specify file under test should be shown
+   */
+  it("Opens demo-dmn.scesim file in SCESIM Editor", async function () {
+    this.timeout(20000);
+
+    webview = await testHelper.openFileFromSidebar(DEMO_DMN_SCESIM);
+    await testHelper.switchWebviewToFrame(webview);
+    const scesimEditorTester = new ScesimEditorTestHelper(webview);
+
+    await scesimEditorTester.specifyDmnOnLandingPage(DEMO_DMN);
+
+    await webview.switchBack();
+
+    // save file so we can check the plain text source
+    await testHelper.executeCommandFromPrompt("File: Save");
+
+    // check plain text source starts with <?xml?> prolog
+    await testHelper.executeCommandFromPrompt("View: Reopen Editor With...");
+    const input = await InputBox.create();
+    await input.selectQuickPick("Text Editor");
+
+    const xmlProlog = '<?xml version="1.0" encoding="UTF-8"?>';
+    const plainText = new TextEditor();
+    assert.equal(await plainText.getTextAtLine(1), xmlProlog, "First line should be an <?xml?> prolog");
+    assert.notEqual(await plainText.getTextAtLine(2), xmlProlog, "<?xml?> prolog should be there just once");
   });
 
   it("Opens demo.pmml file in PMML Editor", async function () {

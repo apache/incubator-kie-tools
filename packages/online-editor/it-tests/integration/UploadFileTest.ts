@@ -81,6 +81,7 @@ describe("Upload file test", () => {
 
     // check process content
     cy.readFile("downloads/testProcess.bpmn").should(($text) => {
+      expect($text).match(/<\?xml version="1.0" encoding="UTF-8"\?>/);
       expect($text).match(/<bpmn2:endEvent id="[A-Z0-9_-]*" name="End test node">/);
       expect($text).match(/<bpmn2:startEvent id="[A-Z0-9_-]*" name="Start test node">/);
     });
@@ -141,6 +142,7 @@ describe("Upload file test", () => {
 
     // check model content
     cy.readFile("downloads/testModel.dmn").should(($text) => {
+      expect($text).match(/<\?xml version="1.0" encoding="UTF-8"\?>/);
       expect($text).match(/<dmn:inputData id="[A-Z0-9_-]*" name="Test input data">/);
       expect($text).match(/<dmn:decision id="[A-Z0-9_-]*" name="Test decision node">/);
     });
