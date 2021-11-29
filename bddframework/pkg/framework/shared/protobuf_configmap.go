@@ -44,10 +44,10 @@ const (
 
 // ProtoBufConfigMapHandler ...
 type ProtoBufConfigMapHandler interface {
-	GetProtoBufConfigMapName(runtimeInstance api.KogitoRuntimeInterface) string
 	CreateProtoBufConfigMap(runtimeInstance api.KogitoRuntimeInterface) (*corev1.ConfigMap, error)
 	FetchProtoBufConfigMap(runtimeInstance api.KogitoRuntimeInterface) (*corev1.ConfigMap, error)
-	CreateProtoBufConfigMapReference(runtimeInstance api.KogitoRuntimeInterface) api.VolumeReferenceInterface
+	FetchAllProtoBufConfigMaps(namespace string) ([]corev1.ConfigMap, error)
+	CreateProtoBufConfigMapVolumeReference(protoBufConfigMapName string) api.VolumeReferenceInterface
 }
 
 type protobufConfigMapHandler struct {
@@ -82,6 +82,17 @@ func (p *protobufConfigMapHandler) FetchProtoBufConfigMap(runtimeInstance api.Ko
 	return nil, nil
 }
 
+func (p *protobufConfigMapHandler) FetchAllProtoBufConfigMaps(namespace string) ([]corev1.ConfigMap, error) {
+	labelSelector := map[string]string{
+		ConfigMapProtoBufEnabledLabelKey: "true",
+	}
+	configMapList, err := p.configMapHandler.FetchConfigMapsForLabel(namespace, labelSelector)
+	if err != nil {
+		return nil, err
+	}
+	return configMapList.Items, nil
+}
+
 func (p *protobufConfigMapHandler) CreateProtoBufConfigMap(runtimeInstance api.KogitoRuntimeInterface) (*corev1.ConfigMap, error) {
 	protoBufData, err := p.getProtobufData(runtimeInstance)
 	if err != nil {
@@ -90,7 +101,7 @@ func (p *protobufConfigMapHandler) CreateProtoBufConfigMap(runtimeInstance api.K
 	configMap := &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: runtimeInstance.GetNamespace(),
-			Name:      p.GetProtoBufConfigMapName(runtimeInstance),
+			Name:      p.getProtoBufConfigMapName(runtimeInstance),
 			Labels: map[string]string{
 				ConfigMapProtoBufEnabledLabelKey: "true",
 				framework.LabelAppKey:            runtimeInstance.GetName(),
@@ -101,10 +112,10 @@ func (p *protobufConfigMapHandler) CreateProtoBufConfigMap(runtimeInstance api.K
 	return configMap, nil
 }
 
-func (p *protobufConfigMapHandler) CreateProtoBufConfigMapReference(runtimeInstance api.KogitoRuntimeInterface) api.VolumeReferenceInterface {
+func (p *protobufConfigMapHandler) CreateProtoBufConfigMapVolumeReference(protoBufConfigMapName string) api.VolumeReferenceInterface {
 	return &kogitoservice.VolumeReference{
-		Name:      p.GetProtoBufConfigMapName(runtimeInstance),
-		MountPath: path.Join(DefaultProtobufMountPath, runtimeInstance.GetName()),
+		Name:      protoBufConfigMapName,
+		MountPath: path.Join(DefaultProtobufMountPath, protoBufConfigMapName),
 		FileMode:  &framework.ModeForProtoBufConfigMapVolume,
 	}
 }
@@ -158,7 +169,7 @@ func (p *protobufConfigMapHandler) getProtobufData(runtimeInstance api.KogitoRun
 }
 
 // GetProtoBufConfigMapName gets the name of the protobuf configMap based the given KogitoRuntime instance
-func (p *protobufConfigMapHandler) GetProtoBufConfigMapName(runtimeInstance api.KogitoRuntimeInterface) string {
+func (p *protobufConfigMapHandler) getProtoBufConfigMapName(runtimeInstance api.KogitoRuntimeInterface) string {
 	return fmt.Sprintf("%s-%s", runtimeInstance.GetName(), protobufConfigMapSuffix)
 }
 

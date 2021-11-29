@@ -59,15 +59,12 @@ func (d *dataIndexSupportingServiceResource) Reconcile() (err error) {
 	if err = urlHandler.InjectDataIndexURLIntoSupportingService(d.instance.GetNamespace(), api.MgmtConsole); err != nil {
 		return
 	}
+	protoBufHandler := shared.NewProtoBufHandler(d.Context, d.supportingServiceHandler)
 	definition := kogitoservice.ServiceDefinition{
-		DefaultImageName: DefaultDataIndexImageName,
-		KafkaTopics:      dataIndexKafkaTopics,
-		Request:          controller1.Request{NamespacedName: types.NamespacedName{Name: d.instance.GetName(), Namespace: d.instance.GetNamespace()}},
-	}
-
-	protoBufConfigMapReconciler := shared.NewProtoBufConfigMapReconciler(d.Context, d.instance, &definition, d.runtimeHandler)
-	if err = protoBufConfigMapReconciler.Reconcile(); err != nil {
-		return err
+		DefaultImageName:   DefaultDataIndexImageName,
+		KafkaTopics:        dataIndexKafkaTopics,
+		Request:            controller1.Request{NamespacedName: types.NamespacedName{Name: d.instance.GetName(), Namespace: d.instance.GetNamespace()}},
+		OnDeploymentCreate: protoBufHandler.MountAllProtoBufConfigMapOnDataIndexDeployment,
 	}
 	return kogitoservice.NewServiceDeployer(d.Context, definition, d.instance, d.infraHandler).Deploy()
 }

@@ -34,6 +34,7 @@ const (
 // ProtoBufHandler ...
 type ProtoBufHandler interface {
 	MountProtoBufConfigMapOnDataIndex(runtimeInstance api.KogitoRuntimeInterface) (err error)
+	MountAllProtoBufConfigMapOnDataIndexDeployment(deployment *appsv1.Deployment) (err error)
 }
 
 type protoBufHandler struct {
@@ -58,47 +59,24 @@ func NewProtoBufHandler(context operator.Context, supportingServiceHandler manag
 // MountProtoBufConfigMapOnDataIndex mounts protobuf configMaps from KogitoRuntime services into the given deployment instance of DataIndex
 func (p *protoBufHandler) MountProtoBufConfigMapOnDataIndex(runtimeInstance api.KogitoRuntimeInterface) (err error) {
 
-	// Load Data index service instance
-	dataIndexService, err := p.supportingServiceManager.FetchKogitoSupportingServiceForServiceType(runtimeInstance.GetNamespace(), api.DataIndex)
-	if err != nil {
-		return err
-	}
-
-	// check if data-index service not exists then return
-	if dataIndexService == nil {
-		p.Log.Debug("Data-index service not exists, returning")
-		return
-	}
-
 	// Fetch Protobuf configmap for provided runtime
 	protoBufConfigMap, err := p.protoBufConfigMapHandler.FetchProtoBufConfigMap(runtimeInstance)
 	if err != nil {
 		return err
 	}
 
-	// If protobuf configmap not exists then create new configmap
-	if protoBufConfigMap == nil {
-		protoBufConfigMap, err = p.protoBufConfigMapHandler.CreateProtoBufConfigMap(runtimeInstance)
-		if err != nil {
-			return err
-		}
-		// set data-index service as owner of that configmap
-		if err = framework.SetOwner(dataIndexService, p.Scheme, protoBufConfigMap); err != nil {
-			return err
-		}
-		if err = kubernetes.ResourceC(p.Client).Create(protoBufConfigMap); err != nil {
-			return err
-		}
-		return infrastructure.ErrorForProcessingProtoBufConfigMapDelta()
-	}
-
 	// mount protobuf configmap on data-index deployment
 	dataIndexDeployment, err := p.supportingServiceManager.FetchKogitoSupportingServiceDeployment(runtimeInstance.GetNamespace(), api.DataIndex)
-	if err != nil || dataIndexDeployment == nil {
+	if err != nil {
+		return
+	}
+	// check if data-index service not exists then return
+	if dataIndexDeployment == nil {
+		p.Log.Debug("Data-index deployment not exists, returning")
 		return
 	}
 
-	volumeReference := p.protoBufConfigMapHandler.CreateProtoBufConfigMapReference(runtimeInstance)
+	volumeReference := p.protoBufConfigMapHandler.CreateProtoBufConfigMapVolumeReference(protoBufConfigMap.GetName())
 	if err = p.configMapHandler.MountAsVolume(dataIndexDeployment, volumeReference); err != nil {
 		return
 	}
@@ -115,4 +93,17 @@ func updateProtoBufPropInToDeploymentEnv(deployment *appsv1.Deployment) {
 		framework.SetEnvVar(protoBufKeyWatch, "false", &deployment.Spec.Template.Spec.Containers[0])
 		framework.SetEnvVar(protoBufKeyFolder, "", &deployment.Spec.Template.Spec.Containers[0])
 	}
+}
+func (p *protoBufHandler) MountAllProtoBufConfigMapOnDataIndexDeployment(dataIndexDeployment *appsv1.Deployment) (err error) {
+	protoBufConfigMaps, err := p.protoBufConfigMapHandler.FetchAllProtoBufConfigMaps(dataIndexDeployment.Namespace)
+	if err != nil {
+		return err
+	}
+	for _, protoBufConfigMap := range protoBufConfigMaps {
+		volumeReference := p.protoBufConfigMapHandler.CreateProtoBufConfigMapVolumeReference(protoBufConfigMap.GetName())
+		if err = p.configMapHandler.MountAsVolume(dataIndexDeployment, volumeReference); err != nil {
+			return err
+		}
+	}
+	return nil
 }

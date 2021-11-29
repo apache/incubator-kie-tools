@@ -15,11 +15,9 @@
 package shared
 
 import (
-	"github.com/kiegroup/kogito-operator/apis"
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
-	"github.com/kiegroup/kogito-operator/core/kogitoservice"
-	"github.com/kiegroup/kogito-operator/core/manager"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	v1 "k8s.io/api/core/v1"
 	"reflect"
@@ -33,21 +31,17 @@ type ProtoBufConfigMapReconciler interface {
 
 type protoBufConfigMapReconciler struct {
 	operator.Context
-	instance                 api.KogitoSupportingServiceInterface
-	serviceDefinition        *kogitoservice.ServiceDefinition
-	runtimeHandler           manager.KogitoRuntimeHandler
+	runtimeInstance          api.KogitoRuntimeInterface
 	configMapHandler         infrastructure.ConfigMapHandler
 	protobufConfigMapHandler ProtoBufConfigMapHandler
 	deltaProcessor           infrastructure.DeltaProcessor
 }
 
 // NewProtoBufConfigMapReconciler ...
-func NewProtoBufConfigMapReconciler(context operator.Context, instance api.KogitoSupportingServiceInterface, serviceDefinition *kogitoservice.ServiceDefinition, runtimeHandler manager.KogitoRuntimeHandler) ProtoBufConfigMapReconciler {
+func NewProtoBufConfigMapReconciler(context operator.Context, instance api.KogitoRuntimeInterface) ProtoBufConfigMapReconciler {
 	return &protoBufConfigMapReconciler{
 		Context:                  context,
-		instance:                 instance,
-		serviceDefinition:        serviceDefinition,
-		runtimeHandler:           runtimeHandler,
+		runtimeInstance:          instance,
 		configMapHandler:         infrastructure.NewConfigMapHandler(context),
 		protobufConfigMapHandler: NewProtoBufConfigMapHandler(context),
 		deltaProcessor:           infrastructure.NewDeltaProcessor(context),
@@ -56,32 +50,20 @@ func NewProtoBufConfigMapReconciler(context operator.Context, instance api.Kogit
 
 func (p *protoBufConfigMapReconciler) Reconcile() error {
 
-	runtimeInstances, err := p.runtimeHandler.FetchAllKogitoRuntimeInstances(p.instance.GetNamespace())
+	// Create Required resource
+	requestedResources, err := p.createRequiredResources(p.runtimeInstance)
 	if err != nil {
 		return err
 	}
-	for _, runtimeInstance := range runtimeInstances.GetItems() {
-		// Create Required resource
-		requestedResources, err := p.createRequiredResources(runtimeInstance)
-		if err != nil {
-			return err
-		}
 
-		// Get Deployed resource
-		deployedResources, err := p.getDeployedResources(runtimeInstance)
-		if err != nil {
-			return err
-		}
-
-		// Process Delta
-		if err = p.processDelta(requestedResources, deployedResources); err != nil {
-			return err
-		}
-
-		volumeReference := p.protobufConfigMapHandler.CreateProtoBufConfigMapReference(runtimeInstance)
-		p.serviceDefinition.ConfigMapVolumeReferences = append(p.serviceDefinition.ConfigMapVolumeReferences, volumeReference)
+	// Get Deployed resource
+	deployedResources, err := p.getDeployedResources(p.runtimeInstance)
+	if err != nil {
+		return err
 	}
-	return nil
+
+	// Process Delta
+	return p.processDelta(requestedResources, deployedResources)
 }
 
 func (p *protoBufConfigMapReconciler) createRequiredResources(runtimeInstance api.KogitoRuntimeInterface) (map[reflect.Type][]client.Object, error) {
@@ -90,7 +72,7 @@ func (p *protoBufConfigMapReconciler) createRequiredResources(runtimeInstance ap
 	if err != nil {
 		return nil, err
 	}
-	if err := framework.SetOwner(p.instance, p.Scheme, protoBufConfigMap); err != nil {
+	if err := framework.SetOwner(runtimeInstance, p.Scheme, protoBufConfigMap); err != nil {
 		return nil, err
 	}
 	resources[reflect.TypeOf(v1.ConfigMap{})] = []client.Object{protoBufConfigMap}
@@ -103,7 +85,7 @@ func (p *protoBufConfigMapReconciler) getDeployedResources(runtimeInstance api.K
 		framework.LabelAppKey:            runtimeInstance.GetName(),
 		ConfigMapProtoBufEnabledLabelKey: "true",
 	}
-	configMapList, err := p.configMapHandler.FetchConfigMapsForLabel(p.instance.GetNamespace(), labels)
+	configMapList, err := p.configMapHandler.FetchConfigMapsForLabel(runtimeInstance.GetNamespace(), labels)
 	if err != nil {
 		return nil, err
 	}
@@ -120,6 +102,12 @@ func (p *protoBufConfigMapReconciler) getDeployedResources(runtimeInstance api.K
 
 func (p *protoBufConfigMapReconciler) processDelta(requestedResources map[reflect.Type][]client.Object, deployedResources map[reflect.Type][]client.Object) (err error) {
 	comparator := p.configMapHandler.GetComparator()
-	_, err = p.deltaProcessor.ProcessDelta(comparator, requestedResources, deployedResources)
+	isDeltaProcessed, err := p.deltaProcessor.ProcessDelta(comparator, requestedResources, deployedResources)
+	if err != nil {
+		return err
+	}
+	if isDeltaProcessed {
+		return infrastructure.ErrorForProcessingProtoBufConfigMapDelta()
+	}
 	return
 }
