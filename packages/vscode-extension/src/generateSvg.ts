@@ -58,8 +58,13 @@ export async function generateSvg(args: {
     return;
   }
 
-  const workspace = vscode.workspace.workspaceFolders?.length ? vscode.workspace.workspaceFolders[0] : null;
   const parsedPath = __path.parse(editor.document.uri.fsPath);
+  const workspace = vscode.workspace.workspaceFolders?.length
+    ? vscode.workspace.workspaceFolders.find((workspace) => {
+        const relative = __path.relative(workspace.uri.fsPath, editor.document.uri.fsPath);
+        return relative && !relative.startsWith("..") && !__path.isAbsolute(relative);
+      })
+    : undefined;
 
   const tokens: Record<SettingsValueInterpolationToken, string | undefined> = {
     "${workspaceFolder}": workspace?.uri.fsPath,
@@ -86,11 +91,11 @@ export async function generateSvg(args: {
 
   const svgFileName = interpolateSettingsValue({
     tokens,
-    value: svgFilenameTemplate.length ? svgFilenameTemplate : "${fileBasenameNoExtension}-svg.svg",
+    value: svgFilenameTemplate ? svgFilenameTemplate : "${fileBasenameNoExtension}-svg.svg",
   });
   const svgFilePath = interpolateSettingsValue({
     tokens,
-    value: svgFilePathTemplate.length ? svgFilePathTemplate : "${fileDirname}",
+    value: svgFilePathTemplate ? svgFilePathTemplate : "${fileDirname}",
   });
   const svgUri = editor.document.uri.with({ path: __path.resolve(svgFilePath, svgFileName) });
 
