@@ -121,8 +121,8 @@ export default class ScesimEditorTestHelper {
   };
 
   /**
-   * In case you open empty scesim file a landing page prompt you to specify a a file you want to test.
-   * This method set specified dmn file to be tested.
+   * In case you open empty scesim file a landing page prompts you to specify a file you want to test.
+   * This method sets specified dmn file to be tested.
    *
    * @param dmnFileName
    *
