@@ -160,7 +160,7 @@ describe("Editors are loading properly", () => {
   });
 
   /**
-   * As the openend scesim file is empty, a promtp to specify file under test should be shown
+   * As the opened sceism file is empty, a prompt to specify file under test should be shown
    */
   it("Opens demo-dmn.scesim file in SCESIM Editor", async function () {
     this.timeout(20000);
