@@ -3,7 +3,7 @@ name: "Release :: Dry Run"
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 17 * * *" # 5pm UTC everyday
+    - cron: "0 11 * * *" # 11am UTC everyday
   pull_request:
     branches: "**"
     paths:
@@ -16,5 +16,3 @@ jobs:
     with:
       dry_run: true
       runners: '{"dmn_dev_sandbox_image":"true","online_editor":"true","chrome_extension":"true","vscode_extensions_dev":"true","vscode_extensions_prod":"true","desktop":"true","hub":"true","npm_packages":"true","standalone_editors_cdn":"true","extended_services":"true","dashbuilder":"true","dashbuilder_images":"true"}'
-    secrets:
-      kogito_tooling_bot_token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}

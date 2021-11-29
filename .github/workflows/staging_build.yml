@@ -25,7 +25,7 @@ on:
         default: ""
     secrets:
       kogito_tooling_bot_token:
-        required: true
+        required: false
       github_token:
         required: false
       quay_registry_password:
@@ -62,7 +62,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Checkout kogito-online-staging"
-        if: matrix.os == 'ubuntu-latest'
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/checkout@v2
         with:
           path: ${{ github.workspace }}/kogito-online-staging

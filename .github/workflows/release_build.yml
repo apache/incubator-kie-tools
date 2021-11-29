@@ -29,7 +29,7 @@ on:
         default: '{"dmn_dev_sandbox_image":"false","online_editor":"false","chrome_extension":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","hub":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false"}'
     secrets:
       kogito_tooling_bot_token:
-        required: true
+        required: false
       github_token:
         required: false
       quay_registry_password:
@@ -247,6 +247,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Checkout kogito-online"
+        if: ${{ !inputs.dry_run }}
         uses: actions/checkout@v2
         with:
           path: ${{ github.workspace }}/kogito-online
@@ -328,6 +329,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Checkout kogito-online"
+        if: ${{ !inputs.dry_run }}
         uses: actions/checkout@v2
         with:
           path: ${{ github.workspace }}/kogito-online
@@ -621,7 +623,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.kiegroup_npm_token }}
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-          lerna exec 'npm publish --access public' --stream --no-private
+          lerna exec 'PKG_NAME=$(jq -r ".name" package.json); NPM_PKG_INFO=$(npm view $PKG_NAME@${{ inputs.tag }} name || echo ""); if [ -z $NPM_PKG_INFO ]; then npm publish --access public; fi' --stream --no-private
 
   standalone_editors_cdn:
     if: ${{ always() && needs.extract_runners.outputs.standalone_editors_cdn == 'true' && (needs.chrome_extension.result == 'success' || needs.chrome_extension.result == 'skipped') }}
@@ -636,6 +638,7 @@ jobs:
           fetch-depth: 0
 
       - name: "Checkout kogito-online"
+        if: ${{ !inputs.dry_run }}
         uses: actions/checkout@v2
         with:
           path: ${{ github.workspace }}/kogito-online
