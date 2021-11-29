@@ -33,7 +33,7 @@ yarn
 yarn prebuild
 
 # Build a production-ready artifact to be deployed
-yarn build
+yarn build:prod
 
 # Execute all tests
 yarn test
@@ -48,20 +48,13 @@ yarn type-check
 yarn quality-checks
 ```
 
-In the showcase project, only two scripts are available:
+In the showcase project, these scripts are available:
 
 ```sh
 # Start a local server to see the 'BoxedExpressionEditor' in action
 yarn start
 # Compiles a production ready showcase application
 yarn build
-```
-
-Furthermore, there are cypress tests for the showcase project, however they are not automated yet. You can run them as:
-
-```sh
-# Start a local server to see the 'BoxedExpressionEditor' in action
-yarn start
-# Wait until app is running and execute tests
-yarn cypress run
+# Run cypress 'BoxedExpressionEditor' tests
+yarn test:it
 ```

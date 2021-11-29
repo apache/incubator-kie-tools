@@ -23,9 +23,13 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
+    "start:it": "BROWSER=none yarn start",
     "build": "react-app-rewired build",
+    "build:prod": "yarn test:it",
     "predeploy": "yarn build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "cy:run": "cypress run",
+    "test:it": "start-server-and-test start:it http://localhost:3000 cy:run"
   },
   "eslintConfig": {
     "extends": [
