@@ -30,10 +30,10 @@ type SettingsValueInterpolationToken =
   | "${fileBasename}"
   | "${fileBasenameNoExtension}";
 
-function interpolateSettingsValue(args: { tokens: Record<string, string | undefined>; value: string }) {
+function interpolateSettingsValue(args: { tokens: Record<string, string>; value: string }) {
   const { tokens, value } = args;
   return Object.entries(tokens).reduce(
-    (result, [tokenName, tokenValue]) => result.replaceAll(tokenName, tokenValue ?? ""),
+    (result, [tokenName, tokenValue]) => result.replaceAll(tokenName, tokenValue),
     value
   );
 }
