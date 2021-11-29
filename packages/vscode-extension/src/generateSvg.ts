@@ -66,8 +66,8 @@ export async function generateSvg(args: {
       })
     : undefined;
 
-  const tokens: Record<SettingsValueInterpolationToken, string | undefined> = {
-    "${workspaceFolder}": workspace?.uri.fsPath,
+  const tokens: Record<SettingsValueInterpolationToken, string> = {
+    "${workspaceFolder}": workspace?.uri.fsPath ?? parsedPath.dir,
     "${fileDirname}": parsedPath.dir,
     "${fileExtname}": parsedPath.ext,
     "${fileBasename}": parsedPath.base,
