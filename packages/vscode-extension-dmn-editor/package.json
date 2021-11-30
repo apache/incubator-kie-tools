@@ -64,14 +64,21 @@
       }
     ],
     "configuration": {
-      "title": "DMN",
+      "title": "DMN Editor",
       "properties": {
         "kogito.dmn.runOnSave": {
-          "type": [
-            "string",
-            "null"
-          ],
-          "description": "Execute a command on each save operation of the DMN file."
+          "type": "string",
+          "markdownDescription": "Execute a command on each save operation of the DMN file"
+        },
+        "kogito.dmn.svgFilenameTemplate": {
+          "type": "string",
+          "default": "${fileBasenameNoExtension}-svg.svg",
+          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}-svg.svg`)."
+        },
+        "kogito.dmn.svgFilePath": {
+          "type": "string",
+          "default": "${fileDirname}",
+          "markdownDescription": "Where to save generated SVG files (defaults to same path as .dmn file: `${fileDirname}`)."
         }
       }
     },
