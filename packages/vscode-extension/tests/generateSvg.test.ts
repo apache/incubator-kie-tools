@@ -30,4 +30,15 @@ describe("generateSvg", () => {
 
     expect(resultText).toBe("This text has Token 1 Value, Token 2 Value and 10!");
   });
+  test("Should replace repeated tokens with mapped values", () => {
+    const tokens = {
+      myToken1: "Token 1 Value",
+    };
+
+    const originalText = "This text has myToken1myToken1myToken1 myToken1";
+
+    const resultText = interpolateSettingsValue({ tokens, value: originalText });
+
+    expect(resultText).toBe("This text has Token 1 ValueToken 1 ValueToken 1 Value Token 1 Value");
+  });
 });
