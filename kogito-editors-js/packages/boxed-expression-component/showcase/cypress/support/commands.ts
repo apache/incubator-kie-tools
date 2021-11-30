@@ -48,3 +48,13 @@ Cypress.Commands.add("ouiaId", { prevSubject: "optional" }, (subject, id: string
     el = cy.get(idSelector, options);
   }
 });
+
+Cypress.Commands.add("ouiaType", { prevSubject: "optional" }, (subject, type: string, options = {}) => {
+  var typeSelector = type ? `[data-ouia-component-type='${type}']` : "";
+  var el;
+  if (subject) {
+    el = cy.wrap(subject, options).find(typeSelector, options);
+  } else {
+    el = cy.get(typeSelector, options);
+  }
+});

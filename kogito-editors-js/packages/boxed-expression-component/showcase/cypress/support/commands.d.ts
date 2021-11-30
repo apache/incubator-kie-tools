@@ -23,5 +23,7 @@ declare namespace Cypress {
      * @param opts optional - config object
      */
     ouiaId(id: string, opts?: Record<string, any>): Chainable<Element>;
+
+    ouiaType(type: string, opts?: Record<string, any>): Chainable<Element>;
   }
 }
