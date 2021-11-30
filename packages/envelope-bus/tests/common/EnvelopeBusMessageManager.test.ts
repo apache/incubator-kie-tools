@@ -15,12 +15,13 @@
  */
 
 import { EnvelopeBusMessageManager } from "@kie-tooling-core/envelope-bus/dist/common";
-import { EnvelopeBusMessagePurpose } from "@kie-tooling-core/envelope-bus/dist/api";
+import { EnvelopeBusMessagePurpose, SharedValueProvider } from "@kie-tooling-core/envelope-bus/dist/api";
 
 interface ApiToProvide {
   setText(text: string): void;
   getEnvelopeText(): Promise<string>;
   getFooBar(foo: string, bar: string): Promise<string>;
+  fooValue(): SharedValueProvider<string>;
 }
 
 interface ApiToConsume {
@@ -28,6 +29,7 @@ interface ApiToConsume {
   setSomething(something: string): void;
   setSomethings(something1: string, something2: string): void;
   getSomething(param1: string, param2: number): Promise<number>;
+  barValue(): SharedValueProvider<string>;
 }
 
 let sentMessages: any[] = [];
@@ -47,10 +49,23 @@ beforeEach(() => {
     getFooBar: jest.fn(async (foo: string, bar: string) => {
       return foo + bar;
     }),
+    fooValue: () => {
+      return { defaultValue: "default-foo" };
+    },
   };
+  manager.currentApiImpl = apiImpl;
 });
 
-describe("request", () => {
+describe("cached", () => {
+  test("returns the same instance", async () => {
+    expect(manager.clientApi.notifications.setSomething).toStrictEqual(manager.clientApi.notifications.setSomething);
+    expect(manager.shared.fooValue).toStrictEqual(manager.shared.fooValue);
+    expect(manager.clientApi.shared.barValue).toStrictEqual(manager.clientApi.shared.barValue);
+    expect(manager.clientApi.requests.getText).toStrictEqual(manager.clientApi.requests.getText);
+  });
+});
+
+describe("requests", () => {
   test("method with no parameters", async () => {
     const retPromise = manager.clientApi.requests.getText();
     expect(sentMessages).toStrictEqual([
@@ -119,9 +134,9 @@ describe("request", () => {
   });
 });
 
-describe("notify", () => {
+describe("notifications", () => {
   test("simple notification", async () => {
-    manager.clientApi.notifications.setSomething("something");
+    manager.clientApi.notifications.setSomething.send("something");
     expect(sentMessages).toStrictEqual([
       {
         type: "setSomething",
@@ -130,21 +145,19 @@ describe("notify", () => {
       },
     ]);
   });
-});
 
-describe("subscribe", () => {
   test("simple subscription", async () => {
     const callback = jest.fn((a, b) => {
       expect(a).toStrictEqual("foo");
       expect(b).toStrictEqual("bar");
     });
 
-    const subscription = manager.clientApi.subscribe("setSomethings", callback);
+    const subscription = manager.clientApi.notifications.setSomethings.subscribe(callback);
     expect(subscription).toStrictEqual(callback);
     expect(sentMessages).toStrictEqual([
       {
         type: "setSomethings",
-        purpose: EnvelopeBusMessagePurpose.SUBSCRIPTION,
+        purpose: EnvelopeBusMessagePurpose.NOTIFICATION_SUBSCRIPTION,
         data: [],
       },
     ]);
@@ -159,11 +172,9 @@ describe("subscribe", () => {
     );
     expect(callback).toHaveBeenCalledWith("foo", "bar");
   });
-});
 
-describe("unsubscribe", () => {
   test("simple unsubscription", async () => {
-    const subscription = manager.clientApi.subscribe("setSomething", jest.fn());
+    const subscription = manager.clientApi.notifications.setSomething.subscribe(jest.fn());
     await manager.server.receive(
       {
         type: "setSomething",
@@ -176,16 +187,16 @@ describe("unsubscribe", () => {
     expect(subscription).toHaveBeenCalledWith("something");
     expect(subscription).toHaveBeenCalledTimes(1);
 
-    manager.clientApi.unsubscribe("setSomething", subscription);
+    manager.clientApi.notifications.setSomething.unsubscribe(subscription);
     expect(sentMessages).toStrictEqual([
       {
         type: "setSomething",
-        purpose: EnvelopeBusMessagePurpose.SUBSCRIPTION,
+        purpose: EnvelopeBusMessagePurpose.NOTIFICATION_SUBSCRIPTION,
         data: [],
       },
       {
         type: "setSomething",
-        purpose: EnvelopeBusMessagePurpose.UNSUBSCRIPTION,
+        purpose: EnvelopeBusMessagePurpose.NOTIFICATION_UNSUBSCRIPTION,
         data: [],
       },
     ]);
@@ -203,9 +214,113 @@ describe("unsubscribe", () => {
   });
 });
 
-const delay = (ms: number) => {
-  return new Promise((res) => setTimeout(res, ms));
-};
+describe("shared", () => {
+  test("set consumed", () => {
+    manager.clientApi.shared.barValue.set("bar1");
+    manager.clientApi.shared.barValue.set("bar2");
+
+    expect(sentMessages).toStrictEqual([
+      {
+        type: "barValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+        data: "bar1",
+      },
+      {
+        type: "barValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+        data: "bar2",
+      },
+    ]);
+  });
+
+  test("set owned", () => {
+    manager.shared.fooValue.set("foo1");
+    manager.shared.fooValue.set("foo2");
+
+    expect(sentMessages).toStrictEqual([
+      {
+        type: "fooValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+        data: "foo1",
+      },
+      {
+        type: "fooValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+        data: "foo2",
+      },
+    ]);
+  });
+
+  test("set consumed with subscriptions", () => {
+    const subscription1 = manager.clientApi.shared.barValue.subscribe(jest.fn());
+
+    manager.clientApi.shared.barValue.set("bar1");
+    expect(subscription1).toHaveBeenCalledWith("bar1");
+
+    manager.clientApi.shared.barValue.set("bar2");
+    expect(subscription1).toHaveBeenCalledWith("bar2");
+
+    const subscription2 = manager.clientApi.shared.barValue.subscribe(jest.fn());
+    expect(subscription2).toHaveBeenCalledWith("bar2");
+
+    expect(sentMessages).toStrictEqual([
+      {
+        type: "barValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_GET_DEFAULT,
+        data: [],
+      },
+      {
+        type: "barValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+        data: "bar1",
+      },
+      {
+        type: "barValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+        data: "bar2",
+      },
+    ]);
+  });
+
+  test("set owned with subscriptions", () => {
+    const subscription1 = manager.shared.fooValue.subscribe(jest.fn());
+
+    manager.shared.fooValue.set("foo1");
+    expect(subscription1).toHaveBeenCalledWith("foo1");
+
+    manager.shared.fooValue.set("foo2");
+    expect(subscription1).toHaveBeenCalledWith("foo2");
+
+    const subscription2 = manager.shared.fooValue.subscribe(jest.fn());
+    expect(subscription2).toHaveBeenCalledWith("foo2");
+
+    expect(sentMessages).toStrictEqual([
+      {
+        type: "fooValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+        data: "foo1",
+      },
+      {
+        type: "fooValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+        data: "foo2",
+      },
+    ]);
+  });
+
+  test("unsubscribe consumed", () => {
+    const subscription = manager.clientApi.shared.barValue.subscribe(jest.fn());
+    manager.clientApi.shared.barValue.unsubscribe(subscription);
+    manager.clientApi.shared.barValue.set("new-bar");
+  });
+
+  test("unsubscribe owned", () => {
+    const subscription = manager.shared.fooValue.subscribe(jest.fn()); //this calls the callback
+    manager.shared.fooValue.unsubscribe(subscription);
+    manager.shared.fooValue.set("new-foo"); //this shouldn't call the callback
+    expect(subscription).toHaveBeenCalledTimes(1);
+  });
+});
 
 describe("receive", () => {
   test("simple request", async () => {
@@ -231,6 +346,7 @@ describe("receive", () => {
       },
     ]);
   });
+
   test("request with parameters", async () => {
     manager.server.receive(
       {
@@ -297,11 +413,11 @@ describe("receive", () => {
     expect(apiImpl.setText).toHaveBeenCalledWith("the text");
   });
 
-  test("normal subscription", () => {
+  test("normal notification subscription", () => {
     manager.server.receive(
       {
         type: "setText",
-        purpose: EnvelopeBusMessagePurpose.SUBSCRIPTION,
+        purpose: EnvelopeBusMessagePurpose.NOTIFICATION_SUBSCRIPTION,
         data: [],
       },
       apiImpl
@@ -326,11 +442,11 @@ describe("receive", () => {
     ]);
   });
 
-  test("subscription with no api handler", () => {
+  test("notification subscription with no api handler", () => {
     manager.server.receive(
       {
         type: "setText",
-        purpose: EnvelopeBusMessagePurpose.SUBSCRIPTION,
+        purpose: EnvelopeBusMessagePurpose.NOTIFICATION_SUBSCRIPTION,
         data: [],
       },
       apiImpl
@@ -356,11 +472,11 @@ describe("receive", () => {
     ]);
   });
 
-  test("unsubscription", () => {
+  test("notification unsubscription", () => {
     manager.server.receive(
       {
         type: "setText",
-        purpose: EnvelopeBusMessagePurpose.SUBSCRIPTION,
+        purpose: EnvelopeBusMessagePurpose.NOTIFICATION_SUBSCRIPTION,
         data: [],
       },
       apiImpl
@@ -369,7 +485,7 @@ describe("receive", () => {
     manager.server.receive(
       {
         type: "setText",
-        purpose: EnvelopeBusMessagePurpose.UNSUBSCRIPTION,
+        purpose: EnvelopeBusMessagePurpose.NOTIFICATION_UNSUBSCRIPTION,
         data: [],
       },
       apiImpl
@@ -387,4 +503,91 @@ describe("receive", () => {
     expect(apiImpl.setText).not.toHaveBeenCalled();
     expect(sentMessages).toStrictEqual([]);
   });
+
+  test("consumed shared value update", () => {
+    const subscription1 = manager.clientApi.shared.barValue.subscribe(jest.fn());
+
+    manager.server.receive(
+      {
+        type: "barValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+        data: "default-bar",
+      },
+      apiImpl
+    );
+    expect(subscription1).toHaveBeenCalledWith("default-bar");
+    expect(subscription1).toHaveBeenCalledTimes(1);
+
+    const subscription2 = manager.clientApi.shared.barValue.subscribe(jest.fn());
+    expect(subscription2).toHaveBeenCalledWith("default-bar");
+    expect(subscription2).toHaveBeenCalledTimes(1);
+  });
+
+  test("owned shared value update", () => {
+    const subscription1 = manager.shared.fooValue.subscribe(jest.fn());
+
+    manager.server.receive(
+      {
+        type: "fooValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+        data: "foo-from-someone",
+      },
+      apiImpl
+    );
+    expect(subscription1).toHaveBeenCalledWith("foo-from-someone");
+    expect(subscription1).toHaveBeenCalledTimes(2);
+
+    const subscription2 = manager.shared.fooValue.subscribe(jest.fn());
+    expect(subscription2).toHaveBeenCalledWith("foo-from-someone");
+    expect(subscription2).toHaveBeenCalledTimes(1);
+  });
+
+  test("shared value subscription", () => {
+    manager.server.receive(
+      {
+        type: "fooValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_GET_DEFAULT,
+        data: [],
+      },
+      apiImpl
+    );
+    expect(sentMessages).toStrictEqual([
+      {
+        type: "fooValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+        data: "default-foo",
+      },
+    ]);
+
+    manager.shared.fooValue.set("new-foo");
+    manager.server.receive(
+      {
+        type: "fooValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_GET_DEFAULT,
+        data: [],
+      },
+      apiImpl
+    );
+    expect(sentMessages).toStrictEqual([
+      {
+        type: "fooValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+        data: "default-foo",
+      },
+      {
+        type: "fooValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+        data: "new-foo",
+      },
+      {
+        type: "fooValue",
+        purpose: EnvelopeBusMessagePurpose.SHARED_VALUE_UPDATE,
+        data: "new-foo",
+      },
+    ]);
+  });
 });
+
+const delay = (ms: number) => {
+  return new Promise((res) => setTimeout(res, ms));
+};

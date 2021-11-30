@@ -18,20 +18,21 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { PingPongApi, PingPongChannelApi, PingPongEnvelopeApi } from "../../api";
 import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
-import { EmbeddedEnvelopeFactory } from "@kie-tooling-core/envelope/dist/embedded";
+import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tooling-core/envelope/dist/embedded";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
 
-export type Props = PingPongChannelApi & {
+export type Props = {
   mapping: {
     title: string;
     envelopePath: string;
   };
+  apiImpl: PingPongChannelApi;
   targetOrigin: string;
   name: string;
 };
 
 export const EmbeddedIFramePingPong = React.forwardRef((props: Props, forwardedRef: React.Ref<PingPongApi>) => {
-  const refDelegate = useCallback((envelopeServer): PingPongApi => ({}), []);
+  const refDelegate = useCallback((): PingPongApi => ({}), []);
 
   const pollInit = useCallback(
     (
@@ -43,18 +44,30 @@ export const EmbeddedIFramePingPong = React.forwardRef((props: Props, forwardedR
         { name: props.name }
       );
     },
-    []
+    [props.name]
   );
 
-  const EmbeddedEnvelope = useMemo(() => {
-    return EmbeddedEnvelopeFactory({
-      api: props,
-      origin: props.targetOrigin,
-      refDelegate,
-      pollInit,
-      config: { containerType: ContainerType.IFRAME, envelopePath: props.mapping.envelopePath },
-    });
-  }, []);
+  const config = useMemo(
+    () => ({
+      containerType: ContainerType.IFRAME,
+      envelopePath: props.mapping.envelopePath,
+    }),
+    [props.mapping.envelopePath]
+  );
 
-  return <EmbeddedEnvelope ref={forwardedRef} />;
+  return (
+    <EmbeddedIframePingPongEnvelope
+      ref={forwardedRef}
+      apiImpl={props.apiImpl}
+      origin={props.targetOrigin}
+      refDelegate={refDelegate}
+      pollInit={pollInit}
+      config={config}
+    />
+  );
 });
+
+const EmbeddedIframePingPongEnvelope =
+  React.forwardRef<PingPongApi, EmbeddedEnvelopeProps<PingPongChannelApi, PingPongEnvelopeApi, PingPongApi>>(
+    RefForwardingEmbeddedEnvelope
+  );

@@ -19,6 +19,7 @@ import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useState } from "react";
 import { Item, TodoListChannelApi } from "../api";
 import "./styles.scss";
+import { useSharedValue } from "@kie-tooling-core/envelope-bus/dist/hooks";
 
 export interface TodoListEnvelopeViewApi {
   setUser(user: string): void;
@@ -49,10 +50,10 @@ export const TodoListEnvelopeView = React.forwardRef<TodoListEnvelopeViewApi, Pr
       if (i >= 0) {
         itemsCopy.splice(i, 1);
         setItems(itemsCopy);
-        props.channelApi.notifications.todoList__itemRemoved(item.label);
+        props.channelApi.notifications.todoList__itemRemoved.send(item.label);
       }
     },
-    [items]
+    [items, props.channelApi]
   );
 
   const updateItemCompletedStatus = useCallback(
@@ -84,6 +85,8 @@ export const TodoListEnvelopeView = React.forwardRef<TodoListEnvelopeViewApi, Pr
     [items]
   );
 
+  const [potentialNewItem, _] = useSharedValue(props.channelApi.shared.todoList__potentialNewItem);
+
   return (
     <>
       {user && (
@@ -94,9 +97,9 @@ export const TodoListEnvelopeView = React.forwardRef<TodoListEnvelopeViewApi, Pr
 
           <hr />
 
-          <h2>Here's your 'To do' list:</h2>
+          <h2>{`Here's your 'To do' list:`}</h2>
 
-          {(items.length <= 0 && (
+          {(items.length <= 0 && !potentialNewItem && (
             <>
               <p>Nothing to do 😎</p>
             </>
@@ -133,13 +136,20 @@ export const TodoListEnvelopeView = React.forwardRef<TodoListEnvelopeViewApi, Pr
                   </a>
                 </li>
               ))}
+              {potentialNewItem && (
+                <li key={"potential-new-item"} className={"todo-list--list-items"} style={{ color: "gray" }}>
+                  <i>{potentialNewItem}</i>
+                </li>
+              )}
             </ol>
           )}
           {allCompleted && (
             <>
               <hr />
               <div>
-                <b>Congratulations!</b> You've completed all your items! 🎉
+                <b>Congratulations!</b>
+                &nbsp;
+                {`You've completed all your items! 🎉`}
               </div>
             </>
           )}

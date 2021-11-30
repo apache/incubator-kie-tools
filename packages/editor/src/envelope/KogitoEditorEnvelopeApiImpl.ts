@@ -40,6 +40,7 @@ export class KogitoEditorEnvelopeApiImpl<
   ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi> = KogitoEditorChannelApi
 > implements KogitoEditorEnvelopeApi
 {
+  protected view: () => EditorEnvelopeViewApi<E>;
   private capturedInitRequestYet = false;
   private editor: E;
 
@@ -66,7 +67,7 @@ export class KogitoEditorEnvelopeApiImpl<
   }
 
   public kogitoEditor_initRequest = async (association: Association, initArgs: EditorInitArgs) => {
-    this.args.envelopeBusController.associate(association.origin, association.envelopeServerId);
+    this.args.envelopeClient.associate(association.origin, association.envelopeServerId);
 
     if (this.hasCapturedInitRequestYet()) {
       return;
@@ -74,38 +75,40 @@ export class KogitoEditorEnvelopeApiImpl<
 
     this.ackCapturedInitRequest();
 
+    this.view = await this.args.viewDelegate();
+
     this.setupI18n(initArgs);
 
     this.editor = await this.editorFactory.createEditor(this.args.envelopeContext, initArgs);
 
-    await this.args.view().setEditor(this.editor);
+    await this.view().setEditor(this.editor);
 
     this.editor.af_onStartup?.();
     this.editor.af_onOpen?.();
 
-    this.args.view().setLoading();
+    this.view().setLoading();
 
     const editorContent = await this.args.envelopeContext.channelApi.requests.kogitoEditor_contentRequest();
 
     await this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
-      .catch((e) => this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError(editorContent))
-      .finally(() => this.args.view().setLoadingFinished());
+      .catch((e) => this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError.send(editorContent))
+      .finally(() => this.view().setLoadingFinished());
 
     this.registerDefaultShortcuts(initArgs);
 
-    this.args.envelopeContext.channelApi.notifications.kogitoEditor_ready();
+    this.args.envelopeContext.channelApi.notifications.kogitoEditor_ready.send();
   };
 
   public kogitoEditor_contentChanged = (editorContent: EditorContent) => {
-    this.args.view().setLoading();
+    this.view().setLoading();
     return this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
       .catch((e) => {
-        this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError(editorContent);
+        this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError.send(editorContent);
         throw e;
       })
-      .finally(() => this.args.view().setLoadingFinished());
+      .finally(() => this.view().setLoadingFinished());
   };
 
   public kogitoEditor_editorUndo() {
@@ -144,7 +147,7 @@ export class KogitoEditorEnvelopeApiImpl<
     this.i18n.setLocale(initArgs.initialLocale);
     this.args.envelopeContext.services.i18n.subscribeToLocaleChange((locale) => {
       this.i18n.setLocale(locale);
-      this.args.view().setLocale(locale);
+      this.view().setLocale(locale);
     });
   }
 
@@ -159,7 +162,7 @@ export class KogitoEditorEnvelopeApiImpl<
       `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.redo}`,
       async () => {
         this.editor.redo();
-        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate(
+        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate.send(
           StateControlCommand.REDO
         );
       }
@@ -169,7 +172,7 @@ export class KogitoEditorEnvelopeApiImpl<
       `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.undo}`,
       async () => {
         this.editor.undo();
-        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate(
+        this.args.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate.send(
           StateControlCommand.UNDO
         );
       }

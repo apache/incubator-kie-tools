@@ -15,25 +15,75 @@
  */
 
 import * as React from "react";
-import { useRef } from "react";
-import { Page, PageSection } from "@patternfly/react-core";
-import { EmbeddedTodoList } from "@kogito-tooling-examples/todo-list-view/dist/embedded";
-import { TodoListApi } from "@kogito-tooling-examples/todo-list-view/dist/api";
-import { ActionsSidebar } from "./ActionsSidebar";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { Nav, NavItem, NavList, Page, PageSection, Title } from "@patternfly/react-core";
+import { EmbeddedTodoList, EmbeddedTodoListRef } from "@kogito-tooling-examples/todo-list-view/dist/embedded";
+import { useStateAsSharedValue } from "@kie-tooling-core/envelope-bus/dist/hooks";
 
 export function TodoListViewPage() {
-  const todoListViewRef = useRef<TodoListApi>(null);
+  const embeddedTodoListRef = useRef<EmbeddedTodoListRef>(null);
+
+  const [newItem, setNewItem] = useState("");
+  const addItem = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (newItem.length > 0) {
+        embeddedTodoListRef.current?.addItem(newItem);
+        setNewItem("");
+      }
+    },
+    [newItem]
+  );
+
+  const handleItemRemoved = useCallback((item: string) => {
+    window.alert(`Item '${item}' removed successfully!`);
+  }, []);
+
+  useStateAsSharedValue(
+    newItem,
+    setNewItem,
+    embeddedTodoListRef.current?.envelopeServer.shared.todoList__potentialNewItem
+  );
+
+  const apiImpl = useMemo(() => {
+    return {
+      todoList__itemRemoved: handleItemRemoved,
+      todoList__potentialNewItem: () => ({ defaultValue: "" }),
+    };
+  }, [handleItemRemoved]);
 
   return (
     <Page>
       <div className={"webapp--page-main-div"}>
-        <ActionsSidebar todoListViewRef={todoListViewRef} />
+        <div>
+          <Nav className={"webapp--page-navigation"}>
+            <div className={"webapp--page-navigation-title-div"}>
+              <Title className={"webapp--page-navigation-title-h3"} headingLevel="h3" size="xl">
+                Actions
+              </Title>
+            </div>
+            <NavList>
+              <NavItem onClick={embeddedTodoListRef.current?.markAllAsCompleted}>Mark all as completed</NavItem>
+              <NavItem>
+                <form onSubmit={addItem}>
+                  <input
+                    type={"text"}
+                    value={newItem}
+                    onChange={(e) => setNewItem(e.target.value)}
+                    placeholder={"New item"}
+                  />
+                  <button>Add</button>
+                </form>
+              </NavItem>
+            </NavList>
+          </Nav>
+        </div>
         <PageSection>
           <EmbeddedTodoList
-            ref={todoListViewRef}
+            ref={embeddedTodoListRef}
             targetOrigin={window.location.origin}
             envelopePath={"envelope/todo-list-view.html"}
-            todoList__itemRemoved={(item) => window.alert(`Item '${item}' removed successfully!`)}
+            apiImpl={apiImpl}
           />
         </PageSection>
       </div>

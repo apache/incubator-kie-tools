@@ -120,10 +120,10 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
         keyboardShortcuts: envelopeContext.services.keyboardShortcuts,
         guidedTourService: {
           refresh(userInteraction: UserInteraction): void {
-            envelopeContext.channelApi.notifications.kogitoGuidedTour_guidedTourUserInteraction(userInteraction);
+            envelopeContext.channelApi.notifications.kogitoGuidedTour_guidedTourUserInteraction.send(userInteraction);
           },
           registerTutorial(tutorial: Tutorial): void {
-            envelopeContext.channelApi.notifications.kogitoGuidedTour_guidedTourRegisterTutorial(tutorial);
+            envelopeContext.channelApi.notifications.kogitoGuidedTour_guidedTourRegisterTutorial.send(tutorial);
           },
           isEnabled(): boolean {
             return true;
@@ -143,7 +143,7 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
         },
         workspaceService: {
           openFile(path: string): void {
-            envelopeContext.channelApi.notifications.kogitoWorkspace_openFile(path);
+            envelopeContext.channelApi.notifications.kogitoWorkspace_openFile.send(path);
           },
         },
         i18nService: {
@@ -156,13 +156,13 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
         },
         notificationsService: {
           createNotification: (notification: Notification) => {
-            envelopeContext.channelApi.notifications.kogitoNotifications_createNotification(notification);
+            envelopeContext.channelApi.notifications.kogitoNotifications_createNotification.send(notification);
           },
           removeNotifications: (path: string) => {
-            envelopeContext.channelApi.notifications.kogitoNotifications_removeNotifications(path);
+            envelopeContext.channelApi.notifications.kogitoNotifications_removeNotifications.send(path);
           },
           setNotifications: (path: string, notifications: Notification[]) => {
-            envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications(path, notifications);
+            envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send(path, notifications);
           },
         },
       },

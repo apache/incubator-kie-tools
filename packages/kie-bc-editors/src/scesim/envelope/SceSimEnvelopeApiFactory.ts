@@ -40,7 +40,7 @@ export class SceSimEditorEnvelopeApiImpl
   }
 
   public mySceSimEnvelopeMethod() {
-    const editor = this.sceSimArgs.view().getEditor();
+    const editor = this.view().getEditor();
     const ret = editor?.mySceSimMethod() ?? "scesim-specific--default";
     return Promise.resolve(ret);
   }

@@ -18,12 +18,17 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
 import { TodoListApi, TodoListChannelApi, TodoListEnvelopeApi } from "../api";
-import { EmbeddedEnvelopeFactory } from "@kie-tooling-core/envelope/dist/embedded";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
+import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tooling-core/envelope/dist/embedded";
 
-export type Props = TodoListChannelApi & {
+export type EmbeddedTodoListRef = TodoListApi & {
+  envelopeServer: EnvelopeServer<TodoListChannelApi, TodoListEnvelopeApi>;
+};
+
+export type Props = {
   targetOrigin: string;
   envelopePath: string;
+  apiImpl: TodoListChannelApi;
 };
 
 /**
@@ -31,7 +36,7 @@ export type Props = TodoListChannelApi & {
  *
  * This is aimed to be used mostly by Web applications. It exposes a `ref` to give control to the parent component.
  */
-export const EmbeddedTodoList = React.forwardRef<TodoListApi, Props>((props, forwardedRef) => {
+export const EmbeddedTodoList = React.forwardRef<EmbeddedTodoListRef, Props>((props, forwardedRef) => {
   /*
    * This is the pollInit parameter. Used to connect the Envelope with this instance of EnvelopeServer.
    */
@@ -55,28 +60,33 @@ export const EmbeddedTodoList = React.forwardRef<TodoListApi, Props>((props, for
    * Function that creates a `ref` to be exposed to the parent components.
    */
   const refDelegate = useCallback(
-    (envelopeServer: EnvelopeServer<TodoListChannelApi, TodoListEnvelopeApi>): TodoListApi => ({
+    (envelopeServer: EnvelopeServer<TodoListChannelApi, TodoListEnvelopeApi>): EmbeddedTodoListRef => ({
+      envelopeServer,
       addItem: (item) => envelopeServer.envelopeApi.requests.todoList__addItem(item),
       getItems: () => envelopeServer.envelopeApi.requests.todoList__getItems(),
-      markAllAsCompleted: () => envelopeServer.envelopeApi.notifications.todoList__markAllAsCompleted(),
+      markAllAsCompleted: () => envelopeServer.envelopeApi.notifications.todoList__markAllAsCompleted.send(),
     }),
     []
   );
 
-  /*
-   * Creates an instance of EmbeddedEnvelope.
-   *
-   * This abstracts the EnvelopeServer creation and its lifecycle handling, allowing the EmbeddedTodoList to be simpler.
-   */
-  const EmbeddedEnvelope = useMemo(() => {
-    return EmbeddedEnvelopeFactory({
-      api: props,
-      origin: props.targetOrigin,
-      refDelegate,
-      pollInit,
-      config: { containerType: ContainerType.IFRAME, envelopePath: props.envelopePath },
-    });
-  }, []);
+  const config = useMemo(() => {
+    return { containerType: ContainerType.IFRAME, envelopePath: props.envelopePath };
+  }, [props.envelopePath]);
 
-  return <EmbeddedEnvelope ref={forwardedRef} />;
+  return (
+    <EmbeddedTodoListEnvelope
+      ref={forwardedRef}
+      apiImpl={props.apiImpl}
+      origin={props.targetOrigin}
+      refDelegate={refDelegate}
+      pollInit={pollInit}
+      config={config}
+    />
+  );
 });
+
+const EmbeddedTodoListEnvelope =
+  React.forwardRef<
+    EmbeddedTodoListRef,
+    EmbeddedEnvelopeProps<TodoListChannelApi, TodoListEnvelopeApi, EmbeddedTodoListRef>
+  >(RefForwardingEmbeddedEnvelope);

@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-import { init } from "@kogito-tooling-examples/todo-list-view/dist/envelope";
-import { EnvelopeBusMessage } from "@kie-tooling-core/envelope-bus/dist/api";
+import * as TodoListViewEnvelope from "@kogito-tooling-examples/todo-list-view/dist/envelope";
 
-init({
+TodoListViewEnvelope.init({
   container: document.getElementById("envelope-app")!,
-  bus: {
-    postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, transfer?: any) {
-      window.parent.postMessage(message, "*", transfer);
-    },
-  },
+  bus: { postMessage: (message, targetOrigin, transfer) => window.parent.postMessage(message, "*", transfer) },
 });

@@ -25,6 +25,7 @@ import { EnvelopeApiFactoryArgs } from "@kie-tooling-core/envelope";
  * These are the methods that the Channel can call.
  */
 export class TodoListEnvelopeApiImpl implements TodoListEnvelopeApi {
+  private view: () => TodoListEnvelopeViewApi;
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<
       TodoListEnvelopeApi,
@@ -37,15 +38,16 @@ export class TodoListEnvelopeApiImpl implements TodoListEnvelopeApi {
   /**
    * Inits the Todo List View.
    *
-   * Calling envelopeBusController.associate is mandatory if this Envelope will send messages
+   * Calling envelopeClient.associate is mandatory if this Envelope will send messages
    * back to the Editor (which is almost always the case).
    *
    * @param association
    * @param initArgs Initial arguments of this Envelope. The `user` object is only for example purposes.
    */
   public async todoList__init(association: Association, initArgs: TodoListInitArgs) {
-    this.args.envelopeBusController.associate(association.origin, association.envelopeServerId);
-    this.args.view().setUser(initArgs.user);
+    this.args.envelopeClient.associate(association.origin, association.envelopeServerId);
+    this.view = await this.args.viewDelegate();
+    this.view().setUser(initArgs.user);
   }
 
   /**
@@ -53,20 +55,20 @@ export class TodoListEnvelopeApiImpl implements TodoListEnvelopeApi {
    * @param item The item to be added.
    */
   public async todoList__addItem(item: string) {
-    return this.args.view().addItem(item);
+    return this.view().addItem(item);
   }
 
   /**
    * Returns the current items on the Todo List View
    */
   public async todoList__getItems() {
-    return this.args.view().getItems();
+    return this.view().getItems();
   }
 
   /**
    * Marks all items on the Todo List View as completed.
    */
   public todoList__markAllAsCompleted() {
-    this.args.view().markAllAsCompleted();
+    this.view().markAllAsCompleted();
   }
 }

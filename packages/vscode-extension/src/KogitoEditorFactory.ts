@@ -72,7 +72,7 @@ export class KogitoEditorFactory {
       this.messageBroadcaster
     );
 
-    const editorChannelApi = new KogitoEditorChannelApiImpl(
+    const editorChannelApiImpl = new KogitoEditorChannelApiImpl(
       editor,
       resourceContentService,
       this.workspaceApi,
@@ -84,8 +84,8 @@ export class KogitoEditorFactory {
     );
 
     this.editorStore.addAsActive(editor);
-    editor.startListening(editorChannelApi);
-    editor.startInitPolling();
+    editor.startListening(editorChannelApiImpl);
+    editor.startInitPolling(editorChannelApiImpl);
     editor.setupPanelActiveStatusChange();
     editor.setupPanelOnDidDispose();
     editor.setupWebviewContent();

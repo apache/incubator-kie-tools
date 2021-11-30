@@ -22,11 +22,13 @@ module.exports = function webpackLoader(content, map, meta) {
   const transformations = [
     { from: /@kie-tooling-core\/(.*)\/dist/g, to: `@kie-tooling-core/$1/src` },
     { from: /@kogito-tooling\/(.*)\/dist/g, to: `@kogito-tooling/$1/src` },
+    { from: /@kogito-tooling-examples\/(.*)\/dist/g, to: `@kogito-tooling-examples/$1/src` },
     { from: /@kie-tooling-core\/([\w\d-]*)/g, to: `@kie-tooling-core/$1/src` },
     { from: /@kogito-tooling\/([\w\d-]*)/g, to: `@kogito-tooling/$1/src` },
+    { from: /@kogito-tooling-examples\/([\w\d-]*)/g, to: `@kogito-tooling-examples/$1/src` },
   ];
 
-  const excludes = ["@kie-tooling-core/monaco-editor"];
+  const excludes = ["@kie-tooling-core/monaco-editor", "@kogito-tooling/kie-editors-standalone"];
   const includes = ["@kie-tooling-core", "@kogito-tooling"];
 
   const ast = parser.parse(content, { sourceType: "module", plugins: ["typescript", "jsx", "classProperties"] });

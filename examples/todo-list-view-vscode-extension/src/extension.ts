@@ -17,7 +17,7 @@
 import * as vscode from "vscode";
 import { TodoListWebview } from "@kogito-tooling-examples/todo-list-view/dist/vscode";
 import { TodoListEnvelopeApi } from "@kogito-tooling-examples/todo-list-view/dist/api";
-import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
+import { MessageBusClientApi, SharedValueProvider } from "@kie-tooling-core/envelope-bus/dist/api";
 
 const OPEN_TODO_LIST_VIEW_COMMAND_ID = "kogito-tooling-examples.todo-list-view";
 const ADD_TODO_ITEM_COMMAND_ID = "kogito-tooling-examples.todo-list-view.add-item";
@@ -42,26 +42,29 @@ export function activate(context: vscode.ExtensionContext) {
       /*
        * This is the implementation of TodoListChannelApi
        */
+      todoList__potentialNewItem(): SharedValueProvider<string> {
+        return { defaultValue: "" };
+      },
       todoList__itemRemoved: (item) => {
         vscode.window.showInformationMessage(`Item '${item}' successfully removed.`);
       },
     }
   );
 
-  // Will store the active envelopeApi.
-  let envelopeApi: MessageBusClientApi<TodoListEnvelopeApi> | undefined;
+  // Will store the active envelopeApiImpl.
+  let envelopeApiImpl: MessageBusClientApi<TodoListEnvelopeApi> | undefined;
 
   context.subscriptions.push(
     vscode.commands.registerCommand(OPEN_TODO_LIST_VIEW_COMMAND_ID, () => {
-      envelopeApi = todoListWebview.open("todo-list-view", {
-        onClose: () => (envelopeApi = undefined),
+      envelopeApiImpl = todoListWebview.open("todo-list-view", {
+        onClose: () => (envelopeApiImpl = undefined),
       });
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand(MARK_ALL_AS_COMPLETED_COMMAND_ID, () => {
-      envelopeApi?.notifications.todoList__markAllAsCompleted();
+      envelopeApiImpl?.notifications.todoList__markAllAsCompleted.send();
     })
   );
 
@@ -80,8 +83,8 @@ export function activate(context: vscode.ExtensionContext) {
 
       const items = selectedText.split("\n");
 
-      if (envelopeApi) {
-        addItems(items, envelopeApi);
+      if (envelopeApiImpl) {
+        addItems(items, envelopeApiImpl);
         return;
       }
 
@@ -95,7 +98,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       await vscode.commands.executeCommand(OPEN_TODO_LIST_VIEW_COMMAND_ID);
-      addItems(items, envelopeApi);
+      addItems(items, envelopeApiImpl);
     })
   );
 
