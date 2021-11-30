@@ -23,12 +23,13 @@ import { MermaidDiagram } from "../diagram";
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { EditorDidMount } from "react-monaco-editor/src/types";
 import * as monaco from "@kie-tooling-core/monaco-editor";
+import * as svgPanZoom from "svg-pan-zoom";
 
-declare global {
-  interface Window {
-    mermaid: any;
-  }
+export interface CustomWindow extends Window {
+  mermaid: any;
 }
+
+declare let window: CustomWindow;
 
 interface Props {
   /**
@@ -139,11 +140,14 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
         mermaidDiv.current!.innerHTML = mermaidSourceCode;
         mermaidDiv.current!.removeAttribute("data-processed");
         window.mermaid.init(undefined, mermaidDiv.current!);
+        mermaidDiv.current!.getElementsByTagName("svg")[0].setAttribute("style", "height: 100vh;");
+        svgPanZoom(mermaidDiv.current!.getElementsByTagName("svg")[0]);
         setDiagramOutOfSync(false);
       } else {
         setDiagramOutOfSync(true);
       }
-    } catch {
+    } catch (e) {
+      console.error(e);
       setDiagramOutOfSync(true);
     }
   }, [content]);

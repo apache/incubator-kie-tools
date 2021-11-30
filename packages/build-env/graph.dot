@@ -49,9 +49,9 @@ digraph G {
   "@kie-tooling-core/workspace" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kogito-tooling/online-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kogito-tooling/serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kogito-tooling/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tooling-core/run-script-if" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kogito-tooling/serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-backend" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "vscode-extension-bpmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-dmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -125,6 +125,7 @@ digraph G {
   "@kogito-tooling/online-editor" -> "@kogito-tooling/form" [ style = "solid", color = "black" ];
   "@kogito-tooling/online-editor" -> "@kogito-tooling/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kogito-tooling/online-editor" -> "@kogito-tooling/pmml-editor" [ style = "solid", color = "black" ];
+  "@kogito-tooling/online-editor" -> "@kogito-tooling/serverless-workflow-editor" [ style = "solid", color = "black" ];
   "@kogito-tooling/online-editor" -> "@kogito-tooling/unitables" [ style = "solid", color = "black" ];
   "@kogito-tooling/online-editor" -> "@kogito-tooling/extended-services" [ style = "dashed", color = "black" ];
   "@kogito-tooling/online-editor" -> "@kogito-tooling/external-assets-base" [ style = "dashed", color = "black" ];
