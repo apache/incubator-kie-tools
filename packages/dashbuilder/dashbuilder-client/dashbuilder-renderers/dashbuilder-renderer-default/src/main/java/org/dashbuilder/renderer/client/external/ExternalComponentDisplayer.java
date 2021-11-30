@@ -16,22 +16,16 @@
 package org.dashbuilder.renderer.client.external;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import elemental2.dom.DomGlobal;
 import org.dashbuilder.common.client.StringUtils;
-import org.dashbuilder.common.client.widgets.FilterLabel;
-import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetLookupConstraints;
-import org.dashbuilder.dataset.group.Interval;
 import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
@@ -45,6 +39,8 @@ import org.dashbuilder.displayer.external.ExternalComponentMessageHelper;
 import org.dashbuilder.displayer.external.ExternalDataSet;
 import org.dashbuilder.displayer.external.ExternalFilterRequest;
 
+import elemental2.dom.DomGlobal;
+
 @Dependent
 public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalComponentDisplayer.View> {
 
@@ -54,7 +50,9 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
 
         void setMargin(int chartMarginTop, int chartMarginRight, int chartMarginBottom, int chartMarginLeft);
 
-        void setFilterLabelSet(FilterLabelSet widget);
+        void setHeight(String height);
+
+        void setWidth(String width);
 
     }
 
@@ -63,9 +61,6 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
 
     @Inject
     ExternalComponentPresenter externalComponentPresenter;
-
-    @Inject
-    FilterLabelSet filterLabelSet;
 
     @Inject
     ExternalComponentMessageHelper messageHelper;
@@ -80,27 +75,26 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
     @PostConstruct
     public void init() {
         view.init(this);
-        view.setFilterLabelSet(filterLabelSet);
-        this.filterLabelSet.setOnClearAllCommand(this::onFilterClearAll);
         externalComponentPresenter.setFilterConsumer(this::receiveFilterRequest);
     }
 
     @Override
     public DisplayerConstraints createDisplayerConstraints() {
         DataSetLookupConstraints lookupConstraints = new DataSetLookupConstraints().setGroupAllowed(true)
-                                                                                   .setGroupRequired(false)
-                                                                                   .setExtraColumnsAllowed(true)
-                                                                                   .setGroupsTitle("Groups")
-                                                                                   .setColumnsTitle("Columns");
+                .setGroupRequired(false)
+                .setExtraColumnsAllowed(true)
+                .setGroupsTitle("Groups")
+                .setColumnsTitle("Columns");
 
         return new DisplayerConstraints(lookupConstraints).supportsAttribute(DisplayerAttributeDef.TYPE)
-                                                          .supportsAttribute(DisplayerAttributeDef.EXTERNAL_COMPONENT_ID)
-                                                          .supportsAttribute(DisplayerAttributeGroupDef.COLUMNS_GROUP)
-                                                          .supportsAttribute(DisplayerAttributeGroupDef.FILTER_GROUP)
-                                                          .supportsAttribute(DisplayerAttributeGroupDef.REFRESH_GROUP)
-                                                          .supportsAttribute(DisplayerAttributeGroupDef.CHART_WIDTH)
-                                                          .supportsAttribute(DisplayerAttributeGroupDef.CHART_HEIGHT)
-                                                          .supportsAttribute(DisplayerAttributeGroupDef.CHART_MARGIN_GROUP);
+                .supportsAttribute(DisplayerAttributeDef.EXTERNAL_COMPONENT_ID)
+                .supportsAttribute(DisplayerAttributeGroupDef.COLUMNS_GROUP)
+                .supportsAttribute(DisplayerAttributeGroupDef.FILTER_GROUP)
+                .supportsAttribute(DisplayerAttributeGroupDef.REFRESH_GROUP)
+                .supportsAttribute(DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_GROUP)
+                .supportsAttribute(DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_WIDTH)
+                .supportsAttribute(DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_HEIGHT)
+                .supportsAttribute(DisplayerAttributeGroupDef.CHART_MARGIN_GROUP);
     }
 
     @Override
@@ -126,19 +120,29 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
         ExternalComponentMessage message = dataSetMessage();
         externalComponentPresenter.sendMessage(message);
 
+        // legacy
         view.setSize(displayerSettings.getChartWidth(), displayerSettings.getChartHeight());
 
         view.setMargin(displayerSettings.getChartMarginTop(),
-                       displayerSettings.getChartMarginRight(),
-                       displayerSettings.getChartMarginBottom(),
-                       displayerSettings.getChartMarginLeft());
-        updateFilterStatus();
+                displayerSettings.getChartMarginRight(),
+                displayerSettings.getChartMarginBottom(),
+                displayerSettings.getChartMarginLeft());
+
+        var width = displayerSettings.getComponentWidth();
+        if (width != null && !width.trim().isEmpty()) {
+            view.setWidth(width);
+        }
+
+        var height = displayerSettings.getComponentHeight();
+        if (height != null && !height.trim().isEmpty()) {
+            view.setHeight(height);
+        }
     }
 
     private ExternalComponentMessage dataSetMessage() {
         Map<String, Object> componentProperties = new HashMap<>(displayerSettings.getComponentProperties());
-        ExternalDataSet ds = ExternalDataSet.of(buildColumns(),
-                                                buildData(dataSet));
+        var ds = ExternalDataSet.of(buildColumns(),
+                buildData(dataSet));
         return messageHelper.newDataSetMessage(ds, componentProperties);
     }
 
@@ -149,9 +153,9 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
 
     private ExternalColumn[] buildColumns() {
         return dataSet.getColumns()
-                      .stream()
-                      .map(this::buildExternalColumn)
-                      .toArray(ExternalColumn[]::new);
+                .stream()
+                .map(this::buildExternalColumn)
+                .toArray(ExternalColumn[]::new);
     }
 
     public ExternalComponentPresenter getExternalComponentPresenter() {
@@ -159,12 +163,12 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
     }
 
     public String[][] buildData(DataSet ds) {
-        List<DataColumn> columns = ds.getColumns();
+        var columns = ds.getColumns();
         int rows = columns.get(0).getValues().size();
         int cols = columns.size();
-        String[][] result = new String[rows][];
+        var result = new String[rows][];
         for (int i = 0; i < rows; i++) {
-            String[] line = new String[cols];
+            var line = new String[cols];
             for (int j = 0; j < cols; j++) {
                 line[j] = getEvaluatedValue(ds, i, j);
             }
@@ -186,31 +190,14 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
     protected ExternalColumn buildExternalColumn(DataColumn cl) {
         ColumnSettings clSettings = displayerSettings.getColumnSettings(cl);
         ExternalColumnSettings settings = ExternalColumnSettings.of(clSettings.getColumnId(),
-                                                                    clSettings.getColumnName(),
-                                                                    clSettings.getValueExpression(),
-                                                                    clSettings.getEmptyTemplate(),
-                                                                    clSettings.getValuePattern());
+                clSettings.getColumnName(),
+                clSettings.getValueExpression(),
+                clSettings.getEmptyTemplate(),
+                clSettings.getValuePattern());
         return ExternalColumn.of(cl.getId(),
-                                 cl.getColumnType().name(),
-                                 settings);
+                cl.getColumnType().name(),
+                settings);
 
-    }
-
-    protected void updateFilterStatus() {
-        filterLabelSet.clear();
-        Set<String> columnFilters = filterColumns();
-        if (displayerSettings.isFilterEnabled() && !columnFilters.isEmpty()) {
-
-            for (String columnId : columnFilters) {
-                List<Interval> selectedValues = filterIntervals(columnId);
-                DataColumn column = dataSet.getColumnById(columnId);
-                for (Interval interval : selectedValues) {
-                    String formattedValue = formatInterval(interval, column);
-                    FilterLabel filterLabel = filterLabelSet.addLabel(formattedValue);
-                    filterLabel.setOnRemoveCommand(() -> onFilterLabelRemoved(columnId, interval.getIndex()));
-                }
-            }
-        }
     }
 
     protected void onFilterLabelRemoved(String columnId, int row) {
@@ -235,7 +222,6 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
                 DataColumn column = dataSet.getColumnByIndex(filterRequest.getColumn());
                 super.filterUpdate(column.getId(), filterRequest.getRow());
             }
-            updateFilterStatus();
         }
     }
 

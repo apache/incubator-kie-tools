@@ -18,17 +18,17 @@ package org.dashbuilder.renderer.client.external;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.dashbuilder.displayer.client.AbstractErraiDisplayerView;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+
 import elemental2.dom.CSSProperties.HeightUnionType;
 import elemental2.dom.CSSProperties.MarginUnionType;
 import elemental2.dom.CSSProperties.WidthUnionType;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
-import org.dashbuilder.common.client.widgets.FilterLabelSet;
-import org.dashbuilder.displayer.client.AbstractErraiDisplayerView;
-import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
 @Templated
@@ -64,24 +64,25 @@ public class ExternalComponentDisplayerView extends AbstractErraiDisplayerView<E
     }
 
     @Override
-    public void setMargin(int top, int right, int bottom, int left) {
-        externalComponentDisplayerRoot.style.margin = MarginUnionType.of(String.join(" ",
-                                                                                     asPixel(top),
-                                                                                     asPixel(right),
-                                                                                     asPixel(bottom),
-                                                                                     asPixel(left)));
-    }
-    
-    private String asPixel(int value) {
-        return value + "px";
+    public void setHeight(String height) {
+        externalComponentDisplayerRoot.style.height = HeightUnionType.of(height);
     }
 
     @Override
-    public void setFilterLabelSet(FilterLabelSet widget) {
-        org.jboss.errai.common.client.dom.HTMLElement element = widget.getElement();
-        element.getStyle().setProperty("position", "absolute");
-        element.getStyle().setProperty("z-index", "20");
-        externalComponentDisplayerRoot.insertBefore(Js.cast(element), externalComponentView);
+    public void setWidth(String width) {
+        externalComponentDisplayerRoot.style.width = WidthUnionType.of(width);
     }
 
+    @Override
+    public void setMargin(int top, int right, int bottom, int left) {
+        externalComponentDisplayerRoot.style.margin = MarginUnionType.of(String.join(" ",
+                asPixel(top),
+                asPixel(right),
+                asPixel(bottom),
+                asPixel(left)));
+    }
+
+    private String asPixel(int value) {
+        return value + "px";
+    }
 }

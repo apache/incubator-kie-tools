@@ -681,6 +681,24 @@ public class DisplayerSettings {
     public String setComponentId(String componentId) {
         return settings.put(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_ID), componentId);
     }
+    
+    
+    public String getComponentWidth() {
+        return parseString(settings.get(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_WIDTH)));
+    }
+
+    public String setComponentWidth(String width) {
+        return settings.put(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_WIDTH), width);
+    }
+    
+    
+    public String getComponentHeight() {
+        return parseString(settings.get(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_HEIGHT)));
+    }
+
+    public String setComponentHeight(String height) {
+        return settings.put(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_HEIGHT), height);
+    }
 
     public void setComponentProperty(String key, String value) {
         String componentId = getComponentId();
