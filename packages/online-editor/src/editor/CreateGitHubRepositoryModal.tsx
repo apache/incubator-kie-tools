@@ -35,7 +35,7 @@ import { useSettingsDispatch } from "../settings/SettingsContext";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { useGitHubAuthInfo } from "../github/Hooks";
 
-const parseRepositoryName = (name: string) =>
+const getSuggestedRepositoryName = (name: string) =>
   name
     .replaceAll(" ", "-")
     .toLocaleLowerCase()
@@ -54,10 +54,10 @@ export function CreateGitHubRepositoryModal(props: {
   const [isPrivate, setPrivate] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
-  const [name, setName] = useState(parseRepositoryName(props.workspace.name));
+  const [name, setName] = useState(getSuggestedRepositoryName(props.workspace.name));
 
   useEffect(() => {
-    setName(parseRepositoryName(props.workspace.name));
+    setName(getSuggestedRepositoryName(props.workspace.name));
   }, [props.workspace.name]);
 
   const create = useCallback(async () => {
