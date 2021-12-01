@@ -28,7 +28,7 @@ export interface EntryInfo {
   dataType: DataType;
 }
 
-export interface ContextEntryRecord {
+export interface ContextEntryRecord extends DataRecord {
   entryInfo: EntryInfo;
   /** Entry expression */
   entryExpression: ExpressionProps;
@@ -73,7 +73,9 @@ export const getEntryKey = (row: Row): string => {
   return entryRecord.entryInfo.name + entryRecord.entryInfo.dataType;
 };
 
-export const resetEntry = (row: DataRecord): DataRecord => ({
-  ...row,
-  entryExpression: { uid: (row.entryExpression as ExpressionProps).uid },
-});
+export function resetEntry(row: ContextEntryRecord): ContextEntryRecord {
+  return {
+    ...row,
+    entryExpression: { uid: (row.entryExpression as ExpressionProps).uid },
+  };
+}

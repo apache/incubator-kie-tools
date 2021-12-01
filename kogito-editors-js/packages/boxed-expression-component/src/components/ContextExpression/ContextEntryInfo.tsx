@@ -16,7 +16,7 @@
 
 import "./ContextEntryInfo.css";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { EditExpressionMenu } from "../EditExpressionMenu";
 import { DataType } from "../../api";
 
@@ -37,22 +37,8 @@ export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = 
   onContextEntryUpdate,
   editInfoPopoverLabel,
 }) => {
-  const [entryName, setEntryName] = useState(name);
-
-  const [entryDataType, setEntryDataType] = useState(dataType);
-
-  useEffect(() => {
-    setEntryName(name);
-  }, [name]);
-
-  useEffect(() => {
-    setEntryDataType(dataType);
-  }, [dataType]);
-
   const onEntryNameOrDataTypeUpdate = useCallback(
     ({ name, dataType }) => {
-      setEntryName(name);
-      setEntryDataType(dataType);
       onContextEntryUpdate(name, dataType);
     },
     [onContextEntryUpdate]
@@ -61,29 +47,29 @@ export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = 
   const renderEntryDefinition = useCallback(
     (additionalCssClass?: string) => (
       <div className={`entry-definition ${additionalCssClass}`}>
-        <p className="entry-name pf-u-text-truncate" title={entryName}>
-          {entryName}
+        <p className="entry-name pf-u-text-truncate" title={name}>
+          {name}
         </p>
-        <p className="entry-data-type pf-u-text-truncate" title={entryDataType}>
-          ({entryDataType})
+        <p className="entry-data-type pf-u-text-truncate" title={dataType}>
+          ({dataType})
         </p>
       </div>
     ),
-    [entryDataType, entryName]
+    [dataType, name]
   );
 
   const renderEntryDefinitionWithPopoverMenu = useMemo(
     () => (
       <EditExpressionMenu
         title={editInfoPopoverLabel}
-        selectedExpressionName={entryName}
-        selectedDataType={entryDataType}
+        selectedExpressionName={name}
+        selectedDataType={dataType}
         onExpressionUpdate={onEntryNameOrDataTypeUpdate}
       >
         {renderEntryDefinition("with-popover-menu")}
       </EditExpressionMenu>
     ),
-    [editInfoPopoverLabel, entryDataType, entryName, onEntryNameOrDataTypeUpdate, renderEntryDefinition]
+    [editInfoPopoverLabel, dataType, name, onEntryNameOrDataTypeUpdate, renderEntryDefinition]
   );
 
   return (

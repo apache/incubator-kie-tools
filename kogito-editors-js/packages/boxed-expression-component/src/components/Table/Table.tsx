@@ -92,7 +92,10 @@ export const Table: React.FunctionComponent<TableProps> = ({
   const onRowAddingCallback = useCallback(() => {
     return onRowAdding ? onRowAdding() : {};
   }, [onRowAdding]);
-  const onGetColumnPrefix = useCallback(() => (getColumnPrefix ? getColumnPrefix() : "column-"), [getColumnPrefix]);
+  const onGetColumnPrefix = useCallback(
+    (groupType?: string) => (getColumnPrefix ? getColumnPrefix(groupType) : "column-"),
+    [getColumnPrefix]
+  );
 
   const globalContext = useContext(BoxedExpressionGlobalContext);
 

@@ -268,14 +268,14 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
       };
 
       if (decisionTable.isHeadless) {
-        const headlessDefinition = _.omit(updatedDefinition, ["name", "dataType", "isHeadless"]);
+        const headlessDefinition = _.omit(updatedDefinition, ["isHeadless"]);
         executeIfExpressionDefinitionChanged(
           decisionTable,
           headlessDefinition,
           () => {
             decisionTable.onUpdatingRecursiveExpression?.(headlessDefinition);
           },
-          ["hitPolicy", "aggregation", "input", "output", "annotations", "rules"]
+          ["name", "dataType", "hitPolicy", "aggregation", "input", "output", "annotations", "rules"]
         );
       } else {
         executeIfExpressionDefinitionChanged(
@@ -314,7 +314,9 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   const onColumnsUpdate = useCallback(
     (updatedColumns) => {
       const decisionNodeColumn = _.find(updatedColumns, { groupType: DecisionTableColumnType.OutputClause });
-      synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType(decisionNodeColumn);
+      if (!decisionTable.isHeadless) {
+        synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType(decisionNodeColumn);
+      }
       spreadDecisionTableExpressionDefinition(
         {
           name: decisionNodeColumn.label,

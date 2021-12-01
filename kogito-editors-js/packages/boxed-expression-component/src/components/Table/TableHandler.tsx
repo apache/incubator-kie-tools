@@ -153,10 +153,11 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
   /** These column operations have impact also on the collection of cells */
   const updateColumnsThenRows = useCallback(
     (operation?: TableOperation, columnIndex?: number, updatedColumns?: any) => {
-      updatedColumns
-        ? onColumnsUpdate([...updatedColumns], operation, columnIndex)
-        : onColumnsUpdate([...tableColumns], operation, columnIndex);
-
+      if (updatedColumns) {
+        onColumnsUpdate([...updatedColumns], operation, columnIndex);
+      } else {
+        onColumnsUpdate([...tableColumns], operation, columnIndex);
+      }
       onRowsUpdate([...tableRows.current]);
     },
     [onColumnsUpdate, onRowsUpdate, tableColumns, tableRows]
