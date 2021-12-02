@@ -63,4 +63,67 @@ describe("DMN Runner Test", () => {
       cy.get("article div:contains('Loan Pre-Qualification')").next().should("contain.text", "Qualified");
     });
   });
+
+  it("Test DMN Runner on DMN sample - table view", () => {
+    // click Create new decision model button (new DMN)
+    cy.get("[data-ouia-component-id='try-dmn-sample-button']").click();
+
+    // wait until loading dialog disappears
+    cy.loadEditor();
+
+    // skip tour
+    cy.get("button").contains("Skip tour").click();
+
+    // switch to tabular view
+    cy.get("[data-ouia-component-id='switch-dmn-runner-to-table-view']").click();
+
+    // fill in DMN Runner inputs in table
+    cy.get(".dmn-runner-table.id1")
+      .get("[data-ouia-component-id='expression-row-0']")
+      .within(($table) => {
+        cy.get("input[name='Credit Score.FICO']").type("650");
+        cy.get("input[name='Applicant Data.Age']").type("30");
+
+        // 'Marital_Status' is set later
+
+        cy.get("input[name='Applicant Data.Existing Customer']").check();
+
+        cy.get("input[name='Applicant Data.Monthly.Income']").type("3000");
+        cy.get("input[name='Applicant Data.Monthly.Repayments']").type("120");
+        cy.get("input[name='Applicant Data.Monthly.Expenses']").type("0");
+        cy.get("input[name='Applicant Data.Monthly.Tax']").type("0");
+        cy.get("input[name='Applicant Data.Monthly.Insurance']").type("0");
+
+        // 'Product_Type' is set later
+
+        cy.get("input[name='Requested Product.Rate']").type("1.5");
+        cy.get("input[name='Requested Product.Term']").type("4");
+        cy.get("input[name='Requested Product.Amount']").type("10000");
+      });
+
+    // handle inputs that uses selectboxes outside of expression-row
+    cy.get(".dmn-runner-table.id1")
+      .get("[data-ouia-component-id='expression-row-0']")
+      .within(($table) => {
+        cy.get("[x-dmn-type*='Marital_Status'] button").click();
+      });
+    cy.get("ul[name='Applicant Data.Marital Status'] button").contains("M").click();
+
+    cy.get(".dmn-runner-table.id1")
+      .get("[data-ouia-component-id='expression-row-0']")
+      .within(($table) => {
+        cy.get("[x-dmn-type*='Product_Type'] button").click();
+      });
+    cy.get("ul[name='Requested Product.Type'] button").contains("Standard Loan").click();
+
+    // check DMN Runner outputs in table
+    cy.get(".dmn-runner-table.id2")
+      .get("[data-ouia-component-id='expression-row-0']")
+      .within(($table) => {
+        cy.get("[data-ouia-component-id='expression-column-1']").contains("Sufficient").should("be.visible");
+        cy.get("[data-ouia-component-id='expression-column-2']").contains("Sufficient").should("be.visible");
+        cy.get("[data-ouia-component-id='expression-column-3']").contains("Fair").should("be.visible");
+        cy.get("[data-ouia-component-id='expression-column-4']").should("contain.text", "Qualified");
+      });
+  });
 });
