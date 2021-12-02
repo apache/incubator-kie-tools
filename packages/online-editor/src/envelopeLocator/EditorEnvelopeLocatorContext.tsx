@@ -18,7 +18,7 @@ import * as React from "react";
 import { useContext, useMemo } from "react";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
 
-export type SupportedFileExtensions = "bpmn" | "bpmn2" | "dmn" | "pmml" | "json";
+export type SupportedFileExtensions = "bpmn" | "bpmn2" | "dmn" | "pmml" | "json" | "yml";
 
 export const EditorEnvelopeLocatorContext = React.createContext<EditorEnvelopeLocator>({} as any);
 
@@ -32,6 +32,7 @@ export function EditorEnvelopeLocatorContextProvider(props: { children: React.Re
         ["dmn", { resourcesPathPrefix: "gwt-editors/dmn", envelopePath: "dmn-envelope.html" }],
         ["pmml", { resourcesPathPrefix: "", envelopePath: "pmml-envelope.html" }],
         ["json", { resourcesPathPrefix: "", envelopePath: "serverless-workflow-envelope.html" }],
+        ["yml", { resourcesPathPrefix: "", envelopePath: "serverless-workflow-envelope.html" }],
       ]),
     }),
     []

@@ -59,6 +59,7 @@ digraph G {
   "vscode-extension-pack-kogito-kie-editors" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "vscode-extension-pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-red-hat-business-automation-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "vscode-extension-serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kogito-tooling-examples/base64png-editor" -> "@kie-tooling-core/editor" [ style = "solid", color = "orange" ];
   "@kogito-tooling-examples/base64png-editor-chrome-extension" -> "@kie-tooling-core/chrome-extension" [ style = "solid", color = "orange" ];
   "@kogito-tooling-examples/base64png-editor-chrome-extension" -> "@kogito-tooling-examples/base64png-editor" [ style = "solid", color = "orange" ];
@@ -154,9 +155,12 @@ digraph G {
   "vscode-extension-pack-kogito-kie-editors" -> "@kie-tooling-core/vscode-extension" [ style = "solid", color = "black" ];
   "vscode-extension-pack-kogito-kie-editors" -> "@kogito-tooling/kie-bc-editors" [ style = "solid", color = "black" ];
   "vscode-extension-pack-kogito-kie-editors" -> "@kogito-tooling/pmml-editor" [ style = "solid", color = "black" ];
+  "vscode-extension-pack-kogito-kie-editors" -> "@kogito-tooling/serverless-workflow-editor" [ style = "solid", color = "black" ];
   "vscode-extension-pack-kogito-kie-editors" -> "@kogito-tooling/external-assets-base" [ style = "dashed", color = "black" ];
   "vscode-extension-pmml-editor" -> "@kie-tooling-core/vscode-extension" [ style = "solid", color = "blue" ];
   "vscode-extension-pmml-editor" -> "@kogito-tooling/pmml-editor" [ style = "solid", color = "blue" ];
   "vscode-extension-red-hat-business-automation-bundle" -> "@kogito-tooling/build-env" [ style = "dashed", color = "blue" ];
+  "vscode-extension-serverless-workflow-editor" -> "@kie-tooling-core/vscode-extension" [ style = "solid", color = "blue" ];
+  "vscode-extension-serverless-workflow-editor" -> "@kogito-tooling/serverless-workflow-editor" [ style = "solid", color = "blue" ];
   "@kie-tooling-core/workspace" -> "@kie-tooling-core/operating-system" [ style = "solid", color = "purple" ];
 }

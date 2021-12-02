@@ -87,6 +87,20 @@ export async function activate(context: vscode.ExtensionContext) {
             envelopePath: "dist/webview/PMMLEditorEnvelopeApp.js",
           },
         ],
+        [
+          "sw.json",
+          {
+            resourcesPathPrefix: "dist/webview/editors/serverless-workflow",
+            envelopePath: "dist/webview/ServerlessWorkflowEditorEnvelopeApp.js",
+          },
+        ],
+        [
+          "sw.yml",
+          {
+            resourcesPathPrefix: "dist/webview/editors/serverless-workflow",
+            envelopePath: "dist/webview/ServerlessWorkflowEditorEnvelopeApp.js",
+          },
+        ],
       ]),
     },
     backendProxy: backendProxy,

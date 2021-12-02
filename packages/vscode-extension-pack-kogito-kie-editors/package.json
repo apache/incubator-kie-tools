@@ -2,7 +2,7 @@
   "name": "vscode-extension-pack-kogito-kie-editors",
   "version": "0.0.0",
   "private": true,
-  "displayName": "BPMN, DMN, Test Scenario and (PMML) Scorecard Editors",
+  "displayName": "BPMN, DMN, Test Scenario, (PMML) Scorecard and Serverless Workflow Editors",
   "description": "",
   "license": "Apache-2.0",
   "engines": {
@@ -55,7 +55,7 @@
         "displayName": "KIE Kogito Editors",
         "selector": [
           {
-            "filenamePattern": "*.{dmn,bpmn,bpmn2,scesim,pmml}"
+            "filenamePattern": "*.{dmn,bpmn,bpmn2,scesim,pmml,sw.json,sw.yml}"
           }
         ]
       }
@@ -144,6 +144,18 @@
           "pmml",
           "Predictive Model Markup Language"
         ]
+      },
+      {
+        "id": "serverless-workflow",
+        "extensions": [
+          ".sw.json",
+          ".sw.yml"
+        ],
+        "aliases": [
+          "sw.json",
+          "sw.yml",
+          "Serverless workflow description"
+        ]
       }
     ]
   },
@@ -165,6 +177,7 @@
     "@kie-tooling-core/vscode-extension": "0.0.0",
     "@kogito-tooling/kie-bc-editors": "0.0.0",
     "@kogito-tooling/pmml-editor": "0.0.0",
+    "@kogito-tooling/serverless-workflow-editor": "0.0.0",
     "minimatch": "^3.0.4"
   },
   "devDependencies": {

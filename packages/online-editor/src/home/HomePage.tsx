@@ -166,7 +166,16 @@ export function HomePage() {
                 <NewModelCard
                   title={"Serverless Workflow"}
                   extension={"json"}
-                  description={"Serverless Workflow files"}
+                  description={
+                    "Serverless Workflow files are used to generate a vendor-neutral and declarative workflow definition."
+                  }
+                />
+                <NewModelCard
+                  title={"Serverless Workflow"}
+                  extension={"yml"}
+                  description={
+                    "Serverless Workflow files are used to generate a vendor-neutral and declarative workflow definition."
+                  }
                 />
               </Gallery>
             </PageSection>

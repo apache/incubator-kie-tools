@@ -1,0 +1,25 @@
+id: provisionorder
+name: Provision Order
+timeouts:
+  workflowExecTimeout: PT1M
+autoRetries: true
+states:
+  - name: Start Provisioning
+    type: event
+    onEvents:
+      - eventRefs:
+          - New Order Cloud Event
+        actions:
+          - functionRef:
+              refName: Provisioning Rest Function
+              arguments:
+                order: "${ .order }"
+            nonRetryableErrors:
+              - Invalid Order Error
+    onErrors:
+      - errorRef: Invalid Order Error
+        end:
+          continueAs: invalidorderworkflow
+    end:
+      produceEvents:
+        - eventRef: Order Provisioned Cloud Event

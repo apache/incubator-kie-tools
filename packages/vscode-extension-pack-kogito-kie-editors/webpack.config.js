@@ -90,6 +90,7 @@ module.exports = async (env) => [
     target: "web",
     entry: {
       "webview/PMMLEditorEnvelopeApp": "./src/webview/PMMLEditorEnvelopeApp.ts",
+      "webview/ServerlessWorkflowEditorEnvelopeApp": "./src/webview/ServerlessWorkflowEditorEnvelopeApp.ts",
     },
     resolve: {
       alias: {

@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Page } from "@patternfly/react-core/dist/js/components/Page";
-import { HashRouter } from "react-router-dom";
 import { KogitoEdit } from "@kie-tooling-core/workspace/dist/api";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { MermaidDiagram } from "../diagram";
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
-import { EditorDidMount } from "react-monaco-editor/src/types";
 import * as monaco from "@kie-tooling-core/monaco-editor";
 import * as svgPanZoom from "svg-pan-zoom";
-
+import * as mermaid from "../../static/resources/mermaid/mermaid";
+/*
 export interface CustomWindow extends Window {
   mermaid: any;
 }
 
-declare let window: CustomWindow;
+declare let window: CustomWindow;*/
 
 interface Props {
   /**
@@ -69,18 +67,14 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   const mermaidDiv = useRef<HTMLDivElement>(null);
   const monacoEditorContainer = useRef<HTMLDivElement>(null);
 
-  const editorDidMount: EditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
-    editor.focus();
-  };
-
   useImperativeHandle(
     forwardedRef,
     () => {
       return {
-        setContent: (path: string, content: string): Promise<void> => {
+        setContent: (path: string, newContent: string): Promise<void> => {
           try {
-            setOriginalContent(content);
-            setContent(content);
+            setOriginalContent(newContent);
+            setContent(newContent);
             return Promise.resolve();
           } catch (e) {
             console.error(e);
@@ -103,13 +97,11 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
         },
       };
     },
-    []
+    [content]
   );
 
-  let monacoInstance: monaco.editor.IStandaloneCodeEditor;
-
   useEffect(() => {
-    monacoInstance = monaco.editor.create(monacoEditorContainer.current!, {
+    const monacoInstance = monaco.editor.create(monacoEditorContainer.current!, {
       value: originalContent,
       language: "json",
       scrollBeyondLastLine: false,
@@ -120,16 +112,14 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
       setContent(monacoInstance.getValue());
     });
 
+    monacoInstance?.getModel()?.setValue(originalContent);
+
     props.ready();
 
     return () => {
       monacoInstance.dispose();
     };
-  }, [originalContent]);
-
-  useEffect(() => {
-    monacoInstance?.getModel()?.setValue(originalContent);
-  }, [originalContent]);
+  }, [originalContent, props]);
 
   useEffect(() => {
     try {
@@ -139,8 +129,8 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
       if (mermaidSourceCode?.length > 0) {
         mermaidDiv.current!.innerHTML = mermaidSourceCode;
         mermaidDiv.current!.removeAttribute("data-processed");
-        window.mermaid.init(undefined, mermaidDiv.current!);
-        mermaidDiv.current!.getElementsByTagName("svg")[0].setAttribute("style", "height: 100vh;");
+        mermaid.init(mermaidDiv.current!);
+        mermaidDiv.current!.getElementsByTagName("svg")[0].setAttribute("style", "height: 100%;");
         svgPanZoom(mermaidDiv.current!.getElementsByTagName("svg")[0]);
         setDiagramOutOfSync(false);
       } else {
@@ -153,18 +143,14 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   }, [content]);
 
   return (
-    <HashRouter>
-      <Page>
-        <div style={{ display: "flex" }}>
-          <div style={{ width: "49%", height: "100vh" }} ref={monacoEditorContainer}></div>
-          <div
-            style={{ width: "49%", height: "100vh", opacity: diagramOutOfSync ? 0.5 : 1 }}
-            ref={mermaidDiv}
-            className={"mermaid"}
-          ></div>
-        </div>
-      </Page>
-    </HashRouter>
+    <div style={{ display: "flex", height: "100vh" }}>
+      <div style={{ width: "50%", height: "100%" }} ref={monacoEditorContainer} />
+      <div
+        style={{ width: "50%", height: "100%", opacity: diagramOutOfSync ? 0.5 : 1 }}
+        ref={mermaidDiv}
+        className={"mermaid"}
+      />
+    </div>
   );
 };
 
