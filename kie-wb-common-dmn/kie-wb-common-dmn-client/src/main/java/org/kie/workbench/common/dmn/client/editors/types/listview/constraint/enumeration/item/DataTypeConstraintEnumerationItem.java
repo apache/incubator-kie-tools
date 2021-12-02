@@ -96,8 +96,8 @@ public class DataTypeConstraintEnumerationItem {
     }
 
     public void save(final String newValue) {
-        setNonNullValue(newValue);
-        refreshEnumerationListAndScrollToThisItem();
+        setValue(newValue);
+        disableEditMode();
     }
 
     public void remove() {
@@ -116,10 +116,6 @@ public class DataTypeConstraintEnumerationItem {
 
     private void refreshEnumerationList() {
         dataTypeConstraintEnumeration.refreshView();
-    }
-
-    private void refreshEnumerationListAndScrollToThisItem() {
-        dataTypeConstraintEnumeration.refreshView(getScrollToThisItemCallback());
     }
 
     Command getScrollToThisItemCallback() {

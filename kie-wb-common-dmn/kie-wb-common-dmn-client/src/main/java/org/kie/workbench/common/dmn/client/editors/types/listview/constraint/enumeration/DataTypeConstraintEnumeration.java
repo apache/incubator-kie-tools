@@ -92,6 +92,7 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
         return getEnumerationItems()
                 .stream()
                 .map(DataTypeConstraintEnumerationItem::getValue)
+                .distinct()
                 .filter(itemValue -> !isEmpty(itemValue))
                 .collect(joining(SEPARATOR));
     }

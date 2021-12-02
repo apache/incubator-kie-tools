@@ -78,6 +78,7 @@ public class DataTypeConstraintEnumerationView implements DataTypeConstraintEnum
         enumerationItem.setAttribute(DATA_POSITION, items.childNodes.length);
         items.appendChild(enumerationItem);
         getDragAndDropHelper().refreshItemsPosition();
+        presenter.scrollToBottom();
     }
 
     DragAndDropHelper getDragAndDropHelper() {

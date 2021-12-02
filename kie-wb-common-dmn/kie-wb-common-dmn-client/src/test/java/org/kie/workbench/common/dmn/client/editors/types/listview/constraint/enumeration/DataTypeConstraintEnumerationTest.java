@@ -99,12 +99,14 @@ public class DataTypeConstraintEnumerationTest {
         final DataTypeConstraintEnumerationItem item1 = mock(DataTypeConstraintEnumerationItem.class);
         final DataTypeConstraintEnumerationItem item2 = mock(DataTypeConstraintEnumerationItem.class);
         final DataTypeConstraintEnumerationItem item3 = mock(DataTypeConstraintEnumerationItem.class);
+        final DataTypeConstraintEnumerationItem item4 = mock(DataTypeConstraintEnumerationItem.class);
 
         when(item1.getValue()).thenReturn("123");
         when(item2.getValue()).thenReturn("456");
         when(item3.getValue()).thenReturn("");
+        when(item4.getValue()).thenReturn("123");
 
-        doReturn(asList(item1, item2)).when(constraintEnumeration).getEnumerationItems();
+        doReturn(asList(item1, item2, item3, item4)).when(constraintEnumeration).getEnumerationItems();
 
         final String actualValue = constraintEnumeration.getValue();
         final String expectedValue = "123, 456";
