@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
@@ -35,6 +35,12 @@ import { useSettingsDispatch } from "../settings/SettingsContext";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { useGitHubAuthInfo } from "../github/Hooks";
 
+const getSuggestedRepositoryName = (name: string) =>
+  name
+    .replaceAll(" ", "-")
+    .toLocaleLowerCase()
+    .replace(/[^._\-\w\d]/g, "");
+
 export function CreateGitHubRepositoryModal(props: {
   workspace: WorkspaceDescriptor;
   isOpen: boolean;
@@ -48,7 +54,11 @@ export function CreateGitHubRepositoryModal(props: {
   const [isPrivate, setPrivate] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
-  const [name, setName] = useState(props.workspace.name.replace(" ", "-").toLocaleLowerCase());
+  const [name, setName] = useState(getSuggestedRepositoryName(props.workspace.name));
+
+  useEffect(() => {
+    setName(getSuggestedRepositoryName(props.workspace.name));
+  }, [props.workspace.name]);
 
   const create = useCallback(async () => {
     try {
