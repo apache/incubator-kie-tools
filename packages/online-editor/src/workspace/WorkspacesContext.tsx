@@ -112,7 +112,11 @@ export interface WorkspacesContextType {
   pull(args: {
     fs: LightningFS;
     workspaceId: string;
-    authInfo?: { username: string; password: string };
+    gitConfig?: { email: string; name: string };
+    authInfo?: {
+      username: string;
+      password: string;
+    };
   }): Promise<void>;
 
   // edit workspace

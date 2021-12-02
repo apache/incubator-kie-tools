@@ -43,7 +43,7 @@ import {
   useNavigationStatusToggle,
   useRoutes,
 } from "../navigation/Hooks";
-import { AuthStatus, useSettings, useSettingsDispatch } from "../settings/SettingsContext";
+import { AuthStatus, GithubScopes, useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
 import { useHistory } from "react-router";
 import { EmbedModal } from "./EmbedModal";
@@ -295,6 +295,8 @@ export function EditorToolbar(props: Props) {
       setGitHubGistLoading(true);
       const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
 
+      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId, gitConfig: githubAuthInfo });
+
       await workspaces.gitService.push({
         fs,
         dir: await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId }),
@@ -305,7 +307,11 @@ export function EditorToolbar(props: Props) {
         authInfo: githubAuthInfo,
       });
 
-      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId, gitConfig: githubAuthInfo });
+      await workspaces.pull({
+        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+        workspaceId: props.workspaceFile.workspaceId,
+        authInfo: githubAuthInfo,
+      });
     } catch (e) {
       errorAlert.show();
       throw e;
@@ -347,7 +353,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       await workspaces.descriptorService.turnIntoGist(props.workspaceFile.workspaceId, new URL(gist.data.git_push_url));
 
       const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-      const workspaceRootDirPath = await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
+      const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
 
       await workspaces.gitService.addRemote({
         fs,
@@ -377,6 +383,12 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
         force: true,
+        authInfo: githubAuthInfo,
+      });
+
+      await workspaces.pull({
+        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+        workspaceId: props.workspaceFile.workspaceId,
         authInfo: githubAuthInfo,
       });
 
@@ -411,24 +423,27 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   const canCreateGitRepository = useMemo(
     () =>
       settings.github.authStatus === AuthStatus.SIGNED_IN &&
+      settings.github.scopes?.includes(GithubScopes.REPO) &&
       workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL,
-    [workspacePromise, settings.github.authStatus]
+    [workspacePromise, settings.github.authStatus, settings.github.scopes]
   );
 
   const canCreateGitHubGist = useMemo(
     () =>
       settings.github.authStatus === AuthStatus.SIGNED_IN &&
+      settings.github.scopes?.includes(GithubScopes.GIST) &&
       workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL &&
       !workspaceHasNestedDirectories,
-    [workspacePromise, settings.github.authStatus, workspaceHasNestedDirectories]
+    [workspacePromise, settings.github.authStatus, settings.github.scopes, workspaceHasNestedDirectories]
   );
 
   const canUpdateGitHubGist = useMemo(
     () =>
       settings.github.authStatus === AuthStatus.SIGNED_IN &&
+      settings.github.scopes?.includes(GithubScopes.GIST) &&
       workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST &&
       !workspaceHasNestedDirectories,
-    [workspacePromise, settings.github.authStatus, workspaceHasNestedDirectories]
+    [workspacePromise, settings.github.authStatus, settings.github.scopes, workspaceHasNestedDirectories]
   );
 
   const [isCreateGitHubRepositoryModalOpen, setCreateGitHubRepositoryModalOpen] = useState(false);
