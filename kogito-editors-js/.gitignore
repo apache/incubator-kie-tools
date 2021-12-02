@@ -13,6 +13,9 @@ target
 *.iws
 /nbproject
 
+**/cypress/videos
+**/cypress/screenshots
+
 # Misc
 **/.DS_Store
 *.log

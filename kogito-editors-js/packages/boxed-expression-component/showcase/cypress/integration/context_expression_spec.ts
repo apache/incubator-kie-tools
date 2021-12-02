@@ -45,8 +45,7 @@ describe("Context Expression Tests", () => {
     cy.ouiaType("expression-column-header-cell-info").contains("boolean").should("be.visible");
   });
 
-  // Blocked by KOGITO-6262
-  it.skip("Define nested Decision Table", () => {
+  it("Define nested Decision Table", () => {
     // Entry point for each new expression
     cy.ouiaId("expression-container").click();
 
@@ -71,14 +70,13 @@ describe("Context Expression Tests", () => {
 
     cy.get("th:contains('output-')").should(($outputs) => {
       expect($outputs).to.have.length(3);
-      expect($outputs.eq(1)).to.contain("output-3");
-      expect($outputs.eq(2)).to.contain("output-1");
-      expect($outputs.eq(3)).to.contain("output-2");
+      expect($outputs.eq(0)).to.contain("output-3");
+      expect($outputs.eq(1)).to.contain("output-1");
+      expect($outputs.eq(2)).to.contain("output-2");
     });
   });
 
-  // Blocked by KOGITO-6262
-  it.skip("Define nested Decision Table as result", () => {
+  it("Define nested Decision Table as result", () => {
     // Entry point for each new expression
     cy.ouiaId("expression-container").click();
 
