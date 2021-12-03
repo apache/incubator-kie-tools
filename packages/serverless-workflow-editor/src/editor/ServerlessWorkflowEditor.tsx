@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
+import { Drawer, DrawerPanelContent, DrawerContent, DrawerContentBody, DrawerPanelBody } from "@patternfly/react-core";
 import { KogitoEdit } from "@kie-tooling-core/workspace/dist/api";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
@@ -22,12 +23,6 @@ import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import * as monaco from "@kie-tooling-core/monaco-editor";
 import * as svgPanZoom from "svg-pan-zoom";
 import * as mermaid from "../../static/resources/mermaid/mermaid";
-/*
-export interface CustomWindow extends Window {
-  mermaid: any;
-}
-
-declare let window: CustomWindow;*/
 
 interface Props {
   /**
@@ -64,8 +59,8 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   const [originalContent, setOriginalContent] = useState("");
   const [content, setContent] = useState("");
   const [diagramOutOfSync, setDiagramOutOfSync] = useState(false);
-  const mermaidDiv = useRef<HTMLDivElement>(null);
-  const monacoEditorContainer = useRef<HTMLDivElement>(null);
+  const svgContainer = useRef<HTMLDivElement>(null);
+  const editorContainer = useRef<HTMLDivElement>(null);
 
   useImperativeHandle(
     forwardedRef,
@@ -101,7 +96,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   );
 
   useEffect(() => {
-    const monacoInstance = monaco.editor.create(monacoEditorContainer.current!, {
+    const monacoInstance = monaco.editor.create(editorContainer.current!, {
       value: originalContent,
       language: "json",
       scrollBeyondLastLine: false,
@@ -127,11 +122,11 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
       const mermaidSourceCode = workflow.states ? new MermaidDiagram(workflow).sourceCode() : "";
 
       if (mermaidSourceCode?.length > 0) {
-        mermaidDiv.current!.innerHTML = mermaidSourceCode;
-        mermaidDiv.current!.removeAttribute("data-processed");
-        mermaid.init(mermaidDiv.current!);
-        mermaidDiv.current!.getElementsByTagName("svg")[0].setAttribute("style", "height: 100%;");
-        svgPanZoom(mermaidDiv.current!.getElementsByTagName("svg")[0]);
+        svgContainer.current!.innerHTML = mermaidSourceCode;
+        svgContainer.current!.removeAttribute("data-processed");
+        mermaid.init(svgContainer.current!);
+        svgContainer.current!.getElementsByTagName("svg")[0].setAttribute("style", "height: 100%;");
+        svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0]);
         setDiagramOutOfSync(false);
       } else {
         setDiagramOutOfSync(true);
@@ -142,15 +137,22 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     }
   }, [content]);
 
+  const panelContent = (
+    <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
+      <DrawerPanelBody>
+        <div style={{ height: "100%", opacity: diagramOutOfSync ? 0.5 : 1 }} ref={svgContainer} className={"mermaid"} />
+      </DrawerPanelBody>
+    </DrawerPanelContent>
+  );
+
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
-      <div style={{ width: "50%", height: "100%" }} ref={monacoEditorContainer} />
-      <div
-        style={{ width: "50%", height: "100%", opacity: diagramOutOfSync ? 0.5 : 1 }}
-        ref={mermaidDiv}
-        className={"mermaid"}
-      />
-    </div>
+    <Drawer isExpanded={true} isInline>
+      <DrawerContent panelContent={panelContent}>
+        <DrawerContentBody>
+          <div style={{ height: "100%" }} ref={editorContainer} />
+        </DrawerContentBody>
+      </DrawerContent>
+    </Drawer>
   );
 };
 
