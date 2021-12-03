@@ -132,6 +132,12 @@ export function open(args: {
       getDimensions: (uuid: string) => {
         return envelopeServer.envelopeApi.requests.canvas_getDimensions(uuid);
       },
+      applyState: (uuid: string, state: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_applyState(uuid, state);
+      },
+      centerNode: (uuid: string) => {
+        return envelopeServer.envelopeApi.requests.canvas_centerNode(uuid);
+      },
     },
   };
 }
