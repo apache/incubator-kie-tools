@@ -16,7 +16,7 @@
 
 import "./LiteralExpression.css";
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import {
   DataType,
   executeIfExpressionDefinitionChanged,
@@ -91,6 +91,12 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
     },
     [spreadLiteralExpressionDefinition]
   );
+
+  // TODO: https://issues.redhat.com/browse/KOGITO-6341
+  useEffect(() => {
+    spreadLiteralExpressionDefinition();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="literal-expression">
