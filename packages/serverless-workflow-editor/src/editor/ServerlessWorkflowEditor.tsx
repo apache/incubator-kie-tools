@@ -17,8 +17,7 @@ import * as React from "react";
 import { Drawer, DrawerPanelContent, DrawerContent, DrawerContentBody, DrawerPanelBody } from "@patternfly/react-core";
 import { KogitoEdit } from "@kie-tooling-core/workspace/dist/api";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
-import { Specification } from "@severlessworkflow/sdk-typescript";
-import { MermaidDiagram } from "../diagram";
+import { MermaidDiagram, Specification } from "@severlessworkflow/sdk-typescript";
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import * as monaco from "@kie-tooling-core/monaco-editor";
 import * as svgPanZoom from "svg-pan-zoom";
@@ -146,7 +145,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   );
 
   return (
-    <Drawer isExpanded={true} isInline>
+    <Drawer isExpanded={true} isInline style={{ height: "100vh" }}>
       <DrawerContent panelContent={panelContent}>
         <DrawerContentBody>
           <div style={{ height: "100%" }} ref={editorContainer} />
