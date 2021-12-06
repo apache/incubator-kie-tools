@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,8 @@ import * as React from "react";
 import { Drawer, DrawerPanelContent, DrawerContent, DrawerContentBody, DrawerPanelBody } from "@patternfly/react-core";
 import { KogitoEdit } from "@kie-tooling-core/workspace/dist/api";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
-import { MermaidDiagram, Specification } from "@severlessworkflow/sdk-typescript";
+import { Specification } from "@severlessworkflow/sdk-typescript";
+import { MermaidDiagram } from "../diagram";
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import * as monaco from "@kie-tooling-core/monaco-editor";
 import * as svgPanZoom from "svg-pan-zoom";

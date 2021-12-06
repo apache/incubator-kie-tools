@@ -2885,10 +2885,10 @@
   dependencies:
     any-observable "^0.3.0"
 
-"@severlessworkflow/sdk-typescript@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@severlessworkflow/sdk-typescript/-/sdk-typescript-3.0.0.tgz#d48eee1b5fee93d4d2bf7643cbcc91e9861fda1e"
-  integrity sha512-JX6kgzMerVBVdmD3Z+XzaLoIMHpzVcuoKRMshBqroRMHsXBHi9+1V9aZi+aetpkheIz8uPC+vWGTsSoAiWZurA==
+"@severlessworkflow/sdk-typescript@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@severlessworkflow/sdk-typescript/-/sdk-typescript-1.0.0.tgz#f7b04b3b7f0cf339bf1c517ffa865baf1df1f744"
+  integrity sha512-LbLJ070IFJz3Ak3TVmhF0iKdQAfJyCIpccJWAQJleWiUPuJ6kmFBCHGjvaMYZ4SYtsqnRAj06T7aswBiu2jwKA==
   dependencies:
     ajv "^8.1.0"
     js-yaml "^4.1.0"
