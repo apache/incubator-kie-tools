@@ -180,7 +180,13 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
         strict: true,
       });
 
-      if (!gistMatch && !rawGistMatch) {
+      const directGistMatch = matchPath<{ gistId: string }>(url.pathname, {
+        path: "/:gistId",
+        exact: true,
+        strict: true,
+      });
+
+      if (!gistMatch && !rawGistMatch && !directGistMatch) {
         return { type: UrlType.INVALID, error: "Unsupported Gist URL", url: urlString };
       }
 

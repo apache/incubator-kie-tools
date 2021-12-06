@@ -111,7 +111,7 @@ export function NewWorkspaceFromUrlPage() {
     async function run() {
       const singleFile = [UrlType.FILE, UrlType.GIST_FILE, UrlType.GITHUB_FILE].includes(importableUrl.type);
 
-      if (!singleFile) {
+      if (!singleFile && importableUrl.type !== UrlType.GIST) {
         // try to import the URL as a git repository first
         try {
           const url = new URL(queryParamUrl!);
