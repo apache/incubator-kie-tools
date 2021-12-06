@@ -257,6 +257,7 @@ jobs:
           ref: gh-pages
 
       - name: "Setup kogito-tooling-bot"
+        if: ${{ !inputs.dry_run }}
         uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
         with:
           path: kogito-online
@@ -339,6 +340,7 @@ jobs:
           ref: gh-pages
 
       - name: "Setup kogito-tooling-bot"
+        if: ${{ !inputs.dry_run }}
         uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
         with:
           path: kogito-online
@@ -648,6 +650,7 @@ jobs:
           ref: gh-pages
 
       - name: "Setup kogito-tooling-bot"
+        if: ${{ !inputs.dry_run }}
         uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
         with:
           path: kogito-online
