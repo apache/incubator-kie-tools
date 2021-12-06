@@ -20,29 +20,6 @@ import { wrapped } from "@kie-tooling-core/i18n/dist/core";
 
 export const en: OnlineI18n = {
   ...en_common,
-  downloadHubModal: {
-    beforeDownload: {
-      title: `The ${en_common.names.businessModeler.hub} allows you to access`,
-      vscodeDescription: `Installs ${en_common.names.vscode} extension and gives you a convenient way to launch ${en_common.names.vscode} ready to work with ${en_common.names.kogito}.`,
-      githubChromeExtension: {
-        title: `${en_common.names.github}  ${en_common.names.chrome} Extension`,
-        description: `Provides detailed instructions on how to install ${en_common.names.kogito} ${en_common.names.github} Extension for ${en_common.names.chrome}.`,
-      },
-      desktop: {
-        title: `${en_common.names.desktop} ${en_common.names.app}`,
-        description: `Installs the ${en_common.names.businessModeler.desktop} ${en_common.names.app} for use locally and offline.`,
-      },
-      businessModeler: {
-        title: `${en_common.names.businessModeler.name} Preview`,
-        description: "Provides a quick link to access the website in the same hub.",
-      },
-    },
-    afterDownload: {
-      title: `Thank you for downloading ${en_common.names.businessModeler.hub}!`,
-      message: "If the download does not begin automatically,",
-      link: "click here",
-    },
-  },
   editorPage: {
     textEditorModal: {
       title: (fileName: string) => `Editing ${fileName}`,

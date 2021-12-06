@@ -95,9 +95,9 @@ The Kogito Tooling project contains several applications. To develop each one of
 2. Open a terminal and run `yarn start`. This will start a `webpack serve` instance with the Online Editor resources.
 3. From now on you can use the development version of the Online Editor by accessing `https://localhost:9001`.
 
-#### Desktop and Hub
+#### Desktop
 
-1. After you've successfully built the project following the instructions above, go to `packages/desktop` or `packages/hub`. They work exactly the same.
+1. After you've successfully built the project following the instructions above, go to `packages/desktop`.
 2. To start the application in development mode, you can run `yarn start`. If you make changes and want to reload the app, run `yarn run build:dev && yarn start`. This will recompile the module and restart the Electron app. Remember: if you make changes to other modules, you have to build them too!
 3. To build and package the application for production (i.e. generating an executable), you can run `yarn run build:prod`. This will pack the application for the current OS. If you want to pack the application for a different OS, run `yarn run pack:linux`, for example. See `package.json` for more details.
 

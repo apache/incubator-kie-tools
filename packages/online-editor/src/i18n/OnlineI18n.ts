@@ -18,29 +18,6 @@ import { ReferenceDictionary, Wrapped } from "@kie-tooling-core/i18n/dist/core";
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
 interface OnlineDictionary extends ReferenceDictionary {
-  downloadHubModal: {
-    beforeDownload: {
-      title: string;
-      vscodeDescription: string;
-      githubChromeExtension: {
-        title: string;
-        description: string;
-      };
-      desktop: {
-        title: string;
-        description: string;
-      };
-      businessModeler: {
-        title: string;
-        description: string;
-      };
-    };
-    afterDownload: {
-      title: string;
-      message: string;
-      link: string;
-    };
-  };
   editorPage: {
     textEditorModal: {
       title: (fileName: string) => string;

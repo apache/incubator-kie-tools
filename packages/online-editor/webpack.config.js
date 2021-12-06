@@ -27,7 +27,6 @@ const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const { ProvidePlugin } = require("webpack");
 
 module.exports = async (env, argv) => {
-  const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs();
   const buildInfo = getBuildInfo();
   const [
     kieToolingExtendedServices_linuxDownloadUrl,
@@ -70,9 +69,6 @@ module.exports = async (env, argv) => {
         },
       ]),
       new EnvironmentPlugin({
-        WEBPACK_REPLACE__hubLinuxUrl: downloadHub_linuxUrl,
-        WEBPACK_REPLACE__hubMacOsUrl: downloadHub_macOsUrl,
-        WEBPACK_REPLACE__hubWindowsUrl: downloadHub_windowsUrl,
         WEBPACK_REPLACE__buildInfo: buildInfo,
         WEBPACK_REPLACE__kieToolingExtendedServicesLinuxDownloadUrl: kieToolingExtendedServices_linuxDownloadUrl,
         WEBPACK_REPLACE__kieToolingExtendedServicesMacOsDownloadUrl: kieToolingExtendedServices_macOsDownloadUrl,
@@ -169,18 +165,6 @@ function getGtmResource() {
     </noscript>
     <!-- End Google Tag Manager (noscript) -->`,
   };
-}
-
-function getDownloadHubArgs() {
-  const linuxUrl = buildEnv.onlineEditor.downloadHubUrl.linux;
-  const macOsUrl = buildEnv.onlineEditor.downloadHubUrl.macOs;
-  const windowsUrl = buildEnv.onlineEditor.downloadHubUrl.windows;
-
-  console.info(`Online Editor :: Download Hub URL (Linux): ${linuxUrl}`);
-  console.info(`Online Editor :: Download Hub URL (macOS): ${macOsUrl}`);
-  console.info(`Online Editor :: Download Hub URL (Windows): ${windowsUrl}`);
-
-  return [linuxUrl, macOsUrl, windowsUrl];
 }
 
 function getBuildInfo() {
