@@ -145,6 +145,15 @@ export const EditorPageDockDrawer = React.forwardRef<
     return "";
   }, [kieToolingExtendedServices.status, props.workspaceFile.extension]);
 
+  const isDmnTableMode = useMemo(
+    () => dmnRunnerState.mode === DmnRunnerMode.TABLE && props.workspaceFile.extension.toLowerCase() === "dmn",
+    [dmnRunnerState.mode, props.workspaceFile.extension]
+  );
+
+  useEffect(() => {
+    setPanel(PanelId.NONE);
+  }, [props.workspaceFile.relativePath]);
+
   return (
     <>
       <Drawer isInline={true} position={"bottom"} isExpanded={panel !== PanelId.NONE}>
@@ -157,7 +166,7 @@ export const EditorPageDockDrawer = React.forwardRef<
                     {panel === PanelId.NOTIFICATIONS_PANEL && (
                       <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
                     )}
-                    {panel === PanelId.DMN_RUNNER_TABULAR && dmnRunnerState.mode === DmnRunnerMode.TABLE && (
+                    {panel === PanelId.DMN_RUNNER_TABULAR && isDmnTableMode && (
                       <DmnRunnerTabular
                         setPanelOpen={setPanel}
                         isReady={props.isEditorReady}
@@ -183,7 +192,7 @@ export const EditorPageDockDrawer = React.forwardRef<
         }}
       >
         <ToggleGroup>
-          {dmnRunnerState.mode === DmnRunnerMode.TABLE && (
+          {isDmnTableMode && (
             <DmnRunnerDockToggle isSelected={panel === PanelId.DMN_RUNNER_TABULAR} onChange={(id) => onToggle(id)} />
           )}
           <NotificationsPanelDockToggle
