@@ -71,7 +71,7 @@ jobs:
           repository: kiegroup/kogito-online-staging
 
       - name: "Setup kogito-tooling-bot"
-        if: matrix.os == 'ubuntu-latest'
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
         with:
           path: kogito-online-staging
