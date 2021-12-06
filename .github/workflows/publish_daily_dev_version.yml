@@ -60,9 +60,6 @@ jobs:
           WEBPACK__tsLoaderTranspileOnly: "false"
           CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
           CHROME_EXTENSION__routerRelativePath: "kogito-online/dev/editors/"
-          ONLINE_EDITOR__downloadHubUrlLinux: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
-          ONLINE_EDITOR__downloadHubUrlMacOs: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
-          ONLINE_EDITOR__downloadHubUrlWindows: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
           ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ env.KIE_TOOLING_EXTENDED_SERVICES_VERSION }}/kie_tooling_extended_services_linux_${{ env.KIE_TOOLING_EXTENDED_SERVICES_VERSION }}.tar.gz"
           ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ env.KIE_TOOLING_EXTENDED_SERVICES_VERSION }}/kie_tooling_extended_services_macos_${{ env.KIE_TOOLING_EXTENDED_SERVICES_VERSION }}.dmg"
           ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ env.KIE_TOOLING_EXTENDED_SERVICES_VERSION }}/kie_tooling_extended_services_windows_${{ env.KIE_TOOLING_EXTENDED_SERVICES_VERSION }}.exe"
@@ -125,27 +122,6 @@ jobs:
           name: desktop-app-windows
           path: kogito-tooling/packages/desktop/out/Business Modeler Preview-win32-x64
 
-      - name: "Upload Hub App - Ubuntu (Ubuntu only)"
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v1
-        with:
-          name: hub-app-linux
-          path: kogito-tooling/packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
-
-      - name: "Upload Hub App - macOS (macOS only)"
-        if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v1
-        with:
-          name: hub-app-macos
-          path: kogito-tooling/packages/hub/out/Business Modeler Hub Preview-darwin-x64.zip
-
-      - name: "Upload Hub App - Windows (Windows only)"
-        if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v1
-        with:
-          name: hub-app-windows
-          path: kogito-tooling/packages/hub/out/Business Modeler Hub Preview-win32-x64
-
       - name: "Checkout kogito-online (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
         uses: actions/checkout@v2
@@ -167,7 +143,6 @@ jobs:
           cp -r ../kogito-tooling/packages/online-editor/dist/* dev/
           rm -rf dev/gwt-editors
           ln -s editors dev/gwt-editors
-          echo "Hub download unsupported in this distribution. If you want it, you can access the latest \"Publish daily dev version\" job in https://github.com/kiegroup/kogito-tooling/actions and download it in the Artifacts dropdown." > dev/hub_download_unsupported.txt
           git config --global user.email "kietooling@gmail.com"
           git config --global user.name "Kogito Tooling Bot (kiegroup)"
           today=$(date -I)

@@ -91,9 +91,7 @@ jobs:
           if-no-files-found: warn
           path: |
             packages/*/dist
-            packages/hub/out/*.zip
             packages/desktop/out/*.zip
-            !packages/hub/dist
             !packages/desktop/dist
 
       - name: "Upload IT Tests artifacts"

@@ -67,21 +67,6 @@ const ENV_VARS = {
     default: "manifest.dev.json",
     description: "",
   },
-  ONLINE_EDITOR__downloadHubUrlLinux: {
-    name: "ONLINE_EDITOR__downloadHubUrlLinux",
-    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/business_modeler_hub_preview_linux_${version}.zip`,
-    description: "",
-  },
-  ONLINE_EDITOR__downloadHubUrlMacOs: {
-    name: "ONLINE_EDITOR__downloadHubUrlMacOs",
-    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/business_modeler_hub_preview_macos_${version}.zip`,
-    description: "",
-  },
-  ONLINE_EDITOR__downloadHubUrlWindows: {
-    name: "ONLINE_EDITOR__downloadHubUrlWindows",
-    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/business_modeler_hub_preview_windows_${version}.zip`,
-    description: "",
-  },
   ONLINE_EDITOR__buildInfo: {
     name: "ONLINE_EDITOR__buildInfo",
     default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
@@ -252,11 +237,6 @@ module.exports = {
     },
     gtmId: getOrDefault(ENV_VARS.ONLINE_EDITOR__gtmId),
     buildInfo: getOrDefault(ENV_VARS.ONLINE_EDITOR__buildInfo),
-    downloadHubUrl: {
-      linux: getOrDefault(ENV_VARS.ONLINE_EDITOR__downloadHubUrlLinux),
-      macOs: getOrDefault(ENV_VARS.ONLINE_EDITOR__downloadHubUrlMacOs),
-      windows: getOrDefault(ENV_VARS.ONLINE_EDITOR__downloadHubUrlWindows),
-    },
     kieToolingExtendedServices: {
       compatibleVersion: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion),
       downloadUrl: {

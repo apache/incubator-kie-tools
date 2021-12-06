@@ -102,9 +102,6 @@ jobs:
           CHROME_EXTENSION__routerRelativePath: "kogito-online-staging/${{ inputs.tag }}-prerelease/chrome-extension"
           CHROME_EXTENSION__onlineEditorUrl: "https://kiegroup.github.io/kogito-online-staging/${{ inputs.tag }}-prerelease"
           CHROME_EXTENSION__manifestFile: "manifest.prod.json"
-          ONLINE_EDITOR__downloadHubUrlLinux: "${{ inputs.download_asset_url }}/STAGING__business_modeler_hub_preview_linux_${{ inputs.tag }}.tar.gz"
-          ONLINE_EDITOR__downloadHubUrlMacOs: "${{ inputs.download_asset_url }}/STAGING__business_modeler_hub_preview_macos_${{ inputs.tag }}.zip"
-          ONLINE_EDITOR__downloadHubUrlWindows: "${{ inputs.download_asset_url }}/STAGING__business_modeler_hub_preview_windows_${{ inputs.tag }}.zip"
           ONLINE_EDITOR__buildInfo: "${{ inputs.tag }} (staging) @ ${{ inputs.commit_sha }}"
           ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: "${{ inputs.download_asset_url }}/STAGING__kie_tooling_extended_services_linux_${{ inputs.tag }}.tar.gz"
           ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: "${{ inputs.download_asset_url }}/STAGING__kie_tooling_extended_services_macos_${{ inputs.tag }}.dmg"
@@ -273,43 +270,6 @@ jobs:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: "${{ github.workspace }}/kogito-tooling/packages/desktop/out/Business Modeler Preview-win32-x64.zip"
           asset_name: "STAGING__business_modeler_preview_windows_${{ inputs.tag }}.zip"
-          asset_content_type: application/zip
-
-      - name: "STAGING: Upload Hub App for Linux (Ubuntu only)"
-        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kogito-tooling/packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
-          asset_name: STAGING__business_modeler_hub_preview_linux_${{ inputs.tag }}.tar.gz
-          asset_content_type: application/tar+gzip
-
-      - name: "STAGING: Upload Hub App for macOS (macOS only)"
-        if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kogito-tooling/packages/hub/out/Business Modeler Hub Preview-darwin-x64.zip
-          asset_name: STAGING__business_modeler_hub_preview_macos_${{ inputs.tag }}.zip
-          asset_content_type: application/zip
-
-      - name: "Compress Hub App (Windows only)"
-        if: matrix.os == 'windows-latest'
-        run: "Compress-Archive -Path \"kogito-tooling\\packages\\hub\\out\\Business Modeler Hub Preview-win32-x64\" -DestinationPath \"kogito-tooling\\packages\\hub\\out\\Business Modeler Hub Preview-win32-x64.zip\""
-
-      - name: "STAGING: Upload Hub App for Windows (Windows only)"
-        if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
-        with:
-          upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: "${{ github.workspace }}/kogito-tooling/packages/hub/out/Business Modeler Hub Preview-win32-x64.zip"
-          asset_name: "STAGING__business_modeler_hub_preview_windows_${{ inputs.tag }}.zip"
           asset_content_type: application/zip
 
       - name: "STAGING: Upload Extended Services for Linux (Ubuntu only)"
