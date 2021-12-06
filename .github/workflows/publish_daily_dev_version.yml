@@ -14,7 +14,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     env:
-      KIE_TOOLING_EXTENDED_SERVICES_VERSION: "0.13.0"
+      KIE_TOOLING_EXTENDED_SERVICES_VERSION: "0.0.0"
       KOGITO_TOOLING_BUILD_docker: "true"
       DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
       DMN_DEV_SANDBOX__baseImageAccount: "kogito_tooling_bot"
