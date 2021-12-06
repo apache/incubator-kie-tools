@@ -27,7 +27,7 @@ import { WorkspaceService } from "./services/WorkspaceService";
 import { basename, extname, parse } from "path";
 import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
-import LightningFS from "@isomorphic-git/lightning-fs";
+import KieSandboxFs from "@kogito-tooling/kie-sandbox-fs";
 import { GitService } from "./services/GitService";
 import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
@@ -110,23 +110,23 @@ export interface WorkspacesContextType {
   }) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
 
   pull(args: {
-    fs: LightningFS;
+    fs: KieSandboxFs;
     workspaceId: string;
     authInfo?: { username: string; password: string };
   }): Promise<void>;
 
   // edit workspace
   addEmptyFile(args: {
-    fs: LightningFS;
+    fs: KieSandboxFs;
     workspaceId: string;
     destinationDirRelativePath: string;
     extension: string;
   }): Promise<WorkspaceFile>;
-  prepareZip(args: { fs: LightningFS; workspaceId: string; onlyExtensions?: string[] }): Promise<Blob>;
-  getFiles(args: { fs: LightningFS; workspaceId: string }): Promise<WorkspaceFile[]>;
-  hasLocalChanges(args: { fs: LightningFS; workspaceId: string }): Promise<boolean>;
+  prepareZip(args: { fs: KieSandboxFs; workspaceId: string; onlyExtensions?: string[] }): Promise<Blob>;
+  getFiles(args: { fs: KieSandboxFs; workspaceId: string }): Promise<WorkspaceFile[]>;
+  hasLocalChanges(args: { fs: KieSandboxFs; workspaceId: string }): Promise<boolean>;
   createSavePoint(args: {
-    fs: LightningFS;
+    fs: KieSandboxFs;
     workspaceId: string;
     gitConfig?: { email: string; name: string };
   }): Promise<void>;
@@ -136,14 +136,14 @@ export interface WorkspacesContextType {
   renameWorkspace(args: { workspaceId: string; newName: string }): Promise<void>;
 
   resourceContentList: (args: {
-    fs: LightningFS;
+    fs: KieSandboxFs;
     workspaceId: string;
     globPattern: string;
     opts?: ResourceListOptions;
   }) => Promise<ResourcesList>;
 
   resourceContentGet: (args: {
-    fs: LightningFS;
+    fs: KieSandboxFs;
     workspaceId: string;
     relativePath: string;
     opts?: ResourceContentOptions;
@@ -151,24 +151,24 @@ export interface WorkspacesContextType {
 
   //
 
-  getFile(args: { fs: LightningFS; workspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined>;
+  getFile(args: { fs: KieSandboxFs; workspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined>;
 
   renameFile(args: {
-    fs: LightningFS;
+    fs: KieSandboxFs;
     file: WorkspaceFile;
     newFileNameWithoutExtension: string;
   }): Promise<WorkspaceFile>;
 
   updateFile(args: {
-    fs: LightningFS;
+    fs: KieSandboxFs;
     file: WorkspaceFile;
     getNewContents: () => Promise<string | undefined>;
   }): Promise<void>;
 
-  deleteFile(args: { fs: LightningFS; file: WorkspaceFile }): Promise<void>;
+  deleteFile(args: { fs: KieSandboxFs; file: WorkspaceFile }): Promise<void>;
 
   addFile(args: {
-    fs: LightningFS;
+    fs: KieSandboxFs;
     workspaceId: string;
     name: string;
     destinationDirRelativePath: string;
@@ -176,7 +176,7 @@ export interface WorkspacesContextType {
     extension: string;
   }): Promise<WorkspaceFile>;
 
-  existsFile(args: { fs: LightningFS; workspaceId: string; relativePath: string }): Promise<boolean>;
+  existsFile(args: { fs: KieSandboxFs; workspaceId: string; relativePath: string }): Promise<boolean>;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);

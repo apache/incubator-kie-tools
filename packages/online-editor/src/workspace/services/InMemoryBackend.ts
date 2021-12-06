@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import DexieBackend from "@isomorphic-git/lightning-fs/src/DexieBackend";
+import DexieBackend from "@kogito-tooling/kie-sandbox-fs/dist/DexieBackend";
 
 export class InMemoryBackend {
   constructor(public readonly dexieBackend: DexieBackend, public fs = new Map<string, any>()) {}

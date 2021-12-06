@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import LightningFS from "@isomorphic-git/lightning-fs";
+import KieSandboxFs from "@kogito-tooling/kie-sandbox-fs";
 import { basename, dirname, extname, join, relative, resolve } from "path";
 
 export class EagerStorageFile {
@@ -42,7 +42,7 @@ export class StorageFile {
 }
 
 export class StorageService {
-  public async createOrOverwriteFile(fs: LightningFS, file: StorageFile) {
+  public async createOrOverwriteFile(fs: KieSandboxFs, file: StorageFile) {
     const contents = await file.getFileContents();
     try {
       await fs.promises.writeFile(file.path, contents);
@@ -52,7 +52,7 @@ export class StorageService {
     }
   }
 
-  public async createFiles(fs: LightningFS, files: StorageFile[]) {
+  public async createFiles(fs: KieSandboxFs, files: StorageFile[]) {
     if (!fs.promises.writeFileBulk) {
       throw new Error("Can't write bulk");
     }
@@ -68,7 +68,7 @@ export class StorageService {
     await fs.promises.writeFileBulk(filesArray);
   }
 
-  public async updateFile(fs: LightningFS, file: StorageFile): Promise<void> {
+  public async updateFile(fs: KieSandboxFs, file: StorageFile): Promise<void> {
     if (!(await this.exists(fs, file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
@@ -77,11 +77,11 @@ export class StorageService {
     await fs.promises.writeFile(file.path, content);
   }
 
-  public async deleteFile(fs: LightningFS, path: string): Promise<void> {
+  public async deleteFile(fs: KieSandboxFs, path: string): Promise<void> {
     await fs.promises.unlink(path);
   }
 
-  public async renameFile(fs: LightningFS, file: StorageFile, newFileName: string): Promise<StorageFile> {
+  public async renameFile(fs: KieSandboxFs, file: StorageFile, newFileName: string): Promise<StorageFile> {
     if (!(await this.exists(fs, file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
@@ -105,7 +105,7 @@ export class StorageService {
     return newFile;
   }
 
-  public async moveFile(fs: LightningFS, file: StorageFile, newDirPath: string): Promise<StorageFile> {
+  public async moveFile(fs: KieSandboxFs, file: StorageFile, newDirPath: string): Promise<StorageFile> {
     if (!(await this.exists(fs, file.path))) {
       throw new Error(`File ${file.path} does not exist`);
     }
@@ -121,7 +121,7 @@ export class StorageService {
     return newFile;
   }
 
-  public async moveFiles(fs: LightningFS, files: StorageFile[], newDirPath: string): Promise<Map<string, string>> {
+  public async moveFiles(fs: KieSandboxFs, files: StorageFile[], newDirPath: string): Promise<Map<string, string>> {
     const paths = new Map<string, string>();
     for (const fileToMove of files) {
       const movedFile = await this.moveFile(fs, fileToMove, newDirPath);
@@ -130,7 +130,7 @@ export class StorageService {
     return paths;
   }
 
-  public async getFile(fs: LightningFS, path: string): Promise<StorageFile | undefined> {
+  public async getFile(fs: KieSandboxFs, path: string): Promise<StorageFile | undefined> {
     if (!(await this.exists(fs, path))) {
       return;
     }
@@ -141,7 +141,7 @@ export class StorageService {
     });
   }
 
-  public async getFiles(fs: LightningFS, paths: string[]): Promise<EagerStorageFile[]> {
+  public async getFiles(fs: KieSandboxFs, paths: string[]): Promise<EagerStorageFile[]> {
     if (!fs.promises.readFileBulk) {
       throw new Error("Can't read bulk");
     }
@@ -155,7 +155,7 @@ export class StorageService {
     });
   }
 
-  async mkdirDeep(fs: LightningFS, dirPath: string, _selfCall = false) {
+  async mkdirDeep(fs: KieSandboxFs, dirPath: string, _selfCall = false) {
     try {
       await fs.promises.mkdir(dirPath);
       return;
@@ -191,7 +191,7 @@ export class StorageService {
     }
   }
 
-  public async exists(fs: LightningFS, path: string): Promise<boolean> {
+  public async exists(fs: KieSandboxFs, path: string): Promise<boolean> {
     try {
       await fs.promises.stat(path);
       return true;
@@ -206,7 +206,7 @@ export class StorageService {
   }
 
   public async walk<T = string>(args: {
-    fs: LightningFS;
+    fs: KieSandboxFs;
     startFromDirPath: string;
     shouldExcludeDir: (dirPath: string) => boolean;
     onVisit: (args: { absolutePath: string; relativePath: string }) => Promise<T | undefined>;
@@ -236,7 +236,7 @@ export class StorageService {
     }, []) as T[];
   }
 
-  async deleteFiles(fs: LightningFS, paths: string[]) {
+  async deleteFiles(fs: KieSandboxFs, paths: string[]) {
     if (!fs.promises.unlinkBulk) {
       throw new Error("Can't unlink bulk");
     }

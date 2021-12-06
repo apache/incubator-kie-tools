@@ -31,7 +31,7 @@ import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLo
 import { join } from "path";
 import { WorkspaceEvents } from "./hooks/WorkspaceHooks";
 import { Buffer } from "buffer";
-import LightningFS from "@isomorphic-git/lightning-fs";
+import KieSandboxFs from "@kogito-tooling/kie-sandbox-fs";
 import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
@@ -72,7 +72,7 @@ export function WorkspacesContextProvider(props: Props) {
   const createWorkspace = useCallback(
     async (args: {
       useInMemoryFs: boolean;
-      storeFiles: (fs: LightningFS, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
+      storeFiles: (fs: KieSandboxFs, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
       origin: WorkspaceOrigin;
       preferredName?: string;
     }) => {
@@ -98,7 +98,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const hasLocalChanges = useCallback(
-    async (args: { fs: LightningFS; workspaceId: string }) => {
+    async (args: { fs: KieSandboxFs; workspaceId: string }) => {
       return await gitService.hasLocalChanges({
         fs: args.fs,
         dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
@@ -108,7 +108,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const pull = useCallback(
-    async (args: { fs: LightningFS; workspaceId: string }) => {
+    async (args: { fs: KieSandboxFs; workspaceId: string }) => {
       const workspace = await descriptorService.get(args.workspaceId);
       await gitService.pull({
         fs: args.fs,
@@ -128,7 +128,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createSavePoint = useCallback(
-    async (args: { fs: LightningFS; workspaceId: string; gitConfig?: { email: string; name: string } }) => {
+    async (args: { fs: KieSandboxFs; workspaceId: string; gitConfig?: { email: string; name: string } }) => {
       const descriptor = await descriptorService.get(args.workspaceId);
 
       const workspaceRootDirPath = service.getAbsolutePath({ workspaceId: args.workspaceId });
@@ -189,7 +189,7 @@ export function WorkspacesContextProvider(props: Props) {
         preferredName: args.preferredName,
         origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
         useInMemoryFs: args.useInMemoryFs,
-        storeFiles: async (fs: LightningFS, workspace: WorkspaceDescriptor) => {
+        storeFiles: async (fs: KieSandboxFs, workspace: WorkspaceDescriptor) => {
           const files = args.localFiles
             .filter((file) => !file.path.startsWith(".git/"))
             .map(
@@ -275,7 +275,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const renameFile = useCallback(
-    async (args: { fs: LightningFS; file: WorkspaceFile; newFileNameWithoutExtension: string }) => {
+    async (args: { fs: KieSandboxFs; file: WorkspaceFile; newFileNameWithoutExtension: string }) => {
       const newFile = service.renameFile({
         fs: args.fs,
         file: args.file,
@@ -289,21 +289,21 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const getFiles = useCallback(
-    async (args: { fs: LightningFS; workspaceId: string }) => {
+    async (args: { fs: KieSandboxFs; workspaceId: string }) => {
       return service.getFilesWithLazyContent(args.fs, args.workspaceId);
     },
     [service]
   );
 
   const getFile = useCallback(
-    async (args: { fs: LightningFS; workspaceId: string; relativePath: string }) => {
+    async (args: { fs: KieSandboxFs; workspaceId: string; relativePath: string }) => {
       return service.getFile(args);
     },
     [service]
   );
 
   const deleteFile = useCallback(
-    async (args: { fs: LightningFS; file: WorkspaceFile }) => {
+    async (args: { fs: KieSandboxFs; file: WorkspaceFile }) => {
       await service.deleteFile(args.fs, args.file, { broadcast: true });
       await svgService.deleteSvg(args.file);
     },
@@ -311,7 +311,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const updateFile = useCallback(
-    async (args: { fs: LightningFS; file: WorkspaceFile; getNewContents: () => Promise<string> }) => {
+    async (args: { fs: KieSandboxFs; file: WorkspaceFile; getNewContents: () => Promise<string> }) => {
       await service.updateFile(args.fs, args.file, args.getNewContents, { broadcast: true });
     },
     [service]
@@ -319,7 +319,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const addFile = useCallback(
     async (args: {
-      fs: LightningFS;
+      fs: KieSandboxFs;
       workspaceId: string;
       name: string;
       destinationDirRelativePath: string;
@@ -350,13 +350,13 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const existsFile = useCallback(
-    async (args: { fs: LightningFS; workspaceId: string; relativePath: string }) => await service.existsFile(args),
+    async (args: { fs: KieSandboxFs; workspaceId: string; relativePath: string }) => await service.existsFile(args),
     [service]
   );
 
   const addEmptyFile = useCallback(
     async (args: {
-      fs: LightningFS;
+      fs: KieSandboxFs;
       workspaceId: string;
       destinationDirRelativePath: string;
       extension: SupportedFileExtensions;
@@ -365,13 +365,13 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const prepareZip = useCallback(
-    (args: { fs: LightningFS; workspaceId: string; onlyExtensions?: string[] }) =>
+    (args: { fs: KieSandboxFs; workspaceId: string; onlyExtensions?: string[] }) =>
       service.prepareZip(args.fs, args.workspaceId, args.onlyExtensions),
     [service]
   );
 
   const resourceContentGet = useCallback(
-    async (args: { fs: LightningFS; workspaceId: string; relativePath: string; opts?: ResourceContentOptions }) => {
+    async (args: { fs: KieSandboxFs; workspaceId: string; relativePath: string; opts?: ResourceContentOptions }) => {
       const file = await service.getFile(args);
       if (!file) {
         throw new Error(`File '${args.relativePath}' not found in Workspace ${args.workspaceId}`);
@@ -394,7 +394,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const resourceContentList = useCallback(
-    async (args: { fs: LightningFS; workspaceId: string; globPattern: string }) => {
+    async (args: { fs: KieSandboxFs; workspaceId: string; globPattern: string }) => {
       const files = await service.getFilesWithLazyContent(args.fs, args.workspaceId, args.globPattern);
       const matchingPaths = files.map((file) => file.relativePath);
       return new ResourcesList(args.globPattern, matchingPaths);

@@ -23,7 +23,7 @@ import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
 import { extname, join, relative } from "path";
 import { Minimatch } from "minimatch";
-import LightningFS from "@isomorphic-git/lightning-fs";
+import KieSandboxFs from "@kogito-tooling/kie-sandbox-fs";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./WorkspaceFsService";
 import { WorkspaceOrigin } from "../model/WorkspaceOrigin";
@@ -37,7 +37,7 @@ export class WorkspaceService {
 
   public async create(args: {
     useInMemoryFs: boolean;
-    storeFiles: (fs: LightningFS, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
+    storeFiles: (fs: KieSandboxFs, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
     broadcastArgs: { broadcast: boolean };
     origin: WorkspaceOrigin;
     preferredName?: string;
@@ -70,7 +70,7 @@ export class WorkspaceService {
   }
 
   public async getFilesWithLazyContent(
-    fs: LightningFS,
+    fs: KieSandboxFs,
     workspaceId: string,
     globPattern?: string
   ): Promise<WorkspaceFile[]> {
@@ -122,7 +122,7 @@ export class WorkspaceService {
     }
   }
 
-  public async prepareZip(fs: LightningFS, workspaceId: string, onlyExtensions?: string[]): Promise<Blob> {
+  public async prepareZip(fs: KieSandboxFs, workspaceId: string, onlyExtensions?: string[]): Promise<Blob> {
     const workspaceRootDirPath = this.getAbsolutePath({ workspaceId });
 
     const gitDirPath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
@@ -146,7 +146,7 @@ export class WorkspaceService {
   }
 
   public async createOrOverwriteFile(
-    fs: LightningFS,
+    fs: KieSandboxFs,
     file: WorkspaceFile,
     broadcastArgs: { broadcast: boolean }
   ): Promise<void> {
@@ -169,7 +169,7 @@ export class WorkspaceService {
   }
 
   public async getFile(args: {
-    fs: LightningFS;
+    fs: KieSandboxFs;
     workspaceId: string;
     relativePath: string;
   }): Promise<WorkspaceFile | undefined> {
@@ -182,7 +182,7 @@ export class WorkspaceService {
   }
 
   public async updateFile(
-    fs: LightningFS,
+    fs: KieSandboxFs,
     file: WorkspaceFile,
     getNewContents: () => Promise<string>,
     broadcastArgs: { broadcast: boolean }
@@ -214,7 +214,7 @@ export class WorkspaceService {
     }
   }
 
-  public async deleteFile(fs: LightningFS, file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
+  public async deleteFile(fs: KieSandboxFs, file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
     await this.storageService.deleteFile(fs, this.toStorageFile(file).path);
 
     if (broadcastArgs.broadcast) {
@@ -234,7 +234,7 @@ export class WorkspaceService {
   }
 
   public async renameFile(args: {
-    fs: LightningFS;
+    fs: KieSandboxFs;
     file: WorkspaceFile;
     newFileNameWithoutExtension: string;
     broadcastArgs: { broadcast: boolean };
@@ -271,7 +271,7 @@ export class WorkspaceService {
     return renamedWorkspaceFile;
   }
 
-  public async existsFile(args: { fs: LightningFS; workspaceId: string; relativePath: string }): Promise<boolean> {
+  public async existsFile(args: { fs: KieSandboxFs; workspaceId: string; relativePath: string }): Promise<boolean> {
     return this.storageService.exists(args.fs, this.getAbsolutePath(args));
   }
 
@@ -280,7 +280,7 @@ export class WorkspaceService {
   }
 
   public async deleteFiles(
-    fs: LightningFS,
+    fs: KieSandboxFs,
     files: WorkspaceFile[],
     broadcastArgs: { broadcast: boolean }
   ): Promise<void> {
@@ -304,7 +304,7 @@ export class WorkspaceService {
   }
 
   public async moveFiles(
-    fs: LightningFS,
+    fs: KieSandboxFs,
     files: WorkspaceFile[],
     newDirPath: string,
     broadcastArgs: { broadcast: boolean }

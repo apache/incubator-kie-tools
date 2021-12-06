@@ -16,9 +16,9 @@
 
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { v4 as uuid } from "uuid";
-import LightningFS from "@isomorphic-git/lightning-fs";
-import DefaultBackend from "@isomorphic-git/lightning-fs/src/DefaultBackend";
-import DexieBackend from "@isomorphic-git/lightning-fs/src/DexieBackend";
+import KieSandboxFs from "@kogito-tooling/kie-sandbox-fs";
+import DefaultBackend from "@kogito-tooling/kie-sandbox-fs/dist/DefaultBackend";
+import DexieBackend from "@kogito-tooling/kie-sandbox-fs/dist/DexieBackend";
 import { StorageFile, StorageService } from "./StorageService";
 import { decoder, encoder } from "../WorkspacesContext";
 import { WorkspaceKind, WorkspaceOrigin } from "../model/WorkspaceOrigin";
@@ -31,7 +31,7 @@ const NEW_WORKSPACE_DEFAULT_NAME = `Untitled Folder`;
 export class WorkspaceDescriptorService {
   constructor(
     private readonly storageService: StorageService,
-    private readonly descriptorsFs = new LightningFS(WORKSPACE_DESCRIPTORS_FS_NAME, {
+    private readonly descriptorsFs = new KieSandboxFs(WORKSPACE_DESCRIPTORS_FS_NAME, {
       backend: new DefaultBackend({
         idbBackendDelegate: (fileDbName, fileStoreName) => {
           return new DexieBackend(fileDbName, fileStoreName);

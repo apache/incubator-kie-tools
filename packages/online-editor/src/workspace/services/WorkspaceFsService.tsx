@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import LightningFS from "@isomorphic-git/lightning-fs";
-import DexieBackend from "@isomorphic-git/lightning-fs/src/DexieBackend";
+import KieSandboxFs from "@kogito-tooling/kie-sandbox-fs";
+import DexieBackend from "@kogito-tooling/kie-sandbox-fs/dist/DexieBackend";
 import { InMemoryBackend } from "./InMemoryBackend";
-import DefaultBackend from "@isomorphic-git/lightning-fs/src/DefaultBackend";
+import DefaultBackend from "@kogito-tooling/kie-sandbox-fs/dist/DefaultBackend";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
 import { FsCache } from "./FsCache";
 
@@ -34,7 +34,7 @@ export class WorkspaceFsService {
     return this.fsCache.getOrCreateFs(workspaceId);
   }
 
-  public async withInMemoryFs<T>(workspaceId: string, callback: (fs: LightningFS) => Promise<T>) {
+  public async withInMemoryFs<T>(workspaceId: string, callback: (fs: KieSandboxFs) => Promise<T>) {
     const { fs, flush } = await this.createInMemoryWorkspaceFs(workspaceId);
     const ret = await callback(fs);
     await flush();
@@ -54,8 +54,8 @@ export class WorkspaceFsService {
       return fsAsMapConstructorParameter;
     };
 
-    const dbName = workspaceId; // don't change. (This is hardcoded on LightningFS).
-    const storeName = workspaceId + "_files"; // don't change (This is hardcoded on LightningFS).
+    const dbName = workspaceId; // don't change. (This is hardcoded on KieSandboxFs).
+    const storeName = workspaceId + "_files"; // don't change (This is hardcoded on KieSandboxFs).
     const dexieBackend = new DexieBackend(dbName, storeName);
     const inMemoryBackend = new InMemoryBackend(dexieBackend, new Map(await readEntireFs(dexieBackend)));
 
@@ -70,11 +70,11 @@ export class WorkspaceFsService {
           console.debug("MEM :: Flushing in memory FS");
           await dexieBackend.writeFileBulk(inodeBulk, dataBulk);
           res();
-        }, 500); // necessary to wait for debounce of 500ms (This is hardcoded on LightningFS).
+        }, 500); // necessary to wait for debounce of 500ms (This is hardcoded on KieSandboxFs).
       });
     };
 
-    const fs = new LightningFS(dbName, {
+    const fs = new KieSandboxFs(dbName, {
       backend: new DefaultBackend({ idbBackendDelegate: () => inMemoryBackend }) as any,
     });
 

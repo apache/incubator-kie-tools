@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import LightningFS from "@isomorphic-git/lightning-fs";
-import DefaultBackend from "@isomorphic-git/lightning-fs/src/DefaultBackend";
-import DexieBackend from "@isomorphic-git/lightning-fs/src/DexieBackend";
+import KieSandboxFs from "@kogito-tooling/kie-sandbox-fs";
+import DefaultBackend from "@kogito-tooling/kie-sandbox-fs/dist/DefaultBackend";
+import DexieBackend from "@kogito-tooling/kie-sandbox-fs/dist/DexieBackend";
 
 export class FsCache {
-  private fsCache = new Map<string, LightningFS>();
+  private fsCache = new Map<string, KieSandboxFs>();
   public getOrCreateFs(workspaceId: string) {
     const fs = this.fsCache.get(workspaceId);
     if (fs) {
       return fs;
     }
 
-    const newFs = new LightningFS(workspaceId, {
+    const newFs = new KieSandboxFs(workspaceId, {
       backend: new DefaultBackend({
         idbBackendDelegate: (dbName, storeName) => new DexieBackend(dbName, storeName),
       }) as any,
