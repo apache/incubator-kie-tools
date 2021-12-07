@@ -3,10 +3,17 @@
   "version": "0.0.0",
   "license": "Apache-2.0",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "examples/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "examples/*"
+    ],
+    "nohoist": [
+      "@kogito-tooling/serverless-workflow-editor",
+      "@kogito-tooling/serverless-workflow-editor/mermaid",
+      "@kogito-tooling/serverless-workflow-editor/mermaid/**"
+    ]
+  },
   "scripts": {
     "env:print": "build-env --print-env",
     "env:vars": "build-env --print-vars",

@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Drawer, DrawerPanelContent, DrawerContent, DrawerContentBody, DrawerPanelBody } from "@patternfly/react-core";
+import {
+  Drawer,
+  DrawerPanelContent,
+  DrawerContent,
+  DrawerContentBody,
+  DrawerPanelBody,
+} from "@patternfly/react-core/dist/js/components/Drawer";
 import { KogitoEdit } from "@kie-tooling-core/workspace/dist/api";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
@@ -22,7 +28,7 @@ import { MermaidDiagram } from "../diagram";
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import * as monaco from "@kie-tooling-core/monaco-editor";
 import * as svgPanZoom from "svg-pan-zoom";
-import * as mermaid from "../../static/resources/mermaid/mermaid";
+import mermaid from "mermaid";
 
 interface Props {
   /**
