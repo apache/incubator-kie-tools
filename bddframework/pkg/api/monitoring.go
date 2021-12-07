@@ -16,8 +16,11 @@ package api
 
 const (
 
-	// MonitoringDefaultPath default path
-	MonitoringDefaultPath = "/metrics"
+	// MonitoringDefaultPathQuarkus default path
+	MonitoringDefaultPathQuarkus = "/q/metrics"
+
+	// MonitoringDefaultPathSpringboot default path
+	MonitoringDefaultPathSpringboot = "/actuator/prometheus"
 
 	// MonitoringDefaultScheme default scheme
 	MonitoringDefaultScheme = "http"
