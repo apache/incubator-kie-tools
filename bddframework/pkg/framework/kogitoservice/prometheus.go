@@ -15,9 +15,10 @@
 package kogitoservice
 
 import (
-	"github.com/kiegroup/kogito-operator/apis"
-	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"net/http"
+
+	api "github.com/kiegroup/kogito-operator/apis"
+	"github.com/kiegroup/kogito-operator/core/infrastructure"
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
@@ -83,7 +84,7 @@ func (m *prometheusManager) isPrometheusAvailable() bool {
 func (m *prometheusManager) isPrometheusAddOnAvailable(kogitoService api.KogitoService) (bool, error) {
 	kogitoServiceHandler := NewKogitoServiceHandler(m.Context)
 	url := kogitoServiceHandler.GetKogitoServiceEndpoint(kogitoService)
-	url = url + getMonitoringPath(kogitoService.GetSpec().GetMonitoring())
+	url = url + getMonitoringPath(kogitoService.GetSpec().GetMonitoring(), kogitoService)
 	if resp, err := http.Head(url); err != nil {
 		return false, err
 	} else if resp.StatusCode == http.StatusOK {
@@ -126,7 +127,7 @@ func (m *prometheusManager) loadDeployedServiceMonitor(instanceName, namespace s
 func (m *prometheusManager) createServiceMonitor(kogitoService api.KogitoService) (*monv1.ServiceMonitor, error) {
 	monitoring := kogitoService.GetSpec().GetMonitoring()
 	endPoint := monv1.Endpoint{}
-	endPoint.Path = getMonitoringPath(monitoring)
+	endPoint.Path = getMonitoringPath(monitoring, kogitoService)
 	endPoint.Scheme = getMonitoringScheme(monitoring)
 
 	serviceSelectorLabels := make(map[string]string)
@@ -167,10 +168,13 @@ func (m *prometheusManager) createServiceMonitor(kogitoService api.KogitoService
 	return sm, nil
 }
 
-func getMonitoringPath(monitoring api.MonitoringInterface) string {
+func getMonitoringPath(monitoring api.MonitoringInterface, kogitoService api.KogitoService) string {
 	path := monitoring.GetPath()
 	if len(path) == 0 {
-		path = api.MonitoringDefaultPath
+		path = api.MonitoringDefaultPathQuarkus
+		if kogitoService.GetSpec().GetRuntime() == api.SpringBootRuntimeType {
+			path = api.MonitoringDefaultPathSpringboot
+		}
 	}
 	return path
 }

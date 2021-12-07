@@ -15,13 +15,14 @@
 package kogitoservice
 
 import (
-	"github.com/kiegroup/kogito-operator/apis"
+	"testing"
+
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func Test_createServiceMonitor_defaultConfiguration(t *testing.T) {
@@ -36,8 +37,24 @@ func Test_createServiceMonitor_defaultConfiguration(t *testing.T) {
 	monitoringManager := prometheusManager{Context: context}
 	serviceMonitor, err := monitoringManager.createServiceMonitor(kogitoService)
 	assert.NoError(t, err)
-	assert.Equal(t, api.MonitoringDefaultPath, serviceMonitor.Spec.Endpoints[0].Path)
+	assert.Equal(t, api.MonitoringDefaultPathQuarkus, serviceMonitor.Spec.Endpoints[0].Path)
 	assert.Equal(t, api.MonitoringDefaultScheme, serviceMonitor.Spec.Endpoints[0].Scheme)
+}
+
+func Test_createServiceMonitor_defaultSpringConfiguration(t *testing.T) {
+	ns := t.Name()
+	cli := test.NewFakeClientBuilder().Build()
+	kogitoService := test.CreateFakeKogitoRuntime(ns)
+	context := operator.Context{
+		Client: cli,
+		Log:    test.TestLogger,
+		Scheme: meta.GetRegisteredSchema(),
+	}
+	kogitoService.Spec.Runtime = api.SpringBootRuntimeType
+	monitoringManager := prometheusManager{Context: context}
+	serviceMonitor, err := monitoringManager.createServiceMonitor(kogitoService)
+	assert.NoError(t, err)
+	assert.Equal(t, api.MonitoringDefaultPathSpringboot, serviceMonitor.Spec.Endpoints[0].Path)
 }
 
 func Test_createServiceMonitor_customConfiguration(t *testing.T) {
