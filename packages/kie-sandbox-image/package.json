@@ -1,0 +1,27 @@
+{
+  "name": "@kogito-tooling/kie-sandbox-image",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "scripts": {
+    "cleanup": "rimraf dist-dev && mkdir dist-dev",
+    "copy:online-editor": "cp -R ../online-editor/dist ./dist-dev/online-editor",
+    "copy:assets": "yarn copy:online-editor",
+    "podman:build": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env kieSandbox.baseImage.buildTags) | xargs printf -- \"-t $(build-env kieSandbox.baseImage.registry)/$(build-env kieSandbox.baseImage.account)/$(build-env kieSandbox.baseImage.name):%s\n\" | xargs echo) .\" --else \"echo Podman not found, skipping image build.\"",
+    "build:dev": "yarn cleanup && yarn copy:assets",
+    "build:prod:win32": "echo \"Build not supported on Windows\"",
+    "build:prod:darwin:linux": "yarn run run-script-if --bool \"$(build-env global.build.docker)\" --then \"yarn podman:build\"",
+    "build:prod": "yarn cleanup && yarn copy:assets && run-script-os"
+  },
+  "dependencies": {
+    "@kogito-tooling/online-editor": "0.0.0"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
+  }
+}

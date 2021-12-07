@@ -1,0 +1,27 @@
+{
+  "name": "@kogito-tooling/kie-sandbox-extended-services-image",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "scripts": {
+    "cleanup": "rimraf dist-dev && mkdir dist-dev",
+    "copy:extended-services": "cp -R ../extended-services/dist/linux/kie_tooling_extended_services ./dist-dev/kie_tooling_extended_services",
+    "copy:assets": "yarn copy:extended-services",
+    "podman:build": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env extendedServices.baseImage.buildTags) | xargs printf -- \"-t $(build-env extendedServices.baseImage.registry)/$(build-env extendedServices.baseImage.account)/$(build-env extendedServices.baseImage.name):%s\n\" | xargs echo) .\" --else \"echo Podman not found, skipping image build.\"",
+    "build:dev": "yarn cleanup && yarn copy:assets",
+    "build:prod:win32": "echo \"Build not supported on Windows\"",
+    "build:prod:darwin:linux": "yarn run run-script-if --bool \"$(build-env global.build.docker)\" --then \"yarn podman:build\"",
+    "build:prod": "yarn cleanup && yarn copy:assets && run-script-os"
+  },
+  "dependencies": {
+    "@kogito-tooling/extended-services": "0.0.0"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
+  }
+}

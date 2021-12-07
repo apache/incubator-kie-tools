@@ -188,6 +188,46 @@ const ENV_VARS = {
     default: "latest",
     description: "",
   },
+  KIE_SANDBOX__baseImageRegistry: {
+    name: "KIE_SANDBOX__baseImageRegistry",
+    default: "quay.io",
+    description: "",
+  },
+  KIE_SANDBOX__baseImageAccount: {
+    name: "KIE_SANDBOX__baseImageAccount",
+    default: "kogito_tooling_bot",
+    description: "",
+  },
+  KIE_SANDBOX__baseImageName: {
+    name: "KIE_SANDBOX__baseImageName",
+    default: "kie-sandbox-image",
+    description: "",
+  },
+  KIE_SANDBOX__baseImageBuildTags: {
+    name: "KIE_SANDBOX__baseImageBuildTags",
+    default: "latest",
+    description: "",
+  },
+  KIE_SANDBOX_EXTENDED_SERVICES__baseImageRegistry: {
+    name: "KIE_SANDBOX_EXTENDED_SERVICES__baseImageRegistry",
+    default: "quay.io",
+    description: "",
+  },
+  KIE_SANDBOX_EXTENDED_SERVICES__baseImageAccount: {
+    name: "KIE_SANDBOX_EXTENDED_SERVICES__baseImageAccount",
+    default: "kogito_tooling_bot",
+    description: "",
+  },
+  KIE_SANDBOX_EXTENDED_SERVICES__baseImageName: {
+    name: "KIE_SANDBOX_EXTENDED_SERVICES__baseImageName",
+    default: "kie-sandbox-extended-services-image",
+    description: "",
+  },
+  KIE_SANDBOX_EXTENDED_SERVICES__baseImageBuildTags: {
+    name: "KIE_SANDBOX_EXTENDED_SERVICES__baseImageBuildTags",
+    default: "latest",
+    description: "",
+  },
 };
 
 module.exports = {
@@ -258,6 +298,7 @@ module.exports = {
       buildTags: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__baseImageBuildTags),
     },
   },
+
   dashbuilder: {
     baseImage: {
       registry: getOrDefault(ENV_VARS.DASHBUILDER__baseImageRegistry),
@@ -266,6 +307,24 @@ module.exports = {
       authoringName: getOrDefault(ENV_VARS.DASHBUILDER_AUTHORING__baseImageName),
       tag: getOrDefault(ENV_VARS.DASHBUILDER__baseImageTag),
       buildTags: getOrDefault(ENV_VARS.DASHBUILDER__baseImageBuildTags),
+    },
+  },
+
+  kieSandbox: {
+    baseImage: {
+      registry: getOrDefault(ENV_VARS.KIE_SANDBOX__baseImageRegistry),
+      account: getOrDefault(ENV_VARS.KIE_SANDBOX__baseImageAccount),
+      name: getOrDefault(ENV_VARS.KIE_SANDBOX__baseImageName),
+      buildTags: getOrDefault(ENV_VARS.KIE_SANDBOX__baseImageBuildTags),
+    },
+  },
+
+  extendedServices: {
+    baseImage: {
+      registry: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__baseImageRegistry),
+      account: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__baseImageAccount),
+      name: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__baseImageName),
+      buildTags: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__baseImageBuildTags),
     },
   },
 
