@@ -58,10 +58,10 @@
             <id>lock-treatment-tool execution</id>
             <phase>initialize</phase>
             <goals>
-              <goal>npx</goal>
+              <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>lock-treatment-tool --</arguments>
+              <arguments>exec @kie/lock-treatment-tool --</arguments>
             </configuration>
           </execution>
           <execution>
