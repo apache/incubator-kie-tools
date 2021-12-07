@@ -49,7 +49,7 @@ const (
 var (
 	// MongoDB variables for the KogitoInfra deployed infrastructure.
 	//For Quarkus: https://quarkus.io/guides/mongoDB-client#quarkus-mongoDB-client_configuration
-	//For Spring: https://github.com/mongoDB/mongoDB-spring-boot/blob/master/mongoDB-spring-boot-starter-remote/src/test/resources/test-application.properties
+	//For Spring: https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#data.nosql.mongodb
 
 	propertiesMongoDB = map[api.RuntimeType]map[int]string{
 		api.QuarkusRuntimeType: {
