@@ -71,7 +71,7 @@ import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedSer
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { GIST_DEFAULT_BRANCH, GIST_ORIGIN_REMOTE_NAME, GIT_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
-import { GistOrigin, WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
+import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
@@ -144,7 +144,8 @@ export function EditorToolbar(props: Props) {
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
   const [isGitHubGistLoading, setGitHubGistLoading] = useState(false);
   const [gitHubGist, setGitHubGist] =
-    useState<OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | null>(null);
+    useState<OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined>(undefined);
+  const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
 
   const githubAuthInfo = useGitHubAuthInfo();
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
@@ -152,13 +153,14 @@ export function EditorToolbar(props: Props) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (gitHubGist || workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.GITHUB_GIST) {
+        if (
+          gitHubGist ||
+          (workspaceImportableUrl.type !== UrlType.GIST_FILE && workspaceImportableUrl.type !== UrlType.GIST)
+        ) {
           return;
         }
 
-        const gistUrl = workspacePromise.data?.descriptor.origin?.url;
-
-        const gistId = gistUrl?.toString().split("/").pop()!.replace(".git", "");
+        const { gistId } = workspaceImportableUrl;
 
         if (!gistId) {
           return;
@@ -174,7 +176,7 @@ export function EditorToolbar(props: Props) {
           }
         });
       },
-      [workspacePromise.data, settingsDispatch.github.octokit, setGitHubGist, gitHubGist]
+      [gitHubGist, workspaceImportableUrl, settingsDispatch.github.octokit.gists]
     )
   );
 
@@ -488,28 +490,13 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         authInfo: githubAuthInfo,
       });
 
-      // Create new workspace from forked gist
-      const { workspace, suggestedFirstFile } = await workspaces.createWorkspaceFromGitRepository({
-        origin: { kind: WorkspaceKind.GITHUB_GIST, url: new URL(gist.data.html_url), branch: GIST_DEFAULT_BRANCH },
-      });
-
-      if (!suggestedFirstFile) {
-        history.replace({ pathname: routes.home.path({}) });
-        return;
-      }
-
-      // Redirect to new workspace
-      history.replace({
-        pathname: routes.workspaceWithFilePath.path({
-          workspaceId: workspace.workspaceId,
-          fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-          extension: suggestedFirstFile.extension,
-        }),
+      // Redirect to import workspace
+      history.push({
+        pathname: routes.importModel.path({}),
+        search: routes.importModel.queryString({ url: gist.data.html_url }),
       });
 
       successfullyCreateGistAlert.show();
-
-      return;
     } catch (err) {
       errorAlert.show();
       throw err;
@@ -523,8 +510,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     workspaces,
     props.workspaceFile.workspaceId,
     history,
-    routes.workspaceWithFilePath,
-    routes.home,
+    routes.importModel,
     successfullyCreateGistAlert,
     errorAlert,
   ]);
@@ -1213,8 +1199,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       confirmNavigationAlert.close();
     }
   }, [confirmNavigationAlert, navigationStatus]);
-
-  const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
 
   const [isVsCodeDropdownOpen, setVsCodeDropdownOpen] = useState(false);
 

@@ -49,6 +49,7 @@ export type ImportableUrl =
   | {
       type: UrlType.GIST;
       error?: undefined;
+      gistId?: string;
       url: URL;
     }
   | {
@@ -208,7 +209,11 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
         });
       }
 
-      return ifAllowed({ type: UrlType.GIST, url });
+      return ifAllowed({
+        type: UrlType.GIST,
+        url,
+        gistId: (gistMatch ?? directGistMatch)?.params.gistId.replace(".git", ""),
+      });
     }
 
     const extension = extname(url.pathname).replace(".", "");
