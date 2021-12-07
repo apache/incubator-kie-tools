@@ -51,7 +51,7 @@ export const en: OnlineI18n = {
     downloadSVG: `${en_common.terms.download} ${en_common.names.svg}`,
     setGitHubToken: `Setup`,
     createGist: "Create Gist",
-    cantCreateGistTooltip: `You can't create a Gist because you're either not logged in, not the owner, or your models are in nested directories.`,
+    cantCreateGistTooltip: `You can't create a Gist because you're either not logged in, or your models are in nested directories.`,
     cantUpdateGistTooltip: `You can't update your Gist because you're either not logged in, not the owner, or your models are in nested directories.`,
     share: "Share",
     embed: "Embed",

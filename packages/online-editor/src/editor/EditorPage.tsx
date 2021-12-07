@@ -154,7 +154,6 @@ export function EditorPage(props: Props) {
     }
 
     const content = await editor.getContent();
-
     // FIXME: Uncomment when KOGITO-6181 is fixed
     // const svgString = await editor.getPreview();
 
