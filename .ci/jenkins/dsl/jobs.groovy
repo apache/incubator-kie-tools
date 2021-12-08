@@ -1,4 +1,5 @@
 import org.kie.jenkins.jobdsl.templates.KogitoJobTemplate
+import org.kie.jenkins.jobdsl.Utils
 
 /////////////////////////////////////////////////////////////////
 // This file is used for generating Jenkins jobs

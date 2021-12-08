@@ -1,0 +1,24 @@
+# This Github Action validates the jenkins job definitions from .ci/jenkins folder
+
+name: Jenkins Tests
+
+on:
+  pull_request:
+    paths: 
+    - '.ci/jenkins/**'
+
+jobs:
+  dsl-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout 
+      uses: actions/checkout@v2
+
+    - name: Set up JDK 1.11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+      
+    - name: Test DSL
+      run: cd .ci/jenkins/dsl && ./test.sh
