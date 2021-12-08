@@ -149,6 +149,7 @@ export function EditorToolbar(props: Props) {
 
   const githubAuthInfo = useGitHubAuthInfo();
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
+  const navigationBlockersBypass = useNavigationBlockersBypass();
 
   useCancelableEffect(
     useCallback(
@@ -491,12 +492,12 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       });
 
       // Redirect to import workspace
-      history.push({
-        pathname: routes.importModel.path({}),
-        search: routes.importModel.queryString({ url: gist.data.html_url }),
+      navigationBlockersBypass.execute(() => {
+        history.push({
+          pathname: routes.importModel.path({}),
+          search: routes.importModel.queryString({ url: gist.data.html_url }),
+        });
       });
-
-      successfullyCreateGistAlert.show();
     } catch (err) {
       errorAlert.show();
       throw err;
@@ -509,9 +510,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     settingsDispatch.github.octokit.gists,
     workspaces,
     props.workspaceFile.workspaceId,
+    navigationBlockersBypass,
     history,
     routes.importModel,
-    successfullyCreateGistAlert,
     errorAlert,
   ]);
 
@@ -1116,7 +1117,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   ]);
 
   const navigationStatus = useNavigationStatus();
-  const navigationBlockersBypass = useNavigationBlockersBypass();
   const navigationStatusToggle = useNavigationStatusToggle();
   const confirmNavigationAlert = useAlert<{ lastBlockedLocation: Location }>(
     props.alerts,
