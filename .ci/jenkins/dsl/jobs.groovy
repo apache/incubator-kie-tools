@@ -1,5 +1,4 @@
 import org.kie.jenkins.jobdsl.templates.KogitoJobTemplate
-import org.kie.jenkins.jobdsl.Utils
 
 /////////////////////////////////////////////////////////////////
 // This file is used for generating Jenkins jobs
@@ -25,11 +24,13 @@ Map getMultijobPRConfig() {
             jobs : [
                     [
                             id: 'kogito-tooling-editors-java',
-                            primary: true
+                            primary: true,
+                            env : [
+                                // Sonarcloud analysis only on main branch
+                                // As we have only Community edition
+                                ENABLE_SONARCLOUD: Utils.isMainBranch(this),
+                            ]
                     ]
-            ],
-            extraEnv : [
-                    ENABLE_SONARCLOUD: Utils.isMainBranch(this)
             ]
     ]
 }
