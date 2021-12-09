@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useRoutes } from "../../navigation/Hooks";
 import { useKieToolingExtendedServices } from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
@@ -43,6 +43,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
   const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
   const [deployments, setDeployments] = useState([] as OpenShiftDeployedModel[]);
+  const loadDeploymentsTask = useRef<number>();
 
   const onDisconnect = useCallback(
     (closeModals: boolean) => {
@@ -123,19 +124,22 @@ export function DmnDevSandboxContextProvider(props: Props) {
       return;
     }
 
-    if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED) {
-      const loadDeploymentsTask = setInterval(() => {
+    if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
+      loadDeploymentsTask.current = window.setInterval(() => {
         settingsDispatch.openshift.service
           .loadDeployments(settings.openshift.config)
           .then((deployments) => setDeployments(deployments))
           .catch((error) => {
             setDeployments([]);
-            clearInterval(loadDeploymentsTask);
+            window.clearInterval(loadDeploymentsTask.current);
             console.error(error);
           });
       }, LOAD_DEPLOYMENTS_POLLING_TIME);
-      return () => clearInterval(loadDeploymentsTask);
+    } else {
+      window.clearInterval(loadDeploymentsTask.current);
     }
+
+    return () => clearInterval(loadDeploymentsTask.current);
   }, [
     onDisconnect,
     settings.openshift,
@@ -143,6 +147,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
     kieToolingExtendedServices.status,
     deployments.length,
     settingsDispatch.openshift,
+    isDeploymentsDropdownOpen,
   ]);
 
   const value = useMemo(
