@@ -40,9 +40,6 @@ module.exports = (env) =>
           { from: path.resolve(__dirname, "../static/images"), to: "./images" },
         ],
       }),
-      new webpack.ProvidePlugin({
-        mermaid: "mermaid",
-      }),
     ],
     module: {
       rules: [

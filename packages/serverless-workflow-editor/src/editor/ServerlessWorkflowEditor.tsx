@@ -27,7 +27,7 @@ import { Specification } from "@severlessworkflow/sdk-typescript";
 import { MermaidDiagram } from "../diagram";
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import * as monaco from "@kie-tooling-core/monaco-editor";
-import * as svgPanZoom from "svg-pan-zoom";
+import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
 
 interface Props {
@@ -133,6 +133,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
         mermaid.init(svgContainer.current!);
         svgContainer.current!.getElementsByTagName("svg")[0].setAttribute("style", "height: 100%;");
         svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0]);
+        console.log(svgPanZoom);
         setDiagramOutOfSync(false);
       } else {
         setDiagramOutOfSync(true);

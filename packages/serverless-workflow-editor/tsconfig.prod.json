@@ -1,7 +1,9 @@
 {
   "extends": "../../tsconfig.prod.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src"]
 }

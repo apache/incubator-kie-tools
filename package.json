@@ -11,7 +11,9 @@
     "nohoist": [
       "@kogito-tooling/serverless-workflow-editor",
       "@kogito-tooling/serverless-workflow-editor/mermaid",
-      "@kogito-tooling/serverless-workflow-editor/mermaid/**"
+      "@kogito-tooling/serverless-workflow-editor/mermaid/**",
+      "@kogito-tooling/serverless-workflow-editor/@types/mermaid",
+      "@kogito-tooling/serverless-workflow-editor/@types/mermaid/**"
     ]
   },
   "scripts": {
