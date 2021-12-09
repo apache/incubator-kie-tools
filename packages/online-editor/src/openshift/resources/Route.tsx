@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { HttpMethod, JAVA_RUNTIME_VERSION, Resource, ResourceFetch } from "./Resource";
+import { HttpMethod, JAVA_RUNTIME_VERSION, KOGITO_CREATED_BY, Resource, ResourceFetch } from "./Resource";
 
 const API_ENDPOINT = "apis/route.openshift.io/v1";
 
@@ -47,6 +47,7 @@ export class CreateRoute extends ResourceFetch {
           app.kubernetes.io/name: java
           app.openshift.io/runtime: quarkus
           app.openshift.io/runtime-version: ${JAVA_RUNTIME_VERSION}
+          ${KOGITO_CREATED_BY}: ${this.args.createdBy}
       spec:
         to:
           kind: Service

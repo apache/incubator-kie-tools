@@ -385,7 +385,7 @@ interface OnlineDictionary extends ReferenceDictionary {
     dropdown: {
       shortConnected: (port: string) => string;
       tooltip: {
-        connected: (port: string) => string;
+        connected: string;
         install: string;
         outdated: string;
         disconnected: string;

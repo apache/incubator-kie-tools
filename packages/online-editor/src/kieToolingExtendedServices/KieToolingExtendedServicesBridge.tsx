@@ -15,16 +15,14 @@
  */
 
 export class KieToolingExtendedServicesBridge {
-  private readonly KIE_TOOLING_EXTENDED_SERVICES_SERVER_URL: string;
   private readonly KIE_TOOLING_EXTENDED_SERVICES_PING: string;
 
-  public constructor(port: string) {
-    this.KIE_TOOLING_EXTENDED_SERVICES_SERVER_URL = `http://localhost:${port}`;
-    this.KIE_TOOLING_EXTENDED_SERVICES_PING = `${this.KIE_TOOLING_EXTENDED_SERVICES_SERVER_URL}/ping`;
+  public constructor(private readonly baseUrl: string) {
+    this.KIE_TOOLING_EXTENDED_SERVICES_PING = `${this.baseUrl}/ping`;
   }
 
   public async check(): Promise<boolean> {
-    const response = await fetch(this.KIE_TOOLING_EXTENDED_SERVICES_SERVER_URL, { method: "OPTIONS" });
+    const response = await fetch(this.baseUrl, { method: "OPTIONS" });
     return response.status < 300;
   }
 

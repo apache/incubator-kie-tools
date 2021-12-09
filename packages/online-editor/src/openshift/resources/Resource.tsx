@@ -19,6 +19,7 @@ export interface ResourceArgs {
   namespace: string;
   token: string;
   resourceName?: string;
+  createdBy?: string;
 }
 
 export interface Resource {
