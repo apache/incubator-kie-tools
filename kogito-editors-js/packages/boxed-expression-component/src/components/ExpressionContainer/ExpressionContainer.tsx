@@ -59,14 +59,14 @@ export const ExpressionContainer: (props: ExpressionContainerProps) => JSX.Eleme
 
   const onLogicTypeResetting = useCallback(() => {
     const updatedExpression = {
-      uid: selectedExpression.uid,
+      id: selectedExpression.id,
       name: selectedExpression.name,
       dataType: selectedExpression.dataType,
       logicType: LogicType.Undefined,
     };
     window.beeApi?.resetExpressionDefinition?.(updatedExpression);
     onExpressionChange?.(updatedExpression);
-  }, [onExpressionChange, selectedExpression.dataType, selectedExpression.name, selectedExpression.uid]);
+  }, [onExpressionChange, selectedExpression.dataType, selectedExpression.name, selectedExpression.id]);
 
   return (
     <div className="expression-container">

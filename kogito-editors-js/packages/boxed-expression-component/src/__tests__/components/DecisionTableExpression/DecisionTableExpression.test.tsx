@@ -27,7 +27,7 @@ describe("DecisionTableExpression tests", () => {
   test("should show a table with three columns: input, output and annotation, and one row", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        wrapComponentInContext(<DecisionTableExpression uid="decision-node-id" logicType={LogicType.DecisionTable} />)
+        wrapComponentInContext(<DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />)
       ).wrapper
     );
 
@@ -51,7 +51,7 @@ describe("DecisionTableExpression tests", () => {
   test("should show as default hit policy, unique", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        wrapComponentInContext(<DecisionTableExpression uid="decision-node-id" logicType={LogicType.DecisionTable} />)
+        wrapComponentInContext(<DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />)
       ).wrapper
     );
 
@@ -63,7 +63,7 @@ describe("DecisionTableExpression tests", () => {
       usingTestingBoxedExpressionI18nContext(
         wrapComponentInContext(
           <DecisionTableExpression
-            uid="decision-node-id"
+            id="decision-node-id"
             logicType={LogicType.DecisionTable}
             hitPolicy={HitPolicy.First}
           />
@@ -77,7 +77,7 @@ describe("DecisionTableExpression tests", () => {
   test("should show as default a row, with empty values, except for input column, whose value is dash symbol", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        wrapComponentInContext(<DecisionTableExpression uid="decision-node-id" logicType={LogicType.DecisionTable} />)
+        wrapComponentInContext(<DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />)
       ).wrapper
     );
 
@@ -111,7 +111,7 @@ describe("DecisionTableExpression tests", () => {
       usingTestingBoxedExpressionI18nContext(
         wrapComponentInContext(
           <DecisionTableExpression
-            uid="decision-node-id"
+            id="decision-node-id"
             logicType={LogicType.DecisionTable}
             input={input}
             output={output}
@@ -149,7 +149,7 @@ describe("DecisionTableExpression tests", () => {
     const { container, baseElement } = render(
       wrapComponentInContext(
         usingTestingBoxedExpressionI18nContext(
-          <DecisionTableExpression uid="decision-node-id" logicType={LogicType.DecisionTable} />
+          <DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />
         ).wrapper
       )
     );

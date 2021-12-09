@@ -23,7 +23,12 @@ describe("BoxedExpressionEditor tests", () => {
   test("should render BoxedExpressionEditor component", () => {
     const selectedExpression: ExpressionProps = { name: "Expression Name", dataType: DataType.Undefined };
 
-    const { container } = render(<BoxedExpressionEditor expressionDefinition={selectedExpression} />);
+    const { container } = render(
+      <BoxedExpressionEditor
+        decisionNodeId="_00000000-0000-0000-0000-000000000000"
+        expressionDefinition={selectedExpression}
+      />
+    );
 
     expect(container).toMatchSnapshot();
   });

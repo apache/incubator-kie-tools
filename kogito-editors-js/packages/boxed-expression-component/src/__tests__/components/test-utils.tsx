@@ -24,7 +24,6 @@ import {
 } from "../../i18n";
 import { act } from "react-dom/test-utils";
 import { fireEvent } from "@testing-library/react";
-import { resetId } from "react-id-generator";
 import { BoxedExpressionGlobalContext } from "../../context";
 import { DataType } from "../../api";
 import { BoxedExpressionProvider, BoxedExpressionProviderProps } from "../../components";
@@ -63,11 +62,14 @@ export function usingTestingBoxedExpressionProviderContext(
   ctx?: Partial<BoxedExpressionProviderProps>
 ) {
   const usedCtx: BoxedExpressionProviderProps = {
+    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
     expressionDefinition: {},
     pmmlParams: [
       {
         document: "document",
-        modelsFromDocument: [{ model: "model", parametersFromModel: [{ name: "p-1", dataType: DataType.Number }] }],
+        modelsFromDocument: [
+          { model: "model", parametersFromModel: [{ id: "p1", name: "p-1", dataType: DataType.Number }] },
+        ],
       },
     ],
     isRunnerTable: false,
@@ -78,6 +80,7 @@ export function usingTestingBoxedExpressionProviderContext(
     ctx: usedCtx,
     wrapper: (
       <BoxedExpressionProvider
+        decisionNodeId={usedCtx.decisionNodeId}
         expressionDefinition={usedCtx.expressionDefinition}
         pmmlParams={usedCtx.pmmlParams}
         isRunnerTable={false}
@@ -92,10 +95,13 @@ export function wrapComponentInContext(component: JSX.Element): JSX.Element {
   return (
     <BoxedExpressionGlobalContext.Provider
       value={{
+        decisionNodeId: "_00000000-0000-0000-0000-000000000000",
         pmmlParams: [
           {
             document: "document",
-            modelsFromDocument: [{ model: "model", parametersFromModel: [{ name: "p-1", dataType: DataType.Number }] }],
+            modelsFromDocument: [
+              { model: "model", parametersFromModel: [{ id: "p1", name: "p-1", dataType: DataType.Number }] },
+            ],
           },
         ],
         supervisorHash: "",
@@ -149,7 +155,13 @@ export async function updateElementViaPopover(
 export const contextEntry = (container: Element, index: number): Element | null =>
   container.querySelector(`table tbody tr:nth-of-type(${index})`);
 
-export const checkEntryContent = (entry: Element | null, entryRecordInfo: { name: string; dataType: string }): void => {
+export const checkEntryContent = (
+  entry: Element | null,
+  entryRecordInfo: { id?: string; name: string; dataType: string }
+): void => {
+  if (entryRecordInfo.id) {
+    expect(entry?.querySelector(".entry-info")).toHaveClass(entryRecordInfo.id);
+  }
   expect(entry).toContainHTML(entryRecordInfo.name);
   expect(entry).toContainHTML(entryRecordInfo.dataType);
 };
@@ -161,7 +173,3 @@ export const checkEntryStyle = (entry: Element | null, cssClass: string): void =
 export const checkEntryLogicType = (entry: Element | null, cssClass: string): void => {
   expect(entry?.querySelector(".entry-expression")?.firstChild?.firstChild).toHaveClass(cssClass);
 };
-
-beforeEach(() => {
-  resetId();
-});

@@ -29,7 +29,8 @@ public class DecisionTableProps extends ExpressionProps {
     public final Clause[] output;
     public final DecisionTableRule[] rules;
 
-    public DecisionTableProps(final String name,
+    public DecisionTableProps(final String id,
+                              final String name,
                               final String dataType,
                               final String hitPolicy,
                               final String aggregation,
@@ -37,7 +38,7 @@ public class DecisionTableProps extends ExpressionProps {
                               final Clause[] input,
                               final Clause[] output,
                               final DecisionTableRule[] rules) {
-        super(name, dataType, DECISION_TABLE.getText());
+        super(id, name, dataType, DECISION_TABLE.getText());
         this.hitPolicy = hitPolicy;
         this.aggregation = aggregation;
         this.annotations = annotations;

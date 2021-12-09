@@ -36,7 +36,9 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.Context;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
@@ -46,6 +48,7 @@ import org.kie.workbench.common.dmn.api.definition.model.List;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
@@ -99,8 +102,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperati
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveUp;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
-
-import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.UNDEFINED;
 
 @Templated
 @Dependent
@@ -338,8 +339,15 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     @EventHandler("try-it")
     public void onTryIt(final ClickEvent event) {
+        String decisionNodeId = null;
+        if (hasExpression instanceof Decision) {
+            decisionNodeId = ((Decision) hasExpression).getId().getValue();
+        } else if (hasExpression.getExpression() instanceof FunctionDefinition) {
+            decisionNodeId = ((BusinessKnowledgeModel) hasExpression.getExpression().asDMNModelInstrumentedBase().getParent()).getId().getValue();
+        }
         DMNLoader.renderBoxedExpressionEditor(
                 ".kie-dmn-new-expression-editor",
+                decisionNodeId,
                 ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef()),
                 hasExpression.isClearSupported(),
                 buildPmmlParams()
@@ -522,7 +530,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         return modelName -> {
             final EntryInfo[] parametersFromModel = pmmlDocumentMetadataProvider.getPMMLDocumentModelParameterNames(documentName, modelName)
                     .stream()
-                    .map(parameter -> new EntryInfo(parameter, UNDEFINED.getText()))
+                    .map(parameter -> new EntryInfo(new Id().getValue(), parameter, BuiltInType.ANY.getName()))
                     .toArray(EntryInfo[]::new);
             return new ModelsFromDocument(modelName, parametersFromModel);
         };

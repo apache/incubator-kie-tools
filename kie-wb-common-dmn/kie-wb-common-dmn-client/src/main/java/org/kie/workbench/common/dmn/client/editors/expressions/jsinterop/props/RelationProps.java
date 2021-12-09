@@ -25,8 +25,8 @@ public class RelationProps extends ExpressionProps{
     public final Column[] columns;
     public final Row[] rows;
 
-    public RelationProps(final String name, final String dataType, final Column[] columns, final Row[] rows) {
-        super(name, dataType, RELATION.getText());
+    public RelationProps(final String id, final String name, final String dataType, final Column[] columns, final Row[] rows) {
+        super(id, name, dataType, RELATION.getText());
         this.columns = columns;
         this.rows = rows;
     }

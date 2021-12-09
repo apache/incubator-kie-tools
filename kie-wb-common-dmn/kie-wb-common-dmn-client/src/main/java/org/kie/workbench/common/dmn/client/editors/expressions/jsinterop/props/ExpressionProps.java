@@ -21,13 +21,16 @@ import jsinterop.annotations.JsType;
 @JsType
 public class ExpressionProps {
 
+    public final String id;
+
     public final String name;
 
     public final String dataType;
 
     public final String logicType;
 
-    public ExpressionProps(final String name, final String dataType, final String logicType) {
+    public ExpressionProps(final String id, final String name, final String dataType, final String logicType) {
+        this.id = id;
         this.name = name;
         this.dataType = dataType;
         this.logicType = logicType;

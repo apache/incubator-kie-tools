@@ -22,6 +22,7 @@ import {
   DataType,
   executeIfExpressionDefinitionChanged,
   ExpressionProps,
+  generateUuid,
   ListProps,
   LiteralExpressionProps,
   LogicType,
@@ -35,7 +36,6 @@ import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { DataRecord, Row } from "react-table";
 import { hashfy } from "../Resizer";
 import { BoxedExpressionGlobalContext } from "../../context";
-import nextId from "react-id-generator";
 
 const LIST_EXPRESSION_MIN_WIDTH = 430;
 
@@ -46,7 +46,7 @@ export const ListExpression: React.FunctionComponent<ListProps> = (listExpressio
   const generateLiteralExpression = useMemo(
     () =>
       ({
-        uid: nextId(),
+        id: generateUuid(),
         name: "",
         dataType: DataType.Undefined,
         logicType: LogicType.LiteralExpression,
@@ -87,7 +87,7 @@ export const ListExpression: React.FunctionComponent<ListProps> = (listExpressio
   const spreadListExpressionDefinition = useCallback(
     (updatedListExpression?: Partial<ListProps>) => {
       const updatedDefinition: Partial<ListProps> = {
-        uid: listExpression.uid,
+        id: listExpression.id,
         name: listExpression.name,
         dataType: listExpression.dataType,
         logicType: LogicType.List,
@@ -129,7 +129,7 @@ export const ListExpression: React.FunctionComponent<ListProps> = (listExpressio
   );
 
   const resetRowCustomFunction = useCallback((row: DataRecord) => {
-    return { entryExpression: { uid: (row.entryExpression as ExpressionProps).uid } };
+    return { entryExpression: { id: (row.entryExpression as ExpressionProps).id } };
   }, []);
 
   const onRowAdding = useCallback(
@@ -152,7 +152,7 @@ export const ListExpression: React.FunctionComponent<ListProps> = (listExpressio
   );
 
   const getRowKey = useCallback((row: Row) => {
-    return (row.original as ContextEntryRecord).entryExpression.uid!;
+    return (row.original as ContextEntryRecord).entryExpression.id!;
   }, []);
 
   const defaultCell = useMemo(
@@ -163,9 +163,9 @@ export const ListExpression: React.FunctionComponent<ListProps> = (listExpressio
   );
 
   return (
-    <div className="list-expression">
+    <div className={`${listExpression.id} list-expression`}>
       <Table
-        tableId={listExpression.uid}
+        tableId={listExpression.id}
         headerVisibility={TableHeaderVisibility.None}
         defaultCell={defaultCell}
         columns={columns}

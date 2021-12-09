@@ -46,7 +46,7 @@ describe("Relation Expression Tests", () => {
     return {
       name: "Expression Name",
       dataType: "<Undefined>",
-      uid: "id1",
+      id: "id1",
       isHeadless: false,
       logicType: "Relation",
       columns: relationColumns(columnSize),

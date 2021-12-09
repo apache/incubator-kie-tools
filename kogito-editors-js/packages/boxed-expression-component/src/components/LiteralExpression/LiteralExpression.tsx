@@ -36,7 +36,7 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
   const spreadLiteralExpressionDefinition = useCallback(
     (literalExpressionUpdate?: Partial<LiteralExpressionProps>) => {
       const expressionDefinition: LiteralExpressionProps = {
-        uid: literalExpression.uid,
+        id: literalExpression.id,
         name: literalExpression.name ?? EXPRESSION_NAME,
         dataType: literalExpression.dataType ?? DataType.Undefined,
         logicType: LogicType.LiteralExpression,
@@ -122,11 +122,11 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
           </Resizer>
         </div>
       )}
-      <div className="literal-expression-body">
+      <div className={`${literalExpression.id} literal-expression-body`}>
         <EditableCell
           value={literalExpression.content ?? ""}
           rowIndex={0}
-          columnId={literalExpression.uid ?? "-"}
+          columnId={literalExpression.id ?? "-"}
           onCellUpdate={onCellUpdate}
         />
       </div>

@@ -65,17 +65,19 @@ describe("InvocationExpression tests", () => {
   });
 
   test("should display a row in the table body, for each given binding entries", () => {
+    const firstEntryId = "p1";
     const firstEntryName = "param1";
     const firstEntryDataType = DataType.Boolean;
     const firstEntry = {
-      entryInfo: { name: firstEntryName, dataType: firstEntryDataType },
+      entryInfo: { id: firstEntryId, name: firstEntryName, dataType: firstEntryDataType },
       entryExpression: {},
       editInfoPopoverLabel: "Edit parameter",
     };
+    const secondEntryId = "p2";
     const secondEntryName = "param2";
     const secondEntryDataType = DataType.Any;
     const secondEntry = {
-      entryInfo: { name: secondEntryName, dataType: secondEntryDataType },
+      entryInfo: { id: secondEntryId, name: secondEntryName, dataType: secondEntryDataType },
       entryExpression: {},
       editInfoPopoverLabel: "Edit parameter",
     };

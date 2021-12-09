@@ -18,6 +18,7 @@ import * as React from "react";
 import { PMMLParams } from "../api";
 
 export interface BoxedExpressionGlobalContextProps {
+  decisionNodeId: string;
   pmmlParams?: PMMLParams;
   supervisorHash: string;
   setSupervisorHash: (hash: string) => void;

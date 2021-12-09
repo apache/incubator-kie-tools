@@ -100,16 +100,18 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
       tableInstance.prepareRow(row);
       const rowProps = { ...row.getRowProps(), style: {} };
       const RowDelegate = (row.original as any).rowDelegate;
+      const rowKey = getRowKey(row);
+      const rowClassNames = `${rowKey} table-row`;
       return (
-        <React.Fragment key={`${getRowKey(row)}`}>
+        <React.Fragment key={rowKey}>
           {RowDelegate ? (
             <RowDelegate>
-              <Tr className="table-row" {...rowProps} ouiaId={"expression-row-" + rowIndex}>
+              <Tr className={rowClassNames} {...rowProps} ouiaId={"expression-row-" + rowIndex} key={rowKey}>
                 {row.cells.map((cell: Cell, cellIndex: number) => renderCell(cellIndex, cell, rowIndex, true))}
               </Tr>
             </RowDelegate>
           ) : (
-            <Tr className="table-row" {...rowProps} ouiaId={"expression-row-" + rowIndex}>
+            <Tr className={rowClassNames} {...rowProps} ouiaId={"expression-row-" + rowIndex} key={rowKey}>
               {row.cells.map((cell: Cell, cellIndex: number) => renderCell(cellIndex, cell, rowIndex, false))}
             </Tr>
           )}

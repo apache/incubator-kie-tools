@@ -37,6 +37,10 @@ export interface JavaFunctionProps {
   className?: string;
   /** Method signature */
   methodName?: string;
+  /** Class text field identifier */
+  classFieldId?: string;
+  /** Method text field identifier */
+  methodFieldId?: string;
 }
 
 interface PMMLParam {
@@ -56,4 +60,8 @@ export interface PmmlFunctionProps {
   document?: string;
   /** Selected PMML model */
   model?: string;
+  /** Document dropdown field identifier */
+  documentFieldId?: string;
+  /** Model dropdown field identifier */
+  modelFieldId?: string;
 }

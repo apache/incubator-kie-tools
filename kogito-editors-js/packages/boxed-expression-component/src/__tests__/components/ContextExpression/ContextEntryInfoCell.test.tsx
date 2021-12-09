@@ -25,6 +25,7 @@ import { DataRecord } from "react-table";
 jest.useFakeTimers();
 
 describe("ContextEntryInfoCell tests", () => {
+  const id = "id1";
   const name = "Expression Name";
   const newValue = "New Value";
   const dataType = DataType.Boolean;
@@ -36,7 +37,7 @@ describe("ContextEntryInfoCell tests", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         <ContextEntryInfoCell
-          data={[{ entryInfo: { name, dataType }, entryExpression: emptyExpression }]}
+          data={[{ entryInfo: { id, name, dataType }, entryExpression: emptyExpression }]}
           rowIndex={0}
           columnId={"col1"}
           onRowUpdate={_.identity}
@@ -46,6 +47,7 @@ describe("ContextEntryInfoCell tests", () => {
     );
 
     expect(container.querySelector(".context-entry-info-cell")).toBeTruthy();
+    expect(container.querySelector(".context-entry-info-cell .entry-info")).toHaveClass(id);
     expect(container.querySelector(".context-entry-info-cell .entry-info")).toBeTruthy();
     expect(container.querySelector(".context-entry-info-cell .entry-info .entry-definition")).toBeTruthy();
     expect(container.querySelector(".context-entry-info-cell .entry-info .entry-definition .entry-name")).toContainHTML(
@@ -62,7 +64,7 @@ describe("ContextEntryInfoCell tests", () => {
     const { container, baseElement } = render(
       usingTestingBoxedExpressionI18nContext(
         <ContextEntryInfoCell
-          data={[{ entryInfo: { name, dataType }, entryExpression: emptyExpression }]}
+          data={[{ entryInfo: { id, name, dataType }, entryExpression: emptyExpression }]}
           rowIndex={0}
           columnId={"col1"}
           onRowUpdate={mockedOnRowUpdate}
@@ -81,6 +83,7 @@ describe("ContextEntryInfoCell tests", () => {
     expect(mockedOnRowUpdate).toHaveBeenCalled();
     expect(mockedOnRowUpdate).toHaveBeenCalledWith(0, {
       entryInfo: {
+        id,
         name: newValue,
         dataType,
       },

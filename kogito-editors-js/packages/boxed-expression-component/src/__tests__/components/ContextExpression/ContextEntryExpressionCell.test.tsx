@@ -29,12 +29,12 @@ describe("ContextEntryExpressionCell tests", () => {
   const name = "Expression Name";
   const dataType = DataType.Boolean;
   const emptyExpression = { name, dataType };
+  const entryId = "entry-id1";
   const entryName = "entry name";
   const entryDataType = DataType.Date;
 
   const value = "value";
   const rowIndex = 0;
-  const columnId = "col1";
   const onRowUpdate: (rowIndex: number, updatedRow: DataRecord) => void = (rowIndex, updatedRow) =>
     _.identity({ rowIndex, updatedRow });
 
@@ -44,7 +44,7 @@ describe("ContextEntryExpressionCell tests", () => {
         <ContextEntryExpressionCell
           data={[
             {
-              entryInfo: { name: entryName, dataType: entryDataType },
+              entryInfo: { id: entryId, name: entryName, dataType: entryDataType },
               entryExpression: emptyExpression,
             },
           ]}
@@ -67,7 +67,7 @@ describe("ContextEntryExpressionCell tests", () => {
         <ContextEntryExpressionCell
           data={[
             {
-              entryInfo: { name: value, dataType },
+              entryInfo: { id: entryId, name: value, dataType },
               entryExpression: emptyExpression,
             },
           ]}
@@ -90,6 +90,7 @@ describe("ContextEntryExpressionCell tests", () => {
     expect(mockedOnRowUpdate).toHaveBeenCalled();
     expect(mockedOnRowUpdate).toHaveBeenCalledWith(rowIndex, {
       entryInfo: {
+        id: entryId,
         name: value,
         dataType,
       },

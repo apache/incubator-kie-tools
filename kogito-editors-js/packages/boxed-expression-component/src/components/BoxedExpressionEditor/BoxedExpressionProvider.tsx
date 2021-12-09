@@ -24,6 +24,8 @@ import { ExpressionProps, PMMLParams } from "../../api";
 import { CellSelectionBox } from "../SelectionBox";
 
 export interface BoxedExpressionProviderProps {
+  /** Identifier of the decision node, where the expression will be hold */
+  decisionNodeId: string;
   /** All expression properties used to define it */
   expressionDefinition: ExpressionProps;
   /** PMML parameters */
@@ -46,6 +48,7 @@ export function BoxedExpressionProvider(props: BoxedExpressionProviderProps) {
   return (
     <BoxedExpressionGlobalContext.Provider
       value={{
+        decisionNodeId: props.decisionNodeId,
         pmmlParams: props.pmmlParams,
         supervisorHash,
         setSupervisorHash,

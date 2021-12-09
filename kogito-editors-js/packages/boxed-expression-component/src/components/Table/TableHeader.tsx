@@ -92,13 +92,17 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   );
 
   const renderCountColumn = useCallback(
-    (column: ColumnInstance) => (
-      <Th {...column.getHeaderProps()} className="fixed-column no-clickable-cell" key={getColumnKey(column)}>
-        <div className="header-cell" data-ouia-component-type="expression-column-header">
-          {column.label}
-        </div>
-      </Th>
-    ),
+    (column: ColumnInstance) => {
+      const columnKey = getColumnKey(column);
+      const classNames = `${columnKey} fixed-column no-clickable-cell`;
+      return (
+        <Th {...column.getHeaderProps()} className={classNames} key={columnKey}>
+          <div className="header-cell" data-ouia-component-type="expression-column-header">
+            {column.label}
+          </div>
+        </Th>
+      );
+    },
     [getColumnKey]
   );
 
@@ -158,9 +162,10 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       };
       const width = column.width || DEFAULT_MIN_WIDTH;
       const isColspan = (column.columns?.length ?? 0) > 0 || false;
+      const columnKey = getColumnKey(column);
 
       const getCssClass = () => {
-        const cssClasses = [];
+        const cssClasses = [columnKey];
         if (!column.dataType) {
           cssClasses.push("no-clickable-cell");
         }
@@ -178,7 +183,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       };
 
       return (
-        <Th {...headerProps} {...thProps(column)} className={getCssClass()} key={getColumnKey(column)}>
+        <Th {...headerProps} {...thProps(column)} className={getCssClass()} key={columnKey}>
           <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
             <div className="header-cell" data-ouia-component-type="expression-column-header">
               {column.dataType && editableHeader ? (
@@ -187,7 +192,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
                   selectedExpressionName={column.label}
                   selectedDataType={column.dataType}
                   onExpressionUpdate={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
-                  key={getColumnKey(column)}
+                  key={columnKey}
                 >
                   {renderHeaderCellInfo(column, columnIndex)}
                 </EditExpressionMenu>

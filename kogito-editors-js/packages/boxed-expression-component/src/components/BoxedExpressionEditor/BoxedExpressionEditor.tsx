@@ -29,6 +29,8 @@ import "@patternfly/react-styles/css/components/Drawer/drawer.css";
 import "./base-no-reset-wrapped.css";
 
 export interface BoxedExpressionEditorProps {
+  /** Identifier of the decision node, where the expression will be hold */
+  decisionNodeId: string;
   /** All expression properties used to define it */
   expressionDefinition: ExpressionProps;
   /**
@@ -74,6 +76,7 @@ export function BoxedExpressionEditor(props: BoxedExpressionEditorProps) {
       ctx={BoxedExpressionEditorI18nContext}
     >
       <BoxedExpressionProvider
+        decisionNodeId={props.decisionNodeId}
         expressionDefinition={expressionDefinition}
         pmmlParams={props.pmmlParams}
         isRunnerTable={false}

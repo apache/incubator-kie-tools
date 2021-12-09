@@ -21,12 +21,17 @@ import org.kie.dmn.model.api.FunctionKind;
 
 @JsType
 public class JavaFunctionProps extends FunctionProps {
+
     public final String className;
     public final String methodName;
+    public final String classFieldId;
+    public final String methodFieldId;
 
-    public JavaFunctionProps(final String name, final String dataType, final EntryInfo[] formalParameters, final Double parametersWidth, final String className, final String methodName) {
-        super(name, dataType, formalParameters, parametersWidth, FunctionKind.JAVA.value());
+    public JavaFunctionProps(final String id, final String name, final String dataType, final EntryInfo[] formalParameters, final Double parametersWidth, final String className, final String methodName, final String classFieldId, final String methodFieldId) {
+        super(id, name, dataType, formalParameters, parametersWidth, FunctionKind.JAVA.value());
         this.className = className;
         this.methodName = methodName;
+        this.classFieldId = classFieldId;
+        this.methodFieldId = methodFieldId;
     }
 }

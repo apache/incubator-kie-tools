@@ -27,8 +27,8 @@ public class ContextProps extends ExpressionProps {
     public final Double entryInfoWidth;
     public final Double entryExpressionWidth;
 
-    public ContextProps(final String name, final String dataType, final ContextEntryProps[] contextEntries, final ExpressionProps result, final Double entryInfoWidth, final Double entryExpressionWidth) {
-        super(name, dataType, CONTEXT.getText());
+    public ContextProps(final String id, final String name, final String dataType, final ContextEntryProps[] contextEntries, final ExpressionProps result, final Double entryInfoWidth, final Double entryExpressionWidth) {
+        super(id, name, dataType, CONTEXT.getText());
         this.contextEntries = contextEntries;
         this.result = result;
         this.entryInfoWidth = entryInfoWidth;

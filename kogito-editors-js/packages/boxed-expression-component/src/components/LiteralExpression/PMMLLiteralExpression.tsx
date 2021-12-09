@@ -61,7 +61,7 @@ export const PMMLLiteralExpression: React.FunctionComponent<PMMLLiteralExpressio
 
   return (
     <Select
-      className={`pmml-literal-expression ${showingPlaceholder() ? "showing-placeholder" : ""}`}
+      className={`${props.id} pmml-literal-expression ${showingPlaceholder() ? "showing-placeholder" : ""}`}
       menuAppendTo={globalContext.boxedExpressionEditorRef?.current ?? "inline"}
       ouiaId="pmml-literal-expression-selector"
       placeholderText={props.noOptionsLabel}

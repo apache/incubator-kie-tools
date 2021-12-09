@@ -45,9 +45,11 @@ describe("ContextExpression tests", () => {
   });
 
   test("should show a table with one row for each passed entry, plus the passed entry result", () => {
+    const firstEntryId = "id1";
     const firstEntry = "first entry";
     const firstDataType = DataType.Boolean;
     const firstExpression = { name: "expressionName", dataType: DataType.Any, logicType: LogicType.LiteralExpression };
+    const secondEntryId = "id2";
     const secondEntry = "second entry";
     const secondDataType = DataType.Date;
     const secondExpression = { name: "anotherName", dataType: DataType.Undefined };
@@ -57,6 +59,7 @@ describe("ContextExpression tests", () => {
     const contextEntries = [
       {
         entryInfo: {
+          id: firstEntryId,
           name: firstEntry,
           dataType: firstDataType,
         },
@@ -65,6 +68,7 @@ describe("ContextExpression tests", () => {
       },
       {
         entryInfo: {
+          id: secondEntryId,
           name: secondEntry,
           dataType: secondDataType,
         },
@@ -95,8 +99,8 @@ describe("ContextExpression tests", () => {
     expect(container.querySelector(".context-expression table")).toBeTruthy();
     expect(container.querySelectorAll(".context-expression table tbody tr")).toHaveLength(3);
 
-    checkEntryContent(contextEntry(container, 1), { name: firstEntry, dataType: firstDataType });
-    checkEntryContent(contextEntry(container, 2), { name: secondEntry, dataType: secondDataType });
+    checkEntryContent(contextEntry(container, 1), { id: firstEntryId, name: firstEntry, dataType: firstDataType });
+    checkEntryContent(contextEntry(container, 2), { id: secondEntryId, name: secondEntry, dataType: secondDataType });
     checkEntryContent(contextEntry(container, 3), { name: "result", dataType: "" });
 
     checkEntryStyle(contextEntry(container, 1), "logic-type-selected");

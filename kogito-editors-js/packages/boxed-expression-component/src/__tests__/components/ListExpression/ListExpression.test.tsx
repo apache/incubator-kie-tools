@@ -20,7 +20,6 @@ import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
 import { LogicType } from "../../../api";
 import * as React from "react";
 import { ListExpression } from "../../../components/ListExpression";
-import nextId from "react-id-generator";
 
 describe("ListExpression tests", () => {
   test("should show a table without header, with one row and one column", () => {
@@ -51,7 +50,7 @@ describe("ListExpression tests", () => {
   test("should be able to render nested expressions", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <ListExpression uid={nextId()} logicType={LogicType.List} items={[{ logicType: LogicType.List }]} />
+        <ListExpression id="id1" logicType={LogicType.List} items={[{ logicType: LogicType.List, id: "id2" }]} />
       ).wrapper
     );
 

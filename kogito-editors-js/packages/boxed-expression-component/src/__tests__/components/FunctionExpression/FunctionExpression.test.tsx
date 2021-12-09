@@ -30,6 +30,7 @@ import { act } from "react-dom/test-utils";
 import * as _ from "lodash";
 
 describe("FunctionExpression tests", () => {
+  const parameterId = "p1";
   const documentName = "document";
   const modelName = "model";
 
@@ -54,7 +55,7 @@ describe("FunctionExpression tests", () => {
         <FunctionExpression
           logicType={LogicType.Function}
           functionKind={FunctionKind.Feel}
-          formalParameters={[{ name: DEFAULT_FIRST_PARAM_NAME, dataType: DataType.Undefined }]}
+          formalParameters={[{ id: "p1", name: DEFAULT_FIRST_PARAM_NAME, dataType: DataType.Undefined }]}
         />
       ).wrapper
     );
@@ -86,7 +87,7 @@ describe("FunctionExpression tests", () => {
       logicType: "Function",
       name: "p-1",
       parametersWidth: 370,
-      uid: undefined,
+      id: undefined,
     });
   });
 
@@ -120,7 +121,7 @@ describe("FunctionExpression tests", () => {
             <FunctionExpression
               logicType={LogicType.Function}
               functionKind={FunctionKind.Feel}
-              formalParameters={[{ name: paramName, dataType: paramDataType }]}
+              formalParameters={[{ id: parameterId, name: paramName, dataType: paramDataType }]}
             />
           )
         ).wrapper
@@ -143,7 +144,7 @@ describe("FunctionExpression tests", () => {
             <FunctionExpression
               logicType={LogicType.Function}
               functionKind={FunctionKind.Feel}
-              formalParameters={[{ name: "param", dataType: DataType.Any }]}
+              formalParameters={[{ id: parameterId, name: "param", dataType: DataType.Any }]}
             />
           )
         ).wrapper
@@ -156,6 +157,7 @@ describe("FunctionExpression tests", () => {
 
       checkFormalParameters(mockedBroadcastDefinition, [
         {
+          id: parameterId,
           dataType: DataType.Any,
           name: `${newParamName}`,
         },
@@ -172,7 +174,7 @@ describe("FunctionExpression tests", () => {
             <FunctionExpression
               logicType={LogicType.Function}
               functionKind={FunctionKind.Feel}
-              formalParameters={[{ name: "param", dataType: DataType.Undefined }]}
+              formalParameters={[{ id: parameterId, name: "param", dataType: DataType.Undefined }]}
             />
           )
         ).wrapper
@@ -189,6 +191,7 @@ describe("FunctionExpression tests", () => {
 
       checkFormalParameters(mockedBroadcastDefinition, [
         {
+          id: parameterId,
           dataType: DataType.Boolean,
           name: "param",
         },
@@ -212,10 +215,10 @@ describe("FunctionExpression tests", () => {
       });
 
       checkFormalParameters(mockedBroadcastDefinition, [
-        {
+        expect.objectContaining({
           dataType: DataType.Undefined,
           name: DEFAULT_FIRST_PARAM_NAME,
-        },
+        }),
       ]);
     });
 
@@ -231,6 +234,7 @@ describe("FunctionExpression tests", () => {
               functionKind={FunctionKind.Feel}
               formalParameters={[
                 {
+                  id: parameterId,
                   dataType: DataType.Undefined,
                   name: DEFAULT_FIRST_PARAM_NAME,
                 },
@@ -258,7 +262,7 @@ describe("FunctionExpression tests", () => {
         logicType: "Function",
         name: "p-1",
         parametersWidth: 370,
-        uid: undefined,
+        id: undefined,
       });
     }
   });
@@ -290,7 +294,7 @@ describe("FunctionExpression tests", () => {
             functionKind={FunctionKind.Feel}
             formalParameters={[]}
             expression={{
-              uid: "id2",
+              id: "id2",
               logicType: LogicType.Relation,
             }}
           />
@@ -431,7 +435,7 @@ describe("FunctionExpression tests", () => {
         container.querySelector(".function-expression table tbody td.counter-cell") as HTMLTableElement
       );
       await flushPromises();
-      await jest.runAllTimers();
+      jest.runAllTimers();
     });
 
     await act(async () => {
@@ -441,7 +445,7 @@ describe("FunctionExpression tests", () => {
         )! as HTMLButtonElement
       );
       await flushPromises();
-      await jest.runAllTimers();
+      jest.runAllTimers();
     });
   }
 

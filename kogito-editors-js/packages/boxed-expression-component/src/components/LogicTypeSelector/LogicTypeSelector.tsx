@@ -24,6 +24,7 @@ import {
   ExpressionProps,
   FunctionKind,
   FunctionProps,
+  generateUuid,
   InvocationProps,
   ListProps,
   LiteralExpressionProps,
@@ -39,7 +40,6 @@ import { PopoverMenu } from "../PopoverMenu";
 import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core";
 import * as _ from "lodash";
 import { useContextMenuHandler } from "../../hooks";
-import nextId from "react-id-generator";
 import { BoxedExpressionGlobalContext } from "../../context";
 import { DecisionTableExpression } from "../DecisionTableExpression";
 import { ListExpression } from "../ListExpression";
@@ -79,7 +79,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
   const expression = useMemo(() => {
     return {
       ...selectedExpression,
-      uid: selectedExpression.uid ?? nextId(),
+      id: selectedExpression.id ?? generateUuid(),
       isHeadless: isHeadless ?? false,
       onUpdatingNameAndDataType,
       onUpdatingRecursiveExpression,
@@ -211,11 +211,22 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
     return !selectedExpression.noClearAction && contextMenuVisibility && clickedOnAllowedTableSection;
   }, [contextMenuVisibility, selectedExpression.noClearAction, targetElement]);
 
+  const cssClasses = useMemo(() => {
+    const classes = [];
+    if (!isHeadless) {
+      classes.push(`${globalContext.decisionNodeId}`);
+    }
+    classes.push("logic-type-selector");
+    if (isLogicTypeSelected) {
+      classes.push("logic-type-selected");
+    } else {
+      classes.push("logic-type-not-present");
+    }
+    return classes.join(" ");
+  }, [globalContext.decisionNodeId, isHeadless, isLogicTypeSelected]);
+
   return (
-    <div
-      className={`logic-type-selector ${isLogicTypeSelected ? "logic-type-selected" : "logic-type-not-present"}`}
-      ref={contextMenuRef}
-    >
+    <div className={cssClasses} ref={contextMenuRef}>
       {isLogicTypeSelected ? renderExpression : i18n.selectExpression}
       {!isLogicTypeSelected && buildLogicSelectorMenu}
       {shouldClearContextMenuBeOpened && buildContextMenu}

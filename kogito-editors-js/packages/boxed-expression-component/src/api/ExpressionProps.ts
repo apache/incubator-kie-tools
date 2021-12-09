@@ -25,7 +25,7 @@ import { FeelFunctionProps, JavaFunctionProps, PmmlFunctionProps } from "./Funct
 
 export interface ExpressionProps {
   /** Unique identifier used to identify the expression */
-  uid?: string;
+  id?: string;
   /** Expression name (which, in DMN world, is equal to the Decision node's name) */
   name?: string;
   /** Expression data type */

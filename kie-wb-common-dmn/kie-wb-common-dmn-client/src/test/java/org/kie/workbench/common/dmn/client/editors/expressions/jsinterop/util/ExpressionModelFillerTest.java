@@ -60,6 +60,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExpressionModelFillerTest {
 
+    public static final String EXPRESSION_ID = "id1";
     public static final String EXPRESSION_NAME = "Expression Name";
     public static final String DATA_TYPE = BuiltInType.UNDEFINED.asQName().getLocalPart();
     private static final String ENTRY_INFO_NAME = "Entry Info";
@@ -68,6 +69,7 @@ public class ExpressionModelFillerTest {
     private static final Double ENTRY_INFO_WIDTH = 200d;
     private static final Double ENTRY_EXPRESSION_WIDTH = 350d;
     private static final Double PARAMETERS_WIDTH = 450d;
+    private static final String PARAM_ID = "param-id";
     private static final String PARAM_NAME = "p-1";
     private static final String PARAM_DATA_TYPE = BuiltInType.BOOLEAN.asQName().getLocalPart();
 
@@ -76,7 +78,7 @@ public class ExpressionModelFillerTest {
         final LiteralExpression literalExpression = new LiteralExpression();
         final String content = "content";
         final double width = 100d;
-        final LiteralProps literalProps = new LiteralProps(EXPRESSION_NAME, DATA_TYPE, content, width);
+        final LiteralProps literalProps = new LiteralProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, content, width);
 
         ExpressionModelFiller.fillLiteralExpression(literalExpression, literalProps);
 
@@ -97,8 +99,8 @@ public class ExpressionModelFillerTest {
         final ContextEntryProps[] contextEntries = new ContextEntryProps[]{
                 buildContextEntryProps()
         };
-        final ExpressionProps result = new LiteralProps("Result Expression", BuiltInType.DATE.asQName().getLocalPart(), "", null);
-        final ContextProps contextProps = new ContextProps(EXPRESSION_NAME, DATA_TYPE, contextEntries, result, ENTRY_INFO_WIDTH, ENTRY_EXPRESSION_WIDTH);
+        final ExpressionProps result = new LiteralProps("result-id", "Result Expression", BuiltInType.DATE.asQName().getLocalPart(), "", null);
+        final ContextProps contextProps = new ContextProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, contextEntries, result, ENTRY_INFO_WIDTH, ENTRY_EXPRESSION_WIDTH);
 
         ExpressionModelFiller.fillContextExpression(contextExpression, contextProps);
 
@@ -146,7 +148,7 @@ public class ExpressionModelFillerTest {
         final String fourthCell = "fourth cell";
         final Column[] columns = new Column[]{new Column(firstColumnId, firstColumnName, firstColumnDataType, firstColumnWidth), new Column(secondColumnId, secondColumnName, secondColumnDataType, secondColumnWidth)};
         final Row[] rows = new Row[]{new Row("first-row", new String[]{firstCell, secondCell}), new Row("second-id", new String[]{thirdCell, fourthCell})};
-        final RelationProps relationProps = new RelationProps(EXPRESSION_NAME, DATA_TYPE, columns, rows);
+        final RelationProps relationProps = new RelationProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, columns, rows);
 
         ExpressionModelFiller.fillRelationExpression(relationExpression, relationProps);
 
@@ -178,9 +180,9 @@ public class ExpressionModelFillerTest {
     public void testFillListExpression() {
         final List listExpression = new List();
         final String nestedContent = "nested content";
-        final ExpressionProps[] items = new ExpressionProps[]{new LiteralProps("Nested Literal Expression", BuiltInType.UNDEFINED.asQName().getLocalPart(), nestedContent, null)};
+        final ExpressionProps[] items = new ExpressionProps[]{new LiteralProps("nested-literal", "Nested Literal Expression", BuiltInType.UNDEFINED.asQName().getLocalPart(), nestedContent, null)};
         final Double width = 600d;
-        final ListProps listProps = new ListProps(EXPRESSION_NAME, DATA_TYPE, items, width);
+        final ListProps listProps = new ListProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, items, width);
 
         ExpressionModelFiller.fillListExpression(listExpression, listProps);
 
@@ -202,7 +204,7 @@ public class ExpressionModelFillerTest {
         final ContextEntryProps[] bindingEntries = new ContextEntryProps[]{
                 buildContextEntryProps()
         };
-        final InvocationProps invocationProps = new InvocationProps(EXPRESSION_NAME, DATA_TYPE, invokedFunction, bindingEntries, ENTRY_INFO_WIDTH, ENTRY_EXPRESSION_WIDTH);
+        final InvocationProps invocationProps = new InvocationProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, invokedFunction, bindingEntries, ENTRY_INFO_WIDTH, ENTRY_EXPRESSION_WIDTH);
 
         ExpressionModelFiller.fillInvocationExpression(invocationExpression, invocationProps);
 
@@ -231,7 +233,7 @@ public class ExpressionModelFillerTest {
         final FunctionDefinition functionExpression = new FunctionDefinition();
         final String documentName = "document name";
         final String modelName = "model name";
-        final PmmlFunctionProps functionProps = new PmmlFunctionProps(EXPRESSION_NAME, DATA_TYPE, new EntryInfo[]{new EntryInfo(PARAM_NAME, PARAM_DATA_TYPE)}, PARAMETERS_WIDTH, documentName, modelName);
+        final PmmlFunctionProps functionProps = new PmmlFunctionProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, new EntryInfo[]{new EntryInfo(PARAM_ID, PARAM_NAME, PARAM_DATA_TYPE)}, PARAMETERS_WIDTH, documentName, modelName, "document-id", "model-id");
 
         ExpressionModelFiller.fillFunctionExpression(functionExpression, functionProps);
 
@@ -246,7 +248,7 @@ public class ExpressionModelFillerTest {
         final FunctionDefinition functionExpression = new FunctionDefinition();
         final String className = "class name";
         final String methodName = "method name";
-        final JavaFunctionProps functionProps = new JavaFunctionProps(EXPRESSION_NAME, DATA_TYPE, new EntryInfo[]{new EntryInfo(PARAM_NAME, PARAM_DATA_TYPE)}, PARAMETERS_WIDTH, className, methodName);
+        final JavaFunctionProps functionProps = new JavaFunctionProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, new EntryInfo[]{new EntryInfo(PARAM_ID, PARAM_NAME, PARAM_DATA_TYPE)}, PARAMETERS_WIDTH, className, methodName, "class-id", "method-id");
 
         ExpressionModelFiller.fillFunctionExpression(functionExpression, functionProps);
 
@@ -260,8 +262,8 @@ public class ExpressionModelFillerTest {
     public void testFillFeelFunctionExpression() {
         final FunctionDefinition functionExpression = new FunctionDefinition();
         final String nestedContent = "Nested Content";
-        final FeelFunctionProps functionProps = new FeelFunctionProps(EXPRESSION_NAME, DATA_TYPE, new EntryInfo[]{new EntryInfo(PARAM_NAME, PARAM_DATA_TYPE)}, PARAMETERS_WIDTH,
-                                                                      new LiteralProps("Nested Literal Expression", BuiltInType.UNDEFINED.asQName().getLocalPart(), nestedContent, null));
+        final FeelFunctionProps functionProps = new FeelFunctionProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, new EntryInfo[]{new EntryInfo(PARAM_ID, PARAM_NAME, PARAM_DATA_TYPE)}, PARAMETERS_WIDTH,
+                                                                      new LiteralProps("nested-literal", "Nested Literal Expression", BuiltInType.UNDEFINED.asQName().getLocalPart(), nestedContent, null));
 
         ExpressionModelFiller.fillFunctionExpression(functionExpression, functionProps);
 
@@ -295,7 +297,7 @@ public class ExpressionModelFillerTest {
         final String outputValue = "output value";
         final String annotationValue = "annotation value";
         DecisionTableRule[] rules = new DecisionTableRule[]{new DecisionTableRule("rule-1", new String[]{inputValue}, new String[]{outputValue}, new String[]{annotationValue})};
-        final DecisionTableProps decisionTableProps = new DecisionTableProps(EXPRESSION_NAME, DATA_TYPE, HitPolicy.COLLECT.value(), BuiltinAggregator.MAX.getCode(), annotations, input, output, rules);
+        final DecisionTableProps decisionTableProps = new DecisionTableProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, HitPolicy.COLLECT.value(), BuiltinAggregator.MAX.getCode(), annotations, input, output, rules);
 
         ExpressionModelFiller.fillDecisionTableExpression(decisionTableExpression, decisionTableProps);
 
@@ -339,7 +341,7 @@ public class ExpressionModelFillerTest {
     }
 
     private ContextEntryProps buildContextEntryProps() {
-        return new ContextEntryProps(new EntryInfo(ENTRY_INFO_NAME, ENTRY_INFO_DATA_TYPE), new LiteralProps("Nested Expression", BuiltInType.UNDEFINED.asQName().getLocalPart(), ENTRY_EXPRESSION_CONTENT, null));
+        return new ContextEntryProps(new EntryInfo("entry-info-id", ENTRY_INFO_NAME, ENTRY_INFO_DATA_TYPE), new LiteralProps("nested-literal", "Nested Expression", BuiltInType.UNDEFINED.asQName().getLocalPart(), ENTRY_EXPRESSION_CONTENT, null));
     }
 
     private void assertEntryWidths(final Collection<Double> componentWidths) {
@@ -393,9 +395,9 @@ public class ExpressionModelFillerTest {
         assertThat(((Context) functionExpression.getExpression()).getContextEntry())
                 .isNotNull()
                 .hasSize(2);
-        assertThat(((Context) functionExpression.getExpression()).getContextEntry()).first().extracting(ContextEntry::getExpression).isExactlyInstanceOf(LiteralExpression.class);
+        assertThat(((Context) functionExpression.getExpression()).getContextEntry()).first().extracting(ContextEntry::getExpression).isInstanceOf(LiteralExpression.class);
         assertThat(((Context) functionExpression.getExpression()).getContextEntry()).first().extracting(contextEntry -> ((LiteralExpression) contextEntry.getExpression()).getText().getValue()).isEqualTo(documentName);
-        assertThat(((Context) functionExpression.getExpression()).getContextEntry()).last().extracting(ContextEntry::getExpression).isExactlyInstanceOf(LiteralExpression.class);
+        assertThat(((Context) functionExpression.getExpression()).getContextEntry()).last().extracting(ContextEntry::getExpression).isInstanceOf(LiteralExpression.class);
         assertThat(((Context) functionExpression.getExpression()).getContextEntry()).last().extracting(contextEntry -> ((LiteralExpression) contextEntry.getExpression()).getText().getValue()).isEqualTo(modelName);
     }
 }

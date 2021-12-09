@@ -44,14 +44,19 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
         updatedExpression.name = name;
         updatedExpression.dataType = dataType;
       }
-      onRowUpdate(rowIndex, { ...contextEntry, entryExpression: updatedExpression, entryInfo: { name, dataType } });
+      onRowUpdate(rowIndex, {
+        ...contextEntry,
+        entryExpression: updatedExpression,
+        entryInfo: { id: entryInfo.id, name, dataType },
+      });
     },
-    [entryExpression, contextEntry, rowIndex, onRowUpdate]
+    [entryExpression, contextEntry, rowIndex, onRowUpdate, entryInfo.id]
   );
 
   return (
     <div className="context-entry-info-cell">
       <ContextEntryInfo
+        id={entryInfo.id}
         name={entryInfo.name}
         dataType={entryInfo.dataType}
         onContextEntryUpdate={onContextEntryUpdate}

@@ -21,7 +21,7 @@ import { Button } from "@patternfly/react-core";
 import { OutlinedTrashAltIcon } from "@patternfly/react-icons";
 import * as React from "react";
 import { ChangeEvent, useCallback } from "react";
-import { DataType, EntryInfo, generateNextAvailableEntryName } from "../../api";
+import { DataType, EntryInfo, generateNextAvailableEntryName, generateUuid } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 
 export interface EditParametersProps {
@@ -38,6 +38,7 @@ export const EditParameters: React.FunctionComponent<EditParametersProps> = ({ p
     setParameters([
       ...parameters,
       {
+        id: generateUuid(),
         name: generateNextAvailableEntryName(parameters, "p"),
         dataType: DataType.Undefined,
       },

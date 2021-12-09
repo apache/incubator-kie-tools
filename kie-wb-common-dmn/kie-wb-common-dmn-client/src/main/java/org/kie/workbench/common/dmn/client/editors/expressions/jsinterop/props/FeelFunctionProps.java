@@ -23,8 +23,8 @@ import org.kie.dmn.model.api.FunctionKind;
 public class FeelFunctionProps extends FunctionProps {
     public final ExpressionProps expression;
 
-    public FeelFunctionProps(final String name, final String dataType, final EntryInfo[] formalParameters, final Double parametersWidth, final ExpressionProps expression) {
-        super(name, dataType, formalParameters, parametersWidth, FunctionKind.FEEL.value());
+    public FeelFunctionProps(final String id, final String name, final String dataType, final EntryInfo[] formalParameters, final Double parametersWidth, final ExpressionProps expression) {
+        super(id, name, dataType, formalParameters, parametersWidth, FunctionKind.FEEL.value());
         this.expression = expression;
     }
 }

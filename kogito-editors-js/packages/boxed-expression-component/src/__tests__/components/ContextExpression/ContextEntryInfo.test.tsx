@@ -24,6 +24,7 @@ import * as React from "react";
 jest.useFakeTimers();
 
 describe("ContextEntryInfo tests", () => {
+  const id = "id1";
   const name = "Expression Name";
   const newValue = "New Value";
   const dataType = DataType.Boolean;
@@ -32,6 +33,7 @@ describe("ContextEntryInfo tests", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         <ContextEntryInfo
+          id={id}
           name={name}
           dataType={dataType}
           editInfoPopoverLabel="Edit entry"
@@ -41,6 +43,7 @@ describe("ContextEntryInfo tests", () => {
     );
 
     expect(container.querySelector(".entry-info")).toBeTruthy();
+    expect(container.querySelector(".entry-info")).toHaveClass(id);
     expect(container.querySelector(".entry-info .entry-definition")).toBeTruthy();
     expect(container.querySelector(".entry-info .entry-definition .entry-name")).toContainHTML(name);
     expect(container.querySelector(".entry-info .entry-definition .entry-data-type")).toContainHTML(dataType);
@@ -54,6 +57,7 @@ describe("ContextEntryInfo tests", () => {
     const { container, baseElement } = render(
       usingTestingBoxedExpressionI18nContext(
         <ContextEntryInfo
+          id={id}
           name={name}
           dataType={dataType}
           editInfoPopoverLabel="Edit entry"

@@ -21,6 +21,8 @@ import { EditExpressionMenu } from "../EditExpressionMenu";
 import { DataType } from "../../api";
 
 export interface ContextEntryInfoProps {
+  /** Context entry info id */
+  id: string;
   /** Context Entry info name */
   name: string;
   /** Context Entry info dataType */
@@ -32,6 +34,7 @@ export interface ContextEntryInfoProps {
 }
 
 export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = ({
+  id,
   name,
   dataType,
   onContextEntryUpdate,
@@ -73,7 +76,7 @@ export const ContextEntryInfo: React.FunctionComponent<ContextEntryInfoProps> = 
   );
 
   return (
-    <div className="entry-info">
+    <div className={`${id} entry-info`}>
       {editInfoPopoverLabel ? renderEntryDefinitionWithPopoverMenu : renderEntryDefinition()}
     </div>
   );

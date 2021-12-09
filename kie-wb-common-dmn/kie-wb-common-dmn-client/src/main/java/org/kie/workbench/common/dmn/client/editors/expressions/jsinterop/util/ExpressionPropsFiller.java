@@ -21,6 +21,7 @@ import java.util.stream.IntStream;
 
 import org.kie.workbench.common.dmn.api.definition.model.Context;
 import org.kie.workbench.common.dmn.api.definition.model.ContextEntry;
+import org.kie.workbench.common.dmn.api.definition.model.DMNElement;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
@@ -30,6 +31,8 @@ import org.kie.workbench.common.dmn.api.definition.model.Invocation;
 import org.kie.workbench.common.dmn.api.definition.model.IsLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.model.List;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocument;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocumentModel;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
@@ -58,44 +61,45 @@ import static org.kie.workbench.common.dmn.client.editors.expressions.types.Expr
 public class ExpressionPropsFiller {
 
     public static ExpressionProps buildAndFillJsInteropProp(final Expression wrappedExpression, final String expressionName, final String dataType) {
+        final String expressionId = Optional.ofNullable(wrappedExpression).map(DMNElement::getId).orElse(new Id()).getValue();
         if (wrappedExpression instanceof IsLiteralExpression) {
             final LiteralExpression literalExpression = (LiteralExpression) wrappedExpression;
             final Double width = literalExpression.getComponentWidths().get(0);
-            return new LiteralProps(expressionName, dataType, literalExpression.getText().getValue(), width);
+            return new LiteralProps(expressionId, expressionName, dataType, literalExpression.getText().getValue(), width);
         } else if (wrappedExpression instanceof Context) {
             final Context contextExpression = (Context) wrappedExpression;
             final Double entryInfoWidth = contextExpression.getComponentWidths().get(1);
             final Double entryExpressionWidth = contextExpression.getComponentWidths().get(2);
-            return new ContextProps(expressionName, dataType, contextEntriesConvertForContextProps(contextExpression), contextResultConvertForContextProps(contextExpression), entryInfoWidth, entryExpressionWidth);
+            return new ContextProps(expressionId, expressionName, dataType, contextEntriesConvertForContextProps(contextExpression), contextResultConvertForContextProps(contextExpression), entryInfoWidth, entryExpressionWidth);
         } else if (wrappedExpression instanceof Relation) {
             final Relation relationExpression = (Relation) wrappedExpression;
-            return new RelationProps(expressionName, dataType, columnsConvertForRelationProps(relationExpression), rowsConvertForRelationProps(relationExpression));
+            return new RelationProps(expressionId, expressionName, dataType, columnsConvertForRelationProps(relationExpression), rowsConvertForRelationProps(relationExpression));
         } else if (wrappedExpression instanceof List) {
             final List listExpression = (List) wrappedExpression;
             final Double width = listExpression.getComponentWidths().get(1);
-            return new ListProps(expressionName, dataType, itemsConvertForListProps(listExpression), width);
+            return new ListProps(expressionId, expressionName, dataType, itemsConvertForListProps(listExpression), width);
         } else if (wrappedExpression instanceof Invocation) {
             final Invocation invocationExpression = (Invocation) wrappedExpression;
             final String invokedFunction = ((LiteralExpression) Optional.ofNullable(invocationExpression.getExpression()).orElse(new LiteralExpression())).getText().getValue();
             final Double entryInfoWidth = invocationExpression.getComponentWidths().get(1);
             final Double entryExpressionWidth = invocationExpression.getComponentWidths().get(2);
-            return new InvocationProps(expressionName, dataType, invokedFunction, bindingsConvertForInvocationProps(invocationExpression), entryInfoWidth, entryExpressionWidth);
+            return new InvocationProps(expressionId, expressionName, dataType, invokedFunction, bindingsConvertForInvocationProps(invocationExpression), entryInfoWidth, entryExpressionWidth);
         } else if (wrappedExpression instanceof FunctionDefinition) {
             final FunctionDefinition functionExpression = (FunctionDefinition) wrappedExpression;
             final EntryInfo[] formalParameters = formalParametersConvertForFunctionProps(functionExpression);
             final Double parametersWidth = functionExpression.getComponentWidths().get(1);
-            return specificFunctionPropsBasedOnFunctionKind(expressionName, dataType, functionExpression, formalParameters, parametersWidth);
+            return specificFunctionPropsBasedOnFunctionKind(expressionId, expressionName, dataType, functionExpression, formalParameters, parametersWidth);
         } else if (wrappedExpression instanceof DecisionTable) {
             final DecisionTable decisionTableExpression = (DecisionTable) wrappedExpression;
             final String hitPolicy = decisionTableExpression.getHitPolicy() != null ? decisionTableExpression.getHitPolicy().value() : null;
             final String aggregation = decisionTableExpression.getAggregation() != null ? decisionTableExpression.getAggregation().getCode() : "";
-            return new DecisionTableProps(expressionName, dataType, hitPolicy, aggregation,
+            return new DecisionTableProps(expressionId, expressionName, dataType, hitPolicy, aggregation,
                                           annotationsConvertForDecisionTableProps(decisionTableExpression),
                                           inputConvertForDecisionTableProps(decisionTableExpression),
                                           outputConvertForDecisionTableProps(decisionTableExpression, expressionName, dataType),
                                           rulesConvertForDecisionTableProps(decisionTableExpression));
         }
-        return new ExpressionProps(expressionName, dataType, null);
+        return new ExpressionProps(expressionId, expressionName, dataType, null);
     }
 
     private static ExpressionProps contextResultConvertForContextProps(final Context contextExpression) {
@@ -155,9 +159,10 @@ public class ExpressionPropsFiller {
     }
 
     private static ContextEntryProps fromModelToPropsContextEntryMapper(final InformationItem contextEntryVariable, final Expression expression) {
+        final String entryId = contextEntryVariable.getId().getValue();
         final String entryName = contextEntryVariable.getName().getValue();
         final String entryDataType = contextEntryVariable.getTypeRef().getLocalPart();
-        final EntryInfo entryInfo = new EntryInfo(entryName, entryDataType);
+        final EntryInfo entryInfo = new EntryInfo(entryId, entryName, entryDataType);
         final ExpressionProps entryExpression = buildAndFillJsInteropProp(expression, entryName, entryDataType);
         return new ContextEntryProps(entryInfo, entryExpression);
     }
@@ -166,38 +171,66 @@ public class ExpressionPropsFiller {
         return functionExpression
                 .getFormalParameter()
                 .stream()
-                .map(parameter -> new EntryInfo(parameter.getName().getValue(), parameter.getTypeRefHolder().getValue().getLocalPart()))
+                .map(parameter -> new EntryInfo(parameter.getId().getValue(), parameter.getName().getValue(), parameter.getTypeRefHolder().getValue().getLocalPart()))
                 .toArray(EntryInfo[]::new);
     }
 
-    private static FunctionProps specificFunctionPropsBasedOnFunctionKind(final String expressionName, final String dataType, final FunctionDefinition functionExpression, final EntryInfo[] formalParameters, final Double parametersWidth) {
+    private static FunctionProps specificFunctionPropsBasedOnFunctionKind(final String expressionId, final String expressionName, final String dataType, final FunctionDefinition functionExpression, final EntryInfo[] formalParameters, final Double parametersWidth) {
         switch (functionExpression.getKind()) {
             case JAVA:
-                final String classNameExpression = getEntryAt(functionExpression.getExpression(), 0);
-                final String methodNameExpression = getEntryAt(functionExpression.getExpression(), 1);
-                return new JavaFunctionProps(expressionName, dataType, formalParameters, parametersWidth, classNameExpression, methodNameExpression);
+                final LiteralExpression classLiteralExpression = getWrappedEntryLiteralExpression(functionExpression.getExpression(), 0);
+                final LiteralExpression methodLiteralExpression = getWrappedEntryLiteralExpression(functionExpression.getExpression(), 1);
+                final String className = getWrappedEntryText(classLiteralExpression);
+                final String methodName = getWrappedEntryText(methodLiteralExpression);
+                final String classFieldId = classLiteralExpression.getId().getValue();
+                final String methodFieldId = methodLiteralExpression.getId().getValue();
+                return new JavaFunctionProps(expressionId, expressionName, dataType, formalParameters, parametersWidth, className, methodName, classFieldId, methodFieldId);
             case PMML:
-                final String documentExpression = getEntryAt(functionExpression.getExpression(), 0);
-                final String modelExpression = getEntryAt(functionExpression.getExpression(), 1);
-                return new PmmlFunctionProps(expressionName, dataType, formalParameters, parametersWidth, documentExpression, modelExpression);
+                final LiteralExpressionPMMLDocument documentPmmlLiteralExpression = getWrappedPmmlDocumentLiteralExpression(functionExpression.getExpression());
+                final LiteralExpressionPMMLDocumentModel modelPmmlLiteralExpression = getWrappedPmmlModelLiteralExpression(functionExpression.getExpression());
+                final String document = getWrappedEntryText(documentPmmlLiteralExpression);
+                final String model = getWrappedEntryText(modelPmmlLiteralExpression);
+                final String documentFieldId = documentPmmlLiteralExpression.getId().getValue();
+                final String modelFieldId = modelPmmlLiteralExpression.getId().getValue();
+                return new PmmlFunctionProps(expressionId, expressionName, dataType, formalParameters, parametersWidth, document, model, documentFieldId, modelFieldId);
             default:
             case FEEL:
-                return new FeelFunctionProps(expressionName, dataType, formalParameters, parametersWidth,
+                return new FeelFunctionProps(expressionId, expressionName, dataType, formalParameters, parametersWidth,
                                              buildAndFillJsInteropProp(functionExpression.getExpression(), "Feel Expression", UNDEFINED.getText()));
         }
     }
 
-    private static String getEntryAt(final Expression wrappedExpression, final int index) {
+    private static LiteralExpression getWrappedEntryLiteralExpression(final Expression wrappedExpression, final int index) {
         final Context wrappedContext = (Context) (Optional.ofNullable(wrappedExpression).orElse(new Context()));
         LiteralExpression entryExpression = new LiteralExpression();
-        String wrappedTextValue = "";
         if (wrappedContext.getContextEntry().size() > index && wrappedContext.getContextEntry().get(index).getExpression() instanceof LiteralExpression) {
             entryExpression = (LiteralExpression) wrappedContext.getContextEntry().get(index).getExpression();
         }
+        return entryExpression;
+    }
+
+    private static String getWrappedEntryText(final LiteralExpression entryExpression) {
+        String wrappedTextValue = "";
         if (entryExpression.getText() != null && entryExpression.getText().getValue() != null) {
             wrappedTextValue = entryExpression.getText().getValue();
         }
         return wrappedTextValue;
+    }
+
+    private static LiteralExpressionPMMLDocument getWrappedPmmlDocumentLiteralExpression(final Expression wrappedExpression) {
+        final Context wrappedContext = (Context) (Optional.ofNullable(wrappedExpression).orElse(new Context()));
+        if (!wrappedContext.getContextEntry().isEmpty() && wrappedContext.getContextEntry().get(0).getExpression() instanceof LiteralExpressionPMMLDocument) {
+            return (LiteralExpressionPMMLDocument) wrappedContext.getContextEntry().get(0).getExpression();
+        }
+        return new LiteralExpressionPMMLDocument();
+    }
+
+    private static LiteralExpressionPMMLDocumentModel getWrappedPmmlModelLiteralExpression(final Expression wrappedExpression) {
+        final Context wrappedContext = (Context) (Optional.ofNullable(wrappedExpression).orElse(new Context()));
+        if (!wrappedContext.getContextEntry().isEmpty() && wrappedContext.getContextEntry().get(1).getExpression() instanceof LiteralExpressionPMMLDocumentModel) {
+            return (LiteralExpressionPMMLDocumentModel) wrappedContext.getContextEntry().get(1).getExpression();
+        }
+        return new LiteralExpressionPMMLDocumentModel();
     }
 
     private static DecisionTableRule[] rulesConvertForDecisionTableProps(final DecisionTable decisionTableExpression) {

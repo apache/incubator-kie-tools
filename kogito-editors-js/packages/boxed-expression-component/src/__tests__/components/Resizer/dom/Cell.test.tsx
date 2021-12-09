@@ -177,7 +177,7 @@ function createContext() {
     usingTestingBoxedExpressionI18nContext(
       <ContextExpression
         {...({
-          uid: "id1",
+          id: "id1",
           logicType: "Context",
           name: "Expression Name",
           dataType: "<Undefined>",
@@ -188,7 +188,7 @@ function createContext() {
                 dataType: "<Undefined>",
               },
               entryExpression: {
-                uid: "id2",
+                id: "id2",
                 logicType: "Context",
                 contextEntries: [
                   {
@@ -197,7 +197,7 @@ function createContext() {
                       dataType: "<Undefined>",
                     },
                     entryExpression: {
-                      uid: "id4",
+                      id: "id4",
                       logicType: "Context",
                       contextEntries: [
                         {
@@ -210,7 +210,7 @@ function createContext() {
                         },
                       ],
                       result: {
-                        uid: "id7",
+                        id: "id7",
                       },
                       entryInfoWidth: 257,
                       entryExpressionWidth: 370,
@@ -219,7 +219,7 @@ function createContext() {
                   },
                 ],
                 result: {
-                  uid: "id5",
+                  id: "id5",
                 },
                 entryInfoWidth: 713,
                 entryExpressionWidth: 691,
@@ -228,7 +228,7 @@ function createContext() {
             },
           ],
           result: {
-            uid: "id3",
+            id: "id3",
           },
           entryInfoWidth: 150,
           entryExpressionWidth: 1468,

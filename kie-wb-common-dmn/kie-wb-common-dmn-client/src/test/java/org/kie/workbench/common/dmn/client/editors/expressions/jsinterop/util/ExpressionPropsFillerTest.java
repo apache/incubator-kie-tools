@@ -31,6 +31,8 @@ import org.kie.workbench.common.dmn.api.definition.model.InputClauseLiteralExpre
 import org.kie.workbench.common.dmn.api.definition.model.Invocation;
 import org.kie.workbench.common.dmn.api.definition.model.List;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocument;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocumentModel;
 import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
@@ -79,7 +81,7 @@ public class ExpressionPropsFillerTest {
     @Test
     public void testFillContextProps() {
         final Context contextExpression = new Context();
-        contextExpression.getContextEntry().add(buildContextEntry());
+        contextExpression.getContextEntry().add(buildContextEntry(new LiteralExpression()));
         contextExpression.getContextEntry().add(buildResultEntry());
 
         final ExpressionProps expressionProps = ExpressionPropsFiller.buildAndFillJsInteropProp(contextExpression, null, null);
@@ -198,7 +200,11 @@ public class ExpressionPropsFillerTest {
         pmmlFunctionExpression.getFormalParameter().add(buildVariable());
         final String documentName = "document name";
         final String modelName = "model name";
-        pmmlFunctionExpression.setExpression(buildWrappedContext(documentName, modelName));
+        final ContextEntry firstEntry = buildContextEntry(new LiteralExpressionPMMLDocument());
+        ((LiteralExpressionPMMLDocument) firstEntry.getExpression()).setText(new Text(documentName));
+        final ContextEntry secondEntry = buildContextEntry(new LiteralExpressionPMMLDocumentModel());
+        ((LiteralExpressionPMMLDocumentModel) secondEntry.getExpression()).setText(new Text(modelName));
+        pmmlFunctionExpression.setExpression(buildWrappedContext(firstEntry, secondEntry));
 
         final ExpressionProps expressionProps = ExpressionPropsFiller.buildAndFillJsInteropProp(pmmlFunctionExpression, null, null);
 
@@ -219,7 +225,11 @@ public class ExpressionPropsFillerTest {
         javaFunctionExpression.getFormalParameter().add(buildVariable());
         final String className = "class name";
         final String methodName = "method name";
-        javaFunctionExpression.setExpression(buildWrappedContext(className, methodName));
+        final ContextEntry firstEntry = buildContextEntry(new LiteralExpression());
+        ((LiteralExpression) firstEntry.getExpression()).setText(new Text(className));
+        final ContextEntry secondEntry = buildContextEntry(new LiteralExpression());
+        ((LiteralExpression) secondEntry.getExpression()).setText(new Text(methodName));
+        javaFunctionExpression.setExpression(buildWrappedContext(firstEntry, secondEntry));
 
         final ExpressionProps expressionProps = ExpressionPropsFiller.buildAndFillJsInteropProp(javaFunctionExpression, null, null);
 
@@ -298,11 +308,11 @@ public class ExpressionPropsFillerTest {
         return resultEntry;
     }
 
-    private ContextEntry buildContextEntry() {
+    private ContextEntry buildContextEntry(final LiteralExpression wrappedEntry) {
         final ContextEntry entry = buildResultEntry();
         final InformationItem variable = buildVariable();
         entry.setVariable(variable);
-        entry.setExpression(new LiteralExpression());
+        entry.setExpression(wrappedEntry);
         return entry;
     }
 
@@ -324,12 +334,8 @@ public class ExpressionPropsFillerTest {
         return list;
     }
 
-    private Context buildWrappedContext(final String firstEntryValue, final String secondEntryValue) {
+    private Context buildWrappedContext(final ContextEntry firstEntry, final ContextEntry secondEntry) {
         final Context wrappedContext = new Context();
-        final ContextEntry firstEntry = buildContextEntry();
-        ((LiteralExpression) firstEntry.getExpression()).setText(new Text(firstEntryValue));
-        final ContextEntry secondEntry = buildContextEntry();
-        ((LiteralExpression) secondEntry.getExpression()).setText(new Text(secondEntryValue));
         wrappedContext.getContextEntry().add(firstEntry);
         wrappedContext.getContextEntry().add(secondEntry);
         return wrappedContext;

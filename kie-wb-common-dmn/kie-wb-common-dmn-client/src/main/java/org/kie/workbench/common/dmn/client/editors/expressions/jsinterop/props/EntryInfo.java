@@ -20,10 +20,12 @@ import jsinterop.annotations.JsType;
 
 @JsType
 public class EntryInfo {
+    public final String id;
     public final String name;
     public final String dataType;
 
-    public EntryInfo(final String name, final String dataType) {
+    public EntryInfo(final String id, final String name, final String dataType) {
+        this.id = id;
         this.name = name;
         this.dataType = dataType;
     }

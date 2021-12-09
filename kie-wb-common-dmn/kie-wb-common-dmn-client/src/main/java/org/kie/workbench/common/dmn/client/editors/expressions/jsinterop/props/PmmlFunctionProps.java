@@ -21,12 +21,17 @@ import org.kie.dmn.model.api.FunctionKind;
 
 @JsType
 public class PmmlFunctionProps extends FunctionProps {
+
     public final String document;
     public final String model;
+    public final String documentFieldId;
+    public final String modelFieldId;
 
-    public PmmlFunctionProps(final String name, final String dataType, final EntryInfo[] formalParameters, final Double parametersWidth, final String document, final String model) {
-        super(name, dataType, formalParameters, parametersWidth, FunctionKind.PMML.value());
+    public PmmlFunctionProps(final String id, final String name, final String dataType, final EntryInfo[] formalParameters, final Double parametersWidth, final String document, final String model, final String documentFieldId, final String modelFieldId) {
+        super(id, name, dataType, formalParameters, parametersWidth, FunctionKind.PMML.value());
         this.document = document;
         this.model = model;
+        this.documentFieldId = documentFieldId;
+        this.modelFieldId = modelFieldId;
     }
 }

@@ -26,8 +26,8 @@ public class FunctionProps extends ExpressionProps {
     public final String functionKind;
     public final Double parametersWidth;
 
-    public FunctionProps(final String name, final String dataType, final EntryInfo[] formalParameters, final Double parametersWidth, final String functionKind) {
-        super(name, dataType, FUNCTION.getText());
+    public FunctionProps(final String id, final String name, final String dataType, final EntryInfo[] formalParameters, final Double parametersWidth, final String functionKind) {
+        super(id, name, dataType, FUNCTION.getText());
         this.formalParameters = formalParameters;
         this.functionKind = functionKind;
         this.parametersWidth = parametersWidth;

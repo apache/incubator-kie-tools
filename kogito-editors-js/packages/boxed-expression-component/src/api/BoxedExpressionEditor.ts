@@ -44,7 +44,6 @@ declare global {
 
   //API that BoxedExpressionEditor (bee) and its wrapper are expecting to be defined in the Window namespace
   interface Window {
-    renderBoxedExpressionEditor: (selector: string, definition: ExpressionProps) => void;
     beeApi: BeeApi;
     beeApiWrapper: BeeApi;
   }

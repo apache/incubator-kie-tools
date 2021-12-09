@@ -30,7 +30,7 @@ exports[`BoxedExpressionEditor tests should render BoxedExpressionEditor compone
           data-ouia-component-id="expression-container"
         >
           <div
-            class="logic-type-selector logic-type-not-present"
+            class="_00000000-0000-0000-0000-000000000000 logic-type-selector logic-type-not-present"
           >
             Select expression
           </div>
