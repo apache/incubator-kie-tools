@@ -76,4 +76,3 @@ The returned object will contain the methods needed to manipulate the Editor:
   - `getDimensions(uuid: string): Promise<number[]>`: Returns a Promise containing the dimensions of a node with provided UUID.
   - `applyState(uuid: string, state: string): Promise<void>`: Applies state to a node given the UUID ("None", "Selected", "Highlight", "Error").
   - `centerNode(uuid: string): Promise<void>`: Centers node on viewable Canvas.
-  
