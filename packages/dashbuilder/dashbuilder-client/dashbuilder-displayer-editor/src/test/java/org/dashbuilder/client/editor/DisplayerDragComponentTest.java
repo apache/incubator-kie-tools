@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 
 import java.util.Map;
@@ -53,6 +54,9 @@ public class DisplayerDragComponentTest {
 
     @Mock
     Map<String,String> configurationProperties;
+    
+    @Mock
+    LayoutComponent layoutComponent;
 
     @InjectMocks
     LineChartDragComponent lineChartDragComponent;
@@ -60,6 +64,7 @@ public class DisplayerDragComponentTest {
     @Before
     public void setUp(){
         when(configurationContext.getComponentProperties()).thenReturn(configurationProperties);
+        when(configurationContext.getLayoutComponent()).thenReturn(layoutComponent);
         when(beanManager.lookupBean(DisplayerEditorPopup.class)).thenReturn(editorBeanDef);
         when(editorBeanDef.newInstance()).thenReturn(editorPopup);
     }

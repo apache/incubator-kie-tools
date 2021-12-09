@@ -117,7 +117,6 @@ public class LayoutTemplateJSONMarshallerTest {
         LayoutComponent layoutComponent = layoutColumn.getLayoutComponents().get(0);
         assertEquals(LCOMP_DRAG_TYPE, layoutComponent.getDragTypeName());
         assertEquals(PROP_VAL, layoutComponent.getProperties().get(PROP_KEY));
-
     }
 
 }

@@ -24,6 +24,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.dashbuilder.displayer.DisplayerSettings;
+import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
 import org.dashbuilder.json.Json;
 import org.dashbuilder.json.JsonArray;
 import org.dashbuilder.json.JsonObject;
@@ -49,6 +51,10 @@ public class LayoutTemplateJSONMarshaller {
     private static final String NAME = "name";
     private static final String STYLE = "style";
     private static final String HEIGHT = "height";
+    private static final String SETTINGS = "settings";
+
+    private static final String DEFAULT_HEIGHT = "1";
+    private static final String DEFAULT_SPAN = "12";
 
     private static LayoutTemplateJSONMarshaller instance;
 
@@ -61,23 +67,24 @@ public class LayoutTemplateJSONMarshaller {
     }
 
     public JsonObject toJson(LayoutTemplate lt) {
-        JsonObject jsonObject = Json.createObject();
+        var jsonObject = Json.createObject();
         jsonObject.set(STYLE, Json.create(lt.getStyle().name()));
         jsonObject.set(NAME, Json.create(lt.getName()));
         jsonObject.set(LAYOUT_PROPERTIES, propertiesToJson(lt.getLayoutProperties()));
         jsonObject.set(ROWS, rowsToJson(lt.getRows()));
         return jsonObject;
     }
-    
+
     public LayoutTemplate fromJson(String json) {
         return fromJson(Json.parse(json));
     }
 
     public LayoutTemplate fromJson(JsonObject object) {
-        LayoutTemplate template = new LayoutTemplate();
-
-        template.setName(object.getString(NAME));
-        template.setStyle(Style.valueOf(object.getString(STYLE)));
+        var template = new LayoutTemplate();
+        var style = object.getString(STYLE);
+        var name = object.getString(NAME);
+        template.setName(name == null ? "Page " + System.currentTimeMillis() : name);
+        template.setStyle(style == null ? Style.FLUID : Style.valueOf(style));
         extractProperties(object.getObject(LAYOUT_PROPERTIES), template::addLayoutProperty);
         extractRows(object.getArray(ROWS), template::addRow);
 
@@ -88,7 +95,9 @@ public class LayoutTemplateJSONMarshaller {
         extractObjects(array, this::extractRow, rowConsumer);
     }
 
-    private <T> void extractObjects(JsonArray array, Function<JsonObject, T> objectExtractor, Consumer<T> objectConsumer) {
+    private <T> void extractObjects(JsonArray array,
+                                    Function<JsonObject, T> objectExtractor,
+                                    Consumer<T> objectConsumer) {
         if (array != null) {
             for (int i = 0; i < array.length(); i++) {
                 objectConsumer.accept(objectExtractor.apply(array.getObject(i)));
@@ -97,8 +106,9 @@ public class LayoutTemplateJSONMarshaller {
     }
 
     private LayoutRow extractRow(JsonObject object) {
-        LayoutRow row = new LayoutRow(object.getString(HEIGHT),
-                                      extractProperties(object.getObject(PROPERTIES)));
+        var height = object.getString(HEIGHT);
+        var row = new LayoutRow(height == null ? DEFAULT_HEIGHT : height,
+                extractProperties(object.getObject(PROPERTIES)));
         extractColumns(object.getArray(LAYOUT_COLUMNS), row::add);
         return row;
     }
@@ -108,9 +118,11 @@ public class LayoutTemplateJSONMarshaller {
     }
 
     private LayoutColumn extractColumn(JsonObject object) {
-        LayoutColumn column = new LayoutColumn(object.getString(SPAN),
-                                               object.getString(HEIGHT),
-                                               extractProperties(object.getObject(PROPERTIES)));
+        var span = object.getString(SPAN);
+        var height = object.getString(HEIGHT);
+        LayoutColumn column = new LayoutColumn(span == null ? DEFAULT_SPAN : span,
+                height == null ? DEFAULT_HEIGHT : height,
+                extractProperties(object.getObject(PROPERTIES)));
 
         extractRows(object.getArray(ROWS), column::addRow);
         extractComponents(object.getArray(LAYOUT_COMPONENTS), column::add);
@@ -122,26 +134,34 @@ public class LayoutTemplateJSONMarshaller {
     }
 
     private LayoutComponent extractComponent(JsonObject object) {
-        LayoutComponent component = new LayoutComponent(object.getString(DRAG_TYPE_NAME));
-        extractProperties(object.getObject(PROPERTIES), component::addProperty);
-        extractParts(object.getArray(PARTS)).forEach(part -> component.addPartProperties(part.getPartId(), part.getCssProperties()));
+        var component = new LayoutComponent(object.getString(DRAG_TYPE_NAME));
+        var propertiesObject = object.getObject(PROPERTIES);
+        var settings = object.getObject(SETTINGS);
+        extractProperties(propertiesObject, component::addProperty);
+        extractParts(object.getArray(PARTS)).forEach(part -> component.addPartProperties(part.getPartId(), part
+                .getCssProperties()));
+
+        if (settings != null) {
+            component.setSettings(DisplayerSettingsJSONMarshaller.get().fromJsonObject(settings));
+
+        }
         return component;
     }
 
     private List<LayoutComponentPart> extractParts(JsonArray array) {
-        List<LayoutComponentPart> parts = new ArrayList<>();
+        var parts = new ArrayList<LayoutComponentPart>();
         if (array != null) {
             for (int i = 0; i < array.length(); i++) {
                 JsonObject object = array.getObject(i);
                 parts.add(new LayoutComponentPart(object.getString(PART_ID),
-                                                  extractProperties(object.getObject(PROPERTIES))));
+                        extractProperties(object.getObject(PROPERTIES))));
             }
         }
         return parts;
     }
 
     private Map<String, String> extractProperties(JsonObject object) {
-        Map<String, String> properties = new HashMap<>();
+        var properties = new HashMap<String, String>();
         extractProperties(object, properties::put);
         return properties;
     }
@@ -159,14 +179,14 @@ public class LayoutTemplateJSONMarshaller {
     }
 
     private <T> JsonArray listToJson(List<T> objects, Function<T, JsonObject> toObjectFunction) {
-        JsonArray array = Json.createArray();
-        AtomicInteger i = new AtomicInteger();
+        var array = Json.createArray();
+        var i = new AtomicInteger();
         objects.forEach(obj -> array.set(i.getAndIncrement(), toObjectFunction.apply(obj)));
         return array;
     }
 
     private JsonObject rowToJson(LayoutRow row) {
-        JsonObject object = Json.createObject();
+        var object = Json.createObject();
         object.set(HEIGHT, Json.create(row.getHeight()));
         object.set(PROPERTIES, propertiesToJson(row.getProperties()));
         object.set(LAYOUT_COLUMNS, columnsToJson(row.getLayoutColumns()));
@@ -178,7 +198,7 @@ public class LayoutTemplateJSONMarshaller {
     }
 
     private JsonObject columnToJson(LayoutColumn column) {
-        JsonObject object = Json.createObject();
+        var object = Json.createObject();
         object.set(HEIGHT, Json.create(column.getHeight()));
         object.set(SPAN, Json.create(column.getSpan()));
         object.set(PROPERTIES, propertiesToJson(column.getProperties()));
@@ -192,10 +212,16 @@ public class LayoutTemplateJSONMarshaller {
     }
 
     private JsonObject componentToJson(LayoutComponent component) {
-        JsonObject object = Json.createObject();
+        var object = Json.createObject();
         object.set(DRAG_TYPE_NAME, Json.create(component.getDragTypeName()));
-        object.set(PROPERTIES, propertiesToJson(component.getProperties()));
         object.set(PARTS, partsToJson(component.getParts()));
+        object.set(PROPERTIES, propertiesToJson(component.getProperties()));
+
+        var settings = component.getSettings();
+        if (settings != null) {
+            var displayerSettings = (DisplayerSettings) settings;
+            object.set(SETTINGS, DisplayerSettingsJSONMarshaller.get().toJsonObject(displayerSettings));
+        }
         return object;
     }
 
@@ -204,14 +230,14 @@ public class LayoutTemplateJSONMarshaller {
     }
 
     private JsonObject partToJson(LayoutComponentPart part) {
-        JsonObject object = Json.createObject();
+        var object = Json.createObject();
         object.set(PART_ID, Json.create(part.getPartId()));
         object.set(PROPERTIES, propertiesToJson(part.getCssProperties()));
         return object;
     }
 
     private JsonValue propertiesToJson(Map<String, String> layoutProperties) {
-        JsonObject object = Json.createObject();
+        var object = Json.createObject();
         layoutProperties.forEach((key, value) -> object.set(key, Json.create(value)));
         return object;
     }

@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dashbuilder.dataprovider.external.parser;
+package org.dashbuilder.dataset.json;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataColumn;
@@ -124,11 +128,15 @@ public class ExternalDataSetParserTest {
             "   ]\n" +
             "}";
 
-    private ExternalDataSetParser parser;
+    private ExternalDataSetJSONParser parser;
 
     @Before
     public void setup() {
-        parser = new ExternalDataSetParser();
+        parser = new ExternalDataSetJSONParser(value -> {
+            var temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(value);
+            var instant = Instant.from(temporalAccessor);
+            return Date.from(instant);
+        });
     }
 
     @Test

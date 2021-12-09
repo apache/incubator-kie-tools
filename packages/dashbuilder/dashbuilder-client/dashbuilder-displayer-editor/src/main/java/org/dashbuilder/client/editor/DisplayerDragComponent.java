@@ -15,7 +15,12 @@
  */
 package org.dashbuilder.client.editor;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.dashbuilder.client.editor.resources.i18n.Constants;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
@@ -28,19 +33,19 @@ import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.mvp.Command;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.Map;
+import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 public class DisplayerDragComponent implements LayoutDragComponent, HasModalConfiguration {
 
+    private static final String JSON = "json";
     SyncBeanManager beanManager;
     DisplayerViewer viewer;
     PlaceManager placeManager;
@@ -80,29 +85,27 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
 
     @Override
     public IsWidget getShowWidget(final RenderingContext ctx) {
-        Map<String, String> properties = ctx.getComponent().getProperties();
-        String json = properties.get("json");
-        if (json == null) {
-            return null;
+        var settingsOp = getDisplayerSettings(ctx.getComponent().getProperties(), ctx.getComponent());
+        if (settingsOp.isPresent()) {
+            final DisplayerSettings settings = settingsOp.get();
+            viewer.removeFromParent();
+            viewer.init(settings);
+            viewer.addAttachHandler(attachEvent -> {
+                if (attachEvent.isAttached()) {
+                    final int offsetWidth = ctx.getContainer().getOffsetWidth();
+                    int containerWidth = offsetWidth > 40 ? offsetWidth - 40 : 0;
+                    adjustSize(settings, containerWidth);
+                    Displayer displayer = viewer.draw();
+                    perspectiveCoordinator.addDisplayer(displayer);
+                }
+            });
+            int containerWidth = ctx.getContainer().getOffsetWidth() - 40;
+            adjustSize(settings, containerWidth);
+            Displayer displayer = viewer.draw();
+            perspectiveCoordinator.addDisplayer(displayer);
+            return viewer;
         }
-
-        final DisplayerSettings settings = marshaller.fromJsonString(json);
-        viewer.removeFromParent();
-        viewer.init(settings);
-        viewer.addAttachHandler(attachEvent -> {
-            if (attachEvent.isAttached()) {
-                final int offsetWidth = ctx.getContainer().getOffsetWidth();
-                int containerWidth = offsetWidth > 40 ? offsetWidth - 40 : 0;
-                adjustSize(settings, containerWidth);
-                Displayer displayer = viewer.draw();
-                perspectiveCoordinator.addDisplayer(displayer);
-            }
-        });
-        int containerWidth = ctx.getContainer().getOffsetWidth() - 40;
-        adjustSize(settings, containerWidth);
-        Displayer displayer = viewer.draw();
-        perspectiveCoordinator.addDisplayer(displayer);
-        return viewer;
+        return null;
     }
 
     @Override
@@ -120,10 +123,9 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
     }
 
     protected DisplayerEditorPopup buildEditorPopUp(final ModalConfigurationContext ctx) {
-        Map<String, String> properties = ctx.getComponentProperties();
-        String json = properties.get("json");
-        DisplayerSettings settings = json != null ? marshaller.fromJsonString(json) : initialSettings(ctx);
-        DisplayerEditorPopup editor = beanManager.lookupBean(DisplayerEditorPopup.class).newInstance();
+        var settings = getDisplayerSettings(ctx).orElseGet(() -> initialSettings(
+                ctx));
+        var editor = beanManager.lookupBean(DisplayerEditorPopup.class).newInstance();
 
         // For brand new components set the default type/subtype to create
         if (settings == null) {
@@ -172,5 +174,25 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
         if (tableWidth == 0 || tableWidth > containerWidth) {
             settings.setTableWidth(containerWidth > 20 ? containerWidth - 20 : 0);
         }
+    }
+
+    private Optional<DisplayerSettings> getDisplayerSettings(ModalConfigurationContext ctx) {
+        return getDisplayerSettings(ctx.getComponentProperties(), ctx.getLayoutComponent());
+    }
+
+    private Optional<DisplayerSettings> getDisplayerSettings(Map<String, String> properties,
+                                                             LayoutComponent component) {
+        var json = properties.get(JSON);
+        // compatibility with old settings
+        if (json != null) {
+            return Optional.of(marshaller.fromJsonString(json));
+        }
+        var settings = component.getSettings();
+        if (settings != null) {
+            var displayerSettings = (DisplayerSettings) settings;
+            return Optional.of(displayerSettings);
+        }
+
+        return Optional.empty();
     }
 }

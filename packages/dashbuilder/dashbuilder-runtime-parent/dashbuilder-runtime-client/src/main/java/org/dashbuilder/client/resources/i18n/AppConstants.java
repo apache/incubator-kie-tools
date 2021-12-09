@@ -71,4 +71,8 @@ public interface AppConstants extends Messages {
 
     String notAuthorizedTitle();
 
+    String notAbleToLoadDashboard(String message);
+
+    String errorLoadingBackend();
+
 }
