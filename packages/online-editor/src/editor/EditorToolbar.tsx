@@ -154,10 +154,7 @@ export function EditorToolbar(props: Props) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (
-          gitHubGist ||
-          (workspaceImportableUrl.type !== UrlType.GIST_FILE && workspaceImportableUrl.type !== UrlType.GIST)
-        ) {
+        if (gitHubGist || workspaceImportableUrl.type !== UrlType.GIST) {
           return;
         }
 
@@ -526,8 +523,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   );
 
   const isGitHubGistOwner = useMemo(() => {
-    const { username } = githubAuthInfo ?? {};
-    return username && gitHubGist?.owner?.login === username;
+    return githubAuthInfo?.username && gitHubGist?.owner?.login === githubAuthInfo.username;
   }, [githubAuthInfo, gitHubGist]);
 
   const canCreateGitRepository = useMemo(
@@ -1459,11 +1455,13 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                       isInline={true}
                                       variant={"info"}
                                       title={
-                                        <span style={{ whiteSpace: "nowrap" }}>{"Can't sync Gists you don't own"}</span>
+                                        <span style={{ whiteSpace: "nowrap" }}>
+                                          {"Can't update Gists you don't own"}
+                                        </span>
                                       }
                                       actionLinks={
                                         <AlertActionLink onClick={forkGitHubGist} style={{ fontWeight: "bold" }}>
-                                          {`Create Gist fork...`}
+                                          {`Fork Gist`}
                                         </AlertActionLink>
                                       }
                                     >
