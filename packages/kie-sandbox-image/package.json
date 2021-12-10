@@ -12,7 +12,7 @@
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:online-editor": "cp -R ../online-editor/dist ./dist-dev/online-editor",
     "copy:assets": "yarn copy:online-editor",
-    "podman:build": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env kieSandbox.image.buildTags) | xargs printf -- \"-t $(build-env kieSandbox.image.registry)/$(build-env kieSandbox.image.account)/$(build-env kieSandbox.image.name):%s\n\" | xargs echo) .\" --else \"echo Podman not found, skipping image build.\"",
+    "podman:build": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env kieSandbox.image.buildTags) | xargs printf -- \"-t $(build-env kieSandbox.image.registry)/$(build-env kieSandbox.image.account)/$(build-env kieSandbox.image.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\"",
     "build:dev": "yarn cleanup && yarn copy:assets",
     "build:prod:win32": "echo \"Build not supported on Windows\"",
     "build:prod:darwin:linux": "yarn run run-script-if --bool \"$(build-env global.build.docker)\" --then \"yarn podman:build\"",
