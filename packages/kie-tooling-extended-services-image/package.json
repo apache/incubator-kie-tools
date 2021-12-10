@@ -14,7 +14,7 @@
     "copy:extended-services:linux": "cp -R ../extended-services/dist/linux/kie_tooling_extended_services ./dist-dev/kie_tooling_extended_services",
     "copy:extended-services": "run-script-os",
     "copy:assets": "yarn copy:extended-services",
-    "podman:build": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env extendedServices.baseImage.buildTags) | xargs printf -- \"-t $(build-env extendedServices.baseImage.registry)/$(build-env extendedServices.baseImage.account)/$(build-env extendedServices.baseImage.name):%s\n\" | xargs echo) .\" --else \"echo Podman not found, skipping image build.\"",
+    "podman:build": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env extendedServices.image.buildTags) | xargs printf -- \"-t $(build-env extendedServices.image.registry)/$(build-env extendedServices.image.account)/$(build-env extendedServices.image.name):%s\n\" | xargs echo) .\" --else \"echo Podman not found, skipping image build.\"",
     "build:dev": "yarn cleanup && yarn copy:assets",
     "build:prod:darwin:win32": "echo \"Build not supported\"",
     "build:prod:linux": "yarn run run-script-if --bool \"$(build-env global.build.docker)\" --then \"yarn podman:build\"",

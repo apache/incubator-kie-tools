@@ -188,43 +188,43 @@ const ENV_VARS = {
     default: "latest",
     description: "",
   },
-  KIE_SANDBOX__baseImageRegistry: {
-    name: "KIE_SANDBOX__baseImageRegistry",
+  KIE_SANDBOX__imageRegistry: {
+    name: "KIE_SANDBOX__imageRegistry",
     default: "quay.io",
     description: "",
   },
-  KIE_SANDBOX__baseImageAccount: {
-    name: "KIE_SANDBOX__baseImageAccount",
+  KIE_SANDBOX__imageAccount: {
+    name: "KIE_SANDBOX__imageAccount",
     default: "kogito_tooling_bot",
     description: "",
   },
-  KIE_SANDBOX__baseImageName: {
-    name: "KIE_SANDBOX__baseImageName",
+  KIE_SANDBOX__imageName: {
+    name: "KIE_SANDBOX__imageName",
     default: "kie-sandbox-image",
     description: "",
   },
-  KIE_SANDBOX__baseImageBuildTags: {
-    name: "KIE_SANDBOX__baseImageBuildTags",
+  KIE_SANDBOX__imageBuildTags: {
+    name: "KIE_SANDBOX__imageBuildTags",
     default: "latest",
     description: "",
   },
-  KIE_TOOLING_EXTENDED_SERVICES__baseImageRegistry: {
-    name: "KIE_TOOLING_EXTENDED_SERVICES__baseImageRegistry",
+  KIE_TOOLING_EXTENDED_SERVICES__imageRegistry: {
+    name: "KIE_TOOLING_EXTENDED_SERVICES__imageRegistry",
     default: "quay.io",
     description: "",
   },
-  KIE_TOOLING_EXTENDED_SERVICES__baseImageAccount: {
-    name: "KIE_TOOLING_EXTENDED_SERVICES__baseImageAccount",
+  KIE_TOOLING_EXTENDED_SERVICES__imageAccount: {
+    name: "KIE_TOOLING_EXTENDED_SERVICES__imageAccount",
     default: "kogito_tooling_bot",
     description: "",
   },
-  KIE_TOOLING_EXTENDED_SERVICES__baseImageName: {
-    name: "KIE_TOOLING_EXTENDED_SERVICES__baseImageName",
+  KIE_TOOLING_EXTENDED_SERVICES__imageName: {
+    name: "KIE_TOOLING_EXTENDED_SERVICES__imageName",
     default: "kie-tooling-extended-services-image",
     description: "",
   },
-  KIE_TOOLING_EXTENDED_SERVICES__baseImageBuildTags: {
-    name: "KIE_TOOLING_EXTENDED_SERVICES__baseImageBuildTags",
+  KIE_TOOLING_EXTENDED_SERVICES__imageBuildTags: {
+    name: "KIE_TOOLING_EXTENDED_SERVICES__imageBuildTags",
     default: "latest",
     description: "",
   },
@@ -311,20 +311,20 @@ module.exports = {
   },
 
   kieSandbox: {
-    baseImage: {
-      registry: getOrDefault(ENV_VARS.KIE_SANDBOX__baseImageRegistry),
-      account: getOrDefault(ENV_VARS.KIE_SANDBOX__baseImageAccount),
-      name: getOrDefault(ENV_VARS.KIE_SANDBOX__baseImageName),
-      buildTags: getOrDefault(ENV_VARS.KIE_SANDBOX__baseImageBuildTags),
+    image: {
+      registry: getOrDefault(ENV_VARS.KIE_SANDBOX__imageRegistry),
+      account: getOrDefault(ENV_VARS.KIE_SANDBOX__imageAccount),
+      name: getOrDefault(ENV_VARS.KIE_SANDBOX__imageName),
+      buildTags: getOrDefault(ENV_VARS.KIE_SANDBOX__imageBuildTags),
     },
   },
 
   extendedServices: {
-    baseImage: {
-      registry: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__baseImageRegistry),
-      account: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__baseImageAccount),
-      name: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__baseImageName),
-      buildTags: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__baseImageBuildTags),
+    image: {
+      registry: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__imageRegistry),
+      account: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__imageAccount),
+      name: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__imageName),
+      buildTags: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__imageBuildTags),
     },
   },
 

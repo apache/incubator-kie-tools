@@ -157,10 +157,10 @@ jobs:
 
   kie_sandbox_image:
     env:
-      KIE_SANDBOX__baseImageRegistry: "quay.io"
-      KIE_SANDBOX__baseImageAccount: "kogito_tooling_bot"
-      KIE_SANDBOX__baseImageName: "kie-sandbox-image"
-      KIE_SANDBOX__baseImageBuildTags: "latest ${{ inputs.tag }}"
+      KIE_SANDBOX__imageRegistry: "quay.io"
+      KIE_SANDBOX__imageAccount: "kogito_tooling_bot"
+      KIE_SANDBOX__imageName: "kie-sandbox-image"
+      KIE_SANDBOX__imageBuildTags: "latest ${{ inputs.tag }}"
 
     if: ${{ needs.extract_runners.outputs.kie_sandbox_image == 'true' }}
     runs-on: ubuntu-latest
@@ -188,18 +188,18 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.KIE_SANDBOX__baseImageName }}"
-          tags: "${{ env.KIE_SANDBOX__baseImageBuildTags }}"
-          registry: "${{ env.KIE_SANDBOX__baseImageRegistry }}/${{ env.KIE_SANDBOX__baseImageAccount }}"
-          username: "${{ env.KIE_SANDBOX__baseImageAccount }}"
+          image: "${{ env.KIE_SANDBOX__imageName }}"
+          tags: "${{ env.KIE_SANDBOX__imageBuildTags }}"
+          registry: "${{ env.KIE_SANDBOX__imageRegistry }}/${{ env.KIE_SANDBOX__imageAccount }}"
+          username: "${{ env.KIE_SANDBOX__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
   kie_tooling_extended_services_image:
     env:
-      KIE_TOOLING_EXTENDED_SERVICES__baseImageRegistry: "quay.io"
-      KIE_TOOLING_EXTENDED_SERVICES__baseImageAccount: "kogito_tooling_bot"
-      KIE_TOOLING_EXTENDED_SERVICES__baseImageName: "kie-tooling-extended-services-image"
-      KIE_TOOLING_EXTENDED_SERVICES__baseImageBuildTags: "latest ${{ inputs.tag }}"
+      KIE_TOOLING_EXTENDED_SERVICES__imageRegistry: "quay.io"
+      KIE_TOOLING_EXTENDED_SERVICES__imageAccount: "kogito_tooling_bot"
+      KIE_TOOLING_EXTENDED_SERVICES__imageName: "kie-tooling-extended-services-image"
+      KIE_TOOLING_EXTENDED_SERVICES__imageBuildTags: "latest ${{ inputs.tag }}"
 
     if: ${{ needs.extract_runners.outputs.kie_tooling_extended_services_image == 'true' }}
     runs-on: ubuntu-latest
@@ -227,10 +227,10 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__baseImageName }}"
-          tags: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__baseImageBuildTags }}"
-          registry: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__baseImageRegistry }}/${{ env.KIE_TOOLING_EXTENDED_SERVICES__baseImageAccount }}"
-          username: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__baseImageAccount }}"
+          image: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__imageName }}"
+          tags: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__imageBuildTags }}"
+          registry: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__imageRegistry }}/${{ env.KIE_TOOLING_EXTENDED_SERVICES__imageAccount }}"
+          username: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
   online_editor:
