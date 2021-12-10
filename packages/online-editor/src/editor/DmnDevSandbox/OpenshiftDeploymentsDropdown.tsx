@@ -56,7 +56,6 @@ export function OpenshiftDeploymentsDropdown() {
       ? [
           <DropdownSeparator key={"dropdown-dmn-dev-sandbox-separator-deployments-1"} />,
           <DropdownItem
-            style={{ minWidth: "400px" }}
             key={"dropdown-dmn-dev-sandbox-setup-as"}
             component={"button"}
             onClick={openOpenShiftSettings}
@@ -113,7 +112,7 @@ export function OpenshiftDeploymentsDropdown() {
         className="kogito--editor__light-tooltip"
         content={<div>{`You're not connected to any OpenShift instance.`}</div>}
         trigger={!isDmnDevSandboxConnected ? "mouseenter" : ""}
-        position="left"
+        position="auto"
       >
         <Dropdown
           position={"right"}
@@ -128,6 +127,7 @@ export function OpenshiftDeploymentsDropdown() {
           }
           isOpen={dmnDevSandbox.isDeploymentsDropdownOpen}
           isPlain={true}
+          className="kogito--editor__responsive-dropdown"
           dropdownItems={[
             <DropdownGroup key={"openshift-deployments-group"} label={"OpenShift deployments"}>
               {items}

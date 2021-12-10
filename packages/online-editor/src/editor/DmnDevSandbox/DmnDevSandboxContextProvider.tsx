@@ -79,6 +79,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
       try {
         await settingsDispatch.openshift.service.deploy({
           targetFilePath: workspaceFile.relativePath,
+          workspaceId: workspaceFile.workspaceId,
           workspaceZipBlob: zipBlob,
           config: settings.openshift.config,
           onlineEditorUrl: (baseUrl) =>

@@ -28,12 +28,14 @@ export interface Resource {
     labels: Record<string, string>;
     annotations: Record<string, string>;
     creationTimestamp: string;
+    workspaceId: string;
   };
 }
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 export const KOGITO_CREATED_BY = "kogito.kie.org/created-by";
+export const KOGITO_WORKSPACE_ID = "kogito.kie.org/workspace-id";
 export const KOGITO_URI = "kogito.kie.org/uri";
 export const JAVA_RUNTIME_VERSION = "openjdk-11-el7";
 
