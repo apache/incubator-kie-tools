@@ -20,7 +20,6 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-// import { Panel, PanelMain, PanelMainBody, PanelHeader, PanelFooter } from '@patternfly/react-core/dist/js/components/Panel';
 import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { useHistory } from "react-router";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -35,7 +34,7 @@ import {
 } from "@patternfly/react-core/dist/js/components/Card";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
-import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
@@ -134,9 +133,9 @@ export function HomePage() {
 
   return (
     <OnlineEditorPage>
-      <PageSection>
-        <Split isWrappable={true} hasGutter={true}>
-          <SplitItem isFilled={true}>
+      <PageSection isFilled={true}>
+        <Grid hasGutter>
+          <GridItem sm={12} xl={6}>
             <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
               <TextContent>
                 <Text component={TextVariants.h1}>Create</Text>
@@ -166,8 +165,8 @@ export function HomePage() {
                 />
               </Gallery>
             </PageSection>
-          </SplitItem>
-          <SplitItem isFilled={true}>
+          </GridItem>
+          <GridItem sm={12} xl={6}>
             <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
               <TextContent>
                 <Text component={TextVariants.h1}>Import</Text>
@@ -184,10 +183,10 @@ export function HomePage() {
                 <UploadCard expandWorkspace={expandWorkspace} />
               </Gallery>
             </PageSection>
-          </SplitItem>
-        </Split>
+          </GridItem>
+        </Grid>
       </PageSection>
-      <PageSection isFilled={true} variant={"light"} hasOverflowScroll={true} style={{ paddingBottom: 0 }}>
+      <PageSection isFilled={true} variant={"light"} hasOverflowScroll={false}>
         <PromiseStateWrapper
           promise={workspaceDescriptorsPromise}
           rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
@@ -354,12 +353,12 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                     extension: editableFiles[0].extension,
                   })}
                 >
-                  <CardHeaderMain>
+                  <CardHeaderMain style={{ width: "100%" }}>
                     <Flex>
                       <FlexItem>
                         <CardTitle>
                           <TextContent>
-                            <Text component={TextVariants.h3}>
+                            <Text component={TextVariants.h3} style={{ textOverflow: "ellipsis", overflow: "hidden" }}>
                               <TaskIcon />
                               &nbsp;&nbsp;
                               {editableFiles[0].nameWithoutExtension}
@@ -418,12 +417,12 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
               onClick={props.onSelect}
             >
               <CardHeader>
-                <CardHeaderMain>
+                <CardHeaderMain style={{ width: "100%" }}>
                   <Flex>
                     <FlexItem>
                       <CardTitle>
                         <TextContent>
-                          <Text component={TextVariants.h3}>
+                          <Text component={TextVariants.h3} style={{ textOverflow: "ellipsis", overflow: "hidden" }}>
                             <FolderIcon />
                             &nbsp;&nbsp;
                             {workspaceName}
@@ -486,9 +485,9 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
         </TextContent>
       </CardBody>
       <CardFooter>
-        <Flex>
+        <Grid>
           <Link to={{ pathname: routes.newModel.path({ extension: props.extension }) }}>
-            <Button isLarge={true} variant={ButtonVariant.secondary} ouiaId={`new-${props.extension}-button`}>
+            <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.extension}-button`}>
               New {props.title}
             </Button>
           </Link>
@@ -510,7 +509,7 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
               Try sample
             </Button>
           </Link>
-        </Flex>
+        </Grid>
       </CardFooter>
     </Card>
   );
