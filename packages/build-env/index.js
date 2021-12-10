@@ -208,23 +208,23 @@ const ENV_VARS = {
     default: "latest",
     description: "",
   },
-  KIE_SANDBOX_EXTENDED_SERVICES__baseImageRegistry: {
-    name: "KIE_SANDBOX_EXTENDED_SERVICES__baseImageRegistry",
+  KIE_TOOLING_EXTENDED_SERVICES__baseImageRegistry: {
+    name: "KIE_TOOLING_EXTENDED_SERVICES__baseImageRegistry",
     default: "quay.io",
     description: "",
   },
-  KIE_SANDBOX_EXTENDED_SERVICES__baseImageAccount: {
-    name: "KIE_SANDBOX_EXTENDED_SERVICES__baseImageAccount",
+  KIE_TOOLING_EXTENDED_SERVICES__baseImageAccount: {
+    name: "KIE_TOOLING_EXTENDED_SERVICES__baseImageAccount",
     default: "kogito_tooling_bot",
     description: "",
   },
-  KIE_SANDBOX_EXTENDED_SERVICES__baseImageName: {
-    name: "KIE_SANDBOX_EXTENDED_SERVICES__baseImageName",
-    default: "kie-sandbox-extended-services-image",
+  KIE_TOOLING_EXTENDED_SERVICES__baseImageName: {
+    name: "KIE_TOOLING_EXTENDED_SERVICES__baseImageName",
+    default: "kie-tooling-extended-services-image",
     description: "",
   },
-  KIE_SANDBOX_EXTENDED_SERVICES__baseImageBuildTags: {
-    name: "KIE_SANDBOX_EXTENDED_SERVICES__baseImageBuildTags",
+  KIE_TOOLING_EXTENDED_SERVICES__baseImageBuildTags: {
+    name: "KIE_TOOLING_EXTENDED_SERVICES__baseImageBuildTags",
     default: "latest",
     description: "",
   },
@@ -321,10 +321,10 @@ module.exports = {
 
   extendedServices: {
     baseImage: {
-      registry: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__baseImageRegistry),
-      account: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__baseImageAccount),
-      name: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__baseImageName),
-      buildTags: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__baseImageBuildTags),
+      registry: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__baseImageRegistry),
+      account: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__baseImageAccount),
+      name: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__baseImageName),
+      buildTags: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__baseImageBuildTags),
     },
   },
 
