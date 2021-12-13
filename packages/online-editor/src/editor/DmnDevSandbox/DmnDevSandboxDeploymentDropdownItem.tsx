@@ -38,8 +38,8 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
 
   const deploymentName = useMemo(() => {
     const maxSize = 25;
-    const isMultifileWorkspace = workspacePromise.data?.files && workspacePromise.data?.files?.length > 1;
-    if (!workspacePromise.data || !isMultifileWorkspace) {
+    const isSingleFileWorkspace = workspacePromise.data?.files && workspacePromise.data?.files?.length === 1;
+    if (!workspacePromise.data || isSingleFileWorkspace) {
       const originalFilename = basename(props.deployment.uri);
       const extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
       const name = originalFilename.replace(`.${extension}`, "");

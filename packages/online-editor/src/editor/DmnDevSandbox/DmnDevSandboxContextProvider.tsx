@@ -140,7 +140,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
       window.clearInterval(loadDeploymentsTask.current);
     }
 
-    return () => clearInterval(loadDeploymentsTask.current);
+    return () => window.clearInterval(loadDeploymentsTask.current);
   }, [
     onDisconnect,
     settings.openshift,
