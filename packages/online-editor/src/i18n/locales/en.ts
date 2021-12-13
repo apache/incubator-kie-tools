@@ -52,7 +52,7 @@ export const en: OnlineI18n = {
     setGitHubToken: `Setup`,
     createGist: "Create Gist",
     cantCreateGistTooltip: `You can't create a Gist because you're either not logged in, or your models are in nested directories.`,
-    cantUpdateGistTooltip: `You can't update your Gist because you're either not logged in, or your models are in nested directories.`,
+    cantUpdateGistTooltip: `You can't update your Gist because you're either not logged in, not the owner, or your models are in nested directories.`,
     share: "Share",
     embed: "Embed",
   },
