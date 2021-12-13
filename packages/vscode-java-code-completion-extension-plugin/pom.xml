@@ -56,12 +56,12 @@
     <repository>
       <id>2021-12</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/2021-12/</url>
+      <url>http://download.eclipse.org/releases/2021-09/</url>
     </repository>
     <repository>
       <id>jdt.ls.p2</id>
       <layout>p2</layout>
-      <url>https://download.eclipse.org/jdtls/milestones/1.6.0/repository</url>
+      <url>https://download.eclipse.org/jdtls/milestones/1.5.0/repository</url>
     </repository>
     <repository>
       <id>jdt.ls.maven</id>
