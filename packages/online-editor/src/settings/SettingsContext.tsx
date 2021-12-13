@@ -44,6 +44,11 @@ export enum AuthStatus {
   SIGNED_IN,
 }
 
+export enum GithubScopes {
+  GIST = "gist",
+  REPO = "repo",
+}
+
 interface GithubUser {
   login: string;
   name: string;

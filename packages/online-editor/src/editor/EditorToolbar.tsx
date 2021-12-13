@@ -43,7 +43,7 @@ import {
   useNavigationStatusToggle,
   useRoutes,
 } from "../navigation/Hooks";
-import { AuthStatus, useSettings, useSettingsDispatch } from "../settings/SettingsContext";
+import { AuthStatus, GithubScopes, useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
 import { useHistory } from "react-router";
 import { EmbedModal } from "./EmbedModal";
@@ -86,6 +86,8 @@ import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/exter
 import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
 import { useGitHubAuthInfo } from "../github/Hooks";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { useCancelableEffect } from "../reactExt/Hooks";
+import { RestEndpointMethodTypes as OctokitRestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -141,9 +143,40 @@ export function EditorToolbar(props: Props) {
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
   const [isGitHubGistLoading, setGitHubGistLoading] = useState(false);
+  const [gitHubGist, setGitHubGist] =
+    useState<OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined>(undefined);
+  const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
 
   const githubAuthInfo = useGitHubAuthInfo();
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
+  const navigationBlockersBypass = useNavigationBlockersBypass();
+
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (gitHubGist || workspaceImportableUrl.type !== UrlType.GIST) {
+          return;
+        }
+
+        const { gistId } = workspaceImportableUrl;
+
+        if (!gistId) {
+          return;
+        }
+
+        settingsDispatch.github.octokit.gists.get({ gist_id: gistId }).then(({ data: gist }) => {
+          if (canceled.get()) {
+            return;
+          }
+
+          if (gist) {
+            setGitHubGist(gist);
+          }
+        });
+      },
+      [gitHubGist, workspaceImportableUrl, settingsDispatch.github.octokit.gists]
+    )
+  );
 
   const successfullyCreateGistAlert = useAlert(
     props.alerts,
@@ -191,7 +224,7 @@ export function EditorToolbar(props: Props) {
           />
         );
       },
-      [i18n, workspacePromise]
+      [workspacePromise]
     )
   );
 
@@ -295,6 +328,8 @@ export function EditorToolbar(props: Props) {
       setGitHubGistLoading(true);
       const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
 
+      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId, gitConfig: githubAuthInfo });
+
       await workspaces.gitService.push({
         fs,
         dir: await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId }),
@@ -305,7 +340,11 @@ export function EditorToolbar(props: Props) {
         authInfo: githubAuthInfo,
       });
 
-      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId, gitConfig: githubAuthInfo });
+      await workspaces.pull({
+        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+        workspaceId: props.workspaceFile.workspaceId,
+        authInfo: githubAuthInfo,
+      });
     } catch (e) {
       errorAlert.show();
       throw e;
@@ -347,7 +386,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       await workspaces.descriptorService.turnIntoGist(props.workspaceFile.workspaceId, new URL(gist.data.git_push_url));
 
       const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-      const workspaceRootDirPath = await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
+      const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
 
       await workspaces.gitService.addRemote({
         fs,
@@ -380,6 +419,12 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         authInfo: githubAuthInfo,
       });
 
+      await workspaces.pull({
+        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+        workspaceId: props.workspaceFile.workspaceId,
+        authInfo: githubAuthInfo,
+      });
+
       successfullyCreateGistAlert.show();
 
       return;
@@ -399,6 +444,75 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     errorAlert,
   ]);
 
+  const forkGitHubGist = useCallback(async () => {
+    try {
+      if (!githubAuthInfo || !gitHubGist?.id) {
+        return;
+      }
+      setGitHubGistLoading(true);
+
+      // Fork Gist
+      const gist = await settingsDispatch.github.octokit.gists.fork({
+        gist_id: gitHubGist.id,
+      });
+
+      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
+      const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
+
+      const remoteName = gist.data.id;
+
+      // Adds forked gist remote to current one
+      await workspaces.gitService.addRemote({
+        fs,
+        dir: workspaceRootDirPath,
+        url: gist.data.git_push_url,
+        name: remoteName,
+        force: true,
+      });
+
+      // Commit
+      await workspaces.createSavePoint({
+        fs: fs,
+        workspaceId: props.workspaceFile.workspaceId,
+        gitConfig: githubAuthInfo,
+      });
+
+      // Push to forked gist remote
+      await workspaces.gitService.push({
+        fs: fs,
+        dir: workspaceRootDirPath,
+        remote: remoteName,
+        ref: GIST_DEFAULT_BRANCH,
+        remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
+        force: true,
+        authInfo: githubAuthInfo,
+      });
+
+      // Redirect to import workspace
+      navigationBlockersBypass.execute(() => {
+        history.push({
+          pathname: routes.importModel.path({}),
+          search: routes.importModel.queryString({ url: gist.data.html_url }),
+        });
+      });
+    } catch (err) {
+      errorAlert.show();
+      throw err;
+    } finally {
+      setGitHubGistLoading(false);
+    }
+  }, [
+    githubAuthInfo,
+    gitHubGist,
+    settingsDispatch.github.octokit.gists,
+    workspaces,
+    props.workspaceFile.workspaceId,
+    navigationBlockersBypass,
+    history,
+    routes.importModel,
+    errorAlert,
+  ]);
+
   const openEmbedModal = useCallback(() => {
     setEmbedModalOpen(true);
   }, []);
@@ -408,27 +522,57 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     [workspacePromise]
   );
 
+  const isGitHubGistOwner = useMemo(() => {
+    return githubAuthInfo?.username && gitHubGist?.owner?.login === githubAuthInfo.username;
+  }, [githubAuthInfo, gitHubGist]);
+
   const canCreateGitRepository = useMemo(
     () =>
       settings.github.authStatus === AuthStatus.SIGNED_IN &&
+      settings.github.scopes?.includes(GithubScopes.REPO) &&
       workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL,
-    [workspacePromise, settings.github.authStatus]
+    [workspacePromise, settings.github.authStatus, settings.github.scopes]
   );
 
   const canCreateGitHubGist = useMemo(
     () =>
       settings.github.authStatus === AuthStatus.SIGNED_IN &&
+      settings.github.scopes?.includes(GithubScopes.GIST) &&
       workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL &&
       !workspaceHasNestedDirectories,
-    [workspacePromise, settings.github.authStatus, workspaceHasNestedDirectories]
+    [workspacePromise, settings.github.authStatus, settings.github.scopes, workspaceHasNestedDirectories]
   );
 
   const canUpdateGitHubGist = useMemo(
     () =>
       settings.github.authStatus === AuthStatus.SIGNED_IN &&
+      settings.github.scopes?.includes(GithubScopes.GIST) &&
+      isGitHubGistOwner &&
       workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST &&
       !workspaceHasNestedDirectories,
-    [workspacePromise, settings.github.authStatus, workspaceHasNestedDirectories]
+    [
+      workspacePromise,
+      settings.github.authStatus,
+      settings.github.scopes,
+      workspaceHasNestedDirectories,
+      isGitHubGistOwner,
+    ]
+  );
+
+  const canForkGitHubGist = useMemo(
+    () =>
+      settings.github.authStatus === AuthStatus.SIGNED_IN &&
+      settings.github.scopes?.includes(GithubScopes.GIST) &&
+      !isGitHubGistOwner &&
+      workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST &&
+      !workspaceHasNestedDirectories,
+    [
+      workspacePromise,
+      settings.github.authStatus,
+      settings.github.scopes,
+      workspaceHasNestedDirectories,
+      isGitHubGistOwner,
+    ]
   );
 
   const [isCreateGitHubRepositoryModalOpen, setCreateGitHubRepositoryModalOpen] = useState(false);
@@ -548,6 +692,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       canCreateGitHubGist,
       canCreateGitRepository,
       createGitHubGist,
+      settingsDispatch,
     ]
   );
 
@@ -968,7 +1113,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   ]);
 
   const navigationStatus = useNavigationStatus();
-  const navigationBlockersBypass = useNavigationBlockersBypass();
   const navigationStatusToggle = useNavigationStatusToggle();
   const confirmNavigationAlert = useAlert<{ lastBlockedLocation: Location }>(
     props.alerts,
@@ -1051,8 +1195,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       confirmNavigationAlert.close();
     }
   }, [confirmNavigationAlert, navigationStatus]);
-
-  const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
 
   const [isVsCodeDropdownOpen, setVsCodeDropdownOpen] = useState(false);
 
@@ -1306,6 +1448,29 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                           }
                           dropdownItems={[
                             <DropdownGroup key={"sync-gist-dropdown-group"}>
+                              {canForkGitHubGist && (
+                                <>
+                                  <li role="menuitem">
+                                    <Alert
+                                      isInline={true}
+                                      variant={"info"}
+                                      title={
+                                        <span style={{ whiteSpace: "nowrap" }}>
+                                          {"Can't update Gists you don't own"}
+                                        </span>
+                                      }
+                                      actionLinks={
+                                        <AlertActionLink onClick={forkGitHubGist} style={{ fontWeight: "bold" }}>
+                                          {`Fork Gist`}
+                                        </AlertActionLink>
+                                      }
+                                    >
+                                      {`You can create a fork of '${workspace.descriptor.name}' to save your updates.`}
+                                    </Alert>
+                                  </li>
+                                  <Divider />
+                                </>
+                              )}
                               <Tooltip
                                 data-testid={"gist-it-tooltip"}
                                 content={<div>{i18n.editorToolbar.cantUpdateGistTooltip}</div>}

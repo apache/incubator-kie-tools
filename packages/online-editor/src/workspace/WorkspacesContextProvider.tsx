@@ -108,16 +108,22 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const pull = useCallback(
-    async (args: { fs: LightningFS; workspaceId: string }) => {
+    async (args: {
+      fs: LightningFS;
+      workspaceId: string;
+      gitConfig?: { name: string; email: string };
+      authInfo?: { username: string; password: string };
+    }) => {
       const workspace = await descriptorService.get(args.workspaceId);
       await gitService.pull({
         fs: args.fs,
         dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
         ref: workspace.origin.branch,
         author: {
-          name: "Unknown",
-          email: "unknown@email.com",
+          name: args.gitConfig?.name ?? "Unknown",
+          email: args.gitConfig?.email ?? "unknown@email.com",
         },
+        authInfo: args.authInfo,
       });
 
       const broadcastChannel2 = new BroadcastChannel(args.workspaceId);

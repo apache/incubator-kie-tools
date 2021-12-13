@@ -138,7 +138,8 @@ export class GitService {
       email: string;
     };
     authInfo?: {
-      onAuth: () => { username: string; password: string };
+      username: string;
+      password: string;
     };
   }) {
     await git.pull({
@@ -149,7 +150,7 @@ export class GitService {
       ref: args.ref,
       singleBranch: true,
       author: args.author,
-      onAuth: args.authInfo?.onAuth,
+      onAuth: () => args.authInfo,
     });
   }
 
