@@ -24,7 +24,7 @@
     "@types/react-transition-group": "^4.4.1",
     "@types/uuid": "^8.3.0",
     "combine-reducer": "^1.0.2",
-    "immer": "^9.0.2",
+    "immer": "^9.0.6",
     "lodash": "^4.17.21",
     "react-cool-onclickoutside": "^1.6.1",
     "react-monaco-editor": "^0.43.0",
