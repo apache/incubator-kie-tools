@@ -31,6 +31,7 @@ import LightningFS from "@isomorphic-git/lightning-fs";
 import { GitService } from "./services/GitService";
 import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
+import { StorageService } from "./services/StorageService";
 
 export const decoder = new TextDecoder("utf-8");
 export const encoder = new TextEncoder();
@@ -87,6 +88,7 @@ export interface LocalFile {
 }
 
 export interface WorkspacesContextType {
+  storageService: StorageService;
   service: WorkspaceService;
   gitService: GitService;
   svgService: WorkspaceSvgService;

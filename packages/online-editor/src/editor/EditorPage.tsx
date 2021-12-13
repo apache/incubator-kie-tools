@@ -307,7 +307,12 @@ export function EditorPage(props: Props) {
         rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
         resolved={(file) => (
           <>
-            <DmnRunnerProvider workspaceFile={file} editorPageDock={editorPageDock}>
+            <DmnRunnerProvider
+              workspaceFile={file}
+              editorPageDock={editorPageDock}
+              fileRelativePath={props.fileRelativePath}
+              workspaceId={props.workspaceId}
+            >
               <Page>
                 <EditorToolbar
                   workspaceFile={file}
