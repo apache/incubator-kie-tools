@@ -35,7 +35,7 @@
     <tycho.extras.version>${tycho.version}</tycho.extras.version>
     <tycho.scmUrl>scm:git:https://github.com/kiegroup/kogito-tooling.git</tycho.scmUrl>
     <tycho.generateSourceReferences>true</tycho.generateSourceReferences>
-    <jdt.ls.version>1.5.0-SNAPSHOT</jdt.ls.version>
+    <jdt.ls.version>1.7.0-SNAPSHOT</jdt.ls.version>
 
     <tycho.test.platformArgs />
     <tycho.test.jvmArgs>-Xmx512m ${tycho.test.platformArgs}</tycho.test.jvmArgs>
@@ -56,12 +56,12 @@
     <repository>
       <id>2021-12</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/2021-09/</url>
+      <url>http://download.eclipse.org/releases/2021-12/</url>
     </repository>
     <repository>
       <id>jdt.ls.p2</id>
       <layout>p2</layout>
-      <url>https://download.eclipse.org/jdtls/milestones/1.5.0/repository</url>
+      <url>https://download.eclipse.org/jdtls/milestones/1.6.0/repository/</url>
     </repository>
     <repository>
       <id>jdt.ls.maven</id>
@@ -86,7 +86,6 @@
             <artifact>
               <groupId>org.eclipse.jdt.ls</groupId>
               <artifactId>org.eclipse.jdt.ls.tp</artifactId>
-              <version></version>
               <version>${jdt.ls.version}</version>
             </artifact>
           </target>
