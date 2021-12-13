@@ -43,7 +43,6 @@ export function DmnDevSandboxContextProvider(props: Props) {
   const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
   const [deployments, setDeployments] = useState([] as OpenShiftDeployedModel[]);
-  const loadDeploymentsTask = useRef<number>();
 
   const onDisconnect = useCallback(
     (closeModals: boolean) => {
@@ -126,21 +125,18 @@ export function DmnDevSandboxContextProvider(props: Props) {
     }
 
     if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
-      loadDeploymentsTask.current = window.setInterval(() => {
+      const loadDeploymentsTask = window.setInterval(() => {
         settingsDispatch.openshift.service
           .loadDeployments(settings.openshift.config)
           .then((deployments) => setDeployments(deployments))
           .catch((error) => {
             setDeployments([]);
-            window.clearInterval(loadDeploymentsTask.current);
+            window.clearInterval(loadDeploymentsTask);
             console.error(error);
           });
       }, LOAD_DEPLOYMENTS_POLLING_TIME);
-    } else {
-      window.clearInterval(loadDeploymentsTask.current);
+      return () => window.clearInterval(loadDeploymentsTask);
     }
-
-    return () => window.clearInterval(loadDeploymentsTask.current);
   }, [
     onDisconnect,
     settings.openshift,

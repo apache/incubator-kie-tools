@@ -29,8 +29,8 @@ export function SingleEditorToolbar(props: {
   onFullScreen: () => void;
   onSeeAsSource: () => void;
   onSeeAsDiagram: () => void;
-  onOpenInExternalEditor: (() => void) | undefined;
-  linkToExternalEditor: string | undefined;
+  onOpenInExternalEditor?: () => void;
+  linkToExternalEditor?: string;
 }) {
   const globals = useGlobals();
   const [copyLinkSuccessAlertVisible, setCopyLinkSuccessAlertVisible] = useState(false);
