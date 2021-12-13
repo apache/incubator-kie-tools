@@ -133,7 +133,7 @@ export function HomePage() {
 
   return (
     <OnlineEditorPage>
-      <PageSection isFilled={true}>
+      <PageSection isFilled={false}>
         <Grid hasGutter>
           <GridItem sm={12} xl={6}>
             <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
