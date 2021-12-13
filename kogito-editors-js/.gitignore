@@ -1,6 +1,6 @@
 # Dependencies and builds
 build
-coverage
+**/coverage
 dist
 local
 node_modules
@@ -27,7 +27,6 @@ target
 .idea
 .rpt2_cache
 .vscode
-coverage
 out
 target
 stats.json
