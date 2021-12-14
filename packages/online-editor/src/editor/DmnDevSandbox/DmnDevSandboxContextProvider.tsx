@@ -25,6 +25,7 @@ import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { isConfigValid } from "../../openshift/OpenShiftSettingsConfig";
 import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { NEW_WORKSPACE_DEFAULT_NAME } from "../../workspace/services/WorkspaceDescriptorService";
 
 interface Props {
   children: React.ReactNode;
@@ -75,10 +76,15 @@ export function DmnDevSandboxContextProvider(props: Props) {
         onlyExtensions: ["dmn"],
       });
 
+      const descriptorService = await workspaces.descriptorService.get(workspaceFile.workspaceId);
+
+      const workspaceName =
+        descriptorService.name !== NEW_WORKSPACE_DEFAULT_NAME ? descriptorService.name : workspaceFile.name;
+
       try {
         await settingsDispatch.openshift.service.deploy({
           targetFilePath: workspaceFile.relativePath,
-          workspaceId: workspaceFile.workspaceId,
+          workspaceName,
           workspaceZipBlob: zipBlob,
           config: settings.openshift.config,
           onlineEditorUrl: (baseUrl) =>

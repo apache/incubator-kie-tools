@@ -25,7 +25,6 @@ import { basename } from "path";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { OpenShiftDeployedModel, OpenShiftDeployedModelState } from "../../openshift/OpenShiftDeployedModel";
-import { useWorkspacePromise } from "../../workspace/hooks/WorkspaceHooks";
 
 interface Props {
   id: number;
@@ -34,25 +33,25 @@ interface Props {
 
 export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
   const { i18n } = useOnlineI18n();
-  const workspacePromise = useWorkspacePromise(props.deployment.workspaceId);
 
   const deploymentName = useMemo(() => {
-    const maxSize = 25;
-    const isSingleFileWorkspace = workspacePromise.data?.files && workspacePromise.data?.files?.length === 1;
-    if (!workspacePromise.data || isSingleFileWorkspace) {
+    const maxSize = 30;
+
+    let name = props.deployment.workspaceName;
+    let extension = "";
+
+    if (!name) {
       const originalFilename = basename(props.deployment.uri);
-      const extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-      const name = originalFilename.replace(`.${extension}`, "");
-
-      if (name.length < maxSize) {
-        return originalFilename;
-      }
-
-      return `${name.substring(0, maxSize)}... .${extension}`;
+      extension = ` ${originalFilename.substring(originalFilename.lastIndexOf("."))}`;
+      name = originalFilename.replace(extension, "");
     }
 
-    return workspacePromise.data.descriptor.name.substring(0, maxSize);
-  }, [workspacePromise.data, props.deployment.uri]);
+    if (name.length < maxSize) {
+      return name;
+    }
+
+    return `${name.substring(0, maxSize)}...${extension}`;
+  }, [props.deployment.uri, props.deployment.workspaceName]);
 
   const stateIcon = useMemo(() => {
     if (props.deployment.state === OpenShiftDeployedModelState.UP) {
