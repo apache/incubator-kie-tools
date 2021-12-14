@@ -12,17 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ubuntu:21.10
+FROM fedora:35
 
-ENV DEBIAN_FRONTEND=noninteractive
 ENV DISPLAY=":99.0"
 
 COPY dist-dev/kie_tooling_extended_services /tmp/kie_tooling_extended_services
 
 RUN mkdir -p /root/.cache /.cache \
-  && apt-get update \
-  && apt-get install -qqy xvfb libgtk-3-dev libappindicator3-dev gir1.2-appindicator3-0.1 \
-  && echo "#!/bin/sh\n/usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &\n./tmp/kie_tooling_extended_services" > /tmp/run.sh \
+  && dnf install -y xorg-x11-server-Xvfb libappindicator-gtk3 \
+  && echo -e "#!/bin/sh\n/usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &\n./tmp/kie_tooling_extended_services" > /tmp/run.sh \
   && chmod -R 775 /tmp /root/.cache /.cache
 
 EXPOSE 21345
