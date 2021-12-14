@@ -32,8 +32,7 @@ import { useRoutes } from "../../navigation/Hooks";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { DmnSchema } from "@kogito-tooling/form/dist/dmn";
-import { WorkspaceDmnRunnerDataService } from "../../workspace/services/WorkspaceDmnRunnerDataService";
-import { useWorkspaceFilePromise } from "../../workspace/hooks/WorkspaceFileHooks";
+import { useWorkspaceDmnRunnerInput } from "../../workspace/hooks/WorkspaceDmnRunnerInput";
 import { useSettings } from "../../settings/SettingsContext";
 
 interface Props {
@@ -50,69 +49,19 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const routes = useRoutes();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const workspaces = useWorkspaces();
-  const settings = useSettings();
-  const dmnRunnerData = useMemo(() => {
-    if (props.workspaceFile.extension !== "dmn") {
-      return;
-    }
-    return new WorkspaceDmnRunnerDataService(workspaces.storageService);
-  }, [props.workspaceFile.extension, workspaces.storageService]);
-  const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
+
+const settings = useSettings();
+  const [inputRows, updateInputRows] = useWorkspaceDmnRunnerInput(
+    props.workspaceId,
+    props.fileRelativePath,
+    props.workspaceFile
+  );
 
   const [error, setError] = useState(false);
   const [jsonSchema, setJsonSchema] = useState<DmnSchema | undefined>(undefined);
   const [isExpanded, setExpanded] = useState(false);
   const [mode, setMode] = useState(DmnRunnerMode.FORM);
-  const [inputRows, setInputRows] = useState<Array<InputRow>>([{}]);
   const [currentInputRowIndex, setCurrentInputRowIndex] = useState<number>(0);
-
-  const getInputRows = useCallback(() => {
-    if (!workspaceFilePromise.data || !dmnRunnerData) {
-      return Promise.resolve([{}]);
-    }
-    return dmnRunnerData.getDmnRunnerData(workspaceFilePromise.data).then((data) => {
-      if (!data) {
-        return [{}];
-      }
-      return data.getFileContents().then((content) => JSON.parse(decoder.decode(content)) as Array<object>);
-    });
-  }, [dmnRunnerData, workspaceFilePromise.data]);
-
-  const updateInputRows = useCallback(
-    async (newInputRows: Array<object> | ((previous: Array<object>) => Array<object>)) => {
-      if (!workspaceFilePromise.data || !dmnRunnerData) {
-        return;
-      }
-      if (typeof newInputRows === "function") {
-        const data = await dmnRunnerData.getDmnRunnerData(workspaceFilePromise.data);
-        const currentInputRows = await data
-          ?.getFileContents()
-          .then((content) => JSON.parse(decoder.decode(content)) as Array<object>);
-        await dmnRunnerData.createOrOverwriteDmnRunnerData(
-          workspaceFilePromise.data,
-          newInputRows(currentInputRows ?? [{}])
-        );
-      } else {
-        await dmnRunnerData.createOrOverwriteDmnRunnerData(workspaceFilePromise.data, newInputRows);
-      }
-    },
-    [dmnRunnerData, workspaceFilePromise.data]
-  );
-
-  useEffect(() => {
-    let runEffect = true;
-    getInputRows().then((inputRows) => {
-      // avoid setState on unmounted component
-      if (!runEffect) {
-        return;
-      }
-      setInputRows(inputRows);
-    });
-
-    return () => {
-      runEffect = false;
-    };
-  }, [getInputRows]);
 
   const status = useMemo(() => {
     return isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE;
@@ -208,7 +157,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
 
     try {
-      updateInputRows([jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!)]);
+      updateInputRows([jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!) as InputRow]);
       setExpanded(true);
     } catch (e) {
       console.error(`Cannot parse "${QueryParams.DMN_RUNNER_FORM_INPUTS}"`, e);
@@ -218,7 +167,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         search: routes.editor.queryArgs(queryParams).without(QueryParams.DMN_RUNNER_FORM_INPUTS).toString(),
       });
     }
-  }, [jsonSchema, history, routes, queryParams, workspaceFilePromise.data, dmnRunnerData]);
+  }, [jsonSchema, history, routes, queryParams, updateInputRows]);
 
   const prevKieSandboxExtendedServicesStatus = usePrevious(kieSandboxExtendedServices.status);
   useEffect(() => {

@@ -28,7 +28,7 @@ export class WorkspaceDmnRunnerDataService {
   public async getDmnRunnerData(workspaceFile: WorkspaceFile) {
     return this.storageService.getFile(
       await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
-      `/${workspaceFile.relativePath}.json`
+      `/${workspaceFile.relativePath}`
     );
   }
 
@@ -43,7 +43,7 @@ export class WorkspaceDmnRunnerDataService {
 
     await this.storageService.deleteFile(
       await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
-      `/${workspaceFile.relativePath}.json`
+      `/${workspaceFile.relativePath}`
     );
   }
 
@@ -52,7 +52,7 @@ export class WorkspaceDmnRunnerDataService {
       await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
       new StorageFile({
         getFileContents: () => Promise.resolve(encoder.encode(JSON.stringify(dmnRunnerData))),
-        path: `/${workspaceFile.relativePath}.json`,
+        path: `/${workspaceFile.relativePath}`,
       })
     );
   }
