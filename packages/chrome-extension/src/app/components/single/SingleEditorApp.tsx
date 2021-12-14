@@ -96,15 +96,17 @@ export function SingleEditorApp(props: {
     setFullscreen(true);
   }, []);
 
+  const { getFileContents, getFileName } = props;
+
   const openExternalEditor = useMemo(
     () =>
       globals.externalEditorManager?.open &&
       (() => {
-        props.getFileContents().then((fileContent) => {
-          globals.externalEditorManager?.open?.(props.getFileName(), fileContent!, props.readonly);
+        getFileContents().then((fileContent) => {
+          globals.externalEditorManager?.open?.(getFileName(), fileContent!, props.readonly);
         });
       }),
-    [globals.externalEditorManager, props.getFileName, props.readonly]
+    [globals.externalEditorManager, getFileContents, getFileName, props.readonly]
   );
 
   const linkToExternalEditor = useMemo(() => {

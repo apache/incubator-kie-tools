@@ -28,5 +28,5 @@ export interface OpenShiftDeployedModel {
   baseUrl: string;
   creationTimestamp: Date;
   state: OpenShiftDeployedModelState;
-  workspaceId: string;
+  workspaceName: string;
 }

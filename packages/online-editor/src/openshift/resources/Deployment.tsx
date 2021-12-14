@@ -19,7 +19,7 @@ import {
   JAVA_RUNTIME_VERSION,
   KOGITO_CREATED_BY,
   KOGITO_URI,
-  KOGITO_WORKSPACE_ID,
+  KOGITO_WORKSPACE_NAME,
   Resource,
   ResourceArgs,
   ResourceFetch,
@@ -48,7 +48,7 @@ export interface CreateDeploymentArgs {
   uri: string;
   createdBy: string;
   baseUrl: string;
-  workspaceId: string;
+  workspaceName: string;
 }
 
 export class CreateDeployment extends ResourceFetch {
@@ -67,6 +67,7 @@ export class CreateDeployment extends ResourceFetch {
       metadata:
         annotations:
           ${KOGITO_URI}: ${this.args.uri}
+          ${KOGITO_WORKSPACE_NAME}: ${this.args.workspaceName}
         name: ${this.args.resourceName}
         namespace: ${this.args.namespace}
         labels:
@@ -78,7 +79,6 @@ export class CreateDeployment extends ResourceFetch {
           app.openshift.io/runtime: quarkus
           app.openshift.io/runtime-version: ${JAVA_RUNTIME_VERSION}
           ${KOGITO_CREATED_BY}: ${this.args.createdBy}
-          ${KOGITO_WORKSPACE_ID}: ${this.args.workspaceId}
       spec:
         replicas: 1
         selector:
