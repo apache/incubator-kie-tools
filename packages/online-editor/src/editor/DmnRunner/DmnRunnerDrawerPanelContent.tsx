@@ -19,7 +19,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
-import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
+import { InputRow, useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
@@ -199,7 +199,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
         Object.keys(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex] ?? {}).forEach((propertyName) => {
           formRef.current?.change(
             propertyName,
-            (dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex] as any)?.[propertyName]
+            dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]?.[propertyName]
           );
         });
       }, 0);
@@ -260,7 +260,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const setFormData = useCallback(
     (newFormData) => {
-      dmnRunnerDispatch.updateInputRows((previousData: Array<object>) => {
+      dmnRunnerDispatch.updateInputRows((previousData: Array<InputRow>) => {
         const newData = [...previousData];
         newData[dmnRunnerState.currentInputRowIndex] = newFormData;
         return newData;
@@ -269,7 +269,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     [dmnRunnerState.currentInputRowIndex, dmnRunnerDispatch]
   );
 
-  const [selectedRow, selectRow] = useState<any>(null);
+  const [selectedRow, selectRow] = useState<string>("");
   const [rowSelectionIsOpen, openRowSelection] = useState<boolean>(false);
 
   const onSelectRow = useCallback((event) => {
@@ -298,7 +298,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   }, [dmnRunnerState.inputRows, dmnRunnerState.currentInputRowIndex]);
 
   const onAddNewRow = useCallback(() => {
-    dmnRunnerDispatch.updateInputRows((previousData: Array<object>) => {
+    dmnRunnerDispatch.updateInputRows((previousData: Array<InputRow>) => {
       const newData = [...previousData, {}];
       dmnRunnerDispatch.setCurrentInputRowIndex(newData.length - 1);
       selectRow(`Row ${newData.length}`);

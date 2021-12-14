@@ -19,7 +19,7 @@ import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "re
 import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
-import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
+import { DmnRunnerDispatchContext, DmnRunnerStateContext, InputRow } from "./DmnRunnerContext";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { QueryParams } from "../../navigation/Routes";
@@ -63,7 +63,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const [jsonSchema, setJsonSchema] = useState<DmnSchema | undefined>(undefined);
   const [isExpanded, setExpanded] = useState(false);
   const [mode, setMode] = useState(DmnRunnerMode.FORM);
-  const [inputRows, setInputRows] = useState([{}]);
+  const [inputRows, setInputRows] = useState<Array<InputRow>>([{}]);
   const [currentInputRowIndex, setCurrentInputRowIndex] = useState<number>(0);
 
   const getInputRows = useCallback(() => {

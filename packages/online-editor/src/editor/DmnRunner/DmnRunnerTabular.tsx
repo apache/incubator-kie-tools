@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo } from "react";
-import { useDmnRunnerState, useDmnRunnerDispatch } from "./DmnRunnerContext";
+import { useDmnRunnerState, useDmnRunnerDispatch, InputRow } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DmnAutoTable } from "@kogito-tooling/unitables";
 import { DecisionResult } from "@kogito-tooling/form/dist/dmn";
@@ -35,12 +35,12 @@ export function DmnRunnerTabular(props: Props) {
   const dmnRunnerDispatch = useDmnRunnerDispatch();
 
   const updateDmnRunnerResults = useCallback(
-    async (tableData: any[]) => {
+    async (inputRows: Array<InputRow>) => {
       if (!props.isReady) {
         return;
       }
 
-      const payloads = await Promise.all(tableData.map((data) => dmnRunnerDispatch.preparePayload(data)));
+      const payloads = await Promise.all(inputRows.map((data) => dmnRunnerDispatch.preparePayload(data)));
 
       try {
         const results = await Promise.all(

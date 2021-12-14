@@ -20,8 +20,10 @@ import { useContext } from "react";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 
+export type InputRow = { [x: string]: string };
+
 export interface DmnRunnerContextType {
-  inputRows: Array<object>;
+  inputRows: Array<InputRow>;
   currentInputRowIndex: number;
   error: boolean;
   isExpanded: boolean;
@@ -37,7 +39,7 @@ export interface DmnRunnerCallbacksContextType {
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentInputRowIndex: React.Dispatch<React.SetStateAction<number>>;
   setMode: React.Dispatch<React.SetStateAction<DmnRunnerMode>>;
-  updateInputRows: (newInputRows: Array<object> | ((previous: Array<object>) => Array<object>)) => void;
+  updateInputRows: (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => void;
 }
 
 export const DmnRunnerStateContext = React.createContext<DmnRunnerContextType>({} as any);
