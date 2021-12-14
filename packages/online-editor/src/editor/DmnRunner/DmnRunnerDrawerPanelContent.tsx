@@ -260,7 +260,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const setFormData = useCallback(
     (newFormData) => {
-      dmnRunnerDispatch.setInputRows((previousData: any) => {
+      dmnRunnerDispatch.updateInputRows((previousData: Array<object>) => {
         const newData = [...previousData];
         newData[dmnRunnerState.currentInputRowIndex] = newFormData;
         return newData;
@@ -298,7 +298,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   }, [dmnRunnerState.inputRows, dmnRunnerState.currentInputRowIndex]);
 
   const onAddNewRow = useCallback(() => {
-    dmnRunnerDispatch.setInputRows((previousData: Array<object>) => {
+    dmnRunnerDispatch.updateInputRows((previousData: Array<object>) => {
       const newData = [...previousData, {}];
       dmnRunnerDispatch.setCurrentInputRowIndex(newData.length - 1);
       selectRow(`Row ${newData.length}`);

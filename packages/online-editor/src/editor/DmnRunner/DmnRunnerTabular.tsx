@@ -94,7 +94,7 @@ export function DmnRunnerTabular(props: Props) {
         <DmnAutoTable
           jsonSchema={dmnRunnerState.jsonSchema}
           inputRows={dmnRunnerState.inputRows}
-          setInputRows={dmnRunnerDispatch.setInputRows}
+          setInputRows={dmnRunnerDispatch.updateInputRows}
           results={props.dmnRunnerResults}
           error={dmnRunnerState.error}
           setError={dmnRunnerDispatch.setError}

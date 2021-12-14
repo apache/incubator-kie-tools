@@ -66,46 +66,53 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const [inputRows, setInputRows] = useState([{}]);
   const [currentInputRowIndex, setCurrentInputRowIndex] = useState<number>(0);
 
-  useEffect(() => {
-    if (!workspaceFilePromise.data) {
-      return;
+  const getInputRows = useCallback(() => {
+    if (!workspaceFilePromise.data || !dmnRunnerData) {
+      return Promise.resolve([{}]);
     }
-    if (!dmnRunnerData) {
-      return;
-    }
-    dmnRunnerData.getDmnRunnerData(workspaceFilePromise.data).then((data) => {
-      data?.getFileContents().then((content) => {
-        setInputRows(JSON.parse(decoder.decode(content)));
-      });
+    return dmnRunnerData.getDmnRunnerData(workspaceFilePromise.data).then((data) => {
+      if (!data) {
+        return [{}];
+      }
+      return data.getFileContents().then((content) => JSON.parse(decoder.decode(content)) as Array<object>);
     });
   }, [dmnRunnerData, workspaceFilePromise.data]);
 
-  // subscribe to file name changes. update dmn runner data
-  // source of truth?
-
-  //
-
   const updateInputRows = useCallback(
-    (newInputRows) => {
-      if (!workspaceFilePromise.data) {
-        return;
-      }
-      if (!dmnRunnerData) {
+    async (newInputRows: Array<object> | ((previous: Array<object>) => Array<object>)) => {
+      if (!workspaceFilePromise.data || !dmnRunnerData) {
         return;
       }
       if (typeof newInputRows === "function") {
-        setInputRows((previousInputRows) => {
-          console.log(newInputRows(previousInputRows));
-          dmnRunnerData.createOrOverwriteDmnRunnerData(workspaceFilePromise.data, newInputRows(previousInputRows));
-          return newInputRows(previousInputRows);
-        });
+        const data = await dmnRunnerData.getDmnRunnerData(workspaceFilePromise.data);
+        const currentInputRows = await data
+          ?.getFileContents()
+          .then((content) => JSON.parse(decoder.decode(content)) as Array<object>);
+        await dmnRunnerData.createOrOverwriteDmnRunnerData(
+          workspaceFilePromise.data,
+          newInputRows(currentInputRows ?? [{}])
+        );
       } else {
-        setInputRows(newInputRows);
-        dmnRunnerData.createOrOverwriteDmnRunnerData(workspaceFilePromise.data, newInputRows);
+        await dmnRunnerData.createOrOverwriteDmnRunnerData(workspaceFilePromise.data, newInputRows);
       }
     },
     [dmnRunnerData, workspaceFilePromise.data]
   );
+
+  useEffect(() => {
+    let runEffect = true;
+    getInputRows().then((inputRows) => {
+      // avoid setState on unmounted component
+      if (!runEffect) {
+        return;
+      }
+      setInputRows(inputRows);
+    });
+
+    return () => {
+      runEffect = false;
+    };
+  }, [getInputRows]);
 
   const status = useMemo(() => {
     return isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE;
@@ -201,17 +208,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
 
     try {
-      setInputRows([jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!)]);
-      if (!workspaceFilePromise.data) {
-        return;
-      }
-      if (!dmnRunnerData) {
-        return;
-      }
-      dmnRunnerData.createOrOverwriteDmnRunnerData(workspaceFilePromise.data, [
-        jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!),
-      ]);
-
+      updateInputRows([jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!)]);
       setExpanded(true);
     } catch (e) {
       console.error(`Cannot parse "${QueryParams.DMN_RUNNER_FORM_INPUTS}"`, e);
@@ -249,11 +246,11 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const dmnRunnerDispatch = useMemo(
     () => ({
       preparePayload,
-      setInputRows: updateInputRows,
       setCurrentInputRowIndex,
       setExpanded,
       setError,
       setMode,
+      updateInputRows,
     }),
     [preparePayload, updateInputRows]
   );

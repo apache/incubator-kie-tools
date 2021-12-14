@@ -37,7 +37,7 @@ export interface DmnRunnerCallbacksContextType {
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentInputRowIndex: React.Dispatch<React.SetStateAction<number>>;
   setMode: React.Dispatch<React.SetStateAction<DmnRunnerMode>>;
-  setInputRows: React.Dispatch<React.SetStateAction<any>>;
+  updateInputRows: (newInputRows: Array<object> | ((previous: Array<object>) => Array<object>)) => void;
 }
 
 export const DmnRunnerStateContext = React.createContext<DmnRunnerContextType>({} as any);
