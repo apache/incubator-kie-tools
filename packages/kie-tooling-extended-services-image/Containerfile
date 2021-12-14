@@ -12,17 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM fedora:35
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
 
-ENV DISPLAY=":99.0"
-
-COPY dist-dev/kie_tooling_extended_services /tmp/kie_tooling_extended_services
+COPY dist-dev/kie_tooling_extended_services_headless /tmp/kie_tooling_extended_services_headless
 
 RUN mkdir -p /root/.cache /.cache \
-  && dnf install -y xorg-x11-server-Xvfb libappindicator-gtk3 \
-  && echo -e "#!/bin/sh\n/usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &\n./tmp/kie_tooling_extended_services" > /tmp/run.sh \
   && chmod -R 775 /tmp /root/.cache /.cache
 
 EXPOSE 21345
 
-ENTRYPOINT [ "/tmp/run.sh" ]
+CMD [ "/tmp/kie_tooling_extended_services_headless" ]

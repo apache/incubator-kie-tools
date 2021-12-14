@@ -11,7 +11,7 @@
   "scripts": {
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:extended-services:darwin:win32": "echo \"Copy extended-services not supported\"",
-    "copy:extended-services:linux": "cp -R ../extended-services/dist/linux/kie_tooling_extended_services ./dist-dev/kie_tooling_extended_services",
+    "copy:extended-services:linux": "cp -R ../extended-services/dist/linux/kie_tooling_extended_services_headless ./dist-dev/kie_tooling_extended_services_headless",
     "copy:extended-services": "run-script-os",
     "copy:assets": "yarn copy:extended-services",
     "podman:build": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env extendedServices.image.buildTags) | xargs printf -- \"-t $(build-env extendedServices.image.registry)/$(build-env extendedServices.image.account)/$(build-env extendedServices.image.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\"",

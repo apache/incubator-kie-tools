@@ -1,3 +1,5 @@
+// +build !headless
+
 /*
  * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
