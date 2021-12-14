@@ -30,7 +30,7 @@ on:
     secrets:
       kogito_tooling_bot_token:
         required: false
-      github_token:
+      gh_token:
         required: false
       quay_registry_password:
         required: false
@@ -290,7 +290,7 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip
@@ -369,7 +369,7 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ inputs.tag }}.vsix
@@ -380,7 +380,7 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/vscode-extension-backend/dist/vscode-extension-backend_${{ inputs.tag }}.vsix
@@ -415,7 +415,7 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/vscode-extension-bpmn-editor/dist/vscode_extension_bpmn_editor_${{ inputs.tag }}.vsix
@@ -426,7 +426,7 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/vscode-extension-dmn-editor/dist/vscode_extension_dmn_editor_${{ inputs.tag }}.vsix
@@ -437,7 +437,7 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/vscode-extension-pmml-editor/dist/vscode_extension_pmml_editor_${{ inputs.tag }}.vsix
@@ -448,7 +448,7 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${{ inputs.tag }}.vsix
@@ -459,7 +459,7 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/vscode-extension-red-hat-business-automation-bundle/dist/vscode_extension_red_hat_business_automation_bundle_${{ inputs.tag }}.vsix
@@ -497,7 +497,7 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
@@ -508,7 +508,7 @@ jobs:
         if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/desktop/out/Business Modeler Preview-darwin-x64.zip
@@ -523,7 +523,7 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: "./packages/desktop/out/Business Modeler Preview-win32-x64.zip"
@@ -645,7 +645,7 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/extended-services/dist/linux/kie_tooling_extended_services.tar.gz
@@ -656,7 +656,7 @@ jobs:
         if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/extended-services/dist/darwin/Kogito.dmg
@@ -667,7 +667,7 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: "./packages/extended-services/dist/win32/kie_tooling_extended_services.exe"
@@ -698,7 +698,7 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/dashbuilder/dist/dashbuilder_dist.zip
