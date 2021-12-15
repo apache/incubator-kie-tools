@@ -14,11 +14,10 @@
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
 
-COPY dist-dev/kie_tooling_extended_services_headless /tmp/kie_tooling_extended_services_headless
+RUN mkdir -m 775 -p /kogito /root/.cache /.cache
 
-RUN mkdir -p /root/.cache /.cache \
-  && chmod -R 775 /tmp /root/.cache /.cache
+COPY dist-dev/kie_tooling_extended_services_headless /kogito/kie_tooling_extended_services_headless
 
 EXPOSE 21345
 
-CMD [ "/tmp/kie_tooling_extended_services_headless" ]
+CMD [ "/kogito/kie_tooling_extended_services_headless" ]
