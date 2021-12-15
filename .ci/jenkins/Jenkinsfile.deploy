@@ -5,7 +5,8 @@ deployProperties = [ : ]
 commitDone = false
 
 BUILT_IMAGES = []
-FAILED_IMAGES = []
+BUILD_FAILED_IMAGES = []
+TEST_FAILED_IMAGES = []
 
 pipeline {
     agent {
@@ -184,33 +185,41 @@ pipeline {
                 }
             }
         }
-        stage('Build Images') {
+        stage('Build & Test Images') {
             steps {
                 script {
-                    // Init workspaces before build
-                    getImages().each { image -> initWorkspace(image) }
-                    // Build images
-                    launchParallelForEachImage('Build', { img -> buildImage(img) })
-                }
-            }
-            post {
-                always {
-                    script {
-                        cleanWorkspaces()
+                    parallelStages = [:]
+                    getImages().each { image -> 
+                        initWorkspace(image)
+                        String workspacePath = getWorkspacePath(image)
+                        parallelStages["Build&Test ${image}"] = { 
+                            stage("Build ${image}") {
+                                try {
+                                    dir(workspacePath) {
+                                        buildImage(image)
+                                    }
+                                    registerBuiltImage(image)
+                                } catch (err) {
+                                    registerBuildFailedImage(image)
+                                    util.archiveConsoleLog(image)
+                                    throw err
+                                }
+                            }
+                            stage("Test ${image}") {
+                                dir(workspacePath) {
+                                    try {
+                                        testImage(image)
+                                    } catch (err) {
+                                        registerTestFailedImage(image)
+                                    } finally {
+                                        junit testResults: "target/test/results/*.xml", allowEmptyResults: true
+                                        archiveArtifacts artifacts: "target/test/results/*.xml", allowEmptyArchive: true
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
-            }
-        }
-        stage('Test Images') {
-            when {
-                expression { return !params.SKIP_TESTS }
-            }
-            steps {
-                script {
-                    // Init workspaces before test
-                    getImages().each { image -> initWorkspace(image) }
-                    // Test images
-                    launchParallelForEachImage('Test', { img -> testImage(img) })
+                    parallel parallelStages
                 }
             }
             post {
@@ -278,9 +287,17 @@ pipeline {
                         getBuiltImages().each {
                             prBody += "- ${it}\n"
                         }
-                        if (getFailedImages()){
-                            prBody += '\nFailed images:\n'
-                            getFailedImages().each {
+                        if (getBuildFailedImages()){
+                            prBody += '\nBuild failures on those images:\n'
+                            getBuildFailedImages().each {
+                                prBody += "- ${it}\n"
+                            }
+                        } else {
+                            prBody += '\nImages were all successfully built but some other problem occured in the pipeline execution...\n'
+                        }
+                        if (getTestFailedImages()){
+                            prBody += '\nTest failures on those images:\n'
+                            getTestFailedImages().each {
                                 prBody += "- ${it}\n"
                             }
                         } else {
@@ -327,7 +344,7 @@ pipeline {
 
 void sendUnsuccessfulNotification() {
     if (params.SEND_NOTIFICATION) {
-        sendNotification("**Deploy job** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}")
+        mailer.sendMarkdownTestSummaryNotification('Deploy', getNotificationSubject(), [env.KOGITO_CI_EMAIL_TO])
     } else {
         echo 'No notification sent per configuration'
     }
@@ -335,8 +352,12 @@ void sendUnsuccessfulNotification() {
 
 void sendNotification(String body) {
     emailext body: body,
-        subject: "[${getBuildBranch()}] Kogito Images",
+        subject: getNotificationSubject(),
         to: env.KOGITO_CI_EMAIL_TO
+}
+
+String getNotificationSubject() {
+    return "[${getBuildBranch()}] Kogito Images"
 }
 
 void checkoutRepo() {
@@ -362,49 +383,29 @@ void cleanImages() {
     sh "${env.CONTAINER_ENGINE} rmi -f \$(${env.CONTAINER_ENGINE} images -q) || date"
 }
 
-void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
-    parallelStages = [:]
-    getImages().each { image ->
-        parallelStages["${stageNamePrefix} ${image}"] = {
-            dir(getWorkspacePath(image)) {
-                executeOnImage(image)
-            }
-        }
-    }
-    parallel parallelStages
+void buildImage(String imageName) {
+    sh "make build-image image_name=${imageName} ignore_test=true cekit_option='--work-dir .'"
 }
 
-void buildImage(image) {
-    try {
-        sh "make build-image image_name=${image} ignore_test=true cekit_option='--work-dir .'"
-        registerBuiltImage(image)
-    } catch (err) {
-        registerFailedImage(image)
-        unstable("${image} build failed")
-    }
-}
-
-void testImage(image) {
-    try {
-        sh "make build-image image_name=${image} ignore_build=true cekit_option='--work-dir .'"
-    } catch (err) {
-        removeBuiltImage (image)
-        registerFailedImage(image)
-        unstable("${image} testing failed")
-    } finally {
-        junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
-    }
+void testImage(String imageName) {
+    sh "make build-image image_name=${imageName} ignore_build=true cekit_option='--work-dir .'"
 }
 
 void registerBuiltImage(String imageName) {
-    lock("${BUILD_URL}") {
+    lock("${BUILD_URL} build success") {
         BUILT_IMAGES.add(imageName)
     }
 }
 
-void registerFailedImage(String imageName) {
-    lock("${BUILD_URL}") {
-        FAILED_IMAGES.add(imageName)
+void registerBuildFailedImage(String imageName) {
+    lock("${BUILD_URL} build failed") {
+        BUILD_FAILED_IMAGES.add(imageName)
+    }
+}
+
+void registerTestFailedImage(String imageName) {
+    lock("${BUILD_URL} test failed") {
+        TEST_FAILED_IMAGES.add(imageName)
     }
 }
 
@@ -418,8 +419,12 @@ List getBuiltImages() {
     return BUILT_IMAGES
 }
 
-List getFailedImages() {
-    return FAILED_IMAGES
+List getBuildFailedImages() {
+    return BUILD_FAILED_IMAGES
+}
+
+List getTestFailedImages() {
+    return TEST_FAILED_IMAGES
 }
 
 void tagImages() {
