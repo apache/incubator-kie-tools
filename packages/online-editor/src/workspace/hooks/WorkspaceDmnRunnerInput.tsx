@@ -70,6 +70,13 @@ export function useWorkspaceDmnRunnerInput(
   );
 
   useEffect(() => {
+    if (!workspaceFilePromise.data || !dmnRunnerInput) {
+      return;
+    }
+    dmnRunnerInput.renameDmnRunnerData(workspaceFilePromise.data, workspaceFilePromise.data.relativePath);
+  }, [dmnRunnerInput, inputRows, workspaceFilePromise.data]);
+
+  useEffect(() => {
     let runEffect = true;
     getInputRows().then((inputRows) => {
       // avoid setState on unmounted component
