@@ -69,7 +69,7 @@ export class WorkspaceDmnRunnerDataService {
     return this.storageService.renameFile(
       await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
       dmnRunnerDataFile,
-      `${newFileNameWithoutExtension}.${workspaceFile.extension}`
+      `${newFileNameWithoutExtension}`
     );
   }
 
