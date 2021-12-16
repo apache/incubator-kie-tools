@@ -18,6 +18,7 @@ import "./ContextExpression.css";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import {
+  ColumnsUpdateArgs,
   ContextEntries,
   ContextEntryRecord,
   ContextProps,
@@ -32,6 +33,7 @@ import {
   getHandlerConfiguration,
   LogicType,
   resetEntry,
+  RowsUpdateArgs,
   TableHeaderVisibility,
 } from "../../api";
 import { Table } from "../Table";
@@ -87,14 +89,15 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
         ...contextExpressionUpdated,
       };
 
+      const expression = _.omit(updatedDefinition, ["name", "dataType", "isHeadless"]);
       executeIfExpressionDefinitionChanged(
         contextExpression,
         updatedDefinition,
         () => {
           if (contextExpression.isHeadless) {
-            contextExpression.onUpdatingRecursiveExpression?.(updatedDefinition);
+            contextExpression.onUpdatingRecursiveExpression?.(expression);
           } else {
-            setSupervisorHash(hashfy(updatedDefinition));
+            setSupervisorHash(hashfy(expression));
             window.beeApi?.broadcastContextExpressionDefinition?.(updatedDefinition as ContextProps);
           }
         },
@@ -154,9 +157,9 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
   );
 
   const onColumnsUpdate = useCallback(
-    ([expressionColumn]: [ColumnInstance]) => {
-      contextExpression.onUpdatingNameAndDataType?.(expressionColumn.label as string, expressionColumn.dataType);
-      const updatedWidth = expressionColumn.columns?.reduce((acc, e) => {
+    ({ columns: [column] }: ColumnsUpdateArgs<ColumnInstance>) => {
+      contextExpression.onUpdatingNameAndDataType?.(column.label as string, column.dataType);
+      const updatedWidth = column.columns?.reduce((acc, e) => {
         if (e.id === "entryInfo") {
           acc["entryInfoWidth"] = e.width;
         }
@@ -166,8 +169,8 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
         return acc;
       }, {} as any);
       spreadContextExpressionDefinition({
-        name: expressionColumn.label as string,
-        dataType: expressionColumn.dataType,
+        name: column.label as string,
+        dataType: column.dataType,
         ...updatedWidth,
       });
     },
@@ -195,8 +198,8 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
   }, [i18n.editContextEntry, rows]);
 
   const onRowsUpdate = useCallback(
-    (entries) => {
-      spreadContextExpressionDefinition({ contextEntries: [...entries] });
+    ({ rows }: RowsUpdateArgs<ContextEntryRecord>) => {
+      spreadContextExpressionDefinition({ contextEntries: [...rows] });
     },
     [spreadContextExpressionDefinition]
   );

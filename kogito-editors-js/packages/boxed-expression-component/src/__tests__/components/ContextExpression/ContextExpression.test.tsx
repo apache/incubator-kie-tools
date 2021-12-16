@@ -22,6 +22,7 @@ import {
   checkEntryStyle,
   contextEntry,
   usingTestingBoxedExpressionI18nContext,
+  usingTestingBoxedExpressionProviderContext,
 } from "../test-utils";
 import { ContextExpression } from "../../../components/ContextExpression";
 import * as React from "react";
@@ -33,7 +34,9 @@ describe("ContextExpression tests", () => {
   test("should show a table with two rows: two context entries, where last is representing the result", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <ContextExpression logicType={LogicType.Context} name={name} dataType={dataType} />
+        usingTestingBoxedExpressionProviderContext(
+          <ContextExpression logicType={LogicType.Context} name={name} dataType={dataType} />
+        ).wrapper
       ).wrapper
     );
 
@@ -85,13 +88,15 @@ describe("ContextExpression tests", () => {
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <ContextExpression
-          logicType={LogicType.Context}
-          name={name}
-          dataType={dataType}
-          contextEntries={contextEntries}
-          result={result}
-        />
+        usingTestingBoxedExpressionProviderContext(
+          <ContextExpression
+            logicType={LogicType.Context}
+            name={name}
+            dataType={dataType}
+            contextEntries={contextEntries}
+            result={result}
+          />
+        ).wrapper
       ).wrapper
     );
 

@@ -16,8 +16,10 @@
 
 import "./FunctionExpression.css";
 import * as React from "react";
-import { PropsWithChildren, useCallback, useContext, useMemo } from "react";
+import { PropsWithChildren, useCallback, useMemo } from "react";
 import {
+  ColumnsUpdateArgs,
+  ContextEntryRecord,
   ContextProps,
   DataType,
   DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH,
@@ -33,6 +35,7 @@ import {
   PmmlFunctionProps,
   PMMLLiteralExpressionProps,
   resetEntry,
+  RowsUpdateArgs,
   TableHeaderVisibility,
   TableOperation,
 } from "../../api";
@@ -42,7 +45,7 @@ import { ContextEntryExpressionCell } from "../ContextExpression";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { PopoverMenu } from "../PopoverMenu";
 import * as _ from "lodash";
-import { BoxedExpressionGlobalContext } from "../../context";
+import { useBoxedExpression } from "../../context";
 import { FunctionKindSelector } from "./FunctionKindSelector";
 import { EditParameters } from "./EditParameters";
 import { hashfy } from "../Resizer";
@@ -55,7 +58,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (
   const FIRST_ENTRY_ID = "0";
   const SECOND_ENTRY_ID = "1";
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { boxedExpressionEditorRef, setSupervisorHash, pmmlParams } = useContext(BoxedExpressionGlobalContext);
+  const { editorRef, setSupervisorHash, pmmlParams } = useBoxedExpression();
   const pmmlDocument = useMemo(
     () => (functionExpression as PmmlFunctionProps).document,
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -342,8 +345,8 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (
   );
 
   const editParametersPopoverAppendTo = useCallback(() => {
-    return () => boxedExpressionEditorRef.current!;
-  }, [boxedExpressionEditorRef]);
+    return () => editorRef.current!;
+  }, [editorRef]);
 
   const setParameters = useCallback(
     (newParameter) => {
@@ -413,12 +416,12 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (
   );
 
   const onColumnsUpdate = useCallback(
-    ([expressionColumn]: ColumnInstance[]) => {
-      functionExpression.onUpdatingNameAndDataType?.(expressionColumn.label as string, expressionColumn.dataType);
+    ({ columns: [column] }: ColumnsUpdateArgs<ColumnInstance>) => {
+      functionExpression.onUpdatingNameAndDataType?.(column.label as string, column.dataType);
       spreadFunctionExpressionDefinition({
-        name: expressionColumn.label as string,
-        dataType: expressionColumn.dataType,
-        parametersWidth: expressionColumn.width as number,
+        name: column.label as string,
+        dataType: column.dataType,
+        parametersWidth: column.width as number,
       });
     },
     [functionExpression, spreadFunctionExpressionDefinition]
@@ -447,24 +450,28 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (
   const defaultCell = useMemo(() => ({ parameters: ContextEntryExpressionCell }), []);
 
   const onRowsUpdate = useCallback(
-    ([entries]) => {
+    ({ rows: [row] }: RowsUpdateArgs<ContextEntryRecord<ContextProps>>) => {
       switch (functionExpression.functionKind) {
         case FunctionKind.Feel:
-          spreadFunctionExpressionDefinition({ expression: entries.entryExpression });
+          spreadFunctionExpressionDefinition({ expression: row.entryExpression });
           break;
         case FunctionKind.Java:
-          if (entries.entryExpression.contextEntries) {
+          if (row.entryExpression.contextEntries) {
             spreadFunctionExpressionDefinition({
-              className: entries.entryExpression.contextEntries[0]?.entryExpression.content ?? "",
-              methodName: entries.entryExpression.contextEntries[1]?.entryExpression.content ?? "",
+              className:
+                (row.entryExpression.contextEntries[0]?.entryExpression as LiteralExpressionProps).content ?? "",
+              methodName:
+                (row.entryExpression.contextEntries[1]?.entryExpression as LiteralExpressionProps).content ?? "",
             });
           }
           break;
         case FunctionKind.Pmml:
-          if (entries.entryExpression.contextEntries) {
+          if (row.entryExpression.contextEntries) {
             spreadFunctionExpressionDefinition({
-              document: entries.entryExpression.contextEntries[0]?.entryExpression.selected ?? "",
-              model: entries.entryExpression.contextEntries[1]?.entryExpression.selected ?? "",
+              document:
+                (row.entryExpression.contextEntries[0]?.entryExpression as PMMLLiteralExpressionProps).selected ?? "",
+              model:
+                (row.entryExpression.contextEntries[1]?.entryExpression as PMMLLiteralExpressionProps).selected ?? "",
             });
           }
           break;

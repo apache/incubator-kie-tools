@@ -16,7 +16,7 @@
 
 import "../../__mocks__/ReactWithSupervisor";
 import { render } from "@testing-library/react";
-import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
+import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 import { LogicType } from "../../../api";
 import * as React from "react";
 import { ListExpression } from "../../../components/ListExpression";
@@ -24,7 +24,9 @@ import { ListExpression } from "../../../components/ListExpression";
 describe("ListExpression tests", () => {
   test("should show a table without header, with one row and one column", () => {
     const { container } = render(
-      usingTestingBoxedExpressionI18nContext(<ListExpression logicType={LogicType.List} />).wrapper
+      usingTestingBoxedExpressionI18nContext(
+        usingTestingBoxedExpressionProviderContext(<ListExpression logicType={LogicType.List} />).wrapper
+      ).wrapper
     );
 
     expect(container.querySelector(".list-expression")).toBeTruthy();
@@ -36,7 +38,9 @@ describe("ListExpression tests", () => {
 
   test("should have, for its default cell, as default logic type, a literal expression with empty content", () => {
     const { container } = render(
-      usingTestingBoxedExpressionI18nContext(<ListExpression logicType={LogicType.List} />).wrapper
+      usingTestingBoxedExpressionI18nContext(
+        usingTestingBoxedExpressionProviderContext(<ListExpression logicType={LogicType.List} />).wrapper
+      ).wrapper
     );
 
     expect(container.querySelector(".list-expression table tbody td.data-cell .literal-expression")).toBeTruthy();
@@ -50,7 +54,9 @@ describe("ListExpression tests", () => {
   test("should be able to render nested expressions", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <ListExpression id="id1" logicType={LogicType.List} items={[{ logicType: LogicType.List, id: "id2" }]} />
+        usingTestingBoxedExpressionProviderContext(
+          <ListExpression id="id1" logicType={LogicType.List} items={[{ logicType: LogicType.List, id: "id2" }]} />
+        ).wrapper
       ).wrapper
     );
 

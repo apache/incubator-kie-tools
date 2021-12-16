@@ -18,6 +18,7 @@ import "../../__mocks__/ReactWithSupervisor";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import * as React from "react";
 import { Resizer } from "../../../components/Resizer";
+import { wrapComponentInContext } from "../test-utils";
 
 describe("Resizer", () => {
   describe("when users drag the draggable element", () => {
@@ -45,35 +46,37 @@ describe("Resizer", () => {
 
 function renderTable() {
   return render(
-    <>
-      <table>
-        <thead>
-          <tr>
-            <th className="col-1-1">
-              <Resizer width={250} />
-            </th>
-            <th className="col-1-2">
-              <Resizer width={250} />
-            </th>
-            <th className="col-1-3">
-              <Resizer width={250} />
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="col-2-1">
-              <Resizer width={250} />
-            </td>
-            <td className="col-2-2">
-              <Resizer width={250} />
-            </td>
-            <td className="col-2-3">
-              <Resizer width={250} />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </>
+    wrapComponentInContext(
+      <>
+        <table>
+          <thead>
+            <tr>
+              <th className="col-1-1">
+                <Resizer width={250} />
+              </th>
+              <th className="col-1-2">
+                <Resizer width={250} />
+              </th>
+              <th className="col-1-3">
+                <Resizer width={250} />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="col-2-1">
+                <Resizer width={250} />
+              </td>
+              <td className="col-2-2">
+                <Resizer width={250} />
+              </td>
+              <td className="col-2-3">
+                <Resizer width={250} />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </>
+    )
   ).container;
 }

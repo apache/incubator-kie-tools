@@ -17,7 +17,11 @@
 import "../../__mocks__/ReactWithSupervisor";
 import { DataType, LogicType } from "../../../api";
 import { fireEvent, render } from "@testing-library/react";
-import { flushPromises, usingTestingBoxedExpressionI18nContext } from "../test-utils";
+import {
+  flushPromises,
+  usingTestingBoxedExpressionI18nContext,
+  usingTestingBoxedExpressionProviderContext,
+} from "../test-utils";
 import { act } from "react-dom/test-utils";
 import * as React from "react";
 import { LogicTypeSelector } from "../../../components/LogicTypeSelector";
@@ -31,12 +35,14 @@ describe("LogicTypeSelector tests", () => {
 
     const { baseElement } = render(
       usingTestingBoxedExpressionI18nContext(
-        <LogicTypeSelector
-          selectedExpression={expression}
-          getPlacementRef={() => document.body as HTMLDivElement}
-          onLogicTypeResetting={_.identity}
-          onLogicTypeUpdating={_.identity}
-        />
+        usingTestingBoxedExpressionProviderContext(
+          <LogicTypeSelector
+            selectedExpression={expression}
+            getPlacementRef={() => document.body as HTMLDivElement}
+            onLogicTypeResetting={_.identity}
+            onLogicTypeUpdating={_.identity}
+          />
+        ).wrapper
       ).wrapper
     );
 
@@ -51,12 +57,14 @@ describe("LogicTypeSelector tests", () => {
 
     const { baseElement } = render(
       usingTestingBoxedExpressionI18nContext(
-        <LogicTypeSelector
-          selectedExpression={expression}
-          getPlacementRef={() => document.body as HTMLDivElement}
-          onLogicTypeResetting={_.identity}
-          onLogicTypeUpdating={_.identity}
-        />
+        usingTestingBoxedExpressionProviderContext(
+          <LogicTypeSelector
+            selectedExpression={expression}
+            getPlacementRef={() => document.body as HTMLDivElement}
+            onLogicTypeResetting={_.identity}
+            onLogicTypeUpdating={_.identity}
+          />
+        ).wrapper
       ).wrapper
     );
 
@@ -74,12 +82,14 @@ describe("Logic type selection", () => {
 
     const { baseElement } = render(
       usingTestingBoxedExpressionI18nContext(
-        <LogicTypeSelector
-          selectedExpression={expression}
-          getPlacementRef={() => document.body as HTMLDivElement}
-          onLogicTypeResetting={_.identity}
-          onLogicTypeUpdating={_.identity}
-        />
+        usingTestingBoxedExpressionProviderContext(
+          <LogicTypeSelector
+            selectedExpression={expression}
+            getPlacementRef={() => document.body as HTMLDivElement}
+            onLogicTypeResetting={_.identity}
+            onLogicTypeUpdating={_.identity}
+          />
+        ).wrapper
       ).wrapper
     );
 
@@ -94,12 +104,14 @@ describe("Logic type selection", () => {
     });
 
     const logicTypeSelector = usingTestingBoxedExpressionI18nContext(
-      <LogicTypeSelector
-        selectedExpression={expression}
-        getPlacementRef={() => document.body as HTMLDivElement}
-        onLogicTypeResetting={onLogicTypeResetting}
-        onLogicTypeUpdating={_.identity}
-      />
+      usingTestingBoxedExpressionProviderContext(
+        <LogicTypeSelector
+          selectedExpression={expression}
+          getPlacementRef={() => document.body as HTMLDivElement}
+          onLogicTypeResetting={onLogicTypeResetting}
+          onLogicTypeUpdating={_.identity}
+        />
+      ).wrapper
     ).wrapper;
 
     const screen = render(logicTypeSelector);

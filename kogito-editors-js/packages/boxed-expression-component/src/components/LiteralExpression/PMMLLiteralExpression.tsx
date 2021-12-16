@@ -16,16 +16,16 @@
 
 import "./PMMLLiteralExpression.css";
 import * as React from "react";
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { PMMLLiteralExpressionProps } from "../../api";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core";
 import * as _ from "lodash";
-import { BoxedExpressionGlobalContext } from "../../context";
+import { useBoxedExpression } from "../../context";
 
 export const PMMLLiteralExpression: React.FunctionComponent<PMMLLiteralExpressionProps> = (
   props: PMMLLiteralExpressionProps
 ) => {
-  const globalContext = useContext(BoxedExpressionGlobalContext);
+  const boxedExpression = useBoxedExpression();
 
   const selection = useRef(props.selected);
 
@@ -62,7 +62,7 @@ export const PMMLLiteralExpression: React.FunctionComponent<PMMLLiteralExpressio
   return (
     <Select
       className={`${props.id} pmml-literal-expression ${showingPlaceholder() ? "showing-placeholder" : ""}`}
-      menuAppendTo={globalContext.boxedExpressionEditorRef?.current ?? "inline"}
+      menuAppendTo={boxedExpression.editorRef?.current ?? "inline"}
       ouiaId="pmml-literal-expression-selector"
       placeholderText={props.noOptionsLabel}
       aria-placeholder={props.noOptionsLabel}

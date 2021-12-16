@@ -18,6 +18,7 @@ import { fireEvent, render } from "@testing-library/react";
 import * as React from "react";
 import { CellSelectionBox } from "../../../components/SelectionBox";
 import "../../__mocks__/ReactWithSupervisor";
+import { wrapComponentInContext } from "../test-utils";
 
 describe("CellSelectionBox", () => {
   describe("when users select elements", () => {
@@ -38,38 +39,40 @@ describe("CellSelectionBox", () => {
 
 function renderTable() {
   return render(
-    <>
-      <CellSelectionBox />
-      <div className="uuid-f1f0b02e react-resizable">
-        <div className="editable-cell">
-          <textarea defaultValue="Cell 1"></textarea>
+    wrapComponentInContext(
+      <>
+        <CellSelectionBox />
+        <div className="uuid-f1f0b02e react-resizable">
+          <div className="editable-cell">
+            <textarea defaultValue="Cell 1" />
+          </div>
         </div>
-      </div>
-      <div className="uuid-56cabb83 react-resizable">
-        <div className="editable-cell">
-          <textarea defaultValue="Cell 2"></textarea>
+        <div className="uuid-56cabb83 react-resizable">
+          <div className="editable-cell">
+            <textarea defaultValue="Cell 2" />
+          </div>
         </div>
-      </div>
-      <div className="uuid-3daf1136 react-resizable">
-        <div className="editable-cell">
-          <textarea defaultValue="Cell 3"></textarea>
+        <div className="uuid-3daf1136 react-resizable">
+          <div className="editable-cell">
+            <textarea defaultValue="Cell 3" />
+          </div>
         </div>
-      </div>
-      <div className="uuid-d45c5153 react-resizable">
-        <div className="editable-cell">
-          <textarea defaultValue="Cell 4"></textarea>
+        <div className="uuid-d45c5153 react-resizable">
+          <div className="editable-cell">
+            <textarea defaultValue="Cell 4" />
+          </div>
         </div>
-      </div>
-      <div className="uuid-8265fa47 react-resizable">
-        <div className="editable-cell">
-          <textarea defaultValue="Cell 5"></textarea>
+        <div className="uuid-8265fa47 react-resizable">
+          <div className="editable-cell">
+            <textarea defaultValue="Cell 5" />
+          </div>
         </div>
-      </div>
-      <div className="uuid-fb97017a react-resizable">
-        <div className="editable-cell">
-          <textarea defaultValue="Cell 6"></textarea>
+        <div className="uuid-fb97017a react-resizable">
+          <div className="editable-cell">
+            <textarea defaultValue="Cell 6" />
+          </div>
         </div>
-      </div>
-    </>
+      </>
+    )
   ).container;
 }

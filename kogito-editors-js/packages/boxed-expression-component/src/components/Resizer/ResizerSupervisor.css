@@ -14,14 +14,6 @@
  * limitations under the License.
  */
 
-.kie-cell-selection-box .kie-selection-box {
-  position: fixed;
-  pointer-events: none;
-  z-index: 1;
-  width: 0;
-  height: 0;
-  top: -100%;
-  left: -100%;
-  border: 1px dotted #888;
-  background-color: rgba(190, 200, 205, 0.4);
+.react-resizable-supervisor {
+  height: 100%;
 }

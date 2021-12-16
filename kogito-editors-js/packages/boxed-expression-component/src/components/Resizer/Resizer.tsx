@@ -19,7 +19,7 @@ import * as React from "react";
 import { useCallback, useContext, useLayoutEffect, useMemo, useState } from "react";
 import { ResizableBox } from "react-resizable";
 import { v4 as uuid } from "uuid";
-import { BoxedExpressionGlobalContext } from "../../context";
+import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
 import { widthValue as commonWidthValue } from "./common";
 import { Cell, DEFAULT_MIN_WIDTH, DOMSession } from "./dom";
 import "./Resizer.css";
@@ -47,6 +47,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const [initialResizerWidth, setInitialResizerWidth] = useState(0);
   const [cells, setCells] = useState<Cell[]>([]);
   const { setSupervisorHash } = useContext(BoxedExpressionGlobalContext);
+  const boxedExpression = useBoxedExpression();
 
   /*
    * Memos
@@ -76,11 +77,11 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
       onHorizontalResizeStop?.(width);
     }
 
-    document.addEventListener(id, listener);
+    boxedExpression.editorRef.current?.addEventListener(id, listener);
     return () => {
-      document.removeEventListener(id, listener);
+      boxedExpression.editorRef.current?.removeEventListener(id, listener);
     };
-  }, [id, onHorizontalResizeStop, resizerWidth]);
+  }, [id, onHorizontalResizeStop, resizerWidth, boxedExpression.editorRef]);
 
   /*
    * Callbacks
@@ -149,14 +150,14 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   }, []);
 
   const onResizeStart = useCallback(() => {
-    const allCells = new DOMSession().getCells();
+    const allCells = new DOMSession(boxedExpression.editorRef.current!).getCells();
     const currentCell = allCells.find((c) => c.getId() === id)!;
     const applicableCells = getApplicableCells(allCells, currentCell);
     const initialWidth = widthValue(currentCell.getRect().width);
 
     setCells(applicableCells);
     setInitialResizerWidth(initialWidth);
-  }, [getApplicableCells, id, widthValue]);
+  }, [getApplicableCells, id, widthValue, boxedExpression.editorRef]);
 
   const onResize = useCallback(
     (_, data) => {

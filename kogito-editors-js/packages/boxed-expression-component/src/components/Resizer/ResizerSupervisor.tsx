@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import "./Resizer.css";
 import * as React from "react";
+import { useContext, useEffect } from "react";
 import { applyDOMSupervisor } from "./dom";
-import { useEffect, useContext, useState } from "react";
-import { BoxedExpressionGlobalContext } from "../../context";
+import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
+import "./ResizerSupervisor.css";
 
 export interface ResizerSupervisorProps {
   children?: React.ReactElement;
@@ -27,16 +27,16 @@ export interface ResizerSupervisorProps {
 
 export const ResizerSupervisor: React.FunctionComponent<ResizerSupervisorProps> = ({ children, isRunnerTable }) => {
   const { supervisorHash } = useContext(BoxedExpressionGlobalContext);
-  const [resizerSupervisor, setResizer] = useState<HTMLDivElement | null>(null);
+  const boxedExpression = useBoxedExpression();
 
   useEffect(() => {
     const id = setTimeout(() => {
-      if (resizerSupervisor !== null) {
-        applyDOMSupervisor(isRunnerTable, resizerSupervisor);
+      if (boxedExpression.editorRef.current !== null) {
+        applyDOMSupervisor(isRunnerTable, boxedExpression.editorRef.current);
       }
     }, 0);
     return () => clearTimeout(id);
-  }, [isRunnerTable, supervisorHash, resizerSupervisor]);
+  }, [isRunnerTable, supervisorHash, boxedExpression.editorRef]);
 
-  return <div ref={(element) => setResizer(element)}>{children}</div>;
+  return <div className={"react-resizable-supervisor"}>{children}</div>;
 };

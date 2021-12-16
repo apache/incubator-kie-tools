@@ -19,6 +19,7 @@ import * as React from "react";
 import { Resizer } from "../../../components/Resizer";
 import { SelectionBox } from "../../../components/SelectionBox";
 import "../../__mocks__/ReactWithSupervisor";
+import { wrapComponentInContext } from "../test-utils";
 
 describe("SelectionBox", () => {
   describe("when users drag the selection box element (but do not release the mouse button)", () => {
@@ -57,36 +58,38 @@ describe("SelectionBox", () => {
 
 function renderTable() {
   return render(
-    <>
-      <SelectionBox />
-      <table>
-        <thead>
-          <tr>
-            <th className="col-1-1">
-              <Resizer width={250}></Resizer>
-            </th>
-            <th className="col-1-2">
-              <Resizer width={250}></Resizer>
-            </th>
-            <th className="col-1-3">
-              <Resizer width={250}></Resizer>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="col-2-1">
-              <Resizer width={250}></Resizer>
-            </td>
-            <td className="col-2-2">
-              <Resizer width={250}></Resizer>
-            </td>
-            <td className="col-2-3">
-              <Resizer width={250}></Resizer>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </>
+    wrapComponentInContext(
+      <>
+        <SelectionBox />
+        <table>
+          <thead>
+            <tr>
+              <th className="col-1-1">
+                <Resizer width={250} />
+              </th>
+              <th className="col-1-2">
+                <Resizer width={250} />
+              </th>
+              <th className="col-1-3">
+                <Resizer width={250} />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="col-2-1">
+                <Resizer width={250} />
+              </td>
+              <td className="col-2-2">
+                <Resizer width={250} />
+              </td>
+              <td className="col-2-3">
+                <Resizer width={250} />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </>
+    )
   ).container;
 }

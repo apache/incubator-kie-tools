@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { applyDOMSupervisor, Cell } from "../../../../components/Resizer/dom";
+import { applyDOMSupervisor, Cell } from "../../../../components/Resizer";
 
 const fakeCells = [fakeCell(0), fakeCell(2), fakeCell(4), fakeCell(8)];
 
 describe("ResizerSupervisorDOM", () => {
   describe("applyDOMSupervisor", () => {
     beforeEach(() => {
-      applyDOMSupervisor(false);
+      applyDOMSupervisor(false, document.body);
     });
 
     it("refreshes cell widths as parents", () => {
@@ -56,7 +56,7 @@ jest.mock("src/components/Resizer/dom", () => {
 });
 
 function fakeCell(depth: number) {
-  const cell = new Cell({} as HTMLElement, [], depth);
+  const cell = new Cell({} as HTMLElement, [], depth, document.body);
   const spyRefreshWidthAsParent = jest.spyOn(cell, "refreshWidthAsParent");
   const spyRefreshWidthAsLastColumn = jest.spyOn(cell, "refreshWidthAsLastColumn");
   return { cell, spyRefreshWidthAsParent, spyRefreshWidthAsLastColumn };

@@ -15,8 +15,9 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import "./SelectionBox.css";
+import { useBoxedExpression } from "../../context";
 
 export interface SelectionBoxProps {
   /** CSS classes of elements that must not trigger the selection box */
@@ -44,7 +45,6 @@ export interface SelectionRect extends SelectionStart {
 
 type SelectionStartState = SelectionStart | null;
 type SelectionRectState = SelectionRect | null;
-type SelectionStyleState = React.CSSProperties | null;
 
 export const SelectionBox: React.FunctionComponent<SelectionBoxProps> = ({
   ignoredElements,
@@ -52,23 +52,23 @@ export const SelectionBox: React.FunctionComponent<SelectionBoxProps> = ({
   onDragMove,
   onDragStop,
 }: SelectionBoxProps) => {
-  const [selectionBoxStyle, setSelectionBoxStyle] = useState<SelectionStyleState>(null);
   const [selectionStart, setSelectionStart] = useState<SelectionStartState>(null);
   const [selectionRect, setSelectionRect] = useState<SelectionRectState>(null);
+  const boxedExpression = useBoxedExpression();
 
-  useEffect(() => {
-    const pxValue = (value: number) => `${value}px`;
-    let style = {};
+  const pxValue = useCallback((value: number) => `${value}px`, []);
+
+  const selectionBoxStyle: React.CSSProperties = useMemo(() => {
     if (selectionRect) {
-      style = {
+      return {
         width: pxValue(selectionRect.width),
         height: pxValue(selectionRect.height),
         top: pxValue(selectionRect.y),
         left: pxValue(selectionRect.x),
       };
     }
-    setSelectionBoxStyle(style);
-  }, [selectionRect]);
+    return {};
+  }, [pxValue, selectionRect]);
 
   const getCoordinate = useCallback((event: MouseEvent | TouchEvent): SelectionStart => {
     if ("touches" in event) {
@@ -134,23 +134,21 @@ export const SelectionBox: React.FunctionComponent<SelectionBoxProps> = ({
     const touchStartType = "touchstart";
     const touchEndType = "touchend";
 
-    document.addEventListener(mouseMoveType, moveHandler);
-    document.addEventListener(mouseDownType, downHandler);
-    document.addEventListener(mouseUpType, upHandler);
-    document.addEventListener(touchMoveType, moveHandler);
-    document.addEventListener(touchStartType, downHandler);
-    document.addEventListener(touchEndType, upHandler);
+    boxedExpression.editorRef.current?.addEventListener(mouseMoveType, moveHandler);
+    boxedExpression.editorRef.current?.addEventListener(mouseDownType, downHandler);
+    boxedExpression.editorRef.current?.addEventListener(mouseUpType, upHandler);
+    boxedExpression.editorRef.current?.addEventListener(touchMoveType, moveHandler);
+    boxedExpression.editorRef.current?.addEventListener(touchStartType, downHandler);
+    boxedExpression.editorRef.current?.addEventListener(touchEndType, upHandler);
     return () => {
-      document.removeEventListener(mouseMoveType, moveHandler);
-      document.removeEventListener(mouseDownType, downHandler);
-      document.removeEventListener(mouseUpType, upHandler);
-      document.removeEventListener(touchMoveType, moveHandler);
-      document.removeEventListener(touchStartType, downHandler);
-      document.removeEventListener(touchEndType, upHandler);
+      boxedExpression.editorRef.current?.removeEventListener(mouseMoveType, moveHandler);
+      boxedExpression.editorRef.current?.removeEventListener(mouseDownType, downHandler);
+      boxedExpression.editorRef.current?.removeEventListener(mouseUpType, upHandler);
+      boxedExpression.editorRef.current?.removeEventListener(touchMoveType, moveHandler);
+      boxedExpression.editorRef.current?.removeEventListener(touchStartType, downHandler);
+      boxedExpression.editorRef.current?.removeEventListener(touchEndType, upHandler);
     };
-  }, [moveHandler, downHandler, upHandler]);
+  }, [moveHandler, downHandler, upHandler, boxedExpression.editorRef]);
 
-  return useMemo(() => {
-    return <div style={{ ...selectionBoxStyle }} className="kie-selection-box"></div>;
-  }, [selectionBoxStyle]);
+  return <div style={{ ...selectionBoxStyle }} className="kie-selection-box" />;
 };

@@ -18,7 +18,8 @@ import { render } from "@testing-library/react";
 import * as React from "react";
 import { act } from "react-dom/test-utils";
 import { DataRecord } from "react-table";
-import { iterableValue, paste, pasteOnTable } from "./../../../../../showcase/src/lib/components/Table/common";
+import { iterableValue, paste, pasteOnTable } from "../../../../components/Table/common";
+import { wrapComponentInContext } from "../../test-utils";
 
 describe("CopyAndPasteUtils", () => {
   describe("pasteOnTable", () => {
@@ -158,37 +159,39 @@ describe("CopyAndPasteUtils", () => {
 
   describe("paste", () => {
     beforeEach(() => {
-      document.dispatchEvent = jest.fn();
+      document.body.dispatchEvent = jest.fn();
 
       const container = render(
-        <>
-          <table className="table-component table-event-0">
-            <tbody>
-              <tr>
-                <td>A</td>
-                <td>B</td>
-                <td>C</td>
-              </tr>
-              <tr>
-                <td>D</td>
-                <td className="ref">E</td>
-                <td>F</td>
-              </tr>
-              <tr>
-                <td>G</td>
-                <td>H</td>
-                <td>I</td>
-              </tr>
-            </tbody>
-          </table>
-        </>
+        wrapComponentInContext(
+          <>
+            <table className="table-component table-event-0">
+              <tbody>
+                <tr>
+                  <td>A</td>
+                  <td>B</td>
+                  <td>C</td>
+                </tr>
+                <tr>
+                  <td>D</td>
+                  <td className="ref">E</td>
+                  <td>F</td>
+                </tr>
+                <tr>
+                  <td>G</td>
+                  <td>H</td>
+                  <td>I</td>
+                </tr>
+              </tbody>
+            </table>
+          </>
+        )
       ).container;
 
-      paste("Z\tZ\nZ\tZ", container.querySelector(".ref")!);
+      paste("Z\tZ\nZ\tZ", container.querySelector(".ref")!, document.body);
     });
 
     test("dispatches paste event", () => {
-      expect(document.dispatchEvent).toBeCalled();
+      expect(document.body.dispatchEvent).toBeCalled();
     });
   });
 });

@@ -30,7 +30,7 @@ import {
 import { TableComposable } from "@patternfly/react-table";
 import { v4 as uuid } from "uuid";
 import { generateUuid, TableHeaderVisibility, TableOperation, TableProps } from "../../api";
-import { BoxedExpressionGlobalContext } from "../../context";
+import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
 import { PASTE_OPERATION, pasteOnTable } from "./common";
 import { EditableCell } from "./EditableCell";
 import "./Table.css";
@@ -88,6 +88,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
 }: TableProps) => {
   const tableRef = useRef<HTMLTableElement>(null);
   const tableEventUUID = useMemo(() => `table-event-${uuid()}`, []);
+  const boxedExpression = useBoxedExpression();
 
   const onRowAddingCallback = useCallback(() => {
     return onRowAdding ? onRowAdding() : {};
@@ -150,7 +151,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
 
   const tableRows = useRef<DataRecord[]>(evaluateRows(rows));
   const [showTableHandler, setShowTableHandler] = useState(false);
-  const [tableHandlerTarget, setTableHandlerTarget] = useState(document.body);
+  const [tableHandlerTarget, setTableHandlerTarget] = useState<HTMLElement>(boxedExpression.editorRef.current!);
   const [tableHandlerAllowedOperations, setTableHandlerAllowedOperations] = useState(
     _.values(TableOperation).map((operation) => parseInt(operation.toString()))
   );
@@ -183,20 +184,28 @@ export const Table: React.FunctionComponent<TableProps> = ({
       if (DEFAULT_ON_ROW_ADDING !== rowFactory && !isLockedTable) {
         const pastedRows = pasteOnTable(pasteValue, rows, rowFactory, x, y);
         tableRows.current = pastedRows;
-        onRowsUpdate?.(pastedRows);
+        onRowsUpdate?.({ rows: pastedRows, columns });
       }
     }
 
-    document.addEventListener(tableEventUUID, listener);
+    boxedExpression.editorRef.current?.addEventListener(tableEventUUID, listener);
     return () => {
-      document.removeEventListener(tableEventUUID, listener);
+      boxedExpression.editorRef.current?.removeEventListener(tableEventUUID, listener);
     };
-  }, [tableEventUUID, tableRows, onRowsUpdate, onColumnsUpdate, onRowAddingCallback]);
+  }, [
+    tableEventUUID,
+    tableRows,
+    onRowsUpdate,
+    onColumnsUpdate,
+    onRowAddingCallback,
+    columns,
+    boxedExpression.editorRef,
+  ]);
 
   const onColumnsUpdateCallback = useCallback(
     (columns: Column[], operation?: TableOperation, columnIndex?: number) => {
       //Removing "# of rows" column
-      onColumnsUpdate?.(columns.slice(1), operation, (columnIndex ?? 1) - 1);
+      onColumnsUpdate?.({ columns: columns.slice(1), operation, columnIndex: (columnIndex ?? 1) - 1 });
     },
     [onColumnsUpdate]
   );
@@ -204,7 +213,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
   const onRowsUpdateCallback = useCallback(
     (rows: DataRecord[], operation?: TableOperation, rowIndex?: number) => {
       tableRows.current = rows;
-      onRowsUpdate?.([...rows], operation, rowIndex, columns);
+      onRowsUpdate?.({ rows: [...rows], operation, rowIndex, columns });
     },
     [onRowsUpdate, columns]
   );

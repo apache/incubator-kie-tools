@@ -16,7 +16,7 @@
 
 import { Column, DataType, generateUuid, LogicType, Row } from "../../../api";
 import { render } from "@testing-library/react";
-import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
+import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 import * as React from "react";
 import { RelationExpression } from "../../../components/RelationExpression";
 
@@ -24,7 +24,9 @@ describe("RelationExpression tests", () => {
   test("should render a table element, with one default column and one default row, when no props are passed", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <RelationExpression logicType={LogicType.Relation} name="Relation" dataType={DataType.Undefined} />
+        usingTestingBoxedExpressionProviderContext(
+          <RelationExpression logicType={LogicType.Relation} name="Relation" dataType={DataType.Undefined} />
+        ).wrapper
       ).wrapper
     );
 
@@ -41,12 +43,14 @@ describe("RelationExpression tests", () => {
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <RelationExpression
-          logicType={LogicType.Relation}
-          name="Relation"
-          dataType={DataType.Undefined}
-          columns={[column]}
-        />
+        usingTestingBoxedExpressionProviderContext(
+          <RelationExpression
+            logicType={LogicType.Relation}
+            name="Relation"
+            dataType={DataType.Undefined}
+            columns={[column]}
+          />
+        ).wrapper
       ).wrapper
     );
 
@@ -87,13 +91,15 @@ describe("RelationExpression tests", () => {
 function buildRelationComponent(column: Column, row: Row) {
   const { container } = render(
     usingTestingBoxedExpressionI18nContext(
-      <RelationExpression
-        logicType={LogicType.Relation}
-        name="Relation"
-        dataType={DataType.Undefined}
-        columns={[column]}
-        rows={[row]}
-      />
+      usingTestingBoxedExpressionProviderContext(
+        <RelationExpression
+          logicType={LogicType.Relation}
+          name="Relation"
+          dataType={DataType.Undefined}
+          columns={[column]}
+          rows={[row]}
+        />
+      ).wrapper
     ).wrapper
   );
   return container;

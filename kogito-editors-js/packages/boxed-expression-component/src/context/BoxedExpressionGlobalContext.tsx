@@ -16,13 +16,14 @@
 
 import * as React from "react";
 import { PMMLParams } from "../api";
+import { useContext } from "react";
 
 export interface BoxedExpressionGlobalContextProps {
   decisionNodeId: string;
   pmmlParams?: PMMLParams;
   supervisorHash: string;
   setSupervisorHash: (hash: string) => void;
-  boxedExpressionEditorRef: React.RefObject<HTMLDivElement>;
+  editorRef: React.RefObject<HTMLDivElement>;
   currentlyOpenedHandlerCallback: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentlyOpenedHandlerCallback: React.Dispatch<
     React.SetStateAction<React.Dispatch<React.SetStateAction<boolean>>>
@@ -32,3 +33,7 @@ export interface BoxedExpressionGlobalContextProps {
 export const BoxedExpressionGlobalContext = React.createContext<BoxedExpressionGlobalContextProps>(
   {} as BoxedExpressionGlobalContextProps
 );
+
+export function useBoxedExpression() {
+  return useContext(BoxedExpressionGlobalContext);
+}

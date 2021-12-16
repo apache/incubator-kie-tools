@@ -16,7 +16,12 @@
 
 import "../../__mocks__/ReactWithSupervisor";
 import { render } from "@testing-library/react";
-import { checkEntryContent, contextEntry, usingTestingBoxedExpressionI18nContext } from "../test-utils";
+import {
+  checkEntryContent,
+  contextEntry,
+  usingTestingBoxedExpressionI18nContext,
+  usingTestingBoxedExpressionProviderContext,
+} from "../test-utils";
 import { DataType, LogicType } from "../../../api";
 import * as React from "react";
 import { InvocationExpression } from "../../../components/InvocationExpression";
@@ -24,7 +29,9 @@ import { InvocationExpression } from "../../../components/InvocationExpression";
 describe("InvocationExpression tests", () => {
   test("should show a table with two levels visible header, with one row and two columns", () => {
     const { container } = render(
-      usingTestingBoxedExpressionI18nContext(<InvocationExpression logicType={LogicType.Invocation} />).wrapper
+      usingTestingBoxedExpressionI18nContext(
+        usingTestingBoxedExpressionProviderContext(<InvocationExpression logicType={LogicType.Invocation} />).wrapper
+      ).wrapper
     );
 
     expect(container.querySelector(".invocation-expression")).toBeTruthy();
@@ -37,7 +44,9 @@ describe("InvocationExpression tests", () => {
 
   test("should show a table with an input in the header, representing the invoked function", () => {
     const { container } = render(
-      usingTestingBoxedExpressionI18nContext(<InvocationExpression logicType={LogicType.Invocation} />).wrapper
+      usingTestingBoxedExpressionI18nContext(
+        usingTestingBoxedExpressionProviderContext(<InvocationExpression logicType={LogicType.Invocation} />).wrapper
+      ).wrapper
     );
 
     expect(
@@ -55,7 +64,9 @@ describe("InvocationExpression tests", () => {
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <InvocationExpression logicType={LogicType.Invocation} invokedFunction={invokedFunction} />
+        usingTestingBoxedExpressionProviderContext(
+          <InvocationExpression logicType={LogicType.Invocation} invokedFunction={invokedFunction} />
+        ).wrapper
       ).wrapper
     );
 
@@ -85,7 +96,9 @@ describe("InvocationExpression tests", () => {
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <InvocationExpression logicType={LogicType.Invocation} bindingEntries={bindingEntries} />
+        usingTestingBoxedExpressionProviderContext(
+          <InvocationExpression logicType={LogicType.Invocation} bindingEntries={bindingEntries} />
+        ).wrapper
       ).wrapper
     );
 

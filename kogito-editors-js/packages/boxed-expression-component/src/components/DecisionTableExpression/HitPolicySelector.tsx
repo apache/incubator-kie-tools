@@ -17,12 +17,12 @@
 import "./HitPolicySelector.css";
 import { BuiltinAggregation, getEnumKeyByEnumValue, HitPolicy } from "../../api";
 import * as React from "react";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useState } from "react";
 import { PopoverMenu } from "../PopoverMenu";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { BoxedExpressionGlobalContext } from "../../context";
+import { useBoxedExpression } from "../../context";
 
 export interface HitPolicySelectorProps {
   /** Pre-selected hit policy */
@@ -43,14 +43,13 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
   selectedHitPolicy,
 }) => {
   const { i18n } = useBoxedExpressionEditorI18n();
+  const boxedExpression = useBoxedExpression();
 
   const [hitPolicySelectOpen, setHitPolicySelectOpen] = useState(false);
   const [builtInAggregatorSelectOpen, setBuiltInAggregatorSelectOpen] = useState(false);
   const [builtInAggregatorSelectDisabled, setBuiltInAggregatorSelectDisabled] = useState(
     !_.includes(BUILT_IN_AGGREGATION_AVAILABILITY, selectedHitPolicy)
   );
-
-  const globalContext = useContext(BoxedExpressionGlobalContext);
 
   const onHitPolicySelectToggle = useCallback((isOpen) => setHitPolicySelectOpen(isOpen), []);
   const onBuiltInAggregatorSelectToggle = useCallback((isOpen) => setBuiltInAggregatorSelectOpen(isOpen), []);
@@ -109,7 +108,7 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
   return (
     <PopoverMenu
       title={i18n.editHitPolicy}
-      appendTo={globalContext.boxedExpressionEditorRef?.current ?? undefined}
+      appendTo={boxedExpression.editorRef?.current ?? undefined}
       className="hit-policy-popover"
       hasAutoWidth
       body={
@@ -118,7 +117,7 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
             <label>{i18n.hitPolicy}</label>
             <Select
               className="hit-policy-selector"
-              menuAppendTo={globalContext.boxedExpressionEditorRef?.current ?? "inline"}
+              menuAppendTo={boxedExpression.editorRef?.current ?? "inline"}
               ouiaId="hit-policy-selector"
               variant={SelectVariant.single}
               onToggle={onHitPolicySelectToggle}
@@ -133,7 +132,7 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
             <label>{i18n.builtInAggregator}</label>
             <Select
               className="builtin-aggregator-selector"
-              menuAppendTo={globalContext.boxedExpressionEditorRef?.current ?? "inline"}
+              menuAppendTo={boxedExpression.editorRef?.current ?? "inline"}
               ouiaId="builtin-aggregator-selector"
               isDisabled={builtInAggregatorSelectDisabled}
               variant={SelectVariant.single}

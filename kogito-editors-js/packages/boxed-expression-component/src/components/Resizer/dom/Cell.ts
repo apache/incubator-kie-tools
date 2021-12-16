@@ -26,7 +26,12 @@ export class Cell {
   private rect?: DOMRect;
   private parentRow?: HTMLTableRowElement | null;
 
-  constructor(public element: HTMLElement, public children: Cell[], public depth: number) {}
+  constructor(
+    public element: HTMLElement,
+    public children: Cell[],
+    public depth: number,
+    private editorElement: HTMLElement
+  ) {}
 
   getId(): string {
     if (!this.id) {
@@ -51,7 +56,7 @@ export class Cell {
 
   setWidth(width: number): void {
     const cellWidth = widthValue(width);
-    notifyCell(this.getId(), cellWidth);
+    notifyCell(this.getId(), cellWidth, this.editorElement);
     this.element.style.width = cellWidth + "px";
   }
 

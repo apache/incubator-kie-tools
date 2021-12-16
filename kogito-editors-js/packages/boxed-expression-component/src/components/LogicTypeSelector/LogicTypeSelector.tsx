@@ -16,7 +16,7 @@
 
 import "./LogicTypeSelector.css";
 import * as React from "react";
-import { useCallback, useContext, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import {
   ContextProps,
   DataType,
@@ -40,7 +40,7 @@ import { PopoverMenu } from "../PopoverMenu";
 import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core";
 import * as _ from "lodash";
 import { useContextMenuHandler } from "../../hooks";
-import { BoxedExpressionGlobalContext } from "../../context";
+import { useBoxedExpression } from "../../context";
 import { DecisionTableExpression } from "../DecisionTableExpression";
 import { ListExpression } from "../ListExpression";
 import { InvocationExpression } from "../InvocationExpression";
@@ -73,8 +73,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
   onUpdatingRecursiveExpression,
 }) => {
   const { i18n } = useBoxedExpressionEditorI18n();
-
-  const globalContext = useContext(BoxedExpressionGlobalContext);
+  const boxedExpression = useBoxedExpression();
 
   const expression = useMemo(() => {
     return {
@@ -98,7 +97,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
     contextMenuVisibility,
     setContextMenuVisibility,
     targetElement,
-  } = useContextMenuHandler(globalContext.boxedExpressionEditorRef?.current ?? document);
+  } = useContextMenuHandler(boxedExpression.editorRef?.current ?? document);
 
   const renderExpression = useMemo(() => {
     switch (expression.logicType) {
@@ -146,8 +145,8 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
   const getArrowPlacement = useCallback(() => getPlacementRef() as HTMLElement, [getPlacementRef]);
 
   const getAppendToPlacement = useCallback(() => {
-    return globalContext.boxedExpressionEditorRef?.current ?? getArrowPlacement;
-  }, [getArrowPlacement, globalContext.boxedExpressionEditorRef]);
+    return boxedExpression.editorRef?.current ?? getArrowPlacement;
+  }, [getArrowPlacement, boxedExpression.editorRef]);
 
   const onLogicTypeSelect = useCallback(
     (event?: React.MouseEvent, itemId?: string | number) => {
@@ -214,7 +213,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
   const cssClasses = useMemo(() => {
     const classes = [];
     if (!isHeadless) {
-      classes.push(`${globalContext.decisionNodeId}`);
+      classes.push(`${boxedExpression.decisionNodeId}`);
     }
     classes.push("logic-type-selector");
     if (isLogicTypeSelected) {
@@ -223,7 +222,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
       classes.push("logic-type-not-present");
     }
     return classes.join(" ");
-  }, [globalContext.decisionNodeId, isHeadless, isLogicTypeSelected]);
+  }, [boxedExpression.decisionNodeId, isHeadless, isLogicTypeSelected]);
 
   return (
     <div className={cssClasses} ref={contextMenuRef}>

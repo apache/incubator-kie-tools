@@ -16,7 +16,12 @@
 
 import { DataType, DecisionTableProps, HitPolicy, LogicType } from "../../../api";
 import { fireEvent, render } from "@testing-library/react";
-import { flushPromises, usingTestingBoxedExpressionI18nContext, wrapComponentInContext } from "../test-utils";
+import {
+  flushPromises,
+  usingTestingBoxedExpressionI18nContext,
+  usingTestingBoxedExpressionProviderContext,
+  wrapComponentInContext,
+} from "../test-utils";
 import * as React from "react";
 import { DecisionTableExpression } from "../../../components/DecisionTableExpression";
 import { openContextMenu } from "../Table/Table.test";
@@ -27,7 +32,9 @@ describe("DecisionTableExpression tests", () => {
   test("should show a table with three columns: input, output and annotation, and one row", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        wrapComponentInContext(<DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />)
+        usingTestingBoxedExpressionProviderContext(
+          <DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />
+        ).wrapper
       ).wrapper
     );
 
@@ -51,7 +58,9 @@ describe("DecisionTableExpression tests", () => {
   test("should show as default hit policy, unique", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        wrapComponentInContext(<DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />)
+        usingTestingBoxedExpressionProviderContext(
+          <DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />
+        ).wrapper
       ).wrapper
     );
 
@@ -61,13 +70,13 @@ describe("DecisionTableExpression tests", () => {
   test("should show the passed hit policy", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        wrapComponentInContext(
+        usingTestingBoxedExpressionProviderContext(
           <DecisionTableExpression
             id="decision-node-id"
             logicType={LogicType.DecisionTable}
             hitPolicy={HitPolicy.First}
           />
-        )
+        ).wrapper
       ).wrapper
     );
 
@@ -77,7 +86,9 @@ describe("DecisionTableExpression tests", () => {
   test("should show as default a row, with empty values, except for input column, whose value is dash symbol", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        wrapComponentInContext(<DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />)
+        usingTestingBoxedExpressionProviderContext(
+          <DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />
+        ).wrapper
       ).wrapper
     );
 
@@ -109,7 +120,7 @@ describe("DecisionTableExpression tests", () => {
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        wrapComponentInContext(
+        usingTestingBoxedExpressionProviderContext(
           <DecisionTableExpression
             id="decision-node-id"
             logicType={LogicType.DecisionTable}
@@ -118,7 +129,7 @@ describe("DecisionTableExpression tests", () => {
             annotations={annotations}
             rules={rules}
           />
-        )
+        ).wrapper
       ).wrapper
     );
 
@@ -147,11 +158,9 @@ describe("DecisionTableExpression tests", () => {
     const mockedBroadcastDefinition = jest.fn();
     mockBroadcastDefinition(mockedBroadcastDefinition);
     const { container, baseElement } = render(
-      wrapComponentInContext(
-        usingTestingBoxedExpressionI18nContext(
-          <DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />
-        ).wrapper
-      )
+      usingTestingBoxedExpressionI18nContext(
+        wrapComponentInContext(<DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />)
+      ).wrapper
     );
 
     await openContextMenu(container.querySelector(".decision-table-expression table tbody tr td.counter-cell")!);

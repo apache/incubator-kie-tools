@@ -18,6 +18,19 @@ import { DataType } from "./DataType";
 import * as React from "react";
 import { Column as ReactTableColumn, DataRecord, Row as ReactTableRow } from "react-table";
 
+export interface ColumnsUpdateArgs<T = ReactTableColumn> {
+  columns: T[];
+  operation?: TableOperation;
+  columnIndex?: number;
+}
+
+export interface RowsUpdateArgs<T = DataRecord> {
+  rows: T[];
+  operation?: TableOperation;
+  rowIndex?: number;
+  columns?: ReactTableColumn[];
+}
+
 export interface TableProps {
   /** Table identifier, useful for nested structures */
   tableId?: string;
@@ -40,14 +53,9 @@ export interface TableProps {
   /** Table's cells */
   rows: DataRecord[];
   /** Function to be executed when columns are modified */
-  onColumnsUpdate?: (columns: ReactTableColumn[], operation?: TableOperation, columnIndex?: number) => void;
+  onColumnsUpdate?: (args: ColumnsUpdateArgs) => void;
   /** Function to be executed when one or more rows are modified */
-  onRowsUpdate?: (
-    rows: DataRecord[],
-    operation?: TableOperation,
-    rowIndex?: number,
-    columns?: ReactTableColumn[]
-  ) => void;
+  onRowsUpdate?: (args: RowsUpdateArgs) => void;
   /** Function to be executed when adding a new row to the table */
   onRowAdding?: () => DataRecord;
   /** Custom configuration for the table handler */

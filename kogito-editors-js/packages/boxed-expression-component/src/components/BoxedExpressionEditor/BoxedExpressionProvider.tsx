@@ -38,8 +38,8 @@ export interface BoxedExpressionProviderProps {
 
 export function BoxedExpressionProvider(props: BoxedExpressionProviderProps) {
   const [currentlyOpenedHandlerCallback, setCurrentlyOpenedHandlerCallback] = useState(() => _.identity);
-  const boxedExpressionEditorRef = useRef<HTMLDivElement>(null);
   const [supervisorHash, setSupervisorHash] = useState(hashfy(props.expressionDefinition));
+  const editorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setSupervisorHash(hashfy(props.expressionDefinition));
@@ -52,13 +52,13 @@ export function BoxedExpressionProvider(props: BoxedExpressionProviderProps) {
         pmmlParams: props.pmmlParams,
         supervisorHash,
         setSupervisorHash,
-        boxedExpressionEditorRef,
+        editorRef,
         currentlyOpenedHandlerCallback,
         setCurrentlyOpenedHandlerCallback,
       }}
     >
       <ResizerSupervisor isRunnerTable={props.isRunnerTable}>
-        <div className="boxed-expression-editor" ref={boxedExpressionEditorRef}>
+        <div className="boxed-expression-provider" ref={editorRef}>
           {props.children}
         </div>
       </ResizerSupervisor>

@@ -26,6 +26,7 @@ import {
   ListProps,
   LiteralExpressionProps,
   LogicType,
+  RowsUpdateArgs,
   TableHandlerConfiguration,
   TableHeaderVisibility,
   TableOperation,
@@ -140,9 +141,9 @@ export const ListExpression: React.FunctionComponent<ListProps> = (listExpressio
   );
 
   const onRowsUpdate = useCallback(
-    (newItems: any[]) => {
-      const newEntryExpressions = newItems.map((newItem) => {
-        return { entryExpression: newItem.entryExpression };
+    ({ rows }: RowsUpdateArgs) => {
+      const newEntryExpressions = rows.map((row) => {
+        return { entryExpression: row.entryExpression };
       });
       spreadListExpressionDefinition({
         items: newEntryExpressions as ExpressionProps[],

@@ -21,7 +21,7 @@ import {
   EDIT_EXPRESSION_DATA_TYPE,
   flushPromises,
   usingTestingBoxedExpressionI18nContext,
-  wrapComponentInContext,
+  usingTestingBoxedExpressionProviderContext,
 } from "../test-utils";
 import { DEFAULT_FIRST_PARAM_NAME, FunctionExpression } from "../../../components/FunctionExpression";
 import * as React from "react";
@@ -37,7 +37,9 @@ describe("FunctionExpression tests", () => {
   test("should show a table with two levels visible header, with one row and one column", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
+        usingTestingBoxedExpressionProviderContext(
+          <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
+        ).wrapper
       ).wrapper
     );
 
@@ -52,11 +54,13 @@ describe("FunctionExpression tests", () => {
   test("should show a section in the header, with the list of parameters", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
-        <FunctionExpression
-          logicType={LogicType.Function}
-          functionKind={FunctionKind.Feel}
-          formalParameters={[{ id: "p1", name: DEFAULT_FIRST_PARAM_NAME, dataType: DataType.Undefined }]}
-        />
+        usingTestingBoxedExpressionProviderContext(
+          <FunctionExpression
+            logicType={LogicType.Function}
+            functionKind={FunctionKind.Feel}
+            formalParameters={[{ id: "p1", name: DEFAULT_FIRST_PARAM_NAME, dataType: DataType.Undefined }]}
+          />
+        ).wrapper
       ).wrapper
     );
 
@@ -71,7 +75,9 @@ describe("FunctionExpression tests", () => {
     mockBroadcastDefinition(mockedBroadcastDefinition);
     const { container, baseElement } = render(
       usingTestingBoxedExpressionI18nContext(
-        <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Java} formalParameters={[]} />
+        usingTestingBoxedExpressionProviderContext(
+          <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Java} formalParameters={[]} />
+        ).wrapper
       ).wrapper
     );
 
@@ -99,9 +105,9 @@ describe("FunctionExpression tests", () => {
     test("should render no parameter, if passed property is empty array", async () => {
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
-          wrapComponentInContext(
+          usingTestingBoxedExpressionProviderContext(
             <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
-          )
+          ).wrapper
         ).wrapper
       );
       await activateSelector(container as HTMLElement, ".parameters-list");
@@ -117,13 +123,13 @@ describe("FunctionExpression tests", () => {
 
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
-          wrapComponentInContext(
+          usingTestingBoxedExpressionProviderContext(
             <FunctionExpression
               logicType={LogicType.Function}
               functionKind={FunctionKind.Feel}
               formalParameters={[{ id: parameterId, name: paramName, dataType: paramDataType }]}
             />
-          )
+          ).wrapper
         ).wrapper
       );
       await activateSelector(container as HTMLElement, ".parameters-list");
@@ -140,13 +146,13 @@ describe("FunctionExpression tests", () => {
 
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
-          wrapComponentInContext(
+          usingTestingBoxedExpressionProviderContext(
             <FunctionExpression
               logicType={LogicType.Function}
               functionKind={FunctionKind.Feel}
               formalParameters={[{ id: parameterId, name: "param", dataType: DataType.Any }]}
             />
-          )
+          ).wrapper
         ).wrapper
       );
       await activateSelector(container as HTMLElement, ".parameters-list");
@@ -170,13 +176,13 @@ describe("FunctionExpression tests", () => {
 
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
-          wrapComponentInContext(
+          usingTestingBoxedExpressionProviderContext(
             <FunctionExpression
               logicType={LogicType.Function}
               functionKind={FunctionKind.Feel}
               formalParameters={[{ id: parameterId, name: "param", dataType: DataType.Undefined }]}
             />
-          )
+          ).wrapper
         ).wrapper
       );
       await activateSelector(container as HTMLElement, ".parameters-list");
@@ -204,9 +210,9 @@ describe("FunctionExpression tests", () => {
 
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
-          wrapComponentInContext(
+          usingTestingBoxedExpressionProviderContext(
             <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
-          )
+          ).wrapper
         ).wrapper
       );
       await activateSelector(container as HTMLElement, ".parameters-list");
@@ -228,7 +234,7 @@ describe("FunctionExpression tests", () => {
 
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
-          wrapComponentInContext(
+          usingTestingBoxedExpressionProviderContext(
             <FunctionExpression
               logicType={LogicType.Function}
               functionKind={FunctionKind.Feel}
@@ -240,7 +246,7 @@ describe("FunctionExpression tests", () => {
                 },
               ]}
             />
-          )
+          ).wrapper
         ).wrapper
       );
       await activateSelector(container as HTMLElement, ".parameters-list");
@@ -271,7 +277,9 @@ describe("FunctionExpression tests", () => {
     test("should show, by default, an entry with an empty literal expression", () => {
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
-          <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
+          usingTestingBoxedExpressionProviderContext(
+            <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
+          ).wrapper
         ).wrapper
       );
 
@@ -289,15 +297,17 @@ describe("FunctionExpression tests", () => {
     test("should show an entry corresponding to the passed expression", () => {
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
-          <FunctionExpression
-            logicType={LogicType.Function}
-            functionKind={FunctionKind.Feel}
-            formalParameters={[]}
-            expression={{
-              id: "id2",
-              logicType: LogicType.Relation,
-            }}
-          />
+          usingTestingBoxedExpressionProviderContext(
+            <FunctionExpression
+              logicType={LogicType.Function}
+              functionKind={FunctionKind.Feel}
+              formalParameters={[]}
+              expression={{
+                id: "id2",
+                logicType: LogicType.Relation,
+              }}
+            />
+          ).wrapper
         ).wrapper
       );
 
@@ -315,7 +325,9 @@ describe("FunctionExpression tests", () => {
     test("should show, by default, an entry with a context table, containing two entries: class and method", () => {
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
-          <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Java} formalParameters={[]} />
+          usingTestingBoxedExpressionProviderContext(
+            <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Java} formalParameters={[]} />
+          ).wrapper
         ).wrapper
       );
 
@@ -328,13 +340,15 @@ describe("FunctionExpression tests", () => {
 
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
-          <FunctionExpression
-            logicType={LogicType.Function}
-            functionKind={FunctionKind.Java}
-            formalParameters={[]}
-            className={classValue}
-            methodName={methodValue}
-          />
+          usingTestingBoxedExpressionProviderContext(
+            <FunctionExpression
+              logicType={LogicType.Function}
+              functionKind={FunctionKind.Java}
+              formalParameters={[]}
+              className={classValue}
+              methodName={methodValue}
+            />
+          ).wrapper
         ).wrapper
       );
 
@@ -346,7 +360,9 @@ describe("FunctionExpression tests", () => {
     test("should show, by default, an entry with a context table, containing two entries: document and model", () => {
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
-          <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Pmml} formalParameters={[]} />
+          usingTestingBoxedExpressionProviderContext(
+            <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Pmml} formalParameters={[]} />
+          ).wrapper
         ).wrapper
       );
 
@@ -359,13 +375,15 @@ describe("FunctionExpression tests", () => {
 
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
-          <FunctionExpression
-            logicType={LogicType.Function}
-            functionKind={FunctionKind.Pmml}
-            formalParameters={[]}
-            document={document}
-            model={model}
-          />
+          usingTestingBoxedExpressionProviderContext(
+            <FunctionExpression
+              logicType={LogicType.Function}
+              functionKind={FunctionKind.Pmml}
+              formalParameters={[]}
+              document={document}
+              model={model}
+            />
+          ).wrapper
         ).wrapper
       );
 
@@ -395,7 +413,9 @@ describe("FunctionExpression tests", () => {
       mockBroadcastDefinition();
 
       const screen = render(
-        usingTestingBoxedExpressionI18nContext(wrapComponentInContext(<FunctionExpression {...props} />)).wrapper
+        usingTestingBoxedExpressionI18nContext(
+          usingTestingBoxedExpressionProviderContext(<FunctionExpression {...props} />).wrapper
+        ).wrapper
       );
 
       await act(async () => {
@@ -405,7 +425,9 @@ describe("FunctionExpression tests", () => {
       });
 
       screen.rerender(
-        usingTestingBoxedExpressionI18nContext(wrapComponentInContext(<FunctionExpression {...props} />)).wrapper
+        usingTestingBoxedExpressionI18nContext(
+          usingTestingBoxedExpressionProviderContext(<FunctionExpression {...props} />).wrapper
+        ).wrapper
       );
       await act(async () => {
         fireEvent.click(screen.container.querySelectorAll(".pmml-literal-expression button")[1]! as HTMLElement);

@@ -116,13 +116,13 @@ export interface ListProps extends ExpressionProps {
   width?: number;
 }
 
-export interface InvocationProps extends ExpressionProps {
+export interface InvocationProps<T = ExpressionProps> extends ExpressionProps {
   /** Logic type must be Invocation */
   logicType: LogicType.Invocation;
   /** Function to be invoked */
   invokedFunction?: string;
   /** Collection of parameters used to invoke the function */
-  bindingEntries?: ContextEntries;
+  bindingEntries?: ContextEntries<T>;
   /** Entry info width */
   entryInfoWidth?: number;
   /** Entry expression width */

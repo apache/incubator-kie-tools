@@ -21,6 +21,7 @@ import { SelectionBox, SelectionRect } from ".";
 import { CELL_CSS_SELECTOR } from "../Resizer";
 import { paste } from "../Table/common";
 import "./CellSelectionBox.css";
+import { useBoxedExpression } from "../../context";
 
 const SELECTED_CELL = "cell--selected";
 
@@ -28,13 +29,14 @@ const EDITABLE_CELL = "editable-cell";
 
 export const CellSelectionBox: React.FunctionComponent = () => {
   const textarea = useRef<HTMLTextAreaElement>(null);
+  const boxedExpression = useBoxedExpression();
 
   const allEditableCells = useCallback((): Element[] => {
     const hasEditableCell = (cell: Element) => !!cell.querySelector(`.${EDITABLE_CELL}`);
-    const allCells = document.querySelectorAll(CELL_CSS_SELECTOR);
+    const allCells = boxedExpression.editorRef.current?.querySelectorAll(CELL_CSS_SELECTOR);
 
     return [].slice.call(allCells).filter(hasEditableCell);
-  }, []);
+  }, [boxedExpression.editorRef]);
 
   const findCell = useCallback((x: number, y: number): Element | null => {
     let refElement = null;
@@ -69,8 +71,10 @@ export const CellSelectionBox: React.FunctionComponent = () => {
   );
 
   const lowlightCells = useCallback(() => {
-    document.querySelectorAll(`.${SELECTED_CELL}`).forEach((c) => c.classList.remove(SELECTED_CELL));
-  }, []);
+    boxedExpression.editorRef.current
+      ?.querySelectorAll(`.${SELECTED_CELL}`)
+      .forEach((c) => c.classList.remove(SELECTED_CELL));
+  }, [boxedExpression.editorRef]);
 
   const highlightCells = useCallback(
     (cells: Element[]) => {
@@ -132,9 +136,9 @@ export const CellSelectionBox: React.FunctionComponent = () => {
 
   const disableHighlightedCells = useCallback(() => {
     const selectedCellClassName = "editable-cell--selected";
-    const selectedCell = document.querySelector(`.${selectedCellClassName}`);
+    const selectedCell = boxedExpression.editorRef.current?.querySelector(`.${selectedCellClassName}`);
     selectedCell?.classList.remove(selectedCellClassName);
-  }, []);
+  }, [boxedExpression.editorRef]);
 
   const ignoredElements = useMemo(
     () => [
@@ -151,16 +155,16 @@ export const CellSelectionBox: React.FunctionComponent = () => {
   const setCellsValue = useCallback(
     (event) => {
       const pasteValue = event.target.value;
-      const selectedCell = document.querySelector(`.${SELECTED_CELL}`);
+      const selectedCell = boxedExpression.editorRef.current?.querySelector(`.${SELECTED_CELL}`);
 
       if (!selectedCell) {
         return;
       }
 
-      paste(pasteValue, selectedCell);
+      paste(pasteValue, selectedCell, boxedExpression.editorRef.current!);
       disableSelection();
     },
-    [disableSelection]
+    [disableSelection, boxedExpression.editorRef]
   );
 
   return useMemo(
@@ -171,7 +175,7 @@ export const CellSelectionBox: React.FunctionComponent = () => {
           onDragMove={disableHighlightedCells}
           onDragStop={enableSelection}
         />
-        <textarea ref={textarea} onBlur={disableSelection} onChange={setCellsValue}></textarea>
+        <textarea ref={textarea} onBlur={disableSelection} onChange={setCellsValue} />
       </div>
     ),
     [enableSelection, disableSelection, disableHighlightedCells, ignoredElements, setCellsValue]

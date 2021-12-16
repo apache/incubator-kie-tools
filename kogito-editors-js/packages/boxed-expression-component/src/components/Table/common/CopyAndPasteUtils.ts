@@ -16,7 +16,7 @@
 
 import { DataRecord } from "react-table";
 import { getCellCoordinates, getCellTableId } from ".";
-import { LogicType } from "../../../api/LogicType";
+import { LogicType } from "../../../api";
 
 const DASH_SYMBOL = "-";
 
@@ -42,8 +42,9 @@ export const PASTE_OPERATION = "PASTE_OPERATION";
  * +-----+-----+-----+
  * @param pasteValue   - value being pasted
  * @param reference    - reference element
+ * @param editorElement    - container where the event will be dispatched
  */
-export const paste = (pasteValue: string, reference: Element) => {
+export const paste = (pasteValue: string, reference: Element, editorElement: HTMLElement) => {
   const cell = reference.closest("td");
   const coordinates = getCellCoordinates(cell);
   const detail = {
@@ -54,7 +55,7 @@ export const paste = (pasteValue: string, reference: Element) => {
 
   const eventId = getCellTableId(cell);
 
-  document.dispatchEvent(new CustomEvent(eventId, { detail }));
+  editorElement.dispatchEvent(new CustomEvent(eventId, { detail }));
 };
 
 /**
@@ -62,6 +63,7 @@ export const paste = (pasteValue: string, reference: Element) => {
  * tools.
  * @param pasteValue   - value being pasted
  * @param rows         - rows of the table
+ * @param rowFactory   - callback to create row
  * @param x (optional) - the initial X coordinate of the table
  * @param y (optional) - the initial Y coordinate of the table
  */

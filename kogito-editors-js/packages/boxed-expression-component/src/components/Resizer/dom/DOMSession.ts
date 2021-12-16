@@ -21,7 +21,7 @@ export const CELL_CSS_SELECTOR = ".react-resizable";
 export class DOMSession {
   private cells: Cell[] | undefined;
 
-  constructor(private readonly node?: HTMLElement) {}
+  constructor(private readonly editorElement: HTMLElement) {}
 
   getCells(): Cell[] {
     if (this.cells === undefined) {
@@ -32,7 +32,7 @@ export class DOMSession {
 
   private buildCells() {
     const cells: Cell[] = [];
-    this.fetchCellElements(this.node ?? document.body).forEach((cellElement) => {
+    this.fetchCellElements(this.editorElement ?? document.body).forEach((cellElement) => {
       this.buildCell(cellElement, cells, 0);
     });
     return cells;
@@ -49,7 +49,8 @@ export class DOMSession {
       this.fetchCellElements(htmlElement)
         .map((child) => this.buildCell(child, cells, depthLevel + 1))
         .filter((c) => c.depth == depthLevel + 1),
-      depthLevel
+      depthLevel,
+      this.editorElement
     );
 
     cells.push(cell);

@@ -22,6 +22,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CellProps } from "../../api";
 import { blurActiveElement, focusNextTextArea, focusTextArea, paste } from "./common";
 import "./EditableCell.css";
+import { useBoxedExpression } from "../../context";
 
 const CELL_LINE_HEIGHT = 20;
 const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
@@ -53,6 +54,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
   const textarea = useRef<HTMLTextAreaElement>(null);
   const [previousValue, setPreviousValue] = useState("");
   const feelInputRef = useRef<FeelInputRef>(null);
+  const boxedExpression = useBoxedExpression();
 
   // Common Handlers =========================================================
 
@@ -113,7 +115,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
 
       if (textarea.current && isPastedValue) {
         const pasteValue = newValue.slice(value.length);
-        paste(pasteValue, textarea.current);
+        paste(pasteValue, textarea.current, boxedExpression.editorRef.current!);
         triggerReadMode();
         return;
       }
@@ -121,7 +123,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       onCellUpdate(rowIndex, columnId, newValue ?? value);
       triggerEditMode();
     },
-    [triggerEditMode, value, triggerReadMode, onCellUpdate, rowIndex, columnId]
+    [triggerEditMode, value, triggerReadMode, onCellUpdate, rowIndex, columnId, boxedExpression.editorRef]
   );
 
   // Feel Handlers ===========================================================

@@ -2,9 +2,11 @@
 
 exports[`ExpressionContainer tests should render ExpressionContainer component 1`] = `
 <div>
-  <div>
+  <div
+    class="react-resizable-supervisor"
+  >
     <div
-      class="boxed-expression-editor"
+      class="boxed-expression-provider"
     >
       <div
         class="expression-container"

@@ -30,6 +30,7 @@ import {
   GroupOperations,
   HitPolicy,
   LogicType,
+  RowsUpdateArgs,
   TableHeaderVisibility,
   TableOperation,
 } from "../../api";
@@ -49,6 +50,12 @@ enum DecisionTableColumnType {
 const DASH_SYMBOL = "-";
 const EMPTY_SYMBOL = "";
 const DECISION_NODE_DEFAULT_NAME = "output-1";
+
+interface SpreadFunction {
+  updatedDecisionTable?: Partial<DecisionTableProps>;
+  updatedColumns?: ColumnInstance[];
+  updatedRows?: Array<object>;
+}
 
 export function DecisionTableExpression(decisionTable: PropsWithChildren<DecisionTableProps>) {
   const globalContext = useContext(BoxedExpressionGlobalContext);
@@ -213,7 +220,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   );
 
   const spreadDecisionTableExpressionDefinition = useCallback(
-    (updatedDecisionTable?: Partial<DecisionTableProps>, updatedColumns?: any, updatedRows?: Array<object>) => {
+    ({ updatedColumns, updatedDecisionTable, updatedRows }: SpreadFunction) => {
       const groupedColumns = _.groupBy(getColumnsAtLastLevel(updatedColumns ?? columns), (column) => column.groupType);
       const input: Clause[] = _.chain(groupedColumns[DecisionTableColumnType.InputClause])
         .map((inputClause) => ({
@@ -314,18 +321,18 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   );
 
   const onColumnsUpdate = useCallback(
-    (updatedColumns) => {
-      const decisionNodeColumn = _.find(updatedColumns, { groupType: DecisionTableColumnType.OutputClause });
+    ({ columns }) => {
+      const decisionNodeColumn = _.find(columns, { groupType: DecisionTableColumnType.OutputClause });
       if (!decisionTable.isHeadless) {
         synchronizeDecisionNodeDataTypeWithSingleOutputColumnDataType(decisionNodeColumn);
       }
-      spreadDecisionTableExpressionDefinition(
-        {
+      spreadDecisionTableExpressionDefinition({
+        updatedDecisionTable: {
           name: decisionNodeColumn.label,
           dataType: decisionNodeColumn.dataType,
         },
-        [...updatedColumns]
-      );
+        updatedColumns: [...columns],
+      });
       decisionTable.onUpdatingNameAndDataType?.(decisionNodeColumn.label, decisionNodeColumn.dataType);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -355,8 +362,8 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
   );
 
   const onRowsUpdate = useCallback(
-    (updatedRows) => {
-      spreadDecisionTableExpressionDefinition(undefined, undefined, fillMissingCellValues(updatedRows));
+    ({ rows }: RowsUpdateArgs) => {
+      spreadDecisionTableExpressionDefinition({ updatedRows: fillMissingCellValues(rows) });
     },
     [fillMissingCellValues, spreadDecisionTableExpressionDefinition]
   );
@@ -370,14 +377,22 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
 
   const onHitPolicySelect = useCallback(
     (itemId: HitPolicy) => {
-      spreadDecisionTableExpressionDefinition({ hitPolicy: itemId });
+      spreadDecisionTableExpressionDefinition({
+        updatedDecisionTable: {
+          hitPolicy: itemId,
+        },
+      });
     },
     [spreadDecisionTableExpressionDefinition]
   );
 
   const onBuiltInAggregatorSelect = useCallback(
     (itemId) => {
-      spreadDecisionTableExpressionDefinition({ aggregation: (BuiltinAggregation as never)[itemId] });
+      spreadDecisionTableExpressionDefinition({
+        updatedDecisionTable: {
+          aggregation: (BuiltinAggregation as never)[itemId],
+        },
+      });
     },
     [spreadDecisionTableExpressionDefinition]
   );

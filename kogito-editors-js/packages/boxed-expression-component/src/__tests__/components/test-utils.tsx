@@ -106,7 +106,7 @@ export function wrapComponentInContext(component: JSX.Element): JSX.Element {
         ],
         supervisorHash: "",
         setSupervisorHash: jest.fn,
-        boxedExpressionEditorRef: { current: document.body as HTMLDivElement },
+        editorRef: { current: document.body as HTMLDivElement },
         currentlyOpenedHandlerCallback: jest.fn,
         setCurrentlyOpenedHandlerCallback: jest.fn,
       }}
@@ -146,10 +146,18 @@ export async function updateElementViaPopover(
   await activateNameAndDataTypePopover(triggerPoint);
   const inputElement = baseElement.querySelector(inputSelector)! as HTMLInputElement;
   inputElement.value = newName;
-  fireEvent.change(inputElement, {
-    target: { value: newName },
+  await act(async () => {
+    fireEvent.change(inputElement, {
+      target: { value: newName },
+    });
+    await flushPromises();
+    jest.runAllTimers();
   });
-  fireEvent.blur(inputElement);
+  await act(async () => {
+    fireEvent.blur(inputElement);
+    await flushPromises();
+    jest.runAllTimers();
+  });
 }
 
 export const contextEntry = (container: Element, index: number): Element | null =>

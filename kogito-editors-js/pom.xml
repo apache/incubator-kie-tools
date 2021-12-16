@@ -65,12 +65,12 @@
             </configuration>
           </execution>
           <execution>
-            <id>yarn run init</id>
+            <id>yarn bootstrap</id>
             <goals>
               <goal>yarn</goal>
             </goals>
             <configuration>
-              <arguments>run init</arguments>
+              <arguments>bootstrap</arguments>
             </configuration>
           </execution>
           <execution>

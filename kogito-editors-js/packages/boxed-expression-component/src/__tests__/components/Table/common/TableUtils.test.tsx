@@ -16,7 +16,7 @@
 
 import { render } from "@testing-library/react";
 import * as React from "react";
-import { getCellCoordinates, getCellTableId } from "./../../../../../showcase/src/lib/components/Table/common";
+import { getCellCoordinates, getCellTableId } from "../../../../components/Table/common";
 
 describe("TableUtils", () => {
   describe("getCellCoordinates", () => {

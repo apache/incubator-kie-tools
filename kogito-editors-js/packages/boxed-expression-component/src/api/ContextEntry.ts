@@ -30,17 +30,17 @@ export interface EntryInfo {
   dataType: DataType;
 }
 
-export interface ContextEntryRecord extends DataRecord {
+export interface ContextEntryRecord<T = ExpressionProps> extends DataRecord {
   entryInfo: EntryInfo;
   /** Entry expression */
-  entryExpression: ExpressionProps;
+  entryExpression: T;
   /** True, for synchronizing name and dataType parameters, between entryInfo and entryExpression */
   nameAndDataTypeSynchronized?: boolean;
   /** Callback to be invoked on expression resetting */
   onExpressionResetting?: () => void;
 }
 
-export type ContextEntries = ContextEntryRecord[];
+export type ContextEntries<T = ExpressionProps> = ContextEntryRecord<T>[];
 
 export const DEFAULT_ENTRY_INFO_MIN_WIDTH = 150;
 export const DEFAULT_ENTRY_EXPRESSION_MIN_WIDTH = 370;

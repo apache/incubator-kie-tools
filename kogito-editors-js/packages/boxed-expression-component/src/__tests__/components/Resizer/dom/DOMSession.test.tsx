@@ -16,7 +16,8 @@
 
 import { render } from "@testing-library/react";
 import * as React from "react";
-import { Cell, DOMSession } from "../../../../components/Resizer/dom";
+import { Cell, DOMSession } from "../../../../components/Resizer";
+import { wrapComponentInContext } from "../../test-utils";
 
 describe("DOMSession", () => {
   let session: DOMSession;
@@ -24,20 +25,22 @@ describe("DOMSession", () => {
 
   beforeEach(() => {
     render(
-      <>
-        <div data-test-id="cell-0" className="react-resizable">
-          <div data-test-id="cell-1" className="react-resizable">
-            <div data-test-id="cell-2" className="react-resizable"></div>
-            <div data-test-id="cell-3" className="react-resizable"></div>
+      wrapComponentInContext(
+        <>
+          <div data-test-id="cell-0" className="react-resizable">
+            <div data-test-id="cell-1" className="react-resizable">
+              <div data-test-id="cell-2" className="react-resizable" />
+              <div data-test-id="cell-3" className="react-resizable" />
+            </div>
+            <div data-test-id="cell-4" className="react-resizable" />
           </div>
-          <div data-test-id="cell-4" className="react-resizable"></div>
-        </div>
-        <div data-test-id="cell-5" className="react-resizable"></div>
-        <div data-test-id="cell-6" className="react-resizable"></div>
-      </>
+          <div data-test-id="cell-5" className="react-resizable" />
+          <div data-test-id="cell-6" className="react-resizable" />
+        </>
+      )
     );
 
-    session = new DOMSession();
+    session = new DOMSession(document.body);
   });
 
   describe("getCells", () => {

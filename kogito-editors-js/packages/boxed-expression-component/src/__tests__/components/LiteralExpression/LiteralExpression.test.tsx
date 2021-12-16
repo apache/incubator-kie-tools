@@ -15,7 +15,7 @@
  */
 
 import { render } from "@testing-library/react";
-import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
+import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 import * as React from "react";
 import { LiteralExpression } from "../../../components/LiteralExpression";
 import { DataType, LogicType } from "../../../api";
@@ -30,11 +30,13 @@ describe("LiteralExpression tests", () => {
       const expressionName = "expression name";
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
-          <LiteralExpression
-            logicType={LogicType.LiteralExpression}
-            name={expressionName}
-            dataType={DataType.Undefined}
-          />
+          usingTestingBoxedExpressionProviderContext(
+            <LiteralExpression
+              logicType={LogicType.LiteralExpression}
+              name={expressionName}
+              dataType={DataType.Undefined}
+            />
+          ).wrapper
         ).wrapper
       );
       expect(container.querySelector(".expression-name")).toBeTruthy();
@@ -45,7 +47,9 @@ describe("LiteralExpression tests", () => {
       const dataType = DataType.Boolean;
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
-          <LiteralExpression logicType={LogicType.LiteralExpression} name={"expressionName"} dataType={dataType} />
+          usingTestingBoxedExpressionProviderContext(
+            <LiteralExpression logicType={LogicType.LiteralExpression} name={"expressionName"} dataType={dataType} />
+          ).wrapper
         ).wrapper
       );
       expect(container.querySelector(".expression-data-type")).toBeTruthy();
@@ -55,12 +59,14 @@ describe("LiteralExpression tests", () => {
     test("should render no header section, when isHeadless property is passed", () => {
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
-          <LiteralExpression
-            isHeadless={true}
-            logicType={LogicType.LiteralExpression}
-            name={"expressionName"}
-            dataType={DataType.Undefined}
-          />
+          usingTestingBoxedExpressionProviderContext(
+            <LiteralExpression
+              isHeadless={true}
+              logicType={LogicType.LiteralExpression}
+              name={"expressionName"}
+              dataType={DataType.Undefined}
+            />
+          ).wrapper
         ).wrapper
       );
       expect(container.querySelector(".literal-expression-header")).toBeFalsy();
@@ -69,11 +75,13 @@ describe("LiteralExpression tests", () => {
     test("should render header section, when isHeadless property is not passed or it is false", () => {
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
-          <LiteralExpression
-            logicType={LogicType.LiteralExpression}
-            name={"expressionName"}
-            dataType={DataType.Undefined}
-          />
+          usingTestingBoxedExpressionProviderContext(
+            <LiteralExpression
+              logicType={LogicType.LiteralExpression}
+              name={"expressionName"}
+              dataType={DataType.Undefined}
+            />
+          ).wrapper
         ).wrapper
       );
       expect(container.querySelector(".literal-expression-header")).toBeTruthy();
@@ -82,11 +90,13 @@ describe("LiteralExpression tests", () => {
     test("should render edit expression menu, when header is clicked", async () => {
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
-          <LiteralExpression
-            logicType={LogicType.LiteralExpression}
-            name={"expressionName"}
-            dataType={DataType.Boolean}
-          />
+          usingTestingBoxedExpressionProviderContext(
+            <LiteralExpression
+              logicType={LogicType.LiteralExpression}
+              name={"expressionName"}
+              dataType={DataType.Boolean}
+            />
+          ).wrapper
         ).wrapper
       );
 
@@ -108,12 +118,14 @@ describe("LiteralExpression tests", () => {
       const content = "content";
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
-          <LiteralExpression
-            logicType={LogicType.LiteralExpression}
-            name={"expressionName"}
-            dataType={DataType.Boolean}
-            content={content}
-          />
+          usingTestingBoxedExpressionProviderContext(
+            <LiteralExpression
+              logicType={LogicType.LiteralExpression}
+              name={"expressionName"}
+              dataType={DataType.Boolean}
+              content={content}
+            />
+          ).wrapper
         ).wrapper
       );
 
@@ -124,11 +136,13 @@ describe("LiteralExpression tests", () => {
     test("should render nothing, when content property is not passed", () => {
       const { container } = render(
         usingTestingBoxedExpressionI18nContext(
-          <LiteralExpression
-            logicType={LogicType.LiteralExpression}
-            name={"expressionName"}
-            dataType={DataType.Boolean}
-          />
+          usingTestingBoxedExpressionProviderContext(
+            <LiteralExpression
+              logicType={LogicType.LiteralExpression}
+              name={"expressionName"}
+              dataType={DataType.Boolean}
+            />
+          ).wrapper
         ).wrapper
       );
 

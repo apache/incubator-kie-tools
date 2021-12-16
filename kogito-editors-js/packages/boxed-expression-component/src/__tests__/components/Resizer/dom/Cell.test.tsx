@@ -15,10 +15,10 @@
  */
 
 import "../../../__mocks__/ReactWithSupervisor";
-import { Cell, CELL_CSS_SELECTOR } from "../../../../components/Resizer/dom";
+import { Cell, CELL_CSS_SELECTOR } from "../../../../components/Resizer";
 import { Resizer } from "../../../../components/Resizer";
 import { render } from "@testing-library/react";
-import { usingTestingBoxedExpressionI18nContext } from "../../test-utils";
+import { usingTestingBoxedExpressionI18nContext, wrapComponentInContext } from "../../test-utils";
 import * as React from "react";
 import { ContextExpression } from "../../../../components/ContextExpression";
 import { ContextProps } from "../../../../api";
@@ -30,7 +30,7 @@ let container: Element;
 
 describe("Cell", () => {
   beforeAll(() => {
-    document.dispatchEvent = jest.fn();
+    document.body.dispatchEvent = jest.fn();
   });
 
   describe("getId", () => {
@@ -53,13 +53,13 @@ describe("Cell", () => {
     it("set the width in the element", () => {
       act(() => cell.setWidth(150));
       expect(element.style.width).toEqual("150px");
-      expect(document.dispatchEvent).toBeCalled();
+      expect(document.body.dispatchEvent).toBeCalled();
     });
 
     it("set the width in the element considering the minimum value", () => {
       act(() => cell.setWidth(80));
       expect(element.style.width).toEqual("100px");
-      expect(document.dispatchEvent).toBeCalled();
+      expect(document.body.dispatchEvent).toBeCalled();
     });
   });
 
@@ -69,12 +69,12 @@ describe("Cell", () => {
         createContext();
 
         const elements = container.querySelectorAll(CELL_CSS_SELECTOR);
-        const child1 = new Cell(elements.item(1) as HTMLElement, [], 1);
-        const child2 = new Cell(elements.item(2) as HTMLElement, [], 1);
+        const child1 = new Cell(elements.item(1) as HTMLElement, [], 1, document.body);
+        const child2 = new Cell(elements.item(2) as HTMLElement, [], 1, document.body);
 
         element = elements.item(3) as HTMLElement;
 
-        cell = new Cell(element, [child1, child2], 0);
+        cell = new Cell(element, [child1, child2], 0, document.body);
 
         cell.refreshWidthAsParent();
       });
@@ -88,11 +88,11 @@ describe("Cell", () => {
         createContext();
 
         const elements = container.querySelectorAll(CELL_CSS_SELECTOR);
-        const child1 = new Cell(elements.item(0) as HTMLElement, [], 1);
-        const child2 = new Cell(elements.item(1) as HTMLElement, [], 1);
+        const child1 = new Cell(elements.item(0) as HTMLElement, [], 1, document.body);
+        const child2 = new Cell(elements.item(1) as HTMLElement, [], 1, document.body);
 
         element = elements.item(2) as HTMLElement;
-        cell = new Cell(element, [child1, child2], 0);
+        cell = new Cell(element, [child1, child2], 0, document.body);
 
         cell.refreshWidthAsLastColumn();
       });
@@ -125,115 +125,121 @@ describe("Cell", () => {
 function renderLiteralAtRegularColumn() {
   container = render(
     usingTestingBoxedExpressionI18nContext(
-      <>
-        <table>
-          <tbody>
-            <tr>
-              <td />
-              <td>
-                <Resizer width={250} />
-              </td>
-              <td />
-            </tr>
-          </tbody>
-        </table>
-      </>
+      wrapComponentInContext(
+        <>
+          <table>
+            <tbody>
+              <tr>
+                <td />
+                <td>
+                  <Resizer width={250} />
+                </td>
+                <td />
+              </tr>
+            </tbody>
+          </table>
+        </>
+      )
     ).wrapper
   ).container;
   element = container.querySelector(CELL_CSS_SELECTOR) as HTMLElement;
-  cell = new Cell(element, [], 0);
+  cell = new Cell(element, [], 0, document.body);
 }
 
 function renderLiteralAtLastColumn() {
   container = render(
     usingTestingBoxedExpressionI18nContext(
-      <>
-        <table>
-          <tbody>
-            <tr>
-              <td />
-              <td />
-              <td>
-                <Resizer width={250} />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </>
+      wrapComponentInContext(
+        <>
+          <table>
+            <tbody>
+              <tr>
+                <td />
+                <td />
+                <td>
+                  <Resizer width={250} />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </>
+      )
     ).wrapper
   ).container;
   element = container.querySelector(CELL_CSS_SELECTOR) as HTMLElement;
-  cell = new Cell(element, [], 0);
+  cell = new Cell(element, [], 0, document.body);
 }
 
 function createLiteral() {
-  container = render(<Resizer width={250} />).container;
+  container = render(wrapComponentInContext(<Resizer width={250} />)).container;
   element = container.querySelector(CELL_CSS_SELECTOR) as HTMLElement;
-  cell = new Cell(element, [], 0);
+  cell = new Cell(element, [], 0, document.body);
 }
 
 function createContext() {
   container = render(
     usingTestingBoxedExpressionI18nContext(
-      <ContextExpression
-        {...({
-          id: "id1",
-          logicType: "Context",
-          name: "Expression Name",
-          dataType: "<Undefined>",
-          contextEntries: [
-            {
-              entryInfo: {
-                name: "ContextEntry-1",
-                dataType: "<Undefined>",
-              },
-              entryExpression: {
-                id: "id2",
-                logicType: "Context",
-                contextEntries: [
-                  {
-                    entryInfo: {
-                      name: "ContextEntry-1",
-                      dataType: "<Undefined>",
-                    },
-                    entryExpression: {
-                      id: "id4",
-                      logicType: "Context",
-                      contextEntries: [
-                        {
-                          entryInfo: {
-                            name: "ContextEntry-1",
-                            dataType: "<Undefined>",
-                          },
-                          entryExpression: {},
-                          editInfoPopoverLabel: "Edit Context Entry",
-                        },
-                      ],
-                      result: {
-                        id: "id7",
-                      },
-                      entryInfoWidth: 257,
-                      entryExpressionWidth: 370,
-                    },
-                    editInfoPopoverLabel: "Edit Context Entry",
-                  },
-                ],
-                result: {
-                  id: "id5",
+      wrapComponentInContext(
+        <ContextExpression
+          {...({
+            id: "id1",
+            logicType: "Context",
+            name: "Expression Name",
+            dataType: "<Undefined>",
+            contextEntries: [
+              {
+                entryInfo: {
+                  name: "ContextEntry-1",
+                  dataType: "<Undefined>",
                 },
-                entryInfoWidth: 713,
-                entryExpressionWidth: 691,
+                entryExpression: {
+                  id: "id2",
+                  logicType: "Context",
+                  contextEntries: [
+                    {
+                      entryInfo: {
+                        name: "ContextEntry-1",
+                        dataType: "<Undefined>",
+                      },
+                      entryExpression: {
+                        id: "id4",
+                        logicType: "Context",
+                        contextEntries: [
+                          {
+                            entryInfo: {
+                              name: "ContextEntry-1",
+                              dataType: "<Undefined>",
+                            },
+                            entryExpression: {},
+                            editInfoPopoverLabel: "Edit Context Entry",
+                          },
+                        ],
+                        result: {
+                          id: "id7",
+                        },
+                        entryInfoWidth: 257,
+                        entryExpressionWidth: 370,
+                      },
+                      editInfoPopoverLabel: "Edit Context Entry",
+                    },
+                  ],
+                  result: {
+                    id: "id5",
+                  },
+                  entryInfoWidth: 713,
+                  entryExpressionWidth: 691,
+                },
+                editInfoPopoverLabel: "Edit Context Entry",
               },
-              editInfoPopoverLabel: "Edit Context Entry",
+            ],
+            result: {
+              id: "id3",
             },
-          ],
-          result: {
-            id: "id3",
-          },
-          entryInfoWidth: 150,
-          entryExpressionWidth: 1468,
-        } as unknown as ContextProps)}
-      />
+            entryInfoWidth: 150,
+            entryExpressionWidth: 1468,
+          } as unknown as ContextProps)}
+        />
+      )
     ).wrapper
   ).container;
 }

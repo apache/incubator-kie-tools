@@ -16,11 +16,11 @@
 
 import "./EditExpressionMenu.css";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { PopoverMenu } from "../PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { DataType, ExpressionProps } from "../../api";
-import { BoxedExpressionGlobalContext } from "../../context";
+import { useBoxedExpression } from "../../context";
 import { DataTypeSelector } from "./DataTypeSelector";
 
 export interface EditExpressionMenuProps {
@@ -57,12 +57,12 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
   selectedExpressionName,
   onExpressionUpdate,
 }: EditExpressionMenuProps) => {
-  const globalContext = useContext(BoxedExpressionGlobalContext);
+  const boxedExpression = useBoxedExpression();
   const { i18n } = useBoxedExpressionEditorI18n();
   title = title ?? i18n.editExpression;
   nameField = nameField ?? i18n.name;
   dataTypeField = dataTypeField ?? i18n.dataType;
-  appendTo = appendTo ?? globalContext.boxedExpressionEditorRef?.current ?? undefined;
+  appendTo = appendTo ?? boxedExpression.editorRef?.current ?? undefined;
 
   const [dataType, setDataType] = useState(selectedDataType);
   const [expressionName, setExpressionName] = useState(selectedExpressionName);

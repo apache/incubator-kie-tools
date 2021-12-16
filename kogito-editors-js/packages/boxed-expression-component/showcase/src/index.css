@@ -21,12 +21,13 @@
 }
 
 .showcase .boxed-expression {
-  max-height: 55em;
   overflow-y: auto;
+  height: 40vh;
+  border: 1px dashed rgb(211, 211, 211);
 }
 
 .showcase .updated-json {
-  margin-top: 5em;
+  margin-top: 2em;
   border-style: inset;
   padding: 1em;
   max-height: 30em;
