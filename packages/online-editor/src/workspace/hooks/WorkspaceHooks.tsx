@@ -96,25 +96,30 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
         return;
       }
 
-      const descriptor = await workspaces.descriptorService.get(workspaceId);
-      if (canceled.get()) {
-        return;
-      }
+      try {
+        const descriptor = await workspaces.descriptorService.get(workspaceId);
+        if (canceled.get()) {
+          return;
+        }
 
-      if (!descriptor) {
+        if (!descriptor) {
+          setWorkspacePromise({ error: `Can't find Workspace with id '${workspaceId}'` });
+          return;
+        }
+
+        const files = await workspaces.getFiles({
+          fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
+          workspaceId,
+        });
+        if (canceled.get()) {
+          return;
+        }
+
+        setWorkspacePromise({ data: { descriptor, files } });
+      } catch (error) {
         setWorkspacePromise({ error: `Can't find Workspace with id '${workspaceId}'` });
         return;
       }
-
-      const files = await workspaces.getFiles({
-        fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
-        workspaceId,
-      });
-      if (canceled.get()) {
-        return;
-      }
-
-      setWorkspacePromise({ data: { descriptor, files } });
     },
     [setWorkspacePromise, workspaceId, workspaces]
   );

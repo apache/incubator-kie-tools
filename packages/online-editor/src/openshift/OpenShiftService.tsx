@@ -24,7 +24,7 @@ import {
   ListDeployments,
 } from "./resources/Deployment";
 import { GetProject } from "./resources/Project";
-import { KOGITO_CREATED_BY, KOGITO_URI, Resource, ResourceFetch } from "./resources/Resource";
+import { KOGITO_CREATED_BY, KOGITO_URI, KOGITO_WORKSPACE_NAME, Resource, ResourceFetch } from "./resources/Resource";
 import { CreateRoute, DeleteRoute, ListRoutes, Route, Routes } from "./resources/Route";
 import { CreateService, DeleteService } from "./resources/Service";
 import { isConfigValid, OpenShiftSettingsConfig } from "./OpenShiftSettingsConfig";
@@ -98,12 +98,14 @@ export class OpenShiftService {
           baseUrl: baseUrl,
           creationTimestamp: new Date(deployment.metadata.creationTimestamp),
           state: this.extractDeploymentStateWithUploadStatus(deployment, uploadStatus),
+          workspaceName: deployment.metadata.annotations[KOGITO_WORKSPACE_NAME],
         };
       });
   }
 
   public async deploy(args: {
     targetFilePath: string;
+    workspaceName: string;
     workspaceZipBlob: Blob;
     config: OpenShiftSettingsConfig;
     onlineEditorUrl: (baseUrl: string) => string;
@@ -127,6 +129,7 @@ export class OpenShiftService {
         uri: args.targetFilePath,
         createdBy: DEFAULT_CREATED_BY,
         baseUrl: baseUrl,
+        workspaceName: args.workspaceName,
       }),
       rollbacks
     );
