@@ -54,6 +54,14 @@ public class JSFunctions {
             return new $wnd.GWTEditor(this.bean.@org.jboss.errai.ioc.client.container.SyncBeanDef::newInstance()());
         }
 
+        $wnd.GWTEditor.prototype.undo = function () {
+            return this.instance.@org.uberfire.client.mvp.EditorActivity::undo()();
+        };
+
+        $wnd.GWTEditor.prototype.redo = function () {
+            return this.instance.@org.uberfire.client.mvp.EditorActivity::redo()();
+        };
+
     }-*/;
 
     public static native void nativeRegisterGwtClientBean(final String id, final SyncBeanDef<EditorActivity> bean) /*-{

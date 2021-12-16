@@ -35,6 +35,7 @@ export const EditParameters: React.FunctionComponent<EditParametersProps> = ({ p
   const { i18n } = useBoxedExpressionEditorI18n();
 
   const addParameter = useCallback(() => {
+    window.beeApi?.notifyUserAction();
     setParameters([
       ...parameters,
       {
@@ -48,6 +49,9 @@ export const EditParameters: React.FunctionComponent<EditParametersProps> = ({ p
   const onNameChange = useCallback(
     (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
       const parametersCopy = [...parameters].map((parameter) => Object.assign({}, parameter));
+      if (parametersCopy[index].name != event.target.value) {
+        window.beeApi?.notifyUserAction();
+      }
       parametersCopy[index].name = event.target.value;
       setParameters([...parametersCopy]);
     },
@@ -56,6 +60,7 @@ export const EditParameters: React.FunctionComponent<EditParametersProps> = ({ p
 
   const onDataTypeChange = useCallback(
     (index: number) => (dataType: DataType) => {
+      window.beeApi?.notifyUserAction();
       const parametersCopy = [...parameters].map((parameter) => Object.assign({}, parameter));
       parametersCopy[index].dataType = dataType;
       setParameters([...parametersCopy]);
@@ -64,7 +69,10 @@ export const EditParameters: React.FunctionComponent<EditParametersProps> = ({ p
   );
 
   const onParameterRemove = useCallback(
-    (index: number) => () => setParameters([...parameters.slice(0, index), ...parameters.slice(index + 1)]),
+    (index: number) => () => {
+      window.beeApi?.notifyUserAction();
+      setParameters([...parameters.slice(0, index), ...parameters.slice(index + 1)]);
+    },
     [parameters, setParameters]
   );
 

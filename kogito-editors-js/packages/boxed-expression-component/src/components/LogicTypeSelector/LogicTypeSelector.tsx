@@ -150,6 +150,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
 
   const onLogicTypeSelect = useCallback(
     (event?: React.MouseEvent, itemId?: string | number) => {
+      window.beeApi?.notifyUserAction();
       const selectedLogicType = itemId as LogicType;
       onLogicTypeUpdating(selectedLogicType);
     },

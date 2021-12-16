@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import elemental2.promise.Promise;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
@@ -190,6 +191,18 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
     public void openFEELEditor() {
         dialogBox.center();
         dialogBox.show();
+    }
+
+    public Promise<Void> undo() {
+        return promises.create((resolve, reject) -> {
+            commands.getUndoSessionCommand().execute();
+        });
+    }
+
+    public Promise<Void> redo() {
+        return promises.create((resolve, reject) -> {
+            commands.getRedoSessionCommand().execute();
+        });
     }
 
     private DialogBox createDialogBox(final IsWidget content) {

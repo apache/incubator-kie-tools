@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
@@ -78,6 +79,8 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
 
     private ExpressionContainerUIModelMapper uiModelMapper;
 
+    private Optional<Consumer> onUndoClear;
+
     private static class ExpressionEditorColumnWrapper extends ExpressionEditorColumn {
 
         public ExpressionEditorColumnWrapper(final GridWidgetRegistry registry,
@@ -126,6 +129,7 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
         this.expressionGridCache = expressionGridCache;
         this.onHasExpressionChanged = onHasExpressionChanged;
         this.onHasNameChanged = onHasNameChanged;
+        this.onUndoClear = Optional.empty();
 
         this.uiModelMapper = new ExpressionContainerUIModelMapper(parent,
                                                                   this::getModel,
@@ -151,6 +155,14 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
         model.appendRow(new ExpressionEditorGridRow());
 
         getRenderer().setColumnRenderConstraint((isSelectionLayer, gridColumn) -> !isSelectionLayer || gridColumn.equals(expressionColumn));
+    }
+
+    public Optional<Consumer> getOnUndoClear() {
+        return onUndoClear;
+    }
+
+    public void setOnUndoClear(final Optional<Consumer> onUndoClear) {
+        this.onUndoClear = onUndoClear;
     }
 
     @Override
@@ -196,24 +208,6 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
             }
         }
         return existingWidth;
-    }
-
-    Optional<BaseExpressionGrid> getExistingEditor() {
-
-        Optional<BaseExpressionGrid> beg = Optional.empty();
-        final GridCell<?> cell = model.getRow(0).getCells().get(0);
-        if (cell != null) {
-            final GridCellValue<?> value = cell.getValue();
-            if (value instanceof ExpressionCellValue) {
-                final ExpressionCellValue ecv = (ExpressionCellValue) value;
-                final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = ecv.getValue();
-                if (editor.isPresent()) {
-                    beg = Optional.of(editor.get());
-                }
-            }
-        }
-
-        return beg;
     }
 
     /**
@@ -314,10 +308,12 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
                                                                      () -> {
                                                                          expressionColumn.setWidthInternal(getExistingEditorWidth());
                                                                          selectExpressionEditorFirstCell();
+                                                                         getOnUndoClear().ifPresent(c -> c.accept(this));
                                                                      },
                                                                      () -> {
                                                                          expressionColumn.setWidthInternal(getExistingEditorWidth());
                                                                          selectExpressionEditorFirstCell();
+                                                                         getOnUndoClear().ifPresent(c -> c.accept(this));
                                                                      }));
     }
 

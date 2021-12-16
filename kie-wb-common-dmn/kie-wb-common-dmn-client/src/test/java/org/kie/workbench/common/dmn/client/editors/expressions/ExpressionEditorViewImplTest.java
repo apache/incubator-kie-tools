@@ -42,6 +42,20 @@ import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillContextExpressionCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillDecisionTableExpressionCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillExpressionCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillFunctionExpressionCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillInvocationExpressionCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillListExpressionCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillLiteralExpressionCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DecisionTableProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.FunctionProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.InvocationProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ListProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.LiteralProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
@@ -60,7 +74,11 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelContainer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
@@ -93,6 +111,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -216,6 +235,9 @@ public class ExpressionEditorViewImplTest {
     @Mock
     private HTMLDivElement dmnExpressionEditor;
 
+    @Mock
+    private AbstractCanvasHandler canvasHandler;
+
     @Captor
     private ArgumentCaptor<Transform> transformArgumentCaptor;
 
@@ -227,6 +249,9 @@ public class ExpressionEditorViewImplTest {
 
     @Captor
     private ArgumentCaptor<KeyboardOperation> keyboardOperationArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<FillExpressionCommand> commandCaptor;
 
     private ExpressionGridCache expressionGridCache;
 
@@ -245,6 +270,7 @@ public class ExpressionEditorViewImplTest {
         when(session.getGridLayer()).thenReturn(gridLayer);
         when(session.getCellEditorControls()).thenReturn(cellEditorControls);
         when(session.getMousePanMediator()).thenReturn(mousePanMediator);
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
 
         doReturn(viewport).when(gridPanel).getViewport();
         doReturn(viewportMediators).when(viewport).getMediators();
@@ -280,6 +306,10 @@ public class ExpressionEditorViewImplTest {
                                                      dmnExpressionEditor));
         view.init(presenter);
         view.bind(session);
+
+        doReturn(hasExpression).when(view).getHasExpression();
+        doReturn(editorSelectedEvent).when(view).getEditorSelectedEvent();
+        doReturn(NODE_UUID).when(view).getNodeUUID();
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
@@ -526,5 +556,248 @@ public class ExpressionEditorViewImplTest {
     public void testToggleBoxedExpressionAndEnableIt() {
         view.toggleBetaBoxedExpressionEditor(true);
         verify(betaBoxedExpressionToggle.classList).toggle(ENABLED_BETA_CSS_CLASS, true);
+    }
+
+    @Test
+    public void testClear() {
+
+        final ExpressionContainerGrid expressionContainerGrid = mock(ExpressionContainerGrid.class);
+
+        doReturn(expressionContainerGrid).when(view).getExpressionContainerGrid();
+
+        view.clear();
+
+        verify(expressionContainerGrid).clearExpressionType();
+    }
+
+    private void assertCommandParameters(final FillExpressionCommand command,
+                                         final ExpressionProps props) {
+        assertEquals(hasExpression, command.getHasExpression());
+        assertEquals(props, command.getExpressionProps());
+        assertEquals(editorSelectedEvent, command.getEditorSelectedEvent());
+        assertEquals(NODE_UUID, command.getNodeUUID());
+    }
+
+    @Test
+    public void testBroadcastLiteralExpressionDefinition() {
+
+        final LiteralProps props = mock(LiteralProps.class);
+
+        doNothing().when(view).executeExpressionCommand(any());
+
+        view.broadcastLiteralExpressionDefinition(props);
+
+        verify(view).executeExpressionCommand(commandCaptor.capture());
+
+        final FillExpressionCommand command = commandCaptor.getValue();
+
+        assertTrue(command instanceof FillLiteralExpressionCommand);
+        assertCommandParameters(command, props);
+    }
+
+    @Test
+    public void testBroadcastContextExpressionDefinition() {
+
+        final ContextProps props = mock(ContextProps.class);
+
+        doNothing().when(view).executeExpressionCommand(any());
+
+        view.broadcastContextExpressionDefinition(props);
+
+        verify(view).executeExpressionCommand(commandCaptor.capture());
+
+        final FillExpressionCommand command = commandCaptor.getValue();
+
+        assertTrue(command instanceof FillContextExpressionCommand);
+        assertCommandParameters(command, props);
+    }
+
+    @Test
+    public void testBroadcastListExpressionDefinition() {
+
+        final ListProps props = mock(ListProps.class);
+
+        doNothing().when(view).executeExpressionCommand(any());
+
+        view.broadcastListExpressionDefinition(props);
+
+        verify(view).executeExpressionCommand(commandCaptor.capture());
+
+        final FillExpressionCommand command = commandCaptor.getValue();
+
+        assertTrue(command instanceof FillListExpressionCommand);
+        assertCommandParameters(command, props);
+    }
+
+    @Test
+    public void testBroadcastInvocationExpressionDefinition() {
+
+        final InvocationProps props = mock(InvocationProps.class);
+
+        doNothing().when(view).executeExpressionCommand(any());
+
+        view.broadcastInvocationExpressionDefinition(props);
+
+        verify(view).executeExpressionCommand(commandCaptor.capture());
+
+        final FillExpressionCommand command = commandCaptor.getValue();
+
+        assertTrue(command instanceof FillInvocationExpressionCommand);
+        assertCommandParameters(command, props);
+    }
+
+    @Test
+    public void testBroadcastFunctionExpressionDefinition() {
+
+        final FunctionProps props = mock(FunctionProps.class);
+
+        doNothing().when(view).executeExpressionCommand(any());
+
+        view.broadcastFunctionExpressionDefinition(props);
+
+        verify(view).executeExpressionCommand(commandCaptor.capture());
+
+        final FillExpressionCommand command = commandCaptor.getValue();
+
+        assertTrue(command instanceof FillFunctionExpressionCommand);
+        assertCommandParameters(command, props);
+    }
+
+    @Test
+    public void testBroadcastDecisionTableExpressionDefinition() {
+
+        final DecisionTableProps props = mock(DecisionTableProps.class);
+
+        doNothing().when(view).executeExpressionCommand(any());
+
+        view.broadcastDecisionTableExpressionDefinition(props);
+
+        verify(view).executeExpressionCommand(commandCaptor.capture());
+
+        final FillExpressionCommand command = commandCaptor.getValue();
+
+        assertTrue(command instanceof FillDecisionTableExpressionCommand);
+        assertCommandParameters(command, props);
+    }
+
+    @Test
+    public void testNotifyUserAction() {
+
+        final ArgumentCaptor<SaveCurrentStateCommand> captor = ArgumentCaptor.forClass(SaveCurrentStateCommand.class);
+
+        final CompositeCommand.Builder commandBuilder = mock(CompositeCommand.Builder.class);
+        doReturn(commandBuilder).when(view).createCommandBuilder();
+
+        doNothing().when(view).addExpressionCommand(any(), eq(commandBuilder));
+        doNothing().when(view).addUpdatePropertyNameCommand(commandBuilder);
+        doNothing().when(view).execute(commandBuilder);
+
+        view.notifyUserAction();
+
+        verify(view).addExpressionCommand(captor.capture(), eq(commandBuilder));
+        verify(view).addUpdatePropertyNameCommand(commandBuilder);
+        verify(view).execute(commandBuilder);
+
+        final SaveCurrentStateCommand command = captor.getValue();
+
+        assertEquals(hasExpression, command.getHasExpression());
+        assertEquals(editorSelectedEvent, command.getEditorSelectedEvent());
+        assertEquals(view, command.getView());
+        assertEquals(NODE_UUID, command.getNodeUUID());
+    }
+
+    @Test
+    public void testAddUpdatePropertyNameCommand() {
+
+        final CompositeCommand.Builder commandBuilder = mock(CompositeCommand.Builder.class);
+        final Index graphIndex = mock(Index.class);
+        final org.kie.workbench.common.stunner.core.graph.Element element = mock(org.kie.workbench.common.stunner.core.graph.Element.class);
+        final Definition definition = mock(Definition.class);
+        final Object theDefinition = mock(Object.class);
+        final HasName hasName = mock(HasName.class);
+        final Optional<HasName> optionalHasName = Optional.of(hasName);
+        final Name name = mock(Name.class);
+        final String nameId = "nameId";
+        final CanvasCommand<AbstractCanvasHandler> updateCommand = mock(CanvasCommand.class);
+
+        doReturn(optionalHasName).when(view).getHasName();
+
+        when(hasName.getValue()).thenReturn(name);
+        when(definition.getDefinition()).thenReturn(theDefinition);
+        when(canvasCommandFactory.updatePropertyValue(element, nameId, name)).thenReturn(updateCommand);
+        when(definitionUtils.getNameIdentifier(theDefinition)).thenReturn(nameId);
+        when(element.getContent()).thenReturn(definition);
+        when(graphIndex.get(NODE_UUID)).thenReturn(element);
+        when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
+
+        view.addUpdatePropertyNameCommand(commandBuilder);
+
+        verify(commandBuilder).addCommand(updateCommand);
+    }
+
+    @Test
+    public void testAddExpressionCommand() {
+
+        final SaveCurrentStateCommand expressionCommand = mock(SaveCurrentStateCommand.class);
+        final CompositeCommand.Builder builder = mock(CompositeCommand.Builder.class);
+
+        view.addExpressionCommand(expressionCommand, builder);
+
+        verify(builder).addCommand(expressionCommand);
+    }
+
+    @Test
+    public void testReloadEditor() {
+        doNothing().when(view).loadNewBoxedExpressionEditor();
+        doNothing().when(view).syncExpressionWithOlderEditor();
+
+        view.reloadEditor();
+
+        verify(view).loadNewBoxedExpressionEditor();
+        verify(view).syncExpressionWithOlderEditor();
+    }
+
+    @Test
+    public void testSyncExpressionWithOlderEditor() {
+
+        final Supplier cache = mock(Supplier.class);
+        final ExpressionGridCache gridCache = mock(ExpressionGridCache.class);
+        final ExpressionContainerGrid expressionContainerGrid = mock(ExpressionContainerGrid.class);
+        final Optional hasName = Optional.empty();
+
+        when(cache.get()).thenReturn(gridCache);
+        doReturn(cache).when(view).getExpressionGridCacheSupplier();
+        doReturn(expressionContainerGrid).when(view).getExpressionContainerGrid();
+        doReturn(hasName).when(view).getHasName();
+
+        view.syncExpressionWithOlderEditor();
+
+        verify(gridCache).removeExpressionGrid(NODE_UUID);
+        verify(expressionContainerGrid).setExpression(NODE_UUID,
+                                                      hasExpression,
+                                                      hasName,
+                                                      false);
+    }
+
+    @Test
+    public void testReloadIfIsNewEditor_WhenItIs() {
+
+        doReturn(true).when(view).isNewEditorEnabled();
+        doNothing().when(view).reloadEditor();
+
+        view.reloadIfIsNewEditor();
+
+        verify(view).reloadEditor();
+    }
+
+    @Test
+    public void testReloadIfIsNewEditor_WhenItIsNot() {
+
+        doReturn(false).when(view).isNewEditorEnabled();
+        doNothing().when(view).reloadEditor();
+
+        view.reloadIfIsNewEditor();
+
+        verify(view, never()).reloadEditor();
     }
 }

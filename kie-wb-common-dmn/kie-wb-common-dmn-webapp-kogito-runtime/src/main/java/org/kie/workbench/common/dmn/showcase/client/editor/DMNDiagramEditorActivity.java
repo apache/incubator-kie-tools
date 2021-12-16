@@ -92,4 +92,14 @@ public class DMNDiagramEditorActivity extends AbstractActivity implements Editor
     public ResourceType getResourceType() {
         return ActivityResourceType.EDITOR;
     }
+
+    @Override
+    public Promise<Void> undo() {
+        return realPresenter.undo();
+    }
+
+    @Override
+    public Promise<Void> redo() {
+        return realPresenter.redo();
+    }
 }

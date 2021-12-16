@@ -71,6 +71,20 @@ function download() {
     });
 }
 
+function undo() {
+    window.frames.editorFrame.contentWindow.gwtEditorBeans
+            .get("DMNDiagramEditor")
+            .get()
+            .undo();
+}
+
+function redo() {
+    window.frames.editorFrame.contentWindow.gwtEditorBeans
+            .get("DMNDiagramEditor")
+            .get()
+            .redo();
+}
+
 const openFile = (event) => {
   const input = event.target;
   const reader = new FileReader();

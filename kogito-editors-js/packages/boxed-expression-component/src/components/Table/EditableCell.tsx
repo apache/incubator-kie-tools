@@ -71,6 +71,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       }
 
       if (value !== newValue) {
+        window.beeApi?.notifyUserAction();
         onCellUpdate(rowIndex, columnId, newValue ?? value);
       }
 

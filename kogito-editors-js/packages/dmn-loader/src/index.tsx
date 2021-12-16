@@ -54,6 +54,9 @@ const BoxedExpressionWrapper: React.FunctionComponent<BoxedExpressionEditorProps
   //The wrapper defines these function in order to keep expression definition state updated,
   //And to propagate such definition to DMN Editor (GWT world), by calling beeApiWrapper APIs
   window.beeApi = {
+    notifyUserAction(): void {
+      window.beeApiWrapper?.notifyUserAction();
+    },
     resetExpressionDefinition: (definition: ExpressionProps) => {
       setExpressionDefinition(definition);
       window.beeApiWrapper?.resetExpressionDefinition?.(definition);

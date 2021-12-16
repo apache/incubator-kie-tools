@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
+import elemental2.promise.Promise;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
@@ -197,6 +198,18 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
     @Override
     public boolean isReadOnly() {
         return readOnlyProvider.isReadOnlyDiagram();
+    }
+
+    public Promise<Void> undo() {
+        return promises.create((resolve, reject) -> {
+            commands.getUndoSessionCommand().execute();
+        });
+    }
+
+    public Promise<Void> redo() {
+        return promises.create((resolve, reject) -> {
+            commands.getRedoSessionCommand().execute();
+        });
     }
 
     private DMNDiagramEditor.View getView() {

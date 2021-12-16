@@ -194,6 +194,7 @@ describe("DecisionTableExpression tests", () => {
     window.beeApi = _.extend(window.beeApi || {}, {
       broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) =>
         mockedBroadcastDefinition(definition),
+      notifyUserAction: () => {},
     });
   }
 });

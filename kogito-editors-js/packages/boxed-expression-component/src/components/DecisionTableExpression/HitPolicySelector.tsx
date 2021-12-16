@@ -58,6 +58,7 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
     (event: React.MouseEvent<Element, MouseEvent>, itemId: string) => {
       const updatedHitPolicy = itemId as HitPolicy;
       const hitPolicySupportsAggregation = _.includes(BUILT_IN_AGGREGATION_AVAILABILITY, updatedHitPolicy);
+      window.beeApi?.notifyUserAction();
       onHitPolicySelect(updatedHitPolicy);
       if (hitPolicySupportsAggregation) {
         setBuiltInAggregatorSelectDisabled(false);
@@ -82,6 +83,7 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
 
   const builtInAggregatorSelectionCallback = useCallback(
     (event: React.MouseEvent<Element, MouseEvent>, itemId: string) => {
+      window.beeApi?.notifyUserAction();
       onBuiltInAggregatorSelect(itemId as BuiltinAggregation);
       setBuiltInAggregatorSelectOpen(false);
     },

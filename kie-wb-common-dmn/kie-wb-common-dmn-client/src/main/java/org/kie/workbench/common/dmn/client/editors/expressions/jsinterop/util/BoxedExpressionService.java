@@ -77,4 +77,9 @@ public class BoxedExpressionService {
     public static void broadcastDecisionTableExpressionDefinition(final DecisionTableProps decisionTableProps) {
         expressionEditor.broadcastDecisionTableExpressionDefinition(decisionTableProps);
     }
+
+    @JsMethod
+    public static void notifyUserAction() {
+        expressionEditor.notifyUserAction();
+    }
 }

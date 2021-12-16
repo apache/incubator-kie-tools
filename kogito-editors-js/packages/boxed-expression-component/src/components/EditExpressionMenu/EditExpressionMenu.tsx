@@ -79,6 +79,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     (event) => {
       setExpressionName(event.target.value);
       if (event.type === "blur") {
+        window.beeApi?.notifyUserAction();
         onExpressionUpdate({
           name: event.target.value,
           dataType,
@@ -90,6 +91,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
 
   const onDataTypeChange = useCallback(
     (dataType: DataType) => {
+      window.beeApi?.notifyUserAction();
       setDataType(dataType);
       onExpressionUpdate({
         name: expressionName,

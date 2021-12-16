@@ -226,6 +226,7 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
 
   const handlingOperation = useCallback(
     (tableOperation: TableOperation) => {
+      window.beeApi?.notifyUserAction();
       switch (tableOperation) {
         case TableOperation.ColumnInsertLeft:
           updateTargetColumns(insertBefore, TableOperation.ColumnInsertLeft);

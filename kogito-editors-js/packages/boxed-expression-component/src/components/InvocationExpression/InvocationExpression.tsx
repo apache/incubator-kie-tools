@@ -112,6 +112,9 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = (i
 
   const onBlurCallback = useCallback(
     (event) => {
+      if (invocationProps.invokedFunction != event.target.value) {
+        window.beeApi?.notifyUserAction();
+      }
       spreadInvocationExpressionDefinition({ invokedFunction: event.target.value });
     },
     [spreadInvocationExpressionDefinition]

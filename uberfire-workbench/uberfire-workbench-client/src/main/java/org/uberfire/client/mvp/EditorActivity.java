@@ -36,4 +36,12 @@ public interface EditorActivity extends Activity {
         IsWidget widget = getWidget();
         return (widget == null) ? null : widget.asWidget().getElement();
     }
+
+    default Promise<Void> undo() {
+        throw new UnsupportedOperationException("The editor does not support undo.");
+    }
+
+    default Promise<Void> redo() {
+        throw new UnsupportedOperationException("The editor does not support redo.");
+    }
 }

@@ -109,7 +109,7 @@ public class ExpressionModelFiller {
         IntStream.range(0, columnsLength)
                 .forEach(index -> relationExpression.getComponentWidths().set(index + 1, Objects.requireNonNull(relationProps.columns)[index].width));
         relationExpression.getRow().clear();
-        relationExpression.getRow().addAll(rowsConvertForRelationExpression(relationProps, relationExpression));
+        relationExpression.getRow().addAll(rowsConvertForRelationExpression(relationProps));
     }
 
     public static void fillListExpression(final List listExpression, final ListProps listProps) {
@@ -210,7 +210,7 @@ public class ExpressionModelFiller {
         return contextEntryResult;
     }
 
-    private static Collection<List> rowsConvertForRelationExpression(final RelationProps relationProps, final Relation relationExpression) {
+    private static Collection<List> rowsConvertForRelationExpression(final RelationProps relationProps) {
         return Arrays
                 .stream(Optional.ofNullable(relationProps.rows).orElse(new Row[0]))
                 .map(row -> {
@@ -221,7 +221,7 @@ public class ExpressionModelFiller {
                                 final String cell = row.cells.length <= columnIndex ? "" : row.cells[columnIndex];
                                 final LiteralExpression wrappedExpression = new LiteralExpression();
                                 wrappedExpression.setText(new Text(cell));
-                                return HasExpression.wrap(relationExpression, wrappedExpression);
+                                return HasExpression.wrap(list, wrappedExpression);
                             }).collect(Collectors.toList())
                     );
                     return list;

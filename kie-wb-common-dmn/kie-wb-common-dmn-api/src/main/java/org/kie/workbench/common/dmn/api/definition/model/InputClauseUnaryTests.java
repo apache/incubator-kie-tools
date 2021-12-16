@@ -73,7 +73,7 @@ public class InputClauseUnaryTests extends DMNModelInstrumentedBase implements I
     public InputClauseUnaryTests() {
         this(new Id(),
              new Text(),
-             null);
+             ConstraintType.NONE);
     }
 
     public InputClauseUnaryTests(final Id id,

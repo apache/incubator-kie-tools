@@ -36,7 +36,7 @@ public class InputClauseUnaryTestsTest {
     @Test
     public void testDefaultConstraintTypeProperty() {
         final InputClauseUnaryTests inputClause = new InputClauseUnaryTests();
-        assertEquals("", inputClause.getConstraintTypeProperty().getValue());
+        assertEquals(NONE.value(), inputClause.getConstraintTypeProperty().getValue());
     }
 
     @Test
