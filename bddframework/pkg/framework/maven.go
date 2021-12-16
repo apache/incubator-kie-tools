@@ -123,6 +123,10 @@ func (mvnCmd *mavenCommandStruct) Execute(targets ...string) (string, error) {
 		args = append(args, mvnCmd.otherOptions...)
 	}
 
+	// Maven download artifacts configuration
+	// Same configuration as in https://github.com/kiegroup/kogito-pipelines/blob/main/.ci/pull-request-config.yaml#L6
+	args = append(args, "-Dhttp.keepAlive=false", "-Dmaven.wagon.http.pool=false", "-Dmaven.wagon.httpconnectionManager.ttlSeconds=120", "-Dmaven.wagon.http.retryHandler.count=3")
+
 	cmd := CreateCommand(mavenCommandName, args...).InDirectory(mvnCmd.directory)
 
 	// Set logger context if exists
