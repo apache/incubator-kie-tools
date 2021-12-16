@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { AsapAction } from './AsapAction';\nimport { AsapScheduler } from './AsapScheduler';\nexport var asapScheduler = new AsapScheduler(AsapAction);\nexport var asap = asapScheduler;",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/scheduler/asap.js"
+    ],
+    "names": ["AsapAction", "AsapScheduler", "asapScheduler", "asap"],
+    "mappings": "AAAA,SAASA,UAAT,QAA2B,cAA3B;AACA,SAASC,aAAT,QAA8B,iBAA9B;AACA,OAAO,IAAMC,aAAa,GAAG,IAAID,aAAJ,CAAkBD,UAAlB,CAAtB;AACP,OAAO,IAAMG,IAAI,GAAGD,aAAb",
+    "sourcesContent": [
+      "import { AsapAction } from './AsapAction';\nimport { AsapScheduler } from './AsapScheduler';\nexport const asapScheduler = new AsapScheduler(AsapAction);\nexport const asap = asapScheduler;\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

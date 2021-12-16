@@ -1,0 +1,27 @@
+{
+  "ast": null,
+  "code": "import { concat } from '../observable/concat';\nimport { popScheduler } from '../util/args';\nimport { operate } from '../util/lift';\nexport function startWith() {\n  for (var _len = arguments.length, values = new Array(_len), _key = 0; _key < _len; _key++) {\n    values[_key] = arguments[_key];\n  }\n\n  var scheduler = popScheduler(values);\n  return operate(function (source, subscriber) {\n    (scheduler ? concat(values, source, scheduler) : concat(values, source)).subscribe(subscriber);\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/startWith.js"
+    ],
+    "names": [
+      "concat",
+      "popScheduler",
+      "operate",
+      "startWith",
+      "values",
+      "scheduler",
+      "source",
+      "subscriber",
+      "subscribe"
+    ],
+    "mappings": "AAAA,SAASA,MAAT,QAAuB,sBAAvB;AACA,SAASC,YAAT,QAA6B,cAA7B;AACA,SAASC,OAAT,QAAwB,cAAxB;AACA,OAAO,SAASC,SAAT,GAA8B;AAAA,oCAARC,MAAQ;AAARA,IAAAA,MAAQ;AAAA;;AACjC,MAAMC,SAAS,GAAGJ,YAAY,CAACG,MAAD,CAA9B;AACA,SAAOF,OAAO,CAAC,UAACI,MAAD,EAASC,UAAT,EAAwB;AACnC,KAACF,SAAS,GAAGL,MAAM,CAACI,MAAD,EAASE,MAAT,EAAiBD,SAAjB,CAAT,GAAuCL,MAAM,CAACI,MAAD,EAASE,MAAT,CAAvD,EAAyEE,SAAzE,CAAmFD,UAAnF;AACH,GAFa,CAAd;AAGH",
+    "sourcesContent": [
+      "import { concat } from '../observable/concat';\nimport { popScheduler } from '../util/args';\nimport { operate } from '../util/lift';\nexport function startWith(...values) {\n    const scheduler = popScheduler(values);\n    return operate((source, subscriber) => {\n        (scheduler ? concat(values, source, scheduler) : concat(values, source)).subscribe(subscriber);\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,44 @@
+{
+  "name": "@kogito-tooling-examples/ping-pong-view-angular",
+  "version": "0.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "license": "Apache-2.0",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thiagoelg/kogito-tooling.git"
+  },
+  "scripts": {
+    "build": "rimraf dist && ng build",
+    "build:dev": "yarn run run-script-if --bool $(build-env global.build.examples) --then \"yarn run build\"",
+    "build:prod": "yarn run run-script-if --bool $(build-env global.build.examples) --then \"yarn run build\"",
+    "ng": "ng",
+    "start": "ng serve",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "dependencies": {
+    "@angular/animations": "^13.1.1",
+    "@angular/common": "^13.1.1",
+    "@angular/compiler": "^13.1.1",
+    "@angular/core": "^13.1.1",
+    "@angular/forms": "^13.1.1",
+    "@angular/platform-browser": "^13.1.1",
+    "@angular/platform-browser-dynamic": "^13.1.1",
+    "@angular/router": "^13.1.1",
+    "@kie-tooling-core/envelope-bus": "0.0.0",
+    "@kogito-tooling-examples/ping-pong-view": "0.0.0",
+    "rxjs": "^7.4.0",
+    "tslib": "^2.3.1",
+    "zone.js": "^0.11.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^13.1.2",
+    "@angular/cli": "^13.1.2",
+    "@angular/compiler-cli": "^13.1.1",
+    "@kogito-tooling/build-env": "0.0.0"
+  }
+}

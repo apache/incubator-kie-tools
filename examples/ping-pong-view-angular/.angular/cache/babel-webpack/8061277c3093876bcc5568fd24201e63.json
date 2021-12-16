@@ -1,0 +1,30 @@
+{
+  "ast": null,
+  "code": "export function createErrorClass(createImpl) {\n  var _super = function _super(instance) {\n    Error.call(instance);\n    instance.stack = new Error().stack;\n  };\n\n  var ctorFunc = createImpl(_super);\n  ctorFunc.prototype = Object.create(Error.prototype);\n  ctorFunc.prototype.constructor = ctorFunc;\n  return ctorFunc;\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/util/createErrorClass.js"
+    ],
+    "names": [
+      "createErrorClass",
+      "createImpl",
+      "_super",
+      "instance",
+      "Error",
+      "call",
+      "stack",
+      "ctorFunc",
+      "prototype",
+      "Object",
+      "create",
+      "constructor"
+    ],
+    "mappings": "AAAA,OAAO,SAASA,gBAAT,CAA0BC,UAA1B,EAAsC;AACzC,MAAMC,MAAM,GAAG,SAATA,MAAS,CAACC,QAAD,EAAc;AACzBC,IAAAA,KAAK,CAACC,IAAN,CAAWF,QAAX;AACAA,IAAAA,QAAQ,CAACG,KAAT,GAAiB,IAAIF,KAAJ,GAAYE,KAA7B;AACH,GAHD;;AAIA,MAAMC,QAAQ,GAAGN,UAAU,CAACC,MAAD,CAA3B;AACAK,EAAAA,QAAQ,CAACC,SAAT,GAAqBC,MAAM,CAACC,MAAP,CAAcN,KAAK,CAACI,SAApB,CAArB;AACAD,EAAAA,QAAQ,CAACC,SAAT,CAAmBG,WAAnB,GAAiCJ,QAAjC;AACA,SAAOA,QAAP;AACH",
+    "sourcesContent": [
+      "export function createErrorClass(createImpl) {\n    const _super = (instance) => {\n        Error.call(instance);\n        instance.stack = new Error().stack;\n    };\n    const ctorFunc = createImpl(_super);\n    ctorFunc.prototype = Object.create(Error.prototype);\n    ctorFunc.prototype.constructor = ctorFunc;\n    return ctorFunc;\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { scheduled } from '../scheduled/scheduled';\nimport { innerFrom } from './innerFrom';\nexport function from(input, scheduler) {\n  return scheduler ? scheduled(input, scheduler) : innerFrom(input);\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/observable/from.js"
+    ],
+    "names": ["scheduled", "innerFrom", "from", "input", "scheduler"],
+    "mappings": "AAAA,SAASA,SAAT,QAA0B,wBAA1B;AACA,SAASC,SAAT,QAA0B,aAA1B;AACA,OAAO,SAASC,IAAT,CAAcC,KAAd,EAAqBC,SAArB,EAAgC;AACnC,SAAOA,SAAS,GAAGJ,SAAS,CAACG,KAAD,EAAQC,SAAR,CAAZ,GAAiCH,SAAS,CAACE,KAAD,CAA1D;AACH",
+    "sourcesContent": [
+      "import { scheduled } from '../scheduled/scheduled';\nimport { innerFrom } from './innerFrom';\nexport function from(input, scheduler) {\n    return scheduler ? scheduled(input, scheduler) : innerFrom(input);\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { mergeMap } from './mergeMap';\nimport { isFunction } from '../util/isFunction';\nexport function mergeMapTo(innerObservable, resultSelector) {\n  var concurrent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Infinity;\n\n  if (isFunction(resultSelector)) {\n    return mergeMap(function () {\n      return innerObservable;\n    }, resultSelector, concurrent);\n  }\n\n  if (typeof resultSelector === 'number') {\n    concurrent = resultSelector;\n  }\n\n  return mergeMap(function () {\n    return innerObservable;\n  }, concurrent);\n} //# sourceMappingURL=mergeMapTo.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

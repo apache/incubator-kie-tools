@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { concatMap } from './concatMap';\nimport { isFunction } from '../util/isFunction';\nexport function concatMapTo(innerObservable, resultSelector) {\n  return isFunction(resultSelector) ? concatMap(function () {\n    return innerObservable;\n  }, resultSelector) : concatMap(function () {\n    return innerObservable;\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/concatMapTo.js"
+    ],
+    "names": ["concatMap", "isFunction", "concatMapTo", "innerObservable", "resultSelector"],
+    "mappings": "AAAA,SAASA,SAAT,QAA0B,aAA1B;AACA,SAASC,UAAT,QAA2B,oBAA3B;AACA,OAAO,SAASC,WAAT,CAAqBC,eAArB,EAAsCC,cAAtC,EAAsD;AACzD,SAAOH,UAAU,CAACG,cAAD,CAAV,GAA6BJ,SAAS,CAAC;AAAA,WAAMG,eAAN;AAAA,GAAD,EAAwBC,cAAxB,CAAtC,GAAgFJ,SAAS,CAAC;AAAA,WAAMG,eAAN;AAAA,GAAD,CAAhG;AACH",
+    "sourcesContent": [
+      "import { concatMap } from './concatMap';\nimport { isFunction } from '../util/isFunction';\nexport function concatMapTo(innerObservable, resultSelector) {\n    return isFunction(resultSelector) ? concatMap(() => innerObservable, resultSelector) : concatMap(() => innerObservable);\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

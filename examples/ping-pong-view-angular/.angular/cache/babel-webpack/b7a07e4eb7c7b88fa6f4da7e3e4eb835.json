@@ -1,0 +1,34 @@
+{
+  "ast": null,
+  "code": "import { Subject } from '../Subject';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function retryWhen(notifier) {\n  return operate(function (source, subscriber) {\n    var innerSub;\n    var syncResub = false;\n    var errors$;\n\n    var subscribeForRetryWhen = function subscribeForRetryWhen() {\n      innerSub = source.subscribe(new OperatorSubscriber(subscriber, undefined, undefined, function (err) {\n        if (!errors$) {\n          errors$ = new Subject();\n          notifier(errors$).subscribe(new OperatorSubscriber(subscriber, function () {\n            return innerSub ? subscribeForRetryWhen() : syncResub = true;\n          }));\n        }\n\n        if (errors$) {\n          errors$.next(err);\n        }\n      }));\n\n      if (syncResub) {\n        innerSub.unsubscribe();\n        innerSub = null;\n        syncResub = false;\n        subscribeForRetryWhen();\n      }\n    };\n\n    subscribeForRetryWhen();\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/retryWhen.js"
+    ],
+    "names": [
+      "Subject",
+      "operate",
+      "OperatorSubscriber",
+      "retryWhen",
+      "notifier",
+      "source",
+      "subscriber",
+      "innerSub",
+      "syncResub",
+      "errors$",
+      "subscribeForRetryWhen",
+      "subscribe",
+      "undefined",
+      "err",
+      "next",
+      "unsubscribe"
+    ],
+    "mappings": "AAAA,SAASA,OAAT,QAAwB,YAAxB;AACA,SAASC,OAAT,QAAwB,cAAxB;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,OAAO,SAASC,SAAT,CAAmBC,QAAnB,EAA6B;AAChC,SAAOH,OAAO,CAAC,UAACI,MAAD,EAASC,UAAT,EAAwB;AACnC,QAAIC,QAAJ;AACA,QAAIC,SAAS,GAAG,KAAhB;AACA,QAAIC,OAAJ;;AACA,QAAMC,qBAAqB,GAAG,SAAxBA,qBAAwB,GAAM;AAChCH,MAAAA,QAAQ,GAAGF,MAAM,CAACM,SAAP,CAAiB,IAAIT,kBAAJ,CAAuBI,UAAvB,EAAmCM,SAAnC,EAA8CA,SAA9C,EAAyD,UAACC,GAAD,EAAS;AAC1F,YAAI,CAACJ,OAAL,EAAc;AACVA,UAAAA,OAAO,GAAG,IAAIT,OAAJ,EAAV;AACAI,UAAAA,QAAQ,CAACK,OAAD,CAAR,CAAkBE,SAAlB,CAA4B,IAAIT,kBAAJ,CAAuBI,UAAvB,EAAmC;AAAA,mBAAMC,QAAQ,GAAGG,qBAAqB,EAAxB,GAA8BF,SAAS,GAAG,IAAxD;AAAA,WAAnC,CAA5B;AACH;;AACD,YAAIC,OAAJ,EAAa;AACTA,UAAAA,OAAO,CAACK,IAAR,CAAaD,GAAb;AACH;AACJ,OAR2B,CAAjB,CAAX;;AASA,UAAIL,SAAJ,EAAe;AACXD,QAAAA,QAAQ,CAACQ,WAAT;AACAR,QAAAA,QAAQ,GAAG,IAAX;AACAC,QAAAA,SAAS,GAAG,KAAZ;AACAE,QAAAA,qBAAqB;AACxB;AACJ,KAhBD;;AAiBAA,IAAAA,qBAAqB;AACxB,GAtBa,CAAd;AAuBH",
+    "sourcesContent": [
+      "import { Subject } from '../Subject';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function retryWhen(notifier) {\n    return operate((source, subscriber) => {\n        let innerSub;\n        let syncResub = false;\n        let errors$;\n        const subscribeForRetryWhen = () => {\n            innerSub = source.subscribe(new OperatorSubscriber(subscriber, undefined, undefined, (err) => {\n                if (!errors$) {\n                    errors$ = new Subject();\n                    notifier(errors$).subscribe(new OperatorSubscriber(subscriber, () => innerSub ? subscribeForRetryWhen() : (syncResub = true)));\n                }\n                if (errors$) {\n                    errors$.next(err);\n                }\n            }));\n            if (syncResub) {\n                innerSub.unsubscribe();\n                innerSub = null;\n                syncResub = false;\n                subscribeForRetryWhen();\n            }\n        };\n        subscribeForRetryWhen();\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

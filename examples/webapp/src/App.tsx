@@ -19,25 +19,28 @@ import "@patternfly/patternfly/patternfly-addons.scss";
 import "@patternfly/patternfly/patternfly.scss";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Brand, Nav, NavItem, NavList, Page, PageHeader } from "@patternfly/react-core";
+import { Brand, Nav, NavItem, NavList, NavExpandable, Page, PageHeader } from "@patternfly/react-core";
 import { HashRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { Base64PngPage } from "./Pages/Base64Png/Base64PngPage";
 import { BpmnPage } from "./Pages/KogitoEditors/BpmnPage";
 import { DmnPage } from "./Pages/KogitoEditors/DmnPage";
 import { TodoListViewPage } from "./Pages/TodoList/TodoListViewPage";
-import { PingPongIFrameViewsPage } from "./Pages/PingPong/PingPongIFrameViewsPage";
-import { PingPongDivViewsPage } from "./Pages/PingPong/PingPongDivViewsPage";
+import { PingPongReactIFrameViewsPage } from "./Pages/PingPong/React/PingPongReactIFrameViewsPage";
+import { PingPongReactDivViewsPage } from "./Pages/PingPong/React/PingPongReactDivViewsPage";
 import { Home } from "./Home";
 import "../static/resources/styles.css";
 import { DmnStandaloneEditorPage } from "./Pages/StandaloneEditors/DmnStandaloneEditorPage";
+import { PingPongAngularIFrameViewsPage } from "./Pages/PingPong/Angular/PingPongAngularIFrameViewsPage";
+import { PingPongAngularDivViewsPage } from "./Pages/PingPong/Angular/PingPongAngularDivViewsPage";
 
 enum Location {
   BPMN = "/editor/bpmn",
   DMN = "/editor/dmn",
   BASE46PNG = "/editor/base64png",
   TODO_LIST = "/page/todo-list",
-  PING_PONG_IFRAME_PAGES = "/page/ping-pong-iframe-pages",
-  PING_PONG_DIV_PAGES = "/page/ping-pong-div-pages",
+  PING_PONG_REACT_IFRAME_PAGES = "/page/ping-pong-react/iframe-pages",
+  PING_PONG_REACT_DIV_PAGES = "/page/ping-pong-react/div-pages",
+  PING_PONG_ANGULAR_IFRAME_PAGES = "/page/ping-pong-angular/iframe-pages",
   STANDALONE_EDITORS = "/page/standalone-editors",
   HOME = "/",
 }
@@ -80,13 +83,22 @@ export function App() {
                     <Link to={Location.TODO_LIST}>'To do' list View</Link>
                   </NavItem>
                   <NavItem
-                    itemId={Location.PING_PONG_IFRAME_PAGES}
-                    isActive={location === Location.PING_PONG_IFRAME_PAGES}
+                    itemId={Location.PING_PONG_REACT_IFRAME_PAGES}
+                    isActive={location === Location.PING_PONG_REACT_IFRAME_PAGES}
                   >
-                    <Link to={Location.PING_PONG_IFRAME_PAGES}>Ping-Pong IFrame Views</Link>
+                    <Link to={Location.PING_PONG_REACT_IFRAME_PAGES}>Ping-Pong React IFrame</Link>
                   </NavItem>
-                  <NavItem itemId={Location.PING_PONG_DIV_PAGES} isActive={location === Location.PING_PONG_DIV_PAGES}>
-                    <Link to={Location.PING_PONG_DIV_PAGES}>Ping-Pong Div Views</Link>
+                  <NavItem
+                    itemId={Location.PING_PONG_REACT_DIV_PAGES}
+                    isActive={location === Location.PING_PONG_REACT_DIV_PAGES}
+                  >
+                    <Link to={Location.PING_PONG_REACT_DIV_PAGES}>Ping-Pong React Div</Link>
+                  </NavItem>
+                  <NavItem
+                    itemId={Location.PING_PONG_ANGULAR_IFRAME_PAGES}
+                    isActive={location === Location.PING_PONG_ANGULAR_IFRAME_PAGES}
+                  >
+                    <Link to={Location.PING_PONG_ANGULAR_IFRAME_PAGES}>Ping-Pong Angular IFrame</Link>
                   </NavItem>
                   <NavItem itemId={Location.STANDALONE_EDITORS} isActive={location === Location.STANDALONE_EDITORS}>
                     <Link to={Location.STANDALONE_EDITORS}>DMN Standalone Editor</Link>
@@ -113,11 +125,14 @@ export function App() {
           <Route path={Location.TODO_LIST}>
             <TodoListViewPage />
           </Route>
-          <Route path={Location.PING_PONG_IFRAME_PAGES}>
-            <PingPongIFrameViewsPage />
+          <Route path={Location.PING_PONG_REACT_IFRAME_PAGES}>
+            <PingPongReactIFrameViewsPage />
           </Route>
-          <Route path={Location.PING_PONG_DIV_PAGES}>
-            <PingPongDivViewsPage />
+          <Route path={Location.PING_PONG_REACT_DIV_PAGES}>
+            <PingPongReactDivViewsPage />
+          </Route>
+          <Route path={Location.PING_PONG_ANGULAR_IFRAME_PAGES}>
+            <PingPongAngularIFrameViewsPage />
           </Route>
           <Route path={Location.STANDALONE_EDITORS}>
             <DmnStandaloneEditorPage />

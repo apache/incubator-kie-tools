@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { createErrorClass } from './createErrorClass';\nexport var SequenceError = createErrorClass(function (_super) {\n  return function SequenceErrorImpl(message) {\n    _super(this);\n\n    this.name = 'SequenceError';\n    this.message = message;\n  };\n});",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/util/SequenceError.js"
+    ],
+    "names": ["createErrorClass", "SequenceError", "_super", "SequenceErrorImpl", "message", "name"],
+    "mappings": "AAAA,SAASA,gBAAT,QAAiC,oBAAjC;AACA,OAAO,IAAMC,aAAa,GAAGD,gBAAgB,CAAC,UAACE,MAAD;AAAA,SAAY,SAASC,iBAAT,CAA2BC,OAA3B,EAAoC;AAC1FF,IAAAA,MAAM,CAAC,IAAD,CAAN;;AACA,SAAKG,IAAL,GAAY,eAAZ;AACA,SAAKD,OAAL,GAAeA,OAAf;AACH,GAJ6C;AAAA,CAAD,CAAtC",
+    "sourcesContent": [
+      "import { createErrorClass } from './createErrorClass';\nexport const SequenceError = createErrorClass((_super) => function SequenceErrorImpl(message) {\n    _super(this);\n    this.name = 'SequenceError';\n    this.message = message;\n});\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

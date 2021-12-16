@@ -1,0 +1,30 @@
+{
+  "ast": null,
+  "code": "import _classCallCheck from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/classCallCheck.js\";\nimport _createClass from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/createClass.js\";\nimport _get from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/get.js\";\nimport _getPrototypeOf from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js\";\nimport _inherits from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/inherits.js\";\nimport _createSuper from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/createSuper.js\";\nimport { Subject } from './Subject';\nexport var BehaviorSubject = /*#__PURE__*/function (_Subject) {\n  _inherits(BehaviorSubject, _Subject);\n\n  var _super = _createSuper(BehaviorSubject);\n\n  function BehaviorSubject(_value) {\n    var _this;\n\n    _classCallCheck(this, BehaviorSubject);\n\n    _this = _super.call(this);\n    _this._value = _value;\n    return _this;\n  }\n\n  _createClass(BehaviorSubject, [{\n    key: \"value\",\n    get: function get() {\n      return this.getValue();\n    }\n  }, {\n    key: \"_subscribe\",\n    value: function _subscribe(subscriber) {\n      var subscription = _get(_getPrototypeOf(BehaviorSubject.prototype), \"_subscribe\", this).call(this, subscriber);\n\n      !subscription.closed && subscriber.next(this._value);\n      return subscription;\n    }\n  }, {\n    key: \"getValue\",\n    value: function getValue() {\n      var hasError = this.hasError,\n          thrownError = this.thrownError,\n          _value = this._value;\n\n      if (hasError) {\n        throw thrownError;\n      }\n\n      this._throwIfClosed();\n\n      return _value;\n    }\n  }, {\n    key: \"next\",\n    value: function next(value) {\n      _get(_getPrototypeOf(BehaviorSubject.prototype), \"next\", this).call(this, this._value = value);\n    }\n  }]);\n\n  return BehaviorSubject;\n}(Subject);",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/BehaviorSubject.js"
+    ],
+    "names": [
+      "Subject",
+      "BehaviorSubject",
+      "_value",
+      "getValue",
+      "subscriber",
+      "subscription",
+      "closed",
+      "next",
+      "hasError",
+      "thrownError",
+      "_throwIfClosed",
+      "value"
+    ],
+    "mappings": ";;;;;;AAAA,SAASA,OAAT,QAAwB,WAAxB;AACA,WAAaC,eAAb;AAAA;;AAAA;;AACI,2BAAYC,MAAZ,EAAoB;AAAA;;AAAA;;AAChB;AACA,UAAKA,MAAL,GAAcA,MAAd;AAFgB;AAGnB;;AAJL;AAAA;AAAA,SAKI,eAAY;AACR,aAAO,KAAKC,QAAL,EAAP;AACH;AAPL;AAAA;AAAA,WAQI,oBAAWC,UAAX,EAAuB;AACnB,UAAMC,YAAY,mFAAoBD,UAApB,CAAlB;;AACA,OAACC,YAAY,CAACC,MAAd,IAAwBF,UAAU,CAACG,IAAX,CAAgB,KAAKL,MAArB,CAAxB;AACA,aAAOG,YAAP;AACH;AAZL;AAAA;AAAA,WAaI,oBAAW;AACP,UAAQG,QAAR,GAA0C,IAA1C,CAAQA,QAAR;AAAA,UAAkBC,WAAlB,GAA0C,IAA1C,CAAkBA,WAAlB;AAAA,UAA+BP,MAA/B,GAA0C,IAA1C,CAA+BA,MAA/B;;AACA,UAAIM,QAAJ,EAAc;AACV,cAAMC,WAAN;AACH;;AACD,WAAKC,cAAL;;AACA,aAAOR,MAAP;AACH;AApBL;AAAA;AAAA,WAqBI,cAAKS,KAAL,EAAY;AACR,gFAAY,KAAKT,MAAL,GAAcS,KAA1B;AACH;AAvBL;;AAAA;AAAA,EAAqCX,OAArC",
+    "sourcesContent": [
+      "import { Subject } from './Subject';\nexport class BehaviorSubject extends Subject {\n    constructor(_value) {\n        super();\n        this._value = _value;\n    }\n    get value() {\n        return this.getValue();\n    }\n    _subscribe(subscriber) {\n        const subscription = super._subscribe(subscriber);\n        !subscription.closed && subscriber.next(this._value);\n        return subscription;\n    }\n    getValue() {\n        const { hasError, thrownError, _value } = this;\n        if (hasError) {\n            throw thrownError;\n        }\n        this._throwIfClosed();\n        return _value;\n    }\n    next(value) {\n        super.next((this._value = value));\n    }\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

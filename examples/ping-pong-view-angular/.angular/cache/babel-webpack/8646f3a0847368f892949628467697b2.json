@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { reduce } from './reduce';\nimport { isFunction } from '../util/isFunction';\nexport function min(comparer) {\n  return reduce(isFunction(comparer) ? function (x, y) {\n    return comparer(x, y) < 0 ? x : y;\n  } : function (x, y) {\n    return x < y ? x : y;\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/min.js"
+    ],
+    "names": ["reduce", "isFunction", "min", "comparer", "x", "y"],
+    "mappings": "AAAA,SAASA,MAAT,QAAuB,UAAvB;AACA,SAASC,UAAT,QAA2B,oBAA3B;AACA,OAAO,SAASC,GAAT,CAAaC,QAAb,EAAuB;AAC1B,SAAOH,MAAM,CAACC,UAAU,CAACE,QAAD,CAAV,GAAuB,UAACC,CAAD,EAAIC,CAAJ;AAAA,WAAWF,QAAQ,CAACC,CAAD,EAAIC,CAAJ,CAAR,GAAiB,CAAjB,GAAqBD,CAArB,GAAyBC,CAApC;AAAA,GAAvB,GAAgE,UAACD,CAAD,EAAIC,CAAJ;AAAA,WAAWD,CAAC,GAAGC,CAAJ,GAAQD,CAAR,GAAYC,CAAvB;AAAA,GAAjE,CAAb;AACH",
+    "sourcesContent": [
+      "import { reduce } from './reduce';\nimport { isFunction } from '../util/isFunction';\nexport function min(comparer) {\n    return reduce(isFunction(comparer) ? (x, y) => (comparer(x, y) < 0 ? x : y) : (x, y) => (x < y ? x : y));\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,32 @@
+{
+  "ast": null,
+  "code": "import { executeSchedule } from '../util/executeSchedule';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function observeOn(scheduler) {\n  var delay = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;\n  return operate(function (source, subscriber) {\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      return executeSchedule(subscriber, scheduler, function () {\n        return subscriber.next(value);\n      }, delay);\n    }, function () {\n      return executeSchedule(subscriber, scheduler, function () {\n        return subscriber.complete();\n      }, delay);\n    }, function (err) {\n      return executeSchedule(subscriber, scheduler, function () {\n        return subscriber.error(err);\n      }, delay);\n    }));\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/observeOn.js"
+    ],
+    "names": [
+      "executeSchedule",
+      "operate",
+      "OperatorSubscriber",
+      "observeOn",
+      "scheduler",
+      "delay",
+      "source",
+      "subscriber",
+      "subscribe",
+      "value",
+      "next",
+      "complete",
+      "err",
+      "error"
+    ],
+    "mappings": "AAAA,SAASA,eAAT,QAAgC,yBAAhC;AACA,SAASC,OAAT,QAAwB,cAAxB;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,OAAO,SAASC,SAAT,CAAmBC,SAAnB,EAAyC;AAAA,MAAXC,KAAW,uEAAH,CAAG;AAC5C,SAAOJ,OAAO,CAAC,UAACK,MAAD,EAASC,UAAT,EAAwB;AACnCD,IAAAA,MAAM,CAACE,SAAP,CAAiB,IAAIN,kBAAJ,CAAuBK,UAAvB,EAAmC,UAACE,KAAD;AAAA,aAAWT,eAAe,CAACO,UAAD,EAAaH,SAAb,EAAwB;AAAA,eAAMG,UAAU,CAACG,IAAX,CAAgBD,KAAhB,CAAN;AAAA,OAAxB,EAAsDJ,KAAtD,CAA1B;AAAA,KAAnC,EAA2H;AAAA,aAAML,eAAe,CAACO,UAAD,EAAaH,SAAb,EAAwB;AAAA,eAAMG,UAAU,CAACI,QAAX,EAAN;AAAA,OAAxB,EAAqDN,KAArD,CAArB;AAAA,KAA3H,EAA6M,UAACO,GAAD;AAAA,aAASZ,eAAe,CAACO,UAAD,EAAaH,SAAb,EAAwB;AAAA,eAAMG,UAAU,CAACM,KAAX,CAAiBD,GAAjB,CAAN;AAAA,OAAxB,EAAqDP,KAArD,CAAxB;AAAA,KAA7M,CAAjB;AACH,GAFa,CAAd;AAGH",
+    "sourcesContent": [
+      "import { executeSchedule } from '../util/executeSchedule';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function observeOn(scheduler, delay = 0) {\n    return operate((source, subscriber) => {\n        source.subscribe(new OperatorSubscriber(subscriber, (value) => executeSchedule(subscriber, scheduler, () => subscriber.next(value), delay), () => executeSchedule(subscriber, scheduler, () => subscriber.complete(), delay), (err) => executeSchedule(subscriber, scheduler, () => subscriber.error(err), delay)));\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

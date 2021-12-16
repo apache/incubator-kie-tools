@@ -1,0 +1,28 @@
+{
+  "ast": null,
+  "code": "import { Observable } from '../Observable';\nimport { isFunction } from '../util/isFunction';\nexport function throwError(errorOrErrorFactory, scheduler) {\n  var errorFactory = isFunction(errorOrErrorFactory) ? errorOrErrorFactory : function () {\n    return errorOrErrorFactory;\n  };\n\n  var init = function init(subscriber) {\n    return subscriber.error(errorFactory());\n  };\n\n  return new Observable(scheduler ? function (subscriber) {\n    return scheduler.schedule(init, 0, subscriber);\n  } : init);\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/observable/throwError.js"
+    ],
+    "names": [
+      "Observable",
+      "isFunction",
+      "throwError",
+      "errorOrErrorFactory",
+      "scheduler",
+      "errorFactory",
+      "init",
+      "subscriber",
+      "error",
+      "schedule"
+    ],
+    "mappings": "AAAA,SAASA,UAAT,QAA2B,eAA3B;AACA,SAASC,UAAT,QAA2B,oBAA3B;AACA,OAAO,SAASC,UAAT,CAAoBC,mBAApB,EAAyCC,SAAzC,EAAoD;AACvD,MAAMC,YAAY,GAAGJ,UAAU,CAACE,mBAAD,CAAV,GAAkCA,mBAAlC,GAAwD;AAAA,WAAMA,mBAAN;AAAA,GAA7E;;AACA,MAAMG,IAAI,GAAG,SAAPA,IAAO,CAACC,UAAD;AAAA,WAAgBA,UAAU,CAACC,KAAX,CAAiBH,YAAY,EAA7B,CAAhB;AAAA,GAAb;;AACA,SAAO,IAAIL,UAAJ,CAAeI,SAAS,GAAG,UAACG,UAAD;AAAA,WAAgBH,SAAS,CAACK,QAAV,CAAmBH,IAAnB,EAAyB,CAAzB,EAA4BC,UAA5B,CAAhB;AAAA,GAAH,GAA6DD,IAArF,CAAP;AACH",
+    "sourcesContent": [
+      "import { Observable } from '../Observable';\nimport { isFunction } from '../util/isFunction';\nexport function throwError(errorOrErrorFactory, scheduler) {\n    const errorFactory = isFunction(errorOrErrorFactory) ? errorOrErrorFactory : () => errorOrErrorFactory;\n    const init = (subscriber) => subscriber.error(errorFactory());\n    return new Observable(scheduler ? (subscriber) => scheduler.schedule(init, 0, subscriber) : init);\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

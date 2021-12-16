@@ -1,0 +1,29 @@
+{
+  "ast": null,
+  "code": "import _toConsumableArray from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/toConsumableArray.js\";\nimport { combineLatestInit } from '../observable/combineLatest';\nimport { operate } from '../util/lift';\nimport { argsOrArgArray } from '../util/argsOrArgArray';\nimport { mapOneOrManyArgs } from '../util/mapOneOrManyArgs';\nimport { pipe } from '../util/pipe';\nimport { popResultSelector } from '../util/args';\nexport function combineLatest() {\n  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {\n    args[_key] = arguments[_key];\n  }\n\n  var resultSelector = popResultSelector(args);\n  return resultSelector ? pipe(combineLatest.apply(void 0, args), mapOneOrManyArgs(resultSelector)) : operate(function (source, subscriber) {\n    combineLatestInit([source].concat(_toConsumableArray(argsOrArgArray(args))))(subscriber);\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/combineLatest.js"
+    ],
+    "names": [
+      "combineLatestInit",
+      "operate",
+      "argsOrArgArray",
+      "mapOneOrManyArgs",
+      "pipe",
+      "popResultSelector",
+      "combineLatest",
+      "args",
+      "resultSelector",
+      "source",
+      "subscriber"
+    ],
+    "mappings": ";AAAA,SAASA,iBAAT,QAAkC,6BAAlC;AACA,SAASC,OAAT,QAAwB,cAAxB;AACA,SAASC,cAAT,QAA+B,wBAA/B;AACA,SAASC,gBAAT,QAAiC,0BAAjC;AACA,SAASC,IAAT,QAAqB,cAArB;AACA,SAASC,iBAAT,QAAkC,cAAlC;AACA,OAAO,SAASC,aAAT,GAAgC;AAAA,oCAANC,IAAM;AAANA,IAAAA,IAAM;AAAA;;AACnC,MAAMC,cAAc,GAAGH,iBAAiB,CAACE,IAAD,CAAxC;AACA,SAAOC,cAAc,GACfJ,IAAI,CAACE,aAAa,MAAb,SAAiBC,IAAjB,CAAD,EAAyBJ,gBAAgB,CAACK,cAAD,CAAzC,CADW,GAEfP,OAAO,CAAC,UAACQ,MAAD,EAASC,UAAT,EAAwB;AAC9BV,IAAAA,iBAAiB,EAAES,MAAF,4BAAaP,cAAc,CAACK,IAAD,CAA3B,GAAjB,CAAqDG,UAArD;AACH,GAFQ,CAFb;AAKH",
+    "sourcesContent": [
+      "import { combineLatestInit } from '../observable/combineLatest';\nimport { operate } from '../util/lift';\nimport { argsOrArgArray } from '../util/argsOrArgArray';\nimport { mapOneOrManyArgs } from '../util/mapOneOrManyArgs';\nimport { pipe } from '../util/pipe';\nimport { popResultSelector } from '../util/args';\nexport function combineLatest(...args) {\n    const resultSelector = popResultSelector(args);\n    return resultSelector\n        ? pipe(combineLatest(...args), mapOneOrManyArgs(resultSelector))\n        : operate((source, subscriber) => {\n            combineLatestInit([source, ...argsOrArgArray(args)])(subscriber);\n        });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

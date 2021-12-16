@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { operate } from '../util/lift';\nimport { createFind } from './find';\nexport function findIndex(predicate, thisArg) {\n  return operate(createFind(predicate, thisArg, 'index'));\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/findIndex.js"
+    ],
+    "names": ["operate", "createFind", "findIndex", "predicate", "thisArg"],
+    "mappings": "AAAA,SAASA,OAAT,QAAwB,cAAxB;AACA,SAASC,UAAT,QAA2B,QAA3B;AACA,OAAO,SAASC,SAAT,CAAmBC,SAAnB,EAA8BC,OAA9B,EAAuC;AAC1C,SAAOJ,OAAO,CAACC,UAAU,CAACE,SAAD,EAAYC,OAAZ,EAAqB,OAArB,CAAX,CAAd;AACH",
+    "sourcesContent": [
+      "import { operate } from '../util/lift';\nimport { createFind } from './find';\nexport function findIndex(predicate, thisArg) {\n    return operate(createFind(predicate, thisArg, 'index'));\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

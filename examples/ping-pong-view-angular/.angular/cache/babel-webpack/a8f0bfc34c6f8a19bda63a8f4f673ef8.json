@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "export function createInvalidObservableTypeError(input) {\n  return new TypeError(\"You provided \".concat(input !== null && typeof input === 'object' ? 'an invalid object' : \"'\".concat(input, \"'\"), \" where a stream was expected. You can provide an Observable, Promise, ReadableStream, Array, AsyncIterable, or Iterable.\"));\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/util/throwUnobservableError.js"
+    ],
+    "names": ["createInvalidObservableTypeError", "input", "TypeError"],
+    "mappings": "AAAA,OAAO,SAASA,gCAAT,CAA0CC,KAA1C,EAAiD;AACpD,SAAO,IAAIC,SAAJ,wBAA8BD,KAAK,KAAK,IAAV,IAAkB,OAAOA,KAAP,KAAiB,QAAnC,GAA8C,mBAA9C,cAAwEA,KAAxE,MAA9B,8HAAP;AACH",
+    "sourcesContent": [
+      "export function createInvalidObservableTypeError(input) {\n    return new TypeError(`You provided ${input !== null && typeof input === 'object' ? 'an invalid object' : `'${input}'`} where a stream was expected. You can provide an Observable, Promise, ReadableStream, Array, AsyncIterable, or Iterable.`);\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,30 @@
+{
+  "ast": null,
+  "code": "import { concat } from '../observable/concat';\nimport { take } from './take';\nimport { ignoreElements } from './ignoreElements';\nimport { mapTo } from './mapTo';\nimport { mergeMap } from './mergeMap';\nexport function delayWhen(delayDurationSelector, subscriptionDelay) {\n  if (subscriptionDelay) {\n    return function (source) {\n      return concat(subscriptionDelay.pipe(take(1), ignoreElements()), source.pipe(delayWhen(delayDurationSelector)));\n    };\n  }\n\n  return mergeMap(function (value, index) {\n    return delayDurationSelector(value, index).pipe(take(1), mapTo(value));\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/delayWhen.js"
+    ],
+    "names": [
+      "concat",
+      "take",
+      "ignoreElements",
+      "mapTo",
+      "mergeMap",
+      "delayWhen",
+      "delayDurationSelector",
+      "subscriptionDelay",
+      "source",
+      "pipe",
+      "value",
+      "index"
+    ],
+    "mappings": "AAAA,SAASA,MAAT,QAAuB,sBAAvB;AACA,SAASC,IAAT,QAAqB,QAArB;AACA,SAASC,cAAT,QAA+B,kBAA/B;AACA,SAASC,KAAT,QAAsB,SAAtB;AACA,SAASC,QAAT,QAAyB,YAAzB;AACA,OAAO,SAASC,SAAT,CAAmBC,qBAAnB,EAA0CC,iBAA1C,EAA6D;AAChE,MAAIA,iBAAJ,EAAuB;AACnB,WAAO,UAACC,MAAD;AAAA,aAAYR,MAAM,CAACO,iBAAiB,CAACE,IAAlB,CAAuBR,IAAI,CAAC,CAAD,CAA3B,EAAgCC,cAAc,EAA9C,CAAD,EAAoDM,MAAM,CAACC,IAAP,CAAYJ,SAAS,CAACC,qBAAD,CAArB,CAApD,CAAlB;AAAA,KAAP;AACH;;AACD,SAAOF,QAAQ,CAAC,UAACM,KAAD,EAAQC,KAAR;AAAA,WAAkBL,qBAAqB,CAACI,KAAD,EAAQC,KAAR,CAArB,CAAoCF,IAApC,CAAyCR,IAAI,CAAC,CAAD,CAA7C,EAAkDE,KAAK,CAACO,KAAD,CAAvD,CAAlB;AAAA,GAAD,CAAf;AACH",
+    "sourcesContent": [
+      "import { concat } from '../observable/concat';\nimport { take } from './take';\nimport { ignoreElements } from './ignoreElements';\nimport { mapTo } from './mapTo';\nimport { mergeMap } from './mergeMap';\nexport function delayWhen(delayDurationSelector, subscriptionDelay) {\n    if (subscriptionDelay) {\n        return (source) => concat(subscriptionDelay.pipe(take(1), ignoreElements()), source.pipe(delayWhen(delayDurationSelector)));\n    }\n    return mergeMap((value, index) => delayDurationSelector(value, index).pipe(take(1), mapTo(value)));\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

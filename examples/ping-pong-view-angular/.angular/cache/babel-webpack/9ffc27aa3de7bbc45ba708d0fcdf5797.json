@@ -1,0 +1,32 @@
+{
+  "ast": null,
+  "code": "import { EmptyError } from '../util/EmptyError';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function throwIfEmpty() {\n  var errorFactory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultErrorFactory;\n  return operate(function (source, subscriber) {\n    var hasValue = false;\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      hasValue = true;\n      subscriber.next(value);\n    }, function () {\n      return hasValue ? subscriber.complete() : subscriber.error(errorFactory());\n    }));\n  });\n}\n\nfunction defaultErrorFactory() {\n  return new EmptyError();\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/throwIfEmpty.js"
+    ],
+    "names": [
+      "EmptyError",
+      "operate",
+      "OperatorSubscriber",
+      "throwIfEmpty",
+      "errorFactory",
+      "defaultErrorFactory",
+      "source",
+      "subscriber",
+      "hasValue",
+      "subscribe",
+      "value",
+      "next",
+      "complete",
+      "error"
+    ],
+    "mappings": "AAAA,SAASA,UAAT,QAA2B,oBAA3B;AACA,SAASC,OAAT,QAAwB,cAAxB;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,OAAO,SAASC,YAAT,GAA0D;AAAA,MAApCC,YAAoC,uEAArBC,mBAAqB;AAC7D,SAAOJ,OAAO,CAAC,UAACK,MAAD,EAASC,UAAT,EAAwB;AACnC,QAAIC,QAAQ,GAAG,KAAf;AACAF,IAAAA,MAAM,CAACG,SAAP,CAAiB,IAAIP,kBAAJ,CAAuBK,UAAvB,EAAmC,UAACG,KAAD,EAAW;AAC3DF,MAAAA,QAAQ,GAAG,IAAX;AACAD,MAAAA,UAAU,CAACI,IAAX,CAAgBD,KAAhB;AACH,KAHgB,EAGd;AAAA,aAAOF,QAAQ,GAAGD,UAAU,CAACK,QAAX,EAAH,GAA2BL,UAAU,CAACM,KAAX,CAAiBT,YAAY,EAA7B,CAA1C;AAAA,KAHc,CAAjB;AAIH,GANa,CAAd;AAOH;;AACD,SAASC,mBAAT,GAA+B;AAC3B,SAAO,IAAIL,UAAJ,EAAP;AACH",
+    "sourcesContent": [
+      "import { EmptyError } from '../util/EmptyError';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function throwIfEmpty(errorFactory = defaultErrorFactory) {\n    return operate((source, subscriber) => {\n        let hasValue = false;\n        source.subscribe(new OperatorSubscriber(subscriber, (value) => {\n            hasValue = true;\n            subscriber.next(value);\n        }, () => (hasValue ? subscriber.complete() : subscriber.error(errorFactory()))));\n    });\n}\nfunction defaultErrorFactory() {\n    return new EmptyError();\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

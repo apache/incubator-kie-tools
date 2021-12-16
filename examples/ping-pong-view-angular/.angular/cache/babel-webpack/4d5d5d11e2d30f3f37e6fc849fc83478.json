@@ -1,0 +1,31 @@
+{
+  "ast": null,
+  "code": "import { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function takeWhile(predicate) {\n  var inclusive = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;\n  return operate(function (source, subscriber) {\n    var index = 0;\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      var result = predicate(value, index++);\n      (result || inclusive) && subscriber.next(value);\n      !result && subscriber.complete();\n    }));\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/takeWhile.js"
+    ],
+    "names": [
+      "operate",
+      "OperatorSubscriber",
+      "takeWhile",
+      "predicate",
+      "inclusive",
+      "source",
+      "subscriber",
+      "index",
+      "subscribe",
+      "value",
+      "result",
+      "next",
+      "complete"
+    ],
+    "mappings": "AAAA,SAASA,OAAT,QAAwB,cAAxB;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,OAAO,SAASC,SAAT,CAAmBC,SAAnB,EAAiD;AAAA,MAAnBC,SAAmB,uEAAP,KAAO;AACpD,SAAOJ,OAAO,CAAC,UAACK,MAAD,EAASC,UAAT,EAAwB;AACnC,QAAIC,KAAK,GAAG,CAAZ;AACAF,IAAAA,MAAM,CAACG,SAAP,CAAiB,IAAIP,kBAAJ,CAAuBK,UAAvB,EAAmC,UAACG,KAAD,EAAW;AAC3D,UAAMC,MAAM,GAAGP,SAAS,CAACM,KAAD,EAAQF,KAAK,EAAb,CAAxB;AACA,OAACG,MAAM,IAAIN,SAAX,KAAyBE,UAAU,CAACK,IAAX,CAAgBF,KAAhB,CAAzB;AACA,OAACC,MAAD,IAAWJ,UAAU,CAACM,QAAX,EAAX;AACH,KAJgB,CAAjB;AAKH,GAPa,CAAd;AAQH",
+    "sourcesContent": [
+      "import { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function takeWhile(predicate, inclusive = false) {\n    return operate((source, subscriber) => {\n        let index = 0;\n        source.subscribe(new OperatorSubscriber(subscriber, (value) => {\n            const result = predicate(value, index++);\n            (result || inclusive) && subscriber.next(value);\n            !result && subscriber.complete();\n        }));\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

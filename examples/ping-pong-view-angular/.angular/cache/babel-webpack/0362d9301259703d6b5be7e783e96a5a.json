@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "export function createObject(keys, values) {\n  return keys.reduce(function (result, key, i) {\n    return result[key] = values[i], result;\n  }, {});\n} //# sourceMappingURL=createObject.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

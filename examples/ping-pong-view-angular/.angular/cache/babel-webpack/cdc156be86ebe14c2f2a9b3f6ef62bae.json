@@ -1,0 +1,31 @@
+{
+  "ast": null,
+  "code": "import { switchMap } from './switchMap';\nimport { operate } from '../util/lift';\nexport function switchScan(accumulator, seed) {\n  return operate(function (source, subscriber) {\n    var state = seed;\n    switchMap(function (value, index) {\n      return accumulator(state, value, index);\n    }, function (_, innerValue) {\n      return state = innerValue, innerValue;\n    })(source).subscribe(subscriber);\n    return function () {\n      state = null;\n    };\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/switchScan.js"
+    ],
+    "names": [
+      "switchMap",
+      "operate",
+      "switchScan",
+      "accumulator",
+      "seed",
+      "source",
+      "subscriber",
+      "state",
+      "value",
+      "index",
+      "_",
+      "innerValue",
+      "subscribe"
+    ],
+    "mappings": "AAAA,SAASA,SAAT,QAA0B,aAA1B;AACA,SAASC,OAAT,QAAwB,cAAxB;AACA,OAAO,SAASC,UAAT,CAAoBC,WAApB,EAAiCC,IAAjC,EAAuC;AAC1C,SAAOH,OAAO,CAAC,UAACI,MAAD,EAASC,UAAT,EAAwB;AACnC,QAAIC,KAAK,GAAGH,IAAZ;AACAJ,IAAAA,SAAS,CAAC,UAACQ,KAAD,EAAQC,KAAR;AAAA,aAAkBN,WAAW,CAACI,KAAD,EAAQC,KAAR,EAAeC,KAAf,CAA7B;AAAA,KAAD,EAAqD,UAACC,CAAD,EAAIC,UAAJ;AAAA,aAAqBJ,KAAK,GAAGI,UAAT,EAAsBA,UAA1C;AAAA,KAArD,CAAT,CAAqHN,MAArH,EAA6HO,SAA7H,CAAuIN,UAAvI;AACA,WAAO,YAAM;AACTC,MAAAA,KAAK,GAAG,IAAR;AACH,KAFD;AAGH,GANa,CAAd;AAOH",
+    "sourcesContent": [
+      "import { switchMap } from './switchMap';\nimport { operate } from '../util/lift';\nexport function switchScan(accumulator, seed) {\n    return operate((source, subscriber) => {\n        let state = seed;\n        switchMap((value, index) => accumulator(state, value, index), (_, innerValue) => ((state = innerValue), innerValue))(source).subscribe(subscriber);\n        return () => {\n            state = null;\n        };\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

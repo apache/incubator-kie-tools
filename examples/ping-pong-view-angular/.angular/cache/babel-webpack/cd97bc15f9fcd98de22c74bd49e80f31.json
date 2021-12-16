@@ -1,0 +1,28 @@
+{
+  "ast": null,
+  "code": "import { config } from '../config';\nvar context = null;\nexport function errorContext(cb) {\n  if (config.useDeprecatedSynchronousErrorHandling) {\n    var isRoot = !context;\n\n    if (isRoot) {\n      context = {\n        errorThrown: false,\n        error: null\n      };\n    }\n\n    cb();\n\n    if (isRoot) {\n      var _context = context,\n          errorThrown = _context.errorThrown,\n          error = _context.error;\n      context = null;\n\n      if (errorThrown) {\n        throw error;\n      }\n    }\n  } else {\n    cb();\n  }\n}\nexport function captureError(err) {\n  if (config.useDeprecatedSynchronousErrorHandling && context) {\n    context.errorThrown = true;\n    context.error = err;\n  }\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/util/errorContext.js"
+    ],
+    "names": [
+      "config",
+      "context",
+      "errorContext",
+      "cb",
+      "useDeprecatedSynchronousErrorHandling",
+      "isRoot",
+      "errorThrown",
+      "error",
+      "captureError",
+      "err"
+    ],
+    "mappings": "AAAA,SAASA,MAAT,QAAuB,WAAvB;AACA,IAAIC,OAAO,GAAG,IAAd;AACA,OAAO,SAASC,YAAT,CAAsBC,EAAtB,EAA0B;AAC7B,MAAIH,MAAM,CAACI,qCAAX,EAAkD;AAC9C,QAAMC,MAAM,GAAG,CAACJ,OAAhB;;AACA,QAAII,MAAJ,EAAY;AACRJ,MAAAA,OAAO,GAAG;AAAEK,QAAAA,WAAW,EAAE,KAAf;AAAsBC,QAAAA,KAAK,EAAE;AAA7B,OAAV;AACH;;AACDJ,IAAAA,EAAE;;AACF,QAAIE,MAAJ,EAAY;AACR,qBAA+BJ,OAA/B;AAAA,UAAQK,WAAR,YAAQA,WAAR;AAAA,UAAqBC,KAArB,YAAqBA,KAArB;AACAN,MAAAA,OAAO,GAAG,IAAV;;AACA,UAAIK,WAAJ,EAAiB;AACb,cAAMC,KAAN;AACH;AACJ;AACJ,GAbD,MAcK;AACDJ,IAAAA,EAAE;AACL;AACJ;AACD,OAAO,SAASK,YAAT,CAAsBC,GAAtB,EAA2B;AAC9B,MAAIT,MAAM,CAACI,qCAAP,IAAgDH,OAApD,EAA6D;AACzDA,IAAAA,OAAO,CAACK,WAAR,GAAsB,IAAtB;AACAL,IAAAA,OAAO,CAACM,KAAR,GAAgBE,GAAhB;AACH;AACJ",
+    "sourcesContent": [
+      "import { config } from '../config';\nlet context = null;\nexport function errorContext(cb) {\n    if (config.useDeprecatedSynchronousErrorHandling) {\n        const isRoot = !context;\n        if (isRoot) {\n            context = { errorThrown: false, error: null };\n        }\n        cb();\n        if (isRoot) {\n            const { errorThrown, error } = context;\n            context = null;\n            if (errorThrown) {\n                throw error;\n            }\n        }\n    }\n    else {\n        cb();\n    }\n}\nexport function captureError(err) {\n    if (config.useDeprecatedSynchronousErrorHandling && context) {\n        context.errorThrown = true;\n        context.error = err;\n    }\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

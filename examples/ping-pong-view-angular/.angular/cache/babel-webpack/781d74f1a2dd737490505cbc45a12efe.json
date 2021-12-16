@@ -1,0 +1,28 @@
+{
+  "ast": null,
+  "code": "import { reduce } from './reduce';\nimport { operate } from '../util/lift';\n\nvar arrReducer = function arrReducer(arr, value) {\n  return arr.push(value), arr;\n};\n\nexport function toArray() {\n  return operate(function (source, subscriber) {\n    reduce(arrReducer, [])(source).subscribe(subscriber);\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/toArray.js"
+    ],
+    "names": [
+      "reduce",
+      "operate",
+      "arrReducer",
+      "arr",
+      "value",
+      "push",
+      "toArray",
+      "source",
+      "subscriber",
+      "subscribe"
+    ],
+    "mappings": "AAAA,SAASA,MAAT,QAAuB,UAAvB;AACA,SAASC,OAAT,QAAwB,cAAxB;;AACA,IAAMC,UAAU,GAAG,SAAbA,UAAa,CAACC,GAAD,EAAMC,KAAN;AAAA,SAAiBD,GAAG,CAACE,IAAJ,CAASD,KAAT,GAAiBD,GAAlC;AAAA,CAAnB;;AACA,OAAO,SAASG,OAAT,GAAmB;AACtB,SAAOL,OAAO,CAAC,UAACM,MAAD,EAASC,UAAT,EAAwB;AACnCR,IAAAA,MAAM,CAACE,UAAD,EAAa,EAAb,CAAN,CAAuBK,MAAvB,EAA+BE,SAA/B,CAAyCD,UAAzC;AACH,GAFa,CAAd;AAGH",
+    "sourcesContent": [
+      "import { reduce } from './reduce';\nimport { operate } from '../util/lift';\nconst arrReducer = (arr, value) => (arr.push(value), arr);\nexport function toArray() {\n    return operate((source, subscriber) => {\n        reduce(arrReducer, [])(source).subscribe(subscriber);\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

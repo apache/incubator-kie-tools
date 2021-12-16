@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { operate } from '../util/lift';\nexport function finalize(callback) {\n  return operate(function (source, subscriber) {\n    try {\n      source.subscribe(subscriber);\n    } finally {\n      subscriber.add(callback);\n    }\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/finalize.js"
+    ],
+    "names": ["operate", "finalize", "callback", "source", "subscriber", "subscribe", "add"],
+    "mappings": "AAAA,SAASA,OAAT,QAAwB,cAAxB;AACA,OAAO,SAASC,QAAT,CAAkBC,QAAlB,EAA4B;AAC/B,SAAOF,OAAO,CAAC,UAACG,MAAD,EAASC,UAAT,EAAwB;AACnC,QAAI;AACAD,MAAAA,MAAM,CAACE,SAAP,CAAiBD,UAAjB;AACH,KAFD,SAGQ;AACJA,MAAAA,UAAU,CAACE,GAAX,CAAeJ,QAAf;AACH;AACJ,GAPa,CAAd;AAQH",
+    "sourcesContent": [
+      "import { operate } from '../util/lift';\nexport function finalize(callback) {\n    return operate((source, subscriber) => {\n        try {\n            source.subscribe(subscriber);\n        }\n        finally {\n            subscriber.add(callback);\n        }\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

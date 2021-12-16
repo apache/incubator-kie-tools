@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { createErrorClass } from './createErrorClass';\nexport var ArgumentOutOfRangeError = createErrorClass(function (_super) {\n  return function ArgumentOutOfRangeErrorImpl() {\n    _super(this);\n\n    this.name = 'ArgumentOutOfRangeError';\n    this.message = 'argument out of range';\n  };\n}); //# sourceMappingURL=ArgumentOutOfRangeError.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

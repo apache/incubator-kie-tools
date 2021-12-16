@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { reduce } from './reduce';\nexport function count(predicate) {\n  return reduce(function (total, value, i) {\n    return !predicate || predicate(value, i) ? total + 1 : total;\n  }, 0);\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/count.js"
+    ],
+    "names": ["reduce", "count", "predicate", "total", "value", "i"],
+    "mappings": "AAAA,SAASA,MAAT,QAAuB,UAAvB;AACA,OAAO,SAASC,KAAT,CAAeC,SAAf,EAA0B;AAC7B,SAAOF,MAAM,CAAC,UAACG,KAAD,EAAQC,KAAR,EAAeC,CAAf;AAAA,WAAsB,CAACH,SAAD,IAAcA,SAAS,CAACE,KAAD,EAAQC,CAAR,CAAvB,GAAoCF,KAAK,GAAG,CAA5C,GAAgDA,KAAtE;AAAA,GAAD,EAA+E,CAA/E,CAAb;AACH",
+    "sourcesContent": [
+      "import { reduce } from './reduce';\nexport function count(predicate) {\n    return reduce((total, value, i) => (!predicate || predicate(value, i) ? total + 1 : total), 0);\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,33 @@
+{
+  "ast": null,
+  "code": "import { ReplaySubject } from '../ReplaySubject';\nimport { share } from './share';\nexport function shareReplay(configOrBufferSize, windowTime, scheduler) {\n  var _a, _b;\n\n  var bufferSize;\n  var refCount = false;\n\n  if (configOrBufferSize && typeof configOrBufferSize === 'object') {\n    bufferSize = (_a = configOrBufferSize.bufferSize) !== null && _a !== void 0 ? _a : Infinity;\n    windowTime = (_b = configOrBufferSize.windowTime) !== null && _b !== void 0 ? _b : Infinity;\n    refCount = !!configOrBufferSize.refCount;\n    scheduler = configOrBufferSize.scheduler;\n  } else {\n    bufferSize = configOrBufferSize !== null && configOrBufferSize !== void 0 ? configOrBufferSize : Infinity;\n  }\n\n  return share({\n    connector: function connector() {\n      return new ReplaySubject(bufferSize, windowTime, scheduler);\n    },\n    resetOnError: true,\n    resetOnComplete: false,\n    resetOnRefCountZero: refCount\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/shareReplay.js"
+    ],
+    "names": [
+      "ReplaySubject",
+      "share",
+      "shareReplay",
+      "configOrBufferSize",
+      "windowTime",
+      "scheduler",
+      "_a",
+      "_b",
+      "bufferSize",
+      "refCount",
+      "Infinity",
+      "connector",
+      "resetOnError",
+      "resetOnComplete",
+      "resetOnRefCountZero"
+    ],
+    "mappings": "AAAA,SAASA,aAAT,QAA8B,kBAA9B;AACA,SAASC,KAAT,QAAsB,SAAtB;AACA,OAAO,SAASC,WAAT,CAAqBC,kBAArB,EAAyCC,UAAzC,EAAqDC,SAArD,EAAgE;AACnE,MAAIC,EAAJ,EAAQC,EAAR;;AACA,MAAIC,UAAJ;AACA,MAAIC,QAAQ,GAAG,KAAf;;AACA,MAAIN,kBAAkB,IAAI,OAAOA,kBAAP,KAA8B,QAAxD,EAAkE;AAC9DK,IAAAA,UAAU,GAAG,CAACF,EAAE,GAAGH,kBAAkB,CAACK,UAAzB,MAAyC,IAAzC,IAAiDF,EAAE,KAAK,KAAK,CAA7D,GAAiEA,EAAjE,GAAsEI,QAAnF;AACAN,IAAAA,UAAU,GAAG,CAACG,EAAE,GAAGJ,kBAAkB,CAACC,UAAzB,MAAyC,IAAzC,IAAiDG,EAAE,KAAK,KAAK,CAA7D,GAAiEA,EAAjE,GAAsEG,QAAnF;AACAD,IAAAA,QAAQ,GAAG,CAAC,CAACN,kBAAkB,CAACM,QAAhC;AACAJ,IAAAA,SAAS,GAAGF,kBAAkB,CAACE,SAA/B;AACH,GALD,MAMK;AACDG,IAAAA,UAAU,GAAGL,kBAAkB,KAAK,IAAvB,IAA+BA,kBAAkB,KAAK,KAAK,CAA3D,GAA+DA,kBAA/D,GAAoFO,QAAjG;AACH;;AACD,SAAOT,KAAK,CAAC;AACTU,IAAAA,SAAS,EAAE;AAAA,aAAM,IAAIX,aAAJ,CAAkBQ,UAAlB,EAA8BJ,UAA9B,EAA0CC,SAA1C,CAAN;AAAA,KADF;AAETO,IAAAA,YAAY,EAAE,IAFL;AAGTC,IAAAA,eAAe,EAAE,KAHR;AAITC,IAAAA,mBAAmB,EAAEL;AAJZ,GAAD,CAAZ;AAMH",
+    "sourcesContent": [
+      "import { ReplaySubject } from '../ReplaySubject';\nimport { share } from './share';\nexport function shareReplay(configOrBufferSize, windowTime, scheduler) {\n    var _a, _b;\n    let bufferSize;\n    let refCount = false;\n    if (configOrBufferSize && typeof configOrBufferSize === 'object') {\n        bufferSize = (_a = configOrBufferSize.bufferSize) !== null && _a !== void 0 ? _a : Infinity;\n        windowTime = (_b = configOrBufferSize.windowTime) !== null && _b !== void 0 ? _b : Infinity;\n        refCount = !!configOrBufferSize.refCount;\n        scheduler = configOrBufferSize.scheduler;\n    }\n    else {\n        bufferSize = configOrBufferSize !== null && configOrBufferSize !== void 0 ? configOrBufferSize : Infinity;\n    }\n    return share({\n        connector: () => new ReplaySubject(bufferSize, windowTime, scheduler),\n        resetOnError: true,\n        resetOnComplete: false,\n        resetOnRefCountZero: refCount\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

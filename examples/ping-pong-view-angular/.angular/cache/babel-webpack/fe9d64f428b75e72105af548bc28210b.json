@@ -1,0 +1,55 @@
+{
+  "ast": null,
+  "code": "import _slicedToArray from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/slicedToArray.js\";\nimport { innerFrom } from '../observable/innerFrom';\nimport { Observable } from '../Observable';\nimport { mergeMap } from '../operators/mergeMap';\nimport { isArrayLike } from '../util/isArrayLike';\nimport { isFunction } from '../util/isFunction';\nimport { mapOneOrManyArgs } from '../util/mapOneOrManyArgs';\nvar nodeEventEmitterMethods = ['addListener', 'removeListener'];\nvar eventTargetMethods = ['addEventListener', 'removeEventListener'];\nvar jqueryMethods = ['on', 'off'];\nexport function fromEvent(target, eventName, options, resultSelector) {\n  if (isFunction(options)) {\n    resultSelector = options;\n    options = undefined;\n  }\n\n  if (resultSelector) {\n    return fromEvent(target, eventName, options).pipe(mapOneOrManyArgs(resultSelector));\n  }\n\n  var _ref = isEventTarget(target) ? eventTargetMethods.map(function (methodName) {\n    return function (handler) {\n      return target[methodName](eventName, handler, options);\n    };\n  }) : isNodeStyleEventEmitter(target) ? nodeEventEmitterMethods.map(toCommonHandlerRegistry(target, eventName)) : isJQueryStyleEventEmitter(target) ? jqueryMethods.map(toCommonHandlerRegistry(target, eventName)) : [],\n      _ref2 = _slicedToArray(_ref, 2),\n      add = _ref2[0],\n      remove = _ref2[1];\n\n  if (!add) {\n    if (isArrayLike(target)) {\n      return mergeMap(function (subTarget) {\n        return fromEvent(subTarget, eventName, options);\n      })(innerFrom(target));\n    }\n  }\n\n  if (!add) {\n    throw new TypeError('Invalid event target');\n  }\n\n  return new Observable(function (subscriber) {\n    var handler = function handler() {\n      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {\n        args[_key] = arguments[_key];\n      }\n\n      return subscriber.next(1 < args.length ? args : args[0]);\n    };\n\n    add(handler);\n    return function () {\n      return remove(handler);\n    };\n  });\n}\n\nfunction toCommonHandlerRegistry(target, eventName) {\n  return function (methodName) {\n    return function (handler) {\n      return target[methodName](eventName, handler);\n    };\n  };\n}\n\nfunction isNodeStyleEventEmitter(target) {\n  return isFunction(target.addListener) && isFunction(target.removeListener);\n}\n\nfunction isJQueryStyleEventEmitter(target) {\n  return isFunction(target.on) && isFunction(target.off);\n}\n\nfunction isEventTarget(target) {\n  return isFunction(target.addEventListener) && isFunction(target.removeEventListener);\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/observable/fromEvent.js"
+    ],
+    "names": [
+      "innerFrom",
+      "Observable",
+      "mergeMap",
+      "isArrayLike",
+      "isFunction",
+      "mapOneOrManyArgs",
+      "nodeEventEmitterMethods",
+      "eventTargetMethods",
+      "jqueryMethods",
+      "fromEvent",
+      "target",
+      "eventName",
+      "options",
+      "resultSelector",
+      "undefined",
+      "pipe",
+      "isEventTarget",
+      "map",
+      "methodName",
+      "handler",
+      "isNodeStyleEventEmitter",
+      "toCommonHandlerRegistry",
+      "isJQueryStyleEventEmitter",
+      "add",
+      "remove",
+      "subTarget",
+      "TypeError",
+      "subscriber",
+      "args",
+      "next",
+      "length",
+      "addListener",
+      "removeListener",
+      "on",
+      "off",
+      "addEventListener",
+      "removeEventListener"
+    ],
+    "mappings": "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",
+    "sourcesContent": [
+      "import { innerFrom } from '../observable/innerFrom';\nimport { Observable } from '../Observable';\nimport { mergeMap } from '../operators/mergeMap';\nimport { isArrayLike } from '../util/isArrayLike';\nimport { isFunction } from '../util/isFunction';\nimport { mapOneOrManyArgs } from '../util/mapOneOrManyArgs';\nconst nodeEventEmitterMethods = ['addListener', 'removeListener'];\nconst eventTargetMethods = ['addEventListener', 'removeEventListener'];\nconst jqueryMethods = ['on', 'off'];\nexport function fromEvent(target, eventName, options, resultSelector) {\n    if (isFunction(options)) {\n        resultSelector = options;\n        options = undefined;\n    }\n    if (resultSelector) {\n        return fromEvent(target, eventName, options).pipe(mapOneOrManyArgs(resultSelector));\n    }\n    const [add, remove] = isEventTarget(target)\n        ? eventTargetMethods.map((methodName) => (handler) => target[methodName](eventName, handler, options))\n        :\n            isNodeStyleEventEmitter(target)\n                ? nodeEventEmitterMethods.map(toCommonHandlerRegistry(target, eventName))\n                : isJQueryStyleEventEmitter(target)\n                    ? jqueryMethods.map(toCommonHandlerRegistry(target, eventName))\n                    : [];\n    if (!add) {\n        if (isArrayLike(target)) {\n            return mergeMap((subTarget) => fromEvent(subTarget, eventName, options))(innerFrom(target));\n        }\n    }\n    if (!add) {\n        throw new TypeError('Invalid event target');\n    }\n    return new Observable((subscriber) => {\n        const handler = (...args) => subscriber.next(1 < args.length ? args : args[0]);\n        add(handler);\n        return () => remove(handler);\n    });\n}\nfunction toCommonHandlerRegistry(target, eventName) {\n    return (methodName) => (handler) => target[methodName](eventName, handler);\n}\nfunction isNodeStyleEventEmitter(target) {\n    return isFunction(target.addListener) && isFunction(target.removeListener);\n}\nfunction isJQueryStyleEventEmitter(target) {\n    return isFunction(target.on) && isFunction(target.off);\n}\nfunction isEventTarget(target) {\n    return isFunction(target.addEventListener) && isFunction(target.removeEventListener);\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

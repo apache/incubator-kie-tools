@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { zip as zipStatic } from '../observable/zip';\nimport { operate } from '../util/lift';\nexport function zip() {\n  for (var _len = arguments.length, sources = new Array(_len), _key = 0; _key < _len; _key++) {\n    sources[_key] = arguments[_key];\n  }\n\n  return operate(function (source, subscriber) {\n    zipStatic.apply(void 0, [source].concat(sources)).subscribe(subscriber);\n  });\n} //# sourceMappingURL=zip.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

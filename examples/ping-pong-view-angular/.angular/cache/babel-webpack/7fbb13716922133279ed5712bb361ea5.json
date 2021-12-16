@@ -1,0 +1,15 @@
+{
+  "ast": null,
+  "code": "export function identity(x) {\n  return x;\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/util/identity.js"
+    ],
+    "names": ["identity", "x"],
+    "mappings": "AAAA,OAAO,SAASA,QAAT,CAAkBC,CAAlB,EAAqB;AACxB,SAAOA,CAAP;AACH",
+    "sourcesContent": ["export function identity(x) {\n    return x;\n}\n"]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

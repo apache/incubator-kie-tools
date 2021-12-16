@@ -1,0 +1,32 @@
+{
+  "ast": null,
+  "code": "import _toConsumableArray from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/toConsumableArray.js\";\nimport { operate } from '../util/lift';\nimport { argsOrArgArray } from '../util/argsOrArgArray';\nimport { mergeAll } from './mergeAll';\nimport { popNumber, popScheduler } from '../util/args';\nimport { from } from '../observable/from';\nexport function merge() {\n  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {\n    args[_key] = arguments[_key];\n  }\n\n  var scheduler = popScheduler(args);\n  var concurrent = popNumber(args, Infinity);\n  args = argsOrArgArray(args);\n  return operate(function (source, subscriber) {\n    mergeAll(concurrent)(from([source].concat(_toConsumableArray(args)), scheduler)).subscribe(subscriber);\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/merge.js"
+    ],
+    "names": [
+      "operate",
+      "argsOrArgArray",
+      "mergeAll",
+      "popNumber",
+      "popScheduler",
+      "from",
+      "merge",
+      "args",
+      "scheduler",
+      "concurrent",
+      "Infinity",
+      "source",
+      "subscriber",
+      "subscribe"
+    ],
+    "mappings": ";AAAA,SAASA,OAAT,QAAwB,cAAxB;AACA,SAASC,cAAT,QAA+B,wBAA/B;AACA,SAASC,QAAT,QAAyB,YAAzB;AACA,SAASC,SAAT,EAAoBC,YAApB,QAAwC,cAAxC;AACA,SAASC,IAAT,QAAqB,oBAArB;AACA,OAAO,SAASC,KAAT,GAAwB;AAAA,oCAANC,IAAM;AAANA,IAAAA,IAAM;AAAA;;AAC3B,MAAMC,SAAS,GAAGJ,YAAY,CAACG,IAAD,CAA9B;AACA,MAAME,UAAU,GAAGN,SAAS,CAACI,IAAD,EAAOG,QAAP,CAA5B;AACAH,EAAAA,IAAI,GAAGN,cAAc,CAACM,IAAD,CAArB;AACA,SAAOP,OAAO,CAAC,UAACW,MAAD,EAASC,UAAT,EAAwB;AACnCV,IAAAA,QAAQ,CAACO,UAAD,CAAR,CAAqBJ,IAAI,EAAEM,MAAF,4BAAaJ,IAAb,IAAoBC,SAApB,CAAzB,EAAyDK,SAAzD,CAAmED,UAAnE;AACH,GAFa,CAAd;AAGH",
+    "sourcesContent": [
+      "import { operate } from '../util/lift';\nimport { argsOrArgArray } from '../util/argsOrArgArray';\nimport { mergeAll } from './mergeAll';\nimport { popNumber, popScheduler } from '../util/args';\nimport { from } from '../observable/from';\nexport function merge(...args) {\n    const scheduler = popScheduler(args);\n    const concurrent = popNumber(args, Infinity);\n    args = argsOrArgArray(args);\n    return operate((source, subscriber) => {\n        mergeAll(concurrent)(from([source, ...args], scheduler)).subscribe(subscriber);\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

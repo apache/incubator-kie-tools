@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { Observable } from '../../Observable';\nimport { Subscription } from '../../Subscription';\nimport { performanceTimestampProvider } from '../../scheduler/performanceTimestampProvider';\nimport { animationFrameProvider } from '../../scheduler/animationFrameProvider';\nexport function animationFrames(timestampProvider) {\n  return timestampProvider ? animationFramesFactory(timestampProvider) : DEFAULT_ANIMATION_FRAMES;\n}\n\nfunction animationFramesFactory(timestampProvider) {\n  var schedule = animationFrameProvider.schedule;\n  return new Observable(function (subscriber) {\n    var subscription = new Subscription();\n    var provider = timestampProvider || performanceTimestampProvider;\n    var start = provider.now();\n\n    var run = function run(timestamp) {\n      var now = provider.now();\n      subscriber.next({\n        timestamp: timestampProvider ? now : timestamp,\n        elapsed: now - start\n      });\n\n      if (!subscriber.closed) {\n        subscription.add(schedule(run));\n      }\n    };\n\n    subscription.add(schedule(run));\n    return subscription;\n  });\n}\n\nvar DEFAULT_ANIMATION_FRAMES = animationFramesFactory(); //# sourceMappingURL=animationFrames.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

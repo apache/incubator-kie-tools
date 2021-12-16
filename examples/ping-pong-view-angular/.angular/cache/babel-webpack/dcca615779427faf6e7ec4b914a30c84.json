@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { mergeMap } from './mergeMap';\nimport { isFunction } from '../util/isFunction';\nexport function mergeMapTo(innerObservable, resultSelector) {\n  var concurrent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Infinity;\n\n  if (isFunction(resultSelector)) {\n    return mergeMap(function () {\n      return innerObservable;\n    }, resultSelector, concurrent);\n  }\n\n  if (typeof resultSelector === 'number') {\n    concurrent = resultSelector;\n  }\n\n  return mergeMap(function () {\n    return innerObservable;\n  }, concurrent);\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/mergeMapTo.js"
+    ],
+    "names": ["mergeMap", "isFunction", "mergeMapTo", "innerObservable", "resultSelector", "concurrent", "Infinity"],
+    "mappings": "AAAA,SAASA,QAAT,QAAyB,YAAzB;AACA,SAASC,UAAT,QAA2B,oBAA3B;AACA,OAAO,SAASC,UAAT,CAAoBC,eAApB,EAAqCC,cAArC,EAA4E;AAAA,MAAvBC,UAAuB,uEAAVC,QAAU;;AAC/E,MAAIL,UAAU,CAACG,cAAD,CAAd,EAAgC;AAC5B,WAAOJ,QAAQ,CAAC;AAAA,aAAMG,eAAN;AAAA,KAAD,EAAwBC,cAAxB,EAAwCC,UAAxC,CAAf;AACH;;AACD,MAAI,OAAOD,cAAP,KAA0B,QAA9B,EAAwC;AACpCC,IAAAA,UAAU,GAAGD,cAAb;AACH;;AACD,SAAOJ,QAAQ,CAAC;AAAA,WAAMG,eAAN;AAAA,GAAD,EAAwBE,UAAxB,CAAf;AACH",
+    "sourcesContent": [
+      "import { mergeMap } from './mergeMap';\nimport { isFunction } from '../util/isFunction';\nexport function mergeMapTo(innerObservable, resultSelector, concurrent = Infinity) {\n    if (isFunction(resultSelector)) {\n        return mergeMap(() => innerObservable, resultSelector, concurrent);\n    }\n    if (typeof resultSelector === 'number') {\n        concurrent = resultSelector;\n    }\n    return mergeMap(() => innerObservable, concurrent);\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

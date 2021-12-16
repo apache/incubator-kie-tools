@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function isEmpty() {\n  return operate(function (source, subscriber) {\n    source.subscribe(new OperatorSubscriber(subscriber, function () {\n      subscriber.next(false);\n      subscriber.complete();\n    }, function () {\n      subscriber.next(true);\n      subscriber.complete();\n    }));\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/isEmpty.js"
+    ],
+    "names": ["operate", "OperatorSubscriber", "isEmpty", "source", "subscriber", "subscribe", "next", "complete"],
+    "mappings": "AAAA,SAASA,OAAT,QAAwB,cAAxB;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,OAAO,SAASC,OAAT,GAAmB;AACtB,SAAOF,OAAO,CAAC,UAACG,MAAD,EAASC,UAAT,EAAwB;AACnCD,IAAAA,MAAM,CAACE,SAAP,CAAiB,IAAIJ,kBAAJ,CAAuBG,UAAvB,EAAmC,YAAM;AACtDA,MAAAA,UAAU,CAACE,IAAX,CAAgB,KAAhB;AACAF,MAAAA,UAAU,CAACG,QAAX;AACH,KAHgB,EAGd,YAAM;AACLH,MAAAA,UAAU,CAACE,IAAX,CAAgB,IAAhB;AACAF,MAAAA,UAAU,CAACG,QAAX;AACH,KANgB,CAAjB;AAOH,GARa,CAAd;AASH",
+    "sourcesContent": [
+      "import { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function isEmpty() {\n    return operate((source, subscriber) => {\n        source.subscribe(new OperatorSubscriber(subscriber, () => {\n            subscriber.next(false);\n            subscriber.complete();\n        }, () => {\n            subscriber.next(true);\n            subscriber.complete();\n        }));\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

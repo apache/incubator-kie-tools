@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { switchMap } from './switchMap';\nimport { identity } from '../util/identity';\nexport function switchAll() {\n  return switchMap(identity);\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/switchAll.js"
+    ],
+    "names": ["switchMap", "identity", "switchAll"],
+    "mappings": "AAAA,SAASA,SAAT,QAA0B,aAA1B;AACA,SAASC,QAAT,QAAyB,kBAAzB;AACA,OAAO,SAASC,SAAT,GAAqB;AACxB,SAAOF,SAAS,CAACC,QAAD,CAAhB;AACH",
+    "sourcesContent": [
+      "import { switchMap } from './switchMap';\nimport { identity } from '../util/identity';\nexport function switchAll() {\n    return switchMap(identity);\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

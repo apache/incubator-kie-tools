@@ -1,0 +1,55 @@
+{
+  "ast": null,
+  "code": "import { Observable } from '../Observable';\nimport { argsArgArrayOrObject } from '../util/argsArgArrayOrObject';\nimport { from } from './from';\nimport { identity } from '../util/identity';\nimport { mapOneOrManyArgs } from '../util/mapOneOrManyArgs';\nimport { popResultSelector, popScheduler } from '../util/args';\nimport { createObject } from '../util/createObject';\nimport { OperatorSubscriber } from '../operators/OperatorSubscriber';\nimport { executeSchedule } from '../util/executeSchedule';\nexport function combineLatest() {\n  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {\n    args[_key] = arguments[_key];\n  }\n\n  var scheduler = popScheduler(args);\n  var resultSelector = popResultSelector(args);\n\n  var _argsArgArrayOrObject = argsArgArrayOrObject(args),\n      observables = _argsArgArrayOrObject.args,\n      keys = _argsArgArrayOrObject.keys;\n\n  if (observables.length === 0) {\n    return from([], scheduler);\n  }\n\n  var result = new Observable(combineLatestInit(observables, scheduler, keys ? function (values) {\n    return createObject(keys, values);\n  } : identity));\n  return resultSelector ? result.pipe(mapOneOrManyArgs(resultSelector)) : result;\n}\nexport function combineLatestInit(observables, scheduler) {\n  var valueTransform = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : identity;\n  return function (subscriber) {\n    maybeSchedule(scheduler, function () {\n      var length = observables.length;\n      var values = new Array(length);\n      var active = length;\n      var remainingFirstValues = length;\n\n      var _loop = function _loop(i) {\n        maybeSchedule(scheduler, function () {\n          var source = from(observables[i], scheduler);\n          var hasFirstValue = false;\n          source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n            values[i] = value;\n\n            if (!hasFirstValue) {\n              hasFirstValue = true;\n              remainingFirstValues--;\n            }\n\n            if (!remainingFirstValues) {\n              subscriber.next(valueTransform(values.slice()));\n            }\n          }, function () {\n            if (! --active) {\n              subscriber.complete();\n            }\n          }));\n        }, subscriber);\n      };\n\n      for (var i = 0; i < length; i++) {\n        _loop(i);\n      }\n    }, subscriber);\n  };\n}\n\nfunction maybeSchedule(scheduler, execute, subscription) {\n  if (scheduler) {\n    executeSchedule(subscription, scheduler, execute);\n  } else {\n    execute();\n  }\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/observable/combineLatest.js"
+    ],
+    "names": [
+      "Observable",
+      "argsArgArrayOrObject",
+      "from",
+      "identity",
+      "mapOneOrManyArgs",
+      "popResultSelector",
+      "popScheduler",
+      "createObject",
+      "OperatorSubscriber",
+      "executeSchedule",
+      "combineLatest",
+      "args",
+      "scheduler",
+      "resultSelector",
+      "observables",
+      "keys",
+      "length",
+      "result",
+      "combineLatestInit",
+      "values",
+      "pipe",
+      "valueTransform",
+      "subscriber",
+      "maybeSchedule",
+      "Array",
+      "active",
+      "remainingFirstValues",
+      "i",
+      "source",
+      "hasFirstValue",
+      "subscribe",
+      "value",
+      "next",
+      "slice",
+      "complete",
+      "execute",
+      "subscription"
+    ],
+    "mappings": "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",
+    "sourcesContent": [
+      "import { Observable } from '../Observable';\nimport { argsArgArrayOrObject } from '../util/argsArgArrayOrObject';\nimport { from } from './from';\nimport { identity } from '../util/identity';\nimport { mapOneOrManyArgs } from '../util/mapOneOrManyArgs';\nimport { popResultSelector, popScheduler } from '../util/args';\nimport { createObject } from '../util/createObject';\nimport { OperatorSubscriber } from '../operators/OperatorSubscriber';\nimport { executeSchedule } from '../util/executeSchedule';\nexport function combineLatest(...args) {\n    const scheduler = popScheduler(args);\n    const resultSelector = popResultSelector(args);\n    const { args: observables, keys } = argsArgArrayOrObject(args);\n    if (observables.length === 0) {\n        return from([], scheduler);\n    }\n    const result = new Observable(combineLatestInit(observables, scheduler, keys\n        ?\n            (values) => createObject(keys, values)\n        :\n            identity));\n    return resultSelector ? result.pipe(mapOneOrManyArgs(resultSelector)) : result;\n}\nexport function combineLatestInit(observables, scheduler, valueTransform = identity) {\n    return (subscriber) => {\n        maybeSchedule(scheduler, () => {\n            const { length } = observables;\n            const values = new Array(length);\n            let active = length;\n            let remainingFirstValues = length;\n            for (let i = 0; i < length; i++) {\n                maybeSchedule(scheduler, () => {\n                    const source = from(observables[i], scheduler);\n                    let hasFirstValue = false;\n                    source.subscribe(new OperatorSubscriber(subscriber, (value) => {\n                        values[i] = value;\n                        if (!hasFirstValue) {\n                            hasFirstValue = true;\n                            remainingFirstValues--;\n                        }\n                        if (!remainingFirstValues) {\n                            subscriber.next(valueTransform(values.slice()));\n                        }\n                    }, () => {\n                        if (!--active) {\n                            subscriber.complete();\n                        }\n                    }));\n                }, subscriber);\n            }\n        }, subscriber);\n    };\n}\nfunction maybeSchedule(scheduler, execute, subscription) {\n    if (scheduler) {\n        executeSchedule(subscription, scheduler, execute);\n    }\n    else {\n        execute();\n    }\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

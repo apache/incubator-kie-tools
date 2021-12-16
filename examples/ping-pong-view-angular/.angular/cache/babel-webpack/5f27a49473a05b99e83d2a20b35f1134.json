@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "export function executeSchedule(parentSubscription, scheduler, work) {\n  var delay = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;\n  var repeat = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;\n  var scheduleSubscription = scheduler.schedule(function () {\n    work();\n\n    if (repeat) {\n      parentSubscription.add(this.schedule(null, delay));\n    } else {\n      this.unsubscribe();\n    }\n  }, delay);\n  parentSubscription.add(scheduleSubscription);\n\n  if (!repeat) {\n    return scheduleSubscription;\n  }\n} //# sourceMappingURL=executeSchedule.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,37 @@
+{
+  "ast": null,
+  "code": "import _createForOfIteratorHelper from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/createForOfIteratorHelper.js\";\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nimport { arrRemove } from '../util/arrRemove';\nexport function bufferCount(bufferSize) {\n  var startBufferEvery = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;\n  startBufferEvery = startBufferEvery !== null && startBufferEvery !== void 0 ? startBufferEvery : bufferSize;\n  return operate(function (source, subscriber) {\n    var buffers = [];\n    var count = 0;\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      var toEmit = null;\n\n      if (count++ % startBufferEvery === 0) {\n        buffers.push([]);\n      }\n\n      var _iterator = _createForOfIteratorHelper(buffers),\n          _step;\n\n      try {\n        for (_iterator.s(); !(_step = _iterator.n()).done;) {\n          var _buffer = _step.value;\n\n          _buffer.push(value);\n\n          if (bufferSize <= _buffer.length) {\n            toEmit = toEmit !== null && toEmit !== void 0 ? toEmit : [];\n            toEmit.push(_buffer);\n          }\n        }\n      } catch (err) {\n        _iterator.e(err);\n      } finally {\n        _iterator.f();\n      }\n\n      if (toEmit) {\n        var _iterator2 = _createForOfIteratorHelper(toEmit),\n            _step2;\n\n        try {\n          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {\n            var buffer = _step2.value;\n            arrRemove(buffers, buffer);\n            subscriber.next(buffer);\n          }\n        } catch (err) {\n          _iterator2.e(err);\n        } finally {\n          _iterator2.f();\n        }\n      }\n    }, function () {\n      var _iterator3 = _createForOfIteratorHelper(buffers),\n          _step3;\n\n      try {\n        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {\n          var buffer = _step3.value;\n          subscriber.next(buffer);\n        }\n      } catch (err) {\n        _iterator3.e(err);\n      } finally {\n        _iterator3.f();\n      }\n\n      subscriber.complete();\n    }, undefined, function () {\n      buffers = null;\n    }));\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/bufferCount.js"
+    ],
+    "names": [
+      "operate",
+      "OperatorSubscriber",
+      "arrRemove",
+      "bufferCount",
+      "bufferSize",
+      "startBufferEvery",
+      "source",
+      "subscriber",
+      "buffers",
+      "count",
+      "subscribe",
+      "value",
+      "toEmit",
+      "push",
+      "buffer",
+      "length",
+      "next",
+      "complete",
+      "undefined"
+    ],
+    "mappings": ";AAAA,SAASA,OAAT,QAAwB,cAAxB;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,SAASC,SAAT,QAA0B,mBAA1B;AACA,OAAO,SAASC,WAAT,CAAqBC,UAArB,EAA0D;AAAA,MAAzBC,gBAAyB,uEAAN,IAAM;AAC7DA,EAAAA,gBAAgB,GAAGA,gBAAgB,KAAK,IAArB,IAA6BA,gBAAgB,KAAK,KAAK,CAAvD,GAA2DA,gBAA3D,GAA8ED,UAAjG;AACA,SAAOJ,OAAO,CAAC,UAACM,MAAD,EAASC,UAAT,EAAwB;AACnC,QAAIC,OAAO,GAAG,EAAd;AACA,QAAIC,KAAK,GAAG,CAAZ;AACAH,IAAAA,MAAM,CAACI,SAAP,CAAiB,IAAIT,kBAAJ,CAAuBM,UAAvB,EAAmC,UAACI,KAAD,EAAW;AAC3D,UAAIC,MAAM,GAAG,IAAb;;AACA,UAAIH,KAAK,KAAKJ,gBAAV,KAA+B,CAAnC,EAAsC;AAClCG,QAAAA,OAAO,CAACK,IAAR,CAAa,EAAb;AACH;;AAJ0D,iDAKtCL,OALsC;AAAA;;AAAA;AAK3D,4DAA8B;AAAA,cAAnBM,OAAmB;;AAC1BA,UAAAA,OAAM,CAACD,IAAP,CAAYF,KAAZ;;AACA,cAAIP,UAAU,IAAIU,OAAM,CAACC,MAAzB,EAAiC;AAC7BH,YAAAA,MAAM,GAAGA,MAAM,KAAK,IAAX,IAAmBA,MAAM,KAAK,KAAK,CAAnC,GAAuCA,MAAvC,GAAgD,EAAzD;AACAA,YAAAA,MAAM,CAACC,IAAP,CAAYC,OAAZ;AACH;AACJ;AAX0D;AAAA;AAAA;AAAA;AAAA;;AAY3D,UAAIF,MAAJ,EAAY;AAAA,oDACaA,MADb;AAAA;;AAAA;AACR,iEAA6B;AAAA,gBAAlBE,MAAkB;AACzBZ,YAAAA,SAAS,CAACM,OAAD,EAAUM,MAAV,CAAT;AACAP,YAAAA,UAAU,CAACS,IAAX,CAAgBF,MAAhB;AACH;AAJO;AAAA;AAAA;AAAA;AAAA;AAKX;AACJ,KAlBgB,EAkBd,YAAM;AAAA,kDACgBN,OADhB;AAAA;;AAAA;AACL,+DAA8B;AAAA,cAAnBM,MAAmB;AAC1BP,UAAAA,UAAU,CAACS,IAAX,CAAgBF,MAAhB;AACH;AAHI;AAAA;AAAA;AAAA;AAAA;;AAILP,MAAAA,UAAU,CAACU,QAAX;AACH,KAvBgB,EAuBdC,SAvBc,EAuBH,YAAM;AAChBV,MAAAA,OAAO,GAAG,IAAV;AACH,KAzBgB,CAAjB;AA0BH,GA7Ba,CAAd;AA8BH",
+    "sourcesContent": [
+      "import { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nimport { arrRemove } from '../util/arrRemove';\nexport function bufferCount(bufferSize, startBufferEvery = null) {\n    startBufferEvery = startBufferEvery !== null && startBufferEvery !== void 0 ? startBufferEvery : bufferSize;\n    return operate((source, subscriber) => {\n        let buffers = [];\n        let count = 0;\n        source.subscribe(new OperatorSubscriber(subscriber, (value) => {\n            let toEmit = null;\n            if (count++ % startBufferEvery === 0) {\n                buffers.push([]);\n            }\n            for (const buffer of buffers) {\n                buffer.push(value);\n                if (bufferSize <= buffer.length) {\n                    toEmit = toEmit !== null && toEmit !== void 0 ? toEmit : [];\n                    toEmit.push(buffer);\n                }\n            }\n            if (toEmit) {\n                for (const buffer of toEmit) {\n                    arrRemove(buffers, buffer);\n                    subscriber.next(buffer);\n                }\n            }\n        }, () => {\n            for (const buffer of buffers) {\n                subscriber.next(buffer);\n            }\n            subscriber.complete();\n        }, undefined, () => {\n            buffers = null;\n        }));\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

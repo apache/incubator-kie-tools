@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { identity } from '../util/identity';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function skipLast(skipCount) {\n  return skipCount <= 0 ? identity : operate(function (source, subscriber) {\n    var ring = new Array(skipCount);\n    var seen = 0;\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      var valueIndex = seen++;\n\n      if (valueIndex < skipCount) {\n        ring[valueIndex] = value;\n      } else {\n        var index = valueIndex % skipCount;\n        var oldValue = ring[index];\n        ring[index] = value;\n        subscriber.next(oldValue);\n      }\n    }));\n    return function () {\n      ring = null;\n    };\n  });\n} //# sourceMappingURL=skipLast.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

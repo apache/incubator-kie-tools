@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { EmptyError } from '../util/EmptyError';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function throwIfEmpty() {\n  var errorFactory = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultErrorFactory;\n  return operate(function (source, subscriber) {\n    var hasValue = false;\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      hasValue = true;\n      subscriber.next(value);\n    }, function () {\n      return hasValue ? subscriber.complete() : subscriber.error(errorFactory());\n    }));\n  });\n}\n\nfunction defaultErrorFactory() {\n  return new EmptyError();\n} //# sourceMappingURL=throwIfEmpty.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

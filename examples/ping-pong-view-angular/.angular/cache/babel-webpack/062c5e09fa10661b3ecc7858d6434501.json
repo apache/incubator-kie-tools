@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { innerFrom } from '../observable/innerFrom';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function switchMap(project, resultSelector) {\n  return operate(function (source, subscriber) {\n    var innerSubscriber = null;\n    var index = 0;\n    var isComplete = false;\n\n    var checkComplete = function checkComplete() {\n      return isComplete && !innerSubscriber && subscriber.complete();\n    };\n\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      innerSubscriber === null || innerSubscriber === void 0 ? void 0 : innerSubscriber.unsubscribe();\n      var innerIndex = 0;\n      var outerIndex = index++;\n      innerFrom(project(value, outerIndex)).subscribe(innerSubscriber = new OperatorSubscriber(subscriber, function (innerValue) {\n        return subscriber.next(resultSelector ? resultSelector(value, innerValue, outerIndex, innerIndex++) : innerValue);\n      }, function () {\n        innerSubscriber = null;\n        checkComplete();\n      }));\n    }, function () {\n      isComplete = true;\n      checkComplete();\n    }));\n  });\n} //# sourceMappingURL=switchMap.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

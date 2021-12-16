@@ -1,0 +1,29 @@
+{
+  "ast": null,
+  "code": "import { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function skipWhile(predicate) {\n  return operate(function (source, subscriber) {\n    var taking = false;\n    var index = 0;\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      return (taking || (taking = !predicate(value, index++))) && subscriber.next(value);\n    }));\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/skipWhile.js"
+    ],
+    "names": [
+      "operate",
+      "OperatorSubscriber",
+      "skipWhile",
+      "predicate",
+      "source",
+      "subscriber",
+      "taking",
+      "index",
+      "subscribe",
+      "value",
+      "next"
+    ],
+    "mappings": "AAAA,SAASA,OAAT,QAAwB,cAAxB;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,OAAO,SAASC,SAAT,CAAmBC,SAAnB,EAA8B;AACjC,SAAOH,OAAO,CAAC,UAACI,MAAD,EAASC,UAAT,EAAwB;AACnC,QAAIC,MAAM,GAAG,KAAb;AACA,QAAIC,KAAK,GAAG,CAAZ;AACAH,IAAAA,MAAM,CAACI,SAAP,CAAiB,IAAIP,kBAAJ,CAAuBI,UAAvB,EAAmC,UAACI,KAAD;AAAA,aAAW,CAACH,MAAM,KAAKA,MAAM,GAAG,CAACH,SAAS,CAACM,KAAD,EAAQF,KAAK,EAAb,CAAxB,CAAP,KAAqDF,UAAU,CAACK,IAAX,CAAgBD,KAAhB,CAAhE;AAAA,KAAnC,CAAjB;AACH,GAJa,CAAd;AAKH",
+    "sourcesContent": [
+      "import { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function skipWhile(predicate) {\n    return operate((source, subscriber) => {\n        let taking = false;\n        let index = 0;\n        source.subscribe(new OperatorSubscriber(subscriber, (value) => (taking || (taking = !predicate(value, index++))) && subscriber.next(value)));\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

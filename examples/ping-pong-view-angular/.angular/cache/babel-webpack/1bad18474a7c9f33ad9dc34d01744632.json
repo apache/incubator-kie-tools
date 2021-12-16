@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { combineLatestAll } from './combineLatestAll';\nexport var combineAll = combineLatestAll;",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/combineAll.js"
+    ],
+    "names": ["combineLatestAll", "combineAll"],
+    "mappings": "AAAA,SAASA,gBAAT,QAAiC,oBAAjC;AACA,OAAO,IAAMC,UAAU,GAAGD,gBAAnB",
+    "sourcesContent": [
+      "import { combineLatestAll } from './combineLatestAll';\nexport const combineAll = combineLatestAll;\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

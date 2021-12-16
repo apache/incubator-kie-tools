@@ -1,0 +1,33 @@
+{
+  "ast": null,
+  "code": "import _classCallCheck from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/classCallCheck.js\";\nimport { async } from '../scheduler/async';\nimport { scan } from './scan';\nimport { defer } from '../observable/defer';\nimport { map } from './map';\nexport function timeInterval() {\n  var scheduler = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : async;\n  return function (source) {\n    return defer(function () {\n      return source.pipe(scan(function (_ref, value) {\n        var current = _ref.current;\n        return {\n          value: value,\n          current: scheduler.now(),\n          last: current\n        };\n      }, {\n        current: scheduler.now(),\n        value: undefined,\n        last: undefined\n      }), map(function (_ref2) {\n        var current = _ref2.current,\n            last = _ref2.last,\n            value = _ref2.value;\n        return new TimeInterval(value, current - last);\n      }));\n    });\n  };\n}\nexport var TimeInterval = function TimeInterval(value, interval) {\n  _classCallCheck(this, TimeInterval);\n\n  this.value = value;\n  this.interval = interval;\n};",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/timeInterval.js"
+    ],
+    "names": [
+      "async",
+      "scan",
+      "defer",
+      "map",
+      "timeInterval",
+      "scheduler",
+      "source",
+      "pipe",
+      "value",
+      "current",
+      "now",
+      "last",
+      "undefined",
+      "TimeInterval",
+      "interval"
+    ],
+    "mappings": ";AAAA,SAASA,KAAT,QAAsB,oBAAtB;AACA,SAASC,IAAT,QAAqB,QAArB;AACA,SAASC,KAAT,QAAsB,qBAAtB;AACA,SAASC,GAAT,QAAoB,OAApB;AACA,OAAO,SAASC,YAAT,GAAyC;AAAA,MAAnBC,SAAmB,uEAAPL,KAAO;AAC5C,SAAO,UAACM,MAAD;AAAA,WAAYJ,KAAK,CAAC,YAAM;AAC3B,aAAOI,MAAM,CAACC,IAAP,CAAYN,IAAI,CAAC,gBAAcO,KAAd;AAAA,YAAGC,OAAH,QAAGA,OAAH;AAAA,eAAyB;AAAED,UAAAA,KAAK,EAALA,KAAF;AAASC,UAAAA,OAAO,EAAEJ,SAAS,CAACK,GAAV,EAAlB;AAAmCC,UAAAA,IAAI,EAAEF;AAAzC,SAAzB;AAAA,OAAD,EAA+E;AAClGA,QAAAA,OAAO,EAAEJ,SAAS,CAACK,GAAV,EADyF;AAElGF,QAAAA,KAAK,EAAEI,SAF2F;AAGlGD,QAAAA,IAAI,EAAEC;AAH4F,OAA/E,CAAhB,EAIHT,GAAG,CAAC;AAAA,YAAGM,OAAH,SAAGA,OAAH;AAAA,YAAYE,IAAZ,SAAYA,IAAZ;AAAA,YAAkBH,KAAlB,SAAkBA,KAAlB;AAAA,eAA8B,IAAIK,YAAJ,CAAiBL,KAAjB,EAAwBC,OAAO,GAAGE,IAAlC,CAA9B;AAAA,OAAD,CAJA,CAAP;AAKH,KANuB,CAAjB;AAAA,GAAP;AAOH;AACD,WAAaE,YAAb,GACI,sBAAYL,KAAZ,EAAmBM,QAAnB,EAA6B;AAAA;;AACzB,OAAKN,KAAL,GAAaA,KAAb;AACA,OAAKM,QAAL,GAAgBA,QAAhB;AACH,CAJL",
+    "sourcesContent": [
+      "import { async } from '../scheduler/async';\nimport { scan } from './scan';\nimport { defer } from '../observable/defer';\nimport { map } from './map';\nexport function timeInterval(scheduler = async) {\n    return (source) => defer(() => {\n        return source.pipe(scan(({ current }, value) => ({ value, current: scheduler.now(), last: current }), {\n            current: scheduler.now(),\n            value: undefined,\n            last: undefined,\n        }), map(({ current, last, value }) => new TimeInterval(value, current - last)));\n    });\n}\nexport class TimeInterval {\n    constructor(value, interval) {\n        this.value = value;\n        this.interval = interval;\n    }\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

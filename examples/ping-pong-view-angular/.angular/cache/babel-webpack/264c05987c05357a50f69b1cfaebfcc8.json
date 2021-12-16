@@ -1,0 +1,32 @@
+{
+  "ast": null,
+  "code": "import { Notification } from '../Notification';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function materialize() {\n  return operate(function (source, subscriber) {\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      subscriber.next(Notification.createNext(value));\n    }, function () {\n      subscriber.next(Notification.createComplete());\n      subscriber.complete();\n    }, function (err) {\n      subscriber.next(Notification.createError(err));\n      subscriber.complete();\n    }));\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/materialize.js"
+    ],
+    "names": [
+      "Notification",
+      "operate",
+      "OperatorSubscriber",
+      "materialize",
+      "source",
+      "subscriber",
+      "subscribe",
+      "value",
+      "next",
+      "createNext",
+      "createComplete",
+      "complete",
+      "err",
+      "createError"
+    ],
+    "mappings": "AAAA,SAASA,YAAT,QAA6B,iBAA7B;AACA,SAASC,OAAT,QAAwB,cAAxB;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,OAAO,SAASC,WAAT,GAAuB;AAC1B,SAAOF,OAAO,CAAC,UAACG,MAAD,EAASC,UAAT,EAAwB;AACnCD,IAAAA,MAAM,CAACE,SAAP,CAAiB,IAAIJ,kBAAJ,CAAuBG,UAAvB,EAAmC,UAACE,KAAD,EAAW;AAC3DF,MAAAA,UAAU,CAACG,IAAX,CAAgBR,YAAY,CAACS,UAAb,CAAwBF,KAAxB,CAAhB;AACH,KAFgB,EAEd,YAAM;AACLF,MAAAA,UAAU,CAACG,IAAX,CAAgBR,YAAY,CAACU,cAAb,EAAhB;AACAL,MAAAA,UAAU,CAACM,QAAX;AACH,KALgB,EAKd,UAACC,GAAD,EAAS;AACRP,MAAAA,UAAU,CAACG,IAAX,CAAgBR,YAAY,CAACa,WAAb,CAAyBD,GAAzB,CAAhB;AACAP,MAAAA,UAAU,CAACM,QAAX;AACH,KARgB,CAAjB;AASH,GAVa,CAAd;AAWH",
+    "sourcesContent": [
+      "import { Notification } from '../Notification';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function materialize() {\n    return operate((source, subscriber) => {\n        source.subscribe(new OperatorSubscriber(subscriber, (value) => {\n            subscriber.next(Notification.createNext(value));\n        }, () => {\n            subscriber.next(Notification.createComplete());\n            subscriber.complete();\n        }, (err) => {\n            subscriber.next(Notification.createError(err));\n            subscriber.complete();\n        }));\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

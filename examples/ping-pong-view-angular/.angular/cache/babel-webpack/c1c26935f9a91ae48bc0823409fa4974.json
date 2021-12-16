@@ -1,0 +1,46 @@
+{
+  "ast": null,
+  "code": "import { isScheduler } from '../util/isScheduler';\nimport { Observable } from '../Observable';\nimport { subscribeOn } from '../operators/subscribeOn';\nimport { mapOneOrManyArgs } from '../util/mapOneOrManyArgs';\nimport { observeOn } from '../operators/observeOn';\nimport { AsyncSubject } from '../AsyncSubject';\nexport function bindCallbackInternals(isNodeStyle, callbackFunc, resultSelector, scheduler) {\n  if (resultSelector) {\n    if (isScheduler(resultSelector)) {\n      scheduler = resultSelector;\n    } else {\n      return function () {\n        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {\n          args[_key] = arguments[_key];\n        }\n\n        return bindCallbackInternals(isNodeStyle, callbackFunc, scheduler).apply(this, args).pipe(mapOneOrManyArgs(resultSelector));\n      };\n    }\n  }\n\n  if (scheduler) {\n    return function () {\n      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {\n        args[_key2] = arguments[_key2];\n      }\n\n      return bindCallbackInternals(isNodeStyle, callbackFunc).apply(this, args).pipe(subscribeOn(scheduler), observeOn(scheduler));\n    };\n  }\n\n  return function () {\n    var _this = this;\n\n    for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {\n      args[_key3] = arguments[_key3];\n    }\n\n    var subject = new AsyncSubject();\n    var uninitialized = true;\n    return new Observable(function (subscriber) {\n      var subs = subject.subscribe(subscriber);\n\n      if (uninitialized) {\n        uninitialized = false;\n        var isAsync = false;\n        var isComplete = false;\n        callbackFunc.apply(_this, [].concat(args, [function () {\n          for (var _len4 = arguments.length, results = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {\n            results[_key4] = arguments[_key4];\n          }\n\n          if (isNodeStyle) {\n            var err = results.shift();\n\n            if (err != null) {\n              subject.error(err);\n              return;\n            }\n          }\n\n          subject.next(1 < results.length ? results : results[0]);\n          isComplete = true;\n\n          if (isAsync) {\n            subject.complete();\n          }\n        }]));\n\n        if (isComplete) {\n          subject.complete();\n        }\n\n        isAsync = true;\n      }\n\n      return subs;\n    });\n  };\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/observable/bindCallbackInternals.js"
+    ],
+    "names": [
+      "isScheduler",
+      "Observable",
+      "subscribeOn",
+      "mapOneOrManyArgs",
+      "observeOn",
+      "AsyncSubject",
+      "bindCallbackInternals",
+      "isNodeStyle",
+      "callbackFunc",
+      "resultSelector",
+      "scheduler",
+      "args",
+      "apply",
+      "pipe",
+      "subject",
+      "uninitialized",
+      "subscriber",
+      "subs",
+      "subscribe",
+      "isAsync",
+      "isComplete",
+      "results",
+      "err",
+      "shift",
+      "error",
+      "next",
+      "length",
+      "complete"
+    ],
+    "mappings": "AAAA,SAASA,WAAT,QAA4B,qBAA5B;AACA,SAASC,UAAT,QAA2B,eAA3B;AACA,SAASC,WAAT,QAA4B,0BAA5B;AACA,SAASC,gBAAT,QAAiC,0BAAjC;AACA,SAASC,SAAT,QAA0B,wBAA1B;AACA,SAASC,YAAT,QAA6B,iBAA7B;AACA,OAAO,SAASC,qBAAT,CAA+BC,WAA/B,EAA4CC,YAA5C,EAA0DC,cAA1D,EAA0EC,SAA1E,EAAqF;AACxF,MAAID,cAAJ,EAAoB;AAChB,QAAIT,WAAW,CAACS,cAAD,CAAf,EAAiC;AAC7BC,MAAAA,SAAS,GAAGD,cAAZ;AACH,KAFD,MAGK;AACD,aAAO,YAAmB;AAAA,0CAANE,IAAM;AAANA,UAAAA,IAAM;AAAA;;AACtB,eAAOL,qBAAqB,CAACC,WAAD,EAAcC,YAAd,EAA4BE,SAA5B,CAArB,CACFE,KADE,CACI,IADJ,EACUD,IADV,EAEFE,IAFE,CAEGV,gBAAgB,CAACM,cAAD,CAFnB,CAAP;AAGH,OAJD;AAKH;AACJ;;AACD,MAAIC,SAAJ,EAAe;AACX,WAAO,YAAmB;AAAA,yCAANC,IAAM;AAANA,QAAAA,IAAM;AAAA;;AACtB,aAAOL,qBAAqB,CAACC,WAAD,EAAcC,YAAd,CAArB,CACFI,KADE,CACI,IADJ,EACUD,IADV,EAEFE,IAFE,CAEGX,WAAW,CAACQ,SAAD,CAFd,EAE2BN,SAAS,CAACM,SAAD,CAFpC,CAAP;AAGH,KAJD;AAKH;;AACD,SAAO,YAAmB;AAAA;;AAAA,uCAANC,IAAM;AAANA,MAAAA,IAAM;AAAA;;AACtB,QAAMG,OAAO,GAAG,IAAIT,YAAJ,EAAhB;AACA,QAAIU,aAAa,GAAG,IAApB;AACA,WAAO,IAAId,UAAJ,CAAe,UAACe,UAAD,EAAgB;AAClC,UAAMC,IAAI,GAAGH,OAAO,CAACI,SAAR,CAAkBF,UAAlB,CAAb;;AACA,UAAID,aAAJ,EAAmB;AACfA,QAAAA,aAAa,GAAG,KAAhB;AACA,YAAII,OAAO,GAAG,KAAd;AACA,YAAIC,UAAU,GAAG,KAAjB;AACAZ,QAAAA,YAAY,CAACI,KAAb,CAAmB,KAAnB,YACOD,IADP,GAEI,YAAgB;AAAA,6CAAZU,OAAY;AAAZA,YAAAA,OAAY;AAAA;;AACZ,cAAId,WAAJ,EAAiB;AACb,gBAAMe,GAAG,GAAGD,OAAO,CAACE,KAAR,EAAZ;;AACA,gBAAID,GAAG,IAAI,IAAX,EAAiB;AACbR,cAAAA,OAAO,CAACU,KAAR,CAAcF,GAAd;AACA;AACH;AACJ;;AACDR,UAAAA,OAAO,CAACW,IAAR,CAAa,IAAIJ,OAAO,CAACK,MAAZ,GAAqBL,OAArB,GAA+BA,OAAO,CAAC,CAAD,CAAnD;AACAD,UAAAA,UAAU,GAAG,IAAb;;AACA,cAAID,OAAJ,EAAa;AACTL,YAAAA,OAAO,CAACa,QAAR;AACH;AACJ,SAfL;;AAiBA,YAAIP,UAAJ,EAAgB;AACZN,UAAAA,OAAO,CAACa,QAAR;AACH;;AACDR,QAAAA,OAAO,GAAG,IAAV;AACH;;AACD,aAAOF,IAAP;AACH,KA7BM,CAAP;AA8BH,GAjCD;AAkCH",
+    "sourcesContent": [
+      "import { isScheduler } from '../util/isScheduler';\nimport { Observable } from '../Observable';\nimport { subscribeOn } from '../operators/subscribeOn';\nimport { mapOneOrManyArgs } from '../util/mapOneOrManyArgs';\nimport { observeOn } from '../operators/observeOn';\nimport { AsyncSubject } from '../AsyncSubject';\nexport function bindCallbackInternals(isNodeStyle, callbackFunc, resultSelector, scheduler) {\n    if (resultSelector) {\n        if (isScheduler(resultSelector)) {\n            scheduler = resultSelector;\n        }\n        else {\n            return function (...args) {\n                return bindCallbackInternals(isNodeStyle, callbackFunc, scheduler)\n                    .apply(this, args)\n                    .pipe(mapOneOrManyArgs(resultSelector));\n            };\n        }\n    }\n    if (scheduler) {\n        return function (...args) {\n            return bindCallbackInternals(isNodeStyle, callbackFunc)\n                .apply(this, args)\n                .pipe(subscribeOn(scheduler), observeOn(scheduler));\n        };\n    }\n    return function (...args) {\n        const subject = new AsyncSubject();\n        let uninitialized = true;\n        return new Observable((subscriber) => {\n            const subs = subject.subscribe(subscriber);\n            if (uninitialized) {\n                uninitialized = false;\n                let isAsync = false;\n                let isComplete = false;\n                callbackFunc.apply(this, [\n                    ...args,\n                    (...results) => {\n                        if (isNodeStyle) {\n                            const err = results.shift();\n                            if (err != null) {\n                                subject.error(err);\n                                return;\n                            }\n                        }\n                        subject.next(1 < results.length ? results : results[0]);\n                        isComplete = true;\n                        if (isAsync) {\n                            subject.complete();\n                        }\n                    },\n                ]);\n                if (isComplete) {\n                    subject.complete();\n                }\n                isAsync = true;\n            }\n            return subs;\n        });\n    };\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

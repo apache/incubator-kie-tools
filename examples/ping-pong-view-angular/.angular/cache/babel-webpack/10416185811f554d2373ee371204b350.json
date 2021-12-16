@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { raceInit } from '../observable/race';\nimport { operate } from '../util/lift';\nimport { identity } from '../util/identity';\nexport function raceWith() {\n  for (var _len = arguments.length, otherSources = new Array(_len), _key = 0; _key < _len; _key++) {\n    otherSources[_key] = arguments[_key];\n  }\n\n  return !otherSources.length ? identity : operate(function (source, subscriber) {\n    raceInit([source].concat(otherSources))(subscriber);\n  });\n} //# sourceMappingURL=raceWith.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

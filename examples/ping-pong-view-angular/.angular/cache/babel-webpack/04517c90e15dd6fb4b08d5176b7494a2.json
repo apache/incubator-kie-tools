@@ -1,0 +1,35 @@
+{
+  "ast": null,
+  "code": "import { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nimport { noop } from '../util/noop';\nexport function distinct(keySelector, flushes) {\n  return operate(function (source, subscriber) {\n    var distinctKeys = new Set();\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      var key = keySelector ? keySelector(value) : value;\n\n      if (!distinctKeys.has(key)) {\n        distinctKeys.add(key);\n        subscriber.next(value);\n      }\n    }));\n    flushes === null || flushes === void 0 ? void 0 : flushes.subscribe(new OperatorSubscriber(subscriber, function () {\n      return distinctKeys.clear();\n    }, noop));\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/distinct.js"
+    ],
+    "names": [
+      "operate",
+      "OperatorSubscriber",
+      "noop",
+      "distinct",
+      "keySelector",
+      "flushes",
+      "source",
+      "subscriber",
+      "distinctKeys",
+      "Set",
+      "subscribe",
+      "value",
+      "key",
+      "has",
+      "add",
+      "next",
+      "clear"
+    ],
+    "mappings": "AAAA,SAASA,OAAT,QAAwB,cAAxB;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,SAASC,IAAT,QAAqB,cAArB;AACA,OAAO,SAASC,QAAT,CAAkBC,WAAlB,EAA+BC,OAA/B,EAAwC;AAC3C,SAAOL,OAAO,CAAC,UAACM,MAAD,EAASC,UAAT,EAAwB;AACnC,QAAMC,YAAY,GAAG,IAAIC,GAAJ,EAArB;AACAH,IAAAA,MAAM,CAACI,SAAP,CAAiB,IAAIT,kBAAJ,CAAuBM,UAAvB,EAAmC,UAACI,KAAD,EAAW;AAC3D,UAAMC,GAAG,GAAGR,WAAW,GAAGA,WAAW,CAACO,KAAD,CAAd,GAAwBA,KAA/C;;AACA,UAAI,CAACH,YAAY,CAACK,GAAb,CAAiBD,GAAjB,CAAL,EAA4B;AACxBJ,QAAAA,YAAY,CAACM,GAAb,CAAiBF,GAAjB;AACAL,QAAAA,UAAU,CAACQ,IAAX,CAAgBJ,KAAhB;AACH;AACJ,KANgB,CAAjB;AAOAN,IAAAA,OAAO,KAAK,IAAZ,IAAoBA,OAAO,KAAK,KAAK,CAArC,GAAyC,KAAK,CAA9C,GAAkDA,OAAO,CAACK,SAAR,CAAkB,IAAIT,kBAAJ,CAAuBM,UAAvB,EAAmC;AAAA,aAAMC,YAAY,CAACQ,KAAb,EAAN;AAAA,KAAnC,EAA+Dd,IAA/D,CAAlB,CAAlD;AACH,GAVa,CAAd;AAWH",
+    "sourcesContent": [
+      "import { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nimport { noop } from '../util/noop';\nexport function distinct(keySelector, flushes) {\n    return operate((source, subscriber) => {\n        const distinctKeys = new Set();\n        source.subscribe(new OperatorSubscriber(subscriber, (value) => {\n            const key = keySelector ? keySelector(value) : value;\n            if (!distinctKeys.has(key)) {\n                distinctKeys.add(key);\n                subscriber.next(value);\n            }\n        }));\n        flushes === null || flushes === void 0 ? void 0 : flushes.subscribe(new OperatorSubscriber(subscriber, () => distinctKeys.clear(), noop));\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

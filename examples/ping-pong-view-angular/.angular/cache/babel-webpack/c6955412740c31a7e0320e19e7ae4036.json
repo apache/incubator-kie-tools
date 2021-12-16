@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { Observable } from '../Observable';\nexport var EMPTY = new Observable(function (subscriber) {\n  return subscriber.complete();\n});\nexport function empty(scheduler) {\n  return scheduler ? emptyScheduled(scheduler) : EMPTY;\n}\n\nfunction emptyScheduled(scheduler) {\n  return new Observable(function (subscriber) {\n    return scheduler.schedule(function () {\n      return subscriber.complete();\n    });\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/observable/empty.js"
+    ],
+    "names": ["Observable", "EMPTY", "subscriber", "complete", "empty", "scheduler", "emptyScheduled", "schedule"],
+    "mappings": "AAAA,SAASA,UAAT,QAA2B,eAA3B;AACA,OAAO,IAAMC,KAAK,GAAG,IAAID,UAAJ,CAAe,UAACE,UAAD;AAAA,SAAgBA,UAAU,CAACC,QAAX,EAAhB;AAAA,CAAf,CAAd;AACP,OAAO,SAASC,KAAT,CAAeC,SAAf,EAA0B;AAC7B,SAAOA,SAAS,GAAGC,cAAc,CAACD,SAAD,CAAjB,GAA+BJ,KAA/C;AACH;;AACD,SAASK,cAAT,CAAwBD,SAAxB,EAAmC;AAC/B,SAAO,IAAIL,UAAJ,CAAe,UAACE,UAAD;AAAA,WAAgBG,SAAS,CAACE,QAAV,CAAmB;AAAA,aAAML,UAAU,CAACC,QAAX,EAAN;AAAA,KAAnB,CAAhB;AAAA,GAAf,CAAP;AACH",
+    "sourcesContent": [
+      "import { Observable } from '../Observable';\nexport const EMPTY = new Observable((subscriber) => subscriber.complete());\nexport function empty(scheduler) {\n    return scheduler ? emptyScheduled(scheduler) : EMPTY;\n}\nfunction emptyScheduled(scheduler) {\n    return new Observable((subscriber) => scheduler.schedule(() => subscriber.complete()));\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

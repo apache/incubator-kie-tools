@@ -1,0 +1,39 @@
+{
+  "ast": null,
+  "code": "import { isFunction } from '../util/isFunction';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nimport { identity } from '../util/identity';\nexport function tap(observerOrNext, error, complete) {\n  var tapObserver = isFunction(observerOrNext) || error || complete ? {\n    next: observerOrNext,\n    error: error,\n    complete: complete\n  } : observerOrNext;\n  return tapObserver ? operate(function (source, subscriber) {\n    var _a;\n\n    (_a = tapObserver.subscribe) === null || _a === void 0 ? void 0 : _a.call(tapObserver);\n    var isUnsub = true;\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      var _a;\n\n      (_a = tapObserver.next) === null || _a === void 0 ? void 0 : _a.call(tapObserver, value);\n      subscriber.next(value);\n    }, function () {\n      var _a;\n\n      isUnsub = false;\n      (_a = tapObserver.complete) === null || _a === void 0 ? void 0 : _a.call(tapObserver);\n      subscriber.complete();\n    }, function (err) {\n      var _a;\n\n      isUnsub = false;\n      (_a = tapObserver.error) === null || _a === void 0 ? void 0 : _a.call(tapObserver, err);\n      subscriber.error(err);\n    }, function () {\n      var _a, _b;\n\n      if (isUnsub) {\n        (_a = tapObserver.unsubscribe) === null || _a === void 0 ? void 0 : _a.call(tapObserver);\n      }\n\n      (_b = tapObserver.finalize) === null || _b === void 0 ? void 0 : _b.call(tapObserver);\n    }));\n  }) : identity;\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/tap.js"
+    ],
+    "names": [
+      "isFunction",
+      "operate",
+      "OperatorSubscriber",
+      "identity",
+      "tap",
+      "observerOrNext",
+      "error",
+      "complete",
+      "tapObserver",
+      "next",
+      "source",
+      "subscriber",
+      "_a",
+      "subscribe",
+      "call",
+      "isUnsub",
+      "value",
+      "err",
+      "_b",
+      "unsubscribe",
+      "finalize"
+    ],
+    "mappings": "AAAA,SAASA,UAAT,QAA2B,oBAA3B;AACA,SAASC,OAAT,QAAwB,cAAxB;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,SAASC,QAAT,QAAyB,kBAAzB;AACA,OAAO,SAASC,GAAT,CAAaC,cAAb,EAA6BC,KAA7B,EAAoCC,QAApC,EAA8C;AACjD,MAAMC,WAAW,GAAGR,UAAU,CAACK,cAAD,CAAV,IAA8BC,KAA9B,IAAuCC,QAAvC,GAEZ;AAAEE,IAAAA,IAAI,EAAEJ,cAAR;AAAwBC,IAAAA,KAAK,EAALA,KAAxB;AAA+BC,IAAAA,QAAQ,EAARA;AAA/B,GAFY,GAGdF,cAHN;AAIA,SAAOG,WAAW,GACZP,OAAO,CAAC,UAACS,MAAD,EAASC,UAAT,EAAwB;AAC9B,QAAIC,EAAJ;;AACA,KAACA,EAAE,GAAGJ,WAAW,CAACK,SAAlB,MAAiC,IAAjC,IAAyCD,EAAE,KAAK,KAAK,CAArD,GAAyD,KAAK,CAA9D,GAAkEA,EAAE,CAACE,IAAH,CAAQN,WAAR,CAAlE;AACA,QAAIO,OAAO,GAAG,IAAd;AACAL,IAAAA,MAAM,CAACG,SAAP,CAAiB,IAAIX,kBAAJ,CAAuBS,UAAvB,EAAmC,UAACK,KAAD,EAAW;AAC3D,UAAIJ,EAAJ;;AACA,OAACA,EAAE,GAAGJ,WAAW,CAACC,IAAlB,MAA4B,IAA5B,IAAoCG,EAAE,KAAK,KAAK,CAAhD,GAAoD,KAAK,CAAzD,GAA6DA,EAAE,CAACE,IAAH,CAAQN,WAAR,EAAqBQ,KAArB,CAA7D;AACAL,MAAAA,UAAU,CAACF,IAAX,CAAgBO,KAAhB;AACH,KAJgB,EAId,YAAM;AACL,UAAIJ,EAAJ;;AACAG,MAAAA,OAAO,GAAG,KAAV;AACA,OAACH,EAAE,GAAGJ,WAAW,CAACD,QAAlB,MAAgC,IAAhC,IAAwCK,EAAE,KAAK,KAAK,CAApD,GAAwD,KAAK,CAA7D,GAAiEA,EAAE,CAACE,IAAH,CAAQN,WAAR,CAAjE;AACAG,MAAAA,UAAU,CAACJ,QAAX;AACH,KATgB,EASd,UAACU,GAAD,EAAS;AACR,UAAIL,EAAJ;;AACAG,MAAAA,OAAO,GAAG,KAAV;AACA,OAACH,EAAE,GAAGJ,WAAW,CAACF,KAAlB,MAA6B,IAA7B,IAAqCM,EAAE,KAAK,KAAK,CAAjD,GAAqD,KAAK,CAA1D,GAA8DA,EAAE,CAACE,IAAH,CAAQN,WAAR,EAAqBS,GAArB,CAA9D;AACAN,MAAAA,UAAU,CAACL,KAAX,CAAiBW,GAAjB;AACH,KAdgB,EAcd,YAAM;AACL,UAAIL,EAAJ,EAAQM,EAAR;;AACA,UAAIH,OAAJ,EAAa;AACT,SAACH,EAAE,GAAGJ,WAAW,CAACW,WAAlB,MAAmC,IAAnC,IAA2CP,EAAE,KAAK,KAAK,CAAvD,GAA2D,KAAK,CAAhE,GAAoEA,EAAE,CAACE,IAAH,CAAQN,WAAR,CAApE;AACH;;AACD,OAACU,EAAE,GAAGV,WAAW,CAACY,QAAlB,MAAgC,IAAhC,IAAwCF,EAAE,KAAK,KAAK,CAApD,GAAwD,KAAK,CAA7D,GAAiEA,EAAE,CAACJ,IAAH,CAAQN,WAAR,CAAjE;AACH,KApBgB,CAAjB;AAqBH,GAzBQ,CADK,GA4BVL,QA5BR;AA6BH",
+    "sourcesContent": [
+      "import { isFunction } from '../util/isFunction';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nimport { identity } from '../util/identity';\nexport function tap(observerOrNext, error, complete) {\n    const tapObserver = isFunction(observerOrNext) || error || complete\n        ?\n            { next: observerOrNext, error, complete }\n        : observerOrNext;\n    return tapObserver\n        ? operate((source, subscriber) => {\n            var _a;\n            (_a = tapObserver.subscribe) === null || _a === void 0 ? void 0 : _a.call(tapObserver);\n            let isUnsub = true;\n            source.subscribe(new OperatorSubscriber(subscriber, (value) => {\n                var _a;\n                (_a = tapObserver.next) === null || _a === void 0 ? void 0 : _a.call(tapObserver, value);\n                subscriber.next(value);\n            }, () => {\n                var _a;\n                isUnsub = false;\n                (_a = tapObserver.complete) === null || _a === void 0 ? void 0 : _a.call(tapObserver);\n                subscriber.complete();\n            }, (err) => {\n                var _a;\n                isUnsub = false;\n                (_a = tapObserver.error) === null || _a === void 0 ? void 0 : _a.call(tapObserver, err);\n                subscriber.error(err);\n            }, () => {\n                var _a, _b;\n                if (isUnsub) {\n                    (_a = tapObserver.unsubscribe) === null || _a === void 0 ? void 0 : _a.call(tapObserver);\n                }\n                (_b = tapObserver.finalize) === null || _b === void 0 ? void 0 : _b.call(tapObserver);\n            }));\n        })\n        :\n            identity;\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

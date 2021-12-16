@@ -1,0 +1,15 @@
+{
+  "ast": null,
+  "code": "export function isValidDate(value) {\n  return value instanceof Date && !isNaN(value);\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/util/isDate.js"
+    ],
+    "names": ["isValidDate", "value", "Date", "isNaN"],
+    "mappings": "AAAA,OAAO,SAASA,WAAT,CAAqBC,KAArB,EAA4B;AAC/B,SAAOA,KAAK,YAAYC,IAAjB,IAAyB,CAACC,KAAK,CAACF,KAAD,CAAtC;AACH",
+    "sourcesContent": ["export function isValidDate(value) {\n    return value instanceof Date && !isNaN(value);\n}\n"]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

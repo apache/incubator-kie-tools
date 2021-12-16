@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { isFunction } from \"./isFunction\";\nexport function isPromise(value) {\n  return isFunction(value === null || value === void 0 ? void 0 : value.then);\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/util/isPromise.js"
+    ],
+    "names": ["isFunction", "isPromise", "value", "then"],
+    "mappings": "AAAA,SAASA,UAAT,QAA2B,cAA3B;AACA,OAAO,SAASC,SAAT,CAAmBC,KAAnB,EAA0B;AAC7B,SAAOF,UAAU,CAACE,KAAK,KAAK,IAAV,IAAkBA,KAAK,KAAK,KAAK,CAAjC,GAAqC,KAAK,CAA1C,GAA8CA,KAAK,CAACC,IAArD,CAAjB;AACH",
+    "sourcesContent": [
+      "import { isFunction } from \"./isFunction\";\nexport function isPromise(value) {\n    return isFunction(value === null || value === void 0 ? void 0 : value.then);\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

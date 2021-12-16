@@ -1,0 +1,30 @@
+{
+  "ast": null,
+  "code": "import { Subscription } from '../Subscription';\nexport var animationFrameProvider = {\n  schedule: function schedule(callback) {\n    var request = requestAnimationFrame;\n    var cancel = cancelAnimationFrame;\n    var delegate = animationFrameProvider.delegate;\n\n    if (delegate) {\n      request = delegate.requestAnimationFrame;\n      cancel = delegate.cancelAnimationFrame;\n    }\n\n    var handle = request(function (timestamp) {\n      cancel = undefined;\n      callback(timestamp);\n    });\n    return new Subscription(function () {\n      return cancel === null || cancel === void 0 ? void 0 : cancel(handle);\n    });\n  },\n  requestAnimationFrame: function (_requestAnimationFrame) {\n    function requestAnimationFrame() {\n      return _requestAnimationFrame.apply(this, arguments);\n    }\n\n    requestAnimationFrame.toString = function () {\n      return _requestAnimationFrame.toString();\n    };\n\n    return requestAnimationFrame;\n  }(function () {\n    var delegate = animationFrameProvider.delegate;\n    return ((delegate === null || delegate === void 0 ? void 0 : delegate.requestAnimationFrame) || requestAnimationFrame).apply(void 0, arguments);\n  }),\n  cancelAnimationFrame: function (_cancelAnimationFrame) {\n    function cancelAnimationFrame() {\n      return _cancelAnimationFrame.apply(this, arguments);\n    }\n\n    cancelAnimationFrame.toString = function () {\n      return _cancelAnimationFrame.toString();\n    };\n\n    return cancelAnimationFrame;\n  }(function () {\n    var delegate = animationFrameProvider.delegate;\n    return ((delegate === null || delegate === void 0 ? void 0 : delegate.cancelAnimationFrame) || cancelAnimationFrame).apply(void 0, arguments);\n  }),\n  delegate: undefined\n};",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/scheduler/animationFrameProvider.js"
+    ],
+    "names": [
+      "Subscription",
+      "animationFrameProvider",
+      "schedule",
+      "callback",
+      "request",
+      "requestAnimationFrame",
+      "cancel",
+      "cancelAnimationFrame",
+      "delegate",
+      "handle",
+      "timestamp",
+      "undefined"
+    ],
+    "mappings": "AAAA,SAASA,YAAT,QAA6B,iBAA7B;AACA,OAAO,IAAMC,sBAAsB,GAAG;AAClCC,EAAAA,QADkC,oBACzBC,QADyB,EACf;AACf,QAAIC,OAAO,GAAGC,qBAAd;AACA,QAAIC,MAAM,GAAGC,oBAAb;AACA,QAAQC,QAAR,GAAqBP,sBAArB,CAAQO,QAAR;;AACA,QAAIA,QAAJ,EAAc;AACVJ,MAAAA,OAAO,GAAGI,QAAQ,CAACH,qBAAnB;AACAC,MAAAA,MAAM,GAAGE,QAAQ,CAACD,oBAAlB;AACH;;AACD,QAAME,MAAM,GAAGL,OAAO,CAAC,UAACM,SAAD,EAAe;AAClCJ,MAAAA,MAAM,GAAGK,SAAT;AACAR,MAAAA,QAAQ,CAACO,SAAD,CAAR;AACH,KAHqB,CAAtB;AAIA,WAAO,IAAIV,YAAJ,CAAiB;AAAA,aAAMM,MAAM,KAAK,IAAX,IAAmBA,MAAM,KAAK,KAAK,CAAnC,GAAuC,KAAK,CAA5C,GAAgDA,MAAM,CAACG,MAAD,CAA5D;AAAA,KAAjB,CAAP;AACH,GAdiC;AAelCJ,EAAAA,qBAfkC;AAAA;AAAA;AAAA;;AAAA;AAAA;AAAA;;AAAA;AAAA,gBAeH;AAC3B,QAAQG,QAAR,GAAqBP,sBAArB,CAAQO,QAAR;AACA,WAAO,CAAC,CAACA,QAAQ,KAAK,IAAb,IAAqBA,QAAQ,KAAK,KAAK,CAAvC,GAA2C,KAAK,CAAhD,GAAoDA,QAAQ,CAACH,qBAA9D,KAAwFA,qBAAzF,0BAAP;AACH,GAlBiC;AAmBlCE,EAAAA,oBAnBkC;AAAA;AAAA;AAAA;;AAAA;AAAA;AAAA;;AAAA;AAAA,gBAmBJ;AAC1B,QAAQC,QAAR,GAAqBP,sBAArB,CAAQO,QAAR;AACA,WAAO,CAAC,CAACA,QAAQ,KAAK,IAAb,IAAqBA,QAAQ,KAAK,KAAK,CAAvC,GAA2C,KAAK,CAAhD,GAAoDA,QAAQ,CAACD,oBAA9D,KAAuFA,oBAAxF,0BAAP;AACH,GAtBiC;AAuBlCC,EAAAA,QAAQ,EAAEG;AAvBwB,CAA/B",
+    "sourcesContent": [
+      "import { Subscription } from '../Subscription';\nexport const animationFrameProvider = {\n    schedule(callback) {\n        let request = requestAnimationFrame;\n        let cancel = cancelAnimationFrame;\n        const { delegate } = animationFrameProvider;\n        if (delegate) {\n            request = delegate.requestAnimationFrame;\n            cancel = delegate.cancelAnimationFrame;\n        }\n        const handle = request((timestamp) => {\n            cancel = undefined;\n            callback(timestamp);\n        });\n        return new Subscription(() => cancel === null || cancel === void 0 ? void 0 : cancel(handle));\n    },\n    requestAnimationFrame(...args) {\n        const { delegate } = animationFrameProvider;\n        return ((delegate === null || delegate === void 0 ? void 0 : delegate.requestAnimationFrame) || requestAnimationFrame)(...args);\n    },\n    cancelAnimationFrame(...args) {\n        const { delegate } = animationFrameProvider;\n        return ((delegate === null || delegate === void 0 ? void 0 : delegate.cancelAnimationFrame) || cancelAnimationFrame)(...args);\n    },\n    delegate: undefined,\n};\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { AsyncSubject } from '../AsyncSubject';\nimport { ConnectableObservable } from '../observable/ConnectableObservable';\nexport function publishLast() {\n  return function (source) {\n    var subject = new AsyncSubject();\n    return new ConnectableObservable(source, function () {\n      return subject;\n    });\n  };\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/publishLast.js"
+    ],
+    "names": ["AsyncSubject", "ConnectableObservable", "publishLast", "source", "subject"],
+    "mappings": "AAAA,SAASA,YAAT,QAA6B,iBAA7B;AACA,SAASC,qBAAT,QAAsC,qCAAtC;AACA,OAAO,SAASC,WAAT,GAAuB;AAC1B,SAAO,UAACC,MAAD,EAAY;AACf,QAAMC,OAAO,GAAG,IAAIJ,YAAJ,EAAhB;AACA,WAAO,IAAIC,qBAAJ,CAA0BE,MAA1B,EAAkC;AAAA,aAAMC,OAAN;AAAA,KAAlC,CAAP;AACH,GAHD;AAIH",
+    "sourcesContent": [
+      "import { AsyncSubject } from '../AsyncSubject';\nimport { ConnectableObservable } from '../observable/ConnectableObservable';\nexport function publishLast() {\n    return (source) => {\n        const subject = new AsyncSubject();\n        return new ConnectableObservable(source, () => subject);\n    };\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

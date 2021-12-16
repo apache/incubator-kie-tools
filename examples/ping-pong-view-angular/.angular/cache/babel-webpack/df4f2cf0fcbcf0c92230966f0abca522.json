@@ -1,0 +1,13 @@
+{
+  "ast": null,
+  "code": "export var environment = {\n  production: false\n};",
+  "map": {
+    "version": 3,
+    "sources": ["/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/src/environments/environment.ts"],
+    "names": ["environment", "production"],
+    "mappings": "AAAA,OAAO,IAAMA,WAAW,GAAG;AACvBC,EAAAA,UAAU,EAAE;AADW,CAApB",
+    "sourcesContent": ["export const environment = {\n    production: false\n};\n"]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

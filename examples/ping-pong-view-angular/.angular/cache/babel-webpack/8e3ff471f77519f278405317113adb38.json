@@ -1,0 +1,34 @@
+{
+  "ast": null,
+  "code": "import { map } from './map';\nimport { innerFrom } from '../observable/innerFrom';\nimport { operate } from '../util/lift';\nimport { mergeInternals } from './mergeInternals';\nimport { isFunction } from '../util/isFunction';\nexport function mergeMap(project, resultSelector) {\n  var concurrent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Infinity;\n\n  if (isFunction(resultSelector)) {\n    return mergeMap(function (a, i) {\n      return map(function (b, ii) {\n        return resultSelector(a, b, i, ii);\n      })(innerFrom(project(a, i)));\n    }, concurrent);\n  } else if (typeof resultSelector === 'number') {\n    concurrent = resultSelector;\n  }\n\n  return operate(function (source, subscriber) {\n    return mergeInternals(source, subscriber, project, concurrent);\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/mergeMap.js"
+    ],
+    "names": [
+      "map",
+      "innerFrom",
+      "operate",
+      "mergeInternals",
+      "isFunction",
+      "mergeMap",
+      "project",
+      "resultSelector",
+      "concurrent",
+      "Infinity",
+      "a",
+      "i",
+      "b",
+      "ii",
+      "source",
+      "subscriber"
+    ],
+    "mappings": "AAAA,SAASA,GAAT,QAAoB,OAApB;AACA,SAASC,SAAT,QAA0B,yBAA1B;AACA,SAASC,OAAT,QAAwB,cAAxB;AACA,SAASC,cAAT,QAA+B,kBAA/B;AACA,SAASC,UAAT,QAA2B,oBAA3B;AACA,OAAO,SAASC,QAAT,CAAkBC,OAAlB,EAA2BC,cAA3B,EAAkE;AAAA,MAAvBC,UAAuB,uEAAVC,QAAU;;AACrE,MAAIL,UAAU,CAACG,cAAD,CAAd,EAAgC;AAC5B,WAAOF,QAAQ,CAAC,UAACK,CAAD,EAAIC,CAAJ;AAAA,aAAUX,GAAG,CAAC,UAACY,CAAD,EAAIC,EAAJ;AAAA,eAAWN,cAAc,CAACG,CAAD,EAAIE,CAAJ,EAAOD,CAAP,EAAUE,EAAV,CAAzB;AAAA,OAAD,CAAH,CAA4CZ,SAAS,CAACK,OAAO,CAACI,CAAD,EAAIC,CAAJ,CAAR,CAArD,CAAV;AAAA,KAAD,EAAkFH,UAAlF,CAAf;AACH,GAFD,MAGK,IAAI,OAAOD,cAAP,KAA0B,QAA9B,EAAwC;AACzCC,IAAAA,UAAU,GAAGD,cAAb;AACH;;AACD,SAAOL,OAAO,CAAC,UAACY,MAAD,EAASC,UAAT;AAAA,WAAwBZ,cAAc,CAACW,MAAD,EAASC,UAAT,EAAqBT,OAArB,EAA8BE,UAA9B,CAAtC;AAAA,GAAD,CAAd;AACH",
+    "sourcesContent": [
+      "import { map } from './map';\nimport { innerFrom } from '../observable/innerFrom';\nimport { operate } from '../util/lift';\nimport { mergeInternals } from './mergeInternals';\nimport { isFunction } from '../util/isFunction';\nexport function mergeMap(project, resultSelector, concurrent = Infinity) {\n    if (isFunction(resultSelector)) {\n        return mergeMap((a, i) => map((b, ii) => resultSelector(a, b, i, ii))(innerFrom(project(a, i))), concurrent);\n    }\n    else if (typeof resultSelector === 'number') {\n        concurrent = resultSelector;\n    }\n    return operate((source, subscriber) => mergeInternals(source, subscriber, project, concurrent));\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

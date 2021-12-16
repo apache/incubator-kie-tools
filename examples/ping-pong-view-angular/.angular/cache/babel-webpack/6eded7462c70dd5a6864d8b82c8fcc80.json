@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { zip as zipStatic } from '../observable/zip';\nimport { operate } from '../util/lift';\nexport function zip() {\n  for (var _len = arguments.length, sources = new Array(_len), _key = 0; _key < _len; _key++) {\n    sources[_key] = arguments[_key];\n  }\n\n  return operate(function (source, subscriber) {\n    zipStatic.apply(void 0, [source].concat(sources)).subscribe(subscriber);\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/zip.js"
+    ],
+    "names": ["zip", "zipStatic", "operate", "sources", "source", "subscriber", "subscribe"],
+    "mappings": "AAAA,SAASA,GAAG,IAAIC,SAAhB,QAAiC,mBAAjC;AACA,SAASC,OAAT,QAAwB,cAAxB;AACA,OAAO,SAASF,GAAT,GAAyB;AAAA,oCAATG,OAAS;AAATA,IAAAA,OAAS;AAAA;;AAC5B,SAAOD,OAAO,CAAC,UAACE,MAAD,EAASC,UAAT,EAAwB;AACnCJ,IAAAA,SAAS,MAAT,UAAUG,MAAV,SAAqBD,OAArB,GAA8BG,SAA9B,CAAwCD,UAAxC;AACH,GAFa,CAAd;AAGH",
+    "sourcesContent": [
+      "import { zip as zipStatic } from '../observable/zip';\nimport { operate } from '../util/lift';\nexport function zip(...sources) {\n    return operate((source, subscriber) => {\n        zipStatic(source, ...sources).subscribe(subscriber);\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,37 @@
+{
+  "ast": null,
+  "code": "import { operate } from '../util/lift';\nimport { innerFrom } from '../observable/innerFrom';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function audit(durationSelector) {\n  return operate(function (source, subscriber) {\n    var hasValue = false;\n    var lastValue = null;\n    var durationSubscriber = null;\n    var isComplete = false;\n\n    var endDuration = function endDuration() {\n      durationSubscriber === null || durationSubscriber === void 0 ? void 0 : durationSubscriber.unsubscribe();\n      durationSubscriber = null;\n\n      if (hasValue) {\n        hasValue = false;\n        var value = lastValue;\n        lastValue = null;\n        subscriber.next(value);\n      }\n\n      isComplete && subscriber.complete();\n    };\n\n    var cleanupDuration = function cleanupDuration() {\n      durationSubscriber = null;\n      isComplete && subscriber.complete();\n    };\n\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      hasValue = true;\n      lastValue = value;\n\n      if (!durationSubscriber) {\n        innerFrom(durationSelector(value)).subscribe(durationSubscriber = new OperatorSubscriber(subscriber, endDuration, cleanupDuration));\n      }\n    }, function () {\n      isComplete = true;\n      (!hasValue || !durationSubscriber || durationSubscriber.closed) && subscriber.complete();\n    }));\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/audit.js"
+    ],
+    "names": [
+      "operate",
+      "innerFrom",
+      "OperatorSubscriber",
+      "audit",
+      "durationSelector",
+      "source",
+      "subscriber",
+      "hasValue",
+      "lastValue",
+      "durationSubscriber",
+      "isComplete",
+      "endDuration",
+      "unsubscribe",
+      "value",
+      "next",
+      "complete",
+      "cleanupDuration",
+      "subscribe",
+      "closed"
+    ],
+    "mappings": "AAAA,SAASA,OAAT,QAAwB,cAAxB;AACA,SAASC,SAAT,QAA0B,yBAA1B;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,OAAO,SAASC,KAAT,CAAeC,gBAAf,EAAiC;AACpC,SAAOJ,OAAO,CAAC,UAACK,MAAD,EAASC,UAAT,EAAwB;AACnC,QAAIC,QAAQ,GAAG,KAAf;AACA,QAAIC,SAAS,GAAG,IAAhB;AACA,QAAIC,kBAAkB,GAAG,IAAzB;AACA,QAAIC,UAAU,GAAG,KAAjB;;AACA,QAAMC,WAAW,GAAG,SAAdA,WAAc,GAAM;AACtBF,MAAAA,kBAAkB,KAAK,IAAvB,IAA+BA,kBAAkB,KAAK,KAAK,CAA3D,GAA+D,KAAK,CAApE,GAAwEA,kBAAkB,CAACG,WAAnB,EAAxE;AACAH,MAAAA,kBAAkB,GAAG,IAArB;;AACA,UAAIF,QAAJ,EAAc;AACVA,QAAAA,QAAQ,GAAG,KAAX;AACA,YAAMM,KAAK,GAAGL,SAAd;AACAA,QAAAA,SAAS,GAAG,IAAZ;AACAF,QAAAA,UAAU,CAACQ,IAAX,CAAgBD,KAAhB;AACH;;AACDH,MAAAA,UAAU,IAAIJ,UAAU,CAACS,QAAX,EAAd;AACH,KAVD;;AAWA,QAAMC,eAAe,GAAG,SAAlBA,eAAkB,GAAM;AAC1BP,MAAAA,kBAAkB,GAAG,IAArB;AACAC,MAAAA,UAAU,IAAIJ,UAAU,CAACS,QAAX,EAAd;AACH,KAHD;;AAIAV,IAAAA,MAAM,CAACY,SAAP,CAAiB,IAAIf,kBAAJ,CAAuBI,UAAvB,EAAmC,UAACO,KAAD,EAAW;AAC3DN,MAAAA,QAAQ,GAAG,IAAX;AACAC,MAAAA,SAAS,GAAGK,KAAZ;;AACA,UAAI,CAACJ,kBAAL,EAAyB;AACrBR,QAAAA,SAAS,CAACG,gBAAgB,CAACS,KAAD,CAAjB,CAAT,CAAmCI,SAAnC,CAA8CR,kBAAkB,GAAG,IAAIP,kBAAJ,CAAuBI,UAAvB,EAAmCK,WAAnC,EAAgDK,eAAhD,CAAnE;AACH;AACJ,KANgB,EAMd,YAAM;AACLN,MAAAA,UAAU,GAAG,IAAb;AACA,OAAC,CAACH,QAAD,IAAa,CAACE,kBAAd,IAAoCA,kBAAkB,CAACS,MAAxD,KAAmEZ,UAAU,CAACS,QAAX,EAAnE;AACH,KATgB,CAAjB;AAUH,GA9Ba,CAAd;AA+BH",
+    "sourcesContent": [
+      "import { operate } from '../util/lift';\nimport { innerFrom } from '../observable/innerFrom';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function audit(durationSelector) {\n    return operate((source, subscriber) => {\n        let hasValue = false;\n        let lastValue = null;\n        let durationSubscriber = null;\n        let isComplete = false;\n        const endDuration = () => {\n            durationSubscriber === null || durationSubscriber === void 0 ? void 0 : durationSubscriber.unsubscribe();\n            durationSubscriber = null;\n            if (hasValue) {\n                hasValue = false;\n                const value = lastValue;\n                lastValue = null;\n                subscriber.next(value);\n            }\n            isComplete && subscriber.complete();\n        };\n        const cleanupDuration = () => {\n            durationSubscriber = null;\n            isComplete && subscriber.complete();\n        };\n        source.subscribe(new OperatorSubscriber(subscriber, (value) => {\n            hasValue = true;\n            lastValue = value;\n            if (!durationSubscriber) {\n                innerFrom(durationSelector(value)).subscribe((durationSubscriber = new OperatorSubscriber(subscriber, endDuration, cleanupDuration)));\n            }\n        }, () => {\n            isComplete = true;\n            (!hasValue || !durationSubscriber || durationSubscriber.closed) && subscriber.complete();\n        }));\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

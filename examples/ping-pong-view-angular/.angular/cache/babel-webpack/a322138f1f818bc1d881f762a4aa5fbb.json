@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { Observable } from '../Observable';\nimport { innerFrom } from './innerFrom';\nimport { EMPTY } from './empty';\nexport function using(resourceFactory, observableFactory) {\n  return new Observable(function (subscriber) {\n    var resource = resourceFactory();\n    var result = observableFactory(resource);\n    var source = result ? innerFrom(result) : EMPTY;\n    source.subscribe(subscriber);\n    return function () {\n      if (resource) {\n        resource.unsubscribe();\n      }\n    };\n  });\n} //# sourceMappingURL=using.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

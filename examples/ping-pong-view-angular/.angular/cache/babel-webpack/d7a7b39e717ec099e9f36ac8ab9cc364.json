@@ -1,0 +1,46 @@
+{
+  "ast": null,
+  "code": "import _classCallCheck from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/classCallCheck.js\";\nimport _createClass from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/createClass.js\";\nimport _inherits from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/inherits.js\";\nimport _createSuper from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/createSuper.js\";\nimport { Observable } from '../Observable';\nimport { Subscription } from '../Subscription';\nimport { refCount as higherOrderRefCount } from '../operators/refCount';\nimport { OperatorSubscriber } from '../operators/OperatorSubscriber';\nimport { hasLift } from '../util/lift';\nexport var ConnectableObservable = /*#__PURE__*/function (_Observable) {\n  _inherits(ConnectableObservable, _Observable);\n\n  var _super = _createSuper(ConnectableObservable);\n\n  function ConnectableObservable(source, subjectFactory) {\n    var _this;\n\n    _classCallCheck(this, ConnectableObservable);\n\n    _this = _super.call(this);\n    _this.source = source;\n    _this.subjectFactory = subjectFactory;\n    _this._subject = null;\n    _this._refCount = 0;\n    _this._connection = null;\n\n    if (hasLift(source)) {\n      _this.lift = source.lift;\n    }\n\n    return _this;\n  }\n\n  _createClass(ConnectableObservable, [{\n    key: \"_subscribe\",\n    value: function _subscribe(subscriber) {\n      return this.getSubject().subscribe(subscriber);\n    }\n  }, {\n    key: \"getSubject\",\n    value: function getSubject() {\n      var subject = this._subject;\n\n      if (!subject || subject.isStopped) {\n        this._subject = this.subjectFactory();\n      }\n\n      return this._subject;\n    }\n  }, {\n    key: \"_teardown\",\n    value: function _teardown() {\n      this._refCount = 0;\n      var _connection = this._connection;\n      this._subject = this._connection = null;\n      _connection === null || _connection === void 0 ? void 0 : _connection.unsubscribe();\n    }\n  }, {\n    key: \"connect\",\n    value: function connect() {\n      var _this2 = this;\n\n      var connection = this._connection;\n\n      if (!connection) {\n        connection = this._connection = new Subscription();\n        var subject = this.getSubject();\n        connection.add(this.source.subscribe(new OperatorSubscriber(subject, undefined, function () {\n          _this2._teardown();\n\n          subject.complete();\n        }, function (err) {\n          _this2._teardown();\n\n          subject.error(err);\n        }, function () {\n          return _this2._teardown();\n        })));\n\n        if (connection.closed) {\n          this._connection = null;\n          connection = Subscription.EMPTY;\n        }\n      }\n\n      return connection;\n    }\n  }, {\n    key: \"refCount\",\n    value: function refCount() {\n      return higherOrderRefCount()(this);\n    }\n  }]);\n\n  return ConnectableObservable;\n}(Observable);",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/observable/ConnectableObservable.js"
+    ],
+    "names": [
+      "Observable",
+      "Subscription",
+      "refCount",
+      "higherOrderRefCount",
+      "OperatorSubscriber",
+      "hasLift",
+      "ConnectableObservable",
+      "source",
+      "subjectFactory",
+      "_subject",
+      "_refCount",
+      "_connection",
+      "lift",
+      "subscriber",
+      "getSubject",
+      "subscribe",
+      "subject",
+      "isStopped",
+      "unsubscribe",
+      "connection",
+      "add",
+      "undefined",
+      "_teardown",
+      "complete",
+      "err",
+      "error",
+      "closed",
+      "EMPTY"
+    ],
+    "mappings": ";;;;AAAA,SAASA,UAAT,QAA2B,eAA3B;AACA,SAASC,YAAT,QAA6B,iBAA7B;AACA,SAASC,QAAQ,IAAIC,mBAArB,QAAgD,uBAAhD;AACA,SAASC,kBAAT,QAAmC,iCAAnC;AACA,SAASC,OAAT,QAAwB,cAAxB;AACA,WAAaC,qBAAb;AAAA;;AAAA;;AACI,iCAAYC,MAAZ,EAAoBC,cAApB,EAAoC;AAAA;;AAAA;;AAChC;AACA,UAAKD,MAAL,GAAcA,MAAd;AACA,UAAKC,cAAL,GAAsBA,cAAtB;AACA,UAAKC,QAAL,GAAgB,IAAhB;AACA,UAAKC,SAAL,GAAiB,CAAjB;AACA,UAAKC,WAAL,GAAmB,IAAnB;;AACA,QAAIN,OAAO,CAACE,MAAD,CAAX,EAAqB;AACjB,YAAKK,IAAL,GAAYL,MAAM,CAACK,IAAnB;AACH;;AAT+B;AAUnC;;AAXL;AAAA;AAAA,WAYI,oBAAWC,UAAX,EAAuB;AACnB,aAAO,KAAKC,UAAL,GAAkBC,SAAlB,CAA4BF,UAA5B,CAAP;AACH;AAdL;AAAA;AAAA,WAeI,sBAAa;AACT,UAAMG,OAAO,GAAG,KAAKP,QAArB;;AACA,UAAI,CAACO,OAAD,IAAYA,OAAO,CAACC,SAAxB,EAAmC;AAC/B,aAAKR,QAAL,GAAgB,KAAKD,cAAL,EAAhB;AACH;;AACD,aAAO,KAAKC,QAAZ;AACH;AArBL;AAAA;AAAA,WAsBI,qBAAY;AACR,WAAKC,SAAL,GAAiB,CAAjB;AACA,UAAQC,WAAR,GAAwB,IAAxB,CAAQA,WAAR;AACA,WAAKF,QAAL,GAAgB,KAAKE,WAAL,GAAmB,IAAnC;AACAA,MAAAA,WAAW,KAAK,IAAhB,IAAwBA,WAAW,KAAK,KAAK,CAA7C,GAAiD,KAAK,CAAtD,GAA0DA,WAAW,CAACO,WAAZ,EAA1D;AACH;AA3BL;AAAA;AAAA,WA4BI,mBAAU;AAAA;;AACN,UAAIC,UAAU,GAAG,KAAKR,WAAtB;;AACA,UAAI,CAACQ,UAAL,EAAiB;AACbA,QAAAA,UAAU,GAAG,KAAKR,WAAL,GAAmB,IAAIV,YAAJ,EAAhC;AACA,YAAMe,OAAO,GAAG,KAAKF,UAAL,EAAhB;AACAK,QAAAA,UAAU,CAACC,GAAX,CAAe,KAAKb,MAAL,CAAYQ,SAAZ,CAAsB,IAAIX,kBAAJ,CAAuBY,OAAvB,EAAgCK,SAAhC,EAA2C,YAAM;AAClF,UAAA,MAAI,CAACC,SAAL;;AACAN,UAAAA,OAAO,CAACO,QAAR;AACH,SAHoC,EAGlC,UAACC,GAAD,EAAS;AACR,UAAA,MAAI,CAACF,SAAL;;AACAN,UAAAA,OAAO,CAACS,KAAR,CAAcD,GAAd;AACH,SANoC,EAMlC;AAAA,iBAAM,MAAI,CAACF,SAAL,EAAN;AAAA,SANkC,CAAtB,CAAf;;AAOA,YAAIH,UAAU,CAACO,MAAf,EAAuB;AACnB,eAAKf,WAAL,GAAmB,IAAnB;AACAQ,UAAAA,UAAU,GAAGlB,YAAY,CAAC0B,KAA1B;AACH;AACJ;;AACD,aAAOR,UAAP;AACH;AA9CL;AAAA;AAAA,WA+CI,oBAAW;AACP,aAAOhB,mBAAmB,GAAG,IAAH,CAA1B;AACH;AAjDL;;AAAA;AAAA,EAA2CH,UAA3C",
+    "sourcesContent": [
+      "import { Observable } from '../Observable';\nimport { Subscription } from '../Subscription';\nimport { refCount as higherOrderRefCount } from '../operators/refCount';\nimport { OperatorSubscriber } from '../operators/OperatorSubscriber';\nimport { hasLift } from '../util/lift';\nexport class ConnectableObservable extends Observable {\n    constructor(source, subjectFactory) {\n        super();\n        this.source = source;\n        this.subjectFactory = subjectFactory;\n        this._subject = null;\n        this._refCount = 0;\n        this._connection = null;\n        if (hasLift(source)) {\n            this.lift = source.lift;\n        }\n    }\n    _subscribe(subscriber) {\n        return this.getSubject().subscribe(subscriber);\n    }\n    getSubject() {\n        const subject = this._subject;\n        if (!subject || subject.isStopped) {\n            this._subject = this.subjectFactory();\n        }\n        return this._subject;\n    }\n    _teardown() {\n        this._refCount = 0;\n        const { _connection } = this;\n        this._subject = this._connection = null;\n        _connection === null || _connection === void 0 ? void 0 : _connection.unsubscribe();\n    }\n    connect() {\n        let connection = this._connection;\n        if (!connection) {\n            connection = this._connection = new Subscription();\n            const subject = this.getSubject();\n            connection.add(this.source.subscribe(new OperatorSubscriber(subject, undefined, () => {\n                this._teardown();\n                subject.complete();\n            }, (err) => {\n                this._teardown();\n                subject.error(err);\n            }, () => this._teardown())));\n            if (connection.closed) {\n                this._connection = null;\n                connection = Subscription.EMPTY;\n            }\n        }\n        return connection;\n    }\n    refCount() {\n        return higherOrderRefCount()(this);\n    }\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

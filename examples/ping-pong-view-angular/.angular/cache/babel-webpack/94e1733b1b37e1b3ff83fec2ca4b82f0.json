@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { merge } from './merge';\nexport function mergeWith() {\n  return merge.apply(void 0, arguments);\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/mergeWith.js"
+    ],
+    "names": ["merge", "mergeWith"],
+    "mappings": "AAAA,SAASA,KAAT,QAAsB,SAAtB;AACA,OAAO,SAASC,SAAT,GAAoC;AACvC,SAAOD,KAAK,MAAL,mBAAP;AACH",
+    "sourcesContent": [
+      "import { merge } from './merge';\nexport function mergeWith(...otherSources) {\n    return merge(...otherSources);\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { operate } from '../util/lift';\nimport { innerFrom } from '../observable/innerFrom';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function audit(durationSelector) {\n  return operate(function (source, subscriber) {\n    var hasValue = false;\n    var lastValue = null;\n    var durationSubscriber = null;\n    var isComplete = false;\n\n    var endDuration = function endDuration() {\n      durationSubscriber === null || durationSubscriber === void 0 ? void 0 : durationSubscriber.unsubscribe();\n      durationSubscriber = null;\n\n      if (hasValue) {\n        hasValue = false;\n        var value = lastValue;\n        lastValue = null;\n        subscriber.next(value);\n      }\n\n      isComplete && subscriber.complete();\n    };\n\n    var cleanupDuration = function cleanupDuration() {\n      durationSubscriber = null;\n      isComplete && subscriber.complete();\n    };\n\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      hasValue = true;\n      lastValue = value;\n\n      if (!durationSubscriber) {\n        innerFrom(durationSelector(value)).subscribe(durationSubscriber = new OperatorSubscriber(subscriber, endDuration, cleanupDuration));\n      }\n    }, function () {\n      isComplete = true;\n      (!hasValue || !durationSubscriber || durationSubscriber.closed) && subscriber.complete();\n    }));\n  });\n} //# sourceMappingURL=audit.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

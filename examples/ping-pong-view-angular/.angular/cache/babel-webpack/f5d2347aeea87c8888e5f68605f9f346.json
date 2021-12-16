@@ -1,0 +1,35 @@
+{
+  "ast": null,
+  "code": "import _classCallCheck from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/classCallCheck.js\";\nimport _createClass from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/createClass.js\";\nimport _assertThisInitialized from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js\";\nimport _inherits from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/inherits.js\";\nimport _createSuper from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/createSuper.js\";\nimport _get from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/get.js\";\nimport _getPrototypeOf from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js\";\nimport { Subscriber } from '../Subscriber';\nexport var OperatorSubscriber = /*#__PURE__*/function (_Subscriber) {\n  _inherits(OperatorSubscriber, _Subscriber);\n\n  var _super = _createSuper(OperatorSubscriber);\n\n  function OperatorSubscriber(destination, onNext, onComplete, onError, onFinalize) {\n    var _thisSuper, _thisSuper2, _thisSuper3, _this;\n\n    _classCallCheck(this, OperatorSubscriber);\n\n    _this = _super.call(this, destination);\n    _this.onFinalize = onFinalize;\n    _this._next = onNext ? function (value) {\n      try {\n        onNext(value);\n      } catch (err) {\n        destination.error(err);\n      }\n    } : _get((_thisSuper = _assertThisInitialized(_this), _getPrototypeOf(OperatorSubscriber.prototype)), \"_next\", _thisSuper);\n    _this._error = onError ? function (err) {\n      try {\n        onError(err);\n      } catch (err) {\n        destination.error(err);\n      } finally {\n        this.unsubscribe();\n      }\n    } : _get((_thisSuper2 = _assertThisInitialized(_this), _getPrototypeOf(OperatorSubscriber.prototype)), \"_error\", _thisSuper2);\n    _this._complete = onComplete ? function () {\n      try {\n        onComplete();\n      } catch (err) {\n        destination.error(err);\n      } finally {\n        this.unsubscribe();\n      }\n    } : _get((_thisSuper3 = _assertThisInitialized(_this), _getPrototypeOf(OperatorSubscriber.prototype)), \"_complete\", _thisSuper3);\n    return _this;\n  }\n\n  _createClass(OperatorSubscriber, [{\n    key: \"unsubscribe\",\n    value: function unsubscribe() {\n      var _a;\n\n      var closed = this.closed;\n\n      _get(_getPrototypeOf(OperatorSubscriber.prototype), \"unsubscribe\", this).call(this);\n\n      !closed && ((_a = this.onFinalize) === null || _a === void 0 ? void 0 : _a.call(this));\n    }\n  }]);\n\n  return OperatorSubscriber;\n}(Subscriber);",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js"
+    ],
+    "names": [
+      "Subscriber",
+      "OperatorSubscriber",
+      "destination",
+      "onNext",
+      "onComplete",
+      "onError",
+      "onFinalize",
+      "_next",
+      "value",
+      "err",
+      "error",
+      "_error",
+      "unsubscribe",
+      "_complete",
+      "_a",
+      "closed",
+      "call"
+    ],
+    "mappings": ";;;;;;;AAAA,SAASA,UAAT,QAA2B,eAA3B;AACA,WAAaC,kBAAb;AAAA;;AAAA;;AACI,8BAAYC,WAAZ,EAAyBC,MAAzB,EAAiCC,UAAjC,EAA6CC,OAA7C,EAAsDC,UAAtD,EAAkE;AAAA;;AAAA;;AAC9D,8BAAMJ,WAAN;AACA,UAAKI,UAAL,GAAkBA,UAAlB;AACA,UAAKC,KAAL,GAAaJ,MAAM,GACb,UAAUK,KAAV,EAAiB;AACf,UAAI;AACAL,QAAAA,MAAM,CAACK,KAAD,CAAN;AACH,OAFD,CAGA,OAAOC,GAAP,EAAY;AACRP,QAAAA,WAAW,CAACQ,KAAZ,CAAkBD,GAAlB;AACH;AACJ,KARc,yHAAnB;AAUA,UAAKE,MAAL,GAAcN,OAAO,GACf,UAAUI,GAAV,EAAe;AACb,UAAI;AACAJ,QAAAA,OAAO,CAACI,GAAD,CAAP;AACH,OAFD,CAGA,OAAOA,GAAP,EAAY;AACRP,QAAAA,WAAW,CAACQ,KAAZ,CAAkBD,GAAlB;AACH,OALD,SAMQ;AACJ,aAAKG,WAAL;AACH;AACJ,KAXgB,4HAArB;AAaA,UAAKC,SAAL,GAAiBT,UAAU,GACrB,YAAY;AACV,UAAI;AACAA,QAAAA,UAAU;AACb,OAFD,CAGA,OAAOK,GAAP,EAAY;AACRP,QAAAA,WAAW,CAACQ,KAAZ,CAAkBD,GAAlB;AACH,OALD,SAMQ;AACJ,aAAKG,WAAL;AACH;AACJ,KAXsB,+HAA3B;AA1B8D;AAuCjE;;AAxCL;AAAA;AAAA,WAyCI,uBAAc;AACV,UAAIE,EAAJ;;AACA,UAAQC,MAAR,GAAmB,IAAnB,CAAQA,MAAR;;AACA;;AACA,OAACA,MAAD,KAAY,CAACD,EAAE,GAAG,KAAKR,UAAX,MAA2B,IAA3B,IAAmCQ,EAAE,KAAK,KAAK,CAA/C,GAAmD,KAAK,CAAxD,GAA4DA,EAAE,CAACE,IAAH,CAAQ,IAAR,CAAxE;AACH;AA9CL;;AAAA;AAAA,EAAwChB,UAAxC",
+    "sourcesContent": [
+      "import { Subscriber } from '../Subscriber';\nexport class OperatorSubscriber extends Subscriber {\n    constructor(destination, onNext, onComplete, onError, onFinalize) {\n        super(destination);\n        this.onFinalize = onFinalize;\n        this._next = onNext\n            ? function (value) {\n                try {\n                    onNext(value);\n                }\n                catch (err) {\n                    destination.error(err);\n                }\n            }\n            : super._next;\n        this._error = onError\n            ? function (err) {\n                try {\n                    onError(err);\n                }\n                catch (err) {\n                    destination.error(err);\n                }\n                finally {\n                    this.unsubscribe();\n                }\n            }\n            : super._error;\n        this._complete = onComplete\n            ? function () {\n                try {\n                    onComplete();\n                }\n                catch (err) {\n                    destination.error(err);\n                }\n                finally {\n                    this.unsubscribe();\n                }\n            }\n            : super._complete;\n    }\n    unsubscribe() {\n        var _a;\n        const { closed } = this;\n        super.unsubscribe();\n        !closed && ((_a = this.onFinalize) === null || _a === void 0 ? void 0 : _a.call(this));\n    }\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

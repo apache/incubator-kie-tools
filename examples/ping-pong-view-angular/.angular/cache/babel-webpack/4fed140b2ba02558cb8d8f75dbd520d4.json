@@ -1,0 +1,33 @@
+{
+  "ast": null,
+  "code": "import { Observable } from '../Observable';\nimport { isFunction } from '../util/isFunction';\nimport { mapOneOrManyArgs } from '../util/mapOneOrManyArgs';\nexport function fromEventPattern(addHandler, removeHandler, resultSelector) {\n  if (resultSelector) {\n    return fromEventPattern(addHandler, removeHandler).pipe(mapOneOrManyArgs(resultSelector));\n  }\n\n  return new Observable(function (subscriber) {\n    var handler = function handler() {\n      for (var _len = arguments.length, e = new Array(_len), _key = 0; _key < _len; _key++) {\n        e[_key] = arguments[_key];\n      }\n\n      return subscriber.next(e.length === 1 ? e[0] : e);\n    };\n\n    var retValue = addHandler(handler);\n    return isFunction(removeHandler) ? function () {\n      return removeHandler(handler, retValue);\n    } : undefined;\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/observable/fromEventPattern.js"
+    ],
+    "names": [
+      "Observable",
+      "isFunction",
+      "mapOneOrManyArgs",
+      "fromEventPattern",
+      "addHandler",
+      "removeHandler",
+      "resultSelector",
+      "pipe",
+      "subscriber",
+      "handler",
+      "e",
+      "next",
+      "length",
+      "retValue",
+      "undefined"
+    ],
+    "mappings": "AAAA,SAASA,UAAT,QAA2B,eAA3B;AACA,SAASC,UAAT,QAA2B,oBAA3B;AACA,SAASC,gBAAT,QAAiC,0BAAjC;AACA,OAAO,SAASC,gBAAT,CAA0BC,UAA1B,EAAsCC,aAAtC,EAAqDC,cAArD,EAAqE;AACxE,MAAIA,cAAJ,EAAoB;AAChB,WAAOH,gBAAgB,CAACC,UAAD,EAAaC,aAAb,CAAhB,CAA4CE,IAA5C,CAAiDL,gBAAgB,CAACI,cAAD,CAAjE,CAAP;AACH;;AACD,SAAO,IAAIN,UAAJ,CAAe,UAACQ,UAAD,EAAgB;AAClC,QAAMC,OAAO,GAAG,SAAVA,OAAU;AAAA,wCAAIC,CAAJ;AAAIA,QAAAA,CAAJ;AAAA;;AAAA,aAAUF,UAAU,CAACG,IAAX,CAAgBD,CAAC,CAACE,MAAF,KAAa,CAAb,GAAiBF,CAAC,CAAC,CAAD,CAAlB,GAAwBA,CAAxC,CAAV;AAAA,KAAhB;;AACA,QAAMG,QAAQ,GAAGT,UAAU,CAACK,OAAD,CAA3B;AACA,WAAOR,UAAU,CAACI,aAAD,CAAV,GAA4B;AAAA,aAAMA,aAAa,CAACI,OAAD,EAAUI,QAAV,CAAnB;AAAA,KAA5B,GAAqEC,SAA5E;AACH,GAJM,CAAP;AAKH",
+    "sourcesContent": [
+      "import { Observable } from '../Observable';\nimport { isFunction } from '../util/isFunction';\nimport { mapOneOrManyArgs } from '../util/mapOneOrManyArgs';\nexport function fromEventPattern(addHandler, removeHandler, resultSelector) {\n    if (resultSelector) {\n        return fromEventPattern(addHandler, removeHandler).pipe(mapOneOrManyArgs(resultSelector));\n    }\n    return new Observable((subscriber) => {\n        const handler = (...e) => subscriber.next(e.length === 1 ? e[0] : e);\n        const retValue = addHandler(handler);\n        return isFunction(removeHandler) ? () => removeHandler(handler, retValue) : undefined;\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

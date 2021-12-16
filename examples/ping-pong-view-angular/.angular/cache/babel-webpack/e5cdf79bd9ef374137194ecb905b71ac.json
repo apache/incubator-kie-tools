@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { dateTimestampProvider } from '../scheduler/dateTimestampProvider';\nimport { map } from './map';\nexport function timestamp() {\n  var timestampProvider = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : dateTimestampProvider;\n  return map(function (value) {\n    return {\n      value: value,\n      timestamp: timestampProvider.now()\n    };\n  });\n} //# sourceMappingURL=timestamp.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

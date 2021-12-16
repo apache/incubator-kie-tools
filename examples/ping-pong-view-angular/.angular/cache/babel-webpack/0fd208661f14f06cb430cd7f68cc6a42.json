@@ -1,0 +1,34 @@
+{
+  "ast": null,
+  "code": "import _classCallCheck from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/classCallCheck.js\";\nimport { BrowserModule } from '@angular/platform-browser';\nimport { AppComponent } from './app.component';\nimport * as i0 from \"@angular/core\";\nexport var AppModule = function AppModule() {\n  _classCallCheck(this, AppModule);\n};\n\nAppModule.ɵfac = function AppModule_Factory(t) {\n  return new (t || AppModule)();\n};\n\nAppModule.ɵmod = i0.ɵɵdefineNgModule({\n  type: AppModule,\n  bootstrap: [AppComponent]\n});\nAppModule.ɵinj = i0.ɵɵdefineInjector({\n  providers: [],\n  imports: [[BrowserModule]]\n});\n\n(function () {\n  (typeof ngJitMode === \"undefined\" || ngJitMode) && i0.ɵɵsetNgModuleScope(AppModule, {\n    declarations: [AppComponent],\n    imports: [BrowserModule]\n  });\n})();",
+  "map": {
+    "version": 3,
+    "sources": ["/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/src/app/app.module.ts"],
+    "names": [
+      "BrowserModule",
+      "AppComponent",
+      "i0",
+      "AppModule",
+      "ɵfac",
+      "AppModule_Factory",
+      "t",
+      "ɵmod",
+      "ɵɵdefineNgModule",
+      "type",
+      "bootstrap",
+      "ɵinj",
+      "ɵɵdefineInjector",
+      "providers",
+      "imports",
+      "ngJitMode",
+      "ɵɵsetNgModuleScope",
+      "declarations"
+    ],
+    "mappings": ";AAAA,SAASA,aAAT,QAA8B,2BAA9B;AACA,SAASC,YAAT,QAA6B,iBAA7B;AACA,OAAO,KAAKC,EAAZ,MAAoB,eAApB;AACA,WAAaC,SAAb;AAAA;AAAA;;AAEAA,SAAS,CAACC,IAAV,GAAiB,SAASC,iBAAT,CAA2BC,CAA3B,EAA8B;AAAE,SAAO,KAAKA,CAAC,IAAIH,SAAV,GAAP;AAAgC,CAAjF;;AACAA,SAAS,CAACI,IAAV,GAAiBL,EAAE,CAACM,gBAAH,CAAoB;AAAEC,EAAAA,IAAI,EAAEN,SAAR;AAAmBO,EAAAA,SAAS,EAAE,CAACT,YAAD;AAA9B,CAApB,CAAjB;AACAE,SAAS,CAACQ,IAAV,GAAiBT,EAAE,CAACU,gBAAH,CAAoB;AAAEC,EAAAA,SAAS,EAAE,EAAb;AAAiBC,EAAAA,OAAO,EAAE,CAAC,CACpDd,aADoD,CAAD;AAA1B,CAApB,CAAjB;;AAGA,CAAC,YAAY;AAAE,GAAC,OAAOe,SAAP,KAAqB,WAArB,IAAoCA,SAArC,KAAmDb,EAAE,CAACc,kBAAH,CAAsBb,SAAtB,EAAiC;AAAEc,IAAAA,YAAY,EAAE,CAAChB,YAAD,CAAhB;AAAgCa,IAAAA,OAAO,EAAE,CAACd,aAAD;AAAzC,GAAjC,CAAnD;AAAkJ,CAAjK",
+    "sourcesContent": [
+      "import { BrowserModule } from '@angular/platform-browser';\nimport { AppComponent } from './app.component';\nimport * as i0 from \"@angular/core\";\nexport class AppModule {\n}\nAppModule.ɵfac = function AppModule_Factory(t) { return new (t || AppModule)(); };\nAppModule.ɵmod = i0.ɵɵdefineNgModule({ type: AppModule, bootstrap: [AppComponent] });\nAppModule.ɵinj = i0.ɵɵdefineInjector({ providers: [], imports: [[\n            BrowserModule\n        ]] });\n(function () { (typeof ngJitMode === \"undefined\" || ngJitMode) && i0.ɵɵsetNgModuleScope(AppModule, { declarations: [AppComponent], imports: [BrowserModule] }); })();\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { operate } from '../util/lift';\nimport { noop } from '../util/noop';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function buffer(closingNotifier) {\n  return operate(function (source, subscriber) {\n    var currentBuffer = [];\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      return currentBuffer.push(value);\n    }, function () {\n      subscriber.next(currentBuffer);\n      subscriber.complete();\n    }));\n    closingNotifier.subscribe(new OperatorSubscriber(subscriber, function () {\n      var b = currentBuffer;\n      currentBuffer = [];\n      subscriber.next(b);\n    }, noop));\n    return function () {\n      currentBuffer = null;\n    };\n  });\n} //# sourceMappingURL=buffer.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

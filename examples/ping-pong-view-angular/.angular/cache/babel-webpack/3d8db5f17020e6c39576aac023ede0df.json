@@ -1,0 +1,28 @@
+{
+  "ast": null,
+  "code": "export function executeSchedule(parentSubscription, scheduler, work) {\n  var delay = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;\n  var repeat = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;\n  var scheduleSubscription = scheduler.schedule(function () {\n    work();\n\n    if (repeat) {\n      parentSubscription.add(this.schedule(null, delay));\n    } else {\n      this.unsubscribe();\n    }\n  }, delay);\n  parentSubscription.add(scheduleSubscription);\n\n  if (!repeat) {\n    return scheduleSubscription;\n  }\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/util/executeSchedule.js"
+    ],
+    "names": [
+      "executeSchedule",
+      "parentSubscription",
+      "scheduler",
+      "work",
+      "delay",
+      "repeat",
+      "scheduleSubscription",
+      "schedule",
+      "add",
+      "unsubscribe"
+    ],
+    "mappings": "AAAA,OAAO,SAASA,eAAT,CAAyBC,kBAAzB,EAA6CC,SAA7C,EAAwDC,IAAxD,EAAyF;AAAA,MAA3BC,KAA2B,uEAAnB,CAAmB;AAAA,MAAhBC,MAAgB,uEAAP,KAAO;AAC5F,MAAMC,oBAAoB,GAAGJ,SAAS,CAACK,QAAV,CAAmB,YAAY;AACxDJ,IAAAA,IAAI;;AACJ,QAAIE,MAAJ,EAAY;AACRJ,MAAAA,kBAAkB,CAACO,GAAnB,CAAuB,KAAKD,QAAL,CAAc,IAAd,EAAoBH,KAApB,CAAvB;AACH,KAFD,MAGK;AACD,WAAKK,WAAL;AACH;AACJ,GAR4B,EAQ1BL,KAR0B,CAA7B;AASAH,EAAAA,kBAAkB,CAACO,GAAnB,CAAuBF,oBAAvB;;AACA,MAAI,CAACD,MAAL,EAAa;AACT,WAAOC,oBAAP;AACH;AACJ",
+    "sourcesContent": [
+      "export function executeSchedule(parentSubscription, scheduler, work, delay = 0, repeat = false) {\n    const scheduleSubscription = scheduler.schedule(function () {\n        work();\n        if (repeat) {\n            parentSubscription.add(this.schedule(null, delay));\n        }\n        else {\n            this.unsubscribe();\n        }\n    }, delay);\n    parentSubscription.add(scheduleSubscription);\n    if (!repeat) {\n        return scheduleSubscription;\n    }\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

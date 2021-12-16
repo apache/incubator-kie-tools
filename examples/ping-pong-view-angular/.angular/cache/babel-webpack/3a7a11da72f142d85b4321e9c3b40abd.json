@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { reduce } from './reduce';\nexport function count(predicate) {\n  return reduce(function (total, value, i) {\n    return !predicate || predicate(value, i) ? total + 1 : total;\n  }, 0);\n} //# sourceMappingURL=count.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,35 @@
+{
+  "ast": null,
+  "code": "var nextHandle = 1;\nvar resolved;\nvar activeHandles = {};\n\nfunction findAndClearHandle(handle) {\n  if (handle in activeHandles) {\n    delete activeHandles[handle];\n    return true;\n  }\n\n  return false;\n}\n\nexport var Immediate = {\n  setImmediate: function setImmediate(cb) {\n    var handle = nextHandle++;\n    activeHandles[handle] = true;\n\n    if (!resolved) {\n      resolved = Promise.resolve();\n    }\n\n    resolved.then(function () {\n      return findAndClearHandle(handle) && cb();\n    });\n    return handle;\n  },\n  clearImmediate: function clearImmediate(handle) {\n    findAndClearHandle(handle);\n  }\n};\nexport var TestTools = {\n  pending: function pending() {\n    return Object.keys(activeHandles).length;\n  }\n};",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/util/Immediate.js"
+    ],
+    "names": [
+      "nextHandle",
+      "resolved",
+      "activeHandles",
+      "findAndClearHandle",
+      "handle",
+      "Immediate",
+      "setImmediate",
+      "cb",
+      "Promise",
+      "resolve",
+      "then",
+      "clearImmediate",
+      "TestTools",
+      "pending",
+      "Object",
+      "keys",
+      "length"
+    ],
+    "mappings": "AAAA,IAAIA,UAAU,GAAG,CAAjB;AACA,IAAIC,QAAJ;AACA,IAAMC,aAAa,GAAG,EAAtB;;AACA,SAASC,kBAAT,CAA4BC,MAA5B,EAAoC;AAChC,MAAIA,MAAM,IAAIF,aAAd,EAA6B;AACzB,WAAOA,aAAa,CAACE,MAAD,CAApB;AACA,WAAO,IAAP;AACH;;AACD,SAAO,KAAP;AACH;;AACD,OAAO,IAAMC,SAAS,GAAG;AACrBC,EAAAA,YADqB,wBACRC,EADQ,EACJ;AACb,QAAMH,MAAM,GAAGJ,UAAU,EAAzB;AACAE,IAAAA,aAAa,CAACE,MAAD,CAAb,GAAwB,IAAxB;;AACA,QAAI,CAACH,QAAL,EAAe;AACXA,MAAAA,QAAQ,GAAGO,OAAO,CAACC,OAAR,EAAX;AACH;;AACDR,IAAAA,QAAQ,CAACS,IAAT,CAAc;AAAA,aAAMP,kBAAkB,CAACC,MAAD,CAAlB,IAA8BG,EAAE,EAAtC;AAAA,KAAd;AACA,WAAOH,MAAP;AACH,GAToB;AAUrBO,EAAAA,cAVqB,0BAUNP,MAVM,EAUE;AACnBD,IAAAA,kBAAkB,CAACC,MAAD,CAAlB;AACH;AAZoB,CAAlB;AAcP,OAAO,IAAMQ,SAAS,GAAG;AACrBC,EAAAA,OADqB,qBACX;AACN,WAAOC,MAAM,CAACC,IAAP,CAAYb,aAAZ,EAA2Bc,MAAlC;AACH;AAHoB,CAAlB",
+    "sourcesContent": [
+      "let nextHandle = 1;\nlet resolved;\nconst activeHandles = {};\nfunction findAndClearHandle(handle) {\n    if (handle in activeHandles) {\n        delete activeHandles[handle];\n        return true;\n    }\n    return false;\n}\nexport const Immediate = {\n    setImmediate(cb) {\n        const handle = nextHandle++;\n        activeHandles[handle] = true;\n        if (!resolved) {\n            resolved = Promise.resolve();\n        }\n        resolved.then(() => findAndClearHandle(handle) && cb());\n        return handle;\n    },\n    clearImmediate(handle) {\n        findAndClearHandle(handle);\n    },\n};\nexport const TestTools = {\n    pending() {\n        return Object.keys(activeHandles).length;\n    }\n};\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

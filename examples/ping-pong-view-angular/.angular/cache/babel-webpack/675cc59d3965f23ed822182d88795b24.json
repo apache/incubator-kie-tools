@@ -1,0 +1,39 @@
+{
+  "ast": null,
+  "code": "import { map } from './map';\nimport { innerFrom } from '../observable/innerFrom';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function exhaustMap(project, resultSelector) {\n  if (resultSelector) {\n    return function (source) {\n      return source.pipe(exhaustMap(function (a, i) {\n        return innerFrom(project(a, i)).pipe(map(function (b, ii) {\n          return resultSelector(a, b, i, ii);\n        }));\n      }));\n    };\n  }\n\n  return operate(function (source, subscriber) {\n    var index = 0;\n    var innerSub = null;\n    var isComplete = false;\n    source.subscribe(new OperatorSubscriber(subscriber, function (outerValue) {\n      if (!innerSub) {\n        innerSub = new OperatorSubscriber(subscriber, undefined, function () {\n          innerSub = null;\n          isComplete && subscriber.complete();\n        });\n        innerFrom(project(outerValue, index++)).subscribe(innerSub);\n      }\n    }, function () {\n      isComplete = true;\n      !innerSub && subscriber.complete();\n    }));\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/exhaustMap.js"
+    ],
+    "names": [
+      "map",
+      "innerFrom",
+      "operate",
+      "OperatorSubscriber",
+      "exhaustMap",
+      "project",
+      "resultSelector",
+      "source",
+      "pipe",
+      "a",
+      "i",
+      "b",
+      "ii",
+      "subscriber",
+      "index",
+      "innerSub",
+      "isComplete",
+      "subscribe",
+      "outerValue",
+      "undefined",
+      "complete"
+    ],
+    "mappings": "AAAA,SAASA,GAAT,QAAoB,OAApB;AACA,SAASC,SAAT,QAA0B,yBAA1B;AACA,SAASC,OAAT,QAAwB,cAAxB;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,OAAO,SAASC,UAAT,CAAoBC,OAApB,EAA6BC,cAA7B,EAA6C;AAChD,MAAIA,cAAJ,EAAoB;AAChB,WAAO,UAACC,MAAD;AAAA,aAAYA,MAAM,CAACC,IAAP,CAAYJ,UAAU,CAAC,UAACK,CAAD,EAAIC,CAAJ;AAAA,eAAUT,SAAS,CAACI,OAAO,CAACI,CAAD,EAAIC,CAAJ,CAAR,CAAT,CAAyBF,IAAzB,CAA8BR,GAAG,CAAC,UAACW,CAAD,EAAIC,EAAJ;AAAA,iBAAWN,cAAc,CAACG,CAAD,EAAIE,CAAJ,EAAOD,CAAP,EAAUE,EAAV,CAAzB;AAAA,SAAD,CAAjC,CAAV;AAAA,OAAD,CAAtB,CAAZ;AAAA,KAAP;AACH;;AACD,SAAOV,OAAO,CAAC,UAACK,MAAD,EAASM,UAAT,EAAwB;AACnC,QAAIC,KAAK,GAAG,CAAZ;AACA,QAAIC,QAAQ,GAAG,IAAf;AACA,QAAIC,UAAU,GAAG,KAAjB;AACAT,IAAAA,MAAM,CAACU,SAAP,CAAiB,IAAId,kBAAJ,CAAuBU,UAAvB,EAAmC,UAACK,UAAD,EAAgB;AAChE,UAAI,CAACH,QAAL,EAAe;AACXA,QAAAA,QAAQ,GAAG,IAAIZ,kBAAJ,CAAuBU,UAAvB,EAAmCM,SAAnC,EAA8C,YAAM;AAC3DJ,UAAAA,QAAQ,GAAG,IAAX;AACAC,UAAAA,UAAU,IAAIH,UAAU,CAACO,QAAX,EAAd;AACH,SAHU,CAAX;AAIAnB,QAAAA,SAAS,CAACI,OAAO,CAACa,UAAD,EAAaJ,KAAK,EAAlB,CAAR,CAAT,CAAwCG,SAAxC,CAAkDF,QAAlD;AACH;AACJ,KARgB,EAQd,YAAM;AACLC,MAAAA,UAAU,GAAG,IAAb;AACA,OAACD,QAAD,IAAaF,UAAU,CAACO,QAAX,EAAb;AACH,KAXgB,CAAjB;AAYH,GAhBa,CAAd;AAiBH",
+    "sourcesContent": [
+      "import { map } from './map';\nimport { innerFrom } from '../observable/innerFrom';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function exhaustMap(project, resultSelector) {\n    if (resultSelector) {\n        return (source) => source.pipe(exhaustMap((a, i) => innerFrom(project(a, i)).pipe(map((b, ii) => resultSelector(a, b, i, ii)))));\n    }\n    return operate((source, subscriber) => {\n        let index = 0;\n        let innerSub = null;\n        let isComplete = false;\n        source.subscribe(new OperatorSubscriber(subscriber, (outerValue) => {\n            if (!innerSub) {\n                innerSub = new OperatorSubscriber(subscriber, undefined, () => {\n                    innerSub = null;\n                    isComplete && subscriber.complete();\n                });\n                innerFrom(project(outerValue, index++)).subscribe(innerSub);\n            }\n        }, () => {\n            isComplete = true;\n            !innerSub && subscriber.complete();\n        }));\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,34 @@
+{
+  "ast": null,
+  "code": "import _classCallCheck from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/classCallCheck.js\";\nimport _createClass from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/createClass.js\";\nimport _inherits from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/inherits.js\";\nimport _createSuper from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/createSuper.js\";\nimport { AsyncScheduler } from './AsyncScheduler';\nexport var AsapScheduler = /*#__PURE__*/function (_AsyncScheduler) {\n  _inherits(AsapScheduler, _AsyncScheduler);\n\n  var _super = _createSuper(AsapScheduler);\n\n  function AsapScheduler() {\n    _classCallCheck(this, AsapScheduler);\n\n    return _super.apply(this, arguments);\n  }\n\n  _createClass(AsapScheduler, [{\n    key: \"flush\",\n    value: function flush(action) {\n      this._active = true;\n      this._scheduled = undefined;\n      var actions = this.actions;\n      var error;\n      var index = -1;\n      action = action || actions.shift();\n      var count = actions.length;\n\n      do {\n        if (error = action.execute(action.state, action.delay)) {\n          break;\n        }\n      } while (++index < count && (action = actions.shift()));\n\n      this._active = false;\n\n      if (error) {\n        while (++index < count && (action = actions.shift())) {\n          action.unsubscribe();\n        }\n\n        throw error;\n      }\n    }\n  }]);\n\n  return AsapScheduler;\n}(AsyncScheduler);",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/scheduler/AsapScheduler.js"
+    ],
+    "names": [
+      "AsyncScheduler",
+      "AsapScheduler",
+      "action",
+      "_active",
+      "_scheduled",
+      "undefined",
+      "actions",
+      "error",
+      "index",
+      "shift",
+      "count",
+      "length",
+      "execute",
+      "state",
+      "delay",
+      "unsubscribe"
+    ],
+    "mappings": ";;;;AAAA,SAASA,cAAT,QAA+B,kBAA/B;AACA,WAAaC,aAAb;AAAA;;AAAA;;AAAA;AAAA;;AAAA;AAAA;;AAAA;AAAA;AAAA,WACI,eAAMC,MAAN,EAAc;AACV,WAAKC,OAAL,GAAe,IAAf;AACA,WAAKC,UAAL,GAAkBC,SAAlB;AACA,UAAQC,OAAR,GAAoB,IAApB,CAAQA,OAAR;AACA,UAAIC,KAAJ;AACA,UAAIC,KAAK,GAAG,CAAC,CAAb;AACAN,MAAAA,MAAM,GAAGA,MAAM,IAAII,OAAO,CAACG,KAAR,EAAnB;AACA,UAAMC,KAAK,GAAGJ,OAAO,CAACK,MAAtB;;AACA,SAAG;AACC,YAAKJ,KAAK,GAAGL,MAAM,CAACU,OAAP,CAAeV,MAAM,CAACW,KAAtB,EAA6BX,MAAM,CAACY,KAApC,CAAb,EAA0D;AACtD;AACH;AACJ,OAJD,QAIS,EAAEN,KAAF,GAAUE,KAAV,KAAoBR,MAAM,GAAGI,OAAO,CAACG,KAAR,EAA7B,CAJT;;AAKA,WAAKN,OAAL,GAAe,KAAf;;AACA,UAAII,KAAJ,EAAW;AACP,eAAO,EAAEC,KAAF,GAAUE,KAAV,KAAoBR,MAAM,GAAGI,OAAO,CAACG,KAAR,EAA7B,CAAP,EAAsD;AAClDP,UAAAA,MAAM,CAACa,WAAP;AACH;;AACD,cAAMR,KAAN;AACH;AACJ;AArBL;;AAAA;AAAA,EAAmCP,cAAnC",
+    "sourcesContent": [
+      "import { AsyncScheduler } from './AsyncScheduler';\nexport class AsapScheduler extends AsyncScheduler {\n    flush(action) {\n        this._active = true;\n        this._scheduled = undefined;\n        const { actions } = this;\n        let error;\n        let index = -1;\n        action = action || actions.shift();\n        const count = actions.length;\n        do {\n            if ((error = action.execute(action.state, action.delay))) {\n                break;\n            }\n        } while (++index < count && (action = actions.shift()));\n        this._active = false;\n        if (error) {\n            while (++index < count && (action = actions.shift())) {\n                action.unsubscribe();\n            }\n            throw error;\n        }\n    }\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

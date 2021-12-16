@@ -1,0 +1,31 @@
+{
+  "ast": null,
+  "code": "import { createErrorClass } from './createErrorClass';\nexport var UnsubscriptionError = createErrorClass(function (_super) {\n  return function UnsubscriptionErrorImpl(errors) {\n    _super(this);\n\n    this.message = errors ? \"\".concat(errors.length, \" errors occurred during unsubscription:\\n\").concat(errors.map(function (err, i) {\n      return \"\".concat(i + 1, \") \").concat(err.toString());\n    }).join('\\n  ')) : '';\n    this.name = 'UnsubscriptionError';\n    this.errors = errors;\n  };\n});",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/util/UnsubscriptionError.js"
+    ],
+    "names": [
+      "createErrorClass",
+      "UnsubscriptionError",
+      "_super",
+      "UnsubscriptionErrorImpl",
+      "errors",
+      "message",
+      "length",
+      "map",
+      "err",
+      "i",
+      "toString",
+      "join",
+      "name"
+    ],
+    "mappings": "AAAA,SAASA,gBAAT,QAAiC,oBAAjC;AACA,OAAO,IAAMC,mBAAmB,GAAGD,gBAAgB,CAAC,UAACE,MAAD;AAAA,SAAY,SAASC,uBAAT,CAAiCC,MAAjC,EAAyC;AACrGF,IAAAA,MAAM,CAAC,IAAD,CAAN;;AACA,SAAKG,OAAL,GAAeD,MAAM,aACZA,MAAM,CAACE,MADK,sDAEvBF,MAAM,CAACG,GAAP,CAAW,UAACC,GAAD,EAAMC,CAAN;AAAA,uBAAeA,CAAC,GAAG,CAAnB,eAAyBD,GAAG,CAACE,QAAJ,EAAzB;AAAA,KAAX,EAAsDC,IAAtD,CAA2D,MAA3D,CAFuB,IAGf,EAHN;AAIA,SAAKC,IAAL,GAAY,qBAAZ;AACA,SAAKR,MAAL,GAAcA,MAAd;AACH,GARmD;AAAA,CAAD,CAA5C",
+    "sourcesContent": [
+      "import { createErrorClass } from './createErrorClass';\nexport const UnsubscriptionError = createErrorClass((_super) => function UnsubscriptionErrorImpl(errors) {\n    _super(this);\n    this.message = errors\n        ? `${errors.length} errors occurred during unsubscription:\n${errors.map((err, i) => `${i + 1}) ${err.toString()}`).join('\\n  ')}`\n        : '';\n    this.name = 'UnsubscriptionError';\n    this.errors = errors;\n});\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

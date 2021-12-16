@@ -1,0 +1,36 @@
+{
+  "ast": null,
+  "code": "import { EmptyError } from '../util/EmptyError';\nimport { SequenceError } from '../util/SequenceError';\nimport { NotFoundError } from '../util/NotFoundError';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function single(predicate) {\n  return operate(function (source, subscriber) {\n    var hasValue = false;\n    var singleValue;\n    var seenValue = false;\n    var index = 0;\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      seenValue = true;\n\n      if (!predicate || predicate(value, index++, source)) {\n        hasValue && subscriber.error(new SequenceError('Too many matching values'));\n        hasValue = true;\n        singleValue = value;\n      }\n    }, function () {\n      if (hasValue) {\n        subscriber.next(singleValue);\n        subscriber.complete();\n      } else {\n        subscriber.error(seenValue ? new NotFoundError('No matching values') : new EmptyError());\n      }\n    }));\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/single.js"
+    ],
+    "names": [
+      "EmptyError",
+      "SequenceError",
+      "NotFoundError",
+      "operate",
+      "OperatorSubscriber",
+      "single",
+      "predicate",
+      "source",
+      "subscriber",
+      "hasValue",
+      "singleValue",
+      "seenValue",
+      "index",
+      "subscribe",
+      "value",
+      "error",
+      "next",
+      "complete"
+    ],
+    "mappings": "AAAA,SAASA,UAAT,QAA2B,oBAA3B;AACA,SAASC,aAAT,QAA8B,uBAA9B;AACA,SAASC,aAAT,QAA8B,uBAA9B;AACA,SAASC,OAAT,QAAwB,cAAxB;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,OAAO,SAASC,MAAT,CAAgBC,SAAhB,EAA2B;AAC9B,SAAOH,OAAO,CAAC,UAACI,MAAD,EAASC,UAAT,EAAwB;AACnC,QAAIC,QAAQ,GAAG,KAAf;AACA,QAAIC,WAAJ;AACA,QAAIC,SAAS,GAAG,KAAhB;AACA,QAAIC,KAAK,GAAG,CAAZ;AACAL,IAAAA,MAAM,CAACM,SAAP,CAAiB,IAAIT,kBAAJ,CAAuBI,UAAvB,EAAmC,UAACM,KAAD,EAAW;AAC3DH,MAAAA,SAAS,GAAG,IAAZ;;AACA,UAAI,CAACL,SAAD,IAAcA,SAAS,CAACQ,KAAD,EAAQF,KAAK,EAAb,EAAiBL,MAAjB,CAA3B,EAAqD;AACjDE,QAAAA,QAAQ,IAAID,UAAU,CAACO,KAAX,CAAiB,IAAId,aAAJ,CAAkB,0BAAlB,CAAjB,CAAZ;AACAQ,QAAAA,QAAQ,GAAG,IAAX;AACAC,QAAAA,WAAW,GAAGI,KAAd;AACH;AACJ,KAPgB,EAOd,YAAM;AACL,UAAIL,QAAJ,EAAc;AACVD,QAAAA,UAAU,CAACQ,IAAX,CAAgBN,WAAhB;AACAF,QAAAA,UAAU,CAACS,QAAX;AACH,OAHD,MAIK;AACDT,QAAAA,UAAU,CAACO,KAAX,CAAiBJ,SAAS,GAAG,IAAIT,aAAJ,CAAkB,oBAAlB,CAAH,GAA6C,IAAIF,UAAJ,EAAvE;AACH;AACJ,KAfgB,CAAjB;AAgBH,GArBa,CAAd;AAsBH",
+    "sourcesContent": [
+      "import { EmptyError } from '../util/EmptyError';\nimport { SequenceError } from '../util/SequenceError';\nimport { NotFoundError } from '../util/NotFoundError';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function single(predicate) {\n    return operate((source, subscriber) => {\n        let hasValue = false;\n        let singleValue;\n        let seenValue = false;\n        let index = 0;\n        source.subscribe(new OperatorSubscriber(subscriber, (value) => {\n            seenValue = true;\n            if (!predicate || predicate(value, index++, source)) {\n                hasValue && subscriber.error(new SequenceError('Too many matching values'));\n                hasValue = true;\n                singleValue = value;\n            }\n        }, () => {\n            if (hasValue) {\n                subscriber.next(singleValue);\n                subscriber.complete();\n            }\n            else {\n                subscriber.error(seenValue ? new NotFoundError('No matching values') : new EmptyError());\n            }\n        }));\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

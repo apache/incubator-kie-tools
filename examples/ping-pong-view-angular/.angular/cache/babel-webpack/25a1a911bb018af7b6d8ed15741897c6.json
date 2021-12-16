@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { EMPTY } from '../observable/empty';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function repeat() {\n  var count = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : Infinity;\n  return count <= 0 ? function () {\n    return EMPTY;\n  } : operate(function (source, subscriber) {\n    var soFar = 0;\n    var innerSub;\n\n    var subscribeForRepeat = function subscribeForRepeat() {\n      var syncUnsub = false;\n      innerSub = source.subscribe(new OperatorSubscriber(subscriber, undefined, function () {\n        if (++soFar < count) {\n          if (innerSub) {\n            innerSub.unsubscribe();\n            innerSub = null;\n            subscribeForRepeat();\n          } else {\n            syncUnsub = true;\n          }\n        } else {\n          subscriber.complete();\n        }\n      }));\n\n      if (syncUnsub) {\n        innerSub.unsubscribe();\n        innerSub = null;\n        subscribeForRepeat();\n      }\n    };\n\n    subscribeForRepeat();\n  });\n} //# sourceMappingURL=repeat.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "export var observable = function () {\n  return typeof Symbol === 'function' && Symbol.observable || '@@observable';\n}();",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/symbol/observable.js"
+    ],
+    "names": ["observable", "Symbol"],
+    "mappings": "AAAA,OAAO,IAAMA,UAAU,GAAI;AAAA,SAAO,OAAOC,MAAP,KAAkB,UAAlB,IAAgCA,MAAM,CAACD,UAAxC,IAAuD,cAA7D;AAAA,CAAD,EAAnB",
+    "sourcesContent": [
+      "export const observable = (() => (typeof Symbol === 'function' && Symbol.observable) || '@@observable')();\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { map } from './map';\nimport { innerFrom } from '../observable/innerFrom';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function exhaustMap(project, resultSelector) {\n  if (resultSelector) {\n    return function (source) {\n      return source.pipe(exhaustMap(function (a, i) {\n        return innerFrom(project(a, i)).pipe(map(function (b, ii) {\n          return resultSelector(a, b, i, ii);\n        }));\n      }));\n    };\n  }\n\n  return operate(function (source, subscriber) {\n    var index = 0;\n    var innerSub = null;\n    var isComplete = false;\n    source.subscribe(new OperatorSubscriber(subscriber, function (outerValue) {\n      if (!innerSub) {\n        innerSub = new OperatorSubscriber(subscriber, undefined, function () {\n          innerSub = null;\n          isComplete && subscriber.complete();\n        });\n        innerFrom(project(outerValue, index++)).subscribe(innerSub);\n      }\n    }, function () {\n      isComplete = true;\n      !innerSub && subscriber.complete();\n    }));\n  });\n} //# sourceMappingURL=exhaustMap.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { operate } from '../util/lift';\nimport { mergeInternals } from './mergeInternals';\nexport function mergeScan(accumulator, seed) {\n  var concurrent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Infinity;\n  return operate(function (source, subscriber) {\n    var state = seed;\n    return mergeInternals(source, subscriber, function (value, index) {\n      return accumulator(state, value, index);\n    }, concurrent, function (value) {\n      state = value;\n    }, false, undefined, function () {\n      return state = null;\n    });\n  });\n} //# sourceMappingURL=mergeScan.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

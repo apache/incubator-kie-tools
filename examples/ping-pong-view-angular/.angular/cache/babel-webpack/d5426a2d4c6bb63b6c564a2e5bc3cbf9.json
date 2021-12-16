@@ -1,0 +1,13 @@
+{
+  "ast": null,
+  "code": "import 'zone.js';",
+  "map": {
+    "version": 3,
+    "sources": ["/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/src/polyfills.ts"],
+    "names": [],
+    "mappings": "AAAA,OAAO,SAAP",
+    "sourcesContent": ["import 'zone.js';\n"]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

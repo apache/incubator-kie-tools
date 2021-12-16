@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import _classCallCheck from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/classCallCheck.js\";\nimport _inherits from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/inherits.js\";\nimport _createSuper from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/createSuper.js\";\nimport { AsyncScheduler } from './AsyncScheduler';\nexport var QueueScheduler = /*#__PURE__*/function (_AsyncScheduler) {\n  _inherits(QueueScheduler, _AsyncScheduler);\n\n  var _super = _createSuper(QueueScheduler);\n\n  function QueueScheduler() {\n    _classCallCheck(this, QueueScheduler);\n\n    return _super.apply(this, arguments);\n  }\n\n  return QueueScheduler;\n}(AsyncScheduler);",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/scheduler/QueueScheduler.js"
+    ],
+    "names": ["AsyncScheduler", "QueueScheduler"],
+    "mappings": ";;;AAAA,SAASA,cAAT,QAA+B,kBAA/B;AACA,WAAaC,cAAb;AAAA;;AAAA;;AAAA;AAAA;;AAAA;AAAA;;AAAA;AAAA,EAAoCD,cAApC",
+    "sourcesContent": [
+      "import { AsyncScheduler } from './AsyncScheduler';\nexport class QueueScheduler extends AsyncScheduler {\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { defer } from './defer';\nexport function iif(condition, trueResult, falseResult) {\n  return defer(function () {\n    return condition() ? trueResult : falseResult;\n  });\n} //# sourceMappingURL=iif.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

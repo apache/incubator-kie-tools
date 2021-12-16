@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { asyncScheduler } from '../scheduler/async';\nimport { defaultThrottleConfig, throttle } from './throttle';\nimport { timer } from '../observable/timer';\nexport function throttleTime(duration) {\n  var scheduler = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : asyncScheduler;\n  var config = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : defaultThrottleConfig;\n  var duration$ = timer(duration, scheduler);\n  return throttle(function () {\n    return duration$;\n  }, config);\n} //# sourceMappingURL=throttleTime.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

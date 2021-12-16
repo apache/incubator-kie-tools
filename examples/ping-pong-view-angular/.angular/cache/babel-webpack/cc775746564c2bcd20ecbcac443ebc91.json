@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { asyncScheduler } from '../scheduler/async';\nimport { delayWhen } from './delayWhen';\nimport { timer } from '../observable/timer';\nexport function delay(due) {\n  var scheduler = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : asyncScheduler;\n  var duration = timer(due, scheduler);\n  return delayWhen(function () {\n    return duration;\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/delay.js"
+    ],
+    "names": ["asyncScheduler", "delayWhen", "timer", "delay", "due", "scheduler", "duration"],
+    "mappings": "AAAA,SAASA,cAAT,QAA+B,oBAA/B;AACA,SAASC,SAAT,QAA0B,aAA1B;AACA,SAASC,KAAT,QAAsB,qBAAtB;AACA,OAAO,SAASC,KAAT,CAAeC,GAAf,EAAgD;AAAA,MAA5BC,SAA4B,uEAAhBL,cAAgB;AACnD,MAAMM,QAAQ,GAAGJ,KAAK,CAACE,GAAD,EAAMC,SAAN,CAAtB;AACA,SAAOJ,SAAS,CAAC;AAAA,WAAMK,QAAN;AAAA,GAAD,CAAhB;AACH",
+    "sourcesContent": [
+      "import { asyncScheduler } from '../scheduler/async';\nimport { delayWhen } from './delayWhen';\nimport { timer } from '../observable/timer';\nexport function delay(due, scheduler = asyncScheduler) {\n    const duration = timer(due, scheduler);\n    return delayWhen(() => duration);\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

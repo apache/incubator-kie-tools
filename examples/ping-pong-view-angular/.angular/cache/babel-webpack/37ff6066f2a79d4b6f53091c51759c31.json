@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { operate } from '../util/lift';\nexport function subscribeOn(scheduler) {\n  var delay = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;\n  return operate(function (source, subscriber) {\n    subscriber.add(scheduler.schedule(function () {\n      return source.subscribe(subscriber);\n    }, delay));\n  });\n} //# sourceMappingURL=subscribeOn.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

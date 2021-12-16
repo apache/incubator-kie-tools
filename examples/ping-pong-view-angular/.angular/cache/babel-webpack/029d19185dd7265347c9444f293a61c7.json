@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { filter } from './filter';\nexport function skip(count) {\n  return filter(function (_, index) {\n    return count <= index;\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/skip.js"
+    ],
+    "names": ["filter", "skip", "count", "_", "index"],
+    "mappings": "AAAA,SAASA,MAAT,QAAuB,UAAvB;AACA,OAAO,SAASC,IAAT,CAAcC,KAAd,EAAqB;AACxB,SAAOF,MAAM,CAAC,UAACG,CAAD,EAAIC,KAAJ;AAAA,WAAcF,KAAK,IAAIE,KAAvB;AAAA,GAAD,CAAb;AACH",
+    "sourcesContent": [
+      "import { filter } from './filter';\nexport function skip(count) {\n    return filter((_, index) => count <= index);\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

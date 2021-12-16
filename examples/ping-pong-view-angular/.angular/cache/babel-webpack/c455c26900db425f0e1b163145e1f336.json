@@ -1,0 +1,51 @@
+{
+  "ast": null,
+  "code": "import _createForOfIteratorHelper from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/createForOfIteratorHelper.js\";\nimport { Subject } from '../Subject';\nimport { Subscription } from '../Subscription';\nimport { operate } from '../util/lift';\nimport { innerFrom } from '../observable/innerFrom';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nimport { noop } from '../util/noop';\nimport { arrRemove } from '../util/arrRemove';\nexport function windowToggle(openings, closingSelector) {\n  return operate(function (source, subscriber) {\n    var windows = [];\n\n    var handleError = function handleError(err) {\n      while (0 < windows.length) {\n        windows.shift().error(err);\n      }\n\n      subscriber.error(err);\n    };\n\n    innerFrom(openings).subscribe(new OperatorSubscriber(subscriber, function (openValue) {\n      var window = new Subject();\n      windows.push(window);\n      var closingSubscription = new Subscription();\n\n      var closeWindow = function closeWindow() {\n        arrRemove(windows, window);\n        window.complete();\n        closingSubscription.unsubscribe();\n      };\n\n      var closingNotifier;\n\n      try {\n        closingNotifier = innerFrom(closingSelector(openValue));\n      } catch (err) {\n        handleError(err);\n        return;\n      }\n\n      subscriber.next(window.asObservable());\n      closingSubscription.add(closingNotifier.subscribe(new OperatorSubscriber(subscriber, closeWindow, noop, handleError)));\n    }, noop));\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      var windowsCopy = windows.slice();\n\n      var _iterator = _createForOfIteratorHelper(windowsCopy),\n          _step;\n\n      try {\n        for (_iterator.s(); !(_step = _iterator.n()).done;) {\n          var window = _step.value;\n          window.next(value);\n        }\n      } catch (err) {\n        _iterator.e(err);\n      } finally {\n        _iterator.f();\n      }\n    }, function () {\n      while (0 < windows.length) {\n        windows.shift().complete();\n      }\n\n      subscriber.complete();\n    }, handleError, function () {\n      while (0 < windows.length) {\n        windows.shift().unsubscribe();\n      }\n    }));\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/windowToggle.js"
+    ],
+    "names": [
+      "Subject",
+      "Subscription",
+      "operate",
+      "innerFrom",
+      "OperatorSubscriber",
+      "noop",
+      "arrRemove",
+      "windowToggle",
+      "openings",
+      "closingSelector",
+      "source",
+      "subscriber",
+      "windows",
+      "handleError",
+      "err",
+      "length",
+      "shift",
+      "error",
+      "subscribe",
+      "openValue",
+      "window",
+      "push",
+      "closingSubscription",
+      "closeWindow",
+      "complete",
+      "unsubscribe",
+      "closingNotifier",
+      "next",
+      "asObservable",
+      "add",
+      "value",
+      "windowsCopy",
+      "slice"
+    ],
+    "mappings": ";AAAA,SAASA,OAAT,QAAwB,YAAxB;AACA,SAASC,YAAT,QAA6B,iBAA7B;AACA,SAASC,OAAT,QAAwB,cAAxB;AACA,SAASC,SAAT,QAA0B,yBAA1B;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,SAASC,IAAT,QAAqB,cAArB;AACA,SAASC,SAAT,QAA0B,mBAA1B;AACA,OAAO,SAASC,YAAT,CAAsBC,QAAtB,EAAgCC,eAAhC,EAAiD;AACpD,SAAOP,OAAO,CAAC,UAACQ,MAAD,EAASC,UAAT,EAAwB;AACnC,QAAMC,OAAO,GAAG,EAAhB;;AACA,QAAMC,WAAW,GAAG,SAAdA,WAAc,CAACC,GAAD,EAAS;AACzB,aAAO,IAAIF,OAAO,CAACG,MAAnB,EAA2B;AACvBH,QAAAA,OAAO,CAACI,KAAR,GAAgBC,KAAhB,CAAsBH,GAAtB;AACH;;AACDH,MAAAA,UAAU,CAACM,KAAX,CAAiBH,GAAjB;AACH,KALD;;AAMAX,IAAAA,SAAS,CAACK,QAAD,CAAT,CAAoBU,SAApB,CAA8B,IAAId,kBAAJ,CAAuBO,UAAvB,EAAmC,UAACQ,SAAD,EAAe;AAC5E,UAAMC,MAAM,GAAG,IAAIpB,OAAJ,EAAf;AACAY,MAAAA,OAAO,CAACS,IAAR,CAAaD,MAAb;AACA,UAAME,mBAAmB,GAAG,IAAIrB,YAAJ,EAA5B;;AACA,UAAMsB,WAAW,GAAG,SAAdA,WAAc,GAAM;AACtBjB,QAAAA,SAAS,CAACM,OAAD,EAAUQ,MAAV,CAAT;AACAA,QAAAA,MAAM,CAACI,QAAP;AACAF,QAAAA,mBAAmB,CAACG,WAApB;AACH,OAJD;;AAKA,UAAIC,eAAJ;;AACA,UAAI;AACAA,QAAAA,eAAe,GAAGvB,SAAS,CAACM,eAAe,CAACU,SAAD,CAAhB,CAA3B;AACH,OAFD,CAGA,OAAOL,GAAP,EAAY;AACRD,QAAAA,WAAW,CAACC,GAAD,CAAX;AACA;AACH;;AACDH,MAAAA,UAAU,CAACgB,IAAX,CAAgBP,MAAM,CAACQ,YAAP,EAAhB;AACAN,MAAAA,mBAAmB,CAACO,GAApB,CAAwBH,eAAe,CAACR,SAAhB,CAA0B,IAAId,kBAAJ,CAAuBO,UAAvB,EAAmCY,WAAnC,EAAgDlB,IAAhD,EAAsDQ,WAAtD,CAA1B,CAAxB;AACH,KAnB6B,EAmB3BR,IAnB2B,CAA9B;AAoBAK,IAAAA,MAAM,CAACQ,SAAP,CAAiB,IAAId,kBAAJ,CAAuBO,UAAvB,EAAmC,UAACmB,KAAD,EAAW;AAC3D,UAAMC,WAAW,GAAGnB,OAAO,CAACoB,KAAR,EAApB;;AAD2D,iDAEtCD,WAFsC;AAAA;;AAAA;AAE3D,4DAAkC;AAAA,cAAvBX,MAAuB;AAC9BA,UAAAA,MAAM,CAACO,IAAP,CAAYG,KAAZ;AACH;AAJ0D;AAAA;AAAA;AAAA;AAAA;AAK9D,KALgB,EAKd,YAAM;AACL,aAAO,IAAIlB,OAAO,CAACG,MAAnB,EAA2B;AACvBH,QAAAA,OAAO,CAACI,KAAR,GAAgBQ,QAAhB;AACH;;AACDb,MAAAA,UAAU,CAACa,QAAX;AACH,KAVgB,EAUdX,WAVc,EAUD,YAAM;AAClB,aAAO,IAAID,OAAO,CAACG,MAAnB,EAA2B;AACvBH,QAAAA,OAAO,CAACI,KAAR,GAAgBS,WAAhB;AACH;AACJ,KAdgB,CAAjB;AAeH,GA3Ca,CAAd;AA4CH",
+    "sourcesContent": [
+      "import { Subject } from '../Subject';\nimport { Subscription } from '../Subscription';\nimport { operate } from '../util/lift';\nimport { innerFrom } from '../observable/innerFrom';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nimport { noop } from '../util/noop';\nimport { arrRemove } from '../util/arrRemove';\nexport function windowToggle(openings, closingSelector) {\n    return operate((source, subscriber) => {\n        const windows = [];\n        const handleError = (err) => {\n            while (0 < windows.length) {\n                windows.shift().error(err);\n            }\n            subscriber.error(err);\n        };\n        innerFrom(openings).subscribe(new OperatorSubscriber(subscriber, (openValue) => {\n            const window = new Subject();\n            windows.push(window);\n            const closingSubscription = new Subscription();\n            const closeWindow = () => {\n                arrRemove(windows, window);\n                window.complete();\n                closingSubscription.unsubscribe();\n            };\n            let closingNotifier;\n            try {\n                closingNotifier = innerFrom(closingSelector(openValue));\n            }\n            catch (err) {\n                handleError(err);\n                return;\n            }\n            subscriber.next(window.asObservable());\n            closingSubscription.add(closingNotifier.subscribe(new OperatorSubscriber(subscriber, closeWindow, noop, handleError)));\n        }, noop));\n        source.subscribe(new OperatorSubscriber(subscriber, (value) => {\n            const windowsCopy = windows.slice();\n            for (const window of windowsCopy) {\n                window.next(value);\n            }\n        }, () => {\n            while (0 < windows.length) {\n                windows.shift().complete();\n            }\n            subscriber.complete();\n        }, handleError, () => {\n            while (0 < windows.length) {\n                windows.shift().unsubscribe();\n            }\n        }));\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

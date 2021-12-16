@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { mergeAll } from '../operators/mergeAll';\nimport { innerFrom } from './innerFrom';\nimport { EMPTY } from './empty';\nimport { popNumber, popScheduler } from '../util/args';\nimport { from } from './from';\nexport function merge() {\n  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {\n    args[_key] = arguments[_key];\n  }\n\n  var scheduler = popScheduler(args);\n  var concurrent = popNumber(args, Infinity);\n  var sources = args;\n  return !sources.length ? EMPTY : sources.length === 1 ? innerFrom(sources[0]) : mergeAll(concurrent)(from(sources, scheduler));\n} //# sourceMappingURL=merge.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

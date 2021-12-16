@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { concat } from './concat';\nexport function concatWith() {\n  return concat.apply(void 0, arguments);\n} //# sourceMappingURL=concatWith.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

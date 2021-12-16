@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "import { innerFrom } from '../observable/innerFrom';\nimport { observeOn } from '../operators/observeOn';\nimport { subscribeOn } from '../operators/subscribeOn';\nexport function scheduleObservable(input, scheduler) {\n  return innerFrom(input).pipe(subscribeOn(scheduler), observeOn(scheduler));\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/scheduled/scheduleObservable.js"
+    ],
+    "names": ["innerFrom", "observeOn", "subscribeOn", "scheduleObservable", "input", "scheduler", "pipe"],
+    "mappings": "AAAA,SAASA,SAAT,QAA0B,yBAA1B;AACA,SAASC,SAAT,QAA0B,wBAA1B;AACA,SAASC,WAAT,QAA4B,0BAA5B;AACA,OAAO,SAASC,kBAAT,CAA4BC,KAA5B,EAAmCC,SAAnC,EAA8C;AACjD,SAAOL,SAAS,CAACI,KAAD,CAAT,CAAiBE,IAAjB,CAAsBJ,WAAW,CAACG,SAAD,CAAjC,EAA8CJ,SAAS,CAACI,SAAD,CAAvD,CAAP;AACH",
+    "sourcesContent": [
+      "import { innerFrom } from '../observable/innerFrom';\nimport { observeOn } from '../operators/observeOn';\nimport { subscribeOn } from '../operators/subscribeOn';\nexport function scheduleObservable(input, scheduler) {\n    return innerFrom(input).pipe(subscribeOn(scheduler), observeOn(scheduler));\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

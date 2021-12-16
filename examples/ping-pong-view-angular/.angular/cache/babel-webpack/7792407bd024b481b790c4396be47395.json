@@ -1,0 +1,15 @@
+{
+  "ast": null,
+  "code": "export function isFunction(value) {\n  return typeof value === 'function';\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/util/isFunction.js"
+    ],
+    "names": ["isFunction", "value"],
+    "mappings": "AAAA,OAAO,SAASA,UAAT,CAAoBC,KAApB,EAA2B;AAC9B,SAAO,OAAOA,KAAP,KAAiB,UAAxB;AACH",
+    "sourcesContent": ["export function isFunction(value) {\n    return typeof value === 'function';\n}\n"]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

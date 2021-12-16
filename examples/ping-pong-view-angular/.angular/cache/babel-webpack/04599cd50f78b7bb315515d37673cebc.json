@@ -1,0 +1,31 @@
+{
+  "ast": null,
+  "code": "import { mergeAll } from '../operators/mergeAll';\nimport { innerFrom } from './innerFrom';\nimport { EMPTY } from './empty';\nimport { popNumber, popScheduler } from '../util/args';\nimport { from } from './from';\nexport function merge() {\n  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {\n    args[_key] = arguments[_key];\n  }\n\n  var scheduler = popScheduler(args);\n  var concurrent = popNumber(args, Infinity);\n  var sources = args;\n  return !sources.length ? EMPTY : sources.length === 1 ? innerFrom(sources[0]) : mergeAll(concurrent)(from(sources, scheduler));\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/observable/merge.js"
+    ],
+    "names": [
+      "mergeAll",
+      "innerFrom",
+      "EMPTY",
+      "popNumber",
+      "popScheduler",
+      "from",
+      "merge",
+      "args",
+      "scheduler",
+      "concurrent",
+      "Infinity",
+      "sources",
+      "length"
+    ],
+    "mappings": "AAAA,SAASA,QAAT,QAAyB,uBAAzB;AACA,SAASC,SAAT,QAA0B,aAA1B;AACA,SAASC,KAAT,QAAsB,SAAtB;AACA,SAASC,SAAT,EAAoBC,YAApB,QAAwC,cAAxC;AACA,SAASC,IAAT,QAAqB,QAArB;AACA,OAAO,SAASC,KAAT,GAAwB;AAAA,oCAANC,IAAM;AAANA,IAAAA,IAAM;AAAA;;AAC3B,MAAMC,SAAS,GAAGJ,YAAY,CAACG,IAAD,CAA9B;AACA,MAAME,UAAU,GAAGN,SAAS,CAACI,IAAD,EAAOG,QAAP,CAA5B;AACA,MAAMC,OAAO,GAAGJ,IAAhB;AACA,SAAO,CAACI,OAAO,CAACC,MAAT,GAECV,KAFD,GAGDS,OAAO,CAACC,MAAR,KAAmB,CAAnB,GAEMX,SAAS,CAACU,OAAO,CAAC,CAAD,CAAR,CAFf,GAIMX,QAAQ,CAACS,UAAD,CAAR,CAAqBJ,IAAI,CAACM,OAAD,EAAUH,SAAV,CAAzB,CAPZ;AAQH",
+    "sourcesContent": [
+      "import { mergeAll } from '../operators/mergeAll';\nimport { innerFrom } from './innerFrom';\nimport { EMPTY } from './empty';\nimport { popNumber, popScheduler } from '../util/args';\nimport { from } from './from';\nexport function merge(...args) {\n    const scheduler = popScheduler(args);\n    const concurrent = popNumber(args, Infinity);\n    const sources = args;\n    return !sources.length\n        ?\n            EMPTY\n        : sources.length === 1\n            ?\n                innerFrom(sources[0])\n            :\n                mergeAll(concurrent)(from(sources, scheduler));\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

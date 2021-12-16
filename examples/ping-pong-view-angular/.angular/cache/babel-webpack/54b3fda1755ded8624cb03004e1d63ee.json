@@ -1,0 +1,32 @@
+{
+  "ast": null,
+  "code": "import { Subject } from '../Subject';\nimport { from } from '../observable/from';\nimport { operate } from '../util/lift';\nimport { fromSubscribable } from '../observable/fromSubscribable';\nvar DEFAULT_CONFIG = {\n  connector: function connector() {\n    return new Subject();\n  }\n};\nexport function connect(selector) {\n  var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : DEFAULT_CONFIG;\n  var connector = config.connector;\n  return operate(function (source, subscriber) {\n    var subject = connector();\n    from(selector(fromSubscribable(subject))).subscribe(subscriber);\n    subscriber.add(source.subscribe(subject));\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/connect.js"
+    ],
+    "names": [
+      "Subject",
+      "from",
+      "operate",
+      "fromSubscribable",
+      "DEFAULT_CONFIG",
+      "connector",
+      "connect",
+      "selector",
+      "config",
+      "source",
+      "subscriber",
+      "subject",
+      "subscribe",
+      "add"
+    ],
+    "mappings": "AAAA,SAASA,OAAT,QAAwB,YAAxB;AACA,SAASC,IAAT,QAAqB,oBAArB;AACA,SAASC,OAAT,QAAwB,cAAxB;AACA,SAASC,gBAAT,QAAiC,gCAAjC;AACA,IAAMC,cAAc,GAAG;AACnBC,EAAAA,SAAS,EAAE;AAAA,WAAM,IAAIL,OAAJ,EAAN;AAAA;AADQ,CAAvB;AAGA,OAAO,SAASM,OAAT,CAAiBC,QAAjB,EAAoD;AAAA,MAAzBC,MAAyB,uEAAhBJ,cAAgB;AACvD,MAAQC,SAAR,GAAsBG,MAAtB,CAAQH,SAAR;AACA,SAAOH,OAAO,CAAC,UAACO,MAAD,EAASC,UAAT,EAAwB;AACnC,QAAMC,OAAO,GAAGN,SAAS,EAAzB;AACAJ,IAAAA,IAAI,CAACM,QAAQ,CAACJ,gBAAgB,CAACQ,OAAD,CAAjB,CAAT,CAAJ,CAA0CC,SAA1C,CAAoDF,UAApD;AACAA,IAAAA,UAAU,CAACG,GAAX,CAAeJ,MAAM,CAACG,SAAP,CAAiBD,OAAjB,CAAf;AACH,GAJa,CAAd;AAKH",
+    "sourcesContent": [
+      "import { Subject } from '../Subject';\nimport { from } from '../observable/from';\nimport { operate } from '../util/lift';\nimport { fromSubscribable } from '../observable/fromSubscribable';\nconst DEFAULT_CONFIG = {\n    connector: () => new Subject(),\n};\nexport function connect(selector, config = DEFAULT_CONFIG) {\n    const { connector } = config;\n    return operate((source, subscriber) => {\n        const subject = connector();\n        from(selector(fromSubscribable(subject))).subscribe(subscriber);\n        subscriber.add(source.subscribe(subject));\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

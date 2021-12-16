@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { createErrorClass } from './createErrorClass';\nexport var UnsubscriptionError = createErrorClass(function (_super) {\n  return function UnsubscriptionErrorImpl(errors) {\n    _super(this);\n\n    this.message = errors ? \"\".concat(errors.length, \" errors occurred during unsubscription:\\n\").concat(errors.map(function (err, i) {\n      return \"\".concat(i + 1, \") \").concat(err.toString());\n    }).join('\\n  ')) : '';\n    this.name = 'UnsubscriptionError';\n    this.errors = errors;\n  };\n}); //# sourceMappingURL=UnsubscriptionError.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

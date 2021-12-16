@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "export function getSymbolIterator() {\n  if (typeof Symbol !== 'function' || !Symbol.iterator) {\n    return '@@iterator';\n  }\n\n  return Symbol.iterator;\n}\nexport var iterator = getSymbolIterator();",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/symbol/iterator.js"
+    ],
+    "names": ["getSymbolIterator", "Symbol", "iterator"],
+    "mappings": "AAAA,OAAO,SAASA,iBAAT,GAA6B;AAChC,MAAI,OAAOC,MAAP,KAAkB,UAAlB,IAAgC,CAACA,MAAM,CAACC,QAA5C,EAAsD;AAClD,WAAO,YAAP;AACH;;AACD,SAAOD,MAAM,CAACC,QAAd;AACH;AACD,OAAO,IAAMA,QAAQ,GAAGF,iBAAiB,EAAlC",
+    "sourcesContent": [
+      "export function getSymbolIterator() {\n    if (typeof Symbol !== 'function' || !Symbol.iterator) {\n        return '@@iterator';\n    }\n    return Symbol.iterator;\n}\nexport const iterator = getSymbolIterator();\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import { Immediate } from '../util/Immediate';\nvar _setImmediate = Immediate.setImmediate,\n    _clearImmediate = Immediate.clearImmediate;\nexport var immediateProvider = {\n  setImmediate: function setImmediate() {\n    var delegate = immediateProvider.delegate;\n    return ((delegate === null || delegate === void 0 ? void 0 : delegate.setImmediate) || _setImmediate).apply(void 0, arguments);\n  },\n  clearImmediate: function clearImmediate(handle) {\n    var delegate = immediateProvider.delegate;\n    return ((delegate === null || delegate === void 0 ? void 0 : delegate.clearImmediate) || _clearImmediate)(handle);\n  },\n  delegate: undefined\n}; //# sourceMappingURL=immediateProvider.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

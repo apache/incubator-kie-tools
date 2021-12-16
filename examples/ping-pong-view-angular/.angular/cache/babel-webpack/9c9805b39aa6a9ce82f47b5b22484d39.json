@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "export function createErrorClass(createImpl) {\n  var _super = function _super(instance) {\n    Error.call(instance);\n    instance.stack = new Error().stack;\n  };\n\n  var ctorFunc = createImpl(_super);\n  ctorFunc.prototype = Object.create(Error.prototype);\n  ctorFunc.prototype.constructor = ctorFunc;\n  return ctorFunc;\n} //# sourceMappingURL=createErrorClass.js.map",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

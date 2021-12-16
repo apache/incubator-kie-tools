@@ -1,0 +1,44 @@
+{
+  "ast": null,
+  "code": "import { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function sequenceEqual(compareTo) {\n  var comparator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (a, b) {\n    return a === b;\n  };\n  return operate(function (source, subscriber) {\n    var aState = createState();\n    var bState = createState();\n\n    var emit = function emit(isEqual) {\n      subscriber.next(isEqual);\n      subscriber.complete();\n    };\n\n    var createSubscriber = function createSubscriber(selfState, otherState) {\n      var sequenceEqualSubscriber = new OperatorSubscriber(subscriber, function (a) {\n        var buffer = otherState.buffer,\n            complete = otherState.complete;\n\n        if (buffer.length === 0) {\n          complete ? emit(false) : selfState.buffer.push(a);\n        } else {\n          !comparator(a, buffer.shift()) && emit(false);\n        }\n      }, function () {\n        selfState.complete = true;\n        var complete = otherState.complete,\n            buffer = otherState.buffer;\n        complete && emit(buffer.length === 0);\n        sequenceEqualSubscriber === null || sequenceEqualSubscriber === void 0 ? void 0 : sequenceEqualSubscriber.unsubscribe();\n      });\n      return sequenceEqualSubscriber;\n    };\n\n    source.subscribe(createSubscriber(aState, bState));\n    compareTo.subscribe(createSubscriber(bState, aState));\n  });\n}\n\nfunction createState() {\n  return {\n    buffer: [],\n    complete: false\n  };\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/sequenceEqual.js"
+    ],
+    "names": [
+      "operate",
+      "OperatorSubscriber",
+      "sequenceEqual",
+      "compareTo",
+      "comparator",
+      "a",
+      "b",
+      "source",
+      "subscriber",
+      "aState",
+      "createState",
+      "bState",
+      "emit",
+      "isEqual",
+      "next",
+      "complete",
+      "createSubscriber",
+      "selfState",
+      "otherState",
+      "sequenceEqualSubscriber",
+      "buffer",
+      "length",
+      "push",
+      "shift",
+      "unsubscribe",
+      "subscribe"
+    ],
+    "mappings": "AAAA,SAASA,OAAT,QAAwB,cAAxB;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,OAAO,SAASC,aAAT,CAAuBC,SAAvB,EAAkE;AAAA,MAAhCC,UAAgC,uEAAnB,UAACC,CAAD,EAAIC,CAAJ;AAAA,WAAUD,CAAC,KAAKC,CAAhB;AAAA,GAAmB;AACrE,SAAON,OAAO,CAAC,UAACO,MAAD,EAASC,UAAT,EAAwB;AACnC,QAAMC,MAAM,GAAGC,WAAW,EAA1B;AACA,QAAMC,MAAM,GAAGD,WAAW,EAA1B;;AACA,QAAME,IAAI,GAAG,SAAPA,IAAO,CAACC,OAAD,EAAa;AACtBL,MAAAA,UAAU,CAACM,IAAX,CAAgBD,OAAhB;AACAL,MAAAA,UAAU,CAACO,QAAX;AACH,KAHD;;AAIA,QAAMC,gBAAgB,GAAG,SAAnBA,gBAAmB,CAACC,SAAD,EAAYC,UAAZ,EAA2B;AAChD,UAAMC,uBAAuB,GAAG,IAAIlB,kBAAJ,CAAuBO,UAAvB,EAAmC,UAACH,CAAD,EAAO;AACtE,YAAQe,MAAR,GAA6BF,UAA7B,CAAQE,MAAR;AAAA,YAAgBL,QAAhB,GAA6BG,UAA7B,CAAgBH,QAAhB;;AACA,YAAIK,MAAM,CAACC,MAAP,KAAkB,CAAtB,EAAyB;AACrBN,UAAAA,QAAQ,GAAGH,IAAI,CAAC,KAAD,CAAP,GAAiBK,SAAS,CAACG,MAAV,CAAiBE,IAAjB,CAAsBjB,CAAtB,CAAzB;AACH,SAFD,MAGK;AACD,WAACD,UAAU,CAACC,CAAD,EAAIe,MAAM,CAACG,KAAP,EAAJ,CAAX,IAAkCX,IAAI,CAAC,KAAD,CAAtC;AACH;AACJ,OAR+B,EAQ7B,YAAM;AACLK,QAAAA,SAAS,CAACF,QAAV,GAAqB,IAArB;AACA,YAAQA,QAAR,GAA6BG,UAA7B,CAAQH,QAAR;AAAA,YAAkBK,MAAlB,GAA6BF,UAA7B,CAAkBE,MAAlB;AACAL,QAAAA,QAAQ,IAAIH,IAAI,CAACQ,MAAM,CAACC,MAAP,KAAkB,CAAnB,CAAhB;AACAF,QAAAA,uBAAuB,KAAK,IAA5B,IAAoCA,uBAAuB,KAAK,KAAK,CAArE,GAAyE,KAAK,CAA9E,GAAkFA,uBAAuB,CAACK,WAAxB,EAAlF;AACH,OAb+B,CAAhC;AAcA,aAAOL,uBAAP;AACH,KAhBD;;AAiBAZ,IAAAA,MAAM,CAACkB,SAAP,CAAiBT,gBAAgB,CAACP,MAAD,EAASE,MAAT,CAAjC;AACAR,IAAAA,SAAS,CAACsB,SAAV,CAAoBT,gBAAgB,CAACL,MAAD,EAASF,MAAT,CAApC;AACH,GA1Ba,CAAd;AA2BH;;AACD,SAASC,WAAT,GAAuB;AACnB,SAAO;AACHU,IAAAA,MAAM,EAAE,EADL;AAEHL,IAAAA,QAAQ,EAAE;AAFP,GAAP;AAIH",
+    "sourcesContent": [
+      "import { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function sequenceEqual(compareTo, comparator = (a, b) => a === b) {\n    return operate((source, subscriber) => {\n        const aState = createState();\n        const bState = createState();\n        const emit = (isEqual) => {\n            subscriber.next(isEqual);\n            subscriber.complete();\n        };\n        const createSubscriber = (selfState, otherState) => {\n            const sequenceEqualSubscriber = new OperatorSubscriber(subscriber, (a) => {\n                const { buffer, complete } = otherState;\n                if (buffer.length === 0) {\n                    complete ? emit(false) : selfState.buffer.push(a);\n                }\n                else {\n                    !comparator(a, buffer.shift()) && emit(false);\n                }\n            }, () => {\n                selfState.complete = true;\n                const { complete, buffer } = otherState;\n                complete && emit(buffer.length === 0);\n                sequenceEqualSubscriber === null || sequenceEqualSubscriber === void 0 ? void 0 : sequenceEqualSubscriber.unsubscribe();\n            });\n            return sequenceEqualSubscriber;\n        };\n        source.subscribe(createSubscriber(aState, bState));\n        compareTo.subscribe(createSubscriber(bState, aState));\n    });\n}\nfunction createState() {\n    return {\n        buffer: [],\n        complete: false,\n    };\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

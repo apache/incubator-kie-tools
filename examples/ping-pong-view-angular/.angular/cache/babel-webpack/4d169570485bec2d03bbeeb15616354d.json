@@ -1,0 +1,27 @@
+{
+  "ast": null,
+  "code": "import { asyncScheduler } from '../scheduler/async';\nimport { defaultThrottleConfig, throttle } from './throttle';\nimport { timer } from '../observable/timer';\nexport function throttleTime(duration) {\n  var scheduler = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : asyncScheduler;\n  var config = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : defaultThrottleConfig;\n  var duration$ = timer(duration, scheduler);\n  return throttle(function () {\n    return duration$;\n  }, config);\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/throttleTime.js"
+    ],
+    "names": [
+      "asyncScheduler",
+      "defaultThrottleConfig",
+      "throttle",
+      "timer",
+      "throttleTime",
+      "duration",
+      "scheduler",
+      "config",
+      "duration$"
+    ],
+    "mappings": "AAAA,SAASA,cAAT,QAA+B,oBAA/B;AACA,SAASC,qBAAT,EAAgCC,QAAhC,QAAgD,YAAhD;AACA,SAASC,KAAT,QAAsB,qBAAtB;AACA,OAAO,SAASC,YAAT,CAAsBC,QAAtB,EAA4F;AAAA,MAA5DC,SAA4D,uEAAhDN,cAAgD;AAAA,MAAhCO,MAAgC,uEAAvBN,qBAAuB;AAC/F,MAAMO,SAAS,GAAGL,KAAK,CAACE,QAAD,EAAWC,SAAX,CAAvB;AACA,SAAOJ,QAAQ,CAAC;AAAA,WAAMM,SAAN;AAAA,GAAD,EAAkBD,MAAlB,CAAf;AACH",
+    "sourcesContent": [
+      "import { asyncScheduler } from '../scheduler/async';\nimport { defaultThrottleConfig, throttle } from './throttle';\nimport { timer } from '../observable/timer';\nexport function throttleTime(duration, scheduler = asyncScheduler, config = defaultThrottleConfig) {\n    const duration$ = timer(duration, scheduler);\n    return throttle(() => duration$, config);\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

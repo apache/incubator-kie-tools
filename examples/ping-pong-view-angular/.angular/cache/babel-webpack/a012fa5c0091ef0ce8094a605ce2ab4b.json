@@ -1,0 +1,7 @@
+{
+  "ast": null,
+  "code": "import _classCallCheck from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/classCallCheck.js\";\nimport { BrowserModule } from '@angular/platform-browser';\nimport { AppComponent } from './app.component';\nimport * as i0 from \"@angular/core\";\nexport var AppModule = /*#__PURE__*/(function () {\n  var AppModule = function AppModule() {\n    _classCallCheck(this, AppModule);\n  };\n\n  AppModule.ɵfac = function AppModule_Factory(t) {\n    return new (t || AppModule)();\n  };\n\n  AppModule.ɵmod = i0.ɵɵdefineNgModule({\n    type: AppModule,\n    bootstrap: [AppComponent]\n  });\n  AppModule.ɵinj = i0.ɵɵdefineInjector({\n    providers: [],\n    imports: [[BrowserModule]]\n  });\n  return AppModule;\n})();",
+  "map": null,
+  "metadata": {},
+  "sourceType": "module"
+}

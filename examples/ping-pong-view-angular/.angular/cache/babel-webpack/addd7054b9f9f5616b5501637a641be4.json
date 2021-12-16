@@ -1,0 +1,34 @@
+{
+  "ast": null,
+  "code": "import _classCallCheck from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/classCallCheck.js\";\nimport _createClass from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/createClass.js\";\nimport _get from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/get.js\";\nimport _getPrototypeOf from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js\";\nimport _inherits from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/inherits.js\";\nimport _createSuper from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/createSuper.js\";\nimport { AsyncAction } from './AsyncAction';\nimport { immediateProvider } from './immediateProvider';\nexport var AsapAction = /*#__PURE__*/function (_AsyncAction) {\n  _inherits(AsapAction, _AsyncAction);\n\n  var _super = _createSuper(AsapAction);\n\n  function AsapAction(scheduler, work) {\n    var _this;\n\n    _classCallCheck(this, AsapAction);\n\n    _this = _super.call(this, scheduler, work);\n    _this.scheduler = scheduler;\n    _this.work = work;\n    return _this;\n  }\n\n  _createClass(AsapAction, [{\n    key: \"requestAsyncId\",\n    value: function requestAsyncId(scheduler, id) {\n      var delay = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;\n\n      if (delay !== null && delay > 0) {\n        return _get(_getPrototypeOf(AsapAction.prototype), \"requestAsyncId\", this).call(this, scheduler, id, delay);\n      }\n\n      scheduler.actions.push(this);\n      return scheduler._scheduled || (scheduler._scheduled = immediateProvider.setImmediate(scheduler.flush.bind(scheduler, undefined)));\n    }\n  }, {\n    key: \"recycleAsyncId\",\n    value: function recycleAsyncId(scheduler, id) {\n      var delay = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;\n\n      if (delay != null && delay > 0 || delay == null && this.delay > 0) {\n        return _get(_getPrototypeOf(AsapAction.prototype), \"recycleAsyncId\", this).call(this, scheduler, id, delay);\n      }\n\n      if (scheduler.actions.length === 0) {\n        immediateProvider.clearImmediate(id);\n        scheduler._scheduled = undefined;\n      }\n\n      return undefined;\n    }\n  }]);\n\n  return AsapAction;\n}(AsyncAction);",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/scheduler/AsapAction.js"
+    ],
+    "names": [
+      "AsyncAction",
+      "immediateProvider",
+      "AsapAction",
+      "scheduler",
+      "work",
+      "id",
+      "delay",
+      "actions",
+      "push",
+      "_scheduled",
+      "setImmediate",
+      "flush",
+      "bind",
+      "undefined",
+      "length",
+      "clearImmediate"
+    ],
+    "mappings": ";;;;;;AAAA,SAASA,WAAT,QAA4B,eAA5B;AACA,SAASC,iBAAT,QAAkC,qBAAlC;AACA,WAAaC,UAAb;AAAA;;AAAA;;AACI,sBAAYC,SAAZ,EAAuBC,IAAvB,EAA6B;AAAA;;AAAA;;AACzB,8BAAMD,SAAN,EAAiBC,IAAjB;AACA,UAAKD,SAAL,GAAiBA,SAAjB;AACA,UAAKC,IAAL,GAAYA,IAAZ;AAHyB;AAI5B;;AALL;AAAA;AAAA,WAMI,wBAAeD,SAAf,EAA0BE,EAA1B,EAAyC;AAAA,UAAXC,KAAW,uEAAH,CAAG;;AACrC,UAAIA,KAAK,KAAK,IAAV,IAAkBA,KAAK,GAAG,CAA9B,EAAiC;AAC7B,8FAA4BH,SAA5B,EAAuCE,EAAvC,EAA2CC,KAA3C;AACH;;AACDH,MAAAA,SAAS,CAACI,OAAV,CAAkBC,IAAlB,CAAuB,IAAvB;AACA,aAAOL,SAAS,CAACM,UAAV,KAAyBN,SAAS,CAACM,UAAV,GAAuBR,iBAAiB,CAACS,YAAlB,CAA+BP,SAAS,CAACQ,KAAV,CAAgBC,IAAhB,CAAqBT,SAArB,EAAgCU,SAAhC,CAA/B,CAAhD,CAAP;AACH;AAZL;AAAA;AAAA,WAaI,wBAAeV,SAAf,EAA0BE,EAA1B,EAAyC;AAAA,UAAXC,KAAW,uEAAH,CAAG;;AACrC,UAAKA,KAAK,IAAI,IAAT,IAAiBA,KAAK,GAAG,CAA1B,IAAiCA,KAAK,IAAI,IAAT,IAAiB,KAAKA,KAAL,GAAa,CAAnE,EAAuE;AACnE,8FAA4BH,SAA5B,EAAuCE,EAAvC,EAA2CC,KAA3C;AACH;;AACD,UAAIH,SAAS,CAACI,OAAV,CAAkBO,MAAlB,KAA6B,CAAjC,EAAoC;AAChCb,QAAAA,iBAAiB,CAACc,cAAlB,CAAiCV,EAAjC;AACAF,QAAAA,SAAS,CAACM,UAAV,GAAuBI,SAAvB;AACH;;AACD,aAAOA,SAAP;AACH;AAtBL;;AAAA;AAAA,EAAgCb,WAAhC",
+    "sourcesContent": [
+      "import { AsyncAction } from './AsyncAction';\nimport { immediateProvider } from './immediateProvider';\nexport class AsapAction extends AsyncAction {\n    constructor(scheduler, work) {\n        super(scheduler, work);\n        this.scheduler = scheduler;\n        this.work = work;\n    }\n    requestAsyncId(scheduler, id, delay = 0) {\n        if (delay !== null && delay > 0) {\n            return super.requestAsyncId(scheduler, id, delay);\n        }\n        scheduler.actions.push(this);\n        return scheduler._scheduled || (scheduler._scheduled = immediateProvider.setImmediate(scheduler.flush.bind(scheduler, undefined)));\n    }\n    recycleAsyncId(scheduler, id, delay = 0) {\n        if ((delay != null && delay > 0) || (delay == null && this.delay > 0)) {\n            return super.recycleAsyncId(scheduler, id, delay);\n        }\n        if (scheduler.actions.length === 0) {\n            immediateProvider.clearImmediate(id);\n            scheduler._scheduled = undefined;\n        }\n        return undefined;\n    }\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

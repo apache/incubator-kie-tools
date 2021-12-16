@@ -1,0 +1,17 @@
+{
+  "ast": null,
+  "code": "export var dateTimestampProvider = {\n  now: function now() {\n    return (dateTimestampProvider.delegate || Date).now();\n  },\n  delegate: undefined\n};",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/scheduler/dateTimestampProvider.js"
+    ],
+    "names": ["dateTimestampProvider", "now", "delegate", "Date", "undefined"],
+    "mappings": "AAAA,OAAO,IAAMA,qBAAqB,GAAG;AACjCC,EAAAA,GADiC,iBAC3B;AACF,WAAO,CAACD,qBAAqB,CAACE,QAAtB,IAAkCC,IAAnC,EAAyCF,GAAzC,EAAP;AACH,GAHgC;AAIjCC,EAAAA,QAAQ,EAAEE;AAJuB,CAA9B",
+    "sourcesContent": [
+      "export const dateTimestampProvider = {\n    now() {\n        return (dateTimestampProvider.delegate || Date).now();\n    },\n    delegate: undefined,\n};\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}

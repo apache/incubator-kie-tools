@@ -1,0 +1,32 @@
+{
+  "ast": null,
+  "code": "import { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nimport { innerFrom } from '../observable/innerFrom';\nimport { noop } from '../util/noop';\nexport function skipUntil(notifier) {\n  return operate(function (source, subscriber) {\n    var taking = false;\n    var skipSubscriber = new OperatorSubscriber(subscriber, function () {\n      skipSubscriber === null || skipSubscriber === void 0 ? void 0 : skipSubscriber.unsubscribe();\n      taking = true;\n    }, noop);\n    innerFrom(notifier).subscribe(skipSubscriber);\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      return taking && subscriber.next(value);\n    }));\n  });\n}",
+  "map": {
+    "version": 3,
+    "sources": [
+      "/home/koda/redhat/kogito-tooling/examples/ping-pong-view-angular/node_modules/rxjs/dist/esm/internal/operators/skipUntil.js"
+    ],
+    "names": [
+      "operate",
+      "OperatorSubscriber",
+      "innerFrom",
+      "noop",
+      "skipUntil",
+      "notifier",
+      "source",
+      "subscriber",
+      "taking",
+      "skipSubscriber",
+      "unsubscribe",
+      "subscribe",
+      "value",
+      "next"
+    ],
+    "mappings": "AAAA,SAASA,OAAT,QAAwB,cAAxB;AACA,SAASC,kBAAT,QAAmC,sBAAnC;AACA,SAASC,SAAT,QAA0B,yBAA1B;AACA,SAASC,IAAT,QAAqB,cAArB;AACA,OAAO,SAASC,SAAT,CAAmBC,QAAnB,EAA6B;AAChC,SAAOL,OAAO,CAAC,UAACM,MAAD,EAASC,UAAT,EAAwB;AACnC,QAAIC,MAAM,GAAG,KAAb;AACA,QAAMC,cAAc,GAAG,IAAIR,kBAAJ,CAAuBM,UAAvB,EAAmC,YAAM;AAC5DE,MAAAA,cAAc,KAAK,IAAnB,IAA2BA,cAAc,KAAK,KAAK,CAAnD,GAAuD,KAAK,CAA5D,GAAgEA,cAAc,CAACC,WAAf,EAAhE;AACAF,MAAAA,MAAM,GAAG,IAAT;AACH,KAHsB,EAGpBL,IAHoB,CAAvB;AAIAD,IAAAA,SAAS,CAACG,QAAD,CAAT,CAAoBM,SAApB,CAA8BF,cAA9B;AACAH,IAAAA,MAAM,CAACK,SAAP,CAAiB,IAAIV,kBAAJ,CAAuBM,UAAvB,EAAmC,UAACK,KAAD;AAAA,aAAWJ,MAAM,IAAID,UAAU,CAACM,IAAX,CAAgBD,KAAhB,CAArB;AAAA,KAAnC,CAAjB;AACH,GARa,CAAd;AASH",
+    "sourcesContent": [
+      "import { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nimport { innerFrom } from '../observable/innerFrom';\nimport { noop } from '../util/noop';\nexport function skipUntil(notifier) {\n    return operate((source, subscriber) => {\n        let taking = false;\n        const skipSubscriber = new OperatorSubscriber(subscriber, () => {\n            skipSubscriber === null || skipSubscriber === void 0 ? void 0 : skipSubscriber.unsubscribe();\n            taking = true;\n        }, noop);\n        innerFrom(notifier).subscribe(skipSubscriber);\n        source.subscribe(new OperatorSubscriber(subscriber, (value) => taking && subscriber.next(value)));\n    });\n}\n"
+    ]
+  },
+  "metadata": {},
+  "sourceType": "module"
+}
