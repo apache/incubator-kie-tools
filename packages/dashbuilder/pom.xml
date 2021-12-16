@@ -97,7 +97,6 @@
     <version.install.plugin>2.5.2</version.install.plugin>
     <version.site.plugin>3.8.2</version.site.plugin>
     <version.antrun.plugin>1.8</version.antrun.plugin>
-    <version.javadoc.plugin>3.1.1</version.javadoc.plugin>
     <version.exec-maven-plugin>3.0.0</version.exec-maven-plugin>
   </properties>
 
@@ -1159,43 +1158,6 @@
           <artifactId>maven-dependency-plugin</artifactId>
           <version>${version.org.apache.maven.plugins.dependency}</version>
         </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${version.javadoc.plugin}</version>
-          <configuration>
-            <header><![CDATA[<b>${project.name} ${project.version}</b>]]></header>
-            <footer><![CDATA[<b>${project.name} ${project.version}</b>]]></footer>
-            <archive>
-              <index>true</index>
-              <manifest>
-                <addDefaultSpecificationEntries>
-                  true
-                </addDefaultSpecificationEntries>
-                <addDefaultImplementationEntries>
-                  true
-                </addDefaultImplementationEntries>
-              </manifest>
-              <manifestEntries>
-                <Implementation-URL>${project.url}</Implementation-URL>
-                <Java-Version>${java.version}</Java-Version>
-                <Java-Vendor>${java.vendor}</Java-Vendor>
-                <Os-Name>${os.name}</Os-Name>
-                <Os-Arch>${os.arch}</Os-Arch>
-                <Os-Version>${os.version}</Os-Version>
-                <Scm-Url>${project.scm.url}</Scm-Url>
-                <Scm-Connection>${project.scm.connection}</Scm-Connection>
-                <Scm-Revision>${buildNumber}</Scm-Revision>
-              </manifestEntries>
-            </archive>
-            <!-- Since maven-javadoc-plugin 3.0.0 additionalparam is not 
-              not working anymore. Therefore additionalOptions has been introduced, but 
-              old configuration is kept for backward compatibility in case you are using 
-              this parent pom with overwritten version of maven-javadoc-plugin -->
-            <additionalparam>${javadoc.additional.params}</additionalparam>
-            <additionalOptions>${javadoc.additional.params}</additionalOptions>
-          </configuration>
-        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -1268,23 +1230,6 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <links>
-            <link>http://docs.oracle.com/javase/8/docs/api</link>
-          </links>
-          <source>${maven.compiler.source}</source>
-          <minmemory>128m</minmemory>
-          <maxmemory>512m</maxmemory>
-          <author>false</author>
-          <breakiterator>true</breakiterator>
-	  <quiet>true</quiet>
-	  <failOnError>false</failOnError>
-          <additionalparam>${javadoc.additional.params}</additionalparam>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
       </plugin>
     </plugins>
@@ -1310,21 +1255,6 @@
                   This piece here only makes sure the execution is enabled (by specifying a 
                   phase) for full profile builds. -->
                 <phase>validate</phase>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <configuration>
-                  <source>${maven.compiler.source}</source>
-                </configuration>
               </execution>
             </executions>
           </plugin>
