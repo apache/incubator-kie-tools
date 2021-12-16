@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { map } from './map';\nimport { innerFrom } from '../observable/innerFrom';\nimport { operate } from '../util/lift';\nimport { mergeInternals } from './mergeInternals';\nimport { isFunction } from '../util/isFunction';\nexport function mergeMap(project, resultSelector) {\n  var concurrent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Infinity;\n\n  if (isFunction(resultSelector)) {\n    return mergeMap(function (a, i) {\n      return map(function (b, ii) {\n        return resultSelector(a, b, i, ii);\n      })(innerFrom(project(a, i)));\n    }, concurrent);\n  } else if (typeof resultSelector === 'number') {\n    concurrent = resultSelector;\n  }\n\n  return operate(function (source, subscriber) {\n    return mergeInternals(source, subscriber, project, concurrent);\n  });\n} //# sourceMappingURL=mergeMap.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

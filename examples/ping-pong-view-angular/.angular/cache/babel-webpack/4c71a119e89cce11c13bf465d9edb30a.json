@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { createErrorClass } from './createErrorClass';\nexport var SequenceError = createErrorClass(function (_super) {\n  return function SequenceErrorImpl(message) {\n    _super(this);\n\n    this.name = 'SequenceError';\n    this.message = message;\n  };\n}); //# sourceMappingURL=SequenceError.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

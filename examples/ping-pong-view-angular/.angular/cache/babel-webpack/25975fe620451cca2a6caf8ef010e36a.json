@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { EMPTY } from './empty';\nimport { onErrorResumeNext as onErrorResumeNextWith } from '../operators/onErrorResumeNext';\nimport { argsOrArgArray } from '../util/argsOrArgArray';\nexport function onErrorResumeNext() {\n  for (var _len = arguments.length, sources = new Array(_len), _key = 0; _key < _len; _key++) {\n    sources[_key] = arguments[_key];\n  }\n\n  return onErrorResumeNextWith(argsOrArgArray(sources))(EMPTY);\n} //# sourceMappingURL=onErrorResumeNext.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "export var environment = {\n  production: true\n};",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

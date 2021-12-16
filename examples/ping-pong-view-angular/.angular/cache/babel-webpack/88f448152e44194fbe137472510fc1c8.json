@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import _createForOfIteratorHelper from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/createForOfIteratorHelper.js\";\nimport { EMPTY } from '../observable/empty';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function takeLast(count) {\n  return count <= 0 ? function () {\n    return EMPTY;\n  } : operate(function (source, subscriber) {\n    var buffer = [];\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      buffer.push(value);\n      count < buffer.length && buffer.shift();\n    }, function () {\n      var _iterator = _createForOfIteratorHelper(buffer),\n          _step;\n\n      try {\n        for (_iterator.s(); !(_step = _iterator.n()).done;) {\n          var value = _step.value;\n          subscriber.next(value);\n        }\n      } catch (err) {\n        _iterator.e(err);\n      } finally {\n        _iterator.f();\n      }\n\n      subscriber.complete();\n    }, undefined, function () {\n      buffer = null;\n    }));\n  });\n} //# sourceMappingURL=takeLast.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

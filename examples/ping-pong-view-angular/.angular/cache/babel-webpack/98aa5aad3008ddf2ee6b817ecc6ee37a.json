@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { Subject } from '../Subject';\nimport { from } from '../observable/from';\nimport { operate } from '../util/lift';\nimport { fromSubscribable } from '../observable/fromSubscribable';\nvar DEFAULT_CONFIG = {\n  connector: function connector() {\n    return new Subject();\n  }\n};\nexport function connect(selector) {\n  var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : DEFAULT_CONFIG;\n  var connector = config.connector;\n  return operate(function (source, subscriber) {\n    var subject = connector();\n    from(selector(fromSubscribable(subject))).subscribe(subscriber);\n    subscriber.add(source.subscribe(subject));\n  });\n} //# sourceMappingURL=connect.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import _toConsumableArray from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/toConsumableArray.js\";\nimport { argsOrArgArray } from '../util/argsOrArgArray';\nimport { raceWith } from './raceWith';\nexport function race() {\n  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {\n    args[_key] = arguments[_key];\n  }\n\n  return raceWith.apply(void 0, _toConsumableArray(argsOrArgArray(args)));\n} //# sourceMappingURL=race.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

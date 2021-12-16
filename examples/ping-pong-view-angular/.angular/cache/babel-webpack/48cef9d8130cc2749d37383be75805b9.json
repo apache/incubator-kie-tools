@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import _toConsumableArray from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/toConsumableArray.js\";\nimport { combineLatestInit } from '../observable/combineLatest';\nimport { operate } from '../util/lift';\nimport { argsOrArgArray } from '../util/argsOrArgArray';\nimport { mapOneOrManyArgs } from '../util/mapOneOrManyArgs';\nimport { pipe } from '../util/pipe';\nimport { popResultSelector } from '../util/args';\nexport function combineLatest() {\n  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {\n    args[_key] = arguments[_key];\n  }\n\n  var resultSelector = popResultSelector(args);\n  return resultSelector ? pipe(combineLatest.apply(void 0, args), mapOneOrManyArgs(resultSelector)) : operate(function (source, subscriber) {\n    combineLatestInit([source].concat(_toConsumableArray(argsOrArgArray(args))))(subscriber);\n  });\n} //# sourceMappingURL=combineLatest.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

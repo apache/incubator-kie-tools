@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { reduce } from './reduce';\nimport { operate } from '../util/lift';\n\nvar arrReducer = function arrReducer(arr, value) {\n  return arr.push(value), arr;\n};\n\nexport function toArray() {\n  return operate(function (source, subscriber) {\n    reduce(arrReducer, [])(source).subscribe(subscriber);\n  });\n} //# sourceMappingURL=toArray.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

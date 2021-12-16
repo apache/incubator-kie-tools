@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { asyncScheduler } from '../scheduler/async';\nimport { sample } from './sample';\nimport { interval } from '../observable/interval';\nexport function sampleTime(period) {\n  var scheduler = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : asyncScheduler;\n  return sample(interval(period, scheduler));\n} //# sourceMappingURL=sampleTime.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

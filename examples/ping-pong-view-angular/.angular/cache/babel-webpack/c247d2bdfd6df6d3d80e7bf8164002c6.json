@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function filter(predicate, thisArg) {\n  return operate(function (source, subscriber) {\n    var index = 0;\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      return predicate.call(thisArg, value, index++) && subscriber.next(value);\n    }));\n  });\n} //# sourceMappingURL=filter.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

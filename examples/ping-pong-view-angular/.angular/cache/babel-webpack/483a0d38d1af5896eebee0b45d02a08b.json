@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { createErrorClass } from './createErrorClass';\nexport var ObjectUnsubscribedError = createErrorClass(function (_super) {\n  return function ObjectUnsubscribedErrorImpl() {\n    _super(this);\n\n    this.name = 'ObjectUnsubscribedError';\n    this.message = 'object unsubscribed';\n  };\n}); //# sourceMappingURL=ObjectUnsubscribedError.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

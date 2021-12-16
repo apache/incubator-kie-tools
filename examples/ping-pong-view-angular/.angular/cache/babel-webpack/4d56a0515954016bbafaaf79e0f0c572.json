@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { concat } from '../observable/concat';\nimport { popScheduler } from '../util/args';\nimport { operate } from '../util/lift';\nexport function startWith() {\n  for (var _len = arguments.length, values = new Array(_len), _key = 0; _key < _len; _key++) {\n    values[_key] = arguments[_key];\n  }\n\n  var scheduler = popScheduler(values);\n  return operate(function (source, subscriber) {\n    (scheduler ? concat(values, source, scheduler) : concat(values, source)).subscribe(subscriber);\n  });\n} //# sourceMappingURL=startWith.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

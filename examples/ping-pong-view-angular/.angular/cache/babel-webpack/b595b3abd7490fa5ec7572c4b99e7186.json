@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { Observable } from '../Observable';\nimport { isFunction } from '../util/isFunction';\nimport { mapOneOrManyArgs } from '../util/mapOneOrManyArgs';\nexport function fromEventPattern(addHandler, removeHandler, resultSelector) {\n  if (resultSelector) {\n    return fromEventPattern(addHandler, removeHandler).pipe(mapOneOrManyArgs(resultSelector));\n  }\n\n  return new Observable(function (subscriber) {\n    var handler = function handler() {\n      for (var _len = arguments.length, e = new Array(_len), _key = 0; _key < _len; _key++) {\n        e[_key] = arguments[_key];\n      }\n\n      return subscriber.next(e.length === 1 ? e[0] : e);\n    };\n\n    var retValue = addHandler(handler);\n    return isFunction(removeHandler) ? function () {\n      return removeHandler(handler, retValue);\n    } : undefined;\n  });\n} //# sourceMappingURL=fromEventPattern.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

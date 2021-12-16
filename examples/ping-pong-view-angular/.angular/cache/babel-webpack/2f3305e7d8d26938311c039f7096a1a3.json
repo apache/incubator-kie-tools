@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import _toConsumableArray from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/toConsumableArray.js\";\nimport { map } from \"../operators/map\";\nvar isArray = Array.isArray;\n\nfunction callOrApply(fn, args) {\n  return isArray(args) ? fn.apply(void 0, _toConsumableArray(args)) : fn(args);\n}\n\nexport function mapOneOrManyArgs(fn) {\n  return map(function (args) {\n    return callOrApply(fn, args);\n  });\n} //# sourceMappingURL=mapOneOrManyArgs.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

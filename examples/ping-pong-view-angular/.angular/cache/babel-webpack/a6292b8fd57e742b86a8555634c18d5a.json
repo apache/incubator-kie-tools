@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { popScheduler } from '../util/args';\nimport { from } from './from';\nexport function of() {\n  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {\n    args[_key] = arguments[_key];\n  }\n\n  var scheduler = popScheduler(args);\n  return from(args, scheduler);\n} //# sourceMappingURL=of.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

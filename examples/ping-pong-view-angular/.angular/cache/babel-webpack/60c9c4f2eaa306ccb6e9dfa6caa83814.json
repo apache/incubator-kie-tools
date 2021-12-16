@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import _toConsumableArray from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/toConsumableArray.js\";\nimport { operate } from '../util/lift';\nimport { argsOrArgArray } from '../util/argsOrArgArray';\nimport { mergeAll } from './mergeAll';\nimport { popNumber, popScheduler } from '../util/args';\nimport { from } from '../observable/from';\nexport function merge() {\n  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {\n    args[_key] = arguments[_key];\n  }\n\n  var scheduler = popScheduler(args);\n  var concurrent = popNumber(args, Infinity);\n  args = argsOrArgArray(args);\n  return operate(function (source, subscriber) {\n    mergeAll(concurrent)(from([source].concat(_toConsumableArray(args)), scheduler)).subscribe(subscriber);\n  });\n} //# sourceMappingURL=merge.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

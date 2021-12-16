@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { OperatorSubscriber } from './OperatorSubscriber';\nexport function scanInternals(accumulator, seed, hasSeed, emitOnNext, emitBeforeComplete) {\n  return function (source, subscriber) {\n    var hasState = hasSeed;\n    var state = seed;\n    var index = 0;\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      var i = index++;\n      state = hasState ? accumulator(state, value, i) : (hasState = true, value);\n      emitOnNext && subscriber.next(state);\n    }, emitBeforeComplete && function () {\n      hasState && subscriber.next(state);\n      subscriber.complete();\n    }));\n  };\n} //# sourceMappingURL=scanInternals.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

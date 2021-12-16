@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { identity } from '../util/identity';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function distinctUntilChanged(comparator) {\n  var keySelector = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : identity;\n  comparator = comparator !== null && comparator !== void 0 ? comparator : defaultCompare;\n  return operate(function (source, subscriber) {\n    var previousKey;\n    var first = true;\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      var currentKey = keySelector(value);\n\n      if (first || !comparator(previousKey, currentKey)) {\n        first = false;\n        previousKey = currentKey;\n        subscriber.next(value);\n      }\n    }));\n  });\n}\n\nfunction defaultCompare(a, b) {\n  return a === b;\n} //# sourceMappingURL=distinctUntilChanged.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

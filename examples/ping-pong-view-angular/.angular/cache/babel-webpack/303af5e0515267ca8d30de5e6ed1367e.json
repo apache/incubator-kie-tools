@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { EmptyError } from './util/EmptyError';\nexport function lastValueFrom(source, config) {\n  var hasConfig = typeof config === 'object';\n  return new Promise(function (resolve, reject) {\n    var _hasValue = false;\n\n    var _value;\n\n    source.subscribe({\n      next: function next(value) {\n        _value = value;\n        _hasValue = true;\n      },\n      error: reject,\n      complete: function complete() {\n        if (_hasValue) {\n          resolve(_value);\n        } else if (hasConfig) {\n          resolve(config.defaultValue);\n        } else {\n          reject(new EmptyError());\n        }\n      }\n    });\n  });\n} //# sourceMappingURL=lastValueFrom.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

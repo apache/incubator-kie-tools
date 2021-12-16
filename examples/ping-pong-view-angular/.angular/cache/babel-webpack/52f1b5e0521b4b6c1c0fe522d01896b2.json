@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "var isArray = Array.isArray;\nvar getPrototypeOf = Object.getPrototypeOf,\n    objectProto = Object.prototype,\n    getKeys = Object.keys;\nexport function argsArgArrayOrObject(args) {\n  if (args.length === 1) {\n    var first = args[0];\n\n    if (isArray(first)) {\n      return {\n        args: first,\n        keys: null\n      };\n    }\n\n    if (isPOJO(first)) {\n      var keys = getKeys(first);\n      return {\n        args: keys.map(function (key) {\n          return first[key];\n        }),\n        keys: keys\n      };\n    }\n  }\n\n  return {\n    args: args,\n    keys: null\n  };\n}\n\nfunction isPOJO(obj) {\n  return obj && typeof obj === 'object' && getPrototypeOf(obj) === objectProto;\n} //# sourceMappingURL=argsArgArrayOrObject.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

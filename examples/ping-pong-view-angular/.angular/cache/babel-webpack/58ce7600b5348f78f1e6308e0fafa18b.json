@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import _toConsumableArray from \"/home/koda/redhat/kogito-tooling/node_modules/@angular-devkit/build-angular/node_modules/@babel/runtime/helpers/esm/toConsumableArray.js\";\nimport { operate } from '../util/lift';\nimport { innerFrom } from '../observable/innerFrom';\nimport { argsOrArgArray } from '../util/argsOrArgArray';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nimport { noop } from '../util/noop';\nexport function onErrorResumeNext() {\n  for (var _len = arguments.length, sources = new Array(_len), _key = 0; _key < _len; _key++) {\n    sources[_key] = arguments[_key];\n  }\n\n  var nextSources = argsOrArgArray(sources);\n  return operate(function (source, subscriber) {\n    var remaining = [source].concat(_toConsumableArray(nextSources));\n\n    var subscribeNext = function subscribeNext() {\n      if (!subscriber.closed) {\n        if (remaining.length > 0) {\n          var nextSource;\n\n          try {\n            nextSource = innerFrom(remaining.shift());\n          } catch (err) {\n            subscribeNext();\n            return;\n          }\n\n          var innerSub = new OperatorSubscriber(subscriber, undefined, noop, noop);\n          subscriber.add(nextSource.subscribe(innerSub));\n          innerSub.add(subscribeNext);\n        } else {\n          subscriber.complete();\n        }\n      }\n    };\n\n    subscribeNext();\n  });\n} //# sourceMappingURL=onErrorResumeNext.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

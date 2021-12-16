@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { Subject } from '../Subject';\nimport { Observable } from '../Observable';\nimport { defer } from './defer';\nvar DEFAULT_CONFIG = {\n  connector: function connector() {\n    return new Subject();\n  },\n  resetOnDisconnect: true\n};\nexport function connectable(source) {\n  var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : DEFAULT_CONFIG;\n  var connection = null;\n  var connector = config.connector,\n      _config$resetOnDiscon = config.resetOnDisconnect,\n      resetOnDisconnect = _config$resetOnDiscon === void 0 ? true : _config$resetOnDiscon;\n  var subject = connector();\n  var result = new Observable(function (subscriber) {\n    return subject.subscribe(subscriber);\n  });\n\n  result.connect = function () {\n    if (!connection || connection.closed) {\n      connection = defer(function () {\n        return source;\n      }).subscribe(subject);\n\n      if (resetOnDisconnect) {\n        connection.add(function () {\n          return subject = connector();\n        });\n      }\n    }\n\n    return connection;\n  };\n\n  return result;\n} //# sourceMappingURL=connectable.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { Notification } from '../Notification';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function materialize() {\n  return operate(function (source, subscriber) {\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      subscriber.next(Notification.createNext(value));\n    }, function () {\n      subscriber.next(Notification.createComplete());\n      subscriber.complete();\n    }, function (err) {\n      subscriber.next(Notification.createError(err));\n      subscriber.complete();\n    }));\n  });\n} //# sourceMappingURL=materialize.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

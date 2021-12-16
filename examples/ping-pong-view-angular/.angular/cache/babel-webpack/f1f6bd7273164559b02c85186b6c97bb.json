@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { config } from '../config';\nvar context = null;\nexport function errorContext(cb) {\n  if (config.useDeprecatedSynchronousErrorHandling) {\n    var isRoot = !context;\n\n    if (isRoot) {\n      context = {\n        errorThrown: false,\n        error: null\n      };\n    }\n\n    cb();\n\n    if (isRoot) {\n      var _context = context,\n          errorThrown = _context.errorThrown,\n          error = _context.error;\n      context = null;\n\n      if (errorThrown) {\n        throw error;\n      }\n    }\n  } else {\n    cb();\n  }\n}\nexport function captureError(err) {\n  if (config.useDeprecatedSynchronousErrorHandling && context) {\n    context.errorThrown = true;\n    context.error = err;\n  }\n} //# sourceMappingURL=errorContext.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

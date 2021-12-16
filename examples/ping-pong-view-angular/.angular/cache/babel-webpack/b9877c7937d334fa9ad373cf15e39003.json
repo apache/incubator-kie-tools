@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { merge } from './merge';\nexport function mergeWith() {\n  return merge.apply(void 0, arguments);\n} //# sourceMappingURL=mergeWith.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

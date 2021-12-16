@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "export var timeoutProvider = {\n  setTimeout: function (_setTimeout) {\n    function setTimeout() {\n      return _setTimeout.apply(this, arguments);\n    }\n\n    setTimeout.toString = function () {\n      return _setTimeout.toString();\n    };\n\n    return setTimeout;\n  }(function () {\n    var delegate = timeoutProvider.delegate;\n    return ((delegate === null || delegate === void 0 ? void 0 : delegate.setTimeout) || setTimeout).apply(void 0, arguments);\n  }),\n  clearTimeout: function (_clearTimeout) {\n    function clearTimeout(_x) {\n      return _clearTimeout.apply(this, arguments);\n    }\n\n    clearTimeout.toString = function () {\n      return _clearTimeout.toString();\n    };\n\n    return clearTimeout;\n  }(function (handle) {\n    var delegate = timeoutProvider.delegate;\n    return ((delegate === null || delegate === void 0 ? void 0 : delegate.clearTimeout) || clearTimeout)(handle);\n  }),\n  delegate: undefined\n}; //# sourceMappingURL=timeoutProvider.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

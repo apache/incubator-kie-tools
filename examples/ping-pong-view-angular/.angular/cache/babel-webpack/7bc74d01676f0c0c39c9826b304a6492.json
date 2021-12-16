@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { EmptyError } from './util/EmptyError';\nimport { SafeSubscriber } from './Subscriber';\nexport function firstValueFrom(source, config) {\n  var hasConfig = typeof config === 'object';\n  return new Promise(function (resolve, reject) {\n    var subscriber = new SafeSubscriber({\n      next: function next(value) {\n        resolve(value);\n        subscriber.unsubscribe();\n      },\n      error: reject,\n      complete: function complete() {\n        if (hasConfig) {\n          resolve(config.defaultValue);\n        } else {\n          reject(new EmptyError());\n        }\n      }\n    });\n    source.subscribe(subscriber);\n  });\n} //# sourceMappingURL=firstValueFrom.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

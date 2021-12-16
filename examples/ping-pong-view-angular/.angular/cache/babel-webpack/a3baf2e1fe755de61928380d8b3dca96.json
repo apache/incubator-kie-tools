@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { Observable } from '../Observable';\nimport { isFunction } from '../util/isFunction';\nexport function throwError(errorOrErrorFactory, scheduler) {\n  var errorFactory = isFunction(errorOrErrorFactory) ? errorOrErrorFactory : function () {\n    return errorOrErrorFactory;\n  };\n\n  var init = function init(subscriber) {\n    return subscriber.error(errorFactory());\n  };\n\n  return new Observable(scheduler ? function (subscriber) {\n    return scheduler.schedule(init, 0, subscriber);\n  } : init);\n} //# sourceMappingURL=throwError.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}

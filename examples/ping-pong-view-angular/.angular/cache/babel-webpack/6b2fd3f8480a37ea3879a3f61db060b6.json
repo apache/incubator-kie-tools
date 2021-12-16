@@ -1,7 +1,0 @@
-{
-  "ast": null,
-  "code": "import { executeSchedule } from '../util/executeSchedule';\nimport { operate } from '../util/lift';\nimport { OperatorSubscriber } from './OperatorSubscriber';\nexport function observeOn(scheduler) {\n  var delay = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;\n  return operate(function (source, subscriber) {\n    source.subscribe(new OperatorSubscriber(subscriber, function (value) {\n      return executeSchedule(subscriber, scheduler, function () {\n        return subscriber.next(value);\n      }, delay);\n    }, function () {\n      return executeSchedule(subscriber, scheduler, function () {\n        return subscriber.complete();\n      }, delay);\n    }, function (err) {\n      return executeSchedule(subscriber, scheduler, function () {\n        return subscriber.error(err);\n      }, delay);\n    }));\n  });\n} //# sourceMappingURL=observeOn.js.map",
-  "map": null,
-  "metadata": {},
-  "sourceType": "module"
-}
