@@ -35,6 +35,7 @@ import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/compo
 import { TopologyIcon } from "@patternfly/react-icons/dist/js/icons/topology-icon";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { ResponsiveDropdown } from "../../components/ResponsiveDropdown/ResponsiveDropdown";
 
 export function OpenshiftDeploymentsDropdown() {
   const settings = useSettings();
@@ -50,6 +51,19 @@ export function OpenshiftDeploymentsDropdown() {
   const openOpenShiftSettings = useCallback(() => {
     settingsDispatch.open(SettingsTabs.OPENSHIFT);
   }, [settingsDispatch]);
+
+  return (
+    <ResponsiveDropdown
+      toggle={
+        <DropdownToggle
+          toggleIndicator={null}
+          onToggle={(isOpen) => dmnDevSandbox.setDeploymentsDropdownOpen(isDmnDevSandboxConnected && isOpen)}
+        >
+          <OpenshiftIcon color={!isDmnDevSandboxConnected ? "gray" : undefined} />
+        </DropdownToggle>
+      }
+    />
+  );
 
   const items = useMemo(() => {
     const common = isDmnDevSandboxConnected
