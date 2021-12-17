@@ -34,6 +34,7 @@ import { NewWorkspaceFromUrlPage } from "./workspace/components/NewWorkspaceFrom
 import { DmnDevSandboxContextProvider } from "./editor/DmnDevSandbox/DmnDevSandboxContextProvider";
 import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
 import { useRoutes } from "./navigation/Hooks";
+import { EnvironmentContextProvider } from "./environment/EnvironmentContextProvider";
 
 export function App() {
   return (
@@ -41,6 +42,7 @@ export function App() {
       {nest(
         [OnlineI18nContextProvider, {}],
         [EditorEnvelopeLocatorContextProvider, {}],
+        [EnvironmentContextProvider, {}],
         [KieToolingExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
         [WorkspacesContextProvider, {}],

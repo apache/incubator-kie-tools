@@ -85,6 +85,7 @@ module.exports = async (env, argv) => {
           { from: "./static/images", to: "./images" },
           { from: "./static/samples", to: "./samples" },
           { from: "./static/favicon.svg", to: "./favicon.svg" },
+          { from: "./static/env.json", to: "./env.json" },
           {
             from: externalAssets.dmnEditorPath(),
             to: "./gwt-editors/dmn",
