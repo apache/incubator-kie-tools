@@ -57,7 +57,7 @@ jobs:
       runners: ${{ github.event.inputs.runners }}
     secrets:
       kogito_tooling_bot_token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
-      github_token: ${{ secrets.GITHUB_TOKEN }}
+      gh_token: ${{ secrets.GITHUB_TOKEN }}
       quay_registry_password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
       google_developer_console_client_id: ${{ secrets.GOOGLE_DEVELOPER_CONSOLE_CLIENT_ID }}
       google_developer_console_client_secret: ${{ secrets.GOOGLE_DEVELOPER_CONSOLE_CLIENT_SECRET }}

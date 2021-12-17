@@ -61,5 +61,5 @@ jobs:
       upload_asset_url: ${{ needs.create_release.outputs.upload_asset_url }}
     secrets:
       kogito_tooling_bot_token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
-      github_token: ${{ secrets.GITHUB_TOKEN }}
+      gh_token: ${{ secrets.GITHUB_TOKEN }}
       quay_registry_password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
