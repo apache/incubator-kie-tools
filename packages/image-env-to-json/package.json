@@ -1,0 +1,35 @@
+{
+  "name": "@kogito-tooling/image-env-to-json",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "dependencies": {
+    "commander": "^8.3.0"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
+  },
+  "scripts": {
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts\"",
+    "build:dev": "rimraf -rf dist && tsc",
+    "build:prod": "yarn lint && rimraf dist && ncc build src/index.ts --license licenses.txt -m"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ]
+    ]
+  }
+}
