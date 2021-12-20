@@ -37,8 +37,8 @@ release.properties
 */**/war/StockDemo/
 *ErraiBusTests.JUnit/
 *.JUnit/
-gwt-unitCache/
-class_list.txt
+*/**/gwt-unitCache/
+*/**/class_list.txt
 *.jpage
 .factorypath
 dependency-reduced-pom.xml
@@ -54,4 +54,4 @@ dependency-reduced-pom.xml
 *.mp4
 
 # Local Netlify folder
-.netlify
+*/**/.netlify
