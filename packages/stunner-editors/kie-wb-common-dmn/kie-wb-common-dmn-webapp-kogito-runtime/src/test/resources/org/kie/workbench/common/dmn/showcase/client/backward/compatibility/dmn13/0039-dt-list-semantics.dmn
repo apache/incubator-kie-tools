@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions exporter="DMN Modeler" exporterVersion="6.1.3" namespace="http://www.trisotech.com/dmn/definitions/_7f0fb170-45f8-4189-94a4-74c686cc1d55" name="DT list semantics" triso:logoChoice="Default" id="_7f0fb170-45f8-4189-94a4-74c686cc1d55" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <extensionElements/>
+    <itemDefinition isCollection="true" name="tListOfStrings" label="tListOfStrings">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <inputData name="Flu Symtoms" id="_ceab30da-d86b-4c49-9685-49a6dc60413d">
+        <variable typeRef="tListOfStrings" name="Flu Symtoms" id="_bfee4407-5d09-444c-9055-95c6c9defec7"/>
+    </inputData>
+    <inputData name="Symptom" id="_0d07c799-309c-49cd-9dc4-3c26bbf96282">
+        <variable typeRef="string" name="Symptom" id="_2ee5c4b8-2820-405e-a5e3-9fd3f56163af"/>
+    </inputData>
+    <decision name="Symptom Analysis" id="_531cd585-b1f9-4f12-abda-6d152fc324af">
+        <variable typeRef="tListOfStrings" name="Symptom Analysis" id="_b89f47cd-d986-45fc-8e97-2d0281b42dab"/>
+        <informationRequirement id="d252aed4-6a34-4e31-b4c3-c58ea03ee235">
+            <requiredInput href="#_ceab30da-d86b-4c49-9685-49a6dc60413d"/>
+        </informationRequirement>
+        <informationRequirement id="d382479e-ab34-4848-abfc-81c1ffcc76e3">
+            <requiredInput href="#_0d07c799-309c-49cd-9dc4-3c26bbf96282"/>
+        </informationRequirement>
+        <decisionTable hitPolicy="COLLECT" outputLabel="Symptom Analysis" typeRef="tListOfStrings" id="_895523c7-9926-43bb-83db-e596f9caaebc">
+            <input id="_34a2f5f6-d4d9-4b03-8ac0-cbfac33f2591">
+                <inputExpression typeRef="string">
+                    <text>Symptom</text>
+                </inputExpression>
+            </input>
+            <output id="_2a4ebb8a-f98e-47e1-a57f-78230ced36fd"/>
+            <rule id="_1b20fe26-e3b3-449f-838b-a8ab00238e53">
+                <inputEntry id="_fd5fb838-ebfd-4b89-916d-a96d51df0cf7">
+                    <text>"cough", "sore throat", "stuffy nose"</text>
+                </inputEntry>
+                <outputEntry id="_79aaec27-d2f0-4f00-9f33-9ccade427765">
+                    <text>Symptom + " is in the list of Cold symptoms"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_0da0a131-4e1a-4b1a-b763-8af96a11982d">
+                <inputEntry id="_2fbeca46-aa7f-4746-9929-ce7c88cd1a5f">
+                    <text>Flu Symtoms</text>
+                </inputEntry>
+                <outputEntry id="_ba75f36d-77dd-4190-b64c-3036e9d26d5b">
+                    <text>Symptom + " is in the list of Flu symptoms"</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_7f0fb170-45f8-4189-94a4-74c686cc1d55_D1">
+            <dmndi:Size height="650.0" width="666.0"/>
+            <dmndi:DMNShape dmnElementRef="_ceab30da-d86b-4c49-9685-49a6dc60413d" id="_7f0fb170-45f8-4189-94a4-74c686cc1d55_s1">
+                <dc:Bounds height="60.0" width="153.0" x="150.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_0d07c799-309c-49cd-9dc4-3c26bbf96282" id="_7f0fb170-45f8-4189-94a4-74c686cc1d55_s2">
+                <dc:Bounds height="60.0" width="153.0" x="363.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_531cd585-b1f9-4f12-abda-6d152fc324af" id="_7f0fb170-45f8-4189-94a4-74c686cc1d55_s3">
+                <dc:Bounds height="61.0" width="154.0" x="255.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="d252aed4-6a34-4e31-b4c3-c58ea03ee235" id="_7f0fb170-45f8-4189-94a4-74c686cc1d55_e1">
+                <di:waypoint x="226.0" y="331.0"/>
+                <di:waypoint x="332.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="d382479e-ab34-4848-abfc-81c1ffcc76e3" id="_7f0fb170-45f8-4189-94a4-74c686cc1d55_e2">
+                <di:waypoint x="439.0" y="331.0"/>
+                <di:waypoint x="332.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

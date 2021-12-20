@@ -1,0 +1,57 @@
+name: "Publish :: NPM :: Release"
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build_and_publish:
+    if: github.repository == 'kiegroup/kogito-editors-java'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # This bash script returns the `tag` name for the release. Will match "/refs/[tags/heads]/[tag]"
+      - name: Parse tag
+        id: release_tag
+        run: |
+          echo ::set-output name=tag::$(node -e "console.log('${{ github.ref }}'.match(/^.*\/(.+)$/)[1])")
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Build with Maven
+        run: mvn clean install -B -ntp --file pom.xml
+
+      - name: Publish BPMN Editor
+        run: |
+          cd ${{ github.workspace }}/.github/supporting-files/publish-artifacts-npm/bpmn-editor-unpacked
+          cp -r ${{ github.workspace }}/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime ./target/bpmn
+          npm version ${{ steps.release_tag.outputs.tag }}
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.KIEGROUP_NPM_TOKEN }}" > ~/.npmrc
+          npm publish --access public
+
+      - name: Publish DMN Editor
+        run: |
+          cd ${{ github.workspace }}/.github/supporting-files/publish-artifacts-npm/dmn-editor-unpacked
+          cp -r ${{ github.workspace }}/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime ./target/dmn
+          npm version ${{ steps.release_tag.outputs.tag }}
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.KIEGROUP_NPM_TOKEN }}" > ~/.npmrc
+          npm publish --access public
+
+      - name: Publish SceSim Editor
+        run: |
+          cd ${{ github.workspace }}/.github/supporting-files/publish-artifacts-npm/scesim-editor-unpacked
+          cp -r ${{ github.workspace }}/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime ./target/scesim
+          npm version ${{ steps.release_tag.outputs.tag }}
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.KIEGROUP_NPM_TOKEN }}" > ~/.npmrc
+          npm publish --access public
+
+      - name: Publish Boxed Expression Component
+        run: |
+          cd ${{ github.workspace }}/kogito-editors-js/
+          lerna version ${{ steps.release_tag.outputs.tag }} --no-push --no-git-tag-version --exact --yes
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.KIEGROUP_NPM_TOKEN }}" > ~/.npmrc
+          lerna exec 'npm publish --access public' --scope=boxed-expression-component --include-dependencies --stream

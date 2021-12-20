@@ -1,0 +1,155 @@
+name: "CI :: Full Downstream Build"
+
+on:
+  schedule:
+    - cron: "0 1 * * *"
+  push:
+    branches: [main]
+    paths-ignore:
+      - "LICENSE"
+      - "**/.gitignore"
+      - "**.md"
+      - "**.adoc"
+      - "**.txt"
+      - ".ci/jenkins/**"
+  pull_request_target:
+    branches: "**"
+    paths-ignore:
+      - "LICENSE"
+      - "**/.gitignore"
+      - "**.md"
+      - "**.adoc"
+      - "**.txt"
+      - ".ci/jenkins/**"
+
+env:
+  EXTERNAL_RESOURCE_PATH__dmnEditor: "${{ github.workspace }}/kogito-editors-java/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime"
+  EXTERNAL_RESOURCE_PATH__bpmnEditor: "${{ github.workspace }}/kogito-editors-java/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime"
+  EXTERNAL_RESOURCE_PATH__scesimEditor: "${{ github.workspace }}/kogito-editors-java/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime"
+  MERGE_WARNING_MESSAGE: "ATTENTION: A merge attempt is being made to get your changes. If a conflict happens, please do a rebase/merge manually in your branch to get the latest commits."
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "General :: Fetch user membership to kiegroup"
+        if: github.repository == 'kiegroup/kogito-editors-java'
+        uses: octokit/request-action@v2.x
+        id: checkUserMembership
+        with:
+          route: GET /orgs/kiegroup/members/:username
+          username: ${{ github.actor }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+
+      - name: "General :: Check user membership to kiegroup"
+        if: github.repository == 'kiegroup/kogito-editors-java'
+        run: |
+          [ "204" == "${{ steps.checkUserMembership.outputs.status }}" ]
+
+      - name: "General :: Resolve <user>/<branch>"
+        id: buildInfo
+        run: |
+          if [ -n "${{ github.event.pull_request }}" ]; then
+            user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
+          else
+            user="kiegroup"
+          fi
+          echo ::set-output name=user::$user
+          echo ::set-output name=ref::${{ github.head_ref }}
+
+      - name: "kogito-editors-java :: Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          path: ${{ github.workspace }}/kogito-editors-java
+
+      - name: "kogito-editors-java :: Setup JDK 11"
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: "kogito-editors-java :: Cache Maven Packages"
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: "kogito-editors-java :: Merge Changes"
+        if: ${{ github.event.pull_request }}
+        run: |
+          cd ${{ github.workspace }}/kogito-editors-java
+          git config --global user.email "kietooling@gmail.com"
+          git config --global user.name "Kogito Tooling Bot"
+          git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/kogito-editors-java.git
+          git fetch --all || true
+          if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
+            echo $MERGE_WARNING_MESSAGE
+            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+          fi
+
+      - name: "kogito-editors-java :: Build"
+        env:
+          MAVEN_OPTS: -Xmx6000m -Xms1000m
+        run: |
+          cd ${{ github.workspace }}/kogito-editors-java
+          mvn clean install -B -ntp --file pom.xml
+
+      - name: "kogito-tooling :: Checkout"
+        uses: actions/checkout@v2
+        with:
+          path: ${{ github.workspace }}/kogito-tooling
+          repository: kiegroup/kogito-tooling
+          fetch-depth: 0
+
+      - name: "kogito-tooling :: Merge Changes"
+        if: ${{ github.event.pull_request }}
+        working-directory: ${{ github.workspace }}/kogito-tooling
+        run: |
+          cd ${{ github.workspace }}/kogito-tooling
+          git config --global user.email "kietooling@gmail.com"
+          git config --global user.name "Kogito Tooling Bot"
+          git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/kogito-tooling.git
+          git fetch --all || true
+          if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
+            echo $MERGE_WARNING_MESSAGE
+            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+          fi
+
+      - name: "kogito-tooling :: Setup Env"
+        uses: ./kogito-tooling/.github/actions/setup-env
+        with:
+          path: ${{ github.workspace }}/kogito-tooling
+          os: ubuntu-latest
+
+      - name: "kogito-tooling :: Build"
+        working-directory: ${{ github.workspace }}/kogito-tooling
+        env:
+          WEBPACK__minimize: "false"
+          WEBPACK__tsLoaderTranspileOnly: "false"
+          KOGITO_TOOLING_BUILD_lint: "true"
+          KOGITO_TOOLING_BUILD_test: "true"
+          KOGITO_TOOLING_BUILD_testIT: "true"
+          KOGITO_TOOLING_BUILD_docker: "true"
+          KOGITO_TOOLING_BUILD_examples: "true"
+          DISPLAY: ":99.0"
+          START_SERVER_AND_TEST_INSECURE: "true"
+        run: |
+          lerna run build:prod --stream --concurrency 1
+
+      - name: "kogito-tooling :: Upload VS Code Extension"
+        uses: actions/upload-artifact@v2
+        with:
+          name: vscode-extension
+          path: ${{ github.workspace }}/kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_*.vsix
+
+      - name: "kogito-tooling :: Upload IT Tests artifacts"
+        uses: actions/upload-artifact@v2
+        if: always() && !cancelled()
+        with:
+          name: it-tests-artifacts
+          if-no-files-found: warn
+          path: |
+            kogito-tooling/packages/*/dist-it-tests

@@ -1,0 +1,82 @@
+{
+  "version": 2,
+  "name": "test2",
+  "style": "PAGE",
+  "layoutProperties": {},
+  "rows": [
+    {
+      "height": "6",
+      "layoutColumns": [
+        {
+          "span": "12",
+          "height": "12",
+          "rows": [
+            {
+              "height": "12",
+              "layoutColumns": [
+                {
+                  "span": "12",
+                  "height": "4",
+                  "rows": [],
+                  "layoutComponents": [
+                    {
+                      "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+                      "properties": {
+                        "HTML_CODE": "Add your HTML here..."
+                      }
+                    }
+                  ]
+                },
+                {
+                  "span": "12",
+                  "height": "4",
+                  "rows": [],
+                  "layoutComponents": [
+                    {
+                      "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+                      "properties": {
+                        "HTML_CODE": "Add your HTML here..."
+                      }
+                    }
+                  ]
+                },
+                {
+                  "span": "12",
+                  "height": "4",
+                  "rows": [],
+                  "layoutComponents": [
+                    {
+                      "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+                      "properties": {
+                        "HTML_CODE": "Add your HTML here..."
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "layoutComponents": []
+        }
+      ]
+    },
+    {
+      "height": "6",
+      "layoutColumns": [
+        {
+          "span": "12",
+          "height": "12",
+          "rows": [],
+          "layoutComponents": [
+            {
+              "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+              "properties": {
+                "HTML_CODE": "Add your HTML here..."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

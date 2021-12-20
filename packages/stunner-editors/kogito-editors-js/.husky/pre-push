@@ -1,0 +1,6 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+. "$(dirname "$0")/common.sh"
+
+
+cd kogito-editors-js && yarn run format && yarn run prepush && git add .

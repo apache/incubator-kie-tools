@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_D4D66ED7-F5CB-4F14-995F-41E2B92AB857" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" id="_B24137D5-C82C-4266-B42F-5396EC8F352E" name="complex-data-types" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_D4D66ED7-F5CB-4F14-995F-41E2B92AB857">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_ACF068EC-7FC4-434E-9CE0-7E384332897B" name="tNationalPeopleSurvey" isCollection="false">
+    <dmn:itemComponent id="_1D1F7B5C-E937-41AC-B492-1A8CCEE9F3A8" name="Records" isCollection="true">
+      <dmn:typeRef>tRecord</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_37671721-7620-4E70-966B-67D98C1B71B4" name="tQuestion" isCollection="false">
+    <dmn:itemComponent id="_03258773-18A3-47AA-B3F3-4642F1F1FD8D" name="Text" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_05E34848-72D6-452D-A0CC-0BC4580E5D44" name="Answer" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+      <dmn:allowedValues kie:constraintType="enumeration" id="_56DF8D24-E52A-42E3-9794-4AEA1042BC3C">
+        <dmn:text>"yes", "no"</dmn:text>
+      </dmn:allowedValues>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_B0D2371D-E00A-4ABA-8DAE-D0223D4C1D55" name="tRecord" isCollection="false">
+    <dmn:itemComponent id="_3B08DED1-458A-443E-90E9-3D1F81AC8A2E" name="Question" isCollection="false">
+      <dmn:typeRef>tQuestion</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_B818FAE9-3AA2-4092-AD23-483D0490D378" name="Respondent" isCollection="false">
+      <dmn:itemComponent id="_C67F796D-7C20-49B7-BA1A-83C1A7F0A288" name="Name" isCollection="false">
+        <dmn:typeRef>string</dmn:typeRef>
+      </dmn:itemComponent>
+      <dmn:itemComponent id="_A71507D1-6542-45BF-9AA5-654B8841926A" name="Age" isCollection="false">
+        <dmn:typeRef>number</dmn:typeRef>
+      </dmn:itemComponent>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_F9BF90D9-8F44-495D-A2E8-220B2BB4F9E5" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension/>
+      </di:extension>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

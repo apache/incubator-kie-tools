@@ -1,0 +1,14 @@
+{
+  "name": "appformer-js-monaco",
+  "version": "0.0.0",
+  "scripts": {
+    "init": "yarn install --force",
+    "locktt": "locktt"
+  },
+  "dependencies": {
+    "@kiegroup/monaco-editor": "2.3.0"
+  },
+  "keywords": [
+    "monaco"
+  ]
+}

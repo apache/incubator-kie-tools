@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0074-feel-properties" name="0074-feel-properties" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <description>FEEL properties</description>
+
+    <decision name="context_001" id="_context_001">
+        <variable name="context_001"/>
+        <literalExpression>
+            <text>{a: "foo"}.a</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_001" id="_date_001">
+        <variable name="date_001"/>
+        <literalExpression>
+            <text>date("2018-12-10").year</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_002" id="_date_002">
+        <variable name="date_002"/>
+        <literalExpression>
+            <text>date("2018-12-10").month</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_003" id="_date_003">
+        <variable name="date_003"/>
+        <literalExpression>
+            <text>date("2018-12-10").day</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="date_004" id="_date_004">
+        <variable name="date_004"/>
+        <literalExpression>
+            <text>date("2018-12-10").weekday</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_001" id="_dateTime_001">
+        <variable name="dateTime_001"/>
+        <literalExpression>
+            <text>date and time("2018-12-10T10:30:01").year</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_002" id="_dateTime_002">
+        <variable name="dateTime_002"/>
+        <literalExpression>
+            <text>date and time("2018-12-10T10:30:01").month</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_003" id="_dateTime_003">
+        <variable name="dateTime_003"/>
+        <literalExpression>
+            <text>date and time("2018-12-10T10:30:01").day</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_004" id="_dateTime_004">
+        <variable name="dateTime_004"/>
+        <literalExpression>
+            <text>date and time("2018-12-10T10:30:01").weekday</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_005" id="_dateTime_005">
+        <variable name="dateTime_005"/>
+        <literalExpression>
+            <text>date and time("2018-12-10T10:30:01").hour</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_005_a" id="_dateTime_005_a">
+        <variable name="dateTime_005_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-10").hour</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_006" id="_dateTime_006">
+        <variable name="dateTime_006"/>
+        <literalExpression>
+            <text>date and time("2018-12-10T10:30:01").minute</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_006_a" id="_dateTime_006_a">
+        <variable name="dateTime_006_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-10").minute</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_007" id="_dateTime_007">
+        <variable name="dateTime_007"/>
+        <literalExpression>
+            <text>date and time("2018-12-10T10:30:01").second</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_007_a" id="_dateTime_007_a">
+        <variable name="dateTime_007_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-10").second</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_008" id="_dateTime_008">
+        <variable name="dateTime_008"/>
+        <literalExpression>
+            <text>date and time("2018-12-10T10:30:00+05:00").time offset</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_008_a" id="_dateTime_008_a">
+        <variable name="dateTime_008_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-10T10:30:00").time offset</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_009" id="_dateTime_009">
+        <variable name="dateTime_009"/>
+        <literalExpression>
+            <text>date and time("2018-12-10T10:30:00@Etc/UTC").timezone</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dateTime_009_a" id="_dateTime_009_a">
+        <variable name="dateTime_009_a"/>
+        <literalExpression>
+            <text>date and time("2018-12-10T10:30:00").timezone</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_001" id="_time_001">
+        <variable name="time_001"/>
+        <literalExpression>
+            <text>time("10:30:01").hour</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_002" id="_time_002">
+        <variable name="time_002"/>
+        <literalExpression>
+            <text>time("10:30:01").minute</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_003" id="_time_003">
+        <variable name="time_003"/>
+        <literalExpression>
+            <text>time("10:30:01").second</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_004" id="_time_004">
+        <variable name="time_004"/>
+        <literalExpression>
+            <text>time("10:30:00+05:00").time offset</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_004_a" id="_time_004_a">
+        <variable name="time_004_a"/>
+        <literalExpression>
+            <text>time("10:30:00").time offset</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_005" id="_time_005">
+        <variable name="time_005"/>
+        <literalExpression>
+            <text>time("10:30:00@Etc/UTC").timezone</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="time_005_a" id="_time_005_a">
+        <variable name="time_005_a"/>
+        <literalExpression>
+            <text>time("10:30:00").timezone</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_001" id="_ym_duration_001">
+        <variable name="ym_duration_001"/>
+        <literalExpression>
+            <text>duration("P1Y2M").years</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_001_a" id="_ym_duration_001_a">
+        <variable name="ym_duration_001_a"/>
+        <literalExpression>
+            <text>duration("P2M").years</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_002" id="_ym_duration_002">
+        <variable name="ym_duration_002"/>
+        <literalExpression>
+            <text>duration("P2M").months</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_002_a" id="_ym_duration_002_a">
+        <variable name="ym_duration_002_a"/>
+        <literalExpression>
+            <text>duration("P1Y").months</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_003" id="_ym_duration_003">
+        <variable name="ym_duration_003"/>
+        <literalExpression>
+            <text>duration("P1Y").days</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_004" id="_ym_duration_004">
+        <variable name="ym_duration_004"/>
+        <literalExpression>
+            <text>duration("P1Y").hours</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_005" id="_ym_duration_005">
+        <variable name="ym_duration_005"/>
+        <literalExpression>
+            <text>duration("P1Y").minutes</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="ym_duration_006" id="_ym_duration_006">
+        <variable name="ym_duration_006"/>
+        <literalExpression>
+            <text>duration("P1Y").seconds</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_001" id="_dt_duration_001">
+        <variable name="dt_duration_001"/>
+        <literalExpression>
+            <text>duration("P1D").years</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_002" id="_dt_duration_002">
+        <variable name="dt_duration_002"/>
+        <literalExpression>
+            <text>duration("P1D").months</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_003" id="_dt_duration_003">
+        <variable name="dt_duration_003"/>
+        <literalExpression>
+            <text>duration("P1D").days</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_003_a" id="_dt_duration_003_a">
+        <variable name="dt_duration_003_a"/>
+        <literalExpression>
+            <text>duration("PT2H").days</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_004" id="_dt_duration_004">
+        <variable name="dt_duration_004"/>
+        <literalExpression>
+            <text>duration("PT2H").hours</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_004_a" id="_dt_duration_004_a">
+        <variable name="dt_duration_004_a"/>
+        <literalExpression>
+            <text>duration("P1D").hours</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_005" id="_dt_duration_005">
+        <variable name="dt_duration_005"/>
+        <literalExpression>
+            <text>duration("PT2M").minutes</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_005_a" id="_dt_duration_005_a">
+        <variable name="dt_duration_005_a"/>
+        <literalExpression>
+            <text>duration("P1D").minutes</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_006" id="_dt_duration_006">
+        <variable name="dt_duration_006"/>
+        <literalExpression>
+            <text>duration("PT2S").seconds</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="dt_duration_006_a" id="_dt_duration_006_a">
+        <variable name="dt_duration_006_a"/>
+        <literalExpression>
+            <text>duration("P1D").seconds</text>
+        </literalExpression>
+    </decision>
+
+</definitions>

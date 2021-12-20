@@ -76,3 +76,56 @@ packages/feel-input-component/src
 packages/vscode-extension-dmn-editor/server
 packages/vscode-extension-bpmn-editor/server
 packages/vscode-extension-pack-kogito-kie-editors/server
+
+# imported from kogito-editors-java
+*.ipr
+*.iws
+*.iml
+.idea/*
+*/.idea/*
+.settings
+.metadata/*
+.gwt-tmp/
+target/
+bin/
+classes/
+local/
+repository/
+repositories/
+nbproject/
+data
+deploy/
+.errai/
+.DS_Store
+*.releaseBackup
+*.versionsBackup
+release.properties
+.gwt
+/war/WEB-INF/classes/
+packages/stunner-editors/errai-ioc/war/WEB-INF/classes/
+packages/stunner-editors/errai-tools/war/
+*/**/war/AsyncDemo/
+*/**/war/ClientService/
+*/**/war/HelloWorld/
+*/**/war/QueryService/
+*/**/war/RPCDemo/
+*/**/war/Serialization/
+*/**/war/StockDemo/
+*.JUnit/
+*/**/gwt-unitCache/
+*/**/class_list.txt
+*.jpage
+packages/stunner-editors.factorypath
+packages/stunner-editors/dependency-reduced-pom.xml
+
+# Created by Zanata
+packages/stunner-editors/org.kie.workbench.screens
+packages/stunner-editors/org.kie.workbench.widgets
+packages/stunner-editors/org.kie.workbench.forms
+
+# Cypress tests recordings
+**/videos/**
+*.mp4
+
+# Local Netlify folder
+*/**/.netlify

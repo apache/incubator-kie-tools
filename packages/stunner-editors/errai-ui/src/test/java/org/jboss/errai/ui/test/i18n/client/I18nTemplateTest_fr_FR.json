@@ -1,0 +1,12 @@
+{
+  "I18nComponent.welcome": "Bienvenue sur la démo Errai-ui i18n.",
+  "I18nComponent.Label_1_": "Etiquette 1:",
+  "I18nComponent.value_one": "une valeur",
+  "I18nComponent.Label_2_": "Etiquette 2:",
+  "I18nComponent.value_two": "valeur de deux",
+  "I18nComponent.Email_": "email:",
+  "I18nComponent.email-placeholder": "Entrez votre adresse e-mail...",
+  "I18nComponent.Password_": "mot de passe:",
+  "I18nComponent.password-title": "Votre mot de passe va ici.",
+  "I18nComponent.This_is_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really-942055656": "String trop grand"
+}

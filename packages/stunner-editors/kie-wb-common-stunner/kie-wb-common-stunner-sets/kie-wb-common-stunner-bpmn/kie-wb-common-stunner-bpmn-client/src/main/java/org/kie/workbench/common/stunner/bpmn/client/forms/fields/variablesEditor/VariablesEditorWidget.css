@@ -1,0 +1,61 @@
+.containerDiv {
+  width: 30px;
+  height: 26px;
+}
+
+.tagAnchor {
+  width: 26px;
+  height: 26px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #0060b6;
+  text-decoration: none;
+}
+
+.tagSpan {
+  margin-left: 25px;
+  color: black;
+  font-weight: bold;
+}
+
+.tagsSVG {
+  display: inline-block;
+  content: "";
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAgMjAiIGRhdGEtdG9nZ2xlPSJ0b29sdGlwIiBjbGFzcz0iYmkgYmktdGFnLWZpbGwiIHdpZHRoPSIyNnB4IiBoZWlnaHQ9IjI2cHgiICBmaWxsPSJjdXJyZW50Q29sb3IiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICA8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik00IDNhMSAxIDAgMDAtMSAxdjQuNTg2YTEgMSAwIDAwLjI5My43MDdsNyA3YTEgMSAwIDAwMS40MTQgMGw0LjU4Ni00LjU4NmExIDEgMCAwMDAtMS40MTRsLTctN0ExIDEgMCAwMDguNTg2IDNINHptNCAzLjVhMS41IDEuNSAwIDExLTMgMCAxLjUgMS41IDAgMDEzIDB6IiBjbGlwLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD4KICAgIDwvc3ZnPgo=");
+  background-repeat: no-repeat;
+  margin-left: 0px;
+}
+
+.tagsDiv {
+  width: 200px;
+  display: none;
+}
+
+.acceptButton {
+  color: #00659c;
+  padding-left: 10px;
+  cursor: pointer;
+}
+
+.tagBadges {
+  padding-right: 0.6em;
+  padding-left: 0.6em;
+  border-radius: 10rem;
+}
+
+.tagCloseButton {
+  font-size: 13px;
+  cursor: pointer;
+  color: #0060b6;
+}
+
+.tagBadge {
+  font-size: 15px;
+  padding-right: 10px;
+  color: #0060b6;
+  background-color: #f5f5f5;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}

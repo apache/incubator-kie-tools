@@ -1,0 +1,9 @@
+{
+  "name": "demo",
+  "editors": [
+    {
+      "regex": "*.bpmn",
+      "editor": "BPMNStandaloneDiagramEditor"
+    }
+  ]
+}

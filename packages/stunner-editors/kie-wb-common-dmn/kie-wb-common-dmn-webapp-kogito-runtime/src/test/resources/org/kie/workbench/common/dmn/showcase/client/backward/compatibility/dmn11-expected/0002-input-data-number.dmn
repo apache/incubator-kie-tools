@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns="https://github.com/agilepro/dmn-tck"
+  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns:kie="http://www.drools.org/kie/dmn/1.2"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_0002-input-data-number" name="0002-input-data-number" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/agilepro/dmn-tck">
+  <dmn:extensionElements/>
+  <dmn:decision id="d_YearlySalary" name="Yearly Salary">
+    <dmn:extensionElements/>
+    <dmn:variable id="_877774FA-F499-404F-8029-E87C4F6C37DE" name="Yearly Salary" typeRef="number"/>
+    <dmn:informationRequirement id="_E3AEED90-FCBF-41A3-95BD-2EFEF0DA557E">
+      <dmn:requiredInput href="#i_MonthlySalary"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_1E6CBA36-1B87-46D2-9BD2-0BBB52E6CB75">
+      <dmn:text>12 * Monthly Salary</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:inputData id="i_MonthlySalary" name="Monthly Salary">
+    <dmn:extensionElements/>
+    <dmn:variable id="_83A8CC91-3DAD-4916-86E6-15370D170A0B" name="Monthly Salary" typeRef="number"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_FA0A43CE-395E-49DE-9605-90DA13E6FC81" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_1E6CBA36-1B87-46D2-9BD2-0BBB52E6CB75"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-d_YearlySalary" dmnElementRef="d_YearlySalary" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-i_MonthlySalary" dmnElementRef="i_MonthlySalary" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="225" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_E3AEED90-FCBF-41A3-95BD-2EFEF0DA557E" dmnElementRef="_E3AEED90-FCBF-41A3-95BD-2EFEF0DA557E">
+		<di:waypoint x="100" y="250"/>
+		<di:waypoint x="100" y="75"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

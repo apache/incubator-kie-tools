@@ -1,0 +1,69 @@
+name: "CI :: Default"
+
+on:
+  schedule:
+    - cron: "0 1 * * *"
+  push:
+    branches: [main]
+    paths-ignore:
+      - "LICENSE"
+      - "**/.gitignore"
+      - "**.md"
+      - "**.adoc"
+      - "**.txt"
+      - ".ci/jenkins/**"
+  pull_request:
+    branches: "**"
+    paths-ignore:
+      - "LICENSE"
+      - "**/.gitignore"
+      - "**.md"
+      - "**.adoc"
+      - "**.txt"
+      - ".ci/jenkins/**"
+
+env:
+  MAVEN_OPTS: -Xmx6000m -Xms1000m
+
+jobs:
+  build:
+    if: github.repository == 'kiegroup/kogito-editors-java' || github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with Maven
+        run: mvn clean install -B --file pom.xml
+
+      - name: Upload kie-wb-common-dmn-webapp-kogito-runtime
+        uses: actions/upload-artifact@v2
+        with:
+          name: kie-wb-common-dmn-webapp-kogito-runtime
+          path: "kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime.war"
+
+      - name: Upload kie-wb-common-stunner-bpmn-kogito-runtime
+        uses: actions/upload-artifact@v2
+        with:
+          name: kie-wb-common-stunner-bpmn-kogito-runtime
+          path: "kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime.war"
+
+      - name: Upload drools-wb-scenario-simulation-editor-kogito-runtime
+        uses: actions/upload-artifact@v2
+        with:
+          name: drools-wb-scenario-simulation-editor-kogito-runtime
+          path: "drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime.war"

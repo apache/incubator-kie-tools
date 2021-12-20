@@ -1,0 +1,77 @@
+/appformer-bom/ @yesamer @tiagobento
+
+/appformer-client-api/ @tiagobento
+
+/appformer-js-monaco/ @tiagobento
+
+/appformer-kogito-bridge/ @tiagobento
+
+/bump_version.sh/ @yesamer
+
+/docs/ @yesamer @jomarko
+
+/drools-wb-bom/ @yesamer
+
+/drools-wb-screens/ @yesamer
+
+/errai-api/ @tiagobento
+
+/errai-bom/ @tiagobento
+
+/errai-cdi/ @tiagobento
+
+/errai-codegen-gwt/ @tiagobento
+
+/errai-codegen/ @tiagobento
+
+/errai-common/ @tiagobento
+
+/errai-config/ @tiagobento
+
+/errai-data-binding/ @tiagobento
+
+/errai-ioc/ @tiagobento
+
+/errai-javax-enterprise/ @tiagobento
+
+/errai-reflections/ @tiagobento
+
+/errai-ui/ @tiagobento
+
+/errai-validation/ @tiagobento
+
+/kie-wb-common-bom/ @yesamer @romartin
+
+/kie-wb-common-dmn/ @yesamer
+
+/kie-wb-common-forms/ @romartin
+
+/kie-wb-common-kogito/ @romartin
+
+/kie-wb-common-stunner/ @romartin
+
+/kie-wb-common-widgets/ @yesamer @romartin
+
+/kogito-editors-js/ @vpellegrino @yesamer
+
+/lienzo-core/ @romartin
+
+/lienzo-tests/ @romartin
+
+/lienzo-webapp/ @romartin
+
+/uberfire-api/ @tiagobento
+
+/uberfire-client-api/ @tiagobento
+
+/uberfire-extensions/ @tiagobento
+
+/uberfire-workbench/ @tiagobento
+
+CONTRIBUTING.md @yesamer @tiagobento @jomarko
+
+LICENSE @yesamer @tiagobento @jomarko
+
+pom.xml @yesamer @tiagobento @romartin
+
+README.md @yesamer @tiagobento @jomarko

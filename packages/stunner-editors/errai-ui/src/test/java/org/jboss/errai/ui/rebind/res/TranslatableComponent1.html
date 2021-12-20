@@ -1,0 +1,24 @@
+<div>
+  <p data-field="welcome-p" data-i18n-key="welcome">Welcome to the errai-ui i18n demo.</p>
+  <div><span data-field="label1">Label 1:</span> <span data-field="val1">value one</span></div>
+  <hr />
+  <div><span data-field="label2">Label 2:</span> <span data-field="val2">value two</span></div>
+  <form action="POST">
+    <div>
+      <span data-field="emailLabel">Email:</span>
+      <input data-field="email" name="email" type="text" placeholder="Enter your email address..." />
+    </div>
+    <div>
+      <span data-field="passwordLabel">Password:</span>
+      <input data-field="password" name="password" type="password" title="Your password goes here." />
+    </div>
+  </form>
+
+  <!-- The data-role of the following list is "dummy", which means the element itself is important,
+       but its contents are just filler that will not show up in the finished template.
+       Therefore, the list items in the following list should be disregarded as potential i18n keys. -->
+  <ul data-field="variableLengthList" data-role="dummy">
+    <li>Example Item 1</li>
+    <li>Second Example Item</li>
+  </ul>
+</div>

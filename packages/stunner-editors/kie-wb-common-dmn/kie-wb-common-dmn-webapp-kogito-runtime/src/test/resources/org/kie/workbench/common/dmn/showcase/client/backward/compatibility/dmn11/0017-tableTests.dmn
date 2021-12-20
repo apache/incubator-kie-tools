@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tns="http://www.trisotech.com/definitions/_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.35; 1.0" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6" name="tableTest" namespace="http://www.trisotech.com/definitions/_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6" triso:logoChoice="Default">
+	<itemDefinition id="tNumList" isCollection="true" name="tNumList">
+		<typeRef>feel:number</typeRef>
+	</itemDefinition>
+	<itemDefinition id="tA" name="tA">
+		<itemComponent id="_adf6f96a-c574-4ba7-a305-ea14ad9852b1" name="name">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+		<itemComponent id="_d297adac-f086-42a0-989e-04c431270f77" name="price">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<itemDefinition id="tStringList" isCollection="true" name="tStringList">
+		<typeRef>feel:string</typeRef>
+	</itemDefinition>
+	<inputData id="_18b9d486-1ec0-436d-af4b-3e4567e8bca9" name="structA">
+		<variable name="structA" typeRef="tns:tA"/>
+	</inputData>
+	<inputData id="_3b175722-5f96-49e4-a50d-0bf9588c901c" name="numB">
+		<variable name="numB" typeRef="feel:number"/>
+	</inputData>
+	<inputData id="_25cdd674-9b3f-47b1-bace-1d4e3ce50d5d" name="numC">
+		<variable name="numC" typeRef="feel:number"/>
+	</inputData>
+	<inputData id="_fabdbafc-f28a-466d-ae08-86c5b928dad5" name="dateD">
+		<variable name="dateD" typeRef="feel:date"/>
+	</inputData>
+	<inputData id="_4926f78e-5df0-4d88-8ee7-1a418b08562f" name="dateE">
+		<variable name="dateE" typeRef="feel:date"/>
+	</inputData>
+	<decision id="_2683ec7f-fa17-4a1e-9151-8077a10c561f" name="priceGt10">
+		<variable name="priceGt10" typeRef="feel:boolean"/>
+		<informationRequirement>
+			<requiredInput href="#_18b9d486-1ec0-436d-af4b-3e4567e8bca9"/>
+		</informationRequirement>
+		<decisionTable hitPolicy="UNIQUE" outputLabel="priceGt10">
+			<input id="_bfb04e56-12dc-461f-a341-f5522efc7388" label="structA.price">
+				<inputExpression typeRef="feel:number">
+					<text>structA.price</text>
+				</inputExpression>
+			</input>
+			<output id="_89841156-1ca0-4704-9551-39205fdb7ae2"/>
+			<rule id="_543c9e93-e815-41df-8884-b40f726a847e">
+				<inputEntry id="_543c9e93-e815-41df-8884-b40f726a847e-0">
+					<text>&gt;10</text>
+				</inputEntry>
+				<outputEntry id="_543c9e93-e815-41df-8884-b40f726a847e-1">
+					<text>true</text>
+				</outputEntry>
+			</rule>
+			<rule id="_41adf645-547d-4c65-97c1-355c297d02d6">
+				<inputEntry id="_41adf645-547d-4c65-97c1-355c297d02d6-0">
+					<text>&lt;=10</text>
+				</inputEntry>
+				<outputEntry id="_41adf645-547d-4c65-97c1-355c297d02d6-1">
+					<text>false</text>
+				</outputEntry>
+			</rule>
+		</decisionTable>
+	</decision>
+	<decision id="_98e08c9d-66de-4f67-8bd9-cc667be27eb3" name="priceInRange">
+		<variable name="priceInRange" typeRef="feel:string"/>
+		<informationRequirement>
+			<requiredInput href="#_3b175722-5f96-49e4-a50d-0bf9588c901c"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_25cdd674-9b3f-47b1-bace-1d4e3ce50d5d"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_18b9d486-1ec0-436d-af4b-3e4567e8bca9"/>
+		</informationRequirement>
+		<decisionTable hitPolicy="PRIORITY" outputLabel="priceInRange">
+			<input id="_ea1c33b5-593b-416a-b507-75e419506451" label="structA.price">
+				<inputExpression typeRef="feel:number">
+					<text>structA.price</text>
+				</inputExpression>
+			</input>
+			<output id="_2d6d203c-7f53-4d4c-bfe1-1ce30c374fad">
+				<outputValues>
+					<text>"In range", "Not in range"</text>
+				</outputValues>
+			</output>
+			<rule id="_0111b055-b741-48ed-9d34-ee447a683a30">
+				<inputEntry id="_0111b055-b741-48ed-9d34-ee447a683a30-0">
+					<text>[numB..numC]</text>
+				</inputEntry>
+				<outputEntry id="_0111b055-b741-48ed-9d34-ee447a683a30-1">
+					<text>"In range"</text>
+				</outputEntry>
+			</rule>
+			<rule id="_feed8519-9afc-485b-a831-eecaf7daedf3">
+				<inputEntry id="_feed8519-9afc-485b-a831-eecaf7daedf3-0">
+					<text>-</text>
+				</inputEntry>
+				<outputEntry id="_feed8519-9afc-485b-a831-eecaf7daedf3-1">
+					<text>"Not in range"</text>
+				</outputEntry>
+			</rule>
+		</decisionTable>
+	</decision>
+	<decision id="_ca5e0efd-3fff-4bf8-8939-85fc3b9c20b8" name="dateCompare1">
+		<variable name="dateCompare1" typeRef="feel:boolean"/>
+		<informationRequirement>
+			<requiredInput href="#_fabdbafc-f28a-466d-ae08-86c5b928dad5"/>
+		</informationRequirement>
+		<decisionTable hitPolicy="UNIQUE" outputLabel="dateCompare1">
+			<input id="_cccfb596-2349-4ff2-bed6-51373e84a7c6" label="dateD">
+				<inputExpression typeRef="feel:date">
+					<text>dateD</text>
+				</inputExpression>
+			</input>
+			<output id="_81e4c1b4-0638-4fec-9d0a-3a6864b64bdf"/>
+			<rule id="_7b156632-d54a-4097-986d-78dc74254a1d">
+				<inputEntry id="_7b156632-d54a-4097-986d-78dc74254a1d-0">
+					<text>&gt;date("2016-10-01")</text>
+				</inputEntry>
+				<outputEntry id="_7b156632-d54a-4097-986d-78dc74254a1d-1">
+					<text>true</text>
+				</outputEntry>
+			</rule>
+			<rule id="_5ccd1858-e7be-47b9-9213-65573af1079c">
+				<inputEntry id="_5ccd1858-e7be-47b9-9213-65573af1079c-0">
+					<text>&lt;=date("2016-10-01")</text>
+				</inputEntry>
+				<outputEntry id="_5ccd1858-e7be-47b9-9213-65573af1079c-1">
+					<text>false</text>
+				</outputEntry>
+			</rule>
+		</decisionTable>
+	</decision>
+	<decision id="_bf3c3a79-9fa2-491f-8065-a990c70b50de" name="dateCompare2">
+		<variable name="dateCompare2" typeRef="feel:boolean"/>
+		<informationRequirement>
+			<requiredInput href="#_fabdbafc-f28a-466d-ae08-86c5b928dad5"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_4926f78e-5df0-4d88-8ee7-1a418b08562f"/>
+		</informationRequirement>
+		<decisionTable hitPolicy="UNIQUE" outputLabel="dateCompare2">
+			<input id="_510a77ec-f587-41eb-a3c0-139cb0fd1cb4" label="dateD">
+				<inputExpression typeRef="feel:date">
+					<text>dateD</text>
+				</inputExpression>
+			</input>
+			<output id="_d296a8b5-41f5-4991-a052-cd19815a5730"/>
+			<rule id="_fb95f9d4-b59b-4eb0-96d1-1898af54d63b">
+				<inputEntry id="_fb95f9d4-b59b-4eb0-96d1-1898af54d63b-0">
+					<text>&gt;dateE</text>
+				</inputEntry>
+				<outputEntry id="_fb95f9d4-b59b-4eb0-96d1-1898af54d63b-1">
+					<text>true</text>
+				</outputEntry>
+			</rule>
+			<rule id="_d5cf4c3c-ce7b-4ad3-b9b3-db036bcfb505">
+				<inputEntry id="_d5cf4c3c-ce7b-4ad3-b9b3-db036bcfb505-0">
+					<text>&lt;=dateE</text>
+				</inputEntry>
+				<outputEntry id="_d5cf4c3c-ce7b-4ad3-b9b3-db036bcfb505-1">
+					<text>false</text>
+				</outputEntry>
+			</rule>
+		</decisionTable>
+	</decision>
+</definitions>

@@ -1,0 +1,77 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+[data-i18n-prefix="DataTypeConstraintEnumerationView."] {
+  background-image: linear-gradient(to bottom, #efefef 0%, #ffffff 9%, #ffffff 100%);
+  padding: 0 5px;
+  height: 200px;
+  overflow-y: scroll;
+
+  [data-field="add-icon"] {
+    float: right;
+    margin: 5px;
+
+    i {
+      margin-right: 2px;
+    }
+  }
+
+  .dragarea {
+    position: relative;
+  }
+
+  .draggable {
+    width: 490px;
+    padding-left: 20px;
+    transition: top 0.1s;
+    position: absolute;
+    z-index: 1;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: -moz-none;
+    -ms-user-select: none;
+    user-select: none;
+    height: 40px;
+
+    &.highlighted {
+      z-index: 2;
+    }
+
+    [data-field="value-text"] {
+      display: inline-block;
+      padding: 5px 0;
+      height: 30px;
+      margin-top: -2px;
+    }
+  }
+
+  [data-field="add-button-container"] {
+    position: relative;
+  }
+
+  &.kie-days-and-time-duration {
+    .draggable {
+      height: 55px;
+
+      [data-field="value-text"] {
+        display: inline-block;
+        padding: 13px 0;
+        height: 45px;
+      }
+    }
+  }
+}
