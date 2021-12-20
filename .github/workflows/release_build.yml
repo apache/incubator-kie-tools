@@ -308,9 +308,9 @@ jobs:
           echo "Copy Editor resources"
           rm -rf $EDITORS_DIR
           mkdir -p $EDITORS_DIR
-          cp -r ${{ github.workspace }}/kogito-tooling/node_modules/@kogito-tooling/dmn-editor-unpacked/target/dmn $EDITORS_DIR
-          cp -r ${{ github.workspace }}/kogito-tooling/node_modules/@kogito-tooling/bpmn-editor-unpacked/target/bpmn $EDITORS_DIR
-          cp -r ${{ github.workspace }}/kogito-tooling/node_modules/@kogito-tooling/scesim-editor-unpacked/target/scesim $EDITORS_DIR
+          cp -r ${{ github.workspace }}/kogito-tooling/packages/stunner-editors/dist/dmn $EDITORS_DIR
+          cp -r ${{ github.workspace }}/kogito-tooling/packages/stunner-editors/dist/bpmn $EDITORS_DIR
+          cp -r ${{ github.workspace }}//kogito-tooling/packages/stunner-editors/dist/scesim $EDITORS_DIR
           rm -rf ./editors/latest
           ln -s ${{ inputs.tag }} ./editors/latest
 

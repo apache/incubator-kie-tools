@@ -299,7 +299,7 @@ export function DmnRunnerTable(props: DmnRunnerTableProps) {
     <div className="expression-container">
       <div className="expression-name-and-logic-type" />
       <div className="expression-container-box" data-ouia-component-id="expression-container">
-        <div className={`dmn-runner-table ${props.uid}`}>
+        <div className={`dmn-runner-table ${props.id}`}>
           <div className={`logic-type-selector logic-type-selected`}>
             <Table
               editableHeader={false}

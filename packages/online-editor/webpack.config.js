@@ -19,7 +19,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("../../config/webpack.common.config");
-const externalAssets = require("@kogito-tooling/external-assets-base");
+const stunnerEditors = require("@kogito-tooling/stunner-editors");
 const { EnvironmentPlugin } = require("webpack");
 const buildEnv = require("@kogito-tooling/build-env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
@@ -86,12 +86,12 @@ module.exports = async (env, argv) => {
           { from: "./static/samples", to: "./samples" },
           { from: "./static/favicon.svg", to: "./favicon.svg" },
           {
-            from: externalAssets.dmnEditorPath(),
+            from: stunnerEditors.dmnEditorPath(),
             to: "./gwt-editors/dmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
           {
-            from: externalAssets.bpmnEditorPath(),
+            from: stunnerEditors.bpmnEditorPath(),
             to: "./gwt-editors/bpmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },

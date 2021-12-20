@@ -57,10 +57,6 @@ package-lock.json
 **/mvnw.cmd
 **/.mvn
 
-## boxed-expression-component & feel-input-component
-packages/boxed-expression-component/src
-packages/feel-input-component/src
-
 # Eclipse, Netbeans and IntelliJ files
 **/nbproject
 **/*.ipr
@@ -88,13 +84,6 @@ packages/vscode-extension-pack-kogito-kie-editors/server
 .gwt-tmp/
 target/
 bin/
-classes/
-local/
-repository/
-repositories/
-nbproject/
-data
-deploy/
 .errai/
 .DS_Store
 *.releaseBackup
@@ -104,6 +93,7 @@ release.properties
 /war/WEB-INF/classes/
 packages/stunner-editors/errai-ioc/war/WEB-INF/classes/
 packages/stunner-editors/errai-tools/war/
+*/**/war/WEB-INF/classes
 */**/war/AsyncDemo/
 */**/war/ClientService/
 */**/war/HelloWorld/
@@ -115,8 +105,8 @@ packages/stunner-editors/errai-tools/war/
 */**/gwt-unitCache/
 */**/class_list.txt
 *.jpage
-packages/stunner-editors.factorypath
-packages/stunner-editors/dependency-reduced-pom.xml
+packages/stunner-editors/**/.factorypath
+packages/stunner-editors/**/dependency-reduced-pom.xml
 
 # Created by Zanata
 packages/stunner-editors/org.kie.workbench.screens

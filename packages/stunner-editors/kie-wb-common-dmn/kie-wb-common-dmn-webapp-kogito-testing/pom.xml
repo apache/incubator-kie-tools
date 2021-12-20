@@ -103,13 +103,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- kogito-editors-js -->
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-editors-js</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Stunner -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -714,25 +707,6 @@
                   </artifactItems>
                 </configuration>
               </execution>
-              <execution>
-                <id>Unpack DMN loader from dependency</id>
-                <phase>process-sources</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>org.kie.kogito</groupId>
-                      <artifactId>kogito-editors-js</artifactId>
-                      <version>${project.version}</version>
-                      <type>jar</type>
-                      <overWrite>true</overWrite>
-                      <outputDirectory>${project.build.directory}/kogito-editors-js</outputDirectory>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
             </executions>
           </plugin>
 
@@ -757,7 +731,7 @@
                 </configuration>
               </execution>
               <execution>
-                <id>Copy kogito-editors-js assets to WAR</id>
+                <id>Copy dmn-loader assets to WAR</id>
                 <phase>process-resources</phase>
                 <goals>
                   <goal>run</goal>
@@ -765,7 +739,7 @@
                 <configuration>
                   <target>
                     <copy todir="${basedir}/src/main/webapp/kogito-editors-js">
-                      <fileset dir="${project.build.directory}/kogito-editors-js/META-INF/resources/webjars/kogito-editors-js/kogito-editors-js" includes="**/*" />
+                      <fileset dir="${basedir}/../../../stunner-editors-dmn-loader/dist" includes="**/*" />
                     </copy>
                   </target>
                 </configuration>

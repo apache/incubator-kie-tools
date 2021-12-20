@@ -20,10 +20,8 @@
     "react-router-dom": "^5.2.1"
   },
   "devDependencies": {
-    "@kogito-tooling/bpmn-editor-unpacked": "^8.5.3",
     "@kogito-tooling/build-env": "0.0.0",
-    "@kogito-tooling/dmn-editor-unpacked": "^8.5.3",
-    "@kogito-tooling/external-assets-base": "0.0.0"
+    "@kogito-tooling/stunner-editors": "0.0.0"
   },
   "scripts": {
     "start": "electron dist --disable-gpu",

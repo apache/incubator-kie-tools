@@ -1,0 +1,50 @@
+{
+  "name": "boxed-expression-component-showcase",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "dependencies": {
+    "customize-cra": "^1.0.0",
+    "monaco-editor": "^0.26.1",
+    "react": "^17.0.2",
+    "react-app-rewired": "^2.1.8",
+    "react-dom": "^17.0.2",
+    "react-scripts": "^4.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^15.0.2",
+    "@types/react": "^17.0.5",
+    "@types/react-dom": "^17.0.3",
+    "cypress": "^8.1.0",
+    "gh-pages": "^3.2.3",
+    "react-json-view": "^1.21.3",
+    "typescript": "^4.2.4"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "start:it": "BROWSER=none yarn start",
+    "build": "react-app-rewired build",
+    "build:prod": "yarn test:it",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build",
+    "cy:run": "cypress run",
+    "test:it": "start-server-and-test start:it http://localhost:3000 cy:run"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

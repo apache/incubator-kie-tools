@@ -1,0 +1,25 @@
+{
+  "name": "@kogito-tooling/stunner-editors-dmn-loader",
+  "version": "0.0.0",
+  "description": "Common",
+  "license": "Apache-2.0",
+  "main": "src/index.tsx",
+  "source": "src/index.tsx",
+  "scripts": {
+    "build:dev": "webpack --config webpack.development.js",
+    "build:prod": "webpack --config webpack.production.js",
+    "build:watch": "webpack --config webpack.development.js --watch",
+    "lint": "eslint --ext .ts,.tsx,.js ./src/"
+  },
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "@kogito-tooling/boxed-expression-component": "0.0.0"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0",
+    "mini-css-extract-plugin": "^2.4.5",
+    "style-loader": "^2.0.0",
+    "css-loader": "^5.2.6"
+  }
+}

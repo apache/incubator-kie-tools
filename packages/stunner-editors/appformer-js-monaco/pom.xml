@@ -18,50 +18,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>com.github.eirslett</groupId>
-        <artifactId>frontend-maven-plugin</artifactId>
-        <configuration>
-          <installDirectory>${project.build.directory}</installDirectory>
-          <nodeVersion>v16.2.0</nodeVersion>
-          <npmVersion>7.15.1</npmVersion>
-          <yarnVersion>v1.22.10</yarnVersion>
-        </configuration>
-        <executions>
-          <execution>
-            <id>install yarn</id>
-            <goals>
-              <goal>install-node-and-yarn</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>install node and npm</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>install-node-and-npm</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>lock-treatment-tool execution</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <configuration>
-              <arguments>exec @kie/lock-treatment-tool --</arguments>
-            </configuration>
-          </execution>
-          <execution>
-            <id>yarn run init</id>
-            <goals>
-              <goal>yarn</goal>
-            </goals>
-            <configuration>
-              <arguments>run init</arguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.1.0</version>
         <executions>
@@ -77,12 +33,8 @@
               </outputDirectory>
               <resources>
                 <resource>
-                  <directory>node_modules/@kiegroup/monaco-editor/dist/standalone</directory>
+                  <directory>../../monaco-editor/dist/standalone</directory>
                   <filtering>false</filtering>
-                </resource>
-                <resource>
-                  <directory>.</directory>
-                  <includes>package.json</includes>
                 </resource>
               </resources>
             </configuration>
