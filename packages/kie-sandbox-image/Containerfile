@@ -12,22 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM registry.access.redhat.com/ubi8/nodejs-16:latest
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
 
-COPY entrypoint.sh /tmp/entrypoint.sh
-COPY dist-dev/image-env-to-json.js /tmp/image-env-to-json.js
+COPY entrypoint.sh dist-dev/image-env-to-json-standalone /tmp/
 
-USER root
-
-RUN dnf --disableplugin=subscription-manager -y install httpd \
-  && dnf --disableplugin=subscription-manager clean all \
+RUN microdnf --disableplugin=subscription-manager -y install httpd \
+  && microdnf --disableplugin=subscription-manager clean all \
   && sed -i -e 's/Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf \
   && sed -i -e 's/#ServerName www.example.com:80/ServerName 127.0.0.1:8080/' /etc/httpd/conf/httpd.conf \
   && mkdir /kogito \
-  && mv -t /kogito /tmp/entrypoint.sh /tmp/image-env-to-json.js  \
+  && mv -t /kogito /tmp/entrypoint.sh /tmp/image-env-to-json-standalone  \
   && chgrp -R 0 /var/log/httpd /var/run/httpd /var/www/html /kogito \
   && chmod -R g=u /var/log/httpd /var/run/httpd /var/www/html /kogito \
-  && chmod +x /kogito/entrypoint.sh /kogito/image-env-to-json.js
+  && chmod +x /kogito/entrypoint.sh /kogito/image-env-to-json-standalone
 
 COPY dist-dev/online-editor /var/www/html
 

@@ -102,6 +102,7 @@
     "os-browserify": "^0.3.0",
     "patch-package": "^6.4.7",
     "path-browserify": "^1.0.1",
+    "pkg": "^5.5.1",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^2.2.1",
     "pretty-quick": "^3.1.0",

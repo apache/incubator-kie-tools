@@ -26,11 +26,11 @@ const ENV_JSON_FILE = "env.json";
 function main() {
   const program = createCommand();
 
-  program.version(packageVersion);
+  program.name("image-env-to-json").version(packageVersion);
   program.showHelpAfterError("(add --help for additional information)");
   program
-    .requiredOption("-d, --directory <directory>", `Directory to create or update an existing ${ENV_JSON_FILE} file`)
-    .requiredOption("-n, --names <names...>", "Environment variable names to look for")
+    .requiredOption("-d, --directory <directory>", `directory to create or update an existing ${ENV_JSON_FILE} file`)
+    .requiredOption("-n, --names <names...>", "environment variable names to look for")
     .parse();
 
   const options = program.opts();

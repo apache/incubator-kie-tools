@@ -66,7 +66,10 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
       getCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME) ??
       environment.variables.KIE_TOOLING_EXTENDED_SERVICES_PORT;
 
-    const newConfig = new ExtendedServicesConfig(host.trim(), port.trim());
+    const sanitizedHost = host.replace(/\/+$/, "").trim();
+    const sanitizedPort = port.trim();
+
+    const newConfig = new ExtendedServicesConfig(sanitizedHost, sanitizedPort);
     setConfig(newConfig);
 
     new KieToolingExtendedServicesBridge(newConfig.buildUrl()).check().then((checked) => {
