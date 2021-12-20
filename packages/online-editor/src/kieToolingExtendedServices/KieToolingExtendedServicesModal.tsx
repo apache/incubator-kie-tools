@@ -41,9 +41,13 @@ import { SelectOs } from "../os/SelectOs";
 import { getOperatingSystem, OperatingSystem } from "@kie-tooling-core/operating-system";
 import { DEVELOPER_SANDBOX_URL } from "../openshift/OpenShiftService";
 import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
-import { KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT } from "./KieToolingExtendedServicesContextProvider";
+import {
+  KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_HOST,
+  KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT,
+} from "./KieToolingExtendedServicesContextProvider";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 import { useRoutes } from "../navigation/Hooks";
+import { ExtendedServicesConfig } from "../settings/SettingsContext";
 
 enum ModalPage {
   INITIAL,
@@ -258,7 +262,7 @@ export function KieToolingExtendedServicesModal() {
                   <TextContent>
                     <Text component={TextVariants.p} className={"kogito--code"}>
                       /Applications/KIE\ Tooling\ Extended\ Services.app/Contents/MacOs/kogito -p{" "}
-                      {kieToolingExtendedServices.port}
+                      {kieToolingExtendedServices.config.port}
                     </Text>
                   </TextContent>
                   <br />
@@ -273,7 +277,7 @@ export function KieToolingExtendedServicesModal() {
       i18n,
       kieToolingExtendedServices.outdated,
       kieToolingExtendedServices.status,
-      kieToolingExtendedServices.port,
+      kieToolingExtendedServices.config.port,
       downloadKieToolingExtendedServicesUrl,
       KIE_TOOLING_EXTENDED_SERVICES_MACOS_DMG,
       KIE_TOOLING_EXTENDED_SERVICES_MACOS_APP,
@@ -418,7 +422,7 @@ export function KieToolingExtendedServicesModal() {
                   <TextContent>
                     <Text component={TextVariants.p} className={"kogito--code"}>
                       &quot;kie-tooling-extended-services_windows_{kieToolingExtendedServices.version}.exe&quot; -p{" "}
-                      {kieToolingExtendedServices.port}
+                      {kieToolingExtendedServices.config.port}
                     </Text>
                   </TextContent>
                   <br />
@@ -434,7 +438,7 @@ export function KieToolingExtendedServicesModal() {
       kieToolingExtendedServices.outdated,
       kieToolingExtendedServices.status,
       kieToolingExtendedServices.version,
-      kieToolingExtendedServices.port,
+      kieToolingExtendedServices.config.port,
       downloadKieToolingExtendedServicesUrl,
       KIE_TOOLING_EXTENDED_SERVICES_WINDOWS_EXE,
     ]
@@ -573,7 +577,7 @@ export function KieToolingExtendedServicesModal() {
                 <br />
                 <TextContent>
                   <Text component={TextVariants.p} className={"kogito--code"}>
-                    ./kie-tooling-extended-services -p {kieToolingExtendedServices.port}
+                    ./kie-tooling-extended-services -p {kieToolingExtendedServices.config.port}
                   </Text>
                 </TextContent>
                 <br />
@@ -587,7 +591,7 @@ export function KieToolingExtendedServicesModal() {
       i18n,
       kieToolingExtendedServices.outdated,
       kieToolingExtendedServices.status,
-      kieToolingExtendedServices.port,
+      kieToolingExtendedServices.config.port,
       downloadKieToolingExtendedServicesUrl,
       KIE_TOOLING_EXTENDED_SERVICES_LINUX_TAG_GZ,
       KIE_TOOLING_EXTENDED_SERVICES_BINARIES,
@@ -859,7 +863,7 @@ function KieToolingExtendedServicesWizardFooter(props: WizardImperativeControlPr
 }
 
 function KieToolingExtendedServicesPortForm() {
-  const { port, saveNewPort } = useKieToolingExtendedServices();
+  const { config, saveNewConfig } = useKieToolingExtendedServices();
   const { i18n } = useOnlineI18n();
 
   return (
@@ -876,10 +880,20 @@ function KieToolingExtendedServicesPortForm() {
         <FormGroup
           fieldId={"kie-tooling-extended-services-port"}
           label={i18n.dmnRunner.modal.wizard.advancedSettings.label}
-          validated={port === "" || parseInt(port, 10) < 0 || parseInt(port, 10) > 65353 ? "error" : "success"}
+          validated={
+            config.port === "" || parseInt(config.port, 10) < 0 || parseInt(config.port, 10) > 65353
+              ? "error"
+              : "success"
+          }
           helperTextInvalid={i18n.dmnRunner.modal.wizard.advancedSettings.helperTextInvalid}
         >
-          <TextInput value={port} type={"number"} onChange={(value) => saveNewPort(value)} />
+          <TextInput
+            value={config.port}
+            type={"number"}
+            onChange={(value) =>
+              saveNewConfig(new ExtendedServicesConfig(KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_HOST, value))
+            }
+          />
         </FormGroup>
       </Form>
     </>

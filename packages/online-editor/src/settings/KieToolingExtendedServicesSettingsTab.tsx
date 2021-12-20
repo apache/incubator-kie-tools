@@ -20,7 +20,7 @@ import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { useSettings, useSettingsDispatch } from "./SettingsContext";
+import { ExtendedServicesConfig, useSettings, useSettingsDispatch } from "./SettingsContext";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { useKieToolingExtendedServices } from "../kieToolingExtendedServices/KieToolingExtendedServicesContext";
@@ -30,14 +30,15 @@ export function KieToolingExtendedServicesSettingsTab() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
-  const [port, setPort] = useState(settings.kieToolingExtendedServices.port);
+  const [host, setHost] = useState(settings.kieToolingExtendedServices.config.host);
+  const [port, setPort] = useState(settings.kieToolingExtendedServices.config.port);
 
   const onSubmit = useCallback(
     (e: any) => {
       e.preventDefault();
-      settingsDispatch.kieToolingExtendedServices.setPort(port);
+      settingsDispatch.kieToolingExtendedServices.setConfig(new ExtendedServicesConfig(host, port));
     },
-    [settingsDispatch, port]
+    [settingsDispatch, host, port]
   );
 
   return (
@@ -66,6 +67,26 @@ export function KieToolingExtendedServicesSettingsTab() {
               </FormAlert>
               <FormGroup
                 isRequired={true}
+                helperTextInvalid={""}
+                validated={"default"}
+                label={"Host"}
+                fieldId={"host-input"}
+              >
+                <InputGroup>
+                  <TextInput
+                    id="host-input"
+                    name="host"
+                    aria-describedby="host-text-input-helper"
+                    placeholder={""}
+                    validated={"default"}
+                    value={host}
+                    onChange={setHost}
+                    autoFocus={true}
+                  />
+                </InputGroup>
+              </FormGroup>
+              <FormGroup
+                isRequired={false}
                 helperTextInvalid={""}
                 validated={"default"}
                 label={"Port"}

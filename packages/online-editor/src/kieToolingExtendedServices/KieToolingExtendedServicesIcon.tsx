@@ -67,7 +67,7 @@ export function KieToolingExtendedServicesIcon() {
               <Tooltip
                 className="kogito--editor__light-tooltip"
                 key={"connected"}
-                content={i18n.kieToolingExtendedServices.dropdown.tooltip.connected(kieToolingExtendedServices.port)}
+                content={i18n.kieToolingExtendedServices.dropdown.tooltip.connected}
                 flipBehavior={["left"]}
                 distance={20}
               >
@@ -96,7 +96,7 @@ export function KieToolingExtendedServicesIcon() {
         )}
       </>
     ),
-    [i18n, kieToolingExtendedServices.outdated, kieToolingExtendedServices.port, kieToolingExtendedServices.status]
+    [i18n, kieToolingExtendedServices.outdated, kieToolingExtendedServices.status]
   );
 
   return (

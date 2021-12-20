@@ -46,7 +46,6 @@ export interface Deployments {
 
 export interface CreateDeploymentArgs {
   uri: string;
-  createdBy: string;
   baseUrl: string;
   workspaceName: string;
 }

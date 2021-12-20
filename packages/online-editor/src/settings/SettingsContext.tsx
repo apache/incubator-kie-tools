@@ -29,6 +29,8 @@ import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/M
 import { QueryParams } from "../navigation/Routes";
 import { KieToolingExtendedServicesStatus } from "../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
 
+export const KIE_TOOLING_EXTENDED_SERVICES_HOST_COOKIE_NAME =
+  "KOGITO-TOOLING-COOKIE__kie-tooling-extended-services--host";
 export const KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME =
   "KOGITO-TOOLING-COOKIE__kie-tooling-extended-services--port";
 const GITHUB_AUTH_TOKEN_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__github-oauth--token";
@@ -55,6 +57,17 @@ interface GithubUser {
   email: string;
 }
 
+export class ExtendedServicesConfig {
+  constructor(public readonly host: string, public readonly port: string) {}
+
+  public buildUrl(): string {
+    if (this.port.trim().length === 0) {
+      return this.host;
+    }
+    return `${this.host}:${this.port}`;
+  }
+}
+
 export interface SettingsContextType {
   isOpen: boolean;
   activeTab: SettingsTabs;
@@ -63,7 +76,7 @@ export interface SettingsContextType {
     config: OpenShiftSettingsConfig;
   };
   kieToolingExtendedServices: {
-    port: string;
+    config: ExtendedServicesConfig;
   };
   github: {
     token?: string;
@@ -87,7 +100,7 @@ export interface SettingsDispatchContextType {
     setConfig: React.Dispatch<React.SetStateAction<OpenShiftSettingsConfig>>;
   };
   kieToolingExtendedServices: {
-    setPort: React.Dispatch<React.SetStateAction<string>>;
+    setConfig: React.Dispatch<React.SetStateAction<ExtendedServicesConfig>>;
   };
   github: {
     authService: { reset: () => void; authenticate: (token: string) => Promise<void> };
@@ -204,9 +217,10 @@ export function SettingsContextProvider(props: any) {
       ? OpenShiftInstanceStatus.DISCONNECTED
       : OpenShiftInstanceStatus.UNAVAILABLE
   );
+
   const openshiftService = useMemo(
-    () => new OpenShiftService(`${kieToolingExtendedServices.baseUrl}/devsandbox`),
-    [kieToolingExtendedServices.baseUrl]
+    () => new OpenShiftService(`${kieToolingExtendedServices.config.buildUrl()}/devsandbox`),
+    [kieToolingExtendedServices.config]
   );
 
   const dispatch = useMemo(() => {
@@ -223,7 +237,7 @@ export function SettingsContextProvider(props: any) {
         octokit: githubOctokit,
       },
       kieToolingExtendedServices: {
-        setPort: kieToolingExtendedServices.saveNewPort,
+        setConfig: kieToolingExtendedServices.saveNewConfig,
       },
       general: {
         guidedTour: {
@@ -231,7 +245,7 @@ export function SettingsContextProvider(props: any) {
         },
       },
     };
-  }, [close, githubAuthService, githubOctokit, kieToolingExtendedServices.saveNewPort, open, openshiftService]);
+  }, [close, githubAuthService, githubOctokit, kieToolingExtendedServices.saveNewConfig, open, openshiftService]);
 
   const value = useMemo(() => {
     return {
@@ -248,7 +262,7 @@ export function SettingsContextProvider(props: any) {
         scopes: githubScopes,
       },
       kieToolingExtendedServices: {
-        port: kieToolingExtendedServices.port,
+        config: kieToolingExtendedServices.config,
       },
       general: {
         guidedTour: {
@@ -264,7 +278,7 @@ export function SettingsContextProvider(props: any) {
     githubUser,
     isGuidedTourEnabled,
     isOpen,
-    kieToolingExtendedServices.port,
+    kieToolingExtendedServices.config,
     openshiftConfig,
     openshiftStatus,
   ]);
