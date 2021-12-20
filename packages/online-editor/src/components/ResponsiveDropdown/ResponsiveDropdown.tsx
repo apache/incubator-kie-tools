@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Dropdown,
   DropdownGroup,
@@ -26,21 +26,7 @@ import {
   DropdownProps,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
 
-import global_breakpoint_xs from "@patternfly/react-tokens/dist/esm/global_breakpoint_xs";
-import global_breakpoint_sm from "@patternfly/react-tokens/dist/esm/global_breakpoint_sm";
-import global_breakpoint_md from "@patternfly/react-tokens/dist/esm/global_breakpoint_md";
-import global_breakpoint_lg from "@patternfly/react-tokens/dist/esm/global_breakpoint_lg";
-import global_breakpoint_xl from "@patternfly/react-tokens/dist/esm/global_breakpoint_xl";
-import global_breakpoint_2xl from "@patternfly/react-tokens/dist/esm/global_breakpoint_2xl";
-
-const breakpoints = {
-  xs: global_breakpoint_xs.value,
-  sm: global_breakpoint_sm.value,
-  md: global_breakpoint_md.value,
-  lg: global_breakpoint_lg.value,
-  xl: global_breakpoint_xl.value,
-  "2xl": global_breakpoint_2xl.value,
-};
+import useBreakpoint from "./hooks";
 
 export interface ResponsiveDropdownProps extends DropdownProps {
   /** Classes applied to root element of dropdown */
@@ -56,7 +42,13 @@ export interface ResponsiveDropdownProps extends DropdownProps {
 }
 
 export function ResponsiveDropdown(args: ResponsiveDropdownProps) {
-  console.log(breakpoints);
+  const breakpoint = useBreakpoint();
 
-  return <div></div>;
+  console.log(args.isOpen);
+
+  useEffect(() => {
+    console.log(breakpoint);
+  }, [breakpoint]);
+
+  return <div>{args.toggle}</div>;
 }

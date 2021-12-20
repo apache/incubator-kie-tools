@@ -52,19 +52,6 @@ export function OpenshiftDeploymentsDropdown() {
     settingsDispatch.open(SettingsTabs.OPENSHIFT);
   }, [settingsDispatch]);
 
-  return (
-    <ResponsiveDropdown
-      toggle={
-        <DropdownToggle
-          toggleIndicator={null}
-          onToggle={(isOpen) => dmnDevSandbox.setDeploymentsDropdownOpen(isDmnDevSandboxConnected && isOpen)}
-        >
-          <OpenshiftIcon color={!isDmnDevSandboxConnected ? "gray" : undefined} />
-        </DropdownToggle>
-      }
-    />
-  );
-
   const items = useMemo(() => {
     const common = isDmnDevSandboxConnected
       ? [
@@ -119,6 +106,38 @@ export function OpenshiftDeploymentsDropdown() {
     openOpenShiftSettings,
     settings.openshift.config.namespace,
   ]);
+
+  return (
+    <>
+      <Tooltip
+        className="kogito--editor__light-tooltip"
+        content={<div>{`You're not connected to any OpenShift instance.`}</div>}
+        trigger={!isDmnDevSandboxConnected ? "mouseenter" : ""}
+        position="auto"
+      >
+        <ResponsiveDropdown
+          position={"right"}
+          onSelect={() => dmnDevSandbox.setDeploymentsDropdownOpen(false)}
+          toggle={
+            <DropdownToggle
+              toggleIndicator={null}
+              onToggle={(isOpen) => dmnDevSandbox.setDeploymentsDropdownOpen(isDmnDevSandboxConnected && isOpen)}
+            >
+              <OpenshiftIcon color={!isDmnDevSandboxConnected ? "gray" : undefined} />
+            </DropdownToggle>
+          }
+          isOpen={dmnDevSandbox.isDeploymentsDropdownOpen}
+          isPlain={true}
+          className="kogito--editor__responsive-dropdown"
+          dropdownItems={[
+            <DropdownGroup key={"openshift-deployments-group"} label={"OpenShift deployments"}>
+              {items}
+            </DropdownGroup>,
+          ]}
+        />
+      </Tooltip>
+    </>
+  );
 
   return (
     <>
