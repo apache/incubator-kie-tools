@@ -96,4 +96,39 @@ describe("DMN Expression Editor Test", () => {
       cy.get(".expression-type").contains("Decision Table").should("be.visible");
     });
   });
+
+  // TODO - unskip once kogito-editors-java bump is available
+  it.skip("Change Decition Table from Any to Custom Data Type", () => {
+    cy.get("#upload-field").attachFile("testModelWithCustomDataType.dmn", { subjectType: "drag-n-drop" });
+
+    // wait until loading dialog disappears
+    cy.loadEditor();
+
+    // close DMN guided tour dialog
+    cy.ouiaId("dmn-guided-tour").children("button[aria-label='Close']").click();
+
+    cy.getEditor().within(() => {
+      // open decision navigator
+      cy.ouiaId("docks-item-org.kie.dmn.decision.navigator").children("button").click();
+
+      // open decision table expression
+      cy.get("li[data-i18n-prefix='DecisionNavigatorTreeView.']").within(($navigator) => {
+        cy.get("[title='Final Salary'] div span").contains("Decision Table").click();
+      });
+      // activate editor beta version
+      cy.get("[data-field='beta-boxed-expression-toggle'] [data-field='try-it']").click();
+
+      cy.get("[data-ouia-component-type='expression-column-header-cell-info']:contains('tSalary')").should("not.exist");
+
+      cy.get(".header-cell-info").contains("Final Salary").click();
+      cy.ouiaId("edit-expression-data-type").click();
+      cy.ouiaId("expression-popover-menu").within(($menu) => {
+        cy.ouiaId("tSalary").click({ force: true });
+      });
+
+      cy.get("[data-ouia-component-type='expression-column-header-cell-info']:contains('tSalary')").should(
+        "be.visible"
+      );
+    });
+  });
 });
