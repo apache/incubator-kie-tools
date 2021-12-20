@@ -8,13 +8,13 @@ import global_breakpoint_lg from "@patternfly/react-tokens/dist/esm/global_break
 import global_breakpoint_xl from "@patternfly/react-tokens/dist/esm/global_breakpoint_xl";
 import global_breakpoint_2xl from "@patternfly/react-tokens/dist/esm/global_breakpoint_2xl";
 
-export type Breakpoints = "2xl" | "xl" | "lg" | "md" | "sm" | "xs";
+export type Breakpoint = "2xl" | "xl" | "lg" | "md" | "sm" | "xs";
 
 const getPxValue = ({ value }: { value: string }) => {
   return parseInt(value.replace("px", ""), 10);
 };
 
-const breakpoints: Record<Breakpoints, number> = {
+const breakpoints: Record<Breakpoint, number> = {
   xs: getPxValue(global_breakpoint_xs),
   sm: getPxValue(global_breakpoint_sm),
   md: getPxValue(global_breakpoint_md),
@@ -22,6 +22,8 @@ const breakpoints: Record<Breakpoints, number> = {
   xl: getPxValue(global_breakpoint_xl),
   "2xl": getPxValue(global_breakpoint_2xl),
 };
+
+const breakpointOrder = Object.keys(breakpoints); // Since breakpoint keys are strings, the order is guaranteed.
 
 function throttle(func: (...args: any) => any, timeout: number) {
   let ready = true;
@@ -38,7 +40,7 @@ function throttle(func: (...args: any) => any, timeout: number) {
   };
 }
 
-const getBreakpointFromWidth = (width: number): Breakpoints => {
+const getBreakpointFromWidth = (width: number): Breakpoint => {
   if (width > breakpoints["2xl"]) {
     return "2xl";
   } else if (width > breakpoints.xl) {
@@ -53,15 +55,37 @@ const getBreakpointFromWidth = (width: number): Breakpoints => {
   return "xs";
 };
 
-const useBreakpoint = () => {
-  const [breakpoint, setBreakpoint] = useState(() => getBreakpointFromWidth(window.innerWidth));
+export function useWindowWidth() {
+  const [width, setWidth] = useState(() => window.innerWidth);
 
   useEffect(() => {
-    const calcBreakpoint = throttle(() => setBreakpoint(getBreakpointFromWidth(window.innerWidth)), 200);
-    window.addEventListener("resize", calcBreakpoint);
-    return () => window.removeEventListener("resize", calcBreakpoint);
+    const getWidth = throttle(() => setWidth(window.innerWidth), 200);
+    window.addEventListener("resize", getWidth);
+    return () => window.removeEventListener("resize", getWidth);
   }, []);
 
+  return width;
+}
+
+export function useCurrentBreakpoint() {
+  const width = useWindowWidth();
+  const [breakpoint, setBreakpoint] = useState(() => getBreakpointFromWidth(width));
+
+  useEffect(() => {
+    setBreakpoint(getBreakpointFromWidth(width));
+  }, [width]);
+
   return breakpoint;
-};
-export default useBreakpoint;
+}
+
+export function useIsAboveBreakpoint(targetBreakpoint: Breakpoint) {
+  const width = useWindowWidth();
+
+  return width >= breakpoints[targetBreakpoint];
+}
+
+export function useIsBelowBreakpoint(targetBreakpoint: Breakpoint) {
+  const width = useWindowWidth();
+
+  return width < breakpoints[targetBreakpoint];
+}

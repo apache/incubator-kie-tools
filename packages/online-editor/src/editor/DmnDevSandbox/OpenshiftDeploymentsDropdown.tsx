@@ -36,6 +36,8 @@ import { TopologyIcon } from "@patternfly/react-icons/dist/js/icons/topology-ico
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ResponsiveDropdown } from "../../components/ResponsiveDropdown/ResponsiveDropdown";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { ResponsiveDropdownToggle } from "../../components/ResponsiveDropdown/ResponsiveDropdownToggle";
 
 export function OpenshiftDeploymentsDropdown() {
   const settings = useSettings();
@@ -119,12 +121,15 @@ export function OpenshiftDeploymentsDropdown() {
           position={"right"}
           onSelect={() => dmnDevSandbox.setDeploymentsDropdownOpen(false)}
           toggle={
-            <DropdownToggle
+            <ResponsiveDropdownToggle
               toggleIndicator={null}
-              onToggle={(isOpen) => dmnDevSandbox.setDeploymentsDropdownOpen(isDmnDevSandboxConnected && isOpen)}
+              onToggle={() =>
+                dmnDevSandbox.setDeploymentsDropdownOpen((dropdownOpen) => isDmnDevSandboxConnected && !dropdownOpen)
+              }
+              className={"kogito-tooling--masthead-hoverable-dark"}
             >
               <OpenshiftIcon color={!isDmnDevSandboxConnected ? "gray" : undefined} />
-            </DropdownToggle>
+            </ResponsiveDropdownToggle>
           }
           isOpen={dmnDevSandbox.isDeploymentsDropdownOpen}
           isPlain={true}

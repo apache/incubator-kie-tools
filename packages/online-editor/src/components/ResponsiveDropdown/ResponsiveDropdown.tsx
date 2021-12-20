@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dropdown,
   DropdownGroup,
@@ -26,7 +26,9 @@ import {
   DropdownProps,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
 
-import useBreakpoint from "./hooks";
+import { useIsBelowBreakpoint, Breakpoint } from "./hooks";
+import { ResponsiveDropdownContext } from "./ResponsiveDropdownContext";
+import { ResponsiveDropdownToggle } from "./ResponsiveDropdownToggle";
 
 export interface ResponsiveDropdownProps extends DropdownProps {
   /** Classes applied to root element of dropdown */
@@ -34,21 +36,19 @@ export interface ResponsiveDropdownProps extends DropdownProps {
   /** Array of nodes that will be rendered in the dropdown Menu list */
   dropdownItems?: React.ReactNode[];
   /** Flag to indicate if dropdown is opened */
-  isOpen?: boolean;
+  isOpen: boolean;
   /** Flag indicating that the dropdown should expand to full height */
   isFullHeight?: boolean;
-  /** Indicates where menu will be aligned horizontally */
-  switchingBreakpoint?: "sm" | "md" | "lg" | "xl" | "2xl";
+  /** Breakpoint from which the dropdown should turn into a Modal */
+  switchingBreakpoint?: Breakpoint;
 }
 
 export function ResponsiveDropdown(args: ResponsiveDropdownProps) {
-  const breakpoint = useBreakpoint();
+  const isModal = useIsBelowBreakpoint(args.switchingBreakpoint || "sm");
 
-  console.log(args.isOpen);
-
-  useEffect(() => {
-    console.log(breakpoint);
-  }, [breakpoint]);
-
-  return <div>{args.toggle}</div>;
+  return (
+    <ResponsiveDropdownContext.Provider value={{ isModal }}>
+      {isModal ? <>{args.toggle}</> : <Dropdown {...args} />}
+    </ResponsiveDropdownContext.Provider>
+  );
 }
