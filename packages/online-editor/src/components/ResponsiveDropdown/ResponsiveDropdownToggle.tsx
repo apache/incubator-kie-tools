@@ -22,9 +22,7 @@ export function ResponsiveDropdownToggle(args: ResponsiveDropdownToggleProps) {
   return (
     <ResponsiveDropdownContext.Consumer>
       {({ isModal }) => {
-        if (!isModal) {
-          return <DropdownToggle {...args} />;
-        } else {
+        if (isModal) {
           return (
             <Button
               variant={ButtonVariant.plain}
@@ -34,6 +32,8 @@ export function ResponsiveDropdownToggle(args: ResponsiveDropdownToggleProps) {
               {args.children}
             </Button>
           );
+        } else {
+          return <DropdownToggle {...args} />;
         }
       }}
     </ResponsiveDropdownContext.Consumer>

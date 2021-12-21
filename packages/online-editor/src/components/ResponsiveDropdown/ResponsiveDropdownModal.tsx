@@ -1,17 +1,34 @@
 import React from "react";
-import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 
 export type ResponsiveDropdownModalProps = {
+  isOpen?: boolean;
   className?: string;
+  title?: string;
+  onClose?: () => void;
 };
 
-export function ResponsiveDropdownModal() {
+export const ResponsiveDropdownModal: React.FunctionComponent<ResponsiveDropdownModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+}) => {
   return (
-    <Modal title="Simple modal header" isOpen={isModalOpen} onClose={this.handleModalToggle}>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-      magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-      Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    <Modal
+      isOpen={isOpen ?? false}
+      onClose={onClose}
+      hasNoBodyWrapper={true}
+      variant={ModalVariant.small}
+      title={title}
+      className="kogito--editor__responsive-dropdown-modal"
+    >
+      <div
+        style={{ margin: "var(--pf-global--spacer--lg) 0 0 0" }}
+        className="kogito--editor__responsive-dropdown-container"
+      >
+        {children}
+      </div>
     </Modal>
   );
-}
+};

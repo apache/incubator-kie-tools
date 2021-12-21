@@ -633,7 +633,12 @@ section.kogito-tooling--settings-tab {
 }
 
 @media screen and (min-width: 576px) {
-  .kogito--editor__responsive-dropdown .pf-c-dropdown__menu {
+  .kogito--editor__openshift-deployments-dropdown .pf-c-dropdown__menu {
     min-width: 400px;
   }
+}
+
+.kogito--editor__responsive-dropdown-container .pf-c-dropdown__menu {
+  position: relative;
+  min-width: 100%;
 }

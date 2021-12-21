@@ -57,7 +57,6 @@ export function OpenshiftDeploymentsDropdown() {
   const items = useMemo(() => {
     const common = isDmnDevSandboxConnected
       ? [
-          <DropdownSeparator key={"dropdown-dmn-dev-sandbox-separator-deployments-1"} />,
           <DropdownItem
             key={"dropdown-dmn-dev-sandbox-setup-as"}
             component={"button"}
@@ -120,6 +119,7 @@ export function OpenshiftDeploymentsDropdown() {
         <ResponsiveDropdown
           position={"right"}
           onSelect={() => dmnDevSandbox.setDeploymentsDropdownOpen(false)}
+          onClose={() => dmnDevSandbox.setDeploymentsDropdownOpen(false)}
           toggle={
             <ResponsiveDropdownToggle
               toggleIndicator={null}
@@ -133,44 +133,9 @@ export function OpenshiftDeploymentsDropdown() {
           }
           isOpen={dmnDevSandbox.isDeploymentsDropdownOpen}
           isPlain={true}
-          className="kogito--editor__responsive-dropdown"
-          dropdownItems={[
-            <DropdownGroup key={"openshift-deployments-group"} label={"OpenShift deployments"}>
-              {items}
-            </DropdownGroup>,
-          ]}
-        />
-      </Tooltip>
-    </>
-  );
-
-  return (
-    <>
-      <Tooltip
-        className="kogito--editor__light-tooltip"
-        content={<div>{`You're not connected to any OpenShift instance.`}</div>}
-        trigger={!isDmnDevSandboxConnected ? "mouseenter" : ""}
-        position="auto"
-      >
-        <Dropdown
-          position={"right"}
-          onSelect={() => dmnDevSandbox.setDeploymentsDropdownOpen(false)}
-          toggle={
-            <DropdownToggle
-              toggleIndicator={null}
-              onToggle={(isOpen) => dmnDevSandbox.setDeploymentsDropdownOpen(isDmnDevSandboxConnected && isOpen)}
-            >
-              <OpenshiftIcon color={!isDmnDevSandboxConnected ? "gray" : undefined} />
-            </DropdownToggle>
-          }
-          isOpen={dmnDevSandbox.isDeploymentsDropdownOpen}
-          isPlain={true}
-          className="kogito--editor__responsive-dropdown"
-          dropdownItems={[
-            <DropdownGroup key={"openshift-deployments-group"} label={"OpenShift deployments"}>
-              {items}
-            </DropdownGroup>,
-          ]}
+          className="kogito--editor__openshift-deployments-dropdown"
+          title="OpenShift deployments"
+          dropdownItems={items}
         />
       </Tooltip>
     </>

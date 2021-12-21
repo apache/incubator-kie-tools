@@ -14,33 +14,27 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Dropdown,
-  DropdownGroup,
+  DropdownProps,
   DropdownItem,
   DropdownSeparator,
-  DropdownToggle,
-  DropdownPosition,
-  DropdownDirection,
-  DropdownProps,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
 
 import { useIsBelowBreakpoint, Breakpoint } from "./hooks";
 import { ResponsiveDropdownContext } from "./ResponsiveDropdownContext";
-import { ResponsiveDropdownToggle } from "./ResponsiveDropdownToggle";
+import { ResponsiveDropdownModal } from "./ResponsiveDropdownModal";
 
 export interface ResponsiveDropdownProps extends DropdownProps {
-  /** Classes applied to root element of dropdown */
-  className?: string;
   /** Array of nodes that will be rendered in the dropdown Menu list */
   dropdownItems?: React.ReactNode[];
-  /** Flag to indicate if dropdown is opened */
-  isOpen: boolean;
-  /** Flag indicating that the dropdown should expand to full height */
-  isFullHeight?: boolean;
   /** Breakpoint from which the dropdown should turn into a Modal */
   switchingBreakpoint?: Breakpoint;
+  /** Function callback to close the dropdown */
+  onClose?: () => void;
+  /** Dropdown/Modal title */
+  title: string;
 }
 
 export function ResponsiveDropdown(args: ResponsiveDropdownProps) {
@@ -48,7 +42,27 @@ export function ResponsiveDropdown(args: ResponsiveDropdownProps) {
 
   return (
     <ResponsiveDropdownContext.Provider value={{ isModal }}>
-      {isModal ? <>{args.toggle}</> : <Dropdown {...args} />}
+      {isModal ? (
+        <>
+          {args.toggle}
+          <ResponsiveDropdownModal isOpen={args.isOpen} onClose={() => args.onClose?.()} title={args.title}>
+            <Dropdown {...args} isOpen={true} isFullHeight={true} toggle={<></>} style={{ width: "100%" }} />
+          </ResponsiveDropdownModal>
+        </>
+      ) : (
+        <Dropdown
+          {...args}
+          dropdownItems={[
+            <>
+              <DropdownItem isDisabled key="responsive-dropdown-title">
+                {args.title}
+              </DropdownItem>
+              <DropdownSeparator key="responsive-dropdown-separator" />
+              {args.dropdownItems}
+            </>,
+          ]}
+        />
+      )}
     </ResponsiveDropdownContext.Provider>
   );
 }
