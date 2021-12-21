@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@kie-tooling-core/editor": "0.0.0",
-    "@kie-tooling-core/monaco-editor": "0.0.0",
     "@kie-tooling-core/patternfly-base": "0.0.0",
+    "monaco-editor": "^0.23.0",
     "mermaid": "^8.13.4"
   },
   "scripts": {
@@ -36,7 +36,8 @@
   },
   "devDependencies": {
     "@kogito-tooling/build-env": "0.0.0",
-    "@types/mermaid": "^8.2.7"
+    "@types/mermaid": "^8.2.7",
+    "monaco-editor-webpack-plugin": "^3.0.0"
   },
   "babel": {
     "presets": [

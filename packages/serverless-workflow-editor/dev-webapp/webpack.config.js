@@ -20,6 +20,7 @@ const { merge } = require("webpack-merge");
 const common = require("../../../config/webpack.common.config");
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const buildEnv = require("@kogito-tooling/build-env");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const webpack = require("webpack");
 
 module.exports = (env) =>
@@ -39,6 +40,12 @@ module.exports = (env) =>
           { from: path.resolve(__dirname, "./static/favicon.ico"), to: "./favicon.ico" },
           { from: path.resolve(__dirname, "../static/images"), to: "./images" },
         ],
+      }),
+      new MonacoWebpackPlugin({
+        languages: ["json", "yaml"],
+      }),
+      new webpack.ProvidePlugin({
+        mermaid: "mermaid",
       }),
     ],
     module: {
