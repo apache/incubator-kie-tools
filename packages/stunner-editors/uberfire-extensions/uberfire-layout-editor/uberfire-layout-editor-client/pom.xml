@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.kie.kogito</groupId>
     <artifactId>uberfire-layout-editor</artifactId>
-    <version>8.5.4-SNAPSHOT</version>
+    <version>0.0.0</version>
   </parent>
 
   <artifactId>uberfire-layout-editor-client</artifactId>

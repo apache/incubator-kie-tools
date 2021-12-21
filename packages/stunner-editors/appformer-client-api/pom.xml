@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.kie.kogito</groupId>
     <artifactId>kogito-editors-java</artifactId>
-    <version>8.5.4-SNAPSHOT</version>
+    <version>0.0.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
