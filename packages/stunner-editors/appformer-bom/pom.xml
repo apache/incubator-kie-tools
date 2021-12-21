@@ -40,9 +40,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:kiegroup/kogito-editors-java.git</connection>
-    <developerConnection>scm:git:git@github.com:kiegroup/kogito-editors-java.git</developerConnection>
-    <url>scm:git:git@github.com:kiegroup/kogito-editors-java.git</url>
+    <connection>scm:git:git@github.com:kiegroup/kogito-tooling.git</connection>
+    <developerConnection>scm:git:git@github.com:kiegroup/kogito-tooling.git</developerConnection>
+    <url>scm:git:git@github.com:kiegroup/kogito-tooling.git</url>
   </scm>
 
   <developers>

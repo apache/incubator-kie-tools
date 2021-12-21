@@ -10,7 +10,7 @@ Various complementary documents related to Stunner development and functionality
 
 To compile all Stunner components and install to your local Maven repository, issue the following commands:
 
-    cd kogito-editors-java/kie-wb-common-stunner/
+    cd kogito-tooling/packages/stunner-editors/kie-wb-common-stunner/
     mvn clean install -DskipTests
 
 ## Running the Application
@@ -79,9 +79,9 @@ Change the _inotify_ limits configuration as noted below to avoid further issues
 
 **Before Working with the IDE**
 
-Prior to importing the project into the IDE, assuming [kogito-editors-java](../) has already been cloned locally, navigate to that directory and issue the following command:
+Prior to importing the project into the IDE, assuming [kogito-tooling](../) has already been cloned locally, navigate to that directory and issue the following command:
 
-        cd kogito-editors-java/
+        cd kogito-tooling/packages/stunner-editors
         mvn clean install -DskipTests
 
 **IDEA Environment Setup**
@@ -91,7 +91,7 @@ If you have not run the step from **Before Working with the IDE** above, do so b
 **_Importing the project into IDEA_**
 
 1. From the header menu, select **File** --> **New** --> **Project from Existing Sources...**
-2. Using the directory tree, navigate to and select the **pom.xml** file within the **kogito-editors-java/kie-wb-common-stunner** directory and hit **OK**.
+2. Using the directory tree, navigate to and select the **pom.xml** file within the **kogito-tooling/packages/stunner-editors/kie-wb-common-stunner** directory and hit **OK**.
 3. At the bottom of the new dialog box, click the **Environment Settings...** button.
 4. Use the '**...**' button next to the **Maven home directory** field to locate and select your local Maven (3.3.9+) installation, rather than the "Bundled" prefilled value.
 5. Select **OK** to close the Maven environment popup dialog.
@@ -183,7 +183,7 @@ The following assumes that the Standalone Showcase will be utilized. Some eviden
         -XX:CompileThreshold=7000
         -Djava.util.prefs.syncInterval=200000
         -Dorg.uberfire.nio.git.dir=/tmp/project/dir
-        -Derrai.jboss.home=/[YOUR_DIR_LOCATION]/kogito-editors-java/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/wildfly-14.0.1.Final
+        -Derrai.jboss.home=/[YOUR_DIR_LOCATION]/kogito-tooling/packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/wildfly-14.0.1.Final
 
 8.  Change _Dev Mode parameters_ to the following:
 
@@ -192,7 +192,7 @@ The following assumes that the Standalone Showcase will be utilized. Some eviden
 9.  Ensure that the _with JavaScript debugger_ checkbox is **NOT** checked, as Chrome debugger will be used instead.
 10. Under _Before launch_, click the plus (+) sign.
 11. Select _Run Maven Goal_.
-12. Change the working directory to /[YOUR_DIR_LOCATION]/kogito-editors-java/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/.
+12. Change the working directory to /[YOUR_DIR_LOCATION]/kogito-tooling/packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/.
 13. Change _Command line_ value to 'clean process-resources', then hit _OK_.
 14. Select the newly added Maven entry in the _Before launch_ section, then click the UP arrow underneath so that it moves **above** the _Make_ entry.
 15. Click _Apply_ and/or _OK_.

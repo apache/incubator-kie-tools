@@ -6,7 +6,7 @@ the [Stunner directory README documentation](../../../).
 ## Building
 
 - Before building this webapp, you should build the whole of the Stunner project before
-  - change to the `kogito-editors-java/kie-wb-common-stunner` root folder
+  - change to the `kogito-tooling/packages/stunner-editors/kie-wb-common-stunner` root folder
   - run `mvn clean install -DskipTests -Dgwt.compiler.skip=true`
 - Build the webapp:
   - Production: `mvn -T 8C clean install -DskipTests=true`

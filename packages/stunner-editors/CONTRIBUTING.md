@@ -36,7 +36,7 @@ To contribute, use GitHub Pull Requests, from your **own** fork.
 
 ### Java Coding Guidelines
 
-We decided to disallow `@author` tags in the Javadoc: they are hard to maintain, especially in a very active project, and we use the Git history to track authorship. GitHub also has [this nice page with your contributions](https://github.com/kiegroup/kogito-editors-java/graphs/contributors).
+We decided to disallow `@author` tags in the Javadoc: they are hard to maintain, especially in a very active project, and we use the Git history to track authorship. GitHub also has [this nice page with your contributions](https://github.com/kiegroup/kogito-tooling/graphs/contributors).
 
 It is strongly recommended that you import [our code style](https://github.com/kiegroup/droolsjbpm-build-bootstrap/tree/main/ide-configuration) if you use IntelliJ or Eclipse.
 
@@ -84,7 +84,7 @@ Any dependency used in any KIE project must fulfill these hard requirements:
 
 Any dependency used in any KOGITO projects should fulfill these soft requirements:
 
-- Dependencies in subprojects should avoid overwriting the dependency versions of `kogito-editors-java` if there is no special case or need for that.
+- Dependencies in subprojects should avoid overwriting the dependency versions of `kogito-tooling` if there is no special case or need for that.
 
 - Only use dependencies with **an active community**.
 
@@ -131,8 +131,8 @@ If you have not done so on this machine, you need to:
 - Clone the repository, navigate to the directory, invoke `mvn clean install -DskipTests` from the root directory.
 
 ```bash
-git clone https://github.com/kiegroup/kogito-editors-java.git
-cd kogito-editors-java
+git clone https://github.com/kiegroup/kogito-toolig.git
+cd kogito-tooling/packages/stunner-editors
 mvn clean install -DskipTests
 # Wait... success!
 ```

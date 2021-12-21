@@ -48,9 +48,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:kiegroup/kogito-editors-java.git</connection>
-    <developerConnection>scm:git:git@github.com:kiegroup/kogito-editors-java.git</developerConnection>
-    <url>scm:git:git@github.com:kiegroup/kogito-editors-java.git</url>
+    <connection>scm:git:git@github.com:kiegroup/kogito-tooling.git</connection>
+    <developerConnection>scm:git:git@github.com:kiegroup/kogito-tooling.git</developerConnection>
+    <url>scm:git:git@github.com:kiegroup/kogito-tooling.git</url>
   </scm>
 
   <developers>
@@ -769,7 +769,7 @@
                         as transitive dependency as well. -->
                       <ignoreClass>org.joda.time.*</ignoreClass>
                       <!-- Classes bundled in errai-javax-enterprise which are GWT friendly.
-                           See https://github.com/kiegroup/kogito-editors-java/blob/main/errai-javax-enterprise/README -->
+                           See https://github.com/kiegroup/kogito-tooling/blob/main/packages/stunner-editors/errai-javax-enterprise/README -->
                       <ignoreClass>javax.interceptor.InvocationContext</ignoreClass>
                       <ignoreClass>javax.inject.Provider</ignoreClass>
                       <ignoreClass>javax.inject.Named</ignoreClass>
