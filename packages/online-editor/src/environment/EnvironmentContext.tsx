@@ -17,13 +17,15 @@
 import * as React from "react";
 import { useContext } from "react";
 
-type EnvironmentVariableNames = "KIE_TOOLING_EXTENDED_SERVICES_HOST" | "KIE_TOOLING_EXTENDED_SERVICES_PORT";
+type EnvironmentVariableNames = "KIE_TOOLING_EXTENDED_SERVICES_URL";
 
 export type EnvironmentVariables = Record<EnvironmentVariableNames, string>;
 
+export const DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_HOST = "http://localhost";
+export const DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_PORT = "21345";
+
 export const DEFAULT_ENVIRONMENT_VARIABLES: EnvironmentVariables = {
-  KIE_TOOLING_EXTENDED_SERVICES_HOST: "http://localhost",
-  KIE_TOOLING_EXTENDED_SERVICES_PORT: "21345",
+  KIE_TOOLING_EXTENDED_SERVICES_URL: `${DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_HOST}:${DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_PORT}`,
 };
 
 export interface EnvironmentContextType {

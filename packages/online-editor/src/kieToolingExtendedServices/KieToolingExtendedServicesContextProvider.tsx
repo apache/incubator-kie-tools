@@ -26,7 +26,11 @@ import {
   KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME,
 } from "../settings/SettingsContext";
 import { KieToolingExtendedServicesModal } from "./KieToolingExtendedServicesModal";
-import { useEnvironment } from "../environment/EnvironmentContext";
+import {
+  DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_HOST,
+  DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_PORT,
+  useEnvironment,
+} from "../environment/EnvironmentContext";
 
 interface Props {
   children: React.ReactNode;
@@ -41,10 +45,7 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
   const [installTriggeredBy, setInstallTriggeredBy] = useState<DependentFeature | undefined>(undefined);
   const [outdated, setOutdated] = useState(false);
   const [config, setConfig] = useState(
-    new ExtendedServicesConfig(
-      environment.variables.KIE_TOOLING_EXTENDED_SERVICES_HOST,
-      environment.variables.KIE_TOOLING_EXTENDED_SERVICES_PORT
-    )
+    new ExtendedServicesConfig(DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_HOST, DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_PORT)
   );
   const bridge = useMemo(() => new KieToolingExtendedServicesBridge(config.buildUrl()), [config]);
   const version = useMemo(
@@ -59,17 +60,20 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
   }, []);
 
   useEffect(() => {
-    const host =
-      getCookie(KIE_TOOLING_EXTENDED_SERVICES_HOST_COOKIE_NAME) ??
-      environment.variables.KIE_TOOLING_EXTENDED_SERVICES_HOST;
-    const port =
-      getCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME) ??
-      environment.variables.KIE_TOOLING_EXTENDED_SERVICES_PORT;
+    let envHost = DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_HOST;
+    let envPort = DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_PORT;
+    try {
+      const envUrl = new URL(environment.variables.KIE_TOOLING_EXTENDED_SERVICES_URL);
+      envHost = `${envUrl.protocol}//${envUrl.hostname}`;
+      envPort = envUrl.port;
+    } catch (e) {
+      console.error("Invalid KIE_TOOLING_EXTENDED_SERVICES_URL", e);
+    }
 
-    const sanitizedHost = host.replace(/\/+$/, "").trim();
-    const sanitizedPort = port.trim();
+    const host = getCookie(KIE_TOOLING_EXTENDED_SERVICES_HOST_COOKIE_NAME) ?? envHost;
+    const port = getCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? envPort;
 
-    const newConfig = new ExtendedServicesConfig(sanitizedHost, sanitizedPort);
+    const newConfig = new ExtendedServicesConfig(host, port);
     setConfig(newConfig);
 
     new KieToolingExtendedServicesBridge(newConfig.buildUrl()).check().then((checked) => {
@@ -77,11 +81,7 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
         saveNewConfig(newConfig);
       }
     });
-  }, [
-    environment.variables.KIE_TOOLING_EXTENDED_SERVICES_HOST,
-    environment.variables.KIE_TOOLING_EXTENDED_SERVICES_PORT,
-    saveNewConfig,
-  ]);
+  }, [environment.variables.KIE_TOOLING_EXTENDED_SERVICES_URL, saveNewConfig]);
 
   useEffect(() => {
     // Pooling to detect either if KieToolingExtendedServices is running or has stopped

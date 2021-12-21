@@ -44,7 +44,6 @@ import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExt
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 import { useRoutes } from "../navigation/Hooks";
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
-import { useEnvironment } from "../environment/EnvironmentContext";
 
 enum ModalPage {
   INITIAL,
@@ -862,14 +861,13 @@ function KieToolingExtendedServicesWizardFooter(props: WizardImperativeControlPr
 function KieToolingExtendedServicesPortForm() {
   const { config, saveNewConfig } = useKieToolingExtendedServices();
   const { i18n } = useOnlineI18n();
-  const environment = useEnvironment();
 
   return (
     <>
       <Text component={TextVariants.p}>
         <I18nWrapped
           components={{
-            port: <Text className={"kogito--code"}>{environment.variables.KIE_TOOLING_EXTENDED_SERVICES_PORT}</Text>,
+            port: <Text className={"kogito--code"}>{config.port}</Text>,
           }}
         >
           {i18n.dmnRunner.modal.wizard.advancedSettings.title}
@@ -890,9 +888,7 @@ function KieToolingExtendedServicesPortForm() {
           <TextInput
             value={config.port}
             type={"number"}
-            onChange={(value) =>
-              saveNewConfig(new ExtendedServicesConfig(environment.variables.KIE_TOOLING_EXTENDED_SERVICES_HOST, value))
-            }
+            onChange={(value) => saveNewConfig(new ExtendedServicesConfig(config.host, value))}
           />
         </FormGroup>
       </Form>
