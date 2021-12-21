@@ -16,7 +16,7 @@
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.kie.kogito</groupId>
+  <groupId>org.kie.kogito.stunner.editors</groupId>
   <artifactId>drools-wb-bom</artifactId>
   <version>0.0.0</version>
   <packaging>pom</packaging>
@@ -79,49 +79,49 @@
     <dependencies>
       <!-- drools-wb internal modules -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>drools-wb-screens</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>drools-wb-scenario-simulation-editor</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>drools-wb-scenario-simulation-editor-api</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>drools-wb-scenario-simulation-editor-client</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>drools-wb-scenario-simulation-editor-kogito-client</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>drools-wb-scenario-simulation-editor-kogito-marshaller</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>drools-wb-scenario-simulation-editor-kogito-runtime</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>drools-wb-scenario-simulation-editor-kogito-testing</artifactId>
         <version>${project.version}</version>
       </dependency>

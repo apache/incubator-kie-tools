@@ -18,7 +18,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
     <artifactId>kie-wb-common-dmn</artifactId>
     <version>0.0.0</version>
   </parent>
@@ -42,52 +42,52 @@
 
     <!-- Stunner -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-core-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-core-common</artifactId>
     </dependency>
 
     <!-- Required to generate the DefinitionSet adaptors -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-processors</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-forms-api</artifactId>
     </dependency>
 
     <!-- Form Modeler API -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-forms-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-forms-adf-base</artifactId>
     </dependency>
 
     <!-- Required to generate the Properties Panel form adaptors -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-forms-adf-processors</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-dynamic-forms-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-forms-fields</artifactId>
     </dependency>
 
@@ -95,12 +95,12 @@
 
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-ioc</artifactId>
       <exclusions>
         <exclusion>
@@ -111,12 +111,12 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-data-binding</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-ui</artifactId>
       <exclusions>
         <exclusion>
@@ -128,7 +128,7 @@
 
     <!-- Uberfire -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>
 

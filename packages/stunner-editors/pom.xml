@@ -24,8 +24,8 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.kie.kogito</groupId>
-  <artifactId>kogito-editors-java</artifactId>
+  <groupId>org.kie.kogito.stunner.editors</groupId>
+  <artifactId>stunner-editors-parent</artifactId>
   <version>0.0.0</version>
   <packaging>pom</packaging>
 
@@ -287,7 +287,7 @@
 
       <!-- All errai's modules and third-party versions are defined in this POM -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
@@ -296,7 +296,7 @@
 
       <!-- All appformer's modules and third-party versions are defined in this POM -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>appformer-bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
@@ -305,7 +305,7 @@
 
       <!-- All kie-wb-common's modules and third-party versions are defined in this POM -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>kie-wb-common-bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
@@ -314,7 +314,7 @@
 
       <!-- All drools-wb's modules and third-party versions are defined in this POM -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>drools-wb-bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
@@ -323,23 +323,23 @@
 
       <!-- Lienzo artifacts for kogito stream -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>lienzo-core</artifactId>
         <version>${version.org.kie.kogito.lienzo}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>lienzo-core</artifactId>
         <version>${version.org.kie.kogito.lienzo}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>lienzo-tests</artifactId>
         <version>${version.org.kie.kogito.lienzo}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>lienzo-tests</artifactId>
         <version>${version.org.kie.kogito.lienzo}</version>
         <classifier>sources</classifier>

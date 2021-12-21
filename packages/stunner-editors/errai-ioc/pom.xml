@@ -9,8 +9,8 @@
 
   <!-- Parent -->
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-editors-java</artifactId>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <artifactId>stunner-editors-parent</artifactId>
     <version>0.0.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
@@ -51,17 +51,17 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-config</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-codegen</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-codegen-gwt</artifactId>
     </dependency>
 
@@ -87,7 +87,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -168,7 +168,7 @@
         </dependency>
 
         <dependency>
-          <groupId>org.kie.kogito</groupId>
+          <groupId>org.kie.kogito.stunner.editors</groupId>
           <artifactId>errai-codegen</artifactId>
           <exclusions>
             <exclusion>

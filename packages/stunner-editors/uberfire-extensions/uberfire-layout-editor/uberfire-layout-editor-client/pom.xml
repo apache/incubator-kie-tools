@@ -20,7 +20,7 @@
     xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
     <artifactId>uberfire-layout-editor</artifactId>
     <version>0.0.0</version>
   </parent>
@@ -33,17 +33,17 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>uberfire-commons-editor-client</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-ioc</artifactId>
       <exclusions>
         <exclusion>
@@ -53,7 +53,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-ui</artifactId>
       <exclusions>
         <exclusion>
@@ -68,7 +68,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>uberfire-layout-editor-api</artifactId>
     </dependency>
 
@@ -89,16 +89,16 @@
       <artifactId>cdi-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>uberfire-client-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>
     <dependency>
@@ -106,11 +106,11 @@
       <artifactId>gwtbootstrap3</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>uberfire-widgets-core-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>uberfire-widgets-commons</artifactId>
     </dependency>
 

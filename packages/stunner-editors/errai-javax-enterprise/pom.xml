@@ -6,15 +6,15 @@
     <artifactId>errai-javax-enterprise</artifactId>
 
     <parent>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-editors-java</artifactId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
+        <artifactId>stunner-editors-parent</artifactId>
         <version>0.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
+            <groupId>org.kie.kogito.stunner.editors</groupId>
             <artifactId>errai-codegen</artifactId>
         </dependency>
     </dependencies>

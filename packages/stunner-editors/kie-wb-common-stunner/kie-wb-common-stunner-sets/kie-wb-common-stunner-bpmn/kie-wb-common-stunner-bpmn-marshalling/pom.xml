@@ -20,7 +20,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>kie-wb-common-stunner-bpmn</artifactId>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
     <version>0.0.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -45,37 +45,37 @@
     <!-- Stunner. -->
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-core-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-client-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-core-common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-shapes-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-forms-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-bpmn-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-bpmn-client</artifactId>
     </dependency>
 
@@ -94,22 +94,22 @@
 
     <!-- Uberfire & Errai. -->
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-ioc</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-data-binding</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>
 
@@ -121,19 +121,19 @@
     <!-- Kogito -->
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-kogito-client</artifactId>
       <!-- TODO: Kogito - need to check why this transitive dependency-->
       <exclusions>
         <exclusion>
-          <groupId>org.kie.kogito</groupId>
+          <groupId>org.kie.kogito.stunner.editors</groupId>
           <artifactId>kie-wb-common-stunner-backend-api</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-bpmn-emf</artifactId>
     </dependency>
 
@@ -188,7 +188,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-stunner-core-api</artifactId>
       <classifier>sources</classifier>
       <scope>test</scope>

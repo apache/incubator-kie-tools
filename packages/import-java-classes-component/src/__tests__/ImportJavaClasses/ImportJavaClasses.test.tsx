@@ -162,7 +162,7 @@ describe("ImportJavaClasses component tests", () => {
     let checkSecondElement = baseElement.querySelector('[aria-labelledby="com.Author"]')! as HTMLInputElement;
     expect(checkSecondElement).toBeInTheDocument();
     expect(checkSecondElement).not.toBeChecked();
-    let checkThirdElement = baseElement.querySelector('[aria-labelledby="com.Test"]')! as HTMLInputElement;
+    const checkThirdElement = baseElement.querySelector('[aria-labelledby="com.Test"]')! as HTMLInputElement;
     if (hasThirdElement) {
       expect(checkThirdElement).toBeInTheDocument();
       expect(checkThirdElement).not.toBeChecked();

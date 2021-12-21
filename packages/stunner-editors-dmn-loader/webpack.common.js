@@ -15,13 +15,13 @@
  */
 
 const path = require("path");
+const buildEnv = require("@kogito-tooling/build-env");
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const commonConfig = (name, devMode, options = {}) => {
-  const wire = process.env["wire"];
-  const outputDir = path.resolve(__dirname, wire ? `${wire}` : "dist");
-  const upperCasedName = name.toUpperCase().replace(/\-/g, "_");
+const commonConfig = (devMode, options = {}) => {
+  const wirePath = buildEnv.stunnerEditors.dmnLoader.wirePath;
+  console.info(`Stunner Editors :: DMN Loader :: Wire path: '${wirePath}'`);
 
   return {
     entry: "./src/index.tsx",
@@ -29,23 +29,21 @@ const commonConfig = (name, devMode, options = {}) => {
     target: "web",
 
     output: {
-      path: outputDir,
-      filename: `${name}.js`,
+      path: path.resolve(__dirname, wirePath),
+      filename: `dmn-loader.js`,
       library: {
         type: "umd",
-        name: `__KIE__${upperCasedName}__`,
+        name: `__KIE__DMN_LOADER__`,
       },
     },
 
-    externals: [/^react.*/, /^@patternfly\/.+$/i],
-
     plugins: [
       new MiniCssExtractPlugin({
-        filename: `${name}.css`,
-        chunkFilename: `${name}.[id].css]`,
+        filename: `dmn-loader.css`,
+        chunkFilename: `dmn-loader.[id].css]`,
       }),
       new webpack.DefinePlugin({
-        __IS_WIRED__: JSON.stringify(!!wire),
+        __IS_WIRED__: JSON.stringify(wirePath !== buildEnv.vars().ENV_VARS.DMN_LOADER__wirePath.default),
       }),
       new webpack.optimize.LimitChunkCountPlugin({
         maxChunks: 1,
@@ -61,7 +59,7 @@ const commonConfig = (name, devMode, options = {}) => {
             configFile: path.resolve("./tsconfig.json"),
             compilerOptions: {
               declaration: true,
-              outDir: path.resolve(outputDir, `${name}`),
+              outDir: path.resolve(path.resolve(__dirname, wirePath), `dmn-loader`),
             },
           },
         },

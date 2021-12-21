@@ -9,8 +9,8 @@
   <url>http://jboss.org/errai/errai</url>
 
   <parent>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-editors-java</artifactId>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <artifactId>stunner-editors-parent</artifactId>
     <version>0.0.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>

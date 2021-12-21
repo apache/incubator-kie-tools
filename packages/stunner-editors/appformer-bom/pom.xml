@@ -16,7 +16,7 @@
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.kie.kogito</groupId>
+  <groupId>org.kie.kogito.stunner.editors</groupId>
   <artifactId>appformer-bom</artifactId>
   <version>0.0.0</version>
   <packaging>pom</packaging>
@@ -78,177 +78,177 @@
     <dependencies>
       <!-- appformer internal modules -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>appformer-client-api</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>appformer-js-monaco</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>appformer-kogito-bridge</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>appformer-kogito-bridge</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-api</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-client-api</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-extensions</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-commons-editor</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-commons-editor-api</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-commons-editor-client</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-layout-editor</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-layout-editor-api</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-layout-editor-client</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-simple-docks</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-simple-docks-client</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-widgets</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-widgets-commons</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-widgets-core</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-widgets-core-client</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-widgets-table</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-wires</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-wires-core</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-wires-core-grids</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-wires-grids</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-workbench</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-workbench-client</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>uberfire-workbench-processors</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <!-- 3rd-party dependencies -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-cdi-client</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -458,20 +458,20 @@
 
       <!-- KIE Lienzo modules -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>lienzo-core</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>lienzo-core</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>lienzo-tests</artifactId>
         <version>${project.version}</version>
       </dependency>

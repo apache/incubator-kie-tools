@@ -3,7 +3,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.kie.kogito</groupId>
+  <groupId>org.kie.kogito.stunner.editors</groupId>
   <artifactId>errai-bom</artifactId>
   <version>0.0.0</version>
   <packaging>pom</packaging>
@@ -171,100 +171,100 @@
     <dependencies>
       <!-- errai internal modules -->
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-cdi-client</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-cdi-shared</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-cdi-client</artifactId>
         <type>test-jar</type>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-codegen</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-codegen-gwt</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-codegen</artifactId>
         <type>test-jar</type>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-common</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-config</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-data-binding</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-ioc</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-ioc</artifactId>
         <type>test-jar</type>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-javax-enterprise</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-ui</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-validation</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>reflections</artifactId>
         <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito</groupId>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>errai-api</artifactId>
         <version>${project.version}</version>
       </dependency>

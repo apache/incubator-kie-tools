@@ -5,7 +5,7 @@
   "private": true,
   "license": "Apache-2.0",
   "main": "index.js",
-  "types": "index.d.js",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-tooling.git"

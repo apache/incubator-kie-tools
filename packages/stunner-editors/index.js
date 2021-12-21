@@ -17,11 +17,9 @@
 const nodePath = require("path");
 const nodeFs = require("fs");
 
-const stunnerEditorsPath = nodePath.dirname(require.resolve("@kogito-tooling/stunner-editors"));
-
 module.exports = {
   dmnEditorPath: () => {
-    const path = nodePath.resolve(stunnerEditorsPath, "dist", "dmn");
+    const path = nodePath.resolve(__dirname, "dist", "dmn");
 
     if (!nodeFs.existsSync(path)) {
       throw new Error(`Stunner Editors :: DMN Editor path doesn't exist: ${path}`);
@@ -33,7 +31,7 @@ module.exports = {
   },
 
   bpmnEditorPath: () => {
-    const path = nodePath.resolve(stunnerEditorsPath, "dist", "bpmn");
+    const path = nodePath.resolve(__dirname, "dist", "bpmn");
 
     if (!nodeFs.existsSync(path)) {
       throw new Error(`Stunner Editors :: BPMN Editor path doesn't exist: ${path}`);
@@ -45,7 +43,7 @@ module.exports = {
   },
 
   scesimEditorPath: () => {
-    const path = nodePath.resolve(stunnerEditorsPath, "dist", "scesim");
+    const path = nodePath.resolve(__dirname, "dist", "scesim");
 
     if (!nodeFs.existsSync(path)) {
       throw new Error(`Stunner Editors :: SceSim Editor path doesn't exist: ${path}`);

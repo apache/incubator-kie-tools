@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-const { developmentConfig } = require("./webpack.common.development");
+const { commonConfig } = require("./webpack.common");
 
-module.exports = [
-  developmentConfig("dmn-loader", {
-    externals: [],
-  }),
-];
+module.exports = commonConfig(true, {
+  mode: "development",
+  externals: [],
+});

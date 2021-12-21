@@ -7,7 +7,7 @@
 add:
 
     <dependency>
-         <groupId>org.kie.kogito</groupId>
+         <groupId>org.kie.kogito.stunner.editors</groupId>
          <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
          <scope>provided</scope>
     </dependency>
@@ -39,12 +39,12 @@ _org.kie.workbench.common.dmn.webapp.kogito.common.backend.IOServiceNio2WrapperP
 add:
 
      <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
       <classifier>sources</classifier>
     </dependency>

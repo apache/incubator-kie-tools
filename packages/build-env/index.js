@@ -228,6 +228,11 @@ const ENV_VARS = {
     default: "latest",
     description: "",
   },
+  DMN_LOADER__wirePath: {
+    name: "DMN_LOADER__wirePath",
+    default: "dist",
+    description: "Directory path used to output build artifacts of stunner-editors-dmn-loader",
+  },
 };
 
 module.exports = {
@@ -360,6 +365,12 @@ module.exports = {
     },
     webapp: {
       port: 9100,
+    },
+  },
+
+  stunnerEditors: {
+    dmnLoader: {
+      wirePath: getOrDefault(ENV_VARS.DMN_LOADER__wirePath),
     },
   },
 

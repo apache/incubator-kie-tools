@@ -14,10 +14,25 @@
  * limitations under the License.
  */
 
-const { productionConfig } = require("./webpack.common.production");
+const { commonConfig } = require("./webpack.common");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
-module.exports = [
-  productionConfig("dmn-loader", {
-    externals: [],
-  }),
-];
+module.exports = commonConfig(false, {
+  mode: "production",
+  externals: [],
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          format: {
+            comments: false,
+          },
+        },
+        extractComments: false,
+      }),
+      new CssMinimizerPlugin(),
+    ],
+  },
+});

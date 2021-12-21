@@ -19,7 +19,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
     <artifactId>uberfire-workbench</artifactId>
     <version>0.0.0</version>
   </parent>
