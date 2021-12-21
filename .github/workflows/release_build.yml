@@ -182,7 +182,7 @@ jobs:
       - name: "Build"
         working-directory: ${{ github.workspace }}/kogito-tooling
         run: |
-          lerna run build:prod --scope=@kogito-tooling/kie_sandbox_image --include-dependencies --stream
+          lerna run build:prod --scope=@kogito-tooling/kie-sandbox-image --include-dependencies --stream
 
       - name: "Push kie_sandbox_image to quay.io"
         if: ${{ !inputs.dry_run }}
@@ -221,7 +221,7 @@ jobs:
       - name: "Build"
         working-directory: ${{ github.workspace }}/kogito-tooling
         run: |
-          lerna run build:prod --scope=@kogito-tooling/kie_tooling_extended_services_image --include-dependencies --stream
+          lerna run build:prod --scope=@kogito-tooling/kie-tooling-extended-services-image --include-dependencies --stream
 
       - name: "Push kie_tooling_extended_services_image to quay.io"
         if: ${{ !inputs.dry_run }}
