@@ -10,7 +10,7 @@
   "scripts": {
     "env:print": "build-env --print-env",
     "env:vars": "build-env --print-vars",
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "yarn",
     "build:dev": "lerna run build:dev --stream",
     "build:prod": "lerna run build:prod --stream",
     "build:productization": "lerna run build:prod --scope=@kogito-tooling/kie-editors-standalone --include-filtered-dependencies --stream",
