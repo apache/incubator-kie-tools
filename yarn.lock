@@ -5368,12 +5368,12 @@ boolean@^3.0.1:
   resolved "https://registry.yarnpkg.com/boolean/-/boolean-3.0.4.tgz#aa1df8749af41d7211b66b4eee584722ff428c27"
   integrity sha512-5pyOr+w2LNN72F2mAq6J0ckHUfJYSgRKma7e/wlcMMhgOLV9OI0ERhERYXxUqo+dPyVxcbXKy9n+wg13+LpNnA==
 
-boxed-expression-component@0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/boxed-expression-component/-/boxed-expression-component-0.0.0.tgz#8f3d0b60a1093d33a3b9c1ae1dd9f033edb9f8e0"
-  integrity sha512-YDXsPoYdpqnQBwzQHjHvoXHbv9125EbUQVXWdFlJ6s0jCWquCgx3e8L/dclbLxGL3ij53981eLVu6US3Ora6tQ==
+boxed-expression-component@^8.5.4:
+  version "8.5.4"
+  resolved "https://registry.yarnpkg.com/boxed-expression-component/-/boxed-expression-component-8.5.4.tgz#85138ba27b907be19f227cfd02511b3cf274f2d3"
+  integrity sha512-N6RiEv4nfOiVq8PC33nJxyofyx2yOB5bCMDLOvYt54pf8JNn30FMOQOb4CvI6FiBIFoDbGK8SbYyttg8BZ3vZA==
   dependencies:
-    feel-input-component "0.0.0"
+    feel-input-component "8.5.4"
 
 brace-expansion@^1.1.7:
   version "1.1.11"
@@ -8293,10 +8293,10 @@ fd-slicer@~1.1.0:
   dependencies:
     pend "~1.2.0"
 
-feel-input-component@0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/feel-input-component/-/feel-input-component-0.0.0.tgz#defb45eceb79821cf98173a917533f030eaab2b9"
-  integrity sha512-nnvRY82vYaKaihwsf0fLjjBzmgDh330sNt7puL+KoIxxZyEJ6fj32yUO7wi5ENkuttbZAWSt8UPOC9jrqe36jQ==
+feel-input-component@8.5.4, feel-input-component@^8.5.4:
+  version "8.5.4"
+  resolved "https://registry.yarnpkg.com/feel-input-component/-/feel-input-component-8.5.4.tgz#23aaf898615559d692bce5ab86bb03bb10f3fccc"
+  integrity sha512-aOjWk3a73gjKHN/JkoM5qEGqkqFUS29ulHx0hQctT+i3CqNtIwb+E258QtaakrlbPqp7dGU9HlYyP62tw7iu7w==
 
 figures@^1.7.0:
   version "1.7.0"

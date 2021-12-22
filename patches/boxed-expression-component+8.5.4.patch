@@ -224,10 +224,10 @@ index 5522015..0000000
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/BoxedExpressionEditor/BoxedExpressionEditor.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/BoxedExpressionEditor/BoxedExpressionEditor.test.tsx
 deleted file mode 100644
-index 3dc5117..0000000
+index 6fff12e..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/BoxedExpressionEditor/BoxedExpressionEditor.test.tsx
 +++ /dev/null
-@@ -1,30 +0,0 @@
+@@ -1,35 +0,0 @@
 -/*
 - * Copyright 2020 Red Hat, Inc. and/or its affiliates.
 - *
@@ -253,24 +253,31 @@ index 3dc5117..0000000
 -  test("should render BoxedExpressionEditor component", () => {
 -    const selectedExpression: ExpressionProps = { name: "Expression Name", dataType: DataType.Undefined };
 -
--    const { container } = render(<BoxedExpressionEditor expressionDefinition={selectedExpression} />);
+-    const { container } = render(
+-      <BoxedExpressionEditor
+-        decisionNodeId="_00000000-0000-0000-0000-000000000000"
+-        expressionDefinition={selectedExpression}
+-      />
+-    );
 -
 -    expect(container).toMatchSnapshot();
 -  });
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/BoxedExpressionEditor/__snapshots__/BoxedExpressionEditor.test.tsx.snap b/node_modules/boxed-expression-component/src/__tests__/components/BoxedExpressionEditor/__snapshots__/BoxedExpressionEditor.test.tsx.snap
 deleted file mode 100644
-index afd1f90..0000000
+index 192b325..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/BoxedExpressionEditor/__snapshots__/BoxedExpressionEditor.test.tsx.snap
 +++ /dev/null
-@@ -1,50 +0,0 @@
+@@ -1,52 +0,0 @@
 -// Jest Snapshot v1, https://goo.gl/fbAQLP
 -
 -exports[`BoxedExpressionEditor tests should render BoxedExpressionEditor component 1`] = `
 -<div>
--  <div>
+-  <div
+-    class="react-resizable-supervisor"
+-  >
 -    <div
--      class="boxed-expression-editor"
+-      class="boxed-expression-provider"
 -    >
 -      <div
 -        class="expression-container"
@@ -296,7 +303,7 @@ index afd1f90..0000000
 -          data-ouia-component-id="expression-container"
 -        >
 -          <div
--            class="logic-type-selector logic-type-not-present"
+-            class="_00000000-0000-0000-0000-000000000000 logic-type-selector logic-type-not-present"
 -          >
 -            Select expression
 -          </div>
@@ -389,10 +396,10 @@ index 5a27dc8..0000000
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/ContextExpression/ContextEntryExpressionCell.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/ContextExpression/ContextEntryExpressionCell.test.tsx
 deleted file mode 100644
-index 9e9557d..0000000
+index 8e21df8..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/ContextExpression/ContextEntryExpressionCell.test.tsx
 +++ /dev/null
-@@ -1,103 +0,0 @@
+@@ -1,104 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -424,12 +431,12 @@ index 9e9557d..0000000
 -  const name = "Expression Name";
 -  const dataType = DataType.Boolean;
 -  const emptyExpression = { name, dataType };
+-  const entryId = "entry-id1";
 -  const entryName = "entry name";
 -  const entryDataType = DataType.Date;
 -
 -  const value = "value";
 -  const rowIndex = 0;
--  const columnId = "col1";
 -  const onRowUpdate: (rowIndex: number, updatedRow: DataRecord) => void = (rowIndex, updatedRow) =>
 -    _.identity({ rowIndex, updatedRow });
 -
@@ -439,7 +446,7 @@ index 9e9557d..0000000
 -        <ContextEntryExpressionCell
 -          data={[
 -            {
--              entryInfo: { name: entryName, dataType: entryDataType },
+-              entryInfo: { id: entryId, name: entryName, dataType: entryDataType },
 -              entryExpression: emptyExpression,
 -            },
 -          ]}
@@ -462,7 +469,7 @@ index 9e9557d..0000000
 -        <ContextEntryExpressionCell
 -          data={[
 -            {
--              entryInfo: { name: value, dataType },
+-              entryInfo: { id: entryId, name: value, dataType },
 -              entryExpression: emptyExpression,
 -            },
 -          ]}
@@ -485,6 +492,7 @@ index 9e9557d..0000000
 -    expect(mockedOnRowUpdate).toHaveBeenCalled();
 -    expect(mockedOnRowUpdate).toHaveBeenCalledWith(rowIndex, {
 -      entryInfo: {
+-        id: entryId,
 -        name: value,
 -        dataType,
 -      },
@@ -498,10 +506,10 @@ index 9e9557d..0000000
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/ContextExpression/ContextEntryInfo.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/ContextExpression/ContextEntryInfo.test.tsx
 deleted file mode 100644
-index 16f4b1a..0000000
+index 0f8e460..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/ContextExpression/ContextEntryInfo.test.tsx
 +++ /dev/null
-@@ -1,75 +0,0 @@
+@@ -1,79 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -528,6 +536,7 @@ index 16f4b1a..0000000
 -jest.useFakeTimers();
 -
 -describe("ContextEntryInfo tests", () => {
+-  const id = "id1";
 -  const name = "Expression Name";
 -  const newValue = "New Value";
 -  const dataType = DataType.Boolean;
@@ -536,6 +545,7 @@ index 16f4b1a..0000000
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
 -        <ContextEntryInfo
+-          id={id}
 -          name={name}
 -          dataType={dataType}
 -          editInfoPopoverLabel="Edit entry"
@@ -545,6 +555,7 @@ index 16f4b1a..0000000
 -    );
 -
 -    expect(container.querySelector(".entry-info")).toBeTruthy();
+-    expect(container.querySelector(".entry-info")).toHaveClass(id);
 -    expect(container.querySelector(".entry-info .entry-definition")).toBeTruthy();
 -    expect(container.querySelector(".entry-info .entry-definition .entry-name")).toContainHTML(name);
 -    expect(container.querySelector(".entry-info .entry-definition .entry-data-type")).toContainHTML(dataType);
@@ -558,6 +569,7 @@ index 16f4b1a..0000000
 -    const { container, baseElement } = render(
 -      usingTestingBoxedExpressionI18nContext(
 -        <ContextEntryInfo
+-          id={id}
 -          name={name}
 -          dataType={dataType}
 -          editInfoPopoverLabel="Edit entry"
@@ -579,10 +591,10 @@ index 16f4b1a..0000000
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/ContextExpression/ContextEntryInfoCell.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/ContextExpression/ContextEntryInfoCell.test.tsx
 deleted file mode 100644
-index d510046..0000000
+index 4665fe2..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/ContextExpression/ContextEntryInfoCell.test.tsx
 +++ /dev/null
-@@ -1,90 +0,0 @@
+@@ -1,93 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -610,6 +622,7 @@ index d510046..0000000
 -jest.useFakeTimers();
 -
 -describe("ContextEntryInfoCell tests", () => {
+-  const id = "id1";
 -  const name = "Expression Name";
 -  const newValue = "New Value";
 -  const dataType = DataType.Boolean;
@@ -621,7 +634,7 @@ index d510046..0000000
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
 -        <ContextEntryInfoCell
--          data={[{ entryInfo: { name, dataType }, entryExpression: emptyExpression }]}
+-          data={[{ entryInfo: { id, name, dataType }, entryExpression: emptyExpression }]}
 -          rowIndex={0}
 -          columnId={"col1"}
 -          onRowUpdate={_.identity}
@@ -631,6 +644,7 @@ index d510046..0000000
 -    );
 -
 -    expect(container.querySelector(".context-entry-info-cell")).toBeTruthy();
+-    expect(container.querySelector(".context-entry-info-cell .entry-info")).toHaveClass(id);
 -    expect(container.querySelector(".context-entry-info-cell .entry-info")).toBeTruthy();
 -    expect(container.querySelector(".context-entry-info-cell .entry-info .entry-definition")).toBeTruthy();
 -    expect(container.querySelector(".context-entry-info-cell .entry-info .entry-definition .entry-name")).toContainHTML(
@@ -647,7 +661,7 @@ index d510046..0000000
 -    const { container, baseElement } = render(
 -      usingTestingBoxedExpressionI18nContext(
 -        <ContextEntryInfoCell
--          data={[{ entryInfo: { name, dataType }, entryExpression: emptyExpression }]}
+-          data={[{ entryInfo: { id, name, dataType }, entryExpression: emptyExpression }]}
 -          rowIndex={0}
 -          columnId={"col1"}
 -          onRowUpdate={mockedOnRowUpdate}
@@ -666,6 +680,7 @@ index d510046..0000000
 -    expect(mockedOnRowUpdate).toHaveBeenCalled();
 -    expect(mockedOnRowUpdate).toHaveBeenCalledWith(0, {
 -      entryInfo: {
+-        id,
 -        name: newValue,
 -        dataType,
 -      },
@@ -675,10 +690,10 @@ index d510046..0000000
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/ContextExpression/ContextExpression.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/ContextExpression/ContextExpression.test.tsx
 deleted file mode 100644
-index b3d551c..0000000
+index 929f275..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/ContextExpression/ContextExpression.test.tsx
 +++ /dev/null
-@@ -1,112 +0,0 @@
+@@ -1,121 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -703,6 +718,7 @@ index b3d551c..0000000
 -  checkEntryStyle,
 -  contextEntry,
 -  usingTestingBoxedExpressionI18nContext,
+-  usingTestingBoxedExpressionProviderContext,
 -} from "../test-utils";
 -import { ContextExpression } from "../../../components/ContextExpression";
 -import * as React from "react";
@@ -714,7 +730,9 @@ index b3d551c..0000000
 -  test("should show a table with two rows: two context entries, where last is representing the result", () => {
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        <ContextExpression logicType={LogicType.Context} name={name} dataType={dataType} />
+-        usingTestingBoxedExpressionProviderContext(
+-          <ContextExpression logicType={LogicType.Context} name={name} dataType={dataType} />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -726,9 +744,11 @@ index b3d551c..0000000
 -  });
 -
 -  test("should show a table with one row for each passed entry, plus the passed entry result", () => {
+-    const firstEntryId = "id1";
 -    const firstEntry = "first entry";
 -    const firstDataType = DataType.Boolean;
 -    const firstExpression = { name: "expressionName", dataType: DataType.Any, logicType: LogicType.LiteralExpression };
+-    const secondEntryId = "id2";
 -    const secondEntry = "second entry";
 -    const secondDataType = DataType.Date;
 -    const secondExpression = { name: "anotherName", dataType: DataType.Undefined };
@@ -738,6 +758,7 @@ index b3d551c..0000000
 -    const contextEntries = [
 -      {
 -        entryInfo: {
+-          id: firstEntryId,
 -          name: firstEntry,
 -          dataType: firstDataType,
 -        },
@@ -746,6 +767,7 @@ index b3d551c..0000000
 -      },
 -      {
 -        entryInfo: {
+-          id: secondEntryId,
 -          name: secondEntry,
 -          dataType: secondDataType,
 -        },
@@ -762,13 +784,15 @@ index b3d551c..0000000
 -
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        <ContextExpression
--          logicType={LogicType.Context}
--          name={name}
--          dataType={dataType}
--          contextEntries={contextEntries}
--          result={result}
--        />
+-        usingTestingBoxedExpressionProviderContext(
+-          <ContextExpression
+-            logicType={LogicType.Context}
+-            name={name}
+-            dataType={dataType}
+-            contextEntries={contextEntries}
+-            result={result}
+-          />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -776,8 +800,8 @@ index b3d551c..0000000
 -    expect(container.querySelector(".context-expression table")).toBeTruthy();
 -    expect(container.querySelectorAll(".context-expression table tbody tr")).toHaveLength(3);
 -
--    checkEntryContent(contextEntry(container, 1), { name: firstEntry, dataType: firstDataType });
--    checkEntryContent(contextEntry(container, 2), { name: secondEntry, dataType: secondDataType });
+-    checkEntryContent(contextEntry(container, 1), { id: firstEntryId, name: firstEntry, dataType: firstDataType });
+-    checkEntryContent(contextEntry(container, 2), { id: secondEntryId, name: secondEntry, dataType: secondDataType });
 -    checkEntryContent(contextEntry(container, 3), { name: "result", dataType: "" });
 -
 -    checkEntryStyle(contextEntry(container, 1), "logic-type-selected");
@@ -793,10 +817,10 @@ index b3d551c..0000000
 -}));
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/DecisionTableExpression/DecisionTableExpression.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/DecisionTableExpression/DecisionTableExpression.test.tsx
 deleted file mode 100644
-index 38bff10..0000000
+index 13a119d..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/DecisionTableExpression/DecisionTableExpression.test.tsx
 +++ /dev/null
-@@ -1,181 +0,0 @@
+@@ -1,200 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -815,7 +839,12 @@ index 38bff10..0000000
 -
 -import { DataType, DecisionTableProps, HitPolicy, LogicType } from "../../../api";
 -import { fireEvent, render } from "@testing-library/react";
--import { flushPromises, usingTestingBoxedExpressionI18nContext, wrapComponentInContext } from "../test-utils";
+-import {
+-  flushPromises,
+-  usingTestingBoxedExpressionI18nContext,
+-  usingTestingBoxedExpressionProviderContext,
+-  wrapComponentInContext,
+-} from "../test-utils";
 -import * as React from "react";
 -import { DecisionTableExpression } from "../../../components/DecisionTableExpression";
 -import { openContextMenu } from "../Table/Table.test";
@@ -826,7 +855,9 @@ index 38bff10..0000000
 -  test("should show a table with three columns: input, output and annotation, and one row", () => {
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        wrapComponentInContext(<DecisionTableExpression logicType={LogicType.DecisionTable} />)
+-        usingTestingBoxedExpressionProviderContext(
+-          <DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -850,7 +881,9 @@ index 38bff10..0000000
 -  test("should show as default hit policy, unique", () => {
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        wrapComponentInContext(<DecisionTableExpression logicType={LogicType.DecisionTable} />)
+-        usingTestingBoxedExpressionProviderContext(
+-          <DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -860,9 +893,13 @@ index 38bff10..0000000
 -  test("should show the passed hit policy", () => {
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        wrapComponentInContext(
--          <DecisionTableExpression logicType={LogicType.DecisionTable} hitPolicy={HitPolicy.First} />
--        )
+-        usingTestingBoxedExpressionProviderContext(
+-          <DecisionTableExpression
+-            id="decision-node-id"
+-            logicType={LogicType.DecisionTable}
+-            hitPolicy={HitPolicy.First}
+-          />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -872,7 +909,9 @@ index 38bff10..0000000
 -  test("should show as default a row, with empty values, except for input column, whose value is dash symbol", () => {
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        wrapComponentInContext(<DecisionTableExpression logicType={LogicType.DecisionTable} />)
+-        usingTestingBoxedExpressionProviderContext(
+-          <DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -892,25 +931,28 @@ index 38bff10..0000000
 -    const inputName = "input name";
 -    const outputName = "output name";
 -    const annotationName = "annotation name";
--    const input = [{ name: inputName, dataType: DataType.Undefined }];
--    const output = [{ name: outputName, dataType: DataType.Undefined }];
--    const annotations = [{ name: annotationName }];
+-    const input = [{ id: "input", name: inputName, dataType: DataType.Undefined }];
+-    const output = [{ id: "output", name: outputName, dataType: DataType.Undefined }];
+-    const annotations = [{ id: "annotation", name: annotationName }];
 -    const inputEntry = "input entry";
 -    const outputEntry = "output entry";
 -    const annotation = "annotation";
--    const rules = [{ inputEntries: [inputEntry], outputEntries: [outputEntry], annotationEntries: [annotation] }];
+-    const rules = [
+-      { id: "rule-1", inputEntries: [inputEntry], outputEntries: [outputEntry], annotationEntries: [annotation] },
+-    ];
 -
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        wrapComponentInContext(
+-        usingTestingBoxedExpressionProviderContext(
 -          <DecisionTableExpression
+-            id="decision-node-id"
 -            logicType={LogicType.DecisionTable}
 -            input={input}
 -            output={output}
 -            annotations={annotations}
 -            rules={rules}
 -          />
--        )
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -939,9 +981,9 @@ index 38bff10..0000000
 -    const mockedBroadcastDefinition = jest.fn();
 -    mockBroadcastDefinition(mockedBroadcastDefinition);
 -    const { container, baseElement } = render(
--      wrapComponentInContext(
--        usingTestingBoxedExpressionI18nContext(<DecisionTableExpression logicType={LogicType.DecisionTable} />).wrapper
--      )
+-      usingTestingBoxedExpressionI18nContext(
+-        wrapComponentInContext(<DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />)
+-      ).wrapper
 -    );
 -
 -    await openContextMenu(container.querySelector(".decision-table-expression table tbody tr td.counter-cell")!);
@@ -956,16 +998,16 @@ index 38bff10..0000000
 -    expect(mockedBroadcastDefinition).toHaveBeenLastCalledWith(
 -      expect.objectContaining({
 -        rules: [
--          {
+-          expect.objectContaining({
 -            inputEntries: ["-"],
 -            outputEntries: [""],
 -            annotationEntries: [""],
--          },
--          {
+-          }),
+-          expect.objectContaining({
 -            inputEntries: ["-"],
 -            outputEntries: [""],
 -            annotationEntries: [""],
--          },
+-          }),
 -        ],
 -      })
 -    );
@@ -975,6 +1017,7 @@ index 38bff10..0000000
 -    window.beeApi = _.extend(window.beeApi || {}, {
 -      broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) =>
 -        mockedBroadcastDefinition(definition),
+-      notifyUserAction: () => {},
 -    });
 -  }
 -});
@@ -1651,17 +1694,19 @@ index 9d55962..0000000
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/ExpressionContainer/__snapshots__/ExpressionContainer.test.tsx.snap b/node_modules/boxed-expression-component/src/__tests__/components/ExpressionContainer/__snapshots__/ExpressionContainer.test.tsx.snap
 deleted file mode 100644
-index 1b9afd1..0000000
+index 227d987..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/ExpressionContainer/__snapshots__/ExpressionContainer.test.tsx.snap
 +++ /dev/null
-@@ -1,50 +0,0 @@
+@@ -1,52 +0,0 @@
 -// Jest Snapshot v1, https://goo.gl/fbAQLP
 -
 -exports[`ExpressionContainer tests should render ExpressionContainer component 1`] = `
 -<div>
--  <div>
+-  <div
+-    class="react-resizable-supervisor"
+-  >
 -    <div
--      class="boxed-expression-editor"
+-      class="boxed-expression-provider"
 -    >
 -      <div
 -        class="expression-container"
@@ -1687,7 +1732,7 @@ index 1b9afd1..0000000
 -          data-ouia-component-id="expression-container"
 -        >
 -          <div
--            class="logic-type-selector logic-type-not-present"
+-            class="_00000000-0000-0000-0000-000000000000 logic-type-selector logic-type-not-present"
 -          >
 -            Select expression
 -          </div>
@@ -1707,10 +1752,10 @@ index 1b9afd1..0000000
 -`;
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/FunctionExpression/FunctionExpression.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/FunctionExpression/FunctionExpression.test.tsx
 deleted file mode 100644
-index fda5b42..0000000
+index 5abff5d..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/FunctionExpression/FunctionExpression.test.tsx
 +++ /dev/null
-@@ -1,460 +0,0 @@
+@@ -1,487 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -1734,7 +1779,7 @@ index fda5b42..0000000
 -  EDIT_EXPRESSION_DATA_TYPE,
 -  flushPromises,
 -  usingTestingBoxedExpressionI18nContext,
--  wrapComponentInContext,
+-  usingTestingBoxedExpressionProviderContext,
 -} from "../test-utils";
 -import { DEFAULT_FIRST_PARAM_NAME, FunctionExpression } from "../../../components/FunctionExpression";
 -import * as React from "react";
@@ -1743,13 +1788,16 @@ index fda5b42..0000000
 -import * as _ from "lodash";
 -
 -describe("FunctionExpression tests", () => {
+-  const parameterId = "p1";
 -  const documentName = "document";
 -  const modelName = "model";
 -
 -  test("should show a table with two levels visible header, with one row and one column", () => {
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
+-        usingTestingBoxedExpressionProviderContext(
+-          <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -1764,11 +1812,13 @@ index fda5b42..0000000
 -  test("should show a section in the header, with the list of parameters", () => {
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        <FunctionExpression
--          logicType={LogicType.Function}
--          functionKind={FunctionKind.Feel}
--          formalParameters={[{ name: DEFAULT_FIRST_PARAM_NAME, dataType: DataType.Undefined }]}
--        />
+-        usingTestingBoxedExpressionProviderContext(
+-          <FunctionExpression
+-            logicType={LogicType.Function}
+-            functionKind={FunctionKind.Feel}
+-            formalParameters={[{ id: "p1", name: DEFAULT_FIRST_PARAM_NAME, dataType: DataType.Undefined }]}
+-          />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -1783,7 +1833,9 @@ index fda5b42..0000000
 -    mockBroadcastDefinition(mockedBroadcastDefinition);
 -    const { container, baseElement } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Java} formalParameters={[]} />
+-        usingTestingBoxedExpressionProviderContext(
+-          <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Java} formalParameters={[]} />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -1799,7 +1851,7 @@ index fda5b42..0000000
 -      logicType: "Function",
 -      name: "p-1",
 -      parametersWidth: 370,
--      uid: undefined,
+-      id: undefined,
 -    });
 -  });
 -
@@ -1811,9 +1863,9 @@ index fda5b42..0000000
 -    test("should render no parameter, if passed property is empty array", async () => {
 -      const { container, baseElement } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          wrapComponentInContext(
+-          usingTestingBoxedExpressionProviderContext(
 -            <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
--          )
+-          ).wrapper
 -        ).wrapper
 -      );
 -      await activateSelector(container as HTMLElement, ".parameters-list");
@@ -1829,13 +1881,13 @@ index fda5b42..0000000
 -
 -      const { container, baseElement } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          wrapComponentInContext(
+-          usingTestingBoxedExpressionProviderContext(
 -            <FunctionExpression
 -              logicType={LogicType.Function}
 -              functionKind={FunctionKind.Feel}
--              formalParameters={[{ name: paramName, dataType: paramDataType }]}
+-              formalParameters={[{ id: parameterId, name: paramName, dataType: paramDataType }]}
 -            />
--          )
+-          ).wrapper
 -        ).wrapper
 -      );
 -      await activateSelector(container as HTMLElement, ".parameters-list");
@@ -1852,13 +1904,13 @@ index fda5b42..0000000
 -
 -      const { container, baseElement } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          wrapComponentInContext(
+-          usingTestingBoxedExpressionProviderContext(
 -            <FunctionExpression
 -              logicType={LogicType.Function}
 -              functionKind={FunctionKind.Feel}
--              formalParameters={[{ name: "param", dataType: DataType.Any }]}
+-              formalParameters={[{ id: parameterId, name: "param", dataType: DataType.Any }]}
 -            />
--          )
+-          ).wrapper
 -        ).wrapper
 -      );
 -      await activateSelector(container as HTMLElement, ".parameters-list");
@@ -1869,6 +1921,7 @@ index fda5b42..0000000
 -
 -      checkFormalParameters(mockedBroadcastDefinition, [
 -        {
+-          id: parameterId,
 -          dataType: DataType.Any,
 -          name: `${newParamName}`,
 -        },
@@ -1881,13 +1934,13 @@ index fda5b42..0000000
 -
 -      const { container, baseElement } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          wrapComponentInContext(
+-          usingTestingBoxedExpressionProviderContext(
 -            <FunctionExpression
 -              logicType={LogicType.Function}
 -              functionKind={FunctionKind.Feel}
--              formalParameters={[{ name: "param", dataType: DataType.Undefined }]}
+-              formalParameters={[{ id: parameterId, name: "param", dataType: DataType.Undefined }]}
 -            />
--          )
+-          ).wrapper
 -        ).wrapper
 -      );
 -      await activateSelector(container as HTMLElement, ".parameters-list");
@@ -1902,6 +1955,7 @@ index fda5b42..0000000
 -
 -      checkFormalParameters(mockedBroadcastDefinition, [
 -        {
+-          id: parameterId,
 -          dataType: DataType.Boolean,
 -          name: "param",
 -        },
@@ -1914,9 +1968,9 @@ index fda5b42..0000000
 -
 -      const { container, baseElement } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          wrapComponentInContext(
+-          usingTestingBoxedExpressionProviderContext(
 -            <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
--          )
+-          ).wrapper
 -        ).wrapper
 -      );
 -      await activateSelector(container as HTMLElement, ".parameters-list");
@@ -1925,10 +1979,10 @@ index fda5b42..0000000
 -      });
 -
 -      checkFormalParameters(mockedBroadcastDefinition, [
--        {
+-        expect.objectContaining({
 -          dataType: DataType.Undefined,
 -          name: DEFAULT_FIRST_PARAM_NAME,
--        },
+-        }),
 -      ]);
 -    });
 -
@@ -1938,18 +1992,19 @@ index fda5b42..0000000
 -
 -      const { container, baseElement } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          wrapComponentInContext(
+-          usingTestingBoxedExpressionProviderContext(
 -            <FunctionExpression
 -              logicType={LogicType.Function}
 -              functionKind={FunctionKind.Feel}
 -              formalParameters={[
 -                {
+-                  id: parameterId,
 -                  dataType: DataType.Undefined,
 -                  name: DEFAULT_FIRST_PARAM_NAME,
 -                },
 -              ]}
 -            />
--          )
+-          ).wrapper
 -        ).wrapper
 -      );
 -      await activateSelector(container as HTMLElement, ".parameters-list");
@@ -1971,7 +2026,7 @@ index fda5b42..0000000
 -        logicType: "Function",
 -        name: "p-1",
 -        parametersWidth: 370,
--        uid: undefined,
+-        id: undefined,
 -      });
 -    }
 -  });
@@ -1980,7 +2035,9 @@ index fda5b42..0000000
 -    test("should show, by default, an entry with an empty literal expression", () => {
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
+-          usingTestingBoxedExpressionProviderContext(
+-            <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -1998,15 +2055,17 @@ index fda5b42..0000000
 -    test("should show an entry corresponding to the passed expression", () => {
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <FunctionExpression
--            logicType={LogicType.Function}
--            functionKind={FunctionKind.Feel}
--            formalParameters={[]}
--            expression={{
--              uid: "id2",
--              logicType: LogicType.Relation,
--            }}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <FunctionExpression
+-              logicType={LogicType.Function}
+-              functionKind={FunctionKind.Feel}
+-              formalParameters={[]}
+-              expression={{
+-                id: "id2",
+-                logicType: LogicType.Relation,
+-              }}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -2024,7 +2083,9 @@ index fda5b42..0000000
 -    test("should show, by default, an entry with a context table, containing two entries: class and method", () => {
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Java} formalParameters={[]} />
+-          usingTestingBoxedExpressionProviderContext(
+-            <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Java} formalParameters={[]} />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -2037,13 +2098,15 @@ index fda5b42..0000000
 -
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <FunctionExpression
--            logicType={LogicType.Function}
--            functionKind={FunctionKind.Java}
--            formalParameters={[]}
--            className={classValue}
--            methodName={methodValue}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <FunctionExpression
+-              logicType={LogicType.Function}
+-              functionKind={FunctionKind.Java}
+-              formalParameters={[]}
+-              className={classValue}
+-              methodName={methodValue}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -2055,7 +2118,9 @@ index fda5b42..0000000
 -    test("should show, by default, an entry with a context table, containing two entries: document and model", () => {
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Pmml} formalParameters={[]} />
+-          usingTestingBoxedExpressionProviderContext(
+-            <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Pmml} formalParameters={[]} />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -2068,13 +2133,15 @@ index fda5b42..0000000
 -
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <FunctionExpression
--            logicType={LogicType.Function}
--            functionKind={FunctionKind.Pmml}
--            formalParameters={[]}
--            document={document}
--            model={model}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <FunctionExpression
+-              logicType={LogicType.Function}
+-              functionKind={FunctionKind.Pmml}
+-              formalParameters={[]}
+-              document={document}
+-              model={model}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -2104,7 +2171,9 @@ index fda5b42..0000000
 -      mockBroadcastDefinition();
 -
 -      const screen = render(
--        usingTestingBoxedExpressionI18nContext(wrapComponentInContext(<FunctionExpression {...props} />)).wrapper
+-        usingTestingBoxedExpressionI18nContext(
+-          usingTestingBoxedExpressionProviderContext(<FunctionExpression {...props} />).wrapper
+-        ).wrapper
 -      );
 -
 -      await act(async () => {
@@ -2114,7 +2183,9 @@ index fda5b42..0000000
 -      });
 -
 -      screen.rerender(
--        usingTestingBoxedExpressionI18nContext(wrapComponentInContext(<FunctionExpression {...props} />)).wrapper
+-        usingTestingBoxedExpressionI18nContext(
+-          usingTestingBoxedExpressionProviderContext(<FunctionExpression {...props} />).wrapper
+-        ).wrapper
 -      );
 -      await act(async () => {
 -        fireEvent.click(screen.container.querySelectorAll(".pmml-literal-expression button")[1]! as HTMLElement);
@@ -2135,6 +2206,7 @@ index fda5b42..0000000
 -    // noinspection JSVoidFunctionReturnValueUsed
 -    window.beeApi = _.extend(window.beeApi || {}, {
 -      broadcastFunctionExpressionDefinition: (definition: FunctionProps) => mockedBroadcastDefinition(definition),
+-      notifyUserAction: () => {},
 -    });
 -  }
 -
@@ -2144,7 +2216,7 @@ index fda5b42..0000000
 -        container.querySelector(".function-expression table tbody td.counter-cell") as HTMLTableElement
 -      );
 -      await flushPromises();
--      await jest.runAllTimers();
+-      jest.runAllTimers();
 -    });
 -
 -    await act(async () => {
@@ -2154,7 +2226,7 @@ index fda5b42..0000000
 -        )! as HTMLButtonElement
 -      );
 -      await flushPromises();
--      await jest.runAllTimers();
+-      jest.runAllTimers();
 -    });
 -  }
 -
@@ -2238,10 +2310,10 @@ index a61d46c..0000000
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/InvocationExpression/InvocationExpression.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/InvocationExpression/InvocationExpression.test.tsx
 deleted file mode 100644
-index fe9654f..0000000
+index 560e72a..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/InvocationExpression/InvocationExpression.test.tsx
 +++ /dev/null
-@@ -1,100 +0,0 @@
+@@ -1,115 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -2260,7 +2332,12 @@ index fe9654f..0000000
 -
 -import "../../__mocks__/ReactWithSupervisor";
 -import { render } from "@testing-library/react";
--import { checkEntryContent, contextEntry, usingTestingBoxedExpressionI18nContext } from "../test-utils";
+-import {
+-  checkEntryContent,
+-  contextEntry,
+-  usingTestingBoxedExpressionI18nContext,
+-  usingTestingBoxedExpressionProviderContext,
+-} from "../test-utils";
 -import { DataType, LogicType } from "../../../api";
 -import * as React from "react";
 -import { InvocationExpression } from "../../../components/InvocationExpression";
@@ -2268,7 +2345,9 @@ index fe9654f..0000000
 -describe("InvocationExpression tests", () => {
 -  test("should show a table with two levels visible header, with one row and two columns", () => {
 -    const { container } = render(
--      usingTestingBoxedExpressionI18nContext(<InvocationExpression logicType={LogicType.Invocation} />).wrapper
+-      usingTestingBoxedExpressionI18nContext(
+-        usingTestingBoxedExpressionProviderContext(<InvocationExpression logicType={LogicType.Invocation} />).wrapper
+-      ).wrapper
 -    );
 -
 -    expect(container.querySelector(".invocation-expression")).toBeTruthy();
@@ -2281,7 +2360,9 @@ index fe9654f..0000000
 -
 -  test("should show a table with an input in the header, representing the invoked function", () => {
 -    const { container } = render(
--      usingTestingBoxedExpressionI18nContext(<InvocationExpression logicType={LogicType.Invocation} />).wrapper
+-      usingTestingBoxedExpressionI18nContext(
+-        usingTestingBoxedExpressionProviderContext(<InvocationExpression logicType={LogicType.Invocation} />).wrapper
+-      ).wrapper
 -    );
 -
 -    expect(
@@ -2299,7 +2380,9 @@ index fe9654f..0000000
 -
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        <InvocationExpression logicType={LogicType.Invocation} invokedFunction={invokedFunction} />
+-        usingTestingBoxedExpressionProviderContext(
+-          <InvocationExpression logicType={LogicType.Invocation} invokedFunction={invokedFunction} />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -2309,17 +2392,19 @@ index fe9654f..0000000
 -  });
 -
 -  test("should display a row in the table body, for each given binding entries", () => {
+-    const firstEntryId = "p1";
 -    const firstEntryName = "param1";
 -    const firstEntryDataType = DataType.Boolean;
 -    const firstEntry = {
--      entryInfo: { name: firstEntryName, dataType: firstEntryDataType },
+-      entryInfo: { id: firstEntryId, name: firstEntryName, dataType: firstEntryDataType },
 -      entryExpression: {},
 -      editInfoPopoverLabel: "Edit parameter",
 -    };
+-    const secondEntryId = "p2";
 -    const secondEntryName = "param2";
 -    const secondEntryDataType = DataType.Any;
 -    const secondEntry = {
--      entryInfo: { name: secondEntryName, dataType: secondEntryDataType },
+-      entryInfo: { id: secondEntryId, name: secondEntryName, dataType: secondEntryDataType },
 -      entryExpression: {},
 -      editInfoPopoverLabel: "Edit parameter",
 -    };
@@ -2327,7 +2412,9 @@ index fe9654f..0000000
 -
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        <InvocationExpression logicType={LogicType.Invocation} bindingEntries={bindingEntries} />
+-        usingTestingBoxedExpressionProviderContext(
+-          <InvocationExpression logicType={LogicType.Invocation} bindingEntries={bindingEntries} />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -2344,10 +2431,10 @@ index fe9654f..0000000
 -}));
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/ListExpression/ListExpression.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/ListExpression/ListExpression.test.tsx
 deleted file mode 100644
-index cd20c1b..0000000
+index d14e16d..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/ListExpression/ListExpression.test.tsx
 +++ /dev/null
-@@ -1,66 +0,0 @@
+@@ -1,71 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -2366,16 +2453,17 @@ index cd20c1b..0000000
 -
 -import "../../__mocks__/ReactWithSupervisor";
 -import { render } from "@testing-library/react";
--import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
+-import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 -import { LogicType } from "../../../api";
 -import * as React from "react";
 -import { ListExpression } from "../../../components/ListExpression";
--import nextId from "react-id-generator";
 -
 -describe("ListExpression tests", () => {
 -  test("should show a table without header, with one row and one column", () => {
 -    const { container } = render(
--      usingTestingBoxedExpressionI18nContext(<ListExpression logicType={LogicType.List} />).wrapper
+-      usingTestingBoxedExpressionI18nContext(
+-        usingTestingBoxedExpressionProviderContext(<ListExpression logicType={LogicType.List} />).wrapper
+-      ).wrapper
 -    );
 -
 -    expect(container.querySelector(".list-expression")).toBeTruthy();
@@ -2387,7 +2475,9 @@ index cd20c1b..0000000
 -
 -  test("should have, for its default cell, as default logic type, a literal expression with empty content", () => {
 -    const { container } = render(
--      usingTestingBoxedExpressionI18nContext(<ListExpression logicType={LogicType.List} />).wrapper
+-      usingTestingBoxedExpressionI18nContext(
+-        usingTestingBoxedExpressionProviderContext(<ListExpression logicType={LogicType.List} />).wrapper
+-      ).wrapper
 -    );
 -
 -    expect(container.querySelector(".list-expression table tbody td.data-cell .literal-expression")).toBeTruthy();
@@ -2401,7 +2491,9 @@ index cd20c1b..0000000
 -  test("should be able to render nested expressions", () => {
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        <ListExpression uid={nextId()} logicType={LogicType.List} items={[{ logicType: LogicType.List }]} />
+-        usingTestingBoxedExpressionProviderContext(
+-          <ListExpression id="id1" logicType={LogicType.List} items={[{ logicType: LogicType.List, id: "id2" }]} />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -2416,10 +2508,10 @@ index cd20c1b..0000000
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/LiteralExpression/LiteralExpression.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/LiteralExpression/LiteralExpression.test.tsx
 deleted file mode 100644
-index f042cf2..0000000
+index bc77b8c..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/LiteralExpression/LiteralExpression.test.tsx
 +++ /dev/null
-@@ -1,139 +0,0 @@
+@@ -1,153 +0,0 @@
 -/*
 - * Copyright 2020 Red Hat, Inc. and/or its affiliates.
 - *
@@ -2437,7 +2529,7 @@ index f042cf2..0000000
 - */
 -
 -import { render } from "@testing-library/react";
--import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
+-import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 -import * as React from "react";
 -import { LiteralExpression } from "../../../components/LiteralExpression";
 -import { DataType, LogicType } from "../../../api";
@@ -2452,11 +2544,13 @@ index f042cf2..0000000
 -      const expressionName = "expression name";
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <LiteralExpression
--            logicType={LogicType.LiteralExpression}
--            name={expressionName}
--            dataType={DataType.Undefined}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <LiteralExpression
+-              logicType={LogicType.LiteralExpression}
+-              name={expressionName}
+-              dataType={DataType.Undefined}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -      expect(container.querySelector(".expression-name")).toBeTruthy();
@@ -2467,7 +2561,9 @@ index f042cf2..0000000
 -      const dataType = DataType.Boolean;
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <LiteralExpression logicType={LogicType.LiteralExpression} name={"expressionName"} dataType={dataType} />
+-          usingTestingBoxedExpressionProviderContext(
+-            <LiteralExpression logicType={LogicType.LiteralExpression} name={"expressionName"} dataType={dataType} />
+-          ).wrapper
 -        ).wrapper
 -      );
 -      expect(container.querySelector(".expression-data-type")).toBeTruthy();
@@ -2477,12 +2573,14 @@ index f042cf2..0000000
 -    test("should render no header section, when isHeadless property is passed", () => {
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <LiteralExpression
--            isHeadless={true}
--            logicType={LogicType.LiteralExpression}
--            name={"expressionName"}
--            dataType={DataType.Undefined}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <LiteralExpression
+-              isHeadless={true}
+-              logicType={LogicType.LiteralExpression}
+-              name={"expressionName"}
+-              dataType={DataType.Undefined}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -      expect(container.querySelector(".literal-expression-header")).toBeFalsy();
@@ -2491,11 +2589,13 @@ index f042cf2..0000000
 -    test("should render header section, when isHeadless property is not passed or it is false", () => {
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <LiteralExpression
--            logicType={LogicType.LiteralExpression}
--            name={"expressionName"}
--            dataType={DataType.Undefined}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <LiteralExpression
+-              logicType={LogicType.LiteralExpression}
+-              name={"expressionName"}
+-              dataType={DataType.Undefined}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -      expect(container.querySelector(".literal-expression-header")).toBeTruthy();
@@ -2504,11 +2604,13 @@ index f042cf2..0000000
 -    test("should render edit expression menu, when header is clicked", async () => {
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <LiteralExpression
--            logicType={LogicType.LiteralExpression}
--            name={"expressionName"}
--            dataType={DataType.Boolean}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <LiteralExpression
+-              logicType={LogicType.LiteralExpression}
+-              name={"expressionName"}
+-              dataType={DataType.Boolean}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -2530,12 +2632,14 @@ index f042cf2..0000000
 -      const content = "content";
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <LiteralExpression
--            logicType={LogicType.LiteralExpression}
--            name={"expressionName"}
--            dataType={DataType.Boolean}
--            content={content}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <LiteralExpression
+-              logicType={LogicType.LiteralExpression}
+-              name={"expressionName"}
+-              dataType={DataType.Boolean}
+-              content={content}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -2546,11 +2650,13 @@ index f042cf2..0000000
 -    test("should render nothing, when content property is not passed", () => {
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <LiteralExpression
--            logicType={LogicType.LiteralExpression}
--            name={"expressionName"}
--            dataType={DataType.Boolean}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <LiteralExpression
+-              logicType={LogicType.LiteralExpression}
+-              name={"expressionName"}
+-              dataType={DataType.Boolean}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -2561,10 +2667,10 @@ index f042cf2..0000000
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/LogicTypeSelector/LogicTypeSelector.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/LogicTypeSelector/LogicTypeSelector.test.tsx
 deleted file mode 100644
-index 640bee1..0000000
+index e73ccea..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/LogicTypeSelector/LogicTypeSelector.test.tsx
 +++ /dev/null
-@@ -1,129 +0,0 @@
+@@ -1,141 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -2584,7 +2690,11 @@ index 640bee1..0000000
 -import "../../__mocks__/ReactWithSupervisor";
 -import { DataType, LogicType } from "../../../api";
 -import { fireEvent, render } from "@testing-library/react";
--import { flushPromises, usingTestingBoxedExpressionI18nContext } from "../test-utils";
+-import {
+-  flushPromises,
+-  usingTestingBoxedExpressionI18nContext,
+-  usingTestingBoxedExpressionProviderContext,
+-} from "../test-utils";
 -import { act } from "react-dom/test-utils";
 -import * as React from "react";
 -import { LogicTypeSelector } from "../../../components/LogicTypeSelector";
@@ -2598,12 +2708,14 @@ index 640bee1..0000000
 -
 -    const { baseElement } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        <LogicTypeSelector
--          selectedExpression={expression}
--          getPlacementRef={() => document.body as HTMLDivElement}
--          onLogicTypeResetting={_.identity}
--          onLogicTypeUpdating={_.identity}
--        />
+-        usingTestingBoxedExpressionProviderContext(
+-          <LogicTypeSelector
+-            selectedExpression={expression}
+-            getPlacementRef={() => document.body as HTMLDivElement}
+-            onLogicTypeResetting={_.identity}
+-            onLogicTypeUpdating={_.identity}
+-          />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -2618,12 +2730,14 @@ index 640bee1..0000000
 -
 -    const { baseElement } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        <LogicTypeSelector
--          selectedExpression={expression}
--          getPlacementRef={() => document.body as HTMLDivElement}
--          onLogicTypeResetting={_.identity}
--          onLogicTypeUpdating={_.identity}
--        />
+-        usingTestingBoxedExpressionProviderContext(
+-          <LogicTypeSelector
+-            selectedExpression={expression}
+-            getPlacementRef={() => document.body as HTMLDivElement}
+-            onLogicTypeResetting={_.identity}
+-            onLogicTypeUpdating={_.identity}
+-          />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -2641,12 +2755,14 @@ index 640bee1..0000000
 -
 -    const { baseElement } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        <LogicTypeSelector
--          selectedExpression={expression}
--          getPlacementRef={() => document.body as HTMLDivElement}
--          onLogicTypeResetting={_.identity}
--          onLogicTypeUpdating={_.identity}
--        />
+-        usingTestingBoxedExpressionProviderContext(
+-          <LogicTypeSelector
+-            selectedExpression={expression}
+-            getPlacementRef={() => document.body as HTMLDivElement}
+-            onLogicTypeResetting={_.identity}
+-            onLogicTypeUpdating={_.identity}
+-          />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -2661,12 +2777,14 @@ index 640bee1..0000000
 -    });
 -
 -    const logicTypeSelector = usingTestingBoxedExpressionI18nContext(
--      <LogicTypeSelector
--        selectedExpression={expression}
--        getPlacementRef={() => document.body as HTMLDivElement}
--        onLogicTypeResetting={onLogicTypeResetting}
--        onLogicTypeUpdating={_.identity}
--      />
+-      usingTestingBoxedExpressionProviderContext(
+-        <LogicTypeSelector
+-          selectedExpression={expression}
+-          getPlacementRef={() => document.body as HTMLDivElement}
+-          onLogicTypeResetting={onLogicTypeResetting}
+-          onLogicTypeUpdating={_.identity}
+-        />
+-      ).wrapper
 -    ).wrapper;
 -
 -    const screen = render(logicTypeSelector);
@@ -2961,10 +3079,10 @@ index f4abeea..0000000
 -`;
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/RelationExpression/RelationExpression.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/RelationExpression/RelationExpression.test.tsx
 deleted file mode 100644
-index 3647fb1..0000000
+index 0d8e295..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/RelationExpression/RelationExpression.test.tsx
 +++ /dev/null
-@@ -1,100 +0,0 @@
+@@ -1,106 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -2981,9 +3099,9 @@ index 3647fb1..0000000
 - * limitations under the License.
 - */
 -
--import { Column, DataType, LogicType, Row } from "../../../api";
+-import { Column, DataType, generateUuid, LogicType, Row } from "../../../api";
 -import { render } from "@testing-library/react";
--import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
+-import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 -import * as React from "react";
 -import { RelationExpression } from "../../../components/RelationExpression";
 -
@@ -2991,7 +3109,9 @@ index 3647fb1..0000000
 -  test("should render a table element, with one default column and one default row, when no props are passed", () => {
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        <RelationExpression logicType={LogicType.Relation} name="Relation" dataType={DataType.Undefined} />
+-        usingTestingBoxedExpressionProviderContext(
+-          <RelationExpression logicType={LogicType.Relation} name="Relation" dataType={DataType.Undefined} />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -3004,16 +3124,18 @@ index 3647fb1..0000000
 -  test("should render a table element, with one column, corresponding to passed prop", () => {
 -    const columnName = "a column";
 -    const columnDataType = DataType.Date;
--    const column = { name: columnName, dataType: columnDataType };
+-    const column = { id: generateUuid(), name: columnName, dataType: columnDataType };
 -
 -    const { container } = render(
 -      usingTestingBoxedExpressionI18nContext(
--        <RelationExpression
--          logicType={LogicType.Relation}
--          name="Relation"
--          dataType={DataType.Undefined}
--          columns={[column]}
--        />
+-        usingTestingBoxedExpressionProviderContext(
+-          <RelationExpression
+-            logicType={LogicType.Relation}
+-            name="Relation"
+-            dataType={DataType.Undefined}
+-            columns={[column]}
+-          />
+-        ).wrapper
 -      ).wrapper
 -    );
 -
@@ -3025,9 +3147,9 @@ index 3647fb1..0000000
 -
 -  test("should render a table element, with one row, corresponding to passed prop", () => {
 -    const columnName = "a column";
--    const column = { name: columnName, dataType: DataType.Date };
+-    const column = { id: generateUuid(), name: columnName, dataType: DataType.Date };
 -    const rowValue = "value";
--    const row: Row = [rowValue];
+-    const row: Row = { id: "row-id", cells: [rowValue] };
 -
 -    const container = buildRelationComponent(column, row);
 -
@@ -3039,9 +3161,9 @@ index 3647fb1..0000000
 -
 -  test("should render a table element, where there is just one cell for each column", () => {
 -    const columnName = "a column";
--    const column = { name: columnName, dataType: DataType.Date };
+-    const column = { id: generateUuid(), name: columnName, dataType: DataType.Date };
 -    const rowValue = "value";
--    const row: Row = [rowValue, "another value", "and another one"];
+-    const row: Row = { id: "row-id", cells: [rowValue, "another value", "and another one"] };
 -
 -    const container = buildRelationComponent(column, row);
 -
@@ -3054,23 +3176,25 @@ index 3647fb1..0000000
 -function buildRelationComponent(column: Column, row: Row) {
 -  const { container } = render(
 -    usingTestingBoxedExpressionI18nContext(
--      <RelationExpression
--        logicType={LogicType.Relation}
--        name="Relation"
--        dataType={DataType.Undefined}
--        columns={[column]}
--        rows={[row]}
--      />
+-      usingTestingBoxedExpressionProviderContext(
+-        <RelationExpression
+-          logicType={LogicType.Relation}
+-          name="Relation"
+-          dataType={DataType.Undefined}
+-          columns={[column]}
+-          rows={[row]}
+-        />
+-      ).wrapper
 -    ).wrapper
 -  );
 -  return container;
 -}
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/Resizer/Resizer.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/Resizer/Resizer.test.tsx
 deleted file mode 100644
-index 64995d3..0000000
+index 13ce334..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/Resizer/Resizer.test.tsx
 +++ /dev/null
-@@ -1,79 +0,0 @@
+@@ -1,82 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -3091,6 +3215,7 @@ index 64995d3..0000000
 -import { fireEvent, render, waitFor } from "@testing-library/react";
 -import * as React from "react";
 -import { Resizer } from "../../../components/Resizer";
+-import { wrapComponentInContext } from "../test-utils";
 -
 -describe("Resizer", () => {
 -  describe("when users drag the draggable element", () => {
@@ -3118,44 +3243,46 @@ index 64995d3..0000000
 -
 -function renderTable() {
 -  return render(
--    <>
--      <table>
--        <thead>
--          <tr>
--            <th className="col-1-1">
--              <Resizer width={250} />
--            </th>
--            <th className="col-1-2">
--              <Resizer width={250} />
--            </th>
--            <th className="col-1-3">
--              <Resizer width={250} />
--            </th>
--          </tr>
--        </thead>
--        <tbody>
--          <tr>
--            <td className="col-2-1">
--              <Resizer width={250} />
--            </td>
--            <td className="col-2-2">
--              <Resizer width={250} />
--            </td>
--            <td className="col-2-3">
--              <Resizer width={250} />
--            </td>
--          </tr>
--        </tbody>
--      </table>
--    </>
+-    wrapComponentInContext(
+-      <>
+-        <table>
+-          <thead>
+-            <tr>
+-              <th className="col-1-1">
+-                <Resizer width={250} />
+-              </th>
+-              <th className="col-1-2">
+-                <Resizer width={250} />
+-              </th>
+-              <th className="col-1-3">
+-                <Resizer width={250} />
+-              </th>
+-            </tr>
+-          </thead>
+-          <tbody>
+-            <tr>
+-              <td className="col-2-1">
+-                <Resizer width={250} />
+-              </td>
+-              <td className="col-2-2">
+-                <Resizer width={250} />
+-              </td>
+-              <td className="col-2-3">
+-                <Resizer width={250} />
+-              </td>
+-            </tr>
+-          </tbody>
+-        </table>
+-      </>
+-    )
 -  ).container;
 -}
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/Resizer/dom/Cell.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/Resizer/dom/Cell.test.tsx
 deleted file mode 100644
-index cb42695..0000000
+index 6152087..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/Resizer/dom/Cell.test.tsx
 +++ /dev/null
-@@ -1,243 +0,0 @@
+@@ -1,249 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -3173,10 +3300,10 @@ index cb42695..0000000
 - */
 -
 -import "../../../__mocks__/ReactWithSupervisor";
--import { Cell, CELL_CSS_SELECTOR } from "../../../../components/Resizer/dom";
+-import { Cell, CELL_CSS_SELECTOR } from "../../../../components/Resizer";
 -import { Resizer } from "../../../../components/Resizer";
 -import { render } from "@testing-library/react";
--import { usingTestingBoxedExpressionI18nContext } from "../../test-utils";
+-import { usingTestingBoxedExpressionI18nContext, wrapComponentInContext } from "../../test-utils";
 -import * as React from "react";
 -import { ContextExpression } from "../../../../components/ContextExpression";
 -import { ContextProps } from "../../../../api";
@@ -3188,7 +3315,7 @@ index cb42695..0000000
 -
 -describe("Cell", () => {
 -  beforeAll(() => {
--    document.dispatchEvent = jest.fn();
+-    document.body.dispatchEvent = jest.fn();
 -  });
 -
 -  describe("getId", () => {
@@ -3211,13 +3338,13 @@ index cb42695..0000000
 -    it("set the width in the element", () => {
 -      act(() => cell.setWidth(150));
 -      expect(element.style.width).toEqual("150px");
--      expect(document.dispatchEvent).toBeCalled();
+-      expect(document.body.dispatchEvent).toBeCalled();
 -    });
 -
 -    it("set the width in the element considering the minimum value", () => {
 -      act(() => cell.setWidth(80));
 -      expect(element.style.width).toEqual("100px");
--      expect(document.dispatchEvent).toBeCalled();
+-      expect(document.body.dispatchEvent).toBeCalled();
 -    });
 -  });
 -
@@ -3227,12 +3354,12 @@ index cb42695..0000000
 -        createContext();
 -
 -        const elements = container.querySelectorAll(CELL_CSS_SELECTOR);
--        const child1 = new Cell(elements.item(1) as HTMLElement, [], 1);
--        const child2 = new Cell(elements.item(2) as HTMLElement, [], 1);
+-        const child1 = new Cell(elements.item(1) as HTMLElement, [], 1, document.body);
+-        const child2 = new Cell(elements.item(2) as HTMLElement, [], 1, document.body);
 -
 -        element = elements.item(3) as HTMLElement;
 -
--        cell = new Cell(element, [child1, child2], 0);
+-        cell = new Cell(element, [child1, child2], 0, document.body);
 -
 -        cell.refreshWidthAsParent();
 -      });
@@ -3246,11 +3373,11 @@ index cb42695..0000000
 -        createContext();
 -
 -        const elements = container.querySelectorAll(CELL_CSS_SELECTOR);
--        const child1 = new Cell(elements.item(0) as HTMLElement, [], 1);
--        const child2 = new Cell(elements.item(1) as HTMLElement, [], 1);
+-        const child1 = new Cell(elements.item(0) as HTMLElement, [], 1, document.body);
+-        const child2 = new Cell(elements.item(1) as HTMLElement, [], 1, document.body);
 -
 -        element = elements.item(2) as HTMLElement;
--        cell = new Cell(element, [child1, child2], 0);
+-        cell = new Cell(element, [child1, child2], 0, document.body);
 -
 -        cell.refreshWidthAsLastColumn();
 -      });
@@ -3283,115 +3410,121 @@ index cb42695..0000000
 -function renderLiteralAtRegularColumn() {
 -  container = render(
 -    usingTestingBoxedExpressionI18nContext(
--      <>
--        <table>
--          <tbody>
--            <tr>
--              <td />
--              <td>
--                <Resizer width={250} />
--              </td>
--              <td />
--            </tr>
--          </tbody>
--        </table>
--      </>
+-      wrapComponentInContext(
+-        <>
+-          <table>
+-            <tbody>
+-              <tr>
+-                <td />
+-                <td>
+-                  <Resizer width={250} />
+-                </td>
+-                <td />
+-              </tr>
+-            </tbody>
+-          </table>
+-        </>
+-      )
 -    ).wrapper
 -  ).container;
 -  element = container.querySelector(CELL_CSS_SELECTOR) as HTMLElement;
--  cell = new Cell(element, [], 0);
+-  cell = new Cell(element, [], 0, document.body);
 -}
 -
 -function renderLiteralAtLastColumn() {
 -  container = render(
 -    usingTestingBoxedExpressionI18nContext(
--      <>
--        <table>
--          <tbody>
--            <tr>
--              <td />
--              <td />
--              <td>
--                <Resizer width={250} />
--              </td>
--            </tr>
--          </tbody>
--        </table>
--      </>
+-      wrapComponentInContext(
+-        <>
+-          <table>
+-            <tbody>
+-              <tr>
+-                <td />
+-                <td />
+-                <td>
+-                  <Resizer width={250} />
+-                </td>
+-              </tr>
+-            </tbody>
+-          </table>
+-        </>
+-      )
 -    ).wrapper
 -  ).container;
 -  element = container.querySelector(CELL_CSS_SELECTOR) as HTMLElement;
--  cell = new Cell(element, [], 0);
+-  cell = new Cell(element, [], 0, document.body);
 -}
 -
 -function createLiteral() {
--  container = render(<Resizer width={250} />).container;
+-  container = render(wrapComponentInContext(<Resizer width={250} />)).container;
 -  element = container.querySelector(CELL_CSS_SELECTOR) as HTMLElement;
--  cell = new Cell(element, [], 0);
+-  cell = new Cell(element, [], 0, document.body);
 -}
 -
 -function createContext() {
 -  container = render(
 -    usingTestingBoxedExpressionI18nContext(
--      <ContextExpression
--        {...({
--          uid: "id1",
--          logicType: "Context",
--          name: "Expression Name",
--          dataType: "<Undefined>",
--          contextEntries: [
--            {
--              entryInfo: {
--                name: "ContextEntry-1",
--                dataType: "<Undefined>",
--              },
--              entryExpression: {
--                uid: "id2",
--                logicType: "Context",
--                contextEntries: [
--                  {
--                    entryInfo: {
--                      name: "ContextEntry-1",
--                      dataType: "<Undefined>",
--                    },
--                    entryExpression: {
--                      uid: "id4",
--                      logicType: "Context",
--                      contextEntries: [
--                        {
--                          entryInfo: {
--                            name: "ContextEntry-1",
--                            dataType: "<Undefined>",
--                          },
--                          entryExpression: {},
--                          editInfoPopoverLabel: "Edit Context Entry",
--                        },
--                      ],
--                      result: {
--                        uid: "id7",
--                      },
--                      entryInfoWidth: 257,
--                      entryExpressionWidth: 370,
--                    },
--                    editInfoPopoverLabel: "Edit Context Entry",
--                  },
--                ],
--                result: {
--                  uid: "id5",
+-      wrapComponentInContext(
+-        <ContextExpression
+-          {...({
+-            id: "id1",
+-            logicType: "Context",
+-            name: "Expression Name",
+-            dataType: "<Undefined>",
+-            contextEntries: [
+-              {
+-                entryInfo: {
+-                  name: "ContextEntry-1",
+-                  dataType: "<Undefined>",
 -                },
--                entryInfoWidth: 713,
--                entryExpressionWidth: 691,
+-                entryExpression: {
+-                  id: "id2",
+-                  logicType: "Context",
+-                  contextEntries: [
+-                    {
+-                      entryInfo: {
+-                        name: "ContextEntry-1",
+-                        dataType: "<Undefined>",
+-                      },
+-                      entryExpression: {
+-                        id: "id4",
+-                        logicType: "Context",
+-                        contextEntries: [
+-                          {
+-                            entryInfo: {
+-                              name: "ContextEntry-1",
+-                              dataType: "<Undefined>",
+-                            },
+-                            entryExpression: {},
+-                            editInfoPopoverLabel: "Edit Context Entry",
+-                          },
+-                        ],
+-                        result: {
+-                          id: "id7",
+-                        },
+-                        entryInfoWidth: 257,
+-                        entryExpressionWidth: 370,
+-                      },
+-                      editInfoPopoverLabel: "Edit Context Entry",
+-                    },
+-                  ],
+-                  result: {
+-                    id: "id5",
+-                  },
+-                  entryInfoWidth: 713,
+-                  entryExpressionWidth: 691,
+-                },
+-                editInfoPopoverLabel: "Edit Context Entry",
 -              },
--              editInfoPopoverLabel: "Edit Context Entry",
+-            ],
+-            result: {
+-              id: "id3",
 -            },
--          ],
--          result: {
--            uid: "id3",
--          },
--          entryInfoWidth: 150,
--          entryExpressionWidth: 1468,
--        } as unknown as ContextProps)}
--      />
+-            entryInfoWidth: 150,
+-            entryExpressionWidth: 1468,
+-          } as unknown as ContextProps)}
+-        />
+-      )
 -    ).wrapper
 -  ).container;
 -}
@@ -3401,10 +3534,10 @@ index cb42695..0000000
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/Resizer/dom/DOMSession.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/Resizer/dom/DOMSession.test.tsx
 deleted file mode 100644
-index 2d382b4..0000000
+index 7b29003..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/Resizer/dom/DOMSession.test.tsx
 +++ /dev/null
-@@ -1,77 +0,0 @@
+@@ -1,80 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -3423,7 +3556,8 @@ index 2d382b4..0000000
 -
 -import { render } from "@testing-library/react";
 -import * as React from "react";
--import { Cell, DOMSession } from "../../../../components/Resizer/dom";
+-import { Cell, DOMSession } from "../../../../components/Resizer";
+-import { wrapComponentInContext } from "../../test-utils";
 -
 -describe("DOMSession", () => {
 -  let session: DOMSession;
@@ -3431,20 +3565,22 @@ index 2d382b4..0000000
 -
 -  beforeEach(() => {
 -    render(
--      <>
--        <div data-test-id="cell-0" className="react-resizable">
--          <div data-test-id="cell-1" className="react-resizable">
--            <div data-test-id="cell-2" className="react-resizable"></div>
--            <div data-test-id="cell-3" className="react-resizable"></div>
+-      wrapComponentInContext(
+-        <>
+-          <div data-test-id="cell-0" className="react-resizable">
+-            <div data-test-id="cell-1" className="react-resizable">
+-              <div data-test-id="cell-2" className="react-resizable" />
+-              <div data-test-id="cell-3" className="react-resizable" />
+-            </div>
+-            <div data-test-id="cell-4" className="react-resizable" />
 -          </div>
--          <div data-test-id="cell-4" className="react-resizable"></div>
--        </div>
--        <div data-test-id="cell-5" className="react-resizable"></div>
--        <div data-test-id="cell-6" className="react-resizable"></div>
--      </>
+-          <div data-test-id="cell-5" className="react-resizable" />
+-          <div data-test-id="cell-6" className="react-resizable" />
+-        </>
+-      )
 -    );
 -
--    session = new DOMSession();
+-    session = new DOMSession(document.body);
 -  });
 -
 -  describe("getCells", () => {
@@ -3484,7 +3620,7 @@ index 2d382b4..0000000
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/Resizer/dom/ResizerSupervisorDOM.test.ts b/node_modules/boxed-expression-component/src/__tests__/components/Resizer/dom/ResizerSupervisorDOM.test.ts
 deleted file mode 100644
-index f9d501f..0000000
+index 57a119a..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/Resizer/dom/ResizerSupervisorDOM.test.ts
 +++ /dev/null
 @@ -1,63 +0,0 @@
@@ -3504,14 +3640,14 @@ index f9d501f..0000000
 - * limitations under the License.
 - */
 -
--import { applyDOMSupervisor, Cell } from "../../../../components/Resizer/dom";
+-import { applyDOMSupervisor, Cell } from "../../../../components/Resizer";
 -
 -const fakeCells = [fakeCell(0), fakeCell(2), fakeCell(4), fakeCell(8)];
 -
 -describe("ResizerSupervisorDOM", () => {
 -  describe("applyDOMSupervisor", () => {
 -    beforeEach(() => {
--      applyDOMSupervisor(false);
+-      applyDOMSupervisor(false, document.body);
 -    });
 -
 -    it("refreshes cell widths as parents", () => {
@@ -3546,17 +3682,17 @@ index f9d501f..0000000
 -});
 -
 -function fakeCell(depth: number) {
--  const cell = new Cell({} as HTMLElement, [], depth);
+-  const cell = new Cell({} as HTMLElement, [], depth, document.body);
 -  const spyRefreshWidthAsParent = jest.spyOn(cell, "refreshWidthAsParent");
 -  const spyRefreshWidthAsLastColumn = jest.spyOn(cell, "refreshWidthAsLastColumn");
 -  return { cell, spyRefreshWidthAsParent, spyRefreshWidthAsLastColumn };
 -}
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/SelectionBox/CellSelectionBox.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/SelectionBox/CellSelectionBox.test.tsx
 deleted file mode 100644
-index d012097..0000000
+index e058830..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/SelectionBox/CellSelectionBox.test.tsx
 +++ /dev/null
-@@ -1,75 +0,0 @@
+@@ -1,78 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -3577,6 +3713,7 @@ index d012097..0000000
 -import * as React from "react";
 -import { CellSelectionBox } from "../../../components/SelectionBox";
 -import "../../__mocks__/ReactWithSupervisor";
+-import { wrapComponentInContext } from "../test-utils";
 -
 -describe("CellSelectionBox", () => {
 -  describe("when users select elements", () => {
@@ -3597,47 +3734,49 @@ index d012097..0000000
 -
 -function renderTable() {
 -  return render(
--    <>
--      <CellSelectionBox />
--      <div className="uuid-f1f0b02e react-resizable">
--        <div className="editable-cell">
--          <textarea defaultValue="Cell 1"></textarea>
+-    wrapComponentInContext(
+-      <>
+-        <CellSelectionBox />
+-        <div className="uuid-f1f0b02e react-resizable">
+-          <div className="editable-cell">
+-            <textarea defaultValue="Cell 1" />
+-          </div>
 -        </div>
--      </div>
--      <div className="uuid-56cabb83 react-resizable">
--        <div className="editable-cell">
--          <textarea defaultValue="Cell 2"></textarea>
+-        <div className="uuid-56cabb83 react-resizable">
+-          <div className="editable-cell">
+-            <textarea defaultValue="Cell 2" />
+-          </div>
 -        </div>
--      </div>
--      <div className="uuid-3daf1136 react-resizable">
--        <div className="editable-cell">
--          <textarea defaultValue="Cell 3"></textarea>
+-        <div className="uuid-3daf1136 react-resizable">
+-          <div className="editable-cell">
+-            <textarea defaultValue="Cell 3" />
+-          </div>
 -        </div>
--      </div>
--      <div className="uuid-d45c5153 react-resizable">
--        <div className="editable-cell">
--          <textarea defaultValue="Cell 4"></textarea>
+-        <div className="uuid-d45c5153 react-resizable">
+-          <div className="editable-cell">
+-            <textarea defaultValue="Cell 4" />
+-          </div>
 -        </div>
--      </div>
--      <div className="uuid-8265fa47 react-resizable">
--        <div className="editable-cell">
--          <textarea defaultValue="Cell 5"></textarea>
+-        <div className="uuid-8265fa47 react-resizable">
+-          <div className="editable-cell">
+-            <textarea defaultValue="Cell 5" />
+-          </div>
 -        </div>
--      </div>
--      <div className="uuid-fb97017a react-resizable">
--        <div className="editable-cell">
--          <textarea defaultValue="Cell 6"></textarea>
+-        <div className="uuid-fb97017a react-resizable">
+-          <div className="editable-cell">
+-            <textarea defaultValue="Cell 6" />
+-          </div>
 -        </div>
--      </div>
--    </>
+-      </>
+-    )
 -  ).container;
 -}
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/SelectionBox/SelectionBox.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/SelectionBox/SelectionBox.test.tsx
 deleted file mode 100644
-index c905d57..0000000
+index 997d454..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/SelectionBox/SelectionBox.test.tsx
 +++ /dev/null
-@@ -1,92 +0,0 @@
+@@ -1,95 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -3659,6 +3798,7 @@ index c905d57..0000000
 -import { Resizer } from "../../../components/Resizer";
 -import { SelectionBox } from "../../../components/SelectionBox";
 -import "../../__mocks__/ReactWithSupervisor";
+-import { wrapComponentInContext } from "../test-utils";
 -
 -describe("SelectionBox", () => {
 -  describe("when users drag the selection box element (but do not release the mouse button)", () => {
@@ -3697,37 +3837,39 @@ index c905d57..0000000
 -
 -function renderTable() {
 -  return render(
--    <>
--      <SelectionBox />
--      <table>
--        <thead>
--          <tr>
--            <th className="col-1-1">
--              <Resizer width={250}></Resizer>
--            </th>
--            <th className="col-1-2">
--              <Resizer width={250}></Resizer>
--            </th>
--            <th className="col-1-3">
--              <Resizer width={250}></Resizer>
--            </th>
--          </tr>
--        </thead>
--        <tbody>
--          <tr>
--            <td className="col-2-1">
--              <Resizer width={250}></Resizer>
--            </td>
--            <td className="col-2-2">
--              <Resizer width={250}></Resizer>
--            </td>
--            <td className="col-2-3">
--              <Resizer width={250}></Resizer>
--            </td>
--          </tr>
--        </tbody>
--      </table>
--    </>
+-    wrapComponentInContext(
+-      <>
+-        <SelectionBox />
+-        <table>
+-          <thead>
+-            <tr>
+-              <th className="col-1-1">
+-                <Resizer width={250} />
+-              </th>
+-              <th className="col-1-2">
+-                <Resizer width={250} />
+-              </th>
+-              <th className="col-1-3">
+-                <Resizer width={250} />
+-              </th>
+-            </tr>
+-          </thead>
+-          <tbody>
+-            <tr>
+-              <td className="col-2-1">
+-                <Resizer width={250} />
+-              </td>
+-              <td className="col-2-2">
+-                <Resizer width={250} />
+-              </td>
+-              <td className="col-2-3">
+-                <Resizer width={250} />
+-              </td>
+-            </tr>
+-          </tbody>
+-        </table>
+-      </>
+-    )
 -  ).container;
 -}
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/Table/EditableCell.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/Table/EditableCell.test.tsx
@@ -3874,10 +4016,10 @@ index 2d05d4a..0000000
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/Table/Table.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/Table/Table.test.tsx
 deleted file mode 100644
-index 7dfb265..0000000
+index 2a9cdf6..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/Table/Table.test.tsx
 +++ /dev/null
-@@ -1,673 +0,0 @@
+@@ -1,665 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -3898,10 +4040,10 @@ index 7dfb265..0000000
 -import * as _ from "lodash";
 -import * as React from "react";
 -import { act } from "react-dom/test-utils";
--import { Column as ReactTableColumn, Column, ColumnInstance, DataRecord } from "react-table";
--import { PASTE_OPERATION } from "../../../../showcase/src/lib/components/Table/common/CopyAndPasteUtils";
--import { DataType, TableHandlerConfiguration, TableOperation } from "../../../api";
--import { Table } from "../../../components/Table";
+-import { Column, ColumnInstance, DataRecord } from "react-table";
+-import { PASTE_OPERATION } from "../../../components/Table/common";
+-import { ColumnsUpdateArgs, DataType, RowsUpdateArgs, TableHandlerConfiguration, TableOperation } from "../../../api";
+-import { Table } from "../../../components";
 -import {
 -  activateNameAndDataTypePopover,
 -  EDIT_EXPRESSION_DATA_TYPE,
@@ -3909,6 +4051,8 @@ index 7dfb265..0000000
 -  flushPromises,
 -  updateElementViaPopover,
 -  usingTestingBoxedExpressionI18nContext,
+-  usingTestingBoxedExpressionProviderContext,
+-  wrapComponentInContext,
 -} from "../test-utils";
 -import { DEFAULT_MIN_WIDTH } from "../../../components/Resizer";
 -
@@ -3952,13 +4096,15 @@ index 7dfb265..0000000
 -    test("should show a table element", () => {
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={[]}
--            rows={[]}
--            onColumnsUpdate={_.identity}
--            onRowsUpdate={_.identity}
--            handlerConfiguration={handlerConfiguration}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <Table
+-              columns={[]}
+-              rows={[]}
+-              onColumnsUpdate={_.identity}
+-              onRowsUpdate={_.identity}
+-              handlerConfiguration={handlerConfiguration}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -3968,13 +4114,15 @@ index 7dfb265..0000000
 -    test("should show a table head with only one default column (#)", () => {
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={[]}
--            rows={[]}
--            onColumnsUpdate={_.identity}
--            onRowsUpdate={_.identity}
--            handlerConfiguration={handlerConfiguration}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <Table
+-              columns={[]}
+-              rows={[]}
+-              onColumnsUpdate={_.identity}
+-              onRowsUpdate={_.identity}
+-              handlerConfiguration={handlerConfiguration}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -3984,13 +4132,15 @@ index 7dfb265..0000000
 -    test("should show a table head with one configured column, rendering its label", () => {
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={[{ accessor: columnName, label: columnName, dataType: DataType.Undefined } as ColumnInstance]}
--            rows={[]}
--            onColumnsUpdate={_.identity}
--            onRowsUpdate={_.identity}
--            handlerConfiguration={handlerConfiguration}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <Table
+-              columns={[{ accessor: columnName, label: columnName, dataType: DataType.Undefined } as ColumnInstance]}
+-              rows={[]}
+-              onColumnsUpdate={_.identity}
+-              onRowsUpdate={_.identity}
+-              handlerConfiguration={handlerConfiguration}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -4003,19 +4153,21 @@ index 7dfb265..0000000
 -
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={[
--              {
--                accessor: columnName,
--                headerCellElement,
--                dataType: DataType.Undefined,
--              } as ColumnInstance,
--            ]}
--            rows={[]}
--            onColumnsUpdate={_.identity}
--            onRowsUpdate={_.identity}
--            handlerConfiguration={handlerConfiguration}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <Table
+-              columns={[
+-                {
+-                  accessor: columnName,
+-                  headerCellElement,
+-                  dataType: DataType.Undefined,
+-                } as ColumnInstance,
+-              ]}
+-              rows={[]}
+-              onColumnsUpdate={_.identity}
+-              onRowsUpdate={_.identity}
+-              handlerConfiguration={handlerConfiguration}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -4025,13 +4177,15 @@ index 7dfb265..0000000
 -    test("should show a table body with no rows", () => {
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={[]}
--            rows={[]}
--            onColumnsUpdate={_.identity}
--            onRowsUpdate={_.identity}
--            handlerConfiguration={handlerConfiguration}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <Table
+-              columns={[]}
+-              rows={[]}
+-              onColumnsUpdate={_.identity}
+-              onRowsUpdate={_.identity}
+-              handlerConfiguration={handlerConfiguration}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -4047,13 +4201,15 @@ index 7dfb265..0000000
 -
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={[{ accessor: columnName, dataType: DataType.Undefined } as ColumnInstance]}
--            rows={rows}
--            onColumnsUpdate={_.identity}
--            onRowsUpdate={_.identity}
--            handlerConfiguration={handlerConfiguration}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <Table
+-              columns={[{ accessor: columnName, dataType: DataType.Undefined } as ColumnInstance]}
+-              rows={rows}
+-              onColumnsUpdate={_.identity}
+-              onRowsUpdate={_.identity}
+-              handlerConfiguration={handlerConfiguration}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -4070,14 +4226,16 @@ index 7dfb265..0000000
 -      const editRelationLabel = "Edit Relation";
 -      const { container, baseElement } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            editColumnLabel={editRelationLabel}
--            columns={[{ label: columnName, accessor: columnName, dataType: DataType.Boolean } as ColumnInstance]}
--            rows={[]}
--            onColumnsUpdate={_.identity}
--            onRowsUpdate={_.identity}
--            handlerConfiguration={handlerConfiguration}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <Table
+-              editColumnLabel={editRelationLabel}
+-              columns={[{ label: columnName, accessor: columnName, dataType: DataType.Boolean } as ColumnInstance]}
+-              rows={[]}
+-              onColumnsUpdate={_.identity}
+-              onRowsUpdate={_.identity}
+-              handlerConfiguration={handlerConfiguration}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -4092,21 +4250,24 @@ index 7dfb265..0000000
 -    });
 -
 -    test("should trigger onColumnUpdate, when changing column name via popover", async () => {
+-      const columnId = "column-id";
 -      const newColumnName = "changed";
--      const onColumnUpdate = (columns: Column[]) => {
+-      const onColumnUpdate = ({ columns }: ColumnsUpdateArgs) => {
 -        _.identity(columns);
 -      };
 -      const mockedOnColumnUpdate = jest.fn(onColumnUpdate);
 -
 -      const { container, baseElement } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={[{ label: columnName, accessor: columnName, dataType: DataType.Boolean } as ColumnInstance]}
--            rows={[]}
--            onColumnsUpdate={mockedOnColumnUpdate}
--            onRowsUpdate={_.identity}
--            handlerConfiguration={handlerConfiguration}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <Table
+-              columns={[{ label: columnName, accessor: columnId, dataType: DataType.Boolean } as ColumnInstance]}
+-              rows={[]}
+-              onColumnsUpdate={mockedOnColumnUpdate}
+-              onRowsUpdate={_.identity}
+-              handlerConfiguration={handlerConfiguration}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -      await updateElementViaPopover(
@@ -4117,46 +4278,10 @@ index 7dfb265..0000000
 -      );
 -
 -      expect(mockedOnColumnUpdate).toHaveBeenCalled();
--      expect(mockedOnColumnUpdate).toHaveBeenCalledWith(
--        [{ label: newColumnName, accessor: newColumnName, dataType: DataType.Boolean } as ColumnInstance],
--        undefined,
--        0
--      );
--    });
--
--    test("should trigger onRowsUpdate, when changing the column name, via popover, of a column with a value in an existing row", async () => {
--      const newColumnName = "changed";
--      const row: DataRecord = {};
--      const newRow: DataRecord = {};
--      const rowValue = "value";
--      row[columnName] = rowValue;
--      newRow[newColumnName] = rowValue;
--      const orRowsUpdate = (rows: DataRecord[]) => {
--        _.identity(rows);
--      };
--      const columns = [{ label: columnName, accessor: columnName, dataType: DataType.Boolean } as ColumnInstance];
--      const mockedOnRowsUpdate = jest.fn(orRowsUpdate);
--
--      const { container, baseElement } = render(
--        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={columns}
--            rows={[row]}
--            onColumnsUpdate={_.identity}
--            onRowsUpdate={mockedOnRowsUpdate}
--            handlerConfiguration={handlerConfiguration}
--          />
--        ).wrapper
--      );
--      await updateElementViaPopover(
--        container.querySelectorAll(EXPRESSION_COLUMN_HEADER_CELL_INFO)[0] as HTMLTableHeaderCellElement,
--        baseElement,
--        EDIT_EXPRESSION_NAME,
--        newColumnName
--      );
--
--      expect(mockedOnRowsUpdate).toHaveBeenCalled();
--      expect(mockedOnRowsUpdate).toHaveBeenCalledWith([newRow], undefined, undefined, columns);
+-      expect(mockedOnColumnUpdate).toHaveBeenCalledWith({
+-        columns: [{ label: newColumnName, accessor: columnId, dataType: DataType.Boolean } as ColumnInstance],
+-        columnIndex: 0,
+-      });
 -    });
 -  });
 -
@@ -4171,20 +4296,22 @@ index 7dfb265..0000000
 -      const columns = [{ label: columnName, accessor: columnName, dataType: DataType.Boolean } as ColumnInstance];
 -
 -      row[columnName] = "value";
--      const orRowsUpdate = (rows: DataRecord[]) => {
+-      const orRowsUpdate = ({ rows }: RowsUpdateArgs) => {
 -        _.identity(rows);
 -      };
 -      const mockedOnRowsUpdate = jest.fn(orRowsUpdate);
 -
 -      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={columns}
--            rows={[row]}
--            onColumnsUpdate={_.identity}
--            onRowsUpdate={mockedOnRowsUpdate}
--            handlerConfiguration={handlerConfiguration}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <Table
+-              columns={columns}
+-              rows={[row]}
+-              onColumnsUpdate={_.identity}
+-              onRowsUpdate={mockedOnRowsUpdate}
+-              handlerConfiguration={handlerConfiguration}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -
@@ -4194,18 +4321,20 @@ index 7dfb265..0000000
 -      // onblur is triggered by Monaco (mock), and the new value relies on Monaco implementation
 -
 -      expect(mockedOnRowsUpdate).toHaveBeenCalled();
--      expect(mockedOnRowsUpdate).toHaveBeenCalledWith([newRow], undefined, undefined, columns);
+-      expect(mockedOnRowsUpdate).toHaveBeenCalledWith({
+-        rows: [expect.objectContaining(newRow)],
+-        columns,
+-      });
 -    });
 -  });
 -
 -  describe("when users paste a value", () => {
--    const orRowsUpdate = (rows: DataRecord[]) => {
--      _.identity(rows);
--    };
--    const mockedOnRowsUpdate = jest.fn(orRowsUpdate);
--    let container: HTMLElement;
+-    test("should trigger onRowsUpdate", async () => {
+-      const orRowsUpdate = ({ rows }: RowsUpdateArgs) => {
+-        _.identity(rows);
+-      };
+-      const mockedOnRowsUpdate = jest.fn(orRowsUpdate);
 -
--    beforeEach(() => {
 -      const row: DataRecord = {};
 -      const newRow: DataRecord = {};
 -      const rowValue = "value";
@@ -4213,26 +4342,24 @@ index 7dfb265..0000000
 -      row[columnName] = rowValue;
 -      newRow[columnName] = newRowValue;
 -
--      const value = "value";
--      row[columnName] = value;
+-      row[columnName] = "value";
 -
--      container = render(
+-      const { container } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={[{ label: columnName, accessor: columnName, dataType: DataType.Boolean } as ColumnInstance]}
--            rows={[row]}
--            onColumnsUpdate={_.identity}
--            onRowAdding={() => ({})}
--            onRowsUpdate={mockedOnRowsUpdate}
--            handlerConfiguration={handlerConfiguration}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <Table
+-              columns={[{ label: columnName, accessor: columnName, dataType: DataType.Boolean } as ColumnInstance]}
+-              rows={[row]}
+-              onColumnsUpdate={_.identity}
+-              onRowAdding={() => ({})}
+-              onRowsUpdate={mockedOnRowsUpdate}
+-              handlerConfiguration={handlerConfiguration}
+-            />
+-          ).wrapper
 -        ).wrapper
--      ).container;
+-      );
 -
--      document.dispatchEvent(customEvent(container));
--    });
--
--    test("should trigger onRowsUpdate", async () => {
+-      container.querySelector(".boxed-expression-provider")?.dispatchEvent(customEvent(container));
 -      expect(mockedOnRowsUpdate).toHaveBeenCalled();
 -    });
 -  });
@@ -4247,39 +4374,40 @@ index 7dfb265..0000000
 -      } as ColumnInstance;
 -      const secondColumn = {
 -        label: "column-3",
--        accessor: "column-3",
 -        dataType: DataType.Undefined,
 -        width: DEFAULT_MIN_WIDTH,
 -      } as ColumnInstance;
--      const onColumnUpdate = (columns: Column[]) => {
+-      const onColumnUpdate = ({ columns }: ColumnsUpdateArgs) => {
 -        _.identity(columns);
 -      };
 -      const mockedOnColumnUpdate = jest.fn(onColumnUpdate);
 -
 -      const { container, baseElement } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={[firstColumn]}
--            rows={[]}
--            onColumnsUpdate={mockedOnColumnUpdate}
--            onRowsUpdate={_.identity}
--            handlerConfiguration={[
--              {
--                group: "COLUMNS",
--                items: [{ name: "Insert Column Left", type: TableOperation.ColumnInsertLeft }],
--              },
--            ]}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <Table
+-              columns={[firstColumn]}
+-              rows={[]}
+-              onColumnsUpdate={mockedOnColumnUpdate}
+-              onRowsUpdate={_.identity}
+-              handlerConfiguration={[
+-                {
+-                  group: "COLUMNS",
+-                  items: [{ name: "Insert Column Left", type: TableOperation.ColumnInsertLeft }],
+-                },
+-              ]}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -      await openContextMenu(container.querySelectorAll(EXPRESSION_COLUMN_HEADER)[1]);
 -      await selectMenuEntryIfNotDisabled(baseElement, "Insert Column Left");
 -
--      expect(mockedOnColumnUpdate).toHaveBeenCalledWith(
--        [secondColumn, firstColumn],
--        TableOperation.ColumnInsertLeft,
--        0
--      );
+-      expect(mockedOnColumnUpdate).toHaveBeenCalledWith({
+-        columns: [expect.objectContaining(secondColumn), firstColumn],
+-        operation: TableOperation.ColumnInsertLeft,
+-        columnIndex: 0,
+-      });
 -    });
 -
 -    test("should trigger onColumnUpdate, when inserting a new column on the right", async () => {
@@ -4291,69 +4419,76 @@ index 7dfb265..0000000
 -      } as ColumnInstance;
 -      const secondColumn = {
 -        label: "column-3",
--        accessor: "column-3",
 -        dataType: DataType.Undefined,
 -        width: DEFAULT_MIN_WIDTH,
 -      } as ColumnInstance;
--      const onColumnUpdate = (columns: Column[]) => {
+-      const onColumnUpdate = ({ columns }: ColumnsUpdateArgs) => {
 -        _.identity(columns);
 -      };
 -      const mockedOnColumnUpdate = jest.fn(onColumnUpdate);
 -
 -      const { container, baseElement } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={[firstColumn]}
--            rows={[]}
--            onColumnsUpdate={mockedOnColumnUpdate}
--            onRowsUpdate={_.identity}
--            handlerConfiguration={[
--              {
--                group: "COLUMNS",
--                items: [{ name: "Insert Column right", type: TableOperation.ColumnInsertRight }],
--              },
--            ]}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <Table
+-              columns={[firstColumn]}
+-              rows={[]}
+-              onColumnsUpdate={mockedOnColumnUpdate}
+-              onRowsUpdate={_.identity}
+-              handlerConfiguration={[
+-                {
+-                  group: "COLUMNS",
+-                  items: [{ name: "Insert Column right", type: TableOperation.ColumnInsertRight }],
+-                },
+-              ]}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -      await openContextMenu(container.querySelectorAll(EXPRESSION_COLUMN_HEADER)[1]);
 -      await selectMenuEntryIfNotDisabled(baseElement, "Insert Column right");
 -
--      expect(mockedOnColumnUpdate).toHaveBeenCalledWith(
--        [firstColumn, secondColumn],
--        TableOperation.ColumnInsertRight,
--        0
--      );
+-      expect(mockedOnColumnUpdate).toHaveBeenCalledWith({
+-        columns: [firstColumn, expect.objectContaining(secondColumn)],
+-        operation: TableOperation.ColumnInsertRight,
+-        columnIndex: 0,
+-      });
 -    });
 -
 -    test("should trigger onColumnUpdate, when deleting a column", async () => {
 -      const firstColumn = { label: "column-1", accessor: "column-1", dataType: DataType.Undefined } as ColumnInstance;
 -      const secondColumn = { label: "column-2", accessor: "column-2", dataType: DataType.Undefined } as ColumnInstance;
--      const onColumnUpdate = (columns: Column[]) => {
+-      const onColumnUpdate = ({ columns }: ColumnsUpdateArgs) => {
 -        _.identity(columns);
 -      };
 -      const mockedOnColumnUpdate = jest.fn(onColumnUpdate);
 -
 -      const { container, baseElement } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={[firstColumn, secondColumn]}
--            rows={[]}
--            onColumnsUpdate={mockedOnColumnUpdate}
--            onRowsUpdate={_.identity}
--            handlerConfiguration={[
--              {
--                group: "COLUMNS",
--                items: [{ name: "Delete", type: TableOperation.ColumnDelete }],
--              },
--            ]}
--          />
+-          wrapComponentInContext(
+-            <Table
+-              columns={[firstColumn, secondColumn]}
+-              rows={[]}
+-              onColumnsUpdate={mockedOnColumnUpdate}
+-              onRowsUpdate={_.identity}
+-              handlerConfiguration={[
+-                {
+-                  group: "COLUMNS",
+-                  items: [{ name: "Delete", type: TableOperation.ColumnDelete }],
+-                },
+-              ]}
+-            />
+-          )
 -        ).wrapper
 -      );
 -      await openContextMenu(container.querySelectorAll(EXPRESSION_COLUMN_HEADER)[1]);
 -      await selectMenuEntryIfNotDisabled(baseElement, "Delete");
 -
--      expect(mockedOnColumnUpdate).toHaveBeenCalledWith([secondColumn], TableOperation.ColumnDelete, 0);
+-      expect(mockedOnColumnUpdate).toHaveBeenCalledWith({
+-        columns: [secondColumn],
+-        operation: TableOperation.ColumnDelete,
+-        columnIndex: 0,
+-      });
 -    });
 -
 -    test("should not trigger onColumnUpdate, when deleting a row number column", async () => {
@@ -4363,25 +4498,27 @@ index 7dfb265..0000000
 -      row["column-2"] = "column-2 value";
 -      const firstColumn = { label: "column-1", accessor: "column-1", dataType: DataType.Undefined } as ColumnInstance;
 -      const secondColumn = { label: "column-2", accessor: "column-2", dataType: DataType.Undefined } as ColumnInstance;
--      const onColumnUpdate = (columns: Column[]) => {
+-      const onColumnUpdate = ({ columns }: ColumnsUpdateArgs) => {
 -        _.identity(columns);
 -      };
 -      const mockedOnColumnUpdate = jest.fn(onColumnUpdate);
 -
 -      const { container, baseElement } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={[firstColumn, secondColumn]}
--            rows={[row]}
--            onColumnsUpdate={mockedOnColumnUpdate}
--            onRowsUpdate={_.identity}
--            handlerConfiguration={[
--              {
--                group: "COLUMNS",
--                items: [{ name: "Delete", type: TableOperation.ColumnDelete }],
--              },
--            ]}
--          />
+-          wrapComponentInContext(
+-            <Table
+-              columns={[firstColumn, secondColumn]}
+-              rows={[row]}
+-              onColumnsUpdate={mockedOnColumnUpdate}
+-              onRowsUpdate={_.identity}
+-              handlerConfiguration={[
+-                {
+-                  group: "COLUMNS",
+-                  items: [{ name: "Delete", type: TableOperation.ColumnDelete }],
+-                },
+-              ]}
+-            />
+-          )
 -        ).wrapper
 -      );
 -      await openContextMenu(container.querySelector(expressionCell(0, 0))!);
@@ -4394,52 +4531,45 @@ index 7dfb265..0000000
 -      const row: DataRecord = {};
 -      row[columnName] = "value";
 -      const columns = [{ label: columnName, accessor: columnName, dataType: DataType.Undefined } as ColumnInstance];
--      const onRowsUpdate = (
--        rows: DataRecord[],
--        operation?: TableOperation,
--        rowIndex?: number,
--        columns?: ReactTableColumn[]
--      ) => {
+-      const onRowsUpdate = ({ rows }: RowsUpdateArgs) => {
 -        _.identity(rows);
 -      };
 -      const mockedOnRowsUpdate = jest.fn(onRowsUpdate);
 -
 -      const { container, baseElement } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={columns}
--            rows={[row]}
--            onColumnsUpdate={_.identity}
--            onRowsUpdate={mockedOnRowsUpdate}
--            handlerConfiguration={[
--              {
--                group: "ROWS",
--                items: [{ name: "Insert row above", type: TableOperation.RowInsertAbove }],
--              },
--            ]}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <Table
+-              columns={columns}
+-              rows={[row]}
+-              onColumnsUpdate={_.identity}
+-              onRowsUpdate={mockedOnRowsUpdate}
+-              handlerConfiguration={[
+-                {
+-                  group: "ROWS",
+-                  items: [{ name: "Insert row above", type: TableOperation.RowInsertAbove }],
+-                },
+-              ]}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
+-
 -      await openContextMenu(container.querySelector(expressionCell(0, 1))!);
 -      await selectMenuEntryIfNotDisabled(baseElement, "Insert row above");
 -
--      expect(mockedOnRowsUpdate).toHaveBeenCalledWith(
--        [{ width: DEFAULT_MIN_WIDTH }, row],
--        TableOperation.RowInsertAbove,
--        0,
--        columns
--      );
+-      expect(mockedOnRowsUpdate).toHaveBeenCalledWith({
+-        rows: [expect.objectContaining({ width: DEFAULT_MIN_WIDTH }), expect.objectContaining(row)],
+-        operation: TableOperation.RowInsertAbove,
+-        rowIndex: 0,
+-        columns,
+-      });
 -    });
 -
 -    test("should trigger onRowsUpdate, when inserting a new row below", async () => {
 -      const row: DataRecord = {};
 -      row[columnName] = "value";
--      const onRowsUpdate = (
--        rows: DataRecord[],
--        operation?: TableOperation,
--        rowIndex?: number,
--        columns?: ReactTableColumn[]
--      ) => {
+-      const onRowsUpdate = ({ rows }: RowsUpdateArgs) => {
 -        _.identity(rows);
 -      };
 -      const mockedOnRowsUpdate = jest.fn(onRowsUpdate);
@@ -4447,29 +4577,31 @@ index 7dfb265..0000000
 -
 -      const { container, baseElement } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={columns}
--            rows={[row]}
--            onColumnsUpdate={_.identity}
--            onRowsUpdate={mockedOnRowsUpdate}
--            handlerConfiguration={[
--              {
--                group: "ROWS",
--                items: [{ name: "Insert row below", type: TableOperation.RowInsertBelow }],
--              },
--            ]}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <Table
+-              columns={columns}
+-              rows={[row]}
+-              onColumnsUpdate={_.identity}
+-              onRowsUpdate={mockedOnRowsUpdate}
+-              handlerConfiguration={[
+-                {
+-                  group: "ROWS",
+-                  items: [{ name: "Insert row below", type: TableOperation.RowInsertBelow }],
+-                },
+-              ]}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -      await openContextMenu(container.querySelector(expressionCell(0, 1))!);
 -      await selectMenuEntryIfNotDisabled(baseElement, "Insert row below");
 -
--      expect(mockedOnRowsUpdate).toHaveBeenCalledWith(
--        [row, { width: DEFAULT_MIN_WIDTH }],
--        TableOperation.RowInsertBelow,
--        0,
--        columns
--      );
+-      expect(mockedOnRowsUpdate).toHaveBeenCalledWith({
+-        rows: [expect.objectContaining(row), expect.objectContaining({ width: DEFAULT_MIN_WIDTH })],
+-        operation: TableOperation.RowInsertBelow,
+-        rowIndex: 0,
+-        columns,
+-      });
 -    });
 -
 -    test("should trigger onRowsUpdate, when deleting a row", async () => {
@@ -4477,12 +4609,7 @@ index 7dfb265..0000000
 -      const secondRow: DataRecord = {};
 -      firstRow[columnName] = "value";
 -      secondRow[columnName] = "another value";
--      const onRowsUpdate = (
--        rows: DataRecord[],
--        operation?: TableOperation,
--        rowIndex?: number,
--        columns?: ReactTableColumn[]
--      ) => {
+-      const onRowsUpdate = ({ rows }: RowsUpdateArgs) => {
 -        _.identity(rows);
 -      };
 -      const mockedOnRowsUpdate = jest.fn(onRowsUpdate);
@@ -4490,24 +4617,31 @@ index 7dfb265..0000000
 -
 -      const { container, baseElement } = render(
 -        usingTestingBoxedExpressionI18nContext(
--          <Table
--            columns={columns}
--            rows={[firstRow, secondRow]}
--            onColumnsUpdate={_.identity}
--            onRowsUpdate={mockedOnRowsUpdate}
--            handlerConfiguration={[
--              {
--                group: "ROWS",
--                items: [{ name: "Delete", type: TableOperation.RowDelete }],
--              },
--            ]}
--          />
+-          usingTestingBoxedExpressionProviderContext(
+-            <Table
+-              columns={columns}
+-              rows={[firstRow, secondRow]}
+-              onColumnsUpdate={_.identity}
+-              onRowsUpdate={mockedOnRowsUpdate}
+-              handlerConfiguration={[
+-                {
+-                  group: "ROWS",
+-                  items: [{ name: "Delete", type: TableOperation.RowDelete }],
+-                },
+-              ]}
+-            />
+-          ).wrapper
 -        ).wrapper
 -      );
 -      await openContextMenu(container.querySelector(expressionCell(0, 1))!);
 -      await selectMenuEntryIfNotDisabled(baseElement, "Delete");
 -
--      expect(mockedOnRowsUpdate).toHaveBeenCalledWith([secondRow], TableOperation.RowDelete, 0, columns);
+-      expect(mockedOnRowsUpdate).toHaveBeenCalledWith({
+-        rows: [secondRow],
+-        operation: TableOperation.RowDelete,
+-        rowIndex: 0,
+-        columns,
+-      });
 -    });
 -  });
 -});
@@ -4637,10 +4771,10 @@ index 4b00a5a..0000000
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/Table/common/CopyAndPasteUtils.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/Table/common/CopyAndPasteUtils.test.tsx
 deleted file mode 100644
-index d9f8121..0000000
+index 12457b0..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/Table/common/CopyAndPasteUtils.test.tsx
 +++ /dev/null
-@@ -1,194 +0,0 @@
+@@ -1,197 +0,0 @@
 -/*
 - * Copyright 2021 Red Hat, Inc. and/or its affiliates.
 - *
@@ -4661,7 +4795,8 @@ index d9f8121..0000000
 -import * as React from "react";
 -import { act } from "react-dom/test-utils";
 -import { DataRecord } from "react-table";
--import { iterableValue, paste, pasteOnTable } from "./../../../../../showcase/src/lib/components/Table/common";
+-import { iterableValue, paste, pasteOnTable } from "../../../../components/Table/common";
+-import { wrapComponentInContext } from "../../test-utils";
 -
 -describe("CopyAndPasteUtils", () => {
 -  describe("pasteOnTable", () => {
@@ -4801,43 +4936,45 @@ index d9f8121..0000000
 -
 -  describe("paste", () => {
 -    beforeEach(() => {
--      document.dispatchEvent = jest.fn();
+-      document.body.dispatchEvent = jest.fn();
 -
 -      const container = render(
--        <>
--          <table className="table-component table-event-0">
--            <tbody>
--              <tr>
--                <td>A</td>
--                <td>B</td>
--                <td>C</td>
--              </tr>
--              <tr>
--                <td>D</td>
--                <td className="ref">E</td>
--                <td>F</td>
--              </tr>
--              <tr>
--                <td>G</td>
--                <td>H</td>
--                <td>I</td>
--              </tr>
--            </tbody>
--          </table>
--        </>
+-        wrapComponentInContext(
+-          <>
+-            <table className="table-component table-event-0">
+-              <tbody>
+-                <tr>
+-                  <td>A</td>
+-                  <td>B</td>
+-                  <td>C</td>
+-                </tr>
+-                <tr>
+-                  <td>D</td>
+-                  <td className="ref">E</td>
+-                  <td>F</td>
+-                </tr>
+-                <tr>
+-                  <td>G</td>
+-                  <td>H</td>
+-                  <td>I</td>
+-                </tr>
+-              </tbody>
+-            </table>
+-          </>
+-        )
 -      ).container;
 -
--      paste("Z\tZ\nZ\tZ", container.querySelector(".ref")!);
+-      paste("Z\tZ\nZ\tZ", container.querySelector(".ref")!, document.body);
 -    });
 -
 -    test("dispatches paste event", () => {
--      expect(document.dispatchEvent).toBeCalled();
+-      expect(document.body.dispatchEvent).toBeCalled();
 -    });
 -  });
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/Table/common/TableUtils.test.tsx b/node_modules/boxed-expression-component/src/__tests__/components/Table/common/TableUtils.test.tsx
 deleted file mode 100644
-index 87aa6a9..0000000
+index 4dd7042..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/Table/common/TableUtils.test.tsx
 +++ /dev/null
 @@ -1,115 +0,0 @@
@@ -4859,7 +4996,7 @@ index 87aa6a9..0000000
 -
 -import { render } from "@testing-library/react";
 -import * as React from "react";
--import { getCellCoordinates, getCellTableId } from "./../../../../../showcase/src/lib/components/Table/common";
+-import { getCellCoordinates, getCellTableId } from "../../../../components/Table/common";
 -
 -describe("TableUtils", () => {
 -  describe("getCellCoordinates", () => {
@@ -4958,10 +5095,10 @@ index 87aa6a9..0000000
 -});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/components/test-utils.tsx b/node_modules/boxed-expression-component/src/__tests__/components/test-utils.tsx
 deleted file mode 100644
-index 1a8b6ad..0000000
+index ed391e7..0000000
 --- a/node_modules/boxed-expression-component/src/__tests__/components/test-utils.tsx
 +++ /dev/null
-@@ -1,167 +0,0 @@
+@@ -1,183 +0,0 @@
 -/*
 - * Copyright 2020 Red Hat, Inc. and/or its affiliates.
 - *
@@ -4988,7 +5125,6 @@ index 1a8b6ad..0000000
 -} from "../../i18n";
 -import { act } from "react-dom/test-utils";
 -import { fireEvent } from "@testing-library/react";
--import { resetId } from "react-id-generator";
 -import { BoxedExpressionGlobalContext } from "../../context";
 -import { DataType } from "../../api";
 -import { BoxedExpressionProvider, BoxedExpressionProviderProps } from "../../components";
@@ -5027,11 +5163,14 @@ index 1a8b6ad..0000000
 -  ctx?: Partial<BoxedExpressionProviderProps>
 -) {
 -  const usedCtx: BoxedExpressionProviderProps = {
+-    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
 -    expressionDefinition: {},
 -    pmmlParams: [
 -      {
 -        document: "document",
--        modelsFromDocument: [{ model: "model", parametersFromModel: [{ name: "p-1", dataType: DataType.Number }] }],
+-        modelsFromDocument: [
+-          { model: "model", parametersFromModel: [{ id: "p1", name: "p-1", dataType: DataType.Number }] },
+-        ],
 -      },
 -    ],
 -    isRunnerTable: false,
@@ -5042,6 +5181,7 @@ index 1a8b6ad..0000000
 -    ctx: usedCtx,
 -    wrapper: (
 -      <BoxedExpressionProvider
+-        decisionNodeId={usedCtx.decisionNodeId}
 -        expressionDefinition={usedCtx.expressionDefinition}
 -        pmmlParams={usedCtx.pmmlParams}
 -        isRunnerTable={false}
@@ -5056,15 +5196,18 @@ index 1a8b6ad..0000000
 -  return (
 -    <BoxedExpressionGlobalContext.Provider
 -      value={{
+-        decisionNodeId: "_00000000-0000-0000-0000-000000000000",
 -        pmmlParams: [
 -          {
 -            document: "document",
--            modelsFromDocument: [{ model: "model", parametersFromModel: [{ name: "p-1", dataType: DataType.Number }] }],
+-            modelsFromDocument: [
+-              { model: "model", parametersFromModel: [{ id: "p1", name: "p-1", dataType: DataType.Number }] },
+-            ],
 -          },
 -        ],
 -        supervisorHash: "",
 -        setSupervisorHash: jest.fn,
--        boxedExpressionEditorRef: { current: document.body as HTMLDivElement },
+-        editorRef: { current: document.body as HTMLDivElement },
 -        currentlyOpenedHandlerCallback: jest.fn,
 -        setCurrentlyOpenedHandlerCallback: jest.fn,
 -      }}
@@ -5104,16 +5247,30 @@ index 1a8b6ad..0000000
 -  await activateNameAndDataTypePopover(triggerPoint);
 -  const inputElement = baseElement.querySelector(inputSelector)! as HTMLInputElement;
 -  inputElement.value = newName;
--  fireEvent.change(inputElement, {
--    target: { value: newName },
+-  await act(async () => {
+-    fireEvent.change(inputElement, {
+-      target: { value: newName },
+-    });
+-    await flushPromises();
+-    jest.runAllTimers();
 -  });
--  fireEvent.blur(inputElement);
+-  await act(async () => {
+-    fireEvent.blur(inputElement);
+-    await flushPromises();
+-    jest.runAllTimers();
+-  });
 -}
 -
 -export const contextEntry = (container: Element, index: number): Element | null =>
 -  container.querySelector(`table tbody tr:nth-of-type(${index})`);
 -
--export const checkEntryContent = (entry: Element | null, entryRecordInfo: { name: string; dataType: string }): void => {
+-export const checkEntryContent = (
+-  entry: Element | null,
+-  entryRecordInfo: { id?: string; name: string; dataType: string }
+-): void => {
+-  if (entryRecordInfo.id) {
+-    expect(entry?.querySelector(".entry-info")).toHaveClass(entryRecordInfo.id);
+-  }
 -  expect(entry).toContainHTML(entryRecordInfo.name);
 -  expect(entry).toContainHTML(entryRecordInfo.dataType);
 -};
@@ -5125,10 +5282,6 @@ index 1a8b6ad..0000000
 -export const checkEntryLogicType = (entry: Element | null, cssClass: string): void => {
 -  expect(entry?.querySelector(".entry-expression")?.firstChild?.firstChild).toHaveClass(cssClass);
 -};
--
--beforeEach(() => {
--  resetId();
--});
 diff --git a/node_modules/boxed-expression-component/src/__tests__/test-setup.ts b/node_modules/boxed-expression-component/src/__tests__/test-setup.ts
 deleted file mode 100644
 index 8880774..0000000
@@ -5155,7 +5308,7 @@ index 8880774..0000000
 -import "jest-webextension-mock";
 -import "@testing-library/jest-dom";
 diff --git a/node_modules/boxed-expression-component/src/components/BoxedExpressionEditor/BoxedExpressionEditor.tsx b/node_modules/boxed-expression-component/src/components/BoxedExpressionEditor/BoxedExpressionEditor.tsx
-index 9d31ad8..c0bef9c 100644
+index 634cf3f..e5a2b3b 100644
 --- a/node_modules/boxed-expression-component/src/components/BoxedExpressionEditor/BoxedExpressionEditor.tsx
 +++ b/node_modules/boxed-expression-component/src/components/BoxedExpressionEditor/BoxedExpressionEditor.tsx
 @@ -14,7 +14,7 @@
@@ -5167,21 +5320,8 @@ index 9d31ad8..c0bef9c 100644
  import * as React from "react";
  import { useCallback, useEffect, useMemo, useState } from "react";
  import { ExpressionProps, PMMLParams } from "../../api";
-diff --git a/node_modules/boxed-expression-component/src/components/InvocationExpression/InvocationExpression.tsx b/node_modules/boxed-expression-component/src/components/InvocationExpression/InvocationExpression.tsx
-index 52b3796..6ac385f 100644
---- a/node_modules/boxed-expression-component/src/components/InvocationExpression/InvocationExpression.tsx
-+++ b/node_modules/boxed-expression-component/src/components/InvocationExpression/InvocationExpression.tsx
-@@ -243,7 +243,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = (i
-         skipLastHeaderGroup={true}
-         defaultCell={defaultCell}
-         columns={columns}
--        rows={(rows ?? []) as DataRecord[]}
-+        rows={(rows ?? []) as unknown as DataRecord[]}
-         onColumnsUpdate={onColumnsUpdate}
-         onRowAdding={onRowAdding}
-         onRowsUpdate={setRowsCallback}
 diff --git a/node_modules/boxed-expression-component/src/components/Table/EditableCell.tsx b/node_modules/boxed-expression-component/src/components/Table/EditableCell.tsx
-index 28b5000..3f9cc29 100644
+index 20c33ce..b994f17 100644
 --- a/node_modules/boxed-expression-component/src/components/Table/EditableCell.tsx
 +++ b/node_modules/boxed-expression-component/src/components/Table/EditableCell.tsx
 @@ -14,8 +14,8 @@
@@ -5195,21 +5335,8 @@ index 28b5000..3f9cc29 100644
  import "monaco-editor/dev/vs/editor/editor.main.css";
  import * as React from "react";
  import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-diff --git a/node_modules/boxed-expression-component/src/components/Table/Table.css b/node_modules/boxed-expression-component/src/components/Table/Table.css
-index 606737a..48a8d8b 100644
---- a/node_modules/boxed-expression-component/src/components/Table/Table.css
-+++ b/node_modules/boxed-expression-component/src/components/Table/Table.css
-@@ -100,7 +100,7 @@
-   border-style: solid;
-   padding: 1.1em 0;
-   text-align: center;
--  overflow: hidden;
-+  overflow: visible;
- }
- 
- .expression-container .table-component table tbody td + td {
 diff --git a/node_modules/boxed-expression-component/src/i18n/BoxedExpressionEditorI18n.ts b/node_modules/boxed-expression-component/src/i18n/BoxedExpressionEditorI18n.ts
-index 566be1d..9226bd5 100644
+index d019c88..2b8aa20 100644
 --- a/node_modules/boxed-expression-component/src/i18n/BoxedExpressionEditorI18n.ts
 +++ b/node_modules/boxed-expression-component/src/i18n/BoxedExpressionEditorI18n.ts
 @@ -14,7 +14,7 @@
