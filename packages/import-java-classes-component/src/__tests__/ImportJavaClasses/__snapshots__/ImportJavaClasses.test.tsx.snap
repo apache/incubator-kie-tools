@@ -92,6 +92,9 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
               <h2
                 aria-label="Import Java classes"
                 class="pf-c-title pf-m-3xl pf-c-wizard__title"
+                data-ouia-component-id="OUIA-Generated-Title-11"
+                data-ouia-component-type="PF4/Title"
+                data-ouia-safe="true"
                 id="pf-wizard-title-4"
               >
                 Import Java classes
@@ -221,7 +224,7 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                                 aria-label="Details"
                                 aria-labelledby="simple-node0 expand-toggle0"
                                 class="pf-c-button pf-m-plain pf-m-expanded"
-                                data-ouia-component-id="OUIA-Generated-Button-plain-9"
+                                data-ouia-component-id="OUIA-Generated-Button-plain-1"
                                 data-ouia-component-type="PF4/Button"
                                 data-ouia-safe="true"
                                 id="expand-toggle0"
@@ -333,7 +336,7 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                                 aria-label="Details"
                                 aria-labelledby="simple-node1 expand-toggle1"
                                 class="pf-c-button pf-m-plain pf-m-expanded"
-                                data-ouia-component-id="OUIA-Generated-Button-plain-10"
+                                data-ouia-component-id="OUIA-Generated-Button-plain-2"
                                 data-ouia-component-type="PF4/Button"
                                 data-ouia-safe="true"
                                 id="expand-toggle1"
@@ -562,7 +565,7 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                 aria-disabled="false"
                 aria-label="Close"
                 class="pf-c-button pf-m-plain pf-c-wizard__close"
-                data-ouia-component-id="OUIA-Generated-Button-plain-11"
+                data-ouia-component-id="OUIA-Generated-Button-plain-9"
                 data-ouia-component-type="PF4/Button"
                 data-ouia-safe="true"
                 type="button"
@@ -584,6 +587,9 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
               <h2
                 aria-label="Import Java classes"
                 class="pf-c-title pf-m-3xl pf-c-wizard__title"
+                data-ouia-component-id="OUIA-Generated-Title-13"
+                data-ouia-component-type="PF4/Title"
+                data-ouia-safe="true"
                 id="pf-wizard-title-5"
               >
                 Import Java classes
@@ -713,7 +719,7 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                                 aria-label="Details"
                                 aria-labelledby="simple-node0 expand-toggle0"
                                 class="pf-c-button pf-m-plain pf-m-expanded"
-                                data-ouia-component-id="OUIA-Generated-Button-plain-15"
+                                data-ouia-component-id="OUIA-Generated-Button-plain-5"
                                 data-ouia-component-type="PF4/Button"
                                 data-ouia-safe="true"
                                 id="expand-toggle0"
@@ -825,7 +831,7 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                                 aria-label="Details"
                                 aria-labelledby="simple-node1 expand-toggle1"
                                 class="pf-c-button pf-m-plain pf-m-expanded"
-                                data-ouia-component-id="OUIA-Generated-Button-plain-16"
+                                data-ouia-component-id="OUIA-Generated-Button-plain-6"
                                 data-ouia-component-type="PF4/Button"
                                 data-ouia-safe="true"
                                 id="expand-toggle1"
@@ -1073,7 +1079,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                 aria-disabled="false"
                 aria-label="Close"
                 class="pf-c-button pf-m-plain pf-c-wizard__close"
-                data-ouia-component-id="OUIA-Generated-Button-plain-25"
+                data-ouia-component-id="OUIA-Generated-Button-plain-13"
                 data-ouia-component-type="PF4/Button"
                 data-ouia-safe="true"
                 type="button"
@@ -1095,6 +1101,9 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
               <h2
                 aria-label="Import Java classes"
                 class="pf-c-title pf-m-3xl pf-c-wizard__title"
+                data-ouia-component-id="OUIA-Generated-Title-17"
+                data-ouia-component-type="PF4/Title"
+                data-ouia-safe="true"
                 id="pf-wizard-title-7"
               >
                 Import Java classes
@@ -1226,7 +1235,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                                 aria-label="Details"
                                 aria-labelledby="simple-node0 expand-toggle0"
                                 class="pf-c-button pf-m-plain pf-m-expanded"
-                                data-ouia-component-id="OUIA-Generated-Button-plain-29"
+                                data-ouia-component-id="OUIA-Generated-Button-plain-15"
                                 data-ouia-component-type="PF4/Button"
                                 data-ouia-safe="true"
                                 id="expand-toggle0"
@@ -1338,7 +1347,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                                 aria-label="Details"
                                 aria-labelledby="simple-node1 expand-toggle1"
                                 class="pf-c-button pf-m-plain pf-m-expanded"
-                                data-ouia-component-id="OUIA-Generated-Button-plain-30"
+                                data-ouia-component-id="OUIA-Generated-Button-plain-16"
                                 data-ouia-component-type="PF4/Button"
                                 data-ouia-safe="true"
                                 id="expand-toggle1"
@@ -1579,6 +1588,9 @@ exports[`ImportJavaClasses component tests Should search box with results works 
               <h2
                 aria-label="Import Java classes"
                 class="pf-c-title pf-m-3xl pf-c-wizard__title"
+                data-ouia-component-id="OUIA-Generated-Title-7"
+                data-ouia-component-type="PF4/Title"
+                data-ouia-safe="true"
                 id="pf-wizard-title-2"
               >
                 Import Java classes
@@ -1938,6 +1950,9 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
               <h2
                 aria-label="Import Java classes"
                 class="pf-c-title pf-m-3xl pf-c-wizard__title"
+                data-ouia-component-id="OUIA-Generated-Title-1"
+                data-ouia-component-type="PF4/Title"
+                data-ouia-safe="true"
                 id="pf-wizard-title-0"
               >
                 Import Java classes
@@ -2105,6 +2120,9 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
                         </svg>
                         <h6
                           class="pf-c-title pf-m-md"
+                          data-ouia-component-id="OUIA-Generated-Title-2"
+                          data-ouia-component-type="PF4/Title"
+                          data-ouia-safe="true"
                         >
                           No Java classes selected
                         </h6>

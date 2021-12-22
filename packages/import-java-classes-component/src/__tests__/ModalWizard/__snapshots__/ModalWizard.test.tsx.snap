@@ -92,6 +92,9 @@ exports[`ModalWizard component tests ModalWizard Button component tests Should s
               <h2
                 aria-label="wTitle"
                 class="pf-c-title pf-m-3xl pf-c-wizard__title"
+                data-ouia-component-id="OUIA-Generated-Title-1"
+                data-ouia-component-type="PF4/Title"
+                data-ouia-safe="true"
                 id="pf-wizard-title-0"
               >
                 wTitle

@@ -24,6 +24,9 @@ exports[`EmptyStateWidget component tests EmptyStateWidget component tests 1`] =
       </svg>
       <h6
         class="pf-c-title pf-m-md"
+        data-ouia-component-id="OUIA-Generated-Title-1"
+        data-ouia-component-type="PF4/Title"
+        data-ouia-safe="true"
       >
         Title Text
       </h6>
