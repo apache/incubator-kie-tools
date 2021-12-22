@@ -17,6 +17,7 @@
 import { Page, PageHeaderToolsItem } from "@patternfly/react-core/dist/js/components/Page";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import * as React from "react";
+import { useState } from "react";
 import { useRoutes } from "../navigation/Hooks";
 import { useHistory } from "react-router";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
@@ -33,8 +34,8 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   return (
     <Page
       header={
-        <Masthead aria-label={"Page header"}>
-          <MastheadMain>
+        <Masthead aria-label={"Page header"} display={{ default: "stack" }}>
+          <MastheadMain style={{ justifyContent: "space-between" }}>
             <PageHeaderToolsItem className={"pf-l-flex"}>
               <MastheadBrand
                 onClick={() => history.push({ pathname: routes.home.path({}) })}
@@ -56,24 +57,24 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
                 </Flex>
               </MastheadBrand>
             </PageHeaderToolsItem>
+            <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
+              <FlexItem>
+                <PageHeaderToolsItem>
+                  <OpenshiftDeploymentsDropdown />
+                </PageHeaderToolsItem>
+              </FlexItem>
+              <FlexItem>
+                <PageHeaderToolsItem>
+                  <SettingsButton />
+                </PageHeaderToolsItem>
+              </FlexItem>
+              <FlexItem>
+                <PageHeaderToolsItem>
+                  <KieToolingExtendedServicesIcon />
+                </PageHeaderToolsItem>
+              </FlexItem>
+            </Flex>
           </MastheadMain>
-          <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
-            <FlexItem>
-              <PageHeaderToolsItem>
-                <OpenshiftDeploymentsDropdown />
-              </PageHeaderToolsItem>
-            </FlexItem>
-            <FlexItem>
-              <PageHeaderToolsItem>
-                <SettingsButton />
-              </PageHeaderToolsItem>
-            </FlexItem>
-            <FlexItem>
-              <PageHeaderToolsItem>
-                <KieToolingExtendedServicesIcon />
-              </PageHeaderToolsItem>
-            </FlexItem>
-          </Flex>
         </Masthead>
       }
     >

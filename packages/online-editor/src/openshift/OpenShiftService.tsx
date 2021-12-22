@@ -24,7 +24,7 @@ import {
   ListDeployments,
 } from "./resources/Deployment";
 import { GetProject } from "./resources/Project";
-import { KOGITO_CREATED_BY, KOGITO_URI, Resource, ResourceFetch } from "./resources/Resource";
+import { KOGITO_CREATED_BY, KOGITO_URI, KOGITO_WORKSPACE_NAME, Resource, ResourceFetch } from "./resources/Resource";
 import { CreateRoute, DeleteRoute, ListRoutes, Route, Routes } from "./resources/Route";
 import { CreateService, DeleteService } from "./resources/Service";
 import { isConfigValid, OpenShiftSettingsConfig } from "./OpenShiftSettingsConfig";
@@ -66,6 +66,7 @@ export class OpenShiftService {
       host: config.host,
       namespace: config.namespace,
       token: config.token,
+      createdBy: DEFAULT_CREATED_BY,
     };
 
     const deployments = await this.fetchResource<Deployments>(new ListDeployments(commonArgs));
@@ -74,9 +75,12 @@ export class OpenShiftService {
       return [];
     }
 
-    const routes = await this.fetchResource<Routes>(new ListRoutes(commonArgs));
+    const routes = (await this.fetchResource<Routes>(new ListRoutes(commonArgs))).items.filter(
+      (route: Route) => route.metadata.labels[KOGITO_CREATED_BY] === DEFAULT_CREATED_BY
+    );
+
     const uploadStatuses = await Promise.all(
-      routes.items
+      routes
         .map((route) => this.composeBaseUrl(route))
         .map(async (url) => ({ url: url, uploadStatus: await getUploadStatus({ baseUrl: url }) }))
     );
@@ -86,10 +90,10 @@ export class OpenShiftService {
         (deployment: Deployment) =>
           KOGITO_CREATED_BY in deployment.metadata.labels &&
           deployment.metadata.labels[KOGITO_CREATED_BY] === DEFAULT_CREATED_BY &&
-          routes.items.some((route: Route) => route.metadata.name === deployment.metadata.name)
+          routes.some((route: Route) => route.metadata.name === deployment.metadata.name)
       )
       .map((deployment: Deployment) => {
-        const route = routes.items.find((route: Route) => route.metadata.name === deployment.metadata.name)!;
+        const route = routes.find((route: Route) => route.metadata.name === deployment.metadata.name)!;
         const baseUrl = this.composeBaseUrl(route);
         const uploadStatus = uploadStatuses.find((status) => status.url === baseUrl)!.uploadStatus;
         return {
@@ -98,12 +102,14 @@ export class OpenShiftService {
           baseUrl: baseUrl,
           creationTimestamp: new Date(deployment.metadata.creationTimestamp),
           state: this.extractDeploymentStateWithUploadStatus(deployment, uploadStatus),
+          workspaceName: deployment.metadata.annotations[KOGITO_WORKSPACE_NAME],
         };
       });
   }
 
   public async deploy(args: {
     targetFilePath: string;
+    workspaceName: string;
     workspaceZipBlob: Blob;
     config: OpenShiftSettingsConfig;
     onlineEditorUrl: (baseUrl: string) => string;
@@ -113,6 +119,7 @@ export class OpenShiftService {
       namespace: args.config.namespace,
       token: args.config.token,
       resourceName: `${this.RESOURCE_NAME_PREFIX}-${this.generateRandomId()}`,
+      createdBy: DEFAULT_CREATED_BY,
     };
 
     const rollbacks = [new DeleteRoute(commonArgs), new DeleteService(commonArgs)];
@@ -125,8 +132,8 @@ export class OpenShiftService {
       new CreateDeployment({
         ...commonArgs,
         uri: args.targetFilePath,
-        createdBy: DEFAULT_CREATED_BY,
         baseUrl: baseUrl,
+        workspaceName: args.workspaceName,
       }),
       rollbacks
     );

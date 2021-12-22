@@ -1,3 +1,5 @@
+// +build headless
+
 /*
  * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
@@ -14,23 +16,22 @@
  * limitations under the License.
  */
 
-export class KieToolingExtendedServicesBridge {
-  private readonly KIE_TOOLING_EXTENDED_SERVICES_PING: string;
+package kogito
 
-  public constructor(private readonly baseUrl: string) {
-    this.KIE_TOOLING_EXTENDED_SERVICES_PING = `${this.baseUrl}/ping`;
-  }
+type KogitoSystray struct {
+	controller *Proxy
+}
 
-  public async check(): Promise<boolean> {
-    const response = await fetch(this.baseUrl, { method: "OPTIONS" });
-    return response.status < 300;
-  }
+func (self *KogitoSystray) Run() {
+	var exit = make(chan bool)
+	self.controller.Start()
+	<-exit
+}
 
-  public async version(): Promise<string> {
-    const response = await fetch(this.KIE_TOOLING_EXTENDED_SERVICES_PING, {
-      method: "GET",
-    });
-    const json = await response.json();
-    return json.App.Version;
-  }
+func (self *KogitoSystray) Refresh() {
+	// nothing to do
+}
+
+func (self *KogitoSystray) SetLoading() {
+	// nothing to do
 }

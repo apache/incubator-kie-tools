@@ -177,7 +177,7 @@ export function OpenShiftSettingsTabWizardConfig(props: {
                 </TextContent>
               </ListItem>
             </List>
-            <Form isHorizontal={true} className="pf-u-mt-md">
+            <Form isHorizontal={true} className="pf-u-mt-md" onSubmit={(e) => e.preventDefault()}>
               <FormGroup
                 fieldId={"dmn-dev-sandbox-config-namespace"}
                 label={i18n.terms.namespace}

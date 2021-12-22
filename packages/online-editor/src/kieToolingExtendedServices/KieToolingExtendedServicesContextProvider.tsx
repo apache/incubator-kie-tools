@@ -20,7 +20,11 @@ import { getCookie, setCookie } from "../cookies";
 import { KieToolingExtendedServicesBridge } from "./KieToolingExtendedServicesBridge";
 import { DependentFeature, KieToolingExtendedServicesContext } from "./KieToolingExtendedServicesContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
-import { KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME } from "../settings/SettingsContext";
+import {
+  ExtendedServicesConfig,
+  KIE_TOOLING_EXTENDED_SERVICES_HOST_COOKIE_NAME,
+  KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME,
+} from "../settings/SettingsContext";
 import { KieToolingExtendedServicesModal } from "./KieToolingExtendedServicesModal";
 
 interface Props {
@@ -29,6 +33,7 @@ interface Props {
 
 const KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME = 1000;
 
+export const KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_HOST = "http://localhost";
 export const KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT = "21345";
 
 export function KieToolingExtendedServicesContextProvider(props: Props) {
@@ -36,29 +41,34 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
   const [isModalOpen, setModalOpen] = useState(false);
   const [installTriggeredBy, setInstallTriggeredBy] = useState<DependentFeature | undefined>(undefined);
   const [outdated, setOutdated] = useState(false);
-  const [port, setPort] = useState(KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT);
-
-  const baseUrl = useMemo(() => `http://localhost:${port}`, [port]);
-  const bridge = useMemo(() => new KieToolingExtendedServicesBridge(port), [port]);
+  const [config, setConfig] = useState(
+    new ExtendedServicesConfig(KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_HOST, KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT)
+  );
+  const bridge = useMemo(() => new KieToolingExtendedServicesBridge(config.buildUrl()), [config]);
   const version = useMemo(
     () => process.env.WEBPACK_REPLACE__kieToolingExtendedServicesCompatibleVersion ?? "0.0.0",
     []
   );
 
-  const saveNewPort = useCallback((newPort: string) => {
-    setPort(newPort);
-    setCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME, newPort);
+  const saveNewConfig = useCallback((newConfig: ExtendedServicesConfig) => {
+    setConfig(newConfig);
+    setCookie(KIE_TOOLING_EXTENDED_SERVICES_HOST_COOKIE_NAME, newConfig.host);
+    setCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME, newConfig.port);
   }, []);
 
   useEffect(() => {
+    const hostCookie =
+      getCookie(KIE_TOOLING_EXTENDED_SERVICES_HOST_COOKIE_NAME) ?? KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_HOST;
     const portCookie =
       getCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT;
-    new KieToolingExtendedServicesBridge(portCookie).check().then((checked) => {
+
+    const newConfig = new ExtendedServicesConfig(hostCookie, portCookie);
+    new KieToolingExtendedServicesBridge(newConfig.buildUrl()).check().then((checked) => {
       if (checked) {
-        saveNewPort(portCookie);
+        saveNewConfig(newConfig);
       }
     });
-  }, [saveNewPort]);
+  }, [saveNewConfig]);
 
   useEffect(() => {
     // Pooling to detect either if KieToolingExtendedServices is running or has stopped
@@ -99,8 +109,7 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
   const value = useMemo(
     () => ({
       status,
-      port,
-      baseUrl,
+      config,
       version,
       outdated,
       isModalOpen,
@@ -108,9 +117,9 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
       setStatus,
       setModalOpen,
       setInstallTriggeredBy,
-      saveNewPort,
+      saveNewConfig,
     }),
-    [baseUrl, installTriggeredBy, isModalOpen, outdated, port, saveNewPort, status, version]
+    [config, installTriggeredBy, isModalOpen, outdated, saveNewConfig, status, version]
   );
 
   return (

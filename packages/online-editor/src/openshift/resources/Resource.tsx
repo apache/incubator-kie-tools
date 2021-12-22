@@ -19,6 +19,7 @@ export interface ResourceArgs {
   namespace: string;
   token: string;
   resourceName?: string;
+  createdBy?: string;
 }
 
 export interface Resource {
@@ -28,12 +29,14 @@ export interface Resource {
     labels: Record<string, string>;
     annotations: Record<string, string>;
     creationTimestamp: string;
+    workspaceId: string;
   };
 }
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 export const KOGITO_CREATED_BY = "kogito.kie.org/created-by";
+export const KOGITO_WORKSPACE_NAME = "kogito.kie.org/workspace-name";
 export const KOGITO_URI = "kogito.kie.org/uri";
 export const JAVA_RUNTIME_VERSION = "openjdk-11-el7";
 

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
@@ -21,7 +22,6 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { basename } from "path";
-import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { OpenShiftDeployedModel, OpenShiftDeployedModelState } from "../../openshift/OpenShiftDeployedModel";
@@ -34,18 +34,24 @@ interface Props {
 export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
   const { i18n } = useOnlineI18n();
 
-  const filename = useMemo(() => {
-    const maxSize = 25;
-    const originalFilename = basename(props.deployment.uri);
-    const extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-    const name = originalFilename.replace(`.${extension}`, "");
+  const deploymentName = useMemo(() => {
+    const maxSize = 30;
 
-    if (name.length < maxSize) {
-      return originalFilename;
+    let name = props.deployment.workspaceName;
+    let extension = "";
+
+    if (!name) {
+      const originalFilename = basename(props.deployment.uri);
+      extension = ` ${originalFilename.substring(originalFilename.lastIndexOf("."))}`;
+      name = originalFilename.replace(extension, "");
     }
 
-    return `${name.substring(0, maxSize)}... .${extension}`;
-  }, [props.deployment.uri]);
+    if (name.length < maxSize) {
+      return name;
+    }
+
+    return `${name.substring(0, maxSize)}...${extension}`;
+  }, [props.deployment.uri, props.deployment.workspaceName]);
 
   const stateIcon = useMemo(() => {
     if (props.deployment.state === OpenShiftDeployedModelState.UP) {
@@ -119,7 +125,7 @@ export function DmnDevSandboxDeploymentDropdownItem(props: Props) {
       description={i18n.dmnDevSandbox.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}
       icon={stateIcon}
     >
-      {filename}
+      {deploymentName}
     </DropdownItem>
   );
 }
