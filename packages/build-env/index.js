@@ -370,7 +370,7 @@ module.exports = {
 
   stunnerEditors: {
     dmnLoader: {
-      wirePath: getOrDefault(ENV_VARS.DMN_LOADER__wirePath),
+      outputPath: getOrDefault(ENV_VARS.DMN_LOADER__wirePath),
     },
   },
 

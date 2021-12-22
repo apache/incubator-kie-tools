@@ -6,10 +6,11 @@
   "main": "src/index.tsx",
   "source": "src/index.tsx",
   "scripts": {
-    "build:dev": "webpack --config webpack.development.js",
-    "build:prod": "webpack --config webpack.production.js",
-    "build:watch": "webpack --config webpack.development.js --watch",
-    "lint": "eslint --ext .ts,.tsx,.js ./src/"
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "rimraf dist && webpack",
+    "watch": "webpack --watch --env live --env dev"
   },
   "dependencies": {
     "@kogito-tooling/boxed-expression-component": "0.0.0",

@@ -43,7 +43,7 @@ digraph G {
   "@kogito-tooling/uniforms-bootstrap4-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kogito-tooling/uniforms-patternfly-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tooling-core/i18n" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kogito-tooling/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tooling-core/operating-system" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tooling-core/vscode-java-code-completion" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kogito-tooling/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -113,7 +113,7 @@ digraph G {
   "@kie-tooling-core/guided-tour" -> "@kie-tooling-core/patternfly-base" [ style = "solid", color = "purple" ];
   "@kie-tooling-core/i18n" -> "@kogito-tooling/build-env" [ style = "dashed", color = "purple" ];
   "@kogito-tooling/i18n-common-dictionary" -> "@kie-tooling-core/i18n" [ style = "solid", color = "blue" ];
-  "import-java-classes-component" -> "@kogito-tooling/i18n-common-dictionary" [ style = "solid", color = "blue" ];
+  "@kogito-tooling/import-java-classes-component" -> "@kogito-tooling/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tooling-core/keyboard-shortcuts" -> "@kie-tooling-core/envelope-bus" [ style = "solid", color = "purple" ];
   "@kie-tooling-core/keyboard-shortcuts" -> "@kie-tooling-core/operating-system" [ style = "solid", color = "purple" ];
   "@kogito-tooling/kie-bc-editors" -> "@kie-tooling-core/editor" [ style = "solid", color = "blue" ];

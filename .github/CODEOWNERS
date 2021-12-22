@@ -1,7 +1,5 @@
 packages/stunner-editors/appformer-bom/ @yesamer
 
-packages/stunner-editors/bump_version.sh/ @yesamer
-
 packages/stunner-editors/docs/ @yesamer @jomarko
 
 packages/stunner-editors/drools-wb-bom/ @yesamer

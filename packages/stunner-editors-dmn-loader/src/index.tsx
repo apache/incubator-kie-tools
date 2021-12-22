@@ -31,9 +31,6 @@ import {
 import * as React from "react";
 import { useEffect, useState } from "react";
 import * as ReactDOM from "react-dom";
-import { setupWire } from "./wire";
-
-setupWire();
 
 const BoxedExpressionWrapper: React.FunctionComponent<BoxedExpressionEditorProps> = ({
   decisionNodeId,

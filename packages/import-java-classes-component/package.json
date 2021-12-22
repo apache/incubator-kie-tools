@@ -1,5 +1,5 @@
 {
-  "name": "import-java-classes-component",
+  "name": "@kogito-tooling/import-java-classes-component",
   "version": "0.0.0",
   "description": "This component import Java classes as DMN data types",
   "license": "Apache-2.0",
