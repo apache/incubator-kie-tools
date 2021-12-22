@@ -20,7 +20,7 @@ import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/M
 export type ResponsiveDropdownModalProps = {
   isOpen?: boolean;
   className?: string;
-  title?: string;
+  title: string;
   onClose?: () => void;
   children?: ReactNode;
 };
@@ -33,6 +33,7 @@ export function ResponsiveDropdownModal({ isOpen, onClose, title, children }: Re
       hasNoBodyWrapper={true}
       variant={ModalVariant.small}
       title={title}
+      aria-label={title}
       className="kogito--editor__responsive-dropdown-modal"
     >
       <div

@@ -37,29 +37,27 @@ export interface ResponsiveDropdownProps extends DropdownProps {
   title: string;
 }
 
-export function ResponsiveDropdown(args: ResponsiveDropdownProps) {
-  const isModal = useIsBelowBreakpoint(args.switchingBreakpoint || "sm");
+export function ResponsiveDropdown(props: ResponsiveDropdownProps) {
+  const isModal = useIsBelowBreakpoint(props.switchingBreakpoint || "sm");
 
   return (
     <ResponsiveDropdownContext.Provider value={{ isModal }}>
       {isModal ? (
         <>
-          {args.toggle}
-          <ResponsiveDropdownModal isOpen={args.isOpen} onClose={() => args.onClose?.()} title={args.title}>
-            <Dropdown {...args} isOpen={true} isFullHeight={true} toggle={<></>} style={{ width: "100%" }} />
+          {props.toggle}
+          <ResponsiveDropdownModal isOpen={props.isOpen} onClose={() => props.onClose?.()} title={props.title}>
+            <Dropdown {...props} isOpen={true} isFullHeight={true} toggle={<></>} style={{ width: "100%" }} />
           </ResponsiveDropdownModal>
         </>
       ) : (
         <Dropdown
-          {...args}
+          {...props}
           dropdownItems={[
-            <>
-              <DropdownItem isDisabled key="responsive-dropdown-title">
-                {args.title}
-              </DropdownItem>
-              <DropdownSeparator key="responsive-dropdown-separator" />
-              {args.dropdownItems}
-            </>,
+            <DropdownItem isDisabled key="responsive-dropdown-title">
+              {props.title}
+            </DropdownItem>,
+            <DropdownSeparator key="responsive-dropdown-separator" />,
+            props.dropdownItems,
           ]}
         />
       )}

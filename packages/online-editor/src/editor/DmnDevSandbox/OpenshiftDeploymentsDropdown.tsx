@@ -21,13 +21,7 @@ import { useOnlineI18n } from "../../i18n";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { SettingsTabs } from "../../settings/SettingsModalBody";
-import {
-  Dropdown,
-  DropdownGroup,
-  DropdownItem,
-  DropdownSeparator,
-  DropdownToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownItem, DropdownSeparator } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { DmnDevSandboxDeploymentDropdownItem } from "./DmnDevSandboxDeploymentDropdownItem";
 import { OpenshiftIcon } from "@patternfly/react-icons/dist/js/icons/openshift-icon";
@@ -35,9 +29,8 @@ import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/compo
 import { TopologyIcon } from "@patternfly/react-icons/dist/js/icons/topology-icon";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { ResponsiveDropdown } from "../../components/ResponsiveDropdown/ResponsiveDropdown";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { ResponsiveDropdownToggle } from "../../components/ResponsiveDropdown/ResponsiveDropdownToggle";
+import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
+import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
 
 export function OpenshiftDeploymentsDropdown() {
   const settings = useSettings();

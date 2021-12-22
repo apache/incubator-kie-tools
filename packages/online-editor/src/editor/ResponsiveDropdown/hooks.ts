@@ -1,5 +1,4 @@
-import { useCallback } from "react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 
 import global_breakpoint_xs from "@patternfly/react-tokens/dist/esm/global_breakpoint_xs";
 import global_breakpoint_sm from "@patternfly/react-tokens/dist/esm/global_breakpoint_sm";
@@ -23,59 +22,30 @@ const breakpoints: Record<Breakpoint, number> = {
   "2xl": getPxValue(global_breakpoint_2xl),
 };
 
-const breakpointOrder = Object.keys(breakpoints); // Since breakpoint keys are strings, the order is guaranteed.
-
-function throttle(func: (...args: any) => any, timeout: number) {
-  let ready = true;
-  return (...args: any) => {
-    if (!ready) {
-      return;
-    }
-
-    ready = false;
-    func(...args);
-    setTimeout(() => {
-      ready = true;
-    }, timeout);
-  };
-}
-
-const getBreakpointFromWidth = (width: number): Breakpoint => {
-  if (width > breakpoints["2xl"]) {
-    return "2xl";
-  } else if (width > breakpoints.xl) {
-    return "xl";
-  } else if (width > breakpoints.lg) {
-    return "lg";
-  } else if (width > breakpoints.md) {
-    return "md";
-  } else if (width > breakpoints.sm) {
-    return "sm";
-  }
-  return "xs";
-};
-
 export function useWindowWidth() {
   const [width, setWidth] = useState(() => window.innerWidth);
+  const throttle = useCallback((func: (...args: any) => any, timeout: number) => {
+    let ready = true;
+    return (...args: any) => {
+      if (!ready) {
+        return;
+      }
+
+      ready = false;
+      func(...args);
+      setTimeout(() => {
+        ready = true;
+      }, timeout);
+    };
+  }, []);
+  const getWidth = useMemo(() => throttle(() => setWidth(window.innerWidth), 200), [throttle]);
 
   useEffect(() => {
-    const getWidth = throttle(() => setWidth(window.innerWidth), 200);
     window.addEventListener("resize", getWidth);
     return () => window.removeEventListener("resize", getWidth);
-  }, []);
+  }, [getWidth]);
 
   return width;
-}
-
-export function useCurrentBreakpoint() {
-  const width = useWindowWidth();
-  const [breakpoint, setBreakpoint] = useState(() => getBreakpointFromWidth(width));
-
-  useEffect(() => {
-    setBreakpoint(getBreakpointFromWidth(width));
-  }, [width]);
-
-  return breakpoint;
 }
 
 export function useIsAboveBreakpoint(targetBreakpoint: Breakpoint) {

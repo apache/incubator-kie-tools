@@ -16,27 +16,25 @@
 
 import React from "react";
 import { DropdownToggle, DropdownToggleProps } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { ResponsiveDropdownContext } from "./ResponsiveDropdownContext";
+import { useResponsiveDropdownContext } from "./ResponsiveDropdownContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 
-export function ResponsiveDropdownToggle(args: DropdownToggleProps) {
+export function ResponsiveDropdownToggle(props: DropdownToggleProps) {
+  const { isModal } = useResponsiveDropdownContext();
   return (
-    <ResponsiveDropdownContext.Consumer>
-      {({ isModal }) => {
-        if (isModal) {
-          return (
-            <Button
-              variant={ButtonVariant.plain}
-              onClick={() => args.onToggle?.(args.isOpen || false)}
-              className={args.className}
-            >
-              {args.children}
-            </Button>
-          );
-        } else {
-          return <DropdownToggle {...args} />;
-        }
-      }}
-    </ResponsiveDropdownContext.Consumer>
+    <>
+      {isModal ? (
+        <Button
+          variant={ButtonVariant.plain}
+          onClick={() => props.onToggle?.(props.isOpen || false)}
+          className={props.className}
+          key="bla"
+        >
+          {props.children}
+        </Button>
+      ) : (
+        <DropdownToggle {...props} />
+      )}
+    </>
   );
 }
