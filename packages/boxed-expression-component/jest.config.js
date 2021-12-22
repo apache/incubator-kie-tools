@@ -16,17 +16,16 @@
 
 module.exports = {
   reporters: ["default"],
-  moduleDirectories: ["node_modules", "src", "<rootDir>"],
+  moduleDirectories: ["node_modules"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  modulePathIgnorePatterns: ["<rootDir>/showcase/", "<rootDir>/dist/"],
-  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
-  setupFilesAfterEnv: ["jest-extended", "./src/__tests__/test-setup.ts"],
+  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
   transform: {
     "^.+\\.jsx?$": "babel-jest",
     "^.+\\.tsx?$": "ts-jest",
   },
   moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "identity-obj-proxy",
-    "monaco-editor": "<rootDir>/src/__tests__/__mocks__/monacoMock.js",
+    "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMocks.js",
+    "@kie-tooling-core/monaco-editor": "<rootDir>/tests/__mocks__/monacoMock.js",
   },
+  setupFilesAfterEnv: ["./tests/jest.setup.ts"],
 };

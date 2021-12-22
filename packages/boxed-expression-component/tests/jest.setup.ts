@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,18 +14,4 @@
  * limitations under the License.
  */
 
-module.exports = {
-  reporters: ["default"],
-  moduleDirectories: ["node_modules"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
-  transform: {
-    "^.+\\.jsx?$": "babel-jest",
-    "^.+\\.tsx?$": "ts-jest",
-  },
-  moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMock.js",
-    "@kie-tooling-core/monaco-editor": "<rootDir>/tests/__mocks__/monacoMock.js",
-  },
-  setupFilesAfterEnv: ["./tests/jest.setup.ts"],
-};
+import "@testing-library/jest-dom";

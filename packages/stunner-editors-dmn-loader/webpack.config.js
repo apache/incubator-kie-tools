@@ -22,7 +22,7 @@ const patternflyBase = require("@kie-tooling-core/patternfly-base");
 
 module.exports = (env) => {
   const outputPath = buildEnv.stunnerEditors.dmnLoader.outputPath;
-  console.info(`Stunner Editors :: DMN Loader :: Wire path: '${outputPath}'`);
+  console.info(`Stunner Editors :: DMN Loader :: Output path: '${outputPath}'`);
 
   return merge(common(env), {
     entry: "./src/index.tsx",
