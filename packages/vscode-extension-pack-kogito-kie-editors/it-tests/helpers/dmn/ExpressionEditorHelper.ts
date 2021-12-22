@@ -47,7 +47,7 @@ export default class ExpressionEditorHelper {
       By.xpath("//div[@data-field='dmn-new-expression-editor']")
     );
     const boxedExpressionEditor = await boxedExpressionEditorContainer.findElement(
-      By.className("boxed-expression-editor")
+      By.className("boxed-expression-provider")
     );
     const title = await boxedExpressionEditor.findElement(
       By.xpath(`//div[@data-ouia-component-type='expression-column-header-cell-info']/p[text()='${expectedTitle}']`)
