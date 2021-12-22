@@ -138,7 +138,6 @@ digraph G {
   "@kogito-tooling/pmml-editor-marshaller" -> "@kogito-tooling/build-env" [ style = "dashed", color = "blue" ];
   "@kie-tooling-core/run-script-if" -> "@kogito-tooling/build-env" [ style = "dashed", color = "purple" ];
   "@kogito-tooling/serverless-workflow-editor" -> "@kie-tooling-core/editor" [ style = "solid", color = "blue" ];
-  "@kogito-tooling/serverless-workflow-editor" -> "@kie-tooling-core/monaco-editor" [ style = "solid", color = "blue" ];
   "@kogito-tooling/uniforms-bootstrap4-codegen" -> "@kogito-tooling/build-env" [ style = "dashed", color = "blue" ];
   "@kogito-tooling/uniforms-patternfly-codegen" -> "@kogito-tooling/build-env" [ style = "dashed", color = "blue" ];
   "@kogito-tooling/unitables" -> "@kogito-tooling/boxed-expression-component" [ style = "solid", color = "blue" ];

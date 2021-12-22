@@ -167,14 +167,14 @@ export function HomePage() {
                   title={"Serverless Workflow"}
                   extension={"json"}
                   description={
-                    "Serverless Workflow files are used to generate a vendor-neutral and declarative workflow definition."
+                    "Serverless Workflow files are used to generate vendor-neutral and declarative workflow definitions."
                   }
                 />
                 <NewModelCard
                   title={"Serverless Workflow"}
                   extension={"yml"}
                   description={
-                    "Serverless Workflow files are used to generate a vendor-neutral and declarative workflow definition."
+                    "Serverless Workflow files are used to generate vendor-neutral and declarative workflow definitions."
                   }
                 />
               </Gallery>

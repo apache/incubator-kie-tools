@@ -245,6 +245,17 @@ export function NewFileDropdownMenu(props: {
               </b>
             </MenuItem>
           </MenuGroup>
+          <MenuGroup label={" "}>
+            <MenuItem
+              itemId={"newServerlessWorkflowItemId"}
+              onClick={() => addEmptyFile("json")}
+              description="Serverless Workflow files are used to generate vendor-neutral and declarative workflow definitions"
+            >
+              <b>
+                <FileLabel style={{ marginBottom: "4px" }} extension={"json"} />
+              </b>
+            </MenuItem>
+          </MenuGroup>
           <Divider />
           <MenuItem
             description={"Try sample models"}
@@ -278,6 +289,28 @@ export function NewFileDropdownMenu(props: {
                     <FlexItem>Sample</FlexItem>
                     <FlexItem>
                       <FileLabel extension={"pmml"} />
+                    </FlexItem>
+                  </Flex>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => addSample("json")}
+                  description="Serverless Workflow files are used to generate vendor-neutral and declarative workflow definitions."
+                >
+                  <Flex>
+                    <FlexItem>Sample</FlexItem>
+                    <FlexItem>
+                      <FileLabel extension={"json"} />
+                    </FlexItem>
+                  </Flex>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => addSample("yml")}
+                  description="Serverless Workflow files are used to generate vendor-neutral and declarative workflow definitions."
+                >
+                  <Flex>
+                    <FlexItem>Sample</FlexItem>
+                    <FlexItem>
+                      <FileLabel extension={"yml"} />
                     </FlexItem>
                   </Flex>
                 </MenuItem>

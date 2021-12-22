@@ -47,7 +47,7 @@ export class ServerlessWorkflowEditorInterface implements Editor {
   }
 
   public getPreview(): Promise<string | undefined> {
-    return Promise.resolve(undefined);
+    return this.editorRef.current!.getPreview();
   }
 
   public af_componentRoot() {

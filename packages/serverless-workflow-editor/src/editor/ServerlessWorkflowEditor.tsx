@@ -82,8 +82,13 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
             return Promise.reject();
           }
         },
-        getContent: () => {
-          return content;
+        getContent: (): Promise<string> => {
+          return Promise.resolve(content);
+        },
+        getPreview: (): Promise<string> => {
+          // Line breaks replaced due to https://github.com/mermaid-js/mermaid/issues/1766
+          const svgContent = svgContainer.current!.innerHTML.replace("<br>", "<br/>");
+          return Promise.resolve(svgContent);
         },
         undo: (): Promise<void> => {
           return monacoEditorRef.current?.undo() || Promise.resolve();
@@ -114,7 +119,6 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
         mermaid.init(svgContainer.current!);
         svgContainer.current!.getElementsByTagName("svg")[0].setAttribute("style", "height: 100%;");
         svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0]);
-        console.log(svgPanZoom);
         setDiagramOutOfSync(false);
       } else {
         setDiagramOutOfSync(true);
