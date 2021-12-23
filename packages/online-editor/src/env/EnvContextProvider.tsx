@@ -17,12 +17,13 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useCancelableEffect } from "../reactExt/Hooks";
-import { fetchEnvJson } from "./EnvApi";
 import { DEFAULT_ENV_VARS, EnvContext } from "./EnvContext";
 
 interface Props {
   children: React.ReactNode;
 }
+
+const ENV_FILE_PATH = "env.json";
 
 export function EnvContextProvider(props: Props) {
   const [vars, setVars] = useState(DEFAULT_ENV_VARS);
@@ -31,11 +32,17 @@ export function EnvContextProvider(props: Props) {
 
   useCancelableEffect(
     useCallback(({ canceled }) => {
-      fetchEnvJson()
-        .then((envVars) => {
+      fetch(ENV_FILE_PATH)
+        .then(async (response) => {
           if (canceled.get()) {
             return;
           }
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch ${ENV_FILE_PATH}: ${response.statusText}`);
+          }
+
+          const envVars = await response.json();
           setVars((previous) => ({ ...previous, ...envVars }));
         })
         .catch((e) => {
