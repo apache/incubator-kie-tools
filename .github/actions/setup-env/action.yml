@@ -47,7 +47,7 @@ runs:
       shell: bash
       run: |
         echo "STEP: Setup default Maven args"
-        export MAVEN_ARGS='-B -ntp'
+        lerna exec 'mkdir -p .mvn && echo "-B -ntp" > .mvn/maven.config'
 
     - name: "Bootstrap"
       shell: bash

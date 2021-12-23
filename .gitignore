@@ -18,6 +18,7 @@
 .project
 **/.settings/
 package-lock.json
+**/.mvn
 
 ## chrome-extension-pack-kogito-kie-editors
 **/logs/
