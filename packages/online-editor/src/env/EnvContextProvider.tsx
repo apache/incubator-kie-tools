@@ -15,7 +15,8 @@
  */
 
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCancelableEffect } from "../reactExt/Hooks";
 import { fetchEnvJson } from "./EnvApi";
 import { DEFAULT_ENV_VARS, EnvContext } from "./EnvContext";
 
@@ -26,16 +27,23 @@ interface Props {
 export function EnvContextProvider(props: Props) {
   const [vars, setVars] = useState(DEFAULT_ENV_VARS);
 
-  useEffect(() => {
-    fetchEnvJson()
-      .then((envVars) => {
-        setVars((previous) => ({ ...previous, ...envVars }));
-      })
-      .catch((e) => {
-        // env json file could not be fetched, so we keep the default values
-        console.debug(e);
-      });
-  }, []);
+  useEffect(() => {}, []);
+
+  useCancelableEffect(
+    useCallback(({ canceled }) => {
+      fetchEnvJson()
+        .then((envVars) => {
+          if (canceled.get()) {
+            return;
+          }
+          setVars((previous) => ({ ...previous, ...envVars }));
+        })
+        .catch((e) => {
+          // env json file could not be fetched, so we keep the default values
+          console.debug(e);
+        });
+    }, [])
+  );
 
   const value = useMemo(
     () => ({
