@@ -10,7 +10,7 @@
   },
   "scripts": {
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
-    "copy:image-env-to-json": "cp ../image-env-to-json/dist/image-env-to-json-standalone ./dist-dev/",
+    "copy:image-env-to-json": "cp ../image-env-to-json/dist/linux/image-env-to-json-standalone ./dist-dev/",
     "copy:online-editor": "cp -R ../online-editor/dist ./dist-dev/online-editor",
     "copy:assets": "yarn copy:online-editor && yarn copy:image-env-to-json",
     "podman:build": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env kieSandbox.image.buildTags) | xargs printf -- \"-t $(build-env kieSandbox.image.registry)/$(build-env kieSandbox.image.account)/$(build-env kieSandbox.image.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\"",
