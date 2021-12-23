@@ -29,8 +29,8 @@
     "build:prod:win32": "yarn lint && yarn powershell mvn clean install `-DskipTests=$(build-env global.build.test --not) `-DskipITs=$(build-env global.build.testIT --not) && yarn dist",
     "build:prod": "run-script-os",
     "dist": "rimraf dist && mkdir dist && yarn dist:bpmn && yarn dist:dmn && yarn dist:scesim",
-    "dist:bpmn": "ln -s ../kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime ./dist/bpmn",
-    "dist:dmn": "ln -s ../kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime ./dist/dmn",
-    "dist:scesim": "ln -s ../drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime ./dist/scesim"
+    "dist:bpmn": "symlink-dir kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime ./dist/bpmn",
+    "dist:dmn": "symlink-dir kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime ./dist/dmn",
+    "dist:scesim": "symlink-dir drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime ./dist/scesim"
   }
 }
