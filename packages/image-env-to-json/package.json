@@ -18,7 +18,8 @@
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts\"",
     "build:bundle": "ncc build src/index.ts -m && mv dist/index.js dist/image-env-to-json.js",
-    "build:standalone:darwin:win32": "echo \"Build standalone not supported\"",
+    "build:standalone:win32": "pkg dist/image-env-to-json.js -t node16-win-x64 -o dist/image-env-to-json-standalone",
+    "build:standalone:darwin": "pkg dist/image-env-to-json.js -t node16-macos-x64 -o dist/image-env-to-json-standalone",
     "build:standalone:linux": "pkg dist/image-env-to-json.js -t node16-linux-x64 -o dist/image-env-to-json-standalone",
     "build:standalone": "run-script-os",
     "build:dev": "rimraf -rf dist && yarn build:bundle",
