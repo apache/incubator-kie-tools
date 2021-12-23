@@ -27,6 +27,7 @@ const ENV_FILE_PATH = "env.json";
 
 export function EnvContextProvider(props: Props) {
   const [vars, setVars] = useState(DEFAULT_ENV_VARS);
+  const [fetchDone, setFetchDone] = useState(false);
 
   useEffect(() => {}, []);
 
@@ -48,6 +49,9 @@ export function EnvContextProvider(props: Props) {
         .catch((e) => {
           // env json file could not be fetched, so we keep the default values
           console.debug(e);
+        })
+        .finally(() => {
+          setFetchDone(true);
         });
     }, [])
   );
@@ -59,5 +63,5 @@ export function EnvContextProvider(props: Props) {
     [vars]
   );
 
-  return <EnvContext.Provider value={value}>{props.children}</EnvContext.Provider>;
+  return <EnvContext.Provider value={value}>{fetchDone && props.children}</EnvContext.Provider>;
 }
