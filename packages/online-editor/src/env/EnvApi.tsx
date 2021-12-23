@@ -16,7 +16,7 @@
 
 import { EnvVars } from "./EnvContext";
 
-const ENV_FILE_PATH = "/env.json";
+const ENV_FILE_PATH = "env.json";
 
 export async function fetchEnvJson(): Promise<EnvVars> {
   const response = await fetch(ENV_FILE_PATH);
