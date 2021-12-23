@@ -20,14 +20,14 @@ RUN microdnf --disableplugin=subscription-manager -y install httpd \
   && microdnf --disableplugin=subscription-manager clean all \
   && sed -i -e 's/Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf \
   && sed -i -e 's/#ServerName www.example.com:80/ServerName 127.0.0.1:8080/' /etc/httpd/conf/httpd.conf \
-  && mkdir /kogito \
-  && mv -t /kogito /tmp/entrypoint.sh /tmp/image-env-to-json-standalone  \
-  && chgrp -R 0 /var/log/httpd /var/run/httpd /var/www/html /kogito \
-  && chmod -R g=u /var/log/httpd /var/run/httpd /var/www/html /kogito \
-  && chmod +x /kogito/entrypoint.sh /kogito/image-env-to-json-standalone
+  && mkdir /kie-sandbox \
+  && mv -t /kie-sandbox /tmp/entrypoint.sh /tmp/image-env-to-json-standalone  \
+  && chgrp -R 0 /var/log/httpd /var/run/httpd /var/www/html /kie-sandbox \
+  && chmod -R g=u /var/log/httpd /var/run/httpd /var/www/html /kie-sandbox \
+  && chmod +x /kie-sandbox/entrypoint.sh /kie-sandbox/image-env-to-json-standalone
 
 COPY dist-dev/online-editor /var/www/html
 
 EXPOSE 8080
 
-ENTRYPOINT [ "/kogito/entrypoint.sh" ]
+ENTRYPOINT [ "/kie-sandbox/entrypoint.sh" ]
