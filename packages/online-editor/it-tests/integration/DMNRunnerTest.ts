@@ -126,4 +126,4 @@ describe("DMN Runner Test", () => {
       cy.get("[data-ouia-component-id='expression-column-4']").should("contain.text", "Qualified");
     });
   });
-}); 
+});
