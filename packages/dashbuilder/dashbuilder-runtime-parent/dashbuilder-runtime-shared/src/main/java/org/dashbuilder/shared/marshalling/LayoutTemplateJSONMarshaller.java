@@ -17,6 +17,7 @@ package org.dashbuilder.shared.marshalling;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -53,12 +54,24 @@ public class LayoutTemplateJSONMarshaller {
     private static final String HEIGHT = "height";
     private static final String SETTINGS = "settings";
 
+    // default values
     private static final String DEFAULT_HEIGHT = "1";
     private static final String DEFAULT_SPAN = "12";
+    private static final String DEFAULT_DRAG_TYPE = "org.dashbuilder.client.editor.DisplayerDragComponent";
+
+    // to make the json more user friendly
+    // replacement for Drag type
+    private static final String TYPE = "type";
+
+    private static final Map<String, String> TYPES_DRAG;
 
     private static LayoutTemplateJSONMarshaller instance;
 
     static {
+        TYPES_DRAG = new HashMap<>();
+        TYPES_DRAG.put("HTML","org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent");
+        TYPES_DRAG.put("Displayer", "org.dashbuilder.client.editor.DisplayerDragComponent");
+        TYPES_DRAG.put("External", "org.dashbuilder.client.editor.external.ExternalDragComponent");
         instance = new LayoutTemplateJSONMarshaller();
     }
 
@@ -86,6 +99,7 @@ public class LayoutTemplateJSONMarshaller {
         template.setName(name == null ? "Page " + System.currentTimeMillis() : name);
         template.setStyle(style == null ? Style.FLUID : Style.valueOf(style));
         extractProperties(object.getObject(LAYOUT_PROPERTIES), template::addLayoutProperty);
+        extractProperties(object.getObject(PROPERTIES), template::addLayoutProperty);
         extractRows(object.getArray(ROWS), template::addRow);
 
         return template;
@@ -134,7 +148,8 @@ public class LayoutTemplateJSONMarshaller {
     }
 
     private LayoutComponent extractComponent(JsonObject object) {
-        var component = new LayoutComponent(object.getString(DRAG_TYPE_NAME));
+        var dragTypeName = findDragComponent(object);
+        var component = new LayoutComponent(dragTypeName);
         var propertiesObject = object.getObject(PROPERTIES);
         var settings = object.getObject(SETTINGS);
         extractProperties(propertiesObject, component::addProperty);
@@ -240,6 +255,24 @@ public class LayoutTemplateJSONMarshaller {
         var object = Json.createObject();
         layoutProperties.forEach((key, value) -> object.set(key, Json.create(value)));
         return object;
+    }
+
+    protected String findDragComponent(JsonObject object) {
+        var dragType = object.getString(DRAG_TYPE_NAME);
+        if(dragType != null) {
+            return dragType;
+        }
+        
+        var type = object.getString(TYPE);
+        if (type != null) {
+            for (var entry : TYPES_DRAG.entrySet()) {
+                if (type.equalsIgnoreCase(entry.getKey())) {
+                    return entry.getValue();
+                }
+            }
+            return type;
+        }
+        return DEFAULT_DRAG_TYPE;
     }
 
 }

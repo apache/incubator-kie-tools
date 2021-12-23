@@ -18,6 +18,7 @@ package org.dashbuilder.shared.marshalling;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.dashbuilder.json.Json;
 import org.junit.Test;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
@@ -117,6 +118,35 @@ public class LayoutTemplateJSONMarshallerTest {
         LayoutComponent layoutComponent = layoutColumn.getLayoutComponents().get(0);
         assertEquals(LCOMP_DRAG_TYPE, layoutComponent.getDragTypeName());
         assertEquals(PROP_VAL, layoutComponent.getProperties().get(PROP_KEY));
+    }
+    
+    @Test
+    public void dragComponentReplacementTest() {
+        var object = Json.createObject();
+        
+        object.set("type", Json.create("HtmL"));
+        var dragType = LayoutTemplateJSONMarshaller.get().findDragComponent(object);
+        assertEquals("org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent", dragType);
+        
+        
+        object.set("type", Json.create("displayer"));
+        dragType = LayoutTemplateJSONMarshaller.get().findDragComponent(object);
+        assertEquals("org.dashbuilder.client.editor.DisplayerDragComponent", dragType);
+    }
+    
+    @Test
+    public void dragComponentMissingTest() {
+        var object = Json.createObject();
+        var dragType = LayoutTemplateJSONMarshaller.get().findDragComponent(object);
+        assertEquals("org.dashbuilder.client.editor.DisplayerDragComponent", dragType);
+    }
+    
+    @Test
+    public void legacyDragType() {
+        var object = Json.createObject();
+        object.set("dragTypeName", Json.create("custom"));
+        var dragType = LayoutTemplateJSONMarshaller.get().findDragComponent(object);
+        assertEquals("custom", dragType);
     }
 
 }

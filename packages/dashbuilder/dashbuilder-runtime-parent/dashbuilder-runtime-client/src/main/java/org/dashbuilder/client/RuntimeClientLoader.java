@@ -62,9 +62,9 @@ public class RuntimeClientLoader {
     ExternalDataSetRegister externalDataSetRegister;
 
     RuntimeModelClientParserFactory parserFactory;
-    
+
     RuntimeModelContentListener contentListener;
-    
+
     Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent;
 
     boolean offline;
@@ -96,13 +96,32 @@ public class RuntimeClientLoader {
 
     public void load(Consumer<RuntimeServiceResponse> responseConsumer,
                      BiConsumer<Object, Throwable> error) {
-        String importID = getImportId();
+        final var importID = getImportId();
         loading.showBusyIndicator(i18n.loadingDashboards());
 
         runtimeModelResourceClient.getRuntimeModelInfo(importID, response -> {
             loading.hideBusyIndicator();
-            response.getRuntimeModelOp().ifPresent(this::registerModel);
-            responseConsumer.accept(response);
+
+            if (response.getRuntimeModelOp().isPresent()) {
+                responseConsumer.accept(response);
+                this.registerModel(response.getRuntimeModelOp().get());
+            } else if (importID != null && !importID.trim().isEmpty()) {
+                this.loadModel(model -> {
+                    this.registerModel(model);
+                    var newResponse = new RuntimeServiceResponse(response.getMode(),
+                            Optional.of(model),
+                            response.getAvailableModels(),
+                            response.isAllowUpload());
+                    responseConsumer.accept(newResponse);
+                }, () -> {
+                    responseConsumer.accept(response);
+                }, (e, t) -> {
+                    handleError(error, e, t);
+                });
+            } else {
+                responseConsumer.accept(response);
+            }
+
         }, (msg, t) -> {
             handleError(error, msg, t);
         });

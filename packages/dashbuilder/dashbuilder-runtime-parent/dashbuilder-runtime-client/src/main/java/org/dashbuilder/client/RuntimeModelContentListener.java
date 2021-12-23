@@ -27,6 +27,8 @@ import jsinterop.base.Js;
 @ApplicationScoped
 public class RuntimeModelContentListener {
 
+    private static final String READY = "ready";
+    
     @Inject
     RuntimeCommunication runtimeCommunication;
 
@@ -34,14 +36,16 @@ public class RuntimeModelContentListener {
         DomGlobal.window.addEventListener("message", evt -> {
             MessageEvent<String> message = Js.cast(evt);
             try {
-                contentConsumer.accept(message.data);
-                runtimeCommunication.showSuccess("Dashboard Updated");
+                if (!READY.equals(message.data)) {
+                    contentConsumer.accept(message.data);
+                    runtimeCommunication.showSuccess("Dashboard Updated");
+                }
             } catch (Exception e) {
                 runtimeCommunication.showWarning("Error loading content: " + e.getMessage(), e);
             }
         });
         if (DomGlobal.window.parent != null) {
-            DomGlobal.window.parent.postMessage("ready", null);
+            DomGlobal.window.parent.postMessage(READY, null);
         }
     }
 }

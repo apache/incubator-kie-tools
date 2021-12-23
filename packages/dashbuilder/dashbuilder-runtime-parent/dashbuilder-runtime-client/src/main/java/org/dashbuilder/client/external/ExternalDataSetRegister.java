@@ -1,6 +1,7 @@
 package org.dashbuilder.client.external;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public class ExternalDataSetRegister {
     public void setup() {
         externalDataSets = new HashMap<>();
         scheduledTimeouts = new HashMap<>();
-        
+
         var format = DateTimeFormat.getFormat(PredefinedFormat.ISO_8601);
         externalParser = new ExternalDataSetJSONParser(format::parse);
     }
@@ -87,7 +88,18 @@ public class ExternalDataSetRegister {
                                        DataSetReadyCallback listener,
                                        String responseText) {
         var uuid = lookup.getDataSetUUID();
+        var def = externalDataSets.get(uuid);
         var dataSet = externalParser.parseDataSet(responseText);
+
+        if (def != null && !def.getColumns().isEmpty()) {
+            for (int i = 0; i < def.getColumns().size(); i++) {
+                var defColumn = def.getColumns().get(i);
+                var dsColumn = dataSet.getColumnByIndex(i); 
+                dsColumn.setId(defColumn.getId());
+                dsColumn.setColumnType(defColumn.getColumnType());
+            }
+        }
+
         dataSet.setUUID(uuid);
         clientDataSetManager.registerDataSet(dataSet);
         var lookupResult = clientDataSetManager.lookupDataSet(lookup);

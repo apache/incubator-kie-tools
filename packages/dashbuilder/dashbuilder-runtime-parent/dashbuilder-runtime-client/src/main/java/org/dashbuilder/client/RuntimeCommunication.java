@@ -38,7 +38,7 @@ public class RuntimeCommunication {
     }
 
     public void showError(final String message, Object error) {
-        showError(error);
+        logError(error);
         wbNotification.fire(new NotificationEvent(message, NotificationEvent.NotificationType.ERROR));
     }
     
@@ -47,7 +47,7 @@ public class RuntimeCommunication {
     }
     
     public void showWarning(final String message, Object error) {
-        showError(error);
+        logError(error);
         wbNotification.fire(new NotificationEvent(message, NotificationEvent.NotificationType.WARNING));
     }
 
@@ -55,7 +55,7 @@ public class RuntimeCommunication {
         wbNotification.fire(new NotificationEvent(message, NotificationEvent.NotificationType.SUCCESS));
     }
     
-    private void showError(Object error) {
+    private void logError(Object error) {
         if (error != null) {
             DomGlobal.console.log(error);
         }
