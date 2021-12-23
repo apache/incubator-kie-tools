@@ -78,7 +78,7 @@ describe("DMN Runner Test", () => {
     cy.get("[data-ouia-component-id='switch-dmn-runner-to-table-view']").click();
 
     // fill in DMN Runner inputs in table
-    cy.get(".dmn-runner-table.id1")
+    cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__content")
       .get("[data-ouia-component-id='expression-row-0']")
       .within(($table) => {
         cy.get("input[name='Credit Score.FICO']").type("650");
@@ -102,14 +102,14 @@ describe("DMN Runner Test", () => {
       });
 
     // handle inputs that uses selectboxes outside of expression-row
-    cy.get(".dmn-runner-table.id1")
+    cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__content")
       .get("[data-ouia-component-id='expression-row-0']")
       .within(($table) => {
         cy.get("[x-dmn-type*='Marital_Status'] button").click();
       });
     cy.get("ul[name='Applicant Data.Marital Status'] button").contains("M").click();
 
-    cy.get(".dmn-runner-table.id1")
+    cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__content")
       .get("[data-ouia-component-id='expression-row-0']")
       .within(($table) => {
         cy.get("[x-dmn-type*='Product_Type'] button").click();
@@ -117,9 +117,13 @@ describe("DMN Runner Test", () => {
     cy.get("ul[name='Requested Product.Type'] button").contains("Standard Loan").click();
 
     // check DMN Runner outputs in table
-    cy.find(".id2 [data-ouia-component-id='expression-column-1']").contains("Sufficient").should("be.visible");
-    cy.find(".id2 [data-ouia-component-id='expression-column-2']").contains("Sufficient").should("be.visible");
-    cy.find(".id2 [data-ouia-component-id='expression-column-3']").contains("Fair").should("be.visible");
-    cy.find(".id2 [data-ouia-component-id='expression-column-4']").should("contain.text", "Qualified");
+    cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__panel")
+    .get("[data-ouia-component-id='expression-row-0']")
+    .within(($table) => {
+      cy.get("[data-ouia-component-id='expression-column-1']").contains("Sufficient").should("be.visible");
+      cy.get("[data-ouia-component-id='expression-column-2']").contains("Sufficient").should("be.visible");
+      cy.get("[data-ouia-component-id='expression-column-3']").contains("Fair").should("be.visible");
+      cy.get("[data-ouia-component-id='expression-column-4']").should("contain.text", "Qualified");
+    });
   });
-});
+}); 
