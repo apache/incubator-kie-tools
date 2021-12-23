@@ -117,13 +117,9 @@ describe("DMN Runner Test", () => {
     cy.get("ul[name='Requested Product.Type'] button").contains("Standard Loan").click();
 
     // check DMN Runner outputs in table
-    cy.get(".dmn-runner-table.id2")
-      .find("[data-ouia-component-id='expression-row-0']")
-      .within(($table) => {
-        $table.find("[data-ouia-component-id='expression-column-1']").contains("Sufficient").should("be.visible");
-        $table.find("[data-ouia-component-id='expression-column-2']").contains("Sufficient").should("be.visible");
-        $table.find("[data-ouia-component-id='expression-column-3']").contains("Fair").should("be.visible");
-        $table.find("[data-ouia-component-id='expression-column-4']").should("contain.text", "Qualified");
-      });
+    cy.find(".id2 [data-ouia-component-id='expression-column-1']").contains("Sufficient").should("be.visible");
+    cy.find(".id2 [data-ouia-component-id='expression-column-2']").contains("Sufficient").should("be.visible");
+    cy.find(".id2 [data-ouia-component-id='expression-column-3']").contains("Fair").should("be.visible");
+    cy.find(".id2 [data-ouia-component-id='expression-column-4']").should("contain.text", "Qualified");
   });
 });
