@@ -20,10 +20,10 @@ import { useImperativeHandle, useState } from "react";
 import "./styles.scss";
 
 export interface PingPongEnvelopeViewApi {
-  setView(page: PingPong): Promise<void>;
+  setView: React.Dispatch<React.SetStateAction<PingPong>>;
 }
 
-export const PingPongEnvelopeView = React.forwardRef((props, forwardedRef) => {
+export const PingPongEnvelopeView = React.forwardRef<PingPongEnvelopeViewApi, {}>((props, forwardedRef) => {
   const [view, setView] = useState<PingPong>();
 
   useImperativeHandle(forwardedRef, () => ({ setView: setView }), []);

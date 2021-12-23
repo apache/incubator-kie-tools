@@ -44,7 +44,7 @@ export function PingPongAngularIFrameViewsPage() {
   const mapping = useMemo(
     () => ({
       title: "Ping-Pong Page in Angular",
-      envelopePath: "./envelope/angular/index.html",
+      envelopePath: "envelope/angular/index.html",
     }),
     []
   );
@@ -57,7 +57,7 @@ export function PingPongAngularIFrameViewsPage() {
           <PageSection>
             <EmbeddedIFramePingPong
               apiImpl={apiImpl}
-              name={"React 1"}
+              name={"Angular 1"}
               targetOrigin={window.location.origin}
               mapping={mapping}
             />
@@ -66,7 +66,7 @@ export function PingPongAngularIFrameViewsPage() {
           <PageSection>
             <EmbeddedIFramePingPong
               apiImpl={apiImpl}
-              name={"React 2"}
+              name={"Angular 2"}
               targetOrigin={window.location.origin}
               mapping={mapping}
             />
@@ -75,7 +75,7 @@ export function PingPongAngularIFrameViewsPage() {
           <PageSection>
             <EmbeddedIFramePingPong
               apiImpl={apiImpl}
-              name={"React 3"}
+              name={"Angular 3"}
               targetOrigin={window.location.origin}
               mapping={mapping}
             />

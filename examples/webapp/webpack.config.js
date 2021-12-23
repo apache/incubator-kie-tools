@@ -29,6 +29,7 @@ module.exports = (env) => [
       "envelope/base64-editor": "./src/envelope/base64-editor.ts",
       "envelope/dmn-editor": "./src/envelope/dmn-editor.ts",
       "envelope/ping-pong-view-react-impl": "./src/envelope/ping-pong-view-react-impl.ts",
+      "envelope/ping-pong-view-angular-impl": "./src/envelope/ping-pong-view-angular-impl.ts",
       "envelope/todo-list-view": "./src/envelope/todo-list-view.ts",
     },
     output: {

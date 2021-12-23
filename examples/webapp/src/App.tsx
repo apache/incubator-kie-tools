@@ -31,7 +31,6 @@ import { Home } from "./Home";
 import "../static/resources/styles.css";
 import { DmnStandaloneEditorPage } from "./Pages/StandaloneEditors/DmnStandaloneEditorPage";
 import { PingPongAngularIFrameViewsPage } from "./Pages/PingPong/Angular/PingPongAngularIFrameViewsPage";
-import { PingPongAngularDivViewsPage } from "./Pages/PingPong/Angular/PingPongAngularDivViewsPage";
 
 enum Location {
   BPMN = "/editor/bpmn",
