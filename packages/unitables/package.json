@@ -8,7 +8,6 @@
   "scripts": {
     "lint": "echo 'Linting....'",
     "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose'",
-    "test:clearCache": "jest --clearCache",
     "build:dev": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json",
     "build:prod": "yarn build:dev",
     "build:watch": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json --watch",
