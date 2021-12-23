@@ -88,3 +88,29 @@ The Kogito Tooling project contains several applications. To develop each one of
 1. After you've successfully built the project following the instructions above, go to `packages/kie-editors-standalone`.
 2. Open a terminal and run `yarn start`. This will start a `webpack serve` instance with the Standalone Editors test page.
 3. From now on you can use the development version of the Standalone DMN Editor by accessing `https://localhost:9001/resources/dmn` and the Standalone BPMN Editor by accessing `https://localhost:9001/resources/bpmn`.
+
+## Libraries
+
+#### Stunner Editors
+
+The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of Kogito Tooling.
+After cloning the repo, start with a fresh build.
+
+`lerna run build:dev --scope=@kogito-tooling/stunner-editors --include-dependencies --stream`
+
+After that, you're ready to start developing the Editors individually.
+
+- BPMN
+
+  - Located at `packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime`.
+  - Run `mvn clean gwt:run` to start.
+
+- DMN
+
+  - Located at `packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing`.
+  - Run `mvn clean gwt:run` to start.
+  - If you want to enable live-reloading capabilities of the React components that are part of the DMN Editor, follow [these steps](./packages/stunner-editors/docs/live-reload-dmn-loader.md).
+
+- SceSim
+  - Located at `packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-testing`.
+  - Run `mvn clean gwt:run` to start.
