@@ -29,8 +29,8 @@ import { KieToolingExtendedServicesModal } from "./KieToolingExtendedServicesMod
 import {
   DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_HOST,
   DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_PORT,
-  useEnvironment,
-} from "../environment/EnvironmentContext";
+  useEnv,
+} from "../env/EnvContext";
 
 interface Props {
   children: React.ReactNode;
@@ -39,7 +39,7 @@ interface Props {
 const KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME = 1000;
 
 export function KieToolingExtendedServicesContextProvider(props: Props) {
-  const environment = useEnvironment();
+  const env = useEnv();
   const [status, setStatus] = useState(KieToolingExtendedServicesStatus.AVAILABLE);
   const [isModalOpen, setModalOpen] = useState(false);
   const [installTriggeredBy, setInstallTriggeredBy] = useState<DependentFeature | undefined>(undefined);
@@ -63,7 +63,7 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
     let envHost = DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_HOST;
     let envPort = DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_PORT;
     try {
-      const envUrl = new URL(environment.variables.KIE_TOOLING_EXTENDED_SERVICES_URL);
+      const envUrl = new URL(env.vars.KIE_TOOLING_EXTENDED_SERVICES_URL);
       envHost = `${envUrl.protocol}//${envUrl.hostname}`;
       envPort = envUrl.port;
     } catch (e) {
@@ -81,7 +81,7 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
         saveNewConfig(newConfig);
       }
     });
-  }, [environment.variables.KIE_TOOLING_EXTENDED_SERVICES_URL, saveNewConfig]);
+  }, [env.vars.KIE_TOOLING_EXTENDED_SERVICES_URL, saveNewConfig]);
 
   useEffect(() => {
     // Pooling to detect either if KieToolingExtendedServices is running or has stopped

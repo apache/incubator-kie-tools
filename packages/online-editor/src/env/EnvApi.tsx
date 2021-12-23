@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { EnvironmentVariables } from "./EnvironmentContext";
+import { EnvVars } from "./EnvContext";
 
 const ENV_FILE_PATH = "/env.json";
 
-export async function fetchEnvJson(): Promise<EnvironmentVariables> {
+export async function fetchEnvJson(): Promise<EnvVars> {
   const response = await fetch(ENV_FILE_PATH);
 
   if (!response.ok) {
     throw new Error(`Failed to fetch ${ENV_FILE_PATH}: ${response.statusText}`);
   }
 
-  return (await response.json()) as EnvironmentVariables;
+  return (await response.json()) as EnvVars;
 }

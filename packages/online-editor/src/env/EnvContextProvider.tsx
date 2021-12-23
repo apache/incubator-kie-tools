@@ -16,20 +16,20 @@
 
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { fetchEnvJson } from "./EnvironmentApi";
-import { DEFAULT_ENVIRONMENT_VARIABLES, EnvironmentContext } from "./EnvironmentContext";
+import { fetchEnvJson } from "./EnvApi";
+import { DEFAULT_ENV_VARS, EnvContext } from "./EnvContext";
 
 interface Props {
   children: React.ReactNode;
 }
 
-export function EnvironmentContextProvider(props: Props) {
-  const [variables, setVariables] = useState(DEFAULT_ENVIRONMENT_VARIABLES);
+export function EnvContextProvider(props: Props) {
+  const [vars, setVars] = useState(DEFAULT_ENV_VARS);
 
   useEffect(() => {
     fetchEnvJson()
       .then((envVars) => {
-        setVariables((previous) => ({ ...previous, ...envVars }));
+        setVars((previous) => ({ ...previous, ...envVars }));
       })
       .catch((e) => {
         // env json file could not be fetched, so we keep the default values
@@ -39,10 +39,10 @@ export function EnvironmentContextProvider(props: Props) {
 
   const value = useMemo(
     () => ({
-      variables,
+      vars,
     }),
-    [variables]
+    [vars]
   );
 
-  return <EnvironmentContext.Provider value={value}>{props.children}</EnvironmentContext.Provider>;
+  return <EnvContext.Provider value={value}>{props.children}</EnvContext.Provider>;
 }

@@ -17,23 +17,23 @@
 import * as React from "react";
 import { useContext } from "react";
 
-type EnvironmentVariableNames = "KIE_TOOLING_EXTENDED_SERVICES_URL";
+type EnvVarNames = "KIE_TOOLING_EXTENDED_SERVICES_URL";
 
-export type EnvironmentVariables = Record<EnvironmentVariableNames, string>;
+export type EnvVars = Record<EnvVarNames, string>;
 
 export const DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_HOST = "http://localhost";
 export const DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_PORT = "21345";
 
-export const DEFAULT_ENVIRONMENT_VARIABLES: EnvironmentVariables = {
+export const DEFAULT_ENV_VARS: EnvVars = {
   KIE_TOOLING_EXTENDED_SERVICES_URL: `${DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_HOST}:${DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_PORT}`,
 };
 
-export interface EnvironmentContextType {
-  variables: EnvironmentVariables;
+export interface EnvContextType {
+  vars: EnvVars;
 }
 
-export const EnvironmentContext = React.createContext<EnvironmentContextType>({} as any);
+export const EnvContext = React.createContext<EnvContextType>({} as any);
 
-export function useEnvironment() {
-  return useContext(EnvironmentContext);
+export function useEnv() {
+  return useContext(EnvContext);
 }
