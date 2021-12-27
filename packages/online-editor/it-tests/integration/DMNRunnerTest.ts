@@ -119,11 +119,25 @@ describe("DMN Runner Test", () => {
     // check DMN Runner outputs in table
     cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__panel")
       .find("[data-ouia-component-id='expression-row-0']")
-      .within(($table) => {
-        cy.get("[data-ouia-component-id='expression-column-1']").contains("Sufficient").should("be.visible");
-        cy.get("[data-ouia-component-id='expression-column-2']").contains("Sufficient").should("be.visible");
-        cy.get("[data-ouia-component-id='expression-column-3']").contains("Fair").should("be.visible");
-        cy.get("[data-ouia-component-id='expression-column-4']").should("contain.text", "Qualified");
-      });
+      .find("[data-ouia-component-id='expression-column-1']")
+      .contains("Sufficient")
+      .should("be.visible");
+
+    cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__panel")
+      .find("[data-ouia-component-id='expression-row-0']")
+      .find("[data-ouia-component-id='expression-column-2']")
+      .contains("Sufficient")
+      .should("be.visible");
+
+    cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__panel")
+      .find("[data-ouia-component-id='expression-row-0']")
+      .find("[data-ouia-component-id='expression-column-3']")
+      .contains("Fair")
+      .should("be.visible");
+
+    cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__panel")
+      .find("[data-ouia-component-id='expression-row-0']")
+      .find("[data-ouia-component-id='expression-column-4']")
+      .should("contain.text", "Qualified");
   });
 });
