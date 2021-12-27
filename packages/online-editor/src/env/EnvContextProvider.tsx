@@ -46,7 +46,7 @@ export function EnvContextProvider(props: Props) {
         })
         .catch((e) => {
           // env json file could not be fetched, so we keep the default values
-          console.debug(e);
+          console.error(e);
         })
         .finally(() => {
           setFetchDone(true);
