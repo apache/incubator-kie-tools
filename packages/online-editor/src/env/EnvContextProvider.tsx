@@ -29,8 +29,6 @@ export function EnvContextProvider(props: Props) {
   const [vars, setVars] = useState(DEFAULT_ENV_VARS);
   const [fetchDone, setFetchDone] = useState(false);
 
-  useEffect(() => {}, []);
-
   useCancelableEffect(
     useCallback(({ canceled }) => {
       fetch(ENV_FILE_PATH)
