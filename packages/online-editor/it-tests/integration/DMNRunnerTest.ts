@@ -120,24 +120,28 @@ describe("DMN Runner Test", () => {
     cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__panel")
       .find("[data-ouia-component-id='expression-row-0']")
       .find("[data-ouia-component-id='expression-column-1']")
+      .find(".editable-cell-value")
       .contains("Sufficient")
       .should("be.visible");
 
     cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__panel")
       .find("[data-ouia-component-id='expression-row-0']")
       .find("[data-ouia-component-id='expression-column-2']")
+      .find(".editable-cell-value")
       .contains("Sufficient")
       .should("be.visible");
 
     cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__panel")
       .find("[data-ouia-component-id='expression-row-0']")
       .find("[data-ouia-component-id='expression-column-3']")
+      .find(".editable-cell-value")
       .contains("Fair")
       .should("be.visible");
 
     cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__panel")
       .find("[data-ouia-component-id='expression-row-0']")
       .find("[data-ouia-component-id='expression-column-4']")
+      .find(".editable-cell-value")
       .should("contain.text", "Qualified");
   });
 });
