@@ -51,6 +51,11 @@ module.exports = (env) =>
     module: {
       rules: [
         {
+          test: /\.js$/,
+          enforce: "pre",
+          use: ["source-map-loader"],
+        },
+        {
           test: /\.ttf$/,
           use: ["file-loader"],
         },
@@ -61,6 +66,7 @@ module.exports = (env) =>
         ...patternflyBase.webpackModuleRules,
       ],
     },
+    ignoreWarnings: [/Failed to parse source map/],
     resolve: {
       alias: {
         // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified

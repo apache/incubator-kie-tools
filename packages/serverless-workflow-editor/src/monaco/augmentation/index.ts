@@ -15,12 +15,12 @@
  */
 
 import * as monaco from "monaco-editor";
-import { editor } from "monaco-editor";
+import { CancellationToken, editor, languages, Position } from "monaco-editor";
+import { getSuggestions } from "./completion";
 
 // Setting up the JSON language defaults
 export const SW_SPEC_SCHEMA =
   "https://raw.githubusercontent.com/serverlessworkflow/specification/0.6.x/schema/workflow.json";
-const SW_SCHEMA_URI = monaco.Uri.parse(SW_SPEC_SCHEMA);
 
 monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
   validate: true,
@@ -32,6 +32,22 @@ monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
     },
   ],
   enableSchemaRequest: true,
+});
+
+monaco.languages.registerCompletionItemProvider("json", {
+  provideCompletionItems(
+    model: editor.ITextModel,
+    position: Position,
+    context: languages.CompletionContext,
+    token: CancellationToken
+  ): languages.ProviderResult<languages.CompletionList> {
+    return getSuggestions({
+      model,
+      position,
+      context,
+      token,
+    });
+  },
 });
 
 export interface IMonacoEditor {
