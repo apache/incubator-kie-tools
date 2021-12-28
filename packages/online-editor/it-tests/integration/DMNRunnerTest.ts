@@ -78,7 +78,7 @@ describe("DMN Runner Test", () => {
     cy.get("[data-ouia-component-id='switch-dmn-runner-to-table-view']").click();
 
     // fill in DMN Runner inputs in table
-    cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__content")
+    cy.get(".dmn-runner-table.id1")
       .get("[data-ouia-component-id='expression-row-0']")
       .within(($table) => {
         cy.get("input[name='Credit Score.FICO']").type("650");
@@ -102,14 +102,14 @@ describe("DMN Runner Test", () => {
       });
 
     // handle inputs that uses selectboxes outside of expression-row
-    cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__content")
+    cy.get(".dmn-runner-table.id1")
       .get("[data-ouia-component-id='expression-row-0']")
       .within(($table) => {
         cy.get("[x-dmn-type*='Marital_Status'] button").click();
       });
     cy.get("ul[name='Applicant Data.Marital Status'] button").contains("M").click();
 
-    cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__content")
+    cy.get(".dmn-runner-table.id1")
       .get("[data-ouia-component-id='expression-row-0']")
       .within(($table) => {
         cy.get("[x-dmn-type*='Product_Type'] button").click();
@@ -117,28 +117,28 @@ describe("DMN Runner Test", () => {
     cy.get("ul[name='Requested Product.Type'] button").contains("Standard Loan").click();
 
     // check DMN Runner outputs in table
-    cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__panel")
+    cy.get(".dmn-runner-table.id2")
       .find("[data-ouia-component-id='expression-row-0']")
       .find("[data-ouia-component-id='expression-column-1']")
       .find(".editable-cell-value")
       .contains("Sufficient")
       .should("be.visible");
 
-    cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__panel")
+    cy.get(".dmn-runner-table.id2")
       .find("[data-ouia-component-id='expression-row-0']")
       .find("[data-ouia-component-id='expression-column-2']")
       .find(".editable-cell-value")
       .contains("Sufficient")
       .should("be.visible");
 
-    cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__panel")
+    cy.get(".dmn-runner-table.id2")
       .find("[data-ouia-component-id='expression-row-0']")
       .find("[data-ouia-component-id='expression-column-3']")
       .find(".editable-cell-value")
       .contains("Fair")
       .should("be.visible");
 
-    cy.get(".unitables--dmn-runner-drawer .pf-c-drawer__panel")
+    cy.get(".dmn-runner-table.id2")
       .find("[data-ouia-component-id='expression-row-0']")
       .find("[data-ouia-component-id='expression-column-4']")
       .find(".editable-cell-value")
