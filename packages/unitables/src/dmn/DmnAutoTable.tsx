@@ -309,9 +309,9 @@ export function DmnAutoTable(props: Props) {
                               error={<OutputError />}
                             >
                               <BoxedExpressionProvider
-                                decisionNodeId={outputUid}
-                                expressionDefinition={{ id: outputUid }}
+                                expressionDefinition={{}}
                                 isRunnerTable={true}
+                                decisionNodeId={outputUid}
                               >
                                 <DmnRunnerTable
                                   name={"DMN Runner Output"}
@@ -340,11 +340,7 @@ export function DmnAutoTable(props: Props) {
                   }
                 >
                   <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={<InputError />}>
-                    <BoxedExpressionProvider
-                      decisionNodeId={inputUid}
-                      expressionDefinition={{ id: inputUid }}
-                      isRunnerTable={true}
-                    >
+                    <BoxedExpressionProvider expressionDefinition={{}} isRunnerTable={true} decisionNodeId={inputUid}>
                       <div style={{ display: "flex" }} ref={inputsContainerRef}>
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <div style={{ width: "50px", height: "55px", border: "1px solid", visibility: "hidden" }}>

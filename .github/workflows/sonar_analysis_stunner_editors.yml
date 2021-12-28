@@ -41,9 +41,8 @@ jobs:
       - name: "Build with Maven to measure code coverage"
         run: |
           lerna run build:dev:until @kogito-tooling/stunner-editors
-          echo -B -ntp --fail-at-end -Prun-code-coverage > packages/stunner-editors/.mvn/maven.config
           cd packages/stunner-editors
-          mvn clean install
+          mvn clean install --fail-at-end -Prun-code-coverage
 
       - name: "Analyze with Sonar"
         env:
@@ -51,4 +50,4 @@ jobs:
           SONARCLOUD_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           cd packages/stunner-editors
-          mvn -nsu generate-resources -Psonarcloud-analysis -Denforcer.skip=true
+          mvn generate-resources -Psonarcloud-analysis -Denforcer.skip=true
