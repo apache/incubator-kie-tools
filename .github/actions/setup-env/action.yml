@@ -47,6 +47,7 @@ runs:
       shell: bash
       run: |
         echo "STEP: Setup default Maven args"
+        cd ${{ inputs.path }}
         lerna exec 'mkdir -p .mvn && echo -B -ntp > .mvn/maven.config'
 
     - name: "Bootstrap"
