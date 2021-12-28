@@ -31,17 +31,11 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.base_ref }}
 
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
+
       - name: "Setup kogito-tooling-bot"
         uses: ./.github/actions/setup-kogito-tooling-bot
-
-      - name: "Merge Changes"
-        if: ${{ github.event.pull_request }}
-        shell: bash
-        run: |
-          user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
-          git remote add $user https://github.com/$user/kogito-tooling.git
-          git fetch $user
-          git merge --squash $user/${{ github.head_ref }}
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
