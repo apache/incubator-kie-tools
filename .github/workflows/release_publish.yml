@@ -50,8 +50,8 @@ jobs:
     uses: kiegroup/kogito-tooling/.github/workflows/release_build.yml@main
     with:
       dry_run: false
+      base_ref: ${{ steps.prepare.outputs.release_ref }}
       tag: ${{ github.event.inputs.tag }}
-      release_ref: ${{ steps.prepare.outputs.release_ref }}
       download_asset_url: ${{ needs.prepare.outputs.download_asset_url }}
       upload_asset_url: ${{ needs.prepare.outputs.upload_asset_url }}
       runners: ${{ github.event.inputs.runners }}
