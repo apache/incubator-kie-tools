@@ -17,7 +17,6 @@
 const nodeExternals = require("webpack-node-externals");
 const { merge } = require("webpack-merge");
 const common = require("../../config/webpack.common.config");
-const ShebangPlugin = require("webpack-shebang-plugin");
 
 module.exports = (env, argv) => [
   merge(common(env, argv), {
@@ -28,7 +27,6 @@ module.exports = (env, argv) => [
     output: {
       libraryTarget: "commonjs2",
     },
-    plugins: [new ShebangPlugin()],
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   }),
 ];

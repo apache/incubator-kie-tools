@@ -17456,11 +17456,6 @@ webpack-node-externals@^3.0.0:
   resolved "https://registry.yarnpkg.com/webpack-node-externals/-/webpack-node-externals-3.0.0.tgz#1a3407c158d547a9feb4229a9e3385b7b60c9917"
   integrity sha512-LnL6Z3GGDPht/AigwRh2dvL9PQPFQ8skEpVrWZXLWBYmqcaojHNN0onvHzie6rq7EWKrrBfPYqNEzTJgiwEQDQ==
 
-webpack-shebang-plugin@^1.1.7:
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/webpack-shebang-plugin/-/webpack-shebang-plugin-1.1.7.tgz#def9c9cfa49c2067598e9e4fea567bf313c19cc1"
-  integrity sha512-3jtjFA+7mikbuME61+1Kf6+atBYBNh7r5RCBXmkUUgc0j3f+/MZpIbYbnOp3xhIDe/7i6Ra4O9Q32LiKeUutRg==
-
 webpack-sources@^2.1.1:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-2.2.0.tgz#058926f39e3d443193b6c31547229806ffd02bac"
