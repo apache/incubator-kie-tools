@@ -119,8 +119,8 @@ digraph G {
   "@kogito-tooling/kie-bc-editors" -> "@kie-tooling-core/editor" [ style = "solid", color = "blue" ];
   "@kogito-tooling/kie-bc-editors" -> "@kie-tooling-core/vscode-java-code-completion" [ style = "solid", color = "blue" ];
   "@kogito-tooling/kie-bc-editors" -> "@kogito-tooling/pmml-editor-marshaller" [ style = "solid", color = "blue" ];
-  "@kogito-tooling/kie-editors-standalone" -> "@kogito-tooling/kie-bc-editors" [ style = "solid", color = "blue" ];
   "@kogito-tooling/kie-editors-standalone" -> "@kogito-tooling/stunner-editors" [ style = "dashed", color = "blue" ];
+  "@kogito-tooling/kie-editors-standalone" -> "@kogito-tooling/kie-bc-editors" [ style = "dashed", color = "blue" ];
   "@kogito-tooling/kie-sandbox-image" -> "@kogito-tooling/online-editor" [ style = "solid", color = "black" ];
   "@kogito-tooling/kie-tooling-extended-services-image" -> "@kogito-tooling/extended-services" [ style = "solid", color = "black" ];
   "@kie-tooling-core/monaco-editor" -> "@kogito-tooling/build-env" [ style = "dashed", color = "purple" ];
