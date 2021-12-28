@@ -55,6 +55,7 @@ jobs:
     uses: kiegroup/kogito-tooling/.github/workflows/staging_build.yml@main
     with:
       dry_run: false
+      base_ref: ${{ github.ref }}
       tag: ${{ needs.create_release.outputs.tag }}
       commit_sha: ${{ needs.create_release.outputs.commit_sha }}
       download_asset_url: ${{ needs.create_release.outputs.download_asset_url }}

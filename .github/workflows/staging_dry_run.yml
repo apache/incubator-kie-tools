@@ -15,3 +15,4 @@ jobs:
     uses: kiegroup/kogito-tooling/.github/workflows/staging_build.yml@main
     with:
       dry_run: true
+      base_ref: ${{ github.event.pull_request && github.base_ref || github.ref }}
