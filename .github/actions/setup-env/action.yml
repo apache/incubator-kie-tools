@@ -91,7 +91,7 @@ runs:
         fi
 
     - name: "Configure Pagefile (Windows only)"
-      if: runner.os == 'windows-latest'
+      if: inputs.os == 'windows-latest'
       uses: al-cheb/configure-pagefile-action@v1.2
       with:
         minimum-size: 16GB
