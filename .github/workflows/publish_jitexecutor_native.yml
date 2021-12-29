@@ -40,11 +40,11 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: |
           brew install maven make && \
-          wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz && \
-          tar -xzf graalvm-ce-java11-darwin-amd64-21.1.0.tar.gz && \
-          sudo mv graalvm-ce-java11-21.1.0 /Library/Java/JavaVirtualMachines
-          export PATH=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-21.1.0/Contents/Home/bin:$PATH && \
-          export GRAALVM_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-21.1.0/Contents/Home && \
+          wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.0/graalvm-ce-java11-darwin-amd64-21.3.0.tar.gz && \
+          tar -xzf graalvm-ce-java11-darwin-amd64-21.3.0.tar.gz && \
+          sudo mv graalvm-ce-java11-21.3.0 /Library/Java/JavaVirtualMachines
+          export PATH=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-21.3.0/Contents/Home/bin:$PATH && \
+          export GRAALVM_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-21.3.0/Contents/Home && \
           gu install native-image && \
           mvn clean package -B -ntp -DskipTests -f ./jitexecutor && mvn clean package -B -ntp -DskipTests -Pnative -am -f ./jitexecutor
 
@@ -81,7 +81,7 @@ jobs:
         uses: ayltai/setup-graalvm@v1
         with:
           java-version: 11
-          graalvm-version: 20.3.0
+          graalvm-version: 21.3.0
           native-image: true
 
       - name: "Build Windows"
