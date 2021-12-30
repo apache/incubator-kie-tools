@@ -1,0 +1,25 @@
+{
+  "name": "@kogito-tooling-examples/ping-pong-lib",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "build:dev": "yarn run run-script-if --bool $(build-env global.build.examples) --then \"yarn run build\"",
+    "build:prod": "yarn run run-script-if --bool $(build-env global.build.examples) --then \"yarn run build\""
+  },
+  "dependencies": {
+    "@kie-tooling-core/envelope": "0.0.0",
+    "@kie-tooling-core/envelope-bus": "0.0.0"
+  },
+  "devDependencies": {
+    "@kogito-tooling/build-env": "0.0.0"
+  }
+}
