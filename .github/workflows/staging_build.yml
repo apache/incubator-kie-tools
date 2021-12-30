@@ -75,6 +75,9 @@ jobs:
           path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
 
+      - name: "Setup kogito-tooling-bot"
+        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+
       - name: "Merge PR changes"
         uses: ./kogito-tooling/.github/actions/merge-pr-changes
         with:
@@ -88,12 +91,6 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.kogito_tooling_bot_token }}
           repository: kiegroup/kogito-online-staging
-
-      - name: "Setup kogito-tooling-bot"
-        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
-        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
-        with:
-          path: kogito-online-staging
 
       - name: "Cache Maven packages"
         uses: actions/cache@v2
