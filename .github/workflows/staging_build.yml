@@ -6,7 +6,9 @@ on:
       dry_run:
         type: boolean
         required: true
-        default: true
+      base_ref:
+        type: string
+        required: true
       tag:
         type: string
         required: false
@@ -69,8 +71,17 @@ jobs:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
+          ref: ${{ inputs.base_ref }}
           path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./kogito-tooling/.github/actions/merge-pr-changes
+        with:
+          path: kogito-tooling
 
       - name: "Checkout kogito-online-staging"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
@@ -80,12 +91,6 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.kogito_tooling_bot_token }}
           repository: kiegroup/kogito-online-staging
-
-      - name: "Setup kogito-tooling-bot"
-        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
-        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
-        with:
-          path: kogito-online-staging
 
       - name: "Cache Maven packages"
         uses: actions/cache@v2

@@ -1,0 +1,26 @@
+name: "Merge PR changes"
+description: ""
+
+inputs:
+  path:
+    description: "path"
+    required: false
+    default: "."
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Merge changes"
+      shell: bash
+      run: |
+        echo "STEP: Merge changes"
+        cd ${{ inputs.path }}
+        if [ ${{ github.event.pull_request }} ]; then
+          user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
+          echo "Merge changes from $user/${{ github.head_ref }}"
+          git remote add $user https://github.com/$user/kogito-tooling.git
+          git fetch $user
+          git merge --squash $user/${{ github.head_ref }}
+        else
+          echo "Skip merge, not a pull request"
+        fi
