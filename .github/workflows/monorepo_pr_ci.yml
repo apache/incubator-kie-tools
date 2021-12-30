@@ -29,11 +29,11 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.base_ref }}
 
-      - name: "Merge PR changes"
-        uses: ./.github/actions/merge-pr-changes
-
       - name: "Setup kogito-tooling-bot"
         uses: ./.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
