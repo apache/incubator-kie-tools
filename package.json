@@ -133,7 +133,6 @@
   },
   "resolutions": {
     "react-dropzone": "^11.4.2",
-    "ua-parser-js": "^0.7.30",
     "@types/react": "^17.0.6"
   }
 }

@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { ImportJavaClasses } from "./components";
-import {} from "./api/ImportJavaClasses";
+import * as buildEnv from "@kogito-tooling/build-env";
 
-export * from "./components";
+describe("Invocation Expression Tests", () => {
+  beforeEach(() => {
+    cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
+  });
 
-window.renderImportJavaClasses = (selector: string, buttonDisabledStatus: boolean, buttonTooltipMessage?: string) => {
-  ReactDOM.render(
-    <ImportJavaClasses buttonDisabledStatus={buttonDisabledStatus} buttonTooltipMessage={buttonTooltipMessage} />,
-    document.getElementById(selector)
-  );
-};
+  it("Define Invocation expression", () => {
+    // Entry point for each new expression
+    cy.ouiaId("expression-container").click();
+
+    // Define new expression as List
+    cy.ouiaId("expression-popover-menu").contains("Invocation").click({ force: true });
+
+    // Assert some content
+    cy.ouiaId("expression-row-0").should("contain.text", "p-1").should("contain.text", "<Undefined>");
+  });
+});

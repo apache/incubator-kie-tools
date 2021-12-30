@@ -1,0 +1,10 @@
+{
+  "fixturesFolder": "fixtures",
+  "integrationFolder": "integration",
+  "screenshotsFolder": "../dist-it-tests/screenshots",
+  "videosFolder": "../dist-it-tests/videos",
+  "supportFile": "support/index.ts",
+  "chromeWebSecurity": false,
+  "video": true,
+  "defaultCommandTimeout": 10000
+}

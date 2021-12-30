@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,4 +14,15 @@
  * limitations under the License.
  */
 
-/// <reference types="./commands" />
+declare namespace Cypress {
+  interface Chainable {
+    /**
+     * Search elements by data-ouia-component-id attribute.
+     * @param id string
+     * @param opts optional - config object
+     */
+    ouiaId(id: string, opts?: Record<string, any>): Chainable<Element>;
+
+    ouiaType(type: string, opts?: Record<string, any>): Chainable<Element>;
+  }
+}

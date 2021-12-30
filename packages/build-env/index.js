@@ -266,6 +266,25 @@ module.exports = {
     },
   },
 
+  boxedExpressionComponent: {
+    dev: {
+      port: 3015,
+    },
+  },
+
+  feelInputComponent: {
+    dev: {
+      port: 3016,
+      REACT_APP_FEEL_SERVER: "",
+    },
+  },
+
+  importJavaClassesComponent: {
+    dev: {
+      port: 3017,
+    },
+  },
+
   chromeExtension: {
     dev: {
       port: 9000,
