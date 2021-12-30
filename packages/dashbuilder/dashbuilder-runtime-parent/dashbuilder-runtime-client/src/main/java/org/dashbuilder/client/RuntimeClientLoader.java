@@ -113,18 +113,12 @@ public class RuntimeClientLoader {
                             response.getAvailableModels(),
                             response.isAllowUpload());
                     responseConsumer.accept(newResponse);
-                }, () -> {
-                    responseConsumer.accept(response);
-                }, (e, t) -> {
-                    handleError(error, e, t);
-                });
+                }, () -> responseConsumer.accept(response), (e, t) -> handleError(error, e, t));
             } else {
                 responseConsumer.accept(response);
             }
 
-        }, (msg, t) -> {
-            handleError(error, msg, t);
-        });
+        }, (msg, t) -> handleError(error, msg, t));
     }
 
     public void loadModel(Consumer<RuntimeModel> modelLoaded,
@@ -158,16 +152,12 @@ public class RuntimeClientLoader {
     }
 
     public void clientLoad(String fileName, String content) {
-        var parserOp = parserFactory.get(fileName);
-
-        if (parserOp.isPresent()) {
-            var runtimeModel = parserOp.get().parse(content);
-            registerModel(runtimeModel);
-            runtimeModelResourceClient.setClientModel(runtimeModel);
-            updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(CLIENT_MODEL_ID));
-            return;
-        }
-        throw new IllegalArgumentException("File type is not supported");
+        var parser = parserFactory.get(fileName)
+                .orElseThrow(() -> new IllegalArgumentException("File type is not supported"));
+        var runtimeModel = parser.parse(content);
+        registerModel(runtimeModel);
+        runtimeModelResourceClient.setClientModel(runtimeModel);
+        updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(CLIENT_MODEL_ID));
     }
 
     public boolean isOffline() {

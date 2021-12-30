@@ -97,9 +97,8 @@ public class RuntimeModelJSONMarshaller {
         jsonObject.set(LAYOUT_TEMPLATES, ltArray);
 
         i.set(0);
-        model.getClientDataSets().forEach(def -> {
-            externalDefsArray.set(i.getAndIncrement(), defMarshaller.toJsonObject(def));
-        });
+        model.getClientDataSets()
+             .forEach(def -> externalDefsArray.set(i.getAndIncrement(), defMarshaller.toJsonObject(def)));
         jsonObject.set(EXTERNAL_DATASET_DEFS, externalDefsArray);
 
         return jsonObject;

@@ -86,8 +86,7 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
     @Override
     public IsWidget getShowWidget(final RenderingContext ctx) {
         var settingsOp = getDisplayerSettings(ctx.getComponent().getProperties(), ctx.getComponent());
-        if (settingsOp.isPresent()) {
-            final DisplayerSettings settings = settingsOp.get();
+        return settingsOp.map(settings -> {
             viewer.removeFromParent();
             viewer.init(settings);
             viewer.addAttachHandler(attachEvent -> {
@@ -104,8 +103,7 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
             Displayer displayer = viewer.draw();
             perspectiveCoordinator.addDisplayer(displayer);
             return viewer;
-        }
-        return null;
+        }).orElse(null);
     }
 
     @Override
