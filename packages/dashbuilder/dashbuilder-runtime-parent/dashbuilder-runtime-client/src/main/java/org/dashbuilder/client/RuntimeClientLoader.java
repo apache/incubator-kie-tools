@@ -103,8 +103,8 @@ public class RuntimeClientLoader {
             loading.hideBusyIndicator();
 
             if (response.getRuntimeModelOp().isPresent()) {
-                responseConsumer.accept(response);
                 this.registerModel(response.getRuntimeModelOp().get());
+                responseConsumer.accept(response);
             } else if (importID != null && !importID.trim().isEmpty()) {
                 this.loadModel(model -> {
                     this.registerModel(model);
