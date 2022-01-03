@@ -1,1 +1,11 @@
-<div>llama</div>
+<i>#{{ apiService.initArgs?.name }}</i>
+
+<div class="ping-pong-view--header">
+  <span>Hello from Angular!</span>
+  <button (click)="apiService.ping()">Ping others!</button>
+</div>
+<div class="ping-pong-view--log">
+  <p *ngFor="let entry of log | async" class="ping-pong-view--line">
+    {{ entry.line }}
+  </p>
+</div>

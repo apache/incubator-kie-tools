@@ -1,0 +1,17 @@
+.ping-pong-view--line {
+  font-family: "monospace";
+}
+
+.ping-pong-view--header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #292d34;
+  color: rgb(96, 210, 243);
+}
+
+.ping-pong-view--log {
+  padding: 10px;
+  background-color: black;
+  color: white;
+}

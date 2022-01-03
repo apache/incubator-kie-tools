@@ -1,15 +1,8 @@
-import { PingPongAngularImplFactory } from "./PingPongAngularImplFactory";
+import { ApiService, LogEntry } from "./api.service";
 import { Component, OnInit } from "@angular/core";
-import { PingPongInitArgs, PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-lib/dist/api";
 import * as PingPongViewEnvelope from "@kogito-tooling-examples/ping-pong-lib/dist/envelope";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
-
-declare global {
-  interface Window {
-    initArgs: PingPongInitArgs;
-    channelApi: PingPongChannelApi;
-  }
-}
+import { Observable, scan } from "rxjs";
 
 @Component({
   selector: "app-root",
@@ -17,18 +10,22 @@ declare global {
   styleUrls: ["./app.component.css"],
 })
 export class AppComponent implements OnInit {
-  title = "ping-pong-view-angular";
+  constructor(public apiService: ApiService) {}
+
+  log: Observable<LogEntry[]>;
 
   ngOnInit() {
-    console.log({ initArgs: window.initArgs, channelApi: window.channelApi });
+    this.apiService.log.next({ line: "Logs will show up here", time: 0 });
     PingPongViewEnvelope.init({
       container: document.getElementById("envelope-app")!,
       config: { containerType: ContainerType.IFRAME },
       bus: { postMessage: (message, _targetOrigin, transfer) => window.parent.postMessage(message, "*", transfer) },
-      pingPongViewFactory: new PingPongAngularImplFactory(),
+      pingPongViewFactory: this.apiService,
       viewReady: function (): Promise<() => HTMLElement> {
         return Promise.resolve(() => document.getElementById("envelope-app")!);
       },
     });
+
+    this.log = this.apiService.log.asObservable().pipe(scan((acc, curr) => [...acc.slice(-9), curr], []));
   }
 }
