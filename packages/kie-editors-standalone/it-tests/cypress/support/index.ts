@@ -15,3 +15,5 @@
  */
 
 /// <reference types="./commands" />
+
+import "./commands";
