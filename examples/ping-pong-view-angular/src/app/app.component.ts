@@ -1,5 +1,8 @@
+import { PingPongAngularImplFactory } from "./PingPongAngularImplFactory";
 import { Component, OnInit } from "@angular/core";
-import { PingPongInitArgs, PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { PingPongInitArgs, PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-lib/dist/api";
+import * as PingPongViewEnvelope from "@kogito-tooling-examples/ping-pong-lib/dist/envelope";
+import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
 
 declare global {
   interface Window {
@@ -18,5 +21,14 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     console.log({ initArgs: window.initArgs, channelApi: window.channelApi });
+    PingPongViewEnvelope.init({
+      container: document.getElementById("envelope-app")!,
+      config: { containerType: ContainerType.IFRAME },
+      bus: { postMessage: (message, _targetOrigin, transfer) => window.parent.postMessage(message, "*", transfer) },
+      pingPongViewFactory: new PingPongAngularImplFactory(),
+      viewReady: function (): Promise<() => HTMLElement> {
+        return Promise.resolve(() => document.getElementById("envelope-app")!);
+      },
+    });
   }
 }

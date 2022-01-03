@@ -3,6 +3,5 @@
   "compilerOptions": {
     "declaration": false,
     "declarationMap": false
-  },
-  "include": ["src"]
+  }
 }

@@ -17,8 +17,8 @@
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { Page, PageSection } from "@patternfly/react-core";
-import { EmbeddedIFramePingPong } from "@kogito-tooling-examples/ping-pong-view/dist/embedded/iframe";
-import { PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { EmbeddedIFramePingPong } from "@kogito-tooling-examples/ping-pong-lib/dist/embedded";
+import { PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-lib/dist/api";
 import { StatsSidebar } from "../StatsSidebar";
 
 let pings = 0;
