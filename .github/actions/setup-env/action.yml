@@ -49,7 +49,7 @@ runs:
         echo "STEP: Setup default Maven args"
         cd ${{ inputs.path }}
         lerna exec 'mkdir .mvn'
-        lerna exec 'echo -B -ntp > .mvn/maven.config'
+        lerna exec 'echo -B -ntp -T2 > .mvn/maven.config'
         lerna exec 'echo -Xmx2g > .mvn/jvm.config'
 
     - name: "Bootstrap"
