@@ -22,7 +22,6 @@ import { PingPongEnvelopeApiImpl } from "./PingPongEnvelopeApiImpl";
 
 export function init(args: {
   config: EnvelopeDivConfig | EnvelopeIFrameConfig;
-  container: HTMLElement;
   bus: EnvelopeBus;
   pingPongViewFactory: PingPongFactory;
   viewReady: () => Promise<() => HTMLElement>;

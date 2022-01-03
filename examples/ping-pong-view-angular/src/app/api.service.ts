@@ -35,18 +35,21 @@ export class ApiService {
     this.initArgs = initArgs;
     this.channelApi = channelApi;
 
+    // Subscribe to ping notifications.
     this.channelApi.notifications.pingPongView__ping.subscribe((pingSource) => {
       // If this instance sent the PING, we ignore it.
       if (pingSource === this.initArgs.name) {
         return;
       }
 
+      // Add a new line to our log, stating that we received a ping.
       this.log.next({ line: `PING from '${pingSource}'.`, time: getCurrentTime() });
 
       // Acknowledges the PING message by sending back a PONG message.
       this.channelApi.notifications.pingPongView__pong.send(this.initArgs.name, pingSource);
     });
 
+    // Subscribe to pong notifications.
     this.channelApi.notifications.pingPongView__pong.subscribe((pongSource: string, replyingTo: string) => {
       // If this instance sent the PONG, or if this PONG was not meant to this instance, we ignore it.
       if (pongSource === this.initArgs.name || replyingTo !== this.initArgs.name) {
@@ -57,6 +60,7 @@ export class ApiService {
       this.log.next({ line: `PONG from '${pongSource}'.`, time: getCurrentTime() });
     });
 
+    // Populate the log with a dot each 2 seconds.
     this.dotInterval = window.setInterval(() => {
       this.log.next({ line: ".", time: getCurrentTime() });
     }, 2000);
@@ -64,6 +68,7 @@ export class ApiService {
     return {};
   }
 
+  // Send a ping to the channel.
   ping() {
     this.channelApi.notifications.pingPongView__ping.send(this.initArgs.name);
   }
