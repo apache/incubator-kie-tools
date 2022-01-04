@@ -43,6 +43,7 @@ digraph G {
   "@kogito-tooling/uniforms-bootstrap4-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kogito-tooling/uniforms-patternfly-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tooling-core/i18n" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kogito-tooling/image-env-to-json" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tooling-core/operating-system" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kogito-tooling/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tooling-core/vscode-java-code-completion" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -114,6 +115,7 @@ digraph G {
   "@kie-tooling-core/guided-tour" -> "@kie-tooling-core/patternfly-base" [ style = "solid", color = "purple" ];
   "@kie-tooling-core/i18n" -> "@kogito-tooling/build-env" [ style = "dashed", color = "purple" ];
   "@kogito-tooling/i18n-common-dictionary" -> "@kie-tooling-core/i18n" [ style = "solid", color = "blue" ];
+  "@kogito-tooling/image-env-to-json" -> "@kogito-tooling/build-env" [ style = "dashed", color = "black" ];
   "@kie-tooling-core/keyboard-shortcuts" -> "@kie-tooling-core/envelope-bus" [ style = "solid", color = "purple" ];
   "@kie-tooling-core/keyboard-shortcuts" -> "@kie-tooling-core/operating-system" [ style = "solid", color = "purple" ];
   "@kogito-tooling/kie-bc-editors" -> "@kie-tooling-core/editor" [ style = "solid", color = "blue" ];
@@ -121,7 +123,8 @@ digraph G {
   "@kogito-tooling/kie-bc-editors" -> "@kie-tooling-core/vscode-java-code-completion" [ style = "solid", color = "blue" ];
   "@kogito-tooling/kie-editors-standalone" -> "@kogito-tooling/kie-bc-editors" [ style = "solid", color = "blue" ];
   "@kogito-tooling/kie-editors-standalone" -> "@kogito-tooling/external-assets-base" [ style = "dashed", color = "blue" ];
-  "@kogito-tooling/kie-sandbox-image" -> "@kogito-tooling/online-editor" [ style = "solid", color = "black" ];
+  "@kogito-tooling/kie-sandbox-image" -> "@kogito-tooling/image-env-to-json" [ style = "dashed", color = "black" ];
+  "@kogito-tooling/kie-sandbox-image" -> "@kogito-tooling/online-editor" [ style = "dashed", color = "black" ];
   "@kogito-tooling/kie-tooling-extended-services-image" -> "@kogito-tooling/extended-services" [ style = "solid", color = "black" ];
   "@kie-tooling-core/monaco-editor" -> "@kogito-tooling/build-env" [ style = "dashed", color = "purple" ];
   "@kie-tooling-core/notifications" -> "@kie-tooling-core/i18n" [ style = "solid", color = "purple" ];

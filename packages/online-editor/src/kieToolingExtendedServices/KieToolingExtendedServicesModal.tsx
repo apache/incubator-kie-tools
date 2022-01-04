@@ -41,10 +41,6 @@ import { SelectOs } from "../os/SelectOs";
 import { getOperatingSystem, OperatingSystem } from "@kie-tooling-core/operating-system";
 import { DEVELOPER_SANDBOX_URL } from "../openshift/OpenShiftService";
 import { DependentFeature, useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
-import {
-  KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_HOST,
-  KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT,
-} from "./KieToolingExtendedServicesContextProvider";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 import { useRoutes } from "../navigation/Hooks";
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
@@ -870,7 +866,9 @@ function KieToolingExtendedServicesPortForm() {
     <>
       <Text component={TextVariants.p}>
         <I18nWrapped
-          components={{ port: <Text className={"kogito--code"}>{KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT}</Text> }}
+          components={{
+            port: <Text className={"kogito--code"}>{config.port}</Text>,
+          }}
         >
           {i18n.dmnRunner.modal.wizard.advancedSettings.title}
         </I18nWrapped>
@@ -890,9 +888,7 @@ function KieToolingExtendedServicesPortForm() {
           <TextInput
             value={config.port}
             type={"number"}
-            onChange={(value) =>
-              saveNewConfig(new ExtendedServicesConfig(KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_HOST, value))
-            }
+            onChange={(value) => saveNewConfig(new ExtendedServicesConfig(config.host, value))}
           />
         </FormGroup>
       </Form>
