@@ -71,7 +71,7 @@ runs:
       run: |
         echo "STEP: Check dependencies mismatches"
         cd ${{ inputs.path }}
-        npx --yes syncpack list-mismatches
+        npx --yes syncpack@6.2.0 list-mismatches
 
     - name: "Check format"
       shell: bash
