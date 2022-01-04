@@ -638,6 +638,10 @@ section.kogito-tooling--settings-tab {
   }
 }
 
+.kogito--editor__responsive-dropdown-container {
+  margin: var(--pf-global--spacer--lg) 0 0 0;
+}
+
 .kogito--editor__responsive-dropdown-container .pf-c-dropdown__menu {
   position: relative;
   min-width: 100%;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from "react";
+import React, { useMemo } from "react";
 import {
   Dropdown,
   DropdownProps,
@@ -22,7 +22,7 @@ import {
   DropdownSeparator,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
 
-import { useIsBelowBreakpoint, Breakpoint } from "./hooks";
+import { useWindowSizeRelationToBreakpoint, Breakpoint, RelationToBreakpoint } from "./hooks";
 import { ResponsiveDropdownContext } from "./ResponsiveDropdownContext";
 import { ResponsiveDropdownModal } from "./ResponsiveDropdownModal";
 
@@ -38,7 +38,7 @@ export interface ResponsiveDropdownProps extends DropdownProps {
 }
 
 export function ResponsiveDropdown(props: ResponsiveDropdownProps) {
-  const isModal = useIsBelowBreakpoint(props.switchingBreakpoint || "sm");
+  const isModal = useWindowSizeRelationToBreakpoint(props.switchingBreakpoint || "sm") === RelationToBreakpoint.Below;
 
   return (
     <ResponsiveDropdownContext.Provider value={{ isModal }}>

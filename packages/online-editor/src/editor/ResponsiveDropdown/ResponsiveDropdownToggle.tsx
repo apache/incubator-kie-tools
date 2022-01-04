@@ -28,7 +28,6 @@ export function ResponsiveDropdownToggle(props: DropdownToggleProps) {
           variant={ButtonVariant.plain}
           onClick={() => props.onToggle?.(props.isOpen || false)}
           className={props.className}
-          key="bla"
         >
           {props.children}
         </Button>

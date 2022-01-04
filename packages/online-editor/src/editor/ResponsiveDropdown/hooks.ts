@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 
 import global_breakpoint_xs from "@patternfly/react-tokens/dist/esm/global_breakpoint_xs";
 import global_breakpoint_sm from "@patternfly/react-tokens/dist/esm/global_breakpoint_sm";
@@ -8,6 +8,11 @@ import global_breakpoint_xl from "@patternfly/react-tokens/dist/esm/global_break
 import global_breakpoint_2xl from "@patternfly/react-tokens/dist/esm/global_breakpoint_2xl";
 
 export type Breakpoint = "2xl" | "xl" | "lg" | "md" | "sm" | "xs";
+
+export enum RelationToBreakpoint {
+  Above,
+  Below,
+}
 
 const getPxValue = ({ value }: { value: string }) => {
   return parseInt(value.replace("px", ""), 10);
@@ -22,40 +27,38 @@ const breakpoints: Record<Breakpoint, number> = {
   "2xl": getPxValue(global_breakpoint_2xl),
 };
 
+function throttle(func: (...args: any) => any, timeout: number) {
+  let ready = true;
+  return (...args: any) => {
+    if (!ready) {
+      return;
+    }
+
+    ready = false;
+    func(...args);
+    setTimeout(() => {
+      ready = true;
+    }, timeout);
+  };
+}
+
 export function useWindowWidth() {
   const [width, setWidth] = useState(() => window.innerWidth);
-  const throttle = useCallback((func: (...args: any) => any, timeout: number) => {
-    let ready = true;
-    return (...args: any) => {
-      if (!ready) {
-        return;
-      }
-
-      ready = false;
-      func(...args);
-      setTimeout(() => {
-        ready = true;
-      }, timeout);
-    };
-  }, []);
-  const getWidth = useMemo(() => throttle(() => setWidth(window.innerWidth), 200), [throttle]);
 
   useEffect(() => {
+    const getWidth = throttle(() => setWidth(window.innerWidth), 200);
     window.addEventListener("resize", getWidth);
     return () => window.removeEventListener("resize", getWidth);
-  }, [getWidth]);
+  }, []);
 
   return width;
 }
 
-export function useIsAboveBreakpoint(targetBreakpoint: Breakpoint) {
+export function useWindowSizeRelationToBreakpoint(breakpoint: Breakpoint): RelationToBreakpoint {
   const width = useWindowWidth();
 
-  return width >= breakpoints[targetBreakpoint];
-}
-
-export function useIsBelowBreakpoint(targetBreakpoint: Breakpoint) {
-  const width = useWindowWidth();
-
-  return width < breakpoints[targetBreakpoint];
+  if (width >= breakpoints[breakpoint]) {
+    return RelationToBreakpoint.Above;
+  }
+  return RelationToBreakpoint.Below;
 }

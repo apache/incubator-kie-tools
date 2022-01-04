@@ -36,12 +36,7 @@ export function ResponsiveDropdownModal({ isOpen, onClose, title, children }: Re
       aria-label={title}
       className="kogito--editor__responsive-dropdown-modal"
     >
-      <div
-        style={{ margin: "var(--pf-global--spacer--lg) 0 0 0" }}
-        className="kogito--editor__responsive-dropdown-container"
-      >
-        {children}
-      </div>
+      <div className="kogito--editor__responsive-dropdown-container">{children}</div>
     </Modal>
   );
 }
