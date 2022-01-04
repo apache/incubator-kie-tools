@@ -10,18 +10,18 @@
   },
   "scripts": {
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
+    "copy:image-env-to-json": "cp ../image-env-to-json/dist/linux/image-env-to-json-standalone ./dist-dev/",
     "copy:online-editor": "cp -R ../online-editor/dist ./dist-dev/online-editor",
-    "copy:assets": "yarn copy:online-editor",
+    "copy:assets": "yarn copy:online-editor && yarn copy:image-env-to-json",
     "podman:build": "yarn run run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env kieSandbox.image.buildTags) | xargs printf -- \"-t $(build-env kieSandbox.image.registry)/$(build-env kieSandbox.image.account)/$(build-env kieSandbox.image.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\"",
-    "build:dev": "yarn cleanup && yarn copy:assets",
-    "build:prod:win32": "echo \"Build not supported on Windows\"",
-    "build:prod:darwin:linux": "yarn run run-script-if --bool \"$(build-env global.build.docker)\" --then \"yarn podman:build\"",
-    "build:prod": "yarn cleanup && yarn copy:assets && run-script-os"
-  },
-  "dependencies": {
-    "@kogito-tooling/online-editor": "0.0.0"
+    "build:dev": "echo \"Nothing to do\"",
+    "build:prod:darwin:win32": "echo \"Build not supported\"",
+    "build:prod:linux": "yarn copy:assets && yarn run run-script-if --bool \"$(build-env global.build.docker)\" --then \"yarn podman:build\"",
+    "build:prod": "yarn cleanup && run-script-os"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
+    "@kogito-tooling/build-env": "0.0.0",
+    "@kogito-tooling/image-env-to-json": "0.0.0",
+    "@kogito-tooling/online-editor": "0.0.0"
   }
 }

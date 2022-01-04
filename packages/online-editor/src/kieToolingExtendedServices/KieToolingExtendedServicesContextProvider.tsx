@@ -26,6 +26,11 @@ import {
   KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME,
 } from "../settings/SettingsContext";
 import { KieToolingExtendedServicesModal } from "./KieToolingExtendedServicesModal";
+import {
+  DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_HOST,
+  DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_PORT,
+  useEnv,
+} from "../env/EnvContext";
 
 interface Props {
   children: React.ReactNode;
@@ -33,16 +38,14 @@ interface Props {
 
 const KIE_TOOLING_EXTENDED_SERVICES_POLLING_TIME = 1000;
 
-export const KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_HOST = "http://localhost";
-export const KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT = "21345";
-
 export function KieToolingExtendedServicesContextProvider(props: Props) {
+  const env = useEnv();
   const [status, setStatus] = useState(KieToolingExtendedServicesStatus.AVAILABLE);
   const [isModalOpen, setModalOpen] = useState(false);
   const [installTriggeredBy, setInstallTriggeredBy] = useState<DependentFeature | undefined>(undefined);
   const [outdated, setOutdated] = useState(false);
   const [config, setConfig] = useState(
-    new ExtendedServicesConfig(KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_HOST, KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT)
+    new ExtendedServicesConfig(DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_HOST, DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_PORT)
   );
   const bridge = useMemo(() => new KieToolingExtendedServicesBridge(config.buildUrl()), [config]);
   const version = useMemo(
@@ -57,18 +60,28 @@ export function KieToolingExtendedServicesContextProvider(props: Props) {
   }, []);
 
   useEffect(() => {
-    const hostCookie =
-      getCookie(KIE_TOOLING_EXTENDED_SERVICES_HOST_COOKIE_NAME) ?? KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_HOST;
-    const portCookie =
-      getCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? KIE_TOOLING_EXTENDED_SERVICES_DEFAULT_PORT;
+    let envHost = DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_HOST;
+    let envPort = DEFAULT_KIE_TOOLING_EXTENDED_SERVICES_PORT;
+    try {
+      const envUrl = new URL(env.vars.KIE_TOOLING_EXTENDED_SERVICES_URL);
+      envHost = `${envUrl.protocol}//${envUrl.hostname}`;
+      envPort = envUrl.port;
+    } catch (e) {
+      console.error("Invalid KIE_TOOLING_EXTENDED_SERVICES_URL", e);
+    }
 
-    const newConfig = new ExtendedServicesConfig(hostCookie, portCookie);
+    const host = getCookie(KIE_TOOLING_EXTENDED_SERVICES_HOST_COOKIE_NAME) ?? envHost;
+    const port = getCookie(KIE_TOOLING_EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? envPort;
+
+    const newConfig = new ExtendedServicesConfig(host, port);
+    setConfig(newConfig);
+
     new KieToolingExtendedServicesBridge(newConfig.buildUrl()).check().then((checked) => {
       if (checked) {
         saveNewConfig(newConfig);
       }
     });
-  }, [saveNewConfig]);
+  }, [env.vars.KIE_TOOLING_EXTENDED_SERVICES_URL, saveNewConfig]);
 
   useEffect(() => {
     // Pooling to detect either if KieToolingExtendedServices is running or has stopped
