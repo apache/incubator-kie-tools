@@ -280,6 +280,7 @@ export function GitHubSettingsTab() {
                     >
                       <InputGroup>
                         <TextInput
+                          autoComplete={"off"}
                           id="token-input"
                           name="tokenInput"
                           aria-describedby="token-text-input-helper"

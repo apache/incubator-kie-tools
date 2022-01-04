@@ -16,7 +16,7 @@
 
 import { dirname } from "path";
 import { DeploymentFile } from "../../editor/DmnDevSandbox/DmnDevSandboxContext";
-import { HttpMethod, JAVA_RUNTIME_VERSION, Resource, ResourceArgs, ResourceFetch } from "./Resource";
+import { HttpMethod, JAVA_RUNTIME_VERSION, KOGITO_CREATED_BY, Resource, ResourceArgs, ResourceFetch } from "./Resource";
 
 const API_ENDPOINT = "apis/build.openshift.io/v1";
 
@@ -112,6 +112,7 @@ export class CreateBuild extends ResourceFetch {
           openshift.io/build.start-policy: Serial
           buildconfig: ${this.args.resourceName}
           openshift.io/build-config.name: ${this.args.resourceName}
+          ${KOGITO_CREATED_BY}: ${this.args.createdBy}
       spec:
         output:
           to:

@@ -6,15 +6,13 @@ on:
       dry_run:
         type: boolean
         required: true
-        default: true
+      base_ref:
+        type: string
+        required: true
       tag:
         type: string
         required: false
         default: "0.0.0"
-      release_ref:
-        type: string
-        required: false
-        default: "main"
       download_asset_url:
         type: string
         required: false
@@ -26,7 +24,7 @@ on:
       runners:
         type: string
         required: false
-        default: '{"dmn_dev_sandbox_image":"false","online_editor":"false","chrome_extension":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false"}'
+        default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_tooling_extended_services_image":"false","online_editor":"false","chrome_extension":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false"}'
     secrets:
       kogito_tooling_bot_token:
         required: false
@@ -57,6 +55,8 @@ jobs:
 
     outputs:
       dmn_dev_sandbox_image: ${{ steps.set_runners.outputs.dmn_dev_sandbox_image }}
+      kie_sandbox_image: ${{ steps.set_runners.outputs.kie_sandbox_image }}
+      kie_tooling_extended_services_image: ${{ steps.set_runners.outputs.kie_tooling_extended_services_image }}
       online_editor: ${{ steps.set_runners.outputs.online_editor }}
       chrome_extension: ${{ steps.set_runners.outputs.chrome_extension }}
       vscode_extensions_dev: ${{ steps.set_runners.outputs.vscode_extensions_dev }}
@@ -74,6 +74,8 @@ jobs:
         shell: bash
         run: |
           echo "::set-output name=dmn_dev_sandbox_image::${{ fromJSON(inputs.runners).dmn_dev_sandbox_image }}"
+          echo "::set-output name=kie_sandbox_image::${{ fromJSON(inputs.runners).kie_sandbox_image }}"
+          echo "::set-output name=kie_tooling_extended_services_image::${{ fromJSON(inputs.runners).kie_tooling_extended_services_image }}"
           echo "::set-output name=online_editor::${{ fromJSON(inputs.runners).online_editor }}"
           echo "::set-output name=chrome_extension::${{ fromJSON(inputs.runners).chrome_extension }}"
           echo "::set-output name=vscode_extensions_dev::${{ fromJSON(inputs.runners).vscode_extensions_dev }}"
@@ -89,6 +91,8 @@ jobs:
         shell: bash
         run: |
           echo "dmn_dev_sandbox_image: ${{ steps.set_runners.outputs.dmn_dev_sandbox_image }}"
+          echo "kie_sandbox_image: ${{ steps.set_runners.outputs.kie_sandbox_image }}"
+          echo "kie_tooling_extended_services_image: ${{ steps.set_runners.outputs.kie_tooling_extended_services_image }}"
           echo "online_editor: ${{ steps.set_runners.outputs.online_editor }}"
           echo "chrome_extension: ${{ steps.set_runners.outputs.chrome_extension }}"
           echo "vscode_extensions_dev: ${{ steps.set_runners.outputs.vscode_extensions_dev }}"
@@ -117,9 +121,17 @@ jobs:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
-          ref: ${{ inputs.release_ref }}
+          ref: ${{ inputs.base_ref }}
           path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./kogito-tooling/.github/actions/merge-pr-changes
+        with:
+          path: kogito-tooling
 
       - name: "Cache Maven packages"
         uses: actions/cache@v2
@@ -149,6 +161,100 @@ jobs:
           username: "${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
+  kie_sandbox_image:
+    env:
+      KIE_SANDBOX__imageRegistry: "quay.io"
+      KIE_SANDBOX__imageAccount: "kogito_tooling_bot"
+      KIE_SANDBOX__imageName: "kie-sandbox-image"
+      KIE_SANDBOX__imageBuildTags: "latest ${{ inputs.tag }}"
+
+    if: ${{ needs.extract_runners.outputs.kie_sandbox_image == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [extract_runners]
+    steps:
+      - name: "Checkout kogito-tooling"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.base_ref }}
+          path: ${{ github.workspace }}/kogito-tooling
+          fetch-depth: 0
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./kogito-tooling/.github/actions/merge-pr-changes
+        with:
+          path: kogito-tooling
+
+      - name: "Setup environment"
+        uses: ./kogito-tooling/.github/actions/setup-env
+        with:
+          path: kogito-tooling
+          os: ubuntu-latest
+
+      - name: "Build"
+        working-directory: ${{ github.workspace }}/kogito-tooling
+        run: |
+          lerna run build:prod --scope=@kogito-tooling/kie-sandbox-image --include-dependencies --stream
+
+      - name: "Push kie_sandbox_image to quay.io"
+        if: ${{ !inputs.dry_run }}
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.KIE_SANDBOX__imageName }}"
+          tags: "${{ env.KIE_SANDBOX__imageBuildTags }}"
+          registry: "${{ env.KIE_SANDBOX__imageRegistry }}/${{ env.KIE_SANDBOX__imageAccount }}"
+          username: "${{ env.KIE_SANDBOX__imageAccount }}"
+          password: "${{ secrets.quay_registry_password }}"
+
+  kie_tooling_extended_services_image:
+    env:
+      KIE_TOOLING_EXTENDED_SERVICES__imageRegistry: "quay.io"
+      KIE_TOOLING_EXTENDED_SERVICES__imageAccount: "kogito_tooling_bot"
+      KIE_TOOLING_EXTENDED_SERVICES__imageName: "kie-tooling-extended-services-image"
+      KIE_TOOLING_EXTENDED_SERVICES__imageBuildTags: "latest ${{ inputs.tag }}"
+
+    if: ${{ needs.extract_runners.outputs.kie_tooling_extended_services_image == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [extract_runners]
+    steps:
+      - name: "Checkout kogito-tooling"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.base_ref }}
+          path: ${{ github.workspace }}/kogito-tooling
+          fetch-depth: 0
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./kogito-tooling/.github/actions/merge-pr-changes
+        with:
+          path: kogito-tooling
+
+      - name: "Setup environment"
+        uses: ./kogito-tooling/.github/actions/setup-env
+        with:
+          path: kogito-tooling
+          os: ubuntu-latest
+
+      - name: "Build"
+        working-directory: ${{ github.workspace }}/kogito-tooling
+        run: |
+          lerna run build:prod --scope=@kogito-tooling/kie-tooling-extended-services-image --include-dependencies --stream
+
+      - name: "Push kie_tooling_extended_services_image to quay.io"
+        if: ${{ !inputs.dry_run }}
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__imageName }}"
+          tags: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__imageBuildTags }}"
+          registry: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__imageRegistry }}/${{ env.KIE_TOOLING_EXTENDED_SERVICES__imageAccount }}"
+          username: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__imageAccount }}"
+          password: "${{ secrets.quay_registry_password }}"
+
   online_editor:
     env:
       ONLINE_EDITOR__buildInfo: ""
@@ -172,9 +278,17 @@ jobs:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
-          ref: ${{ inputs.release_ref }}
+          ref: ${{ inputs.base_ref }}
           path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./kogito-tooling/.github/actions/merge-pr-changes
+        with:
+          path: kogito-tooling
 
       - name: "Checkout kogito-online"
         if: ${{ !inputs.dry_run }}
@@ -185,12 +299,6 @@ jobs:
           token: ${{ secrets.kogito_tooling_bot_token }}
           repository: kiegroup/kogito-online
           ref: gh-pages
-
-      - name: "Setup kogito-tooling-bot"
-        if: ${{ !inputs.dry_run }}
-        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
-        with:
-          path: kogito-online
 
       - name: "Cache Maven packages"
         uses: actions/cache@v2
@@ -255,9 +363,17 @@ jobs:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
-          ref: ${{ inputs.release_ref }}
+          ref: ${{ inputs.base_ref }}
           path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./kogito-tooling/.github/actions/merge-pr-changes
+        with:
+          path: kogito-tooling
 
       - name: "Checkout kogito-online"
         if: ${{ !inputs.dry_run }}
@@ -268,12 +384,6 @@ jobs:
           token: ${{ secrets.kogito_tooling_bot_token }}
           repository: kiegroup/kogito-online
           ref: gh-pages
-
-      - name: "Setup kogito-tooling-bot"
-        if: ${{ !inputs.dry_run }}
-        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
-        with:
-          path: kogito-online
 
       - name: "Setup environment"
         uses: ./kogito-tooling/.github/actions/setup-env
@@ -354,7 +464,14 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ inputs.release_ref }}
+          fetch-depth: 0
+          ref: ${{ inputs.base_ref }}
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -395,7 +512,14 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ inputs.release_ref }}
+          fetch-depth: 0
+          ref: ${{ inputs.base_ref }}
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -481,7 +605,14 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ inputs.release_ref }}
+          fetch-depth: 0
+          ref: ${{ inputs.base_ref }}
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -538,7 +669,14 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ inputs.release_ref }}
+          fetch-depth: 0
+          ref: ${{ inputs.base_ref }}
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -547,7 +685,7 @@ jobs:
 
       - name: "Build"
         run: |
-          lerna run build:prod --stream --no-private --concurrency 1
+          lerna run build:prod --stream --no-private --include-dependencies --concurrency 1
 
       - name: "Publish packages to the NPM registry"
         if: ${{ !inputs.dry_run }}
@@ -565,9 +703,17 @@ jobs:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
-          ref: ${{ inputs.release_ref }}
+          ref: ${{ inputs.base_ref }}
           path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./kogito-tooling/.github/actions/merge-pr-changes
+        with:
+          path: kogito-tooling
 
       - name: "Checkout kogito-online"
         if: ${{ !inputs.dry_run }}
@@ -578,12 +724,6 @@ jobs:
           token: ${{ secrets.kogito_tooling_bot_token }}
           repository: kiegroup/kogito-online
           ref: gh-pages
-
-      - name: "Setup kogito-tooling-bot"
-        if: ${{ !inputs.dry_run }}
-        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
-        with:
-          path: kogito-online
 
       - name: "Setup environment"
         uses: ./kogito-tooling/.github/actions/setup-env
@@ -629,7 +769,14 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ inputs.release_ref }}
+          fetch-depth: 0
+          ref: ${{ inputs.base_ref }}
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -682,7 +829,14 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ inputs.release_ref }}
+          fetch-depth: 0
+          ref: ${{ inputs.base_ref }}
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -721,9 +875,17 @@ jobs:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
-          ref: ${{ inputs.release_ref }}
+          ref: ${{ inputs.base_ref }}
           path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./kogito-tooling/.github/actions/merge-pr-changes
+        with:
+          path: kogito-tooling
 
       - name: "Setup environment"
         uses: ./kogito-tooling/.github/actions/setup-env

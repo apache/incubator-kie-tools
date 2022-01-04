@@ -16,6 +16,7 @@
 
 import * as React from "react";
 import { useContext } from "react";
+import { ExtendedServicesConfig } from "../settings/SettingsContext";
 import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
 
 export enum DependentFeature {
@@ -26,9 +27,8 @@ export enum DependentFeature {
 export interface KieToolingExtendedServicesContextType {
   status: KieToolingExtendedServicesStatus;
   setStatus: React.Dispatch<KieToolingExtendedServicesStatus>;
-  port: string;
-  saveNewPort: React.Dispatch<string>;
-  baseUrl: string;
+  config: ExtendedServicesConfig;
+  saveNewConfig: React.Dispatch<ExtendedServicesConfig>;
   version: string;
   outdated: boolean;
   isModalOpen: boolean;

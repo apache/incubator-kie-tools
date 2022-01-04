@@ -32,6 +32,7 @@ import { useRoutes } from "../../navigation/Hooks";
 import { useKieToolingExtendedServices } from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { DmnSchema } from "@kogito-tooling/form/dist/dmn";
+import { useSettings } from "../../settings/SettingsContext";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
@@ -45,6 +46,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const routes = useRoutes();
   const kieToolingExtendedServices = useKieToolingExtendedServices();
   const workspaces = useWorkspaces();
+  const settings = useSettings();
 
   const [error, setError] = useState(false);
   const [jsonSchema, setJsonSchema] = useState<DmnSchema | undefined>(undefined);
@@ -58,8 +60,8 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   }, [isExpanded]);
 
   const service = useMemo(
-    () => new DmnRunnerService(kieToolingExtendedServices.baseUrl),
-    [kieToolingExtendedServices.baseUrl]
+    () => new DmnRunnerService(settings.kieToolingExtendedServices.config.buildUrl()),
+    [settings.kieToolingExtendedServices.config]
   );
 
   const preparePayload = useCallback(

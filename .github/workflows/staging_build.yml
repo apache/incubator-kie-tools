@@ -6,7 +6,9 @@ on:
       dry_run:
         type: boolean
         required: true
-        default: true
+      base_ref:
+        type: string
+        required: true
       tag:
         type: string
         required: false
@@ -40,12 +42,23 @@ jobs:
       DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
       DMN_DEV_SANDBOX__baseImageTag: "${{ inputs.tag }}-prerelease"
       DMN_DEV_SANDBOX__baseImageBuildTags: "${{ inputs.tag }}-prerelease"
+
       DASHBUILDER__baseImageRegistry: "quay.io"
       DASHBUILDER__baseImageAccount: "kogito_tooling_bot"
       DASHBUILDER_AUTHORING__baseImageName: "dashbuilder-authoring"
       DASHBUILDER_RUNTIME__baseImageName: "dashbuilder-runtime"
       DASHBUILDER__baseImageTag: "${{ inputs.tag }}-prerelease"
       DASHBUILDER__baseImageBuildTags: "${{ inputs.tag }}-prerelease"
+
+      KIE_SANDBOX__imageRegistry: "quay.io"
+      KIE_SANDBOX__imageAccount: "kogito_tooling_bot"
+      KIE_SANDBOX__imageName: "kie-sandbox-image"
+      KIE_SANDBOX__imageBuildTags: "${{ inputs.tag }}-prerelease"
+
+      KIE_TOOLING_EXTENDED_SERVICES__imageRegistry: "quay.io"
+      KIE_TOOLING_EXTENDED_SERVICES__imageAccount: "kogito_tooling_bot"
+      KIE_TOOLING_EXTENDED_SERVICES__imageName: "kie-tooling-extended-services-image"
+      KIE_TOOLING_EXTENDED_SERVICES__imageBuildTags: "${{ inputs.tag }}-prerelease"
 
     strategy:
       matrix:
@@ -58,8 +71,17 @@ jobs:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
+          ref: ${{ inputs.base_ref }}
           path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./kogito-tooling/.github/actions/merge-pr-changes
+        with:
+          path: kogito-tooling
 
       - name: "Checkout kogito-online-staging"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
@@ -69,12 +91,6 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.kogito_tooling_bot_token }}
           repository: kiegroup/kogito-online-staging
-
-      - name: "Setup kogito-tooling-bot"
-        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
-        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
-        with:
-          path: kogito-online-staging
 
       - name: "Cache Maven packages"
         uses: actions/cache@v2
@@ -121,6 +137,26 @@ jobs:
           tags: "${{ env.DMN_DEV_SANDBOX__baseImageBuildTags }}"
           registry: "${{ env.DMN_DEV_SANDBOX__baseImageRegistry }}/${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
           username: "${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
+          password: "${{ secrets.quay_registry_password }}"
+
+      - name: "STAGING: Push kie-sandbox-image to quay.io (Ubuntu only)"
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.KIE_SANDBOX__imageName }}"
+          tags: "${{ env.KIE_SANDBOX__imageBuildTags }}"
+          registry: "${{ env.KIE_SANDBOX__imageRegistry }}/${{ env.KIE_SANDBOX__imageAccount }}"
+          username: "${{ env.KIE_SANDBOX__imageAccount }}"
+          password: "${{ secrets.quay_registry_password }}"
+
+      - name: "STAGING: Push kie-tooling-extended-services-image to quay.io (Ubuntu only)"
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__imageName }}"
+          tags: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__imageBuildTags }}"
+          registry: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__imageRegistry }}/${{ env.KIE_TOOLING_EXTENDED_SERVICES__imageAccount }}"
+          username: "${{ env.KIE_TOOLING_EXTENDED_SERVICES__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Deploy Online Editor to kogito-online-staging (Ubuntu only)"
