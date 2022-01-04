@@ -20,13 +20,16 @@ import { PingPongChannelApi, PingPongEnvelopeApi } from "../api";
 import { PingPongFactory } from "./PingPongFactory";
 import { PingPongEnvelopeApiImpl } from "./PingPongEnvelopeApiImpl";
 
+export type PingPongViewType = HTMLElement | void;
+
 export function init(args: {
   config: EnvelopeDivConfig | EnvelopeIFrameConfig;
   bus: EnvelopeBus;
   pingPongViewFactory: PingPongFactory;
-  viewReady: () => Promise<() => HTMLElement>;
+  viewReady: () => Promise<() => PingPongViewType>;
+  container?: HTMLElement;
 }) {
-  const envelope = new Envelope<PingPongEnvelopeApi, PingPongChannelApi, HTMLElement, {}>(args.bus, args.config);
+  const envelope = new Envelope<PingPongEnvelopeApi, PingPongChannelApi, PingPongViewType, {}>(args.bus, args.config);
 
   return envelope.start(
     args.viewReady,

@@ -16,3 +16,4 @@
 
 export * from "./PingPongReactImpl";
 export * from "./PingPongReactImplFactory";
+export * from "./PingPongEnvelopeView";

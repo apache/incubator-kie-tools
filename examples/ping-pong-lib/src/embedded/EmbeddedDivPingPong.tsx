@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,46 +15,52 @@
  */
 
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 import { useCallback, useMemo } from "react";
 import { PingPongApi, PingPongChannelApi, PingPongEnvelopeApi } from "../api";
 import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
-import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tooling-core/envelope/dist/embedded";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
+import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tooling-core/envelope/dist/embedded";
 
-export type EmbeddedIFramePingPongProps = {
+export type EmbeddedDivPingPongProps = {
   mapping: {
     title: string;
-    envelopePath: string;
   };
   apiImpl: PingPongChannelApi;
   targetOrigin: string;
   name: string;
+  renderView: (container: HTMLDivElement, containerType: ContainerType, envelopeId?: string) => Promise<void>;
 };
 
-export const EmbeddedIFramePingPong = React.forwardRef(
-  (props: EmbeddedIFramePingPongProps, forwardedRef: React.Ref<PingPongApi>) => {
+export const EmbeddedDivPingPong = React.forwardRef(
+  (props: EmbeddedDivPingPongProps, forwardedRef: React.Ref<PingPongApi>) => {
     const refDelegate = useCallback((): PingPongApi => ({}), []);
+    const { renderView, name } = props;
 
     const pollInit = useCallback(
-      (envelopeServer: EnvelopeServer<PingPongChannelApi, PingPongEnvelopeApi>, container: () => HTMLIFrameElement) => {
+      async (
+        envelopeServer: EnvelopeServer<PingPongChannelApi, PingPongEnvelopeApi>,
+        container: () => HTMLDivElement
+      ) => {
+        await renderView(container(), ContainerType.DIV, envelopeServer.id);
+
         return envelopeServer.envelopeApi.requests.pingPongView__init(
           { origin: envelopeServer.origin, envelopeServerId: envelopeServer.id },
-          { name: props.name }
+          { name }
         );
       },
-      [props.name]
+      [name, renderView]
     );
 
-    const config = useMemo(
+    const config: { containerType: ContainerType.DIV } = useMemo(
       () => ({
-        containerType: ContainerType.IFRAME,
-        envelopePath: props.mapping.envelopePath,
+        containerType: ContainerType.DIV,
       }),
-      [props.mapping.envelopePath]
+      []
     );
 
     return (
-      <EmbeddedIframePingPongEnvelope
+      <EmbeddedDivPingPongEnvelope
         ref={forwardedRef}
         apiImpl={props.apiImpl}
         origin={props.targetOrigin}
@@ -66,7 +72,7 @@ export const EmbeddedIFramePingPong = React.forwardRef(
   }
 );
 
-const EmbeddedIframePingPongEnvelope =
+const EmbeddedDivPingPongEnvelope =
   React.forwardRef<PingPongApi, EmbeddedEnvelopeProps<PingPongChannelApi, PingPongEnvelopeApi, PingPongApi>>(
     RefForwardingEmbeddedEnvelope
   );

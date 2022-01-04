@@ -14,8 +14,5 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-
-export interface PingPong {
-  reactComponent?(): React.ReactNode;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface PingPongApi {}

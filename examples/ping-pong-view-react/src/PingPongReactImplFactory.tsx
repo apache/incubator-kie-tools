@@ -17,17 +17,15 @@
 import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
 import * as React from "react";
 import { PingPongReactImpl } from "./PingPongReactImpl";
-import { PingPong, PingPongFactory } from "@kogito-tooling-examples/ping-pong-view/dist/envelope";
-import { PingPongApi, PingPongChannelApi, PingPongInitArgs } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { PingPongFactory } from "@kogito-tooling-examples/ping-pong-lib/dist/envelope";
+import { PingPongApi, PingPongChannelApi, PingPongInitArgs } from "@kogito-tooling-examples/ping-pong-lib/dist/api";
 
 export class PingPongReactImplFactory implements PingPongFactory {
+  constructor(private setView: React.Dispatch<React.SetStateAction<React.ReactElement>>) {}
+
   public create(initArgs: PingPongInitArgs, channelApi: MessageBusClientApi<PingPongChannelApi>) {
     const ref = React.createRef<PingPongApi>();
 
-    const pingPongView: PingPong = {
-      reactComponent: () => <PingPongReactImpl initArgs={initArgs} channelApi={channelApi} ref={ref} />,
-    };
-
-    return pingPongView;
+    this.setView(<PingPongReactImpl initArgs={initArgs} channelApi={channelApi} ref={ref} />);
   }
 }

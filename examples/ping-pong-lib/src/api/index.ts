@@ -16,3 +16,4 @@
 
 export * from "./PingPongChannelApi";
 export * from "./PingPongEnvelopeApi";
+export * from "./PingPongApi";

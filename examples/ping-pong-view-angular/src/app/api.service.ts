@@ -1,7 +1,23 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Injectable } from "@angular/core";
 import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
 import { PingPongChannelApi, PingPongInitArgs } from "@kogito-tooling-examples/ping-pong-lib/dist/api";
-import { PingPong } from "@kogito-tooling-examples/ping-pong-lib/dist/envelope";
+import { PingPongFactory } from "@kogito-tooling-examples/ping-pong-lib/dist/envelope";
 import { ReplaySubject } from "rxjs";
 
 declare global {
@@ -23,20 +39,27 @@ function getCurrentTime() {
 @Injectable({
   providedIn: "root",
 })
-export class ApiService {
+export class ApiService implements PingPongFactory {
   channelApi: MessageBusClientApi<PingPongChannelApi>;
   initArgs: PingPongInitArgs;
   log = new ReplaySubject<LogEntry>(10);
-  dotInterval: number;
+  dotInterval?: number;
+  initialized = false;
+  pingSubscription?: (source: string) => void;
+  pongSubscription?: (source: string, replyingTo: string) => void;
 
   constructor() {}
 
-  create(initArgs: PingPongInitArgs, channelApi: MessageBusClientApi<PingPongChannelApi>): PingPong {
+  create(initArgs: PingPongInitArgs, channelApi: MessageBusClientApi<PingPongChannelApi>) {
+    // Making sure we don't subscribe more than once.
+    this.clearSubscriptions();
+    this.clearInterval();
+
     this.initArgs = initArgs;
     this.channelApi = channelApi;
 
     // Subscribe to ping notifications.
-    this.channelApi.notifications.pingPongView__ping.subscribe((pingSource) => {
+    this.pingSubscription = this.channelApi.notifications.pingPongView__ping.subscribe((pingSource) => {
       // If this instance sent the PING, we ignore it.
       if (pingSource === this.initArgs.name) {
         return;
@@ -50,20 +73,24 @@ export class ApiService {
     });
 
     // Subscribe to pong notifications.
-    this.channelApi.notifications.pingPongView__pong.subscribe((pongSource: string, replyingTo: string) => {
-      // If this instance sent the PONG, or if this PONG was not meant to this instance, we ignore it.
-      if (pongSource === this.initArgs.name || replyingTo !== this.initArgs.name) {
-        return;
-      }
+    this.pongSubscription = this.channelApi.notifications.pingPongView__pong.subscribe(
+      (pongSource: string, replyingTo: string) => {
+        // If this instance sent the PONG, or if this PONG was not meant to this instance, we ignore it.
+        if (pongSource === this.initArgs.name || replyingTo !== this.initArgs.name) {
+          return;
+        }
 
-      // Updates the log to show a feedback that a PONG message was observed.
-      this.log.next({ line: `PONG from '${pongSource}'.`, time: getCurrentTime() });
-    });
+        // Updates the log to show a feedback that a PONG message was observed.
+        this.log.next({ line: `PONG from '${pongSource}'.`, time: getCurrentTime() });
+      }
+    );
 
     // Populate the log with a dot each 2 seconds.
     this.dotInterval = window.setInterval(() => {
       this.log.next({ line: ".", time: getCurrentTime() });
     }, 2000);
+
+    this.initialized = true;
 
     return {};
   }
@@ -73,7 +100,17 @@ export class ApiService {
     this.channelApi.notifications.pingPongView__ping.send(this.initArgs.name);
   }
 
-  ngOnDestroy() {
+  clearSubscriptions() {
+    this.pingSubscription && this.channelApi.notifications.pingPongView__ping.unsubscribe(this.pingSubscription);
+    this.pongSubscription && this.channelApi.notifications.pingPongView__pong.unsubscribe(this.pongSubscription);
+  }
+
+  clearInterval() {
     window.clearInterval(this.dotInterval);
+  }
+
+  ngOnDestroy() {
+    this.clearSubscriptions();
+    this.clearInterval();
   }
 }

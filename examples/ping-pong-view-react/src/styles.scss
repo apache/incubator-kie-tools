@@ -27,3 +27,20 @@
   background-color: black;
   color: white;
 }
+
+.ping-pong-view--main {
+  border: 2px solid green;
+  padding: 10px;
+}
+
+.ping-pong-view--p-iframe {
+  color: green;
+}
+
+.ping-pong-view--p-ping-pong {
+  color: red;
+}
+
+.ping-pong-view--container {
+  border: 2px solid red;
+}

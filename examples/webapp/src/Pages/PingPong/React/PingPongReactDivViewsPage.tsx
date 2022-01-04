@@ -17,10 +17,10 @@
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { Page, PageSection } from "@patternfly/react-core";
-import { EmbeddedDivPingPong } from "@kogito-tooling-examples/ping-pong-view/dist/embedded/div";
-import { PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { EmbeddedDivPingPong } from "@kogito-tooling-examples/ping-pong-lib/dist/embedded";
+import { PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-lib/dist/api";
+import { pingPongEnvelopViewRender } from "@kogito-tooling-examples/ping-pong-view-react";
 import { StatsSidebar } from "../StatsSidebar";
-import { PingPongReactImplFactory } from "@kogito-tooling-examples/ping-pong-view-react";
 
 let pings = 0;
 let pongs = 0;
@@ -42,8 +42,6 @@ export function PingPongReactDivViewsPage() {
     };
   }, []);
 
-  const pingPongViewFactory = useMemo(() => new PingPongReactImplFactory(), []);
-
   const mapping = useMemo(
     () => ({
       title: "Ping-Pong Page in React",
@@ -62,7 +60,7 @@ export function PingPongReactDivViewsPage() {
               name={"React 1"}
               targetOrigin={window.location.origin}
               mapping={mapping}
-              pingPongViewFactory={pingPongViewFactory}
+              renderView={pingPongEnvelopViewRender}
             />
           </PageSection>
 
@@ -72,7 +70,7 @@ export function PingPongReactDivViewsPage() {
               name={"React 2"}
               targetOrigin={window.location.origin}
               mapping={mapping}
-              pingPongViewFactory={pingPongViewFactory}
+              renderView={pingPongEnvelopViewRender}
             />
           </PageSection>
 
@@ -82,7 +80,7 @@ export function PingPongReactDivViewsPage() {
               name={"React 3"}
               targetOrigin={window.location.origin}
               mapping={mapping}
-              pingPongViewFactory={pingPongViewFactory}
+              renderView={pingPongEnvelopViewRender}
             />
           </PageSection>
         </div>
