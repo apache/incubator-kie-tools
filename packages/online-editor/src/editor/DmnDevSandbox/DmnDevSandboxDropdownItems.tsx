@@ -19,12 +19,12 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
-import { FeatureDependentOnKieToolingExtendedServices } from "../../kieToolingExtendedServices/FeatureDependentOnKieToolingExtendedServices";
+import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
 import {
   DependentFeature,
-  useKieToolingExtendedServices,
-} from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
+  useKieSandboxExtendedServices,
+} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { SettingsTabs } from "../../settings/SettingsModalBody";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
@@ -37,12 +37,12 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 export function useDmnDevSandboxDropdownItems(workspace: ActiveWorkspace | undefined) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
-  const kieToolingExtendedServices = useKieToolingExtendedServices();
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const dmnDevSandbox = useDmnDevSandbox();
 
-  const isKieToolingExtendedServicesRunning = useMemo(
-    () => kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING,
-    [kieToolingExtendedServices.status]
+  const isKieSandboxExtendedServicesRunning = useMemo(
+    () => kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
+    [kieSandboxExtendedServices.status]
   );
 
   const isDmnDevSandboxConnected = useMemo(
@@ -55,26 +55,26 @@ export function useDmnDevSandboxDropdownItems(workspace: ActiveWorkspace | undef
   }, [settingsDispatch]);
 
   const onDevSandboxDeploy = useCallback(() => {
-    if (isKieToolingExtendedServicesRunning) {
+    if (isKieSandboxExtendedServicesRunning) {
       dmnDevSandbox.setConfirmDeployModalOpen(true);
       return;
     }
-    kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_DEV_SANDBOX);
-    kieToolingExtendedServices.setModalOpen(true);
-  }, [dmnDevSandbox, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
+    kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_DEV_SANDBOX);
+    kieSandboxExtendedServices.setModalOpen(true);
+  }, [dmnDevSandbox, isKieSandboxExtendedServicesRunning, kieSandboxExtendedServices]);
 
   return useMemo(() => {
     return [
       <React.Fragment key={"dmndev-sandbox-dropdown-items"}>
         {workspace && (
-          <FeatureDependentOnKieToolingExtendedServices isLight={false} position="left">
+          <FeatureDependentOnKieSandboxExtendedServices isLight={false} position="left">
             <DropdownItem
               icon={<OpenshiftIcon />}
               id="dmn-dev-sandbox-deploy-your-model-button"
               key={`dropdown-dmn-dev-sandbox-deploy`}
               component={"button"}
               onClick={onDevSandboxDeploy}
-              isDisabled={isKieToolingExtendedServicesRunning && !isDmnDevSandboxConnected}
+              isDisabled={isKieSandboxExtendedServicesRunning && !isDmnDevSandboxConnected}
               ouiaId={"deploy-to-dmn-dev-sandbox-dropdown-button"}
             >
               {workspace.files.length > 1 && (
@@ -97,9 +97,9 @@ export function useDmnDevSandboxDropdownItems(workspace: ActiveWorkspace | undef
                 </Flex>
               )}
             </DropdownItem>
-          </FeatureDependentOnKieToolingExtendedServices>
+          </FeatureDependentOnKieSandboxExtendedServices>
         )}
-        {!isDmnDevSandboxConnected && isKieToolingExtendedServicesRunning && (
+        {!isDmnDevSandboxConnected && isKieSandboxExtendedServicesRunning && (
           <>
             <Divider />
             <DropdownItem
@@ -116,5 +116,5 @@ export function useDmnDevSandboxDropdownItems(workspace: ActiveWorkspace | undef
         )}
       </React.Fragment>,
     ];
-  }, [isDmnDevSandboxConnected, isKieToolingExtendedServicesRunning, onDevSandboxDeploy, onDevSandboxSetup, workspace]);
+  }, [isDmnDevSandboxConnected, isKieSandboxExtendedServicesRunning, onDevSandboxDeploy, onDevSandboxSetup, workspace]);
 }

@@ -36,7 +36,7 @@ import { AngleLeftIcon } from "@patternfly/react-icons/dist/js/icons/angle-left-
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOnlineI18n } from "../i18n";
-import { KieToolingExtendedServicesButtons } from "./KieToolingExtendedServices/KieToolingExtendedServicesButtons";
+import { KieSandboxExtendedServicesButtons } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesButtons";
 import {
   useNavigationBlockersBypass,
   useNavigationStatus,
@@ -67,7 +67,7 @@ import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { FileSwitcher } from "./FileSwitcher";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { KieToolingExtendedServicesDropdownGroup } from "./KieToolingExtendedServices/KieToolingExtendedServicesDropdownGroup";
+import { KieSandboxExtendedServicesDropdownGroup } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesDropdownGroup";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { GIST_DEFAULT_BRANCH, GIST_ORIGIN_REMOTE_NAME, GIT_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
@@ -1425,7 +1425,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     </ToolbarItem>
                     <ToolbarItem visibility={hideWhenSmall}>
                       {props.workspaceFile.extension === "dmn" && (
-                        <KieToolingExtendedServicesButtons
+                        <KieSandboxExtendedServicesButtons
                           workspace={workspace}
                           editorPageDock={props.editorPageDock}
                         />
@@ -1598,9 +1598,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             ? []
                             : [
                                 <Divider key={"divider-2"} />,
-                                <KieToolingExtendedServicesDropdownGroup
+                                <KieSandboxExtendedServicesDropdownGroup
                                   workspace={workspace}
-                                  key="kie-tooling-extended-services-group"
+                                  key="kie-sandbox-extended-services-group"
                                 />,
                               ]),
                         ]}

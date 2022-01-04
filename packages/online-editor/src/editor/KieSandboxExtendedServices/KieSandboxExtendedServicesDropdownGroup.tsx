@@ -21,36 +21,36 @@ import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../../i18n";
 import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
 import { useDmnRunnerState, useDmnRunnerDispatch } from "../DmnRunner/DmnRunnerContext";
-import { FeatureDependentOnKieToolingExtendedServices } from "../../kieToolingExtendedServices/FeatureDependentOnKieToolingExtendedServices";
+import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
 import {
   DependentFeature,
-  useKieToolingExtendedServices,
-} from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
-import { KieToolingExtendedServicesIcon } from "../../kieToolingExtendedServices/KieToolingExtendedServicesIcon";
+  useKieSandboxExtendedServices,
+} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { KieSandboxExtendedServicesIcon } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 
-export function KieToolingExtendedServicesDropdownGroup(props: { workspace: ActiveWorkspace | undefined }) {
+export function KieSandboxExtendedServicesDropdownGroup(props: { workspace: ActiveWorkspace | undefined }) {
   const { i18n } = useOnlineI18n();
-  const kieToolingExtendedServices = useKieToolingExtendedServices();
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const dmnRunnerState = useDmnRunnerState();
   const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems(props.workspace);
   const dmnRunnerDispatch = useDmnRunnerDispatch();
 
-  const isKieToolingExtendedServicesRunning = useMemo(
-    () => kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING,
-    [kieToolingExtendedServices.status]
+  const isKieSandboxExtendedServicesRunning = useMemo(
+    () => kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
+    [kieSandboxExtendedServices.status]
   );
 
   const onToggleDmnRunner = useCallback(() => {
-    if (isKieToolingExtendedServicesRunning) {
+    if (isKieSandboxExtendedServicesRunning) {
       dmnRunnerDispatch.setExpanded((prev) => !prev);
       return;
     }
-    kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
-    kieToolingExtendedServices.setModalOpen(true);
-  }, [dmnRunnerDispatch, isKieToolingExtendedServicesRunning, kieToolingExtendedServices]);
+    kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
+    kieSandboxExtendedServices.setModalOpen(true);
+  }, [dmnRunnerDispatch, isKieSandboxExtendedServicesRunning, kieSandboxExtendedServices]);
 
   return (
     <>
@@ -59,21 +59,21 @@ export function KieToolingExtendedServicesDropdownGroup(props: { workspace: Acti
         label={
           <>
             {"Run"}
-            <KieToolingExtendedServicesIcon />
+            <KieSandboxExtendedServicesIcon />
           </>
         }
       >
-        <FeatureDependentOnKieToolingExtendedServices isLight={false} position="left">
+        <FeatureDependentOnKieSandboxExtendedServices isLight={false} position="left">
           <DropdownItem
             id="dmn-runner-kebab-toggle"
-            key={"kie-tooling-extended-services-dropdown-dmn-runner-toggle"}
+            key={"kie-sandbox-extended-services-dropdown-dmn-runner-toggle"}
             component={"button"}
             onClick={onToggleDmnRunner}
             ouiaId="toggle-dmn-runner-dropdown-button"
           >
             <Text>{dmnRunnerState.isExpanded ? i18n.terms.close : i18n.terms.open}</Text>
           </DropdownItem>
-        </FeatureDependentOnKieToolingExtendedServices>
+        </FeatureDependentOnKieSandboxExtendedServices>
       </DropdownGroup>
       <Divider key={"divider-kie-extended-service-dropdown-items"} />
       <DropdownGroup
@@ -81,7 +81,7 @@ export function KieToolingExtendedServicesDropdownGroup(props: { workspace: Acti
         label={
           <>
             {"Try on OpenShift"}
-            <KieToolingExtendedServicesIcon />
+            <KieSandboxExtendedServicesIcon />
           </>
         }
       >

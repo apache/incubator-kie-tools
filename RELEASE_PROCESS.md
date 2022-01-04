@@ -26,7 +26,7 @@ Release workflow (post 0.13.0)
 - [Phase 1] vscode-extension-backend-dev (GitHub release)
 -
 - [Phase 2] dmn-dev-sandbox-deployment-base (Quay.io)
-- [Phase 2] kie-tooling-extended-services x3 (one for each OS) (GitHub release, Dropbox? Drive?)
+- [Phase 2] kie-sandbox-extended-services x3 (one for each OS) (GitHub release, Dropbox? Drive?)
 - [Phase 2] vscode-extension-bpmn-editor (GitHub release -> Jenkins: VS Code Marketplace, OpenVSX)
 - [Phase 2] vscode-extension-dmn-editor (GitHub release -> Jenkins: VS Code Marketplace, OpenVSX)
 - [Phase 2] vscode-extension-pmml-editor (GitHub release -> Jenkins: VS Code Marketplace, OpenVSX)

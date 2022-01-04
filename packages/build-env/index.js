@@ -72,23 +72,23 @@ const ENV_VARS = {
     default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
     description: "",
   },
-  ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: {
-    name: "ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux",
-    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_tooling_extended_services_linux_${version}.tar.gz`,
+  ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: {
+    name: "ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux",
+    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_sandbox_extended_services_linux_${version}.tar.gz`,
     description: "",
   },
-  ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: {
-    name: "ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs",
-    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_tooling_extended_services_macos_${version}.dmg`,
+  ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: {
+    name: "ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs",
+    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_sandbox_extended_services_macos_${version}.dmg`,
     description: "",
   },
-  ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: {
-    name: "ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows",
-    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_tooling_extended_services_windows_${version}.exe`,
+  ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: {
+    name: "ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows",
+    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_sandbox_extended_services_windows_${version}.exe`,
     description: "",
   },
-  ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion: {
-    name: "ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion",
+  ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: {
+    name: "ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion",
     default: version,
     description: "",
   },
@@ -208,23 +208,23 @@ const ENV_VARS = {
     default: "latest",
     description: "",
   },
-  KIE_TOOLING_EXTENDED_SERVICES__imageRegistry: {
-    name: "KIE_TOOLING_EXTENDED_SERVICES__imageRegistry",
+  KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry: {
+    name: "KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry",
     default: "quay.io",
     description: "",
   },
-  KIE_TOOLING_EXTENDED_SERVICES__imageAccount: {
-    name: "KIE_TOOLING_EXTENDED_SERVICES__imageAccount",
+  KIE_SANDBOX_EXTENDED_SERVICES__imageAccount: {
+    name: "KIE_SANDBOX_EXTENDED_SERVICES__imageAccount",
     default: "kogito_tooling_bot",
     description: "",
   },
-  KIE_TOOLING_EXTENDED_SERVICES__imageName: {
-    name: "KIE_TOOLING_EXTENDED_SERVICES__imageName",
-    default: "kie-tooling-extended-services-image",
+  KIE_SANDBOX_EXTENDED_SERVICES__imageName: {
+    name: "KIE_SANDBOX_EXTENDED_SERVICES__imageName",
+    default: "kie-sandbox-extended-services-image",
     description: "",
   },
-  KIE_TOOLING_EXTENDED_SERVICES__imageBuildTags: {
-    name: "KIE_TOOLING_EXTENDED_SERVICES__imageBuildTags",
+  KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags: {
+    name: "KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags",
     default: "latest",
     description: "",
   },
@@ -277,12 +277,12 @@ module.exports = {
     },
     gtmId: getOrDefault(ENV_VARS.ONLINE_EDITOR__gtmId),
     buildInfo: getOrDefault(ENV_VARS.ONLINE_EDITOR__buildInfo),
-    kieToolingExtendedServices: {
-      compatibleVersion: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion),
+    kieSandboxExtendedServices: {
+      compatibleVersion: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion),
       downloadUrl: {
-        linux: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux),
-        macOs: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs),
-        windows: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows),
+        linux: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux),
+        macOs: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs),
+        windows: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows),
       },
     },
   },
@@ -321,10 +321,10 @@ module.exports = {
 
   extendedServices: {
     image: {
-      registry: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__imageRegistry),
-      account: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__imageAccount),
-      name: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__imageName),
-      buildTags: getOrDefault(ENV_VARS.KIE_TOOLING_EXTENDED_SERVICES__imageBuildTags),
+      registry: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry),
+      account: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount),
+      name: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__imageName),
+      buildTags: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags),
     },
   },
 

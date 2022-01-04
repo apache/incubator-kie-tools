@@ -21,7 +21,7 @@ import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace/Workspace
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
-import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { QueryParams } from "../../navigation/Routes";
 import { jsonParseWithDate } from "../../json/JsonParse";
 import { usePrevious } from "../../reactExt/Hooks";
@@ -29,7 +29,7 @@ import { useOnlineI18n } from "../../i18n";
 import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useHistory } from "react-router";
 import { useRoutes } from "../../navigation/Hooks";
-import { useKieToolingExtendedServices } from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { DmnSchema } from "@kogito-tooling/form/dist/dmn";
 import { useSettings } from "../../settings/SettingsContext";
@@ -44,7 +44,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const queryParams = useQueryParams();
   const history = useHistory();
   const routes = useRoutes();
-  const kieToolingExtendedServices = useKieToolingExtendedServices();
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const workspaces = useWorkspaces();
   const settings = useSettings();
 
@@ -60,8 +60,8 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   }, [isExpanded]);
 
   const service = useMemo(
-    () => new DmnRunnerService(settings.kieToolingExtendedServices.config.buildUrl()),
-    [settings.kieToolingExtendedServices.config]
+    () => new DmnRunnerService(settings.kieSandboxExtendedServices.config.buildUrl()),
+    [settings.kieSandboxExtendedServices.config]
   );
 
   const preparePayload = useCallback(
@@ -115,7 +115,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       return;
     }
 
-    if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
+    if (kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
       props.editorPageDock?.setNotifications(i18n.terms.validation, "", []);
       return;
     }
@@ -137,7 +137,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       message: `${validationResult.messageType}: ${validationResult.message}`,
     }));
     props.editorPageDock?.setNotifications(i18n.terms.validation, "", notifications);
-  }, [props.workspaceFile, props.editorPageDock, kieToolingExtendedServices.status, service, i18n.terms.validation]);
+  }, [props.workspaceFile, props.editorPageDock, kieSandboxExtendedServices.status, service, i18n.terms.validation]);
 
   useEffect(() => {
     validate();
@@ -161,28 +161,28 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
   }, [jsonSchema, history, routes, queryParams]);
 
-  const prevKieToolingExtendedServicesStatus = usePrevious(kieToolingExtendedServices.status);
+  const prevKieSandboxExtendedServicesStatus = usePrevious(kieSandboxExtendedServices.status);
   useEffect(() => {
     if (props.workspaceFile.extension !== "dmn") {
       return;
     }
 
     if (
-      prevKieToolingExtendedServicesStatus &&
-      prevKieToolingExtendedServicesStatus !== KieToolingExtendedServicesStatus.AVAILABLE &&
-      prevKieToolingExtendedServicesStatus !== KieToolingExtendedServicesStatus.RUNNING &&
-      kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING
+      prevKieSandboxExtendedServicesStatus &&
+      prevKieSandboxExtendedServicesStatus !== KieSandboxExtendedServicesStatus.AVAILABLE &&
+      prevKieSandboxExtendedServicesStatus !== KieSandboxExtendedServicesStatus.RUNNING &&
+      kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING
     ) {
       setExpanded(true);
     }
 
     if (
-      kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.STOPPED ||
-      kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.NOT_RUNNING
+      kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.STOPPED ||
+      kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.NOT_RUNNING
     ) {
       setExpanded(false);
     }
-  }, [prevKieToolingExtendedServicesStatus, kieToolingExtendedServices.status, props.workspaceFile.extension]);
+  }, [prevKieSandboxExtendedServicesStatus, kieSandboxExtendedServices.status, props.workspaceFile.extension]);
 
   const dmnRunnerDispatch = useMemo(
     () => ({

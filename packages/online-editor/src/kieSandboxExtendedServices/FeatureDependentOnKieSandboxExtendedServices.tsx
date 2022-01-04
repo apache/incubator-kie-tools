@@ -17,8 +17,8 @@
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import * as React from "react";
 import { useOnlineI18n } from "../i18n";
-import { useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
+import { useKieSandboxExtendedServices } from "./KieSandboxExtendedServicesContext";
+import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
 
 interface Props {
   children: any;
@@ -26,16 +26,16 @@ interface Props {
   position: "auto" | "top" | "bottom" | "left" | "right";
 }
 
-export function FeatureDependentOnKieToolingExtendedServices(props: Props) {
+export function FeatureDependentOnKieSandboxExtendedServices(props: Props) {
   const { i18n } = useOnlineI18n();
-  const kieToolingExtendedServices = useKieToolingExtendedServices();
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
 
-  if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
+  if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
     return props.children;
   }
   return (
     <Tooltip
-      content={i18n.kieToolingExtendedServices.dropdown.tooltip.install}
+      content={i18n.kieSandboxExtendedServices.dropdown.tooltip.install}
       position={props.position}
       className={props.isLight ? "kogito--editor__light-tooltip" : ""}
     >

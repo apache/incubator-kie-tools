@@ -28,7 +28,7 @@ import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/exter
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useKieToolingExtendedServices } from "../kieToolingExtendedServices/KieToolingExtendedServicesContext";
+import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { useOnlineI18n } from "../i18n";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import {
@@ -39,7 +39,7 @@ import {
   OpenShiftSettingsConfig,
   saveConfigCookie,
 } from "../openshift/OpenShiftSettingsConfig";
-import { KieToolingExtendedServicesStatus } from "../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { DEVELOPER_SANDBOX_GET_STARTED_URL } from "../openshift/OpenShiftService";
 import { OpenShiftSettingsTabMode } from "./OpenShiftSettingsTab";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
@@ -53,7 +53,7 @@ enum WizardStepIds {
 export function OpenShiftSettingsTabWizardConfig(props: {
   setMode: React.Dispatch<React.SetStateAction<OpenShiftSettingsTabMode>>;
 }) {
-  const kieToolingExtendedServices = useKieToolingExtendedServices();
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const { i18n } = useOnlineI18n();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
@@ -83,11 +83,11 @@ export function OpenShiftSettingsTabWizardConfig(props: {
   }, [config]);
 
   useEffect(() => {
-    if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
+    if (kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
       return;
     }
     setConfig(settings.openshift.config);
-  }, [settings.openshift.config, kieToolingExtendedServices.status]);
+  }, [settings.openshift.config, kieSandboxExtendedServices.status]);
 
   const onClose = useCallback(() => {
     props.setMode(OpenShiftSettingsTabMode.SIMPLE);
