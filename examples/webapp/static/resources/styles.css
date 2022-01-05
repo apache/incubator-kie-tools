@@ -87,6 +87,7 @@
 
 .webapp--page-ping-pong-view {
   display: flex;
+  width: 100%;
 }
 
 .webapp--page-ping-pong-view-navigation {

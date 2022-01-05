@@ -15,7 +15,6 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { useCallback, useMemo } from "react";
 import { PingPongApi, PingPongChannelApi, PingPongEnvelopeApi } from "../api";
 import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";

@@ -54,7 +54,7 @@ export function PingPongReactDivViewsPage() {
       <div className={"webapp--page-main-div"}>
         <StatsSidebar lastPing={lastPing} lastPong={lastPong} pings={pings} pongs={pongs} />
         <div className={"webapp--page-ping-pong-view"}>
-          <PageSection>
+          <PageSection style={{ flexGrow: 1 }}>
             <EmbeddedDivPingPong
               apiImpl={apiImpl}
               name={"React 1"}
@@ -64,7 +64,7 @@ export function PingPongReactDivViewsPage() {
             />
           </PageSection>
 
-          <PageSection>
+          <PageSection style={{ flexGrow: 1 }}>
             <EmbeddedDivPingPong
               apiImpl={apiImpl}
               name={"React 2"}
@@ -74,7 +74,7 @@ export function PingPongReactDivViewsPage() {
             />
           </PageSection>
 
-          <PageSection>
+          <PageSection style={{ flexGrow: 1 }}>
             <EmbeddedDivPingPong
               apiImpl={apiImpl}
               name={"React 3"}

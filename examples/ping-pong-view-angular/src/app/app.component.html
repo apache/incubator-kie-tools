@@ -1,11 +1,23 @@
-<i>#{{ apiService.initArgs?.name }}</i>
+<div class="ping-pong-view--main">
+  <h2>This is an implementation of Ping-Pong View in Angular</h2>
 
-<div class="ping-pong-view--header">
-  <span>Hello from Angular!</span>
-  <button (click)="apiService.ping()">Ping others!</button>
-</div>
-<div class="ping-pong-view--log">
-  <p *ngFor="let entry of log | async" class="ping-pong-view--line">
-    {{ entry.line }}
+  <p class="ping-pong-view--p-iframe">
+    The envelope boundary border is green. For an Angular app it can only be used with an iFrame. (It's possible to use
+    Div if using web components made from Angular components)
   </p>
+  <p class="ping-pong-view--p-ping-pong">The Ping-Pong View implementation border is red</p>
+
+  <div class="ping-pong-view--container">
+    <i>#{{ apiService.initArgs?.name }}</i>
+
+    <div class="ping-pong-view--header">
+      <span>Hello from Angular!</span>
+      <button (click)="apiService.ping()">Ping others!</button>
+    </div>
+    <div class="ping-pong-view--log">
+      <p *ngFor="let entry of log | async" class="ping-pong-view--line">
+        {{ entry.line }}
+      </p>
+    </div>
+  </div>
 </div>

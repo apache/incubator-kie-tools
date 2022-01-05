@@ -19,7 +19,6 @@ import { useCallback, useImperativeHandle, useLayoutEffect, useMemo, useState } 
 import { PingPongApi, PingPongChannelApi, PingPongInitArgs } from "@kogito-tooling-examples/ping-pong-lib/dist/api";
 import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
 import { useSubscription } from "@kie-tooling-core/envelope-bus/dist/hooks";
-import "./styles.scss";
 
 interface Props {
   initArgs: PingPongInitArgs;

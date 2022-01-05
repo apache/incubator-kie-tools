@@ -84,8 +84,8 @@ export function RefForwardingEmbeddedEnvelope<
       new EnvelopeServer<ApiToProvide, ApiToConsume>(
         bus,
         props.origin,
-        (self) =>
-          props.pollInit(self, () =>
+        async (self) =>
+          await props.pollInit(self, () =>
             props.config.containerType === ContainerType.DIV ? divRef.current! : iframeRef.current!
           ),
         props.config.containerType === ContainerType.DIV ? EnvelopeServerType.LOCAL : EnvelopeServerType.REMOTE

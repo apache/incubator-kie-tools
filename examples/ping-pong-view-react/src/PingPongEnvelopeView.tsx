@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import * as PingPongViewEnvelope from "@kogito-tooling-examples/ping-pong-lib/dist/envelope";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
 import { PingPongReactImplFactory } from ".";
-import "./styles.scss";
+import "./styles.css";
 import { EnvelopeDivConfig, EnvelopeIFrameConfig } from "@kie-tooling-core/envelope";
 
 export const pingPongEnvelopViewRender = (
@@ -29,35 +29,30 @@ export const pingPongEnvelopViewRender = (
   envelopeId?: string
 ) => {
   return new Promise<void>((res) => {
-    ReactDOM.render(<PingPongEnvelopeView containerType={containerType} envelopeId={envelopeId} />, container, () =>
-      res()
-    );
+    let config: EnvelopeDivConfig | EnvelopeIFrameConfig;
+    if (containerType === ContainerType.IFRAME) {
+      config = { containerType: ContainerType.IFRAME };
+    } else {
+      if (!envelopeId) {
+        throw new Error("Need to specify envelopeId for container type DIV");
+      }
+      config = { containerType: ContainerType.DIV, envelopeId };
+    }
+    ReactDOM.render(<PingPongEnvelopeView envelopeConfig={config} />, container, () => res());
   });
 };
 
-export const PingPongEnvelopeView = (props: { containerType: ContainerType; envelopeId?: string }) => {
+export const PingPongEnvelopeView = (props: { envelopeConfig: EnvelopeDivConfig | EnvelopeIFrameConfig }) => {
   const [view, setView] = useState<React.ReactElement>();
 
   useEffect(() => {
-    let container: HTMLElement | undefined;
-    let config: EnvelopeDivConfig | EnvelopeIFrameConfig;
-    if (props.containerType === ContainerType.IFRAME) {
-      config = { containerType: ContainerType.IFRAME };
-      container = document.getElementById("envelope-app")!;
-    } else {
-      if (!props.envelopeId) {
-        throw new Error("Need to specify envelopeId");
-      }
-      config = { containerType: ContainerType.DIV, envelopeId: props.envelopeId };
-    }
     PingPongViewEnvelope.init({
-      container,
-      config,
+      config: props.envelopeConfig,
       bus: { postMessage: (message, _targetOrigin, transfer) => window.parent.postMessage(message, "*", transfer) },
       pingPongViewFactory: new PingPongReactImplFactory(setView),
       viewReady: () => Promise.resolve(() => {}),
     });
-  }, [props.containerType, props.envelopeId]);
+  }, [props.envelopeConfig]);
 
   return (
     <div className={"ping-pong-view--main"}>
