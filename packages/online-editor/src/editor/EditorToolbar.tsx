@@ -63,7 +63,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 import { PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { FileLabel } from "../workspace/components/FileLabel";
-import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
+import { useWorkspaceGitStatusPromise, useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { FileSwitcher } from "./FileSwitcher";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
@@ -146,6 +146,7 @@ export function EditorToolbar(props: Props) {
   const [gitHubGist, setGitHubGist] =
     useState<OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined>(undefined);
   const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
+  const workspaceGitStatusPromise = useWorkspaceGitStatusPromise(workspacePromise.data);
 
   const githubAuthInfo = useGitHubAuthInfo();
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
@@ -375,7 +376,9 @@ export function EditorToolbar(props: Props) {
             </AlertActionLink>,
           ]}
           actionClose={<AlertActionCloseButton onClose={close} />}
-        />
+        >
+          <b>{i18n.editorPage.alerts.forcePushWarning}</b>
+        </Alert>
       ),
       [i18n, forceUpdateGitHubGist]
     )
@@ -390,16 +393,16 @@ export function EditorToolbar(props: Props) {
       setGitHubGistLoading(true);
       const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
 
-      const hasChanges = await workspaces.createSavePoint({
+      if (!workspaceGitStatusPromise.data?.hasLocalChanges && workspaceGitStatusPromise.data?.isSynced) {
+        successfullyUpdateGistAlert.show();
+        return;
+      }
+
+      await workspaces.createSavePoint({
         fs,
         workspaceId: props.workspaceFile.workspaceId,
         gitConfig: githubAuthInfo,
       });
-
-      if (!hasChanges) {
-        successfullyUpdateGistAlert.show();
-        return;
-      }
 
       await workspaces.gitService.push({
         fs,
@@ -425,7 +428,14 @@ export function EditorToolbar(props: Props) {
     }
 
     successfullyUpdateGistAlert.show();
-  }, [successfullyUpdateGistAlert, githubAuthInfo, workspaces, props.workspaceFile.workspaceId, errorPushingGist]);
+  }, [
+    successfullyUpdateGistAlert,
+    githubAuthInfo,
+    workspaces,
+    props.workspaceFile.workspaceId,
+    errorPushingGist,
+    workspaceGitStatusPromise,
+  ]);
 
   const createGitHubGist = useCallback(async () => {
     try {

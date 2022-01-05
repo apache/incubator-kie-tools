@@ -31,6 +31,7 @@ interface OnlineDictionary extends ReferenceDictionary {
       updateGist: string;
       createGist: string;
       errorPushingGist: string;
+      forcePushWarning: string;
       invalidCurrentGist: string;
       invalidGistFilename: string;
       error: string;

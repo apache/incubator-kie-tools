@@ -33,6 +33,7 @@ export const en: OnlineI18n = {
       updateGist: "Gist successfully updated.",
       createGist: "Gist successfully created.",
       errorPushingGist: "Failed to push an update to your current Gist. Attempt to force push?",
+      forcePushWarning: "WARNING: This will overwrite your Gist with the local changes!",
       invalidCurrentGist: `Your current gist ${en_common.names.url} is invalid. If you've updated its filename, it's necessary to update your ${en_common.names.url} as well.`,
       invalidGistFilename: "Invalid filename. This gist already has a file with this name.",
       error: `An error occurred trying to perform the last operation. Check if your ${en_common.names.github} token is still valid and try again later.`,
