@@ -319,8 +319,8 @@ export function EditorToolbar(props: Props) {
     });
   }, [props.editor]);
 
-  const updateGitHubGist = useCallback(async () => {
-    try {
+  const pushGitHubGist = useCallback(
+    async (force = false) => {
       if (!githubAuthInfo) {
         return;
       }
@@ -336,7 +336,7 @@ export function EditorToolbar(props: Props) {
         remote: GIST_ORIGIN_REMOTE_NAME,
         ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
-        force: true,
+        force,
         authInfo: githubAuthInfo,
       });
 
@@ -345,8 +345,56 @@ export function EditorToolbar(props: Props) {
         workspaceId: props.workspaceFile.workspaceId,
         authInfo: githubAuthInfo,
       });
+    },
+    [workspaces, props.workspaceFile.workspaceId, githubAuthInfo]
+  );
+
+  const forceUpdateGitHubGist = useCallback(async () => {
+    try {
+      await pushGitHubGist(true);
     } catch (e) {
       errorAlert.show();
+    } finally {
+      setGitHubGistLoading(false);
+      setSyncGitHubGistDropdownOpen(false);
+    }
+
+    successfullyUpdateGistAlert.show();
+  }, [successfullyUpdateGistAlert, errorAlert, pushGitHubGist]);
+
+  const errorPushingGist = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => (
+        <Alert
+          variant="danger"
+          title={i18n.editorPage.alerts.errorPushingGist}
+          actionLinks={[
+            <AlertActionLink
+              key="force"
+              onClick={() => {
+                close();
+                forceUpdateGitHubGist();
+              }}
+            >
+              Force push
+            </AlertActionLink>,
+            <AlertActionLink key="dismiss" onClick={close}>
+              Dismiss
+            </AlertActionLink>,
+          ]}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      ),
+      [i18n, forceUpdateGitHubGist]
+    )
+  );
+
+  const updateGitHubGist = useCallback(async () => {
+    try {
+      await pushGitHubGist();
+    } catch (e) {
+      errorPushingGist.show();
       throw e;
     } finally {
       setGitHubGistLoading(false);
@@ -354,7 +402,7 @@ export function EditorToolbar(props: Props) {
     }
 
     successfullyUpdateGistAlert.show();
-  }, [successfullyUpdateGistAlert, workspaces, props.workspaceFile.workspaceId, githubAuthInfo, errorAlert]);
+  }, [successfullyUpdateGistAlert, errorPushingGist, pushGitHubGist]);
 
   const createGitHubGist = useCallback(async () => {
     try {
