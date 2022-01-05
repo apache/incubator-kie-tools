@@ -14,10 +14,10 @@
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
 
-RUN mkdir -m 775 -p /kogito /root/.cache /.cache
+RUN mkdir -m 775 -p /kie-sandbox /root/.cache /.cache
 
-COPY dist-dev/kie_tooling_extended_services_headless /kogito/kie_tooling_extended_services_headless
+COPY dist-dev/kie_sandbox_extended_services_headless /kie-sandbox/kie_sandbox_extended_services_headless
 
 EXPOSE 21345
 
-CMD [ "/kogito/kie_tooling_extended_services_headless" ]
+CMD [ "/kie-sandbox/kie_sandbox_extended_services_headless" ]

@@ -25,7 +25,7 @@ import {
 import { EditorPage } from "./editor/EditorPage";
 import { OnlineI18nContextProvider } from "./i18n";
 import { NoMatchPage } from "./NoMatchPage";
-import { KieToolingExtendedServicesContextProvider } from "./kieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
+import { KieSandboxExtendedServicesContextProvider } from "./kieSandboxExtendedServices/KieSandboxExtendedServicesContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
 import { HomePage } from "./home/HomePage";
@@ -43,7 +43,7 @@ export function App() {
         [OnlineI18nContextProvider, {}],
         [EditorEnvelopeLocatorContextProvider, {}],
         [EnvContextProvider, {}],
-        [KieToolingExtendedServicesContextProvider, {}],
+        [KieSandboxExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
         [WorkspacesContextProvider, {}],
         [DmnDevSandboxContextProvider, {}],
