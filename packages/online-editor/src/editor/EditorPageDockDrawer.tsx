@@ -32,8 +32,8 @@ import {
 import { DmnRunnerDockToggle } from "./DmnRunner/DmnRunnerDockToggle";
 import { useController } from "../reactExt/Hooks";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
-import { useKieToolingExtendedServices } from "../kieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 
 export enum PanelId {
   DMN_RUNNER_TABULAR = "dmn-runner-tabular",
@@ -123,14 +123,14 @@ export const EditorPageDockDrawer = React.forwardRef<
     [notificationsPanel, onToggle, setNotifications]
   );
 
-  const kieToolingExtendedServices = useKieToolingExtendedServices();
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const notificationsPanelIsDisabled = useMemo(() => {
     return (
       props.workspaceFile.extension.toLowerCase() === "bpmn" ||
       (props.workspaceFile.extension.toLowerCase() === "dmn" &&
-        kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING)
+        kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING)
     );
-  }, [kieToolingExtendedServices.status, props.workspaceFile.extension]);
+  }, [kieSandboxExtendedServices.status, props.workspaceFile.extension]);
 
   const notificationsPanelDisabledReason = useMemo(() => {
     if (props.workspaceFile.extension.toLowerCase() === "bpmn") {
@@ -138,12 +138,12 @@ export const EditorPageDockDrawer = React.forwardRef<
     }
     if (
       props.workspaceFile.extension.toLowerCase() === "dmn" &&
-      kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING
+      kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
     ) {
-      return "In order to have access to Problems tab you need to use the KIE Tooling Extended Services";
+      return "In order to have access to Problems tab you need to use the KIE Sandbox Extended Services";
     }
     return "";
-  }, [kieToolingExtendedServices.status, props.workspaceFile.extension]);
+  }, [kieSandboxExtendedServices.status, props.workspaceFile.extension]);
 
   const isDmnTableMode = useMemo(
     () => dmnRunnerState.mode === DmnRunnerMode.TABLE && props.workspaceFile.extension.toLowerCase() === "dmn",

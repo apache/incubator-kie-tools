@@ -17,16 +17,16 @@
 import * as React from "react";
 import { useContext } from "react";
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
-import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
+import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
 
 export enum DependentFeature {
   DMN_RUNNER = "DMN_RUNNER",
   DMN_DEV_SANDBOX = "DMN_DEV_SANDBOX",
 }
 
-export interface KieToolingExtendedServicesContextType {
-  status: KieToolingExtendedServicesStatus;
-  setStatus: React.Dispatch<KieToolingExtendedServicesStatus>;
+export interface KieSandboxExtendedServicesContextType {
+  status: KieSandboxExtendedServicesStatus;
+  setStatus: React.Dispatch<KieSandboxExtendedServicesStatus>;
   config: ExtendedServicesConfig;
   saveNewConfig: React.Dispatch<ExtendedServicesConfig>;
   version: string;
@@ -37,8 +37,8 @@ export interface KieToolingExtendedServicesContextType {
   setInstallTriggeredBy: React.Dispatch<React.SetStateAction<DependentFeature>>;
 }
 
-export const KieToolingExtendedServicesContext = React.createContext<KieToolingExtendedServicesContextType>({} as any);
+export const KieSandboxExtendedServicesContext = React.createContext<KieSandboxExtendedServicesContextType>({} as any);
 
-export function useKieToolingExtendedServices() {
-  return useContext(KieToolingExtendedServicesContext);
+export function useKieSandboxExtendedServices() {
+  return useContext(KieSandboxExtendedServicesContext);
 }

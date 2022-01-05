@@ -29,11 +29,11 @@ const { ProvidePlugin } = require("webpack");
 module.exports = async (env, argv) => {
   const buildInfo = getBuildInfo();
   const [
-    kieToolingExtendedServices_linuxDownloadUrl,
-    kieToolingExtendedServices_macOsDownloadUrl,
-    kieToolingExtendedServices_windowsDownloadUrl,
-    kieToolingExtendedServices_compatibleVersion,
-  ] = getKieToolingExtendedServicesArgs(argv);
+    kieSandboxExtendedServices_linuxDownloadUrl,
+    kieSandboxExtendedServices_macOsDownloadUrl,
+    kieSandboxExtendedServices_windowsDownloadUrl,
+    kieSandboxExtendedServices_compatibleVersion,
+  ] = getKieSandboxExtendedServicesArgs(argv);
   const [
     dmnDevSandbox_baseImageRegistry,
     dmnDevSandbox_baseImageAccount,
@@ -70,10 +70,10 @@ module.exports = async (env, argv) => {
       ]),
       new EnvironmentPlugin({
         WEBPACK_REPLACE__buildInfo: buildInfo,
-        WEBPACK_REPLACE__kieToolingExtendedServicesLinuxDownloadUrl: kieToolingExtendedServices_linuxDownloadUrl,
-        WEBPACK_REPLACE__kieToolingExtendedServicesMacOsDownloadUrl: kieToolingExtendedServices_macOsDownloadUrl,
-        WEBPACK_REPLACE__kieToolingExtendedServicesWindowsDownloadUrl: kieToolingExtendedServices_windowsDownloadUrl,
-        WEBPACK_REPLACE__kieToolingExtendedServicesCompatibleVersion: kieToolingExtendedServices_compatibleVersion,
+        WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
+        WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
+        WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl: kieSandboxExtendedServices_windowsDownloadUrl,
+        WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
         WEBPACK_REPLACE__dmnDevSandbox_baseImageFullUrl: `${dmnDevSandbox_baseImageRegistry}/${dmnDevSandbox_baseImageAccount}/${dmnDevSandbox_baseImageName}:${dmnDevSandbox_baseImageTag}`,
         WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl: dmnDevSandbox_onlineEditorUrl,
         WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.quarkusPlatform.version,
@@ -174,16 +174,16 @@ function getBuildInfo() {
   return buildInfo;
 }
 
-function getKieToolingExtendedServicesArgs() {
-  const linuxDownloadUrl = buildEnv.onlineEditor.kieToolingExtendedServices.downloadUrl.linux;
-  const macOsDownloadUrl = buildEnv.onlineEditor.kieToolingExtendedServices.downloadUrl.macOs;
-  const windowsDownloadUrl = buildEnv.onlineEditor.kieToolingExtendedServices.downloadUrl.windows;
-  const compatibleVersion = buildEnv.onlineEditor.kieToolingExtendedServices.compatibleVersion;
+function getKieSandboxExtendedServicesArgs() {
+  const linuxDownloadUrl = buildEnv.onlineEditor.kieSandboxExtendedServices.downloadUrl.linux;
+  const macOsDownloadUrl = buildEnv.onlineEditor.kieSandboxExtendedServices.downloadUrl.macOs;
+  const windowsDownloadUrl = buildEnv.onlineEditor.kieSandboxExtendedServices.downloadUrl.windows;
+  const compatibleVersion = buildEnv.onlineEditor.kieSandboxExtendedServices.compatibleVersion;
 
-  console.info("KIE Tooling Extended Services :: Linux download URL: " + linuxDownloadUrl);
-  console.info("KIE Tooling Extended Services :: macOS download URL: " + macOsDownloadUrl);
-  console.info("KIE Tooling Extended Services :: Windows download URL: " + windowsDownloadUrl);
-  console.info("KIE Tooling Extended Services :: Compatible version: " + compatibleVersion);
+  console.info("KIE Sandbox Extended Services :: Linux download URL: " + linuxDownloadUrl);
+  console.info("KIE Sandbox Extended Services :: macOS download URL: " + macOsDownloadUrl);
+  console.info("KIE Sandbox Extended Services :: Windows download URL: " + windowsDownloadUrl);
+  console.info("KIE Sandbox Extended Services :: Compatible version: " + compatibleVersion);
 
   return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
 }

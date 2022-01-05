@@ -19,12 +19,12 @@ import * as React from "react";
 import { GitHubSettingsTab } from "./GitHubSettingsTab";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { OpenShiftSettingsTab } from "./OpenShiftSettingsTab";
-import { KieToolingExtendedServicesSettingsTab } from "./KieToolingExtendedServicesSettingsTab";
+import { KieSandboxExtendedServicesSettingsTab } from "./KieSandboxExtendedServicesSettingsTab";
 
 export enum SettingsTabs {
   GITHUB = "github",
   OPENSHIFT = "openshift",
-  KIE_TOOLING_EXTENDED_SERVICES = "kie-tooling-extended-services",
+  KIE_SANDBOX_EXTENDED_SERVICES = "kie-sandbox-extended-services",
 }
 
 export function SettingsModalBody() {
@@ -54,10 +54,10 @@ export function SettingsModalBody() {
       </Tab>
       <Tab
         className="kogito-tooling--settings-tab"
-        eventKey={SettingsTabs.KIE_TOOLING_EXTENDED_SERVICES}
-        title={<TabTitleText>KIE Tooling Extended Services</TabTitleText>}
+        eventKey={SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES}
+        title={<TabTitleText>KIE Sandbox Extended Services</TabTitleText>}
       >
-        <KieToolingExtendedServicesSettingsTab />
+        <KieSandboxExtendedServicesSettingsTab />
       </Tab>
     </Tabs>
   );

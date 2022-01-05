@@ -1,6 +1,6 @@
 # kie-tooling-extended-services-image
 
-This package contains the `Containerfile` and scripts to build a container image for the KIE Tooling Extended Services.
+This package contains the `Containerfile` and scripts to build a container image for the KIE Sandbox Extended Services.
 
 ## Additional requirements
 
@@ -17,10 +17,10 @@ $ export KOGITO_TOOLING_BUILD_docker=true
 The image name and tags can be customized by setting the following environment variables:
 
 ```bash
-$ export KIE_TOOLING_EXTENDED_SERVICES__imageRegistry=<registry>
-$ export KIE_TOOLING_EXTENDED_SERVICES__imageAccount=<account>
-$ export KIE_TOOLING_EXTENDED_SERVICES__imageName=<image-name>
-$ export KIE_TOOLING_EXTENDED_SERVICES__imageBuildTags=<image-tags>
+$ export KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry=<registry>
+$ export KIE_SANDBOX_EXTENDED_SERVICES__imageAccount=<account>
+$ export KIE_SANDBOX_EXTENDED_SERVICES__imageName=<image-name>
+$ export KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags=<image-tags>
 ```
 
 Default values can be found [here](../build-env/index.js).

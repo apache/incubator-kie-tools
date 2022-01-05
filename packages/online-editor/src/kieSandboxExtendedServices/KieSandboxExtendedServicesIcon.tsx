@@ -19,76 +19,76 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import { KieToolingExtendedServicesStatus } from "./KieToolingExtendedServicesStatus";
+import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
 import { ConnectedIcon } from "@patternfly/react-icons/dist/js/icons/connected-icon";
 import { DisconnectedIcon } from "@patternfly/react-icons/dist/js/icons/disconnected-icon";
-import { useKieToolingExtendedServices } from "./KieToolingExtendedServicesContext";
+import { useKieSandboxExtendedServices } from "./KieSandboxExtendedServicesContext";
 import { useOnlineI18n } from "../i18n";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { SettingsTabs } from "../settings/SettingsModalBody";
 
-export function KieToolingExtendedServicesIcon() {
-  const kieToolingExtendedServices = useKieToolingExtendedServices();
+export function KieSandboxExtendedServicesIcon() {
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const { i18n } = useOnlineI18n();
   const settingsDispatch = useSettingsDispatch();
 
-  const toggleKieToolingExtendedServices = useCallback(() => {
-    if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
-      settingsDispatch.open(SettingsTabs.KIE_TOOLING_EXTENDED_SERVICES);
+  const toggleKieSandboxExtendedServices = useCallback(() => {
+    if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
+      settingsDispatch.open(SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES);
     }
 
-    if (!kieToolingExtendedServices.outdated) {
+    if (!kieSandboxExtendedServices.outdated) {
       return;
     }
-    kieToolingExtendedServices.setModalOpen(true);
-  }, [settingsDispatch, kieToolingExtendedServices]);
+    kieSandboxExtendedServices.setModalOpen(true);
+  }, [settingsDispatch, kieSandboxExtendedServices]);
 
   const dropdownToggleIcon = useMemo(
     () => (
       <>
-        {kieToolingExtendedServices.outdated && (
+        {kieSandboxExtendedServices.outdated && (
           <Tooltip
             className="kogito--editor__light-tooltip"
             key={"outdated"}
-            content={i18n.kieToolingExtendedServices.dropdown.tooltip.outdated}
+            content={i18n.kieSandboxExtendedServices.dropdown.tooltip.outdated}
             flipBehavior={["left"]}
             distance={20}
           >
             <ExclamationTriangleIcon
               data-testid="outdated-icon"
-              className="kogito--editor__kie-tooling-extended-services-dropdown-icon-outdated static-opacity"
-              id="kie-tooling-extended-services-outdated-icon"
+              className="kogito--editor__kie-sandbox-extended-services-dropdown-icon-outdated static-opacity"
+              id="kie-sandbox-extended-services-outdated-icon"
             />
           </Tooltip>
         )}
-        {!kieToolingExtendedServices.outdated && (
+        {!kieSandboxExtendedServices.outdated && (
           <>
-            {kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING ? (
+            {kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING ? (
               <Tooltip
                 className="kogito--editor__light-tooltip"
                 key={"connected"}
-                content={i18n.kieToolingExtendedServices.dropdown.tooltip.connected}
+                content={i18n.kieSandboxExtendedServices.dropdown.tooltip.connected}
                 flipBehavior={["left"]}
                 distance={20}
               >
                 <ConnectedIcon
                   data-testid="connected-icon"
-                  className="kogito--editor__kie-tooling-extended-services-dropdown-icon-connected blink-opacity"
-                  id="kie-tooling-extended-services-connected-icon"
+                  className="kogito--editor__kie-sandbox-extended-services-dropdown-icon-connected blink-opacity"
+                  id="kie-sandbox-extended-services-connected-icon"
                 />
               </Tooltip>
             ) : (
               <Tooltip
                 className="kogito--editor__light-tooltip"
                 key={"disconnected"}
-                content={i18n.kieToolingExtendedServices.dropdown.tooltip.disconnected}
+                content={i18n.kieSandboxExtendedServices.dropdown.tooltip.disconnected}
                 flipBehavior={["left"]}
                 distance={20}
               >
                 <DisconnectedIcon
                   data-testid="disconnected-icon"
                   className="static-opacity"
-                  id="kie-tooling-extended-services-disconnected-icon"
+                  id="kie-sandbox-extended-services-disconnected-icon"
                 />
               </Tooltip>
             )}
@@ -96,18 +96,18 @@ export function KieToolingExtendedServicesIcon() {
         )}
       </>
     ),
-    [i18n, kieToolingExtendedServices.outdated, kieToolingExtendedServices.status]
+    [i18n, kieSandboxExtendedServices.outdated, kieSandboxExtendedServices.status]
   );
 
   return (
     <Dropdown
       toggle={
         <DropdownToggle
-          id="kie-tooling-extended-services-button"
+          id="kie-sandbox-extended-services-button"
           toggleIndicator={null}
-          onToggle={toggleKieToolingExtendedServices}
+          onToggle={toggleKieSandboxExtendedServices}
           className="kogito-tooling--masthead-hoverable-dark"
-          data-testid="kie-tooling-extended-services-button"
+          data-testid="kie-sandbox-extended-services-button"
         >
           {dropdownToggleIcon}
         </DropdownToggle>

@@ -55,7 +55,7 @@ Currently, the following environment variables are supported:
 
 |                Name                 |                       Description                        | Default                |
 | :---------------------------------: | :------------------------------------------------------: | ---------------------- |
-| `KIE_TOOLING_EXTENDED_SERVICES_URL` | The URL that points to the KIE Tooling Extended Services | http://localhost:21345 |
+| `KIE_SANDBOX_EXTENDED_SERVICES_URL` | The URL that points to the KIE Sandbox Extended Services | http://localhost:21345 |
 
 There are three options to set custom values. Check out the examples below.
 
@@ -63,7 +63,7 @@ There are three options to set custom values. Check out the examples below.
 
 ```bash
 $ podman pull quay.io/kogito_tooling_bot/kie-sandbox-image:latest
-$ podman run -p 8080:8080 -e KIE_TOOLING_EXTENDED_SERVICES_URL=<my_value> -i --rm quay.io/kogito_tooling_bot/kie-sandbox-image:latest
+$ podman run -p 8080:8080 -e KIE_SANDBOX_EXTENDED_SERVICES_URL=<my_value> -i --rm quay.io/kogito_tooling_bot/kie-sandbox-image:latest
 ```
 
 2. Write a custom `Containerfile` from our image:
@@ -71,7 +71,7 @@ $ podman run -p 8080:8080 -e KIE_TOOLING_EXTENDED_SERVICES_URL=<my_value> -i --r
 ```docker
 FROM quay.io/kogito_tooling_bot/kie-sandbox-image:latest
 
-ENV KIE_TOOLING_EXTENDED_SERVICES_URL=<my_value>
+ENV KIE_SANDBOX_EXTENDED_SERVICES_URL=<my_value>
 ```
 
 3. Create the application from our image in OpenShift and set the deployment environment variable right from the OpenShift UI.
