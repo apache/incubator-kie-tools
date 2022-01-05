@@ -29,6 +29,9 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.base_ref }}
 
+      - name: "Setup kogito-tooling-bot"
+        uses: ./.github/actions/setup-kogito-tooling-bot
+
       - name: "Merge PR changes"
         uses: ./.github/actions/merge-pr-changes
 
@@ -38,9 +41,6 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-ci-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-ci-m2
-
-      - name: "Setup kogito-tooling-bot"
-        uses: ./.github/actions/setup-kogito-tooling-bot
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env

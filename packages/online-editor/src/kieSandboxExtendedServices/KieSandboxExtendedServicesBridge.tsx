@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-export class KieToolingExtendedServicesBridge {
-  private readonly KIE_TOOLING_EXTENDED_SERVICES_PING: string;
+export class KieSandboxExtendedServicesBridge {
+  private readonly KIE_SANDBOX_EXTENDED_SERVICES_PING: string;
 
   public constructor(private readonly baseUrl: string) {
-    this.KIE_TOOLING_EXTENDED_SERVICES_PING = `${this.baseUrl}/ping`;
+    this.KIE_SANDBOX_EXTENDED_SERVICES_PING = `${this.baseUrl}/ping`;
   }
 
   public async check(): Promise<boolean> {
@@ -27,7 +27,7 @@ export class KieToolingExtendedServicesBridge {
   }
 
   public async version(): Promise<string> {
-    const response = await fetch(this.KIE_TOOLING_EXTENDED_SERVICES_PING, {
+    const response = await fetch(this.KIE_SANDBOX_EXTENDED_SERVICES_PING, {
       method: "GET",
     });
     const json = await response.json();

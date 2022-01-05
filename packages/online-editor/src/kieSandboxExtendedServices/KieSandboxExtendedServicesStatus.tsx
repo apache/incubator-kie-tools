@@ -14,21 +14,9 @@
  * limitations under the License.
  */
 
-package kogito
-
-const NAME = "Kogito"
-const APPNAME = "KIE Sandbox Extended Services"
-const SERVER_STATUS = "KIE Sandbox Extended Services Status"
-const SERVER_STATUS_ON = SERVER_STATUS + ": ON"
-const SERVER_STATUS_OFF = SERVER_STATUS + ": OFF"
-const START = "Start"
-const STARTING = "Starting..."
-const STOP = "Stop"
-const STOPPING = "Stopping..."
-const RESTART = "Restart"
-const QUIT = "Quit"
-const VERSION = "Version"
-const NOT_STARTED = "Not Started"
-const BUSINESS_MODELER = "Open Business Modeler"
-const MODELER_LINK = "https://kiegroup.github.io/kogito-online/#/"
-const INFORMATION_PORTS = "Ports"
+export enum KieSandboxExtendedServicesStatus {
+  AVAILABLE = "AVAILABLE",
+  RUNNING = "RUNNING",
+  NOT_RUNNING = "NOT_RUNNING",
+  STOPPED = "STOPPED",
+}

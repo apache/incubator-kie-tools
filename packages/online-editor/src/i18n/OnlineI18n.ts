@@ -288,7 +288,7 @@ interface OnlineDictionary extends ReferenceDictionary {
           start: {
             stopped: {
               startInstruction: string;
-              launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
+              launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
             };
             firstTime: {
               title: string;
@@ -298,7 +298,7 @@ interface OnlineDictionary extends ReferenceDictionary {
               openInstruction: Array<string | Wrapped<"file" | "again">>;
             };
             alreadyRanBefore: string;
-            launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
+            launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
             advanced: {
               title: string;
               runFollowingCommand: string;
@@ -313,7 +313,7 @@ interface OnlineDictionary extends ReferenceDictionary {
           start: {
             stopped: {
               startInstruction: string;
-              launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
+              launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
             };
             firstTime: {
               title: string;
@@ -321,7 +321,7 @@ interface OnlineDictionary extends ReferenceDictionary {
               runAnyway: string;
             };
             alreadyRanBefore: string;
-            launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
+            launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
             advanced: {
               title: string;
               runFollowingCommand: string;
@@ -381,7 +381,7 @@ interface OnlineDictionary extends ReferenceDictionary {
       expandAll: string;
     };
   };
-  kieToolingExtendedServices: {
+  kieSandboxExtendedServices: {
     dropdown: {
       shortConnected: (port: string) => string;
       tooltip: {

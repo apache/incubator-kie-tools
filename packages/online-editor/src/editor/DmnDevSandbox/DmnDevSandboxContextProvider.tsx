@@ -17,8 +17,8 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useRoutes } from "../../navigation/Hooks";
-import { useKieToolingExtendedServices } from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { OpenShiftDeployedModel } from "../../openshift/OpenShiftDeployedModel";
 import { DmnDevSandboxContext } from "./DmnDevSandboxContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
@@ -37,7 +37,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const routes = useRoutes();
-  const kieToolingExtendedServices = useKieToolingExtendedServices();
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const workspaces = useWorkspaces();
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -104,7 +104,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
   );
 
   useEffect(() => {
-    if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
+    if (kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
       onDisconnect(true);
       return;
     }
@@ -147,7 +147,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
     onDisconnect,
     settings.openshift,
     settingsDispatch.openshift.service,
-    kieToolingExtendedServices.status,
+    kieSandboxExtendedServices.status,
     deployments.length,
     settingsDispatch.openshift,
     isDeploymentsDropdownOpen,

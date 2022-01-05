@@ -9,7 +9,7 @@ on:
       runners:
         type: string
         required: true
-        default: '{"dmn_dev_sandbox_image":"true","kie_sandbox_image":"true","kie_tooling_extended_services_image":"true","online_editor":"true","chrome_extension":"true","vscode_extensions_dev":"true","vscode_extensions_prod":"true","desktop":"true","npm_packages":"true","standalone_editors_cdn":"true","extended_services":"true","dashbuilder":"true","dashbuilder_images":"true"}'
+        default: '{"dmn_dev_sandbox_image":"true","kie_sandbox_image":"true","kie_sandbox_extended_services_image":"true","online_editor":"true","chrome_extension":"true","vscode_extensions_dev":"true","vscode_extensions_prod":"true","desktop":"true","npm_packages":"true","standalone_editors_cdn":"true","extended_services":"true","dashbuilder":"true","dashbuilder_images":"true"}'
 
 jobs:
   prepare:

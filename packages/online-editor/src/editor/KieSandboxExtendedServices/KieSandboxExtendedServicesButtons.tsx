@@ -28,12 +28,12 @@ import { useDmnDevSandbox } from "../DmnDevSandbox/DmnDevSandboxContext";
 import { useDmnDevSandboxDropdownItems } from "../DmnDevSandbox/DmnDevSandboxDropdownItems";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useDmnRunnerDispatch, useDmnRunnerState } from "../DmnRunner/DmnRunnerContext";
-import { FeatureDependentOnKieToolingExtendedServices } from "../../kieToolingExtendedServices/FeatureDependentOnKieToolingExtendedServices";
+import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
 import {
   DependentFeature,
-  useKieToolingExtendedServices,
-} from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
+  useKieSandboxExtendedServices,
+} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { useSettings } from "../../settings/SettingsContext";
 import { DmnRunnerMode } from "../DmnRunner/DmnRunnerStatus";
 import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
@@ -46,9 +46,9 @@ interface Props {
   workspace: ActiveWorkspace | undefined;
 }
 
-export function KieToolingExtendedServicesButtons(props: Props) {
+export function KieSandboxExtendedServicesButtons(props: Props) {
   const { i18n } = useOnlineI18n();
-  const kieToolingExtendedServices = useKieToolingExtendedServices();
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const dmnDevSandbox = useDmnDevSandbox();
   const dmnRunnerState = useDmnRunnerState();
   const dmnRunnerDispatch = useDmnRunnerDispatch();
@@ -56,7 +56,7 @@ export function KieToolingExtendedServicesButtons(props: Props) {
   const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems(props.workspace);
 
   const toggleDmnRunnerDrawer = useCallback(() => {
-    if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
+    if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
       if (dmnRunnerState.mode === DmnRunnerMode.TABLE) {
         props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABULAR);
       } else {
@@ -64,34 +64,34 @@ export function KieToolingExtendedServicesButtons(props: Props) {
       }
       return;
     }
-    kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
-    kieToolingExtendedServices.setModalOpen(true);
-  }, [dmnRunnerState.mode, dmnRunnerDispatch, kieToolingExtendedServices, props.editorPageDock]);
+    kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_RUNNER);
+    kieSandboxExtendedServices.setModalOpen(true);
+  }, [dmnRunnerState.mode, dmnRunnerDispatch, kieSandboxExtendedServices, props.editorPageDock]);
 
   const toggleDmnDevSandboxDropdown = useCallback(
     (isOpen: boolean) => {
-      if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
+      if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
         dmnDevSandbox.setDropdownOpen(isOpen);
         return;
       }
-      kieToolingExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_DEV_SANDBOX);
-      kieToolingExtendedServices.setModalOpen(true);
+      kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.DMN_DEV_SANDBOX);
+      kieSandboxExtendedServices.setModalOpen(true);
     },
-    [dmnDevSandbox, kieToolingExtendedServices]
+    [dmnDevSandbox, kieSandboxExtendedServices]
   );
 
   const isDevSandboxEnabled = useMemo(() => {
     return (
-      kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING &&
+      kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING &&
       settings.openshift.status === OpenShiftInstanceStatus.CONNECTED
     );
-  }, [kieToolingExtendedServices.status, settings.openshift.status]);
+  }, [kieSandboxExtendedServices.status, settings.openshift.status]);
 
   const [runModeOpen, setRunModeOpen] = useState<boolean>(false);
 
   return (
     <>
-      <FeatureDependentOnKieToolingExtendedServices isLight={true} position="top">
+      <FeatureDependentOnKieSandboxExtendedServices isLight={true} position="top">
         <Dropdown
           className={isDevSandboxEnabled ? "pf-m-active" : ""}
           onSelect={() => dmnDevSandbox.setDropdownOpen(false)}
@@ -108,9 +108,9 @@ export function KieToolingExtendedServicesButtons(props: Props) {
           position={DropdownPosition.right}
           dropdownItems={dmnDevSandboxDropdownItems}
         />
-      </FeatureDependentOnKieToolingExtendedServices>
+      </FeatureDependentOnKieSandboxExtendedServices>
       {"  "}
-      <FeatureDependentOnKieToolingExtendedServices isLight={true} position="top">
+      <FeatureDependentOnKieSandboxExtendedServices isLight={true} position="top">
         <Dropdown
           onSelect={() => setRunModeOpen(!runModeOpen)}
           toggle={
@@ -137,7 +137,7 @@ export function KieToolingExtendedServicesButtons(props: Props) {
               component={"button"}
               icon={<ListIcon />}
               onClick={() => {
-                if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
+                if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
                   dmnRunnerDispatch.setMode(DmnRunnerMode.FORM);
                   props.editorPageDock?.close();
                   dmnRunnerDispatch.setExpanded(true);
@@ -151,7 +151,7 @@ export function KieToolingExtendedServicesButtons(props: Props) {
               component={"button"}
               icon={<TableIcon />}
               onClick={() => {
-                if (kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING) {
+                if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
                   dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
                   props.editorPageDock?.open(PanelId.DMN_RUNNER_TABULAR);
                   dmnRunnerDispatch.setExpanded(true);
@@ -162,7 +162,7 @@ export function KieToolingExtendedServicesButtons(props: Props) {
             </DropdownItem>,
           ]}
         />
-      </FeatureDependentOnKieToolingExtendedServices>
+      </FeatureDependentOnKieSandboxExtendedServices>
     </>
   );
 }
