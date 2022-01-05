@@ -1,11 +1,5 @@
-# `ping-pong-view-angular`
+Ping-Pong View :: Angular implementation
 
-> TODO: description
+The Ping-Pong View is an interface that components can implement to be used inside a Ping-Pong View Envelope.
 
-## Usage
-
-```
-const pingPongViewAngular = require('ping-pong-view-angular');
-
-// TODO: DEMONSTRATE API
-```
+Ths package provides a Ping-Pong View implementation as a Angular application.
