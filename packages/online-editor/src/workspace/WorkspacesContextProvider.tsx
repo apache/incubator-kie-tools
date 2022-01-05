@@ -146,6 +146,7 @@ export function WorkspacesContextProvider(props: Props) {
 
       if (fileRelativePaths.length === 0) {
         console.debug("Nothing to commit.");
+        return;
       }
 
       await Promise.all(
