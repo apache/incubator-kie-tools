@@ -13,7 +13,7 @@
     "@kie-tooling-core/envelope-bus": "0.0.0",
     "@kie-tooling-core/patternfly-base": "0.0.0",
     "@kogito-tooling-examples/base64png-editor": "0.0.0",
-    "@kogito-tooling-examples/ping-pong-lib": "0.0.0",
+    "@kogito-tooling-examples/ping-pong-view": "0.0.0",
     "@kogito-tooling-examples/ping-pong-view-react": "0.0.0",
     "@kogito-tooling-examples/ping-pong-view-angular": "0.0.0",
     "@kogito-tooling-examples/todo-list-view": "0.0.0",

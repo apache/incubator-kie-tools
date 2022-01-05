@@ -16,8 +16,8 @@
 
 import { Injectable } from "@angular/core";
 import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
-import { PingPongChannelApi, PingPongInitArgs } from "@kogito-tooling-examples/ping-pong-lib/dist/api";
-import { PingPongFactory } from "@kogito-tooling-examples/ping-pong-lib/dist/envelope";
+import { PingPongChannelApi, PingPongInitArgs } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { PingPongFactory } from "@kogito-tooling-examples/ping-pong-view/dist/envelope";
 import { ReplaySubject } from "rxjs";
 
 declare global {

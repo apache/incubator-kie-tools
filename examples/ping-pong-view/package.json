@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-tooling-examples/ping-pong-lib",
+  "name": "@kogito-tooling-examples/ping-pong-view",
   "version": "0.0.0",
   "license": "Apache-2.0",
   "private": true,

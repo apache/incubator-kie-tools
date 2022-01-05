@@ -17,7 +17,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { useEffect, useState } from "react";
-import * as PingPongViewEnvelope from "@kogito-tooling-examples/ping-pong-lib/dist/envelope";
+import * as PingPongViewEnvelope from "@kogito-tooling-examples/ping-pong-view/dist/envelope";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
 import { PingPongReactImplFactory } from ".";
 import "./styles.css";
