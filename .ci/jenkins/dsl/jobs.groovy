@@ -14,7 +14,7 @@ import org.kie.jenkins.jobdsl.Utils
 /////////////////////////////////////////////////////////////////
 
 def getDefaultJobParams() {
-    def jobParams = KogitoJobTemplate.getDefaultJobParams(this, 'kogito-editors-java')
+    def jobParams = KogitoJobTemplate.getDefaultJobParams(this, 'kogito-tooling')
     jobParams.pr.excluded_regions.add('docsimg/.*')
     return jobParams
 }
@@ -24,7 +24,7 @@ Map getMultijobPRConfig() {
             parallel: true,
             jobs : [
                     [
-                            id: 'kogito-tooling-editors-java',
+                            id: 'kogito-tooling-stunner-editors',
                             primary: true,
                             env : [
                                 // Sonarcloud analysis only on main branch
