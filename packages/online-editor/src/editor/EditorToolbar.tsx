@@ -319,8 +319,8 @@ export function EditorToolbar(props: Props) {
     });
   }, [props.editor]);
 
-  const pushGitHubGist = useCallback(
-    async (force = false) => {
+  const forceUpdateGitHubGist = useCallback(async () => {
+    try {
       if (!githubAuthInfo) {
         return;
       }
@@ -328,15 +328,13 @@ export function EditorToolbar(props: Props) {
       setGitHubGistLoading(true);
       const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
 
-      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId, gitConfig: githubAuthInfo });
-
       await workspaces.gitService.push({
         fs,
         dir: await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId }),
         remote: GIST_ORIGIN_REMOTE_NAME,
         ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
-        force,
+        force: true,
         authInfo: githubAuthInfo,
       });
 
@@ -345,13 +343,6 @@ export function EditorToolbar(props: Props) {
         workspaceId: props.workspaceFile.workspaceId,
         authInfo: githubAuthInfo,
       });
-    },
-    [workspaces, props.workspaceFile.workspaceId, githubAuthInfo]
-  );
-
-  const forceUpdateGitHubGist = useCallback(async () => {
-    try {
-      await pushGitHubGist(true);
     } catch (e) {
       errorAlert.show();
     } finally {
@@ -360,7 +351,7 @@ export function EditorToolbar(props: Props) {
     }
 
     successfullyUpdateGistAlert.show();
-  }, [successfullyUpdateGistAlert, errorAlert, pushGitHubGist]);
+  }, [workspaces, props.workspaceFile.workspaceId, githubAuthInfo, successfullyUpdateGistAlert, errorAlert]);
 
   const errorPushingGist = useAlert(
     props.alerts,
@@ -392,7 +383,39 @@ export function EditorToolbar(props: Props) {
 
   const updateGitHubGist = useCallback(async () => {
     try {
-      await pushGitHubGist();
+      if (!githubAuthInfo) {
+        return;
+      }
+
+      setGitHubGistLoading(true);
+      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
+
+      const hasChanges = await workspaces.createSavePoint({
+        fs,
+        workspaceId: props.workspaceFile.workspaceId,
+        gitConfig: githubAuthInfo,
+      });
+
+      if (!hasChanges) {
+        successfullyUpdateGistAlert.show();
+        return;
+      }
+
+      await workspaces.gitService.push({
+        fs,
+        dir: await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId }),
+        remote: GIST_ORIGIN_REMOTE_NAME,
+        ref: GIST_DEFAULT_BRANCH,
+        remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
+        force: false,
+        authInfo: githubAuthInfo,
+      });
+
+      await workspaces.pull({
+        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+        workspaceId: props.workspaceFile.workspaceId,
+        authInfo: githubAuthInfo,
+      });
     } catch (e) {
       errorPushingGist.show();
       throw e;
@@ -402,7 +425,7 @@ export function EditorToolbar(props: Props) {
     }
 
     successfullyUpdateGistAlert.show();
-  }, [successfullyUpdateGistAlert, errorPushingGist, pushGitHubGist]);
+  }, [successfullyUpdateGistAlert, githubAuthInfo, workspaces, props.workspaceFile.workspaceId, errorPushingGist]);
 
   const createGitHubGist = useCallback(async () => {
     try {

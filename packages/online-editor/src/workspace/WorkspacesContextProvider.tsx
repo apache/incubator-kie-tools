@@ -146,7 +146,7 @@ export function WorkspacesContextProvider(props: Props) {
 
       if (fileRelativePaths.length === 0) {
         console.debug("Nothing to commit.");
-        return;
+        return false;
       }
 
       await Promise.all(
@@ -180,6 +180,8 @@ export function WorkspacesContextProvider(props: Props) {
       const broadcastChannel = new BroadcastChannel(args.workspaceId);
       const workspaceEvent: WorkspaceEvents = { type: "CREATE_SAVE_POINT", workspaceId: args.workspaceId };
       broadcastChannel.postMessage(workspaceEvent);
+
+      return true;
     },
     [descriptorService, gitService, service]
   );
