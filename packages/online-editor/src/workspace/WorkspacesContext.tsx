@@ -133,7 +133,7 @@ export interface WorkspacesContextType {
     fs: LightningFS;
     workspaceId: string;
     gitConfig?: { email: string; name: string };
-  }): Promise<boolean>;
+  }): Promise<void>;
   getAbsolutePath(args: { workspaceId: string; relativePath?: string }): string;
   getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }): string;
   deleteWorkspace(args: { workspaceId: string }): Promise<void>;
