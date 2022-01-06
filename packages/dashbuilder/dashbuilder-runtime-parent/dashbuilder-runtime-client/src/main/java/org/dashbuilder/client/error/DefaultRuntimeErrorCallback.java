@@ -22,6 +22,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
+
+import elemental2.dom.DomGlobal;
+
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.jboss.errai.bus.client.api.InvalidBusContentException;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -60,6 +63,7 @@ public class DefaultRuntimeErrorCallback {
             error(DefaultErrorType.NOT_LOGGED, message);
         } else {
             error(DefaultErrorType.OTHER, message);
+            DomGlobal.console.error(throwable);
         }
     }
 
@@ -87,9 +91,8 @@ public class DefaultRuntimeErrorCallback {
             case OTHER:
             default:
                 String popupMessage = message == null ? i18n.defaultErrorMessage() : message;
-                showMessage(CommonConstants.INSTANCE.ExceptionGeneric0(popupMessage),
-                            this::unlock,
-                            this::unlock);
+                DomGlobal.console.log(CommonConstants.INSTANCE.ExceptionGeneric0(popupMessage));
+                this.unlock();                
                 break;
         }
     }

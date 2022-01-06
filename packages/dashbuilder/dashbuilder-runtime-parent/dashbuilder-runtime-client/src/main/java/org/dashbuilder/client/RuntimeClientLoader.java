@@ -24,8 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
-import org.dashbuilder.client.external.ExternalDataSetRegister;
+import org.dashbuilder.client.external.ExternalDataSetClientProvider;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.parser.RuntimeModelClientParserFactory;
 import org.dashbuilder.client.perspective.generator.RuntimePerspectiveGenerator;
@@ -36,6 +35,8 @@ import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.model.RuntimeServiceResponse;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mvp.Command;
+
+import com.google.gwt.user.client.Window;
 
 @ApplicationScoped
 public class RuntimeClientLoader {
@@ -56,7 +57,7 @@ public class RuntimeClientLoader {
 
     BusyIndicatorView loading;
 
-    ExternalDataSetRegister externalDataSetRegister;
+    ExternalDataSetClientProvider externalDataSetProvider;
 
     RuntimeModelClientParserFactory parserFactory;
 
@@ -76,7 +77,7 @@ public class RuntimeClientLoader {
                                RuntimePerspectivePluginManager runtimePerspectivePluginManager,
                                NavigationManager navigationManager,
                                BusyIndicatorView loading,
-                               ExternalDataSetRegister externalDataSetRegister,
+                               ExternalDataSetClientProvider externalDataSetRegister,
                                RuntimeModelClientParserFactory parserFactory,
                                RuntimeModelContentListener contentListener,
                                Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent) {
@@ -84,7 +85,7 @@ public class RuntimeClientLoader {
         this.perspectiveEditorGenerator = perspectiveEditorGenerator;
         this.runtimePerspectivePluginManager = runtimePerspectivePluginManager;
         this.navigationManager = navigationManager;
-        this.externalDataSetRegister = externalDataSetRegister;
+        this.externalDataSetProvider = externalDataSetRegister;
         this.parserFactory = parserFactory;
         this.contentListener = contentListener;
         this.loading = loading;
@@ -185,7 +186,7 @@ public class RuntimeClientLoader {
 
     private void registerModel(RuntimeModel runtimeModel) {
         runtimeModel.getLayoutTemplates().forEach(perspectiveEditorGenerator::generatePerspective);
-        runtimeModel.getClientDataSets().forEach(externalDataSetRegister::register);
+        runtimeModel.getClientDataSets().forEach(externalDataSetProvider::register);
         runtimePerspectivePluginManager.setTemplates(runtimeModel.getLayoutTemplates());
         navigationManager.setDefaultNavTree(runtimeModel.getNavTree());
     }

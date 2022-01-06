@@ -15,6 +15,8 @@
  */
 package org.dashbuilder.client.services;
 
+import static elemental2.dom.DomGlobal.fetch;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,16 +27,11 @@ import javax.inject.Inject;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
-import elemental2.dom.DomGlobal;
-import elemental2.dom.Headers;
-import elemental2.dom.RequestInit;
-import elemental2.dom.Response;
-import elemental2.dom.XMLHttpRequest;
-import elemental2.promise.IThenable;
+import org.dashbuilder.client.RuntimeClientLoader;
 import org.dashbuilder.client.error.DefaultRuntimeErrorCallback;
 import org.dashbuilder.client.error.DefaultRuntimeErrorCallback.DefaultErrorType;
 import org.dashbuilder.client.error.ErrorResponseVerifier;
-import org.dashbuilder.client.external.ExternalDataSetRegister;
+import org.dashbuilder.client.external.ExternalDataSetClientProvider;
 import org.dashbuilder.client.marshalling.ClientDataSetMetadataJSONMarshaller;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataprovider.DataSetProviderType;
@@ -53,7 +50,12 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.resteasy.util.HttpResponseCodes;
 import org.uberfire.backend.vfs.Path;
 
-import static elemental2.dom.DomGlobal.fetch;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Headers;
+import elemental2.dom.RequestInit;
+import elemental2.dom.Response;
+import elemental2.dom.XMLHttpRequest;
+import elemental2.promise.IThenable;
 
 @Alternative
 @ApplicationScoped
@@ -74,7 +76,10 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
     ClientDataSetManager clientDataSetManager;
 
     @Inject
-    ExternalDataSetRegister externalDataSetRegister;
+    RuntimeClientLoader loader;
+
+    @Inject
+    ExternalDataSetClientProvider externalDataSetClientProvider;
 
     Map<String, DataSetMetadata> metadataCache = new HashMap<>();
 
@@ -133,21 +138,24 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
 
     @Override
     public void lookupDataSet(DataSetDef def, DataSetLookup lookup, DataSetReadyCallback listener) throws Exception {
-
         var clientDataSet = clientDataSetManager.lookupDataSet(lookup);
         if (clientDataSet != null) {
             listener.callback(clientDataSet);
             return;
         }
 
-        externalDataSetRegister.fetchAndRegister(lookup.getDataSetUUID(),
+        externalDataSetClientProvider.fetchAndRegister(lookup.getDataSetUUID(),
                 lookup,
                 new DataSetReadyCallback() {
 
                     @Override
                     public boolean onError(ClientRuntimeError error) {
-                        DomGlobal.console.log("Error retrieving dataset from client, trying from backend");
-                        backendLookup(def, lookup, listener);
+                        if (loader.isOffline()) {
+                            listener.onError(error);
+                        } else {
+                            DomGlobal.console.debug("Error retrieving dataset from client, trying from backend");
+                            backendLookup(def, lookup, listener);
+                        }
                         return false;
                     }
 

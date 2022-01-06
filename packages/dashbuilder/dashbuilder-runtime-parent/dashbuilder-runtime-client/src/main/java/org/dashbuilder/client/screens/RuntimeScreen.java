@@ -134,8 +134,8 @@ public class RuntimeScreen {
     }
 
     private void refreshMenus() {
-        NavTree navTree = currentRuntimeModel.getNavTree();
-        Menus menus = menusHelper.buildMenusFromNavTree(navTree).build();
+        var navTree = currentRuntimeModel.getNavTree();
+        var menus = menusHelper.buildMenusFromNavTree(navTree).build();
         view.addMenus(menus);
     }
 
