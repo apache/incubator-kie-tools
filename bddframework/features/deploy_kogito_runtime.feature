@@ -7,7 +7,7 @@ Feature: Deploy Kogito Runtime
   Scenario Outline: Deploy <example-service> with native <native> using Kogito Runtime
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |
 
     When Deploy <runtime> example service "<example-service>" from runtime registry
@@ -39,7 +39,7 @@ Feature: Deploy Kogito Runtime
   Scenario Outline: Deploy DMN <example-service> with native <native> using Kogito Runtime
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |
 
     When Deploy <runtime> example service "<example-service>" from runtime registry
@@ -81,7 +81,7 @@ Feature: Deploy Kogito Runtime
     Given Kogito Operator is deployed
     And Infinispan Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
       | profile | persistence |
       | native  | <native>  |
     And Infinispan instance "kogito-infinispan" is deployed with configuration:
@@ -141,7 +141,7 @@ Feature: Deploy Kogito Runtime
       | config   | username | developer            |
       | config   | database | kogito_dataindex     |
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |
 
     When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
@@ -202,7 +202,7 @@ Feature: Deploy Kogito Runtime
       | password | mypass |
       | database | mydb   |
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
       | native  | <native>    |
       | profile | persistence |
 
@@ -266,7 +266,7 @@ Feature: Deploy Kogito Runtime
     And Install Kogito Jobs Service with 1 replicas
     And Kogito Jobs Service has 1 pods running within 10 minutes
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |
     And Deploy <runtime> example service "<example-service>" from runtime registry
     And Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
@@ -311,7 +311,7 @@ Feature: Deploy Kogito Runtime
     And Kafka instance "kogito-kafka" is deployed
     And Install Kafka Kogito Infra "kafka" targeting service "kogito-kafka" within 5 minutes
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
       | profile | events   |
       | native  | <native> |
 
@@ -367,7 +367,7 @@ Feature: Deploy Kogito Runtime
       | config | infra | infinispan |
       | config | infra | kafka      |
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
       | profile | persistence,events |
       | native  | <native>           |
 
@@ -427,7 +427,7 @@ Feature: Deploy Kogito Runtime
       | config | infra         | kogito-mongodb |
       | config | infra         | kafka            |
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
       | profile | events   |
       | native  | <native> |
 
@@ -496,7 +496,7 @@ Feature: Deploy Kogito Runtime
       | runtime-env | QUARKUS_DATASOURCE_PASSWORD               | mypass                                 |
       | runtime-env | quarkus.hibernate-orm.database.generation | update                                 |
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
       | profile | events,persistence |
       | native  | <native>           |
 
@@ -553,7 +553,7 @@ Feature: Deploy Kogito Runtime
   Scenario Outline: Deploy process-optaplanner-quarkus service with native <native> and without persistence
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |
 
     When Deploy <runtime> example service "<example-service>" from runtime registry
@@ -593,7 +593,7 @@ Feature: Deploy Kogito Runtime
   Scenario Outline: Deploy <example-service> service to complete user tasks with native <native>
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |
     And Deploy <runtime> example service "<example-service>" from runtime registry
     And Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
@@ -643,7 +643,7 @@ Feature: Deploy Kogito Runtime
     Given Kogito Operator is deployed
     And Infinispan Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
       | profile | persistence |
     And Infinispan instance "kogito-infinispan" is deployed with configuration:
       | username | developer |
@@ -715,7 +715,7 @@ Feature: Deploy Kogito Runtime
       | config | infra | infinispan |
       | config | infra | kafka      |
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
       | profile | persistence,events |
 
     When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
@@ -785,7 +785,7 @@ Feature: Deploy Kogito Runtime
     And Deploy Event display "event-display"
     And Create Knative Trigger "event-display" receiving events from Broker "default" delivering to Service "event-display"
     And Clone Kogito examples into local directory
-    And Local example service "process-knative-quickstart-quarkus" is built by Maven and deployed to runtime registry
+    And Local example service "kogito-quarkus-examples/process-knative-quickstart-quarkus" is built by Maven and deployed to runtime registry
 
     When Create quarkus KogitoSource "process-knative-quickstart-quarkus" sinking events to Broker "default" from runtime registry
     And Kogito Runtime "ks-process-knative-quickstart-quarkus" has 1 pods running within 10 minutes

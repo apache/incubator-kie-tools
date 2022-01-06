@@ -17,9 +17,6 @@ require (
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.50.0
 	github.com/spf13/pflag v1.0.5
 	go.uber.org/zap v1.19.0
-	golang.org/x/net v0.0.0-20210924054057-cf34111cab4d // indirect
-	google.golang.org/api v0.57.0 // indirect
-	google.golang.org/genproto v0.0.0-20210924002016-3dee208752a0 // indirect
 	gopkg.in/src-d/go-git.v4 v4.13.1
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.20.7

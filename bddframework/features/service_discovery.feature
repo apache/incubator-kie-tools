@@ -9,11 +9,11 @@ Feature: Discovery with onboarding
   Scenario Outline: Deploy Quarkus onboarding example with native <native>
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "onboarding-example/hr" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-quarkus-examples/onboarding-example/hr" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |
-    And Local example service "onboarding-example/payroll" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-quarkus-examples/onboarding-example/payroll" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |
-    And Local example service "onboarding-example/onboarding-quarkus" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-quarkus-examples/onboarding-example/onboarding-quarkus" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |
 
     When Deploy quarkus example service "hr" from runtime registry with configuration:
@@ -65,9 +65,9 @@ Feature: Discovery with onboarding
   Scenario: Deploy Spring Boot onboarding example
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "onboarding-example/hr" is built by Maven and deployed to runtime registry
-    And Local example service "onboarding-example/payroll" is built by Maven and deployed to runtime registry
-    And Local example service "onboarding-example/onboarding-springboot" is built by Maven and deployed to runtime registry
+    And Local example service "kogito-quarkus-examples/onboarding-example/hr" is built by Maven and deployed to runtime registry
+    And Local example service "kogito-quarkus-examples/onboarding-example/payroll" is built by Maven and deployed to runtime registry
+    And Local example service "kogito-springboot-examples/onboarding-springboot" is built by Maven and deployed to runtime registry
     
     When Deploy quarkus example service "hr" from runtime registry with configuration:
       | service-label  | department/first          | process  |

@@ -38,7 +38,7 @@ Feature: Kogito Trusty
     And Install Kogito Trusty with 1 replicas with configuration:
       | config | infra | infinispan |
       | config | infra | kafka      |
-    And Local example service "dmn-tracing-quarkus" is built by Maven and deployed to runtime registry
+    And Local example service "kogito-quarkus-examples/dmn-tracing-quarkus" is built by Maven and deployed to runtime registry
     And Deploy quarkus example service "dmn-tracing-quarkus" from runtime registry with configuration:
       | config | infra | kafka |
     And Kogito Runtime "dmn-tracing-quarkus" has 1 pods running within 10 minutes
@@ -78,7 +78,7 @@ Feature: Kogito Trusty
     And Install Kogito Trusty with 1 replicas with configuration:
       | config | infra | infinispan |
       | config | infra | kafka      |
-    And Local example service "dmn-tracing-quarkus" is built by Maven and deployed to runtime registry
+    And Local example service "kogito-quarkus-examples/dmn-tracing-quarkus" is built by Maven and deployed to runtime registry
     And Deploy quarkus example service "dmn-tracing-quarkus" from runtime registry with configuration:
       | config | infra | kafka |
     And Kogito Runtime "dmn-tracing-quarkus" has 1 pods running within 10 minutes

@@ -6,7 +6,7 @@ Feature: Deploy Kogito Build
     And Kogito Operator is deployed
 
   Scenario Outline: Build <runtime> remote S2I with native <native> using KogitoBuild
-    When Build <runtime> example service "<example-service>" with configuration:
+    When Build <runtime> example service "kogito-<runtime>-examples/<example-service>" with configuration:
       | config | native | <native> |
 
     Then Build "<example-service>-builder" is complete after <minutes> minutes
@@ -38,10 +38,10 @@ Feature: Deploy Kogito Build
 
   Scenario Outline: Build <runtime> binary build with native <native> using KogitoBuild
     Given Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven with configuration:
+    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven with configuration:
       | native | <native> |
 
-    When Build binary <runtime> local example service "<example-service>" from target folder with configuration:
+    When Build binary <runtime> local example service "kogito-<runtime>-examples/<example-service>" from target folder with configuration:
       | config | native | <native> |
 
     Then Kogito Runtime "<example-service>" has 1 pods running within 5 minutes

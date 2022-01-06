@@ -9,7 +9,7 @@ Feature: Deploy the service by configuring the resource requests and limits
 
   Scenario Outline: Setting runtime resource requests cpu <runtime-cpu-request>, mem <runtime-memory-request> and limits cpu <runtime-cpu-limit>, mem <runtime-memory-limit>
     Given Clone Kogito examples into local directory
-    And Local example service "ruleunit-quarkus-example" is built by Maven and deployed to runtime registry
+    And Local example service "kogito-quarkus-examples/ruleunit-quarkus-example" is built by Maven and deployed to runtime registry
 
     When Deploy quarkus example service "ruleunit-quarkus-example" from runtime registry with configuration:
       | runtime-request | cpu    | <runtime-cpu-request>    |
@@ -29,7 +29,7 @@ Feature: Deploy the service by configuring the resource requests and limits
 
 
   Scenario Outline: Setting build resource requests cpu <build-cpu-request>, mem <build-memory-request> and limits cpu <build-cpu-limit>, mem <build-memory-limit>
-    When Build quarkus example service "ruleunit-quarkus-example" with configuration:
+    When Build quarkus example service "kogito-quarkus-examples/ruleunit-quarkus-example" with configuration:
       | build-request | cpu    | <build-cpu-request>    |
       | build-request | memory | <build-memory-request> |
       | build-limit   | cpu    | <build-cpu-limit>      |

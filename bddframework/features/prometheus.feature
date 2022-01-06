@@ -10,7 +10,7 @@ Feature: Service Deployment: Prometheus
   Scenario: Deploy dmn-drools-quarkus-metrics service and verify that it successfully connects to Prometheus
     Given Prometheus instance is deployed, monitoring services with label name "app" and value "dmn-drools-quarkus-metrics"
     And Clone Kogito examples into local directory
-    And Local example service "dmn-drools-quarkus-metrics" is built by Maven and deployed to runtime registry
+    And Local example service "kogito-quarkus-examples/dmn-drools-quarkus-metrics" is built by Maven and deployed to runtime registry
     And Deploy quarkus example service "dmn-drools-quarkus-metrics" from runtime registry
     And Kogito Runtime "dmn-drools-quarkus-metrics" has 1 pods running within 10 minutes
 

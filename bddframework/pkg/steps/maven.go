@@ -42,12 +42,12 @@ func registerMavenSteps(ctx *godog.ScenarioContext, data *Data) {
 }
 
 // Build local service
-func (data *Data) localServiceBuiltByMaven(serviceName string) error {
-	return data.localServiceBuiltByMavenWithConfiguration(serviceName, nil)
+func (data *Data) localServiceBuiltByMaven(contextDir string) error {
+	return data.localServiceBuiltByMavenWithConfiguration(contextDir, nil)
 }
 
 // Build local service with configuration
-func (data *Data) localServiceBuiltByMavenWithConfiguration(serviceName string, table *godog.Table) error {
+func (data *Data) localServiceBuiltByMavenWithConfiguration(contextDir string, table *godog.Table) error {
 	mavenConfig := &mappers.MavenCommandConfig{}
 	if table != nil && len(table.Rows) > 0 {
 		err := mappers.MapMavenCommandConfigTable(table, mavenConfig)
@@ -55,12 +55,12 @@ func (data *Data) localServiceBuiltByMavenWithConfiguration(serviceName string, 
 			return err
 		}
 	}
-	return data.localServiceBuiltByMavenWithProfileAndOptions(serviceName, mavenConfig)
+	return data.localServiceBuiltByMavenWithProfileAndOptions(contextDir, mavenConfig)
 }
 
 // Build local service with profile and additional options
-func (data *Data) localServiceBuiltByMavenWithProfileAndOptions(serviceName string, mavenConfig *mappers.MavenCommandConfig) error {
-	serviceRepositoryPath := data.KogitoExamplesLocation + "/" + serviceName
+func (data *Data) localServiceBuiltByMavenWithProfileAndOptions(contextDir string, mavenConfig *mappers.MavenCommandConfig) error {
+	serviceRepositoryPath := data.KogitoExamplesLocation + "/" + contextDir
 	mvnCmd := framework.CreateMavenCommand(serviceRepositoryPath).
 		SkipTests().
 		UpdateArtifacts().

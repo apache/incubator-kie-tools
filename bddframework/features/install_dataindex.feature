@@ -108,7 +108,7 @@ Feature: Kogito Data Index
     And Kogito Data Index has 1 pods running within 10 minutes
 
     And Clone Kogito examples into local directory
-    And Local example service "process-quarkus-example" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-quarkus-examples/process-quarkus-example" is built by Maven and deployed to runtime registry with Maven configuration:
       | profile | persistence,events |
     And Deploy quarkus example service "process-quarkus-example" from runtime registry with configuration:
       | config | infra | infinispan |
@@ -167,7 +167,7 @@ Feature: Kogito Data Index
     And Kogito Data Index has 1 pods running within 10 minutes
       
     And Clone Kogito examples into local directory
-    And Local example service "process-mongodb-persistence-quarkus" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-quarkus-examples/process-mongodb-persistence-quarkus" is built by Maven and deployed to runtime registry with Maven configuration:
       | profile | events |
     And Deploy quarkus example service "process-mongodb-persistence-quarkus" from runtime registry with configuration:
       | config | infra | mongodb   |
@@ -248,7 +248,7 @@ Feature: Kogito Data Index
     And Kogito Data Index has 1 pods running within 10 minutes
       
     And Clone Kogito examples into local directory
-    And Local example service "process-postgresql-persistence-quarkus" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-quarkus-examples/process-postgresql-persistence-quarkus" is built by Maven and deployed to runtime registry with Maven configuration:
       | profile | persistence,events |
     And Deploy quarkus example service "process-postgresql-persistence-quarkus" from runtime registry with configuration:
       | config      | infra                                        | kafka                                           |

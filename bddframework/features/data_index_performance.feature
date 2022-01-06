@@ -24,7 +24,7 @@ Feature: Data Index Performance
   @quarkus
   Scenario Outline: Quarkus Kogito Service Performance with Maven profile <profile>, without persistence and with requests <requests>
     Given Clone Kogito examples into local directory
-    And Local example service "process-quarkus-example" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-quarkus-examples/process-quarkus-example" is built by Maven and deployed to runtime registry with Maven configuration:
       | profile | <profile>                                       |
       | option  | -Dmp.messaging.emitter.default-buffer-size=1024 |
     And Deploy quarkus example service "process-quarkus-example" from runtime registry with configuration:
@@ -72,7 +72,7 @@ Feature: Data Index Performance
   Scenario Outline: Spring Boot Kogito Service Performance without persistence and with requests <requests>
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "process-springboot-example" is built by Maven and deployed to runtime registry
+    And Local example service "kogito-springboot-examples/process-springboot-example" is built by Maven and deployed to runtime registry
     And Deploy springboot example service "process-springboot-example" from runtime registry with configuration:
       | runtime-env | JAVA_OPTIONS | -Xmx10G |
     And Kogito Runtime "process-springboot-example" has 1 pods running within 10 minutes

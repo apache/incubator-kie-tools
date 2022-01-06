@@ -12,7 +12,7 @@ Feature: Kogito Service Performance
   Scenario Outline: Quarkus Kogito Service Performance with native disabled, without persistence with usersPerSec <usersPerSec> and maxSessions <maxSessions>
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "process-quarkus-example" is built by Maven and deployed to runtime registry
+    And Local example service "kogito-quarkus-examples/process-quarkus-example" is built by Maven and deployed to runtime registry
     And Deploy quarkus example service "process-quarkus-example" from runtime registry with configuration:
        | runtime-env | JAVA_OPTIONS | -Xmx10G  |
     And Kogito Runtime "process-quarkus-example" has 1 pods running within 10 minutes
@@ -97,7 +97,7 @@ Feature: Kogito Service Performance
   Scenario Outline: Quarkus Kogito Service Performance with native enabled, without persistence, with usersPerSec <usersPerSec> and maxSessions <maxSessions>
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "process-quarkus-example" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-quarkus-examples/process-quarkus-example" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | enabled |
     And Deploy quarkus example service "process-quarkus-example" from runtime registry with configuration:
        | runtime-env | JAVA_OPTIONS | -Xmx10G  |
@@ -165,7 +165,7 @@ Feature: Kogito Service Performance
       | password | mypass    |
     And Install Infinispan Kogito Infra "external-infinispan" targeting service "external-infinispan" within 5 minutes
     And Clone Kogito examples into local directory
-    And Local example service "process-quarkus-example" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-quarkus-examples/process-quarkus-example" is built by Maven and deployed to runtime registry with Maven configuration:
       | profile | persistence |
     And Deploy quarkus example service "process-quarkus-example" from runtime registry with configuration:
       | runtime-env | JAVA_OPTIONS | -Xmx10G             |
@@ -259,7 +259,7 @@ Feature: Kogito Service Performance
       | password | mypass    |
     And Install Infinispan Kogito Infra "external-infinispan" targeting service "external-infinispan" within 5 minutes
     And Clone Kogito examples into local directory
-    And Local example service "process-quarkus-example" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-quarkus-examples/process-quarkus-example" is built by Maven and deployed to runtime registry with Maven configuration:
       | profile | persistence |
       | native  | enabled     |
     And Deploy quarkus example service "process-quarkus-example" from runtime registry with configuration:
@@ -322,7 +322,7 @@ Feature: Kogito Service Performance
   Scenario Outline: Spring Boot Kogito Service Performance without persistence, with usersPerSec <usersPerSec> and maxSessions <maxSessions>
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "process-springboot-example" is built by Maven and deployed to runtime registry
+    And Local example service "kogito-springboot-examples/process-springboot-example" is built by Maven and deployed to runtime registry
     And Deploy springboot example service "process-springboot-example" from runtime registry with configuration:
       | runtime-env | JAVA_OPTIONS | -Xmx10G |
     And Kogito Runtime "process-springboot-example" has 1 pods running within 10 minutes
@@ -413,7 +413,7 @@ Feature: Kogito Service Performance
       | password | mypass    |
     And Install Infinispan Kogito Infra "external-infinispan" targeting service "external-infinispan" within 5 minutes
     And Clone Kogito examples into local directory
-    And Local example service "process-springboot-example" is built by Maven and deployed to runtime registry
+    And Local example service "kogito-springboot-examples/process-springboot-example" is built by Maven and deployed to runtime registry
     And Deploy springboot example service "process-springboot-example" from runtime registry with configuration:
       | runtime-env | JAVA_OPTIONS | -Xmx10G             |
       | config      | infra        | external-infinispan |

@@ -21,9 +21,9 @@ Feature: Deploy Travel agency service and verify its functionality
 
   Scenario Outline: Travel application without required Visa and native <native>
     Given Clone Kogito examples into local directory
-    And Local example service "kogito-travel-agency/extended/travels" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-quarkus-examples/kogito-travel-agency/extended/travels" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |
-    And Local example service "kogito-travel-agency/extended/visas" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-quarkus-examples/kogito-travel-agency/extended/visas" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |
     And Deploy quarkus example service "travels" from runtime registry with configuration:
       | config | infra | infinispan |
@@ -80,9 +80,9 @@ Feature: Deploy Travel agency service and verify its functionality
 
   Scenario Outline: Travel application with required Visa and native <native>
     Given Clone Kogito examples into local directory
-    And Local example service "kogito-travel-agency/extended/travels" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-quarkus-examples/kogito-travel-agency/extended/travels" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |
-    And Local example service "kogito-travel-agency/extended/visas" is built by Maven and deployed to runtime registry with Maven configuration:
+    And Local example service "kogito-quarkus-examples/kogito-travel-agency/extended/visas" is built by Maven and deployed to runtime registry with Maven configuration:
       | native | <native> |
     And Deploy quarkus example service "travels" from runtime registry with configuration:
       | config | infra | infinispan |

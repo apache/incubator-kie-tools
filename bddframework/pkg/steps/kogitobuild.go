@@ -84,14 +84,14 @@ func (data *Data) buildExampleServiceWithConfiguration(runtimeType, contextDir s
 	return nil
 }
 
-func (data *Data) buildBinaryLocalExampleServiceFromTargetFolderWithConfiguration(runtimeType, serviceName string, table *godog.Table) error {
-	buildHolder, err := getKogitoBuildConfiguredStub(data.Namespace, runtimeType, serviceName, table)
+func (data *Data) buildBinaryLocalExampleServiceFromTargetFolderWithConfiguration(runtimeType, contextDir string, table *godog.Table) error {
+	buildHolder, err := getKogitoBuildConfiguredStub(data.Namespace, runtimeType, filepath.Base(contextDir), table)
 	if err != nil {
 		return err
 	}
 
 	buildHolder.KogitoBuild.GetSpec().SetType(api.BinaryBuildType)
-	buildHolder.BuiltBinaryFolder = fmt.Sprintf(`%s/%s/target`, data.KogitoExamplesLocation, serviceName)
+	buildHolder.BuiltBinaryFolder = fmt.Sprintf(`%s/%s/target`, data.KogitoExamplesLocation, contextDir)
 
 	err = framework.DeployKogitoBuild(data.Namespace, framework.GetDefaultInstallerType(), buildHolder)
 	if err != nil {
@@ -107,9 +107,9 @@ func (data *Data) buildBinaryLocalExampleServiceFromTargetFolderWithConfiguratio
 
 	// If we don't use Kogito CLI then upload target folder using OC client
 	if config.IsCrDeploymentOnly() {
-		return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("Build '%s' to start", serviceName), defaultTimeoutToStartBuildInMin,
+		return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("Build '%s' to start", filepath.Base(contextDir)), defaultTimeoutToStartBuildInMin,
 			func() (bool, error) {
-				_, err := framework.CreateCommand("oc", "start-build", serviceName, "--from-dir="+buildHolder.BuiltBinaryFolder, "-n", data.Namespace).WithLoggerContext(data.Namespace).Execute()
+				_, err := framework.CreateCommand("oc", "start-build", filepath.Base(contextDir), "--from-dir="+buildHolder.BuiltBinaryFolder, "-n", data.Namespace).WithLoggerContext(data.Namespace).Execute()
 				return err == nil, err
 			})
 	}
