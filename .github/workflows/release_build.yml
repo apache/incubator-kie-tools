@@ -198,7 +198,7 @@ jobs:
         run: |
           lerna run build:prod --scope=@kogito-tooling/kie-sandbox-image --include-dependencies --stream
 
-      - name: "Push kie_sandbox_image to quay.io"
+      - name: "Push kie-sandbox-image to quay.io"
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
@@ -245,7 +245,7 @@ jobs:
         run: |
           lerna run build:prod --scope=@kogito-tooling/kie-sandbox-extended-services-image --include-dependencies --stream
 
-      - name: "Push kie_sandbox_extended_services_image to quay.io"
+      - name: "Push kie-sandbox-extended-services-image to quay.io"
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
