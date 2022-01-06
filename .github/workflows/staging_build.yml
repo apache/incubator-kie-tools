@@ -60,6 +60,11 @@ jobs:
       KIE_SANDBOX_EXTENDED_SERVICES__imageName: "kie-sandbox-extended-services-image"
       KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags: "${{ inputs.tag }}-prerelease"
 
+      CORS_PROXY__imageRegistry: "quay.io"
+      CORS_PROXY__imageAccount: "kogito_tooling_bot"
+      CORS_PROXY__imageName: "cors-proxy-image"
+      CORS_PROXY__imageBuildTags: "${{ inputs.tag }}-prerelease"
+
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -157,6 +162,16 @@ jobs:
           tags: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags }}"
           registry: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry }}/${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount }}"
           username: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount }}"
+          password: "${{ secrets.quay_registry_password }}"
+
+      - name: "STAGING: Push cors-proxy-image to quay.io (Ubuntu only)"
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.CORS_PROXY__imageName }}"
+          tags: "${{ env.CORS_PROXY__imageBuildTags }}"
+          registry: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}"
+          username: "${{ env.CORS_PROXY__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Deploy Online Editor to kogito-online-staging (Ubuntu only)"
