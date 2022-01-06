@@ -228,6 +228,26 @@ const ENV_VARS = {
     default: "latest",
     description: "",
   },
+  CORS_PROXY__imageRegistry: {
+    name: "CORS_PROXY__imageRegistry",
+    default: "quay.io",
+    description: "",
+  },
+  CORS_PROXY__imageAccount: {
+    name: "CORS_PROXY__imageAccount",
+    default: "kogito_tooling_bot",
+    description: "",
+  },
+  CORS_PROXY__imageName: {
+    name: "CORS_PROXY__imageName",
+    default: "cors-proxy",
+    description: "",
+  },
+  CORS_PROXY__imageBuildTags: {
+    name: "CORS_PROXY__imageBuildTags",
+    default: "latest",
+    description: "",
+  },
   DMN_LOADER__outputPath: {
     name: "DMN_LOADER__outputPath",
     default: "dist",
@@ -349,6 +369,15 @@ module.exports = {
       account: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount),
       name: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__imageName),
       buildTags: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags),
+    },
+  },
+
+  corsProxy: {
+    image: {
+      registry: getOrDefault(ENV_VARS.CORS_PROXY__imageRegistry),
+      account: getOrDefault(ENV_VARS.CORS_PROXY__imageAccount),
+      name: getOrDefault(ENV_VARS.CORS_PROXY__imageName),
+      buildTags: getOrDefault(ENV_VARS.CORS_PROXY__imageBuildTags),
     },
   },
 
