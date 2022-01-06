@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
+import { Component } from "@angular/core";
 
-import { AppComponent } from "./app.component";
-import { PingPongModule } from "./ping-pong/ping-pong.module";
-
-@NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, PingPongModule],
-  providers: [],
-  bootstrap: [AppComponent],
+@Component({
+  selector: "ping-pong-wc",
+  template: "<app-ping-pong></app-ping-pong>",
 })
-export class AppModule {}
+export class PingPongWcComponent {}

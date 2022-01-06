@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
+import { PingPongApiService } from "./ping-pong-api.service";
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 
-import { AppComponent } from "./app.component";
-import { PingPongModule } from "./ping-pong/ping-pong.module";
+import { PingPongComponent } from "./ping-pong.component";
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, PingPongModule],
-  providers: [],
-  bootstrap: [AppComponent],
+  declarations: [PingPongComponent],
+  imports: [BrowserModule],
+  exports: [PingPongComponent],
+  providers: [PingPongApiService],
+  bootstrap: [PingPongComponent],
 })
-export class AppModule {}
+export class PingPongModule {}

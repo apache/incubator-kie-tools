@@ -39,7 +39,7 @@ function getCurrentTime() {
 @Injectable({
   providedIn: "root",
 })
-export class ApiService implements PingPongFactory {
+export class PingPongApiService implements PingPongFactory {
   channelApi: MessageBusClientApi<PingPongChannelApi>;
   initArgs: PingPongInitArgs;
   log = new ReplaySubject<LogEntry>(10);
