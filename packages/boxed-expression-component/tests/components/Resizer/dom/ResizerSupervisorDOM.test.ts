@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { applyDOMSupervisor, Cell } from "@kogito-tooling/boxed-expression-component/dist/components/Resizer";
+import { applyDOMSupervisor, Cell } from "@kogito-tooling/boxed-expression-component/dist/components/Resizer/dom";
 
 const fakeCells = [fakeCell(0), fakeCell(2), fakeCell(4), fakeCell(8)];
 
@@ -24,16 +24,14 @@ describe("ResizerSupervisorDOM", () => {
       applyDOMSupervisor(false, document.body);
     });
 
-    //FIXME: Tiago
-    it.skip("refreshes cell widths as parents", () => {
+    it("refreshes cell widths as parents", () => {
       expect(fakeCells[0].spyRefreshWidthAsParent).toBeCalled();
       expect(fakeCells[1].spyRefreshWidthAsParent).toBeCalled();
       expect(fakeCells[2].spyRefreshWidthAsParent).toBeCalled();
       expect(fakeCells[3].spyRefreshWidthAsParent).toBeCalled();
     });
 
-    //FIXME: Tiago
-    it.skip("refreshes cell widths as last column", () => {
+    it("refreshes cell widths as last column", () => {
       expect(fakeCells[0].spyRefreshWidthAsLastColumn).toBeCalled();
       expect(fakeCells[1].spyRefreshWidthAsLastColumn).toBeCalled();
       expect(fakeCells[2].spyRefreshWidthAsLastColumn).toBeCalled();
@@ -42,8 +40,8 @@ describe("ResizerSupervisorDOM", () => {
   });
 });
 
-jest.mock("@kogito-tooling/boxed-expression-component/dist/components/Resizer", () => {
-  const actualResizerDOM = jest.requireActual("@kogito-tooling/boxed-expression-component/dist/components/Resizer");
+jest.mock("@kogito-tooling/boxed-expression-component/dist/components/Resizer/dom", () => {
+  const actualResizerDOM = jest.requireActual("@kogito-tooling/boxed-expression-component/dist/components/Resizer/dom");
   return {
     ...actualResizerDOM,
     DOMSession: jest.fn(() => ({
