@@ -240,7 +240,7 @@ const ENV_VARS = {
   },
   CORS_PROXY__imageName: {
     name: "CORS_PROXY__imageName",
-    default: "cors-proxy",
+    default: "cors-proxy-image",
     description: "",
   },
   CORS_PROXY__imageBuildTags: {
