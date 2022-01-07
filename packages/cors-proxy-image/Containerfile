@@ -22,7 +22,7 @@ RUN mkdir /kie-sandbox \
   && mv /tmp/cors-proxy /kie-sandbox \
   && chgrp -R 0 /kie-sandbox \
   && chmod -R g=u /kie-sandbox \
-  && npm install --silent --prefix /kie-sandbox/cors-proxy
+  && npm install --production --silent --prefix /kie-sandbox/cors-proxy
 
 EXPOSE 8080
 

@@ -48,6 +48,10 @@ env:
   KOGITO_TOOLING_BUILD_test: "false"
   KOGITO_TOOLING_BUILD_testIT: "false"
   KOGITO_TOOLING_BUILD_docker: "true"
+  OPENSHIFT_SERVER: ${{ secrets.OPENSHIFT_SERVER }}
+  OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
+  OPENSHIFT_NAMESPACE: "kie-sandbox"
+  OPENSHIFT_PART_OF: "kie-sandbox-app"
 
 jobs:
   extract_runners:
@@ -162,14 +166,18 @@ jobs:
 
   kie_sandbox_image:
     env:
+      OPENSHIFT_APP_NAME: "kie-sandbox"
       KIE_SANDBOX__imageRegistry: "quay.io"
       KIE_SANDBOX__imageAccount: "kogito_tooling_bot"
       KIE_SANDBOX__imageName: "kie-sandbox-image"
       KIE_SANDBOX__imageBuildTags: "latest ${{ inputs.tag }}"
 
+    outputs:
+      kie_sandbox_url: ${{ steps.deploy_kie_sandbox_image.outputs.route_url }}
+
     if: ${{ needs.extract_runners.outputs.kie_sandbox_image == 'true' }}
     runs-on: ubuntu-latest
-    needs: [extract_runners]
+    needs: [extract_runners, dmn_dev_sandbox_image, kie_sandbox_extended_services_image, cors_proxy_image]
     steps:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
@@ -194,6 +202,7 @@ jobs:
           lerna run build:prod --scope=@kogito-tooling/kie-sandbox-image --include-dependencies --stream
 
       - name: "Push kie-sandbox-image to quay.io"
+        id: push_kie_sandbox_image
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
@@ -203,12 +212,37 @@ jobs:
           username: "${{ env.KIE_SANDBOX__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
+      - name: "Prepare environment variables"
+        if: ${{ !inputs.dry_run }}
+        shell: bash
+        run: |
+          echo "KIE_SANDBOX_EXTENDED_SERVICES_URL=${{ needs.kie_sandbox_extended_services_image.outputs.kie_sandbox_extended_services_url }}" >> deployment.env
+          echo "CORS_PROXY_URL=${{ needs.cors_proxy_image.outputs.cors_proxy_url }}" >> deployment.env
+
+      - name: "Deploy kie-sandbox-image to OpenShift"
+        id: deploy_kie_sandbox_image
+        if: ${{ !inputs.dry_run }}
+        uses: ./.github/actions/deploy-openshift
+        with:
+          image_url: ${{ steps.push_kie_sandbox_image.outputs.registry-path }}
+          app_name: ${{ env.OPENSHIFT_APP_NAME }}
+          part_of: ${{ env.OPENSHIFT_PART_OF }}
+          openshift_server: ${{ env.OPENSHIFT_SERVER }}
+          openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+          openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+          deployment_envvars_file_path: ./deployment.env
+          deployment_icon: "js"
+
   kie_sandbox_extended_services_image:
     env:
+      OPENSHIFT_APP_NAME: "kie-sandbox-extended-services"
       KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry: "quay.io"
       KIE_SANDBOX_EXTENDED_SERVICES__imageAccount: "kogito_tooling_bot"
       KIE_SANDBOX_EXTENDED_SERVICES__imageName: "kie-sandbox-extended-services-image"
       KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags: "latest ${{ inputs.tag }}"
+
+    outputs:
+      kie_sandbox_extended_services_url: ${{ steps.deploy_kie_sandbox_extended_services_image.outputs.route_url }}
 
     if: ${{ needs.extract_runners.outputs.kie_sandbox_extended_services_image == 'true' }}
     runs-on: ubuntu-latest
@@ -237,6 +271,7 @@ jobs:
           lerna run build:prod --scope=@kogito-tooling/kie-sandbox-extended-services-image --include-dependencies --stream
 
       - name: "Push kie-sandbox-extended-services-image to quay.io"
+        id: push_kie_sandbox_extended_services_image
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
@@ -246,12 +281,29 @@ jobs:
           username: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
+      - name: "Deploy kie-sandbox-extended-services-image to OpenShift"
+        id: deploy_kie_sandbox_extended_services_image
+        if: ${{ !inputs.dry_run }}
+        uses: ./.github/actions/deploy-openshift
+        with:
+          image_url: ${{ steps.push_kie_sandbox_extended_services_image.outputs.registry-path }}
+          app_name: ${{ env.OPENSHIFT_APP_NAME }}
+          part_of: ${{ env.OPENSHIFT_PART_OF }}
+          openshift_server: ${{ env.OPENSHIFT_SERVER }}
+          openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+          openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+          deployment_icon: "golang"
+
   cors_proxy_image:
     env:
+      OPENSHIFT_APP_NAME: "cors-proxy"
       CORS_PROXY__imageRegistry: "quay.io"
       CORS_PROXY__imageAccount: "kogito_tooling_bot"
       CORS_PROXY__imageName: "cors-proxy-image"
       CORS_PROXY__imageBuildTags: "latest ${{ inputs.tag }}"
+
+    outputs:
+      cors_proxy_url: ${{ steps.deploy_cors_proxy_image.outputs.route_url }}
 
     if: ${{ needs.extract_runners.outputs.cors_proxy_image == 'true' }}
     runs-on: ubuntu-latest
@@ -280,6 +332,7 @@ jobs:
           lerna run build:prod --scope=@kogito-tooling/cors-proxy-image --include-dependencies --stream
 
       - name: "Push cors-proxy-image to quay.io"
+        id: push_cors_proxy_image
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
@@ -288,6 +341,19 @@ jobs:
           registry: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}"
           username: "${{ env.CORS_PROXY__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
+
+      - name: "Deploy cors-proxy-image to OpenShift"
+        id: deploy_cors_proxy_image
+        if: ${{ !inputs.dry_run }}
+        uses: ./.github/actions/deploy-openshift
+        with:
+          image_url: ${{ steps.push_cors_proxy_image.outputs.registry-path }}
+          app_name: ${{ env.OPENSHIFT_APP_NAME }}
+          part_of: ${{ env.OPENSHIFT_PART_OF }}
+          openshift_server: ${{ env.OPENSHIFT_SERVER }}
+          openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+          openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+          deployment_icon: "nodejs"
 
   online_editor:
     env:

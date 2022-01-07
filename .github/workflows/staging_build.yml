@@ -37,6 +37,11 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     env:
+      OPENSHIFT_SERVER: ${{ secrets.OPENSHIFT_SERVER }}
+      OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
+      OPENSHIFT_NAMESPACE: "kie-sandbox"
+      OPENSHIFT_PART_OF: "staging-kie-sandbox-app"
+
       DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
       DMN_DEV_SANDBOX__baseImageAccount: "kogito_tooling_bot"
       DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
@@ -144,17 +149,8 @@ jobs:
           username: "${{ env.DMN_DEV_SANDBOX__baseImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "STAGING: Push kie-sandbox-image to quay.io (Ubuntu only)"
-        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: "${{ env.KIE_SANDBOX__imageName }}"
-          tags: "${{ env.KIE_SANDBOX__imageBuildTags }}"
-          registry: "${{ env.KIE_SANDBOX__imageRegistry }}/${{ env.KIE_SANDBOX__imageAccount }}"
-          username: "${{ env.KIE_SANDBOX__imageAccount }}"
-          password: "${{ secrets.quay_registry_password }}"
-
       - name: "STAGING: Push kie-sandbox-extended-services-image to quay.io (Ubuntu only)"
+        id: push_kie_sandbox_extended_services_image
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
@@ -164,7 +160,21 @@ jobs:
           username: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
+      - name: "STAGING: Deploy kie-sandbox-extended-services-image to OpenShift"
+        id: deploy_kie_sandbox_extended_services_image
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        uses: ./kogito-tooling/.github/actions/deploy-openshift
+        with:
+          image_url: ${{ steps.push_kie_sandbox_extended_services_image.outputs.registry-path }}
+          app_name: "staging-kie-sandbox-extended-services"
+          part_of: ${{ env.OPENSHIFT_PART_OF }}
+          openshift_server: ${{ env.OPENSHIFT_SERVER }}
+          openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+          openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+          deployment_icon: "golang"
+
       - name: "STAGING: Push cors-proxy-image to quay.io (Ubuntu only)"
+        id: push_cors_proxy_image
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
@@ -173,6 +183,51 @@ jobs:
           registry: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}"
           username: "${{ env.CORS_PROXY__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
+
+      - name: "STAGING: Deploy cors-proxy-image to OpenShift"
+        id: deploy_cors_proxy_image
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        uses: ./kogito-tooling/.github/actions/deploy-openshift
+        with:
+          image_url: ${{ steps.push_cors_proxy_image.outputs.registry-path }}
+          app_name: "staging-cors-proxy"
+          part_of: ${{ env.OPENSHIFT_PART_OF }}
+          openshift_server: ${{ env.OPENSHIFT_SERVER }}
+          openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+          openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+          deployment_icon: "nodejs"
+
+      - name: "STAGING: Push kie-sandbox-image to quay.io (Ubuntu only)"
+        id: push_kie_sandbox_image
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.KIE_SANDBOX__imageName }}"
+          tags: "${{ env.KIE_SANDBOX__imageBuildTags }}"
+          registry: "${{ env.KIE_SANDBOX__imageRegistry }}/${{ env.KIE_SANDBOX__imageAccount }}"
+          username: "${{ env.KIE_SANDBOX__imageAccount }}"
+          password: "${{ secrets.quay_registry_password }}"
+
+      - name: "STAGING: Prepare environment variables"
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        shell: bash
+        run: |
+          echo "KIE_SANDBOX_EXTENDED_SERVICES_URL=${{ steps.deploy_kie_sandbox_extended_services_image.outputs.route_url }}" >> deployment.env
+          echo "CORS_PROXY_URL=${{ steps.deploy_cors_proxy_image.outputs.route_url }}" >> deployment.env
+
+      - name: "STAGING: Deploy kie-sandbox-image to OpenShift"
+        id: deploy_kie_sandbox_image
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        uses: ./kogito-tooling/.github/actions/deploy-openshift
+        with:
+          image_url: ${{ steps.push_kie_sandbox_image.outputs.registry-path }}
+          app_name: "staging-kie-sandbox"
+          part_of: ${{ env.OPENSHIFT_PART_OF }}
+          openshift_server: ${{ env.OPENSHIFT_SERVER }}
+          openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+          openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+          deployment_envvars_file_path: ./deployment.env
+          deployment_icon: "js"
 
       - name: "STAGING: Deploy Online Editor to kogito-online-staging (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
