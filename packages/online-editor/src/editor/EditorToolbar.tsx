@@ -393,30 +393,6 @@ export function EditorToolbar(props: Props) {
       const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
       const dir = await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
 
-      const head = await workspaces.gitService.resolveRef({
-        fs,
-        dir,
-        ref: "HEAD",
-      });
-
-      const remote = await workspaces.gitService.resolveRef({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
-        dir: await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId }),
-        ref: `${GIT_ORIGIN_REMOTE_NAME}/${workspacePromise.data?.descriptor.origin.branch}`,
-      });
-
-      const isSynced = remote === head;
-
-      const hasLocalChanges = await workspaces.gitService.hasLocalChanges({
-        fs,
-        dir,
-      });
-
-      if (!hasLocalChanges && isSynced) {
-        successfullyUpdateGistAlert.show();
-        return;
-      }
-
       await workspaces.createSavePoint({
         fs,
         workspaceId: props.workspaceFile.workspaceId,
@@ -447,14 +423,7 @@ export function EditorToolbar(props: Props) {
     }
 
     successfullyUpdateGistAlert.show();
-  }, [
-    successfullyUpdateGistAlert,
-    githubAuthInfo,
-    workspaces,
-    props.workspaceFile.workspaceId,
-    workspacePromise.data?.descriptor.origin.branch,
-    errorPushingGist,
-  ]);
+  }, [successfullyUpdateGistAlert, githubAuthInfo, workspaces, props.workspaceFile.workspaceId, errorPushingGist]);
 
   const createGitHubGist = useCallback(async () => {
     try {
