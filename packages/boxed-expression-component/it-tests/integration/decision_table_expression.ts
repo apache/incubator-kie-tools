@@ -16,7 +16,7 @@
 
 import * as buildEnv from "@kogito-tooling/build-env";
 
-describe("Decision Table Expression Tests", () => {
+describe.skip("Decision Table Expression Tests", () => {
   beforeEach(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
   });
