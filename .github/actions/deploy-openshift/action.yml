@@ -68,7 +68,7 @@ runs:
           oc label deployments/${{ inputs.app_name }} app.openshift.io/runtime=${{ inputs.deployment_icon }}
         else
           echo "App '${{ inputs.app_name }}' already exists. Update the ImageStream instead."
-          oc import-image ${{ inputs.image_url }}
+          oc import-image ${{ inputs.app_name }}:latest
           cat ${{ inputs.deployment_envvars_file_path }} | oc set env deploy/${{ inputs.app_name }} -
         fi
 
