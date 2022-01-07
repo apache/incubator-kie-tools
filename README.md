@@ -185,7 +185,7 @@ repository: the *rules-quarkus-helloworld* example, with native compilation disa
 $ s2i build https://github.com/kiegroup/kogito-examples.git \
     --ref main \
     -e RUNTIME_TYPE=quarkus \
-    --context-dir rules-quarkus-helloworld \
+    --context-dir kogito-quarkus-examples/rules-quarkus-helloworld \
     quay.io/kiegroup/kogito-builder:latest \
     rules-example:1.0
 ...
@@ -231,9 +231,8 @@ repository: the *process-springboot-example*.
 ```bash
 $ s2i build https://github.com/kiegroup/kogito-examples.git \
     --ref main \
-    --context-dir \
+    --context-dir kogito-springboot-examples/process-springboot-example \
     -e RUNTIME_TYPE=springboot \
-    process-springboot-example \
     quay.io/kiegroup/kogito-builder:latest \
     springboot-example:1.0
 ```
@@ -270,7 +269,7 @@ Let's start 2 builds with the incremental option enabled and compare the time sp
 $ time s2i build https://github.com/kiegroup/kogito-examples.git \
     --ref main \
     -e RUNTIME_TYPE=quarkus
-    --context-dir rules-quarkus-helloworld \
+    --context-dir kogito-quarkus-examples/rules-quarkus-helloworld \
     quay.io/kiegroup/kogito-builder:latest \
     rules-example-incremental:1.0 \
     --incremental \    
@@ -288,7 +287,7 @@ And now, let's run it again.
 $ time s2i build https://github.com/kiegroup/kogito-examples.git \
     --ref main \
     -e RUNTIME_TYPE=quarkus
-    --context-dir rules-quarkus-helloworld \
+    --context-dir kogito-quarkus-examples/rules-quarkus-helloworld \
     quay.io/kiegroup/kogito-builder:latest \
     rules-example-incremental:1.0 \
     --incremental \
@@ -316,7 +315,7 @@ To make it possible we just need to set the **MAVEN_MIRROR_URL** environment var
 $ time s2i build https://github.com/kiegroup/kogito-examples.git \
     --ref main \
     -e RUNTIME_TYPE=quarkus
-    --context-dir rules-quarkus-helloworld \
+    --context-dir kogito-quarkus-examples/rules-quarkus-helloworld \
     quay.io/kiegroup/kogito-builder:latest \
     rules-example-incremental-1 \
     --incremental \
@@ -423,7 +422,7 @@ docker run -it quay.io/kiegroup/kogito-runtime-jvm:latest /home/kogito/kogito-ap
 In the next few lines let's take a look on how this image can be used to receive an already built UberJAR. 
 To configure Quarkus to generate an UberJAR please follow the instructions described [here](https://quarkus.io/guides/maven-tooling#configuration-reference)
 
-For this example let's use the [process-quarkus-example](https://github.com/kiegroup/kogito-examples/tree/stable/process-quarkus-example).
+For this example let's use the [process-quarkus-example](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/process-quarkus-example).
 Once you have checked out the example on your local machine follow the steps below:
 
 **Example with UberJAR**
@@ -831,7 +830,7 @@ rights you can deploy it into the **openshift** namespace, otherwise, deploy it 
 To install the image stream use this imagestream file: [kogito-imagestream.yaml](https://raw.githubusercontent.com/kiegroup/kogito-images/main/kogito-imagestream.yaml).
 It points to the latest released version.
 
-Let's use the *rules-quarkus-helloworld* from [Kogito Examples](https://github.com/kiegroup/kogito-examples).
+Let's use the *kogito-quarkus-examples/rules-quarkus-helloworld* from [Kogito Examples](https://github.com/kiegroup/kogito-examples).
 
 ```bash
 # creating a new namespace
@@ -864,7 +863,7 @@ imagestream.image.openshift.io/kogito-management-console created
 
 # performing a new build
 $ oc new-build --name=rules-quarkus-helloworld-builder --image-stream=kogito-builder:latest \ 
-    https://github.com/kiegroup/kogito-examples.git#main --context-dir=rules-quarkus-helloworld \
+    https://github.com/kiegroup/kogito-examples.git#main --context-dir=kogito-quarkus-examples/rules-quarkus-helloworld \
     --strategy=source --env NATIVE=false 
 --> Found image 8c9d756 (5 days old) in image stream "rules-quarkus-helloworld/kogito-builder" under tag "latest" for "kogito-builder:latest"
 

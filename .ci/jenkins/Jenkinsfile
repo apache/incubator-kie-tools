@@ -114,6 +114,7 @@ void testImage(image) {
         sh "make build-image image_name=${image} ignore_build=true cekit_option='--work-dir .'"
     } finally {
         junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
+        archiveArtifacts artifacts: "target/test/results/*.xml"
     }
 }
 

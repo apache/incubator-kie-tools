@@ -3,7 +3,7 @@
 Feature: Kogito-runtime-native feature.
 
   Scenario: Verify if the binary build is finished as expected and if it is listening on the expected port with quarkus native
-    Given s2i build /tmp/kogito-examples/rules-quarkus-helloworld-native/ from target
+    Given s2i build /tmp/kogito-examples/kogito-quarkus-examples/rules-quarkus-helloworld-native/ from target
       | variable            | value                     |
       | NATIVE              | true                      |
       | BINARY              | true                      |

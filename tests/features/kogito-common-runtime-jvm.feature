@@ -8,7 +8,7 @@ Feature: kogito-runtime-jvm feature.
     And run sh -c 'echo $JAVA_VERSION' in container and immediately check its output for 11
 
   Scenario: Verify if the binary build is finished as expected and if it is listening on the expected port with quarkus
-    Given s2i build /tmp/kogito-examples/rules-quarkus-helloworld from target
+    Given s2i build /tmp/kogito-examples/kogito-quarkus-examples/rules-quarkus-helloworld from target
       | variable            | value                     |
       | RUNTIME_TYPE        | quarkus                   |
       | NATIVE              | false                     |
@@ -25,7 +25,7 @@ Feature: kogito-runtime-jvm feature.
     And file /home/kogito/bin/quarkus-run.jar should exist
 
   Scenario: Verify if the binary build (forcing) is finished as expected and if it is listening on the expected port with quarkus
-    Given s2i build /tmp/kogito-examples/rules-quarkus-helloworld from target
+    Given s2i build /tmp/kogito-examples/kogito-quarkus-examples/rules-quarkus-helloworld from target
       | variable            | value                     |
       | RUNTIME_TYPE        | quarkus                   |
       | NATIVE              | false                     |
@@ -43,7 +43,7 @@ Feature: kogito-runtime-jvm feature.
     And file /home/kogito/bin/quarkus-run.jar should exist
 
   Scenario: Verify if the binary build is finished as expected and if it is listening on the expected port with springboot
-    Given s2i build /tmp/kogito-examples/process-springboot-example from target
+    Given s2i build /tmp/kogito-examples/kogito-springboot-examples/process-springboot-example from target
       | variable            | value        |
       | JAVA_OPTIONS        | -Ddebug=true |
       | RUNTIME_TYPE        | springboot   |
@@ -61,7 +61,7 @@ Feature: kogito-runtime-jvm feature.
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
 
   Scenario: Verify if the binary build (forcing) is finished as expected and if it is listening on the expected port with springboot
-    Given s2i build /tmp/kogito-examples/process-springboot-example from target
+    Given s2i build /tmp/kogito-examples/kogito-springboot-examples/process-springboot-example from target
       | variable            | value        |
       | JAVA_OPTIONS        | -Ddebug=true |
       | BINARY_BUILD        | true         |

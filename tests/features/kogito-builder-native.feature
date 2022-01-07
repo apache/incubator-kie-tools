@@ -15,7 +15,7 @@ Feature: kogito-builder image native build tests
     And run sh -c 'echo $GRAALVM_VERSION' in container and immediately check its output for 21.3.0
 
   Scenario: Verify if the s2i build is finished as expected using native build and runtime image
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from rules-quarkus-helloworld using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-native:latest
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-native:latest
       | variable     | value      |
       | NATIVE       | true       |
       | RUNTIME_TYPE | quarkus    |
@@ -33,7 +33,7 @@ Feature: kogito-builder image native build tests
     And s2i build log should contain -J-Xmx2576980378
 
   Scenario: Verify if the s2i build is finished as expected using native build and no runtime image
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from rules-quarkus-helloworld using nightly-main
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld using nightly-main
       | variable | value          |
       | NATIVE       | true       |
       | RUNTIME_TYPE | quarkus    |
@@ -53,7 +53,7 @@ Feature: kogito-builder image native build tests
     And s2i build log should contain -J-Xmx2576980378
 
   Scenario: Verify if the s2i build is finished as expected performing a native build and if it is listening on the expected port, test uses custom properties file to test the port configuration.
-    Given s2i build /tmp/kogito-examples from rules-quarkus-helloworld using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-native:latest
+    Given s2i build /tmp/kogito-examples from kogito-quarkus-examples/rules-quarkus-helloworld using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-native:latest
       | variable     | value      |
       | NATIVE       | true       |
       | RUNTIME_TYPE | quarkus    |
@@ -71,7 +71,7 @@ Feature: kogito-builder image native build tests
     And s2i build log should contain -J-Xmx5153960755
 
   Scenario: Verify if the s2i build is finished as expected performing a native build with persistence enabled - Step 1: build the application and copy to the runtime image
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from process-quarkus-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-native:latest
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/process-quarkus-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-native:latest
       | variable          | value         |
       | RUNTIME_TYPE      | quarkus       |
       | NATIVE            | true          |
@@ -84,7 +84,7 @@ Feature: kogito-builder image native build tests
      And s2i build log should contain -J-Xmx5153960755
 
   Scenario: Perform a incremental s2i build for native test
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from rules-quarkus-helloworld with env and incremental using nightly-main
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld with env and incremental using nightly-main
       | variable     | value   |
       | RUNTIME_TYPE | quarkus |
       | NATIVE       | false   |
@@ -102,7 +102,7 @@ Feature: kogito-builder image native build tests
 
   # Since the same image is used we can do a subsequent incremental build and verify if it is working as expected.
   Scenario:Perform a second incremental s2i build for native scenario, this time, with native enabled
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from rules-quarkus-helloworld with env and incremental using nightly-main
+    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld with env and incremental using nightly-main
       | variable     | value      |
       | RUNTIME_TYPE | quarkus    |
       | NATIVE       | true       |
