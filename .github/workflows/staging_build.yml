@@ -93,7 +93,7 @@ jobs:
         with:
           path: kogito-tooling
 
-      - name: "Checkout kogito-online-staging"
+      - name: "Checkout kogito-online-staging (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/checkout@v2
         with:
@@ -160,7 +160,7 @@ jobs:
           username: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "STAGING: Deploy kie-sandbox-extended-services-image to OpenShift"
+      - name: "STAGING: Deploy kie-sandbox-extended-services-image to OpenShift (Ubuntu only)"
         id: deploy_kie_sandbox_extended_services_image
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: ./kogito-tooling/.github/actions/deploy-openshift
@@ -184,7 +184,7 @@ jobs:
           username: "${{ env.CORS_PROXY__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "STAGING: Deploy cors-proxy-image to OpenShift"
+      - name: "STAGING: Deploy cors-proxy-image to OpenShift (Ubuntu only)"
         id: deploy_cors_proxy_image
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: ./kogito-tooling/.github/actions/deploy-openshift
@@ -208,14 +208,14 @@ jobs:
           username: "${{ env.KIE_SANDBOX__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "STAGING: Prepare environment variables"
+      - name: "STAGING: Prepare environment variables for OpenShift deployment (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         shell: bash
         run: |
           echo "KIE_SANDBOX_EXTENDED_SERVICES_URL=${{ steps.deploy_kie_sandbox_extended_services_image.outputs.route_url }}" >> deployment.env
           echo "CORS_PROXY_URL=${{ steps.deploy_cors_proxy_image.outputs.route_url }}" >> deployment.env
 
-      - name: "STAGING: Deploy kie-sandbox-image to OpenShift"
+      - name: "STAGING: Deploy kie-sandbox-image to OpenShift (Ubuntu only)"
         id: deploy_kie_sandbox_image
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: ./kogito-tooling/.github/actions/deploy-openshift
@@ -411,7 +411,7 @@ jobs:
           asset_name: "STAGING__kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
           asset_content_type: application/octet-stream
 
-      - name: "STAGING: Upload DashBuilder Assets"
+      - name: "STAGING: Upload DashBuilder Assets (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
@@ -422,7 +422,7 @@ jobs:
           asset_name: STAGING__dashbuilder_dist_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
-      - name: "STAGING Push dashbuilder-authoring image to quay.io"
+      - name: "STAGING Push dashbuilder-authoring image to quay.io (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
@@ -432,7 +432,7 @@ jobs:
           username: "${{ env.DASHBUILDER__baseImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "STAGING Push dashbuilder-runtime image to quay.io"
+      - name: "STAGING Push dashbuilder-runtime image to quay.io (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:

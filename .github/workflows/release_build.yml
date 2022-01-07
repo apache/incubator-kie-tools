@@ -212,7 +212,7 @@ jobs:
           username: "${{ env.KIE_SANDBOX__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "Prepare environment variables"
+      - name: "Prepare environment variables for OpenShift deployment"
         if: ${{ !inputs.dry_run }}
         shell: bash
         run: |
