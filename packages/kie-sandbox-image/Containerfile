@@ -28,6 +28,8 @@ RUN microdnf --disableplugin=subscription-manager -y install httpd \
 
 COPY dist-dev/online-editor /var/www/html
 
+RUN chmod a+w /var/www/html/env.json
+
 EXPOSE 8080
 
 ENTRYPOINT [ "/kie-sandbox/entrypoint.sh" ]
