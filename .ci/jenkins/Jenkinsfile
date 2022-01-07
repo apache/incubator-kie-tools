@@ -27,17 +27,18 @@ pipeline {
                 script {
                     mailer.buildLogScriptPR()
 
-                    checkoutRepo('kogito-editors-java')
+                    checkoutRepo('kogito-tooling')
                 }
             }
         }
-        stage('Build Kogito Editors Java') {
+        stage('Build Kogito Tooling - Stunner Editors') {
             steps {
                 script {
-                    mvnCmd = getMavenCommand('kogito-editors-java')
+                    mvnCmd = getMavenCommand('kogito-tooling/packages/stunner-editors')
                     if (isNormalPRCheck() && isSonarCloudEnabled()) {
                         mvnCmd.withProfiles(['run-code-coverage'])
                     }
+                    mvnCmd.withOptions(["-pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing,!lienzo-webapp'"])
                     mvnCmd.run('clean install')
                 }
             }
@@ -49,18 +50,20 @@ pipeline {
                 }
             }
         }
-        stage('Analyze Kogito Editors Java by SonarCloud') {
+        stage('Analyze Kogito Tooling - Stunner Editors by SonarCloud') {
             when {
                 expression { isNormalPRCheck() && isSonarCloudEnabled() }
             }
             steps {
                 script {
                     if (isSonarCloudEnabled()) {
-                        getMavenCommand('kogito-editors-java')
-                                .withOptions(['-e', '-nsu'])
-                                .withProperty('enforcer.skip', true)
-                                .withProfiles(['sonarcloud-analysis']) // sonarcloud-analysis  is defined in kie-parent pom
-                                .run('generate-resources')
+                        getMavenCommand('kogito-tooling/packages/stunner-editors')
+                                .withOptions(['-e', '-nsu', "-pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing,!lienzo-webapp'"])
+                                .withProperty('sonar.projectKey', 'org.kie.kogito:kogito-tooling')
+                                .withProperty('sonar.organization', 'kiegroup')
+                                .withProperty('sonar.host.url', 'https://sonarcloud.io')
+                                .withProperty('sonar.login', env['SONARCLOUD_TOKEN'])
+                                .run('validate org.sonarsource.scanner.maven:sonar-maven-plugin:sonar')
                     }
                 }
             }
