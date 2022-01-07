@@ -76,6 +76,6 @@ runs:
       id: get_route_url
       shell: bash
       run: |
-        url=$(oc get route ${{ inputs.app_name }} -o jsonpath='{.spec.host}')
-        echo "Route URL: https://$url"
+        url=https://$(oc get route ${{ inputs.app_name }} -o jsonpath='{.spec.host}')
+        echo "Route URL: $url"
         echo ::set-output name=route_url::$url
