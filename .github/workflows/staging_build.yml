@@ -32,13 +32,15 @@ on:
         required: false
       quay_registry_password:
         required: false
+      openshift_server:
+        required: false
+      openshift_token:
+        required: false
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     env:
-      OPENSHIFT_SERVER: ${{ secrets.OPENSHIFT_SERVER }}
-      OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
       OPENSHIFT_NAMESPACE: "kie-sandbox"
       OPENSHIFT_PART_OF: "staging-kie-sandbox-app"
 
@@ -168,8 +170,8 @@ jobs:
           image_url: ${{ steps.push_kie_sandbox_extended_services_image.outputs.registry-path }}
           app_name: "staging-kie-sandbox-extended-services"
           part_of: ${{ env.OPENSHIFT_PART_OF }}
-          openshift_server: ${{ env.OPENSHIFT_SERVER }}
-          openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+          openshift_server: ${{ secrets.openshift_server }}
+          openshift_token: ${{ secrets.openshift_token }}
           openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
           deployment_icon: "golang"
 
@@ -192,8 +194,8 @@ jobs:
           image_url: ${{ steps.push_cors_proxy_image.outputs.registry-path }}
           app_name: "staging-cors-proxy"
           part_of: ${{ env.OPENSHIFT_PART_OF }}
-          openshift_server: ${{ env.OPENSHIFT_SERVER }}
-          openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+          openshift_server: ${{ secrets.openshift_server }}
+          openshift_token: ${{ secrets.openshift_token }}
           openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
           deployment_icon: "nodejs"
 
@@ -223,8 +225,8 @@ jobs:
           image_url: ${{ steps.push_kie_sandbox_image.outputs.registry-path }}
           app_name: "staging-kie-sandbox"
           part_of: ${{ env.OPENSHIFT_PART_OF }}
-          openshift_server: ${{ env.OPENSHIFT_SERVER }}
-          openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+          openshift_server: ${{ secrets.openshift_server }}
+          openshift_token: ${{ secrets.openshift_token }}
           openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
           deployment_envvars_file_path: ./deployment.env
           deployment_icon: "js"

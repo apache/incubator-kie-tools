@@ -42,14 +42,16 @@ on:
         required: false
       kiegroup_npm_token:
         required: false
+      openshift_server:
+        required: false
+      openshift_token:
+        required: false
 
 env:
   KOGITO_TOOLING_BUILD_lint: "false"
   KOGITO_TOOLING_BUILD_test: "false"
   KOGITO_TOOLING_BUILD_testIT: "false"
   KOGITO_TOOLING_BUILD_docker: "true"
-  OPENSHIFT_SERVER: ${{ secrets.OPENSHIFT_SERVER }}
-  OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
   OPENSHIFT_NAMESPACE: "kie-sandbox"
   OPENSHIFT_PART_OF: "kie-sandbox-app"
 
@@ -240,8 +242,8 @@ jobs:
           image_url: ${{ steps.push_kie_sandbox_image.outputs.registry-path }}
           app_name: ${{ env.OPENSHIFT_APP_NAME }}
           part_of: ${{ env.OPENSHIFT_PART_OF }}
-          openshift_server: ${{ env.OPENSHIFT_SERVER }}
-          openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+          openshift_server: ${{ secrets.openshift_server }}
+          openshift_token: ${{ secrets.openshift_token }}
           openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
           deployment_envvars_file_path: ./deployment.env
           deployment_icon: "js"
@@ -302,8 +304,8 @@ jobs:
           image_url: ${{ steps.push_kie_sandbox_extended_services_image.outputs.registry-path }}
           app_name: ${{ env.OPENSHIFT_APP_NAME }}
           part_of: ${{ env.OPENSHIFT_PART_OF }}
-          openshift_server: ${{ env.OPENSHIFT_SERVER }}
-          openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+          openshift_server: ${{ secrets.openshift_server }}
+          openshift_token: ${{ secrets.openshift_token }}
           openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
           deployment_icon: "golang"
 
@@ -363,8 +365,8 @@ jobs:
           image_url: ${{ steps.push_cors_proxy_image.outputs.registry-path }}
           app_name: ${{ env.OPENSHIFT_APP_NAME }}
           part_of: ${{ env.OPENSHIFT_PART_OF }}
-          openshift_server: ${{ env.OPENSHIFT_SERVER }}
-          openshift_token: ${{ env.OPENSHIFT_TOKEN }}
+          openshift_server: ${{ secrets.openshift_server }}
+          openshift_token: ${{ secrets.openshift_token }}
           openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
           deployment_icon: "nodejs"
 
