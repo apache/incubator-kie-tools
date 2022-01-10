@@ -616,7 +616,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     () =>
       settings.github.authStatus === AuthStatus.SIGNED_IN &&
       settings.github.scopes?.includes(GithubScopes.GIST) &&
-      isGitHubGistOwner &&
+      !!isGitHubGistOwner &&
       workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST &&
       !workspaceHasNestedDirectories,
     [
@@ -1181,6 +1181,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     workspaces,
   ]);
 
+  const isGistWorkspace = useMemo(
+    () => workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST,
+    [workspacePromise.data?.descriptor.origin.kind]
+  );
   const navigationStatus = useNavigationStatus();
   const navigationStatusToggle = useNavigationStatusToggle();
   const confirmNavigationAlert = useAlert<{ lastBlockedLocation: Location }>(
@@ -1215,11 +1219,12 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 </AlertActionLink>
               )) || (
                 <PushToGitHubAlertActionLinks
-                  canPush={canPushToGitRepository}
+                  canPush={isGistWorkspace ? canUpdateGitHubGist : canPushToGitRepository}
+                  kind={workspacePromise.data?.descriptor.origin.kind}
                   remoteRef={`${GIT_ORIGIN_REMOTE_NAME}/${workspacePromise.data?.descriptor.origin.branch}`}
                   onPush={() => {
                     navigationStatusToggle.unblock();
-                    return pushToGitRepository();
+                    return isGistWorkspace ? updateGitHubGist() : pushToGitRepository();
                   }}
                 />
               )}
@@ -1245,14 +1250,17 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         </Alert>
       ),
       [
-        canPushToGitRepository,
-        downloadWorkspaceZip,
-        history,
+        workspacePromise.data?.descriptor,
         i18n,
         navigationStatusToggle,
-        navigationBlockersBypass,
+        isGistWorkspace,
+        canUpdateGitHubGist,
+        canPushToGitRepository,
+        downloadWorkspaceZip,
+        updateGitHubGist,
         pushToGitRepository,
-        workspacePromise,
+        navigationBlockersBypass,
+        history,
       ]
     )
   );
@@ -1704,8 +1712,17 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   );
 }
 
-export function PushToGitHubAlertActionLinks(props: { canPush: boolean; onPush: () => void; remoteRef: string }) {
+export function PushToGitHubAlertActionLinks(props: {
+  onPush: () => void;
+  canPush?: boolean;
+  kind?: WorkspaceKind;
+  remoteRef?: string;
+}) {
   const settingsDispatch = useSettingsDispatch();
+
+  if (props.kind === WorkspaceKind.GIT && !props.remoteRef) {
+    throw new Error("Should specify remoteRef for GIT workspaces");
+  }
 
   return (
     <>
@@ -1716,7 +1733,7 @@ export function PushToGitHubAlertActionLinks(props: { canPush: boolean; onPush: 
       )}
       {props.canPush && (
         <AlertActionLink onClick={props.onPush} style={{ fontWeight: "bold" }}>
-          {`Push to '${props.remoteRef}'`}
+          {props.kind === WorkspaceKind.GIT ? `Push to '${props.remoteRef}'` : `Update Gist`}
         </AlertActionLink>
       )}
     </>
