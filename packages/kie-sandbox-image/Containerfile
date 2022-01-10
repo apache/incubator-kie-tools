@@ -28,7 +28,7 @@ RUN microdnf --disableplugin=subscription-manager -y install httpd \
 
 COPY dist-dev/online-editor /var/www/html
 
-RUN chmod a+w /var/www/html/env.json
+RUN if [ -f /var/www/html/env.json ]; then chmod a+w /var/www/html/env.json; fi
 
 EXPOSE 8080
 
