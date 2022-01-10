@@ -111,6 +111,7 @@ After that, you're ready to start developing the Editors individually.
   - Run `mvn clean gwt:run` to start.
   - If you want to enable live-reloading capabilities of the React components that are part of the DMN Editor, follow [these steps](./packages/stunner-editors/docs/live-reload-dmn-loader.md).
 
-- SceSim
+- Test Scenario
+
   - Located at `packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-testing`.
   - Run `mvn clean gwt:run` to start.
