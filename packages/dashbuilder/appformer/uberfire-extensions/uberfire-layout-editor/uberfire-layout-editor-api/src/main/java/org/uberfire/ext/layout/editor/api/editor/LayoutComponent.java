@@ -35,6 +35,8 @@ public class LayoutComponent {
     
     private List<LayoutComponentPart> parts = new ArrayList<>();
     
+    private Object settings;
+    
     public LayoutComponent() {
     }
 
@@ -48,6 +50,14 @@ public class LayoutComponent {
 
     public Map<String, String> getProperties() {
         return properties;
+    }
+    
+    public void setSettings(Object settings) {
+        this.settings = settings;
+    }
+    
+    public Object getSettings() {
+        return settings;
     }
     
     public void addProperty(String key,

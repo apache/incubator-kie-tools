@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dashbuilder.dataprovider.external.parser;
+package org.dashbuilder.dataset.json;
 
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataSet;
@@ -32,7 +31,7 @@ import org.dashbuilder.json.JsonObject;
 import org.dashbuilder.json.JsonType;
 import org.dashbuilder.json.JsonValue;
 
-public class ExternalDataSetParser {
+public class ExternalDataSetJSONParser {
 
     private static final String ARRAY_START_TOKEN = "[";
 
@@ -48,6 +47,18 @@ public class ExternalDataSetParser {
     private static final String COLUMN_PREFIX = "Column ";
     private static final ColumnType DEFAULT_COLUMN_TYPE = ColumnType.LABEL;
     
+    
+    private Function<String, Date> dateParser;
+    
+    public ExternalDataSetJSONParser() {
+        this(s -> null);
+    }         
+    
+    public ExternalDataSetJSONParser(Function<String, Date> dateParser) {
+        super();
+        this.dateParser = dateParser;
+    }
+
     public DataSetMetadata parseMetadata(String jsonStr) {
 
         if (jsonStr == null) {
@@ -151,12 +162,6 @@ public class ExternalDataSetParser {
         }
     }
 
-    protected Date convertToDate(String value) {
-        var temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(value);
-        var instant = Instant.from(temporalAccessor);
-        return Date.from(instant);
-    }
-
     private void fillRow(DataSet dataSet, int rowIndex, JsonArray row) {
         for (int j = 0; j < row.length(); j++) {
             var column = dataSet.getColumnByIndex(j);
@@ -185,6 +190,10 @@ public class ExternalDataSetParser {
     private Object convertJsonValue(JsonValue value, ColumnType type) {
         switch (type) {
             case DATE:
+                var valueStr = value.asString();
+                if (valueStr != null && valueStr.trim().isEmpty()) {
+                    return "";
+                }
                 return convertToDate(value.asString());
             case NUMBER:
                 var number = value.asNumber();
@@ -201,20 +210,24 @@ public class ExternalDataSetParser {
 
     private ColumnType findValueType(String value) {
         try {
-            convertToDate(value);
-            return ColumnType.DATE;
-        } catch (Exception e) {
-            // empty 
-        }
-
-        try {
             Double.parseDouble(value);
             return ColumnType.NUMBER;
         } catch (NumberFormatException e) {
             // empty
         }
+        
+        try {
+            convertToDate(value);
+            return ColumnType.DATE;
+        } catch (Exception e) {
+            // empty
+        }
 
         return DEFAULT_COLUMN_TYPE;
+    }
+    
+    protected Date convertToDate(String value) {
+        return dateParser.apply(value);
     }
 
 }

@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -42,6 +43,9 @@ import javax.inject.Inject;
 import org.dashbuilder.backend.RuntimeOptions;
 import org.dashbuilder.backend.helper.PartitionHelper;
 import org.dashbuilder.backend.navigation.RuntimeNavigationBuilder;
+import org.dashbuilder.backend.services.dataset.provider.RuntimeDataSetProviderRegistry;
+import org.dashbuilder.dataprovider.external.ExternalDataSetHelper;
+import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
 import org.dashbuilder.external.service.ComponentLoader;
@@ -77,6 +81,9 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
 
     @Inject
     ComponentLoader externalComponentLoader;
+
+    @Inject
+    RuntimeDataSetProviderRegistry runtimeDataSetProviderRegistry;
 
     private DisplayerSettingsJSONMarshaller displayerSettingsMarshaller;
 
@@ -137,18 +144,21 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
         if (!datasetContents.isEmpty()) {
             newDataSetContentEvent.fire(new NewDataSetContentEvent(modelId, datasetContents));
         }
+        var externalDefs = getExternalDefs(datasetContents);
         var navTree = runtimeNavigationBuilder.build(navTreeOp, layoutTemplates);
 
-        return new RuntimeModel(navTree, layoutTemplates, System.currentTimeMillis());
+        return new RuntimeModel(navTree, layoutTemplates, System.currentTimeMillis(), externalDefs);
     }
 
     void extractComponentFile(String modelId, InputStream zis, String name) throws IOException {
         var externalComponentsDir = externalComponentLoader.getExternalComponentsDir();
         if (externalComponentsDir != null) {
-            externalComponentsDir = externalComponentsDir.endsWith(File.separator) ? externalComponentsDir : externalComponentsDir + File.separator;
+            externalComponentsDir = externalComponentsDir.endsWith(File.separator) ? externalComponentsDir
+                    : externalComponentsDir + File.separator;
             String newFileName = null;
             if (options.isComponentPartition() && options.isMultipleImport()) {
-                newFileName = externalComponentsDir + modelId + File.separator + name.replaceAll(COMPONENTS_EXPORT_PATH, "");
+                newFileName = externalComponentsDir + modelId + File.separator + name.replaceAll(COMPONENTS_EXPORT_PATH,
+                        "");
             } else {
                 newFileName = externalComponentsDir + name.replaceAll(COMPONENTS_EXPORT_PATH, "");
             }
@@ -231,13 +241,34 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
 
     private Stream<LayoutComponent> allComponentsStream(List<LayoutRow> row) {
         return row.stream()
-                  .flatMap(r -> r.getLayoutColumns().stream())
-                  .flatMap(cl -> Stream.concat(cl.getLayoutComponents().stream(),
-                                               allComponentsStream(cl.getRows())));
+                .flatMap(r -> r.getLayoutColumns().stream())
+                .flatMap(cl -> Stream.concat(cl.getLayoutComponents().stream(),
+                        allComponentsStream(cl.getRows())));
     }
 
     private boolean isExternalComponent(String componentId) {
         return externalComponentLoader.loadProvided().stream().noneMatch(c -> c.getId().equals(componentId));
+    }
+
+    private List<ExternalDataSetDef> getExternalDefs(ArrayList<DataSetContent> datasetContents) {
+        return datasetContents.stream()
+                .filter(c -> c.getContentType() == DataSetContentType.DEFINITION)
+                .map(DataSetContent::getContent)
+                .map(t -> {
+                    try {
+                        return runtimeDataSetProviderRegistry.getDataSetDefJSONMarshaller().fromJson(t);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Error parsing def JSON", e);
+                    }
+                })
+                .filter(def -> def instanceof ExternalDataSetDef)
+                .map(def -> {
+                    var externalDef = (ExternalDataSetDef) def;
+                    var url = ExternalDataSetHelper.getUrl(externalDef);
+                    externalDef.setUrl(url);
+                    return externalDef;
+                })
+                .collect(Collectors.toList());
     }
 
 }

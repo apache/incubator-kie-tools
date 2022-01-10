@@ -47,6 +47,10 @@ public class ConfigurationContext {
         component.addProperty(key,
                               property);
     }
+    
+    public void setComponentSettings(Object settings) {
+        component.setSettings(settings);
+    }
 
     public void removeComponentProperty(String key) {
         component.getProperties().remove(key);

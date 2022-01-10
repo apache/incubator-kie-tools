@@ -30,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 import org.dashbuilder.client.error.DefaultRuntimeErrorCallback;
 import org.dashbuilder.client.error.DefaultRuntimeErrorCallback.DefaultErrorType;
 import org.dashbuilder.client.error.ErrorResponseVerifier;
+import org.dashbuilder.client.external.ExternalDataSetRegister;
 import org.dashbuilder.client.marshalling.ClientDataSetMetadataJSONMarshaller;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataprovider.DataSetProviderType;
@@ -48,6 +49,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.resteasy.util.HttpResponseCodes;
 import org.uberfire.backend.vfs.Path;
 
+import elemental2.dom.DomGlobal;
 import elemental2.dom.Headers;
 import elemental2.dom.RequestInit;
 import elemental2.dom.Response;
@@ -68,12 +70,15 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
 
     @Inject
     DefaultRuntimeErrorCallback errorCallback;
-    
+
     @Inject
     ClientDataSetManager clientDataSetManager;
 
+    @Inject
+    ExternalDataSetRegister externalDataSetRegister;
+
     Map<String, DataSetMetadata> metadataCache = new HashMap<>();
-    
+
     public RuntimeDataSetClientServices() {
         // empty
     }
@@ -129,38 +134,34 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
 
     @Override
     public void lookupDataSet(DataSetDef def, DataSetLookup lookup, DataSetReadyCallback listener) throws Exception {
-        var uuid = lookup.getDataSetUUID();
-        var clientDataSet = clientDataSetManager.getDataSet(uuid);
+
+        var clientDataSet = clientDataSetManager.lookupDataSet(lookup);
         if (clientDataSet != null) {
             listener.callback(clientDataSet);
             return;
         }
-        var request = RequestInit.create();
-        var headers = new Headers();
-        request.setMethod("POST");
-        request.setBody(toJson(lookup));
-        headers.append(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        request.setHeaders(headers);
-        fetch(LOOKUP_ENDPOINT, request).then((Response response) -> {
-            verifier.verify(response);
-            response.text().then(responseText -> {
-                if (response.status == HttpResponseCodes.SC_INTERNAL_SERVER_ERROR) {
-                    listener.onError(new ClientRuntimeError("Not able to retrieve data set: " + getName(lookup, def),
-                            new Exception(responseText)));
-                } else if (response.status == HttpResponseCodes.SC_NOT_FOUND) {
-                    listener.onError(new ClientRuntimeError("Data Set not found: " + getName(lookup, def),
-                            new Exception(responseText)));
-                } else {
-                    var dataSet = parseDataSet(responseText);
-                    listener.callback(dataSet);
-                }
-                return null;
-            }, error -> {
-                listener.onError(new ClientRuntimeError("Error reading data set content: " + error));
-                return null;
-            });
-            return null;
-        }).catch_(this::handleError);
+
+        externalDataSetRegister.fetchAndRegister(lookup.getDataSetUUID(),
+                lookup,
+                new DataSetReadyCallback() {
+
+                    @Override
+                    public boolean onError(ClientRuntimeError error) {
+                        DomGlobal.console.log("Error retrieving dataset from client, trying from backend");
+                        backendLookup(def, lookup, listener);
+                        return false;
+                    }
+
+                    @Override
+                    public void notFound() {
+                        backendLookup(def, lookup, listener);
+                    }
+
+                    @Override
+                    public void callback(DataSet dataSet) {
+                        listener.callback(dataSet);
+                    }
+                });
     }
 
     @Override
@@ -196,6 +197,35 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
     @Override
     public String getUploadFileUrl() {
         throw new IllegalArgumentException("Uploaded not supported");
+    }
+
+    private void backendLookup(DataSetDef def, DataSetLookup lookup, DataSetReadyCallback listener) {
+        var request = RequestInit.create();
+        var headers = new Headers();
+        request.setMethod("POST");
+        request.setBody(toJson(lookup));
+        headers.append(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+        request.setHeaders(headers);
+        fetch(LOOKUP_ENDPOINT, request).then((Response response) -> {
+            verifier.verify(response);
+            response.text().then(responseText -> {
+                if (response.status == HttpResponseCodes.SC_INTERNAL_SERVER_ERROR) {
+                    listener.onError(new ClientRuntimeError("Not able to retrieve data set: " + getName(lookup, def),
+                            new Exception(responseText)));
+                } else if (response.status == HttpResponseCodes.SC_NOT_FOUND) {
+                    listener.onError(new ClientRuntimeError("Data Set not found: " + getName(lookup, def),
+                            new Exception(responseText)));
+                } else {
+                    var dataSet = parseDataSet(responseText);
+                    listener.callback(dataSet);
+                }
+                return null;
+            }, error -> {
+                listener.onError(new ClientRuntimeError("Error reading data set content: " + error));
+                return null;
+            });
+            return null;
+        }).catch_(this::handleError);
     }
 
     private DataSetMetadata parseMetadata(String jsonContent) {
