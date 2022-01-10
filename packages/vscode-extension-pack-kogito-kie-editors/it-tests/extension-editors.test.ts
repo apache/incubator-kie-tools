@@ -86,7 +86,7 @@ describe("Editors are loading properly", () => {
     await webview.switchBack();
   });
 
-  it.skip("Opens demo.dmn file in DMN Editor", async function () {
+  it("Opens demo.dmn file in DMN Editor", async function () {
     this.timeout(20000);
     webview = await testHelper.openFileFromSidebar(DEMO_DMN);
     await testHelper.switchWebviewToFrame(webview);
