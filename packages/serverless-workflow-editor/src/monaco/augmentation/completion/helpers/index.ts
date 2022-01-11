@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export { CompletionHelper, CompletionHelperContext, MonacoCompletionContext } from "./CompletionHelper";
-export { FullFunctionObjectCompletionHelper } from "./FunctionsNodeCompletionHelpers";
+export { CompletionContext, MonacoCompletionContext } from "./CompletionHelper";
+export { helper as MonacoCompletionHelper } from "./MonacoCompletionHelper";

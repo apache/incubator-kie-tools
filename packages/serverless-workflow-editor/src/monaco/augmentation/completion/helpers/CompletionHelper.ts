@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ export type MonacoCompletionContext = {
   token: CancellationToken;
 };
 
-export type CompletionHelperContext = {
+export type CompletionContext = {
   node: ASTNode;
   json: JSONDocument;
   document: TextDocument;
@@ -32,17 +32,14 @@ export type CompletionHelperContext = {
 };
 
 export interface CompletionHelper {
-  fillSuggestions: (
-    consumer: (suggestions: languages.CompletionItem[]) => void,
-    context: CompletionHelperContext
-  ) => void;
+  fillSuggestions: (consumer: (suggestions: languages.CompletionItem[]) => void, context: CompletionContext) => void;
 }
 
 export abstract class AbstractCompletionHelper implements CompletionHelper {
   abstract matches: (node: ASTNode) => boolean;
-  abstract buildSuggestions: (context: CompletionHelperContext) => languages.CompletionItem[] | undefined;
+  abstract buildSuggestions: (context: CompletionContext) => languages.CompletionItem[] | undefined;
 
-  fillSuggestions(consumer: (suggestions: languages.CompletionItem[]) => void, context: CompletionHelperContext): void {
+  fillSuggestions(consumer: (suggestions: languages.CompletionItem[]) => void, context: CompletionContext): void {
     if (context.node && this.matches(context.node)) {
       const suggestions = this.buildSuggestions(context);
       if (suggestions) {

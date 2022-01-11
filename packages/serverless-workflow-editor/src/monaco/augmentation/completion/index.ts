@@ -16,7 +16,7 @@
 
 import * as jsonService from "vscode-json-languageservice";
 import { CancellationToken, editor, languages, Position } from "monaco-editor";
-import { CompletionHelper, FullFunctionObjectCompletionHelper } from "./helpers";
+import { MonacoCompletionHelper } from "./helpers";
 
 export type CompletionArgs = {
   model: editor.ITextModel;
@@ -25,7 +25,6 @@ export type CompletionArgs = {
   token: CancellationToken;
 };
 
-const helpers: CompletionHelper[] = [new FullFunctionObjectCompletionHelper()];
 const jsonLangService = jsonService.getLanguageService({});
 
 export const getSuggestions = ({
@@ -52,19 +51,17 @@ export const getSuggestions = ({
   };
 
   if (node) {
-    helpers.forEach((helper) =>
-      helper.fillSuggestions(consumer, {
-        json,
-        node,
-        document,
-        monacoContext: {
-          model,
-          context,
-          token,
-          position,
-        },
-      })
-    );
+    MonacoCompletionHelper.fillSuggestions(consumer, {
+      json,
+      node,
+      document,
+      monacoContext: {
+        model,
+        context,
+        token,
+        position,
+      },
+    });
   }
 
   return {

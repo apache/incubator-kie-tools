@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-import { ASTNode } from "vscode-json-languageservice";
-import { AbstractCompletionHelper, CompletionHelperContext } from "./CompletionHelper";
-import { ArrayASTNode, PropertyASTNode } from "vscode-json-languageservice/lib/umd/jsonLanguageTypes";
-import { languages, Position } from "monaco-editor";
+import { ASTNode, PropertyASTNode } from "vscode-json-languageservice";
 import * as monaco from "monaco-editor";
+import { languages, Position } from "monaco-editor";
+import { BaseASTNode } from "vscode-json-languageservice/lib/umd/jsonLanguageTypes";
+import { AbstractCompletionHelper, CompletionContext } from "./CompletionHelper";
 
-function buildFunction(name: string, position: Position): languages.CompletionItem {
+const FUNCTIONS_NODE = "functions";
+
+function buildFunctionSuggestions(name: string, position: Position): languages.CompletionItem {
   return {
     label: name,
     kind: monaco.languages.CompletionItemKind.Snippet,
-    insertText: `{ \n  "name": "${name}", \n  "operation": "http://myservice.com/openapi.json#${name}" \n},`,
+    insertText: `{ ${buildFunctionObjectProperties(name)}},`,
     range: {
       startLineNumber: position.lineNumber,
       endLineNumber: position.lineNumber,
@@ -34,36 +36,86 @@ function buildFunction(name: string, position: Position): languages.CompletionIt
   };
 }
 
+function buildFunctionObjectSuggestions(name: string, position: Position): languages.CompletionItem {
+  return {
+    label: name,
+    kind: monaco.languages.CompletionItemKind.Value,
+    insertText: buildFunctionObjectProperties(name),
+    range: {
+      startLineNumber: position.lineNumber,
+      endLineNumber: position.lineNumber,
+      startColumn: position.column,
+      endColumn: position.column,
+    },
+  };
+}
+
+function buildFunctionObjectProperties(name: string) {
+  return `\n    "name": "${name}",\n    "operation": "http://myservice.com/openapi.json#${name}"\n`;
+}
+
+function checkFunctionsPropertyNode(functionsNode: BaseASTNode): boolean {
+  // check if node is a the functions node in the root object and the type is an array.
+  if (functionsNode.type !== "array") {
+    return false;
+  }
+
+  if (!functionsNode.parent) {
+    return false;
+  }
+
+  const asProp = functionsNode.parent as PropertyASTNode;
+
+  if (!asProp.parent || asProp.parent.parent) {
+    return false;
+  }
+
+  return asProp.keyNode && asProp.keyNode.value.toLowerCase() === FUNCTIONS_NODE;
+}
+
 export class FullFunctionObjectCompletionHelper extends AbstractCompletionHelper {
-  buildSuggestions = (context: CompletionHelperContext): languages.CompletionItem[] | undefined => {
+  buildSuggestions = (context: CompletionContext): languages.CompletionItem[] | undefined => {
     return [
-      buildFunction("function1", context.monacoContext.position),
-      buildFunction("function2", context.monacoContext.position),
-      buildFunction("function3", context.monacoContext.position),
-      buildFunction("function4", context.monacoContext.position),
+      buildFunctionSuggestions("function1", context.monacoContext.position),
+      buildFunctionSuggestions("function2", context.monacoContext.position),
+      buildFunctionSuggestions("function3", context.monacoContext.position),
+      buildFunctionSuggestions("function4", context.monacoContext.position),
     ];
   };
 
   public matches = (node: ASTNode): boolean => {
-    const asArray = node as ArrayASTNode;
-    if (!asArray.items) {
-      return false;
-    }
+    return checkFunctionsPropertyNode(node);
+  };
+}
 
+export class FunctionObjectPropsCompletionHelper extends AbstractCompletionHelper {
+  public buildSuggestions = (context: CompletionContext): languages.CompletionItem[] | undefined => {
+    return [
+      buildFunctionObjectSuggestions("function1", context.monacoContext.position),
+      buildFunctionObjectSuggestions("function2", context.monacoContext.position),
+      buildFunctionObjectSuggestions("function3", context.monacoContext.position),
+      buildFunctionObjectSuggestions("function4", context.monacoContext.position),
+    ];
+  };
+
+  public matches = (node: ASTNode): boolean => {
     // check if node has parent ("functions" node)
     if (!node.parent) {
       return false;
     }
 
-    const functionsNode = node.parent;
-
-    // checking if the functions node is at root level
-    if (!functionsNode.parent || functionsNode.parent.parent) {
+    if (!checkFunctionsPropertyNode(node.parent)) {
       return false;
     }
 
-    // check if parent node is "functions" node
-    const asProp = functionsNode as PropertyASTNode;
-    return asProp.keyNode && asProp.keyNode.value.toLowerCase() === "functions";
+    if (node.type !== "object") {
+      return false;
+    }
+
+    if (node.properties && node.properties.length > 0) {
+      return false;
+    }
+
+    return true;
   };
 }
