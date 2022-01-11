@@ -21,14 +21,17 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import org.apache.commons.codec.binary.Base64;
 import org.dashbuilder.dataprovider.external.ExternalDataSetSecurityStore.SecurityInfo;
 import org.dashbuilder.dataprovider.external.ExternalDataSetSecurityStore.SecurityType;
-import org.dashbuilder.dataprovider.external.parser.ExternalDataSetParser;
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetMetadata;
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
+import org.dashbuilder.dataset.json.ExternalDataSetJSONParser;
 
 public class ExternalDataSetCaller {
 
@@ -40,25 +43,27 @@ public class ExternalDataSetCaller {
 
     private static final String METADATA_URI = "metadata";
 
-    private static final String DATASET_URL_PROP = "dashbuilder.dataset.%s.url";
-
-    private ExternalDataSetParser parser;
+    private ExternalDataSetJSONParser parser;
 
     public ExternalDataSetCaller() {
         // Empty
     }
 
-    public ExternalDataSetCaller(ExternalDataSetParser parser) {
+    public ExternalDataSetCaller(ExternalDataSetJSONParser parser) {
         this.parser = parser;
     }
 
     public static ExternalDataSetCaller get() {
-        var parser = new ExternalDataSetParser();
+        var parser = new ExternalDataSetJSONParser(value -> {
+            var temporalAccessor = DateTimeFormatter.ISO_INSTANT.parse(value);
+            var instant = Instant.from(temporalAccessor);
+            return Date.from(instant);
+        });
         return new ExternalDataSetCaller(parser);
     }
 
     public DataSetMetadata retrieveMetadata(ExternalDataSetDef def) {
-        var defUrl = getUrl(def);
+        var defUrl = ExternalDataSetHelper.getUrl(def);
         var metaUrl = defUrl.endsWith("/") ? defUrl : defUrl + "/";
         URL url;
         try {
@@ -74,7 +79,7 @@ public class ExternalDataSetCaller {
 
     public DataSet retrieveDataSet(ExternalDataSetDef def) {
         URL url;
-        var defUrl = getUrl(def);
+        var defUrl = ExternalDataSetHelper.getUrl(def);
         try {
             url = new URL(defUrl);
         } catch (IOException e) {
@@ -133,28 +138,6 @@ public class ExternalDataSetCaller {
         if (secInfo.getType() == SecurityType.TOKEN) {
             conn.setRequestProperty(AUTHORIZATION_HEADER, BEARER + " " + secInfo.getToken());
         }
-    }
-
-    protected String getUrl(ExternalDataSetDef def) {
-        var uuidProp = String.format(DATASET_URL_PROP, def.getUUID());
-        var nameProp = String.format(DATASET_URL_PROP, def.getName());
-        var urlByDefUUID = System.getProperty(uuidProp);
-        var urlByDefName = System.getProperty(nameProp);
-
-        if (urlByDefUUID != null) {
-            return urlByDefUUID;
-        }
-
-        if (urlByDefName != null) {
-            return urlByDefName;
-        }
-
-        if (def.getUrl() != null) {
-            return def.getUrl();
-        }
-
-        throw new IllegalArgumentException("URL for DataSet definition " + def.getName() + "not set.");
-
     }
 
 }

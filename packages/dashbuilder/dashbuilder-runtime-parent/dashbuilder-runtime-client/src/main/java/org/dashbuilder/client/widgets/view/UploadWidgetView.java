@@ -93,7 +93,7 @@ public class UploadWidgetView implements UploadWidget.View {
     public void errorDuringUpload(Object error) {
         runtimeCommunication.showError(i18n.errorUploadingDashboards(), error);
     }
-    
+
     @Override
     public void dashboardAlreadyImportedError(String newImportName, String existingImport) {
         runtimeCommunication.showWarning(i18n.dashboardAlreadyImport(newImportName, existingImport));
@@ -101,6 +101,7 @@ public class UploadWidgetView implements UploadWidget.View {
 
     @EventHandler("btnImport")
     public void handleImport(ClickEvent e) {
+        inputFile.accept = presenter.getAcceptUpload();
         inputFile.click();
     }
 
@@ -108,7 +109,7 @@ public class UploadWidgetView implements UploadWidget.View {
     public void handleInputFileChange(ChangeEvent e) {
         var importName = presenter.retrieveFileName(inputFile.value);
         inputFileName.value = importName;
-        presenter.submit(importName, uploadForm);
+        presenter.submit(importName, inputFile.files.getAt(0), uploadForm);
     }
 
     @Override
@@ -119,6 +120,11 @@ public class UploadWidgetView implements UploadWidget.View {
     @Override
     public void importSuccess(String importName) {
         runtimeCommunication.showSuccess(i18n.importSuccess(importName));
+    }
+
+    @Override
+    public void errorLoadingDashboard(String message) {
+        runtimeCommunication.showWarning(i18n.notAbleToLoadDashboard(message));
     }
 
 }

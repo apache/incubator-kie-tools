@@ -15,60 +15,89 @@
  */
 package org.dashbuilder.shared.marshalling;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.dashbuilder.navigation.NavItem;
-import org.dashbuilder.navigation.impl.NavTreeBuilder;
-import org.dashbuilder.shared.model.RuntimeModel;
-import org.junit.Test;
-import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
+
+import org.dashbuilder.dataset.def.ExternalDataSetDef;
+import org.dashbuilder.dataset.impl.ExternalDataSetDefBuilderImpl;
+import org.dashbuilder.navigation.impl.NavTreeBuilder;
+import org.dashbuilder.shared.model.RuntimeModel;
+import org.junit.Before;
+import org.junit.Test;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+
 public class RuntimeModelJSONMarshallerTest {
 
-    private String RUNTIME_MODEL_JSON = "{\n" +
-                                        "  \"lastModified\": 123,\n" +
-                                        "  \"navTree\": {\n" +
-                                        "    \"root_items\": [\n" +
-                                        "      {\n" +
-                                        "        \"id\": \"TestId\",\n" +
-                                        "        \"type\": \"ITEM\",\n" +
-                                        "        \"name\": \"TestItem\",\n" +
-                                        "        \"description\": \"Item Description\",\n" +
-                                        "        \"modifiable\": false\n" +
-                                        "      }\n" +
-                                        "    ]\n" +
-                                        "  },\n" +
-                                        "  \"layoutTemplates\": [\n" +
-                                        "    {\n" +
-                                        "      \"style\": \"FLUID\",\n" +
-                                        "      \"name\": \"My Template\"\n" +
-                                        "    }\n" +
-                                        "  ]\n" +
-                                        "}";
+    private String RUNTIME_MODEL_JSON = "{\n" + 
+            "  \"lastModified\": 123,\n" + 
+            "  \"navTree\": {\n" + 
+            "    \"root_items\": [\n" + 
+            "      {\n" + 
+            "        \"id\": \"TestId\",\n" + 
+            "        \"type\": \"ITEM\",\n" + 
+            "        \"name\": \"TestItem\",\n" + 
+            "        \"description\": \"Item Description\",\n" + 
+            "        \"modifiable\": false\n" + 
+            "      }\n" + 
+            "    ]\n" + 
+            "  },\n" + 
+            "  \"layoutTemplates\": [\n" + 
+            "    {\n" + 
+            "      \"style\": \"FLUID\",\n" + 
+            "      \"name\": \"My Template\"\n" + 
+            "    }\n" + 
+            "  ],\n" + 
+            "  \"datasets\": [\n" + 
+            "    {\n" + 
+            "      \"uuid\": \"123\",\n" + 
+            "      \"provider\": \"External\",\n" + 
+            "      \"isPublic\": true,\n" + 
+            "      \"cacheEnabled\": true,\n" + 
+            "      \"cacheMaxRows\": 1000,\n" + 
+            "      \"pushEnabled\": false,\n" + 
+            "      \"pushMaxSize\": 1024,\n" + 
+            "      \"refreshAlways\": false,\n" + 
+            "      \"dynamic\": false,\n" + 
+            "      \"url\": \"http://acme.com\"\n" + 
+            "    }\n" + 
+            "  ]\n" + 
+            "}";
+
+    RuntimeModelJSONMarshaller marshaller;
+
+    @Before
+    public void setup() {
+        marshaller = RuntimeModelJSONMarshaller.get();
+    }
 
     @Test
     public void toJsonTest() {
-        List<LayoutTemplate> templates = new ArrayList<>();
+        var templates = new ArrayList<LayoutTemplate>();
+        var externalDefs = new ArrayList<ExternalDataSetDef>();
 
         templates.add(new LayoutTemplate("My Template"));
-        RuntimeModel model = new RuntimeModel(new NavTreeBuilder().item("TestId", "TestItem", "Item Description", false).build(),
-                                              templates,
-                                              123l);
+        externalDefs.add((ExternalDataSetDef) new ExternalDataSetDefBuilderImpl()
+                .uuid("123")
+                .cacheOn(1000)
+                .url("http://acme.com")
+                .buildDef());
 
-        String parsed = RuntimeModelJSONMarshaller.get().toJson(model).toJson();
+        var model = new RuntimeModel(new NavTreeBuilder().item("TestId", "TestItem", "Item Description", false).build(),
+                templates,
+                123l,
+                externalDefs);
 
+        var parsed = marshaller.toJson(model).toJson();
         assertEquals(RUNTIME_MODEL_JSON, parsed);
     }
 
     @Test
     public void fromJsonTest() {
-        RuntimeModel model = RuntimeModelJSONMarshaller.get().fromJson(RUNTIME_MODEL_JSON);
+        var model = marshaller.fromJson(RUNTIME_MODEL_JSON);
 
-        NavItem item = model.getNavTree().getItemById("TestId");
+        var item = model.getNavTree().getItemById("TestId");
         assertEquals(123l, model.getLastModified().longValue());
         assertEquals("My Template", model.getLayoutTemplates().get(0).getName());
 
@@ -76,6 +105,8 @@ public class RuntimeModelJSONMarshallerTest {
         assertEquals("TestItem", item.getName());
         assertEquals("Item Description", item.getDescription());
 
+        assertEquals("123", model.getClientDataSets().get(0).getUUID());
+        assertEquals("http://acme.com", model.getClientDataSets().get(0).getUrl());
     }
 
 }
