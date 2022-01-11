@@ -20,6 +20,7 @@ if __name__ == "__main__":
     parser.add_argument('--ignore-self-signed-cert', dest='ignore_self_signed_cert', default=False, action='store_true', help='If set to true will relax the SSL for user-generated self-signed certificates')
     parser.add_argument('--runtime-image-jvm', dest='runtime_image_jvm', help='To update the runtime jvm image name in behave tests\'s steps')
     parser.add_argument('--runtime-image-native', dest='runtime_image_native', help='To update the runtime native image name in behave tests\'s steps')
+    parser.add_argument('--archetype-maven-mirror-url', dest='archetype_maven_mirror_url', help='Maven mirror URL to be used for archetype generation')
     args = parser.parse_args()
 
     if args.repo_url:
@@ -46,3 +47,6 @@ if __name__ == "__main__":
     
     if args.runtime_image_native:
         common.update_runtime_image_in_behave_tests(args.runtime_image_native, 'native')
+    
+    if args.archetype_maven_mirror_url:
+        common.update_maven_mirror_url_in_quarkus_plugin_behave_tests(args.archetype_maven_mirror_url)
