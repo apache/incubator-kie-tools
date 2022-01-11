@@ -30,6 +30,8 @@ interface OnlineDictionary extends ReferenceDictionary {
       copy: string;
       updateGist: string;
       createGist: string;
+      errorPushingGist: string;
+      forcePushWarning: string;
       invalidCurrentGist: string;
       invalidGistFilename: string;
       error: string;
