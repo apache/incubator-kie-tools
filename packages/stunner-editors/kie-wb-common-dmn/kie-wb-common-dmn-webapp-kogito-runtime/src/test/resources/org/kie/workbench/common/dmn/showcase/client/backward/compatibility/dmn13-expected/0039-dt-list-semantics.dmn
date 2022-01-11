@@ -1,0 +1,100 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.trisotech.com/dmn/definitions/_7f0fb170-45f8-4189-94a4-74c686cc1d55" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_7f0fb170-45f8-4189-94a4-74c686cc1d55" name="DT list semantics" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.trisotech.com/dmn/definitions/_7f0fb170-45f8-4189-94a4-74c686cc1d55">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_7BF26271-FE4E-4865-9575-8E51146D7FA7" name="tListOfStrings" isCollection="true">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_ceab30da-d86b-4c49-9685-49a6dc60413d" name="Flu Symtoms">
+    <dmn:extensionElements/>
+    <dmn:variable id="_bfee4407-5d09-444c-9055-95c6c9defec7" name="Flu Symtoms" typeRef="tListOfStrings"/>
+  </dmn:inputData>
+  <dmn:inputData id="_0d07c799-309c-49cd-9dc4-3c26bbf96282" name="Symptom">
+    <dmn:extensionElements/>
+    <dmn:variable id="_2ee5c4b8-2820-405e-a5e3-9fd3f56163af" name="Symptom" typeRef="string"/>
+  </dmn:inputData>
+  <dmn:decision id="_531cd585-b1f9-4f12-abda-6d152fc324af" name="Symptom Analysis">
+    <dmn:extensionElements/>
+    <dmn:variable id="_b89f47cd-d986-45fc-8e97-2d0281b42dab" name="Symptom Analysis" typeRef="tListOfStrings"/>
+    <dmn:informationRequirement id="d252aed4-6a34-4e31-b4c3-c58ea03ee235">
+      <dmn:requiredInput href="#_ceab30da-d86b-4c49-9685-49a6dc60413d"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="d382479e-ab34-4848-abfc-81c1ffcc76e3">
+      <dmn:requiredInput href="#_0d07c799-309c-49cd-9dc4-3c26bbf96282"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_895523c7-9926-43bb-83db-e596f9caaebc" typeRef="tListOfStrings" hitPolicy="COLLECT" preferredOrientation="Rule-as-Row" outputLabel="Symptom Analysis">
+      <dmn:input id="_34a2f5f6-d4d9-4b03-8ac0-cbfac33f2591">
+        <dmn:inputExpression id="_1044A411-D5DC-44D2-B15A-15D875053692" typeRef="string">
+          <dmn:text>Symptom</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_2a4ebb8a-f98e-47e1-a57f-78230ced36fd"/>
+      <dmn:annotation name=""/>
+      <dmn:rule id="_1b20fe26-e3b3-449f-838b-a8ab00238e53">
+        <dmn:inputEntry id="_fd5fb838-ebfd-4b89-916d-a96d51df0cf7">
+          <dmn:text>"cough", "sore throat", "stuffy nose"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_79aaec27-d2f0-4f00-9f33-9ccade427765">
+          <dmn:text>Symptom + " is in the list of Cold symptoms"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text></dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="_0da0a131-4e1a-4b1a-b763-8af96a11982d">
+        <dmn:inputEntry id="_2fbeca46-aa7f-4746-9929-ce7c88cd1a5f">
+          <dmn:text>Flu Symtoms</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_ba75f36d-77dd-4190-b64c-3036e9d26d5b">
+          <dmn:text>Symptom + " is in the list of Flu symptoms"</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text></dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_7f0fb170-45f8-4189-94a4-74c686cc1d55_D1" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_895523c7-9926-43bb-83db-e596f9caaebc"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_ceab30da-d86b-4c49-9685-49a6dc60413d" dmnElementRef="_ceab30da-d86b-4c49-9685-49a6dc60413d" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="150" y="331" width="153" height="60"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_0d07c799-309c-49cd-9dc4-3c26bbf96282" dmnElementRef="_0d07c799-309c-49cd-9dc4-3c26bbf96282" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="363" y="331" width="153" height="60"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_531cd585-b1f9-4f12-abda-6d152fc324af" dmnElementRef="_531cd585-b1f9-4f12-abda-6d152fc324af" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="255" y="150" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-d252aed4-6a34-4e31-b4c3-c58ea03ee235" dmnElementRef="d252aed4-6a34-4e31-b4c3-c58ea03ee235">
+        <di:waypoint x="226" y="331"/>
+        <di:waypoint x="332" y="211"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-d382479e-ab34-4848-abfc-81c1ffcc76e3" dmnElementRef="d382479e-ab34-4848-abfc-81c1ffcc76e3">
+        <di:waypoint x="439" y="331"/>
+        <di:waypoint x="332" y="211"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

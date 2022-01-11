@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tns="http://www.trisotech.com/definitions/_1fedf2c0-0f4a-470c-bc66-a15528e8a49a" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="_1fedf2c0-0f4a-470c-bc66-a15528e8a49a" namespace="http://www.trisotech.com/definitions/_1fedf2c0-0f4a-470c-bc66-a15528e8a49a" exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.32.2; 1.0" name="literal - arithmetic" triso:logoChoice="Default" xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd ../../dmn.xsd" expressionLanguage="http://www.omg.org/spec/FEEL/20140401" typeLanguage="http://www.omg.org/spec/FEEL/20140401">
+	<itemDefinition id="tLoan" name="tLoan" isCollection="false">
+		<itemComponent id="_561947e6-180a-416e-aa22-5e8e5d650624" name="principal" isCollection="false">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_c1751fa0-4da6-4cb5-a234-45765d6b35ac" name="rate" isCollection="false">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_006e0a06-26a6-42e1-9b3c-4b2502a567fe" name="termMonths" isCollection="false">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<decision id="_ebf02591-49c6-448d-9f76-6358b0e011c3" name="payment">
+		<variable name="payment" typeRef="feel:number"/>
+		<informationRequirement>
+			<requiredInput href="#_1f4ae444-2e4e-4d26-b1f7-87a645c3f50a"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>(loan.principal*loan.rate/12)/(1-(1+loan.rate/12)**-loan.termMonths)</text>
+		</literalExpression>
+	</decision>
+	<inputData id="_1f4ae444-2e4e-4d26-b1f7-87a645c3f50a" name="loan">
+		<variable name="loan" typeRef="tns:tLoan"/>
+	</inputData>
+</definitions>

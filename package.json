@@ -8,17 +8,12 @@
     "examples/*"
   ],
   "scripts": {
+    "bootstrap": "yarn",
     "env:print": "build-env --print-env",
     "env:vars": "build-env --print-vars",
-    "bootstrap": "lerna bootstrap",
-    "build:dev": "lerna run build:dev --stream",
-    "build:prod": "lerna run build:prod --stream",
-    "build:productization": "lerna run build:prod --scope=@kogito-tooling/kie-editors-standalone --include-filtered-dependencies --stream",
-    "test:clearCache": "lerna run test:clearCache --stream",
+    "build:dev:until": "lerna run build:dev --stream --include-dependencies --scope",
+    "build:prod:until": "lerna run build:prod --stream --include-dependencies --scope",
     "update-version-to": "node ./scripts/update_version.js",
-    "locktt": "locktt",
-    "npm-tt": "npm-tt",
-    "publish:productization": "IS_PUBLIC=\"node -p \\\"require('./package.json').private !== true\\\"\" lerna exec --scope @kogito-tooling/kie-editors-standalone --include-dependencies -- yarn run --silent run-script-if --silent --bool '$(eval $IS_PUBLIC)' --then \\\"npm publish --access public --registry $REGISTRY\\\" --else \\\"echo 'Skipping private package $(pwd)'\\\"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky install",
@@ -28,7 +23,6 @@
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
-    "@kie/npm-treatment-tool": "^1.1.1",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",
@@ -65,7 +59,7 @@
     "copyfiles": "^2.4.1",
     "cpr": "^3.0.1",
     "cross-var": "^1.1.0",
-    "css-loader": "^5.2.4",
+    "css-loader": "^5.2.6",
     "cypress": "^7.2.0",
     "cypress-file-upload": "^5.0.7",
     "cypress-iframe": "^1.0.1",
@@ -92,7 +86,6 @@
     "js-yaml": "^4.1.0",
     "junit-report-merger": "^2.2.2",
     "lerna": "^4.0.0",
-    "lock-treatment-tool": "^0.4.2",
     "mocha": "^8.3.2",
     "mocha-jenkins-reporter": "^0.4.5",
     "mocha-multi-reporters": "1.5.1",
@@ -120,6 +113,7 @@
     "start-server-and-test": "^1.12.1",
     "stream": "^0.0.2",
     "style-loader": "^2.0.0",
+    "symlink-dir": "^5.0.1",
     "ts-jest": "^26.5.6",
     "ts-loader": "^9.1.2",
     "tslib": "^2.2.0",
@@ -140,7 +134,6 @@
   },
   "resolutions": {
     "react-dropzone": "^11.4.2",
-    "ua-parser-js": "^0.7.30",
     "@types/react": "^17.0.6"
   }
 }

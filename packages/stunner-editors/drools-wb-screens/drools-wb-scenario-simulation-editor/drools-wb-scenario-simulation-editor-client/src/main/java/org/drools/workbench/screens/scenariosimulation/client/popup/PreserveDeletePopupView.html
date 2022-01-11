@@ -1,0 +1,36 @@
+<div class="modal fade" tabindex="-1" role="dialog" id="confirmation">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span class="pficon pficon-close"></span>
+        </button>
+        <h4 class="modal-title" data-field="main-title"></h4>
+      </div>
+      <div class="modal-body">
+        <div class="pull-left">
+          <h2>
+            <span class="pficon pficon-warning-triangle-o"></span>
+          </h2>
+        </div>
+        <div style="margin-left: 3em">
+          <h2 data-field="main-question"></h2>
+          <div>
+            <p data-field="text-1"></p>
+            <p />
+            <p data-field="text-question"></p>
+            <ul>
+              <li data-field="option-1"></li>
+              <li data-field="option-2"></li>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" data-field="cancel-button"></button>
+          <button type="button" class="btn btn-default" data-field="ok-preserve-button"></button>
+          <button type="button" class="btn btn-danger" data-field="ok-button"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

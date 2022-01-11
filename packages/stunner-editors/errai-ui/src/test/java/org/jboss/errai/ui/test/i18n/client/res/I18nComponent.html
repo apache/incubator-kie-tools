@@ -1,0 +1,31 @@
+<div data-field="root">
+  <p data-field="welcome-p" data-i18n-key="welcome">Welcome to the errai-ui i18n demo.</p>
+  <div>
+    <span data-field="label1">Label 1:</span> <span data-field="val1">value one</span>
+    <div data-field="nested">
+      <span data-field="nestedLabel">Label 1.1:</span> <span data-field="val1_1">value one.one</span>
+    </div>
+  </div>
+  <hr />
+  <div><span data-field="label2">Label 2:</span> <span data-field="val2">value two</span></div>
+  <div data-role="dummy">
+    <span>Nested <i>Deeply</i> Under Dummy Element</span>
+  </div>
+  <p data-role="dummy">Is Dummy Element</p>
+  <p>Text in a non-data-field element</p>
+  <p data-field="longTextLabel">
+    This is a really really really really really really really really really really really really really really really
+    really really really really really long string that exceeds the cutoff length for adding a hash to its
+    internationalization key.
+  </p>
+  <form action="POST">
+    <div>
+      <span data-field="emailLabel">Email:</span>
+      <input data-field="email" name="email" type="text" placeholder="Enter your email address..." />
+    </div>
+    <div>
+      <span data-field="passwordLabel">Password:</span>
+      <input data-field="password" name="password" type="password" title="Your password goes here." />
+    </div>
+  </form>
+</div>

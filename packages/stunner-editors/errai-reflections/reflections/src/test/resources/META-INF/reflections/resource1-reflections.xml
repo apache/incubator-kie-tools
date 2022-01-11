@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Reflections>
+    <org.jboss.errai.reflections.scanners.ConvertersScanner>
+        <entry>
+            <key>org.jboss.errai.reflections.TestModel$C2 to org.jboss.errai.reflections.TestModel$C3</key>
+            <values>
+                <value>org.jboss.errai.reflections.TestModel$C4.c2toC3(org.jboss.errai.reflections.TestModel$C2)</value>
+            </values>
+        </entry>
+    </org.jboss.errai.reflections.scanners.ConvertersScanner>
+</Reflections>

@@ -1,0 +1,163 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.actico.com/spec/DMN/1102-feel-ceiling-function" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_i-UiEPUUEeesLuP4RHs4vA" name="1102-feel-ceiling-function" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.actico.com/spec/DMN/1102-feel-ceiling-function">
+  <dmn:description>FEEL built-in function 'ceiling(n)' in category numeric functions</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_i-UiEvUUEeesLuP4RHs4vA" name="tfeel-ceiling-function_001_3df249d9c6_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i-UiFvUUEeesLuP4RHs4vA" name="tfeel-ceiling-function_002_1052993cd8_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i-UiGvUUEeesLuP4RHs4vA" name="tfeel-ceiling-function_003_ca33989df5_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i-UiHvUUEeesLuP4RHs4vA" name="tfeel-ceiling-function_004_be4a3e809c_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i-UiIvUUEeesLuP4RHs4vA" name="tfeel-ceiling-function_005_cc56ed5373_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i-UiJvUUEeesLuP4RHs4vA" name="tfeel-ceiling-function_006_bbdf3bf8d7_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:decision id="_i-UiKPUUEeesLuP4RHs4vA" name="feel-ceiling-function_006_bbdf3bf8d7">
+    <dmn:description>Tests FEEL expression: 'ceiling(n:-.33333)' and expects result: '0 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'ceiling(n:-.33333)'?</dmn:question>
+    <dmn:allowedAnswers>0 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i-UiKfUUEeesLuP4RHs4vA" name="feel-ceiling-function_006_bbdf3bf8d7" typeRef="ns1:tfeel-ceiling-function_006_bbdf3bf8d7_Result"/>
+    <dmn:literalExpression id="_i-UiJ_UUEeesLuP4RHs4vA">
+      <dmn:text>ceiling(n:-.33333)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i-UiFPUUEeesLuP4RHs4vA" name="feel-ceiling-function_001_3df249d9c6">
+    <dmn:description>Tests FEEL expression: 'ceiling(1.5)' and expects result: '2 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'ceiling(1.5)'?</dmn:question>
+    <dmn:allowedAnswers>2 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i-UiFfUUEeesLuP4RHs4vA" name="feel-ceiling-function_001_3df249d9c6" typeRef="ns1:tfeel-ceiling-function_001_3df249d9c6_Result"/>
+    <dmn:literalExpression id="_i-UiE_UUEeesLuP4RHs4vA">
+      <dmn:text>ceiling(1.5)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:knowledgeSource id="_i-UiEfUUEeesLuP4RHs4vA" name="DMN 1.1 - 10.3.4.5 Table 62">
+    <dmn:extensionElements/>
+  </dmn:knowledgeSource>
+  <dmn:decision id="_i-UiGPUUEeesLuP4RHs4vA" name="feel-ceiling-function_002_1052993cd8">
+    <dmn:description>Tests FEEL expression: 'ceiling(-1.5)' and expects result: '-1 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'ceiling(-1.5)'?</dmn:question>
+    <dmn:allowedAnswers>-1 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i-UiGfUUEeesLuP4RHs4vA" name="feel-ceiling-function_002_1052993cd8" typeRef="ns1:tfeel-ceiling-function_002_1052993cd8_Result"/>
+    <dmn:literalExpression id="_i-UiF_UUEeesLuP4RHs4vA">
+      <dmn:text>ceiling(-1.5)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i-UiJPUUEeesLuP4RHs4vA" name="feel-ceiling-function_005_cc56ed5373">
+    <dmn:description>Tests FEEL expression: 'ceiling(n:5.777)' and expects result: '6 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'ceiling(n:5.777)'?</dmn:question>
+    <dmn:allowedAnswers>6 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i-UiJfUUEeesLuP4RHs4vA" name="feel-ceiling-function_005_cc56ed5373" typeRef="ns1:tfeel-ceiling-function_005_cc56ed5373_Result"/>
+    <dmn:literalExpression id="_i-UiI_UUEeesLuP4RHs4vA">
+      <dmn:text>ceiling(n:5.777)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i-UiIPUUEeesLuP4RHs4vA" name="feel-ceiling-function_004_be4a3e809c">
+    <dmn:description>Tests FEEL expression: 'ceiling(-5/2.3*5)' and expects result: '-10 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'ceiling(-5/2.3*5)'?</dmn:question>
+    <dmn:allowedAnswers>-10 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i-UiIfUUEeesLuP4RHs4vA" name="feel-ceiling-function_004_be4a3e809c" typeRef="ns1:tfeel-ceiling-function_004_be4a3e809c_Result"/>
+    <dmn:literalExpression id="_i-UiH_UUEeesLuP4RHs4vA">
+      <dmn:text>ceiling(-5/2.3*5)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i-UiHPUUEeesLuP4RHs4vA" name="feel-ceiling-function_003_ca33989df5">
+    <dmn:description>Tests FEEL expression: 'ceiling(--1)' and expects result: '1 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'ceiling(--1)'?</dmn:question>
+    <dmn:allowedAnswers>1 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i-UiHfUUEeesLuP4RHs4vA" name="feel-ceiling-function_003_ca33989df5" typeRef="ns1:tfeel-ceiling-function_003_ca33989df5_Result"/>
+    <dmn:literalExpression id="_i-UiG_UUEeesLuP4RHs4vA">
+      <dmn:text>ceiling(--1)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_i-UiEPUUEeesLuP4RHs4vA_D2" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_i-UiJ_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i-UiE_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i-UiF_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i-UiI_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i-UiH_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i-UiG_UUEeesLuP4RHs4vA"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_i-UiKPUUEeesLuP4RHs4vA" dmnElementRef="_i-UiKPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i-UiFPUUEeesLuP4RHs4vA" dmnElementRef="_i-UiFPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i-UiEfUUEeesLuP4RHs4vA" dmnElementRef="_i-UiEfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="133" y="292" width="100" height="69"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i-UiGPUUEeesLuP4RHs4vA" dmnElementRef="_i-UiGPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i-UiJPUUEeesLuP4RHs4vA" dmnElementRef="_i-UiJPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i-UiIPUUEeesLuP4RHs4vA" dmnElementRef="_i-UiIPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i-UiHPUUEeesLuP4RHs4vA" dmnElementRef="_i-UiHPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

@@ -1,0 +1,7 @@
+{
+  "extends": "../tsconfig.dev.json",
+  "compilerOptions": {
+    "types": ["cypress", "cypress-real-events"]
+  },
+  "include": ["support", "integration"]
+}

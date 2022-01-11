@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="..\libgen 61228.xslt"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tns="http://www.trisotech.com/definitions/_56c7d4a5-e6db-4bba-ac5f-dc082a16f719" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.1.1; 1.1" id="_56c7d4a5-e6db-4bba-ac5f-dc082a16f719" name="loanComparison" namespace="http://www.trisotech.com/definitions/_56c7d4a5-e6db-4bba-ac5f-dc082a16f719" triso:logoChoice="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd ../../DMN1.1%20final/dmn.xsd">
+	<itemDefinition label="tLoanProduct" name="tLoanProduct">
+		<itemComponent id="_e4e050fd-9198-4b62-8f99-15cb2a0a2373" name="lenderName">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+		<itemComponent id="_dc34919e-c7d1-4aab-b6d1-4be1174f6fd2" name="rate">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_9ca2f88a-3845-4b8d-864f-b86718eaa54d" name="points">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_5b870440-9692-4e81-959f-f2347c1768c9" name="fee">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<itemDefinition isCollection="true" label="tLoanTable" name="tLoanTable">
+		<typeRef>tns:tLoanProduct</typeRef>
+	</itemDefinition>
+	<itemDefinition label="tMetric" name="tMetric">
+		<itemComponent id="_59994d58-3220-4cc6-8d91-783a008ac472" name="lenderName">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+		<itemComponent id="_63d8c69d-2431-43f5-bfa3-a014a6d2363e" name="rate">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_be9eaeb3-8d52-4d99-9d0a-325c15fa6b74" name="points">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_2a9fe07c-d72b-4f8b-9995-e1b194dd5aa9" name="fee">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_333f9092-d8a7-4e75-973d-82f30569e432" name="loanAmt">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_790093df-4886-405a-8ad6-34de25812bdc" name="downPmtAmt">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_8f37cdc9-ff7a-4b8c-8849-c0b6a6cbb960" name="paymentAmt">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_3f4568e7-be52-4ce2-8704-be14aa6cd1d5" name="equity36moPct">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<itemDefinition isCollection="true" label="tMetrics" name="tMetrics">
+		<typeRef>tns:tMetric</typeRef>
+	</itemDefinition>
+	<itemDefinition label="tRankedProducts" name="tRankedProducts">
+		<itemComponent id="_0ee333d1-03fc-4a77-8798-d0b351a19a36" name="metricsTable">
+			<typeRef>tns:tMetrics</typeRef>
+		</itemComponent>
+		<itemComponent id="_f0790a52-d95d-466a-bc51-5766c046c717" name="rankByRate">
+			<typeRef>tns:tMetrics</typeRef>
+		</itemComponent>
+		<itemComponent id="_d54127c6-8418-45df-89da-2f84bedae37c" name="rankByDownPmt">
+			<typeRef>tns:tMetrics</typeRef>
+		</itemComponent>
+		<itemComponent id="_7f98fed9-552a-4b57-99de-495cb96e8484" name="rankByMonthlyPmt">
+			<typeRef>tns:tMetrics</typeRef>
+		</itemComponent>
+		<itemComponent id="_897183a6-2ca8-4437-b21d-8ba90555a9e0" name="rankByEquityPct">
+			<typeRef>tns:tMetrics</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<decision id="_c5dd7a17-b588-4daf-8c9b-677e65ce87be" name="Bankrates">
+		<variable name="Bankrates" typeRef="tns:tLoanTable"/>
+		<relation>
+			<column id="_23af7b70-cc60-4d84-8e5f-60d5a4ebfe86" name="lenderName"/>
+			<column id="_11fb4b39-53a6-4670-90c7-7f1b21bf3936" name="rate"/>
+			<column id="_505d19fa-b5b3-4adc-8aca-5ecc1b58d4f5" name="points"/>
+			<column id="_e9ed23a8-88c6-4cb0-a1f3-2a895999ef06" name="fee"/>
+			<row id="_bc21b674-23cc-440d-b505-32d5f799e281">
+				<literalExpression>
+					<text>"Oceans Capital"</text>
+				</literalExpression>
+				<literalExpression>
+					<text>.03500</text>
+				</literalExpression>
+				<literalExpression>
+					<text>0</text>
+				</literalExpression>
+				<literalExpression>
+					<text>0</text>
+				</literalExpression>
+			</row>
+			<row id="_6f3eb485-dddc-40f0-a153-8c989dc4b68d">
+				<literalExpression>
+					<text>"eClick Lending"</text>
+				</literalExpression>
+				<literalExpression>
+					<text>.03200</text>
+				</literalExpression>
+				<literalExpression>
+					<text>1.1</text>
+				</literalExpression>
+				<literalExpression>
+					<text>2700</text>
+				</literalExpression>
+			</row>
+			<row id="_36362bb9-5cd1-4b55-8ce2-a8cf02f6bed0">
+				<literalExpression>
+					<text>"eClickLending"</text>
+				</literalExpression>
+				<literalExpression>
+					<text>.03375</text>
+				</literalExpression>
+				<literalExpression>
+					<text>0.1</text>
+				</literalExpression>
+				<literalExpression>
+					<text>1200</text>
+				</literalExpression>
+			</row>
+			<row id="_922a8c6b-2bf0-4453-b1d2-1242c5527dce">
+				<literalExpression>
+					<text>"AimLoan"</text>
+				</literalExpression>
+				<literalExpression>
+					<text>.03000</text>
+				</literalExpression>
+				<literalExpression>
+					<text>1.1</text>
+				</literalExpression>
+				<literalExpression>
+					<text>3966</text>
+				</literalExpression>
+			</row>
+			<row id="_72d72621-d6aa-4c78-a6ee-b0086b27ea3a">
+				<literalExpression>
+					<text>"Home Loans Today"</text>
+				</literalExpression>
+				<literalExpression>
+					<text>.03125</text>
+				</literalExpression>
+				<literalExpression>
+					<text>1.1</text>
+				</literalExpression>
+				<literalExpression>
+					<text>285</text>
+				</literalExpression>
+			</row>
+			<row id="_4fd60510-7767-4cd9-9f5e-9783b9e6f688">
+				<literalExpression>
+					<text>"Sebonic"</text>
+				</literalExpression>
+				<literalExpression>
+					<text>.03125</text>
+				</literalExpression>
+				<literalExpression>
+					<text>0.1</text>
+				</literalExpression>
+				<literalExpression>
+					<text>4028</text>
+				</literalExpression>
+			</row>
+			<row id="_4a2aca46-7331-445b-b378-beb0a4b7064f">
+				<literalExpression>
+					<text>"AimLoan"</text>
+				</literalExpression>
+				<literalExpression>
+					<text>.03125</text>
+				</literalExpression>
+				<literalExpression>
+					<text>0.1</text>
+				</literalExpression>
+				<literalExpression>
+					<text>4317</text>
+				</literalExpression>
+			</row>
+			<row id="_3b1b71e2-7084-4869-bb08-52d5ad2bcf1e">
+				<literalExpression>
+					<text>"eRates Mortgage"</text>
+				</literalExpression>
+				<literalExpression>
+					<text>.03125</text>
+				</literalExpression>
+				<literalExpression>
+					<text>1.1</text>
+				</literalExpression>
+				<literalExpression>
+					<text>2518</text>
+				</literalExpression>
+			</row>
+			<row id="_d0e4ef04-9127-4931-b802-a0d4128a78c9">
+				<literalExpression>
+					<text>"Home Loans Today"</text>
+				</literalExpression>
+				<literalExpression>
+					<text>.03250</text>
+				</literalExpression>
+				<literalExpression>
+					<text>0.1</text>
+				</literalExpression>
+				<literalExpression>
+					<text>822</text>
+				</literalExpression>
+			</row>
+			<row id="_a254dd15-1c62-4f4f-9ce2-83f6bfbcb487">
+				<literalExpression>
+					<text>"AimLoan"</text>
+				</literalExpression>
+				<literalExpression>
+					<text>.03250</text>
+				</literalExpression>
+				<literalExpression>
+					<text>0</text>
+				</literalExpression>
+				<literalExpression>
+					<text>1995</text>
+				</literalExpression>
+			</row>
+		</relation>
+	</decision>
+	<inputData id="_67c50a4c-3002-4d0a-9acf-4c76cb0364fa" name="RequestedAmt">
+		<variable name="RequestedAmt" typeRef="feel:number"/>
+	</inputData>
+	<decision id="_715940be-0f5d-4701-8155-fcba85874aa1" name="RankedProducts">
+		<variable name="RankedProducts" typeRef="tns:tRankedProducts"/>
+		<informationRequirement>
+			<requiredInput href="#_67c50a4c-3002-4d0a-9acf-4c76cb0364fa"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredDecision href="#_c5dd7a17-b588-4daf-8c9b-677e65ce87be"/>
+		</informationRequirement>
+		<knowledgeRequirement>
+			<requiredKnowledge href="#_83059f2e-2862-45a9-97a7-71ffaa860586"/>
+		</knowledgeRequirement>
+		<context>
+			<contextEntry>
+				<variable name="metricsTable" typeRef="tns:tMetrics"/>
+				<literalExpression>
+					<text>for i in Bankrates return FinancialMetrics(i,RequestedAmt)</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="rankByRate" typeRef="tns:tMetrics"/>
+				<literalExpression>
+					<text>sort(metricsTable, function(x,y) x.rate&lt;y.rate)</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="rankByDownPmt" typeRef="tns:tMetrics"/>
+				<literalExpression>
+					<text>sort(metricsTable, function(x,y) x.downPmtAmt&lt;y.downPmtAmt)</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="rankByMonthlyPmt" typeRef="tns:tMetrics"/>
+				<literalExpression>
+					<text>sort(metricsTable, function(x,y) x.paymentAmt&lt;y.paymentAmt)</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="rankByEquityPct" typeRef="tns:tMetrics"/>
+				<literalExpression>
+					<text>sort(metricsTable, function(x,y) x.equity36moPct&gt;y.equity36moPct)</text>
+				</literalExpression>
+			</contextEntry>
+		</context>
+	</decision>
+	<businessKnowledgeModel id="_83059f2e-2862-45a9-97a7-71ffaa860586" name="FinancialMetrics">
+		<encapsulatedLogic>
+			<formalParameter name="product" typeRef="tns:tLoanProduct"/>
+			<formalParameter name="requestedAmt" typeRef="feel:number"/>
+			<context>
+				<contextEntry>
+					<variable name="lenderName" typeRef="feel:string"/>
+					<literalExpression>
+						<text>product.lenderName</text>
+					</literalExpression>
+				</contextEntry>
+				<contextEntry>
+					<variable name="rate" typeRef="feel:number"/>
+					<literalExpression>
+						<text>product.rate</text>
+					</literalExpression>
+				</contextEntry>
+				<contextEntry>
+					<variable name="points" typeRef="feel:number"/>
+					<literalExpression>
+						<text>product.points</text>
+					</literalExpression>
+				</contextEntry>
+				<contextEntry>
+					<variable name="fee" typeRef="feel:number"/>
+					<literalExpression>
+						<text>product.fee</text>
+					</literalExpression>
+				</contextEntry>
+				<contextEntry>
+					<variable name="loanAmt" typeRef="feel:number"/>
+					<literalExpression>
+						<text>requestedAmt*(1+points/100)+fee</text>
+					</literalExpression>
+				</contextEntry>
+				<contextEntry>
+					<variable name="downPmtAmt" typeRef="feel:number"/>
+					<literalExpression>
+						<text>0.2*loanAmt</text>
+					</literalExpression>
+				</contextEntry>
+				<contextEntry>
+					<variable name="paymentAmt" typeRef="feel:number"/>
+					<literalExpression>
+						<text>monthlyPayment(loanAmt,rate,360)</text>
+					</literalExpression>
+				</contextEntry>
+				<contextEntry>
+					<variable name="equity36moPct" typeRef="feel:number"/>
+					<literalExpression>
+						<text>1 - equity36Mo(loanAmt,rate,36,paymentAmt)/requestedAmt*0.8</text>
+					</literalExpression>
+				</contextEntry>
+			</context>
+		</encapsulatedLogic>
+		<variable name="FinancialMetrics" typeRef="tns:tMetrics"/>
+		<knowledgeRequirement>
+			<requiredKnowledge href="#_8702e1b6-213b-4f75-bf56-99ac3835cde7"/>
+		</knowledgeRequirement>
+		<knowledgeRequirement>
+			<requiredKnowledge href="#_daec318a-135b-4d54-9e7f-85af3aa662f7"/>
+		</knowledgeRequirement>
+	</businessKnowledgeModel>
+	<businessKnowledgeModel id="_8702e1b6-213b-4f75-bf56-99ac3835cde7" name="monthlyPayment">
+		<encapsulatedLogic>
+			<formalParameter name="p" typeRef="feel:number"/>
+			<formalParameter name="r" typeRef="feel:number"/>
+			<formalParameter name="n" typeRef="feel:number"/>
+			<literalExpression expressionLanguage="FEEL">
+				<text>p*r/12/(1-(1+r/12)**-n)</text>
+			</literalExpression>
+		</encapsulatedLogic>
+		<variable name="monthlyPayment" typeRef="feel:number"/>
+	</businessKnowledgeModel>
+	<businessKnowledgeModel id="_daec318a-135b-4d54-9e7f-85af3aa662f7" name="equity36Mo">
+		<encapsulatedLogic>
+			<formalParameter name="p" typeRef="feel:number"/>
+			<formalParameter name="r" typeRef="feel:number"/>
+			<formalParameter name="n" typeRef="feel:number"/>
+			<formalParameter name="pmt" typeRef="feel:number"/>
+			<literalExpression expressionLanguage="FEEL">
+				<text>p*(1+r/12)**n - pmt*(-1+(1+r/12)**n)/r</text>
+			</literalExpression>
+		</encapsulatedLogic>
+		<variable name="equity36Mo" typeRef="feel:number"/>
+	</businessKnowledgeModel>
+</definitions>

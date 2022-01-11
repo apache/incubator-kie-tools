@@ -3,25 +3,39 @@
   "version": "0.0.0",
   "description": "FEEL (Friendly Enough Expression Language) input component (with code-completion/highlight support)",
   "license": "Apache-2.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
     "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "copy:src": "copyfiles -u 5 \"../../node_modules/feel-input-component/src/**/*\" src/",
-    "build:dev": "rimraf dist src && yarn copy:src && tsc -p tsconfig.dev.json",
-    "build:prod": "rimraf dist src && yarn copy:src && yarn lint && tsc -p tsconfig.prod.json && yarn test"
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
+    "build:dev": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json",
+    "build:prod": "rimraf dist && yarn copy:css && yarn lint && tsc -p tsconfig.prod.json && yarn test",
+    "start": "webpack serve -c ./showcase/webpack.config.js --host 0.0.0.0 --env dev",
+    "build:showcase": "rimraf ./dist-dev && webpack -c ./showcase/webpack.config.js --env prod",
+    "deploy": "gh-pages -d dist-dev"
   },
   "dependencies": {
-    "@kie-tooling-core/editor": "0.0.0",
-    "@kie-tooling-core/monaco-editor": "0.0.0",
     "@kie-tooling-core/i18n": "0.0.0",
+    "@kie-tooling-core/monaco-editor": "0.0.0",
     "@kogito-tooling/i18n-common-dictionary": "0.0.0",
-    "feel-input-component": "^8.5.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
     "@kogito-tooling/build-env": "0.0.0"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "@babel/react"
+    ]
   }
 }

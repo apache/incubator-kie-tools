@@ -1,0 +1,113 @@
+/*
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+[data-i18n-prefix="DataTypeListView."] {
+  min-width: 600px;
+  padding: 1px 20px 10px;
+  height: calc(~"100% - 15px");
+
+  .data-type-button {
+    height: 40px;
+    margin-top: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+
+    .expand-collapse {
+      float: right;
+      margin: 7px 10px 0 14px;
+    }
+
+    .search-bar-container {
+      float: right;
+    }
+
+    .action-button button {
+      padding: 4px 10px;
+      margin: 0 5px 0 0;
+    }
+  }
+
+  ul {
+    padding: 0 15px;
+  }
+
+  & > * {
+    flex: 0 1 auto;
+  }
+
+  [data-field="list-items"] {
+    height: calc(~"100% - 120px");
+    overflow-y: scroll;
+    flex: 1 1 auto;
+  }
+
+  [data-field="list-items"] .result {
+    display: inherit;
+  }
+
+  .alert.opened[data-field="read-only-message"] {
+    margin: 5px 0 20px;
+  }
+
+  .alert.opened[data-field="read-only-message"] .close {
+    margin-right: 15px;
+    outline: none;
+  }
+
+  .kie-data-types-placeholder {
+    //See PF Empty State: https://www.patternfly.org/v3/pattern-library/communication/empty-state/
+    background-color: #f5f5f5;
+    text-align: center;
+    height: calc(~"100% - 80px");
+    width: calc(~"100%");
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    flex: 1 1 auto;
+    margin-top: 20px;
+
+    &[data-field="no-data-types-found"] {
+      height: calc(~"100% - 140px");
+    }
+
+    i.fa-object-group,
+    i.fa-search-minus {
+      //See PF Empty State: https://www.patternfly.org/v3/pattern-library/communication/empty-state/
+      color: #9c9c9c;
+      font-size: 4.75em;
+      margin-top: 10px;
+    }
+
+    .btn.btn-primary {
+      font-size: 1.1em;
+      padding: 6px 12px;
+      margin-top: 5px;
+
+      i {
+        margin-right: 5px;
+      }
+    }
+
+    p {
+      color: #555;
+      margin: 20px 0;
+      max-width: 575px;
+      text-align: center;
+      font-size: 1.1em;
+    }
+  }
+}

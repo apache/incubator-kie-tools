@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.dev.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "target": "es6",
+    "moduleResolution": "node"
+  },
+  "include": ["src"]
+}

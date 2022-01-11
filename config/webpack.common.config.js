@@ -66,6 +66,12 @@ module.exports = (env) => {
       rules: [
         ...sourceMapsLoader,
         {
+          test: /\.m?js/,
+          resolve: {
+            fullySpecified: false,
+          },
+        },
+        {
           test: /\.tsx?$/,
           use: [
             {
@@ -113,7 +119,7 @@ module.exports = (env) => {
         net: false,
       },
       extensions: [".tsx", ".ts", ".js", ".jsx"],
-      modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")],
+      modules: ["node_modules"],
     },
   };
 };

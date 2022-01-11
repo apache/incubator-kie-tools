@@ -13,18 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 const path = require("path");
 const BG_IMAGES_DIRNAME = "bgimages";
 
-/**
- * Two scenarios for nodeModulesDir:
- * (1) When using @kogito-tooling/patternfly-base library as dependency for other projects,
- *     __dirname is already on node_modules folder.
- * (2) When developing for kogito-tooling,
- *     patternfly-base is accessed directly so nodeModulesDir needs node_modules appended.
- */
-const nodeModulesDir = "../.." + (__dirname.includes("node_modules") ? "" : "/node_modules");
+function posixPath(pathStr) {
+  return pathStr.split(path.sep).join(path.posix.sep);
+}
 
 module.exports = {
   webpackModuleRules: [
@@ -41,13 +35,16 @@ module.exports = {
       // only process modules with this loader
       // if they live under a 'fonts' or 'pficon' directory
       include: [
-        path.resolve(__dirname, nodeModulesDir + "/patternfly/dist/fonts"),
-        path.resolve(__dirname, nodeModulesDir + "/@patternfly/react-core/dist/styles/assets/fonts"),
-        path.resolve(__dirname, nodeModulesDir + "/@patternfly/react-core/dist/styles/assets/pficon"),
-        path.resolve(__dirname, nodeModulesDir + "/@patternfly/patternfly/assets/fonts"),
-        path.resolve(__dirname, nodeModulesDir + "/@patternfly/patternfly/assets/pficon"),
-        path.resolve(__dirname, nodeModulesDir + "/monaco-editor/esm/vs/base/browser/ui/codicons/codicon"),
-        path.resolve(__dirname, nodeModulesDir + "/monaco-editor/dev/vs/base/browser/ui/codicons/codicon"),
+        {
+          or: [
+            (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/fonts"),
+            (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/pficon"),
+            (input) => posixPath(input).includes("node_modules/@patternfly/patternfly/assets/fonts"),
+            (input) => posixPath(input).includes("node_modules/@patternfly/patternfly/assets/pficon"),
+            (input) => posixPath(input).includes("node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon"),
+            (input) => posixPath(input).includes("node_modules/monaco-editor/dev/vs/base/browser/ui/codicons/codicon"),
+          ],
+        },
       ],
       use: {
         loader: "file-loader",
@@ -100,24 +97,26 @@ module.exports = {
     {
       test: /\.(jpg|jpeg|png|gif)$/i,
       include: [
-        path.resolve(__dirname, "src"),
-        path.resolve(__dirname, nodeModulesDir + "/patternfly"),
-        path.resolve(__dirname, nodeModulesDir + "/@patternfly/patternfly/assets/images"),
-        path.resolve(__dirname, nodeModulesDir + "/@patternfly/react-styles/css/assets/images"),
-        path.resolve(__dirname, nodeModulesDir + "/@patternfly/react-core/dist/styles/assets/images"),
-        path.resolve(
-          __dirname,
-          nodeModulesDir + "/@patternfly/react-core/node_modules/@patternfly/react-styles/css/assets/images"
-        ),
-        path.resolve(
-          __dirname,
-          nodeModulesDir + "/@patternfly/react-table/node_modules/@patternfly/react-styles/css/assets/images"
-        ),
-        path.resolve(
-          __dirname,
-          nodeModulesDir +
-            "/@patternfly/react-inline-edit-extension/node_modules/@patternfly/react-styles/css/assets/images"
-        ),
+        {
+          or: [
+            (input) => posixPath(input).includes("src"),
+            (input) => posixPath(input).includes("node_modules/@patternfly/patternfly/assets/images"),
+            (input) => posixPath(input).includes("node_modules/@patternfly/react-styles/css/assets/images"),
+            (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/images"),
+            (input) =>
+              posixPath(input).includes(
+                "node_modules/@patternfly/react-core/node_modules/@patternfly/react-styles/css/assets/images"
+              ),
+            (input) =>
+              posixPath(input).includes(
+                "node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css/assets/images"
+              ),
+            (input) =>
+              posixPath(input).includes(
+                "node_modules/@patternfly/react-inline-edit-extension/node_modules/@patternfly/react-styles/css/assets/images"
+              ),
+          ],
+        },
       ],
       use: [
         {

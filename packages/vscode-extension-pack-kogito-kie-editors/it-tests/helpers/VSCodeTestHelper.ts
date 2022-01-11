@@ -185,7 +185,7 @@ export default class VSCodeTestHelper {
     const driver = webview.getDriver();
     await driver.wait(
       until.elementLocated(By.className("webview ready")),
-      2000,
+      10000,
       "No iframe.webview.ready that was ready was located in webview under 2 seconds." +
         "This should not happen and is most probably issue of VSCode." +
         "In case this happens investigate vscode or vscode-extension-tester dependency."
@@ -193,7 +193,7 @@ export default class VSCodeTestHelper {
     await driver.switchTo().frame(await driver.findElement(By.className("webview ready")));
     await driver.wait(
       until.elementLocated(By.id("active-frame")),
-      2000,
+      10000,
       "No iframe#active-frame located in webview under 2 seconds." +
         "This should not happen and is most probably issue of VSCode." +
         "In case this happens investigate vscode or vscode-extension-tester dependency."

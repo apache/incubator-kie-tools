@@ -48,8 +48,9 @@ runs:
       run: |
         echo "STEP: Setup default Maven args"
         cd ${{ inputs.path }}
-        mkdir .mvn
-        echo '-B -ntp' > .mvn/maven.config
+        lerna exec 'mkdir .mvn'
+        lerna exec 'echo -B -ntp > .mvn/maven.config'
+        lerna exec 'echo -Xmx2g > .mvn/jvm.config'
 
     - name: "Bootstrap"
       shell: bash
@@ -88,6 +89,14 @@ runs:
         if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
             /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
         fi
+
+    - name: "Configure Pagefile (Windows only)"
+      if: inputs.os == 'windows-latest'
+      uses: al-cheb/configure-pagefile-action@v1.2
+      with:
+        minimum-size: 16GB
+        maximum-size: 16GB
+        disk-root: "C:"
 
     - name: "Increase inotify watches (Ubuntu only)"
       shell: bash
