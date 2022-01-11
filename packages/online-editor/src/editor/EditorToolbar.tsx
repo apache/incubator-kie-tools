@@ -319,7 +319,7 @@ export function EditorToolbar(props: Props) {
     });
   }, [props.editor]);
 
-  const updateGitHubGist = useCallback(async () => {
+  const forceUpdateGitHubGist = useCallback(async () => {
     try {
       if (!githubAuthInfo) {
         return;
@@ -327,8 +327,6 @@ export function EditorToolbar(props: Props) {
 
       setGitHubGistLoading(true);
       const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-
-      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId, gitConfig: githubAuthInfo });
 
       await workspaces.gitService.push({
         fs,
@@ -347,6 +345,77 @@ export function EditorToolbar(props: Props) {
       });
     } catch (e) {
       errorAlert.show();
+    } finally {
+      setGitHubGistLoading(false);
+      setSyncGitHubGistDropdownOpen(false);
+    }
+
+    successfullyUpdateGistAlert.show();
+  }, [workspaces, props.workspaceFile.workspaceId, githubAuthInfo, successfullyUpdateGistAlert, errorAlert]);
+
+  const errorPushingGist = useAlert(
+    props.alerts,
+    useCallback(
+      ({ close }) => (
+        <Alert
+          variant="danger"
+          title={i18n.editorPage.alerts.errorPushingGist}
+          actionLinks={[
+            <AlertActionLink
+              key="force"
+              onClick={() => {
+                close();
+                forceUpdateGitHubGist();
+              }}
+            >
+              Force push
+            </AlertActionLink>,
+            <AlertActionLink key="dismiss" onClick={close}>
+              Dismiss
+            </AlertActionLink>,
+          ]}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        >
+          <b>{i18n.editorPage.alerts.forcePushWarning}</b>
+        </Alert>
+      ),
+      [i18n, forceUpdateGitHubGist]
+    )
+  );
+
+  const updateGitHubGist = useCallback(async () => {
+    try {
+      if (!githubAuthInfo) {
+        return;
+      }
+
+      setGitHubGistLoading(true);
+      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
+      const dir = await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
+
+      await workspaces.createSavePoint({
+        fs,
+        workspaceId: props.workspaceFile.workspaceId,
+        gitConfig: githubAuthInfo,
+      });
+
+      await workspaces.gitService.push({
+        fs,
+        dir,
+        remote: GIST_ORIGIN_REMOTE_NAME,
+        ref: GIST_DEFAULT_BRANCH,
+        remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
+        force: false,
+        authInfo: githubAuthInfo,
+      });
+
+      await workspaces.pull({
+        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+        workspaceId: props.workspaceFile.workspaceId,
+        authInfo: githubAuthInfo,
+      });
+    } catch (e) {
+      errorPushingGist.show();
       throw e;
     } finally {
       setGitHubGistLoading(false);
@@ -354,7 +423,7 @@ export function EditorToolbar(props: Props) {
     }
 
     successfullyUpdateGistAlert.show();
-  }, [successfullyUpdateGistAlert, workspaces, props.workspaceFile.workspaceId, githubAuthInfo, errorAlert]);
+  }, [successfullyUpdateGistAlert, githubAuthInfo, workspaces, props.workspaceFile.workspaceId, errorPushingGist]);
 
   const createGitHubGist = useCallback(async () => {
     try {
@@ -547,7 +616,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     () =>
       settings.github.authStatus === AuthStatus.SIGNED_IN &&
       settings.github.scopes?.includes(GithubScopes.GIST) &&
-      isGitHubGistOwner &&
+      !!isGitHubGistOwner &&
       workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST &&
       !workspaceHasNestedDirectories,
     [
@@ -1112,6 +1181,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     workspaces,
   ]);
 
+  const isGistWorkspace = useMemo(
+    () => workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST,
+    [workspacePromise.data?.descriptor.origin.kind]
+  );
   const navigationStatus = useNavigationStatus();
   const navigationStatusToggle = useNavigationStatusToggle();
   const confirmNavigationAlert = useAlert<{ lastBlockedLocation: Location }>(
@@ -1146,11 +1219,12 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 </AlertActionLink>
               )) || (
                 <PushToGitHubAlertActionLinks
-                  canPush={canPushToGitRepository}
+                  canPush={isGistWorkspace ? canUpdateGitHubGist : canPushToGitRepository}
+                  kind={workspacePromise.data?.descriptor.origin.kind}
                   remoteRef={`${GIT_ORIGIN_REMOTE_NAME}/${workspacePromise.data?.descriptor.origin.branch}`}
                   onPush={() => {
                     navigationStatusToggle.unblock();
-                    return pushToGitRepository();
+                    return isGistWorkspace ? updateGitHubGist() : pushToGitRepository();
                   }}
                 />
               )}
@@ -1176,14 +1250,17 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         </Alert>
       ),
       [
-        canPushToGitRepository,
-        downloadWorkspaceZip,
-        history,
+        workspacePromise.data?.descriptor,
         i18n,
         navigationStatusToggle,
-        navigationBlockersBypass,
+        isGistWorkspace,
+        canUpdateGitHubGist,
+        canPushToGitRepository,
+        downloadWorkspaceZip,
+        updateGitHubGist,
         pushToGitRepository,
-        workspacePromise,
+        navigationBlockersBypass,
+        history,
       ]
     )
   );
@@ -1635,8 +1712,17 @@ If you are, it means that creating this Gist failed and it can safely be deleted
   );
 }
 
-export function PushToGitHubAlertActionLinks(props: { canPush: boolean; onPush: () => void; remoteRef: string }) {
+export function PushToGitHubAlertActionLinks(props: {
+  onPush: () => void;
+  canPush?: boolean;
+  kind?: WorkspaceKind;
+  remoteRef?: string;
+}) {
   const settingsDispatch = useSettingsDispatch();
+
+  if (props.kind === WorkspaceKind.GIT && !props.remoteRef) {
+    throw new Error("Should specify remoteRef for GIT workspaces");
+  }
 
   return (
     <>
@@ -1647,7 +1733,7 @@ export function PushToGitHubAlertActionLinks(props: { canPush: boolean; onPush: 
       )}
       {props.canPush && (
         <AlertActionLink onClick={props.onPush} style={{ fontWeight: "bold" }}>
-          {`Push to '${props.remoteRef}'`}
+          {props.kind === WorkspaceKind.GIT ? `Push to '${props.remoteRef}'` : `Update Gist`}
         </AlertActionLink>
       )}
     </>
