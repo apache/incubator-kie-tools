@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-import LightningFS from "@isomorphic-git/lightning-fs";
 import {
   ContentType,
   ResourceContent,
   ResourceContentOptions,
   ResourcesList,
 } from "@kie-tooling-core/workspace/dist/api";
-import { Buffer } from "buffer";
-import { join } from "path";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { DEFAULT_CORS_PROXY_URL, useEnv } from "../env/EnvContext";
-import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
-import { WorkspaceEvents } from "./hooks/WorkspaceHooks";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
-import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
-import { GitService, GIT_DEFAULT_BRANCH } from "./services/GitService";
+import { GIT_DEFAULT_BRANCH, GitService } from "./services/GitService";
 import { StorageFile, StorageService } from "./services/StorageService";
+import { WorkspaceService } from "./services/WorkspaceService";
+import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
+import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { join } from "path";
+import { WorkspaceEvents } from "./hooks/WorkspaceHooks";
+import { Buffer } from "buffer";
+import LightningFS from "@isomorphic-git/lightning-fs";
 import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
-import { WorkspaceService } from "./services/WorkspaceService";
+import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
-import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
+import { DEFAULT_CORS_PROXY_URL, useEnv } from "../env/EnvContext";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_FILE_DEFAULT_NAME = "Untitled";
