@@ -98,6 +98,9 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
                     });
                 }
                 return promises.resolve(importDefinitions);
+            }).catch_(error -> {
+                LOGGER.severe(error::toString);
+                return promises.reject(error);
             });
         }
         return promises.resolve(Collections.emptyMap());
@@ -112,8 +115,15 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
                         final Map<String, JSITDefinitions> otherDefinitions = new ConcurrentHashMap<>();
                         return promises.all(Arrays.asList(list),
                                             (String file) -> loadDefinitionFromFile(file, otherDefinitions))
-                                .then(v -> promises.resolve(otherDefinitions));
+                                .then(v -> promises.resolve(otherDefinitions))
+                                .catch_(error -> {
+                                    LOGGER.severe(error::toString);
+                                    return promises.reject(error);
+                                });
                     }
+                }).catch_(error -> {
+                    LOGGER.severe(error::toString);
+                    return promises.reject(error);
                 });
     }
 
@@ -125,11 +135,17 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
         } else {
             loadDMNDefinitions()
                     .then(existingDefinitions -> promises.all(includedModels, model -> loadNodes(existingDefinitions, model, result))
-                            .then(p ->
-                                  {
-                                      callback.onSuccess(result);
-                                      return promises.resolve();
-                                  }));
+                            .then(p -> {
+                                callback.onSuccess(result);
+                                return promises.resolve();
+                            }).catch_(error -> {
+                                LOGGER.severe(error::toString);
+                                return promises.reject(error);
+                            })
+                    ).catch_(error -> {
+                        LOGGER.severe(error::toString);
+                        return promises.reject(error);
+                    });
         }
     }
 
@@ -165,11 +181,14 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
 
                                                              @Override
                                                              public void onError(final ClientRuntimeError error) {
-                                                                 LOGGER.log(Level.SEVERE, error.getMessage());
+                                                                 LOGGER.severe(error::getMessage);
                                                                  fail.onInvoke(error);
                                                              }
                                                          })
-                ));
+                )).catch_(error -> {
+                    LOGGER.severe(error::toString);
+                    return promises.reject(error);
+                });
     }
 
     public void loadModels(final ServiceCallback<List<IncludedModel>> callback) {
@@ -199,10 +218,14 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
 
                                     @Override
                                     public void onError(final ClientRuntimeError error) {
+                                        LOGGER.warning(error::getMessage);
                                         //Swallow. Since it must try to load other paths.
                                         success.onInvoke(promises.resolve());
                                     }
-                                })));
+                                }))).catch_(error -> {
+                                    LOGGER.severe(error::toString);
+                                    return promises.reject(error);
+                                });
                     }
                     if (fileName.endsWith("." + DMNImportTypes.PMML.getFileExtension())) {
                         return dmnImportsContentService.getPMMLDocumentMetadata(file)
@@ -214,13 +237,22 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
                                                                      DMNImportTypes.PMML.getDefaultNamespace(),
                                                                      modelCount));
                                     return promises.resolve();
+                                }).catch_(error -> {
+                                    LOGGER.severe(error::toString);
+                                    return promises.reject(error);
                                 });
                     }
                     return promises.reject("Error: " + fileName + " is an invalid file. Only *.dmn and *.pmml are supported");
+                }).catch_(error -> {
+                    LOGGER.severe(error::toString);
+                    return promises.reject(error);
                 }).then(v -> {
                     callback.onSuccess(models);
                     return promises.resolve();
-                }));
+                })).catch_(error -> {
+                    LOGGER.severe(error::toString);
+                    return promises.reject(error);
+                });
     }
 
     private Promise<Void> loadDefinitionFromFile(final String file,
@@ -233,12 +265,15 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
                     } else {
                         success.onInvoke(promises.resolve());
                     }
-                }));
+                })).catch_(error -> {
+                    LOGGER.severe(error::toString);
+                    return promises.reject(error);
+                });
     }
 
     private ServiceCallback<Object> getCallback(final String filePath,
                                                 final Map<String, JSITDefinitions> otherDefinitions,
-                                                final Promise.PromiseExecutorCallbackFn.ResolveCallbackFn<Void> success) {
+                                                final Promise.PromiseExecutorCallbackFn.ResolveCallbackFn<Object> success) {
         return new ServiceCallback<Object>() {
             @Override
             public void onSuccess(final Object item) {
@@ -279,19 +314,23 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
     public Promise<Map<JSITImport, PMMLDocumentMetadata>> getPMMLDocumentsAsync(final Metadata metadata,
                                                                                 final List<JSITImport> imports) {
         if (!imports.isEmpty()) {
-            return loadPMMLDefinitions().then(otherDefinitions -> {
-                final Map<JSITImport, PMMLDocumentMetadata> importDefinitions = new HashMap<>();
+            return loadPMMLDefinitions()
+                    .then(otherDefinitions -> {
+                        final Map<JSITImport, PMMLDocumentMetadata> importDefinitions = new HashMap<>();
 
-                for (final Map.Entry<String, PMMLDocumentMetadata> entry : otherDefinitions.entrySet()) {
-                    final PMMLDocumentMetadata def = entry.getValue();
-                    findImportByPMMLDocument(FileUtils.getFileName(def.getPath()), imports).ifPresent(anImport -> {
-                        final JSITImport foundImported = Js.uncheckedCast(anImport);
-                        importDefinitions.put(foundImported, def);
+                        for (final Map.Entry<String, PMMLDocumentMetadata> entry : otherDefinitions.entrySet()) {
+                            final PMMLDocumentMetadata def = entry.getValue();
+                            findImportByPMMLDocument(FileUtils.getFileName(def.getPath()), imports).ifPresent(anImport -> {
+                                final JSITImport foundImported = Js.uncheckedCast(anImport);
+                                importDefinitions.put(foundImported, def);
+                            });
+                        }
+
+                        return promises.resolve(importDefinitions);
+                    }).catch_(error -> {
+                        LOGGER.severe(error::toString);
+                        return promises.reject(error);
                     });
-                }
-
-                return promises.resolve(importDefinitions);
-            });
         }
         return promises.resolve(Collections.emptyMap());
     }
@@ -304,8 +343,15 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
                     } else {
                         final Map<String, PMMLDocumentMetadata> definitions = new HashMap<>();
                         return promises.all(Arrays.asList(files), file -> loadPMMLDefinitionFromFile(file, definitions)
-                                .then(v -> promises.resolve(definitions)));
+                                .then(v -> promises.resolve(definitions)))
+                                .catch_(error -> {
+                                    LOGGER.severe(error::toString);
+                                    return promises.reject(error);
+                                });
                     }
+                }).catch_(error -> {
+                    LOGGER.severe(error::toString);
+                    return promises.reject(error);
                 });
     }
 
@@ -315,6 +361,9 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
                 .then(pmmlDocumentMetadata -> {
                     definitions.put(file, pmmlDocumentMetadata);
                     return promises.resolve();
+                }).catch_(error -> {
+                    LOGGER.severe(error::toString);
+                    return promises.reject(error);
                 });
     }
 
@@ -440,40 +489,50 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
             callback.onSuccess(Collections.emptyList());
             return;
         }
-        loadPMMLDefinitions().then(allDefinitions -> {
-            final Map<String, String> filesToNameMap = includedModels.stream().collect(Collectors.toMap(PMMLIncludedModel::getPath, PMMLIncludedModel::getModelName));
-            final List<PMMLDocumentMetadata> pmmlDocumentMetadata = allDefinitions.entrySet().stream()
-                    .filter(entry -> filesToNameMap.keySet().contains(FileUtils.getFileName(entry.getKey())))
-                    .map(entry -> new PMMLDocumentMetadata(entry.getValue().getPath(),
-                                                           filesToNameMap.get(FileUtils.getFileName(entry.getKey())),
-                                                           entry.getValue().getImportType(),
-                                                           entry.getValue().getModels()))
-                    .collect(Collectors.toList());
-            pmmlDocumentMetadata.sort(Comparator.comparing(PMMLDocumentMetadata::getName));
-            callback.onSuccess(pmmlDocumentMetadata);
-            return promises.resolve();
-        });
+        loadPMMLDefinitions()
+                .then(allDefinitions -> {
+                    final Map<String, String> filesToNameMap = includedModels.stream().collect(Collectors.toMap(PMMLIncludedModel::getPath,
+                                                                                                                PMMLIncludedModel::getModelName));
+                    final List<PMMLDocumentMetadata> pmmlDocumentMetadata = allDefinitions.entrySet().stream()
+                            .filter(entry -> filesToNameMap.keySet().contains(FileUtils.getFileName(entry.getKey())))
+                            .map(entry -> new PMMLDocumentMetadata(entry.getValue().getPath(),
+                                                                   filesToNameMap.get(FileUtils.getFileName(entry.getKey())),
+                                                                   entry.getValue().getImportType(),
+                                                                   entry.getValue().getModels()))
+                            .collect(Collectors.toList());
+                    pmmlDocumentMetadata.sort(Comparator.comparing(PMMLDocumentMetadata::getName));
+                    callback.onSuccess(pmmlDocumentMetadata);
+                    return promises.resolve();
+                }).catch_(error -> {
+                    LOGGER.severe(error::toString);
+                    return promises.reject(error);
+                });
     }
 
     public void getImportedItemDefinitionsByNamespaceAsync(final String modelName,
                                                            final String namespace,
                                                            final ServiceCallback<List<ItemDefinition>> callback) {
-        loadDMNDefinitions().then(definitions -> {
-            final List<ItemDefinition> result = new ArrayList<>();
-            for (final Map.Entry<String, JSITDefinitions> entry : definitions.entrySet()) {
-                final JSITDefinitions definition = Js.uncheckedCast(entry.getValue());
-                if (Objects.equals(definition.getNamespace(), namespace)) {
-                    final List<JSITItemDefinition> items = definition.getItemDefinition();
-                    for (int j = 0; j < items.size(); j++) {
-                        final JSITItemDefinition jsitItemDefinition = Js.uncheckedCast(items.get(j));
-                        final ItemDefinition converted = ImportedItemDefinitionPropertyConverter.wbFromDMN(jsitItemDefinition, modelName);
-                        result.add(converted);
+        loadDMNDefinitions()
+                .then(definitions -> {
+                    final List<ItemDefinition> result = new ArrayList<>();
+                    for (final Map.Entry<String, JSITDefinitions> entry : definitions.entrySet()) {
+                        final JSITDefinitions definition = Js.uncheckedCast(entry.getValue());
+                        if (Objects.equals(definition.getNamespace(), namespace)) {
+                            final List<JSITItemDefinition> items = definition.getItemDefinition();
+                            for (int j = 0; j < items.size(); j++) {
+                                final JSITItemDefinition jsitItemDefinition = Js.uncheckedCast(items.get(j));
+                                final ItemDefinition converted = ImportedItemDefinitionPropertyConverter.wbFromDMN(jsitItemDefinition,
+                                                                                                                   modelName);
+                                result.add(converted);
+                            }
+                        }
                     }
-                }
-            }
-            result.sort(Comparator.comparing(o -> o.getName().getValue()));
-            callback.onSuccess(result);
-            return promises.resolve(result);
-        });
+                    result.sort(Comparator.comparing(o -> o.getName().getValue()));
+                    callback.onSuccess(result);
+                    return promises.resolve(result);
+                }).catch_(error -> {
+                    LOGGER.severe(error::toString);
+                    return promises.reject(error);
+                });
     }
 }
