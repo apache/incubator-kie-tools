@@ -17,7 +17,7 @@
 const CopyPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const { merge } = require("webpack-merge");
-const common = require("../../config/webpack.common.config");
+const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
 const stunnerEditors = require("@kogito-tooling/stunner-editors");
 
 module.exports = async (env) => [

@@ -19,7 +19,7 @@ const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const stunnerEditors = require("@kogito-tooling/stunner-editors");
 const vscodeJavaCodeCompletionExtensionPlugin = require("@kogito-tooling/vscode-java-code-completion-extension-plugin");
 const { merge } = require("webpack-merge");
-const common = require("../../config/webpack.common.config");
+const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
 
 const commonConfig = (env) =>
   merge(common(env), {
