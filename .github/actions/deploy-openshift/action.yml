@@ -49,7 +49,7 @@ runs:
         insecure_skip_tls_verify: true
         namespace: ${{ inputs.openshift_namespace }}
 
-    - name: "Create and expose app if it doesn't already exists"
+    - name: "Create or update the OpenShift application"
       shell: bash
       run: |
         if [ ! -f ${{ inputs.deployment_envvars_file_path }} ]; then
