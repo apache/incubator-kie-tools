@@ -52,7 +52,7 @@ import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConsta
 @Dependent
 public class DataTypesPage extends DMNPage {
 
-    private final DataTypeList treeList;
+    private final DataTypeList dataTypeList;
 
     private final ItemDefinitionUtils itemDefinitionUtils;
 
@@ -75,7 +75,7 @@ public class DataTypesPage extends DMNPage {
     private String loadedDMNModelNamespace;
 
     @Inject
-    public DataTypesPage(final DataTypeList treeList,
+    public DataTypesPage(final DataTypeList dataTypeList,
                          final ItemDefinitionUtils itemDefinitionUtils,
                          final ItemDefinitionStore definitionStore,
                          final DataTypeStore dataTypeStore,
@@ -90,7 +90,7 @@ public class DataTypesPage extends DMNPage {
 
         super(DataTypesPage_Title, pageView, translationService);
 
-        this.treeList = treeList;
+        this.dataTypeList = dataTypeList;
         this.itemDefinitionUtils = itemDefinitionUtils;
         this.definitionStore = definitionStore;
         this.dataTypeStore = dataTypeStore;
@@ -104,7 +104,7 @@ public class DataTypesPage extends DMNPage {
 
     @PostConstruct
     public void init() {
-        dataTypeShortcuts.init(treeList);
+        dataTypeShortcuts.init(dataTypeList);
     }
 
     @Override
@@ -113,6 +113,8 @@ public class DataTypesPage extends DMNPage {
             reload();
         }
         refreshPageView();
+
+        dataTypeList.activate();
     }
 
     @Override
@@ -132,18 +134,18 @@ public class DataTypesPage extends DMNPage {
     }
 
     public void reload() {
-
         loadedDMNModelNamespace = currentDMNModelNamespace();
 
         cleanDataTypeStore();
         loadDataTypes();
+        enableShortcuts();
     }
 
     void refreshPageView() {
         final HTMLDivElement pageView = getPageView();
         RemoveHelper.removeChildren(pageView);
         pageView.appendChild(flashMessages.getElement());
-        pageView.appendChild(treeList.getElement());
+        pageView.appendChild(dataTypeList.getElement());
     }
 
     boolean isLoaded() {
@@ -162,11 +164,11 @@ public class DataTypesPage extends DMNPage {
     }
 
     void loadDataTypes() {
-        treeList.setupItems(itemDefinitionUtils
-                                    .all()
-                                    .stream()
-                                    .map(this::makeDataType)
-                                    .collect(Collectors.toList()));
+        dataTypeList.setupItems(itemDefinitionUtils
+                                        .all()
+                                        .stream()
+                                        .map(this::makeDataType)
+                                        .collect(Collectors.toList()));
     }
 
     DataType makeDataType(final ItemDefinition itemDefinition) {

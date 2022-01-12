@@ -15,85 +15,117 @@
  */
 
 import * as React from "react";
-import { ModalWizard } from "../ModalWizard";
 import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { ImportJavaClassesWizardFirstStep } from "./ImportJavaClassesWizardFirstStep";
 import { ImportJavaClassesWizardSecondStep } from "./ImportJavaClassesWizardSecondStep";
 import { ImportJavaClassesWizardThirdStep } from "./ImportJavaClassesWizardThirdStep";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { JavaClass } from "./Model/JavaClass";
 import { JavaField } from "./Model/JavaField";
 import { DMNSimpleType } from "./Model/DMNSimpleType";
 import { getJavaClassSimpleName } from "./Model/JavaClassUtils";
+import { ImportJavaClassGWTService } from "./Model";
+import { Button, Modal, ModalVariant, Tooltip, Wizard } from "@patternfly/react-core";
 
 export interface ImportJavaClassesWizardProps {
   /** Button disabled status */
   buttonDisabledStatus: boolean;
   /** Button tooltip message */
   buttonTooltipMessage?: string;
+  /** Service class which contains all API methods to dialog with GWT layer */
+  importJavaClassesGWTService: ImportJavaClassGWTService;
 }
 
-export const ImportJavaClassesWizard: React.FunctionComponent<ImportJavaClassesWizardProps> = ({
+export const ImportJavaClassesWizard = ({
   buttonDisabledStatus,
   buttonTooltipMessage,
+  importJavaClassesGWTService,
 }: ImportJavaClassesWizardProps) => {
   const { i18n } = useImportJavaClassesWizardI18n();
   const [javaClasses, setJavaClasses] = useState<JavaClass[]>([]);
-  const updateSelectedClasses = (fullClassName: string, add: boolean) => {
-    if (add) {
-      addJavaClass(fullClassName);
-    } else {
-      removeJavaClass(fullClassName);
-    }
-  };
-  const addJavaClass = (fullClassName: string) => {
-    if (!javaClasses.some((javaClass) => javaClass.name === fullClassName)) {
-      const updatedSelectedJavaClasses: JavaClass[] = [...javaClasses, new JavaClass(fullClassName)];
-      updatedSelectedJavaClasses.sort((a, b) => (a.name < b.name ? -1 : 1));
-      updateJavaFieldsReferences(updatedSelectedJavaClasses, javaClasses);
-      setJavaClasses(updatedSelectedJavaClasses);
-    }
-  };
-  const removeJavaClass = (fullClassName: string) => {
-    const updatedSelectedJavaClasses: JavaClass[] = javaClasses.filter((javaClass) => javaClass.name !== fullClassName);
-    updateJavaFieldsReferences(updatedSelectedJavaClasses, javaClasses);
-    setJavaClasses(updatedSelectedJavaClasses);
-  };
-  const updateSelectedClassesFields = (fullClassName: string, fields: JavaField[]) => {
-    const javaClassIndex: number = javaClasses.findIndex((javaClass) => javaClass.name === fullClassName);
-    if (javaClassIndex > -1) {
-      javaClasses[javaClassIndex].setFields(fields);
-    }
-    setJavaClasses([...javaClasses]);
-  };
-  const updateJavaFieldsReferences = (updatedJavaClasses: JavaClass[], previousJavaClasses: JavaClass[]) => {
-    const updatedJavaClassesNames: string[] = updatedJavaClasses.map((javaClass) => javaClass.name);
-    const previousJavaClassesNames: string[] = previousJavaClasses.map((javaClass) => javaClass.name);
-    const allFields: JavaField[] = javaClasses.map((javaClass) => javaClass.fields).flat(1);
-    allFields.forEach((field: JavaField) => {
-      if (field.dmnTypeRef === DMNSimpleType.ANY && updatedJavaClassesNames.includes(field.type)) {
-        field.dmnTypeRef = getJavaClassSimpleName(field.type);
-      } else if (previousJavaClassesNames.includes(field.type) && !updatedJavaClassesNames.includes(field.type)) {
-        field.dmnTypeRef = DMNSimpleType.ANY;
+  const [isOpen, setOpen] = useState(false);
+
+  const updateJavaFieldsReferences = useCallback(
+    (updatedJavaClasses: JavaClass[], previousJavaClasses: JavaClass[]) => {
+      const updatedJavaClassesNames = updatedJavaClasses.map((javaClass) => javaClass.name);
+      const previousJavaClassesNames = previousJavaClasses.map((javaClass) => javaClass.name);
+      const allFields = javaClasses.map((javaClass) => javaClass.fields).flat(1);
+      allFields.forEach((field) => {
+        if (field.dmnTypeRef === DMNSimpleType.ANY && updatedJavaClassesNames.includes(field.type)) {
+          field.dmnTypeRef = getJavaClassSimpleName(field.type);
+        } else if (previousJavaClassesNames.includes(field.type) && !updatedJavaClassesNames.includes(field.type)) {
+          field.dmnTypeRef = DMNSimpleType.ANY;
+        }
+      });
+    },
+    [javaClasses]
+  );
+
+  const addJavaClass = useCallback(
+    (fullClassName: string) => {
+      setJavaClasses((prevState) => {
+        if (!prevState.some((javaClass) => javaClass.name === fullClassName)) {
+          const updatedSelectedJavaClasses = [...prevState, new JavaClass(fullClassName)];
+          updatedSelectedJavaClasses.sort((a, b) => (a.name < b.name ? -1 : 1));
+          updateJavaFieldsReferences(updatedSelectedJavaClasses, prevState);
+          return updatedSelectedJavaClasses;
+        }
+        return prevState;
+      });
+    },
+    [updateJavaFieldsReferences]
+  );
+
+  const removeJavaClass = useCallback(
+    (fullClassName: string) => {
+      setJavaClasses((prevState) => {
+        const updatedSelectedJavaClasses = prevState.filter((javaClass) => javaClass.name !== fullClassName);
+        updateJavaFieldsReferences(updatedSelectedJavaClasses, prevState);
+        return updatedSelectedJavaClasses;
+      });
+    },
+    [updateJavaFieldsReferences]
+  );
+
+  const updateSelectedClassesFields = useCallback((fullClassName: string, fields: JavaField[]) => {
+    setJavaClasses((prevState) => {
+      const updatedJavaClasses = [...prevState];
+      const javaClassIndex = updatedJavaClasses.findIndex((javaClass) => javaClass.name === fullClassName);
+      if (javaClassIndex > -1) {
+        updatedJavaClasses[javaClassIndex].setFields(fields);
       }
+      return updatedJavaClasses;
     });
-  };
-  const isSecondStepActivatable = () => {
+  }, []);
+
+  const isSecondStepActivatable = useCallback(() => {
     return javaClasses.length > 0;
-  };
-  const isThirdStepActivatable = () => {
-    return javaClasses.length > 0 && javaClasses.every((javaClass: JavaClass) => javaClass.fieldsLoaded);
-  };
-  const resetJavaClassState = () => {
+  }, [javaClasses]);
+
+  const isThirdStepActivatable = useCallback(() => {
+    return javaClasses.length > 0 && javaClasses.every((javaClass) => javaClass.fieldsLoaded);
+  }, [javaClasses]);
+
+  const handleButtonClick = useCallback(() => setOpen((prevState) => !prevState), []);
+
+  const handleWizardClose = useCallback(() => {
+    handleButtonClick();
     setJavaClasses([]);
-  };
+  }, [handleButtonClick]);
+
+  const handleWizardSave = useCallback(() => {
+    handleWizardClose();
+    importJavaClassesGWTService.handleOnWizardImportButtonClick(javaClasses);
+  }, [javaClasses, handleWizardClose, importJavaClassesGWTService]);
+
   const steps = [
     {
       canJumpTo: true,
       component: (
         <ImportJavaClassesWizardFirstStep
           selectedJavaClasses={javaClasses}
-          onSelectedJavaClassesUpdated={updateSelectedClasses}
+          onAddJavaClass={addJavaClass}
+          onRemoveJavaClass={removeJavaClass}
         />
       ),
       enableNext: isSecondStepActivatable(),
@@ -105,9 +137,8 @@ export const ImportJavaClassesWizard: React.FunctionComponent<ImportJavaClassesW
       component: (
         <ImportJavaClassesWizardSecondStep
           selectedJavaClasses={javaClasses}
-          onSelectedJavaClassesUpdated={updateSelectedClasses}
+          onAddJavaClass={addJavaClass}
           onSelectedJavaClassedFieldsLoaded={updateSelectedClassesFields}
-          fetchButtonLabel={i18n.modalWizard.secondStep.fetchButtonLabel}
         />
       ),
       enableNext: isThirdStepActivatable(),
@@ -122,16 +153,45 @@ export const ImportJavaClassesWizard: React.FunctionComponent<ImportJavaClassesW
   ];
 
   return (
-    <ModalWizard
-      buttonStyle="secondary"
-      buttonText={i18n.modalButton.text}
-      buttonDisabledStatus={buttonDisabledStatus}
-      buttonTooltipMessage={buttonTooltipMessage}
-      className={"import-java-classes"}
-      onWizardClose={resetJavaClassState}
-      wizardDescription={i18n.modalWizard.description}
-      wizardSteps={steps}
-      wizardTitle={i18n.modalWizard.title}
-    />
+    <>
+      {buttonTooltipMessage ? (
+        <Tooltip content={buttonTooltipMessage}>
+          <Button
+            variant={"secondary"}
+            onClick={handleButtonClick}
+            isAriaDisabled={buttonDisabledStatus}
+            data-testid={"modal-wizard-button"}
+          >
+            {i18n.modalButton.text}
+          </Button>
+        </Tooltip>
+      ) : (
+        <Button
+          variant={"secondary"}
+          onClick={handleButtonClick}
+          isAriaDisabled={buttonDisabledStatus}
+          data-testid={"modal-wizard-button"}
+        >
+          {i18n.modalButton.text}
+        </Button>
+      )}
+      {isOpen ? (
+        <Modal
+          description={i18n.modalWizard.description}
+          isOpen={isOpen}
+          onClose={handleWizardClose}
+          title={i18n.modalWizard.title}
+          variant={ModalVariant.large}
+        >
+          <Wizard
+            className={"import-java-classes"}
+            height={600}
+            onClose={handleWizardClose}
+            onSave={handleWizardSave}
+            steps={steps}
+          />
+        </Modal>
+      ) : null}
+    </>
   );
 };

@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@kogito-tooling/boxed-expression-component": "0.0.0",
+    "@kogito-tooling/import-java-classes-component": "0.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

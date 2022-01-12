@@ -15,69 +15,132 @@
  */
 
 import * as React from "react";
-import { SearchInput } from "@patternfly/react-core";
+import {
+  DataList,
+  DataListCell,
+  DataListCheck,
+  DataListItem,
+  DataListItemRow,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  SearchInput,
+  Title,
+} from "@patternfly/react-core";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { useCallback, useState } from "react";
-import { EmptyStateWidget } from "../EmptyStateWidget";
-import { ImportJavaClassesWizardClassListTable } from "./ImportJavaClassesWizardClassListTable";
 import { JavaClass } from "./Model/JavaClass";
 
 export interface ImportJavaClassesWizardFirstStepProps {
   /** List of the selected classes by user */
   selectedJavaClasses: JavaClass[];
-  /** Function to be called when selecting a Java Class */
-  onSelectedJavaClassesUpdated: (fullClassName: string, add: boolean) => void;
+  /** Function to be called when adding a Java Class */
+  onAddJavaClass: (fullClassName: string) => void;
+  /** Function to be called when removing a Java Class */
+  onRemoveJavaClass: (fullClassName: string) => void;
 }
 
-export const ImportJavaClassesWizardFirstStep: React.FunctionComponent<ImportJavaClassesWizardFirstStepProps> = ({
+export const ImportJavaClassesWizardFirstStep = ({
   selectedJavaClasses,
-  onSelectedJavaClassesUpdated,
-}) => {
-  const EMPTY_SEARCH_VALUE = "";
+  onAddJavaClass,
+  onRemoveJavaClass,
+}: ImportJavaClassesWizardFirstStepProps) => {
   const { i18n } = useImportJavaClassesWizardI18n();
-  const [searchValue, setSearchValue] = useState(EMPTY_SEARCH_VALUE);
-  const [retrievedJavaClasses, setRetrievedJavaClasses] = useState<string[]>([]);
-  const onSearchValueChange = useCallback((value: string) => retrieveJavaClasses(value), []);
-  /* This function temporary mocks a call to the LSP service method getClasses */
-  const retrieveJavaClasses = (value: string) => {
+  const [searchValue, setSearchValue] = useState("");
+  const [retrievedJavaClassesNames, setRetrievedJavaClassesNames] = useState<string[]>([]);
+
+  const retrieveJavaClasses = useCallback((value: string) => {
     setSearchValue(value);
     const retrieved = window.envelopeMock.lspGetClassServiceMocked(value);
     if (retrieved) {
-      setRetrievedJavaClasses(retrieved);
+      setRetrievedJavaClassesNames(retrieved);
     }
-  };
+  }, []);
 
-  const EmptyStep: React.FunctionComponent = () => {
-    return (
-      <EmptyStateWidget
-        emptyStateIcon={CubesIcon}
-        emptyStateTitleHeading={"h6"}
-        emptyStateTitleSize={"md"}
-        emptyStateTitleText={i18n.modalWizard.firstStep.emptyState.title}
-        emptyStateBodyText={i18n.modalWizard.firstStep.emptyState.body}
-      />
-    );
-  };
+  const handleSearchValueChange = useCallback((value) => retrieveJavaClasses(value), [retrieveJavaClasses]);
+
+  const handleClearSearch = useCallback(() => {
+    setSearchValue("");
+    setRetrievedJavaClassesNames([]);
+  }, []);
+
+  const handleDataListCheckChange = useCallback(
+    (fullClassName: string) => {
+      if (!selectedJavaClasses.map((javaClass) => javaClass.name).includes(fullClassName)) {
+        onAddJavaClass(fullClassName);
+      } else {
+        onRemoveJavaClass(fullClassName);
+      }
+    },
+    [selectedJavaClasses, onAddJavaClass, onRemoveJavaClass]
+  );
+
+  const isDataListChecked = useCallback(
+    (fullClassName: string) => {
+      if (selectedJavaClasses.map((javaClass) => javaClass.name).includes(fullClassName)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    [selectedJavaClasses]
+  );
+
+  const dataListClassesSet = [
+    ...new Set(selectedJavaClasses.map((value) => value.name).concat(retrievedJavaClassesNames)),
+  ];
 
   return (
     <>
       <SearchInput
         placeholder={i18n.modalWizard.firstStep.input.placeholder}
         value={searchValue}
-        onChange={onSearchValueChange}
-        onClear={() => onSearchValueChange(EMPTY_SEARCH_VALUE)}
+        onChange={handleSearchValueChange}
+        onClear={handleClearSearch}
         autoFocus
       />
-      {retrievedJavaClasses.length > 0 || selectedJavaClasses.length > 0 ? (
-        <ImportJavaClassesWizardClassListTable
-          selectedJavaClasses={selectedJavaClasses}
-          retrievedJavaClasses={retrievedJavaClasses}
-          onJavaClassItemSelected={onSelectedJavaClassesUpdated}
-        />
+      {retrievedJavaClassesNames.length > 0 || selectedJavaClasses.length > 0 ? (
+        <DataList aria-label={"class-data-list"}>
+          {dataListClassesSet.map((value) => (
+            <DataListItem key={value} name={value}>
+              <DataListItemRow>
+                <DataListCheck
+                  aria-labelledby={value}
+                  checked={isDataListChecked(value)}
+                  onChange={() => handleDataListCheckChange(value)}
+                />
+                <DataListCell>
+                  <span id={value}>{value}</span>
+                </DataListCell>
+              </DataListItemRow>
+            </DataListItem>
+          ))}
+        </DataList>
       ) : (
-        <EmptyStep />
+        <EmptyStep
+          emptyStateBodyText={i18n.modalWizard.firstStep.emptyState.body}
+          emptyStateTitleText={i18n.modalWizard.firstStep.emptyState.title}
+        />
       )}
     </>
+  );
+};
+
+const EmptyStep = ({
+  emptyStateBodyText,
+  emptyStateTitleText,
+}: {
+  emptyStateBodyText: string;
+  emptyStateTitleText: string;
+}) => {
+  return (
+    <EmptyState>
+      <EmptyStateIcon icon={CubesIcon} />
+      <Title headingLevel={"h6"} size={"md"}>
+        {emptyStateTitleText}
+      </Title>
+      <EmptyStateBody>{emptyStateBodyText}</EmptyStateBody>
+    </EmptyState>
   );
 };
