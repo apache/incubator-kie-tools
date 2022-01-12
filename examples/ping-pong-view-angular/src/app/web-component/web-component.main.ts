@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, Input } from "@angular/core";
-import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
+import { WebComponentModule } from "./web-component.module";
+import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 
-@Component({
-  selector: "ping-pong-wc",
-  template: `<app-ping-pong [containerType]="containerType" [envelopeId]="envelopeId"></app-ping-pong>`,
-})
-export class PingPongWcComponent {
-  @Input("containertype") containerType: ContainerType;
-  @Input("envelopeid") envelopeId: string;
-}
+const bootstrap = () => platformBrowserDynamic().bootstrapModule(WebComponentModule);
+bootstrap().catch((err) => console.error(err));

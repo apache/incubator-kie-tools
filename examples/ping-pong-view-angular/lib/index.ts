@@ -14,14 +14,27 @@
  * limitations under the License.
  */
 
-import { Component, Input } from "@angular/core";
+import { NgElement, WithProperties } from "@angular/elements";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
 
-@Component({
-  selector: "ping-pong-wc",
-  template: `<app-ping-pong [containerType]="containerType" [envelopeId]="envelopeId"></app-ping-pong>`,
-})
-export class PingPongWcComponent {
-  @Input("containertype") containerType: ContainerType;
-  @Input("envelopeid") envelopeId: string;
+// const renderingStatus = new Map<string, boolean>();
+
+export const pingPongEnvelopViewRenderDiv = (
+  container: HTMLElement,
+  containerType: ContainerType,
+  envelopeId: string
+) => {
+  return new Promise<void>((res) => {
+    const element = document.createElement("ping-pong-angular");
+    element.setAttribute("containerType", containerType);
+    element.setAttribute("envelopeId", envelopeId);
+    container.appendChild(element);
+    res();
+  });
+};
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "ping-pong-angular": NgElement & WithProperties<{ containerType: ContainerType; envelopeid: string }>;
+  }
 }

@@ -21,6 +21,7 @@ import { EmbeddedDivPingPong, EmbeddedIFramePingPong } from "@kogito-tooling-exa
 import { PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
 import { StatsSidebar } from "../StatsSidebar";
 import { pingPongEnvelopViewRender } from "@kogito-tooling-examples/ping-pong-view-react";
+import { pingPongEnvelopViewRenderDiv } from "@kogito-tooling-examples/ping-pong-view-angular/dist/wc/lib";
 
 let pings = 0;
 let pongs = 0;
@@ -60,7 +61,14 @@ export function PingPongMixedViewsPage() {
 
   const reactDivMapping = useMemo(
     () => ({
-      title: "Ping-Pong Page in React",
+      title: "Ping-Pong Page in React Div",
+    }),
+    []
+  );
+
+  const angularDivMapping = useMemo(
+    () => ({
+      title: "Ping-Pong Page in Angular Div",
     }),
     []
   );
@@ -70,7 +78,7 @@ export function PingPongMixedViewsPage() {
       <div className={"webapp--page-main-div"}>
         <StatsSidebar lastPing={lastPing} lastPong={lastPong} pings={pings} pongs={pongs} />
         <div className={"webapp--page-ping-pong-view"}>
-          <PageSection style={{ flexGrow: 1 }}>
+          <PageSection style={{ flex: "1 1 25%" }}>
             <EmbeddedIFramePingPong
               apiImpl={apiImpl}
               name={"Angular iFrame"}
@@ -79,7 +87,17 @@ export function PingPongMixedViewsPage() {
             />
           </PageSection>
 
-          <PageSection style={{ flexGrow: 1 }}>
+          <PageSection style={{ flex: "1 1 25%" }}>
+            <EmbeddedDivPingPong
+              apiImpl={apiImpl}
+              name={"Angular Div"}
+              targetOrigin={window.location.origin}
+              mapping={angularDivMapping}
+              renderView={pingPongEnvelopViewRenderDiv}
+            />
+          </PageSection>
+
+          <PageSection style={{ flex: "1 1 25%" }}>
             <EmbeddedIFramePingPong
               apiImpl={apiImpl}
               name={"React iFrame"}
@@ -88,7 +106,7 @@ export function PingPongMixedViewsPage() {
             />
           </PageSection>
 
-          <PageSection style={{ flexGrow: 1 }}>
+          <PageSection style={{ flex: "1 1 25%" }}>
             <EmbeddedDivPingPong
               apiImpl={apiImpl}
               name={"React Div"}

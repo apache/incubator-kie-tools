@@ -32,6 +32,7 @@ import "../static/resources/styles.css";
 import { DmnStandaloneEditorPage } from "./Pages/StandaloneEditors/DmnStandaloneEditorPage";
 import { PingPongAngularIFrameViewsPage } from "./Pages/PingPong/Angular/PingPongAngularIFrameViewsPage";
 import { PingPongMixedViewsPage } from "./Pages/PingPong/Mixed/PingPongMixedViewsPage";
+import { PingPongAngularDivViewsPage } from "./Pages/PingPong/Angular/PingPongAngularDivViewsPage";
 
 enum Location {
   BPMN = "/editor/bpmn",
@@ -41,6 +42,7 @@ enum Location {
   PING_PONG_REACT_IFRAME_PAGES = "/page/ping-pong-react/iframe-pages",
   PING_PONG_REACT_DIV_PAGES = "/page/ping-pong-react/div-pages",
   PING_PONG_ANGULAR_IFRAME_PAGES = "/page/ping-pong-angular/iframe-pages",
+  PING_PONG_ANGULAR_DIV_PAGES = "/page/ping-pong-angular/div-pages",
   PING_PONG_MIXED_PAGES = "/page/ping-pong-mixed",
   STANDALONE_EDITORS = "/page/standalone-editors",
   HOME = "/",
@@ -102,6 +104,12 @@ export function App() {
                     <Link to={Location.PING_PONG_ANGULAR_IFRAME_PAGES}>Ping-Pong Angular IFrame</Link>
                   </NavItem>
                   <NavItem
+                    itemId={Location.PING_PONG_ANGULAR_DIV_PAGES}
+                    isActive={location === Location.PING_PONG_ANGULAR_DIV_PAGES}
+                  >
+                    <Link to={Location.PING_PONG_ANGULAR_DIV_PAGES}>Ping-Pong Angular Div</Link>
+                  </NavItem>
+                  <NavItem
                     itemId={Location.PING_PONG_MIXED_PAGES}
                     isActive={location === Location.PING_PONG_MIXED_PAGES}
                   >
@@ -140,6 +148,9 @@ export function App() {
           </Route>
           <Route path={Location.PING_PONG_ANGULAR_IFRAME_PAGES}>
             <PingPongAngularIFrameViewsPage />
+          </Route>
+          <Route path={Location.PING_PONG_ANGULAR_DIV_PAGES}>
+            <PingPongAngularDivViewsPage />
           </Route>
           <Route path={Location.PING_PONG_MIXED_PAGES}>
             <PingPongMixedViewsPage />

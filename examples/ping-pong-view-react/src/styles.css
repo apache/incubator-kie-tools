@@ -26,11 +26,36 @@
   padding: 10px;
   background-color: black;
   color: white;
+  font-size: 12px;
+  line-height: 16px;
+  margin: 0;
 }
 
 .ping-pong-view--main {
   border: 2px solid green;
   padding: 10px;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+.ping-pong-view--main h2 {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.ping-pong-view--main p {
+  margin: 8px 0;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.ping-pong-view--main button {
+  font-size: 16px;
+  line-height: 18px;
+  margin: 0;
+  padding: 2px;
+  cursor: pointer;
 }
 
 .ping-pong-view--p-iframe {

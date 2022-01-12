@@ -9,9 +9,8 @@ digraph G {
   "@kie-tooling-core/chrome-extension" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "kogito-tooling-examples-base64png-editor-vscode-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tooling-core/vscode-extension" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kogito-tooling-examples/ping-pong-lib" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
-  "@kie-tooling-core/envelope" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kogito-tooling-examples/ping-pong-view" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tooling-core/envelope" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kogito-tooling-examples/ping-pong-view-angular" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kogito-tooling-examples/ping-pong-view-react" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kogito-tooling-examples/todo-list-view" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -69,7 +68,6 @@ digraph G {
   "@kogito-tooling-examples/base64png-editor-chrome-extension" -> "@kogito-tooling-examples/base64png-editor" [ style = "solid", color = "orange" ];
   "kogito-tooling-examples-base64png-editor-vscode-extension" -> "@kie-tooling-core/vscode-extension" [ style = "solid", color = "orange" ];
   "kogito-tooling-examples-base64png-editor-vscode-extension" -> "@kogito-tooling-examples/base64png-editor" [ style = "solid", color = "orange" ];
-  "@kogito-tooling-examples/ping-pong-lib" -> "@kie-tooling-core/envelope" [ style = "solid", color = "orange" ];
   "@kogito-tooling-examples/ping-pong-view" -> "@kie-tooling-core/envelope" [ style = "solid", color = "orange" ];
   "@kogito-tooling-examples/ping-pong-view-angular" -> "@kogito-tooling-examples/ping-pong-view" [ style = "solid", color = "orange" ];
   "@kogito-tooling-examples/ping-pong-view-react" -> "@kogito-tooling-examples/ping-pong-view" [ style = "solid", color = "orange" ];

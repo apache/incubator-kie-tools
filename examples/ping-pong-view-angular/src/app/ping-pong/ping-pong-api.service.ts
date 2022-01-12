@@ -36,9 +36,7 @@ function getCurrentTime() {
   return window.performance.now();
 }
 
-@Injectable({
-  providedIn: "root",
-})
+@Injectable()
 export class PingPongApiService implements PingPongFactory {
   channelApi: MessageBusClientApi<PingPongChannelApi>;
   initArgs: PingPongInitArgs;

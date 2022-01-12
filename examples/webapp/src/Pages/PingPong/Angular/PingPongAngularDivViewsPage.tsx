@@ -19,13 +19,14 @@ import { useMemo, useState } from "react";
 import { Page, PageSection } from "@patternfly/react-core";
 import { EmbeddedDivPingPong } from "@kogito-tooling-examples/ping-pong-view/dist/embedded";
 import { PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
-import { pingPongEnvelopViewRender } from "@kogito-tooling-examples/ping-pong-view-react";
 import { StatsSidebar } from "../StatsSidebar";
+import "@kogito-tooling-examples/ping-pong-view-angular/dist/wc";
+import { pingPongEnvelopViewRenderDiv } from "@kogito-tooling-examples/ping-pong-view-angular/dist/wc/lib";
 
 let pings = 0;
 let pongs = 0;
 
-export function PingPongReactDivViewsPage() {
+export function PingPongAngularDivViewsPage() {
   const [lastPing, setLastPing] = useState<string>("-");
   const [lastPong, setLastPong] = useState<string>("-");
 
@@ -44,7 +45,7 @@ export function PingPongReactDivViewsPage() {
 
   const mapping = useMemo(
     () => ({
-      title: "Ping-Pong Page in React",
+      title: "Ping-Pong Page in Angular",
     }),
     []
   );
@@ -57,30 +58,30 @@ export function PingPongReactDivViewsPage() {
           <PageSection style={{ flex: "1 1" }}>
             <EmbeddedDivPingPong
               apiImpl={apiImpl}
-              name={"React 1"}
+              name={"Angular 1"}
               targetOrigin={window.location.origin}
               mapping={mapping}
-              renderView={pingPongEnvelopViewRender}
+              renderView={pingPongEnvelopViewRenderDiv}
             />
           </PageSection>
 
           <PageSection style={{ flex: "1 1" }}>
             <EmbeddedDivPingPong
               apiImpl={apiImpl}
-              name={"React 2"}
+              name={"Angular 2"}
               targetOrigin={window.location.origin}
               mapping={mapping}
-              renderView={pingPongEnvelopViewRender}
+              renderView={pingPongEnvelopViewRenderDiv}
             />
           </PageSection>
 
           <PageSection style={{ flex: "1 1" }}>
             <EmbeddedDivPingPong
               apiImpl={apiImpl}
-              name={"React 3"}
+              name={"Angular 3"}
               targetOrigin={window.location.origin}
               mapping={mapping}
-              renderView={pingPongEnvelopViewRender}
+              renderView={pingPongEnvelopViewRenderDiv}
             />
           </PageSection>
         </div>

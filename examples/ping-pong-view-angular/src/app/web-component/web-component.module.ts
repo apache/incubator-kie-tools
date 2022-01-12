@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { NgModule, Injector } from "@angular/core";
+import { NgModule, Injector, DoBootstrap } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { createCustomElement } from "@angular/elements";
 import { PingPongModule } from "../ping-pong/ping-pong.module";
@@ -23,14 +23,14 @@ import { PingPongWcComponent } from "./web-component.component";
 @NgModule({
   declarations: [PingPongWcComponent],
   imports: [BrowserModule, PingPongModule],
+  entryComponents: [PingPongWcComponent],
   providers: [],
-  bootstrap: [PingPongWcComponent],
 })
-export class WebComponentModule {
-  constructor(private injector: Injector) {
-    const element = createCustomElement(PingPongWcComponent, { injector });
+export class WebComponentModule implements DoBootstrap {
+  constructor(private injector: Injector) {}
+
+  ngDoBootstrap() {
+    const element = createCustomElement(PingPongWcComponent, { injector: this.injector });
     customElements.define("ping-pong-angular", element);
   }
-
-  ngDoBootstrap() {}
 }

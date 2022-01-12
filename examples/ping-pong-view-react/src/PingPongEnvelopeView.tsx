@@ -56,7 +56,7 @@ export const PingPongEnvelopeView = (props: { envelopeConfig: EnvelopeDivConfig 
 
   return (
     <div className={"ping-pong-view--main"}>
-      <h2>This is an implementation of Ping-Pong View</h2>
+      <h2>This is an implementation of Ping-Pong View in React</h2>
 
       <p className={"ping-pong-view--p-iframe"}>
         {" "}

@@ -54,7 +54,7 @@ export function PingPongAngularIFrameViewsPage() {
       <div className={"webapp--page-main-div"}>
         <StatsSidebar lastPing={lastPing} lastPong={lastPong} pings={pings} pongs={pongs} />
         <div className={"webapp--page-ping-pong-view"}>
-          <PageSection style={{ flexGrow: 1 }}>
+          <PageSection style={{ flex: "1 1" }}>
             <EmbeddedIFramePingPong
               apiImpl={apiImpl}
               name={"Angular 1"}
@@ -63,7 +63,7 @@ export function PingPongAngularIFrameViewsPage() {
             />
           </PageSection>
 
-          <PageSection style={{ flexGrow: 1 }}>
+          <PageSection style={{ flex: "1 1" }}>
             <EmbeddedIFramePingPong
               apiImpl={apiImpl}
               name={"Angular 2"}
@@ -72,7 +72,7 @@ export function PingPongAngularIFrameViewsPage() {
             />
           </PageSection>
 
-          <PageSection style={{ flexGrow: 1 }}>
+          <PageSection style={{ flex: "1 1" }}>
             <EmbeddedIFramePingPong
               apiImpl={apiImpl}
               name={"Angular 3"}

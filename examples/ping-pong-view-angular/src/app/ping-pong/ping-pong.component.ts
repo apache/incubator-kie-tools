@@ -15,7 +15,7 @@
  */
 
 import { PingPongApiService, LogEntry } from "./ping-pong-api.service";
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import * as PingPongViewEnvelope from "@kogito-tooling-examples/ping-pong-view/dist/envelope";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
 import { Observable, scan } from "rxjs";
@@ -24,8 +24,11 @@ import { Observable, scan } from "rxjs";
   selector: "app-ping-pong",
   templateUrl: "./ping-pong.component.html",
   styleUrls: ["./ping-pong.component.css"],
+  providers: [PingPongApiService],
 })
 export class PingPongComponent implements OnInit {
+  @Input() containerType: ContainerType;
+  @Input() envelopeId?: string;
   constructor(public pingPongApiService: PingPongApiService) {}
 
   log: Observable<LogEntry[]>;
@@ -39,7 +42,7 @@ export class PingPongComponent implements OnInit {
     // and the "viewReady" that signals that our app is ready (in this case, immediately,
     // since the app is already loaded).
     PingPongViewEnvelope.init({
-      config: { containerType: ContainerType.IFRAME },
+      config: { containerType: this.containerType, envelopeId: this.envelopeId! },
       bus: { postMessage: (message, _targetOrigin, transfer) => window.parent.postMessage(message, "*", transfer) },
       pingPongViewFactory: this.pingPongApiService,
       viewReady: () => Promise.resolve(() => {}),
