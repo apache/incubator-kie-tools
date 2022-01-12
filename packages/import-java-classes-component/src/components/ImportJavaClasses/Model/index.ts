@@ -14,4 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./";
+export * from "./JavaClass";
+export * from "./ImportJavaClassesGWTService";
