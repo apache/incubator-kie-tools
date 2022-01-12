@@ -15,7 +15,7 @@
  */
 
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
-const common = require("../../config/webpack.common.config");
+const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
 
 const commonConfig = (env) =>
