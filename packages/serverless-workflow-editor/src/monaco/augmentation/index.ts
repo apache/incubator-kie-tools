@@ -15,8 +15,8 @@
  */
 
 import * as monaco from "monaco-editor";
-import { CancellationToken, editor, languages, Position } from "monaco-editor";
-import { getSuggestions } from "./completion";
+import { editor } from "monaco-editor";
+// import { initCompletion } from "./completion";
 
 // Setting up the JSON language defaults
 export const SW_SPEC_SCHEMA =
@@ -32,22 +32,6 @@ monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
     },
   ],
   enableSchemaRequest: true,
-});
-
-monaco.languages.registerCompletionItemProvider("json", {
-  provideCompletionItems(
-    model: editor.ITextModel,
-    position: Position,
-    context: languages.CompletionContext,
-    token: CancellationToken
-  ): languages.ProviderResult<languages.CompletionList> {
-    return getSuggestions({
-      model,
-      position,
-      context,
-      token,
-    });
-  },
 });
 
 export interface IMonacoEditor {
@@ -97,5 +81,6 @@ class DefaultMonacoEditor implements IMonacoEditor {
 }
 
 export function buildEditor(content: string = "{}", onContentChange: (content: string) => void): IMonacoEditor {
+  // initCompletion();
   return new DefaultMonacoEditor(content, onContentChange);
 }
