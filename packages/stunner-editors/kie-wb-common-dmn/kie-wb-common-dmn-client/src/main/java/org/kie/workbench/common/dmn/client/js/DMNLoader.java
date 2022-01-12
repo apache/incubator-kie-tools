@@ -24,9 +24,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.P
 @JsType(isNative = true)
 public class DMNLoader {
 
-    @JsMethod(namespace = "__KIE__DMN_LOADER__")
-    public static native void renderHelloWorld(final String selector);
-
     /**
      * Method used to render the boxed-expression-component (TS/React world) in the DMN Editor (Java/GWT world)
      * @param selector DOM selector, where the component will be placed
