@@ -12,6 +12,7 @@
     "url": "git+https://github.com/thiagoelg/kogito-tooling.git"
   },
   "scripts": {
+    "build": "rimraf dist && yarn run build:app && yarn run build:wc && yarn run build:wc-lib",
     "build:dev": "rimraf dist && yarn run build:app:dev && yarn run build:wc && yarn run build:wc-lib",
     "build:prod": "rimraf dist && yarn run build:app:prod && yarn run build:wc && yarn run build:wc-lib",
     "build:app": "ng build",
@@ -19,11 +20,7 @@
     "build:app:prod": "yarn run run-script-if --bool $(build-env global.build.examples) --then \"yarn run build:app --configuration production\"",
     "build:wc": "ng build ping-pong-view-wc && yarn run build:wc:concat",
     "build:wc:concat": "cat dist/wc/polyfills.js dist/wc/runtime.js dist/wc/main.js > dist/wc/index.js",
-    "build:wc-lib": "tsc --project tsconfig.lib.json",
-    "ng": "ng",
-    "start": "ng serve",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "build:wc-lib": "tsc --project tsconfig.lib.json"
   },
   "dependencies": {
     "@angular/animations": "^13.1.1",
@@ -39,6 +36,7 @@
     "@kogito-tooling-examples/ping-pong-view": "0.0.0",
     "rxjs": "^7.4.0",
     "tslib": "^2.3.1",
+    "typescript": "^4.4.2",
     "zone.js": "^0.11.4"
   },
   "devDependencies": {
