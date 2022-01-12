@@ -37,7 +37,8 @@
     "@kogito-tooling/stunner-editors": "0.0.0",
     "@types/isomorphic-git__lightning-fs": "^4.4.2",
     "@types/react-router": "^5.1.14",
-    "@types/react-router-dom": "^5.1.7"
+    "@types/react-router-dom": "^5.1.7",
+    "@kie-tooling-core/webpack-base": "0.0.0"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
