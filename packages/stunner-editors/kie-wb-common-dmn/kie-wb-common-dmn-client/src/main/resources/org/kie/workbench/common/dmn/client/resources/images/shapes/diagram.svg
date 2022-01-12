@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 20.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="diagram" xmlns="http://www.w3.org/2000/svg" xmlns:stunner="http://kiegroup.org/2017/stunner"
+		 x="0px" y="0px" width="448px" height="448px" viewBox="0 0 448 448"
+		 style="enable-background:new 0 0 448 448;" xml:space="preserve">
+<style type="text/css">
+	.st0{display:none;}
+	.st1{display:inline;}
+	.st2{fill:none;}
+</style>
+<g stunner:shape="exclude" id="Grid" class="st0">
+	<g id="icomoon-ignore" class="st1">
+		<line class="st2" x1="16" y1="0" x2="16" y2="448"/>
+		<line class="st2" x1="32" y1="0" x2="32" y2="448"/>
+		<line class="st2" x1="48" y1="0" x2="48" y2="448"/>
+		<line class="st2" x1="64" y1="0" x2="64" y2="448"/>
+		<line class="st2" x1="80" y1="0" x2="80" y2="448"/>
+		<line class="st2" x1="96" y1="0" x2="96" y2="448"/>
+		<line class="st2" x1="112" y1="0" x2="112" y2="448"/>
+		<line class="st2" x1="128" y1="0" x2="128" y2="448"/>
+		<line class="st2" x1="144" y1="0" x2="144" y2="448"/>
+		<line class="st2" x1="160" y1="0" x2="160" y2="448"/>
+		<line class="st2" x1="176" y1="0" x2="176" y2="448"/>
+		<line class="st2" x1="192" y1="0" x2="192" y2="448"/>
+		<line class="st2" x1="208" y1="0" x2="208" y2="448"/>
+		<line class="st2" x1="224" y1="0" x2="224" y2="448"/>
+		<line class="st2" x1="240" y1="0" x2="240" y2="448"/>
+		<line class="st2" x1="256" y1="0" x2="256" y2="448"/>
+		<line class="st2" x1="272" y1="0" x2="272" y2="448"/>
+		<line class="st2" x1="288" y1="0" x2="288" y2="448"/>
+		<line class="st2" x1="304" y1="0" x2="304" y2="448"/>
+		<line class="st2" x1="320" y1="0" x2="320" y2="448"/>
+		<line class="st2" x1="336" y1="0" x2="336" y2="448"/>
+		<line class="st2" x1="352" y1="0" x2="352" y2="448"/>
+		<line class="st2" x1="368" y1="0" x2="368" y2="448"/>
+		<line class="st2" x1="384" y1="0" x2="384" y2="448"/>
+		<line class="st2" x1="400" y1="0" x2="400" y2="448"/>
+		<line class="st2" x1="416" y1="0" x2="416" y2="448"/>
+		<line class="st2" x1="432" y1="0" x2="432" y2="448"/>
+		<line class="st2" x1="0" y1="16" x2="448" y2="16"/>
+		<line class="st2" x1="0" y1="32" x2="448" y2="32"/>
+		<line class="st2" x1="0" y1="48" x2="448" y2="48"/>
+		<line class="st2" x1="0" y1="64" x2="448" y2="64"/>
+		<line class="st2" x1="0" y1="80" x2="448" y2="80"/>
+		<line class="st2" x1="0" y1="96" x2="448" y2="96"/>
+		<line class="st2" x1="0" y1="112" x2="448" y2="112"/>
+		<line class="st2" x1="0" y1="128" x2="448" y2="128"/>
+		<line class="st2" x1="0" y1="144" x2="448" y2="144"/>
+		<line class="st2" x1="0" y1="160" x2="448" y2="160"/>
+		<line class="st2" x1="0" y1="176" x2="448" y2="176"/>
+		<line class="st2" x1="0" y1="192" x2="448" y2="192"/>
+		<line class="st2" x1="0" y1="208" x2="448" y2="208"/>
+		<line class="st2" x1="0" y1="224" x2="448" y2="224"/>
+		<line class="st2" x1="0" y1="240" x2="448" y2="240"/>
+		<line class="st2" x1="0" y1="256" x2="448" y2="256"/>
+		<line class="st2" x1="0" y1="272" x2="448" y2="272"/>
+		<line class="st2" x1="0" y1="288" x2="448" y2="288"/>
+		<line class="st2" x1="0" y1="304" x2="448" y2="304"/>
+		<line class="st2" x1="0" y1="320" x2="448" y2="320"/>
+		<line class="st2" x1="0" y1="336" x2="448" y2="336"/>
+		<line class="st2" x1="0" y1="352" x2="448" y2="352"/>
+		<line class="st2" x1="0" y1="368" x2="448" y2="368"/>
+		<line class="st2" x1="0" y1="384" x2="448" y2="384"/>
+		<line class="st2" x1="0" y1="400" x2="448" y2="400"/>
+		<line class="st2" x1="0" y1="416" x2="448" y2="416"/>
+		<line class="st2" x1="0" y1="432" x2="448" y2="432"/>
+	</g>
+</g>
+<path class="diagram" id="diagramIcon" d="M224,0C100.3,0,0,100.3,0,224s100.3,224,224,224s224-100.3,224-224S347.7,0,224,0z M224,432
+	c-114.9,0-208-93.1-208-208S109.1,16,224,16s208,93.1,208,208S338.9,432,224,432z"/>
+</svg>

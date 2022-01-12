@@ -228,6 +228,11 @@ const ENV_VARS = {
     default: "latest",
     description: "",
   },
+  DMN_LOADER__outputPath: {
+    name: "DMN_LOADER__outputPath",
+    default: "dist",
+    description: "Directory path used to output build artifacts of stunner-editors-dmn-loader",
+  },
 };
 
 module.exports = {
@@ -258,6 +263,25 @@ module.exports = {
           live: webpackEnv.live,
         };
       }
+    },
+  },
+
+  boxedExpressionComponent: {
+    dev: {
+      port: 3015,
+    },
+  },
+
+  feelInputComponent: {
+    dev: {
+      port: 3016,
+      REACT_APP_FEEL_SERVER: "",
+    },
+  },
+
+  importJavaClassesComponent: {
+    dev: {
+      port: 3017,
     },
   },
 
@@ -360,6 +384,12 @@ module.exports = {
     },
     webapp: {
       port: 9100,
+    },
+  },
+
+  stunnerEditors: {
+    dmnLoader: {
+      outputPath: getOrDefault(ENV_VARS.DMN_LOADER__outputPath),
     },
   },
 

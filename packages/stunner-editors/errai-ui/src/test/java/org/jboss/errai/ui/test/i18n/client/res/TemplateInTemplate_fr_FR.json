@@ -1,0 +1,8 @@
+{
+  "ComplexTemplatedChild.greeting": "bonjour",
+  "ComplexTemplatedChild.red": "rouge",
+  "ComplexTemplatedChild.language": "anglais",
+  "ComplexTemplatedChild.okay": "de rien",
+  "BasicTemplate.child": "enfant",
+  "BasicTemplate.greeting": "bonjour"
+}

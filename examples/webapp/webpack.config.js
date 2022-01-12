@@ -17,10 +17,10 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
-const common = require("../../config/webpack.common.config");
+const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
 const buildEnv = require("@kogito-tooling/build-env");
-const externalAssets = require("@kogito-tooling/external-assets-base");
+const stunnerEditors = require("@kogito-tooling/stunner-editors");
 
 module.exports = (env) => [
   merge(common(env), {
@@ -43,7 +43,7 @@ module.exports = (env) => [
           { from: "./envelope", to: "./envelope" },
           { from: "./static", to: "." },
           { from: "../ping-pong-view-angular/dist", to: "./envelope/angular" },
-          { from: externalAssets.dmnEditorPath(), to: "./dmn-editor/dmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
+          { from: stunnerEditors.dmnEditorPath(), to: "./dmn-editor/dmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
         ],
       }),
     ],

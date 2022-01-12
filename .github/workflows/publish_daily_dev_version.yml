@@ -137,9 +137,9 @@ jobs:
           cd kogito-online
           rm -rf dev
           mkdir -p dev/editors
-          cp -r ../kogito-tooling/node_modules/@kogito-tooling/dmn-editor-unpacked/target/dmn dev/editors/
-          cp -r ../kogito-tooling/node_modules/@kogito-tooling/bpmn-editor-unpacked/target/bpmn dev/editors/
-          cp -r ../kogito-tooling/node_modules/@kogito-tooling/scesim-editor-unpacked/target/scesim dev/editors/
+          cp -r ../kogito-tooling/packages/stunner-editors/dist/dmn dev/editors/
+          cp -r ../kogito-tooling/packages/stunner-editors/dist/bpmn dev/editors/
+          cp -r ../kogito-tooling/packages/stunner-editors/dist/scesim dev/editors/
           cp -r ../kogito-tooling/packages/online-editor/dist/* dev/
           rm -rf dev/gwt-editors
           ln -s editors dev/gwt-editors

@@ -177,6 +177,7 @@ export function WorkspacesContextProvider(props: Props) {
           email: args.gitConfig?.email ?? "unknown@email.com",
         },
       });
+
       const broadcastChannel = new BroadcastChannel(args.workspaceId);
       const workspaceEvent: WorkspaceEvents = { type: "CREATE_SAVE_POINT", workspaceId: args.workspaceId };
       broadcastChannel.postMessage(workspaceEvent);

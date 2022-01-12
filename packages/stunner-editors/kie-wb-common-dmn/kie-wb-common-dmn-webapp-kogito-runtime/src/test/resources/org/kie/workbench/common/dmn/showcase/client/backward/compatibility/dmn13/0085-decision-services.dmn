@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0085-decision-services" name="0085-decision-services"
+             id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+             xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/"
+             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <description>Decision Services</description>
+
+    <!-- Direct invocation: no params -->
+
+    <decisionService name="decisionService_001" id="_decisionService_001">
+        <variable name="decisionService_001"/>
+        <outputDecision href="#_decision_001"/>
+    </decisionService>
+
+    <decision name="decision_001" id="_decision_001">
+        <variable name="decision_001"/>
+        <literalExpression>
+            <text>"foo"</text>
+        </literalExpression>
+    </decision>
+
+    <!-- Direct invocation: an input decision param -->
+
+    <decisionService name="decisionService_002" id="_decisionService_002">
+        <variable name="decisionService_002"/>
+        <outputDecision href="#_decision_002"/>
+        <inputDecision href="#_decision_002_input"/>
+    </decisionService>
+
+    <decision name="decision_002" id="_decision_002">
+        <variable name="decision_002"/>
+        <informationRequirement>
+            <requiredDecision href="#_decision_002_input"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>"foo " + decision_002_input</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_002_input" id="_decision_002_input">
+        <variable name="decision_002_input"/>
+        <literalExpression>
+            <text>"bar"</text>
+        </literalExpression>
+    </decision>
+
+    <!-- Direct invocation: with multiple input decision params and an input data -->
+
+    <decisionService name="decisionService_003" id="_decisionService_003">
+        <variable name="decisionService_003"/>
+        <outputDecision href="#_decision_003"/>
+        <inputDecision href="#_decision_003_input_1"/>
+        <inputDecision href="#_decision_003_input_2"/>
+        <inputData href="#_inputData_003"/>
+    </decisionService>
+
+    <decision name="decision_003" id="_decision_003">
+        <variable name="decision_003"/>
+        <informationRequirement>
+            <requiredDecision href="#_decision_003_input_1"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredDecision href="#_decision_003_input_2"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#_inputData_003"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>"A " + decision_003_input_1 + " " + decision_003_input_2 + " " + inputData_003</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_003_input_1" id="_decision_003_input_1">
+        <variable name="decision_003_input_1"/>
+        <literalExpression>
+            <text>"d3_1"</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_003_input_2" id="_decision_003_input_2">
+        <variable name="decision_003_input_2"/>
+        <literalExpression>
+            <text>"d3_2"</text>
+        </literalExpression>
+    </decision>
+
+    <inputData name="inputData_003" id="_inputData_003">
+        <variable name="inputData_003" typeRef="string"/>
+    </inputData>
+
+    <!-- with no params, when none are expected -->
+
+    <decisionService name="decisionService_004" id="_decisionService_004">
+        <variable name="decisionService_004"/>
+        <outputDecision href="#_decision_004_2"/>
+    </decisionService>
+
+    <decision name="decision_004_1" id="_decision_004_1">
+        <variable name="decision_004_1"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_decisionService_004"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>decisionService_004()</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_004_2" id="_decision_004_2">
+        <variable name="decision_004_2"/>
+        <literalExpression>
+            <text>"foo"</text>
+        </literalExpression>
+    </decision>
+
+    <!-- passing a param when DS accepts none -->
+
+    <decisionService name="decisionService_005" id="_decisionService_005">
+        <variable name="decisionService_005"/>
+        <outputDecision href="#_decision_005_2"/>
+    </decisionService>
+
+    <decision name="decision_005_1" id="_decision_005_1">
+        <variable name="decision_005_1"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_decisionService_005"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>decisionService_005("bar")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_005_2" id="_decision_005_2">
+        <variable typeRef="string" name="decision_005_2"/>
+        <literalExpression>
+            <text>"foo"</text>
+        </literalExpression>
+    </decision>
+
+    <!-- passing a single input decision param -->
+
+    <decisionService name="decisionService_006" id="_decisionService_006">
+        <variable name="decisionService_006"/>
+        <outputDecision href="#_decision_006_2"/>
+        <inputDecision href="#_decision_006_3"/>
+    </decisionService>
+
+    <decision name="decision_006_1" id="_decision_006_1">
+        <variable name="decision_006_1"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_decisionService_006"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>decisionService_006("bar")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_006_2" id="_decision_006_2">
+        <variable name="decision_006_2"/>
+        <informationRequirement>
+            <requiredDecision href="#_decision_006_3"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>"foo " + decision_006_3</text>
+        </literalExpression>
+    </decision>
+
+    <!-- provided as input, so never gets invoked -->
+    <decision name="decision_006_3" id="_decision_006_3">
+        <variable typeRef="string" name="decision_006_3"/>
+        <literalExpression>
+            <text>"I never get invoked"</text>
+        </literalExpression>
+    </decision>
+
+
+    <!-- passing an incorrect type value as single input decision param -->
+
+    <decisionService name="decisionService_007" id="_decisionService_007">
+        <variable name="decisionService_007"/>
+        <outputDecision href="#_decision_007_2"/>
+        <inputDecision href="#_decision_007_3"/>
+    </decisionService>
+
+    <decision name="decision_007_1" id="_decision_007_1">
+        <variable name="decision_007_1"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_decisionService_007"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>decisionService_007(123)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_007_2" id="_decision_007_2">
+        <variable name="decision_007_2"/>
+        <informationRequirement>
+            <requiredDecision href="#_decision_007_3"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>decision_007_3 = null</text>
+        </literalExpression>
+    </decision>
+
+    <!-- provided as input, so never gets invoked -->
+    <decision name="decision_007_3" id="_decision_007_3">
+        <variable typeRef="string" name="decision_007_3"/>
+        <literalExpression>
+            <text>"I never get invoked"</text>
+        </literalExpression>
+    </decision>
+
+
+    <!-- passing no params when expects a single param -->
+
+    <decisionService name="decisionService_008" id="_decisionService_008">
+        <variable name="decisionService_008"/>
+        <outputDecision href="#_decision_008_2"/>
+        <inputDecision href="#_decision_008_3"/>
+    </decisionService>
+
+    <decision name="decision_008_1" id="_decision_008_1">
+        <variable name="decision_008_1"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_decisionService_008"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>decisionService_008()</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_008_2" id="_decision_008_2">
+        <variable name="decision_008_2"/>
+        <informationRequirement>
+            <requiredDecision href="#_decision_008_3"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>decision_008_3 = null</text>
+        </literalExpression>
+    </decision>
+
+    <!-- provided as input, so never gets invoked -->
+    <decision name="decision_008_3" id="_decision_008_3">
+        <variable typeRef="string" name="decision_008_3"/>
+        <literalExpression>
+            <text>"I never get invoked"</text>
+        </literalExpression>
+    </decision>
+
+    <!-- passing named param -->
+
+    <decisionService name="decisionService_009" id="_decisionService_009">
+        <variable name="decisionService_009"/>
+        <outputDecision href="#_decision_009_2"/>
+        <inputDecision href="#_decision_009_3"/>
+    </decisionService>
+
+    <decision name="decision_009_1" id="_decision_009_1">
+        <variable name="decision_009_1"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_decisionService_009"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>decisionService_009(decision_009_3: "bar")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_009_2" id="_decision_009_2">
+        <variable name="decision_009_2"/>
+        <informationRequirement>
+            <requiredDecision href="#_decision_009_3"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>"foo " + decision_009_3</text>
+        </literalExpression>
+    </decision>
+
+    <!-- provided as input, so never gets invoked -->
+    <decision name="decision_009_3" id="_decision_009_3">
+        <variable typeRef="string" name="decision_009_3"/>
+        <literalExpression>
+            <text>"I never get invoked"</text>
+        </literalExpression>
+    </decision>
+
+    <!-- passing badly named param -->
+
+    <decisionService name="decisionService_010" id="_decisionService_010">
+        <variable name="decisionService_010"/>
+        <outputDecision href="#_decision_010_2"/>
+        <inputDecision href="#_decision_010_3"/>
+    </decisionService>
+
+    <decision name="decision_010_1" id="_decision_010_1">
+        <variable name="decision_010_1"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_decisionService_010"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>decisionService_010(foo: "bar")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_010_2" id="_decision_010_2">
+        <variable name="decision_010_2"/>
+        <informationRequirement>
+            <requiredDecision href="#_decision_010_3"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>"foo " + decision_010_3</text>
+        </literalExpression>
+    </decision>
+
+    <!-- provided as input, so never gets invoked -->
+    <decision name="decision_010_3" id="_decision_010_3">
+        <variable typeRef="string" name="decision_010_3"/>
+        <literalExpression>
+            <text>"I never get invoked"</text>
+        </literalExpression>
+    </decision>
+
+    <!-- verify params accepted in correct order : passing two input decision and two input data -->
+
+    <decisionService name="decisionService_011" id="_decisionService_011">
+        <variable name="decisionService_011"/>
+        <outputDecision href="#_decision_011_2"/>
+        <inputDecision href="#_decision_011_3"/>
+        <inputDecision href="#_decision_011_4"/>
+        <inputData href="#_inputData_011_1"/>
+        <inputData href="#_inputData_011_2"/>
+    </decisionService>
+
+    <decision name="decision_011_1" id="_decision_011_1">
+        <variable name="decision_011_1"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_decisionService_011"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>decisionService_011("A", "B", "C", "D")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_011_2" id="_decision_011_2">
+        <variable typeRef="string" name="decision_011_2"/>
+        <informationRequirement>
+            <requiredDecision href="#_decision_011_3"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredDecision href="#_decision_011_4"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#_inputData_011_1"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#_inputData_011_2"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>inputData_011_1 + " " + inputData_011_2 + " " + decision_011_3 + " " + decision_011_4</text>
+        </literalExpression>
+    </decision>
+
+    <!-- provided as input, so never gets invoked -->
+    <decision name="decision_011_3" id="_decision_011_3">
+        <variable typeRef="string" name="decision_011_3"/>
+        <literalExpression>
+            <text>"I never get invoked"</text>
+        </literalExpression>
+    </decision>
+
+    <!-- provided as input, so never gets invoked -->
+    <decision name="decision_011_4" id="_decision_011_4">
+        <variable typeRef="string" name="decision_011_4"/>
+        <literalExpression>
+            <text>"I never get invoked"</text>
+        </literalExpression>
+    </decision>
+
+    <!-- provided as input, so never gets invoked -->
+    <inputData name="inputData_011_1" id="_inputData_011_1">
+        <variable name="inputData_011_1" typeRef="string"/>
+    </inputData>
+
+    <!-- provided as input, so never gets invoked -->
+    <inputData name="inputData_011_2" id="_inputData_011_2">
+        <variable name="inputData_011_2" typeRef="string"/>
+    </inputData>
+
+    <!-- verify named params accepted in correct order : passing two input decision and two input data -->
+
+    <decisionService name="decisionService_012" id="_decisionService_012">
+        <variable name="decisionService_012"/>
+        <outputDecision href="#_decision_012_2"/>
+        <inputDecision href="#_decision_012_3"/>
+        <inputDecision href="#_decision_012_4"/>
+        <inputData href="#_inputData_012_1"/>
+        <inputData href="#_inputData_012_2"/>
+    </decisionService>
+
+    <decision name="decision_012_1" id="_decision_012_1">
+        <variable name="decision_012_1"/>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_decisionService_012"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>decisionService_012(decision_012_3: "C", inputData_012_1: "A", decision_012_4: "D", inputData_012_2: "B")</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_012_2" id="_decision_012_2">
+        <variable typeRef="string" name="decision_012_2"/>
+        <informationRequirement>
+            <requiredDecision href="#_decision_012_3"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredDecision href="#_decision_012_4"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#_inputData_012_1"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#_inputData_012_2"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>inputData_012_1 + " " + inputData_012_2 + " " + decision_012_3 + " " + decision_012_4</text>
+        </literalExpression>
+    </decision>
+
+    <!-- provided as input, so never gets invoked -->
+    <decision name="decision_012_3" id="_decision_012_3">
+        <variable typeRef="string" name="decision_012_3"/>
+        <literalExpression>
+            <text>"I never get invoked"</text>
+        </literalExpression>
+    </decision>
+
+    <!-- provided as input, so never gets invoked -->
+    <decision name="decision_012_4" id="_decision_012_4">
+        <variable typeRef="string" name="decision_012_4"/>
+        <literalExpression>
+            <text>"I never get invoked"</text>
+        </literalExpression>
+    </decision>
+
+    <!-- provided as input, so never gets invoked -->
+    <inputData name="inputData_012_1" id="_inputData_012_1">
+        <variable name="inputData_012_1" typeRef="string"/>
+    </inputData>
+
+    <!-- provided as input, so never gets invoked -->
+    <inputData name="inputData_012_2" id="_inputData_012_2">
+        <variable name="inputData_012_2" typeRef="string"/>
+    </inputData>
+
+    <!-- verify input decision or data has no bearing on 'global' usage of same decision or input.
+    That is, the usage of input decision and data is 'scoped' to within the DS.  To show this
+    we'll pass input decision and data to DS AND we'll also use them outside of the DS -->
+
+    <!-- We'll do two similar tests for this.  One that executes the DS first to assert it had no effect
+    on the global usage, and the other way around - global first to assert it had no effect on DS usage. -->
+
+    <decisionService name="decisionService_013" id="_decisionService_013">
+        <variable name="decisionService_013"/>
+        <outputDecision href="#_decision_013_2"/>
+        <inputDecision href="#_decision_013_3"/>
+        <inputData href="#_inputData_013_1"/>
+    </decisionService>
+
+    <!-- invoke DS using input decision and data, then also use same decision and input _outside_ of the DS -->
+    <decision name="decision_013_1" id="_decision_013_1">
+        <variable name="decision_013_1"/>
+        <informationRequirement>
+            <requiredDecision href="#_decision_013_3"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#_inputData_013_1"/>
+        </informationRequirement>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_decisionService_013"/>
+        </knowledgeRequirement>
+        <context>
+            <contextEntry>
+                <variable name="decisionService_013"/>
+                <literalExpression>
+                    <text>decisionService_013("A", "B")</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable name="inputData_013_1"/>
+                <literalExpression>
+                    <text>inputData_013_1</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable name="decision_013_3"/>
+                <literalExpression>
+                    <text>decision_013_3</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <!-- invoked from DS with input decicion and data -->
+    <decision name="decision_013_2" id="_decision_013_2">
+        <variable typeRef="string" name="decision_013_2"/>
+        <informationRequirement>
+            <requiredDecision href="#_decision_013_3"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#_inputData_013_1"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>inputData_013_1 + " " + decision_013_3</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_013_3" id="_decision_013_3">
+        <variable typeRef="string" name="decision_013_3"/>
+        <literalExpression>
+            <text>"D"</text>
+        </literalExpression>
+    </decision>
+
+    <inputData name="inputData_013_1" id="_inputData_013_1">
+        <variable name="inputData_013_1" typeRef="string"/>
+    </inputData>
+
+
+    <!-- same as 013 but with order of execution of DS /glocal reversed -->
+    <decisionService name="decisionService_014" id="_decisionService_014">
+        <variable name="decisionService_014"/>
+        <outputDecision href="#_decision_014_2"/>
+        <inputDecision href="#_decision_014_3"/>
+        <inputData href="#_inputData_014_1"/>
+    </decisionService>
+
+    <!-- invoke DS using input decision and data, then also use same decision and input _outside_ of the DS -->
+    <decision name="decision_014_1" id="_decision_014_1">
+        <variable name="decision_014_1"/>
+        <informationRequirement>
+            <requiredDecision href="#_decision_014_3"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#_inputData_014_1"/>
+        </informationRequirement>
+        <knowledgeRequirement>
+            <requiredKnowledge href="#_decisionService_014"/>
+        </knowledgeRequirement>
+        <context>
+            <contextEntry>
+                <variable name="inputData_014_1"/>
+                <literalExpression>
+                    <text>inputData_014_1</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable name="decision_014_3"/>
+                <literalExpression>
+                    <text>decision_014_3</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable name="decisionService_014"/>
+                <literalExpression>
+                    <text>decisionService_014("A", "B")</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+
+    <!-- invoked from DS with input decision and data -->
+    <decision name="decision_014_2" id="_decision_014_2">
+        <variable typeRef="string" name="decision_014_2"/>
+        <informationRequirement>
+            <requiredDecision href="#_decision_014_3"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#_inputData_014_1"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>inputData_014_1 + " " + decision_014_3</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_014_3" id="_decision_014_3">
+        <variable typeRef="string" name="decision_014_3"/>
+        <literalExpression>
+            <text>"D"</text>
+        </literalExpression>
+    </decision>
+
+    <inputData name="inputData_014_1" id="_inputData_014_1">
+        <variable name="inputData_014_1" typeRef="string"/>
+    </inputData>
+
+
+</definitions>

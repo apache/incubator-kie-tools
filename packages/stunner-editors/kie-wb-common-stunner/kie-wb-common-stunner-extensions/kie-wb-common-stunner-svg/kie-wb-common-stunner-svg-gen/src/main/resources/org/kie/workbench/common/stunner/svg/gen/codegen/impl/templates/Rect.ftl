@@ -1,0 +1,1 @@
+new ${className}(${width}, ${height}).setCornerRadius(${radius})

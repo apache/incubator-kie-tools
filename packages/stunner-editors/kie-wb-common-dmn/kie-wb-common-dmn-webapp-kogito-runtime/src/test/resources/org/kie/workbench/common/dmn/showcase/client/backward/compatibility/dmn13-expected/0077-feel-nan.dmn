@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.montera.com.au/spec/DMN/0077-feel-nan" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_i9fboPUUEeesLuP4RHs4vA" name="0077-feel-nan" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.montera.com.au/spec/DMN/0077-feel-nan">
+  <dmn:description>FEEL NaN</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:decision id="_decision_001" name="decision_001">
+    <dmn:extensionElements/>
+    <dmn:variable id="_6229E278-F2F0-4EA8-96EB-7176826DAA45" name="decision_001"/>
+    <dmn:literalExpression id="_6E54580D-9914-4B96-B955-2F2F60BA0808">
+      <dmn:text>0.0 / 0.0</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_4372B5A0-1A38-4930-A706-349A19BB8654" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_6E54580D-9914-4B96-B955-2F2F60BA0808"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_decision_001" dmnElementRef="_decision_001" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

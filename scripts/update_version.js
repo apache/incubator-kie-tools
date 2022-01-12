@@ -49,6 +49,7 @@ if (opts === "--verbose") {
 Promise.resolve()
   .then(() => updateNpmPackages(newVersion))
   .then((version) => updateMvnPackages(version))
+  .then((version) => updateSpecialInternalMvnPackagesOnStunnerEditors(version))
   .then((version) => updateChromeExtensionManifestFiles(version))
   .then((version) => updateExtendedServicesConfigFile(version))
   .then(async (version) => {
@@ -83,6 +84,26 @@ async function updateMvnPackages(version) {
     `lerna exec 'mvn versions:set versions:commit -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}' ${mvnPackagesLernaScope} --concurrency 1`,
     execOpts
   );
+  return version;
+}
+
+async function updateSpecialInternalMvnPackagesOnStunnerEditors(version) {
+  console.info("[update-version] Updating special Maven packages on Stunner Editors...");
+
+  const modules = [
+    `packages/stunner-editors/errai-bom`,
+    `packages/stunner-editors/appformer-bom`,
+    `packages/stunner-editors/kie-wb-common-bom`,
+    `packages/stunner-editors/drools-wb-bom`,
+  ];
+
+  for (const module of modules) {
+    execSync(
+      `mvn versions:set versions:commit -f ${module} -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}`,
+      execOpts
+    );
+  }
+
   return version;
 }
 

@@ -1,5 +1,5 @@
 {
-  "exclude": ["./**/node_modules", "./**/__tests__"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "lib": ["es6", "dom", "es2018.promise", "es2019", "esnext"],
     "target": "es5",

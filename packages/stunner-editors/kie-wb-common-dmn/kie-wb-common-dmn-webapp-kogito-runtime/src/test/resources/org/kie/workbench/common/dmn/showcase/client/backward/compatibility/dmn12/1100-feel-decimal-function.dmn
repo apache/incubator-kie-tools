@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.actico.com/spec/DMN/1100-feel-decimal-function" name="1100-feel-decimal-function" id="_i6ACwPUUEeesLuP4RHs4vA" xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>FEEL built-in function 'decimal(n, scale)' in category numeric functions</description>
+    <itemDefinition name="tfeel-decimal-function_001_af177e63fc_Result" id="_i7fQgfUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-decimal-function_002_f4ed9cd487_Result" id="_i7fQhfUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-decimal-function_003_2d50ec7ffc_Result" id="_i7fQifUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-decimal-function_004_bb6f445d2c_Result" id="_i7fQjfUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-decimal-function_005_55d33eadf6_Result" id="_i7fQkfUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-decimal-function_006_d9661e1d45_Result" id="_i7fQlfUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-decimal-function_007_49f7a22058_Result" id="_i7fQmfUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-decimal-function_008_73e4f1c8b9_Result" id="_i7fQnfUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-decimal-function_009_398b94286e_Result" id="_i7fQofUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-decimal-function_010_4b46e59c8b_Result" id="_i7fQpfUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <decision name="feel-decimal-function_001_af177e63fc" id="_i7fQg_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'decimal(1/3, 2)' and expects result: '0.33 (number)'</description>
+        <question>Result of FEEL expression 'decimal(1/3, 2)'?</question>
+        <allowedAnswers>0.33 (number)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-decimal-function_001_af177e63fc_Result" name="feel-decimal-function_001_af177e63fc" id="_i7fQhPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i7fQgvUUEeesLuP4RHs4vA">
+            <text>decimal(1/3, 2)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-decimal-function_002_f4ed9cd487" id="_i7fQh_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'decimal(1/3, 2.5)' and expects result: '0.33 (number)'</description>
+        <question>Result of FEEL expression 'decimal(1/3, 2.5)'?</question>
+        <allowedAnswers>0.33 (number)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-decimal-function_002_f4ed9cd487_Result" name="feel-decimal-function_002_f4ed9cd487" id="_i7fQiPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i7fQhvUUEeesLuP4RHs4vA">
+            <text>decimal(1/3, 2.5)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-decimal-function_003_2d50ec7ffc" id="_i7fQi_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'decimal(1.5, 0)' and expects result: '2 (number)'</description>
+        <question>Result of FEEL expression 'decimal(1.5, 0)'?</question>
+        <allowedAnswers>2 (number)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-decimal-function_003_2d50ec7ffc_Result" name="feel-decimal-function_003_2d50ec7ffc" id="_i7fQjPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i7fQivUUEeesLuP4RHs4vA">
+            <text>decimal(1.5, 0)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-decimal-function_004_bb6f445d2c" id="_i7fQj_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'decimal(2.5, 0)' and expects result: '2 (number)'</description>
+        <question>Result of FEEL expression 'decimal(2.5, 0)'?</question>
+        <allowedAnswers>2 (number)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-decimal-function_004_bb6f445d2c_Result" name="feel-decimal-function_004_bb6f445d2c" id="_i7fQkPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i7fQjvUUEeesLuP4RHs4vA">
+            <text>decimal(2.5, 0)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-decimal-function_005_55d33eadf6" id="_i7fQk_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'decimal(0, 0)' and expects result: '0 (number)'</description>
+        <question>Result of FEEL expression 'decimal(0, 0)'?</question>
+        <allowedAnswers>0 (number)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-decimal-function_005_55d33eadf6_Result" name="feel-decimal-function_005_55d33eadf6" id="_i7fQlPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i7fQkvUUEeesLuP4RHs4vA">
+            <text>decimal(0, 0)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-decimal-function_006_d9661e1d45" id="_i7fQl_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'decimal(0.0, 1)' and expects result: '0.0 (number)'</description>
+        <question>Result of FEEL expression 'decimal(0.0, 1)'?</question>
+        <allowedAnswers>0.0 (number)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-decimal-function_006_d9661e1d45_Result" name="feel-decimal-function_006_d9661e1d45" id="_i7fQmPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i7fQlvUUEeesLuP4RHs4vA">
+            <text>decimal(0.0, 1)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-decimal-function_007_49f7a22058" id="_i7fQm_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'decimal(0.515, 2)' and expects result: '0.52 (number)'</description>
+        <question>Result of FEEL expression 'decimal(0.515, 2)'?</question>
+        <allowedAnswers>0.52 (number)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-decimal-function_007_49f7a22058_Result" name="feel-decimal-function_007_49f7a22058" id="_i7fQnPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i7fQmvUUEeesLuP4RHs4vA">
+            <text>decimal(0.515, 2)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-decimal-function_008_73e4f1c8b9" id="_i7fQn_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'decimal(65.123456, 6)' and expects result: '65.123456 (number)'</description>
+        <question>Result of FEEL expression 'decimal(65.123456, 6)'?</question>
+        <allowedAnswers>65.123456 (number)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-decimal-function_008_73e4f1c8b9_Result" name="feel-decimal-function_008_73e4f1c8b9" id="_i7fQoPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i7fQnvUUEeesLuP4RHs4vA">
+            <text>decimal(65.123456, 6)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-decimal-function_009_398b94286e" id="_i7fQo_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'decimal(n:15/7,scale:3)' and expects result: '2.143 (number)'</description>
+        <question>Result of FEEL expression 'decimal(n:15/7,scale:3)'?</question>
+        <allowedAnswers>2.143 (number)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-decimal-function_009_398b94286e_Result" name="feel-decimal-function_009_398b94286e" id="_i7fQpPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i7fQovUUEeesLuP4RHs4vA">
+            <text>decimal(n:15/7,scale:3)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-decimal-function_010_4b46e59c8b" id="_i7fQp_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'decimal(n:15/78*2,scale:3)' and expects result: '0.385 (number)'</description>
+        <question>Result of FEEL expression 'decimal(n:15/78*2,scale:3)'?</question>
+        <allowedAnswers>0.385 (number)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-decimal-function_010_4b46e59c8b_Result" name="feel-decimal-function_010_4b46e59c8b" id="_i7fQqPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i7fQpvUUEeesLuP4RHs4vA">
+            <text>decimal(n:15/78*2,scale:3)</text>
+        </literalExpression>
+    </decision>
+    <knowledgeSource name="DMN 1.1 - 10.3.4.5 Table 62" id="_i7fQgPUUEeesLuP4RHs4vA"/>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram name="Page 1" id="_i6ACwPUUEeesLuP4RHs4vA_D2">
+            <dmndi:DMNShape dmnElementRef="_i7fQk_UUEeesLuP4RHs4vA" id="_i6ACwPUUEeesLuP4RHs4vA_s1">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i7fQl_UUEeesLuP4RHs4vA" id="_i6ACwPUUEeesLuP4RHs4vA_s2">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i7fQgPUUEeesLuP4RHs4vA" id="_i6ACwPUUEeesLuP4RHs4vA_s3">
+                <dc:Bounds height="69.0" width="100.0" x="133.0" y="292.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i7fQo_UUEeesLuP4RHs4vA" id="_i6ACwPUUEeesLuP4RHs4vA_s4">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i7fQp_UUEeesLuP4RHs4vA" id="_i6ACwPUUEeesLuP4RHs4vA_s5">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i7fQn_UUEeesLuP4RHs4vA" id="_i6ACwPUUEeesLuP4RHs4vA_s6">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i7fQm_UUEeesLuP4RHs4vA" id="_i6ACwPUUEeesLuP4RHs4vA_s7">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i7fQg_UUEeesLuP4RHs4vA" id="_i6ACwPUUEeesLuP4RHs4vA_s8">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i7fQj_UUEeesLuP4RHs4vA" id="_i6ACwPUUEeesLuP4RHs4vA_s9">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i7fQi_UUEeesLuP4RHs4vA" id="_i6ACwPUUEeesLuP4RHs4vA_s10">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i7fQh_UUEeesLuP4RHs4vA" id="_i6ACwPUUEeesLuP4RHs4vA_s11">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="296.0"/>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

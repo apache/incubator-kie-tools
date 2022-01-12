@@ -1,0 +1,24 @@
+.inlineNameEditBoxNameBox {
+  position: absolute;
+  content: "\a";
+  white-space: pre-line;
+  outline: none;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  height: auto;
+  border: none;
+  resize: none;
+  background-color: transparent;
+  font-weight: normal;
+  line-height: 1.2;
+  -webkit-border-radius: 7px;
+  -moz-border-radius: 7px;
+  border-radius: 7px;
+  -webkit-user-modify: read-write-plaintext-only;
+}
+
+[data-text]:empty:before {
+  content: attr(data-text);
+  color: #888;
+  font-style: italic;
+}
