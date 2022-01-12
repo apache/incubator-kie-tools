@@ -276,6 +276,8 @@ public class NodeConnector {
                 connectionContent.setDefinition(definition);
                 connectionContent.setTargetConnection(MagnetConnection.Builder.atCenter(targetNode));
                 connectionContent.setSourceConnection(MagnetConnection.Builder.atCenter(sourceNode));
+
+                findExistingEdge(association, edges).ifPresent(e -> setConnectionControlPoints(connectionContent, e));
             }
         });
     }
@@ -412,10 +414,10 @@ public class NodeConnector {
                 || (sourceNode.isPresent() && Objects.equals(sourceNode.get(), currentNode));
     }
 
-    private Optional<JSIDMNEdge> findExistingEdge(final JSITDMNElement dmnElement,
-                                                  final List<JSIDMNEdge> edges) {
+    private static Optional<JSIDMNEdge> findExistingEdge(final JSITDMNElement dmnElement,
+                                                         final List<JSIDMNEdge> edges) {
         return edges.stream()
-                .filter(e -> Objects.equals(e.getDmnElementRef().getLocalPart(), dmnElement.getId()))
+                .filter(e -> e.getDmnElementRef() != null && Objects.equals(e.getDmnElementRef().getLocalPart(), dmnElement.getId()))
                 .findFirst();
     }
 
@@ -474,9 +476,15 @@ public class NodeConnector {
                                 connectionContent::setTargetConnection,
                                 isTargetAutoConnectionEdge(jsidmnEdge));
         }
-        if (e.getWaypoint().size() > 2) {
-            connectionContent.setControlPoints(e.getWaypoint()
-                                                       .subList(1, e.getWaypoint().size() - 1)
+        setConnectionControlPoints(connectionContent, jsidmnEdge);
+    }
+
+    void setConnectionControlPoints(final ViewConnector connectionContent,
+                                    final JSIDMNEdge jsidmnEdge) {
+
+        if (jsidmnEdge.getWaypoint().size() > 2) {
+            connectionContent.setControlPoints(jsidmnEdge.getWaypoint()
+                                                       .subList(1, jsidmnEdge.getWaypoint().size() - 1)
                                                        .stream()
                                                        .map(p -> ControlPoint.build(PointUtils.dmndiPointToPoint2D(p)))
                                                        .toArray(ControlPoint[]::new));
