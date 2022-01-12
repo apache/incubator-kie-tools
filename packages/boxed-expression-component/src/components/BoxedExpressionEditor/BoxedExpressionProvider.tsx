@@ -20,16 +20,10 @@ import "./BoxedExpressionProvider.css";
 import { hashfy, ResizerSupervisor } from "../Resizer";
 import { BoxedExpressionGlobalContext } from "../../context";
 import * as _ from "lodash";
-import { ExpressionProps, PMMLParams } from "../../api";
 import { CellSelectionBox } from "../SelectionBox";
+import { BoxedExpressionEditorProps } from "./BoxedExpressionEditor";
 
-export interface BoxedExpressionProviderProps {
-  /** Identifier of the decision node, where the expression will be hold */
-  decisionNodeId: string;
-  /** All expression properties used to define it */
-  expressionDefinition: ExpressionProps;
-  /** PMML parameters */
-  pmmlParams?: PMMLParams;
+export interface BoxedExpressionProviderProps extends BoxedExpressionEditorProps {
   /** Flag that changes how the resize works when being used by the DMN Runner **/
   isRunnerTable: boolean;
   /** Children component **/
@@ -49,6 +43,7 @@ export function BoxedExpressionProvider(props: BoxedExpressionProviderProps) {
     <BoxedExpressionGlobalContext.Provider
       value={{
         decisionNodeId: props.decisionNodeId,
+        dataTypes: props.dataTypes,
         pmmlParams: props.pmmlParams,
         supervisorHash,
         setSupervisorHash,

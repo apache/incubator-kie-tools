@@ -32,12 +32,12 @@ describe("Literal Expression Tests", () => {
     cy.get(".literal-expression-header").click();
 
     cy.ouiaId("edit-expression-data-type").within(($container) => {
-      cy.get("input").click({ force: true });
+      cy.get("span.pf-c-select__toggle-text").click({ force: true });
     });
 
     cy.get("button:contains('boolean')").click({ force: true });
 
     // check boolean is now also in grid
-    cy.get(".expression-data-type").contains("boolean").should("be.visible");
+    cy.get(".expression-data-type span").contains("boolean").should("be.visible");
   });
 });

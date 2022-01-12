@@ -27,6 +27,7 @@ describe("BoxedExpressionEditor tests", () => {
       <BoxedExpressionEditor
         decisionNodeId="_00000000-0000-0000-0000-000000000000"
         expressionDefinition={selectedExpression}
+        dataTypes={[{ typeRef: "ANY", name: "Any", isCustom: false }]}
       />
     );
 
