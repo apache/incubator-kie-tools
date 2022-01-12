@@ -15,7 +15,7 @@
     "build:showcase": "rimraf ./dist-dev && webpack -c ./showcase/webpack.config.js --env prod",
     "deploy": "gh-pages -d dist-dev",
     "cy:open": "yarn run cypress open --project it-tests",
-    "cy:run": "yarn run cypress run -b chrome --project it-tests",
+    "cy:run": "yarn run cypress run -b chrome --project it-tests --config watchForFileChanges=false",
     "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start http-get://0.0.0.0:$(build-env boxedExpressionComponent.dev.port) cy:run\""
   },
   "dependencies": {
