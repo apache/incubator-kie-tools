@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.marshaller.unmarshall.nodes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,22 +31,29 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.model.Association;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.model.InformationRequirement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dc.JSIBounds;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dc.JSIPoint;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITAssociation;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDMNElement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDMNElementReference;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNDiagram;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNEdge;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNShape;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 
 import static java.util.Collections.singletonList;
@@ -88,9 +96,13 @@ public class NodeConnectorTest {
     @Mock
     private Node requiredNode;
 
+    @Captor
+    private ArgumentCaptor<ControlPoint[]> controlPointsCaptor;
+
     private NodeConnector nodeConnector;
 
     private String connectorTypeId = getDefinitionId(InformationRequirement.class);
+    private String associationTypeId = getDefinitionId(Association.class);
 
     private Map<String, List<NodeEntry>> entriesById = new HashMap<>();
 
@@ -271,6 +283,7 @@ public class NodeConnectorTest {
 
         NodeConnector nodeConnector = mock(NodeConnector.class);
         doCallRealMethod().when(nodeConnector).setConnectionMagnets(eq(edge), eq(viewConnector), eq(jsidmnEdge));
+        doCallRealMethod().when(nodeConnector).setConnectionControlPoints(eq(viewConnector), eq(jsidmnEdge));
 
         when(jsidmnEdge.getWaypoint()).thenReturn(waypoints);
         when(jsidmnEdge.getId()).thenReturn(AUTO_SOURCE_CONNECTION + AUTO_TARGET_CONNECTION);
@@ -294,6 +307,66 @@ public class NodeConnectorTest {
         verify(nodeConnector).isSourceAutoConnectionEdge(jsidmnEdge);
         verify(nodeConnector).isTargetAutoConnectionEdge(jsidmnEdge);
         verify(viewConnector).setControlPoints(any());
+    }
+
+    @Test
+    public void testConnectAssociationWithControlPoints() {
+        final NodeEntry source = createNodeEntryWithBounds(5, 5, 10, 10);
+        final Node sourceNode = mock(Node.class);
+        final View sourceView = mock(View.class);
+        final JSITDMNElement sourceElement = mock(JSITDMNElement.class);
+        when(source.getNode()).thenReturn(sourceNode);
+        when(sourceNode.getContent()).thenReturn(sourceView);
+        when(sourceView.getBounds()).thenReturn(new Bounds(new Bound(0.0, 0.0), new Bound(10.0, 10.0)));
+        when(source.getDmnElement()).thenReturn(sourceElement);
+        when(sourceElement.getId()).thenReturn("source_id");
+
+        final NodeEntry target = createNodeEntryWithBounds(20, 20, 10, 10);
+        final Node targetNode = mock(Node.class);
+        final View targetView = mock(View.class);
+        final JSITDMNElement targetElement = mock(JSITDMNElement.class);
+        when(target.getNode()).thenReturn(targetNode);
+        when(targetNode.getContent()).thenReturn(targetView);
+        when(targetView.getBounds()).thenReturn(new Bounds(new Bound(15.0, 15.0), new Bound(25.0, 25.0)));
+        when(target.getDmnElement()).thenReturn(targetElement);
+        when(targetElement.getId()).thenReturn("target_id");
+
+        final JSITAssociation jsitAssociation = mock(JSITAssociation.class);
+        when(jsitAssociation.getId()).thenReturn("associationId");
+        final JSITDMNElementReference sourceRef = mock(JSITDMNElementReference.class);
+        when(sourceRef.getHref()).thenReturn("#source_id");
+        final JSITDMNElementReference targetRef = mock(JSITDMNElementReference.class);
+        when(targetRef.getHref()).thenReturn("#target_id");
+        when(jsitAssociation.getSourceRef()).thenReturn(sourceRef);
+        when(jsitAssociation.getTargetRef()).thenReturn(targetRef);
+
+        final JSIDMNEdge jsiAssociationDmnEdge = mock(JSIDMNEdge.class);
+        final QName associationElementRef = mock(QName.class);
+        when(jsiAssociationDmnEdge.getDmnElementRef()).thenReturn(associationElementRef);
+        when(associationElementRef.getLocalPart()).thenReturn("associationId");
+        doReturn(Arrays.asList(createPoint(5.0, 5.0), createPoint(12.0, 12.0), createPoint(20.0, 20.0))).when(jsiAssociationDmnEdge).getWaypoint();
+
+        final Element associationElement = mock(Element.class);
+        final ViewConnector associationConnectorView = mock(ViewConnector.class);
+        final Edge associationWbEdge = mock(Edge.class);
+
+        when(factoryManager.newElement("diagramId#associationId", associationTypeId)).thenReturn(associationElement);
+        when(associationElement.asEdge()).thenReturn(associationWbEdge);
+        when(associationWbEdge.getContent()).thenReturn(associationConnectorView);
+
+        final JSIDMNDiagram jsidmnDiagram = mock(JSIDMNDiagram.class);
+        when(jsidmnDiagram.getId()).thenReturn("diagramId");
+
+        nodeConnector.connect(jsidmnDiagram,
+                              Collections.singletonList(jsiAssociationDmnEdge),
+                              Collections.singletonList(jsitAssociation),
+                              Arrays.asList(source, target),
+                              true);
+
+        verify(associationConnectorView).setControlPoints(controlPointsCaptor.capture());
+        assertEquals(12.0, controlPointsCaptor.getValue()[0].getLocation().getX(), 0.01);
+        assertEquals(12.0, controlPointsCaptor.getValue()[0].getLocation().getY(), 0.01);
+        assertEquals(1, controlPointsCaptor.getValue().length);
     }
 
     @Test
