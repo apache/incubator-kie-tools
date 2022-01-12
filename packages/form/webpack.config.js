@@ -16,7 +16,7 @@
 
 const nodeExternals = require("webpack-node-externals");
 const { merge } = require("webpack-merge");
-const common = require("../../config/webpack.common.config");
+const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
 
 module.exports = (env, argv) => [

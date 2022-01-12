@@ -15,7 +15,7 @@
  */
 
 const { merge } = require("webpack-merge");
-const common = require("../../config/webpack.common.config");
+const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
 const path = require("path");
 const buildEnv = require("@kogito-tooling/build-env");
 

@@ -17,7 +17,7 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
-const common = require("../../../config/webpack.common.config");
+const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const buildEnv = require("@kogito-tooling/build-env");
 const { EnvironmentPlugin } = require("webpack");
