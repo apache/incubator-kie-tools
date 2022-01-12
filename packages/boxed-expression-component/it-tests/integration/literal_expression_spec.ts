@@ -38,6 +38,6 @@ describe("Literal Expression Tests", () => {
     cy.get("button:contains('boolean')").click({ force: true });
 
     // check boolean is now also in grid
-    cy.get(".expression-data-type span").contains("boolean").should("be.visible");
+    cy.get(".expression-data-type").contains("boolean").should("be.visible");
   });
 });
