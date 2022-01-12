@@ -18,21 +18,18 @@ import * as React from "react";
 import "./ImportJavaClassesWizardThirdStep.css";
 import { ImportJavaClassesWizardFieldListTable } from "./ImportJavaClassesWizardFieldListTable";
 import { JavaClass } from "./Model/JavaClass";
+
 export interface ImportJavaClassesWizardThirdStepProps {
   /** List of the selected classes by user */
   selectedJavaClasses: JavaClass[];
 }
 
-export const ImportJavaClassesWizardThirdStep: React.FunctionComponent<ImportJavaClassesWizardThirdStepProps> = ({
-  selectedJavaClasses,
-}: ImportJavaClassesWizardThirdStepProps) => {
+export const ImportJavaClassesWizardThirdStep = ({ selectedJavaClasses }: ImportJavaClassesWizardThirdStepProps) => {
   return (
     <>
-      <ImportJavaClassesWizardFieldListTable
-        selectedJavaClassFields={selectedJavaClasses}
-        readOnly={true}
-        tableClassName={"fields-table"}
-      />
+      <div className={"fields-table"}>
+        <ImportJavaClassesWizardFieldListTable selectedJavaClassFields={selectedJavaClasses} />
+      </div>
     </>
   );
 };

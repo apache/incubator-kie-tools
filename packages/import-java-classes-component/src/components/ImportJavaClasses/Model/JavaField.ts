@@ -19,6 +19,8 @@ export class JavaField {
   public name: string;
   /* The Java Type of the field (eg. java.lang.String OR com.mypackace.Test) */
   public type: string;
+  /* List Type */
+  public isList: boolean;
   /* The DMN Type reference */
   public dmnTypeRef: string;
 
@@ -26,5 +28,6 @@ export class JavaField {
     this.name = name;
     this.type = type;
     this.dmnTypeRef = dmnTypeRef;
+    this.isList = false;
   }
 }

@@ -19,7 +19,7 @@ import * as ReactDOM from "react-dom";
 import { useCallback, useState } from "react";
 import "@patternfly/react-core/dist/styles/base.css";
 import "./index.css";
-import { ImportJavaClasses } from "../src";
+import { ImportJavaClasses, ImportJavaClassGWTService } from "../src";
 
 const Showcase: React.FunctionComponent = () => {
   const LSP_SERVER_NOT_AVAILABLE = "Java LSP Server is not available. Please install Java Extension";
@@ -77,6 +77,10 @@ const Showcase: React.FunctionComponent = () => {
 
   const delay = () => new Promise((res) => setTimeout(res, Math.random() * (4000 - 750) + 1000));
 
+  const importJavaClassesGWTService: ImportJavaClassGWTService = {
+    handleOnWizardImportButtonClick: (javaClasses) => window.alert("Java Classes sent to editor:" + javaClasses.length),
+  };
+
   window.envelopeMock = {
     lspGetClassServiceMocked: (value: string) => lspGetClassServiceMocked(value),
     lspGetClassFieldsServiceMocked: (className: string) => lspGetClassFieldsServiceMocked(className),
@@ -105,7 +109,11 @@ const Showcase: React.FunctionComponent = () => {
         <input value={buttonTooltipMessage} onChange={onInputChange} />
       </div>
       <div className="main">
-        <ImportJavaClasses buttonDisabledStatus={buttonDisableStatus} buttonTooltipMessage={buttonTooltipMessage} />
+        <ImportJavaClasses
+          buttonDisabledStatus={buttonDisableStatus}
+          buttonTooltipMessage={buttonTooltipMessage}
+          importJavaClassesGWTService={importJavaClassesGWTService}
+        />
       </div>
     </div>
   );

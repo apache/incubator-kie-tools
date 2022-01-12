@@ -16,18 +16,22 @@
 
 import * as React from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
-import { ImportJavaClasses } from "../../components";
+import { ImportJavaClasses, ImportJavaClassGWTService } from "../../components";
 import * as _ from "lodash";
 
 describe("ImportJavaClasses component tests", () => {
   test("should render ImportJavaClasses Button component", () => {
-    const { container } = render(<ImportJavaClasses buttonDisabledStatus={false} />);
+    const { container } = render(
+      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+    );
 
     expect(container).toMatchSnapshot();
   });
 
   test("Should show Modal after clicking on the button", () => {
-    const { baseElement, getByText } = render(<ImportJavaClasses buttonDisabledStatus={false} />);
+    const { baseElement, getByText } = render(
+      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+    );
     const modalWizardButton = getByText("Import Java classes")! as HTMLButtonElement;
     modalWizardButton.click();
 
@@ -37,7 +41,9 @@ describe("ImportJavaClasses component tests", () => {
   test("Should search box works", () => {
     const mockedLSPGetClassService = jest.fn();
     lspGetClassServiceMock(mockedLSPGetClassService);
-    const { baseElement, getByText } = render(<ImportJavaClasses buttonDisabledStatus={false} />);
+    const { baseElement, getByText } = render(
+      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+    );
     testSearchInput(baseElement, getByText);
     const resetButton = baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement;
     expect(resetButton).toBeInTheDocument();
@@ -48,7 +54,9 @@ describe("ImportJavaClasses component tests", () => {
   test("Should search box with results works", () => {
     const mockedLSPGetClassService = jest.fn((value) => ["com.Book", "com.Author"]);
     lspGetClassServiceMock(mockedLSPGetClassService);
-    const { baseElement, getByText } = render(<ImportJavaClasses buttonDisabledStatus={false} />);
+    const { baseElement, getByText } = render(
+      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+    );
     testSearchInput(baseElement, getByText);
     testJavaClassSelection(baseElement, false);
     let checkSecondElement = baseElement.querySelector('[aria-labelledby="com.Author"]')! as HTMLInputElement;
@@ -60,7 +68,9 @@ describe("ImportJavaClasses component tests", () => {
   });
 
   test("Should close Modal after opening it and clicking on the Cancel button", () => {
-    const { baseElement, getByText } = render(<ImportJavaClasses buttonDisabledStatus={false} />);
+    const { baseElement, getByText } = render(
+      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+    );
     const modalWizardButton = getByText("Import Java classes")! as HTMLButtonElement;
     modalWizardButton.click();
     const cancelButton = getByText("Cancel") as HTMLButtonElement;
@@ -72,7 +82,9 @@ describe("ImportJavaClasses component tests", () => {
   test("Should move to second step", async () => {
     lspGetClassServiceMock(jest.fn((value) => ["com.Book", "com.Author", "com.Test"]));
     lspGetClassFieldServiceMock();
-    const { baseElement, getByText } = render(<ImportJavaClasses buttonDisabledStatus={false} />);
+    const { baseElement, getByText } = render(
+      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+    );
     testSearchInput(baseElement, getByText);
     testJavaClassSelection(baseElement, true);
     await testNextStepFieldsTable(baseElement, getByText);
@@ -83,7 +95,9 @@ describe("ImportJavaClasses component tests", () => {
   test("Should move to second step and fetch a Java Class", async () => {
     lspGetClassServiceMock(jest.fn((value) => ["com.Book", "com.Author", "com.Test"]));
     lspGetClassFieldServiceMock();
-    const { baseElement, getByText } = render(<ImportJavaClasses buttonDisabledStatus={false} />);
+    const { baseElement, getByText } = render(
+      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+    );
     testSearchInput(baseElement, getByText);
     testJavaClassSelection(baseElement, true);
     await testNextStepFieldsTable(baseElement, getByText);
@@ -101,7 +115,9 @@ describe("ImportJavaClasses component tests", () => {
   test("Should move to second step and fetch, remove a Java Class", async () => {
     lspGetClassServiceMock(jest.fn((value) => ["com.Book", "com.Author", "com.Test"]));
     lspGetClassFieldServiceMock();
-    const { baseElement, getByText } = render(<ImportJavaClasses buttonDisabledStatus={false} />);
+    const { baseElement, getByText } = render(
+      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+    );
     testSearchInput(baseElement, getByText);
     testJavaClassSelection(baseElement, true);
     await testNextStepFieldsTable(baseElement, getByText);
@@ -125,7 +141,9 @@ describe("ImportJavaClasses component tests", () => {
   test("Should move to third step", async () => {
     lspGetClassServiceMock(jest.fn((value) => ["com.Book", "com.Author", "com.Test"]));
     lspGetClassFieldServiceMock();
-    const { baseElement, getByText } = render(<ImportJavaClasses buttonDisabledStatus={false} />);
+    const { baseElement, getByText } = render(
+      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+    );
     testSearchInput(baseElement, getByText);
     testJavaClassSelection(baseElement, true);
     /* Second Step */
@@ -230,5 +248,11 @@ describe("ImportJavaClasses component tests", () => {
     } else {
       return new Map<string, string>();
     }
+  };
+
+  const importJavaClassesGWTServiceMock: ImportJavaClassGWTService = {
+    handleOnWizardImportButtonClick: jest.fn((javaClasses) => {
+      /* Do Nothing */
+    }),
   };
 });

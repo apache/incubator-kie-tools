@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,14 +35,14 @@ import javax.inject.Inject;
 
 import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
+import org.appformer.client.context.Channel;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils;
-import org.kie.workbench.common.dmn.api.editors.types.DataObject;
-import org.kie.workbench.common.dmn.api.editors.types.DataObjectProperty;
-import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
+import org.kie.workbench.common.dmn.client.editors.types.jsinterop.JavaClass;
+import org.kie.workbench.common.dmn.client.editors.types.jsinterop.JavaField;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeStackHash;
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDDataTypesHandler;
@@ -54,7 +55,6 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultB
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.widgets.client.kogito.IsKogito;
 import org.uberfire.client.mvp.UberElemental;
 
 import static java.util.Collections.singletonList;
@@ -80,21 +80,17 @@ public class DataTypeList {
 
     private final DataTypeListHighlightHelper highlightHelper;
 
-    private final IsKogito isKogito;
-
     private final SessionCommandManager<AbstractCanvasHandler> commandManager;
 
     private final SessionManager sessionManager;
 
-    private Consumer<DataTypeListItem> onDataTypeListItemUpdate = (e) -> { /* Nothing. */ };
+    private final KogitoChannelHelper kogitoChannelHelper;
+
+    private Consumer<DataTypeListItem> onDataTypeListItemUpdate = e -> { /* Nothing. */ };
 
     private List<DataTypeListItem> items = new ArrayList<>();
 
     private DataTypeListItem currentEditingItem;
-
-    private Map<String, Integer> importedNamesOccurrencesCount;
-
-    private Map<String, String> renamedImportedDataTypes;
 
     @Inject
     public DataTypeList(final View view,
@@ -105,9 +101,9 @@ public class DataTypeList {
                         final DataTypeStackHash dataTypeStackHash,
                         final DNDDataTypesHandler dndDataTypesHandler,
                         final DataTypeListHighlightHelper highlightHelper,
-                        final IsKogito isKogito,
                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                        final SessionManager sessionManager) {
+                        final SessionManager sessionManager,
+                        final KogitoChannelHelper kogitoChannelHelper) {
         this.view = view;
         this.listItems = listItems;
         this.dataTypeManager = dataTypeManager;
@@ -116,11 +112,9 @@ public class DataTypeList {
         this.dataTypeStackHash = dataTypeStackHash;
         this.dndDataTypesHandler = dndDataTypesHandler;
         this.highlightHelper = highlightHelper;
-        this.isKogito = isKogito;
-        this.importedNamesOccurrencesCount = new HashMap<>();
-        this.renamedImportedDataTypes = new HashMap<>();
         this.commandManager = sessionCommandManager;
         this.sessionManager = sessionManager;
+        this.kogitoChannelHelper = kogitoChannelHelper;
     }
 
     @PostConstruct
@@ -129,11 +123,14 @@ public class DataTypeList {
         highlightHelper.init(this);
         dndDataTypesHandler.init(this);
         dndListComponent.setOnDropItem(getOnDropDataType());
+    }
 
-        if (!isKogito.get()) {
-            view.showImportDataObjectButton();
-        } else {
-            view.hideImportDataObjectButton();
+    /**
+     * It activates the React Components in the DataTypeList Widget
+     */
+    public void activate() {
+        if (kogitoChannelHelper.isCurrentChannelEnabled(Arrays.asList(Channel.VSCODE, Channel.DEFAULT))) {
+            view.renderImportJavaClasses();
         }
     }
 
@@ -179,7 +176,7 @@ public class DataTypeList {
             listItems.addAll(makeTreeListItems(subDataType, level + 1));
         }
 
-        final List<HTMLElement> children = listItems.stream().map(e -> e.getDragAndDropElement()).collect(Collectors.toList());
+        final List<HTMLElement> children = listItems.stream().map(DataTypeListItem::getDragAndDropElement).collect(Collectors.toList());
         dndListComponent.setInitialPositionY(listItem.getDragAndDropElement(), children);
 
         cleanAndUnIndex(dataType);
@@ -450,63 +447,56 @@ public class DataTypeList {
         searchBar.refresh();
     }
 
-    public void importDataObjects(final List<DataObject> selectedDataObjects) {
+    public void importJavaClasses(final List<JavaClass> javaClasses) {
+        if (javaClasses == null || javaClasses.isEmpty()) {
+            return;
+        }
 
-        removeFullQualifiedNames(selectedDataObjects);
-        for (final DataObject dataObject : selectedDataObjects) {
-            final DataType newDataType = createNewDataType(dataObject);
-            final Optional<DataType> existing = findDataTypeByName(dataObject.getClassType());
+        renameJavaClassToDMNName(javaClasses);
+
+        for (JavaClass javaClass : javaClasses) {
+            DataType newDataType = createNewDataType(javaClass);
+            final Optional<DataType> existing = findDataTypeByName(newDataType.getName());
             if (existing.isPresent()) {
                 replace(existing.get(), newDataType);
             } else {
                 insert(newDataType);
             }
-            insertProperties(dataObject);
-        }
-    }
-
-    void removeFullQualifiedNames(final List<DataObject> imported) {
-
-        final Map<String, Integer> namesCount = getImportedNamesOccurrencesCount();
-        final Map<String, String> renamed = getRenamedImportedDataTypes();
-        namesCount.clear();
-        renamed.clear();
-
-        for (final DataObject dataObject : imported) {
-            final String nameCandidate = dataObject.getClassNameWithoutPackage();
-            final String newName = buildName(nameCandidate, namesCount);
-            renamed.put(dataObject.getClassType(), newName);
-            dataObject.setClassType(newName);
-        }
-
-        updatePropertiesReferences(imported, renamed);
-    }
-
-    Map<String, Integer> getImportedNamesOccurrencesCount() {
-        return importedNamesOccurrencesCount;
-    }
-
-    Map<String, String> getRenamedImportedDataTypes() {
-        return renamedImportedDataTypes;
-    }
-
-    void updatePropertiesReferences(final List<DataObject> imported,
-                                    final Map<String, String> renamed) {
-
-        for (final DataObject dataObject : imported) {
-            for (final DataObjectProperty property : dataObject.getProperties()) {
-                String propertyType = renamed.getOrDefault(property.getType(), property.getType());
-                if (!isPropertyTypePresent(propertyType, imported)) {
-                    propertyType = BuiltInType.ANY.getName();
-                }
-                property.setType(propertyType);
+            if (javaClass.getFields() != null && !javaClass.getFields().isEmpty()) {
+                insertFields(newDataType, javaClass);
             }
         }
+
     }
 
-    boolean isPropertyTypePresent(final String type, final List<DataObject> imported) {
-        return BuiltInTypeUtils.isBuiltInType(type)
-                || imported.stream().anyMatch(dataObject -> Objects.equals(dataObject.getClassType(), type));
+    void renameJavaClassToDMNName(final List<JavaClass> javaClasses) {
+        final Map<String, Integer> namesCount = new HashMap<>();
+        final Map<String, String> javaClassNameToDMNTypeNameMap = new HashMap<>();
+
+        for (final JavaClass javaClass : javaClasses) {
+            final String nameCandidate = javaClass.getName().substring(javaClass.getName().lastIndexOf('.') + 1);
+            final String newName = buildName(nameCandidate, namesCount);
+            javaClassNameToDMNTypeNameMap.put(javaClass.getName(), newName);
+            javaClass.setName(newName);
+        }
+
+        updatePropertiesReferences(javaClasses, javaClassNameToDMNTypeNameMap);
+    }
+
+    void updatePropertiesReferences(final List<JavaClass> javaClasses,
+                                    final Map<String, String> javaClassNameToDMNTypeNameMap) {
+
+        for (final JavaClass javaClass : javaClasses) {
+
+            for (final JavaField field : javaClass.getFields()) {
+                if (javaClassNameToDMNTypeNameMap.containsKey(field.getType())) {
+                    String renamedFieldType = javaClassNameToDMNTypeNameMap.get(field.getType());
+                    field.setDmnTypeRef(renamedFieldType);
+                }
+            }
+
+        }
+
     }
 
     String buildName(final String nameCandidate, final Map<String, Integer> namesCount) {
@@ -522,15 +512,13 @@ public class DataTypeList {
         return nameCandidate;
     }
 
-    void insertProperties(final DataObject dataObject) {
-
-        final Optional<DataType> existing = findDataTypeByName(dataObject.getClassType());
-        existing.ifPresent(dataType -> findItem(dataType).ifPresent(item -> {
-            for (final DataObjectProperty property : dataObject.getProperties()) {
-                final DataType newDataType = createNewDataType(property);
+    void insertFields(final DataType structureDataType, final JavaClass javaClass) {
+        findItem(structureDataType).ifPresent(item -> {
+            for (final JavaField javaField : javaClass.getFields()) {
+                final DataType newDataType = createNewDataType(javaField);
                 item.insertNestedField(newDataType);
             }
-        }));
+        });
     }
 
     void insert(final DataType newDataType) {
@@ -543,20 +531,19 @@ public class DataTypeList {
         insert(newDataType);
     }
 
-    DataType createNewDataType(final DataObjectProperty dataProperty) {
-
+    DataType createNewDataType(final JavaField javaField) {
         final DataType newDataType = dataTypeManager.fromNew()
-                .withType(dataProperty.getType())
-                .asList(dataProperty.isList())
+                .withType(javaField.getDmnTypeRef())
+                .asList(javaField.isList())
                 .get();
-        newDataType.setName(dataProperty.getProperty());
+        newDataType.setName(javaField.getName());
         return newDataType;
     }
 
-    DataType createNewDataType(final DataObject dataObject) {
-
+    DataType createNewDataType(final JavaClass javaClass) {
         final DataType newDataType = dataTypeManager.fromNew().withType(dataTypeManager.structure()).get();
-        newDataType.setName(dataObject.getClassType());
+        final String javaClassSimpleName = javaClass.getName().substring(javaClass.getName().lastIndexOf('.') + 1);
+        newDataType.setName(javaClassSimpleName);
         return newDataType;
     }
 
@@ -624,10 +611,8 @@ public class DataTypeList {
 
         void showReadOnlyMessage(final boolean show);
 
-        void showImportDataObjectButton();
-
-        void hideImportDataObjectButton();
-
         HTMLElement getListItems();
+
+        void renderImportJavaClasses();
     }
 }

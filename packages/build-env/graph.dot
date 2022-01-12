@@ -152,6 +152,7 @@ digraph G {
   "@kie-tooling-core/run-script-if" -> "@kogito-tooling/build-env" [ style = "dashed", color = "purple" ];
   "@kogito-tooling/stunner-editors" -> "@kogito-tooling/stunner-editors-dmn-loader" [ style = "solid", color = "black" ];
   "@kogito-tooling/stunner-editors-dmn-loader" -> "@kogito-tooling/boxed-expression-component" [ style = "solid", color = "blue" ];
+  "@kogito-tooling/stunner-editors-dmn-loader" -> "@kogito-tooling/import-java-classes-component" [ style = "solid", color = "blue" ];
   "@kogito-tooling/uniforms-bootstrap4-codegen" -> "@kie-tooling-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kogito-tooling/uniforms-patternfly-codegen" -> "@kie-tooling-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kogito-tooling/unitables" -> "@kie-tooling-core/notifications" [ style = "solid", color = "blue" ];
