@@ -97,8 +97,7 @@ describe("DMN Expression Editor Test", () => {
     });
   });
 
-  // TODO - unskip once kogito-editors-java bump is available
-  it.skip("Change Decition Table from Any to Custom Data Type", () => {
+  it("Change Decition Table from Any to Custom Data Type", () => {
     cy.get("#upload-field").attachFile("testModelWithCustomDataType.dmn", { subjectType: "drag-n-drop" });
 
     // wait until loading dialog disappears
