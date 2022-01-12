@@ -20,7 +20,7 @@ import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/M
 import * as React from "react";
 import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
-import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { WorkspaceFile } from "../../workspace";
 import { AlertsController, useAlert } from "../../alerts/Alerts";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
 

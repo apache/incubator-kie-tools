@@ -49,7 +49,7 @@ import { useHistory } from "react-router";
 import { EmbedModal } from "./EmbedModal";
 import { Alerts, AlertsController, useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
-import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "../workspace";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";

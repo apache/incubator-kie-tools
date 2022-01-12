@@ -23,7 +23,7 @@ import { useOnlineI18n } from "../i18n";
 import { NotificationsPanel, NotificationsPanelRef } from "./NotificationsPanel/NotificationsPanel";
 import { DmnRunnerTabular } from "./DmnRunner/DmnRunnerTabular";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
-import { WorkspaceFile } from "../workspace/WorkspacesContext";
+import { WorkspaceFile } from "../workspace";
 import { DecisionResult } from "@kogito-tooling/form/dist/dmn";
 import {
   NotificationsPanelDockToggle,

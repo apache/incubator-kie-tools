@@ -21,7 +21,7 @@ import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { useOnlineI18n } from "../i18n";
-import { WorkspaceFile } from "../workspace/WorkspacesContext";
+import { WorkspaceFile } from "../workspace";
 import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
 import { GistOrigin, WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";

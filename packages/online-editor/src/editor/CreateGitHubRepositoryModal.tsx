@@ -18,7 +18,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
-import { useWorkspaces } from "../workspace/WorkspacesContext";
+import { useWorkspaces } from "../workspace";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { Form, FormAlert, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";

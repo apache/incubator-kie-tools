@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useWorkspaces } from "../WorkspacesContext";
+import { useWorkspaces } from "../contexts";
 import { useCallback } from "react";
 import { usePromiseState } from "./PromiseState";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";

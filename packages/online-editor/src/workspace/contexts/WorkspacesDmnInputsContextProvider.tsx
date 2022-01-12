@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-import { WorkspaceFile } from "../";
-import { WorkspaceDescriptor } from "./WorkspaceDescriptor";
+import * as React from "react";
+import { WorkspacesContextProvider } from "./WorkspacesContextProvider";
+import { WorkspacesDmnInputsContext } from "./WorkspacesDmnInputsContext";
+import { useParams } from "react-router";
 
-export interface ActiveWorkspace {
-  descriptor: WorkspaceDescriptor;
-  files: WorkspaceFile[];
+export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildren<{}>) {
+  const params = useParams();
+
+  return <WorkspacesContextProvider Context={WorkspacesDmnInputsContext}>{props.children}</WorkspacesContextProvider>;
 }

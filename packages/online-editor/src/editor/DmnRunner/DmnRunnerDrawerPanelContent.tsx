@@ -37,7 +37,7 @@ import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { WorkspaceFile } from "../../workspace";
 import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";

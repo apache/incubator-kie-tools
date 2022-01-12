@@ -20,7 +20,7 @@ import LightningFS from "@isomorphic-git/lightning-fs";
 import DefaultBackend from "@isomorphic-git/lightning-fs/src/DefaultBackend";
 import DexieBackend from "@isomorphic-git/lightning-fs/src/DexieBackend";
 import { StorageFile, StorageService } from "./StorageService";
-import { decoder, encoder } from "../WorkspacesContext";
+import { decoder, encoder } from "../contexts";
 import { WorkspaceKind, WorkspaceOrigin } from "../model/WorkspaceOrigin";
 import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "./GitService";
 import { jsonParseWithUrl } from "../../json/JsonParse";

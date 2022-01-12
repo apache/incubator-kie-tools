@@ -15,7 +15,7 @@
  */
 
 import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
-import { decoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { decoder, useWorkspaces, WorkspaceFile } from "../workspace";
 import { useRoutes } from "../navigation/Hooks";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useWorkspaces } from "../WorkspacesContext";
+import { useWorkspaces } from "../contexts";
 import * as React from "react";
 import { useEffect } from "react";
 import { useHistory } from "react-router";

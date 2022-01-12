@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { encoder, WorkspaceFile } from "../WorkspacesContext";
+import { encoder, WorkspaceFile } from "../contexts";
 import JSZip from "jszip";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { StorageFile, StorageService } from "./StorageService";

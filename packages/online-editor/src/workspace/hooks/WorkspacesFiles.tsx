@@ -15,7 +15,7 @@
  */
 
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
-import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "../contexts";
 import { usePromiseState } from "./PromiseState";
 import { useCallback } from "react";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";

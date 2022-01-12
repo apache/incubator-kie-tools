@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { decoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { decoder, useWorkspaces, WorkspaceFile } from "../workspace";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";

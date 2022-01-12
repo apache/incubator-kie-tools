@@ -15,7 +15,7 @@
  */
 
 import { FsCache } from "./FsCache";
-import { encoder, WorkspaceFile } from "../WorkspacesContext";
+import { encoder, WorkspaceFile } from "../contexts";
 import { StorageFile, StorageService } from "./StorageService";
 
 export class WorkspaceSvgService {

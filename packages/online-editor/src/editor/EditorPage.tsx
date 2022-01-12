@@ -31,7 +31,7 @@ import { DmnRunnerDrawer } from "./DmnRunner/DmnRunnerDrawer";
 import { AlertsController, useAlert } from "../alerts/Alerts";
 import { useCancelableEffect, useController, usePrevious } from "../reactExt/Hooks";
 import { TextEditorModal } from "./TextEditor/TextEditorModal";
-import { useWorkspaces } from "../workspace/WorkspacesContext";
+import { useWorkspaces } from "../workspace";
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tooling-core/workspace/dist/api";
 import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";

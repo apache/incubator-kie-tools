@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import { WorkspaceFile } from "../";
-import { WorkspaceDescriptor } from "./WorkspaceDescriptor";
+import { createContext, useContext } from "react";
+import { WorkspacesContextType } from "./WorkspacesContext";
 
-export interface ActiveWorkspace {
-  descriptor: WorkspaceDescriptor;
-  files: WorkspaceFile[];
+export const WorkspacesDmnInputsContext = createContext<WorkspacesContextType>({} as any);
+
+export function useWorkspacesDmnInputs(): WorkspacesContextType {
+  return useContext(WorkspacesDmnInputsContext);
 }

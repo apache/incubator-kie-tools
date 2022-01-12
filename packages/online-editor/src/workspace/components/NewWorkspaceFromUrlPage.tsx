@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { encoder, LocalFile, useWorkspaces } from "../WorkspacesContext";
+import { encoder, LocalFile, useWorkspaces } from "../contexts";
 import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
 import * as React from "react";

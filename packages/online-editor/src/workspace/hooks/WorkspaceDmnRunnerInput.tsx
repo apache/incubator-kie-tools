@@ -15,19 +15,19 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { decoder, useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
-import { useWorkspaceFilePromise, WorkspaceFileEvents } from "./WorkspaceFileHooks";
+import { decoder, useWorkspacesDmnInputs, WorkspaceFile } from "../";
+import { WorkspaceFileEvents } from "./WorkspaceFileHooks";
 import { WorkspaceDmnRunnerDataService } from "../services/WorkspaceDmnRunnerDataService";
 import { InputRow } from "../../editor/DmnRunner/DmnRunnerContext";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
-import { WorkspaceEvents } from "./WorkspaceHooks";
+import { useParams } from "react-router";
 
 export function useWorkspaceDmnRunnerInput(
   workspaceId: string | undefined,
   relativePath: string | undefined,
   workspaceFile: WorkspaceFile
 ): [Array<InputRow>, (value: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => void] {
-  const workspaces = useWorkspaces();
+  const workspaces = useWorkspacesDmnInputs();
   const [inputRows, setInputRows] = useState<Array<InputRow>>([{}]);
 
   const dmnRunnerInput = useMemo(() => {

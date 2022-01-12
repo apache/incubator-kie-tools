@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useRef, useState } from "react";
 import { isAbsolute } from "path";
-import { LocalFile, useWorkspaces } from "../workspace/WorkspacesContext";
+import { LocalFile, useWorkspaces } from "../workspace";
 import { useDropzone } from "react-dropzone";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";

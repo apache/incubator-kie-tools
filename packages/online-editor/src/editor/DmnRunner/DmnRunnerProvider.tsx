@@ -17,7 +17,7 @@
 import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
-import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext, InputRow } from "./DmnRunnerContext";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
@@ -49,8 +49,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const routes = useRoutes();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const workspaces = useWorkspaces();
-
-const settings = useSettings();
+  const settings = useSettings();
   const [inputRows, updateInputRows] = useWorkspaceDmnRunnerInput(
     props.workspaceId,
     props.fileRelativePath,

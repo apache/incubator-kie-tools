@@ -22,16 +22,16 @@ import {
 } from "@kie-tooling-core/workspace/dist/api";
 import * as React from "react";
 import { createContext, useContext } from "react";
-import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
-import { WorkspaceService } from "./services/WorkspaceService";
+import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
+import { WorkspaceService } from "../services/WorkspaceService";
 import { basename, extname, parse } from "path";
-import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
-import { WorkspaceFsService } from "./services/WorkspaceFsService";
+import { WorkspaceDescriptorService } from "../services/WorkspaceDescriptorService";
+import { WorkspaceFsService } from "../services/WorkspaceFsService";
 import LightningFS from "@isomorphic-git/lightning-fs";
-import { GitService } from "./services/GitService";
-import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
-import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
-import { StorageService } from "./services/StorageService";
+import { GitService } from "../services/GitService";
+import { GistOrigin, GitHubOrigin } from "../model/WorkspaceOrigin";
+import { WorkspaceSvgService } from "../services/WorkspaceSvgService";
+import { StorageService } from "../services/StorageService";
 
 export const decoder = new TextDecoder("utf-8");
 export const encoder = new TextEncoder();

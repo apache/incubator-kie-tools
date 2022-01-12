@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState, useRef } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRoutes } from "../../navigation/Hooks";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
@@ -24,7 +24,7 @@ import { DmnDevSandboxContext } from "./DmnDevSandboxContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { isConfigValid } from "../../openshift/OpenShiftSettingsConfig";
-import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "../../workspace";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "../../workspace/services/WorkspaceDescriptorService";
 
 interface Props {
