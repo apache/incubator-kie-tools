@@ -25,8 +25,11 @@ import {
 import { act } from "react-dom/test-utils";
 import { fireEvent } from "@testing-library/react";
 import { BoxedExpressionGlobalContext } from "@kogito-tooling/boxed-expression-component/dist/context";
-import { BoxedExpressionProvider, BoxedExpressionProviderProps } from "@kogito-tooling/boxed-expression-component";
-import { DataType } from "../../src";
+import {
+  BoxedExpressionProvider,
+  BoxedExpressionProviderProps,
+  DataType,
+} from "@kogito-tooling/boxed-expression-component";
 
 global.console = { ...global.console, warn: () => ({}) };
 
