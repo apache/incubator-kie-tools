@@ -17,9 +17,11 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
@@ -33,11 +35,10 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.editors.types.DataObject;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
-import org.kie.workbench.common.dmn.client.editors.types.imported.ImportDataObjectModal;
+import org.kie.workbench.common.dmn.client.editors.types.jsinterop.JavaClass;
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
@@ -63,6 +64,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -118,10 +120,7 @@ public class DataTypeListViewTest {
     private DataTypeList presenter;
 
     @Mock
-    private HTMLButtonElement importDataObjectButton;
-
-    @Mock
-    private ImportDataObjectModal importDataObjectModal;
+    private SpanElement importJavaClassesContainer;
 
     @Mock
     private EventSourceMock<FlashMessage> flashMessageEvent;
@@ -157,7 +156,7 @@ public class DataTypeListViewTest {
         dataTypeButton.classList = mock(DOMTokenList.class);
         listItems.childNodes = new NodeList<>();
 
-        view = spy(new DataTypeListView(listItems, addButton, addButtonPlaceholder, dataTypeButton, placeholder, searchBarContainer, expandAll, collapseAll, noDataTypesFound, readOnlyMessage, readOnlyMessageCloseButton, scrollHelper, importDataObjectButton, importDataObjectModal, flashMessageEvent, translationService, readOnlyProvider));
+        view = spy(new DataTypeListView(listItems, addButton, addButtonPlaceholder, dataTypeButton, placeholder, searchBarContainer, expandAll, collapseAll, noDataTypesFound, readOnlyMessage, readOnlyMessageCloseButton, scrollHelper, importJavaClassesContainer, flashMessageEvent, translationService, readOnlyProvider));
         view.init(presenter);
 
         doReturn(element).when(view).getElement();
@@ -169,6 +168,7 @@ public class DataTypeListViewTest {
         verify(searchBarContainer).appendChild(searchBarElement);
         verify(listItems).appendChild(dndListComponentElement);
         verify(view).setupAddButtonReadOnlyStatus();
+        verify(view).registerBroadcastForImportJavaClasses();
     }
 
     @Test
@@ -602,27 +602,21 @@ public class DataTypeListViewTest {
     }
 
     @Test
-    public void testImportDataObjectsWhenListIsEmpty() {
-
-        final List<DataObject> imported = mock(List.class);
-
-        when(imported.isEmpty()).thenReturn(true);
-        view.importDataObjects(imported);
-
-        verify(presenter).importDataObjects(imported);
+    public void importJavaClassesTestEmptyList() {
+        view.importJavaClasses(null);
+        view.importJavaClasses(Collections.EMPTY_LIST);
+        verify(presenter, never()).importJavaClasses(any());
+        verify(view, never()).fireSuccessfullyImportedData();
     }
 
     @Test
-    public void testImportDataObjectsWhenListIsNotEmpty() {
-
-        final List<DataObject> imported = mock(List.class);
-
-        doNothing().when(view).fireSuccessfullyImportedData();
-        when(imported.isEmpty()).thenReturn(false);
-        view.importDataObjects(imported);
-
-        verify(presenter).importDataObjects(imported);
-        verify(view).fireSuccessfullyImportedData();
+    public void importJavaClassesTest() {
+        JavaClass javaClass = mock(JavaClass.class);
+        when(javaClass.getName()).thenReturn("com.test");
+        List<JavaClass> javaClasses = Arrays.asList(javaClass);
+        view.importJavaClasses(javaClasses);
+        verify(presenter, times(1)).importJavaClasses(javaClasses);
+        verify(view, times(1)).fireSuccessfullyImportedData();
     }
 
     @Test
@@ -656,38 +650,19 @@ public class DataTypeListViewTest {
     }
 
     @Test
-    public void testShowImportDataObjectButton() {
-        final DOMTokenList classList = mock(DOMTokenList.class);
+    public void renderImportJavaClasses() {
+        view.renderImportJavaClasses();
 
-        importDataObjectButton.classList = classList;
-
-        view.showImportDataObjectButton();
-
-        verify(classList).remove(HIDDEN_CSS_CLASS);
+        verify(view, times(1)).renderImportJavaClasses(".kie-import-java-classes", false, null);
     }
 
     @Test
-    public void testHideImportDataObjectButton() {
-        final DOMTokenList classList = mock(DOMTokenList.class);
+    public void renderImportJavaClassesAlreadyRendered() {
+        when(importJavaClassesContainer.hasChildNodes()).thenReturn(true);
 
-        importDataObjectButton.classList = classList;
+        view.renderImportJavaClasses();
 
-        view.hideImportDataObjectButton();
-
-        verify(classList).add(HIDDEN_CSS_CLASS);
-    }
-
-    @Test
-    public void testOnImportDataObjectClick() {
-
-        final ClickEvent event = mock(ClickEvent.class);
-        final List<String> list = mock(List.class);
-
-        when(presenter.getExistingDataTypesNames()).thenReturn(list);
-
-        view.onImportDataObjectClick(event);
-
-        verify(importDataObjectModal).show(list);
+        verify(view, never()).renderImportJavaClasses(".kie-import-java-classes", false, null);
     }
 
     private HTMLElement makeHTMLElement() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.widgets.client.kogito;
+import { JavaClass } from "./JavaClass";
 
-import javax.enterprise.context.ApplicationScoped;
-
-@ApplicationScoped
-public class IsKogito {
-
-    public boolean get() {
-        return true;
-    }
+/**
+ * This interface defines all the API methods which ImportJavaClasses component can use to dialog with GWT Layer
+ */
+export interface ImportJavaClassGWTService {
+  /**
+   * This method defines the GWT method to call whenever the Import button of the Wizard is clicked
+   * @param javaClasses
+   */
+  handleOnWizardImportButtonClick: (javaClasses: JavaClass[]) => void;
 }
