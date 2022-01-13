@@ -23,6 +23,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.style.Style;
 import com.ait.lienzo.client.core.style.Style.OutlineStyle;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.BoundsProvider;
@@ -324,11 +325,12 @@ public class ScrollablePanel extends LienzoBoundsPanel {
         final double dragBoundsLimitsX = DRAG_BOUNDS_LIMIT_SIZE / getTransform().getScaleX();
         final double dragBoundsLimitsY = DRAG_BOUNDS_LIMIT_SIZE / getTransform().getScaleY();
 
+        final Point2D primitiveLocation = primitive.getComputedLocation();
         final BoundingBox primitiveBoundingBox =
-                BoundingBox.fromDoubles(primitive.getX(),
-                                        primitive.getY(),
-                                        primitive.getX() + primitive.getBoundingBox().getWidth(),
-                                        primitive.getY() + primitive.getBoundingBox().getHeight());
+                BoundingBox.fromDoubles(primitiveLocation.getX(),
+                                        primitiveLocation.getY(),
+                                        primitiveLocation.getX() + primitive.getBoundingBox().getWidth(),
+                                        primitiveLocation.getY() + primitive.getBoundingBox().getHeight());
 
         final BoundingBox visibleBoundingBox = new BoundingBox();
         final Bounds visibleBounds = getVisibleBounds();
@@ -355,16 +357,16 @@ public class ScrollablePanel extends LienzoBoundsPanel {
             if (isDragOverBounds) {
                 isDragOverBounds = false;
                 LienzoPanelEvents.fireDragLimitsOutEvent(this.getLienzoPanel());
+                refresh();
             }
         } else {
             isDragOverBounds = true;
             LienzoPanelEvents.fireDragLimitsOverEvent(this.getLienzoPanel(), limitDirections);
+            refresh();
         }
 
         lastPrimitiveX = primitive.getX();
         lastPrimitiveY = primitive.getY();
-
-        refresh();
     }
 
     private void onPrimitiveDragOffsetUpdate(final IPrimitive primitive, final double offsetX, final double offsetY) {
