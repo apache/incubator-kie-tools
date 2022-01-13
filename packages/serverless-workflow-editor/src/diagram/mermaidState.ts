@@ -148,8 +148,8 @@ export class MermaidState {
       if (isObject(this.state.end)) {
         const end = this.state.end as Specification.End;
 
-        if (end.produceEvents!.length > 0) {
-          transitionLabel = "Produced event = [" + end.produceEvents!.map((pe) => pe.eventRef).join(",") + "]";
+        if (end.produceEvents && end.produceEvents.length > 0) {
+          transitionLabel = "Produced event = [" + end.produceEvents.map((pe) => pe.eventRef).join(",") + "]";
         }
       }
 
