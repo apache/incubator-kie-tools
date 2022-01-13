@@ -84,23 +84,6 @@ interface Props {
 
 export const FORMS_ID = "unitables-forms";
 
-/**
- * The constant below contains all built-in types currently supported by the Boxed Expression Editor,
- */
-const dataTypes = [
-  { typeRef: "Undefined", name: "<Undefined>", isCustom: false },
-  { typeRef: "Any", name: "Any", isCustom: false },
-  { typeRef: "Boolean", name: "boolean", isCustom: false },
-  { typeRef: "Context", name: "context", isCustom: false },
-  { typeRef: "Date", name: "date", isCustom: false },
-  { typeRef: "DateTime", name: "date and time", isCustom: false },
-  { typeRef: "DateTimeDuration", name: "days and time duration", isCustom: false },
-  { typeRef: "Number", name: "number", isCustom: false },
-  { typeRef: "String", name: "string", isCustom: false },
-  { typeRef: "Time", name: "time", isCustom: false },
-  { typeRef: "YearsMonthsDuration", name: "years and months duration", isCustom: false },
-];
-
 export function DmnAutoTable(props: Props) {
   const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
@@ -329,7 +312,7 @@ export function DmnAutoTable(props: Props) {
                                 expressionDefinition={{}}
                                 isRunnerTable={true}
                                 decisionNodeId={outputUid}
-                                dataTypes={dataTypes}
+                                dataTypes={[]}
                               >
                                 <DmnRunnerTable
                                   name={"DMN Runner Output"}
@@ -362,7 +345,7 @@ export function DmnAutoTable(props: Props) {
                       expressionDefinition={{}}
                       isRunnerTable={true}
                       decisionNodeId={inputUid}
-                      dataTypes={dataTypes}
+                      dataTypes={[]}
                     >
                       <div style={{ display: "flex" }} ref={inputsContainerRef}>
                         <div style={{ display: "flex", flexDirection: "column" }}>
