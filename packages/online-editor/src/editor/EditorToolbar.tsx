@@ -88,6 +88,7 @@ import { useGitHubAuthInfo } from "../github/Hooks";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { useCancelableEffect } from "../reactExt/Hooks";
 import type { RestEndpointMethodTypes as OctokitRestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types";
+import { workspace } from "vscode";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -1289,6 +1290,12 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     }, [])
   );
 
+  const canSeeWorkspaceToolbar = useMemo(
+    () =>
+      workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.LOCAL || workspacePromise.data?.files.length > 1,
+    [workspacePromise.data?.descriptor.origin.kind, workspacePromise.data?.files.length]
+  );
+
   return (
     <PromiseStateWrapper
       promise={workspacePromise}
@@ -1296,7 +1303,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         <>
           <Alerts ref={props.alertsRef} width={"500px"} />
           <PageSection type={"nav"} variant={"light"} padding={{ default: "noPadding" }}>
-            {workspace && workspace.files.length > 1 && (
+            {workspace && canSeeWorkspaceToolbar && (
               <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                 <FlexItem>
                   <Button
