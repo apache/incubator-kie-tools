@@ -15,21 +15,24 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { PingPongApi, PingPongChannelApi, PingPongEnvelopeApi } from "../api";
 import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
-import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tooling-core/envelope/dist/embedded";
+import {
+  EmbeddedEnvelopeProps,
+  EnvelopeDivConfig,
+  RefForwardingEmbeddedEnvelope,
+} from "@kie-tooling-core/envelope/dist/embedded";
 
 export type EmbeddedDivPingPongProps = {
-  mapping: {
-    title: string;
-  };
   apiImpl: PingPongChannelApi;
   targetOrigin: string;
   name: string;
-  renderView: (container: HTMLDivElement, containerType: ContainerType, envelopeId?: string) => Promise<void>;
+  renderView: (container: HTMLDivElement, envelopeId?: string) => Promise<void>;
 };
+
+const config: EnvelopeDivConfig = { containerType: ContainerType.DIV };
 
 export const EmbeddedDivPingPong = React.forwardRef(
   (props: EmbeddedDivPingPongProps, forwardedRef: React.Ref<PingPongApi>) => {
@@ -41,7 +44,7 @@ export const EmbeddedDivPingPong = React.forwardRef(
         envelopeServer: EnvelopeServer<PingPongChannelApi, PingPongEnvelopeApi>,
         container: () => HTMLDivElement
       ) => {
-        await renderView(container(), ContainerType.DIV, envelopeServer.id);
+        await renderView(container(), envelopeServer.id);
 
         return envelopeServer.envelopeApi.requests.pingPongView__init(
           { origin: envelopeServer.origin, envelopeServerId: envelopeServer.id },
@@ -49,13 +52,6 @@ export const EmbeddedDivPingPong = React.forwardRef(
         );
       },
       [name, renderView]
-    );
-
-    const config: { containerType: ContainerType.DIV } = useMemo(
-      () => ({
-        containerType: ContainerType.DIV,
-      }),
-      []
     );
 
     return (

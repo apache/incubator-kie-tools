@@ -23,6 +23,7 @@ import { StatsSidebar } from "../StatsSidebar";
 
 let pings = 0;
 let pongs = 0;
+const envelopePath = "envelope/angular/index.html";
 
 export function PingPongAngularIFrameViewsPage() {
   const [lastPing, setLastPing] = useState<string>("-");
@@ -41,14 +42,6 @@ export function PingPongAngularIFrameViewsPage() {
     };
   }, []);
 
-  const mapping = useMemo(
-    () => ({
-      title: "Ping-Pong Page in Angular",
-      envelopePath: "envelope/angular/index.html",
-    }),
-    []
-  );
-
   return (
     <Page>
       <div className={"webapp--page-main-div"}>
@@ -59,7 +52,7 @@ export function PingPongAngularIFrameViewsPage() {
               apiImpl={apiImpl}
               name={"Angular 1"}
               targetOrigin={window.location.origin}
-              mapping={mapping}
+              envelopePath={envelopePath}
             />
           </PageSection>
 
@@ -68,7 +61,7 @@ export function PingPongAngularIFrameViewsPage() {
               apiImpl={apiImpl}
               name={"Angular 2"}
               targetOrigin={window.location.origin}
-              mapping={mapping}
+              envelopePath={envelopePath}
             />
           </PageSection>
 
@@ -77,7 +70,7 @@ export function PingPongAngularIFrameViewsPage() {
               apiImpl={apiImpl}
               name={"Angular 3"}
               targetOrigin={window.location.origin}
-              mapping={mapping}
+              envelopePath={envelopePath}
             />
           </PageSection>
         </div>

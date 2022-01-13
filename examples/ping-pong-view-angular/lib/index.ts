@@ -17,20 +17,12 @@
 import { NgElement, WithProperties } from "@angular/elements";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
 
-// const renderingStatus = new Map<string, boolean>();
-
-export const pingPongEnvelopViewRenderDiv = (
-  container: HTMLElement,
-  containerType: ContainerType,
-  envelopeId: string
-) => {
-  return new Promise<void>((res) => {
-    const element = document.createElement("ping-pong-angular");
-    element.setAttribute("containerType", containerType);
-    element.setAttribute("envelopeId", envelopeId);
-    container.appendChild(element);
-    res();
-  });
+export const pingPongEnvelopViewRenderDiv = (container: HTMLElement, envelopeId: string) => {
+  const element = document.createElement("ping-pong-angular");
+  element.setAttribute("containerType", ContainerType.DIV);
+  element.setAttribute("envelopeId", envelopeId);
+  container.appendChild(element);
+  return Promise.resolve();
 };
 
 declare global {

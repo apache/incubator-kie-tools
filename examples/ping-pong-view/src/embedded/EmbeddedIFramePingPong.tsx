@@ -22,13 +22,10 @@ import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tooli
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
 
 export type EmbeddedIFramePingPongProps = {
-  mapping: {
-    title: string;
-    envelopePath: string;
-  };
   apiImpl: PingPongChannelApi;
   targetOrigin: string;
   name: string;
+  envelopePath: string;
 };
 
 export const EmbeddedIFramePingPong = React.forwardRef(
@@ -48,9 +45,9 @@ export const EmbeddedIFramePingPong = React.forwardRef(
     const config = useMemo(
       () => ({
         containerType: ContainerType.IFRAME,
-        envelopePath: props.mapping.envelopePath,
+        envelopePath: props.envelopePath,
       }),
-      [props.mapping.envelopePath]
+      [props.envelopePath]
     );
 
     return (

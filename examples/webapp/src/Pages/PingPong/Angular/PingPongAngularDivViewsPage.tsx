@@ -43,13 +43,6 @@ export function PingPongAngularDivViewsPage() {
     };
   }, []);
 
-  const mapping = useMemo(
-    () => ({
-      title: "Ping-Pong Page in Angular",
-    }),
-    []
-  );
-
   return (
     <Page>
       <div className={"webapp--page-main-div"}>
@@ -60,7 +53,6 @@ export function PingPongAngularDivViewsPage() {
               apiImpl={apiImpl}
               name={"Angular 1"}
               targetOrigin={window.location.origin}
-              mapping={mapping}
               renderView={pingPongEnvelopViewRenderDiv}
             />
           </PageSection>
@@ -70,7 +62,6 @@ export function PingPongAngularDivViewsPage() {
               apiImpl={apiImpl}
               name={"Angular 2"}
               targetOrigin={window.location.origin}
-              mapping={mapping}
               renderView={pingPongEnvelopViewRenderDiv}
             />
           </PageSection>
@@ -80,7 +71,6 @@ export function PingPongAngularDivViewsPage() {
               apiImpl={apiImpl}
               name={"Angular 3"}
               targetOrigin={window.location.origin}
-              mapping={mapping}
               renderView={pingPongEnvelopViewRenderDiv}
             />
           </PageSection>

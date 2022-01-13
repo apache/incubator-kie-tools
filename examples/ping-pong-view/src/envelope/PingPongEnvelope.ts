@@ -27,7 +27,6 @@ export function init(args: {
   bus: EnvelopeBus;
   pingPongViewFactory: PingPongFactory;
   viewReady: () => Promise<() => PingPongViewType>;
-  container?: HTMLElement;
 }) {
   const envelope = new Envelope<PingPongEnvelopeApi, PingPongChannelApi, PingPongViewType, {}>(args.bus, args.config);
 

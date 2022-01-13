@@ -23,21 +23,16 @@ import { PingPongReactImplFactory } from ".";
 import "./styles.css";
 import { EnvelopeDivConfig, EnvelopeIFrameConfig } from "@kie-tooling-core/envelope";
 
-export const pingPongEnvelopViewRender = (
-  container: HTMLElement,
-  containerType: ContainerType,
-  envelopeId?: string
-) => {
+export const pingPongEnvelopViewRender = (container: HTMLElement) => {
   return new Promise<void>((res) => {
-    let config: EnvelopeDivConfig | EnvelopeIFrameConfig;
-    if (containerType === ContainerType.IFRAME) {
-      config = { containerType: ContainerType.IFRAME };
-    } else {
-      if (!envelopeId) {
-        throw new Error("Need to specify envelopeId for container type DIV");
-      }
-      config = { containerType: ContainerType.DIV, envelopeId };
-    }
+    const config: EnvelopeIFrameConfig = { containerType: ContainerType.IFRAME };
+    ReactDOM.render(<PingPongEnvelopeView envelopeConfig={config} />, container, () => res());
+  });
+};
+
+export const pingPongEnvelopViewRenderDiv = (container: HTMLElement, envelopeId: string) => {
+  return new Promise<void>((res) => {
+    const config: EnvelopeDivConfig = { containerType: ContainerType.DIV, envelopeId };
     ReactDOM.render(<PingPongEnvelopeView envelopeConfig={config} />, container, () => res());
   });
 };

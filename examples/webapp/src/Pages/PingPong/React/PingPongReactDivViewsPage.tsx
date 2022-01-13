@@ -15,12 +15,13 @@
  */
 
 import * as React from "react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Page, PageSection } from "@patternfly/react-core";
 import { EmbeddedDivPingPong } from "@kogito-tooling-examples/ping-pong-view/dist/embedded";
 import { PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
-import { pingPongEnvelopViewRender } from "@kogito-tooling-examples/ping-pong-view-react";
+import { pingPongEnvelopViewRenderDiv } from "@kogito-tooling-examples/ping-pong-view-react";
 import { StatsSidebar } from "../StatsSidebar";
+import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
 
 let pings = 0;
 let pongs = 0;
@@ -42,13 +43,6 @@ export function PingPongReactDivViewsPage() {
     };
   }, []);
 
-  const mapping = useMemo(
-    () => ({
-      title: "Ping-Pong Page in React",
-    }),
-    []
-  );
-
   return (
     <Page>
       <div className={"webapp--page-main-div"}>
@@ -59,8 +53,7 @@ export function PingPongReactDivViewsPage() {
               apiImpl={apiImpl}
               name={"React 1"}
               targetOrigin={window.location.origin}
-              mapping={mapping}
-              renderView={pingPongEnvelopViewRender}
+              renderView={pingPongEnvelopViewRenderDiv}
             />
           </PageSection>
 
@@ -69,8 +62,7 @@ export function PingPongReactDivViewsPage() {
               apiImpl={apiImpl}
               name={"React 2"}
               targetOrigin={window.location.origin}
-              mapping={mapping}
-              renderView={pingPongEnvelopViewRender}
+              renderView={pingPongEnvelopViewRenderDiv}
             />
           </PageSection>
 
@@ -79,8 +71,7 @@ export function PingPongReactDivViewsPage() {
               apiImpl={apiImpl}
               name={"React 3"}
               targetOrigin={window.location.origin}
-              mapping={mapping}
-              renderView={pingPongEnvelopViewRender}
+              renderView={pingPongEnvelopViewRenderDiv}
             />
           </PageSection>
         </div>

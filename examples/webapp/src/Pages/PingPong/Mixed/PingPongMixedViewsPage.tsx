@@ -20,11 +20,13 @@ import { Page, PageSection } from "@patternfly/react-core";
 import { EmbeddedDivPingPong, EmbeddedIFramePingPong } from "@kogito-tooling-examples/ping-pong-view/dist/embedded";
 import { PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
 import { StatsSidebar } from "../StatsSidebar";
-import { pingPongEnvelopViewRender } from "@kogito-tooling-examples/ping-pong-view-react";
-import { pingPongEnvelopViewRenderDiv } from "@kogito-tooling-examples/ping-pong-view-angular/dist/wc/lib";
+import { pingPongEnvelopViewRenderDiv as renderReactDiv } from "@kogito-tooling-examples/ping-pong-view-react";
+import { pingPongEnvelopViewRenderDiv as renderAngularDiv } from "@kogito-tooling-examples/ping-pong-view-angular/dist/wc/lib";
 
 let pings = 0;
 let pongs = 0;
+const reactEnvelopePath = "envelope/ping-pong-view-react-impl.html";
+const angularEnvelopePath = "envelope/angular/index.html";
 
 export function PingPongMixedViewsPage() {
   const [lastPing, setLastPing] = useState<string>("-");
@@ -43,36 +45,6 @@ export function PingPongMixedViewsPage() {
     };
   }, []);
 
-  const angularIFrameMapping = useMemo(
-    () => ({
-      title: "Ping-Pong Page in Angular iFrame",
-      envelopePath: "envelope/angular/index.html",
-    }),
-    []
-  );
-
-  const reactIFrameMapping = useMemo(
-    () => ({
-      title: "Ping-Pong Page in React iFrame",
-      envelopePath: "envelope/ping-pong-view-react-impl.html",
-    }),
-    []
-  );
-
-  const reactDivMapping = useMemo(
-    () => ({
-      title: "Ping-Pong Page in React Div",
-    }),
-    []
-  );
-
-  const angularDivMapping = useMemo(
-    () => ({
-      title: "Ping-Pong Page in Angular Div",
-    }),
-    []
-  );
-
   return (
     <Page>
       <div className={"webapp--page-main-div"}>
@@ -83,7 +55,7 @@ export function PingPongMixedViewsPage() {
               apiImpl={apiImpl}
               name={"Angular iFrame"}
               targetOrigin={window.location.origin}
-              mapping={angularIFrameMapping}
+              envelopePath={angularEnvelopePath}
             />
           </PageSection>
 
@@ -92,8 +64,7 @@ export function PingPongMixedViewsPage() {
               apiImpl={apiImpl}
               name={"Angular Div"}
               targetOrigin={window.location.origin}
-              mapping={angularDivMapping}
-              renderView={pingPongEnvelopViewRenderDiv}
+              renderView={renderAngularDiv}
             />
           </PageSection>
 
@@ -102,7 +73,7 @@ export function PingPongMixedViewsPage() {
               apiImpl={apiImpl}
               name={"React iFrame"}
               targetOrigin={window.location.origin}
-              mapping={reactIFrameMapping}
+              envelopePath={reactEnvelopePath}
             />
           </PageSection>
 
@@ -111,8 +82,7 @@ export function PingPongMixedViewsPage() {
               apiImpl={apiImpl}
               name={"React Div"}
               targetOrigin={window.location.origin}
-              mapping={reactDivMapping}
-              renderView={pingPongEnvelopViewRender}
+              renderView={renderReactDiv}
             />
           </PageSection>
         </div>

@@ -38,6 +38,7 @@ export class EnvelopeServer<
 
   public initPolling?: ReturnType<typeof setInterval>;
   public initPollingTimeout?: ReturnType<typeof setTimeout>;
+  public initialPollingSetting?: ReturnType<typeof setTimeout>;
 
   public readonly id: string;
 
@@ -70,21 +71,27 @@ export class EnvelopeServer<
   public startInitPolling(apiImpl: ApiToProvide) {
     // We can't wait for the setInterval to run, because messages can be sent during the current event-loop pass,
     // making the Envelope reply a message to an old EnvelopeServer instance.
-    this.pollInit(this).then(() => this.stopInitPolling());
+    this.pollInit(this).then(() => {
+      this.stopInitPolling();
+    });
 
     this.manager.currentApiImpl = apiImpl;
 
-    this.initPolling = setInterval(() => {
-      this.pollInit(this).then(() => this.stopInitPolling());
-    }, EnvelopeServer.INIT_POLLING_INTERVAL_IN_MS);
+    // Set intervals and timeout only after first poll.
+    this.initialPollingSetting = setTimeout(() => {
+      this.initPolling = setInterval(() => {
+        this.pollInit(this).then(() => this.stopInitPolling());
+      }, EnvelopeServer.INIT_POLLING_INTERVAL_IN_MS);
 
-    this.initPollingTimeout = setTimeout(() => {
-      this.stopInitPolling();
-      console.info("Init polling timed out. Looks like the Envelope is not responding accordingly.");
-    }, EnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS);
+      this.initPollingTimeout = setTimeout(() => {
+        this.stopInitPolling();
+        console.info("Init polling timed out. Looks like the Envelope is not responding accordingly.");
+      }, EnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS);
+    }, EnvelopeServer.INIT_POLLING_INTERVAL_IN_MS);
   }
 
   public stopInitPolling() {
+    clearTimeout(this.initialPollingSetting!);
     this.manager.currentApiImpl = undefined;
     clearInterval(this.initPolling!);
     this.initPolling = undefined;

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
 import { pingPongEnvelopViewRender } from "@kogito-tooling-examples/ping-pong-view-react";
 
-pingPongEnvelopViewRender(document.getElementById("envelope-app")!, ContainerType.IFRAME);
+pingPongEnvelopViewRender(document.getElementById("envelope-app")!);
