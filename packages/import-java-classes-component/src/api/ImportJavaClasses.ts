@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
+import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
 import { JavaClass } from "../components/ImportJavaClasses/Model/JavaClass";
 
 export {};
 
 declare global {
-  interface EnvelopeMock {
-    lspGetClassServiceMocked: (value: string) => string[];
-    lspGetClassFieldsServiceMocked: (className: string) => Promise<Map<string, string>>;
+  interface Window {
+    envelope: Envelope;
+    ImportJavaClassesAPI: ImportJavaClassesAPI;
+    ImportJavaClassesAPIWrapper: ImportJavaClassesAPI;
+  }
+
+  interface Envelope {
+    javaCodeCompletionService: JavaCodeCompletionApi;
+    lspGetClassServiceMocked: (value: string) => string[]; //TODO To be removed
+    lspGetClassFieldsServiceMocked: (className: string) => Promise<Map<string, string>>; //TODO to be removed
   }
 
   interface ImportJavaClassesAPI {
     importJavaClasses: (javaClasses: JavaClass[]) => void;
-  }
-
-  interface Window {
-    envelopeMock: EnvelopeMock;
-    ImportJavaClassesAPI: ImportJavaClassesAPI;
-    ImportJavaClassesAPIWrapper: ImportJavaClassesAPI;
   }
 }

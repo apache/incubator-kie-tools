@@ -224,13 +224,13 @@ describe("ImportJavaClasses component tests", () => {
   }
 
   function lspGetClassServiceMock(mockedBroadcastDefinition: jest.Mock) {
-    window.envelopeMock = _.extend(window.envelopeMock || {}, {
+    window.envelope = _.extend(window.envelope || {}, {
       lspGetClassServiceMocked: (value: string) => mockedBroadcastDefinition(value),
     });
   }
 
   function lspGetClassFieldServiceMock() {
-    window.envelopeMock.lspGetClassFieldsServiceMocked = jest.fn(lspGetClassFieldsServiceMocked);
+    window.envelope.lspGetClassFieldsServiceMocked = jest.fn(lspGetClassFieldsServiceMocked);
   }
 
   const lspGetClassFieldsServiceMocked = async (className: string) => {
