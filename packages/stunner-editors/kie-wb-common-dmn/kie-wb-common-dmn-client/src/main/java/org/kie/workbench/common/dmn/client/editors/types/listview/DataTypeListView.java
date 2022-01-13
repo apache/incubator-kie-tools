@@ -25,6 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
@@ -36,12 +37,13 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.dmn.api.editors.types.DataObject;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
-import org.kie.workbench.common.dmn.client.editors.types.imported.ImportDataObjectModal;
+import org.kie.workbench.common.dmn.client.editors.types.jsinterop.ImportJavaClassesService;
+import org.kie.workbench.common.dmn.client.editors.types.jsinterop.JavaClass;
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
+import org.kie.workbench.common.dmn.client.js.DMNLoader;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.uberfire.client.views.pfly.selectpicker.ElementHelper;
 
@@ -93,12 +95,10 @@ public class DataTypeListView implements DataTypeList.View {
     @DataField("read-only-message-close-button")
     private final HTMLButtonElement readOnlyMessageCloseButton;
 
-    @DataField("import-data-object-button")
-    private final HTMLButtonElement importDataObjectButton;
+    @DataField("import-java-classes-container")
+    private final SpanElement importJavaClassesContainer;
 
     private final ScrollHelper scrollHelper;
-
-    private final ImportDataObjectModal importDataObjectModal;
 
     private final Event<FlashMessage> flashMessageEvent;
 
@@ -121,8 +121,7 @@ public class DataTypeListView implements DataTypeList.View {
                             final HTMLDivElement readOnlyMessage,
                             final HTMLButtonElement readOnlyMessageCloseButton,
                             final ScrollHelper scrollHelper,
-                            final HTMLButtonElement importDataObjectButton,
-                            final ImportDataObjectModal importDataObjectModal,
+                            final SpanElement importJavaClassesContainer,
                             final Event<FlashMessage> flashMessageEvent,
                             final TranslationService translationService,
                             final ReadOnlyProvider readOnlyProvider) {
@@ -138,8 +137,7 @@ public class DataTypeListView implements DataTypeList.View {
         this.readOnlyMessage = readOnlyMessage;
         this.readOnlyMessageCloseButton = readOnlyMessageCloseButton;
         this.scrollHelper = scrollHelper;
-        this.importDataObjectButton = importDataObjectButton;
-        this.importDataObjectModal = importDataObjectModal;
+        this.importJavaClassesContainer = importJavaClassesContainer;
         this.flashMessageEvent = flashMessageEvent;
         this.translationService = translationService;
         this.readOnlyProvider = readOnlyProvider;
@@ -150,20 +148,20 @@ public class DataTypeListView implements DataTypeList.View {
         this.presenter = presenter;
 
         setupSearchBar();
-        importDataObjectModal.setup(this::importDataObjects);
         setupListElement();
 
         setupAddButtonReadOnlyStatus();
+
+        registerBroadcastForImportJavaClasses();
     }
 
     void setupAddButtonReadOnlyStatus() {
         addButton.disabled = readOnlyProvider.isReadOnlyDiagram();
     }
 
-    void importDataObjects(final List<DataObject> imported) {
-        presenter.importDataObjects(imported);
-
-        if (!imported.isEmpty()) {
+    public void importJavaClasses(final List<JavaClass> javaClasses) {
+        if (javaClasses != null && !javaClasses.isEmpty()) {
+            presenter.importJavaClasses(javaClasses);
             fireSuccessfullyImportedData();
         }
     }
@@ -234,12 +232,6 @@ public class DataTypeListView implements DataTypeList.View {
     public void onAddButtonClick(final ClickEvent e) {
         scrollHelper.animatedScrollToBottom(listItems);
         presenter.addDataType();
-    }
-
-    @SuppressWarnings("unused")
-    @EventHandler("import-data-object-button")
-    public void onImportDataObjectClick(final ClickEvent e) {
-        importDataObjectModal.show(presenter.getExistingDataTypesNames());
     }
 
     @EventHandler("read-only-message-close-button")
@@ -410,12 +402,29 @@ public class DataTypeListView implements DataTypeList.View {
     }
 
     @Override
-    public void showImportDataObjectButton() {
-        show(importDataObjectButton);
+    public void renderImportJavaClasses() {
+        if (!importJavaClassesContainer.hasChildNodes()) {
+            renderImportJavaClasses(".kie-import-java-classes",
+                                    false,
+                                    null);
+        }
     }
 
-    @Override
-    public void hideImportDataObjectButton() {
-        hide(importDataObjectButton);
+    /**
+     * Indirection for Test purposes only
+     */
+    protected void renderImportJavaClasses(final String selector,
+                                           final boolean buttonDisabledStatus,
+                                           final String buttonTooltipMessage) {
+        DMNLoader.renderImportJavaClasses(selector,
+                                          buttonDisabledStatus,
+                                          buttonTooltipMessage);
+    }
+
+    /**
+     * Indirection for Test purposes only
+     */
+    protected void registerBroadcastForImportJavaClasses() {
+        ImportJavaClassesService.registerBroadcastForImportJavaClasses(this);
     }
 }

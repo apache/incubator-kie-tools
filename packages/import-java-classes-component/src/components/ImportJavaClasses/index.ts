@@ -15,3 +15,4 @@
  */
 
 export * from "./ImportJavaClasses";
+export * from "./Model";

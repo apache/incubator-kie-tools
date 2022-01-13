@@ -14,16 +14,5 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { ImportJavaClasses } from "./components";
-import {} from "./api/ImportJavaClasses";
-
+export * from "./api";
 export * from "./components";
-
-window.renderImportJavaClasses = (selector: string, buttonDisabledStatus: boolean, buttonTooltipMessage?: string) => {
-  ReactDOM.render(
-    <ImportJavaClasses buttonDisabledStatus={buttonDisabledStatus} buttonTooltipMessage={buttonTooltipMessage} />,
-    document.getElementById(selector)
-  );
-};

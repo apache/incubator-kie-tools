@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
+import { JavaClass } from "../components/ImportJavaClasses/Model/JavaClass";
+
 export {};
 
 declare global {
+  interface EnvelopeMock {
+    lspGetClassServiceMocked: (value: string) => string[];
+    lspGetClassFieldsServiceMocked: (className: string) => Promise<Map<string, string>>;
+  }
+
+  interface ImportJavaClassesAPI {
+    importJavaClasses: (javaClasses: JavaClass[]) => void;
+  }
+
   interface Window {
-    renderImportJavaClasses: (selector: string, buttonDisabledStatus: boolean, buttonTooltipMessage?: string) => void;
-    envelopeMock: {
-      lspGetClassServiceMocked: (value: string) => string[];
-      lspGetClassFieldsServiceMocked: (className: string) => Promise<Map<string, string>>;
-    };
+    envelopeMock: EnvelopeMock;
+    ImportJavaClassesAPI: ImportJavaClassesAPI;
+    ImportJavaClassesAPIWrapper: ImportJavaClassesAPI;
   }
 }
