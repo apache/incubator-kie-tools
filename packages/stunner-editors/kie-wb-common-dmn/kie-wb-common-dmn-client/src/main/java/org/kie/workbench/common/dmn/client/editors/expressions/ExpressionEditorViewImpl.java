@@ -18,9 +18,11 @@ package org.kie.workbench.common.dmn.client.editors.expressions;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.types.Transform;
@@ -56,6 +58,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillList
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillLiteralExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillRelationExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DataTypeProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DecisionTableProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.EntryInfo;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
@@ -71,6 +74,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.Ex
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
+import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.js.DMNLoader;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
@@ -95,6 +99,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
+import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveDown;
@@ -103,6 +108,10 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperati
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveUp;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
+
+import static java.util.stream.Stream.concat;
+import static org.kie.workbench.common.dmn.api.definition.model.ItemDefinition.ITEM_DEFINITION_COMPARATOR;
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BUILT_IN_TYPE_COMPARATOR;
 
 @Templated
 @Dependent
@@ -155,6 +164,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private Event<ExpressionEditorChanged> editorSelectedEvent;
     private PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider;
     private DefinitionUtils definitionUtils;
+    private ItemDefinitionUtils itemDefinitionUtils;
 
     private DMNGridPanel gridPanel;
     private DMNGridLayer gridLayer;
@@ -186,6 +196,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final Event<ExpressionEditorChanged> editorSelectedEvent,
                                     final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider,
                                     final DefinitionUtils definitionUtils,
+                                    final ItemDefinitionUtils itemDefinitionUtils,
                                     final HTMLAnchorElement tryIt,
                                     final HTMLAnchorElement switchBack,
                                     final HTMLDivElement betaBoxedExpressionToggle,
@@ -209,6 +220,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.editorSelectedEvent = editorSelectedEvent;
         this.pmmlDocumentMetadataProvider = pmmlDocumentMetadataProvider;
         this.definitionUtils = definitionUtils;
+        this.itemDefinitionUtils = itemDefinitionUtils;
 
         this.tryIt = tryIt;
         this.switchBack = switchBack;
@@ -340,6 +352,11 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                         "<" + expressionTypeText + ">"));
     }
 
+    public void onEditorSelectedPageEvent(@Observes MultiPageEditorSelectedPageEvent editorSelectedPageEvent) {
+        toggleBetaBoxedExpressionEditor(false);
+        toggleLegacyExpressionEditor(true);
+    }
+
     @EventHandler("try-it")
     public void onTryIt(final ClickEvent event) {
         loadNewBoxedExpressionEditor();
@@ -359,6 +376,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                 ".kie-dmn-new-expression-editor",
                 decisionNodeId,
                 ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef()),
+                concat(retrieveDefaultDataTypeProps(), retrieveCustomDataTypeProps()).toArray(DataTypeProps[]::new),
                 hasExpression.isClearSupported(),
                 buildPmmlParams()
         );
@@ -385,7 +403,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                             expressionProps,
                                                             getEditorSelectedEvent(),
                                                             getNodeUUID(),
-                                                            this));
+                                                            this,
+                                                            itemDefinitionUtils));
     }
 
     public void broadcastLiteralExpressionDefinition(final LiteralProps literalProps) {
@@ -393,7 +412,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                   literalProps,
                                                                   getEditorSelectedEvent(),
                                                                   getNodeUUID(),
-                                                                  this));
+                                                                  this,
+                                                                  itemDefinitionUtils));
     }
 
     public void broadcastContextExpressionDefinition(final ContextProps contextProps) {
@@ -401,7 +421,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                   contextProps,
                                                                   getEditorSelectedEvent(),
                                                                   getNodeUUID(),
-                                                                  this));
+                                                                  this,
+                                                                  itemDefinitionUtils));
     }
 
     public void broadcastRelationExpressionDefinition(final RelationProps relationProps) {
@@ -409,7 +430,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                    relationProps,
                                                                    getEditorSelectedEvent(),
                                                                    getNodeUUID(),
-                                                                   this));
+                                                                   this,
+                                                                   itemDefinitionUtils));
     }
 
     public void broadcastListExpressionDefinition(final ListProps listProps) {
@@ -417,7 +439,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                listProps,
                                                                getEditorSelectedEvent(),
                                                                getNodeUUID(),
-                                                               this));
+                                                               this,
+                                                               itemDefinitionUtils));
     }
 
     public void broadcastInvocationExpressionDefinition(final InvocationProps invocationProps) {
@@ -425,7 +448,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                      invocationProps,
                                                                      getEditorSelectedEvent(),
                                                                      getNodeUUID(),
-                                                                     this));
+                                                                     this,
+                                                                     itemDefinitionUtils));
     }
 
     public void broadcastFunctionExpressionDefinition(final FunctionProps functionProps) {
@@ -433,7 +457,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                    functionProps,
                                                                    getEditorSelectedEvent(),
                                                                    getNodeUUID(),
-                                                                   this));
+                                                                   this,
+                                                                   itemDefinitionUtils));
     }
 
     public void broadcastDecisionTableExpressionDefinition(final DecisionTableProps decisionTableProps) {
@@ -441,7 +466,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                         decisionTableProps,
                                                                         getEditorSelectedEvent(),
                                                                         getNodeUUID(),
-                                                                        this));
+                                                                        this,
+                                                                        itemDefinitionUtils));
     }
 
     void executeExpressionCommand(final FillExpressionCommand expressionCommand) {
@@ -460,6 +486,23 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     boolean isNewEditorEnabled() {
         return !HiddenHelper.isHidden(newBoxedExpression);
+    }
+
+    Stream<DataTypeProps> retrieveDefaultDataTypeProps() {
+        return Stream.of(BuiltInType.values())
+                .sorted(BUILT_IN_TYPE_COMPARATOR)
+                .map(builtInType -> new DataTypeProps(builtInType.name(), builtInType.getName(), false));
+    }
+
+    Stream<DataTypeProps> retrieveCustomDataTypeProps() {
+        return itemDefinitionUtils
+                .all().stream()
+                .filter(itemDefinition -> itemDefinition.getName() != null)
+                .sorted(ITEM_DEFINITION_COMPARATOR)
+                .map(itemDefinition -> {
+                    final String itemDefinitionName = itemDefinition.getName().getValue();
+                    return new DataTypeProps(itemDefinitionName, itemDefinitionName, true);
+                });
     }
 
     private void preventDefault(final ClickEvent event) {

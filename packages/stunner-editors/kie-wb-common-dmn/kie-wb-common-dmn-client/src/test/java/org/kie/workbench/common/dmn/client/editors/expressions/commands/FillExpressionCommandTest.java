@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.commands;
 
+import java.util.Optional;
+
 import javax.enterprise.event.Event;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -27,11 +29,13 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
+import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
@@ -66,6 +70,9 @@ public class FillExpressionCommandTest {
 
     @Mock
     private Expression existingExpression;
+
+    @Mock
+    private ItemDefinitionUtils itemDefinitionUtils;
 
     private final String nodeUUID = "uuid";
 
@@ -176,6 +183,19 @@ public class FillExpressionCommandTest {
         assertEquals(BuiltInType.UNDEFINED.asQName(), result);
     }
 
+    @Test
+    public void testGetTypeRef_WhenIsACustomTypeRef() {
+        final String customName = "custom";
+        final ItemDefinition customItemDefinition = new ItemDefinition();
+        customItemDefinition.setName(new Name(customName));
+
+        when(itemDefinitionUtils.findByName(customName)).thenReturn(Optional.of(customItemDefinition));
+
+        final QName result = command.getTypeRef(customName);
+
+        assertEquals(customName, result.getLocalPart());
+    }
+
     class FillExpressionCommandMock extends FillExpressionCommand {
 
         public FillExpressionCommandMock(final HasExpression hasExpression,
@@ -183,7 +203,7 @@ public class FillExpressionCommandTest {
                                          final Event<ExpressionEditorChanged> editorSelectedEvent,
                                          final String nodeUUID,
                                          final ExpressionEditorView view) {
-            super(hasExpression, expressionProps, editorSelectedEvent, nodeUUID, view);
+            super(hasExpression, expressionProps, editorSelectedEvent, nodeUUID, view, itemDefinitionUtils);
         }
 
         @Override

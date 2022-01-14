@@ -16,6 +16,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -32,6 +33,8 @@ import static java.util.Collections.singletonList;
 @Portable
 public class ItemDefinition extends NamedElement implements HasTypeRef,
                                                             DynamicReadOnly {
+
+    public static final Comparator<ItemDefinition> ITEM_DEFINITION_COMPARATOR = Comparator.comparing(o -> o.getName().getValue());
 
     private QName typeRef;
     private UnaryTests allowedValues;

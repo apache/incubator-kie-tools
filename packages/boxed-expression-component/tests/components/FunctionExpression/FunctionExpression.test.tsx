@@ -145,7 +145,9 @@ describe("FunctionExpression tests", () => {
 
       expect(baseElement.querySelectorAll(".parameters-editor .parameters-container .parameter-entry")).toHaveLength(1);
       expect((baseElement.querySelector(".parameter-name") as HTMLInputElement).value).toBe(paramName);
-      expect((baseElement.querySelector(EDIT_EXPRESSION_DATA_TYPE)! as HTMLInputElement).value).toBe(paramDataType);
+      expect((baseElement.querySelector(EDIT_EXPRESSION_DATA_TYPE)! as HTMLSpanElement).textContent).toBe(
+        paramDataType
+      );
     });
 
     test("should update the parameter name, when it gets changed by the user", async () => {

@@ -16,18 +16,23 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.commands;
 
+import java.util.Optional;
+
 import javax.enterprise.event.Event;
 
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.HasExpressionUtils;
+import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 
 public abstract class FillExpressionCommand<E extends ExpressionProps> {
@@ -37,17 +42,20 @@ public abstract class FillExpressionCommand<E extends ExpressionProps> {
     private final String nodeUUID;
     private final Event<ExpressionEditorChanged> editorSelectedEvent;
     private final ExpressionEditorView view;
+    private final ItemDefinitionUtils itemDefinitionUtils;
 
     public FillExpressionCommand(final HasExpression hasExpression,
                                  final E expressionProps,
                                  final Event<ExpressionEditorChanged> editorSelectedEvent,
                                  final String nodeUUID,
-                                 final ExpressionEditorView view) {
+                                 final ExpressionEditorView view,
+                                 final ItemDefinitionUtils itemDefinitionUtils) {
         this.hasExpression = hasExpression;
         this.expressionProps = expressionProps;
         this.nodeUUID = nodeUUID;
         this.editorSelectedEvent = editorSelectedEvent;
         this.view = view;
+        this.itemDefinitionUtils = itemDefinitionUtils;
     }
 
     public HasExpression getHasExpression() {
@@ -102,10 +110,17 @@ public abstract class FillExpressionCommand<E extends ExpressionProps> {
     }
 
     QName getTypeRef(final String dataType) {
-        return BuiltInTypeUtils
-                .findBuiltInTypeByName(dataType)
-                .orElse(BuiltInType.UNDEFINED)
-                .asQName();
+        final Optional<BuiltInType> builtInType = BuiltInTypeUtils.findBuiltInTypeByName(dataType);
+        final Optional<ItemDefinition> itemDefinitionType = itemDefinitionUtils.findByName(dataType);
+        if (builtInType.isPresent()) {
+            return builtInType.get().asQName();
+        } else if (itemDefinitionType.isPresent()) {
+            final Name name = itemDefinitionType.get().getName();
+            return new QName(QName.NULL_NS_URI,
+                                name.getValue(),
+                                QName.DEFAULT_NS_PREFIX);
+        }
+        return BuiltInType.UNDEFINED.asQName();
     }
 
     void setExpressionName(final String expressionName) {

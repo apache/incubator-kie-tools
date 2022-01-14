@@ -32,6 +32,10 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   context: string;
   contextEntry: string;
   dataType: string;
+  dataTypeDropDown: {
+    default: string;
+    custom: string;
+  };
   decisionRule: string;
   decisionTable: string;
   document: string;

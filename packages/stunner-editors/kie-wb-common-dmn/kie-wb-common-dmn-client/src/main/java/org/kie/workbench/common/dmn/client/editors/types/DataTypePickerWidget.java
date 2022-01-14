@@ -17,7 +17,6 @@
 package org.kie.workbench.common.dmn.client.editors.types;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -59,6 +58,9 @@ import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 
+import static org.kie.workbench.common.dmn.api.definition.model.ItemDefinition.ITEM_DEFINITION_COMPARATOR;
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BUILT_IN_TYPE_COMPARATOR;
+
 @Dependent
 @Templated
 public class DataTypePickerWidget extends Composite implements HasValue<QName>,
@@ -69,15 +71,6 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
     static final String CSS_DISPLAY_NONE = "none";
 
     static final String READ_ONLY_CSS_CLASS = "read-only";
-
-    static final Comparator<BuiltInType> BUILT_IN_TYPE_COMPARATOR = Comparator.comparing(o -> {
-        if (o == BuiltInType.UNDEFINED) {
-            return "";
-        }
-        return o.getName();
-    });
-
-    static final Comparator<ItemDefinition> ITEM_DEFINITION_COMPARATOR = Comparator.comparing(o -> o.getName().getValue());
 
     @DataField
     private Anchor typeButton;

@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BuiltInTypeTest {
 
@@ -36,6 +37,16 @@ public class BuiltInTypeTest {
                      typeRef.getLocalPart());
         assertEquals(QName.NULL_NS_URI,
                      typeRef.getNamespaceURI());
+    }
+
+    @Test
+    public void testComparatorUndefinedBeforeOtherTypes() {
+        assertTrue(BuiltInType.BUILT_IN_TYPE_COMPARATOR.compare(BuiltInType.ANY, BuiltInType.UNDEFINED) > 0);
+    }
+
+    @Test
+    public void testComparatorAscendingOrder() {
+        assertTrue(BuiltInType.BUILT_IN_TYPE_COMPARATOR.compare(BuiltInType.ANY, BuiltInType.BOOLEAN) < 0);
     }
 }
 
