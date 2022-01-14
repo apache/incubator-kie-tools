@@ -17,7 +17,7 @@
   "scripts": {
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "lint": "echo 'Linting'",
-    "install:mvnw": "mvn -N io.takari:maven:wrapper",
+    "install:mvnw": "mvn wrapper:wrapper",
     "dist": "rimraf dist/ && mkdir dist && zip -j dist/dashbuilder_dist.zip ./dashbuilder-authoring/target/dashbuilder-authoring.war ./dashbuilder-authoring/target/dashbuilder-authoring-bootable.jar ./dashbuilder-runtime-parent/dashbuilder-runtime-app/target/dashbuilder-runtime-app-runner.jar",
     "build:dev:linux": "yarn install:mvnw && mvn clean install -DskipTests -Dgwt.compiler.skip=true",
     "build:dev:win32": "echo \"Build not supported on Windows\"",
