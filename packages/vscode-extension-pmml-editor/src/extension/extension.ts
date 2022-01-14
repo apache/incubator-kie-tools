@@ -28,6 +28,11 @@ export function activate(context: vscode.ExtensionContext) {
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
 
+  const pmmlEnvelope = {
+    envelopePath: "dist/webview/PmmlEditorEnvelopeApp.js",
+    resourcesPathPrefix: "dist/webview/editors/pmml",
+  };
+
   KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-pmml-editor",
     context: context,
@@ -37,13 +42,8 @@ export function activate(context: vscode.ExtensionContext) {
     editorEnvelopeLocator: {
       targetOrigin: "vscode",
       mapping: new Map([
-        [
-          "pmml",
-          {
-            envelopePath: "dist/webview/PmmlEditorEnvelopeApp.js",
-            resourcesPathPrefix: "dist/webview/editors/pmml",
-          },
-        ],
+        ["pmml", pmmlEnvelope],
+        ["PMML", pmmlEnvelope],
       ]),
     },
     backendProxy: backendProxy,

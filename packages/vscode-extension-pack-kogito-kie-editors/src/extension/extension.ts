@@ -43,6 +43,26 @@ export async function activate(context: vscode.ExtensionContext) {
     notificationsApi: notificationsApi,
   });
 
+  const bpmnEnvelope = {
+    envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
+    resourcesPathPrefix: "dist/webview/editors/bpmn",
+  };
+
+  const dmnEnvelope = {
+    resourcesPathPrefix: "dist/webview/editors/dmn",
+    envelopePath: "dist/webview/DmnEditorEnvelopeApp.js",
+  };
+
+  const scesimEnvelope = {
+    resourcesPathPrefix: "dist/webview/editors/scesim",
+    envelopePath: "dist/webview/SceSimEditorEnvelopeApp.js",
+  };
+
+  const pmmlEnvelope = {
+    resourcesPathPrefix: "dist/webview/editors/pmml",
+    envelopePath: "dist/webview/PMMLEditorEnvelopeApp.js",
+  };
+
   KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-pack-kogito-kie-editors",
     context: context,
@@ -52,41 +72,16 @@ export async function activate(context: vscode.ExtensionContext) {
     editorEnvelopeLocator: {
       targetOrigin: envelopeTargetOrigin,
       mapping: new Map([
-        [
-          "bpmn",
-          {
-            resourcesPathPrefix: "dist/webview/editors/bpmn",
-            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
-          },
-        ],
-        [
-          "bpmn2",
-          {
-            resourcesPathPrefix: "dist/webview/editors/bpmn",
-            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
-          },
-        ],
-        [
-          "dmn",
-          {
-            resourcesPathPrefix: "dist/webview/editors/dmn",
-            envelopePath: "dist/webview/DmnEditorEnvelopeApp.js",
-          },
-        ],
-        [
-          "scesim",
-          {
-            resourcesPathPrefix: "dist/webview/editors/scesim",
-            envelopePath: "dist/webview/SceSimEditorEnvelopeApp.js",
-          },
-        ],
-        [
-          "pmml",
-          {
-            resourcesPathPrefix: "dist/webview/editors/pmml",
-            envelopePath: "dist/webview/PMMLEditorEnvelopeApp.js",
-          },
-        ],
+        ["bpmn", bpmnEnvelope],
+        ["bpmn2", bpmnEnvelope],
+        ["BPMN", bpmnEnvelope],
+        ["BPMN2", bpmnEnvelope],
+        ["dmn", dmnEnvelope],
+        ["DMN", dmnEnvelope],
+        ["scesim", scesimEnvelope],
+        ["SCESIM", scesimEnvelope],
+        ["pmml", pmmlEnvelope],
+        ["PMML", pmmlEnvelope],
       ]),
     },
     backendProxy: backendProxy,

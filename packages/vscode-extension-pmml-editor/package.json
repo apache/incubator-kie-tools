@@ -63,10 +63,12 @@
       {
         "id": "pmml",
         "extensions": [
-          ".pmml"
+          ".pmml",
+          ".PMML"
         ],
         "aliases": [
           "pmml",
+          "PMML",
           "Predictive Model Markup Language"
         ]
       }
