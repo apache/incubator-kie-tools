@@ -26,6 +26,10 @@ import {
 
 import * as fs from "fs";
 import * as minimatch from "minimatch";
+import * as vscode from "vscode";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const myFs = require("fs");
 
 /**
  * Implementation of a ResourceContentService using the Node filesystem APIs. This should only be used when the edited
@@ -40,24 +44,50 @@ export class VsCodeNodeResourceContentService implements ResourceContentService 
 
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
     return new Promise<ResourcesList>((resolve, reject) => {
-      fs.readdir(this.rootFolder, { withFileTypes: true }, (err, files) => {
-        if (err) {
-          resolve(new ResourcesList(pattern, []));
-        } else {
-          const paths = files
-            .filter((file) => {
-              let fileName;
-              if (opts?.type === SearchType.TRAVERSAL) {
-                fileName = this.rootFolder + file.name;
-              } else {
-                fileName = file.name;
-              }
-              return file.isFile() && minimatch(fileName, pattern);
-            })
-            .map((file) => this.rootFolder + file.name);
-          resolve(new ResourcesList(pattern, paths));
-        }
-      });
+      console.log({ myFs });
+      try {
+        vscode.workspace.fs.readDirectory(vscode.Uri.parse(this.rootFolder)).then(
+          (files) => {
+            console.log(files);
+            const paths = files
+              .filter(([name, depth]) => {
+                let fileName;
+                if (opts?.type === SearchType.TRAVERSAL) {
+                  fileName = this.rootFolder + name;
+                } else {
+                  fileName = name;
+                }
+                return depth === 1 && minimatch(name, pattern);
+              })
+              .map(([name]) => this.rootFolder + name);
+            resolve(new ResourcesList(pattern, paths));
+          },
+          (err) => {
+            resolve(new ResourcesList(pattern, []));
+          }
+        );
+        console.log({ pattern, opts });
+        // fs.readdir(this.rootFolder, { withFileTypes: true }, (err, files) => {
+        //   if (err) {
+        //     resolve(new ResourcesList(pattern, []));
+        //   } else {
+        //     const paths = files
+        //       .filter((file) => {
+        //         let fileName;
+        //         if (opts?.type === SearchType.TRAVERSAL) {
+        //           fileName = this.rootFolder + file.name;
+        //         } else {
+        //           fileName = file.name;
+        //         }
+        //         return file.isFile() && minimatch(fileName, pattern);
+        //       })
+        //       .map((file) => this.rootFolder + file.name);
+        //     resolve(new ResourcesList(pattern, paths));
+        //   }
+        // });
+      } catch (e) {
+        console.log(e);
+      }
     });
   }
 

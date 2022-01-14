@@ -24,7 +24,7 @@
   "browser": "./dist/extension/extension.js",
   "capabilities": {
     "untrustedWorkspaces": {
-      "supported": false
+      "supported": true
     }
   },
   "contributes": {
