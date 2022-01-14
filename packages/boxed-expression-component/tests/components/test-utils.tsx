@@ -25,15 +25,75 @@ import {
 import { act } from "react-dom/test-utils";
 import { fireEvent } from "@testing-library/react";
 import { BoxedExpressionGlobalContext } from "@kogito-tooling/boxed-expression-component/dist/context";
-import { DataType } from "@kogito-tooling/boxed-expression-component";
-import { BoxedExpressionProvider, BoxedExpressionProviderProps } from "@kogito-tooling/boxed-expression-component";
+import {
+  BoxedExpressionProvider,
+  BoxedExpressionProviderProps,
+  DataType,
+} from "@kogito-tooling/boxed-expression-component";
 
-global.console = { ...global.console, warn: jest.fn() };
+global.console = { ...global.console, warn: () => ({}) };
 
 export const EDIT_EXPRESSION_NAME = "[data-ouia-component-id='edit-expression-name']";
-export const EDIT_EXPRESSION_DATA_TYPE = "[data-ouia-component-id='edit-expression-data-type'] input";
+export const EDIT_EXPRESSION_DATA_TYPE = "[data-ouia-component-id='edit-expression-data-type'] span";
 
 export const flushPromises: () => Promise<unknown> = () => new Promise((resolve) => process.nextTick(resolve));
+
+/**
+ * The constant below contains all built-in types currently supported by the Boxed Expression Editor,
+ * Plus a custom defined data-type.
+ * These values are used for testing purpose, and by the showcase
+ */
+export const dataTypes = [
+  { typeRef: "Undefined", name: "<Undefined>", isCustom: false },
+  { typeRef: "Any", name: "Any", isCustom: false },
+  { typeRef: "Boolean", name: "boolean", isCustom: false },
+  { typeRef: "Context", name: "context", isCustom: false },
+  { typeRef: "Date", name: "date", isCustom: false },
+  { typeRef: "DateTime", name: "date and time", isCustom: false },
+  { typeRef: "DateTimeDuration", name: "days and time duration", isCustom: false },
+  { typeRef: "Number", name: "number", isCustom: false },
+  { typeRef: "String", name: "string", isCustom: false },
+  { typeRef: "Time", name: "time", isCustom: false },
+  { typeRef: "YearsMonthsDuration", name: "years and months duration", isCustom: false },
+  { typeRef: "tPerson", name: "tPerson", isCustom: true },
+];
+
+/**
+ * The constant below contains an example of PMML params to be used for testing purpose, and by the showcase
+ */
+export const pmmlParams = [
+  {
+    document: "document",
+    modelsFromDocument: [
+      { model: "model", parametersFromModel: [{ id: "p1", name: "p-1", dataType: DataType.Number }] },
+    ],
+  },
+  {
+    document: "mining pmml",
+    modelsFromDocument: [
+      {
+        model: "MiningModelSum",
+        parametersFromModel: [
+          { id: "i1", name: "input1", dataType: DataType.Any },
+          { id: "i2", name: "input2", dataType: DataType.Any },
+          { id: "i3", name: "input3", dataType: DataType.Any },
+        ],
+      },
+    ],
+  },
+  {
+    document: "regression pmml",
+    modelsFromDocument: [
+      {
+        model: "RegressionLinear",
+        parametersFromModel: [
+          { id: "i1", name: "i1", dataType: DataType.Number },
+          { id: "i2", name: "i2", dataType: DataType.Number },
+        ],
+      },
+    ],
+  },
+];
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function usingTestingBoxedExpressionI18nContext(
@@ -64,14 +124,8 @@ export function usingTestingBoxedExpressionProviderContext(
   const usedCtx: BoxedExpressionProviderProps = {
     decisionNodeId: "_00000000-0000-0000-0000-000000000000",
     expressionDefinition: {},
-    pmmlParams: [
-      {
-        document: "document",
-        modelsFromDocument: [
-          { model: "model", parametersFromModel: [{ id: "p1", name: "p-1", dataType: DataType.Number }] },
-        ],
-      },
-    ],
+    dataTypes,
+    pmmlParams,
     isRunnerTable: false,
     children,
     ...ctx,
@@ -82,6 +136,7 @@ export function usingTestingBoxedExpressionProviderContext(
       <BoxedExpressionProvider
         decisionNodeId={usedCtx.decisionNodeId}
         expressionDefinition={usedCtx.expressionDefinition}
+        dataTypes={usedCtx.dataTypes}
         pmmlParams={usedCtx.pmmlParams}
         isRunnerTable={false}
       >
@@ -96,14 +151,8 @@ export function wrapComponentInContext(component: JSX.Element): JSX.Element {
     <BoxedExpressionGlobalContext.Provider
       value={{
         decisionNodeId: "_00000000-0000-0000-0000-000000000000",
-        pmmlParams: [
-          {
-            document: "document",
-            modelsFromDocument: [
-              { model: "model", parametersFromModel: [{ id: "p1", name: "p-1", dataType: DataType.Number }] },
-            ],
-          },
-        ],
+        dataTypes,
+        pmmlParams,
         supervisorHash: "",
         setSupervisorHash: jest.fn,
         editorRef: { current: document.body as HTMLDivElement },

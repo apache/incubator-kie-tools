@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.api.property.dmn.types;
 
+import java.util.Comparator;
+
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public enum BuiltInType {
@@ -34,6 +36,13 @@ public enum BuiltInType {
     DATE("date"),
     CONTEXT("context"),
     UNDEFINED("<Undefined>");
+
+    public static final Comparator<BuiltInType> BUILT_IN_TYPE_COMPARATOR = Comparator.comparing(o -> {
+        if (o == BuiltInType.UNDEFINED) {
+            return "";
+        }
+        return o.getName();
+    });
 
     private final String[] names;
 
