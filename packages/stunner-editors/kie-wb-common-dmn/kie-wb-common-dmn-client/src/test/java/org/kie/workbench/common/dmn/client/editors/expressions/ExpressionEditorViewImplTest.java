@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -39,8 +40,10 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillContextExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillDecisionTableExpressionCommand;
@@ -50,6 +53,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillInvo
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillListExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillLiteralExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextProps;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DataTypeProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DecisionTableProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.FunctionProps;
@@ -59,6 +63,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.L
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
+import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
@@ -188,6 +193,9 @@ public class ExpressionEditorViewImplTest {
     private DefinitionUtils definitionUtils;
 
     @Mock
+    private ItemDefinitionUtils itemDefinitionUtils;
+
+    @Mock
     private ExpressionEditorDefinition undefinedExpressionEditorDefinition;
 
     @Mock
@@ -298,6 +306,7 @@ public class ExpressionEditorViewImplTest {
                                                      editorSelectedEvent,
                                                      pmmlDocumentMetadataProvider,
                                                      definitionUtils,
+                                                     itemDefinitionUtils,
                                                      tryIt,
                                                      switchBack,
                                                      betaBoxedExpressionToggle,
@@ -799,5 +808,34 @@ public class ExpressionEditorViewImplTest {
         view.reloadIfIsNewEditor();
 
         verify(view, never()).reloadEditor();
+    }
+
+    @Test
+    public void testRetrieveDefaultDataTypeProps() {
+        final DataTypeProps[] dataTypeProps = view.retrieveDefaultDataTypeProps().toArray(DataTypeProps[]::new);
+        assertThat(dataTypeProps)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(BuiltInType.values().length)
+                .extracting(builtInType -> BuiltInType.valueOf(builtInType.typeRef))
+                .isNotNull();
+    }
+
+    @Test
+    public void testRetrieveCustomDataTypeProps() {
+        final String customDataType = "CUSTOM_DATA_TYPE";
+        when(itemDefinitionUtils.all()).thenReturn(
+                Collections.singletonList(new ItemDefinition() {{
+                    setName(new Name(customDataType));
+                }})
+        );
+
+        final DataTypeProps[] dataTypeProps = view.retrieveCustomDataTypeProps().toArray(DataTypeProps[]::new);
+
+        assertThat(dataTypeProps)
+                .isNotNull()
+                .isNotEmpty()
+                .hasSize(1)
+                .anyMatch(typeProps -> typeProps.isCustom && typeProps.name.equals(customDataType) && typeProps.typeRef.equals(customDataType));
     }
 }

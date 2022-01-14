@@ -15,12 +15,13 @@
  */
 
 import { fireEvent, render } from "@testing-library/react";
-import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
+import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 import * as React from "react";
 import { EditExpressionMenu } from "@kogito-tooling/boxed-expression-component/dist/components/EditExpressionMenu";
 import { activatePopover } from "../PopoverMenu/PopoverMenu.test";
 import { DataType, ExpressionProps, LogicType } from "@kogito-tooling/boxed-expression-component";
 import * as _ from "lodash";
+import { act } from "react-dom/test-utils";
 
 jest.useFakeTimers();
 
@@ -120,7 +121,7 @@ describe("EditExpressionMenu tests", () => {
     await activatePopover(container as HTMLElement);
 
     expect(container.querySelector("[id^='pf-select-toggle-id-']")).toBeTruthy();
-    expect((container.querySelector("[id^='pf-select-toggle-id-']")! as HTMLInputElement).value).toBe(
+    expect((container.querySelector("[id^='pf-select-toggle-id-'] span")! as HTMLSpanElement).textContent).toBe(
       LogicType.Undefined
     );
   });
@@ -147,7 +148,9 @@ describe("EditExpressionMenu tests", () => {
     await activatePopover(container as HTMLElement);
 
     expect(container.querySelector("[id^='pf-select-toggle-id-']")).toBeTruthy();
-    expect((container.querySelector("[id^='pf-select-toggle-id-']")! as HTMLInputElement).value).toBe(selectedDataType);
+    expect((container.querySelector("[id^='pf-select-toggle-id-'] span")! as HTMLSpanElement).textContent).toBe(
+      selectedDataType
+    );
   });
 
   test("should render passed expression name, when it is pre-selected", async () => {
@@ -203,5 +206,34 @@ describe("EditExpressionMenu tests", () => {
       name: "changed",
       dataType: DataType.Undefined,
     });
+  });
+
+  test("should filter the list of data types when user search for it", async () => {
+    const booleanDataType = "boolean";
+    const { container } = render(
+      usingTestingBoxedExpressionI18nContext(
+        usingTestingBoxedExpressionProviderContext(
+          <div>
+            <div id="container">Popover</div>
+            <EditExpressionMenu
+              selectedExpressionName="init"
+              arrowPlacement={() => document.getElementById("container")!}
+              appendTo={() => document.getElementById("container")!}
+              onExpressionUpdate={_.identity}
+            />
+          </div>
+        ).wrapper
+      ).wrapper
+    );
+
+    await activatePopover(container as HTMLElement);
+    await act(async () => {
+      fireEvent.click(container.querySelector("[id^='pf-select-toggle-id-'] span")! as HTMLSpanElement);
+    });
+    const input = container.querySelector("div.pf-c-select__menu-search input.pf-c-form-control") as HTMLInputElement;
+    fireEvent.change(input, { target: { value: booleanDataType } });
+
+    expect(container.querySelectorAll(".pf-c-select__menu button")).toHaveLength(1);
+    expect(container.querySelectorAll(".pf-c-select__menu button")[0]).toHaveTextContent(booleanDataType);
   });
 });
