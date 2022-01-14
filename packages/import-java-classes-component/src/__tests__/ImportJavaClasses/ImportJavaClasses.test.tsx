@@ -16,13 +16,16 @@
 
 import * as React from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
-import { ImportJavaClasses, ImportJavaClassGWTService } from "../../components";
+import { ImportJavaClasses, ImportJavaClassGWTService, JavaCodeCompletionService } from "../../components";
 import * as _ from "lodash";
 
 describe("ImportJavaClasses component tests", () => {
   test("should render ImportJavaClasses Button component", () => {
     const { container } = render(
-      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+      <ImportJavaClasses
+        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        javaCodeCompletionService={javaCodeCompletionServiceMock}
+      />
     );
 
     expect(container).toMatchSnapshot();
@@ -30,7 +33,10 @@ describe("ImportJavaClasses component tests", () => {
 
   test("Should show Modal after clicking on the button", () => {
     const { baseElement, getByText } = render(
-      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+      <ImportJavaClasses
+        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        javaCodeCompletionService={javaCodeCompletionServiceMock}
+      />
     );
     const modalWizardButton = getByText("Import Java classes")! as HTMLButtonElement;
     modalWizardButton.click();
@@ -42,7 +48,10 @@ describe("ImportJavaClasses component tests", () => {
     const mockedLSPGetClassService = jest.fn();
     lspGetClassServiceMock(mockedLSPGetClassService);
     const { baseElement, getByText } = render(
-      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+      <ImportJavaClasses
+        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        javaCodeCompletionService={javaCodeCompletionServiceMock}
+      />
     );
     testSearchInput(baseElement, getByText);
     const resetButton = baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement;
@@ -55,7 +64,10 @@ describe("ImportJavaClasses component tests", () => {
     const mockedLSPGetClassService = jest.fn((value) => ["com.Book", "com.Author"]);
     lspGetClassServiceMock(mockedLSPGetClassService);
     const { baseElement, getByText } = render(
-      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+      <ImportJavaClasses
+        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        javaCodeCompletionService={javaCodeCompletionServiceMock}
+      />
     );
     testSearchInput(baseElement, getByText);
     testJavaClassSelection(baseElement, false);
@@ -69,7 +81,10 @@ describe("ImportJavaClasses component tests", () => {
 
   test("Should close Modal after opening it and clicking on the Cancel button", () => {
     const { baseElement, getByText } = render(
-      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+      <ImportJavaClasses
+        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        javaCodeCompletionService={javaCodeCompletionServiceMock}
+      />
     );
     const modalWizardButton = getByText("Import Java classes")! as HTMLButtonElement;
     modalWizardButton.click();
@@ -83,7 +98,10 @@ describe("ImportJavaClasses component tests", () => {
     lspGetClassServiceMock(jest.fn((value) => ["com.Book", "com.Author", "com.Test"]));
     lspGetClassFieldServiceMock();
     const { baseElement, getByText } = render(
-      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+      <ImportJavaClasses
+        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        javaCodeCompletionService={javaCodeCompletionServiceMock}
+      />
     );
     testSearchInput(baseElement, getByText);
     testJavaClassSelection(baseElement, true);
@@ -96,7 +114,10 @@ describe("ImportJavaClasses component tests", () => {
     lspGetClassServiceMock(jest.fn((value) => ["com.Book", "com.Author", "com.Test"]));
     lspGetClassFieldServiceMock();
     const { baseElement, getByText } = render(
-      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+      <ImportJavaClasses
+        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        javaCodeCompletionService={javaCodeCompletionServiceMock}
+      />
     );
     testSearchInput(baseElement, getByText);
     testJavaClassSelection(baseElement, true);
@@ -116,7 +137,10 @@ describe("ImportJavaClasses component tests", () => {
     lspGetClassServiceMock(jest.fn((value) => ["com.Book", "com.Author", "com.Test"]));
     lspGetClassFieldServiceMock();
     const { baseElement, getByText } = render(
-      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+      <ImportJavaClasses
+        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        javaCodeCompletionService={javaCodeCompletionServiceMock}
+      />
     );
     testSearchInput(baseElement, getByText);
     testJavaClassSelection(baseElement, true);
@@ -142,7 +166,10 @@ describe("ImportJavaClasses component tests", () => {
     lspGetClassServiceMock(jest.fn((value) => ["com.Book", "com.Author", "com.Test"]));
     lspGetClassFieldServiceMock();
     const { baseElement, getByText } = render(
-      <ImportJavaClasses buttonDisabledStatus={false} importJavaClassesGWTService={importJavaClassesGWTServiceMock} />
+      <ImportJavaClasses
+        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        javaCodeCompletionService={javaCodeCompletionServiceMock}
+      />
     );
     testSearchInput(baseElement, getByText);
     testJavaClassSelection(baseElement, true);
@@ -254,5 +281,11 @@ describe("ImportJavaClasses component tests", () => {
     handleOnWizardImportButtonClick: jest.fn((javaClasses) => {
       /* Do Nothing */
     }),
+  };
+
+  const javaCodeCompletionServiceMock: JavaCodeCompletionService = {
+    getClasses: jest.fn(() => new Promise(() => [])),
+    getFields: jest.fn(() => new Promise(() => [])),
+    isLanguageServerAvailable: jest.fn(() => new Promise(() => true)),
   };
 });

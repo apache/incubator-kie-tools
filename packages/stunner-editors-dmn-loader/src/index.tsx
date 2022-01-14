@@ -28,7 +28,12 @@ import {
   PMMLParams,
   RelationProps,
 } from "@kogito-tooling/boxed-expression-component";
-import { ImportJavaClasses, ImportJavaClassGWTService, JavaClass } from "@kogito-tooling/import-java-classes-component";
+import {
+  ImportJavaClasses,
+  ImportJavaClassGWTService,
+  JavaClass,
+  JavaCodeCompletionService,
+} from "@kogito-tooling/import-java-classes-component";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import * as ReactDOM from "react-dom";
@@ -116,14 +121,7 @@ const renderBoxedExpressionEditor = (
   );
 };
 
-export interface ImportJavaClassesWrapperProps {
-  /** Button disabled status */
-  buttonDisabledStatus: boolean;
-  /** Button tooltip message */
-  buttonTooltipMessage?: string;
-}
-
-const ImportJavaClassesWrapper = ({ buttonDisabledStatus, buttonTooltipMessage }: ImportJavaClassesWrapperProps) => {
+const ImportJavaClassesWrapper = () => {
   window.ImportJavaClassesAPI = {
     importJavaClasses: (javaClasses: JavaClass[]) => {
       window.ImportJavaClassesAPIWrapper?.importJavaClasses?.(javaClasses);
@@ -134,23 +132,22 @@ const ImportJavaClassesWrapper = ({ buttonDisabledStatus, buttonTooltipMessage }
     handleOnWizardImportButtonClick: (javaClasses) => window.ImportJavaClassesAPI?.importJavaClasses?.(javaClasses),
   };
 
+  const javaCodeCompletionService: JavaCodeCompletionService = {
+    getClasses: window.envelope.javaCodeCompletionService.getClasses,
+    getFields: (fullClassName: string) => window.envelope.javaCodeCompletionService.getAccessors(fullClassName, ""),
+    isLanguageServerAvailable: window.envelope.javaCodeCompletionService.isLanguageServerAvailable,
+  };
+
   return (
     <ImportJavaClasses
-      buttonDisabledStatus={buttonDisabledStatus}
-      buttonTooltipMessage={buttonTooltipMessage}
       importJavaClassesGWTService={importJavaClassesGWTService}
+      javaCodeCompletionService={javaCodeCompletionService}
     />
   );
 };
 
-const renderImportJavaClasses = (selector: string, buttonDisabledStatus: boolean, buttonTooltipMessage: string) => {
-  ReactDOM.render(
-    <ImportJavaClassesWrapper
-      buttonDisabledStatus={buttonDisabledStatus}
-      buttonTooltipMessage={buttonTooltipMessage}
-    />,
-    document.querySelector(selector)
-  );
+const renderImportJavaClasses = (selector: string) => {
+  ReactDOM.render(<ImportJavaClassesWrapper />, document.querySelector(selector));
 };
 
 export { renderBoxedExpressionEditor, renderImportJavaClasses };

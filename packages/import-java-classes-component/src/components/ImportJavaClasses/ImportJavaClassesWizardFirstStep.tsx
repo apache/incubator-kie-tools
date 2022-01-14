@@ -52,7 +52,7 @@ export const ImportJavaClassesWizardFirstStep = ({
 
   const retrieveJavaClasses = useCallback((value: string) => {
     setSearchValue(value);
-    const retrieved = window.envelopeMock.lspGetClassServiceMocked(value);
+    const retrieved = window.envelope.lspGetClassServiceMocked(value);
     if (retrieved) {
       setRetrievedJavaClassesNames(retrieved);
     }

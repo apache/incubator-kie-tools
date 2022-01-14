@@ -47,7 +47,7 @@ export const ImportJavaClassesWizardSecondStep = ({
 
   const loadJavaFields = useCallback(
     (className: string) => {
-      window.envelopeMock
+      window.envelope
         .lspGetClassFieldsServiceMocked(className)
         .then((value) => {
           const fields = Array.from(value, ([name, type]) => generateJavaClassField(name, type, selectedJavaClasses));

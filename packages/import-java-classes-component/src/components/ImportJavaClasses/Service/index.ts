@@ -14,6 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./ImportJavaClasses";
-export * from "./Model";
-export * from "./Service";
+export * from "./JavaCodeCompletionService";

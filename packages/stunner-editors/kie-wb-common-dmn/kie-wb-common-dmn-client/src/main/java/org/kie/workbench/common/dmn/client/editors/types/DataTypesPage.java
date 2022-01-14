@@ -114,8 +114,7 @@ public class DataTypesPage extends DMNPage {
         }
         refreshPageView();
 
-        /* Temporary hide the import-java-classes button, to be restored in KOGITO-6276 */
-        //dataTypeList.activate();
+        dataTypeList.activateReactComponents();
     }
 
     @Override

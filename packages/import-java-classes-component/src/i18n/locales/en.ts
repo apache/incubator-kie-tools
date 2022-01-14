@@ -21,6 +21,8 @@ export const en: ImportJavaClassesWizardI18n = {
   ...en_common,
   modalButton: {
     text: "Import Java classes",
+    disabledMessage:
+      'Not available, please check if "Language Support for Java by Red Hat" extension is correctly installed',
   },
   modalWizard: {
     title: "Import Java classes",

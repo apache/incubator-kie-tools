@@ -20,6 +20,7 @@ import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 interface ImportJavaClassesWizardDictionary extends ReferenceDictionary {
   modalButton: {
     text: string;
+    disabledMessage: string;
   };
   modalWizard: {
     title: string;

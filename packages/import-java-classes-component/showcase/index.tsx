@@ -19,7 +19,7 @@ import * as ReactDOM from "react-dom";
 import { useCallback, useState } from "react";
 import "@patternfly/react-core/dist/styles/base.css";
 import "./index.css";
-import { ImportJavaClasses, ImportJavaClassGWTService } from "../src";
+import { ImportJavaClasses, ImportJavaClassGWTService, JavaCodeCompletionService } from "../src";
 
 const Showcase: React.FunctionComponent = () => {
   const LSP_SERVER_NOT_AVAILABLE = "Java LSP Server is not available. Please install Java Extension";
@@ -45,6 +45,7 @@ const Showcase: React.FunctionComponent = () => {
       return [];
     }
   };
+
   const lspGetClassFieldsServiceMocked = async (className: string) => {
     /* Mocked data retrieved from LSP Service */
     const bookClassFieldsList = new Map<string, string>();
@@ -75,15 +76,21 @@ const Showcase: React.FunctionComponent = () => {
     }
   };
 
+  const isLanguageServerAvailableMock = async () => {
+    await delay();
+    return Math.random() < 0.8;
+  };
+
   const delay = () => new Promise((res) => setTimeout(res, Math.random() * (4000 - 750) + 1000));
 
   const importJavaClassesGWTService: ImportJavaClassGWTService = {
     handleOnWizardImportButtonClick: (javaClasses) => window.alert("Java Classes sent to editor:" + javaClasses.length),
   };
 
-  window.envelopeMock = {
-    lspGetClassServiceMocked: (value: string) => lspGetClassServiceMocked(value),
-    lspGetClassFieldsServiceMocked: (className: string) => lspGetClassFieldsServiceMocked(className),
+  const javaCodeCompletionService: JavaCodeCompletionService = {
+    getClasses: (query: string) => new Promise(() => []),
+    getFields: (className: string) => new Promise(() => []),
+    isLanguageServerAvailable: isLanguageServerAvailableMock,
   };
 
   return (
@@ -110,9 +117,8 @@ const Showcase: React.FunctionComponent = () => {
       </div>
       <div className="main">
         <ImportJavaClasses
-          buttonDisabledStatus={buttonDisableStatus}
-          buttonTooltipMessage={buttonTooltipMessage}
           importJavaClassesGWTService={importJavaClassesGWTService}
+          javaCodeCompletionService={javaCodeCompletionService}
         />
       </div>
     </div>
