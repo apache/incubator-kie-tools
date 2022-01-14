@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.js;
 
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DataTypeProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PMMLParam;
 
@@ -33,7 +34,7 @@ public class DMNLoader {
      * @param pmmlParams PMML parameters
      */
     @JsMethod(namespace = "__KIE__DMN_LOADER__")
-    public static native void renderBoxedExpressionEditor(final String selector, final String decisionNodeId, final ExpressionProps expressionProps, final Boolean clearSupportedOnRootExpression, final PMMLParam[] pmmlParams);
+    public static native void renderBoxedExpressionEditor(final String selector, final String decisionNodeId, final ExpressionProps expressionProps, final DataTypeProps[] dataTypes, final Boolean clearSupportedOnRootExpression, final PMMLParam[] pmmlParams);
 
     /**
      * Method used to render the import-java-classes component (TS/React world) in the DMN Editor (Java/GWT world)

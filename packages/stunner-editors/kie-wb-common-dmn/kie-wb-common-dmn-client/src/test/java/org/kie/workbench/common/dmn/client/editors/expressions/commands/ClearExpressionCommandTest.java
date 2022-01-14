@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
+import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.mockito.Mock;
 
@@ -48,6 +49,9 @@ public class ClearExpressionCommandTest {
     @Mock
     private ExpressionEditorView view;
 
+    @Mock
+    private ItemDefinitionUtils itemDefinitionUtils;
+
     private ClearExpressionCommand expressionCommand;
 
     private final String nodeUUID = "node uuid";
@@ -58,7 +62,8 @@ public class ClearExpressionCommandTest {
                                                             expressionProps,
                                                             editorSelectedEvent,
                                                             nodeUUID,
-                                                            view);
+                                                            view,
+                                                            itemDefinitionUtils);
     }
 
     @Test

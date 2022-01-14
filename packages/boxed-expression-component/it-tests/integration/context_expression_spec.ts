@@ -52,7 +52,7 @@ describe("Context Expression Tests", () => {
       cy.ouiaId("expression-column-1").contains("ContextEntry-1").click();
     });
     cy.ouiaId("edit-expression-data-type").within(($container) => {
-      cy.get("input").click({ force: true });
+      cy.get("span.pf-c-select__toggle-text").click({ force: true });
     });
 
     cy.get("button:contains('boolean')").click({ force: true });

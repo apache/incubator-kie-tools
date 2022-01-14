@@ -33,6 +33,10 @@ export const en: BoxedExpressionEditorI18n = {
   context: "Context",
   contextEntry: "CONTEXT ENTRY",
   dataType: "Data Type",
+  dataTypeDropDown: {
+    default: "DEFAULT",
+    custom: "CUSTOM",
+  },
   decisionRule: "DECISION RULE",
   decisionTable: "Decision Table",
   delete: "Delete",
