@@ -39,38 +39,47 @@ export const ImportJavaClassesWizard = ({
   importJavaClassesGWTService,
   javaCodeCompletionService,
 }: ImportJavaClassesWizardProps) => {
-  const enum ButtonStatus {
-    DISABLE,
-    ENABLE,
-    LOADING,
-  }
+  type ButtonStatus = "disable" | "enable" | "error" | "loading";
   const { i18n } = useImportJavaClassesWizardI18n();
   const [javaClasses, setJavaClasses] = useState<JavaClass[]>([]);
   const [isOpen, setOpen] = useState(false);
-  const [buttonStatus, setButtonStatus] = useState(ButtonStatus.LOADING);
+  const [buttonStatus, setButtonStatus] = useState<ButtonStatus>("loading");
 
   useEffect(() => {
-    javaCodeCompletionService
-      .isLanguageServerAvailable()
-      .then((available: boolean) => {
-        setButtonStatus(available ? ButtonStatus.ENABLE : ButtonStatus.DISABLE);
-      })
-      .catch((reason: any) => {
-        setButtonStatus(ButtonStatus.DISABLE);
-        console.error(reason);
-      });
-  }, [ButtonStatus.DISABLE, ButtonStatus.ENABLE, javaCodeCompletionService]);
+    try {
+      javaCodeCompletionService
+        .isLanguageServerAvailable()
+        .then((available: boolean) => {
+          setButtonStatus(available ? "enable" : "disable");
+        })
+        .catch((reason: any) => {
+          setButtonStatus("error");
+          console.error(reason);
+        });
+    } catch (error) {
+      setButtonStatus("error");
+      console.error(error);
+    }
+  }, [javaCodeCompletionService]);
 
   const isButtonDisabled = useCallback(() => {
-    return ButtonStatus.ENABLE !== buttonStatus;
-  }, []);
+    return "enable" !== buttonStatus;
+  }, [buttonStatus]);
+
+  const isButtonLoading = useCallback(() => {
+    return "loading" === buttonStatus;
+  }, [buttonStatus]);
 
   const defineTooltipMessage = useCallback(() => {
-    if (ButtonStatus.DISABLE === buttonStatus) {
+    if ("loading" === buttonStatus) {
       return i18n.modalButton.disabledMessage;
+    } else if ("disable" === buttonStatus) {
+      return i18n.modalButton.disabledMessage;
+    } else if ("error" === buttonStatus) {
+      return i18n.modalButton.errorMessage;
     }
     return undefined;
-  }, [ButtonStatus.DISABLE, buttonStatus, i18n.modalButton.disabledMessage]);
+  }, [buttonStatus, i18n.modalButton.disabledMessage, i18n.modalButton.errorMessage]);
 
   const updateJavaFieldsReferences = useCallback(
     (updatedJavaClasses: JavaClass[], previousJavaClasses: JavaClass[]) => {
@@ -181,12 +190,12 @@ export const ImportJavaClassesWizard = ({
 
   return (
     <>
-      {defineTooltipMessage() ? (
+      {isButtonDisabled() ? (
         <Tooltip content={defineTooltipMessage()}>
           <Button
             data-testid={"modal-wizard-button"}
-            isAriaDisabled={ButtonStatus.ENABLE !== buttonStatus}
-            isLoading={ButtonStatus.LOADING == buttonStatus}
+            isAriaDisabled={isButtonDisabled()}
+            isLoading={isButtonLoading()}
             onClick={handleButtonClick}
             variant={"secondary"}
           >
@@ -196,8 +205,8 @@ export const ImportJavaClassesWizard = ({
       ) : (
         <Button
           data-testid={"modal-wizard-button"}
-          isAriaDisabled={ButtonStatus.ENABLE !== buttonStatus}
-          isLoading={ButtonStatus.LOADING == buttonStatus}
+          isAriaDisabled={isButtonDisabled()}
+          isLoading={isButtonLoading()}
           onClick={handleButtonClick}
           variant={"secondary"}
         >
