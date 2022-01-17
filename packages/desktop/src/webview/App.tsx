@@ -39,6 +39,10 @@ enum Pages {
 
 const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 
+const bpmnEnvelope = { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/bpmn-envelope.html" };
+
+const dmnEnvelope = { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/dmn-envelope.html" };
+
 export function App() {
   const [page, setPage] = useState(Pages.HOME);
   const [file, setFile] = useState<EmbeddedEditorFile>({
@@ -65,9 +69,12 @@ export function App() {
     () => ({
       targetOrigin: window.location.origin,
       mapping: new Map([
-        ["bpmn", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/bpmn-envelope.html" }],
-        ["bpmn2", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/bpmn-envelope.html" }],
-        ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/dmn-envelope.html" }],
+        ["bpmn", bpmnEnvelope],
+        ["bpmn2", bpmnEnvelope],
+        ["BPMN", bpmnEnvelope],
+        ["BPMN2", bpmnEnvelope],
+        ["dmn", dmnEnvelope],
+        ["DMN", dmnEnvelope],
       ]),
     }),
     []
