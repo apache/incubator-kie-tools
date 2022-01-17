@@ -114,12 +114,10 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   }
 
   public kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest) {
-    console.log("GET");
     return this.resourceContentService.get(request.path, request.opts);
   }
 
   public kogitoWorkspace_resourceListRequest(request: ResourceListRequest) {
-    console.log("LIST");
     return this.resourceContentService.list(request.pattern, request.opts);
   }
 

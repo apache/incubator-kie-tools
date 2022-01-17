@@ -110,10 +110,8 @@ export class KogitoEditorFactory {
 
   public createResourceContentService(path: string, workspacePath: string): ResourceContentService {
     if (this.isAssetInWorkspace(path)) {
-      console.log("Resource");
       return new VsCodeResourceContentService(this.getParentFolder(workspacePath));
     } else {
-      console.log("Node Resource");
       return new VsCodeNodeResourceContentService(this.getParentFolder(path));
     }
   }
