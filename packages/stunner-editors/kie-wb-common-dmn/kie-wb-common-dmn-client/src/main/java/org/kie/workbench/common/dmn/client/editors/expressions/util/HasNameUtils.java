@@ -18,29 +18,24 @@ package org.kie.workbench.common.dmn.client.editors.expressions.util;
 
 import java.util.Objects;
 
-import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 
-public class HasExpressionUtils {
+public class HasNameUtils {
 
-    private HasExpressionUtils() {
+    private HasNameUtils() {
         // Private constructor for utility class with only static members
     }
 
-    public static void setExpressionName(final HasExpression hasExpression,
-                                         final String expressionName) {
-
-        if (hasExpression instanceof HasName) {
-            final HasName hasName = (HasName) hasExpression;
-            final Name name;
-            if (Objects.isNull(hasName.getName())) {
-                name = new Name();
-                hasName.setName(name);
-            } else {
-                name = hasName.getName();
-            }
-            name.setValue(expressionName);
+    public static void setName(final HasName hasName,
+                               final String expressionName) {
+        final Name name;
+        if (Objects.isNull(hasName.getName())) {
+            name = new Name();
+            hasName.setName(name);
+        } else {
+            name = hasName.getName();
         }
+        name.setValue(expressionName);
     }
 }
