@@ -31,7 +31,7 @@ import { TableComposable } from "@patternfly/react-table";
 import { v4 as uuid } from "uuid";
 import { generateUuid, TableHeaderVisibility, TableOperation, TableProps } from "../../api";
 import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
-import { PASTE_OPERATION, pasteOnTable } from "./common";
+import { PASTE_OPERATION, pasteOnTable, focusPrevCell, focusNextCell } from "./common";
 import { EditableCell } from "./EditableCell";
 import "./Table.css";
 import { TableBody } from "./TableBody";
@@ -320,6 +320,16 @@ export const Table: React.FunctionComponent<TableProps> = ({
 
   const tdProps = useCallback(
     (columnIndex: number, rowIndex: number) => ({
+      tabIndex: 0,
+      onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => {
+        const key = e.key;
+        if (key == "ArrowLeft") {
+          focusPrevCell(e.currentTarget);
+        }
+        if (key == "ArrowRight") {
+          focusNextCell(e.currentTarget);
+        }
+      },
       onContextMenu: (e: ContextMenuEvent) => {
         const target = e.target as HTMLElement;
         if (contextMenuIsAvailable(target)) {

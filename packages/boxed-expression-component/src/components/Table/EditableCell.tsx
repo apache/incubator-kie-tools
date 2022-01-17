@@ -19,7 +19,7 @@ import * as Monaco from "@kie-tooling-core/monaco-editor";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CellProps } from "../../api";
-import { blurActiveElement, focusNextTextArea, focusTextArea, paste } from "./common";
+import { blurActiveElement, focusNextTextArea, focusPrevCell, focusTextArea, paste } from "./common";
 import "./EditableCell.css";
 import { useBoxedExpression } from "../../context";
 
@@ -50,6 +50,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
   const [mode, setMode] = useState(READ_MODE);
   const [cellHeight, setCellHeight] = useState(CELL_LINE_HEIGHT * 3);
   const [preview, setPreview] = useState<string>("");
+  // const wrapper = useRef<HTMLDivElement>(null);
   const textarea = useRef<HTMLTextAreaElement>(null);
   const [previousValue, setPreviousValue] = useState("");
   const feelInputRef = useRef<FeelInputRef>(null);
@@ -90,6 +91,9 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
     return `editable-cell ${selectedClass} ${mode}`;
   }, [isSelected, mode]);
 
+  /**
+   * @deprecated KOGITO-3655
+   */
   const onFocus = useCallback(() => {
     if (mode === EDIT_MODE) {
       return;
@@ -135,6 +139,13 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
     },
     [triggerReadMode]
   );
+
+  // const onEditableCellKeyDown = useCallback((e: React.KeyboardEvent<HTMLElement>) => {
+  //   const key = e.key;
+  //   if (key == "ArrowLeft") {
+  //     focusPrevCell(wrapper.current);
+  //   }
+  // }, []);
 
   const onFeelKeyDown = useCallback(
     (event: Monaco.IKeyboardEvent, newValue: string) => {
@@ -202,7 +213,6 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
           ref={textarea}
           value={textValue}
           onChange={onTextAreaChange}
-          onFocus={onFocus}
           onBlur={onTextAreaBlur}
           readOnly={readOnly}
         />

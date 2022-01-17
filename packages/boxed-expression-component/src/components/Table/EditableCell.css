@@ -27,6 +27,9 @@
   position: relative;
 }
 
+.expression-container .data-cell.data-cell-selected,
+.expression-container .data-cell:focus,
+.expression-container .data-cell:focus-visible,
 .expression-container .editable-cell:active,
 .expression-container .editable-cell.editable-cell--selected,
 .expression-container .editable-cell.editable-cell--edit-mode {

@@ -39,3 +39,56 @@ export const focusNextTextArea = (currentTextArea: HTMLTextAreaElement | null) =
 
   textAreas.item(indexOfNext).focus();
 };
+
+/**
+ * Focus Sibling Cell of a react-table. Works from any element inside a cell or a cell itself.
+ *
+ * @param currCell the current cell
+ * @param getSibling callback to get the sibling cell
+ * @returns
+ */
+const focusSibligngCell = (currCell: HTMLElement | null, getSibling: (parent: Element) => Element | null): void => {
+  const cellSelector = "td";
+
+  if (!currCell) {
+    return;
+  }
+
+  const parent = currCell.matches(cellSelector) ? currCell : currCell.closest(cellSelector);
+
+  if (!parent) {
+    return;
+  }
+
+  const gotoEl = <HTMLElement>getSibling(parent);
+
+  if (!gotoEl) {
+    return;
+  }
+
+  gotoEl.focus();
+};
+
+/**
+ * Focus Next Cell of a react-table. Works from any element inside a cell or a cell itself.
+ *
+ * @param currCell -
+ * @returns
+ */
+export const focusNextCell = (currCell: HTMLElement | null): void => {
+  focusSibligngCell(currCell, (parent) => {
+    return parent?.nextElementSibling;
+  });
+};
+
+/**
+ * Focus Prev Cell of a react-table. Works from any element inside a cell or a cell itself.
+ *
+ * @param currCell -
+ * @returns
+ */
+export const focusPrevCell = (currCell: HTMLElement | null): void => {
+  focusSibligngCell(currCell, (parent) => {
+    return parent?.previousElementSibling;
+  });
+};
