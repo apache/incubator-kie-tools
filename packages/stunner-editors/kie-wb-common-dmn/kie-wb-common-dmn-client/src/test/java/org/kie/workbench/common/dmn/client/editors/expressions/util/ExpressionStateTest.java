@@ -62,7 +62,8 @@ public class ExpressionStateTest {
     @Mock
     private UpdateCanvasNodeNameCommand updateCanvasNodeCommand;
 
-    private Optional<HasName> hasName = Optional.empty();
+    @Mock
+    private HasName hasName;
 
     private static final String NODE_UUID = "uuid";
 
@@ -74,7 +75,7 @@ public class ExpressionStateTest {
                                                   editorSelectedEvent,
                                                   view,
                                                   NODE_UUID,
-                                                  hasName,
+                                                  Optional.of(hasName),
                                                   updateCanvasNodeCommand));
     }
 
@@ -210,7 +211,7 @@ public class ExpressionStateTest {
         final String value = "expression name";
         final Name name = new Name(value);
 
-        when(((HasName) hasExpression).getName()).thenReturn(name);
+        when(hasName.getName()).thenReturn(name);
 
         expressionState.saveCurrentExpressionName();
 

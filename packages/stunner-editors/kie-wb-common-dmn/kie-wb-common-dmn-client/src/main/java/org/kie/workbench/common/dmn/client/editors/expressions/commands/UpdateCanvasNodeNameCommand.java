@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.commands;
 
-import java.util.Optional;
+import java.util.Objects;
 
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
@@ -27,8 +27,8 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
-
 public class UpdateCanvasNodeNameCommand {
+
     private final SessionManager sessionManager;
     private final DefinitionUtils definitionUtils;
     private final DefaultCanvasCommandFactory canvasCommandFactory;
@@ -42,7 +42,7 @@ public class UpdateCanvasNodeNameCommand {
     }
 
     public void execute(final String nodeUUID,
-                        final Optional<HasName> hasName) {
+                        final HasName hasName) {
 
         final AbstractCanvasHandler canvasHandler = (AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler();
         final Element element = canvasHandler.getGraphIndex().get(nodeUUID);
@@ -57,11 +57,17 @@ public class UpdateCanvasNodeNameCommand {
         }
     }
 
-    CanvasCommand<AbstractCanvasHandler> getCommand(final Optional<HasName> hasName,
+    CanvasCommand<AbstractCanvasHandler> getCommand(final HasName hasName,
                                                     final Element element,
                                                     final String nameId) {
+        final HasName value;
+        if (Objects.isNull(hasName)) {
+            value = HasName.NOP;
+        } else {
+            value = hasName;
+        }
         return canvasCommandFactory.updatePropertyValue(element,
                                                         nameId,
-                                                        hasName.orElse(HasName.NOP).getValue());
+                                                        value.getValue());
     }
 }
