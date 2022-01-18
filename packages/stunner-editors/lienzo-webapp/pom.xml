@@ -87,32 +87,34 @@
 	</pluginRepositories>
 
 	<dependencies>
-		<!-- Lienzo -->
-		<dependency>
-			<groupId>org.kie.kogito.stunner.editors</groupId>
-			<artifactId>lienzo-core</artifactId>
-		</dependency>
-		<!-- GWT -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
 		</dependency>
-		<!-- JsInterop & Elemental2 -->
+		<dependency>
+			<groupId>org.kie.kogito.stunner.editors</groupId>
+			<artifactId>lienzo-core</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.google.jsinterop</groupId>
 			<artifactId>base</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.elemental2</groupId>
 			<artifactId>elemental2-core</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.elemental2</groupId>
 			<artifactId>elemental2-dom</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.elemental2</groupId>
 			<artifactId>elemental2-promise</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<!-- Test -->
 		<dependency>

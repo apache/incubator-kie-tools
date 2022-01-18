@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-.boxed-expression-provider .hit-policy-container,
-.boxed-expression-provider .hit-policy-selector,
-.boxed-expression-provider .builtin-aggregator-selector {
-  font-size: small;
-}
+package org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props;
 
-.boxed-expression-provider .hit-policy-container {
-  padding-left: 14px;
-  padding-right: 14px;
-  padding-bottom: 10px;
-}
+import jsinterop.annotations.JsType;
 
-.boxed-expression-provider .hit-policy-container .builtin-aggregator-section {
-  padding-top: 10px;
+@JsType
+public class DataTypeProps {
+    public final String typeRef;
+    public final String name;
+    public final Boolean isCustom;
+
+    public DataTypeProps(final String typeRef, final String name, final Boolean isCustom) {
+        this.typeRef = typeRef;
+        this.name = name;
+        this.isCustom = isCustom;
+    }
 }

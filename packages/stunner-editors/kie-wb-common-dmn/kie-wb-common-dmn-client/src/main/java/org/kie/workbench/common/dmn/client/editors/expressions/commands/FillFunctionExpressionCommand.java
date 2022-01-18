@@ -23,6 +23,7 @@ import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.FunctionProps;
+import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 
 import static org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.ExpressionModelFiller.fillFunctionExpression;
@@ -33,8 +34,9 @@ public class FillFunctionExpressionCommand extends FillExpressionCommand<Functio
                                          final FunctionProps expressionProps,
                                          final Event<ExpressionEditorChanged> editorSelectedEvent,
                                          final String nodeUUID,
-                                         final ExpressionEditorView view) {
-        super(hasExpression, expressionProps, editorSelectedEvent, nodeUUID, view);
+                                         final ExpressionEditorView view,
+                                         final ItemDefinitionUtils itemDefinitionUtils) {
+        super(hasExpression, expressionProps, editorSelectedEvent, nodeUUID, view, itemDefinitionUtils);
     }
 
     @Override
