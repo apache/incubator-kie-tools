@@ -134,7 +134,7 @@ const ImportJavaClassesWrapper = () => {
   };
 
   const importJavaClassesGWTService: ImportJavaClassGWTService = {
-    handleOnWizardImportButtonClick: (javaClasses) => window.ImportJavaClassesAPI?.importJavaClasses?.(javaClasses),
+    importJavaClassesInDataTypeEditor: (javaClasses) => window.ImportJavaClassesAPI?.importJavaClasses?.(javaClasses),
   };
 
   const javaCodeCompletionService: JavaCodeCompletionService = {
