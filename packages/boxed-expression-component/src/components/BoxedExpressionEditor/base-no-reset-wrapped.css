@@ -9,12 +9,12 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
-.boxed-expression-editor  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+.boxed-expression-provider  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
-.boxed-expression-editor .pf-t-light {
+.boxed-expression-provider .pf-t-light {
   --pf-global--Color--100: var(--pf-global--Color--dark-100);
   --pf-global--Color--200: var(--pf-global--Color--dark-200);
   --pf-global--BorderColor--100: var(--pf-global--BorderColor--dark-100);
@@ -24,7 +24,7 @@
   --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--light-100);
 }
 
-.boxed-expression-editor .pf-t-dark {
+.boxed-expression-provider .pf-t-dark {
   --pf-global--Color--100: var(--pf-global--Color--light-100);
   --pf-global--Color--200: var(--pf-global--Color--light-200);
   --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100);
@@ -34,11 +34,11 @@
   --pf-global--BackgroundColor--100: var(--pf-global--BackgroundColor--dark-100);
 }
 
-.boxed-expression-editor .pf-t-dark .pf-c-card {
+.boxed-expression-provider .pf-t-dark .pf-c-card {
   --pf-c-card--BackgroundColor: var(--pf-global--BackgroundColor--dark-transparent-200);
 }
 
-.boxed-expression-editor .pf-t-dark .pf-c-button {
+.boxed-expression-provider .pf-t-dark .pf-c-button {
   --pf-c-button--m-primary--Color: var(--pf-global--primary-color--dark-100);
   --pf-c-button--m-primary--hover--Color: var(--pf-global--primary-color--dark-100);
   --pf-c-button--m-primary--focus--Color: var(--pf-global--primary-color--dark-100);
@@ -286,7 +286,7 @@
   --pf-global--target-size--MinHeight: 44px;
 }
 
-.boxed-expression-editor .pf-m-overpass-font {
+.boxed-expression-provider .pf-m-overpass-font {
   --pf-global--FontFamily--sans-serif: var(--pf-global--FontFamily--overpass--sans-serif);
   --pf-global--FontFamily--heading--sans-serif: var(--pf-global--FontFamily--sans-serif);
   --pf-global--FontFamily--monospace: var(--pf-global--FontFamily--overpass--monospace);
@@ -298,7 +298,7 @@ html {
   font-size: unset !important;
 }
 
-.boxed-expression-editor .pf-screen-reader {
+.boxed-expression-provider .pf-screen-reader {
   position: fixed;
   top: 0;
   left: 0;
@@ -308,168 +308,168 @@ html {
   border: 0;
 }
 
-.boxed-expression-editor .pf-svg-vertical-align {
+.boxed-expression-provider .pf-svg-vertical-align {
   vertical-align: -0.125em;
 }
 
-.boxed-expression-editor .pf-t-dark.pf-m-transparent {
+.boxed-expression-provider .pf-t-dark.pf-m-transparent {
   background-color: transparent;
 }
 
-.boxed-expression-editor .pf-t-dark.pf-m-transparent-100 {
+.boxed-expression-provider .pf-t-dark.pf-m-transparent-100 {
   background-color: rgba(3, 3, 3, 0.42);
 }
 
-.boxed-expression-editor .pf-t-dark.pf-m-transparent-200 {
+.boxed-expression-provider .pf-t-dark.pf-m-transparent-200 {
   background-color: rgba(3, 3, 3, 0.6);
 }
 
-.boxed-expression-editor .pf-t-dark.pf-m-opaque-100 {
+.boxed-expression-provider .pf-t-dark.pf-m-opaque-100 {
   background-color: #3c3f42;
 }
 
-.boxed-expression-editor .pf-t-dark.pf-m-opaque-200 {
+.boxed-expression-provider .pf-t-dark.pf-m-opaque-200 {
   background-color: #151515;
 }
 
-.boxed-expression-editor .pf-t-light.pf-m-transparent {
+.boxed-expression-provider .pf-t-light.pf-m-transparent {
   background-color: transparent;
 }
 
-.boxed-expression-editor .pf-t-light.pf-m-opaque-100 {
+.boxed-expression-provider .pf-t-light.pf-m-opaque-100 {
   background-color: #fff;
 }
 
-.boxed-expression-editor .pf-t-light.pf-m-opaque-200 {
+.boxed-expression-provider .pf-t-light.pf-m-opaque-200 {
   background-color: #fafafa;
 }
 
-.boxed-expression-editor .pf-t-light.pf-m-opaque-300 {
+.boxed-expression-provider .pf-t-light.pf-m-opaque-300 {
   background-color: #f0f0f0;
 }
 
-.boxed-expression-editor .pf-icon-zone:before,
-.boxed-expression-editor .pf-icon-warning-triangle:before,
-.boxed-expression-editor .pf-icon-volume:before,
-.boxed-expression-editor .pf-icon-virtual-machine:before,
-.boxed-expression-editor .pf-icon-users:before,
-.boxed-expression-editor .pf-icon-user:before,
-.boxed-expression-editor .pf-icon-unplugged:before,
-.boxed-expression-editor .pf-icon-unlocked:before,
-.boxed-expression-editor .pf-icon-unknown:before,
-.boxed-expression-editor .pf-icon-trend-up:before,
-.boxed-expression-editor .pf-icon-trend-down:before,
-.boxed-expression-editor .pf-icon-topology:before,
-.boxed-expression-editor .pf-icon-thumb-tack:before,
-.boxed-expression-editor .pf-icon-tenant:before,
-.boxed-expression-editor .pf-icon-storage-domain:before,
-.boxed-expression-editor .pf-icon-spinner2:before,
-.boxed-expression-editor .pf-icon-spinner:before,
-.boxed-expression-editor .pf-icon-services:before,
-.boxed-expression-editor .pf-icon-service:before,
-.boxed-expression-editor .pf-icon-service-catalog:before,
-.boxed-expression-editor .pf-icon-server:before,
-.boxed-expression-editor .pf-icon-server-group:before,
-.boxed-expression-editor .pf-icon-security:before,
-.boxed-expression-editor .pf-icon-screen:before,
-.boxed-expression-editor .pf-icon-save:before,
-.boxed-expression-editor .pf-icon-running:before,
-.boxed-expression-editor .pf-icon-resources-full:before,
-.boxed-expression-editor .pf-icon-resources-empty:before,
-.boxed-expression-editor .pf-icon-resources-almost-full:before,
-.boxed-expression-editor .pf-icon-resources-almost-empty:before,
-.boxed-expression-editor .pf-icon-resource-pool:before,
-.boxed-expression-editor .pf-icon-repository:before,
-.boxed-expression-editor .pf-icon-replicator:before,
-.boxed-expression-editor .pf-icon-remove2:before,
-.boxed-expression-editor .pf-icon-registry:before,
-.boxed-expression-editor .pf-icon-regions:before,
-.boxed-expression-editor .pf-icon-rebooting:before,
-.boxed-expression-editor .pf-icon-rebalance:before,
-.boxed-expression-editor .pf-icon-project:before,
-.boxed-expression-editor .pf-icon-process-automation:before,
-.boxed-expression-editor .pf-icon-private:before,
-.boxed-expression-editor .pf-icon-print:before,
-.boxed-expression-editor .pf-icon-port:before,
-.boxed-expression-editor .pf-icon-plugged:before,
-.boxed-expression-editor .pf-icon-pficon-vcenter:before,
-.boxed-expression-editor .pf-icon-pficon-template:before,
-.boxed-expression-editor .pf-icon-pficon-sort-common-desc:before,
-.boxed-expression-editor .pf-icon-pficon-sort-common-asc:before,
-.boxed-expression-editor .pf-icon-pficon-satellite:before,
-.boxed-expression-editor .pf-icon-pficon-network-range:before,
-.boxed-expression-editor .pf-icon-pficon-history:before,
-.boxed-expression-editor .pf-icon-pficon-dragdrop:before,
-.boxed-expression-editor .pf-icon-pending:before,
-.boxed-expression-editor .pf-icon-paused:before,
-.boxed-expression-editor .pf-icon-panel-open:before,
-.boxed-expression-editor .pf-icon-panel-close:before,
-.boxed-expression-editor .pf-icon-package:before,
-.boxed-expression-editor .pf-icon-os-image:before,
-.boxed-expression-editor .pf-icon-orders:before,
-.boxed-expression-editor .pf-icon-optimize:before,
-.boxed-expression-editor .pf-icon-openstack:before,
-.boxed-expression-editor .pf-icon-openshift:before,
-.boxed-expression-editor .pf-icon-on:before,
-.boxed-expression-editor .pf-icon-on-running:before,
-.boxed-expression-editor .pf-icon-ok:before,
-.boxed-expression-editor .pf-icon-off:before,
-.boxed-expression-editor .pf-icon-not-started:before,
-.boxed-expression-editor .pf-icon-new-process:before,
-.boxed-expression-editor .pf-icon-network:before,
-.boxed-expression-editor .pf-icon-namespaces:before,
-.boxed-expression-editor .pf-icon-monitoring:before,
-.boxed-expression-editor .pf-icon-module:before,
-.boxed-expression-editor .pf-icon-migration:before,
-.boxed-expression-editor .pf-icon-middleware:before,
-.boxed-expression-editor .pf-icon-messages:before,
-.boxed-expression-editor .pf-icon-memory:before,
-.boxed-expression-editor .pf-icon-maintenance:before,
-.boxed-expression-editor .pf-icon-locked:before,
-.boxed-expression-editor .pf-icon-key:before,
-.boxed-expression-editor .pf-icon-integration:before,
-.boxed-expression-editor .pf-icon-infrastructure:before,
-.boxed-expression-editor .pf-icon-info:before,
-.boxed-expression-editor .pf-icon-in-progress:before,
-.boxed-expression-editor .pf-icon-import:before,
-.boxed-expression-editor .pf-icon-home:before,
-.boxed-expression-editor .pf-icon-history:before,
-.boxed-expression-editor .pf-icon-help:before,
-.boxed-expression-editor .pf-icon-globe-route:before,
-.boxed-expression-editor .pf-icon-folder-open:before,
-.boxed-expression-editor .pf-icon-folder-close:before,
-.boxed-expression-editor .pf-icon-flavor:before,
-.boxed-expression-editor .pf-icon-filter:before,
-.boxed-expression-editor .pf-icon-export:before,
-.boxed-expression-editor .pf-icon-error-circle-o:before,
-.boxed-expression-editor .pf-icon-equalizer:before,
-.boxed-expression-editor .pf-icon-enterprise:before,
-.boxed-expression-editor .pf-icon-enhancement:before,
-.boxed-expression-editor .pf-icon-edit:before,
-.boxed-expression-editor .pf-icon-domain:before,
-.boxed-expression-editor .pf-icon-disconnected:before,
-.boxed-expression-editor .pf-icon-degraded:before,
-.boxed-expression-editor .pf-icon-cpu:before,
-.boxed-expression-editor .pf-icon-container-node:before,
-.boxed-expression-editor .pf-icon-connected:before,
-.boxed-expression-editor .pf-icon-cluster:before,
-.boxed-expression-editor .pf-icon-cloud-tenant:before,
-.boxed-expression-editor .pf-icon-cloud-security:before,
-.boxed-expression-editor .pf-icon-close:before,
-.boxed-expression-editor .pf-icon-chat:before,
-.boxed-expression-editor .pf-icon-catalog:before,
-.boxed-expression-editor .pf-icon-bundle:before,
-.boxed-expression-editor .pf-icon-builder-image:before,
-.boxed-expression-editor .pf-icon-build:before,
-.boxed-expression-editor .pf-icon-blueprint:before,
-.boxed-expression-editor .pf-icon-bell:before,
-.boxed-expression-editor .pf-icon-automation:before,
-.boxed-expression-editor .pf-icon-attention-bell:before,
-.boxed-expression-editor .pf-icon-asleep:before,
-.boxed-expression-editor .pf-icon-arrow:before,
-.boxed-expression-editor .pf-icon-applications:before,
-.boxed-expression-editor .pf-icon-ansible-tower:before,
-.boxed-expression-editor .pf-icon-add-circle-o:before {
+.boxed-expression-provider .pf-icon-zone:before,
+.boxed-expression-provider .pf-icon-warning-triangle:before,
+.boxed-expression-provider .pf-icon-volume:before,
+.boxed-expression-provider .pf-icon-virtual-machine:before,
+.boxed-expression-provider .pf-icon-users:before,
+.boxed-expression-provider .pf-icon-user:before,
+.boxed-expression-provider .pf-icon-unplugged:before,
+.boxed-expression-provider .pf-icon-unlocked:before,
+.boxed-expression-provider .pf-icon-unknown:before,
+.boxed-expression-provider .pf-icon-trend-up:before,
+.boxed-expression-provider .pf-icon-trend-down:before,
+.boxed-expression-provider .pf-icon-topology:before,
+.boxed-expression-provider .pf-icon-thumb-tack:before,
+.boxed-expression-provider .pf-icon-tenant:before,
+.boxed-expression-provider .pf-icon-storage-domain:before,
+.boxed-expression-provider .pf-icon-spinner2:before,
+.boxed-expression-provider .pf-icon-spinner:before,
+.boxed-expression-provider .pf-icon-services:before,
+.boxed-expression-provider .pf-icon-service:before,
+.boxed-expression-provider .pf-icon-service-catalog:before,
+.boxed-expression-provider .pf-icon-server:before,
+.boxed-expression-provider .pf-icon-server-group:before,
+.boxed-expression-provider .pf-icon-security:before,
+.boxed-expression-provider .pf-icon-screen:before,
+.boxed-expression-provider .pf-icon-save:before,
+.boxed-expression-provider .pf-icon-running:before,
+.boxed-expression-provider .pf-icon-resources-full:before,
+.boxed-expression-provider .pf-icon-resources-empty:before,
+.boxed-expression-provider .pf-icon-resources-almost-full:before,
+.boxed-expression-provider .pf-icon-resources-almost-empty:before,
+.boxed-expression-provider .pf-icon-resource-pool:before,
+.boxed-expression-provider .pf-icon-repository:before,
+.boxed-expression-provider .pf-icon-replicator:before,
+.boxed-expression-provider .pf-icon-remove2:before,
+.boxed-expression-provider .pf-icon-registry:before,
+.boxed-expression-provider .pf-icon-regions:before,
+.boxed-expression-provider .pf-icon-rebooting:before,
+.boxed-expression-provider .pf-icon-rebalance:before,
+.boxed-expression-provider .pf-icon-project:before,
+.boxed-expression-provider .pf-icon-process-automation:before,
+.boxed-expression-provider .pf-icon-private:before,
+.boxed-expression-provider .pf-icon-print:before,
+.boxed-expression-provider .pf-icon-port:before,
+.boxed-expression-provider .pf-icon-plugged:before,
+.boxed-expression-provider .pf-icon-pficon-vcenter:before,
+.boxed-expression-provider .pf-icon-pficon-template:before,
+.boxed-expression-provider .pf-icon-pficon-sort-common-desc:before,
+.boxed-expression-provider .pf-icon-pficon-sort-common-asc:before,
+.boxed-expression-provider .pf-icon-pficon-satellite:before,
+.boxed-expression-provider .pf-icon-pficon-network-range:before,
+.boxed-expression-provider .pf-icon-pficon-history:before,
+.boxed-expression-provider .pf-icon-pficon-dragdrop:before,
+.boxed-expression-provider .pf-icon-pending:before,
+.boxed-expression-provider .pf-icon-paused:before,
+.boxed-expression-provider .pf-icon-panel-open:before,
+.boxed-expression-provider .pf-icon-panel-close:before,
+.boxed-expression-provider .pf-icon-package:before,
+.boxed-expression-provider .pf-icon-os-image:before,
+.boxed-expression-provider .pf-icon-orders:before,
+.boxed-expression-provider .pf-icon-optimize:before,
+.boxed-expression-provider .pf-icon-openstack:before,
+.boxed-expression-provider .pf-icon-openshift:before,
+.boxed-expression-provider .pf-icon-on:before,
+.boxed-expression-provider .pf-icon-on-running:before,
+.boxed-expression-provider .pf-icon-ok:before,
+.boxed-expression-provider .pf-icon-off:before,
+.boxed-expression-provider .pf-icon-not-started:before,
+.boxed-expression-provider .pf-icon-new-process:before,
+.boxed-expression-provider .pf-icon-network:before,
+.boxed-expression-provider .pf-icon-namespaces:before,
+.boxed-expression-provider .pf-icon-monitoring:before,
+.boxed-expression-provider .pf-icon-module:before,
+.boxed-expression-provider .pf-icon-migration:before,
+.boxed-expression-provider .pf-icon-middleware:before,
+.boxed-expression-provider .pf-icon-messages:before,
+.boxed-expression-provider .pf-icon-memory:before,
+.boxed-expression-provider .pf-icon-maintenance:before,
+.boxed-expression-provider .pf-icon-locked:before,
+.boxed-expression-provider .pf-icon-key:before,
+.boxed-expression-provider .pf-icon-integration:before,
+.boxed-expression-provider .pf-icon-infrastructure:before,
+.boxed-expression-provider .pf-icon-info:before,
+.boxed-expression-provider .pf-icon-in-progress:before,
+.boxed-expression-provider .pf-icon-import:before,
+.boxed-expression-provider .pf-icon-home:before,
+.boxed-expression-provider .pf-icon-history:before,
+.boxed-expression-provider .pf-icon-help:before,
+.boxed-expression-provider .pf-icon-globe-route:before,
+.boxed-expression-provider .pf-icon-folder-open:before,
+.boxed-expression-provider .pf-icon-folder-close:before,
+.boxed-expression-provider .pf-icon-flavor:before,
+.boxed-expression-provider .pf-icon-filter:before,
+.boxed-expression-provider .pf-icon-export:before,
+.boxed-expression-provider .pf-icon-error-circle-o:before,
+.boxed-expression-provider .pf-icon-equalizer:before,
+.boxed-expression-provider .pf-icon-enterprise:before,
+.boxed-expression-provider .pf-icon-enhancement:before,
+.boxed-expression-provider .pf-icon-edit:before,
+.boxed-expression-provider .pf-icon-domain:before,
+.boxed-expression-provider .pf-icon-disconnected:before,
+.boxed-expression-provider .pf-icon-degraded:before,
+.boxed-expression-provider .pf-icon-cpu:before,
+.boxed-expression-provider .pf-icon-container-node:before,
+.boxed-expression-provider .pf-icon-connected:before,
+.boxed-expression-provider .pf-icon-cluster:before,
+.boxed-expression-provider .pf-icon-cloud-tenant:before,
+.boxed-expression-provider .pf-icon-cloud-security:before,
+.boxed-expression-provider .pf-icon-close:before,
+.boxed-expression-provider .pf-icon-chat:before,
+.boxed-expression-provider .pf-icon-catalog:before,
+.boxed-expression-provider .pf-icon-bundle:before,
+.boxed-expression-provider .pf-icon-builder-image:before,
+.boxed-expression-provider .pf-icon-build:before,
+.boxed-expression-provider .pf-icon-blueprint:before,
+.boxed-expression-provider .pf-icon-bell:before,
+.boxed-expression-provider .pf-icon-automation:before,
+.boxed-expression-provider .pf-icon-attention-bell:before,
+.boxed-expression-provider .pf-icon-asleep:before,
+.boxed-expression-provider .pf-icon-arrow:before,
+.boxed-expression-provider .pf-icon-applications:before,
+.boxed-expression-provider .pf-icon-ansible-tower:before,
+.boxed-expression-provider .pf-icon-add-circle-o:before {
   font-family: "pficon", emoji;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -480,490 +480,490 @@ html {
   text-transform: none;
 }
 
-.boxed-expression-editor .pf-icon-add-circle-o:before {
+.boxed-expression-provider .pf-icon-add-circle-o:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-ansible-tower:before {
+.boxed-expression-provider .pf-icon-ansible-tower:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-applications:before {
+.boxed-expression-provider .pf-icon-applications:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-arrow:before {
+.boxed-expression-provider .pf-icon-arrow:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-asleep:before {
+.boxed-expression-provider .pf-icon-asleep:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-attention-bell:before {
+.boxed-expression-provider .pf-icon-attention-bell:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-automation:before {
+.boxed-expression-provider .pf-icon-automation:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-bell:before {
+.boxed-expression-provider .pf-icon-bell:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-blueprint:before {
+.boxed-expression-provider .pf-icon-blueprint:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-build:before {
+.boxed-expression-provider .pf-icon-build:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-builder-image:before {
+.boxed-expression-provider .pf-icon-builder-image:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-bundle:before {
+.boxed-expression-provider .pf-icon-bundle:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-catalog:before {
+.boxed-expression-provider .pf-icon-catalog:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-chat:before {
+.boxed-expression-provider .pf-icon-chat:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-close:before {
+.boxed-expression-provider .pf-icon-close:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-cloud-security:before {
+.boxed-expression-provider .pf-icon-cloud-security:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-cloud-tenant:before {
+.boxed-expression-provider .pf-icon-cloud-tenant:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-cluster:before {
+.boxed-expression-provider .pf-icon-cluster:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-connected:before {
+.boxed-expression-provider .pf-icon-connected:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-container-node:before {
+.boxed-expression-provider .pf-icon-container-node:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-cpu:before {
+.boxed-expression-provider .pf-icon-cpu:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-degraded:before {
+.boxed-expression-provider .pf-icon-degraded:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-disconnected:before {
+.boxed-expression-provider .pf-icon-disconnected:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-domain:before {
+.boxed-expression-provider .pf-icon-domain:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-edit:before {
+.boxed-expression-provider .pf-icon-edit:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-enhancement:before {
+.boxed-expression-provider .pf-icon-enhancement:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-enterprise:before {
+.boxed-expression-provider .pf-icon-enterprise:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-equalizer:before {
+.boxed-expression-provider .pf-icon-equalizer:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-error-circle-o:before {
+.boxed-expression-provider .pf-icon-error-circle-o:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-export:before {
+.boxed-expression-provider .pf-icon-export:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-filter:before {
+.boxed-expression-provider .pf-icon-filter:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-flavor:before {
+.boxed-expression-provider .pf-icon-flavor:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-folder-close:before {
+.boxed-expression-provider .pf-icon-folder-close:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-folder-open:before {
+.boxed-expression-provider .pf-icon-folder-open:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-globe-route:before {
+.boxed-expression-provider .pf-icon-globe-route:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-help:before {
+.boxed-expression-provider .pf-icon-help:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-history:before {
+.boxed-expression-provider .pf-icon-history:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-home:before {
+.boxed-expression-provider .pf-icon-home:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-import:before {
+.boxed-expression-provider .pf-icon-import:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-in-progress:before {
+.boxed-expression-provider .pf-icon-in-progress:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-info:before {
+.boxed-expression-provider .pf-icon-info:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-infrastructure:before {
+.boxed-expression-provider .pf-icon-infrastructure:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-integration:before {
+.boxed-expression-provider .pf-icon-integration:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-key:before {
+.boxed-expression-provider .pf-icon-key:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-locked:before {
+.boxed-expression-provider .pf-icon-locked:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-maintenance:before {
+.boxed-expression-provider .pf-icon-maintenance:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-memory:before {
+.boxed-expression-provider .pf-icon-memory:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-messages:before {
+.boxed-expression-provider .pf-icon-messages:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-middleware:before {
+.boxed-expression-provider .pf-icon-middleware:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-migration:before {
+.boxed-expression-provider .pf-icon-migration:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-module:before {
+.boxed-expression-provider .pf-icon-module:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-monitoring:before {
+.boxed-expression-provider .pf-icon-monitoring:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-namespaces:before {
+.boxed-expression-provider .pf-icon-namespaces:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-network:before {
+.boxed-expression-provider .pf-icon-network:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-new-process:before {
+.boxed-expression-provider .pf-icon-new-process:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-not-started:before {
+.boxed-expression-provider .pf-icon-not-started:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-off:before {
+.boxed-expression-provider .pf-icon-off:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-ok:before {
+.boxed-expression-provider .pf-icon-ok:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-on-running:before {
+.boxed-expression-provider .pf-icon-on-running:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-on:before {
+.boxed-expression-provider .pf-icon-on:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-openshift:before {
+.boxed-expression-provider .pf-icon-openshift:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-openstack:before {
+.boxed-expression-provider .pf-icon-openstack:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-optimize:before {
+.boxed-expression-provider .pf-icon-optimize:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-orders:before {
+.boxed-expression-provider .pf-icon-orders:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-os-image:before {
+.boxed-expression-provider .pf-icon-os-image:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-package:before {
+.boxed-expression-provider .pf-icon-package:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-panel-close:before {
+.boxed-expression-provider .pf-icon-panel-close:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-panel-open:before {
+.boxed-expression-provider .pf-icon-panel-open:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-paused:before {
+.boxed-expression-provider .pf-icon-paused:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-pending:before {
+.boxed-expression-provider .pf-icon-pending:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-pficon-dragdrop:before {
+.boxed-expression-provider .pf-icon-pficon-dragdrop:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-pficon-history:before {
+.boxed-expression-provider .pf-icon-pficon-history:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-pficon-network-range:before {
+.boxed-expression-provider .pf-icon-pficon-network-range:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-pficon-satellite:before {
+.boxed-expression-provider .pf-icon-pficon-satellite:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-pficon-sort-common-asc:before {
+.boxed-expression-provider .pf-icon-pficon-sort-common-asc:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-pficon-sort-common-desc:before {
+.boxed-expression-provider .pf-icon-pficon-sort-common-desc:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-pficon-template:before {
+.boxed-expression-provider .pf-icon-pficon-template:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-pficon-vcenter:before {
+.boxed-expression-provider .pf-icon-pficon-vcenter:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-plugged:before {
+.boxed-expression-provider .pf-icon-plugged:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-port:before {
+.boxed-expression-provider .pf-icon-port:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-print:before {
+.boxed-expression-provider .pf-icon-print:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-private:before {
+.boxed-expression-provider .pf-icon-private:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-process-automation:before {
+.boxed-expression-provider .pf-icon-process-automation:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-project:before {
+.boxed-expression-provider .pf-icon-project:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-rebalance:before {
+.boxed-expression-provider .pf-icon-rebalance:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-rebooting:before {
+.boxed-expression-provider .pf-icon-rebooting:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-regions:before {
+.boxed-expression-provider .pf-icon-regions:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-registry:before {
+.boxed-expression-provider .pf-icon-registry:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-remove2:before {
+.boxed-expression-provider .pf-icon-remove2:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-replicator:before {
+.boxed-expression-provider .pf-icon-replicator:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-repository:before {
+.boxed-expression-provider .pf-icon-repository:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-resource-pool:before {
+.boxed-expression-provider .pf-icon-resource-pool:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-resources-almost-empty:before {
+.boxed-expression-provider .pf-icon-resources-almost-empty:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-resources-almost-full:before {
+.boxed-expression-provider .pf-icon-resources-almost-full:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-resources-empty:before {
+.boxed-expression-provider .pf-icon-resources-empty:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-resources-full:before {
+.boxed-expression-provider .pf-icon-resources-full:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-running:before {
+.boxed-expression-provider .pf-icon-running:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-save:before {
+.boxed-expression-provider .pf-icon-save:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-screen:before {
+.boxed-expression-provider .pf-icon-screen:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-security:before {
+.boxed-expression-provider .pf-icon-security:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-server-group:before {
+.boxed-expression-provider .pf-icon-server-group:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-server:before {
+.boxed-expression-provider .pf-icon-server:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-service-catalog:before {
+.boxed-expression-provider .pf-icon-service-catalog:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-service:before {
+.boxed-expression-provider .pf-icon-service:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-services:before {
+.boxed-expression-provider .pf-icon-services:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-spinner:before {
+.boxed-expression-provider .pf-icon-spinner:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-spinner2:before {
+.boxed-expression-provider .pf-icon-spinner2:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-storage-domain:before {
+.boxed-expression-provider .pf-icon-storage-domain:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-tenant:before {
+.boxed-expression-provider .pf-icon-tenant:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-thumb-tack:before {
+.boxed-expression-provider .pf-icon-thumb-tack:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-topology:before {
+.boxed-expression-provider .pf-icon-topology:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-trend-down:before {
+.boxed-expression-provider .pf-icon-trend-down:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-trend-up:before {
+.boxed-expression-provider .pf-icon-trend-up:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-unknown:before {
+.boxed-expression-provider .pf-icon-unknown:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-unlocked:before {
+.boxed-expression-provider .pf-icon-unlocked:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-unplugged:before {
+.boxed-expression-provider .pf-icon-unplugged:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-user:before {
+.boxed-expression-provider .pf-icon-user:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-users:before {
+.boxed-expression-provider .pf-icon-users:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-virtual-machine:before {
+.boxed-expression-provider .pf-icon-virtual-machine:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-volume:before {
+.boxed-expression-provider .pf-icon-volume:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-warning-triangle:before {
+.boxed-expression-provider .pf-icon-warning-triangle:before {
   content: "";
 }
 
-.boxed-expression-editor .pf-icon-zone:before {
+.boxed-expression-provider .pf-icon-zone:before {
   content: "";
 }
