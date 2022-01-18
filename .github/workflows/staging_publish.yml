@@ -64,3 +64,5 @@ jobs:
       kogito_tooling_bot_token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
       gh_token: ${{ secrets.GITHUB_TOKEN }}
       quay_registry_password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
+      openshift_server: ${{ secrets.OPENSHIFT_SERVER }}
+      openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
