@@ -31,32 +31,55 @@ import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { useCallback, useState } from "react";
 import { JavaClass } from "./Model/JavaClass";
+import { JavaCodeCompletionService } from "./Service";
+import { JavaCodeCompletionClass } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
 
 export interface ImportJavaClassesWizardFirstStepProps {
-  /** List of the selected classes by user */
-  selectedJavaClasses: JavaClass[];
+  /** Service class which contains all API methods to dialog with Java Code Completion Extension*/
+  javaCodeCompletionService: JavaCodeCompletionService;
   /** Function to be called when adding a Java Class */
   onAddJavaClass: (fullClassName: string) => void;
   /** Function to be called when removing a Java Class */
   onRemoveJavaClass: (fullClassName: string) => void;
+  /** List of the selected classes by user */
+  selectedJavaClasses: JavaClass[];
 }
 
 export const ImportJavaClassesWizardFirstStep = ({
-  selectedJavaClasses,
+  javaCodeCompletionService,
   onAddJavaClass,
   onRemoveJavaClass,
+  selectedJavaClasses,
 }: ImportJavaClassesWizardFirstStepProps) => {
   const { i18n } = useImportJavaClassesWizardI18n();
   const [searchValue, setSearchValue] = useState("");
   const [retrievedJavaClassesNames, setRetrievedJavaClassesNames] = useState<string[]>([]);
 
-  const retrieveJavaClasses = useCallback((value: string) => {
-    setSearchValue(value);
-    const retrieved = window.envelope.lspGetClassServiceMocked(value);
-    if (retrieved) {
-      setRetrievedJavaClassesNames(retrieved);
-    }
-  }, []);
+  const retrieveJavaClasses = useCallback(
+    (value: string) => {
+      setSearchValue(value);
+      if (value.length > 2) {
+        try {
+          javaCodeCompletionService
+            .getClasses(value)
+            .then((javaCodeCompletionClasses: JavaCodeCompletionClass[]) => {
+              const retrievedClasses = javaCodeCompletionClasses.map((item) => item.query);
+              setRetrievedJavaClassesNames(retrievedClasses);
+            })
+            .catch((reason: any) => {
+              setRetrievedJavaClassesNames([]);
+              console.error(reason);
+            });
+        } catch (error) {
+          setRetrievedJavaClassesNames([]);
+          console.error(error);
+        }
+      } else {
+        setRetrievedJavaClassesNames([]);
+      }
+    },
+    [javaCodeCompletionService]
+  );
 
   const handleSearchValueChange = useCallback((value) => retrieveJavaClasses(value), [retrieveJavaClasses]);
 

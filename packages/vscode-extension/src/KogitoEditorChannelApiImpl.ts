@@ -34,9 +34,10 @@ import {
   JavaCodeCompletionApi,
   JavaCodeCompletionAccessor,
   JavaCodeCompletionClass,
+  JavaCodeCompletionChannelApi,
 } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
 
-export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
+export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaCodeCompletionChannelApi {
   private readonly decoder = new TextDecoder("utf-8");
 
   constructor(
@@ -137,13 +138,13 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     this.notificationsApi.kogitoNotifications_removeNotifications(path);
   }
 
-  public kogitoJavaCodeCompletion_getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {
+  public kogitoJavaCodeCompletion__getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {
     return this.javaCodeCompletionApi.getAccessors(fqcn, query);
   }
-  public kogitoJavaCodeCompletion_getClasses(query: string): Promise<JavaCodeCompletionClass[]> {
+  public kogitoJavaCodeCompletion__getClasses(query: string): Promise<JavaCodeCompletionClass[]> {
     return this.javaCodeCompletionApi.getClasses(query);
   }
-  public kogitoJavaCodeCompletion_isLanguageServerAvailable(): Promise<boolean> {
+  public kogitoJavaCodeCompletion__isLanguageServerAvailable(): Promise<boolean> {
     return this.javaCodeCompletionApi.isLanguageServerAvailable();
   }
 }

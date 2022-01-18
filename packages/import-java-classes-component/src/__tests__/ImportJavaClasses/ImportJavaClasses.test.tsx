@@ -278,7 +278,7 @@ describe("ImportJavaClasses component tests", () => {
   };
 
   const importJavaClassesGWTServiceMock: ImportJavaClassGWTService = {
-    handleOnWizardImportButtonClick: jest.fn((javaClasses) => {
+    importJavaClassesInDataTypeEditor: jest.fn((javaClasses) => {
       /* Do Nothing */
     }),
   };

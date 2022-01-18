@@ -24,8 +24,7 @@ import { JavaClass } from "./Model/JavaClass";
 import { JavaField } from "./Model/JavaField";
 import { DMNSimpleType } from "./Model/DMNSimpleType";
 import { getJavaClassSimpleName } from "./Model/JavaClassUtils";
-import { ImportJavaClassGWTService } from "./Model";
-import { JavaCodeCompletionService } from "./Service";
+import { ImportJavaClassGWTService, JavaCodeCompletionService } from "./Service";
 import { Button, Modal, ModalVariant, Tooltip, Wizard } from "@patternfly/react-core";
 
 export interface ImportJavaClassesWizardProps {
@@ -39,11 +38,11 @@ export const ImportJavaClassesWizard = ({
   importJavaClassesGWTService,
   javaCodeCompletionService,
 }: ImportJavaClassesWizardProps) => {
-  type ButtonStatus = "disable" | "enable" | "error" | "loading";
+  type ButtonStatus = "disable" | "enable" | "error";
   const { i18n } = useImportJavaClassesWizardI18n();
   const [javaClasses, setJavaClasses] = useState<JavaClass[]>([]);
   const [isOpen, setOpen] = useState(false);
-  const [buttonStatus, setButtonStatus] = useState<ButtonStatus>("loading");
+  const [buttonStatus, setButtonStatus] = useState<ButtonStatus>("disable");
 
   useEffect(() => {
     try {
@@ -66,14 +65,8 @@ export const ImportJavaClassesWizard = ({
     return "enable" !== buttonStatus;
   }, [buttonStatus]);
 
-  const isButtonLoading = useCallback(() => {
-    return "loading" === buttonStatus;
-  }, [buttonStatus]);
-
   const defineTooltipMessage = useCallback(() => {
-    if ("loading" === buttonStatus) {
-      return i18n.modalButton.disabledMessage;
-    } else if ("disable" === buttonStatus) {
+    if ("disable" === buttonStatus) {
       return i18n.modalButton.disabledMessage;
     } else if ("error" === buttonStatus) {
       return i18n.modalButton.errorMessage;
@@ -151,7 +144,7 @@ export const ImportJavaClassesWizard = ({
 
   const handleWizardSave = useCallback(() => {
     handleWizardClose();
-    importJavaClassesGWTService.handleOnWizardImportButtonClick(javaClasses);
+    importJavaClassesGWTService.importJavaClassesInDataTypeEditor(javaClasses);
   }, [javaClasses, handleWizardClose, importJavaClassesGWTService]);
 
   const steps = [
@@ -159,9 +152,10 @@ export const ImportJavaClassesWizard = ({
       canJumpTo: true,
       component: (
         <ImportJavaClassesWizardFirstStep
-          selectedJavaClasses={javaClasses}
+          javaCodeCompletionService={javaCodeCompletionService}
           onAddJavaClass={addJavaClass}
           onRemoveJavaClass={removeJavaClass}
+          selectedJavaClasses={javaClasses}
         />
       ),
       enableNext: isSecondStepActivatable(),
@@ -195,7 +189,6 @@ export const ImportJavaClassesWizard = ({
           <Button
             data-testid={"modal-wizard-button"}
             isAriaDisabled={isButtonDisabled()}
-            isLoading={isButtonLoading()}
             onClick={handleButtonClick}
             variant={"secondary"}
           >
@@ -206,7 +199,6 @@ export const ImportJavaClassesWizard = ({
         <Button
           data-testid={"modal-wizard-button"}
           isAriaDisabled={isButtonDisabled()}
-          isLoading={isButtonLoading()}
           onClick={handleButtonClick}
           variant={"secondary"}
         >
