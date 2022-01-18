@@ -27,6 +27,7 @@ digraph G {
   "chrome-extension-pack-kogito-kie-editors" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/kie-bc-editors" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kogito-tooling/stunner-editors" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kogito-tooling/cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/dashbuilder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/dashbuilder-images" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kogito-tooling/desktop" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -91,6 +92,7 @@ digraph G {
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tooling-core/chrome-extension" [ style = "solid", color = "black" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kogito-tooling/kie-bc-editors" [ style = "solid", color = "black" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kogito-tooling/stunner-editors" [ style = "dashed", color = "black" ];
+  "@kogito-tooling/cors-proxy-image" -> "@kogito-tooling/build-env" [ style = "dashed", color = "black" ];
   "@kogito-tooling/dashbuilder" -> "@kogito-tooling/build-env" [ style = "dashed", color = "black" ];
   "@kogito-tooling/dashbuilder-images" -> "@kogito-tooling/dashbuilder" [ style = "solid", color = "black" ];
   "@kogito-tooling/desktop" -> "@kogito-tooling/kie-bc-editors" [ style = "solid", color = "black" ];

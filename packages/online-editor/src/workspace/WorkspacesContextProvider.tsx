@@ -36,8 +36,7 @@ import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorServic
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
-
-const GIT_CORS_PROXY = "https://cors.isomorphic-git.org";
+import { DEFAULT_CORS_PROXY_URL, useEnv } from "../env/EnvContext";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_FILE_DEFAULT_NAME = "Untitled";
@@ -47,6 +46,7 @@ interface Props {
 }
 
 export function WorkspacesContextProvider(props: Props) {
+  const env = useEnv();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const storageService = useMemo(() => new StorageService(), []);
   const descriptorService = useMemo(() => new WorkspaceDescriptorService(storageService), [storageService]);
@@ -57,7 +57,18 @@ export function WorkspacesContextProvider(props: Props) {
     [storageService, descriptorService, fsService]
   );
 
-  const gitService = useMemo(() => new GitService(GIT_CORS_PROXY), []);
+  const gitService = useMemo(() => {
+    let envUrl = DEFAULT_CORS_PROXY_URL;
+    if (envUrl !== env.vars.CORS_PROXY_URL) {
+      try {
+        new URL(env.vars.CORS_PROXY_URL);
+        envUrl = env.vars.CORS_PROXY_URL;
+      } catch (e) {
+        console.error(`Invalid CORS_PROXY_URL: ${env.vars.CORS_PROXY_URL}`, e);
+      }
+    }
+    return new GitService(envUrl);
+  }, [env.vars.CORS_PROXY_URL]);
 
   const getAbsolutePath = useCallback(
     (args: { workspaceId: string; relativePath?: string }) => service.getAbsolutePath(args),
