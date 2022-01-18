@@ -14,32 +14,24 @@
  * limitations under the License.
  */
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { decoder, useWorkspacesDmnInputs, WorkspaceFile } from "../";
+import { useCallback, useEffect, useState } from "react";
+import { decoder, useWorkspaces, useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../";
 import { WorkspaceFileEvents } from "./WorkspaceFileHooks";
-import { WorkspaceDmnRunnerDataService } from "../services/WorkspaceDmnRunnerDataService";
 import { InputRow } from "../../editor/DmnRunner/DmnRunnerContext";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
-import { useParams } from "react-router";
 
-export function useWorkspaceDmnRunnerInput(
+export function useWorkspaceDmnRunnerInputs(
   workspaceId: string | undefined,
   relativePath: string | undefined,
   workspaceFile: WorkspaceFile
 ): [Array<InputRow>, (value: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => void] {
-  const workspaces = useWorkspacesDmnInputs();
+  const workspaces = useWorkspaces();
+  const { workspaceDmnRunnerInputs } = useWorkspacesDmnRunnerInputs();
   const [inputRows, setInputRows] = useState<Array<InputRow>>([{}]);
-
-  const dmnRunnerInput = useMemo(() => {
-    if (workspaceFile.extension !== "dmn") {
-      return;
-    }
-    return new WorkspaceDmnRunnerDataService(workspaces.storageService);
-  }, [workspaceFile.extension, workspaces.storageService]);
 
   const refresh = useCallback(
     async (workspaceId: string, relativePath: string, canceled: Holder<boolean>) => {
-      dmnRunnerInput?.getDmnRunnerData(workspaceFile).then((workspaceFile) => {
+      workspaceDmnRunnerInputs?.getDmnRunnerData(workspaceFile).then((workspaceFile) => {
         if (canceled.get()) {
           return;
         }
@@ -53,7 +45,7 @@ export function useWorkspaceDmnRunnerInput(
         });
       });
     },
-    [dmnRunnerInput, workspaceFile]
+    [workspaceDmnRunnerInputs, workspaceFile]
   );
 
   useCancelableEffect(
@@ -89,13 +81,13 @@ export function useWorkspaceDmnRunnerInput(
               0,
               data.newRelativePath.lastIndexOf(".")
             );
-            dmnRunnerInput?.renameDmnRunnerData(workspaceFile, newRelativePathWithoutExtension);
+            workspaceDmnRunnerInputs?.renameDmnRunnerData(workspaceFile, newRelativePathWithoutExtension);
           }
           if (data.type === "DELETE") {
             if (canceled.get()) {
               return;
             }
-            dmnRunnerInput?.delete(workspaceId);
+            workspaceDmnRunnerInputs?.delete(workspaceId);
           }
         };
 
@@ -104,45 +96,48 @@ export function useWorkspaceDmnRunnerInput(
           broadcastChannel.close();
         };
       },
-      [relativePath, workspaceId, workspaces, dmnRunnerInput, workspaceFile]
+      [relativePath, workspaceId, workspaces, workspaceDmnRunnerInputs, workspaceFile]
     )
   );
 
   const getInputRows = useCallback(() => {
-    if (!workspaceFile || !dmnRunnerInput) {
+    if (!workspaceFile || !workspaceDmnRunnerInputs) {
       return Promise.resolve([{}]);
     }
-    return dmnRunnerInput.getDmnRunnerData(workspaceFile).then((data) => {
+    return workspaceDmnRunnerInputs.getDmnRunnerData(workspaceFile).then((data) => {
       if (!data) {
         return [{}];
       }
       return data.getFileContents().then((content) => JSON.parse(decoder.decode(content)) as Array<object>);
     });
-  }, [dmnRunnerInput, workspaceFile]);
+  }, [workspaceDmnRunnerInputs, workspaceFile]);
 
   const updateInputRows = useCallback(
     async (newInputRows: Array<object> | ((previous: Array<object>) => Array<object>)) => {
-      if (!workspaceFile || !dmnRunnerInput) {
+      if (!workspaceFile || !workspaceDmnRunnerInputs) {
         return;
       }
       if (typeof newInputRows === "function") {
-        const data = await dmnRunnerInput.getDmnRunnerData(workspaceFile);
+        const data = await workspaceDmnRunnerInputs.getDmnRunnerData(workspaceFile);
         const currentInputRows = await data
           ?.getFileContents()
           .then((content) => JSON.parse(decoder.decode(content)) as Array<object>);
-        // change to updateDmnRunnerInput;
-        await dmnRunnerInput.createOrOverwriteDmnRunnerData(workspaceFile, newInputRows(currentInputRows ?? [{}]));
+        await workspaceDmnRunnerInputs.createOrOverwriteDmnRunnerData(
+          workspaceFile,
+          newInputRows(currentInputRows ?? [{}])
+        );
       } else {
-        await dmnRunnerInput.createOrOverwriteDmnRunnerData(workspaceFile, newInputRows);
+        // Change to updateDmnRunnerInput;
+        await workspaceDmnRunnerInputs.createOrOverwriteDmnRunnerData(workspaceFile, newInputRows);
       }
     },
-    [dmnRunnerInput, workspaceFile]
+    [workspaceDmnRunnerInputs, workspaceFile]
   );
 
   useEffect(() => {
     let runEffect = true;
     getInputRows().then((inputRows) => {
-      // avoid setState on unmounted component
+      // Avoid setState on unmounted component
       if (!runEffect) {
         return;
       }

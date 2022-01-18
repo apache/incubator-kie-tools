@@ -37,7 +37,7 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { useWorkspaces, WorkspaceFile } from "../workspace";
+import { useWorkspaces, useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../workspace";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
@@ -266,6 +266,7 @@ export function WorkspaceLoadingCard() {
 
 export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
   const workspaces = useWorkspaces();
+  const { workspaceDmnRunnerInputs } = useWorkspacesDmnRunnerInputs();
   return (
     <Card isSelected={false} isSelectable={true} isHoverable={true} isCompact={true}>
       <CardHeader>
@@ -286,7 +287,10 @@ export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
         </CardHeaderMain>
         <CardActions>
           <DeleteDropdownWithConfirmation
-            onDelete={() => workspaces.deleteWorkspace({ workspaceId: props.workspace.workspaceId })}
+            onDelete={() => {
+              workspaces.deleteWorkspace({ workspaceId: props.workspace.workspaceId });
+              workspaceDmnRunnerInputs.delete(props.workspace.workspaceId);
+            }}
             item={
               <>
                 Delete <b>{`"${props.workspace.name}"`}</b>
@@ -306,6 +310,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
   const workspaces = useWorkspaces();
   const [isHovered, setHovered] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceId);
+  const { workspaceDmnRunnerInputs } = useWorkspacesDmnRunnerInputs();
 
   const editableFiles = useMemo(() => {
     return (
@@ -377,7 +382,10 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                 <CardActions>
                   {isHovered && (
                     <DeleteDropdownWithConfirmation
-                      onDelete={() => workspaces.deleteWorkspace({ workspaceId: props.workspaceId })}
+                      onDelete={() => {
+                        workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
+                        workspaceDmnRunnerInputs.delete(props.workspaceId);
+                      }}
                       item={
                         <Flex flexWrap={{ default: "nowrap" }}>
                           <FlexItem>
@@ -443,7 +451,10 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                 <CardActions>
                   {isHovered && (
                     <DeleteDropdownWithConfirmation
-                      onDelete={() => workspaces.deleteWorkspace({ workspaceId: props.workspaceId })}
+                      onDelete={() => {
+                        workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
+                        workspaceDmnRunnerInputs.delete(props.workspaceId);
+                      }}
                       item={
                         <>
                           Delete <b>{`"${workspacePromise.data?.descriptor.name}"`}</b>

@@ -15,12 +15,21 @@
  */
 
 import * as React from "react";
-import { WorkspacesContextProvider } from "./WorkspacesContextProvider";
+import { useMemo } from "react";
 import { WorkspacesDmnInputsContext } from "./WorkspacesDmnInputsContext";
-import { useParams } from "react-router";
+import { WorkspaceDmnRunnerInputsService } from "../services/WorkspaceDmnRunnerInputsService";
+import { useWorkspaces } from "./WorkspacesContext";
 
 export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildren<{}>) {
-  const params = useParams();
+  const workspaces = useWorkspaces();
 
-  return <WorkspacesContextProvider Context={WorkspacesDmnInputsContext}>{props.children}</WorkspacesContextProvider>;
+  const workspaceDmnRunnerInputs = useMemo(() => {
+    return new WorkspaceDmnRunnerInputsService(workspaces.storageService);
+  }, [workspaces.storageService]);
+
+  return (
+    <WorkspacesDmnInputsContext.Provider value={{ workspaceDmnRunnerInputs }}>
+      {props.children}
+    </WorkspacesDmnInputsContext.Provider>
+  );
 }

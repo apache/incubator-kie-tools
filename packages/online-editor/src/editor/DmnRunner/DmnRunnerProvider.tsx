@@ -32,7 +32,7 @@ import { useRoutes } from "../../navigation/Hooks";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { DmnSchema } from "@kogito-tooling/form/dist/dmn";
-import { useWorkspaceDmnRunnerInput } from "../../workspace/hooks/WorkspaceDmnRunnerInput";
+import { useWorkspaceDmnRunnerInputs } from "../../workspace/hooks/WorkspaceDmnRunnerInput";
 import { useSettings } from "../../settings/SettingsContext";
 
 interface Props {
@@ -50,7 +50,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const workspaces = useWorkspaces();
   const settings = useSettings();
-  const [inputRows, updateInputRows] = useWorkspaceDmnRunnerInput(
+  const [inputRows, updateInputRows] = useWorkspaceDmnRunnerInputs(
     props.workspaceId,
     props.fileRelativePath,
     props.workspaceFile

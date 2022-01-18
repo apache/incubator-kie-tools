@@ -18,7 +18,7 @@ import { FsCache } from "./FsCache";
 import { encoder, WorkspaceFile } from "../contexts";
 import { StorageFile, StorageService } from "./StorageService";
 
-export class WorkspaceDmnRunnerDataService {
+export class WorkspaceDmnRunnerInputsService {
   constructor(private readonly storageService: StorageService, private readonly fsCache = new FsCache()) {}
 
   public async getWorkspaceDmnRunnerDataFs(workspaceId: string) {
@@ -74,7 +74,7 @@ export class WorkspaceDmnRunnerDataService {
   }
 
   public async delete(workspaceId: string) {
-    indexedDB.deleteDatabase(WorkspaceDmnRunnerDataService.getDmnRunnerDataStoreName(workspaceId));
+    indexedDB.deleteDatabase(WorkspaceDmnRunnerInputsService.getDmnRunnerDataStoreName(workspaceId));
   }
 
   private static getDmnRunnerDataStoreName(workspaceId: string) {

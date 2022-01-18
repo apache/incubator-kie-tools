@@ -15,10 +15,14 @@
  */
 
 import { createContext, useContext } from "react";
-import { WorkspacesContextType } from "./WorkspacesContext";
+import { WorkspaceDmnRunnerInputsService } from "../services/WorkspaceDmnRunnerInputsService";
 
-export const WorkspacesDmnInputsContext = createContext<WorkspacesContextType>({} as any);
+interface WorkspacesDmnInputsType {
+  workspaceDmnRunnerInputs: WorkspaceDmnRunnerInputsService;
+}
 
-export function useWorkspacesDmnInputs(): WorkspacesContextType {
+export const WorkspacesDmnInputsContext = createContext<WorkspacesDmnInputsType>({} as any);
+
+export function useWorkspacesDmnRunnerInputs(): WorkspacesDmnInputsType {
   return useContext(WorkspacesDmnInputsContext);
 }
