@@ -26,12 +26,15 @@ import java.util.stream.Stream;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasManageableControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -40,6 +43,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -161,6 +165,24 @@ public class ShapeUtils {
             final double radius = getRadiusForBoundingBox(boundingBoxWidth, boundingBoxHeight);
             ((HasRadius) view).setRadius(radius);
         }
+    }
+
+    public static ControlPoint[] getManageableControlPoints(final AbstractCanvasHandler canvasHandler,
+                                                            final Edge<? extends ViewConnector<?>, Node> connector) {
+        Shape shape = canvasHandler.getCanvas().getShape(connector.getUUID());
+        if (shape.getShapeView() instanceof HasManageableControlPoints) {
+            ControlPoint[] controlPoints = ((HasManageableControlPoints<?>) shape.getShapeView()).getManageableControlPoints();
+            return controlPoints;
+        }
+        return new ControlPoint[0];
+    }
+
+    public static CanvasCommand<AbstractCanvasHandler> buildUpdateControlPointsCommand(final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
+                                                                                       final AbstractCanvasHandler canvasHandler,
+                                                                                       final Edge<? extends ViewConnector<?>, Node> connector) {
+        ControlPoint[] controlPoints = ShapeUtils.getManageableControlPoints(canvasHandler, connector);
+        connector.getContent().setControlPoints(controlPoints);
+        return commandFactory.updateControlPointPosition(connector, controlPoints);
     }
 
     /**

@@ -42,6 +42,8 @@ import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
+import static org.kie.workbench.common.stunner.core.client.util.ShapeUtils.buildUpdateControlPointsCommand;
+
 @Dependent
 @Default
 public class EdgeBuilderControlImpl
@@ -74,7 +76,7 @@ public class EdgeBuilderControlImpl
             final CommandResult<CanvasViolation> cr1 = getCommandManager().allow(wch,
                                                                                  commandFactory.setSourceNode(inNode,
                                                                                                               edge,
-                                                                                                              MagnetConnection.Builder.forTarget(inNode, outNode)));
+                                                                                                              MagnetConnection.Builder.forSourceAuto(inNode, outNode)));
             allowsSourceConn = isAllowed(cr1);
         }
         boolean allowsTargetConn = true;
@@ -82,7 +84,7 @@ public class EdgeBuilderControlImpl
             final CommandResult<CanvasViolation> cr2 = getCommandManager().allow(wch,
                                                                                  commandFactory.setTargetNode(outNode,
                                                                                                               edge,
-                                                                                                              MagnetConnection.Builder.forTarget(outNode, inNode)));
+                                                                                                              MagnetConnection.Builder.forTargetAuto(outNode, inNode)));
             allowsTargetConn = isAllowed(cr2);
         }
         return allowsSourceConn && allowsTargetConn;
@@ -106,12 +108,13 @@ public class EdgeBuilderControlImpl
         final CompositeCommand.Builder commandBuilder = new CompositeCommand.Builder()
                 .addCommand(commandFactory.addConnector(inNode,
                                                         edge,
-                                                        MagnetConnection.Builder.forTarget(inNode, outNode),
+                                                        MagnetConnection.Builder.forSourceAuto(inNode, outNode),
                                                         ssid));
         if (null != outNode) {
             commandBuilder.addCommand(commandFactory.setTargetNode(outNode,
                                                                    edge,
-                                                                   MagnetConnection.Builder.forTarget(outNode, inNode)));
+                                                                   MagnetConnection.Builder.forTargetAuto(outNode, inNode)));
+            commandBuilder.addCommand(buildUpdateControlPointsCommand(commandFactory, canvasHandler, edge));
         }
         final CommandResult<CanvasViolation> results = getCommandManager().execute(wch,
                                                                                    commandBuilder.build());

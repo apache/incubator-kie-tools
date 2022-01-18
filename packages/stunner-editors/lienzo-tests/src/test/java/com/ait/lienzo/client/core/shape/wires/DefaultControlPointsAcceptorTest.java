@@ -52,15 +52,15 @@ public class DefaultControlPointsAcceptorTest {
         assertTrue(result);
         verify(connector, times(1)).addControlPoint(eq(1d), eq(3d), eq(0));
         verify(connector, never()).destroyControlPoints(any(int[].class));
-        verify(connector, never()).moveControlPoint(anyInt(), any(Point2D.class));
+        verify(connector, never()).setPoints(any(Point2DArray.class));
     }
 
     @Test
     public void testMove() {
         Point2DArray points = Point2DArray.fromArrayOfDouble(0d, 1d);
-        boolean result = tested.move(connector, points);
+        boolean result = tested.update(connector, points);
         assertTrue(result);
-        verify(connector, times(1)).moveControlPoint(eq(0), eq(new Point2D(0d, 1d)));
+        verify(connector, times(1)).setPoints(eq(points));
         verify(connector, never()).addControlPoint(anyDouble(), anyDouble(), anyInt());
         verify(connector, never()).destroyControlPoints(any(int[].class));
     }
@@ -71,6 +71,6 @@ public class DefaultControlPointsAcceptorTest {
         assertTrue(result);
         verify(connector, times(1)).destroyControlPoints(eq(new int[]{0}));
         verify(connector, never()).addControlPoint(anyDouble(), anyDouble(), anyInt());
-        verify(connector, never()).moveControlPoint(anyInt(), any(Point2D.class));
+        verify(connector, never()).setPoints(any(Point2DArray.class));
     }
 }

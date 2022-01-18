@@ -57,6 +57,19 @@ public class SequenceFlowPropertyWriter extends PropertyWriter {
         CustomElement.autoConnectionTarget.of(sequenceFlow).set(c.isAuto());
     }
 
+    public void setInferredPoints(final ControlPoint[] controlPoints) {
+        String inferredPoints = "";
+        for (int i = 0; i < controlPoints.length; i++) {
+            if (controlPoints[i].isInferred()) {
+                inferredPoints += controlPoints[i].getLocation();
+            }
+        }
+
+        if (!inferredPoints.isEmpty()) {
+            CustomElement.inferredPoints.of(sequenceFlow).set(inferredPoints);
+        }
+    }
+
     public void setConnection(ViewConnector<? extends BPMNViewDefinition> connector) {
         Connection sourceConnection = connector.getSourceConnection().get();
         Connection targetConnection = connector.getTargetConnection().get();
@@ -65,6 +78,9 @@ public class SequenceFlowPropertyWriter extends PropertyWriter {
         setAutoConnectionTarget(targetConnection);
 
         ControlPoint[] controlPoints = connector.getControlPoints();
+
+        setInferredPoints(controlPoints);
+
         bpmnEdge = PropertyWriterUtils.createBPMNEdge(source, target, sourceConnection, controlPoints, targetConnection);
         bpmnEdge.setBpmnElement(sequenceFlow);
     }

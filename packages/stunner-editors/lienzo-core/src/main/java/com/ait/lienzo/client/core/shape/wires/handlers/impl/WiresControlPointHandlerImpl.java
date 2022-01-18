@@ -32,7 +32,6 @@ public class WiresControlPointHandlerImpl implements WiresControlPointHandler {
 
     private final WiresConnector m_connector;
     private final WiresManager m_manager;
-    private int cpIndexInitial;
 
     public WiresControlPointHandlerImpl(final WiresConnector connector,
                                         final WiresManager wiresManager) {
@@ -58,7 +57,6 @@ public class WiresControlPointHandlerImpl implements WiresControlPointHandler {
     @Override
     public void onNodeDragStart(NodeDragStartEvent event) {
         final IPrimitive<?> cp = (IPrimitive<?>) event.getSource();
-        cpIndexInitial = m_connector.getControlPointIndex(cp.getX(), cp.getY());
     }
 
     @Override
@@ -77,10 +75,7 @@ public class WiresControlPointHandlerImpl implements WiresControlPointHandler {
 
     @Override
     public void onNodeDragEnd(NodeDragEndEvent event) {
-        final IPrimitive<?> primitive = (IPrimitive<?>) event.getSource();
-        if (!getControl().moveControlPoint(cpIndexInitial,
-                                           new Point2D(primitive.getX(),
-                                                       primitive.getY()))) {
+        if (!getControl().updateControlPoints(m_connector.getControlPoints())) {
             event.getDragContext().reset();
             getControl().reset();
         }

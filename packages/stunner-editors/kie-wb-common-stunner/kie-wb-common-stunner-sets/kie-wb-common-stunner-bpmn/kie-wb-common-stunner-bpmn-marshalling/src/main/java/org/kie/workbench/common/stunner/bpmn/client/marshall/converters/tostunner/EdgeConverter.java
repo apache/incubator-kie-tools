@@ -39,6 +39,7 @@ public interface EdgeConverter<T extends BaseElement> {
                         nodes.get(p.getSourceId()),
                         p.getSourceConnection(),
                         p.getControlPoints(),
+                        p.getInferredPoints(),
                         nodes.get(p.getTargetId()),
                         p.getTargetConnection(),
                         p))

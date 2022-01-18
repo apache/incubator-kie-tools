@@ -53,6 +53,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 import static org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils.lookup;
+import static org.kie.workbench.common.stunner.core.client.util.ShapeUtils.buildUpdateControlPointsCommand;
 
 @Dependent
 @Default
@@ -127,7 +128,10 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
                         .deferCommand(() -> setEdgeTarget(commandFactory,
                                                           connector,
                                                           targetNode,
-                                                          sourceNode));
+                                                          sourceNode))
+                        .deferCommand(() -> buildUpdateControlPointsCommand(commandFactory,
+                                                                            canvasHandler,
+                                                                            connector));
 
         final CommandResult result =
                 sessionCommandManager.execute(canvasHandler,
@@ -138,7 +142,6 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
                                                        canvasHandler,
                                                        targetNode.getUUID());
             this.inlineTextEditEventEvent.fire(new InlineTextEditEvent(targetNode.getUUID()));
-
         }
     }
 
@@ -171,18 +174,18 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
                                                          final Edge<? extends ViewConnector<?>, Node> connector) {
         return commandFactory.addConnector(sourceNode,
                                            connector,
-                                           buildConnectionBetween(sourceNode, targetNode),
+                                           buildSourceConnectionBetween(sourceNode, targetNode),
                                            canvasHandler.getDiagram().getMetadata().getShapeSetId());
     }
 
-    protected MagnetConnection buildConnectionBetween(final Node<View<?>, Edge> sourceNode,
-                                                      final Node<View<?>, Edge> targetNode) {
-        return MagnetConnection.Builder.forTarget(sourceNode, targetNode);
+    protected MagnetConnection buildSourceConnectionBetween(final Node<View<?>, Edge> sourceNode,
+                                                            final Node<View<?>, Edge> targetNode) {
+        return MagnetConnection.Builder.forSourceAuto(sourceNode, targetNode);
     }
 
-    protected MagnetConnection buildCenterConnectionBetween(final Node<View<?>, Edge> sourceNode,
-                                                            final Node<View<?>, Edge> targetNode) {
-        return MagnetConnection.Builder.atCenter(sourceNode);
+    protected MagnetConnection buildTargetBetween(final Node<View<?>, Edge> sourceNode,
+                                                  final Node<View<?>, Edge> targetNode) {
+        return MagnetConnection.Builder.forTargetAuto(sourceNode, targetNode);
     }
 
     private CanvasCommand<AbstractCanvasHandler> setEdgeTarget(final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
@@ -191,7 +194,7 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
                                                                final Node<View<?>, Edge> sourceNode) {
         return commandFactory.setTargetNode(targetNode,
                                             connector,
-                                            buildConnectionBetween(targetNode, sourceNode));
+                                            buildTargetBetween(targetNode, sourceNode));
     }
 
     private CanvasCommand<AbstractCanvasHandler> addNode(final CanvasHandler canvasHandler,

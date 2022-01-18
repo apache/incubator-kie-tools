@@ -264,8 +264,8 @@ public class WiresConnectorHandlerImplTest {
         when(moveEvent.getX()).thenReturn(321);
         when(moveEvent.getY()).thenReturn(435);
         tested.onNodeMouseMove(moveEvent);
-        verify(mouseDownTimer, times(1)).run();
-        verify(mouseDownTimer, never()).cancel();
+        verify(mouseDownTimer, times(1)).cancel();
+        verify(mouseDownTimer, never()).run();
         verify(mouseDownTimer, never()).schedule(anyInt());
         verify(controlPointBuilder, times(1)).moveControlPointTo(eq(321), eq(435));
     }

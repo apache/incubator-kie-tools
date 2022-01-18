@@ -50,7 +50,6 @@ import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.ScratchPad;
-import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -65,7 +64,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
@@ -301,58 +299,20 @@ public class WiresConnectorControlImplTest {
     }
 
     @Test
-    public void testMoveControlPoint() {
+    public void testUpdateControlPoints() {
+        wiresManager.setControlPointsAcceptor(IControlPointsAcceptor.ALL);
         Point2D p0 = new Point2D(1, 50);
         Point2D p1 = new Point2D(51, 50);
         Point2D p2 = new Point2D(101, 50);
         Point2D p3 = new Point2D(151, 50);
         Point2D p4 = new Point2D(201, 50);
-        boolean moved1 = tested.moveControlPoint(0, p0);
-        boolean moved2 = tested.moveControlPoint(1, p1);
-        boolean moved3 = tested.moveControlPoint(2, p2);
-        boolean moved4 = tested.moveControlPoint(3, p3);
-        boolean moved5 = tested.moveControlPoint(4, p4);
-        assertTrue(moved1);
-        assertTrue(moved2);
-        assertTrue(moved3);
-        assertTrue(moved4);
-        assertTrue(moved5);
-        assertEquals(CP0_INIT, CP0);
-        assertEquals(p1, connector.getControlPoints().get(1));
-        assertEquals(p2, connector.getControlPoints().get(2));
-        assertEquals(p3, connector.getControlPoints().get(3));
-        assertEquals(CP4_INIT, connector.getControlPoints().get(4));
-        verify(connector, never()).moveControlPoint(eq(1), eq(p0));
-        verify(connector, atLeastOnce()).moveControlPoint(eq(1), eq(p1));
-        verify(connector, atLeastOnce()).moveControlPoint(eq(2), eq(p2));
-        verify(connector, atLeastOnce()).moveControlPoint(eq(3), eq(p3));
-        verify(connector, never()).moveControlPoint(eq(1), eq(p4));
-    }
-
-    @Test
-    public void testMoveControlPointFailed() {
-        wiresManager.setControlPointsAcceptor(IControlPointsAcceptor.NONE);
-        Point2D p0 = new Point2D(1, 50);
-        Point2D p1 = new Point2D(51, 50);
-        Point2D p2 = new Point2D(101, 50);
-        Point2D p3 = new Point2D(151, 50);
-        Point2D p4 = new Point2D(201, 50);
-        boolean moved1 = tested.moveControlPoint(0, p0);
-        boolean moved2 = tested.moveControlPoint(1, p1);
-        boolean moved3 = tested.moveControlPoint(2, p2);
-        boolean moved4 = tested.moveControlPoint(3, p3);
-        boolean moved5 = tested.moveControlPoint(4, p4);
-        assertTrue(moved1);
-        assertFalse(moved2);
-        assertFalse(moved3);
-        assertFalse(moved4);
-        assertTrue(moved5);
-        assertEquals(CP0_INIT, CP0);
-        assertEquals(CP1_INIT, CP1);
-        assertEquals(CP2_INIT, CP2);
-        assertEquals(CP3_INIT, CP3);
-        assertEquals(CP4_INIT, CP4);
-        verify(connector, never()).moveControlPoint(anyInt(), any(Point2D.class));
+        Point2DArray points = new Point2DArray();
+        points.push(p0);
+        points.push(p1);
+        points.push(p2);
+        points.push(p3);
+        points.push(p4);
+        assertTrue(tested.updateControlPoints(points));
     }
 
     @Test
@@ -432,8 +392,7 @@ public class WiresConnectorControlImplTest {
         wiresManager.setControlPointsAcceptor(acceptor);
         ArgumentCaptor<Point2DArray> pointCaptor = ArgumentCaptor.forClass(Point2DArray.class);
         tested.execute();
-        verify(acceptor, times(1)).move(eq(connector),
-                                        pointCaptor.capture());
+        verify(acceptor, times(1)).update(eq(connector), pointCaptor.capture());
         Point2DArray points = pointCaptor.getValue();
         assertEquals(CP0, points.get(0));
         assertEquals(CP1, points.get(1));
@@ -494,9 +453,6 @@ public class WiresConnectorControlImplTest {
         assertEquals(DRAG_BOUNDS, pointHandles.getHandle(2).getControl().getDragBounds());
         assertEquals(DRAG_BOUNDS, pointHandles.getHandle(3).getControl().getDragBounds());
         assertTrue(pointHandles.getHandle(0).getControl().getDragConstraints() instanceof WiresConnectorControlImpl.ConnectionHandler);
-        assertTrue(pointHandles.getHandle(1).getControl().getDragConstraints() instanceof DefaultDragConstraintEnforcer);
-        assertTrue(pointHandles.getHandle(2).getControl().getDragConstraints() instanceof DefaultDragConstraintEnforcer);
-        assertTrue(pointHandles.getHandle(3).getControl().getDragConstraints() instanceof DefaultDragConstraintEnforcer);
         assertTrue(pointHandles.getHandle(4).getControl().getDragConstraints() instanceof WiresConnectorControlImpl.ConnectionHandler);
     }
 
@@ -504,8 +460,8 @@ public class WiresConnectorControlImplTest {
         when(dragContext.getNode()).thenReturn(shape);
         verify(shape, times(1)).addNodeMouseClickHandler(any(NodeMouseClickHandler.class));
         verify(shape, times(1)).addNodeMouseDoubleClickHandler(any(NodeMouseDoubleClickHandler.class));
-        verify(shape, times(2)).addNodeDragStartHandler(nodeDragStartHandlerCaptor.capture());
-        verify(shape, times(2)).addNodeDragEndHandler(nodeDragEndHandlerCaptor.capture());
+        verify(shape, times(3)).addNodeDragStartHandler(nodeDragStartHandlerCaptor.capture());
+        verify(shape, times(3)).addNodeDragEndHandler(nodeDragEndHandlerCaptor.capture());
         verify(shape, times(1)).addNodeDragMoveHandler(any(NodeDragMoveHandler.class));
         verify(pointHandleDecorator, times(1)).decorate(shape, ShapeState.VALID);
 

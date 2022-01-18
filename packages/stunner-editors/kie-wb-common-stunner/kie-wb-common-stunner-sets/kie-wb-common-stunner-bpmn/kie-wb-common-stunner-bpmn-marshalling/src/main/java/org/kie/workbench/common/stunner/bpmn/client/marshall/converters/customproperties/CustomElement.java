@@ -69,6 +69,7 @@ public class CustomElement<T> {
     public static final MetadataTypeDefinition<Boolean> isCase = new BooleanElement("case", Boolean.FALSE);
     public static final MetadataTypeDefinition<String> customActivationCondition = new StringElement("customActivationCondition", "");
     public static final MetadataTypeDefinition<Boolean> abortParent = new BooleanElement("customAbortParent", true);
+    public static final MetadataTypeDefinition<String> inferredPoints = new StringElement("inferredPoints", "");
 
     private final ElementDefinition<T> elementDefinition;
     private final BaseElement element;

@@ -34,5 +34,7 @@ public interface EdgePropertyReader extends PropertyReader {
 
     List<Point2D> getControlPoints();
 
+    List<Point2D> getInferredPoints();
+
     DefinitionResolver getDefinitionResolver();
 }

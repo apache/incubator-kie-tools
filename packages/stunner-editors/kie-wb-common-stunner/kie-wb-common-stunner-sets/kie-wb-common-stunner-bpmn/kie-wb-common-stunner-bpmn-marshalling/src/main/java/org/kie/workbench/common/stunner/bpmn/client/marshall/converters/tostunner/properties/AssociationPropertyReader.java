@@ -92,6 +92,11 @@ public class AssociationPropertyReader extends BasePropertyReader implements Edg
     }
 
     @Override
+    public List<Point2D> getInferredPoints() {
+        return PropertyReaderUtils.getInferredPoints(element);
+    }
+
+    @Override
     public DefinitionResolver getDefinitionResolver() {
         return definitionResolver;
     }

@@ -23,7 +23,9 @@ import java.util.function.Consumer;
 import java.util.stream.StreamSupport;
 
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
+import com.ait.lienzo.client.core.shape.AbstractOffsetMultiPointShape;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
+import com.ait.lienzo.client.core.shape.PolyMorphicLine;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.MagnetManager;
@@ -103,6 +105,7 @@ public class WiresConnectorView<T> extends WiresConnector
 
     @Override
     public ControlPoint[] getManageableControlPoints() {
+        refreshControlPoints();
         final Point2DArray controlPoints = getControlPoints();
         if (null != controlPoints && controlPoints.size() > 2) {
             // Notice first and last CP from lienzo's connector are discarded,
@@ -125,19 +128,41 @@ public class WiresConnectorView<T> extends WiresConnector
         addControlPoint(controlPoint.getLocation().getX(),
                         controlPoint.getLocation().getY()
                 , index + 1);
+
+        if (getLine() instanceof PolyMorphicLine) {
+            PolyMorphicLine orthogonalLine = (PolyMorphicLine) getLine();
+            orthogonalLine.addManagedPoint(controlPoint.getLocation().getX(),
+                                           controlPoint.getLocation().getY(),
+                                           controlPoint.isInferred());
+        }
+
         refreshControlPoints();
         return cast();
     }
 
     @Override
     public T updateControlPoints(final ControlPoint[] controlPoints) {
+        PolyMorphicLine orthogonalLine = null;
+        if (getLine() instanceof PolyMorphicLine) {
+            orthogonalLine = (PolyMorphicLine) getLine();
+        }
+
+        Point2DArray actual = getControlPoints();
+        Point2DArray array = new Point2DArray();
+        array.push(actual.get(0));
         for (int i = 0; i < controlPoints.length; i++) {
             final Point2D location = controlPoints[i].getLocation();
             final com.ait.lienzo.client.core.types.Point2D lienzoPoint =
                     new com.ait.lienzo.client.core.types.Point2D(location.getX(),
                                                                  location.getY());
-            moveControlPoint(i + 1, lienzoPoint);
+            array.push(lienzoPoint);
+
+            if (null != orthogonalLine) {
+                controlPoints[i].setInferred(orthogonalLine.isInferred(lienzoPoint));
+            }
         }
+        array.push(actual.get(actual.size() - 1));
+        setPoints(array);
         refreshControlPoints();
         return cast();
     }
@@ -148,11 +173,16 @@ public class WiresConnectorView<T> extends WiresConnector
         return cast();
     }
 
+    @SuppressWarnings("all")
     private void refreshControlPoints() {
-        getLine().refresh();
+        if (getLine() instanceof AbstractOffsetMultiPointShape) {
+            ((AbstractOffsetMultiPointShape) getLine()).parse();
+        }
         if (null != getGroup().getLayer()) {
             getGroup().getLayer().batch();
         }
+
+        getLine().refresh();
     }
 
     @SuppressWarnings("unchecked")

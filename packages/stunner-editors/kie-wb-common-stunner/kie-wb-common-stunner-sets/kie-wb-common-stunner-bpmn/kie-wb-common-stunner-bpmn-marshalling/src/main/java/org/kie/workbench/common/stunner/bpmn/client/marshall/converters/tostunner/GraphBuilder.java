@@ -213,6 +213,7 @@ public class GraphBuilder {
             Node source,
             Connection sourceConnection,
             List<Point2D> controlPoints,
+            List<Point2D> inferredPoints,
             Node target,
             Connection targetConnection) {
         final DeferredCompositeCommand.Builder<GraphCommandExecutionContext, RuleViolation> commandBuilder =
@@ -221,6 +222,12 @@ public class GraphBuilder {
         final ControlPoint[] cps = new ControlPoint[controlPoints.size()];
         for (int i = 0; i < cps.length; i++) {
             final ControlPoint cp = ControlPoint.build(controlPoints.get(i));
+            for (Point2D inferredPoint : inferredPoints) {
+                if (inferredPoint.equals(controlPoints.get(i))) {
+                    cp.setInferred(true);
+                    break;
+                }
+            }
             addControlPoint(commandBuilder, edge, cp, i);
         }
         setTargetNode(commandBuilder, target, edge, targetConnection);
@@ -266,6 +273,7 @@ public class GraphBuilder {
                     e.getSource().value(),
                     e.getSourceConnection(),
                     e.getControlPoints(),
+                    e.getInferredPoints(),
                     e.getTarget().value(),
                     e.getTargetConnection());
         }

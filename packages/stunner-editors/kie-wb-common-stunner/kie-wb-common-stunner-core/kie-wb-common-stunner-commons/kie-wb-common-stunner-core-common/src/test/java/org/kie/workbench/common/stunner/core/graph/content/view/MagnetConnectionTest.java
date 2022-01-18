@@ -33,15 +33,15 @@ import static org.mockito.Mockito.when;
 public class MagnetConnectionTest {
 
     @Mock
-    private Element<? extends View<?>> element;
+    private Element element;
 
     @Mock
-    private Element<? extends View<?>> element2;
+    private Element element2;
 
     @Mock
-    private View content;
+    private View<?> content;
     @Mock
-    private View content2;
+    private View<?> content2;
 
     @Before
     @SuppressWarnings("unchecked")

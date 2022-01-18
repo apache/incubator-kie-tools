@@ -141,8 +141,9 @@ public class ControlPointControlImpl
         }
 
         @Override
-        public boolean move(final WiresConnector connector,
-                            final Point2DArray pointsLocation) {
+        public boolean update(final WiresConnector connector,
+                              final Point2DArray pointsLocation) {
+            //DomGlobal.console.log("ACCEPTOR - UPDATING CPs!!");
             completeAddOrMove(connector, pointsLocation);
             resetAddingOp();
             return true;
@@ -187,8 +188,7 @@ public class ControlPointControlImpl
                     controlPoints[i - 1] = ControlPoint.build(Point2D.create(point.getX(),
                                                                              point.getY()));
                 }
-                control.updateControlPoints(edge,
-                                            controlPoints);
+                control.updateControlPoints(edge, controlPoints);
             }
         }
 

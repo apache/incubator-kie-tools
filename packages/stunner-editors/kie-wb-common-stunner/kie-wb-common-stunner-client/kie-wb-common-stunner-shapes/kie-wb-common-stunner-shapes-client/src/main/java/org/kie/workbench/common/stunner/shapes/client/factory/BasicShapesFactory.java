@@ -136,7 +136,7 @@ public class BasicShapesFactory
                                                                       0,
                                                                       0,
                                                                       100,
-                                                                      100);
+                                                                      0);
         view.setDashArray(cShapeDef.getDashArray(instance));
         return new BasicConnectorShape(cShapeDef,
                                        view);

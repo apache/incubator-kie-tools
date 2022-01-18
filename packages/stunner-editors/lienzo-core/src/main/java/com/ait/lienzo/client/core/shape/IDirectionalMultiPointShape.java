@@ -35,6 +35,10 @@ public interface IDirectionalMultiPointShape<T extends Shape<T> & IDirectionalMu
 
     boolean isPathPartListPrepared();
 
+    int getHeadReferencePointIndex();
+
+    int getTailReferencePointIndex();
+
     Point2D adjustPoint(double x, double y, double deltaX, double deltaY);
 
     T cloneLine();

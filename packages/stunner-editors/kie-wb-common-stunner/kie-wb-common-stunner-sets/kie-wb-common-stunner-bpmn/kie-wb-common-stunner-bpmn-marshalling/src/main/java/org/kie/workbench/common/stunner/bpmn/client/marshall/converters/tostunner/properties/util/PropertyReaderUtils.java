@@ -73,6 +73,22 @@ public class PropertyReaderUtils {
         return result;
     }
 
+    public static List<Point2D> getInferredPoints(BaseElement element) {
+        final List<Point2D> result = new ArrayList<>();
+        final String inferredPointsStr = CustomElement.inferredPoints.of(element).get();
+
+        if (!inferredPointsStr.isEmpty()) {
+            String[] pointsStr = inferredPointsStr.split("(?<=])");
+            for (int i = 0; i < pointsStr.length; i++) {
+                String[] pointStr = pointsStr[i].substring(1, pointsStr[i].length() - 1).split(",");
+                result.add(new Point2D(Double.parseDouble(pointStr[0]),
+                                       Double.parseDouble(pointStr[1])));
+            }
+        }
+
+        return result;
+    }
+
     public static WSDLImport toWSDLImports(Import imp) {
         return new WSDLImport(imp.getLocation(), imp.getNamespace());
     }

@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.shapes.client.view;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
-import com.ait.lienzo.client.core.shape.PolyLine;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresConnectorViewExt;
@@ -43,7 +42,7 @@ public abstract class AbstractConnectorView extends WiresConnectorViewExt<Abstra
 
     private AbstractConnectorView(final Object[] line) {
         super(ShapeViewSupportedEvents.DESKTOP_CONNECTOR_EVENT_TYPES,
-              (PolyLine) line[0],
+              (AbstractDirectionalMultiPointShape<?>) line[0],
               (MultiPathDecorator) line[1],
               (MultiPathDecorator) line[2]);
     }

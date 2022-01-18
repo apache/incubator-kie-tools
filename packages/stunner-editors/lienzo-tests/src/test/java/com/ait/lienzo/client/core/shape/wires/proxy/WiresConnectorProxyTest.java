@@ -138,7 +138,7 @@ public class WiresConnectorProxyTest {
         Point2DArray points = connector.getLine().getPoint2DArray();
         assertEquals(CP0, points.get(0));
         assertEquals(CP1, points.get(1));
-        assertEquals(location, points.get(2));
+        assertEquals(CP2, points.get(2));
         assertEquals(location, tailPath.getLocation());
         InOrder updateLineAndThenCallControlMethods = Mockito.inOrder(line, tailConnectionControl, layer);
         updateLineAndThenCallControlMethods.verify(line, times(1)).refresh();
@@ -160,7 +160,7 @@ public class WiresConnectorProxyTest {
         Point2DArray points = connector.getLine().getPoint2DArray();
         assertEquals(CP0, points.get(0));
         assertEquals(CP1, points.get(1));
-        assertEquals(offset, points.get(2));
+        assertEquals(CP2, points.get(2));
         assertEquals(offset, tailPath.getLocation());
         verify(layer, atLeastOnce()).batch();
     }

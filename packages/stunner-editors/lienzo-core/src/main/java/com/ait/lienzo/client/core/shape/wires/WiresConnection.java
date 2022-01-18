@@ -16,9 +16,11 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import com.ait.lienzo.client.core.shape.AbstractMultiPointShape;
 import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.PolyMorphicLine;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
 import com.ait.lienzo.shared.core.types.Direction;
@@ -50,32 +52,6 @@ public class WiresConnection extends AbstractControlHandle {
         m_end = end;
         m_point = (end == ArrowEnd.HEAD) ? m_line.getPoint2DArray().get(0) : m_line.getPoint2DArray().get(m_line.getPoint2DArray().size() - 1);
         m_end = end;
-    }
-
-    public WiresConnection move(final double x, final double y) {
-        m_point.setX(x + m_xOffset);
-
-        m_point.setY(y + m_yOffset);
-
-        m_line.refresh();
-
-        IControlHandle handle;
-
-        if (m_end == ArrowEnd.HEAD) {
-            handle = m_connector.getPointHandles().getHandle(0);
-        } else {
-            handle = m_connector.getPointHandles().getHandle(m_connector.getPointHandles().size() - 1);
-        }
-        if (handle != null && handle.getControl() != null) {
-            handle.getControl().setX(x + m_xOffset);
-
-            handle.getControl().setY(y + m_yOffset);
-        }
-        if (m_line.getLayer() != null) {
-            m_line.getLayer().batch();
-        }
-        m_connector.firePointsUpdated();
-        return this;
     }
 
     public ArrowEnd getEnd() {
@@ -130,6 +106,16 @@ public class WiresConnection extends AbstractControlHandle {
         if (magnet != null) {
             magnet.addHandle(this);
 
+            // This is because of a concrete behavior for orthogonal line - when center magnet is used, segment cannot behave as orthogonal
+            if (m_line instanceof PolyMorphicLine) {
+                boolean isCenterMagnet = magnet.getIndex() == 0;
+                if (m_end == ArrowEnd.HEAD) {
+                    ((PolyMorphicLine) m_line).setFirstSegmentOrthogonal(!isCenterMagnet);
+                } else {
+                    ((PolyMorphicLine) m_line).setLastSegmentOrthogonal(!isCenterMagnet);
+                }
+            }
+
             Point2D absLoc = magnet.getControl().getComputedLocation();
 
             move(absLoc.getX() + m_xOffset, absLoc.getY() + m_yOffset);
@@ -152,6 +138,21 @@ public class WiresConnection extends AbstractControlHandle {
         // The Line is only draggable if both Connections are unconnected
         m_connector.setDraggable();
 
+        return this;
+    }
+
+    public WiresConnection move(final double x, final double y) {
+        int handleIndex = 0;
+        if (m_end != ArrowEnd.HEAD) {
+            handleIndex = m_connector.getPointHandles().size() - 1;
+        }
+        AbstractMultiPointShape.DefaultMultiPointShapeHandleFactory.ConnectionHandle handle = (AbstractMultiPointShape.DefaultMultiPointShapeHandleFactory.ConnectionHandle) m_connector.getPointHandles().getHandle(handleIndex);
+        if (handle != null && handle.getControl() != null) {
+            handle.move(x + m_xOffset, y + m_yOffset);
+            handle.getControl().setX(x + m_xOffset);
+            handle.getControl().setY(y + m_yOffset);
+        }
+        m_connector.firePointsUpdated();
         return this;
     }
 

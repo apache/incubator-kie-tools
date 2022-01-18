@@ -31,9 +31,17 @@ public interface BpmnEdge {
             Edge<? extends View<?>, Node> edge,
             BpmnNode source, Connection sourceConnection,
             List<Point2D> controlPoints,
+            List<Point2D> inferredPoints,
             BpmnNode target, Connection targetConnection,
             PropertyReader propertyReader) {
-        return new BpmnEdge.Simple(edge, source, sourceConnection, controlPoints, target, targetConnection, propertyReader);
+        return new BpmnEdge.Simple(edge,
+                                   source,
+                                   sourceConnection,
+                                   controlPoints,
+                                   inferredPoints,
+                                   target,
+                                   targetConnection,
+                                   propertyReader);
     }
 
     static BpmnEdge.Docked docked(BpmnNode source, BpmnNode target) {
@@ -52,15 +60,24 @@ public interface BpmnEdge {
         private final BpmnNode source;
         private final Connection sourceConnection;
         private final List<Point2D> controlPoints;
+        private final List<Point2D> inferredPoints;
         private final BpmnNode target;
         private final Connection targetConnection;
         private final PropertyReader propertyReader;
 
-        private Simple(Edge<? extends View<?>, Node> edge, BpmnNode source, Connection sourceConnection, List<Point2D> controlPoints, BpmnNode target, Connection targetConnection, PropertyReader propertyReader) {
+        private Simple(Edge<? extends View<?>, Node> edge,
+                       BpmnNode source,
+                       Connection sourceConnection,
+                       List<Point2D> controlPoints,
+                       List<Point2D> inferredPoints,
+                       BpmnNode target,
+                       Connection targetConnection,
+                       PropertyReader propertyReader) {
             this.edge = edge;
             this.source = source;
             this.sourceConnection = sourceConnection;
             this.controlPoints = controlPoints;
+            this.inferredPoints = inferredPoints;
             this.target = target;
             this.targetConnection = targetConnection;
             this.propertyReader = propertyReader;
@@ -80,6 +97,10 @@ public interface BpmnEdge {
 
         public List<Point2D> getControlPoints() {
             return controlPoints;
+        }
+
+        public List<Point2D> getInferredPoints() {
+            return inferredPoints;
         }
 
         public BpmnNode getTarget() {

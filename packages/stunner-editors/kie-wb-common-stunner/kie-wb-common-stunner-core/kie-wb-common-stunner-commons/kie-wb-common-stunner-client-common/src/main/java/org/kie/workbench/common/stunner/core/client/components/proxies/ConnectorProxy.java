@@ -92,7 +92,7 @@ public class ConnectorProxy implements ShapeProxy {
         final CanvasCommandFactory<AbstractCanvasHandler> commandFactory = proxy.lookupCanvasFactory();
         proxy.execute(commandFactory.addConnector(sourceNode,
                                                   edge,
-                                                  MagnetConnection.Builder.atCenter(sourceNode),
+                                                  MagnetConnection.Builder.atRight(sourceNode).setAuto(true),
                                                   getMetadata().getShapeSetId()));
 
         return getConnector();

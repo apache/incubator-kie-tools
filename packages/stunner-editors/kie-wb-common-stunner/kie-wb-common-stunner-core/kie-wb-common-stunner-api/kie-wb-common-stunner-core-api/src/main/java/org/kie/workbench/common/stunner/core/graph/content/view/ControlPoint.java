@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 public class ControlPoint {
 
     private Point2D location;
+    private boolean inferred = false;
 
     public static ControlPoint build(final Point2D location) {
         return new ControlPoint(location);
@@ -34,6 +35,14 @@ public class ControlPoint {
     public static ControlPoint build(final double x,
                                      final double y) {
         return new ControlPoint(Point2D.create(x, y));
+    }
+
+    public boolean isInferred() {
+        return inferred;
+    }
+
+    public void setInferred(boolean inferred) {
+        this.inferred = inferred;
     }
 
     public ControlPoint(final @MapsTo("location") Point2D location) {

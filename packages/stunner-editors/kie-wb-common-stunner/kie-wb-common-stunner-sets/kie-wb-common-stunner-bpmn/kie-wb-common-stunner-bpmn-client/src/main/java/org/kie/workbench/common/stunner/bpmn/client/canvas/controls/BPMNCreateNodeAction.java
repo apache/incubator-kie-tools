@@ -22,7 +22,6 @@ import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -60,39 +59,16 @@ public class BPMNCreateNodeAction extends GeneralCreateNodeAction {
     }
 
     @Override
-    protected MagnetConnection buildConnectionBetween(final Node<View<?>, Edge> sourceNode,
-                                                      final Node<View<?>, Edge> targetNode) {
-        final boolean gatewaySourceOrTarget = isGatewaySourceOrTarget(sourceNode, targetNode);
-        MagnetConnection connection;
-
-        if (gatewaySourceOrTarget) {
-            connection = getMagnetConnectionFixed(sourceNode, targetNode);
-        } else {
-            connection = getMagnetConnectionCenter(sourceNode, targetNode);
-        }
-
-        connection.setAuto(false);
+    protected MagnetConnection buildSourceConnectionBetween(Node<View<?>, Edge> sourceNode, Node<View<?>, Edge> targetNode) {
+        MagnetConnection connection = super.buildSourceConnectionBetween(sourceNode, targetNode);
+        connection.setAuto(true);
         return connection;
     }
 
-    protected MagnetConnection getMagnetConnectionCenter(Node<View<?>, Edge> sourceNode, Node<View<?>, Edge> targetNode) {
-        return super.buildCenterConnectionBetween(sourceNode, targetNode);
-    }
-
-    protected MagnetConnection getMagnetConnectionFixed(Node<View<?>, Edge> sourceNode, Node<View<?>, Edge> targetNode) {
-        return super.buildConnectionBetween(sourceNode, targetNode);
-    }
-
-    public static boolean isGatewaySourceOrTarget(final Node<View<?>, Edge> sourceNode,
-                                                  final Node<View<?>, Edge> targetNode) {
-        final Object sourceDefinition = null != sourceNode ? sourceNode.getContent().getDefinition() : null;
-        final Object targetDefinition = null != targetNode ? targetNode.getContent().getDefinition() : null;
-        final boolean isSourceGateway = isGateway(sourceDefinition);
-        final boolean isTargetGateway = isGateway(targetDefinition);
-        return isSourceGateway || isTargetGateway;
-    }
-
-    private static boolean isGateway(final Object bean) {
-        return bean instanceof BaseGateway;
+    @Override
+    protected MagnetConnection buildTargetBetween(Node<View<?>, Edge> sourceNode, Node<View<?>, Edge> targetNode) {
+        MagnetConnection connection = super.buildTargetBetween(sourceNode, targetNode);
+        connection.setAuto(true);
+        return connection;
     }
 }

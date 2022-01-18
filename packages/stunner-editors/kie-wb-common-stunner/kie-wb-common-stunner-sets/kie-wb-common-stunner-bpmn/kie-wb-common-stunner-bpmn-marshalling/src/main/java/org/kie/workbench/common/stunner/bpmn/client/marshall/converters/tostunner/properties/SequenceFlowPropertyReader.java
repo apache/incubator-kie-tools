@@ -99,6 +99,11 @@ public class SequenceFlowPropertyReader extends FlowElementPropertyReader implem
                                                     element.getId());
     }
 
+    @Override
+    public List<Point2D> getInferredPoints() {
+        return PropertyReaderUtils.getInferredPoints(element);
+    }
+
     public DefinitionResolver getDefinitionResolver() {
         return definitionResolver;
     }

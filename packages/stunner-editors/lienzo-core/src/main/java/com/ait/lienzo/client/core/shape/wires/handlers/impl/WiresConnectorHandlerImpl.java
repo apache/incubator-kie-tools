@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.NodeMouseEnterEvent;
 import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
+import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
@@ -162,10 +163,18 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler {
     @Override
     public void onNodeMouseMove(final NodeMouseMoveEvent event) {
         if (null != mouseDownTimer) {
-            mouseDownTimer.run();
+            mouseDownTimer.cancel();
             mouseDownTimer = null;
         }
         ifControlPointsBuilder(builder -> builder.moveControlPointTo(event.getX(), event.getY()));
+    }
+
+    @Override
+    public void onNodeMouseUp(NodeMouseUpEvent event) {
+        if (null != mouseDownTimer) {
+            mouseDownTimer.cancel();
+            mouseDownTimer = null;
+        }
     }
 
     @Override

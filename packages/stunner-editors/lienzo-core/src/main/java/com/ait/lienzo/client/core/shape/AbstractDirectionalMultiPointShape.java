@@ -23,17 +23,19 @@ import java.util.List;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import jsinterop.annotations.JsProperty;
 
-public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirectionalMultiPointShape<T> & IDirectionalMultiPointShape<T>> extends AbstractOffsetMultiPointShape<T> implements IDirectionalMultiPointShape<T> {
+public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirectionalMultiPointShape<T> & IDirectionalMultiPointShape<T>>
+        extends AbstractOffsetMultiPointShape<T> implements IDirectionalMultiPointShape<T> {
 
     @JsProperty
-    private Direction headDirection;
+    protected Direction headDirection;
 
     @JsProperty
-    private Direction tailDirection;
+    protected Direction tailDirection;
 
     @JsProperty
     private double correctionOffset = LienzoCore.get().getDefaultConnectorOffset();
@@ -93,6 +95,26 @@ public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirec
     @Override
     public Point2D adjustPoint(double x, double y, double deltaX, double deltaY) {
         return new Point2D(x, y);
+    }
+
+    @Override
+    public int getHeadReferencePointIndex() {
+        Point2DArray points = getPoint2DArray();
+        if (points.size() >= 4) {
+            return 1;
+        } else {
+            return points.size() - 1;
+        }
+    }
+
+    @Override
+    public int getTailReferencePointIndex() {
+        Point2DArray points = getPoint2DArray();
+        if (points.size() >= 4) {
+            return points.size() - 2;
+        } else {
+            return 0;
+        }
     }
 
     @Override

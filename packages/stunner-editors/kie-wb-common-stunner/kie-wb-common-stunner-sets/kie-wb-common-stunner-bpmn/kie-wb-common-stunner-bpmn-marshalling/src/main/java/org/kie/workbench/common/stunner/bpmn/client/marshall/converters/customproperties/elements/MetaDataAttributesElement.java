@@ -118,6 +118,7 @@ public class MetaDataAttributesElement extends ElementDefinition<String> {
                 !metaDataTypeName.equals(CustomElement.slaDueDate.name()) &&
                 !metaDataTypeName.equals(CustomElement.isCase.name()) &&
                 !metaDataTypeName.equals(CustomElement.customActivationCondition.name()) &&
-                !metaDataTypeName.equals(CustomElement.abortParent.name());
+                !metaDataTypeName.equals(CustomElement.abortParent.name()) &&
+                !metaDataTypeName.equals(CustomElement.inferredPoints.name());
     }
 }

@@ -20,12 +20,24 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.ait.lienzo.client.core.config.LienzoCore;
+import com.ait.lienzo.client.core.shape.wires.WiresAutoMagnetSelector;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 @ApplicationScoped
 @EntryPoint
 public class StunnerLienzoCore {
+
+    @PostConstruct
+    public void init() {
+        setDefaultImageSelectionMode();
+        setAutoMagnetsDefaultBehavior();
+    }
 
     /**
      * It's really important to set the <code>ImageSelectionMode</code> to the
@@ -35,8 +47,46 @@ public class StunnerLienzoCore {
      * Also it's being used due to huge differences on the resulting performance when
      * rendering the images into the contexts.
      */
-    @PostConstruct
-    public void init() {
+    private static void setDefaultImageSelectionMode() {
         LienzoCore.get().setDefaultImageSelectionMode(ImageSelectionMode.SELECT_BOUNDS);
+    }
+
+    private static void setAutoMagnetsDefaultBehavior() {
+        MagnetConnection.sourceAutoMagnet = (source, target) -> {
+            double[] sourceBounds = viewBoundsToDoubles(source);
+            double[] targetBounds = centerBoundsToDoubles(target);
+            int magnet = WiresAutoMagnetSelector.getHeadMagnetNonOverlappedShapes(sourceBounds, targetBounds);
+            if (magnet == -1) {
+                //DomGlobal.console.log("HEAD IS CENTER");
+            }
+            return magnet;
+        };
+        MagnetConnection.targetAutoMagnet = (source, target) -> {
+            double[] sourceBounds = centerBoundsToDoubles(source);
+            double[] targetBounds = viewBoundsToDoubles(target);
+            int magnet = WiresAutoMagnetSelector.getTailMagnetNonOverlappedShapes(sourceBounds, targetBounds);
+            if (magnet == -1) {
+                //DomGlobal.console.log("TAIL IS CENTER");
+            }
+            return magnet;
+        };
+    }
+
+    private static double[] viewBoundsToDoubles(View shape) {
+        Point2D pos = GraphUtils.getPosition(shape);
+        Bounds bounds = shape.getBounds();
+        double[] doubles = {pos.getX(), pos.getY(), pos.getX() + bounds.getWidth(), pos.getY() + bounds.getHeight()};
+        return doubles;
+    }
+
+    private static double[] centerBoundsToDoubles(View shape) {
+        Point2D pos = GraphUtils.getPosition(shape);
+        Bounds bounds = shape.getBounds();
+        double rw = bounds.getWidth() / 2;
+        double rh = bounds.getHeight() / 2;
+        double x = pos.getX() + rw;
+        double y = pos.getY() + rh;
+        double[] doubles = {x, y, x, y};
+        return doubles;
     }
 }

@@ -38,6 +38,8 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
+import static org.kie.workbench.common.stunner.core.client.util.ShapeUtils.buildUpdateControlPointsCommand;
+
 @Dependent
 public class NodeProxy implements ShapeProxy {
 
@@ -116,12 +118,13 @@ public class NodeProxy implements ShapeProxy {
                                                              getShapeSetId()))
                               .deferCommand(() -> commandFactory.addConnector(sourceNode,
                                                                               edge,
-                                                                              MagnetConnection.Builder.atCenter(sourceNode),
+                                                                              MagnetConnection.Builder.atRight(sourceNode).setAuto(true),
                                                                               getShapeSetId()))
                               .deferCommand(() -> commandFactory.setTargetNode(targetNode,
                                                                                edge,
-                                                                               MagnetConnection.Builder.forTarget(sourceNode,
-                                                                                                                  targetNode)))
+                                                                               MagnetConnection.Builder.forTargetAuto(sourceNode,
+                                                                                                                      targetNode)))
+                              .deferCommand(() -> buildUpdateControlPointsCommand(commandFactory, proxy.getCanvasHandler(), edge))
                               .build());
         final Canvas canvas = proxy.getCanvas();
         final NodeShape targetShape = getTargetShape();

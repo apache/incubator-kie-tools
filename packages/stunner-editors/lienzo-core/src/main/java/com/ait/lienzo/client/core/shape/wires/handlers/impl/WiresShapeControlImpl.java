@@ -67,7 +67,7 @@ public class WiresShapeControlImpl
     private boolean s_accept;
     private boolean accepted;
     private WiresConnector[] m_connectorsWithSpecialConnections;
-    private Collection<WiresConnector> m_connectors;
+    private Collection<WiresConnector> m_child_connectors;
 
     public WiresShapeControlImpl(WiresShape shape) {
         parentPickerControl = new WiresParentPickerControlImpl(shape,
@@ -129,13 +129,22 @@ public class WiresShapeControlImpl
             m_alignAndDistributeControl.dragStart();
         }
 
-        // index nested shapes that have special m_connectors, to avoid searching during drag.
         m_connectorsWithSpecialConnections = WiresShapeControlUtils.collectionSpecialConnectors(getShape());
-        //setting the child connectors that should be moved with the Shape
-        m_connectors = getShape().getChildShapes() != null && !getShape().getChildShapes().isEmpty() ?
-                WiresShapeControlUtils.lookupChildrenConnectorsToUpdate(getShape()).values() :
+        m_child_connectors = getShape().getChildShapes() != null && !getShape().getChildShapes().isEmpty() ?
+                lookupChildrenConnectorsToUpdate() :
                 Collections.emptyList();
-        forEachConnectorControl(control -> control.onMoveStart(x, y));
+
+        forEachConnectorControl(lookupChildrenConnectorsToUpdate(), new Consumer<WiresConnectorControl>() {
+            @Override
+            public void accept(WiresConnectorControl control) {
+                control.hideControlPoints();
+            }
+        });
+        forEachConnectorControl(m_child_connectors, control -> control.onMoveStart(x, y));
+    }
+
+    private Collection<WiresConnector> lookupChildrenConnectorsToUpdate() {
+        return WiresShapeControlUtils.lookupChildrenConnectorsToUpdate(getShape()).values();
     }
 
     @Override
@@ -226,8 +235,7 @@ public class WiresShapeControlImpl
 
         shapeUpdated(false);
 
-        forEachConnectorControl(control -> control.onMove(dx,
-                                                          dy));
+        forEachConnectorControl(m_child_connectors, control -> control.onMove(dx, dy));
 
         return adjust;
     }
@@ -271,7 +279,7 @@ public class WiresShapeControlImpl
         if (m_alignAndDistributeControl != null) {
             m_alignAndDistributeControl.dragEnd();
         }
-        forEachConnectorControl(WiresMoveControl::onMoveComplete);
+        forEachConnectorControl(m_child_connectors, WiresMoveControl::onMoveComplete);
     }
 
     @Override
@@ -306,7 +314,10 @@ public class WiresShapeControlImpl
             shapeUpdated(true);
         }
 
-        forEachConnectorControl(WiresControl::execute);
+        if (null == m_child_connectors || m_child_connectors.isEmpty()) {
+            forEachConnectorControl(lookupChildrenConnectorsToUpdate(), WiresControl::execute);
+        }
+        forEachConnectorControl(m_child_connectors, WiresControl::execute);
 
         clear();
     }
@@ -324,7 +335,10 @@ public class WiresShapeControlImpl
         if (null != m_lineSpliceControl) {
             m_lineSpliceControl.clear();
         }
-        forEachConnectorControl(WiresControl::clear);
+        if (null == m_child_connectors || m_child_connectors.isEmpty()) {
+            forEachConnectorControl(lookupChildrenConnectorsToUpdate(), WiresControl::clear);
+        }
+        forEachConnectorControl(m_child_connectors, WiresControl::clear);
         clearState();
     }
 
@@ -344,7 +358,10 @@ public class WiresShapeControlImpl
             m_alignAndDistributeControl.reset();
         }
         getShape().shapeMoved();
-        forEachConnectorControl(WiresControl::reset);
+        if (null == m_child_connectors || m_child_connectors.isEmpty()) {
+            forEachConnectorControl(lookupChildrenConnectorsToUpdate(), WiresControl::reset);
+        }
+        forEachConnectorControl(m_child_connectors, WiresControl::reset);
         clearState();
     }
 
@@ -446,11 +463,15 @@ public class WiresShapeControlImpl
         absoluteShapeBounds = null;
         m_adjust = new Point2D(0, 0);
         m_connectorsWithSpecialConnections = null;
+        if (null != m_child_connectors) {
+            m_child_connectors.clear();
+        }
     }
 
-    private void forEachConnectorControl(final Consumer<WiresConnectorControl> consumer) {
-        if (m_connectors != null && !m_connectors.isEmpty()) {
-            for (WiresConnector connector : m_connectors) {
+    private static void forEachConnectorControl(Collection<WiresConnector> connectors,
+                                                Consumer<WiresConnectorControl> consumer) {
+        if (connectors != null && !connectors.isEmpty()) {
+            for (WiresConnector connector : connectors) {
                 consumer.accept(connector.getControl());
             }
         }

@@ -222,7 +222,7 @@ public class NodeProxyTest {
         verify(proxy, times(1)).execute(commandCaptor.capture());
         DeferredCompositeCommand command = (DeferredCompositeCommand) commandCaptor.getValue();
         List commands = command.getCommands();
-        assertEquals(3, command.size());
+        assertEquals(4, command.size());
         DeferredCommand c0 = (DeferredCommand) commands.get(0);
         assertEquals(addNodeCommand, c0.getCommand());
         DeferredCommand c1 = (DeferredCommand) commands.get(1);

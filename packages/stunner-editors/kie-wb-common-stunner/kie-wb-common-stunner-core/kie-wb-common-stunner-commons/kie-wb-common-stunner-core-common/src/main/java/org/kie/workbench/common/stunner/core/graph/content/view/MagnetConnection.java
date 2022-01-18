@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -95,6 +96,9 @@ public class MagnetConnection extends DiscreteConnection {
         return "[MagnetConnection at {" + location + "}" + "]";
     }
 
+    public static BiFunction<View, View, Integer> sourceAutoMagnet = null;
+    public static BiFunction<View, View, Integer> targetAutoMagnet = null;
+
     @NonPortable
     public static class Builder {
 
@@ -156,9 +160,43 @@ public class MagnetConnection extends DiscreteConnection {
                                         false);
         }
 
+        public static MagnetConnection forSourceAuto(final Element<? extends View<?>> source,
+                                                     final Element<? extends View<?>> target) {
+            if (null != sourceAutoMagnet && source != null && target != null) {
+                int index = sourceAutoMagnet.apply(source.getContent(), target.getContent());
+                return forIndex(source, index);
+            }
+            return forTarget(source, target);
+        }
+
+        public static MagnetConnection forTargetAuto(final Element<? extends View<?>> source,
+                                                     final Element<? extends View<?>> target) {
+            if (null != targetAutoMagnet && source != null && target != null) {
+                int index = targetAutoMagnet.apply(source.getContent(), target.getContent());
+                return forIndex(target, index);
+            }
+            return forTarget(source, target);
+        }
+
+        public static MagnetConnection forIndex(final Element<? extends View<?>> source, int index) {
+            switch (index) {
+                case 1:
+                    return atTop(source);
+                case 5:
+                    return atBottom(source);
+                case 7:
+                    return atLeft(source);
+                case 3:
+                    return atRight(source);
+                default:
+                    return atCenter(source);
+            }
+        }
+
         public static MagnetConnection forTarget(final Element<? extends View<?>> source,
                                                  final Element<? extends View<?>> target) {
-            final RelativePosition relativePosition = getTargetPositionRelativeToSource(source, target);
+            final RelativePosition relativePosition = getTargetPositionRelativeToSource(source != null ? source.getContent() : null,
+                                                                                        target != null ? target.getContent() : null);
             switch (relativePosition) {
                 case ABOVE:
                     return atTop(source);
@@ -178,30 +216,30 @@ public class MagnetConnection extends DiscreteConnection {
         // LEFT   |       + RIGHT
         // -------+-------+-------
         //        | BELOW +
-        private static RelativePosition getTargetPositionRelativeToSource(final Element<? extends View<?>> source,
-                                                                          final Element<? extends View<?>> target) {
-            final Point2D sourcePosition = GraphUtils.getPosition(source.getContent());
-            final Point2D targetPosition = (Objects.nonNull(target) ? GraphUtils.getPosition(target.getContent()) : sourcePosition);
-            final Bounds sourceBounds = source.getContent().getBounds();
-            final Bounds targetBounds = target.getContent().getBounds();
+        private static RelativePosition getTargetPositionRelativeToSource(final View<?> source,
+                                                                          final View<?> target) {
+            final Point2D sourcePosition = GraphUtils.getPosition(source);
+            final Point2D targetPosition = (Objects.nonNull(target) ? GraphUtils.getPosition(target) : sourcePosition);
+            final Bounds sourceBounds = source.getBounds();
+            final Bounds targetBounds = target.getBounds();
 
-            //Simple non-overlapping cases...
-            if (targetPosition.getY() + targetBounds.getHeight() < sourcePosition.getY()) {
-                return RelativePosition.ABOVE;
-            }
-            if (targetPosition.getY() > sourcePosition.getY() + sourceBounds.getHeight()) {
-                return RelativePosition.BELOW;
-            }
             if (targetPosition.getX() + targetBounds.getWidth() < sourcePosition.getX()) {
                 return RelativePosition.LEFT;
             }
             if (targetPosition.getX() > sourcePosition.getX() + sourceBounds.getWidth()) {
                 return RelativePosition.RIGHT;
             }
+            if (targetPosition.getY() + targetBounds.getHeight() < sourcePosition.getY()) {
+                return RelativePosition.ABOVE;
+            }
+            if (targetPosition.getY() > sourcePosition.getY() + sourceBounds.getHeight()) {
+                return RelativePosition.BELOW;
+            }
 
             return RelativePosition.CENTRE;
         }
 
+        // TODO: Review all uses of atCenter and replace by auto-magnet by default, but only for BPMN?
         public static MagnetConnection atCenter(final Element<? extends View<?>> element) {
             return atLocation(element,
                               MAGNET_CENTER,

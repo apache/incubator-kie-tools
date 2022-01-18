@@ -8,6 +8,7 @@ import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
 import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
 import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.event.NodeMouseMoveHandler;
+import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 
@@ -23,6 +24,7 @@ public interface WiresConnectorHandler extends NodeDragStartHandler,
                                                NodeMouseEnterHandler,
                                                NodeMouseExitHandler,
                                                NodeMouseDownHandler,
+                                               NodeMouseUpHandler,
                                                NodeMouseMoveHandler {
 
     WiresConnectorControl getControl();

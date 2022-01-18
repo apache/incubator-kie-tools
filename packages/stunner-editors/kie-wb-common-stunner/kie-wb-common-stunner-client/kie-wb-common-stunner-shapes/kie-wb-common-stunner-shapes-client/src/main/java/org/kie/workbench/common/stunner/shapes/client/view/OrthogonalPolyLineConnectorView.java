@@ -15,12 +15,12 @@
  */
 package org.kie.workbench.common.stunner.shapes.client.view;
 
-import org.kie.workbench.common.stunner.shapes.client.factory.PolyLineConnectorFactory;
+import org.kie.workbench.common.stunner.shapes.client.factory.OrthogonalPolyLineConnectorFactory;
 import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
 
 public class OrthogonalPolyLineConnectorView extends AbstractConnectorView {
 
     public OrthogonalPolyLineConnectorView(final ConnectorShapeDef.Direction direction, final double... points) {
-        super(new PolyLineConnectorFactory(), direction, points);
+        super(new OrthogonalPolyLineConnectorFactory(), direction, points);
     }
 }
