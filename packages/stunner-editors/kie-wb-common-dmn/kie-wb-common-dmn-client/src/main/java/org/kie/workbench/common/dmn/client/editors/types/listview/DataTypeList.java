@@ -126,7 +126,7 @@ public class DataTypeList {
     }
 
     public void activateReactComponents() {
-        if (kogitoChannelHelper.isCurrentChannelEnabled(Arrays.asList(Channel.VSCODE, Channel.DEFAULT))) {
+        if (kogitoChannelHelper.isCurrentChannelEnabled(Channel.VSCODE)) {
             view.renderImportJavaClasses();
         }
     }
