@@ -122,7 +122,7 @@ public class ExpressionState {
     void setExpressionName(final String expressionName) {
         final HasName fallbackHasName = getFallbackHasName();
         HasNameUtils.setName(getHasName().orElse(fallbackHasName), expressionName);
-        updateCanvasNodeCommand.execute(getNodeUUID(), getHasName());
+        updateCanvasNodeCommand.execute(getNodeUUID(), getHasName().orElse(null));
     }
 
     HasName getFallbackHasName() {

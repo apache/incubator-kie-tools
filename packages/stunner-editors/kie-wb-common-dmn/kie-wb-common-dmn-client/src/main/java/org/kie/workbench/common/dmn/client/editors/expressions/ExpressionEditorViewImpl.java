@@ -316,10 +316,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         gridPanel.getViewport().getMediators().push(mousePanMediator);
     }
 
-    public UpdateCanvasNodeNameCommand getUpdateCanvasNodeNameCommand() {
-        return updateCanvasNodeNameCommand;
-    }
-
     @Override
     public void setReturnToLinkText(final String text) {
         returnToLink.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToLink, text));
@@ -494,7 +490,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     void executeExpressionCommand(final FillExpressionCommand expressionCommand) {
         expressionCommand.execute();
-        updateCanvasNodeNameCommand.execute(getNodeUUID(), getHasName());
+        updateCanvasNodeNameCommand.execute(getNodeUUID(), getHasName().orElse(null));
     }
 
     void toggleBetaBoxedExpressionEditor(final boolean enabled) {
@@ -639,7 +635,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                                       this,
                                                                                       getNodeUUID(),
                                                                                       getHasName(),
-                                                                                      getUpdateCanvasNodeNameCommand());
+                                                                                      updateCanvasNodeNameCommand);
         addExpressionCommand(expressionCommand, commandBuilder);
 
         execute(commandBuilder);

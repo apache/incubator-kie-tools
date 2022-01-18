@@ -64,10 +64,6 @@ public class SaveCurrentStateCommand extends AbstractCanvasCommand {
         originalState.saveCurrentState();
     }
 
-    public UpdateCanvasNodeNameCommand getUpdateCanvasNodeCommand() {
-        return updateCanvasNodeCommand;
-    }
-
     public Optional<HasName> getHasName() {
         return hasName;
     }
@@ -120,7 +116,7 @@ public class SaveCurrentStateCommand extends AbstractCanvasCommand {
                                                                            getView(),
                                                                            getNodeUUID(),
                                                                            getHasName(),
-                                                                           getUpdateCanvasNodeCommand());
+                                                                           updateCanvasNodeCommand);
             newStateBeforeUndo.saveCurrentState();
             setStateBeforeUndo(newStateBeforeUndo);
         }

@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.commands;
 
-import java.util.Optional;
-
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,7 +78,7 @@ public class UpdateCanvasNodeNameCommandTest {
     public void testExecute() {
 
         final String nodeUUID = "node uuid";
-        final Optional<HasName> hasName = Optional.of(mock(HasName.class));
+        final HasName hasName = mock(HasName.class);
 
         final Element element = mock(Element.class);
         final Definition definition = mock(Definition.class);
@@ -115,7 +113,7 @@ public class UpdateCanvasNodeNameCommandTest {
         when(hasName.getValue()).thenReturn(name);
         when(canvasCommandFactory.updatePropertyValue(element, nameId, name)).thenReturn(canvasCommand);
 
-        final CanvasCommand<AbstractCanvasHandler> actualCommand = command.getCommand(Optional.of(hasName),
+        final CanvasCommand<AbstractCanvasHandler> actualCommand = command.getCommand(hasName,
                                                                                       element,
                                                                                       nameId);
 
@@ -132,7 +130,7 @@ public class UpdateCanvasNodeNameCommandTest {
 
         when(canvasCommandFactory.updatePropertyValue(element, nameId, HasName.NOP.getValue())).thenReturn(canvasCommand);
 
-        final CanvasCommand<AbstractCanvasHandler> actualCommand = command.getCommand(Optional.empty(),
+        final CanvasCommand<AbstractCanvasHandler> actualCommand = command.getCommand(null,
                                                                                       element,
                                                                                       nameId);
 
