@@ -179,6 +179,6 @@
 
 /** Hiding popover arrow for the Table Handler */
 
-.boxed-expression-editor .table-handler .pf-c-popover__arrow {
+.boxed-expression-provider .table-handler .pf-c-popover__arrow {
   display: none;
 }
