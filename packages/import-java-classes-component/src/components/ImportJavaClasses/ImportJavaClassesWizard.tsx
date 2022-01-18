@@ -166,9 +166,10 @@ export const ImportJavaClassesWizard = ({
       canJumpTo: isSecondStepActivatable(),
       component: (
         <ImportJavaClassesWizardSecondStep
-          selectedJavaClasses={javaClasses}
+          javaCodeCompletionService={javaCodeCompletionService}
           onAddJavaClass={addJavaClass}
           onSelectedJavaClassedFieldsLoaded={updateSelectedClassesFields}
+          selectedJavaClasses={javaClasses}
         />
       ),
       enableNext: isThirdStepActivatable(),

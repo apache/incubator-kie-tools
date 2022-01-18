@@ -22,20 +22,24 @@ import { JavaField } from "./Model/JavaField";
 import { JavaClass } from "./Model/JavaClass";
 import { DMNSimpleType, JAVA_TO_DMN_MAP } from "./Model/DMNSimpleType";
 import { getJavaClassSimpleName } from "./Model/JavaClassUtils";
+import { JavaCodeCompletionService } from "./Service";
 
 export interface ImportJavaClassesWizardSecondStepProps {
-  /** List of the selected classes by user */
-  selectedJavaClasses: JavaClass[];
+  /** Service class which contains all API methods to dialog with Java Code Completion Extension*/
+  javaCodeCompletionService: JavaCodeCompletionService;
   /** Function to be called when adding a Java Class */
   onAddJavaClass: (fullClassName: string) => void;
   /** Function to be called to update a Java Class with its retrieved Fields */
   onSelectedJavaClassedFieldsLoaded: (fullClassName: string, fields: JavaField[]) => void;
+  /** List of the selected classes by user */
+  selectedJavaClasses: JavaClass[];
 }
 
 export const ImportJavaClassesWizardSecondStep = ({
-  selectedJavaClasses,
+  javaCodeCompletionService,
   onAddJavaClass,
   onSelectedJavaClassedFieldsLoaded,
+  selectedJavaClasses,
 }: ImportJavaClassesWizardSecondStepProps) => {
   const generateJavaClassField = useCallback((name: string, type: string, javaClasses: JavaClass[]) => {
     let dmnTypeRef: string = JAVA_TO_DMN_MAP.get(getJavaClassSimpleName(type)) || DMNSimpleType.ANY;
@@ -47,18 +51,28 @@ export const ImportJavaClassesWizardSecondStep = ({
 
   const loadJavaFields = useCallback(
     (className: string) => {
-      window.envelope
-        .lspGetClassFieldsServiceMocked(className)
-        .then((value) => {
-          const fields = Array.from(value, ([name, type]) => generateJavaClassField(name, type, selectedJavaClasses));
-          fields.sort((a, b) => (a.name < b.name ? -1 : 1));
-          onSelectedJavaClassedFieldsLoaded(className, fields);
-        })
-        .catch((reason) => {
-          console.error(reason);
-        });
+      try {
+        javaCodeCompletionService
+          .getFields(className)
+          .then((javaCodeCompletionFields) => {
+            const retrievedFields = javaCodeCompletionFields.map((javaCodeCompletionField) =>
+              generateJavaClassField(
+                javaCodeCompletionField.accessor,
+                javaCodeCompletionField.fqcn,
+                selectedJavaClasses
+              )
+            );
+            retrievedFields.sort((a, b) => (a.name < b.name ? -1 : 1));
+            onSelectedJavaClassedFieldsLoaded(className, retrievedFields);
+          })
+          .catch((reason) => {
+            console.error(reason);
+          });
+      } catch (error) {
+        console.error(error);
+      }
     },
-    [generateJavaClassField, onSelectedJavaClassedFieldsLoaded, selectedJavaClasses]
+    [generateJavaClassField, javaCodeCompletionService, onSelectedJavaClassedFieldsLoaded, selectedJavaClasses]
   );
 
   useEffect(
