@@ -408,7 +408,7 @@ teardown() {
 
 @test "test get_runtime_type to make sure it returns the expected runtime_type for Quarkus using binary build" {
     echo "Main-Class: io.quarkus.bootstrap.runner.QuarkusEntryPoint" > /tmp/MANIFEST.MF
-    jar -0 --create --file $KOGITO_HOME/bin/my-app.jar -m /tmp/MANIFEST.MF
+    jar -0 -c --file $KOGITO_HOME/bin/my-app.jar -m /tmp/MANIFEST.MF
 
     run get_runtime_type
 
@@ -419,8 +419,8 @@ teardown() {
 @test "test get_runtime_type to make sure it returns the expected runtime_type for Springboot binary build" {
     echo "Main-Class: org.springframework.boot.loader.JarLauncher" > /tmp/MANIFEST.MF
     echo "public void hello(){}" > /tmp/hello.java
-    jar -0 --create --file $KOGITO_HOME/bin/my-app.jar -m /tmp/MANIFEST.MF
-    jar -0 --create --file /tmp/my-app.jar -m /tmp/MANIFEST.MF
+    jar -0 -c --file $KOGITO_HOME/bin/my-app.jar -m /tmp/MANIFEST.MF
+    jar -0 -c --file /tmp/my-app.jar -m /tmp/MANIFEST.MF
 
     run get_runtime_type
 
