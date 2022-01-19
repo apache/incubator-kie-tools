@@ -115,11 +115,15 @@
         "id": "bpmn",
         "extensions": [
           ".bpmn",
-          ".bpmn2"
+          ".bpmn2",
+          ".BPMN",
+          ".BPMN2"
         ],
         "aliases": [
           "bpmn",
           "bpmn2",
+          "BPMN",
+          "BPMN2",
           "Business Process Model and Notation"
         ]
       }
