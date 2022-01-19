@@ -41,54 +41,91 @@ export const focusNextTextArea = (currentTextArea: HTMLTextAreaElement | null) =
 };
 
 /**
- * Focus Sibling Cell of a react-table. Works from any element inside a cell or a cell itself.
+ * Get Parent Cell of the current element.
  *
- * @param currCell the current cell
- * @param getSibling callback to get the sibling cell
+ * @param currentEl the current element
+ * @returns the element of the td parent
+ */
+export const getParentCell = (currentEl: HTMLElement | null): HTMLTableDataCellElement | null => {
+  const cellSelector = "td, th";
+
+  if (!currentEl) {
+    return null;
+  }
+
+  return <HTMLTableDataCellElement>(currentEl.matches(cellSelector) ? currentEl : currentEl.closest(cellSelector));
+};
+
+/**
+ * do the focus of a cell
+ *
+ * @param cell the cell to focus
  * @returns
  */
-const focusSibligngCell = (currCell: HTMLElement | null, getSibling: (parent: Element) => Element | null): void => {
-  const cellSelector = "td";
-
-  if (!currCell) {
+export const cellFocus = (cell: HTMLTableDataCellElement | null): void => {
+  if (!cell) {
     return;
   }
 
-  const parent = currCell.matches(cellSelector) ? currCell : currCell.closest(cellSelector);
+  cell.focus();
+};
 
-  if (!parent) {
-    return;
-  }
-
-  const gotoEl = <HTMLElement>getSibling(parent);
-
-  if (!gotoEl) {
-    return;
-  }
-
-  gotoEl.focus();
+/**
+ * Focus Current Cell of a react-table. Works from any element inside a cell or a cell itself.
+ *
+ * @param currentEl the crrent element
+ * @returns
+ */
+export const focusCurrentCell = (currentEl: HTMLElement | null): void => {
+  cellFocus(getParentCell(currentEl));
 };
 
 /**
  * Focus Next Cell of a react-table. Works from any element inside a cell or a cell itself.
  *
- * @param currCell -
+ * @param currentEl the crrent element
  * @returns
  */
-export const focusNextCell = (currCell: HTMLElement | null): void => {
-  focusSibligngCell(currCell, (parent) => {
-    return parent?.nextElementSibling;
-  });
+export const focusNextCell = (currentEl: HTMLElement | null): void => {
+  cellFocus(<HTMLTableDataCellElement>getParentCell(currentEl)?.nextElementSibling);
 };
 
 /**
  * Focus Prev Cell of a react-table. Works from any element inside a cell or a cell itself.
  *
- * @param currCell -
+ * @param currentEl the crrent element
  * @returns
  */
-export const focusPrevCell = (currCell: HTMLElement | null): void => {
-  focusSibligngCell(currCell, (parent) => {
-    return parent?.previousElementSibling;
-  });
+export const focusPrevCell = (currentEl: HTMLElement | null): void => {
+  cellFocus(<HTMLTableDataCellElement>getParentCell(currentEl)?.previousElementSibling);
+};
+
+/**
+ * Focus Upper Cell of a react-table. Works from any element inside a cell or a cell itself.
+ *
+ * @param currentEl the crrent element
+ * @returns
+ */
+export const focusUpperCell = (currentEl: HTMLElement | null): void => {
+  const currCell = <HTMLTableDataCellElement>getParentCell(currentEl);
+  const currRow = <HTMLTableRowElement>currCell.parentElement;
+  const currTable = currCell.closest("table");
+  const gotoRow = currTable?.rows[currRow.rowIndex - 1];
+
+  cellFocus(<HTMLTableDataCellElement>gotoRow?.cells[currCell.cellIndex]);
+};
+
+/**
+ * Focus Lower Cell of a react-table. Works from any element inside a cell or a cell itself.
+ *
+ * @param currentEl the crrent element
+ * @returns
+ */
+export const focusLowerCell = (currentEl: HTMLElement | null): void => {
+  const currCell = <HTMLTableDataCellElement>getParentCell(currentEl);
+  const currRow = <HTMLTableRowElement>currCell.parentElement;
+  const currTable = currCell.closest("table");
+  const gotoRow = currTable?.rows[currRow.rowIndex + 1];
+
+  cellFocus(<HTMLTableDataCellElement>gotoRow?.cells[currCell.cellIndex]);
 };

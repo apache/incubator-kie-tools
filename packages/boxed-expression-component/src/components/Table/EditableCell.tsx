@@ -19,7 +19,7 @@ import * as Monaco from "@kie-tooling-core/monaco-editor";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CellProps } from "../../api";
-import { blurActiveElement, focusNextTextArea, focusPrevCell, focusTextArea, paste } from "./common";
+import { blurActiveElement, focusCurrentCell, focusNextCell, focusPrevCell, focusTextArea, paste } from "./common";
 import "./EditableCell.css";
 import { useBoxedExpression } from "../../context";
 
@@ -140,13 +140,6 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
     [triggerReadMode]
   );
 
-  // const onEditableCellKeyDown = useCallback((e: React.KeyboardEvent<HTMLElement>) => {
-  //   const key = e.key;
-  //   if (key == "ArrowLeft") {
-  //     focusPrevCell(wrapper.current);
-  //   }
-  // }, []);
-
   const onFeelKeyDown = useCallback(
     (event: Monaco.IKeyboardEvent, newValue: string) => {
       const key = event?.code.toLowerCase() ?? "";
@@ -168,10 +161,15 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
         feelInputRef.current?.setMonacoValue(previousValue);
         triggerReadMode(previousValue);
         setMode(READ_MODE);
+        focusCurrentCell(textarea.current);
       }
 
       if (isTab) {
-        focusNextTextArea(textarea.current);
+        if (!event.shiftKey) {
+          setTimeout(() => focusNextCell(textarea.current), 50);
+        } else {
+          setTimeout(() => focusPrevCell(textarea.current), 50);
+        }
       }
     },
     [triggerReadMode, previousValue]
@@ -211,6 +209,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
           data-testid={"editable-cell-textarea"}
           className="editable-cell-textarea"
           ref={textarea}
+          tabIndex={-1}
           value={textValue}
           onChange={onTextAreaChange}
           onBlur={onTextAreaBlur}

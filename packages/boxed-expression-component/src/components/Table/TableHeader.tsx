@@ -96,7 +96,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       const columnKey = getColumnKey(column);
       const classNames = `${columnKey} fixed-column no-clickable-cell`;
       return (
-        <Th {...column.getHeaderProps()} className={classNames} key={columnKey}>
+        <Th {...column.getHeaderProps()} className={classNames} key={columnKey} tabIndex={0}>
           <div className="header-cell" data-ouia-component-type="expression-column-header">
             {column.label}
           </div>

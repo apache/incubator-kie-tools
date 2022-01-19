@@ -31,7 +31,15 @@ import { TableComposable } from "@patternfly/react-table";
 import { v4 as uuid } from "uuid";
 import { generateUuid, TableHeaderVisibility, TableOperation, TableProps } from "../../api";
 import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
-import { PASTE_OPERATION, pasteOnTable, focusPrevCell, focusNextCell } from "./common";
+import {
+  PASTE_OPERATION,
+  pasteOnTable,
+  focusPrevCell,
+  focusNextCell,
+  focusTextArea,
+  focusUpperCell,
+  focusLowerCell,
+} from "./common";
 import { EditableCell } from "./EditableCell";
 import "./Table.css";
 import { TableBody } from "./TableBody";
@@ -277,6 +285,21 @@ export const Table: React.FunctionComponent<TableProps> = ({
 
   const thProps = useCallback(
     (column: ColumnInstance) => ({
+      tabIndex: 0,
+      onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => {
+        const key = e.key;
+        if (key == "ArrowLeft") {
+          focusPrevCell(e.currentTarget);
+        } else if (key == "ArrowRight") {
+          focusNextCell(e.currentTarget);
+        } else if (key == "ArrowUp") {
+          focusUpperCell(e.currentTarget);
+        } else if (key == "ArrowDown") {
+          focusLowerCell(e.currentTarget);
+        } else if (key == "Enter") {
+          focusTextArea(e.currentTarget.querySelector("textarea"));
+        }
+      },
       onContextMenu: (e: ContextMenuEvent) => {
         const columnIndex = _.findIndex(
           getColumnsAtLastLevel(tableColumns, column.depth),
@@ -318,16 +341,24 @@ export const Table: React.FunctionComponent<TableProps> = ({
     [defaultCell, readOnlyCells]
   );
 
+  const commonCellProps = {};
+
   const tdProps = useCallback(
     (columnIndex: number, rowIndex: number) => ({
       tabIndex: 0,
       onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => {
         const key = e.key;
+        console.log(e.currentTarget);
         if (key == "ArrowLeft") {
           focusPrevCell(e.currentTarget);
-        }
-        if (key == "ArrowRight") {
+        } else if (key == "ArrowRight") {
           focusNextCell(e.currentTarget);
+        } else if (key == "ArrowUp") {
+          focusUpperCell(e.currentTarget);
+        } else if (key == "ArrowDown") {
+          focusLowerCell(e.currentTarget);
+        } else if (key == "Enter") {
+          focusTextArea(e.currentTarget.querySelector("textarea"));
         }
       },
       onContextMenu: (e: ContextMenuEvent) => {

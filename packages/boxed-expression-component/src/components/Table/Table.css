@@ -94,6 +94,12 @@
   border: 1px solid var(--pf-global--palette--black-300);
 }
 
+.expression-container .table-component table thead th:focus,
+.expression-container .table-component table tbody td:focus {
+  border: 2px solid #438cb1;
+  outline: none !important;
+}
+
 /** Table Body rules */
 
 .expression-container .table-component table tr {
