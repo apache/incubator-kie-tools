@@ -102,7 +102,7 @@ export function EditorToolbar(props: Props) {
     <PageHeader
       logo={
         <Brand
-          src={`images/${fileExtension}_kogito_logo.svg`}
+          src={`images/${fileExtension.toLowerCase()}_kogito_logo.svg`}
           alt={`${fileExtension} kogito logo`}
           onClick={props.onClose}
         />
