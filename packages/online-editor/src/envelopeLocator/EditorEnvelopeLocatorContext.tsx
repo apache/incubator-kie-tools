@@ -18,23 +18,18 @@ import * as React from "react";
 import { useContext, useMemo } from "react";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
 
-export type SupportedFileExtensions = "bpmn" | "bpmn2" | "dmn" | "pmml" | "json" | "yml";
+export type SupportedFileExtensions = "bpmn" | "bpmn2" | "dmn" | "pmml";
 
 export const EditorEnvelopeLocatorContext = React.createContext<EditorEnvelopeLocator>({} as any);
 
 export function EditorEnvelopeLocatorContextProvider(props: { children: React.ReactNode }) {
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
-    () => ({
-      targetOrigin: window.location.origin,
-      mapping: new Map<SupportedFileExtensions, EnvelopeMapping>([
-        ["bpmn", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "bpmn-envelope.html" }],
-        ["bpmn2", { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "bpmn-envelope.html" }],
-        ["dmn", { resourcesPathPrefix: "gwt-editors/dmn", envelopePath: "dmn-envelope.html" }],
-        ["pmml", { resourcesPathPrefix: "", envelopePath: "pmml-envelope.html" }],
-        ["json", { resourcesPathPrefix: "", envelopePath: "serverless-workflow-envelope.html" }],
-        ["yml", { resourcesPathPrefix: "", envelopePath: "serverless-workflow-envelope.html" }],
+    () =>
+      new EditorEnvelopeLocator(window.location.origin, [
+        new EnvelopeMapping("**/*.bpmn?(2)", "gwt-editors/bpmn", "bpmn-envelope.html"),
+        new EnvelopeMapping("**/*.dmn", "gwt-editors/dmn", "dmn-envelope.html"),
+        new EnvelopeMapping("**/*.pmml", "", "pmml-envelope.html"),
       ]),
-    }),
     []
   );
 

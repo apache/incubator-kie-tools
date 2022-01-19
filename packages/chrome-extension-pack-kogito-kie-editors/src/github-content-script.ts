@@ -16,6 +16,7 @@
 
 import { ChromeRouter } from "./ChromeRouter";
 import { startExtension } from "@kie-tooling-core/chrome-extension";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
 
 const resourcesPathPrefix = new ChromeRouter().getResourcesPathPrefix();
 
@@ -30,37 +31,9 @@ startExtension({
       return `${process.env.WEBPACK_REPLACE__onlineEditor_url}/#/import?url=${repoUrl}`;
     },
   },
-  editorEnvelopeLocator: {
-    targetOrigin: window.location.origin,
-    mapping: new Map([
-      [
-        "bpmn",
-        {
-          resourcesPathPrefix: `${resourcesPathPrefix}/bpmn`,
-          envelopePath: `${resourcesPathPrefix}/bpmn-envelope.html`,
-        },
-      ],
-      [
-        "bpmn2",
-        {
-          resourcesPathPrefix: `${resourcesPathPrefix}/bpmn`,
-          envelopePath: `${resourcesPathPrefix}/bpmn-envelope.html`,
-        },
-      ],
-      [
-        "dmn",
-        {
-          resourcesPathPrefix: `${resourcesPathPrefix}/dmn`,
-          envelopePath: `${resourcesPathPrefix}/dmn-envelope.html`,
-        },
-      ],
-      [
-        "scesim",
-        {
-          resourcesPathPrefix: `${resourcesPathPrefix}/scesim`,
-          envelopePath: `${resourcesPathPrefix}/scesim-envelope.html`,
-        },
-      ],
-    ]),
-  },
+  editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
+    new EnvelopeMapping("**/*.bpmn?(2)", `${resourcesPathPrefix}/bpmn`, `${resourcesPathPrefix}/bpmn-envelope.html`),
+    new EnvelopeMapping("**/*.dmn", `${resourcesPathPrefix}/dmn`, `${resourcesPathPrefix}/dmn-envelope.html`),
+    new EnvelopeMapping("**/*.scesim", `${resourcesPathPrefix}/scesim`, `${resourcesPathPrefix}/scesim-envelope.html`),
+  ]),
 });

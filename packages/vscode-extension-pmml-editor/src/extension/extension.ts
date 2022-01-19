@@ -16,6 +16,7 @@
 
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tooling-core/backend/dist/i18n";
 import { VsCodeBackendProxy } from "@kie-tooling-core/backend/dist/vscode";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
 import { I18n } from "@kie-tooling-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tooling-core/vscode-extension";
 import * as vscode from "vscode";
@@ -34,18 +35,9 @@ export function activate(context: vscode.ExtensionContext) {
     viewType: "kieKogitoWebviewEditorsPmml",
     generateSvgCommandId: "",
     silentlyGenerateSvgCommandId: "",
-    editorEnvelopeLocator: {
-      targetOrigin: "vscode",
-      mapping: new Map([
-        [
-          "pmml",
-          {
-            envelopePath: "dist/webview/PmmlEditorEnvelopeApp.js",
-            resourcesPathPrefix: "dist/webview/editors/pmml",
-          },
-        ],
-      ]),
-    },
+    editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
+      new EnvelopeMapping("**/*.pmml", "dist/webview/PmmlEditorEnvelopeApp.js", "dist/webview/editors/pmml"),
+    ]),
     backendProxy: backendProxy,
   });
 

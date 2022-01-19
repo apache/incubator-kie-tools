@@ -55,7 +55,7 @@ export class KogitoEditorFactory {
     const editorEnvelopeLocator = this.getEditorEnvelopeLocatorForWebview(webviewPanel.webview);
     const resourceContentService = this.createResourceContentService(document.uri.fsPath, document.relativePath);
 
-    const envelopeMapping = editorEnvelopeLocator.mapping.get(document.fileExtension);
+    const envelopeMapping = editorEnvelopeLocator.getEnvelopeMapping(document.uri.fsPath);
     if (!envelopeMapping) {
       throw new Error(`No envelope mapping found for '${document.fileExtension}'`);
     }
@@ -89,16 +89,19 @@ export class KogitoEditorFactory {
   }
 
   private getEditorEnvelopeLocatorForWebview(webview: vscode.Webview): EditorEnvelopeLocator {
-    return {
-      targetOrigin: this.editorEnvelopeLocator.targetOrigin,
-      mapping: [...this.editorEnvelopeLocator.mapping.entries()].reduce((mapping, [fileExtension, m]) => {
-        mapping.set(fileExtension, {
-          envelopePath: this.getWebviewPath(webview, m.envelopePath),
-          resourcesPathPrefix: this.getWebviewPath(webview, m.resourcesPathPrefix),
-        });
-        return mapping;
-      }, new Map<string, EnvelopeMapping>()),
-    };
+    return new EditorEnvelopeLocator(
+      this.editorEnvelopeLocator.targetOrigin,
+      [...this.editorEnvelopeLocator.envelopeMappings].reduce((envelopeMappings, mapping) => {
+        envelopeMappings.push(
+          new EnvelopeMapping(
+            mapping.filePathGlob,
+            this.getWebviewPath(webview, mapping.envelopePath),
+            this.getWebviewPath(webview, mapping.resourcesPathPrefix)
+          )
+        );
+        return envelopeMappings;
+      }, [] as EnvelopeMapping[])
+    );
   }
 
   private getWebviewPath(webview: Webview, relativePath: string) {

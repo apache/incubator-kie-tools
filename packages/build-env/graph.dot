@@ -154,7 +154,6 @@ digraph G {
   "vscode-extension-pack-kogito-kie-editors" -> "@kie-tooling-core/vscode-extension" [ style = "solid", color = "black" ];
   "vscode-extension-pack-kogito-kie-editors" -> "@kogito-tooling/kie-bc-editors" [ style = "solid", color = "black" ];
   "vscode-extension-pack-kogito-kie-editors" -> "@kogito-tooling/pmml-editor" [ style = "solid", color = "black" ];
-  "vscode-extension-pack-kogito-kie-editors" -> "@kogito-tooling/serverless-workflow-editor" [ style = "solid", color = "black" ];
   "vscode-extension-pack-kogito-kie-editors" -> "@kogito-tooling/external-assets-base" [ style = "dashed", color = "black" ];
   "vscode-extension-pmml-editor" -> "@kie-tooling-core/vscode-extension" [ style = "solid", color = "blue" ];
   "vscode-extension-pmml-editor" -> "@kogito-tooling/pmml-editor" [ style = "solid", color = "blue" ];

@@ -22,8 +22,6 @@ const labelColors = new Map<string, { color: LabelProps["color"]; label: string 
   ["bpmn2", { color: "green", label: "Workflow" }],
   ["dmn", { color: "blue", label: "Decision" }],
   ["pmml", { color: "purple", label: "Scorecard" }],
-  ["json", { color: "orange", label: "Serverless Workflow" }],
-  ["yml", { color: "orange", label: "Serverless Workflow" }],
 ]);
 
 export function FileLabel(props: { style?: LabelProps["style"]; extension: string }) {

@@ -16,6 +16,7 @@
 
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tooling-core/backend/dist/i18n";
 import { VsCodeBackendProxy } from "@kie-tooling-core/backend/dist/vscode";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
 import { I18n } from "@kie-tooling-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tooling-core/vscode-extension";
 import * as vscode from "vscode";
@@ -34,25 +35,10 @@ export function activate(context: vscode.ExtensionContext) {
     viewType: "kieKogitoWebviewEditorsDmn",
     generateSvgCommandId: "extension.kogito.getPreviewSvgDmn",
     silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgDmn",
-    editorEnvelopeLocator: {
-      targetOrigin: "vscode",
-      mapping: new Map([
-        [
-          "dmn",
-          {
-            envelopePath: "dist/webview/DmnEditorEnvelopeApp.js",
-            resourcesPathPrefix: "dist/webview/editors/dmn",
-          },
-        ],
-        [
-          "scesim",
-          {
-            envelopePath: "dist/webview/SceSimEditorEnvelopeApp.js",
-            resourcesPathPrefix: "dist/webview/editors/scesim",
-          },
-        ],
-      ]),
-    },
+    editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
+      new EnvelopeMapping("**/*.dmn", "dist/webview/DmnEditorEnvelopeApp.js", "dist/webview/editors/dmn"),
+      new EnvelopeMapping("**/*.scesim", "dist/webview/SceSimEditorEnvelopeApp.js", "dist/webview/editors/scesim"),
+    ]),
     backendProxy: backendProxy,
   });
 

@@ -16,6 +16,7 @@
 
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tooling-core/backend/dist/i18n";
 import { registerTestScenarioRunnerCommand, VsCodeBackendProxy } from "@kie-tooling-core/backend/dist/vscode";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
 import { I18n } from "@kie-tooling-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tooling-core/vscode-extension";
 import { VsCodeWorkspaceApi } from "@kie-tooling-core/workspace/dist/vscode";
@@ -49,60 +50,12 @@ export async function activate(context: vscode.ExtensionContext) {
     viewType: "kieKogitoWebviewEditors",
     generateSvgCommandId: "extension.kogito.getPreviewSvg",
     silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvg",
-    editorEnvelopeLocator: {
-      targetOrigin: envelopeTargetOrigin,
-      mapping: new Map([
-        [
-          "bpmn",
-          {
-            resourcesPathPrefix: "dist/webview/editors/bpmn",
-            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
-          },
-        ],
-        [
-          "bpmn2",
-          {
-            resourcesPathPrefix: "dist/webview/editors/bpmn",
-            envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
-          },
-        ],
-        [
-          "dmn",
-          {
-            resourcesPathPrefix: "dist/webview/editors/dmn",
-            envelopePath: "dist/webview/DmnEditorEnvelopeApp.js",
-          },
-        ],
-        [
-          "scesim",
-          {
-            resourcesPathPrefix: "dist/webview/editors/scesim",
-            envelopePath: "dist/webview/SceSimEditorEnvelopeApp.js",
-          },
-        ],
-        [
-          "pmml",
-          {
-            resourcesPathPrefix: "dist/webview/editors/pmml",
-            envelopePath: "dist/webview/PMMLEditorEnvelopeApp.js",
-          },
-        ],
-        [
-          "sw.json",
-          {
-            resourcesPathPrefix: "dist/webview/editors/serverless-workflow",
-            envelopePath: "dist/webview/ServerlessWorkflowEditorEnvelopeApp.js",
-          },
-        ],
-        [
-          "sw.yml",
-          {
-            resourcesPathPrefix: "dist/webview/editors/serverless-workflow",
-            envelopePath: "dist/webview/ServerlessWorkflowEditorEnvelopeApp.js",
-          },
-        ],
-      ]),
-    },
+    editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
+      new EnvelopeMapping("**/*.bpmn?(2)", "dist/webview/editors/bpmn", "dist/webview/BpmnEditorEnvelopeApp.js"),
+      new EnvelopeMapping("**/*.dmn", "dist/webview/editors/dmn", "dist/webview/DmnEditorEnvelopeApp.js"),
+      new EnvelopeMapping("**/*.scesim", "dist/webview/editors/scesim", "dist/webview/SceSimEditorEnvelopeApp.js"),
+      new EnvelopeMapping("**/*.pmml", "dist/webview/editors/pmml", "dist/webview/PMMLEditorEnvelopeApp.js"),
+    ]),
     backendProxy: backendProxy,
   });
 

@@ -26,7 +26,7 @@ import { ElectronFile } from "../common/ElectronFile";
 import { GlobalContext } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { HomePage } from "./home/HomePage";
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
 import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n";
@@ -62,14 +62,11 @@ export function App() {
   );
 
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
-    () => ({
-      targetOrigin: window.location.origin,
-      mapping: new Map([
-        ["bpmn", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/bpmn-envelope.html" }],
-        ["bpmn2", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/bpmn-envelope.html" }],
-        ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/dmn-envelope.html" }],
+    () =>
+      new EditorEnvelopeLocator(window.location.origin, [
+        new EnvelopeMapping("**/*.bpmn?(2)", "../gwt-editors/bpmn", "envelope/bpmn-envelope.html"),
+        new EnvelopeMapping("**/*.dmn", "../gwt-editors/dmn", "envelope/dmn-envelope.html"),
       ]),
-    }),
     []
   );
 
@@ -125,7 +122,7 @@ export function App() {
 
   useEffect(() => {
     electron.ipcRenderer.on("openFile", (event: IpcRendererEvent, data: { file: ElectronFile }) => {
-      if (editorEnvelopeLocator.mapping.has(data.file.fileType)) {
+      if (editorEnvelopeLocator.hasMappingFor(data.file.filePath)) {
         if (page === Pages.EDITOR) {
           setPage(Pages.HOME);
         }

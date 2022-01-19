@@ -180,7 +180,7 @@ export function FilesPage(props: Props) {
     const fileType = extractFileExtension(urlObject.pathname);
     if (!fileType) {
       setInputFileUrlState(InputFileUrlState.NO_FILE_URL);
-    } else if (!context.editorEnvelopeLocator.mapping.has(fileType)) {
+    } else if (!context.editorEnvelopeLocator.hasMappingFor(urlObject.pathname)) {
       setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
     } else {
       setInputFileUrlState(InputFileUrlState.VALID);

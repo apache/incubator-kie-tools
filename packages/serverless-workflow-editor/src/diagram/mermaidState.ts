@@ -63,6 +63,10 @@ export class MermaidState {
     transitions.push(...this.naturalTransition(this.stateKeyDiagram(this.state.name), this.state.transition));
     transitions.push(...this.endTransition());
 
+    if (transitions.length == 0) {
+      return "";
+    }
+
     return transitions.reduce((p, c) => {
       return p + "\n" + c;
     });

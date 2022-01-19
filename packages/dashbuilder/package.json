@@ -23,7 +23,7 @@
     "build:dev:win32": "echo \"Build not supported on Windows\"",
     "build:dev:darwin": "echo \"Build not supported on macOS\"",
     "build:dev": "run-script-os",
-    "build:prod:linux": "yarn lint && yarn install:mvnw && mvn clean install -Dfull -B -ntp -DskipTests=$(build-env global.build.test --not) && yarn dist",
+    "build:prod:linux": "yarn lint && yarn install:mvnw && mvn clean install -Dfull -B -ntp -DskipTests && yarn dist",
     "build:prod:win32": "echo \"Build not supported on Windows\"",
     "build:prod:darwin": "echo \"Build not supported on macOS\"",
     "build:prod": "run-script-os"
