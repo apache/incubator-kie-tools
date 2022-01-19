@@ -28,6 +28,16 @@ export function activate(context: vscode.ExtensionContext) {
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
 
+  const dmnEnvelope = {
+    envelopePath: "dist/webview/DmnEditorEnvelopeApp.js",
+    resourcesPathPrefix: "dist/webview/editors/dmn",
+  };
+
+  const scesimEnvelope = {
+    envelopePath: "dist/webview/SceSimEditorEnvelopeApp.js",
+    resourcesPathPrefix: "dist/webview/editors/scesim",
+  };
+
   KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-dmn-editor",
     context: context,
@@ -37,20 +47,10 @@ export function activate(context: vscode.ExtensionContext) {
     editorEnvelopeLocator: {
       targetOrigin: "vscode",
       mapping: new Map([
-        [
-          "dmn",
-          {
-            envelopePath: "dist/webview/DmnEditorEnvelopeApp.js",
-            resourcesPathPrefix: "dist/webview/editors/dmn",
-          },
-        ],
-        [
-          "scesim",
-          {
-            envelopePath: "dist/webview/SceSimEditorEnvelopeApp.js",
-            resourcesPathPrefix: "dist/webview/editors/scesim",
-          },
-        ],
+        ["dmn", dmnEnvelope],
+        ["DMN", dmnEnvelope],
+        ["scesim", scesimEnvelope],
+        ["SCESIM", scesimEnvelope],
       ]),
     },
     backendProxy: backendProxy,
