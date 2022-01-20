@@ -15,6 +15,7 @@
  */
 
 import * as React from "react";
+import "./ImportJavaClassesWizardFirstStep.css";
 import {
   Bullseye,
   DataList,
@@ -27,6 +28,7 @@ import {
   EmptyStateIcon,
   SearchInput,
   Spinner,
+  Tooltip,
   Title,
 } from "@patternfly/react-core";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
@@ -130,13 +132,27 @@ export const ImportJavaClassesWizardFirstStep = ({
 
   return (
     <>
-      <SearchInput
-        placeholder={i18n.modalWizard.firstStep.input.placeholder}
-        value={searchValue}
-        onChange={handleSearchValueChange}
-        onClear={handleClearSearch}
-        autoFocus
-      />
+      <div className="fs-search-input">
+        {searchValue.length < 3 ? (
+          <Tooltip content={i18n.modalWizard.firstStep.input.tooltip}>
+            <SearchInput
+              autoFocus
+              onChange={handleSearchValueChange}
+              onClear={handleClearSearch}
+              placeholder={i18n.modalWizard.firstStep.input.placeholder}
+              value={searchValue}
+            />
+          </Tooltip>
+        ) : (
+          <SearchInput
+            autoFocus
+            onChange={handleSearchValueChange}
+            onClear={handleClearSearch}
+            placeholder={i18n.modalWizard.firstStep.input.placeholder}
+            value={searchValue}
+          />
+        )}
+      </div>
       {isRequestLoading ? (
         <Bullseye>
           <Spinner isSVG={true} />
