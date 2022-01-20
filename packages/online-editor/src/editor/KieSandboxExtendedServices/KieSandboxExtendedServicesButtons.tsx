@@ -40,10 +40,14 @@ import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../../workspace";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
   workspace: ActiveWorkspace | undefined;
+  workspaceFile: WorkspaceFile;
 }
 
 export function KieSandboxExtendedServicesButtons(props: Props) {
@@ -54,6 +58,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
   const dmnRunnerDispatch = useDmnRunnerDispatch();
   const settings = useSettings();
   const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems(props.workspace);
+  const { workspaceDmnRunnerInputs } = useWorkspacesDmnRunnerInputs();
 
   const toggleDmnRunnerDrawer = useCallback(() => {
     if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
@@ -160,6 +165,17 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
             >
               as Table
             </DropdownItem>,
+            <>
+              <Divider />
+              <DropdownItem
+                key={"delete-inputs"}
+                component={"button"}
+                icon={<TrashIcon />}
+                onClick={() => workspaceDmnRunnerInputs.deleteDmnRunnerData(props.workspaceFile)}
+              >
+                delete inputs
+              </DropdownItem>
+            </>,
           ]}
         />
       </FeatureDependentOnKieSandboxExtendedServices>

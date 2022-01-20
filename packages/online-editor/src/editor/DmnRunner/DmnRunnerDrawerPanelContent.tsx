@@ -37,7 +37,7 @@ import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import { WorkspaceFile } from "../../workspace";
+import { useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../../workspace";
 import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
@@ -46,6 +46,7 @@ import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -84,6 +85,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     contentFlexDirection: "row",
     buttonPosition: ButtonPosition.OUTPUT,
   });
+  const { workspaceDmnRunnerInputs } = useWorkspacesDmnRunnerInputs();
 
   const onResize = useCallback((width: number) => {
     // FIXME: PatternFly bug. The first interaction without resizing the splitter will result in width === 0.
@@ -401,6 +403,20 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                             onClick={onChangeToTableView}
                           >
                             <TableIcon />
+                          </Button>
+                        </Tooltip>
+                      </ToolbarItem>
+                      <ToolbarItem>
+                        <Tooltip content={"Delete inputs data"}>
+                          <Button
+                            ouiaId="delete-dmn-runner-inputs"
+                            className={"kogito-tooling--masthead-hoverable"}
+                            variant={ButtonVariant.plain}
+                            onClick={() => {
+                              workspaceDmnRunnerInputs.deleteDmnRunnerData(props.workspaceFile);
+                            }}
+                          >
+                            <TrashIcon />
                           </Button>
                         </Tooltip>
                       </ToolbarItem>

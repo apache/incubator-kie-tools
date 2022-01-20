@@ -72,6 +72,7 @@ export function useWorkspaceDmnRunnerInputs(
         console.debug("Subscribing to " + uniqueFileIdentifier);
         const broadcastChannel = new BroadcastChannel(uniqueFileIdentifier);
         broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileEvents>) => {
+          // create new message related to the change of the input;
           console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(data)}`);
           if (data.type === "MOVE" || data.type == "RENAME") {
             if (canceled.get()) {
@@ -83,11 +84,14 @@ export function useWorkspaceDmnRunnerInputs(
             );
             workspaceDmnRunnerInputs?.renameDmnRunnerData(workspaceFile, newRelativePathWithoutExtension);
           }
-          if (data.type === "DELETE") {
-            if (canceled.get()) {
-              return;
-            }
-            workspaceDmnRunnerInputs?.delete(workspaceId);
+          // if (data.type === "DELETE") {
+          //   if (canceled.get()) {
+          //     return;
+          //   }
+          //   workspaceDmnRunnerInputs?.delete(workspaceId);
+          // }
+          if (data.type === "UPDATE" || data.type === "DELETE" || data.type === "ADD") {
+            refresh(workspaceId, data.relativePath, canceled);
           }
         };
 
@@ -108,24 +112,23 @@ export function useWorkspaceDmnRunnerInputs(
       if (!data) {
         return [{}];
       }
-      return data.getFileContents().then((content) => JSON.parse(decoder.decode(content)) as Array<object>);
+      return data.getFileContents().then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
     });
   }, [workspaceDmnRunnerInputs, workspaceFile]);
 
   const updateInputRows = useCallback(
-    async (newInputRows: Array<object> | ((previous: Array<object>) => Array<object>)) => {
+    async (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => {
       if (!workspaceFile || !workspaceDmnRunnerInputs) {
         return;
       }
       if (typeof newInputRows === "function") {
         const data = await workspaceDmnRunnerInputs.getDmnRunnerData(workspaceFile);
-        const currentInputRows = await data
+        const previousInputRows = await data
           ?.getFileContents()
-          .then((content) => JSON.parse(decoder.decode(content)) as Array<object>);
-        await workspaceDmnRunnerInputs.createOrOverwriteDmnRunnerData(
-          workspaceFile,
-          newInputRows(currentInputRows ?? [{}])
-        );
+          .then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
+        const currentInputRows = newInputRows(previousInputRows ?? [{}]);
+        await workspaceDmnRunnerInputs.createOrOverwriteDmnRunnerData(workspaceFile, currentInputRows);
+        setInputRows(currentInputRows);
       } else {
         // Change to updateDmnRunnerInput;
         await workspaceDmnRunnerInputs.createOrOverwriteDmnRunnerData(workspaceFile, newInputRows);
