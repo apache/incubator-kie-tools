@@ -28,11 +28,11 @@ import {
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 
 interface NewProps {
-  newContent: () => void;
+  newContent: (type: string) => void;
 }
 
 interface UploadProps {
-  setContent: (path: string, xml: string) => void;
+  setContent: (path: string, content: string) => void;
 }
 
 interface AllProps extends NewProps, UploadProps {}
@@ -48,8 +48,11 @@ export const ServerlessWorkflowEmptyState = (props: AllProps) => (
     </EmptyStateBody>
     <FileChooser setContent={props.setContent} />
     <EmptyStateSecondaryActions>
-      <Button variant="link" onClick={(e) => props.newContent()} ouiaId="new-button">
-        New
+      <Button variant="link" onClick={(e) => props.newContent("json")} ouiaId="new-button">
+        New JSON
+      </Button>
+      <Button variant="link" onClick={(e) => props.newContent("yaml")} ouiaId="new-button">
+        New YAML
       </Button>
     </EmptyStateSecondaryActions>
   </EmptyState>
@@ -80,7 +83,13 @@ const FileChooser = (props: UploadProps) => {
         <i className="fa fa-cloud-upload" />
         Upload
       </label>
-      <input id="file-upload" style={{ display: "none" }} type="file" accept={".json"} onChange={(e) => showFile(e)} />
+      <input
+        id="file-upload"
+        style={{ display: "none" }}
+        type="file"
+        accept={".json,.yaml,.yml"}
+        onChange={(e) => showFile(e)}
+      />
     </div>
   );
 };

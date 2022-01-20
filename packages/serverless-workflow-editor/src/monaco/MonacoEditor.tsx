@@ -16,10 +16,12 @@
 
 import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
-import { buildEditor, IMonacoEditor } from "./augmentation";
+import { buildEditor, MonacoEditorApi } from "./augmentation";
+import * as path from "path";
 
 interface Props {
   content: string;
+  fileName: string;
   onContentChange: (content: string) => void;
 }
 
@@ -29,13 +31,13 @@ export interface MonacoEditorRef {
 }
 
 const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorRef | undefined, Props> = (
-  { content = "{}", onContentChange },
+  { content, fileName, onContentChange },
   forwardedRef
 ) => {
   const editorContainer = useRef<HTMLDivElement>(null);
-  const monacoInstance: IMonacoEditor = useMemo<IMonacoEditor>(() => {
-    return buildEditor(content === "" ? "{}" : content, onContentChange);
-  }, [content]);
+  const monacoInstance: MonacoEditorApi = useMemo<MonacoEditorApi>(() => {
+    return buildEditor(content, fileName, onContentChange);
+  }, [content, fileName]);
 
   useEffect(() => {
     if (editorContainer.current) {
@@ -47,7 +49,7 @@ const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorRef 
         monacoInstance.dispose();
       }
     };
-  }, [content]);
+  }, [content, fileName]);
 
   useImperativeHandle(
     forwardedRef,

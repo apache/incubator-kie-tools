@@ -17,7 +17,8 @@
     "@kie-tooling-core/editor": "0.0.0",
     "@kie-tooling-core/patternfly-base": "0.0.0",
     "mermaid": "^8.13.4",
-    "monaco-editor": "^0.23.0"
+    "monaco-editor": "^0.23.0",
+    "monaco-yaml": "^3.2.1"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",

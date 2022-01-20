@@ -75,12 +75,7 @@ function checkFunctionsPropertyNode(functionsNode: BaseASTNode): boolean {
 
 export class FullFunctionObjectCompletionHelper extends AbstractCompletionHelper {
   buildSuggestions = (context: CompletionContext): languages.CompletionItem[] | undefined => {
-    return [
-      buildFunctionSuggestions("function1", context.monacoContext.position),
-      buildFunctionSuggestions("function2", context.monacoContext.position),
-      buildFunctionSuggestions("function3", context.monacoContext.position),
-      buildFunctionSuggestions("function4", context.monacoContext.position),
-    ];
+    return [];
   };
 
   public matches = (node: ASTNode): boolean => {
@@ -90,12 +85,7 @@ export class FullFunctionObjectCompletionHelper extends AbstractCompletionHelper
 
 export class FunctionObjectPropsCompletionHelper extends AbstractCompletionHelper {
   public buildSuggestions = (context: CompletionContext): languages.CompletionItem[] | undefined => {
-    return [
-      buildFunctionObjectSuggestions("function1", context.monacoContext.position),
-      buildFunctionObjectSuggestions("function2", context.monacoContext.position),
-      buildFunctionObjectSuggestions("function3", context.monacoContext.position),
-      buildFunctionObjectSuggestions("function4", context.monacoContext.position),
-    ];
+    return [];
   };
 
   public matches = (node: ASTNode): boolean => {
@@ -112,10 +102,6 @@ export class FunctionObjectPropsCompletionHelper extends AbstractCompletionHelpe
       return false;
     }
 
-    if (node.properties && node.properties.length > 0) {
-      return false;
-    }
-
-    return true;
+    return !(node.properties && node.properties.length > 0);
   };
 }

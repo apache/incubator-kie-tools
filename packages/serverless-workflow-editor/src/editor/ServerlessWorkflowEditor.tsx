@@ -63,6 +63,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   Props
 > = (props, forwardedRef) => {
   const [originalContent, setOriginalContent] = useState<string>("");
+  const [path, setPath] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [diagramOutOfSync, setDiagramOutOfSync] = useState<boolean>(false);
   const svgContainer = useRef<HTMLDivElement>(null);
@@ -76,6 +77,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           try {
             setOriginalContent(newContent);
             setContent(newContent);
+            setPath(path);
             return Promise.resolve();
           } catch (e) {
             console.error(e);
@@ -141,7 +143,14 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     <Drawer isExpanded={true} isInline style={{ height: "100vh" }}>
       <DrawerContent panelContent={panelContent}>
         <DrawerContentBody>
-          <MonacoEditor content={originalContent} onContentChange={setContent} ref={monacoEditorRef} />
+          {path !== "" && (
+            <MonacoEditor
+              content={originalContent}
+              fileName={path}
+              onContentChange={setContent}
+              ref={monacoEditorRef}
+            />
+          )}
         </DrawerContentBody>
       </DrawerContent>
     </Drawer>

@@ -53,9 +53,9 @@ export const App = () => {
     <div>
       {content === undefined && (
         <ServerlessWorkflowEmptyState
-          newContent={() => {
+          newContent={(type: string) => {
             setContent("");
-            editor.current!.setContent("New document", "").finally();
+            editor.current!.setContent(`new-document.sw.${type}`, "").finally();
           }}
           setContent={(path: string, content: string) => {
             setContent(content);

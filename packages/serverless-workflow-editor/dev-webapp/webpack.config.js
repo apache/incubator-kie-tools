@@ -42,7 +42,17 @@ module.exports = (env) =>
         ],
       }),
       new MonacoWebpackPlugin({
-        languages: ["json", "yaml"],
+        languages: ["json"],
+        customLanguages: [
+          {
+            label: "yaml",
+            entry: ["monaco-yaml", "vs/basic-languages/yaml/yaml.contribution"],
+            worker: {
+              id: "monaco-yaml/yamlWorker",
+              entry: "monaco-yaml/lib/esm/yaml.worker",
+            },
+          },
+        ],
       }),
       new webpack.ProvidePlugin({
         mermaid: "mermaid",
