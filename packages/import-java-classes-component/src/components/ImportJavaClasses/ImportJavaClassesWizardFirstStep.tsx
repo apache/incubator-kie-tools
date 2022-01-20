@@ -16,6 +16,7 @@
 
 import * as React from "react";
 import {
+  Bullseye,
   DataList,
   DataListCell,
   DataListCheck,
@@ -25,6 +26,7 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   SearchInput,
+  Spinner,
   Title,
 } from "@patternfly/react-core";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
@@ -32,7 +34,6 @@ import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { useCallback, useState } from "react";
 import { JavaClass } from "./Model/JavaClass";
 import { JavaCodeCompletionService } from "./Service";
-import { JavaCodeCompletionClass } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
 
 export interface ImportJavaClassesWizardFirstStepProps {
   /** Service class which contains all API methods to dialog with Java Code Completion Extension*/
@@ -54,34 +55,47 @@ export const ImportJavaClassesWizardFirstStep = ({
   const { i18n } = useImportJavaClassesWizardI18n();
   const [searchValue, setSearchValue] = useState("");
   const [retrievedJavaClassesNames, setRetrievedJavaClassesNames] = useState<string[]>([]);
+  const [isRequestLoading, setRequestLoading] = useState(false);
+  const [requestTimer, setRequestTimer] = useState<NodeJS.Timeout | undefined>(undefined);
 
   const retrieveJavaClasses = useCallback(
     (value: string) => {
-      setSearchValue(value);
-      if (value.length > 2) {
-        try {
-          javaCodeCompletionService
-            .getClasses(value)
-            .then((javaCodeCompletionClasses: JavaCodeCompletionClass[]) => {
-              const retrievedClasses = javaCodeCompletionClasses.map((item) => item.query);
-              setRetrievedJavaClassesNames(retrievedClasses);
-            })
-            .catch((reason: any) => {
-              setRetrievedJavaClassesNames([]);
-              console.error(reason);
-            });
-        } catch (error) {
+      setRequestLoading(true);
+      javaCodeCompletionService
+        .getClasses(value)
+        .then((javaCodeCompletionClasses) => {
+          const retrievedClasses = javaCodeCompletionClasses.map((item) => item.query);
+          setRetrievedJavaClassesNames(retrievedClasses);
+          setRequestLoading(false);
+        })
+        .catch((reason) => {
           setRetrievedJavaClassesNames([]);
-          console.error(error);
-        }
-      } else {
-        setRetrievedJavaClassesNames([]);
-      }
+          setRequestLoading(false);
+          console.error(reason);
+        });
     },
     [javaCodeCompletionService]
   );
 
-  const handleSearchValueChange = useCallback((value) => retrieveJavaClasses(value), [retrieveJavaClasses]);
+  const handleSearchValueChange = useCallback(
+    (value: string) => {
+      setSearchValue(value);
+      /* Managing debounce effect */
+      if (requestTimer) {
+        clearTimeout(requestTimer);
+      }
+      if (value.length > 2) {
+        setRequestTimer(
+          global.setTimeout(() => {
+            retrieveJavaClasses(value);
+          }, 1000)
+        );
+      } else {
+        setRetrievedJavaClassesNames([]);
+      }
+    },
+    [retrieveJavaClasses, requestTimer]
+  );
 
   const handleClearSearch = useCallback(() => {
     setSearchValue("");
@@ -123,7 +137,11 @@ export const ImportJavaClassesWizardFirstStep = ({
         onClear={handleClearSearch}
         autoFocus
       />
-      {retrievedJavaClassesNames.length > 0 || selectedJavaClasses.length > 0 ? (
+      {isRequestLoading ? (
+        <Bullseye>
+          <Spinner isSVG={true} />
+        </Bullseye>
+      ) : retrievedJavaClassesNames.length > 0 || selectedJavaClasses.length > 0 ? (
         <DataList aria-label={"class-data-list"}>
           {dataListClassesSet.map((value) => (
             <DataListItem key={value} name={value}>

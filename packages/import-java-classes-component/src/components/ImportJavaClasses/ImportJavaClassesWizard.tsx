@@ -51,7 +51,7 @@ export const ImportJavaClassesWizard = ({
         .then((available: boolean) => {
           setButtonStatus(available ? "enable" : "disable");
         })
-        .catch((reason: any) => {
+        .catch((reason) => {
           setButtonStatus("error");
           console.error(reason);
         });
