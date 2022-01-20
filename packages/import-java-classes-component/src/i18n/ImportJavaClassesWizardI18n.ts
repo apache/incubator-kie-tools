@@ -22,7 +22,6 @@ interface ImportJavaClassesWizardDictionary extends ReferenceDictionary {
     text: string;
     disabledMessage: string;
     errorMessage: string;
-    loadingMessage: string;
   };
   modalWizard: {
     title: string;

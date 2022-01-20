@@ -38,11 +38,11 @@ export const ImportJavaClassesWizard = ({
   gwtLayerService,
   javaCodeCompletionService,
 }: ImportJavaClassesWizardProps) => {
-  type ButtonStatus = "disable" | "enable" | "error";
+  type ButtonStatus = "disable" | "enable" | "loading" | "error";
   const { i18n } = useImportJavaClassesWizardI18n();
   const [javaClasses, setJavaClasses] = useState<JavaClass[]>([]);
   const [isOpen, setOpen] = useState(false);
-  const [buttonStatus, setButtonStatus] = useState<ButtonStatus>("disable");
+  const [buttonStatus, setButtonStatus] = useState<ButtonStatus>("loading");
 
   useEffect(() => {
     try {
@@ -63,6 +63,10 @@ export const ImportJavaClassesWizard = ({
 
   const isButtonDisabled = useCallback(() => {
     return "enable" !== buttonStatus;
+  }, [buttonStatus]);
+
+  const isButtonLoading = useCallback(() => {
+    return "loading" == buttonStatus;
   }, [buttonStatus]);
 
   const defineTooltipMessage = useCallback(() => {
@@ -185,11 +189,12 @@ export const ImportJavaClassesWizard = ({
 
   return (
     <>
-      {isButtonDisabled() ? (
+      {defineTooltipMessage() ? (
         <Tooltip content={defineTooltipMessage()}>
           <Button
             data-testid={"modal-wizard-button"}
             isAriaDisabled={isButtonDisabled()}
+            isLoading={isButtonLoading()}
             onClick={handleButtonClick}
             variant={"secondary"}
           >
@@ -200,6 +205,7 @@ export const ImportJavaClassesWizard = ({
         <Button
           data-testid={"modal-wizard-button"}
           isAriaDisabled={isButtonDisabled()}
+          isLoading={isButtonLoading()}
           onClick={handleButtonClick}
           variant={"secondary"}
         >
