@@ -15,6 +15,7 @@
  */
 
 export * from "./BoxedExpressionEditor";
+export * from "./BoxedExpressionEditorGWTService";
 export * from "./BuiltinAggregation";
 export * from "./ContextEntry";
 export * from "./DataType";

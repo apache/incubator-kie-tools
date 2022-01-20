@@ -17,7 +17,7 @@
 import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { DataTypeProps, ExpressionProps, PMMLParams } from "../../api";
+import { BoxedExpressionEditorGWTService, DataTypeProps, ExpressionProps, PMMLParams } from "../../api";
 import {
   boxedExpressionEditorDictionaries,
   BoxedExpressionEditorI18nContext,
@@ -29,6 +29,8 @@ import "@patternfly/react-styles/css/components/Drawer/drawer.css";
 import "./base-no-reset-wrapped.css";
 
 export interface BoxedExpressionEditorProps {
+  /** The API methods which BoxedExpressionEditor component can use to dialog with GWT Layer */
+  boxedExpressionEditorGWTService?: BoxedExpressionEditorGWTService;
   /** Identifier of the decision node, where the expression will be hold */
   decisionNodeId: string;
   /** All expression properties used to define it */
@@ -78,6 +80,7 @@ export function BoxedExpressionEditor(props: BoxedExpressionEditorProps) {
       ctx={BoxedExpressionEditorI18nContext}
     >
       <BoxedExpressionProvider
+        boxedExpressionEditorGWTService={props.boxedExpressionEditorGWTService}
         decisionNodeId={props.decisionNodeId}
         expressionDefinition={expressionDefinition}
         dataTypes={props.dataTypes}
