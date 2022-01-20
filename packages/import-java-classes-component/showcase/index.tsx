@@ -26,6 +26,8 @@ const Showcase: React.FunctionComponent = () => {
     const bookClassesList = [{ query: "org.kie.test.kogito.Book" }];
     const boomClassesList = [{ query: "org.kie.test.kogito.Boom" }];
 
+    await delay();
+
     if (value === "Boo") {
       return booClassesList;
     } else if (value === "Book") {
@@ -73,10 +75,10 @@ const Showcase: React.FunctionComponent = () => {
 
   const isLanguageServerAvailableMock = async () => {
     await delay();
-    return Math.random() < 0.8;
+    return Math.random() < 0.75;
   };
 
-  const delay = () => new Promise((res) => setTimeout(res, Math.random() * (4000 - 750) + 1000));
+  const delay = () => new Promise((res) => setTimeout(res, Math.random() * (3000 - 500) + 1000));
 
   const importJavaClassesGWTService: ImportJavaClassGWTService = {
     importJavaClassesInDataTypeEditor: (javaClasses) =>
@@ -92,10 +94,9 @@ const Showcase: React.FunctionComponent = () => {
   return (
     <div className="showcase">
       <p>
-        This showcase demonstrates how the <strong>Import Java Classes</strong> component works. Adding the component to
-        the DOM, will result to render a Button with <em>Import Java Classes</em> label. As default status, the button
-        is disabled with a tooltip reporting the reason. Using the above menu, you can modify the button status and the
-        related tooltip message.
+        This showcase demonstrates how the <strong>Import Java Classes</strong> component works. To simulate Button
+        Enabled/Disabled status, which is managed by the <strong>JavaCodeCompletionService</strong>, this showcase will
+        randomy enable (75%) or disable (25%) the button.
       </p>
       <p>
         To simulate the searching of a Java Classes on the Search box inside the wizard, please use values:
