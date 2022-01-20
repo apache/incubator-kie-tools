@@ -30,8 +30,9 @@ interface ImportJavaClassesWizardDictionary extends ReferenceDictionary {
     firstStep: {
       stepName: string;
       input: {
-        title: string;
         placeholder: string;
+        title: string;
+        tooltip: string;
       };
       emptyState: {
         title: string;

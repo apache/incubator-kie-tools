@@ -33,8 +33,9 @@ export const en: ImportJavaClassesWizardI18n = {
     firstStep: {
       stepName: "Select Java classes",
       input: {
+        placeholder: "Type the class name here",
         title: "Search:",
-        placeholder: "Search a class name ...",
+        tooltip: "Type at least 3 characters to begin the search",
       },
       emptyState: {
         title: "No Java classes selected",
