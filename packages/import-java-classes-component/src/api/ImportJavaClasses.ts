@@ -15,7 +15,7 @@
  */
 
 import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
-import { JavaClass } from "../components/ImportJavaClasses/Model/JavaClass";
+import { JavaClass } from "../components/ImportJavaClasses/model/JavaClass";
 
 export {};
 

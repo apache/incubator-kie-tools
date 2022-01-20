@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
-import { ImportJavaClasses, ImportJavaClassGWTService, JavaCodeCompletionService } from "../../components";
+import { ImportJavaClasses, GWTLayerService, JavaCodeCompletionService } from "../../components";
 import * as _ from "lodash";
 
 describe("ImportJavaClasses component tests", () => {
@@ -275,7 +275,7 @@ describe("ImportJavaClasses component tests", () => {
     }
   };
 
-  const importJavaClassesGWTServiceMock: ImportJavaClassGWTService = {
+  const importJavaClassesGWTServiceMock: GWTLayerService = {
     importJavaClassesInDataTypeEditor: jest.fn((javaClasses) => {
       /* Do Nothing */
     }),

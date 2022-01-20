@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { JavaClass } from "../Model";
+import { JavaClass } from "../model";
 
 /**
- * This interface defines all the API methods which ImportJavaClasses component can use to dialog with GWT Layer
+ * This interface defines all the API methods which ImportJavaClasses component can uses to dialog with the GWT Layer
  */
-export interface ImportJavaClassGWTService {
+export interface GWTLayerService {
   /**
    * This method defines the GWT method to call whenever the Import button of the Wizard is clicked
    * @param javaClasses

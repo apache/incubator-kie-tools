@@ -18,7 +18,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import "@patternfly/react-core/dist/styles/base.css";
 import "./index.css";
-import { ImportJavaClasses, ImportJavaClassGWTService, JavaCodeCompletionService } from "../src";
+import { ImportJavaClasses, GWTLayerService, JavaCodeCompletionService } from "../src";
 
 const Showcase: React.FunctionComponent = () => {
   const getJavaCodeCompletionClassesMock = async (value: string) => {
@@ -80,7 +80,7 @@ const Showcase: React.FunctionComponent = () => {
 
   const delay = () => new Promise((res) => setTimeout(res, Math.random() * (3000 - 500) + 1000));
 
-  const importJavaClassesGWTService: ImportJavaClassGWTService = {
+  const importJavaClassesGWTService: GWTLayerService = {
     importJavaClassesInDataTypeEditor: (javaClasses) =>
       window.alert("Java Classes sent to editor:" + javaClasses.length),
   };

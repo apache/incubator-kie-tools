@@ -18,11 +18,11 @@ import * as React from "react";
 import { Bullseye, Spinner } from "@patternfly/react-core";
 import { useCallback, useEffect } from "react";
 import { ImportJavaClassesWizardFieldListTable } from "./ImportJavaClassesWizardFieldListTable";
-import { JavaField } from "./Model/JavaField";
-import { JavaClass } from "./Model/JavaClass";
-import { DMNSimpleType, JAVA_TO_DMN_MAP } from "./Model/DMNSimpleType";
-import { getJavaClassSimpleName } from "./Model/JavaClassUtils";
-import { JavaCodeCompletionService } from "./Service";
+import { JavaField } from "./model/JavaField";
+import { JavaClass } from "./model/JavaClass";
+import { DMNSimpleType, JAVA_TO_DMN_MAP } from "./model/DMNSimpleType";
+import { getJavaClassSimpleName } from "./model/JavaClassUtils";
+import { JavaCodeCompletionService } from "./services";
 
 export interface ImportJavaClassesWizardSecondStepProps {
   /** Service class which contains all API methods to dialog with Java Code Completion Extension*/

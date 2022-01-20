@@ -34,8 +34,8 @@ import {
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { useCallback, useState } from "react";
-import { JavaClass } from "./Model/JavaClass";
-import { JavaCodeCompletionService } from "./Service";
+import { JavaClass } from "./model/JavaClass";
+import { JavaCodeCompletionService } from "./services";
 
 export interface ImportJavaClassesWizardFirstStepProps {
   /** Service class which contains all API methods to dialog with Java Code Completion Extension*/

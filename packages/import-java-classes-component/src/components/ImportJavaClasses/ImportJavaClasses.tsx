@@ -22,11 +22,11 @@ import {
 } from "../../i18n";
 import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
 import { ImportJavaClassesWizard } from "./ImportJavaClassesWizard";
-import { ImportJavaClassGWTService, JavaCodeCompletionService } from "./Service";
+import { GWTLayerService, JavaCodeCompletionService } from "./services";
 
 export interface ImportJavaClassesProps {
   /** Service class which contains all API method to dialog with GWT layer */
-  importJavaClassesGWTService: ImportJavaClassGWTService;
+  importJavaClassesGWTService: GWTLayerService;
   /** Service class which contains all API methods to dialog with Java Code Completion Extension*/
   javaCodeCompletionService: JavaCodeCompletionService;
 }
