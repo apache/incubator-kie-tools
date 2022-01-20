@@ -56,6 +56,9 @@ const BoxedExpressionWrapper: React.FunctionComponent<BoxedExpressionEditorProps
     notifyUserAction(): void {
       window.beeApiWrapper?.notifyUserAction();
     },
+    openManageDataType(): void {
+      window.beeApiWrapper?.openManageDataType();
+    },
     resetExpressionDefinition: (definition: ExpressionProps) => {
       setExpressionDefinition(definition);
       window.beeApiWrapper?.resetExpressionDefinition?.(definition);
