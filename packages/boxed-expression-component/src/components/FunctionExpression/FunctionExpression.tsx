@@ -58,7 +58,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (
   const FIRST_ENTRY_ID = "0";
   const SECOND_ENTRY_ID = "1";
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { editorRef, setSupervisorHash, pmmlParams } = useBoxedExpression();
+  const { editorRef, setSupervisorHash, pmmlParams, boxedExpressionEditorGWTService } = useBoxedExpression();
   const pmmlDocument = useMemo(
     () => (functionExpression as PmmlFunctionProps).document,
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -324,7 +324,9 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (
           updatedDefinition,
           () => {
             setSupervisorHash(hashfy(updatedDefinition));
-            window.beeApi?.broadcastFunctionExpressionDefinition?.(updatedDefinition as FunctionProps);
+            boxedExpressionEditorGWTService?.broadcastFunctionExpressionDefinition?.(
+              updatedDefinition as FunctionProps
+            );
           },
           [
             "name",

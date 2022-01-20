@@ -27,12 +27,15 @@ import {
 import { EditExpressionMenu, EXPRESSION_NAME } from "../EditExpressionMenu";
 import { Resizer } from "../Resizer";
 import { EditableCell } from "../Table";
+import { useBoxedExpression } from "../../context";
 
 const HEADER_WIDTH = 250;
 
 export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> = (
   literalExpression: LiteralExpressionProps
 ) => {
+  const { boxedExpressionEditorGWTService } = useBoxedExpression();
+
   const spreadLiteralExpressionDefinition = useCallback(
     (literalExpressionUpdate?: Partial<LiteralExpressionProps>) => {
       const expressionDefinition: LiteralExpressionProps = {
@@ -54,7 +57,7 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
           if (literalExpression.isHeadless) {
             literalExpression.onUpdatingRecursiveExpression?.(expressionDefinition);
           } else {
-            window.beeApi?.broadcastLiteralExpressionDefinition?.(expressionDefinition);
+            boxedExpressionEditorGWTService?.broadcastLiteralExpressionDefinition?.(expressionDefinition);
           }
         },
         ["name", "dataType", "content", "width"]

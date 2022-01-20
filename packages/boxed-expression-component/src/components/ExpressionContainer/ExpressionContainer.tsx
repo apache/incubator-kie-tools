@@ -19,6 +19,7 @@ import { useCallback, useRef } from "react";
 import "./ExpressionContainer.css";
 import { ExpressionProps, LogicType } from "../../api";
 import { LogicTypeSelector } from "../LogicTypeSelector";
+import { useBoxedExpression } from "../../context";
 
 export interface ExpressionContainerProps {
   /** Expression properties */
@@ -31,6 +32,8 @@ export const ExpressionContainer: (props: ExpressionContainerProps) => JSX.Eleme
   selectedExpression,
   onExpressionChange,
 }: ExpressionContainerProps) => {
+  const { boxedExpressionEditorGWTService } = useBoxedExpression();
+
   const expressionContainerRef = useRef<HTMLDivElement>(null);
 
   const updateExpressionNameAndDataType = useCallback(
@@ -64,7 +67,7 @@ export const ExpressionContainer: (props: ExpressionContainerProps) => JSX.Eleme
       dataType: selectedExpression.dataType,
       logicType: LogicType.Undefined,
     };
-    window.beeApi?.resetExpressionDefinition?.(updatedExpression);
+    boxedExpressionEditorGWTService?.resetExpressionDefinition?.(updatedExpression);
     onExpressionChange?.(updatedExpression);
   }, [onExpressionChange, selectedExpression.dataType, selectedExpression.name, selectedExpression.id]);
 
