@@ -29,13 +29,13 @@ import { Button, Modal, ModalVariant, Tooltip, Wizard } from "@patternfly/react-
 
 export interface ImportJavaClassesWizardProps {
   /** Service class which contains all API methods to dialog with GWT layer */
-  importJavaClassesGWTService: GWTLayerService;
+  gwtLayerService: GWTLayerService;
   /** Service class which contains all API methods to dialog with Java Code Completion Extension*/
   javaCodeCompletionService: JavaCodeCompletionService;
 }
 
 export const ImportJavaClassesWizard = ({
-  importJavaClassesGWTService,
+  gwtLayerService,
   javaCodeCompletionService,
 }: ImportJavaClassesWizardProps) => {
   type ButtonStatus = "disable" | "enable" | "error";
@@ -144,8 +144,8 @@ export const ImportJavaClassesWizard = ({
 
   const handleWizardSave = useCallback(() => {
     handleWizardClose();
-    importJavaClassesGWTService.importJavaClassesInDataTypeEditor(javaClasses);
-  }, [javaClasses, handleWizardClose, importJavaClassesGWTService]);
+    gwtLayerService.importJavaClassesInDataTypeEditor(javaClasses);
+  }, [javaClasses, handleWizardClose, gwtLayerService]);
 
   const steps = [
     {

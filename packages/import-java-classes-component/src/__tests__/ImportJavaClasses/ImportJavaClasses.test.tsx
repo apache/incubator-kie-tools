@@ -23,7 +23,7 @@ describe("ImportJavaClasses component tests", () => {
   test("should render ImportJavaClasses Button component", async () => {
     const { baseElement } = render(
       <ImportJavaClasses
-        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock(jest.fn(() => []))}
       />
     );
@@ -36,7 +36,7 @@ describe("ImportJavaClasses component tests", () => {
   test("Should show Modal after clicking on the button", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
-        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock(jest.fn(() => []))}
       />
     );
@@ -50,7 +50,7 @@ describe("ImportJavaClasses component tests", () => {
   test.skip("Should search box works", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
-        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock(jest.fn(() => []))}
       />
     );
@@ -65,7 +65,7 @@ describe("ImportJavaClasses component tests", () => {
   test.skip("Should search box with results works", () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
-        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock(
           jest.fn((value) => [{ query: "com.Book" }, { query: "com.Author" }])
         )}
@@ -84,7 +84,7 @@ describe("ImportJavaClasses component tests", () => {
   test.skip("Should close Modal after opening it and clicking on the Cancel button", () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
-        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock(jest.fn())}
       />
     );
@@ -99,7 +99,7 @@ describe("ImportJavaClasses component tests", () => {
   test.skip("Should move to second step", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
-        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock(
           jest.fn((value) => [{ query: "com.Book" }, { query: "com.Author" }, { query: "com.Test" }])
         )}
@@ -115,7 +115,7 @@ describe("ImportJavaClasses component tests", () => {
   test.skip("Should move to second step and fetch a Java Class", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
-        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock(
           jest.fn((value) => [{ query: "com.Book" }, { query: "com.Author" }, { query: "com.Test" }])
         )}
@@ -138,7 +138,7 @@ describe("ImportJavaClasses component tests", () => {
   test.skip("Should move to second step and fetch, remove a Java Class", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
-        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock(
           jest.fn((value) => [{ query: "com.Book" }, { query: "com.Author" }, { query: "com.Test" }])
         )}
@@ -167,7 +167,7 @@ describe("ImportJavaClasses component tests", () => {
   test.skip("Should move to third step", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
-        importJavaClassesGWTService={importJavaClassesGWTServiceMock}
+        gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock(
           jest.fn((value) => [{ query: "com.Book" }, { query: "com.Author" }, { query: "com.Test" }])
         )}
@@ -275,7 +275,7 @@ describe("ImportJavaClasses component tests", () => {
     }
   };
 
-  const importJavaClassesGWTServiceMock: GWTLayerService = {
+  const gwtLayerServiceMock: GWTLayerService = {
     importJavaClassesInDataTypeEditor: jest.fn((javaClasses) => {
       /* Do Nothing */
     }),

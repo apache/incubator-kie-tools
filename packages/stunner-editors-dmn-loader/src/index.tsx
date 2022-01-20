@@ -31,7 +31,7 @@ import {
 } from "@kogito-tooling/boxed-expression-component";
 import {
   ImportJavaClasses,
-  ImportJavaClassGWTService,
+  GWTLayerService,
   JavaClass,
   JavaCodeCompletionService,
 } from "@kogito-tooling/import-java-classes-component";
@@ -133,7 +133,7 @@ const ImportJavaClassesWrapper = () => {
     },
   };
 
-  const importJavaClassesGWTService: ImportJavaClassGWTService = {
+  const gwtLayerService: GWTLayerService = {
     importJavaClassesInDataTypeEditor: (javaClasses) => window.ImportJavaClassesAPI?.importJavaClasses?.(javaClasses),
   };
 
@@ -143,12 +143,7 @@ const ImportJavaClassesWrapper = () => {
     isLanguageServerAvailable: window.envelope.javaCodeCompletionService.isLanguageServerAvailable,
   };
 
-  return (
-    <ImportJavaClasses
-      importJavaClassesGWTService={importJavaClassesGWTService}
-      javaCodeCompletionService={javaCodeCompletionService}
-    />
-  );
+  return <ImportJavaClasses gwtLayerService={gwtLayerService} javaCodeCompletionService={javaCodeCompletionService} />;
 };
 
 const renderImportJavaClasses = (selector: string) => {

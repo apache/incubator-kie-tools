@@ -80,7 +80,7 @@ const Showcase: React.FunctionComponent = () => {
 
   const delay = () => new Promise((res) => setTimeout(res, Math.random() * (3000 - 500) + 1000));
 
-  const importJavaClassesGWTService: GWTLayerService = {
+  const gwtLayerService: GWTLayerService = {
     importJavaClassesInDataTypeEditor: (javaClasses) =>
       window.alert("Java Classes sent to editor:" + javaClasses.length),
   };
@@ -104,10 +104,7 @@ const Showcase: React.FunctionComponent = () => {
         component usage.
       </p>
       <div className="main">
-        <ImportJavaClasses
-          importJavaClassesGWTService={importJavaClassesGWTService}
-          javaCodeCompletionService={javaCodeCompletionService}
-        />
+        <ImportJavaClasses gwtLayerService={gwtLayerService} javaCodeCompletionService={javaCodeCompletionService} />
       </div>
     </div>
   );

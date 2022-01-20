@@ -26,15 +26,12 @@ import { GWTLayerService, JavaCodeCompletionService } from "./services";
 
 export interface ImportJavaClassesProps {
   /** Service class which contains all API method to dialog with GWT layer */
-  importJavaClassesGWTService: GWTLayerService;
+  gwtLayerService: GWTLayerService;
   /** Service class which contains all API methods to dialog with Java Code Completion Extension*/
   javaCodeCompletionService: JavaCodeCompletionService;
 }
 
-export const ImportJavaClasses = ({
-  importJavaClassesGWTService,
-  javaCodeCompletionService,
-}: ImportJavaClassesProps) => {
+export const ImportJavaClasses = ({ gwtLayerService, javaCodeCompletionService }: ImportJavaClassesProps) => {
   return (
     <I18nDictionariesProvider
       defaults={importJavaClassesWizardI18nDefaults}
@@ -43,7 +40,7 @@ export const ImportJavaClasses = ({
       ctx={ImportJavaClassesWizardI18nContext}
     >
       <ImportJavaClassesWizard
-        importJavaClassesGWTService={importJavaClassesGWTService}
+        gwtLayerService={gwtLayerService}
         javaCodeCompletionService={javaCodeCompletionService}
       />
     </I18nDictionariesProvider>
