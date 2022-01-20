@@ -348,7 +348,6 @@ export const Table: React.FunctionComponent<TableProps> = ({
       tabIndex: 0,
       onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => {
         const key = e.key;
-        console.log(e.currentTarget);
         if (key == "ArrowLeft") {
           focusPrevCell(e.currentTarget);
         } else if (key == "ArrowRight") {

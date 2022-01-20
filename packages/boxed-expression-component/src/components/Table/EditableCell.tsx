@@ -166,9 +166,11 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
 
       if (isTab) {
         if (!event.shiftKey) {
-          setTimeout(() => focusNextCell(textarea.current), 50);
+          //this setTimeout fixes the focus outside of the table when the suggestions opens
+          setTimeout(() => focusNextCell(textarea.current), 0);
         } else {
-          setTimeout(() => focusPrevCell(textarea.current), 50);
+          //this setTimeout fixes the focus outside of the table when the suggestions opens
+          setTimeout(() => focusPrevCell(textarea.current), 0);
         }
       }
     },

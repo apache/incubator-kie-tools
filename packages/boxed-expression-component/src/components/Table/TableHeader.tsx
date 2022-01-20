@@ -183,7 +183,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       };
 
       return (
-        <Th {...headerProps} {...thProps(column)} className={getCssClass()} key={columnKey}>
+        <Th {...headerProps} {...thProps(column)} className={getCssClass()} key={columnKey} tabIndex={0}>
           <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
             <div className="header-cell" data-ouia-component-type="expression-column-header">
               {column.dataType && editableHeader ? (
