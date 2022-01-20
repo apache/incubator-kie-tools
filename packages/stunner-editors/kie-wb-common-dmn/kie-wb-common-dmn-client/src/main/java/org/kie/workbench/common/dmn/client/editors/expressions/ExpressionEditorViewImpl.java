@@ -73,6 +73,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.Bo
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.ExpressionPropsFiller;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.js.DMNLoader;
@@ -162,6 +163,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
     private Event<DomainObjectSelectionEvent> domainObjectSelectionEvent;
     private Event<ExpressionEditorChanged> editorSelectedEvent;
+    private Event<DataTypePageTabActiveEvent> dataTypePageActiveEvent;
     private PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider;
     private DefinitionUtils definitionUtils;
     private ItemDefinitionUtils itemDefinitionUtils;
@@ -194,6 +196,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                     final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                                     final Event<ExpressionEditorChanged> editorSelectedEvent,
+                                    final Event<DataTypePageTabActiveEvent> dataTypePageActiveEvent,
                                     final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider,
                                     final DefinitionUtils definitionUtils,
                                     final ItemDefinitionUtils itemDefinitionUtils,
@@ -218,6 +221,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
         this.domainObjectSelectionEvent = domainObjectSelectionEvent;
         this.editorSelectedEvent = editorSelectedEvent;
+        this.dataTypePageActiveEvent = dataTypePageActiveEvent;
         this.pmmlDocumentMetadataProvider = pmmlDocumentMetadataProvider;
         this.definitionUtils = definitionUtils;
         this.itemDefinitionUtils = itemDefinitionUtils;
@@ -470,6 +474,22 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                         itemDefinitionUtils));
     }
 
+    public void notifyUserAction() {
+        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = createCommandBuilder();
+        final SaveCurrentStateCommand expressionCommand = new SaveCurrentStateCommand(getHasExpression(),
+                                                                                      getEditorSelectedEvent(),
+                                                                                      this,
+                                                                                      getNodeUUID());
+        addExpressionCommand(expressionCommand, commandBuilder);
+        addUpdatePropertyNameCommand(commandBuilder);
+
+        execute(commandBuilder);
+    }
+
+    public void openManageDataType() {
+        dataTypePageActiveEvent.fire(new DataTypePageTabActiveEvent());
+    }
+
     void executeExpressionCommand(final FillExpressionCommand expressionCommand) {
         expressionCommand.execute();
     }
@@ -607,18 +627,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     String getNodeUUID() {
         return nodeUUID;
-    }
-
-    public void notifyUserAction() {
-        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = createCommandBuilder();
-        final SaveCurrentStateCommand expressionCommand = new SaveCurrentStateCommand(getHasExpression(),
-                                                                                      getEditorSelectedEvent(),
-                                                                                      this,
-                                                                                      getNodeUUID());
-        addExpressionCommand(expressionCommand, commandBuilder);
-        addUpdatePropertyNameCommand(commandBuilder);
-
-        execute(commandBuilder);
     }
 
     void execute(final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder) {

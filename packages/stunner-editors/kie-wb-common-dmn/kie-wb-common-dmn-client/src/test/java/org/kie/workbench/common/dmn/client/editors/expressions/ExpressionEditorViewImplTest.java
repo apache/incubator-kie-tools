@@ -63,6 +63,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.L
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -187,6 +188,9 @@ public class ExpressionEditorViewImplTest {
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
     @Mock
+    private EventSourceMock<DataTypePageTabActiveEvent> dataTypePageActiveEvent;
+
+    @Mock
     private PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider;
 
     @Mock
@@ -304,6 +308,7 @@ public class ExpressionEditorViewImplTest {
                                                      refreshFormPropertiesEvent,
                                                      domainObjectSelectionEvent,
                                                      editorSelectedEvent,
+                                                     dataTypePageActiveEvent,
                                                      pmmlDocumentMetadataProvider,
                                                      definitionUtils,
                                                      itemDefinitionUtils,
@@ -713,6 +718,13 @@ public class ExpressionEditorViewImplTest {
         assertEquals(editorSelectedEvent, command.getEditorSelectedEvent());
         assertEquals(view, command.getView());
         assertEquals(NODE_UUID, command.getNodeUUID());
+    }
+
+    @Test
+    public void testOpenManageDataType() {
+        view.openManageDataType();
+
+        verify(dataTypePageActiveEvent).fire(any(DataTypePageTabActiveEvent.class));
     }
 
     @Test
