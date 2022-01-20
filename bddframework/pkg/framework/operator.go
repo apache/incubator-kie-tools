@@ -22,6 +22,7 @@ import (
 	"github.com/kiegroup/kogito-operator/meta"
 
 	v1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
@@ -197,6 +198,9 @@ func WaitForOperatorRunning(namespace, operatorPackageName string, catalog Opera
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("%s operator running", operatorPackageName), timeoutInMin,
 		func() (bool, error) {
 			return IsOperatorRunning(namespace, operatorPackageName, catalog)
+		},
+		func() (bool, error) {
+			return SubscriptionResolutionFails(namespace, operatorPackageName, catalog.source)
 		})
 }
 
@@ -250,6 +254,27 @@ func OperatorExistsUsingSubscription(namespace, operatorPackageName, operatorSou
 		return true, fmt.Errorf("Operator based on Subscription '%s' seems to be created in the namespace '%s', but there's no available pods replicas deployed ", operatorPackageName, namespace)
 	}
 	return true, nil
+}
+
+// SubscriptionResolutionFails returns true when Subscription fails to be resolved with error message
+func SubscriptionResolutionFails(namespace, operatorPackageName, operatorSource string) (bool, error) {
+	GetLogger(namespace).Debug("Checking Subscription", "Subscription", operatorPackageName, "Namespace", namespace)
+
+	subscription, err := getSubscription(kubeClient, namespace, operatorPackageName, operatorSource)
+	if err != nil {
+		return false, err
+	} else if subscription == nil {
+		return false, nil
+	}
+	GetLogger(namespace).Debug("Found", "Subscription", operatorPackageName)
+
+	for _, condition := range subscription.Status.Conditions {
+		// TODO: replace with condition.Type == ResolutionFailed when OLM dependency gets updated
+		if condition.Reason == "ConstraintsNotSatisfiable" && condition.Status == corev1.ConditionTrue {
+			return true, fmt.Errorf("Subscription installation fails: %s", condition.Message)
+		}
+	}
+	return false, nil
 }
 
 // CreateOperatorGroupIfNotExists creates an operator group if no exist
