@@ -33,10 +33,12 @@ import { Table } from "../Table";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { Column as ReactTableColumn, Column, ColumnInstance, DataRecord } from "react-table";
 import { DEFAULT_MIN_WIDTH } from "../Resizer";
+import { useBoxedExpression } from "../../context";
 
 export const RelationExpression: React.FunctionComponent<RelationProps> = (relationProps: RelationProps) => {
   const FIRST_COLUMN_NAME = "column-1";
   const { i18n } = useBoxedExpressionEditorI18n();
+  const { boxedExpressionEditorGWTService } = useBoxedExpression();
 
   const handlerConfiguration = [
     {
@@ -84,7 +86,7 @@ export const RelationExpression: React.FunctionComponent<RelationProps> = (relat
           if (relationProps.isHeadless) {
             relationProps.onUpdatingRecursiveExpression?.(expressionDefinition);
           } else {
-            window.beeApi?.broadcastRelationExpressionDefinition?.(expressionDefinition);
+            boxedExpressionEditorGWTService?.broadcastRelationExpressionDefinition?.(expressionDefinition);
           }
         },
         ["columns", "rows"]

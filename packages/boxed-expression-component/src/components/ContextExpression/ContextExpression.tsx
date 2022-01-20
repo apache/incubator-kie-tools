@@ -44,14 +44,14 @@ import * as _ from "lodash";
 import { ContextEntryExpression } from "./ContextEntryExpression";
 import { getContextEntryInfoCell } from "./ContextEntryInfoCell";
 import { hashfy, Resizer } from "../Resizer";
-import { BoxedExpressionGlobalContext } from "../../context";
+import { useBoxedExpression } from "../../context";
 
 const DEFAULT_CONTEXT_ENTRY_NAME = "ContextEntry-1";
 const DEFAULT_CONTEXT_ENTRY_DATA_TYPE = DataType.Undefined;
 
 export const ContextExpression: React.FunctionComponent<ContextProps> = (contextExpression: ContextProps) => {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { setSupervisorHash } = React.useContext(BoxedExpressionGlobalContext);
+  const { setSupervisorHash, boxedExpressionEditorGWTService } = useBoxedExpression();
 
   const rows = useMemo(
     () =>
@@ -98,7 +98,7 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
             contextExpression.onUpdatingRecursiveExpression?.(expression);
           } else {
             setSupervisorHash(hashfy(expression));
-            window.beeApi?.broadcastContextExpressionDefinition?.(updatedDefinition as ContextProps);
+            boxedExpressionEditorGWTService?.broadcastContextExpressionDefinition?.(updatedDefinition as ContextProps);
           }
         },
         ["name", "dataType", "contextEntries", "result", "entryInfoWidth", "entryExpressionWidth"]

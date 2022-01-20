@@ -16,7 +16,7 @@
 
 import * as _ from "lodash";
 import * as React from "react";
-import { PropsWithChildren, useCallback, useContext, useMemo, useRef } from "react";
+import { PropsWithChildren, useCallback, useMemo, useRef } from "react";
 import { ColumnInstance, DataRecord } from "react-table";
 import {
   Annotation,
@@ -34,7 +34,7 @@ import {
   TableHeaderVisibility,
   TableOperation,
 } from "../../api";
-import { BoxedExpressionGlobalContext } from "../../context";
+import { useBoxedExpression } from "../../context";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { hashfy } from "../Resizer";
 import { getColumnsAtLastLevel, Table } from "../Table";
@@ -58,7 +58,7 @@ interface SpreadFunction {
 }
 
 export function DecisionTableExpression(decisionTable: PropsWithChildren<DecisionTableProps>) {
-  const globalContext = useContext(BoxedExpressionGlobalContext);
+  const { setSupervisorHash, decisionNodeId, boxedExpressionEditorGWTService } = useBoxedExpression();
 
   const { i18n } = useBoxedExpressionEditorI18n();
 
@@ -97,8 +97,6 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     ],
     [i18n]
   );
-
-  const { setSupervisorHash } = useContext(BoxedExpressionGlobalContext);
 
   const getHandlerConfiguration = useMemo(() => {
     const configuration: { [columnGroupType: string]: GroupOperations[] } = {};
@@ -168,7 +166,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     };
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
-      accessor: globalContext.decisionNodeId,
+      accessor: decisionNodeId,
       label: decisionTable.name ?? DECISION_NODE_DEFAULT_NAME,
       dataType: decisionTable.dataType ?? DataType.Undefined,
       cssClasses: "decision-table--output",
@@ -186,7 +184,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
 
     return [inputSection, outputSection, annotationSection] as ColumnInstance[];
   }, [
-    globalContext.decisionNodeId,
+    decisionNodeId,
     decisionTable.annotations,
     decisionTable.dataType,
     decisionTable.input,
@@ -292,7 +290,9 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
           updatedDefinition,
           () => {
             setSupervisorHash(hashfy(updatedDefinition));
-            window.beeApi?.broadcastDecisionTableExpressionDefinition?.(updatedDefinition as DecisionTableProps);
+            boxedExpressionEditorGWTService?.broadcastDecisionTableExpressionDefinition?.(
+              updatedDefinition as DecisionTableProps
+            );
           },
           ["name", "dataType", "hitPolicy", "aggregation", "input", "output", "annotations", "rules"]
         );

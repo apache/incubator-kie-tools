@@ -70,7 +70,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       }
 
       if (value !== newValue) {
-        window.beeApi?.notifyUserAction();
+        boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
         onCellUpdate(rowIndex, columnId, newValue ?? value);
       }
 
@@ -181,7 +181,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
     if (!value) {
       return "";
     }
-    if (value !== null && typeof value === "object") {
+    if (typeof value === "object") {
       return value[columnId];
     }
     return `${value}`;
