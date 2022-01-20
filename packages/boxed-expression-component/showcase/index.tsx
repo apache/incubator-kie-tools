@@ -52,7 +52,7 @@ export const App: React.FunctionComponent = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   //Defining global function that will be available in the Window namespace and used by the BoxedExpressionEditor component
-  window.beeApi = {
+  const boxedExpressionEditorGWTService = {
     resetExpressionDefinition: (definition: ExpressionProps) => setExpressionDefinition(definition),
     broadcastLiteralExpressionDefinition: (definition: LiteralExpressionProps) => setExpressionDefinition(definition),
     broadcastRelationExpressionDefinition: (definition: RelationProps) => setExpressionDefinition(definition),
@@ -101,6 +101,7 @@ export const App: React.FunctionComponent = () => {
     <div className="showcase">
       <div className="boxed-expression">
         <BoxedExpressionEditor
+          boxedExpressionEditorGWTService={boxedExpressionEditorGWTService}
           decisionNodeId="_00000000-0000-0000-0000-000000000000"
           expressionDefinition={expressionDefinition}
           dataTypes={dataTypes}
