@@ -62,6 +62,7 @@ export const App: React.FunctionComponent = () => {
     broadcastFunctionExpressionDefinition: (definition: FunctionProps) => setExpressionDefinition(definition),
     broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) => setExpressionDefinition(definition),
     notifyUserAction(): void {},
+    openManageDataType(): void {},
   };
 
   const copyToClipboard = useCallback(

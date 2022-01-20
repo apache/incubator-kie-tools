@@ -59,6 +59,7 @@ export const en: BoxedExpressionEditorI18n = {
   invocation: "Invocation",
   list: "List",
   literalExpression: "Literal expression",
+  manage: "Manage",
   methodSignature: "method signature",
   model: "model",
   name: "Name",

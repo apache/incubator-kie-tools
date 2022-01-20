@@ -22,6 +22,8 @@ import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { DataType, ExpressionProps } from "../../api";
 import { useBoxedExpression } from "../../context";
 import { DataTypeSelector } from "./DataTypeSelector";
+import { CogIcon } from "@patternfly/react-icons";
+import { Button } from "@patternfly/react-core";
 
 export interface EditExpressionMenuProps {
   /** Optional children element to be considered for triggering the edit expression menu */
@@ -101,6 +103,8 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     [expressionName, onExpressionUpdate]
   );
 
+  const openManageDataType = useCallback(() => window.beeApi?.openManageDataType(), []);
+
   return (
     <PopoverMenu
       title={title}
@@ -123,6 +127,15 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
           </div>
           <div className="expression-data-type">
             <label>{dataTypeField}</label>
+            <Button
+              variant="link"
+              className="manage-datatype"
+              icon={<CogIcon />}
+              iconPosition="left"
+              onClick={openManageDataType}
+            >
+              {i18n.manage}
+            </Button>
             <DataTypeSelector selectedDataType={dataType} onDataTypeChange={onDataTypeChange} />
           </div>
         </div>

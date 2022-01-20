@@ -26,6 +26,11 @@
   padding-top: 10px;
 }
 
+.edit-expression-menu > .expression-data-type .manage-datatype {
+  float: right;
+  padding: 0;
+}
+
 .edit-expression-menu * {
   font-size: var(--small-font-size);
 }

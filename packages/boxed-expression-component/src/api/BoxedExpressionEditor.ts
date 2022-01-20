@@ -41,6 +41,7 @@ declare global {
     broadcastFunctionExpressionDefinition: (definition: FunctionProps) => void;
     broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) => void;
     notifyUserAction: () => void;
+    openManageDataType: () => void;
   }
 
   //API that BoxedExpressionEditor (bee) and its wrapper are expecting to be defined in the Window namespace

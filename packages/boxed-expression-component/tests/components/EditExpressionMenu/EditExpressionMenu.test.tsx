@@ -101,6 +101,28 @@ describe("EditExpressionMenu tests", () => {
     expect(container.querySelector(".expression-data-type label")!.innerHTML).toBe(dataTypeFieldLabel);
   });
 
+  test("should render manage data type button", async () => {
+    const { container } = render(
+      usingTestingBoxedExpressionI18nContext(
+        <div>
+          <div id="container">Popover</div>
+          <EditExpressionMenu
+            selectedExpressionName="Expression Name"
+            arrowPlacement={() => document.getElementById("container")!}
+            appendTo={() => document.getElementById("container")!}
+            onExpressionUpdate={(expression) => {
+              console.log(expression);
+            }}
+          />
+        </div>
+      ).wrapper
+    );
+
+    await activatePopover(container as HTMLElement);
+
+    expect(container.querySelector("button.manage-datatype")).toBeTruthy();
+  });
+
   test("should render undefined as data type, when it is not pre-selected", async () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
