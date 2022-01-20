@@ -108,7 +108,7 @@ pipeline {
 
 void checkoutRepo(String repo, String dirName=repo) {
     dir(dirName) {
-        githubscm.checkoutIfExists(repo, changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
+        checkout(githubscm.resolveRepository('kogito-tooling', changeAuthor, changeBranch, false))
     }
 }
 

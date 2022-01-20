@@ -24,7 +24,7 @@ on:
       runners:
         type: string
         required: false
-        default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","online_editor":"false","chrome_extension":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false"}'
+        default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extension":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false"}'
     secrets:
       kogito_tooling_bot_token:
         required: false
@@ -42,12 +42,18 @@ on:
         required: false
       kiegroup_npm_token:
         required: false
+      openshift_server:
+        required: false
+      openshift_token:
+        required: false
 
 env:
   KOGITO_TOOLING_BUILD_lint: "false"
   KOGITO_TOOLING_BUILD_test: "false"
   KOGITO_TOOLING_BUILD_testIT: "false"
   KOGITO_TOOLING_BUILD_docker: "true"
+  OPENSHIFT_NAMESPACE: "kie-sandbox"
+  OPENSHIFT_PART_OF: "kie-sandbox-app"
 
 jobs:
   extract_runners:
@@ -57,6 +63,7 @@ jobs:
       dmn_dev_sandbox_image: ${{ steps.set_runners.outputs.dmn_dev_sandbox_image }}
       kie_sandbox_image: ${{ steps.set_runners.outputs.kie_sandbox_image }}
       kie_sandbox_extended_services_image: ${{ steps.set_runners.outputs.kie_sandbox_extended_services_image }}
+      cors_proxy_image: ${{ steps.set_runners.outputs.cors_proxy_image }}
       online_editor: ${{ steps.set_runners.outputs.online_editor }}
       chrome_extension: ${{ steps.set_runners.outputs.chrome_extension }}
       vscode_extensions_dev: ${{ steps.set_runners.outputs.vscode_extensions_dev }}
@@ -76,6 +83,7 @@ jobs:
           echo "::set-output name=dmn_dev_sandbox_image::${{ fromJSON(inputs.runners).dmn_dev_sandbox_image }}"
           echo "::set-output name=kie_sandbox_image::${{ fromJSON(inputs.runners).kie_sandbox_image }}"
           echo "::set-output name=kie_sandbox_extended_services_image::${{ fromJSON(inputs.runners).kie_sandbox_extended_services_image }}"
+          echo "::set-output name=cors_proxy_image::${{ fromJSON(inputs.runners).cors_proxy_image }}"
           echo "::set-output name=online_editor::${{ fromJSON(inputs.runners).online_editor }}"
           echo "::set-output name=chrome_extension::${{ fromJSON(inputs.runners).chrome_extension }}"
           echo "::set-output name=vscode_extensions_dev::${{ fromJSON(inputs.runners).vscode_extensions_dev }}"
@@ -93,6 +101,7 @@ jobs:
           echo "dmn_dev_sandbox_image: ${{ steps.set_runners.outputs.dmn_dev_sandbox_image }}"
           echo "kie_sandbox_image: ${{ steps.set_runners.outputs.kie_sandbox_image }}"
           echo "kie_sandbox_extended_services_image: ${{ steps.set_runners.outputs.kie_sandbox_extended_services_image }}"
+          echo "cors_proxy_image: ${{ steps.set_runners.outputs.cors_proxy_image }}"
           echo "online_editor: ${{ steps.set_runners.outputs.online_editor }}"
           echo "chrome_extension: ${{ steps.set_runners.outputs.chrome_extension }}"
           echo "vscode_extensions_dev: ${{ steps.set_runners.outputs.vscode_extensions_dev }}"
@@ -114,7 +123,7 @@ jobs:
       DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
       DMN_DEV_SANDBOX__gtmId: "GTM-PMJ42HB"
 
-    if: ${{ always() && needs.extract_runners.outputs.dmn_dev_sandbox_image == 'true' }}
+    if: ${{ needs.extract_runners.outputs.dmn_dev_sandbox_image == 'true' }}
     runs-on: ubuntu-latest
     needs: [extract_runners]
     steps:
@@ -122,16 +131,13 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ inputs.base_ref }}
-          path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
 
       - name: "Setup kogito-tooling-bot"
-        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+        uses: ./.github/actions/setup-kogito-tooling-bot
 
       - name: "Merge PR changes"
-        uses: ./kogito-tooling/.github/actions/merge-pr-changes
-        with:
-          path: kogito-tooling
+        uses: ./.github/actions/merge-pr-changes
 
       - name: "Cache Maven packages"
         uses: actions/cache@v2
@@ -141,13 +147,12 @@ jobs:
           restore-keys: ${{ runner.os }}-dmn-dev-sandbox-deployment-base-image-m2
 
       - name: "Setup environment"
-        uses: ./kogito-tooling/.github/actions/setup-env
+        uses: ./.github/actions/setup-env
         with:
-          path: kogito-tooling
           os: ubuntu-latest
 
       - name: "Build"
-        working-directory: ${{ github.workspace }}/kogito-tooling
+        shell: bash
         run: |
           lerna run build:prod --scope=@kogito-tooling/dmn-dev-sandbox-deployment-base-image --include-dependencies --stream
 
@@ -163,42 +168,54 @@ jobs:
 
   kie_sandbox_image:
     env:
+      OPENSHIFT_APP_NAME: "kie-sandbox"
       KIE_SANDBOX__imageRegistry: "quay.io"
       KIE_SANDBOX__imageAccount: "kogito_tooling_bot"
       KIE_SANDBOX__imageName: "kie-sandbox-image"
       KIE_SANDBOX__imageBuildTags: "latest ${{ inputs.tag }}"
+      ONLINE_EDITOR__buildInfo: ""
+      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
+      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
+      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
+      ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
+      ONLINE_EDITOR__gtmId: "GTM-PQGMKNW"
+      DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
+      DMN_DEV_SANDBOX__baseImageAccount: "kogito_tooling_bot"
+      DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
+      DMN_DEV_SANDBOX__baseImageTag: "${{ inputs.tag }}"
+      DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
+
+    outputs:
+      kie_sandbox_url: ${{ steps.deploy_kie_sandbox_image.outputs.route_url }}
 
     if: ${{ needs.extract_runners.outputs.kie_sandbox_image == 'true' }}
     runs-on: ubuntu-latest
-    needs: [extract_runners]
+    needs: [extract_runners, dmn_dev_sandbox_image, kie_sandbox_extended_services_image, cors_proxy_image]
     steps:
       - name: "Checkout kogito-tooling"
         uses: actions/checkout@v2
         with:
           ref: ${{ inputs.base_ref }}
-          path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
 
       - name: "Setup kogito-tooling-bot"
-        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+        uses: ./.github/actions/setup-kogito-tooling-bot
 
       - name: "Merge PR changes"
-        uses: ./kogito-tooling/.github/actions/merge-pr-changes
-        with:
-          path: kogito-tooling
+        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
-        uses: ./kogito-tooling/.github/actions/setup-env
+        uses: ./.github/actions/setup-env
         with:
-          path: kogito-tooling
           os: ubuntu-latest
 
       - name: "Build"
-        working-directory: ${{ github.workspace }}/kogito-tooling
+        shell: bash
         run: |
           lerna run build:prod --scope=@kogito-tooling/kie-sandbox-image --include-dependencies --stream
 
-      - name: "Push kie_sandbox_image to quay.io"
+      - name: "Push kie-sandbox-image to quay.io"
+        id: push_kie_sandbox_image
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
@@ -208,12 +225,37 @@ jobs:
           username: "${{ env.KIE_SANDBOX__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
+      - name: "Prepare environment variables for OpenShift deployment"
+        if: ${{ !inputs.dry_run }}
+        shell: bash
+        run: |
+          echo "KIE_SANDBOX_EXTENDED_SERVICES_URL=${{ needs.kie_sandbox_extended_services_image.outputs.kie_sandbox_extended_services_url }}" >> deployment.env
+          echo "CORS_PROXY_URL=${{ needs.cors_proxy_image.outputs.cors_proxy_url }}" >> deployment.env
+
+      - name: "Deploy kie-sandbox-image to OpenShift"
+        id: deploy_kie_sandbox_image
+        if: ${{ !inputs.dry_run }}
+        uses: ./.github/actions/deploy-openshift
+        with:
+          image_url: ${{ steps.push_kie_sandbox_image.outputs.registry-path }}
+          app_name: ${{ env.OPENSHIFT_APP_NAME }}
+          part_of: ${{ env.OPENSHIFT_PART_OF }}
+          openshift_server: ${{ secrets.openshift_server }}
+          openshift_token: ${{ secrets.openshift_token }}
+          openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+          deployment_envvars_file_path: ./deployment.env
+          deployment_icon: "js"
+
   kie_sandbox_extended_services_image:
     env:
+      OPENSHIFT_APP_NAME: "kie-sandbox-extended-services"
       KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry: "quay.io"
       KIE_SANDBOX_EXTENDED_SERVICES__imageAccount: "kogito_tooling_bot"
       KIE_SANDBOX_EXTENDED_SERVICES__imageName: "kie-sandbox-extended-services-image"
       KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags: "latest ${{ inputs.tag }}"
+
+    outputs:
+      kie_sandbox_extended_services_url: ${{ steps.deploy_kie_sandbox_extended_services_image.outputs.route_url }}
 
     if: ${{ needs.extract_runners.outputs.kie_sandbox_extended_services_image == 'true' }}
     runs-on: ubuntu-latest
@@ -223,29 +265,26 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ inputs.base_ref }}
-          path: ${{ github.workspace }}/kogito-tooling
           fetch-depth: 0
 
       - name: "Setup kogito-tooling-bot"
-        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+        uses: ./.github/actions/setup-kogito-tooling-bot
 
       - name: "Merge PR changes"
-        uses: ./kogito-tooling/.github/actions/merge-pr-changes
-        with:
-          path: kogito-tooling
+        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
-        uses: ./kogito-tooling/.github/actions/setup-env
+        uses: ./.github/actions/setup-env
         with:
-          path: kogito-tooling
           os: ubuntu-latest
 
       - name: "Build"
-        working-directory: ${{ github.workspace }}/kogito-tooling
+        shell: bash
         run: |
           lerna run build:prod --scope=@kogito-tooling/kie-sandbox-extended-services-image --include-dependencies --stream
 
-      - name: "Push kie_sandbox_extended_services_image to quay.io"
+      - name: "Push kie-sandbox-extended-services-image to quay.io"
+        id: push_kie_sandbox_extended_services_image
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
@@ -254,6 +293,80 @@ jobs:
           registry: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry }}/${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount }}"
           username: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
+
+      - name: "Deploy kie-sandbox-extended-services-image to OpenShift"
+        id: deploy_kie_sandbox_extended_services_image
+        if: ${{ !inputs.dry_run }}
+        uses: ./.github/actions/deploy-openshift
+        with:
+          image_url: ${{ steps.push_kie_sandbox_extended_services_image.outputs.registry-path }}
+          app_name: ${{ env.OPENSHIFT_APP_NAME }}
+          part_of: ${{ env.OPENSHIFT_PART_OF }}
+          openshift_server: ${{ secrets.openshift_server }}
+          openshift_token: ${{ secrets.openshift_token }}
+          openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+          deployment_icon: "golang"
+
+  cors_proxy_image:
+    env:
+      OPENSHIFT_APP_NAME: "cors-proxy"
+      CORS_PROXY__imageRegistry: "quay.io"
+      CORS_PROXY__imageAccount: "kogito_tooling_bot"
+      CORS_PROXY__imageName: "cors-proxy-image"
+      CORS_PROXY__imageBuildTags: "latest ${{ inputs.tag }}"
+
+    outputs:
+      cors_proxy_url: ${{ steps.deploy_cors_proxy_image.outputs.route_url }}
+
+    if: ${{ needs.extract_runners.outputs.cors_proxy_image == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [extract_runners]
+    steps:
+      - name: "Checkout kogito-tooling"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.base_ref }}
+          fetch-depth: 0
+
+      - name: "Setup kogito-tooling-bot"
+        uses: ./.github/actions/setup-kogito-tooling-bot
+
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ubuntu-latest
+
+      - name: "Build"
+        shell: bash
+        run: |
+          lerna run build:prod --scope=@kogito-tooling/cors-proxy-image --include-dependencies --stream
+
+      - name: "Push cors-proxy-image to quay.io"
+        id: push_cors_proxy_image
+        if: ${{ !inputs.dry_run }}
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.CORS_PROXY__imageName }}"
+          tags: "${{ env.CORS_PROXY__imageBuildTags }}"
+          registry: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}"
+          username: "${{ env.CORS_PROXY__imageAccount }}"
+          password: "${{ secrets.quay_registry_password }}"
+
+      - name: "Deploy cors-proxy-image to OpenShift"
+        id: deploy_cors_proxy_image
+        if: ${{ !inputs.dry_run }}
+        uses: ./.github/actions/deploy-openshift
+        with:
+          image_url: ${{ steps.push_cors_proxy_image.outputs.registry-path }}
+          app_name: ${{ env.OPENSHIFT_APP_NAME }}
+          part_of: ${{ env.OPENSHIFT_PART_OF }}
+          openshift_server: ${{ secrets.openshift_server }}
+          openshift_token: ${{ secrets.openshift_token }}
+          openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+          deployment_icon: "nodejs"
 
   online_editor:
     env:

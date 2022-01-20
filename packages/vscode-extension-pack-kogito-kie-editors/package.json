@@ -124,41 +124,51 @@
         "id": "bpmn",
         "extensions": [
           ".bpmn",
-          ".bpmn2"
+          ".bpmn2",
+          ".BPMN",
+          ".BPMN2"
         ],
         "aliases": [
           "bpmn",
           "bpmn2",
+          "BPMN",
+          "BPMN2",
           "Business Process Model and Notation"
         ]
       },
       {
         "id": "dmn",
         "extensions": [
-          ".dmn"
+          ".dmn",
+          ".DMN"
         ],
         "aliases": [
           "dmn",
+          "DMN",
           "Decision Model and Notation"
         ]
       },
       {
         "id": "scesim",
         "extensions": [
-          ".scesim"
+          ".scesim",
+          ".SCESIM"
         ],
         "aliases": [
           "scesim",
+          "SCESIM",
           "Test Scenario"
         ]
       },
       {
         "id": "pmml",
         "extensions": [
-          ".pmml"
+          ".pmml",
+          ".PMML"
         ],
         "aliases": [
           "pmml",
+          "PMML",
           "Predictive Model Markup Language"
         ]
       }
