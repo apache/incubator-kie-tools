@@ -16,6 +16,7 @@
 
 import {
   BoxedExpressionEditor,
+  BoxedExpressionEditorGWTService,
   BoxedExpressionEditorProps,
   ContextProps,
   DataTypeProps,
@@ -34,7 +35,26 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import * as ReactDOM from "react-dom";
 
-const BoxedExpressionWrapper: React.FunctionComponent<BoxedExpressionEditorProps> = ({
+export interface BoxedExpressionEditorWrapperProps {
+  /** Identifier of the decision node, where the expression will be hold */
+  decisionNodeId: string;
+  /** All expression properties used to define it */
+  expressionDefinition: ExpressionProps;
+  /** The data type elements that can be used in the editor */
+  dataTypes: DataTypeProps[];
+  /**
+   * A boolean used for making (or not) the clear button available on the root expression
+   * Note that this parameter will be used only for the root expression.
+   *
+   * Each expression (internally) has a `noClearAction` property (ExpressionProps interface).
+   * You can set directly it for enabling or not the clear button for such expression.
+   * */
+  clearSupportedOnRootExpression?: boolean;
+  /** PMML parameters */
+  pmmlParams?: PMMLParams;
+}
+
+const BoxedExpressionWrapper: React.FunctionComponent<BoxedExpressionEditorWrapperProps> = ({
   decisionNodeId,
   expressionDefinition,
   dataTypes,
@@ -52,7 +72,7 @@ const BoxedExpressionWrapper: React.FunctionComponent<BoxedExpressionEditorProps
 
   //The wrapper defines these function in order to keep expression definition state updated,
   //And to propagate such definition to DMN Editor (GWT world), by calling beeApiWrapper APIs
-  window.beeApi = {
+  const boxedExpressionEditorGWTService: BoxedExpressionEditorGWTService = {
     notifyUserAction(): void {
       window.beeApiWrapper?.notifyUserAction();
     },
@@ -95,6 +115,7 @@ const BoxedExpressionWrapper: React.FunctionComponent<BoxedExpressionEditorProps
 
   return (
     <BoxedExpressionEditor
+      boxedExpressionEditorGWTService={boxedExpressionEditorGWTService}
       decisionNodeId={decisionNodeId}
       expressionDefinition={updatedDefinition}
       dataTypes={dataTypes}
