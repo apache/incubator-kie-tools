@@ -298,7 +298,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
         );
       }
     },
-    [columns, decisionTable, rows, setSupervisorHash]
+    [boxedExpressionEditorGWTService, columns, decisionTable, rows, setSupervisorHash]
   );
 
   const singleOutputChildDataType = useRef(DataType.Undefined);

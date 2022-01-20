@@ -107,7 +107,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = (i
         );
       }
     },
-    [invocationProps, rows, setSupervisorHash]
+    [boxedExpressionEditorGWTService, invocationProps, rows, setSupervisorHash]
   );
 
   const onBlurCallback = useCallback(
@@ -117,7 +117,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = (i
       }
       spreadInvocationExpressionDefinition({ invokedFunction: event.target.value });
     },
-    [spreadInvocationExpressionDefinition, invocationProps.invokedFunction]
+    [boxedExpressionEditorGWTService, spreadInvocationExpressionDefinition, invocationProps.invokedFunction]
   );
 
   const headerCellElement = useMemo(

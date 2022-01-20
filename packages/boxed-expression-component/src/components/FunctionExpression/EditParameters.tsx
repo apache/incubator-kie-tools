@@ -46,7 +46,7 @@ export const EditParameters: React.FunctionComponent<EditParametersProps> = ({ p
         dataType: DataType.Undefined,
       },
     ]);
-  }, [parameters, setParameters]);
+  }, [boxedExpressionEditorGWTService, parameters, setParameters]);
 
   const onNameChange = useCallback(
     (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +57,7 @@ export const EditParameters: React.FunctionComponent<EditParametersProps> = ({ p
       parametersCopy[index].name = event.target.value;
       setParameters([...parametersCopy]);
     },
-    [parameters, setParameters]
+    [boxedExpressionEditorGWTService, parameters, setParameters]
   );
 
   const onDataTypeChange = useCallback(
@@ -67,7 +67,7 @@ export const EditParameters: React.FunctionComponent<EditParametersProps> = ({ p
       parametersCopy[index].dataType = dataType;
       setParameters([...parametersCopy]);
     },
-    [parameters, setParameters]
+    [boxedExpressionEditorGWTService, parameters, setParameters]
   );
 
   const onParameterRemove = useCallback(
@@ -75,7 +75,7 @@ export const EditParameters: React.FunctionComponent<EditParametersProps> = ({ p
       boxedExpressionEditorGWTService?.notifyUserAction();
       setParameters([...parameters.slice(0, index), ...parameters.slice(index + 1)]);
     },
-    [parameters, setParameters]
+    [boxedExpressionEditorGWTService, parameters, setParameters]
   );
 
   return (

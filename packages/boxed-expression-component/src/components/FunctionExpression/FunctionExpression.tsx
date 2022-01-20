@@ -343,7 +343,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (
         );
       }
     },
-    [extendDefinitionBasedOnFunctionKind, setSupervisorHash, functionExpression]
+    [boxedExpressionEditorGWTService, extendDefinitionBasedOnFunctionKind, setSupervisorHash, functionExpression]
   );
 
   const editParametersPopoverAppendTo = useCallback(() => {

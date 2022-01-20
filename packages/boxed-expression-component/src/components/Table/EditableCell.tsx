@@ -76,7 +76,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
 
       focusTextArea(textarea.current);
     },
-    [mode, columnId, onCellUpdate, rowIndex, value]
+    [boxedExpression.boxedExpressionEditorGWTService, mode, columnId, onCellUpdate, rowIndex, value]
   );
 
   const triggerEditMode = useCallback(() => {

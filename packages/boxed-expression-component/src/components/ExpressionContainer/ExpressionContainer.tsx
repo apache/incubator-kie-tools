@@ -69,7 +69,13 @@ export const ExpressionContainer: (props: ExpressionContainerProps) => JSX.Eleme
     };
     boxedExpressionEditorGWTService?.resetExpressionDefinition?.(updatedExpression);
     onExpressionChange?.(updatedExpression);
-  }, [onExpressionChange, selectedExpression.dataType, selectedExpression.name, selectedExpression.id]);
+  }, [
+    boxedExpressionEditorGWTService,
+    onExpressionChange,
+    selectedExpression.dataType,
+    selectedExpression.name,
+    selectedExpression.id,
+  ]);
 
   return (
     <div className="expression-container">

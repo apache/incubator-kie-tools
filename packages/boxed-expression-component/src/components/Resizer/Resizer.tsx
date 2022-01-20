@@ -188,7 +188,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
       setSupervisorHash("-");
     },
-    [cells, initialResizerWidth, setSupervisorHash, widthValue]
+    [boxedExpression.boxedExpressionEditorGWTService, cells, initialResizerWidth, setSupervisorHash, widthValue]
   );
 
   return (

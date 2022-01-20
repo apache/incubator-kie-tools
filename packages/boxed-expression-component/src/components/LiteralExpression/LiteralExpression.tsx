@@ -63,7 +63,7 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
         ["name", "dataType", "content", "width"]
       );
     },
-    [literalExpression]
+    [boxedExpressionEditorGWTService, literalExpression]
   );
 
   const onExpressionUpdate = useCallback(

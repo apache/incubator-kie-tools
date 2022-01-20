@@ -16,7 +16,7 @@
 
 import "./ListExpression.css";
 import * as React from "react";
-import { useCallback, useContext, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import {
   ContextEntryRecord,
   DataType,
@@ -114,7 +114,7 @@ export const ListExpression: React.FunctionComponent<ListProps> = (listExpressio
         ["width", "items"]
       );
     },
-    [listExpression, items, setSupervisorHash]
+    [boxedExpressionEditorGWTService, listExpression, items, setSupervisorHash]
   );
 
   const setListWidth = useCallback(
