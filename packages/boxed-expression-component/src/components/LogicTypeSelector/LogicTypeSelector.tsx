@@ -154,7 +154,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
       const selectedLogicType = itemId as LogicType;
       onLogicTypeUpdating(selectedLogicType);
     },
-    [onLogicTypeUpdating]
+    [boxedExpression.boxedExpressionEditorGWTService, onLogicTypeUpdating]
   );
 
   const buildLogicSelectorMenu = useMemo(

@@ -43,7 +43,7 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
       onFunctionKindSelect(itemId as FunctionKind);
       hide();
     },
-    [onFunctionKindSelect]
+    [boxedExpression.boxedExpressionEditorGWTService, onFunctionKindSelect]
   );
 
   const renderFunctionKindItems = useCallback(

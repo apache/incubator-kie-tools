@@ -104,7 +104,7 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
         ["name", "dataType", "contextEntries", "result", "entryInfoWidth", "entryExpressionWidth"]
       );
     },
-    [contextExpression, setSupervisorHash, rows]
+    [boxedExpressionEditorGWTService, contextExpression, setSupervisorHash, rows]
   );
 
   const setInfoWidth = useCallback(

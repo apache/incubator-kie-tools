@@ -88,7 +88,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
         });
       }
     },
-    [dataType, onExpressionUpdate]
+    [boxedExpression.boxedExpressionEditorGWTService, dataType, onExpressionUpdate]
   );
 
   const onDataTypeChange = useCallback(
@@ -100,12 +100,12 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
         dataType: dataType,
       });
     },
-    [expressionName, onExpressionUpdate]
+    [boxedExpression.boxedExpressionEditorGWTService, expressionName, onExpressionUpdate]
   );
 
   const openManageDataType = useCallback(
     () => boxedExpression.boxedExpressionEditorGWTService?.openManageDataType(),
-    []
+    [boxedExpression.boxedExpressionEditorGWTService]
   );
 
   return (

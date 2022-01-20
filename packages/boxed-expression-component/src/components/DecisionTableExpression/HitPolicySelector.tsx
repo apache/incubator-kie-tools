@@ -68,7 +68,7 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
       }
       setHitPolicySelectOpen(false);
     },
-    [onBuiltInAggregatorSelect, onHitPolicySelect]
+    [boxedExpression.boxedExpressionEditorGWTService, onBuiltInAggregatorSelect, onHitPolicySelect]
   );
 
   const renderHitPolicyItems = useCallback(
@@ -87,7 +87,7 @@ export const HitPolicySelector: React.FunctionComponent<HitPolicySelectorProps> 
       onBuiltInAggregatorSelect(itemId as BuiltinAggregation);
       setBuiltInAggregatorSelectOpen(false);
     },
-    [onBuiltInAggregatorSelect]
+    [boxedExpression.boxedExpressionEditorGWTService, onBuiltInAggregatorSelect]
   );
 
   const renderBuiltInAggregationItems = useCallback(
