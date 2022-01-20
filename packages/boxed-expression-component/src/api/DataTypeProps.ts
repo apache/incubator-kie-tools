@@ -14,4 +14,11 @@
  * limitations under the License.
  */
 
-export * from "./EmptyStateWidget";
+export interface DataTypeProps {
+  /** Identifier of the data type, e.g. UNDEFINED */
+  typeRef: string;
+  /** Label used for the data type, e.g. <Undefined> */
+  name: string;
+  /** Tells whether this data type is custom or built-in */
+  isCustom: boolean;
+}

@@ -117,7 +117,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = (i
       }
       spreadInvocationExpressionDefinition({ invokedFunction: event.target.value });
     },
-    [spreadInvocationExpressionDefinition]
+    [spreadInvocationExpressionDefinition, invocationProps.invokedFunction]
   );
 
   const headerCellElement = useMemo(

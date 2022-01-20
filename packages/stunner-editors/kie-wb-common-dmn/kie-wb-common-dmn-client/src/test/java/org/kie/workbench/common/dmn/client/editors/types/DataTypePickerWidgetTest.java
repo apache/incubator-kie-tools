@@ -58,6 +58,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.api.definition.model.ItemDefinition.ITEM_DEFINITION_COMPARATOR;
 import static org.kie.workbench.common.dmn.client.editors.types.DataTypePickerWidget.READ_ONLY_CSS_CLASS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -213,7 +214,7 @@ public class DataTypePickerWidgetTest {
         assertThat(builtInTypes).hasSameElementsAs(builtInTypesAddedToWidget);
 
         //Check the items were sorted correctly
-        assertTrue(Ordering.from(DataTypePickerWidget.BUILT_IN_TYPE_COMPARATOR).isOrdered(builtInTypesAddedToWidget));
+        assertTrue(Ordering.from(BuiltInType.BUILT_IN_TYPE_COMPARATOR).isOrdered(builtInTypesAddedToWidget));
 
         //First item must be "<Undefined>"
         assertEquals(builtInTypesAddedToWidget.get(0).getName(), BuiltInType.UNDEFINED.getName());
@@ -240,7 +241,7 @@ public class DataTypePickerWidgetTest {
         assertTrue(itemDefinitions.isEmpty());
 
         //Check the items were sorted correctly
-        assertTrue(Ordering.from(DataTypePickerWidget.ITEM_DEFINITION_COMPARATOR).isOrdered(itemDefinitionsAddedToWidget));
+        assertTrue(Ordering.from(ITEM_DEFINITION_COMPARATOR).isOrdered(itemDefinitionsAddedToWidget));
     }
 
     @Test

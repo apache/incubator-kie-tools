@@ -39,11 +39,13 @@ export const en: ImportJavaClassesWizardI18n = {
     },
     secondStep: {
       stepName: "Select fields",
-      fetchButtonLabel: "Fetch",
     },
     thirdStep: {
       stepName: "Review",
       nextButtonText: "Import",
+    },
+    fieldTable: {
+      fetchButtonLabel: "Fetch",
     },
   },
 };

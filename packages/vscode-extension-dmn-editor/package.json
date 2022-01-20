@@ -114,20 +114,24 @@
       {
         "id": "dmn",
         "extensions": [
-          ".dmn"
+          ".dmn",
+          ".DMN"
         ],
         "aliases": [
           "dmn",
+          "DMN",
           "Decision Model and Notation"
         ]
       },
       {
         "id": "scesim",
         "extensions": [
-          ".scesim"
+          ".scesim",
+          ".SCESIM"
         ],
         "aliases": [
           "scesim",
+          "SCESIM",
           "Test Scenario"
         ]
       }

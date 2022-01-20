@@ -18,14 +18,12 @@ package org.kie.workbench.common.dmn.client.js;
 
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
+import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DataTypeProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.PMMLParam;
 
 @JsType(isNative = true)
 public class DMNLoader {
-
-    @JsMethod(namespace = "__KIE__DMN_LOADER__")
-    public static native void renderHelloWorld(final String selector);
 
     /**
      * Method used to render the boxed-expression-component (TS/React world) in the DMN Editor (Java/GWT world)
@@ -36,5 +34,14 @@ public class DMNLoader {
      * @param pmmlParams PMML parameters
      */
     @JsMethod(namespace = "__KIE__DMN_LOADER__")
-    public static native void renderBoxedExpressionEditor(final String selector, final String decisionNodeId, final ExpressionProps expressionProps, final Boolean clearSupportedOnRootExpression, final PMMLParam[] pmmlParams);
+    public static native void renderBoxedExpressionEditor(final String selector, final String decisionNodeId, final ExpressionProps expressionProps, final DataTypeProps[] dataTypes, final Boolean clearSupportedOnRootExpression, final PMMLParam[] pmmlParams);
+
+    /**
+     * Method used to render the import-java-classes component (TS/React world) in the DMN Editor (Java/GWT world)
+     * @param selector DOM selector, where the component will be placed
+     * @param buttonDisabledStatus Button status (disabled or enabled)
+     * @param buttonTooltipMessage Tooltip message to assign to the button
+     */
+    @JsMethod(namespace = "__KIE__DMN_LOADER__")
+    public static native void renderImportJavaClasses(final String selector, final boolean buttonDisabledStatus, final String buttonTooltipMessage);
 }

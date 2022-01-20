@@ -15,12 +15,13 @@
  */
 
 import * as React from "react";
-import { PMMLParams } from "../api";
 import { useContext } from "react";
+import { DataTypeProps, PMMLParams } from "../api";
 
 export interface BoxedExpressionGlobalContextProps {
   decisionNodeId: string;
   pmmlParams?: PMMLParams;
+  dataTypes: DataTypeProps[];
   supervisorHash: string;
   setSupervisorHash: (hash: string) => void;
   editorRef: React.RefObject<HTMLDivElement>;

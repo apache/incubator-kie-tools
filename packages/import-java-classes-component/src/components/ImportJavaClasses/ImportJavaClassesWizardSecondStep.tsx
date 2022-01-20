@@ -15,9 +15,8 @@
  */
 
 import * as React from "react";
-import "./ImportJavaClassesWizardSecondStep.css";
-import { Spinner } from "@patternfly/react-core";
-import { useEffect } from "react";
+import { Bullseye, Spinner } from "@patternfly/react-core";
+import { useCallback, useEffect } from "react";
 import { ImportJavaClassesWizardFieldListTable } from "./ImportJavaClassesWizardFieldListTable";
 import { JavaField } from "./Model/JavaField";
 import { JavaClass } from "./Model/JavaClass";
@@ -27,58 +26,59 @@ import { getJavaClassSimpleName } from "./Model/JavaClassUtils";
 export interface ImportJavaClassesWizardSecondStepProps {
   /** List of the selected classes by user */
   selectedJavaClasses: JavaClass[];
-  /** Function to be called to update selected Java Class, after a Fetching request */
-  onSelectedJavaClassesUpdated: (fullClassName: string, add: boolean) => void;
+  /** Function to be called when adding a Java Class */
+  onAddJavaClass: (fullClassName: string) => void;
   /** Function to be called to update a Java Class with its retrieved Fields */
   onSelectedJavaClassedFieldsLoaded: (fullClassName: string, fields: JavaField[]) => void;
-  /** Fetch button label */
-  fetchButtonLabel: string;
 }
 
-export const ImportJavaClassesWizardSecondStep: React.FunctionComponent<ImportJavaClassesWizardSecondStepProps> = ({
+export const ImportJavaClassesWizardSecondStep = ({
   selectedJavaClasses,
-  onSelectedJavaClassesUpdated,
+  onAddJavaClass,
   onSelectedJavaClassedFieldsLoaded,
-  fetchButtonLabel,
 }: ImportJavaClassesWizardSecondStepProps) => {
-  useEffect(
-    () =>
-      selectedJavaClasses
-        .filter((javaClass: JavaClass) => !javaClass.fieldsLoaded)
-        .forEach((javaClass: JavaClass) => loadJavaFields(javaClass.name)),
-    // eslint-disable-next-line
-    [selectedJavaClasses]
-  );
-  const loadJavaFields = (className: string) => {
-    window.envelopeMock
-      .lspGetClassFieldsServiceMocked(className)
-      .then((value: Map<string, string>) => {
-        const fields = Array.from(value, ([name, type]) => generateJavaClassField(name, type, selectedJavaClasses));
-        fields.sort((a, b) => (a.name < b.name ? -1 : 1));
-        onSelectedJavaClassedFieldsLoaded(className, fields);
-      })
-      .catch((reason) => {
-        console.error(reason);
-      });
-  };
-  const generateJavaClassField = (name: string, type: string, selectedJavaClasses: JavaClass[]) => {
-    let dmnTypeRef: string = (JAVA_TO_DMN_MAP as any)[getJavaClassSimpleName(type)] || DMNSimpleType.ANY;
-    if (dmnTypeRef === DMNSimpleType.ANY && selectedJavaClasses.some((javaClass) => javaClass.name === type)) {
+  const generateJavaClassField = useCallback((name: string, type: string, javaClasses: JavaClass[]) => {
+    let dmnTypeRef: string = JAVA_TO_DMN_MAP.get(getJavaClassSimpleName(type)) || DMNSimpleType.ANY;
+    if (dmnTypeRef === DMNSimpleType.ANY && javaClasses.some((javaClass) => javaClass.name === type)) {
       dmnTypeRef = getJavaClassSimpleName(type);
     }
     return new JavaField(name, type, dmnTypeRef);
-  };
+  }, []);
+
+  const loadJavaFields = useCallback(
+    (className: string) => {
+      window.envelopeMock
+        .lspGetClassFieldsServiceMocked(className)
+        .then((value) => {
+          const fields = Array.from(value, ([name, type]) => generateJavaClassField(name, type, selectedJavaClasses));
+          fields.sort((a, b) => (a.name < b.name ? -1 : 1));
+          onSelectedJavaClassedFieldsLoaded(className, fields);
+        })
+        .catch((reason) => {
+          console.error(reason);
+        });
+    },
+    [generateJavaClassField, onSelectedJavaClassedFieldsLoaded, selectedJavaClasses]
+  );
+
+  useEffect(
+    () =>
+      selectedJavaClasses
+        .filter((javaClass) => !javaClass.fieldsLoaded)
+        .forEach((javaClass) => loadJavaFields(javaClass.name)),
+    [selectedJavaClasses, loadJavaFields]
+  );
 
   return (
     <>
-      {selectedJavaClasses.some((javaClass: JavaClass) => !javaClass.fieldsLoaded) ? (
-        <Spinner isSVG={true} diameter="150px" className={"loader"} />
+      {selectedJavaClasses.some((javaClass) => !javaClass.fieldsLoaded) ? (
+        <Bullseye>
+          <Spinner isSVG={true} />
+        </Bullseye>
       ) : (
         <ImportJavaClassesWizardFieldListTable
           selectedJavaClassFields={selectedJavaClasses}
-          readOnly={false}
-          onFetchButtonClick={(fullClassName: string) => onSelectedJavaClassesUpdated(fullClassName, true)}
-          fetchButtonLabel={fetchButtonLabel}
+          loadJavaClass={onAddJavaClass}
         />
       )}
     </>

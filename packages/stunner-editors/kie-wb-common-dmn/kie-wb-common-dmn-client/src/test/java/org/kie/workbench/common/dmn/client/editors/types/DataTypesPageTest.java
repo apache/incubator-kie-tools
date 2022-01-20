@@ -59,6 +59,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -67,7 +68,7 @@ import static org.mockito.Mockito.when;
 public class DataTypesPageTest {
 
     @Mock
-    private DataTypeList treeList;
+    private DataTypeList dataTypeList;
 
     @Mock
     private ItemDefinitionUtils itemDefinitionUtils;
@@ -109,7 +110,7 @@ public class DataTypesPageTest {
 
     @Before
     public void setup() {
-        page = spy(new DataTypesPageFake(treeList,
+        page = spy(new DataTypesPageFake(dataTypeList,
                                          itemDefinitionUtils,
                                          definitionStore,
                                          dataTypeStore,
@@ -133,7 +134,7 @@ public class DataTypesPageTest {
 
         page.init();
 
-        verify(dataTypeShortcuts).init(treeList);
+        verify(dataTypeShortcuts).init(dataTypeList);
     }
 
     @Test
@@ -145,6 +146,7 @@ public class DataTypesPageTest {
 
         verify(page, never()).reload();
         verify(page).refreshPageView();
+        //verify(dataTypeList, times(1)).activate();
     }
 
     @Test
@@ -156,6 +158,7 @@ public class DataTypesPageTest {
 
         verify(page).reload();
         verify(page).refreshPageView();
+        //verify(dataTypeList, times(1)).activate();
     }
 
     @Test
@@ -178,6 +181,7 @@ public class DataTypesPageTest {
 
         verify(page).cleanDataTypeStore();
         verify(page).loadDataTypes();
+        verify(page, times(1)).enableShortcuts();
 
         assertEquals(expected, actual);
     }
@@ -196,7 +200,7 @@ public class DataTypesPageTest {
         });
 
         when(flashMessages.getElement()).thenReturn(flashMessagesElement);
-        when(treeList.getElement()).thenReturn(treeListElement);
+        when(dataTypeList.getElement()).thenReturn(treeListElement);
 
         page.refreshPageView();
 
@@ -293,7 +297,7 @@ public class DataTypesPageTest {
 
         page.loadDataTypes();
 
-        verify(treeList).setupItems(dataTypesCaptor.capture());
+        verify(dataTypeList).setupItems(dataTypesCaptor.capture());
 
         final List<DataType> dataTypes = dataTypesCaptor.getValue();
 

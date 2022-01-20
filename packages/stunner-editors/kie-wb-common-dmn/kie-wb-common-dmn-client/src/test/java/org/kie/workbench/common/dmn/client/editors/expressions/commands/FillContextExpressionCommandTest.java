@@ -25,6 +25,7 @@ import org.kie.workbench.common.dmn.api.definition.model.Context;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextProps;
+import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
@@ -56,6 +57,9 @@ public class FillContextExpressionCommandTest {
     @Mock
     private Context existingExpression;
 
+    @Mock
+    private ItemDefinitionUtils itemDefinitionUtils;
+
     @Before
     public void setup() {
 
@@ -65,7 +69,8 @@ public class FillContextExpressionCommandTest {
                                                        expressionProps,
                                                        editorSelectedEvent,
                                                        "nodeUUID",
-                                                       view));
+                                                       view,
+                                                       itemDefinitionUtils));
         doNothing().when(command).fill(any(), any());
     }
 
