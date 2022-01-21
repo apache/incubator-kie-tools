@@ -270,14 +270,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
         <groupId>com.google.elemental2</groupId>
         <artifactId>elemental2-dom</artifactId>
         <version>${version.com.google.elemental2}</version>
