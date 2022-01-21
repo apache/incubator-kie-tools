@@ -164,7 +164,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private Event<ExpressionEditorChanged> editorSelectedEvent;
     private Event<DataTypePageTabActiveEvent> dataTypePageActiveEvent;
     private PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider;
-    private DefinitionUtils definitionUtils;
     private ItemDefinitionUtils itemDefinitionUtils;
 
     private DMNGridPanel gridPanel;
