@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { PingPongApi } from "./PingPongApi";
-
 /**
  * Methods provided by the Envelope that can be consumed by the Channel.
  */
