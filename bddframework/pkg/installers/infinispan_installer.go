@@ -17,6 +17,7 @@ package installers
 import (
 	"errors"
 	"fmt"
+
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	ispn "github.com/kiegroup/kogito-operator/core/infrastructure/infinispan/v1"
@@ -47,7 +48,7 @@ var (
 	}
 
 	infinispanOperatorSubscriptionName    = "infinispan"
-	infinispanOperatorSubscriptionChannel = "2.1.x"
+	infinispanOperatorSubscriptionChannel = "2.2.x"
 	infinispanOperatorGitHubBranch        = "2.0.x"
 	infinispanOperatorDeployFilesURI      = fmt.Sprintf("https://raw.githubusercontent.com/infinispan/infinispan-operator/%s/deploy/", infinispanOperatorGitHubBranch)
 	infinispanOperatorServiceName         = "Infinispan"

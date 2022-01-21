@@ -16,6 +16,7 @@ package steps
 
 import (
 	"fmt"
+	"path/filepath"
 
 	api "github.com/kiegroup/kogito-operator/apis"
 
@@ -34,14 +35,14 @@ func registerKogitoDeployFilesSteps(ctx *godog.ScenarioContext, data *Data) {
 
 // Deploy steps
 
-func (data *Data) deployFileFromExampleService(runtimeType, file, serviceName string) error {
-	sourceFilePath := fmt.Sprintf(`%s/%s/%s/%s`, data.KogitoExamplesLocation, serviceName, sourceLocation, file)
-	return deploySourceFilesFromPath(data.Namespace, runtimeType, serviceName, sourceFilePath)
+func (data *Data) deployFileFromExampleService(runtimeType, file, contextDir string) error {
+	sourceFilePath := fmt.Sprintf(`%s/%s/%s/%s`, data.KogitoExamplesLocation, contextDir, sourceLocation, file)
+	return deploySourceFilesFromPath(data.Namespace, runtimeType, filepath.Base(contextDir), sourceFilePath)
 }
 
-func (data *Data) deployFolderFromExampleService(runtimeType, serviceName string) error {
-	sourceFolderPath := fmt.Sprintf(`%s/%s/%s`, data.KogitoExamplesLocation, serviceName, sourceLocation)
-	return deploySourceFilesFromPath(data.Namespace, runtimeType, serviceName, sourceFolderPath)
+func (data *Data) deployFolderFromExampleService(runtimeType, contextDir string) error {
+	sourceFolderPath := fmt.Sprintf(`%s/%s/%s`, data.KogitoExamplesLocation, contextDir, sourceLocation)
+	return deploySourceFilesFromPath(data.Namespace, runtimeType, filepath.Base(contextDir), sourceFolderPath)
 }
 
 func deploySourceFilesFromPath(namespace, runtimeType, serviceName, path string) error {

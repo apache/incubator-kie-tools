@@ -8,7 +8,7 @@ Feature: Deploy source files (dmn, drl, bpmn, bpmn2, ...) with CLI
   Scenario: Deploy .dmn source files with CLI using runtime <runtime>
     Given Clone Kogito examples into local directory
     
-    When Deploy <runtime> file "Traffic Violation.dmn" from example service "dmn-<runtime>-example"
+    When Deploy <runtime> file "Traffic Violation.dmn" from example service "kogito-<runtime>-examples/dmn-<runtime>-example"
     And Build "dmn-<runtime>-example-builder" is complete after 10 minutes
     And Build "dmn-<runtime>-example" is complete after 5 minutes
 
@@ -39,7 +39,7 @@ Feature: Deploy source files (dmn, drl, bpmn, bpmn2, ...) with CLI
   Scenario: Deploy .bpmn source files with CLI
     Given Clone Kogito examples into local directory
     
-    When Deploy quarkus file "org/acme/travels/scripts.bpmn" from example service "process-scripts-quarkus"
+    When Deploy quarkus file "org/acme/travels/scripts.bpmn" from example service "kogito-quarkus-examples/process-scripts-quarkus"
     And Build "process-scripts-quarkus-builder" is complete after 10 minutes
     And Build "process-scripts-quarkus" is complete after 5 minutes
 
@@ -54,7 +54,7 @@ Feature: Deploy source files (dmn, drl, bpmn, bpmn2, ...) with CLI
   Scenario: Deploy source files in folder with CLI
     Given Clone Kogito examples into local directory
     
-    When Deploy quarkus folder from example service "process-timer-quarkus"
+    When Deploy quarkus folder from example service "kogito-quarkus-examples/process-timer-quarkus"
     And Build "process-timer-quarkus-builder" is complete after 10 minutes
     And Build "process-timer-quarkus" is complete after 5 minutes
 
