@@ -18,7 +18,7 @@ import { Injectable } from "@angular/core";
 import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
 import { PingPongChannelApi, PingPongInitArgs } from "@kogito-tooling-examples/ping-pong-view/dist/api";
 import { PingPongFactory } from "@kogito-tooling-examples/ping-pong-view/dist/envelope";
-import { ReplaySubject, BehaviorSubject } from "rxjs";
+import { ReplaySubject, BehaviorSubject, Subject } from "rxjs";
 
 declare global {
   interface Window {
@@ -41,6 +41,7 @@ export class PingPongApiService implements PingPongFactory {
   channelApi: MessageBusClientApi<PingPongChannelApi>;
   initArgs: PingPongInitArgs;
   log = new ReplaySubject<LogEntry>(10);
+  logCleared = new Subject();
   lastPingTimestamp = new BehaviorSubject<number>(0);
   dotInterval?: number;
   initialized = false;
@@ -94,6 +95,8 @@ export class PingPongApiService implements PingPongFactory {
     return () => ({
       clearLogs: () => {
         this.log = new ReplaySubject<LogEntry>(10);
+        // Emit a value to logCleared so we can re-subscribe to this.log wherever needed.
+        this.logCleared.next(null);
       },
       getLastPingTimestamp: () => {
         return Promise.resolve(this.lastPingTimestamp.value);

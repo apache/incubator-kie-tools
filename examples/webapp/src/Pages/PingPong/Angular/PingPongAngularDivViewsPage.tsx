@@ -15,42 +15,42 @@
  */
 
 import * as React from "react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef } from "react";
 import { Page, PageSection } from "@patternfly/react-core";
 import { EmbeddedDivPingPong } from "@kogito-tooling-examples/ping-pong-view/dist/embedded";
-import { PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
 import { StatsSidebar } from "../StatsSidebar";
 import { pingPongEnvelopViewRenderDiv } from "@kogito-tooling-examples/ping-pong-view-angular/dist/wc/lib";
-
-let pings = 0;
-let pongs = 0;
+import { PingPongApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { usePingPongApiCallbacks, usePingPongChannelApi } from "../hooks";
 
 export function PingPongAngularDivViewsPage() {
-  const [lastPing, setLastPing] = useState<string>("-");
-  const [lastPong, setLastPong] = useState<string>("-");
+  const { pingsCount, pongsCount, lastPing, lastPong, apiImpl } = usePingPongChannelApi();
 
-  const apiImpl: PingPongChannelApi = useMemo(() => {
-    return {
-      pingPongView__ping(source: string) {
-        pings++;
-        setLastPing(source);
-      },
-      pingPongView__pong(source: string, replyingTo: string) {
-        pongs++;
-        setLastPong(source);
-      },
-    };
-  }, []);
+  const angular1 = useRef<PingPongApi>(null);
+  const angular2 = useRef<PingPongApi>(null);
+  const angular3 = useRef<PingPongApi>(null);
+
+  const refs = useMemo(() => [angular1, angular2, angular3], [angular1, angular2, angular3]);
+
+  const { onClearLogs, onGetLastPingTimestamp } = usePingPongApiCallbacks(refs);
 
   return (
     <Page>
       <div className={"webapp--page-main-div"}>
-        <StatsSidebar lastPing={lastPing} lastPong={lastPong} pings={pings} pongs={pongs} />
+        <StatsSidebar
+          lastPing={lastPing}
+          lastPong={lastPong}
+          pings={pingsCount}
+          pongs={pongsCount}
+          onClearLogs={onClearLogs}
+          onGetLastPingTimestamp={onGetLastPingTimestamp}
+        />
         <div className={"webapp--page-ping-pong-view"}>
           <PageSection style={{ flex: "1 1" }}>
             <EmbeddedDivPingPong
               apiImpl={apiImpl}
               name={"Angular 1"}
+              ref={angular1}
               targetOrigin={window.location.origin}
               renderView={pingPongEnvelopViewRenderDiv}
             />
@@ -60,6 +60,7 @@ export function PingPongAngularDivViewsPage() {
             <EmbeddedDivPingPong
               apiImpl={apiImpl}
               name={"Angular 2"}
+              ref={angular2}
               targetOrigin={window.location.origin}
               renderView={pingPongEnvelopViewRenderDiv}
             />
@@ -69,6 +70,7 @@ export function PingPongAngularDivViewsPage() {
             <EmbeddedDivPingPong
               apiImpl={apiImpl}
               name={"Angular 3"}
+              ref={angular3}
               targetOrigin={window.location.origin}
               renderView={pingPongEnvelopViewRenderDiv}
             />

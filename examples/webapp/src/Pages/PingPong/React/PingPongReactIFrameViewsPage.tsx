@@ -15,33 +15,17 @@
  */
 
 import * as React from "react";
-import { useMemo, useState, useCallback, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { Page, PageSection } from "@patternfly/react-core";
 import { EmbeddedIFramePingPong } from "@kogito-tooling-examples/ping-pong-view/dist/embedded";
-import { PingPongChannelApi, PingPongApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { PingPongApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
 import { StatsSidebar } from "../StatsSidebar";
-import { usePingPongApiCallbacks } from "../hooks";
+import { usePingPongApiCallbacks, usePingPongChannelApi } from "../hooks";
 
-let pings = 0;
-let pongs = 0;
 const reactEnvelopePath = "envelope/ping-pong-view-react-impl.html";
 
 export function PingPongReactIFrameViewsPage() {
-  const [lastPing, setLastPing] = useState<string>("-");
-  const [lastPong, setLastPong] = useState<string>("-");
-
-  const apiImpl: PingPongChannelApi = useMemo(() => {
-    return {
-      pingPongView__ping(source: string) {
-        pings++;
-        setLastPing(source);
-      },
-      pingPongView__pong(source: string, replyingTo: string) {
-        pongs++;
-        setLastPong(source);
-      },
-    };
-  }, []);
+  const { pingsCount, pongsCount, lastPing, lastPong, apiImpl } = usePingPongChannelApi();
 
   const react1 = useRef<PingPongApi>(null);
   const react2 = useRef<PingPongApi>(null);
@@ -57,8 +41,8 @@ export function PingPongReactIFrameViewsPage() {
         <StatsSidebar
           lastPing={lastPing}
           lastPong={lastPong}
-          pings={pings}
-          pongs={pongs}
+          pings={pingsCount}
+          pongs={pongsCount}
           onClearLogs={onClearLogs}
           onGetLastPingTimestamp={onGetLastPingTimestamp}
         />

@@ -15,45 +15,50 @@
  */
 
 import * as React from "react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef } from "react";
 import { Page, PageSection } from "@patternfly/react-core";
 import { EmbeddedDivPingPong, EmbeddedIFramePingPong } from "@kogito-tooling-examples/ping-pong-view/dist/embedded";
-import { PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { PingPongApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
 import { StatsSidebar } from "../StatsSidebar";
 import { pingPongEnvelopViewRenderDiv as renderReactDiv } from "@kogito-tooling-examples/ping-pong-view-react";
 import { pingPongEnvelopViewRenderDiv as renderAngularDiv } from "@kogito-tooling-examples/ping-pong-view-angular/dist/wc/lib";
+import { usePingPongApiCallbacks, usePingPongChannelApi } from "../hooks";
 
-let pings = 0;
-let pongs = 0;
 const reactEnvelopePath = "envelope/ping-pong-view-react-impl.html";
 const angularEnvelopePath = "envelope/angular/index.html";
 
 export function PingPongMixedViewsPage() {
-  const [lastPing, setLastPing] = useState<string>("-");
-  const [lastPong, setLastPong] = useState<string>("-");
+  const { pingsCount, pongsCount, lastPing, lastPong, apiImpl } = usePingPongChannelApi();
 
-  const apiImpl: PingPongChannelApi = useMemo(() => {
-    return {
-      pingPongView__ping(source: string) {
-        pings++;
-        setLastPing(source);
-      },
-      pingPongView__pong(source: string, replyingTo: string) {
-        pongs++;
-        setLastPong(source);
-      },
-    };
-  }, []);
+  const angularIFrame = useRef<PingPongApi>(null);
+  const angularDiv = useRef<PingPongApi>(null);
+  const reactIFrame = useRef<PingPongApi>(null);
+  const reactDiv = useRef<PingPongApi>(null);
+
+  const refs = useMemo(
+    () => [angularIFrame, angularDiv, reactIFrame, reactDiv],
+    [angularIFrame, angularDiv, reactIFrame, reactDiv]
+  );
+
+  const { onClearLogs, onGetLastPingTimestamp } = usePingPongApiCallbacks(refs);
 
   return (
     <Page>
       <div className={"webapp--page-main-div"}>
-        <StatsSidebar lastPing={lastPing} lastPong={lastPong} pings={pings} pongs={pongs} />
+        <StatsSidebar
+          lastPing={lastPing}
+          lastPong={lastPong}
+          pings={pingsCount}
+          pongs={pongsCount}
+          onClearLogs={onClearLogs}
+          onGetLastPingTimestamp={onGetLastPingTimestamp}
+        />
         <div className={"webapp--page-ping-pong-view"}>
           <PageSection style={{ flex: "1 1 25%" }}>
             <EmbeddedIFramePingPong
               apiImpl={apiImpl}
               name={"Angular iFrame"}
+              ref={angularIFrame}
               targetOrigin={window.location.origin}
               envelopePath={angularEnvelopePath}
             />
@@ -63,6 +68,7 @@ export function PingPongMixedViewsPage() {
             <EmbeddedDivPingPong
               apiImpl={apiImpl}
               name={"Angular Div"}
+              ref={angularDiv}
               targetOrigin={window.location.origin}
               renderView={renderAngularDiv}
             />
@@ -72,6 +78,7 @@ export function PingPongMixedViewsPage() {
             <EmbeddedIFramePingPong
               apiImpl={apiImpl}
               name={"React iFrame"}
+              ref={reactIFrame}
               targetOrigin={window.location.origin}
               envelopePath={reactEnvelopePath}
             />
@@ -81,6 +88,7 @@ export function PingPongMixedViewsPage() {
             <EmbeddedDivPingPong
               apiImpl={apiImpl}
               name={"React Div"}
+              ref={reactDiv}
               targetOrigin={window.location.origin}
               renderView={renderReactDiv}
             />

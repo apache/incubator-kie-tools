@@ -33,6 +33,10 @@ export class PingPongComponent implements OnInit {
 
   log: Observable<LogEntry[]>;
 
+  subscribeToLogUpdates() {
+    this.log = this.pingPongApiService.log.asObservable().pipe(scan((acc, curr) => [...acc.slice(-9), curr], []));
+  }
+
   ngOnInit() {
     // Initialize log with a starting message.
     this.pingPongApiService.log.next({ line: "Logs will show up here", time: 0 });
@@ -46,6 +50,7 @@ export class PingPongComponent implements OnInit {
     });
 
     // Create an observable variable with the 10 latest values of the log.
-    this.log = this.pingPongApiService.log.asObservable().pipe(scan((acc, curr) => [...acc.slice(-9), curr], []));
+    this.subscribeToLogUpdates();
+    this.pingPongApiService.logCleared.subscribe(() => this.subscribeToLogUpdates());
   }
 }

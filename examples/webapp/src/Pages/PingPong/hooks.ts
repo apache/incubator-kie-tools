@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { useCallback, RefObject } from "react";
-import { PingPongApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { useCallback, RefObject, useState, useMemo } from "react";
+import { PingPongApi, PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
 
 export function usePingPongApiCallbacks(refs: RefObject<PingPongApi>[]) {
   const onClearLogs = useCallback(() => {
@@ -30,4 +30,32 @@ export function usePingPongApiCallbacks(refs: RefObject<PingPongApi>[]) {
   }, [refs]);
 
   return { onClearLogs, onGetLastPingTimestamp };
+}
+
+export function usePingPongChannelApi() {
+  const [lastPing, setLastPing] = useState<string>("-");
+  const [lastPong, setLastPong] = useState<string>("-");
+  const [pingsCount, setPingsCount] = useState(0);
+  const [pongsCount, setPongsCount] = useState(0);
+
+  const apiImpl: PingPongChannelApi = useMemo(() => {
+    return {
+      pingPongView__ping(source: string) {
+        setPingsCount((currentPingCount) => currentPingCount + 1);
+        setLastPing(source);
+      },
+      pingPongView__pong(source: string, _replyingTo: string) {
+        setPongsCount((currentPongCount) => currentPongCount + 1);
+        setLastPong(source);
+      },
+    };
+  }, []);
+
+  return {
+    pingsCount,
+    pongsCount,
+    lastPing,
+    lastPong,
+    apiImpl,
+  };
 }
