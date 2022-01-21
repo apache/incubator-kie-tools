@@ -47,7 +47,11 @@ if (Utils.isLTSBranch(this)) {
 
 void setupPrJob(String branch = "${GIT_BRANCH}") {
     def jobParams = getDefaultJobParams()
-    jobParams.pr.run_only_for_branches = [ branch ]
+    jobParams.pr.putAll([
+        run_only_for_branches: [ branch ],
+        disable_status_message_error: true,
+        disable_status_message_failure: true,
+    ])
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 

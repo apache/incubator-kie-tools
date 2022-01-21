@@ -4,8 +4,10 @@ def changeAuthor = env.ghprbAuthorRepoGitUrl ? util.getGroup(env.ghprbAuthorRepo
 def changeBranch = env.ghprbSourceBranch ?: CHANGE_BRANCH
 def changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
 
-pipeline{
-    agent { label 'kogito-image-slave && !master'}
+BUILD_FAILED_IMAGES = []
+
+pipeline {
+    agent { label 'kogito-image-slave && !master' }
     tools {
         jdk 'kie-jdk11'
     }
@@ -15,28 +17,28 @@ pipeline{
     environment {
         CI = true
     }
-    stages{
-        stage('Initialization'){
-            steps{
-                script{
+    stages {
+        stage('Initialization') {
+            steps {
+                script {
                     clean()
-                    
+
                     // Set the mirror url only if exist
                     if (env.MAVEN_MIRROR_REPOSITORY != null
-                            && env.MAVEN_MIRROR_REPOSITORY != ''){
+                            && env.MAVEN_MIRROR_REPOSITORY != '') {
                         env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
-                    }
+                            }
 
                     githubscm.checkoutIfExists('kogito-images', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
 
                     //Ignore self-signed certificates if MAVEN_MIRROR_URL is defined
-                    if(env.MAVEN_MIRROR_URL != ''){
+                    if (env.MAVEN_MIRROR_URL != '') {
                         sh 'python3 scripts/update-tests.py --ignore-self-signed-cert'
                     }
                 }
             }
         }
-        stage('Validate CeKit Image and Modules descriptors'){
+        stage('Validate CeKit Image and Modules descriptors') {
             steps {
                 script {
                     sh '''
@@ -46,35 +48,76 @@ pipeline{
                     '''
                     sh './cekit-image-validator-runner modules/'
                     sh './cekit-image-validator-runner image.yaml'
-                    getImages().each{ image -> sh "./cekit-image-validator-runner ${image}-overrides.yaml" }   
+                    getImages().each { image -> sh "./cekit-image-validator-runner ${image}-overrides.yaml" }
                 }
             }
         }
-        stage('Prepare offline kogito-examples'){
-            steps{
-                sh "make clone-repos"
+        stage('Prepare offline kogito-examples') {
+            steps {
+                sh 'make clone-repos'
             }
         }
-        stage('Build Images') {
-            steps{
-                script {
-                    getImages().each{ image -> initWorkspace(image) }
-                    launchParallelForEachImage("Build", {img -> buildImage(img)})
-                }
-            }
-        }
-        stage('Test Images') {
+        stage('Build & Test Images') {
             steps {
                 script {
-                    launchParallelForEachImage("Test", {img -> testImage(img)})
+                    parallelStages = [:]
+                    getImages().each { image ->
+                        initWorkspace(image)
+                        String workspacePath = getWorkspacePath(image)
+                        parallelStages["Build&Test ${image}"] = {
+                            stage("Build ${image}") {
+                                try {
+                                    dir(workspacePath) {
+                                        buildImage(image)
+                                    }
+                                } catch (err) {
+                                    registerBuildFailedImage(image)
+                                    util.archiveConsoleLog(image)
+                                    throw err
+                                }
+                            }
+                            stage("Test ${image}") {
+                                dir(workspacePath) {
+                                    try {
+                                        testImage(image)
+                                    } catch (err) {
+                                        echo "Testing error(s) for image ${image}"
+                                    } finally {
+                                        junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
+                                        archiveArtifacts artifacts: 'target/test/results/*.xml', allowEmptyArchive: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    parallel parallelStages
+                }
+            }
+            post {
+                always {
+                    script {
+                        cleanWorkspaces()
+                    }
                 }
             }
         }
     }
-    post{
-        always{
-            script{
+    post {
+        always {
+            script {
                 clean()
+            }
+        }
+        unsuccessful {
+            script {
+                def additionalInfo = ''
+                if (getBuildFailedImages()){
+                    additionalInfo += 'Build failures on those images:\n'
+                    getBuildFailedImages().each {
+                        additionalInfo += "- ${it}\n"
+                    }
+                }
+                pullrequest.postComment(util.getMarkdownTestSummary('PR', additionalInfo, "${BUILD_URL}", 'GITHUB'))
             }
         }
     }
@@ -88,16 +131,16 @@ void clean() {
     sh "rm -rf \$HOME/.cekit/cache"
 }
 
-void cleanImages(){
+void cleanImages() {
     sh "docker rm -f \$(docker ps -a -q) || date"
     sh "docker rmi -f \$(docker images -q) || date"
 }
 
 void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
     parallelStages = [:]
-    getImages().each{ image -> 
+    getImages().each { image ->
         parallelStages["${stageNamePrefix} ${image}"] = {
-            dir(getWorkspacePath(image)){
+            dir(getWorkspacePath(image)) {
                 executeOnImage(image)
             }
         }
@@ -105,36 +148,41 @@ void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
     parallel parallelStages
 }
 
-void buildImage(image) {
-    sh "make build-image image_name=${image} ignore_test=true cekit_option='--work-dir .'"
+void buildImage(String imageName) {
+    sh "make build-image image_name=${imageName} ignore_test=true cekit_option='--work-dir .'"
 }
 
-void testImage(image) {
-    try {
-        sh "make build-image image_name=${image} ignore_build=true cekit_option='--work-dir .'"
-    } finally {
-        junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
-        archiveArtifacts artifacts: "target/test/results/*.xml"
+void testImage(String imageName) {
+    sh "make build-image image_name=${imageName} ignore_build=true cekit_option='--work-dir .'"
+}
+
+void registerBuildFailedImage(String imageName) {
+    lock("${BUILD_URL} build failed") {
+        BUILD_FAILED_IMAGES.add(imageName)
     }
 }
 
-void initWorkspace(String image){
+List getBuildFailedImages() {
+    return BUILD_FAILED_IMAGES
+}
+
+void initWorkspace(String image) {
     sh "mkdir -p ${getWorkspacePath(image)}"
     sh "rsync -av --progress . ${getWorkspacePath(image)} --exclude workspaces"
 }
 
-void cleanWorkspaces(){
+void cleanWorkspaces() {
     sh "rm -rf ${getWorkspacesPath()}"
 }
 
-String getWorkspacesPath(){
+String getWorkspacesPath() {
     return "${WORKSPACE}/workspaces"
 }
 
-String getWorkspacePath(String image){
+String getWorkspacePath(String image) {
     return "${getWorkspacesPath()}/${image}"
 }
 
-String[] getImages(){
+String[] getImages() {
     return sh(script: "make list | tr '\\n' ','", returnStdout: true).trim().split(',')
 }
