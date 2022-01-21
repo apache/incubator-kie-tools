@@ -183,7 +183,7 @@ public class DataTypeListTest {
     @Test
     public void activateReactComponents() {
         // Included channel
-        when(kogitoChannelHelperMock.isCurrentChannelEnabled(any())).thenReturn(true);
+        when(kogitoChannelHelperMock.isCurrentChannelEnabled(Channel.VSCODE)).thenReturn(true);
 
         dataTypeList.activateReactComponents();
 
@@ -192,7 +192,7 @@ public class DataTypeListTest {
 
         // Excluded channel
         reset(kogitoChannelHelperMock, view);
-        when(kogitoChannelHelperMock.isCurrentChannelEnabled(any())).thenReturn(false);
+        when(kogitoChannelHelperMock.isCurrentChannelEnabled(Channel.VSCODE)).thenReturn(false);
 
         dataTypeList.activateReactComponents();
 
