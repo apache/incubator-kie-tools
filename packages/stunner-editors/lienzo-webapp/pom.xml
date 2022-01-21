@@ -14,7 +14,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-  
+
 <project
 		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 		xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -234,7 +234,7 @@
 							</modules>
 							<logLevel>INFO</logLevel>
 							<noServer>false</noServer>
-							<extraJvmArgs>-Xmx2048m -XX:CompileThreshold=7000 -Djava.io.tmpdir=${project.build.directory}
+							<extraJvmArgs>-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC -Djava.io.tmpdir=${project.build.directory}
 							</extraJvmArgs>
 							<disableCastChecking>true</disableCastChecking>
 							<generateJsInteropExports>true</generateJsInteropExports>
