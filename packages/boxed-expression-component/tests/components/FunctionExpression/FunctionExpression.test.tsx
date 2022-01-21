@@ -29,6 +29,7 @@ import {
 } from "@kogito-tooling/boxed-expression-component/dist/components/FunctionExpression";
 import * as React from "react";
 import {
+  BoxedExpressionEditorGWTService,
   DataType,
   EntryInfo,
   FunctionKind,
@@ -36,7 +37,6 @@ import {
   LogicType,
 } from "@kogito-tooling/boxed-expression-component";
 import { act } from "react-dom/test-utils";
-import * as _ from "lodash";
 
 describe("FunctionExpression tests", () => {
   const parameterId = "p1";
@@ -80,12 +80,13 @@ describe("FunctionExpression tests", () => {
   });
 
   test("should reset function kind to FEEL, when resetting table row", async () => {
-    const mockedBroadcastDefinition = jest.fn();
-    mockBroadcastDefinition(mockedBroadcastDefinition);
+    const { mockedBroadcastDefinition, boxedExpressionEditorGWTService } = mockBoxedExpressionEditorGWTService();
+
     const { container, baseElement } = render(
       usingTestingBoxedExpressionI18nContext(
         usingTestingBoxedExpressionProviderContext(
-          <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Java} formalParameters={[]} />
+          <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Java} formalParameters={[]} />,
+          { boxedExpressionEditorGWTService }
         ).wrapper
       ).wrapper
     );
@@ -152,8 +153,7 @@ describe("FunctionExpression tests", () => {
 
     test("should update the parameter name, when it gets changed by the user", async () => {
       const newParamName = "new param";
-      const mockedBroadcastDefinition = jest.fn();
-      mockBroadcastDefinition(mockedBroadcastDefinition);
+      const { mockedBroadcastDefinition, boxedExpressionEditorGWTService } = mockBoxedExpressionEditorGWTService();
 
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
@@ -162,7 +162,8 @@ describe("FunctionExpression tests", () => {
               logicType={LogicType.Function}
               functionKind={FunctionKind.Feel}
               formalParameters={[{ id: parameterId, name: "param", dataType: DataType.Any }]}
-            />
+            />,
+            { boxedExpressionEditorGWTService }
           ).wrapper
         ).wrapper
       );
@@ -182,8 +183,7 @@ describe("FunctionExpression tests", () => {
     });
 
     test("should update the parameter data type, when it gets changed by the user", async () => {
-      const mockedBroadcastDefinition = jest.fn();
-      mockBroadcastDefinition(mockedBroadcastDefinition);
+      const { mockedBroadcastDefinition, boxedExpressionEditorGWTService } = mockBoxedExpressionEditorGWTService();
 
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
@@ -192,7 +192,8 @@ describe("FunctionExpression tests", () => {
               logicType={LogicType.Function}
               functionKind={FunctionKind.Feel}
               formalParameters={[{ id: parameterId, name: "param", dataType: DataType.Undefined }]}
-            />
+            />,
+            { boxedExpressionEditorGWTService }
           ).wrapper
         ).wrapper
       );
@@ -216,13 +217,17 @@ describe("FunctionExpression tests", () => {
     });
 
     test("should add a new parameter, when the user adds it", async () => {
-      const mockedBroadcastDefinition = jest.fn();
-      mockBroadcastDefinition(mockedBroadcastDefinition);
+      const { mockedBroadcastDefinition, boxedExpressionEditorGWTService } = mockBoxedExpressionEditorGWTService();
 
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
           usingTestingBoxedExpressionProviderContext(
-            <FunctionExpression logicType={LogicType.Function} functionKind={FunctionKind.Feel} formalParameters={[]} />
+            <FunctionExpression
+              logicType={LogicType.Function}
+              functionKind={FunctionKind.Feel}
+              formalParameters={[]}
+            />,
+            { boxedExpressionEditorGWTService }
           ).wrapper
         ).wrapper
       );
@@ -240,8 +245,7 @@ describe("FunctionExpression tests", () => {
     });
 
     test("should have no parameter, when the user delete the only existing one", async () => {
-      const mockedBroadcastDefinition = jest.fn();
-      mockBroadcastDefinition(mockedBroadcastDefinition);
+      const { mockedBroadcastDefinition, boxedExpressionEditorGWTService } = mockBoxedExpressionEditorGWTService();
 
       const { container, baseElement } = render(
         usingTestingBoxedExpressionI18nContext(
@@ -256,7 +260,8 @@ describe("FunctionExpression tests", () => {
                   name: DEFAULT_FIRST_PARAM_NAME,
                 },
               ]}
-            />
+            />,
+            { boxedExpressionEditorGWTService }
           ).wrapper
         ).wrapper
       );
@@ -268,7 +273,10 @@ describe("FunctionExpression tests", () => {
       checkFormalParameters(mockedBroadcastDefinition, []);
     });
 
-    function checkFormalParameters(mockedBroadcastDefinition: jest.Mock, formalParameters: EntryInfo[]) {
+    function checkFormalParameters(
+      mockedBroadcastDefinition: jest.Mock | ((definition: FunctionProps) => void),
+      formalParameters: EntryInfo[]
+    ) {
       expect(mockedBroadcastDefinition).toHaveBeenCalledWith({
         dataType: DataType.Undefined,
         expression: {
@@ -400,67 +408,15 @@ describe("FunctionExpression tests", () => {
 
       checkContextEntries(container, document, model, true);
     });
-
-    test("should populate parameters list with parameters related to selected PMML model", async () => {
-      const mockedBroadcastDefinition = jest.fn();
-
-      let props: FunctionProps = {
-        logicType: LogicType.Function,
-        functionKind: FunctionKind.Pmml,
-        formalParameters: [],
-      };
-
-      const mockBroadcastDefinition = () => {
-        window.beeApi = _.extend(window.beeApi || {}, {
-          broadcastFunctionExpressionDefinition: (definition: FunctionProps) => {
-            props = {
-              ...props,
-              ...definition,
-            };
-            mockedBroadcastDefinition(definition);
-          },
-        });
-      };
-      mockBroadcastDefinition();
-
-      const screen = render(
-        usingTestingBoxedExpressionI18nContext(
-          usingTestingBoxedExpressionProviderContext(<FunctionExpression {...props} />).wrapper
-        ).wrapper
-      );
-
-      await act(async () => {
-        fireEvent.click(screen.container.querySelectorAll(".pmml-literal-expression button")[0]! as HTMLElement);
-        fireEvent.click(await screen.findByTestId("pmml-selector-document"));
-        fireEvent.click(await screen.findByTestId("pmml-document"));
-      });
-
-      screen.rerender(
-        usingTestingBoxedExpressionI18nContext(
-          usingTestingBoxedExpressionProviderContext(<FunctionExpression {...props} />).wrapper
-        ).wrapper
-      );
-      await act(async () => {
-        fireEvent.click(screen.container.querySelectorAll(".pmml-literal-expression button")[1]! as HTMLElement);
-        fireEvent.click(await screen.findByTestId("pmml-selector-model"));
-        fireEvent.click(await screen.findByTestId("pmml-model"));
-      });
-
-      expect(mockedBroadcastDefinition).toHaveBeenLastCalledWith(
-        expect.objectContaining({
-          document: documentName,
-          model: modelName,
-        })
-      );
-    });
   });
 
-  function mockBroadcastDefinition(mockedBroadcastDefinition: jest.Mock) {
-    // noinspection JSVoidFunctionReturnValueUsed
-    window.beeApi = _.extend(window.beeApi || {}, {
-      broadcastFunctionExpressionDefinition: (definition: FunctionProps) => mockedBroadcastDefinition(definition),
+  function mockBoxedExpressionEditorGWTService() {
+    const mockedBroadcastDefinition: (definition: FunctionProps) => void = jest.fn();
+    const boxedExpressionEditorGWTService = {
+      broadcastFunctionExpressionDefinition: mockedBroadcastDefinition,
       notifyUserAction: () => {},
-    });
+    } as BoxedExpressionEditorGWTService;
+    return { mockedBroadcastDefinition, boxedExpressionEditorGWTService };
   }
 
   async function clearTableRow(container: Element, baseElement: Element) {
