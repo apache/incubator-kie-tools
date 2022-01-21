@@ -27,5 +27,7 @@ export class PingPongReactImplFactory implements PingPongFactory {
     const ref = React.createRef<PingPongApi>();
 
     this.setView(<PingPongReactImpl initArgs={initArgs} channelApi={channelApi} ref={ref} />);
+
+    return () => ref.current;
   }
 }

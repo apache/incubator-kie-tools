@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-import { PingPongApi } from "./PingPongApi";
+import { useCallback, RefObject } from "react";
+import { PingPongApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
 
-/**
- * Methods provided by the Envelope that can be consumed by the Channel.
- */
-export interface PingPongEnvelopeApi {
-  pingPongView__init(association: Association, initArgs: PingPongInitArgs): Promise<void>;
-  pingPongView__clearLogs(): Promise<void>;
-  pingPongView__getLastPingTimestamp(): Promise<number>;
-}
+export function usePingPongApiCallbacks(refs: RefObject<PingPongApi>[]) {
+  const onClearLogs = useCallback(() => {
+    refs.forEach((ref) => {
+      ref.current?.clearLogs();
+    });
+  }, [refs]);
 
-export interface Association {
-  origin: string;
-  envelopeServerId: string;
-}
+  const onGetLastPingTimestamp = useCallback(() => {
+    const getTimestamps = async () => Promise.all(refs.map((ref) => ref.current?.getLastPingTimestamp() || 0));
+    return getTimestamps().then((timestamps) => Math.max(...timestamps));
+  }, [refs]);
 
-export interface PingPongInitArgs {
-  name: string;
+  return { onClearLogs, onGetLastPingTimestamp };
 }

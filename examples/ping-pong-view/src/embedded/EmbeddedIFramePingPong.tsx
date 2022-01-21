@@ -30,7 +30,13 @@ export type EmbeddedIFramePingPongProps = {
 
 export const EmbeddedIFramePingPong = React.forwardRef(
   (props: EmbeddedIFramePingPongProps, forwardedRef: React.Ref<PingPongApi>) => {
-    const refDelegate = useCallback((): PingPongApi => ({}), []);
+    const refDelegate = useCallback(
+      (envelopeServer: EnvelopeServer<PingPongChannelApi, PingPongEnvelopeApi>): PingPongApi => ({
+        clearLogs: () => envelopeServer.envelopeApi.requests.pingPongView__clearLogs(),
+        getLastPingTimestamp: () => envelopeServer.envelopeApi.requests.pingPongView__getLastPingTimestamp(),
+      }),
+      []
+    );
 
     const pollInit = useCallback(
       (envelopeServer: EnvelopeServer<PingPongChannelApi, PingPongEnvelopeApi>, container: () => HTMLIFrameElement) => {

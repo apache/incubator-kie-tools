@@ -15,6 +15,7 @@
  */
 
 import * as React from "react";
+import { useState, useEffect } from "react";
 import { Label, Nav, NavItem, NavList, Title } from "@patternfly/react-core";
 
 interface Props {
@@ -22,6 +23,8 @@ interface Props {
   lastPong: string;
   pings: number;
   pongs: number;
+  onClearLogs?: () => void;
+  onGetLastPingTimestamp?: () => Promise<number>;
 }
 
 /**
@@ -31,6 +34,18 @@ interface Props {
  * @constructor
  */
 export function StatsSidebar(props: Props) {
+  const [lastPingTimestamp, setLastPingTimestamp] = useState<string>("-");
+
+  const { pings, pongs, lastPing, lastPong, onClearLogs, onGetLastPingTimestamp } = props;
+
+  useEffect(() => {
+    if (pings) {
+      onGetLastPingTimestamp?.().then((timestamp) => {
+        setLastPingTimestamp(new Date(timestamp).toLocaleTimeString());
+      });
+    }
+  }, [pings, onGetLastPingTimestamp]);
+
   return (
     <div>
       <Nav className={"webapp--page-navigation webapp--page-ping-pong-view-navigation"}>
@@ -43,25 +58,36 @@ export function StatsSidebar(props: Props) {
           <NavItem>
             <div>
               Pings: &nbsp;
-              <Label>{props.pings}</Label>
+              <Label>{pings}</Label>
             </div>
           </NavItem>
           <NavItem>
             <div>
               Pongs: &nbsp;
-              <Label>{props.pongs}</Label>
+              <Label>{pongs}</Label>
             </div>
           </NavItem>
           <NavItem>
             <div>
               Last ping: &nbsp;
-              <Label>{props.lastPing}</Label>
+              <Label>{lastPing}</Label>
+            </div>
+          </NavItem>
+          <NavItem>
+            <div>
+              Last ping timestamp: &nbsp;
+              <Label>{lastPingTimestamp}</Label>
             </div>
           </NavItem>
           <NavItem>
             <div>
               Last pong: &nbsp;
-              <Label>{props.lastPong}</Label>
+              <Label>{lastPong}</Label>
+            </div>
+          </NavItem>
+          <NavItem>
+            <div>
+              <button onClick={onClearLogs}>Clear logs!</button>
             </div>
           </NavItem>
         </NavList>

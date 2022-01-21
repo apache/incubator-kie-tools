@@ -20,7 +20,6 @@ import { Page, PageSection } from "@patternfly/react-core";
 import { EmbeddedDivPingPong } from "@kogito-tooling-examples/ping-pong-view/dist/embedded";
 import { PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
 import { StatsSidebar } from "../StatsSidebar";
-import "@kogito-tooling-examples/ping-pong-view-angular/dist/wc";
 import { pingPongEnvelopViewRenderDiv } from "@kogito-tooling-examples/ping-pong-view-angular/dist/wc/lib";
 
 let pings = 0;

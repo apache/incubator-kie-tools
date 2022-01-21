@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { PingPongApi, PingPongChannelApi, PingPongEnvelopeApi } from "../api";
 import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
@@ -36,7 +36,15 @@ const config: EnvelopeDivConfig = { containerType: ContainerType.DIV };
 
 export const EmbeddedDivPingPong = React.forwardRef(
   (props: EmbeddedDivPingPongProps, forwardedRef: React.Ref<PingPongApi>) => {
-    const refDelegate = useCallback((): PingPongApi => ({}), []);
+    const refDelegate = useCallback(
+      (envelopeServer: EnvelopeServer<PingPongChannelApi, PingPongEnvelopeApi>): PingPongApi => ({
+        clearLogs: () => envelopeServer.envelopeApi.requests.pingPongView__clearLogs(),
+        getLastPingTimestamp: () => envelopeServer.envelopeApi.requests.pingPongView__getLastPingTimestamp(),
+      }),
+      []
+    );
+
+    const renderLock = useRef(false);
     const { renderView, name } = props;
 
     const pollInit = useCallback(
@@ -44,7 +52,10 @@ export const EmbeddedDivPingPong = React.forwardRef(
         envelopeServer: EnvelopeServer<PingPongChannelApi, PingPongEnvelopeApi>,
         container: () => HTMLDivElement
       ) => {
-        await renderView(container(), envelopeServer.id);
+        if (!renderLock.current) {
+          await renderView(container(), envelopeServer.id);
+          renderLock.current = true;
+        }
 
         return envelopeServer.envelopeApi.requests.pingPongView__init(
           { origin: envelopeServer.origin, envelopeServerId: envelopeServer.id },

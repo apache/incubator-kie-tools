@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-/**
- * The API of a PingPongViewApi.
- *
- * These methods are what the "external world" knows about this component.
- * In this case, there are no direct interactions with a Ping-Pong View.
- */
-export interface PingPongApi {
-  clearLogs(): void;
-  getLastPingTimestamp(): Promise<number>;
-}
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
+import { PingPongEnvelopeView } from "..";
+
+export const pingPongEnvelopViewRenderDiv = (container: HTMLElement, envelopeId: string) =>
+  new Promise<void>((res) => {
+    ReactDOM.render(
+      <PingPongEnvelopeView envelopeConfig={{ containerType: ContainerType.DIV, envelopeId }} />,
+      container,
+      () => res()
+    );
+  });

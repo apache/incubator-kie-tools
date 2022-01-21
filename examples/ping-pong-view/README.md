@@ -22,7 +22,7 @@ It's divided in the following submodules:
 2. **API Implementation**
    - Create a class that implements the `PingPongEnvelopeApi` interface or use the one provided in `envelope/PingPongEnvelopeApiImpl.ts`;
    - The `pingPongView__init` will be responsible for associating the `envelopeClient` with the `envelopeServer`, waiting for the view to be ready (in our implementation via the async `viewDelegate` method) and then calling the `create` method from your factory implementation.
-3. **Runing inside an `EmbeddedEnvelope`**
+3. **Running inside an `EmbeddedEnvelope`**
    - Your project can run inside a `div` or an `iFrame`, and for that both are available inside the `embedded` directory.
    - Both require similar props and these are the ones that are common to them:
      ```
@@ -50,7 +50,6 @@ It's divided in the following submodules:
         config: EnvelopeDivConfig | EnvelopeIFrameConfig;
         bus: EnvelopeBus;
         pingPongViewFactory: PingPongFactory;
-        viewReady: () => Promise<() => PingPongViewType>;
      }
      ```
 
@@ -60,4 +59,3 @@ It's divided in the following submodules:
        { postMessage: (message, _targetOrigin, transfer) => window.parent.postMessage(message, "*", transfer) }
        ```
      - **pingPongViewFactory** should an instance of the factory class created in step _1_
-     - **viewReady** is an async method that should resolve when the view is loaded and ready to start transmitting and receiving messages from the channel

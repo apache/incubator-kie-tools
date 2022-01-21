@@ -32,32 +32,28 @@ interface LogEntry {
 
 /**
  * This is a React implementation of a PingPongView.
- *
- *
  */
 export const PingPongReactImpl = React.forwardRef<PingPongApi, Props>((props, forwardedRef) => {
-  const pingPongViewApi: PingPongApi = useMemo(
+  // Create `log` state to display the messages exchanged by Ping-Pong Views
+  const [log, setLog] = useState<LogEntry[]>([{ line: "Logs will show up here", time: 0 }]);
+  const [lastPingTimestamp, setLastPingTimestamp] = useState<number>(0);
+
+  const pingPongViewApi = useMemo(
     () => ({
-      /*
-       * Here's where your PingPongViewApi implementation would go if it wasn't empty.
-       *
-       * Since PingPongViews can't be controlled by its parents (PingPongViewEnvelopeView, or EmbeddedPingPongView),
-       * we don't need anything here.
-       */
+      clearLogs: () => setLog([]),
+      getLastPingTimestamp: () => Promise.resolve(lastPingTimestamp),
     }),
-    []
+    [lastPingTimestamp, setLog]
   );
 
   // This line turns your pingPongViewApi implementation into a `ref` of this component,
   // allowing this Ping-Pong View implementation to be controlled by its parents.
   useImperativeHandle(forwardedRef, () => pingPongViewApi, [pingPongViewApi]);
 
-  // Create `log` state to display the messages exchanged by Ping-Pong Views
-  const [log, setLog] = useState<LogEntry[]>([{ line: "Logs will show up here", time: 0 }]);
-
   // Function to be called when pressing the 'Ping others!' button.
   const ping = useCallback(() => {
     props.channelApi.notifications.pingPongView__ping.send(props.initArgs.name);
+    setLastPingTimestamp(getCurrentTime());
   }, [props.channelApi, props.initArgs.name]);
 
   // Subscribes to messages sent to `pingPongView__ping`.
@@ -113,8 +109,8 @@ export const PingPongReactImpl = React.forwardRef<PingPongApi, Props>((props, fo
         <button onClick={ping}>Ping others!</button>
       </div>
       <div className={"ping-pong-view--log"}>
-        {log.slice(-10).map((line) => (
-          <p style={{ fontFamily: "monospace" }} key={line.time}>
+        {log.slice(-10).map((line, i) => (
+          <p style={{ fontFamily: "monospace" }} key={i}>
             {line.line}
           </p>
         ))}
@@ -124,5 +120,5 @@ export const PingPongReactImpl = React.forwardRef<PingPongApi, Props>((props, fo
 });
 
 function getCurrentTime() {
-  return window.performance.now();
+  return Date.now();
 }

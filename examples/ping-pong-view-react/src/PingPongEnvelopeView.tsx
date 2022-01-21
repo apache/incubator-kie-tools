@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,11 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { useEffect, useState } from "react";
 import * as PingPongViewEnvelope from "@kogito-tooling-examples/ping-pong-view/dist/envelope";
-import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
 import { PingPongReactImplFactory } from ".";
 import "./styles.css";
 import { EnvelopeDivConfig, EnvelopeIFrameConfig } from "@kie-tooling-core/envelope";
-
-export const pingPongEnvelopViewRender = (container: HTMLElement) => {
-  return new Promise<void>((res) => {
-    const config: EnvelopeIFrameConfig = { containerType: ContainerType.IFRAME };
-    ReactDOM.render(<PingPongEnvelopeView envelopeConfig={config} />, container, () => res());
-  });
-};
-
-export const pingPongEnvelopViewRenderDiv = (container: HTMLElement, envelopeId: string) => {
-  return new Promise<void>((res) => {
-    const config: EnvelopeDivConfig = { containerType: ContainerType.DIV, envelopeId };
-    ReactDOM.render(<PingPongEnvelopeView envelopeConfig={config} />, container, () => res());
-  });
-};
 
 export const PingPongEnvelopeView = (props: { envelopeConfig: EnvelopeDivConfig | EnvelopeIFrameConfig }) => {
   const [view, setView] = useState<React.ReactElement>();
@@ -45,7 +29,6 @@ export const PingPongEnvelopeView = (props: { envelopeConfig: EnvelopeDivConfig 
       config: props.envelopeConfig,
       bus: { postMessage: (message, _targetOrigin, transfer) => window.parent.postMessage(message, "*", transfer) },
       pingPongViewFactory: new PingPongReactImplFactory(setView),
-      viewReady: () => Promise.resolve(() => {}),
     });
   }, [props.envelopeConfig]);
 

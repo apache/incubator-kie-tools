@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Association, PingPongChannelApi, PingPongEnvelopeApi, PingPongInitArgs } from "../api";
+import { Association, PingPongChannelApi, PingPongEnvelopeApi, PingPongInitArgs, PingPongApi } from "../api";
 import { EnvelopeApiFactoryArgs } from "@kie-tooling-core/envelope";
 import { PingPongFactory } from "./PingPongFactory";
 
@@ -24,9 +24,21 @@ export class PingPongEnvelopeApiImpl implements PingPongEnvelopeApi {
     private readonly pingPongViewFactory: PingPongFactory
   ) {}
 
+  pingPongApi?: () => PingPongApi | null;
+
   public async pingPongView__init(association: Association, initArgs: PingPongInitArgs) {
     this.args.envelopeClient.associate(association.origin, association.envelopeServerId);
-    await this.args.viewDelegate();
-    this.pingPongViewFactory.create(initArgs, this.args.envelopeClient.manager.clientApi);
+    this.pingPongApi = this.pingPongViewFactory.create(initArgs, this.args.envelopeClient.manager.clientApi);
+  }
+
+  public async pingPongView__clearLogs() {
+    this.pingPongApi?.()?.clearLogs();
+  }
+
+  public async pingPongView__getLastPingTimestamp() {
+    const api = this.pingPongApi?.();
+    if (!api) return Promise.resolve(0);
+
+    return api.getLastPingTimestamp();
   }
 }

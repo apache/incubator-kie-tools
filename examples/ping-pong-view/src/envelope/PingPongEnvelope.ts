@@ -26,12 +26,11 @@ export function init(args: {
   config: EnvelopeDivConfig | EnvelopeIFrameConfig;
   bus: EnvelopeBus;
   pingPongViewFactory: PingPongFactory;
-  viewReady: () => Promise<() => PingPongViewType>;
 }) {
   const envelope = new Envelope<PingPongEnvelopeApi, PingPongChannelApi, PingPongViewType, {}>(args.bus, args.config);
 
   return envelope.start(
-    args.viewReady,
+    () => Promise.resolve(() => {}),
     {},
     {
       create: (apiFactoryArgs) => new PingPongEnvelopeApiImpl(apiFactoryArgs, args.pingPongViewFactory),

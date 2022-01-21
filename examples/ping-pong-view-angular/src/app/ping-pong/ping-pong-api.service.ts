@@ -18,7 +18,7 @@ import { Injectable } from "@angular/core";
 import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
 import { PingPongChannelApi, PingPongInitArgs } from "@kogito-tooling-examples/ping-pong-view/dist/api";
 import { PingPongFactory } from "@kogito-tooling-examples/ping-pong-view/dist/envelope";
-import { ReplaySubject } from "rxjs";
+import { ReplaySubject, BehaviorSubject } from "rxjs";
 
 declare global {
   interface Window {
@@ -33,7 +33,7 @@ export interface LogEntry {
 }
 
 function getCurrentTime() {
-  return window.performance.now();
+  return Date.now();
 }
 
 @Injectable()
@@ -41,6 +41,7 @@ export class PingPongApiService implements PingPongFactory {
   channelApi: MessageBusClientApi<PingPongChannelApi>;
   initArgs: PingPongInitArgs;
   log = new ReplaySubject<LogEntry>(10);
+  lastPingTimestamp = new BehaviorSubject<number>(0);
   dotInterval?: number;
   initialized = false;
   pingSubscription?: (source: string) => void;
@@ -90,12 +91,20 @@ export class PingPongApiService implements PingPongFactory {
 
     this.initialized = true;
 
-    return {};
+    return () => ({
+      clearLogs: () => {
+        this.log = new ReplaySubject<LogEntry>(10);
+      },
+      getLastPingTimestamp: () => {
+        return Promise.resolve(this.lastPingTimestamp.value);
+      },
+    });
   }
 
   // Send a ping to the channel.
   ping() {
     this.channelApi.notifications.pingPongView__ping.send(this.initArgs.name);
+    this.lastPingTimestamp.next(getCurrentTime());
   }
 
   clearSubscriptions() {

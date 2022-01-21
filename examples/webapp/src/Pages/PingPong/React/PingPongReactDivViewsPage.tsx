@@ -15,13 +15,13 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState, useRef, useCallback } from "react";
 import { Page, PageSection } from "@patternfly/react-core";
 import { EmbeddedDivPingPong } from "@kogito-tooling-examples/ping-pong-view/dist/embedded";
-import { PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { PingPongApi, PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
 import { pingPongEnvelopViewRenderDiv } from "@kogito-tooling-examples/ping-pong-view-react";
 import { StatsSidebar } from "../StatsSidebar";
-import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
+import { usePingPongApiCallbacks } from "../hooks";
 
 let pings = 0;
 let pongs = 0;
@@ -43,14 +43,30 @@ export function PingPongReactDivViewsPage() {
     };
   }, []);
 
+  const react1 = useRef<PingPongApi>(null);
+  const react2 = useRef<PingPongApi>(null);
+  const react3 = useRef<PingPongApi>(null);
+
+  const refs = useMemo(() => [react1, react2, react3], [react1, react2, react3]);
+
+  const { onClearLogs, onGetLastPingTimestamp } = usePingPongApiCallbacks(refs);
+
   return (
     <Page>
       <div className={"webapp--page-main-div"}>
-        <StatsSidebar lastPing={lastPing} lastPong={lastPong} pings={pings} pongs={pongs} />
+        <StatsSidebar
+          lastPing={lastPing}
+          lastPong={lastPong}
+          pings={pings}
+          pongs={pongs}
+          onClearLogs={onClearLogs}
+          onGetLastPingTimestamp={onGetLastPingTimestamp}
+        />
         <div className={"webapp--page-ping-pong-view"}>
           <PageSection style={{ flex: "1 1" }}>
             <EmbeddedDivPingPong
               apiImpl={apiImpl}
+              ref={react1}
               name={"React 1"}
               targetOrigin={window.location.origin}
               renderView={pingPongEnvelopViewRenderDiv}
@@ -60,6 +76,7 @@ export function PingPongReactDivViewsPage() {
           <PageSection style={{ flex: "1 1" }}>
             <EmbeddedDivPingPong
               apiImpl={apiImpl}
+              ref={react2}
               name={"React 2"}
               targetOrigin={window.location.origin}
               renderView={pingPongEnvelopViewRenderDiv}
@@ -69,6 +86,7 @@ export function PingPongReactDivViewsPage() {
           <PageSection style={{ flex: "1 1" }}>
             <EmbeddedDivPingPong
               apiImpl={apiImpl}
+              ref={react3}
               name={"React 3"}
               targetOrigin={window.location.origin}
               renderView={pingPongEnvelopViewRenderDiv}

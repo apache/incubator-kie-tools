@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { PingPongChannelApi, PingPongInitArgs } from "../api";
+import { PingPongApi, PingPongChannelApi, PingPongInitArgs } from "../api";
 import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
 
 export interface PingPongFactory {
-  create(initArgs: PingPongInitArgs, channelApi: MessageBusClientApi<PingPongChannelApi>): void;
+  create(initArgs: PingPongInitArgs, channelApi: MessageBusClientApi<PingPongChannelApi>): () => PingPongApi | null;
 }
