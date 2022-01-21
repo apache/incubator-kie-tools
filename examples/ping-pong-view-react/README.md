@@ -1,4 +1,4 @@
-Ping-Pong View :: React implementation
+# Ping-Pong View :: React implementation
 
 You can read [here](https://blog.kie.org/2020/10/kogito-tooling-examples-how-to-create-a-more-complex-custom-view.html) a step-by-step tutorial of how this custom View was built.
 
