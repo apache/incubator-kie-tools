@@ -50,7 +50,7 @@ jobs:
           echo $REF $SCOPE &&
           yarn run-script-if --silent --env SCOPE --eq "" \
             --then "echo No dependencies to build." \
-            --else "lerna run --stream --concurrency 1 build:dev $SCOPE"
+            --else "lerna run --stream build:dev $SCOPE"
 
       - name: "Build changed and dependents"
         env:
@@ -63,7 +63,7 @@ jobs:
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
-          lerna run build:prod --stream --concurrency 1 --since ${{ github.base_ref }}
+          lerna run build:prod --stream --since ${{ github.base_ref }}
 
       - name: "Check generated resources (you should commit those!)"
         shell: bash

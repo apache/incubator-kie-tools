@@ -798,7 +798,7 @@ jobs:
 
       - name: "Build"
         run: |
-          lerna run build:prod --stream --no-private --include-dependencies --concurrency 1
+          lerna run build:prod --stream --no-private --include-dependencies
 
       - name: "Publish packages to the NPM registry"
         if: ${{ !inputs.dry_run }}
