@@ -68,7 +68,7 @@ jobs:
           DISPLAY: ":99.0"
         run: |
           cd kogito-tooling
-          lerna run build:prod --stream --concurrency 1
+          lerna run build:prod --stream
 
       - name: "Push dmn-dev-sandbox-deployment-base-image to quay.io (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
