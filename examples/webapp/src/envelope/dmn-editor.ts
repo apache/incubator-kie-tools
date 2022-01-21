@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import * as EditorEnvelope from "@kie-tooling-core/editor/dist/envelope";
-import { DmnEditorFactory } from "@kogito-tooling/kie-bc-editors/dist/dmn/envelope";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+import { DmnEditorFactory } from "@kie-tools/kie-bc-editors/dist/dmn/envelope";
 
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,

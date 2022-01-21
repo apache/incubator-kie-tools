@@ -24,14 +24,14 @@ import { NotificationsPanel, NotificationsPanelRef } from "./NotificationsPanel/
 import { DmnRunnerTabular } from "./DmnRunner/DmnRunnerTabular";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { WorkspaceFile } from "../workspace/WorkspacesContext";
-import { DecisionResult } from "@kogito-tooling/form/dist/dmn";
+import { DecisionResult } from "@kie-tools/form/dist/dmn";
 import {
   NotificationsPanelDockToggle,
   NotificationsPanelDockToggleRef,
 } from "./NotificationsPanel/NotificationsPanelDockToggle";
 import { DmnRunnerDockToggle } from "./DmnRunner/DmnRunnerDockToggle";
 import { useController } from "../reactExt/Hooks";
-import { Notification } from "@kie-tooling-core/notifications/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 

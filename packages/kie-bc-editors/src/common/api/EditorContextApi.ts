@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { OperatingSystem } from "@kie-tooling-core/operating-system";
-import { ChannelType } from "@kie-tooling-core/editor/dist/api";
+import { OperatingSystem } from "@kie-tools-core/operating-system";
+import { ChannelType } from "@kie-tools-core/editor/dist/api";
 
 /**
  * PUBLIC ENVELOPE API

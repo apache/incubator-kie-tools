@@ -33,7 +33,7 @@ test("BPMN from source", async () => {
   // open BPMN from source
   const urlInput = await client.$("#url-text-input");
   await urlInput.setValue(
-    "https://raw.githubusercontent.com/kiegroup/kogito-tooling/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn"
+    "https://raw.githubusercontent.com/kiegroup/kie-tools/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn"
   );
   const openFromSourceButton = await client.$("[data-ouia-component-id='open-from-source-button']");
   await openFromSourceButton.click();
@@ -101,7 +101,7 @@ test("DMN from source", async () => {
   // open DMN from source
   const urlInput = await client.$("#url-text-input");
   await urlInput.setValue(
-    "https://raw.githubusercontent.com/kiegroup/kogito-tooling/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn"
+    "https://raw.githubusercontent.com/kiegroup/kie-tools/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn"
   );
   const openFromSourceButton = await client.$("[data-ouia-component-id='open-from-source-button']");
   await openFromSourceButton.click();

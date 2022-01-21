@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { OperatingSystem } from "@kie-tooling-core/operating-system";
+import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { ChannelKeyboardEvent } from "../api";
 import { KeyboardShortcutRegisterOpts } from "./KeyboardShortcutRegisterOpts";
 

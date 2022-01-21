@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { ValidationEntry, ValidationRegistry } from "@kogito-tooling/pmml-editor/dist/editor/validation";
-import { validateAttribute, validateAttributes } from "@kogito-tooling/pmml-editor/dist/editor/validation/Attributes";
-import { CompoundPredicate, FieldName, SimplePredicate } from "@kogito-tooling/pmml-editor-marshaller";
+import { ValidationEntry, ValidationRegistry } from "@kie-tools/pmml-editor/dist/editor/validation";
+import { validateAttribute, validateAttributes } from "@kie-tools/pmml-editor/dist/editor/validation/Attributes";
+import { CompoundPredicate, FieldName, SimplePredicate } from "@kie-tools/pmml-editor-marshaller";
 
 let registry: ValidationRegistry;
 beforeEach(() => {

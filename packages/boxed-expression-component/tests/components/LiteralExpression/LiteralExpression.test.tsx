@@ -17,8 +17,8 @@
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 import * as React from "react";
-import { LiteralExpression } from "@kogito-tooling/boxed-expression-component/dist/components/LiteralExpression";
-import { DataType, LogicType } from "@kogito-tooling/boxed-expression-component";
+import { LiteralExpression } from "@kie-tools/boxed-expression-component/dist/components/LiteralExpression";
+import { DataType, LogicType } from "@kie-tools/boxed-expression-component";
 import { act } from "react-dom/test-utils";
 
 jest.useFakeTimers();

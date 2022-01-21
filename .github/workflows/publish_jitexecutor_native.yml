@@ -100,7 +100,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build_jitexecutor_native_binaries]
     steps:
-      - name: "Checkout kogito-tooling"
+      - name: "Checkout kie-tools"
         uses: actions/checkout@v2
         with:
           fetch-depth: 0

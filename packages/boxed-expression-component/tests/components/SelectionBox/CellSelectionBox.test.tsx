@@ -16,7 +16,7 @@
 
 import { fireEvent, render } from "@testing-library/react";
 import * as React from "react";
-import { CellSelectionBox } from "@kogito-tooling/boxed-expression-component/dist/components/SelectionBox";
+import { CellSelectionBox } from "@kie-tools/boxed-expression-component/dist/components/SelectionBox";
 import "../../__mocks__/ReactWithSupervisor";
 import { wrapComponentInContext } from "../test-utils";
 

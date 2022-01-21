@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tooling-core/workspace",
+  "name": "@kie-tools-core/workspace",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -9,7 +9,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kogito-tooling.git"
+    "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
@@ -18,10 +18,10 @@
     "build:prod": "yarn lint && rimraf dist && tsc -p tsconfig.prod.json && yarn test"
   },
   "dependencies": {
-    "@kie-tooling-core/operating-system": "0.0.0"
+    "@kie-tools-core/operating-system": "0.0.0"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
+    "@kie-tools/build-env": "0.0.0"
   },
   "babel": {
     "presets": [

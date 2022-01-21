@@ -15,7 +15,7 @@ import { act } from "react-dom/test-utils";
  * limitations under the License.
  */
 
-import { FeelEditorService } from "@kogito-tooling/feel-input-component";
+import { FeelEditorService } from "@kie-tools/feel-input-component";
 
 describe("FeelEditorService", () => {
   it("createEditor, when DOM element is not present", () => {
@@ -91,8 +91,8 @@ describe("FeelEditorService", () => {
 const domElement = () => document.createElement("span");
 const editorBuilder = () => FeelEditorService.getEditorBuilder();
 
-jest.mock("@kogito-tooling/feel-input-component/dist/Monaco", () => {
-  const actualMonacoModule = jest.requireActual("@kogito-tooling/feel-input-component/dist/Monaco");
+jest.mock("@kie-tools/feel-input-component/dist/Monaco", () => {
+  const actualMonacoModule = jest.requireActual("@kie-tools/feel-input-component/dist/Monaco");
   return {
     ...actualMonacoModule,
     initializeFeelLanguage: jest.fn(),

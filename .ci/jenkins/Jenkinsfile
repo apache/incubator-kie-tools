@@ -27,14 +27,14 @@ pipeline {
                 script {
                     mailer.buildLogScriptPR()
 
-                    checkoutRepo('kogito-tooling')
+                    checkoutRepo('kie-tools')
                 }
             }
         }
-        stage('Build Kogito Tooling - Stunner Editors') {
+        stage('Build KIE Tools - Stunner Editors') {
             steps {
                 script {
-                    mvnCmd = getMavenCommand('kogito-tooling/packages/stunner-editors')
+                    mvnCmd = getMavenCommand('kie-tools/packages/stunner-editors')
                     if (isNormalPRCheck() && isSonarCloudEnabled()) {
                         mvnCmd.withProfiles(['run-code-coverage'])
                     }
@@ -50,16 +50,16 @@ pipeline {
                 }
             }
         }
-        stage('Analyze Kogito Tooling - Stunner Editors by SonarCloud') {
+        stage('Analyze KIE Tools - Stunner Editors by SonarCloud') {
             when {
                 expression { isNormalPRCheck() && isSonarCloudEnabled() }
             }
             steps {
                 script {
                     if (isSonarCloudEnabled()) {
-                        getMavenCommand('kogito-tooling/packages/stunner-editors')
+                        getMavenCommand('kie-tools/packages/stunner-editors')
                                 .withOptions(['-e', '-nsu', "-pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing,!lienzo-webapp'"])
-                                .withProperty('sonar.projectKey', 'org.kie.kogito:kogito-tooling')
+                                .withProperty('sonar.projectKey', 'org.kie.kogito:kie-tools')
                                 .withProperty('sonar.organization', 'kiegroup')
                                 .withProperty('sonar.host.url', 'https://sonarcloud.io')
                                 .withProperty('sonar.login', env['SONARCLOUD_TOKEN'])
@@ -108,7 +108,7 @@ pipeline {
 
 void checkoutRepo(String repo, String dirName=repo) {
     dir(dirName) {
-        checkout(githubscm.resolveRepository('kogito-tooling', changeAuthor, changeBranch, false))
+        checkout(githubscm.resolveRepository('kie-tools', changeAuthor, changeBranch, false))
     }
 }
 

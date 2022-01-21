@@ -16,11 +16,11 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const patternflyBase = require("@kie-tooling-core/patternfly-base");
-const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
+const patternflyBase = require("@kie-tools-core/patternfly-base");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
-const buildEnv = require("@kogito-tooling/build-env");
-const stunnerEditors = require("@kogito-tooling/stunner-editors");
+const buildEnv = require("@kie-tools/build-env");
+const stunnerEditors = require("@kie-tools/stunner-editors");
 
 module.exports = (env) => [
   merge(common(env), {

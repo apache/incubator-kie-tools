@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { FeelInput, FeelInputRef } from "@kogito-tooling/feel-input-component";
-import * as Monaco from "@kie-tooling-core/monaco-editor";
+import { FeelInput, FeelInputRef } from "@kie-tools/feel-input-component";
+import * as Monaco from "@kie-tools-core/monaco-editor";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CellProps } from "../../api";

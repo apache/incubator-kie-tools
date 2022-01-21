@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DataType } from "@kogito-tooling/boxed-expression-component/dist/api";
+import { DataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 export interface DmnRunnerClause {
   /** Clause name */

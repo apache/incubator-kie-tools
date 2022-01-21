@@ -21,7 +21,7 @@ import {
   ResourceContentService,
   ResourceListOptions,
   ResourcesList,
-} from "@kie-tooling-core/workspace/dist/api";
+} from "@kie-tools-core/workspace/dist/api";
 import { fetchFile } from "../../github/api";
 import * as minimatch from "minimatch";
 import { RepoInfo } from "./RepoInfo";

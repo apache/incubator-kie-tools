@@ -17,9 +17,9 @@
 import { fireEvent, render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 import * as React from "react";
-import { EditExpressionMenu } from "@kogito-tooling/boxed-expression-component/dist/components/EditExpressionMenu";
+import { EditExpressionMenu } from "@kie-tools/boxed-expression-component/dist/components/EditExpressionMenu";
 import { activatePopover } from "../PopoverMenu/PopoverMenu.test";
-import { DataType, ExpressionProps, LogicType } from "@kogito-tooling/boxed-expression-component";
+import { DataType, ExpressionProps, LogicType } from "@kie-tools/boxed-expression-component";
 import * as _ from "lodash";
 import { act } from "react-dom/test-utils";
 

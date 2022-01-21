@@ -29,8 +29,8 @@ import {
   LogicType,
   PMMLParams,
   RelationProps,
-} from "@kogito-tooling/boxed-expression-component";
-import { ImportJavaClasses, ImportJavaClassGWTService, JavaClass } from "@kogito-tooling/import-java-classes-component";
+} from "@kie-tools/boxed-expression-component";
+import { ImportJavaClasses, ImportJavaClassGWTService, JavaClass } from "@kie-tools/import-java-classes-component";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import * as ReactDOM from "react-dom";

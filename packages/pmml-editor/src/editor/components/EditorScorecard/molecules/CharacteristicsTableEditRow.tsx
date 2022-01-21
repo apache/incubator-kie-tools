@@ -31,7 +31,7 @@ import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation } from "../Operation";
 import { Actions } from "../../../reducers";
 import { useSelector } from "react-redux";
-import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kie-tools/pmml-editor-marshaller";
 import { useBatchDispatch, useHistoryService } from "../../../history";
 import { useOperation } from "../OperationContext";
 import { Builder } from "../../../paths";

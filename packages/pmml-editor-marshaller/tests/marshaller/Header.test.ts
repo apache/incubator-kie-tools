@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Annotation, Header, PMML, PMML2XML, Timestamp, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { Annotation, Header, PMML, PMML2XML, Timestamp, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 
 describe("Header tests", () => {
   test("Attributes", () => {
     const pmml: PMML = XML2PMML(`
-      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <Header copyright="copyright" description="description" modelVersion="modelVersion"/>
       </PMML>
     `);
@@ -48,7 +48,7 @@ describe("Header tests", () => {
 
   test("Application", () => {
     const pmml: PMML = XML2PMML(`
-      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <Header>
           <Application name="name" version="version"/>
         </Header>
@@ -78,7 +78,7 @@ describe("Header tests", () => {
 
   test("Annotation", () => {
     const pmml: PMML = XML2PMML(`
-      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <Header>
           <Annotation>annotation1</Annotation>
         </Header>
@@ -115,7 +115,7 @@ describe("Header tests", () => {
 
   test("Timestamp", () => {
     const pmml: PMML = XML2PMML(`
-      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
         <Header>
           <Timestamp>timestamp</Timestamp>
         </Header>

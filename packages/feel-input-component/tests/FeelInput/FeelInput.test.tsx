@@ -16,7 +16,7 @@
 
 import { render } from "@testing-library/react";
 import * as React from "react";
-import { FeelInput } from "@kogito-tooling/feel-input-component";
+import { FeelInput } from "@kie-tools/feel-input-component";
 
 describe("FeelInput", () => {
   describe("when it's not enabled", () => {
