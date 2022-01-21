@@ -285,21 +285,6 @@ export const Table: React.FunctionComponent<TableProps> = ({
 
   const thProps = useCallback(
     (column: ColumnInstance) => ({
-      tabIndex: 0,
-      onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => {
-        const key = e.key;
-        if (key == "ArrowLeft") {
-          focusPrevCell(e.currentTarget);
-        } else if (key == "ArrowRight") {
-          focusNextCell(e.currentTarget);
-        } else if (key == "ArrowUp") {
-          focusUpperCell(e.currentTarget);
-        } else if (key == "ArrowDown") {
-          focusLowerCell(e.currentTarget);
-        } else if (key == "Enter") {
-          focusTextArea(e.currentTarget.querySelector("textarea"));
-        }
-      },
       onContextMenu: (e: ContextMenuEvent) => {
         const columnIndex = _.findIndex(
           getColumnsAtLastLevel(tableColumns, column.depth),
@@ -353,9 +338,9 @@ export const Table: React.FunctionComponent<TableProps> = ({
         } else if (key == "ArrowRight") {
           focusNextCell(e.currentTarget);
         } else if (key == "ArrowUp") {
-          focusUpperCell(e.currentTarget);
+          focusUpperCell(e.currentTarget, rowIndex);
         } else if (key == "ArrowDown") {
-          focusLowerCell(e.currentTarget);
+          focusLowerCell(e.currentTarget, rowIndex);
         } else if (key == "Enter") {
           focusTextArea(e.currentTarget.querySelector("textarea"));
         }

@@ -104,13 +104,13 @@ export const focusPrevCell = (currentEl: HTMLElement | null): void => {
  * Focus Upper Cell of a react-table. Works from any element inside a cell or a cell itself.
  *
  * @param currentEl the crrent element
+ * @param rowIndex the current row index
  * @returns
  */
-export const focusUpperCell = (currentEl: HTMLElement | null): void => {
+export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number): void => {
   const currCell = <HTMLTableDataCellElement>getParentCell(currentEl);
-  const currRow = <HTMLTableRowElement>currCell.parentElement;
-  const currTable = currCell.closest("table");
-  const gotoRow = currTable?.rows[currRow.rowIndex - 1];
+  const currBody = currCell.closest("tbody");
+  const gotoRow = currBody?.rows[rowIndex - 1];
 
   cellFocus(<HTMLTableDataCellElement>gotoRow?.cells[currCell.cellIndex]);
 };
@@ -119,13 +119,13 @@ export const focusUpperCell = (currentEl: HTMLElement | null): void => {
  * Focus Lower Cell of a react-table. Works from any element inside a cell or a cell itself.
  *
  * @param currentEl the crrent element
+ * @param rowIndex the current row index
  * @returns
  */
-export const focusLowerCell = (currentEl: HTMLElement | null): void => {
+export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number): void => {
   const currCell = <HTMLTableDataCellElement>getParentCell(currentEl);
-  const currRow = <HTMLTableRowElement>currCell.parentElement;
-  const currTable = currCell.closest("table");
-  const gotoRow = currTable?.rows[currRow.rowIndex + 1];
+  const currBody = currCell.closest("tbody");
+  const gotoRow = currBody?.rows[rowIndex + 1];
 
   cellFocus(<HTMLTableDataCellElement>gotoRow?.cells[currCell.cellIndex]);
 };
