@@ -61,6 +61,10 @@ public class LayoutHelper {
         }
     }
 
+    public boolean hasLayoutInformation(final Diagram diagram) {
+        return layoutService.hasLayoutInformation(diagram.getGraph());
+    }
+
     public LayoutService getLayoutService() {
         return this.layoutService;
     }

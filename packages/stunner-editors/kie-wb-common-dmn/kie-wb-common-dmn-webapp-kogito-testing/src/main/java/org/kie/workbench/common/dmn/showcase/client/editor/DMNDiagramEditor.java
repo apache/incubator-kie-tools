@@ -52,6 +52,7 @@ import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.ConfirmationDialog;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
@@ -102,7 +103,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final ReadOnlyProvider readOnlyProvider,
                             final LazyCanvasFocusUtils lazyCanvasFocusUtils,
                             final EditorSessionCommands commands,
-                            final FEELDemoEditor feelDemoEditor) {
+                            final FEELDemoEditor feelDemoEditor,
+                            final ConfirmationDialog confirmationDialog) {
         super(view,
               containerView,
               stunnerEditor,
@@ -126,7 +128,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               includedModelsPage,
               kogitoChannelHelper,
               guidedTourBridgeInitializer,
-              drdNameChanger);
+              drdNameChanger,
+              confirmationDialog);
         this.readOnlyProvider = readOnlyProvider;
         this.lazyCanvasFocusUtils = lazyCanvasFocusUtils;
         this.commands = commands;
