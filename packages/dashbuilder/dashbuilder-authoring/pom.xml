@@ -590,7 +590,7 @@
 
           </compileSourcesArtifacts>
           <runTarget>index.html</runTarget>
-          <extraJvmArgs>-Xmx4024m -XX:CompileThreshold=7000
+          <extraJvmArgs>-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC
             -Ddashbuilder.export.location=dashboard.zip
             -Derrai.jboss.home=${errai.jboss.home}
             -Derrai.jboss.debug.port=8787

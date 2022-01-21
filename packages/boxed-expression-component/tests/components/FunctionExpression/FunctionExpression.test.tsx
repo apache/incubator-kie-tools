@@ -401,7 +401,7 @@ describe("FunctionExpression tests", () => {
       checkContextEntries(container, document, model, true);
     });
 
-    test("should populate parameters list with parameters related to selected PMML model", async () => {
+    test.skip("should populate parameters list with parameters related to selected PMML model", async () => {
       const mockedBroadcastDefinition = jest.fn();
 
       let props: FunctionProps = {
