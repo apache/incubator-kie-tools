@@ -33,7 +33,7 @@ import {
   RelationProps,
 } from "../src";
 import { Button, Modal } from "@patternfly/react-core";
-import { CopyIcon, PenIcon } from "@patternfly/react-icons";
+import { PenIcon } from "@patternfly/react-icons";
 import { dataTypes, pmmlParams } from "../tests/components/test-utils";
 import "../src/components/BoxedExpressionEditor/base-no-reset-wrapped.css";
 import ReactJson from "react-json-view";
@@ -64,11 +64,6 @@ export const App: React.FunctionComponent = () => {
     notifyUserAction(): void {},
     openManageDataType(): void {},
   };
-
-  const copyToClipboard = useCallback(
-    () => navigator.clipboard.writeText(JSON.stringify(expressionDefinition)),
-    [expressionDefinition]
-  );
 
   const onTypedExpressionChange = useCallback((e) => {
     setTypedExpressionDefinition(e.target.value);
@@ -113,13 +108,6 @@ export const App: React.FunctionComponent = () => {
         <div className="buttons">
           <Button
             variant="secondary"
-            icon={<CopyIcon />}
-            iconPosition="left"
-            onClick={copyToClipboard}
-            ouiaId="copy-expression-json"
-          />
-          <Button
-            variant="secondary"
             icon={<PenIcon />}
             iconPosition="left"
             onClick={handleModalToggle}
@@ -128,7 +116,7 @@ export const App: React.FunctionComponent = () => {
         </div>
 
         <pre>
-          <ReactJson src={expressionDefinition} name={false} />
+          <ReactJson src={expressionDefinition} name={false} enableClipboard />
         </pre>
       </div>
 
