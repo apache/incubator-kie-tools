@@ -1,4 +1,6 @@
 @rhpam
+@metrics
+@prometheus
 Feature: Service Deployment: Prometheus
 
   Background:

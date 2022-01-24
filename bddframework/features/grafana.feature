@@ -1,4 +1,6 @@
 @rhpam
+@metrics
+@grafana
 Feature: Service Deployment: Grafana
 
   Background:
