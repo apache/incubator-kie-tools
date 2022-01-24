@@ -779,6 +779,24 @@ export -f oc
     [[ "${output}" != *"--tests.maven_mirror_url"* ]]
 }
 
+@test "invoke run-tests with quarkus_platform_maven_mirror_url" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --quarkus_platform_maven_mirror_url maven --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.quarkus_platform_maven_mirror_url=maven" ]]
+}
+
+@test "invoke run-tests with quarkus_platform_maven_mirror_url missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --quarkus_platform_maven_mirror_url --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.quarkus_platform_maven_mirror_url"* ]]
+}
+
+@test "invoke run-tests with quarkus_platform_maven_mirror_url empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --quarkus_platform_maven_mirror_url "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.quarkus_platform_maven_mirror_url"* ]]
+}
+
 @test "invoke run-tests with maven_ignore_self_signed_certificate" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --maven_ignore_self_signed_certificate
     [ "$status" -eq 0 ]
