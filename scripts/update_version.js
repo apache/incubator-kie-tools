@@ -28,6 +28,9 @@ const CHROME_EXTENSION_MANIFEST_PROD_JSON = path.resolve(
   "./packages/chrome-extension-pack-kogito-kie-editors/manifest.prod.json"
 );
 const EXTENDED_SERVICES_CONFIG_FILE = path.resolve("./packages/extended-services/pkg/config/config.yaml");
+const JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE = path.resolve(
+  "./packages/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin-core/META-INF/MANIFEST.MF"
+);
 const LERNA_JSON = path.resolve("./lerna.json");
 
 // MAIN
@@ -52,6 +55,7 @@ Promise.resolve()
   .then((version) => updateSpecialInternalMvnPackagesOnStunnerEditors(version))
   .then((version) => updateChromeExtensionManifestFiles(version))
   .then((version) => updateExtendedServicesConfigFile(version))
+  .then((version) => updateJavaAutocompletionPluginManifestFile(version))
   .then(async (version) => {
     console.info(`[update-version] Formatting files...`);
     execSync(`yarn format`, execOpts);
@@ -81,7 +85,7 @@ async function updateMvnPackages(version) {
   const mvnPackages = getPackagesSync().filter((pkg) => fs.existsSync(path.resolve(pkg.location, "pom.xml")));
   const mvnPackagesLernaScope = mvnPackages.map((pkg) => `--scope="${pkg.name}"`).join(" ");
   execSync(
-    `lerna exec 'mvn versions:set versions:commit -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}' ${mvnPackagesLernaScope} --concurrency 1`,
+    `lerna exec 'mvn versions:set versions:commit -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version} -o' ${mvnPackagesLernaScope} --concurrency 1`,
     execOpts
   );
   return version;
@@ -99,7 +103,7 @@ async function updateSpecialInternalMvnPackagesOnStunnerEditors(version) {
 
   for (const module of modules) {
     execSync(
-      `mvn versions:set versions:commit -f ${module} -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}`,
+      `mvn versions:set versions:commit -f ${module} -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version} -o`,
       execOpts
     );
   }
@@ -128,6 +132,15 @@ async function updateExtendedServicesConfigFile(version) {
   const config = yaml.load(fs.readFileSync(EXTENDED_SERVICES_CONFIG_FILE, "utf-8"));
   config.app.version = version;
   fs.writeFileSync(EXTENDED_SERVICES_CONFIG_FILE, yaml.dump(config));
+
+  return version;
+}
+
+async function updateJavaAutocompletionPluginManifestFile(version) {
+  console.info("[update-version] Updating Java Autocompletion Plugin Manifest file...");
+  const manifestFile = fs.readFileSync(JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE, "utf-8");
+  const newManifestFile = manifestFile.replace("Bundle-Version: 0.0.0", "Bundle-Version: " + version);
+  fs.writeFileSync(JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE, newManifestFile);
 
   return version;
 }
