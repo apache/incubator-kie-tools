@@ -138,9 +138,9 @@ const ImportJavaClassesWrapper = () => {
   };
 
   const javaCodeCompletionService: JavaCodeCompletionService = {
-    getClasses: window.envelope.javaCodeCompletionService.getClasses,
+    getClasses: (query: string) => window.envelope.javaCodeCompletionService.getClasses(query),
     getFields: (fullClassName: string) => window.envelope.javaCodeCompletionService.getAccessors(fullClassName, ""),
-    isLanguageServerAvailable: window.envelope.javaCodeCompletionService.isLanguageServerAvailable,
+    isLanguageServerAvailable: () => window.envelope.javaCodeCompletionService.isLanguageServerAvailable(),
   };
 
   return <ImportJavaClasses gwtLayerService={gwtLayerService} javaCodeCompletionService={javaCodeCompletionService} />;
