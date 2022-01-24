@@ -1,3 +1,7 @@
+# 0.16.0 (alpha)
+
+- _(No new features)_
+
 # 0.15.0 (alpha)
 
 - [KOGITO-6036](https://issues.redhat.com/browse/KOGITO-6036) - Use html <input type='color'> picker
