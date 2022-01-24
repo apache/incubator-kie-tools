@@ -33,7 +33,7 @@ var (
 
 	amqStreamsOperatorSubscriptionName        = "amq-streams"
 	amqStreamsOperatorSubscriptionChannel     = "amq-streams-1.8.x"
-	amqStreamsOperatorSubscriptionStartingCsv = "amqstreams.v1.8.0"
+	amqStreamsOperatorSubscriptionStartingCsv = "amqstreams.v1.8.3"
 	amqStreamsOperatorTimeoutInMin            = 10
 )
 

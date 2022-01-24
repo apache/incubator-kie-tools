@@ -56,6 +56,10 @@ func deploySourceFilesFromPath(namespace, runtimeType, serviceName, path string)
 	buildHolder.KogitoBuild.GetSpec().SetType(api.LocalSourceBuildType)
 	buildHolder.KogitoBuild.GetSpec().GetGitSource().SetURI(path)
 
+	if runtimeType == "quarkus" && len(config.GetQuarkusPlatformMavenMirrorURL()) > 0 {
+		buildHolder.KogitoBuild.GetSpec().SetMavenMirrorURL(config.GetQuarkusPlatformMavenMirrorURL())
+	}
+
 	err = framework.DeployKogitoBuild(namespace, framework.GetDefaultInstallerType(), buildHolder)
 	if err != nil {
 		return err

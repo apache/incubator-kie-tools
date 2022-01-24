@@ -1,4 +1,5 @@
 @rhpam
+@asset
 Feature: Deploy source files (dmn, drl, bpmn, bpmn2, ...) with CLI
 
   Background:

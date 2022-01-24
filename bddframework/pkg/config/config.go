@@ -65,6 +65,7 @@ type TestConfig struct {
 	customMavenRepoURL                 string
 	customMavenRepoReplaceDefault      bool
 	mavenMirrorURL                     string
+	quarkusPlatformMavenMirrorURL      string
 	mavenIgnoreSelfSignedCertificate   bool
 	buildBuilderImageTag               string
 	buildRuntimeJVMImageTag            string
@@ -166,6 +167,7 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.customMavenRepoURL, prefix+"custom_maven_repo_url", "", "Set a custom Maven repository url for S2I builds, in case your artifacts are in a specific repository. See https://github.com/kiegroup/kogito-images/README.md for more information")
 	set.BoolVar(&env.customMavenRepoReplaceDefault, prefix+"custom_maven_repo_replace_default", false, "If you specified the option 'tests.custom_maven_repo_url' and you want that one to replace the main JBoss repository (useful with snapshots).")
 	set.StringVar(&env.mavenMirrorURL, prefix+"maven_mirror_url", "", "Maven mirror url to be used when building app in the tests")
+	set.StringVar(&env.quarkusPlatformMavenMirrorURL, prefix+"quarkusPlatformMavenMirrorURL", "", "Maven mirror url to be used when building app from source files with Quarkus, using the quarkus maven plugin.")
 	set.BoolVar(&env.mavenIgnoreSelfSignedCertificate, prefix+"maven_ignore_self_signed_certificate", false, "Set to true if maven build need to ignore self-signed certificate. This could happen when using internal maven mirror url.")
 	set.StringVar(&env.buildBuilderImageTag, prefix+"build_builder_image_tag", "", "Set the S2I build image full tag")
 	set.StringVar(&env.buildRuntimeJVMImageTag, prefix+"build_runtime_jvm_image_tag", "", "Set the Runtime build image full tag")
@@ -390,6 +392,11 @@ func IsCustomMavenRepoReplaceDefault() bool {
 // GetMavenMirrorURL return the maven mirror url used for building applications
 func GetMavenMirrorURL() string {
 	return env.mavenMirrorURL
+}
+
+// GetQuarkusPlatformMavenMirrorURL return the maven mirror url used for building applications from assets with quarkus platform
+func GetQuarkusPlatformMavenMirrorURL() string {
+	return env.quarkusPlatformMavenMirrorURL
 }
 
 // IsMavenIgnoreSelfSignedCertificate return whether self-signed certficate should be ignored
