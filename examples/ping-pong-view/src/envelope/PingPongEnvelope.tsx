@@ -15,15 +15,14 @@
  */
 
 import { EnvelopeBus } from "@kie-tooling-core/envelope-bus/dist/api";
-import { Envelope } from "@kie-tooling-core/envelope";
+import { Envelope, EnvelopeDivConfig, EnvelopeIFrameConfig } from "@kie-tooling-core/envelope";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { PingPongChannelApi, PingPongEnvelopeApi } from "../api";
-import { PingPongFactory } from "../envelope/PingPongFactory";
-import { PingPongEnvelopeContext } from "../envelope/PingPongEnvelopeContext";
-import { PingPongEnvelopeView, PingPongEnvelopeViewApi } from "../envelope/PingPongEnvelopeView";
-import { PingPongEnvelopeApiImpl } from "../envelope/PingPongEnvelopeApiImpl";
-import { EnvelopeDivConfig, EnvelopeIFrameConfig } from "@kie-tooling-core/envelope";
+import { PingPongFactory } from "./PingPongFactory";
+import { PingPongEnvelopeContext } from "./PingPongEnvelopeContext";
+import { PingPongEnvelopeView, PingPongEnvelopeViewApi } from "./PingPongEnvelopeView";
+import { PingPongEnvelopeApiImpl } from "./PingPongEnvelopeApiImpl";
 
 export function init(args: {
   config: EnvelopeDivConfig | EnvelopeIFrameConfig;
@@ -40,9 +39,9 @@ export function init(args: {
 
   const envelopeViewDelegate = async () => {
     const ref = React.createRef<PingPongEnvelopeViewApi>();
-    return new Promise<() => PingPongEnvelopeViewApi>((res) =>
-      ReactDOM.render(<PingPongEnvelopeView ref={ref} />, args.container, () => res(() => ref.current!))
-    );
+    return new Promise<() => PingPongEnvelopeViewApi>((res) => {
+      ReactDOM.render(<PingPongEnvelopeView ref={ref} />, args.container, () => res(() => ref.current!));
+    });
   };
 
   const context: PingPongEnvelopeContext = {};

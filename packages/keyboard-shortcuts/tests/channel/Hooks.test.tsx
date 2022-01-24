@@ -33,7 +33,7 @@ describe("useSyncedKeyboardEvents", () => {
     renderHook(() => useSyncedKeyboardEvents(envelopeApi));
     window.dispatchEvent(new KeyboardEvent("keydown", { ctrlKey: true }));
 
-    expect(envelopeApi.notifications.kogitoKeyboardShortcuts_channelKeyboardEvent).toBeCalledWith({
+    expect(envelopeApi.notifications.kogitoKeyboardShortcuts_channelKeyboardEvent.send).toBeCalledWith({
       altKey: false,
       ctrlKey: true,
       shiftKey: false,
@@ -48,7 +48,7 @@ describe("useSyncedKeyboardEvents", () => {
     renderHook(() => useSyncedKeyboardEvents(envelopeApi));
     window.dispatchEvent(new KeyboardEvent("keyup", { altKey: true }));
 
-    expect(envelopeApi.notifications.kogitoKeyboardShortcuts_channelKeyboardEvent).toBeCalledWith({
+    expect(envelopeApi.notifications.kogitoKeyboardShortcuts_channelKeyboardEvent.send).toBeCalledWith({
       altKey: true,
       ctrlKey: false,
       shiftKey: false,
@@ -63,7 +63,7 @@ describe("useSyncedKeyboardEvents", () => {
     renderHook(() => useSyncedKeyboardEvents(envelopeApi));
     window.dispatchEvent(new KeyboardEvent("keypress", { shiftKey: true }));
 
-    expect(envelopeApi.notifications.kogitoKeyboardShortcuts_channelKeyboardEvent).toBeCalledWith({
+    expect(envelopeApi.notifications.kogitoKeyboardShortcuts_channelKeyboardEvent.send).toBeCalledWith({
       altKey: false,
       ctrlKey: false,
       shiftKey: true,
@@ -78,7 +78,7 @@ describe("useSyncedKeyboardEvents", () => {
     renderHook(() => useSyncedKeyboardEvents(envelopeApi, document.body));
     fireEvent(document.body, new KeyboardEvent("keydown", { metaKey: true, code: "KeyA" }));
 
-    expect(envelopeApi.notifications.kogitoKeyboardShortcuts_channelKeyboardEvent).toBeCalledWith({
+    expect(envelopeApi.notifications.kogitoKeyboardShortcuts_channelKeyboardEvent.send).toBeCalledWith({
       altKey: false,
       ctrlKey: false,
       shiftKey: false,

@@ -40,10 +40,13 @@ enum FormStatus {
   EMPTY,
 }
 
+type DmnDecisionNodes = "InputSet" | string;
+
 export interface DmnSchema {
   definitions?: {
-    InputSet?: {
-      properties: object;
+    [x in DmnDecisionNodes]?: {
+      type: string;
+      properties: { [x: string]: DmnDeepProperty };
     };
   };
 }
@@ -52,8 +55,8 @@ export interface DmnFormData {
   definitions: DmnFormDefinitions;
 }
 
-interface DmnFormDefinitions {
-  InputSet?: {
+type DmnFormDefinitions = {
+  [x in DmnDecisionNodes]?: {
     required?: string[];
     properties: object;
     type: string;
@@ -63,7 +66,7 @@ interface DmnFormDefinitions {
     items: any[] & { properties: any };
     "x-dmn-type"?: string;
   };
-}
+};
 
 interface DmnDeepProperty {
   $ref?: string;

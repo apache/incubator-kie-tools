@@ -19,16 +19,24 @@ import { ApiDefinition, MessageBusClientApi } from "@kie-tooling-core/envelope-b
 export function messageBusClientApiMock<T extends ApiDefinition<T>>(): MessageBusClientApi<T> {
   const mocks = new Map<any, any>();
 
-  const proxyMock = new Proxy({} as any, {
-    get: (target, name) => {
-      return mocks.get(name) ?? mocks.set(name, jest.fn()).get(name);
-    },
-  });
+  const proxyMock = (value: any) =>
+    new Proxy({} as any, {
+      get: (target, name) => {
+        return mocks.get(name) ?? mocks.set(name, value).get(name);
+      },
+    });
 
   return {
-    notifications: proxyMock,
-    requests: proxyMock,
-    subscribe: jest.fn(),
-    unsubscribe: jest.fn(),
+    notifications: proxyMock({
+      send: jest.fn(),
+      subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
+    }),
+    requests: proxyMock(jest.fn()),
+    shared: proxyMock({
+      set: jest.fn(),
+      subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
+    }),
   };
 }

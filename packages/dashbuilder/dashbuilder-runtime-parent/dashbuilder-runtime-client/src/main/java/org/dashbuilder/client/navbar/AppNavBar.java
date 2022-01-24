@@ -93,8 +93,10 @@ public class AppNavBar implements Header {
     }
 
     public void setDisplayMainMenu(boolean display) {
-        HTMLElement menuElement = Js.cast(
-                                          DomGlobal.document.querySelector("#mega-menu").querySelector("li.dropdown.uf-yamm--fw"));
-        menuElement.style.display = display ? "block" : "none";
+        var menu = DomGlobal.document.querySelector("#mega-menu");
+        if (menu != null) {
+            HTMLElement menuElement = Js.cast(menu.querySelector("li.dropdown.uf-yamm--fw"));
+            menuElement.style.display = display ? "block" : "none";
+        }
     }
 }

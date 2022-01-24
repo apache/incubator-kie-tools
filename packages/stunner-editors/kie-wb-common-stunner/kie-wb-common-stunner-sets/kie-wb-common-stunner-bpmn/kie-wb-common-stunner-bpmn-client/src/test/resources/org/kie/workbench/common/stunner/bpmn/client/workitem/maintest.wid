@@ -1,0 +1,56 @@
+  [
+    [
+      "name" : "Email",
+      "parameters" : [
+        "From" : new StringDataType()   ,
+        "To" : new StringDataType(),
+        "Subject" :
+                    new StringDataType()  ,
+        "Body"
+                    : new StringDataType()
+      ],
+      "displayName" : "Display Email"  ,
+      "documentation" : "Some documentation"  ,
+      "icon" : "defaultemailicon.gif"
+    ]
+    ,
+
+
+    [
+      "name" : "IncidentPriorityService",
+      "parameters" : [
+        "Incident" : new ObjectDataType()
+      ],
+      "results" :  [
+          "IncidentPriority" : new ObjectDataType()  ,
+      ],
+      "displayName" : "Incident Priority Service" ,
+      "icon" : "incidentpriorityicon.png"
+    ],
+    [
+      "name" : "Rest",
+      "parameters" : [
+          "ContentData" : new StringDataType(),
+          "Url" : new StringDataType(),
+          "Method" : new StringDataType(),
+          "ConnectTimeout" : new StringDataType(),
+          "ReadTimeout" : new StringDataType()   ,
+          "Username" : new StringDataType(),
+          "Password" : new StringDataType()
+      ],
+      "results" : [
+          "Result" : new ObjectDataType(),
+      ],
+      "displayName" : "REST",
+      "icon" : "defaultservicenodeicon.png"
+    ],
+     [
+      "name" : "Milestone",
+      "parameters" : [
+          "Condition" : new StringDataType()
+      ],
+      "displayName" : "Milestone",
+      "icon" : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAYK0lEQVR4nO3de9z1+Vzv8dcMcxCjDMMwjHMOUw5D52ypFMmmaJuaKFTa6YBSm+hgt4lIOmt33nJKg8gWiYrHVDpK2zk1coxhNDOYw93+Y/VoYua+5z5c1/VZa/2ez8fj9b+xfuv9Xfd1rev3KwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA23rWrU6qTqxOr42f/5wAAR+rY6ubV3apvrn6o+uXqFdWbqwuqf7uCLqk+VL21em31gurp1fdUX13dojp67/4zAIBPdUx1p+ph1dOq367+rHpvta8rPuB3oo9Vf1E9s/qW6jbVUbv83woAi3WL6huqn6rObnUQ79Yhf6h9oHpuq582XHeX/vsBYOud1OpH7k+oXt7qx/LTh/zBdmn1J9V35cMAABzQcdW9Wv2e/p3NH+I71cXVi//9v813BwCgukb1gFY",
+      "category" : "Milestone"
+      ]
+  ]

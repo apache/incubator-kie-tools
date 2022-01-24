@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0090-feel-paths" name="0090-feel-paths" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>FEEL path and qualified names</description>
+
+    <decision name="nested_list_001" id="_nested_list_001">
+        <variable name="nested_list_001"/>
+        <literalExpression>
+            <text>
+                [{a: {b: 1}}, {a: {b: [2.1, 2.2]}}, {a: {b: 3}}, {a: {b: 4}}, {a: {b: 5}}].a.b =
+                [{b: 1}, {b: [2.1, 2.2]}, {b: 3}, {b: 4}, {b: 5}].b
+            </text>
+        </literalExpression>
+    </decision>
+
+    <decision name="nested_list_002" id="_nested_list_002">
+        <variable name="nested_list_002"/>
+        <literalExpression>
+            <text>
+                [{b: 1}, {b: [2.1, 2.2]}, {b: 3}, {b: 4}, {b: 5}].b =
+                [1, [2.1, 2.2], 3, 4, 5]
+            </text>
+        </literalExpression>
+    </decision>
+    
+    <decision name="nested_list_003" id="_nested_list_003">
+        <variable name="nested_list_003"/>
+        <literalExpression>
+            <text>
+                [{a: {b: [1]}}, {a: {b: [2.1, 2.2]}}, {a: {b: [3]}}, {a: {b: [4, 5]}}].a.b =
+                [{b: [1]}, {b: [2.1,2.2]}, {b: [3]}, {b: [4, 5]}].b 
+            </text>
+        </literalExpression>
+    </decision>
+
+    <decision name="nested_list_004" id="_nested_list_004">
+        <variable name="nested_list_004"/>
+        <literalExpression>
+            <text>
+                [{b: [1]}, {b: [2.1,2.2]}, {b: [3]}, {b: [4, 5]}].b =
+                [[1], [2.1, 2.2], [3], [4, 5]]
+            </text>
+        </literalExpression>
+    </decision>
+
+</definitions>
+

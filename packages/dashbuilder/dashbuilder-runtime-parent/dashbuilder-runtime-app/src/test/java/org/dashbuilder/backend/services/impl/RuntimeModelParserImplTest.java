@@ -16,6 +16,15 @@
 
 package org.dashbuilder.backend.services.impl;
 
+import static org.dashbuilder.shared.model.DataSetContentType.CSV;
+import static org.dashbuilder.shared.model.DataSetContentType.DEFINITION;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -31,27 +40,21 @@ import javax.enterprise.event.Event;
 import org.dashbuilder.backend.RuntimeOptions;
 import org.dashbuilder.backend.helper.PartitionHelper;
 import org.dashbuilder.backend.navigation.RuntimeNavigationBuilder;
+import org.dashbuilder.backend.services.dataset.provider.RuntimeDataSetProviderRegistry;
+import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
 import org.dashbuilder.external.service.ComponentLoader;
 import org.dashbuilder.navigation.impl.NavTreeBuilder;
 import org.dashbuilder.shared.event.NewDataSetContentEvent;
 import org.dashbuilder.shared.model.DataSetContent;
 import org.dashbuilder.shared.service.RuntimeModelRegistry;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import static org.dashbuilder.shared.model.DataSetContentType.CSV;
-import static org.dashbuilder.shared.model.DataSetContentType.DEFINITION;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RuntimeModelParserImplTest {
@@ -67,12 +70,23 @@ public class RuntimeModelParserImplTest {
 
     @Mock
     RuntimeModelRegistry runtimeModelRegistry;
+    
+    @Mock
+    DataSetDefJSONMarshaller marshaller;
+    
+    @Mock 
+    RuntimeDataSetProviderRegistry runtimeDataSetProviderRegistry;
 
     @Mock
     ComponentLoader externalComponentLoader;
 
     @InjectMocks
     RuntimeModelParserImpl parser;
+    
+    @Before
+    public void setup() {
+        when(runtimeDataSetProviderRegistry.getDataSetDefJSONMarshaller()).thenReturn(marshaller);
+    }
 
     @Test
     public void testEmptyImport() throws IOException {

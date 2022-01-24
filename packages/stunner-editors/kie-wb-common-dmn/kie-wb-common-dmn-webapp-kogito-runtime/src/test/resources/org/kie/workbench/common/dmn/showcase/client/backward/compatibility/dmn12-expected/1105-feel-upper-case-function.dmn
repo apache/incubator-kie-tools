@@ -1,0 +1,209 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.actico.com/spec/DMN/1105-feel-upper-case-function" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_i_zv0PUUEeesLuP4RHs4vA" name="1105-feel-upper-case-function" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.actico.com/spec/DMN/1105-feel-upper-case-function">
+  <dmn:description>FEEL built-in function 'upper case(string) in category string functions</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_i_zv0vUUEeesLuP4RHs4vA" name="tfeel-upper-case-function_001_2395aaad55_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i_zv1vUUEeesLuP4RHs4vA" name="tfeel-upper-case-function_002_991789dded_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i_zv2vUUEeesLuP4RHs4vA" name="tfeel-upper-case-function_003_d8306d8d00_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i_zv3vUUEeesLuP4RHs4vA" name="tfeel-upper-case-function_004_310caf7262_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i_zv4vUUEeesLuP4RHs4vA" name="tfeel-upper-case-function_005_b316d773ac_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i_zv5vUUEeesLuP4RHs4vA" name="tfeel-upper-case-function_006_d9bd3c14bc_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i_zv6vUUEeesLuP4RHs4vA" name="tfeel-upper-case-function_007_31fc6c1967_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i_zv7vUUEeesLuP4RHs4vA" name="tfeel-upper-case-function_008_26e369a9d9_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:decision id="_i_zv4PUUEeesLuP4RHs4vA" name="feel-upper-case-function_004_310caf7262">
+    <dmn:description>Tests FEEL expression: 'upper case("1")' and expects result: '"1" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'upper case("1")'?</dmn:question>
+    <dmn:allowedAnswers>"1" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_i_zv4fUUEeesLuP4RHs4vA" name="feel-upper-case-function_004_310caf7262" typeRef="ns1:tfeel-upper-case-function_004_310caf7262_Result"/>
+    <dmn:literalExpression id="_i_zv3_UUEeesLuP4RHs4vA">
+      <dmn:text>upper case("1")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i_zv5PUUEeesLuP4RHs4vA" name="feel-upper-case-function_005_b316d773ac">
+    <dmn:description>Tests FEEL expression: 'upper case("?@{")' and expects result: '"?@{" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'upper case("?@{")'?</dmn:question>
+    <dmn:allowedAnswers>"?@{" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_i_zv5fUUEeesLuP4RHs4vA" name="feel-upper-case-function_005_b316d773ac" typeRef="ns1:tfeel-upper-case-function_005_b316d773ac_Result"/>
+    <dmn:literalExpression id="_i_zv4_UUEeesLuP4RHs4vA">
+      <dmn:text>upper case("?@{")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i_zv6PUUEeesLuP4RHs4vA" name="feel-upper-case-function_006_d9bd3c14bc">
+    <dmn:description>Tests FEEL expression: 'upper case(string:"AbDcF")' and expects result: '"ABDCF" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'upper case(string:"AbDcF")'?</dmn:question>
+    <dmn:allowedAnswers>"ABDCF" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_i_zv6fUUEeesLuP4RHs4vA" name="feel-upper-case-function_006_d9bd3c14bc" typeRef="ns1:tfeel-upper-case-function_006_d9bd3c14bc_Result"/>
+    <dmn:literalExpression id="_i_zv5_UUEeesLuP4RHs4vA">
+      <dmn:text>upper case(string:"AbDcF")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i_zv8PUUEeesLuP4RHs4vA" name="feel-upper-case-function_008_26e369a9d9">
+    <dmn:description>Tests FEEL expression: 'upper case(string:"123ABC")' and expects result: '"123ABC" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'upper case(string:"123ABC")'?</dmn:question>
+    <dmn:allowedAnswers>"123ABC" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_i_9g0PUUEeesLuP4RHs4vA" name="feel-upper-case-function_008_26e369a9d9" typeRef="ns1:tfeel-upper-case-function_008_26e369a9d9_Result"/>
+    <dmn:literalExpression id="_i_zv7_UUEeesLuP4RHs4vA">
+      <dmn:text>upper case(string:"123ABC")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i_zv2PUUEeesLuP4RHs4vA" name="feel-upper-case-function_002_991789dded">
+    <dmn:description>Tests FEEL expression: 'upper case("abc")' and expects result: '"ABC" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'upper case("abc")'?</dmn:question>
+    <dmn:allowedAnswers>"ABC" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_i_zv2fUUEeesLuP4RHs4vA" name="feel-upper-case-function_002_991789dded" typeRef="ns1:tfeel-upper-case-function_002_991789dded_Result"/>
+    <dmn:literalExpression id="_i_zv1_UUEeesLuP4RHs4vA">
+      <dmn:text>upper case("abc")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i_zv7PUUEeesLuP4RHs4vA" name="feel-upper-case-function_007_31fc6c1967">
+    <dmn:description>Tests FEEL expression: 'upper case(string:"xyZ ")' and expects result: '"XYZ " (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'upper case(string:"xyZ ")'?</dmn:question>
+    <dmn:allowedAnswers>"XYZ " (string)</dmn:allowedAnswers>
+    <dmn:variable id="_i_zv7fUUEeesLuP4RHs4vA" name="feel-upper-case-function_007_31fc6c1967" typeRef="ns1:tfeel-upper-case-function_007_31fc6c1967_Result"/>
+    <dmn:literalExpression id="_i_zv6_UUEeesLuP4RHs4vA">
+      <dmn:text>upper case(string:"xyZ ")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i_zv3PUUEeesLuP4RHs4vA" name="feel-upper-case-function_003_d8306d8d00">
+    <dmn:description>Tests FEEL expression: 'upper case("")' and expects result: '"" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'upper case("")'?</dmn:question>
+    <dmn:allowedAnswers>"" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_i_zv3fUUEeesLuP4RHs4vA" name="feel-upper-case-function_003_d8306d8d00" typeRef="ns1:tfeel-upper-case-function_003_d8306d8d00_Result"/>
+    <dmn:literalExpression id="_i_zv2_UUEeesLuP4RHs4vA">
+      <dmn:text>upper case("")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i_zv1PUUEeesLuP4RHs4vA" name="feel-upper-case-function_001_2395aaad55">
+    <dmn:description>Tests FEEL expression: 'upper case("a")' and expects result: '"A" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'upper case("a")'?</dmn:question>
+    <dmn:allowedAnswers>"A" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_i_zv1fUUEeesLuP4RHs4vA" name="feel-upper-case-function_001_2395aaad55" typeRef="ns1:tfeel-upper-case-function_001_2395aaad55_Result"/>
+    <dmn:literalExpression id="_i_zv0_UUEeesLuP4RHs4vA">
+      <dmn:text>upper case("a")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:knowledgeSource id="_i_zv0fUUEeesLuP4RHs4vA" name="DMN 1.1 - 10.3.4.3 Table 60">
+    <dmn:extensionElements/>
+  </dmn:knowledgeSource>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_i_zv0PUUEeesLuP4RHs4vA_D2" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_i_zv3_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i_zv4_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i_zv5_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i_zv7_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i_zv1_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i_zv6_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i_zv2_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i_zv0_UUEeesLuP4RHs4vA"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_i_zv4PUUEeesLuP4RHs4vA" dmnElementRef="_i_zv4PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="110" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i_zv5PUUEeesLuP4RHs4vA" dmnElementRef="_i_zv5PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="207" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i_zv6PUUEeesLuP4RHs4vA" dmnElementRef="_i_zv6PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="300" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i_zv8PUUEeesLuP4RHs4vA" dmnElementRef="_i_zv8PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i_zv2PUUEeesLuP4RHs4vA" dmnElementRef="_i_zv2PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i_zv7PUUEeesLuP4RHs4vA" dmnElementRef="_i_zv7PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i_zv3PUUEeesLuP4RHs4vA" dmnElementRef="_i_zv3PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i_zv1PUUEeesLuP4RHs4vA" dmnElementRef="_i_zv1PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i_zv0fUUEeesLuP4RHs4vA" dmnElementRef="_i_zv0fUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="106" width="100" height="69"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

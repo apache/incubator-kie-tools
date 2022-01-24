@@ -23,24 +23,29 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "query-filter-spec")
 public class QueryFilterSpec {
 
     @XmlElement(name = "order-by")
+    @JsonProperty("order-by")
     private String orderBy;
     @XmlElement(name = "order-asc")
+    @JsonProperty("order-asc")
     private boolean ascending;
     @XmlElement(name = "query-params")
+    @JsonProperty("query-params")
     private QueryParam[] parameters;
     @XmlElement(name = "result-column-mapping")
+    @JsonProperty("result-column-mapping")
     private Map<String, String> columnMapping;
     @XmlElement(name = "order-by-clause")
+    @JsonProperty("order-by-clause")
     private String orderByClause;
 
-
-    public QueryFilterSpec() {
-    }
+    public QueryFilterSpec() {}
 
     public String getOrderBy() {
         return orderBy;
@@ -84,7 +89,8 @@ public class QueryFilterSpec {
 
     @Override
     public String toString() {
-        return "QueryFilterSpec{" + "orderBy='" + orderBy + '\'' + ", ascending=" + ascending + ", parameters=" + Arrays.toString(parameters) + '}';
+        return "QueryFilterSpec{" + "orderBy='" + orderBy + '\'' + ", ascending=" + ascending + ", parameters=" + Arrays
+                .toString(parameters) + '}';
     }
 
 }

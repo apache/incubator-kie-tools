@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+const path = require("path");
 const BG_IMAGES_DIRNAME = "bgimages";
+
+function posixPath(pathStr) {
+  return pathStr.split(path.sep).join(path.posix.sep);
+}
 
 module.exports = {
   webpackModuleRules: [
@@ -33,12 +37,12 @@ module.exports = {
       include: [
         {
           or: [
-            (input) => input.includes("node_modules/@patternfly/react-core/dist/styles/assets/fonts"),
-            (input) => input.includes("node_modules/@patternfly/react-core/dist/styles/assets/pficon"),
-            (input) => input.includes("node_modules/@patternfly/patternfly/assets/fonts"),
-            (input) => input.includes("node_modules/@patternfly/patternfly/assets/pficon"),
-            (input) => input.includes("node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon"),
-            (input) => input.includes("node_modules/monaco-editor/dev/vs/base/browser/ui/codicons/codicon"),
+            (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/fonts"),
+            (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/pficon"),
+            (input) => posixPath(input).includes("node_modules/@patternfly/patternfly/assets/fonts"),
+            (input) => posixPath(input).includes("node_modules/@patternfly/patternfly/assets/pficon"),
+            (input) => posixPath(input).includes("node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon"),
+            (input) => posixPath(input).includes("node_modules/monaco-editor/dev/vs/base/browser/ui/codicons/codicon"),
           ],
         },
       ],
@@ -95,20 +99,20 @@ module.exports = {
       include: [
         {
           or: [
-            (input) => input.includes("src"),
-            (input) => input.includes("node_modules/@patternfly/patternfly/assets/images"),
-            (input) => input.includes("node_modules/@patternfly/react-styles/css/assets/images"),
-            (input) => input.includes("node_modules/@patternfly/react-core/dist/styles/assets/images"),
+            (input) => posixPath(input).includes("src"),
+            (input) => posixPath(input).includes("node_modules/@patternfly/patternfly/assets/images"),
+            (input) => posixPath(input).includes("node_modules/@patternfly/react-styles/css/assets/images"),
+            (input) => posixPath(input).includes("node_modules/@patternfly/react-core/dist/styles/assets/images"),
             (input) =>
-              input.includes(
+              posixPath(input).includes(
                 "node_modules/@patternfly/react-core/node_modules/@patternfly/react-styles/css/assets/images"
               ),
             (input) =>
-              input.includes(
+              posixPath(input).includes(
                 "node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css/assets/images"
               ),
             (input) =>
-              input.includes(
+              posixPath(input).includes(
                 "node_modules/@patternfly/react-inline-edit-extension/node_modules/@patternfly/react-styles/css/assets/images"
               ),
           ],

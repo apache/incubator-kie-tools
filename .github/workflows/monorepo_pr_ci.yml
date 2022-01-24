@@ -29,23 +29,11 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.base_ref }}
 
-      - name: "Cache Maven packages"
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-ci-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-ci-m2
-
       - name: "Setup kogito-tooling-bot"
         uses: ./.github/actions/setup-kogito-tooling-bot
 
-      - name: "Merge Changes"
-        shell: bash
-        run: |
-          user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
-          git remote add $user https://github.com/$user/kogito-tooling.git
-          git fetch $user
-          git merge --squash $user/${{ github.head_ref }}
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -57,12 +45,12 @@ jobs:
         env:
           KOGITO_TOOLING_BUILD_examples: "true"
         run: |
-          export REF=${{ github.event.pull_request.base.sha }} &&
+          export REF=${{ github.base_ref }} &&
           export SCOPE=$(diff <(echo "$(lerna ls --since $REF --include-dependencies --all | cut -d' ' -f1)") <(echo "$(lerna ls --since $REF  --all | cut -d' ' -f1)") --changed-group-format='%<%>' --unchanged-group-format='' | xargs -I{} echo -n ' --scope="{}"') &&
           echo $REF $SCOPE &&
           yarn run-script-if --silent --env SCOPE --eq "" \
             --then "echo No dependencies to build." \
-            --else "lerna run --stream --concurrency 1 build:dev $SCOPE"
+            --else "lerna run --stream build:dev $SCOPE"
 
       - name: "Build changed and dependents"
         env:
@@ -75,7 +63,7 @@ jobs:
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
-          lerna run build:prod --stream --concurrency 1 --since ${{ github.event.pull_request.base.sha }}
+          lerna run build:prod --stream --since ${{ github.base_ref }}
 
       - name: "Check generated resources (you should commit those!)"
         shell: bash
@@ -91,9 +79,7 @@ jobs:
           if-no-files-found: warn
           path: |
             packages/*/dist
-            packages/hub/out/*.zip
             packages/desktop/out/*.zip
-            !packages/hub/dist
             !packages/desktop/dist
 
       - name: "Upload IT Tests artifacts"

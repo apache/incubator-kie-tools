@@ -64,51 +64,55 @@ public class DisplayerSettingsJSONMarshaller {
 
     public DisplayerSettings fromJsonString( String jsonString ) {
         DisplayerSettings ds = new DisplayerSettings();
-
+        
         if (!isBlank(jsonString)) {
+            var parseResult = Json.parse(jsonString);
+            return fromJsonObject(parseResult);
+        }
+        return ds;
+    }
 
-            JsonObject parseResult = Json.parse(jsonString);
+    public DisplayerSettings fromJsonObject(JsonObject jsonObject) {
+        var ds = new DisplayerSettings();
+        if ( jsonObject != null ) {
 
-            if ( parseResult != null ) {
+            // UUID
+            ds.setUUID(jsonObject.getString(SETTINGS_UUID));
+            jsonObject.put(SETTINGS_UUID, (String) null);
 
-                // UUID
-                ds.setUUID(parseResult.getString(SETTINGS_UUID));
-                parseResult.put(SETTINGS_UUID, (String) null);
+            // First look if a dataset 'on-the-fly' has been specified
+            JsonObject data = jsonObject.getObject(DATASET_PREFIX);
+            if (data != null) {
+                DataSet dataSet = dataSetJsonMarshaller.fromJson(data);
+                ds.setDataSet(dataSet);
 
-                // First look if a dataset 'on-the-fly' has been specified
-                JsonObject data = parseResult.getObject(DATASET_PREFIX);
-                if (data != null) {
-                    DataSet dataSet = dataSetJsonMarshaller.fromJson(data);
-                    ds.setDataSet(dataSet);
+                // Remove from the json input so that it doesn't end up in the settings map.
+                jsonObject.put(DATASET_PREFIX, (JsonValue) null);
 
-                    // Remove from the json input so that it doesn't end up in the settings map.
-                    parseResult.put(DATASET_PREFIX, (JsonValue) null);
+            // If none was found, look for a dataset lookup definition
+            } else if ((data = jsonObject.getObject(DATASET_LOOKUP_PREFIX)) != null) {
+                DataSetLookup dataSetLookup = dataSetLookupJsonMarshaller.fromJson(data);
+                ds.setDataSetLookup(dataSetLookup);
 
-                // If none was found, look for a dataset lookup definition
-                } else if ((data = parseResult.getObject(DATASET_LOOKUP_PREFIX)) != null) {
-                    DataSetLookup dataSetLookup = dataSetLookupJsonMarshaller.fromJson(data);
-                    ds.setDataSetLookup(dataSetLookup);
-
-                    // Remove from the json input so that it doesn't end up in the settings map.
-                    parseResult.put(DATASET_LOOKUP_PREFIX, (JsonValue) null);
-                }
-                else {
-                    throw new RuntimeException("Displayer settings dataset lookup not specified");
-                }
-
-                // Parse the columns settings
-                JsonArray columns = parseResult.getArray(COLUMNS_PREFIX);
-                if (columns != null) {
-                    List<ColumnSettings> columnSettingsList = parseColumnsFromJson(columns);
-                    ds.setColumnSettingsList(columnSettingsList);
-
-                    // Remove from the json input so that it doesn't end up in the settings map.
-                    parseResult.put(COLUMNS_PREFIX, (JsonValue) null);
-                }
-
-                // Now parse all other settings
-                ds.setSettingsFlatMap( parseSettingsFromJson(parseResult));
+                // Remove from the json input so that it doesn't end up in the settings map.
+                jsonObject.put(DATASET_LOOKUP_PREFIX, (JsonValue) null);
             }
+            else {
+                throw new RuntimeException("Displayer settings dataset lookup not specified");
+            }
+
+            // Parse the columns settings
+            JsonArray columns = jsonObject.getArray(COLUMNS_PREFIX);
+            if (columns != null) {
+                List<ColumnSettings> columnSettingsList = parseColumnsFromJson(columns);
+                ds.setColumnSettingsList(columnSettingsList);
+
+                // Remove from the json input so that it doesn't end up in the settings map.
+                jsonObject.put(COLUMNS_PREFIX, (JsonValue) null);
+            }
+
+            // Now parse all other settings
+            ds.setSettingsFlatMap( parseSettingsFromJson(jsonObject));
         }
         return ds;
     }

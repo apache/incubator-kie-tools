@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tns="http://www.trisotech.com/definitions/_54863c52-2fa7-4a3d-b383-d4eb2eb88771" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="_54863c52-2fa7-4a3d-b383-d4eb2eb88771" namespace="http://www.trisotech.com/definitions/_54863c52-2fa7-4a3d-b383-d4eb2eb88771" exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.32.2; 1.0" name="iteration1" triso:logoChoice="Default" xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd ../../dmn.xsd" expressionLanguage="http://www.omg.org/spec/FEEL/20140401" typeLanguage="http://www.omg.org/spec/FEEL/20140401">
+	<itemDefinition isCollection="false" name="tLoan">
+		<itemComponent name="amount" isCollection="false">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent name="rate" isCollection="false">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent name="term" isCollection="false">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<itemDefinition name="tLoanList" isCollection="true">
+		<typeRef>tns:tLoan</typeRef>
+	</itemDefinition>
+	<decision id="d_MonthlyPayment" name="MonthlyPayment">
+		<variable name="MonthlyPayment" typeRef="feel:number"/>
+		<informationRequirement>
+			<requiredInput href="#i_Loans"/>
+		</informationRequirement>
+		<knowledgeRequirement>
+			<requiredKnowledge href="#b_PMT2"/>
+		</knowledgeRequirement>
+		<literalExpression>
+			<text>for i in Loans return PMT2(i)</text>
+		</literalExpression>
+	</decision>
+	<businessKnowledgeModel id="b_PMT2" name="PMT2">
+		<encapsulatedLogic>
+			<formalParameter name="loan" typeRef="tns:tLoan"/>
+			<literalExpression expressionLanguage="FEEL">
+				<text>(loan.amount * loan.rate/12)/(1-(1+loan.rate/12)**-loan.term)</text>
+			</literalExpression>
+		</encapsulatedLogic>
+		<variable name="PMT2" typeRef="feel:number"/>
+	</businessKnowledgeModel>
+	<inputData id="i_Loans" name="Loans">
+		<variable name="Loans" typeRef="tns:tLoanList"/>
+	</inputData>
+</definitions>

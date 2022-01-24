@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+~ Copyright 2018 Red Hat, Inc. and/or its affiliates.
+~
+~ Licensed under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~     http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+-->
+
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+	 viewBox="0 0 420 420" style="enable-background:new 0 0 420 420;" xml:space="preserve">
+<style type="text/css">
+	.intermediate-events-svg-css {fill:#E5A000;}
+</style>
+<path id="Icon" class="intermediate-events-svg-css" d="M210,0C94,0,0,94,0,210s94,210,210,210s210-94,210-210S326,0,210,0z M330.2,330.2
+	C298.1,362.3,255.4,380,210,380s-88.1-17.7-120.2-49.8S40,255.4,40,210s17.7-88.1,49.8-120.2S164.6,40,210,40s88.1,17.7,120.2,49.8
+	S380,164.6,380,210S362.3,298.1,330.2,330.2z M301.9,118.1C277.4,93.5,244.7,80,210,80s-67.4,13.5-91.9,38.1
+	C93.5,142.6,80,175.3,80,210s13.5,67.4,38.1,91.9c24.6,24.6,57.2,38.1,91.9,38.1s67.4-13.5,91.9-38.1c24.6-24.6,38.1-57.2,38.1-91.9
+	S326.5,142.6,301.9,118.1z M273.6,273.6c-17,17-39.6,26.4-63.6,26.4s-46.6-9.4-63.6-26.4S120,234,120,210s9.4-46.6,26.4-63.6
+	S186,120,210,120s46.6,9.4,63.6,26.4S300,186,300,210S290.6,256.6,273.6,273.6z"/>
+</svg>

@@ -18,29 +18,6 @@ import { ReferenceDictionary, Wrapped } from "@kie-tooling-core/i18n/dist/core";
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
 interface OnlineDictionary extends ReferenceDictionary {
-  downloadHubModal: {
-    beforeDownload: {
-      title: string;
-      vscodeDescription: string;
-      githubChromeExtension: {
-        title: string;
-        description: string;
-      };
-      desktop: {
-        title: string;
-        description: string;
-      };
-      businessModeler: {
-        title: string;
-        description: string;
-      };
-    };
-    afterDownload: {
-      title: string;
-      message: string;
-      link: string;
-    };
-  };
   editorPage: {
     textEditorModal: {
       title: (fileName: string) => string;
@@ -53,6 +30,8 @@ interface OnlineDictionary extends ReferenceDictionary {
       copy: string;
       updateGist: string;
       createGist: string;
+      errorPushingGist: string;
+      forcePushWarning: string;
       invalidCurrentGist: string;
       invalidGistFilename: string;
       error: string;
@@ -311,7 +290,7 @@ interface OnlineDictionary extends ReferenceDictionary {
           start: {
             stopped: {
               startInstruction: string;
-              launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
+              launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
             };
             firstTime: {
               title: string;
@@ -321,7 +300,7 @@ interface OnlineDictionary extends ReferenceDictionary {
               openInstruction: Array<string | Wrapped<"file" | "again">>;
             };
             alreadyRanBefore: string;
-            launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
+            launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
             advanced: {
               title: string;
               runFollowingCommand: string;
@@ -336,7 +315,7 @@ interface OnlineDictionary extends ReferenceDictionary {
           start: {
             stopped: {
               startInstruction: string;
-              launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
+              launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
             };
             firstTime: {
               title: string;
@@ -344,7 +323,7 @@ interface OnlineDictionary extends ReferenceDictionary {
               runAnyway: string;
             };
             alreadyRanBefore: string;
-            launchKieToolingExtendedServices: Array<string | Wrapped<"file">>;
+            launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
             advanced: {
               title: string;
               runFollowingCommand: string;
@@ -404,11 +383,11 @@ interface OnlineDictionary extends ReferenceDictionary {
       expandAll: string;
     };
   };
-  kieToolingExtendedServices: {
+  kieSandboxExtendedServices: {
     dropdown: {
       shortConnected: (port: string) => string;
       tooltip: {
-        connected: (port: string) => string;
+        connected: string;
         install: string;
         outdated: string;
         disconnected: string;

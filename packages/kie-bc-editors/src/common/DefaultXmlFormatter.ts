@@ -21,7 +21,8 @@ let cachedXsltProcessor: XSLTProcessor;
 function newXsltProcessor() {
   const xsltDoc = new DOMParser().parseFromString(
     [
-      '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:drools="http://www.jboss.org/drools" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" version="3.0">',
+      '<?xml version="1.0" encoding="UTF-8"?>' +
+        '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:drools="http://www.jboss.org/drools" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" version="3.0">',
       '  <xsl:strip-space elements="*"/>',
       '  <xsl:template match="para[content-style][not(text())]">',
       '    <xsl:value-of select="normalize-space(.)"/>',
@@ -31,7 +32,7 @@ function newXsltProcessor() {
       "  </xsl:template>",
       // indent="yes" prettifies output
       // cdata-section-elements="list of nodes with cdata separated by space"
-      '  <xsl:output indent="yes" encoding="UTF-8" cdata-section-elements="bpmn2:completionCondition bpmn2:condition bpmn2:conditionExpression bpmn2:from bpmn2:to bpmn2:documentation drools:metaValue drools:script"/>',
+      '  <xsl:output indent="yes" version="1.0" method="xml" encoding="UTF-8" omit-xml-declaration="no" cdata-section-elements="bpmn2:completionCondition bpmn2:condition bpmn2:conditionExpression bpmn2:from bpmn2:to bpmn2:documentation drools:metaValue drools:script"/>',
       "</xsl:stylesheet>",
     ].join("\n"),
     "application/xml"
@@ -48,6 +49,14 @@ export class DefaultXmlFormatter implements XmlFormatter {
 
     const xmlDoc = new DOMParser().parseFromString(xml, "application/xml");
     const resultDoc = cachedXsltProcessor.transformToDocument(xmlDoc);
-    return new XMLSerializer().serializeToString(resultDoc);
+    let output = new XMLSerializer().serializeToString(resultDoc);
+
+    // XSLTProcessor browser implementation ignores some <xsl:output> attributes
+    // we need to add xml declaration prolog manually
+    if (!output.startsWith("<?xml")) {
+      output = '<?xml version="1.0" encoding="UTF-8"?>\n' + output;
+    }
+
+    return output;
   }
 }

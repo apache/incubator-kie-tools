@@ -35,14 +35,14 @@ const MockEditor = jest.fn(() => ({
 }));
 
 const mockEditor = new MockEditor();
-const mockChannelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
+const mockChannelApiImpl = messageBusClientApiMock<KogitoEditorChannelApi>();
 const mockXmlFormatter = { format: (c: string) => c };
 const i18n = new I18n(kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries);
 
 const wrapper = new GwtEditorWrapper(
   "MockEditorId",
   mockEditor,
-  mockChannelApi,
+  mockChannelApiImpl,
   mockXmlFormatter,
   new GwtStateControlService(),
   i18n

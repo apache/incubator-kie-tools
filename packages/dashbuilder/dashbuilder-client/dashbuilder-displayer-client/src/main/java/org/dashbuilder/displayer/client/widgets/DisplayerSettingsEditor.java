@@ -15,39 +15,6 @@
  */
 package org.dashbuilder.displayer.client.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import elemental2.dom.DomGlobal;
-import org.dashbuilder.common.client.error.ClientRuntimeError;
-import org.dashbuilder.dataset.DataColumn;
-import org.dashbuilder.dataset.DataSet;
-import org.dashbuilder.dataset.client.DataSetReadyCallback;
-import org.dashbuilder.dataset.sort.SortOrder;
-import org.dashbuilder.displayer.ColumnSettings;
-import org.dashbuilder.displayer.DisplayerAttributeDef;
-import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
-import org.dashbuilder.displayer.DisplayerConstraints;
-import org.dashbuilder.displayer.DisplayerSettings;
-import org.dashbuilder.displayer.MapColorScheme;
-import org.dashbuilder.displayer.Position;
-import org.dashbuilder.displayer.client.Displayer;
-import org.dashbuilder.displayer.client.DisplayerLocator;
-import org.dashbuilder.displayer.client.RendererLibrary;
-import org.dashbuilder.displayer.client.RendererManager;
-import org.dashbuilder.displayer.client.events.DisplayerSettingsChangedEvent;
-import org.uberfire.client.mvp.UberView;
-import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
-
 import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_3D;
 import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_BGCOLOR;
 import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_HEIGHT;
@@ -61,6 +28,8 @@ import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_SHOWLEGEND;
 import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_WIDTH;
 import static org.dashbuilder.displayer.DisplayerAttributeDef.EXPORT_TO_CSV;
 import static org.dashbuilder.displayer.DisplayerAttributeDef.EXPORT_TO_XLS;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.EXTERNAL_COMPONENT_HEIGHT;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.EXTERNAL_COMPONENT_WIDTH;
 import static org.dashbuilder.displayer.DisplayerAttributeDef.FILTER_ENABLED;
 import static org.dashbuilder.displayer.DisplayerAttributeDef.FILTER_LISTENING_ENABLED;
 import static org.dashbuilder.displayer.DisplayerAttributeDef.FILTER_NOTIFICATION_ENABLED;
@@ -94,6 +63,7 @@ import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.CHART_LEGEND_
 import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.CHART_MARGIN_GROUP;
 import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.COLUMNS_GROUP;
 import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.EXPORT_GROUP;
+import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_GROUP;
 import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.FILTER_GROUP;
 import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.GENERAL_GROUP;
 import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.MAP_GROUP;
@@ -103,6 +73,41 @@ import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.SELECTOR_GROU
 import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.TABLE_GROUP;
 import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.XAXIS_GROUP;
 import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.YAXIS_GROUP;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
+import org.dashbuilder.common.client.error.ClientRuntimeError;
+import org.dashbuilder.dataset.DataColumn;
+import org.dashbuilder.dataset.DataSet;
+import org.dashbuilder.dataset.client.DataSetReadyCallback;
+import org.dashbuilder.dataset.sort.SortOrder;
+import org.dashbuilder.displayer.ColumnSettings;
+import org.dashbuilder.displayer.DisplayerAttributeDef;
+import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
+import org.dashbuilder.displayer.DisplayerConstraints;
+import org.dashbuilder.displayer.DisplayerSettings;
+import org.dashbuilder.displayer.MapColorScheme;
+import org.dashbuilder.displayer.Position;
+import org.dashbuilder.displayer.client.Displayer;
+import org.dashbuilder.displayer.client.DisplayerLocator;
+import org.dashbuilder.displayer.client.RendererLibrary;
+import org.dashbuilder.displayer.client.RendererManager;
+import org.dashbuilder.displayer.client.events.DisplayerSettingsChangedEvent;
+import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
+
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+
+import elemental2.dom.DomGlobal;
 
 @Dependent
 public class DisplayerSettingsEditor implements IsWidget {
@@ -275,10 +280,12 @@ public class DisplayerSettingsEditor implements IsWidget {
                 view.addBooleanProperty(CHART_RESIZABLE, displayerSettings.isResizable());
             }
             if (isSupported(CHART_WIDTH)) {
-                view.addTextProperty(CHART_WIDTH, String.valueOf(displayerSettings.getChartWidth()), createLongValidator());
+                view.addTextProperty(CHART_WIDTH, String.valueOf(displayerSettings.getChartWidth()),
+                        createLongValidator());
             }
             if (isSupported(CHART_HEIGHT)) {
-                view.addTextProperty(CHART_HEIGHT, String.valueOf(displayerSettings.getChartHeight()), createLongValidator());
+                view.addTextProperty(CHART_HEIGHT, String.valueOf(displayerSettings.getChartHeight()),
+                        createLongValidator());
             }
             if (isSupported(CHART_BGCOLOR)) {
                 view.addColorProperty(CHART_BGCOLOR, displayerSettings.getChartBackgroundColor());
@@ -291,16 +298,20 @@ public class DisplayerSettingsEditor implements IsWidget {
             view.addCategory(CHART_MARGIN_GROUP);
 
             if (isSupported(CHART_MARGIN_TOP)) {
-                view.addTextProperty(CHART_MARGIN_TOP, String.valueOf(displayerSettings.getChartMarginTop()), createLongValidator());
+                view.addTextProperty(CHART_MARGIN_TOP, String.valueOf(displayerSettings.getChartMarginTop()),
+                        createLongValidator());
             }
             if (isSupported(CHART_MARGIN_BOTTOM)) {
-                view.addTextProperty(CHART_MARGIN_BOTTOM, String.valueOf(displayerSettings.getChartMarginBottom()), createLongValidator());
+                view.addTextProperty(CHART_MARGIN_BOTTOM, String.valueOf(displayerSettings.getChartMarginBottom()),
+                        createLongValidator());
             }
             if (isSupported(CHART_MARGIN_LEFT)) {
-                view.addTextProperty(CHART_MARGIN_LEFT, String.valueOf(displayerSettings.getChartMarginLeft()), createLongValidator());
+                view.addTextProperty(CHART_MARGIN_LEFT, String.valueOf(displayerSettings.getChartMarginLeft()),
+                        createLongValidator());
             }
             if (isSupported(CHART_MARGIN_RIGHT)) {
-                view.addTextProperty(CHART_MARGIN_RIGHT, String.valueOf(displayerSettings.getChartMarginRight()), createLongValidator());
+                view.addTextProperty(CHART_MARGIN_RIGHT, String.valueOf(displayerSettings.getChartMarginRight()),
+                        createLongValidator());
             }
         }
         if (isSupported(CHART_LEGEND_GROUP)) {
@@ -344,10 +355,12 @@ public class DisplayerSettingsEditor implements IsWidget {
             view.addCategory(TABLE_GROUP);
 
             if (isSupported(TABLE_PAGESIZE)) {
-                view.addTextProperty(TABLE_PAGESIZE, String.valueOf(displayerSettings.getTablePageSize()), createLongValidator());
+                view.addTextProperty(TABLE_PAGESIZE, String.valueOf(displayerSettings.getTablePageSize()),
+                        createLongValidator());
             }
             if (isSupported(TABLE_WIDTH)) {
-                view.addTextProperty(TABLE_WIDTH, String.valueOf(displayerSettings.getTableWidth()), createLongValidator());
+                view.addTextProperty(TABLE_WIDTH, String.valueOf(displayerSettings.getTableWidth()),
+                        createLongValidator());
             }
             if (isSupported(TABLE_SORTENABLED)) {
                 view.addBooleanProperty(TABLE_SORTENABLED, displayerSettings.isTableSortEnabled());
@@ -366,7 +379,8 @@ public class DisplayerSettingsEditor implements IsWidget {
                 List<String> optionList = new ArrayList<String>();
                 optionList.add(SortOrder.ASCENDING.toString());
                 optionList.add(SortOrder.DESCENDING.toString());
-                view.addListProperty(TABLE_SORTORDER, optionList, displayerSettings.getTableDefaultSortOrder().toString());
+                view.addListProperty(TABLE_SORTORDER, optionList, displayerSettings.getTableDefaultSortOrder()
+                        .toString());
             }
             if (isSupported(TABLE_COLUMN_PICKER_ENABLED)) {
                 view.addBooleanProperty(TABLE_COLUMN_PICKER_ENABLED, displayerSettings.isTableColumnPickerEnabled());
@@ -376,16 +390,20 @@ public class DisplayerSettingsEditor implements IsWidget {
             view.addCategory(METER_GROUP);
 
             if (isSupported(METER_START)) {
-                view.addTextProperty(METER_START, String.valueOf(displayerSettings.getMeterStart()), createMeterValidator(displayerSettings, 0));
+                view.addTextProperty(METER_START, String.valueOf(displayerSettings.getMeterStart()),
+                        createMeterValidator(displayerSettings, 0));
             }
             if (isSupported(METER_WARNING)) {
-                view.addTextProperty(METER_WARNING, String.valueOf(displayerSettings.getMeterWarning()), createMeterValidator(displayerSettings, 1));
+                view.addTextProperty(METER_WARNING, String.valueOf(displayerSettings.getMeterWarning()),
+                        createMeterValidator(displayerSettings, 1));
             }
             if (isSupported(METER_CRITICAL)) {
-                view.addTextProperty(METER_CRITICAL, String.valueOf(displayerSettings.getMeterCritical()), createMeterValidator(displayerSettings, 2));
+                view.addTextProperty(METER_CRITICAL, String.valueOf(displayerSettings.getMeterCritical()),
+                        createMeterValidator(displayerSettings, 2));
             }
             if (isSupported(METER_END)) {
-                view.addTextProperty(METER_END, String.valueOf(displayerSettings.getMeterEnd()), createMeterValidator(displayerSettings, 3));
+                view.addTextProperty(METER_END, String.valueOf(displayerSettings.getMeterEnd()), createMeterValidator(
+                        displayerSettings, 3));
             }
 
         }
@@ -409,7 +427,8 @@ public class DisplayerSettingsEditor implements IsWidget {
             view.addCategory(SELECTOR_GROUP);
 
             if (isSupported(SELECTOR_WIDTH)) {
-                view.addTextProperty(SELECTOR_WIDTH, String.valueOf(displayerSettings.getSelectorWidth()), createLongValidator());
+                view.addTextProperty(SELECTOR_WIDTH, String.valueOf(displayerSettings.getSelectorWidth()),
+                        createLongValidator());
             }
             if (isSupported(SELECTOR_MULTIPLE)) {
                 view.addBooleanProperty(SELECTOR_MULTIPLE, displayerSettings.isSelectorMultiple());
@@ -422,7 +441,8 @@ public class DisplayerSettingsEditor implements IsWidget {
             view.addCategory(REFRESH_GROUP);
 
             if (isSupported(REFRESH_INTERVAL)) {
-                view.addTextProperty(REFRESH_INTERVAL, String.valueOf(displayerSettings.getRefreshInterval()), createLongValidator());
+                view.addTextProperty(REFRESH_INTERVAL, String.valueOf(displayerSettings.getRefreshInterval()),
+                        createLongValidator());
             }
             if (isSupported(REFRESH_STALE_DATA)) {
                 view.addBooleanProperty(REFRESH_STALE_DATA, displayerSettings.isRefreshStaleData());
@@ -443,7 +463,8 @@ public class DisplayerSettingsEditor implements IsWidget {
                 view.addTextProperty(fieldSuffix + "name", view.getColumnNameI18n() + (i + 1), cs.getColumnName());
 
                 if (expression != null) {
-                    view.addTextProperty(fieldSuffix + "expression", "     " + view.getColumnExpressionI18n(), expression);
+                    view.addTextProperty(fieldSuffix + "expression", "     " + view.getColumnExpressionI18n(),
+                            expression);
                 }
                 if (pattern != null) {
                     view.addTextProperty(fieldSuffix + "pattern", "     " + view.getColumnPatternI18n(), pattern);
@@ -471,13 +492,25 @@ public class DisplayerSettingsEditor implements IsWidget {
 
             if (isSupported(MAP_COLOR_SCHEME)) {
                 List<String> colorsSchemes = Stream.of(MapColorScheme.values())
-                                                   .map(view::getMapColorSchemeI18n)
-                                                   .collect(Collectors.toList());
+                        .map(view::getMapColorSchemeI18n)
+                        .collect(Collectors.toList());
 
                 String mapColorSchemePositionLabel = view.getMapColorSchemeI18n(displayerSettings.getMapColorScheme());
                 view.addListProperty(MAP_COLOR_SCHEME, colorsSchemes, mapColorSchemePositionLabel);
             }
         }
+
+        if (isSupported(EXTERNAL_COMPONENT_GROUP)) {
+            view.addCategory(EXTERNAL_COMPONENT_GROUP);
+
+            if (isSupported(EXTERNAL_COMPONENT_WIDTH)) {
+                view.addTextProperty(EXTERNAL_COMPONENT_WIDTH, displayerSettings.getComponentWidth());
+            }
+            if (isSupported(EXTERNAL_COMPONENT_HEIGHT)) {
+                view.addTextProperty(EXTERNAL_COMPONENT_HEIGHT, displayerSettings.getComponentHeight());
+            }
+        }
+
         view.show();
     }
 

@@ -31,24 +31,11 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.base_ref }}
 
-      - name: "Cache Maven packages"
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-ci-full-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-ci-full-m2
-
       - name: "Setup kogito-tooling-bot"
         uses: ./.github/actions/setup-kogito-tooling-bot
 
-      - name: "Merge Changes"
-        if: ${{ github.event.pull_request }}
-        shell: bash
-        run: |
-          user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
-          git remote add $user https://github.com/$user/kogito-tooling.git
-          git fetch $user
-          git merge --squash $user/${{ github.head_ref }}
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
@@ -67,7 +54,7 @@ jobs:
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
-          lerna run build:prod --stream --concurrency 1
+          lerna run build:prod --stream
 
       - name: "Check generated resources (you should commit those!)"
         shell: bash
@@ -83,9 +70,7 @@ jobs:
           if-no-files-found: warn
           path: |
             packages/*/dist
-            packages/hub/out/*.zip
             packages/desktop/out/*.zip
-            !packages/hub/dist
             !packages/desktop/dist
 
       - name: "Upload IT Tests artifacts"

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2020 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.2//EN"
+    "http://www.gwtproject.org/doctype/2.8.2/gwt-module.dtd">
+<module>
+
+  <inherits name="org.uberfire.UberfireAPI" />
+
+  <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
+  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
+
+  <!-- Errai, Drools etc -->
+  <inherits name="org.kie.workbench.common.kogito.KogitoClient"/>
+  <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
+
+  <inherits name="org.kie.workbench.common.kogito.webapp.base.KogitoWebappBase" />
+  <inherits name='org.drools.workbench.screens.scenariosimulation.kogito.DroolsWorkbenchScenarioSimulationKogitoEditor'/>
+
+  <inherits name="org.guvnor.common.services.GuvnorCommonServices" />
+  <inherits name="org.drools.workbench.screens.scenariosimulation.DroolsWorkbenchScenarioSimulationEditorAPI"/>
+  <inherits name='org.drools.workbench.screens.scenariosimulation.DroolsWorkbenchScenarioSimulationEditorClient'/>
+
+  <inherits name="org.kie.workbench.common.command.KieWorkbenchCommonCommand" />
+  <inherits name="org.kie.workbench.common.KieWorkbenchCommonWidgets" />
+
+  <!-- We only need Chrome -->
+  <set-property name="user.agent" value="safari"/>
+
+  <!-- To change the default logLevel -->
+  <set-property name="gwt.logging.logLevel" value="SEVERE"/>
+
+  <!-- To enable logging -->
+  <set-property name="gwt.logging.enabled" value="TRUE"/>
+
+  <!-- Configure Errai to return default values for missing i18n keys -->
+  <set-property name="errai.i18n.default_per_key" value="true"/>
+
+  <!-- Specify the paths for translatable code -->
+  <source path="client"/>
+
+  <replace-with class="org.uberfire.client.workbench.WorkbenchCloseHandlerImplFallback">
+    <when-type-is class="org.uberfire.client.workbench.WorkbenchCloseHandler"/>
+  </replace-with>
+
+  <!-- Temporary workaround for ClassCastExceptions happening on DMN Marshaller models -->
+  <set-property name="jre.checks.type" value="DISABLED" />
+  <set-property name="jre.checkedMode" value="DISABLED" />
+
+</module>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tns="http://www.trisotech.com/definitions/_a3ebbd98-af09-42f3-9099-4ae2204a1f54" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.36.1; 1.0" id="_a3ebbd98-af09-42f3-9099-4ae2204a1f54" name="multi-output-table" namespace="http://www.trisotech.com/definitions/_a3ebbd98-af09-42f3-9099-4ae2204a1f54" triso:logoChoice="Default">
+	<itemDefinition id="tApproval" name="tApproval">
+		<itemComponent id="_20dfeb44-1c36-43cf-8819-63ce36819e90" name="Status">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+		<itemComponent id="_858ef6e6-69ca-4b50-a654-10f4b981f43c" name="Rate">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<decision id="_3b2953a3-745f-4d2e-b55d-75c8c5ae653c" name="Approval">
+		<variable name="Approval" typeRef="tns:tApproval"/>
+		<informationRequirement>
+			<requiredInput href="#_5a4bdb64-f0ef-4978-9e03-6f1ae64a1f17"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_41effb45-b3c4-46ac-b1da-122b3e428a98"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_8ff18665-84e9-49f2-a8df-8981b1844549"/>
+		</informationRequirement>
+		<decisionTable hitPolicy="UNIQUE" outputLabel="Approval">
+			<input id="_bf7fc56f-ea82-464e-a541-f3221dc07e78" label="Age">
+				<inputExpression typeRef="feel:number">
+					<text>Age</text>
+				</inputExpression>
+			</input>
+			<input id="_bb73bf86-b399-490a-a635-c6f2c04ff75d" label="RiskCategory">
+				<inputExpression typeRef="feel:string">
+					<text>RiskCategory</text>
+				</inputExpression>
+				<inputValues>
+					<text>"High", "Low", "Medium"</text>
+				</inputValues>
+			</input>
+			<input id="_af5e5c2a-5124-4277-9409-d07421dcb5a4" label="isAffordable">
+				<inputExpression typeRef="feel:boolean">
+					<text>isAffordable</text>
+				</inputExpression>
+			</input>
+			<output id="_bffba7a1-f0a2-4679-b6e2-50e27bb27968" name="Status" typeRef="feel:string">
+				<outputValues>
+					<text>"Approved", "Declined"</text>
+				</outputValues>
+				<defaultOutputEntry>
+					<text>"Declined"</text>
+				</defaultOutputEntry>
+			</output>
+			<output id="_f07f9e98-3a1e-4add-a200-7cee75b550b3" name="Rate" typeRef="feel:string">
+				<outputValues>
+					<text>"Best", "Standard"</text>
+				</outputValues>
+				<defaultOutputEntry>
+					<text>"Standard"</text>
+				</defaultOutputEntry>
+			</output>
+			<rule id="_ca85854c-27a3-4001-b2ac-23a164ca5940">
+				<inputEntry id="_ca85854c-27a3-4001-b2ac-23a164ca5940-0">
+					<text>&gt;=18</text>
+				</inputEntry>
+				<inputEntry id="_ca85854c-27a3-4001-b2ac-23a164ca5940-1">
+					<text>"Low"</text>
+				</inputEntry>
+				<inputEntry id="_ca85854c-27a3-4001-b2ac-23a164ca5940-2">
+					<text>true</text>
+				</inputEntry>
+				<outputEntry id="_ca85854c-27a3-4001-b2ac-23a164ca5940-3">
+					<text>"Approved"</text>
+				</outputEntry>
+				<outputEntry id="_ca85854c-27a3-4001-b2ac-23a164ca5940-4">
+					<text>"Best"</text>
+				</outputEntry>
+			</rule>
+			<rule id="_7f03803d-2636-40ab-8346-7fd7f38ab695">
+				<inputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-0">
+					<text>&gt;=18</text>
+				</inputEntry>
+				<inputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-1">
+					<text>"Medium"</text>
+				</inputEntry>
+				<inputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-2">
+					<text>true</text>
+				</inputEntry>
+				<outputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-3">
+					<text>"Approved"</text>
+				</outputEntry>
+				<outputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-4">
+					<text>"Standard"</text>
+				</outputEntry>
+			</rule>
+			<rule id="_887acecd-40fc-42da-9443-eeba476f5516">
+				<inputEntry id="_887acecd-40fc-42da-9443-eeba476f5516-0">
+					<text>&lt;18</text>
+				</inputEntry>
+				<inputEntry id="_887acecd-40fc-42da-9443-eeba476f5516-1">
+					<text>"Medium","Low"</text>
+				</inputEntry>
+				<inputEntry id="_887acecd-40fc-42da-9443-eeba476f5516-2">
+					<text>true</text>
+				</inputEntry>
+				<outputEntry id="_887acecd-40fc-42da-9443-eeba476f5516-3">
+					<text>"Declined"</text>
+				</outputEntry>
+				<outputEntry id="_887acecd-40fc-42da-9443-eeba476f5516-4">
+					<text>"Standard"</text>
+				</outputEntry>
+			</rule>
+			<rule id="_18058414-a571-4375-991f-77b9ea7fc699">
+				<inputEntry id="_18058414-a571-4375-991f-77b9ea7fc699-0">
+					<text>-</text>
+				</inputEntry>
+				<inputEntry id="_18058414-a571-4375-991f-77b9ea7fc699-1">
+					<text>"High"</text>
+				</inputEntry>
+				<inputEntry id="_18058414-a571-4375-991f-77b9ea7fc699-2">
+					<text>true</text>
+				</inputEntry>
+				<outputEntry id="_18058414-a571-4375-991f-77b9ea7fc699-3">
+					<text>"Declined"</text>
+				</outputEntry>
+				<outputEntry id="_18058414-a571-4375-991f-77b9ea7fc699-4">
+					<text>"Standard"</text>
+				</outputEntry>
+			</rule>
+			<rule id="_ede3e62a-43f3-49d3-90a4-ffaf1f698f54">
+				<inputEntry id="_ede3e62a-43f3-49d3-90a4-ffaf1f698f54-0">
+					<text>-</text>
+				</inputEntry>
+				<inputEntry id="_ede3e62a-43f3-49d3-90a4-ffaf1f698f54-1">
+					<text>-</text>
+				</inputEntry>
+				<inputEntry id="_ede3e62a-43f3-49d3-90a4-ffaf1f698f54-2">
+					<text>false</text>
+				</inputEntry>
+				<outputEntry id="_ede3e62a-43f3-49d3-90a4-ffaf1f698f54-3">
+					<text>"Declined"</text>
+				</outputEntry>
+				<outputEntry id="_ede3e62a-43f3-49d3-90a4-ffaf1f698f54-4">
+					<text>"Standard"</text>
+				</outputEntry>
+			</rule>
+		</decisionTable>
+	</decision>
+	<inputData id="_41effb45-b3c4-46ac-b1da-122b3e428a98" name="Age">
+		<variable name="Age" typeRef="feel:number"/>
+	</inputData>
+	<inputData id="_5a4bdb64-f0ef-4978-9e03-6f1ae64a1f17" name="RiskCategory">
+		<variable name="RiskCategory" typeRef="feel:string"/>
+	</inputData>
+	<inputData id="_8ff18665-84e9-49f2-a8df-8981b1844549" name="isAffordable">
+		<variable name="isAffordable" typeRef="feel:boolean"/>
+	</inputData>
+</definitions>

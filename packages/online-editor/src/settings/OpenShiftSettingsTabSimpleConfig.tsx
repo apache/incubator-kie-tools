@@ -36,8 +36,8 @@ import {
 } from "../openshift/OpenShiftSettingsConfig";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { OpenShiftSettingsTabMode } from "./OpenShiftSettingsTab";
-import { useKieToolingExtendedServices } from "../kieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -52,7 +52,7 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
   const { i18n } = useOnlineI18n();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
-  const kieToolingExtendedServices = useKieToolingExtendedServices();
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const [config, setConfig] = useState(settings.openshift.config);
   const [isConfigValidated, setConfigValidated] = useState(FormValiationOptions.INITIAL);
   const [isConnecting, setConnecting] = useState(false);
@@ -60,12 +60,12 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
   useEffect(() => {
     setConfig(settings.openshift.config);
     setConfigValidated(
-      kieToolingExtendedServices.status === KieToolingExtendedServicesStatus.RUNNING &&
+      kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING &&
         settings.openshift.status === OpenShiftInstanceStatus.EXPIRED
         ? FormValiationOptions.CONFIG_EXPIRED
         : FormValiationOptions.INITIAL
     );
-  }, [kieToolingExtendedServices.status, settings.openshift.config, settings.openshift.status]);
+  }, [kieSandboxExtendedServices.status, settings.openshift.config, settings.openshift.status]);
 
   const resetConfig = useCallback(
     (config: OpenShiftSettingsConfig) => {
@@ -137,12 +137,12 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
   return (
     <>
       <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
-        {kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING && (
+        {kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING && (
           <>
             <FormAlert>
               <Alert
                 variant="danger"
-                title={"Connect to KIE Tooling Extended Services before configuring your OpenShift instance"}
+                title={"Connect to KIE Sandbox Extended Services before configuring your OpenShift instance"}
                 aria-live="polite"
                 isInline
               />
@@ -199,7 +199,7 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
           key="use-wizard"
           className="pf-u-p-0"
           variant="link"
-          isDisabled={kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING}
+          isDisabled={kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING}
           onClick={() => props.setMode(OpenShiftSettingsTabMode.WIZARD)}
           data-testid="use-wizard-button"
         >
@@ -340,7 +340,7 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
               onClick={onConnect}
               data-testid="save-config-button"
               isLoading={isConnecting}
-              isDisabled={kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING}
+              isDisabled={kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING}
               spinnerAriaValueText={isConnecting ? "Loading" : undefined}
             >
               {isConnecting ? "Connecting" : "Connect"}

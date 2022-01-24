@@ -1,0 +1,232 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.actico.com/spec/DMN/1107-feel-substring-before-function" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_jBACoPUUEeesLuP4RHs4vA" name="1107-feel-substring-before-function" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.actico.com/spec/DMN/1107-feel-substring-before-function">
+  <dmn:description>FEEL built-in function 'substring before(string, match) in category string functions</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_jBACovUUEeesLuP4RHs4vA" name="tfeel-substring-before-function_001_2e948ccdc7_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jBACpvUUEeesLuP4RHs4vA" name="tfeel-substring-before-function_002_f4de663db7_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jBACqvUUEeesLuP4RHs4vA" name="tfeel-substring-before-function_003_60bc15bade_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jBACrvUUEeesLuP4RHs4vA" name="tfeel-substring-before-function_004_6f93aa7654_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jBACsvUUEeesLuP4RHs4vA" name="tfeel-substring-before-function_005_c8e030633c_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jBACtvUUEeesLuP4RHs4vA" name="tfeel-substring-before-function_006_1c3d39811d_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jBACuvUUEeesLuP4RHs4vA" name="tfeel-substring-before-function_007_ea4e4a38b0_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jBACvvUUEeesLuP4RHs4vA" name="tfeel-substring-before-function_008_501b0a5990_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jBACwvUUEeesLuP4RHs4vA" name="tfeel-substring-before-function_009_a79c5a4111_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:decision id="_jBACrPUUEeesLuP4RHs4vA" name="feel-substring-before-function_003_60bc15bade">
+    <dmn:description>Tests FEEL expression: 'substring before("foobar","x")' and expects result: '"" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'substring before("foobar","x")'?</dmn:question>
+    <dmn:allowedAnswers>"" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jBACrfUUEeesLuP4RHs4vA" name="feel-substring-before-function_003_60bc15bade" typeRef="tfeel-substring-before-function_003_60bc15bade_Result"/>
+    <dmn:literalExpression id="_jBACq_UUEeesLuP4RHs4vA">
+      <dmn:text>substring before("foobar","x")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jBACwPUUEeesLuP4RHs4vA" name="feel-substring-before-function_008_501b0a5990">
+    <dmn:description>Tests FEEL expression: 'substring before(string:"foobar",match:"bar")' and expects result: '"foo" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'substring before(string:"foobar",match:"bar")'?</dmn:question>
+    <dmn:allowedAnswers>"foo" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jBACwfUUEeesLuP4RHs4vA" name="feel-substring-before-function_008_501b0a5990" typeRef="tfeel-substring-before-function_008_501b0a5990_Result"/>
+    <dmn:literalExpression id="_jBACv_UUEeesLuP4RHs4vA">
+      <dmn:text>substring before(string:"foobar",match:"bar")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jBACsPUUEeesLuP4RHs4vA" name="feel-substring-before-function_004_6f93aa7654">
+    <dmn:description>Tests FEEL expression: 'substring before("","")' and expects result: '"" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'substring before("","")'?</dmn:question>
+    <dmn:allowedAnswers>"" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jBACsfUUEeesLuP4RHs4vA" name="feel-substring-before-function_004_6f93aa7654" typeRef="tfeel-substring-before-function_004_6f93aa7654_Result"/>
+    <dmn:literalExpression id="_jBACr_UUEeesLuP4RHs4vA">
+      <dmn:text>substring before("","")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:knowledgeSource id="_jBACofUUEeesLuP4RHs4vA" name="DMN 1.1 - 10.3.4.3 Table 60">
+    <dmn:extensionElements/>
+  </dmn:knowledgeSource>
+  <dmn:decision id="_jBACqPUUEeesLuP4RHs4vA" name="feel-substring-before-function_002_f4de663db7">
+    <dmn:description>Tests FEEL expression: 'substring before("foobar","o")' and expects result: '"f" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'substring before("foobar","o")'?</dmn:question>
+    <dmn:allowedAnswers>"f" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jBACqfUUEeesLuP4RHs4vA" name="feel-substring-before-function_002_f4de663db7" typeRef="tfeel-substring-before-function_002_f4de663db7_Result"/>
+    <dmn:literalExpression id="_jBACp_UUEeesLuP4RHs4vA">
+      <dmn:text>substring before("foobar","o")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jBACpPUUEeesLuP4RHs4vA" name="feel-substring-before-function_001_2e948ccdc7">
+    <dmn:description>Tests FEEL expression: 'substring before("foobar","bar")' and expects result: '"foo" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'substring before("foobar","bar")'?</dmn:question>
+    <dmn:allowedAnswers>"foo" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jBACpfUUEeesLuP4RHs4vA" name="feel-substring-before-function_001_2e948ccdc7" typeRef="tfeel-substring-before-function_001_2e948ccdc7_Result"/>
+    <dmn:literalExpression id="_jBACo_UUEeesLuP4RHs4vA">
+      <dmn:text>substring before("foobar","bar")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jBACuPUUEeesLuP4RHs4vA" name="feel-substring-before-function_006_1c3d39811d">
+    <dmn:description>Tests FEEL expression: 'substring before("abc","a")' and expects result: '"" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'substring before("abc","a")'?</dmn:question>
+    <dmn:allowedAnswers>"" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jBACufUUEeesLuP4RHs4vA" name="feel-substring-before-function_006_1c3d39811d" typeRef="tfeel-substring-before-function_006_1c3d39811d_Result"/>
+    <dmn:literalExpression id="_jBACt_UUEeesLuP4RHs4vA">
+      <dmn:text>substring before("abc","a")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jBACtPUUEeesLuP4RHs4vA" name="feel-substring-before-function_005_c8e030633c">
+    <dmn:description>Tests FEEL expression: 'substring before("abc","")' and expects result: '"" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'substring before("abc","")'?</dmn:question>
+    <dmn:allowedAnswers>"" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jBACtfUUEeesLuP4RHs4vA" name="feel-substring-before-function_005_c8e030633c" typeRef="tfeel-substring-before-function_005_c8e030633c_Result"/>
+    <dmn:literalExpression id="_jBACs_UUEeesLuP4RHs4vA">
+      <dmn:text>substring before("abc","")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jBACvPUUEeesLuP4RHs4vA" name="feel-substring-before-function_007_ea4e4a38b0">
+    <dmn:description>Tests FEEL expression: 'substring before("abc","c")' and expects result: '"ab" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'substring before("abc","c")'?</dmn:question>
+    <dmn:allowedAnswers>"ab" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jBACvfUUEeesLuP4RHs4vA" name="feel-substring-before-function_007_ea4e4a38b0" typeRef="tfeel-substring-before-function_007_ea4e4a38b0_Result"/>
+    <dmn:literalExpression id="_jBACu_UUEeesLuP4RHs4vA">
+      <dmn:text>substring before("abc","c")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jBACxPUUEeesLuP4RHs4vA" name="feel-substring-before-function_009_a79c5a4111">
+    <dmn:description>Tests FEEL expression: 'substring before(string:"foobar",match:"b")' and expects result: '"foo" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'substring before(string:"foobar",match:"b")'?</dmn:question>
+    <dmn:allowedAnswers>"foo" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jBACxfUUEeesLuP4RHs4vA" name="feel-substring-before-function_009_a79c5a4111" typeRef="tfeel-substring-before-function_009_a79c5a4111_Result"/>
+    <dmn:literalExpression id="_jBACw_UUEeesLuP4RHs4vA">
+      <dmn:text>substring before(string:"foobar",match:"b")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_jBACoPUUEeesLuP4RHs4vA_D2" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_jBACq_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jBACv_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jBACr_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jBACp_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jBACo_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jBACt_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jBACs_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jBACu_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jBACw_UUEeesLuP4RHs4vA"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_jBACrPUUEeesLuP4RHs4vA" dmnElementRef="_jBACrPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jBACwPUUEeesLuP4RHs4vA" dmnElementRef="_jBACwPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jBACsPUUEeesLuP4RHs4vA" dmnElementRef="_jBACsPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="292" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jBACofUUEeesLuP4RHs4vA" dmnElementRef="_jBACofUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="133" y="385" width="100" height="69"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jBACqPUUEeesLuP4RHs4vA" dmnElementRef="_jBACqPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jBACpPUUEeesLuP4RHs4vA" dmnElementRef="_jBACpPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jBACuPUUEeesLuP4RHs4vA" dmnElementRef="_jBACuPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jBACtPUUEeesLuP4RHs4vA" dmnElementRef="_jBACtPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jBACvPUUEeesLuP4RHs4vA" dmnElementRef="_jBACvPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jBACxPUUEeesLuP4RHs4vA" dmnElementRef="_jBACxPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

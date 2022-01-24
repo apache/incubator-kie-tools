@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-import { init } from "@kogito-tooling-examples/ping-pong-view/dist/envelope";
-import { EnvelopeBusMessage } from "@kie-tooling-core/envelope-bus/dist/api";
+import * as PingPongViewEnvelope from "@kogito-tooling-examples/ping-pong-view/dist/envelope";
 import { PingPongReactImplFactory } from "@kogito-tooling-examples/ping-pong-view-react";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
 
-init({
+PingPongViewEnvelope.init({
   container: document.getElementById("envelope-app")!,
   config: { containerType: ContainerType.IFRAME },
-  bus: {
-    postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, transfer?: any) {
-      window.parent.postMessage(message, "*", transfer);
-    },
-  },
+  bus: { postMessage: (message, targetOrigin, transfer) => window.parent.postMessage(message, "*", transfer) },
   pingPongViewFactory: new PingPongReactImplFactory(),
 });

@@ -138,7 +138,8 @@ export class GitService {
       email: string;
     };
     authInfo?: {
-      onAuth: () => { username: string; password: string };
+      username: string;
+      password: string;
     };
   }) {
     await git.pull({
@@ -149,14 +150,34 @@ export class GitService {
       ref: args.ref,
       singleBranch: true,
       author: args.author,
-      onAuth: args.authInfo?.onAuth,
+      onAuth: () => args.authInfo,
     });
+  }
+
+  public async getRemoteRef(args: { fs: LightningFS; dir: string; remoteRef?: string }) {
+    const url = await git.getConfig({ fs: args.fs, path: "remote.origin.url", dir: args.dir });
+
+    const serverRefs = await git.listServerRefs({ http: http, url, corsProxy: this.corsProxy });
+
+    return serverRefs.find((serverRef) =>
+      args.remoteRef ? serverRef.ref === args.remoteRef : serverRef.ref === "HEAD"
+    );
   }
 
   public async push(args: PushArgs): Promise<void> {
     if ((await git.listRemotes(args)).length === 0) {
       throw new Error("No remote repository found");
     }
+
+    const head = await this.resolveRef({
+      fs: args.fs,
+      dir: args.dir,
+      ref: "HEAD",
+    });
+
+    const serverRemoteRef = await this.getRemoteRef({ fs: args.fs, dir: args.dir, remoteRef: args.remoteRef });
+
+    if (serverRemoteRef?.oid && head === serverRemoteRef.oid) return;
 
     await git.push({
       fs: args.fs,

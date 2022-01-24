@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>io.github.kiegroup.kogito.tooling</groupId>
+    <artifactId>vscode-java-code-completion-extension-plugin</artifactId>
+    <version>0.0.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>vscode-java-code-completion-extension-plugin-core</artifactId>
+  <packaging>eclipse-plugin</packaging>
+  <name>vscode-java-code-completion-extension-plugin :: core</name>
+  <description>vscode-java-code-completion-extension-plugin-core</description>
+
+  <properties>
+    <version.com.google.code.gson>2.8.5</version.com.google.code.gson>
+    <version.org.freemarker>2.3.31</version.org.freemarker>
+    <version.org.junit.jupiter>5.7.2</version.org.junit.jupiter>
+    <version.org.assertj>3.21.0</version.org.assertj>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>${version.com.google.code.gson}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.freemarker</groupId>
+        <artifactId>freemarker</artifactId>
+        <version>${version.org.freemarker}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>${version.org.junit.jupiter}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${version.org.assertj}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <?m2e execute onConfiguration?>
+            <id>get-libs</id>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <phase>validate</phase>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.freemarker</groupId>
+                  <artifactId>freemarker</artifactId>
+                  <version>${version.org.freemarker}</version>
+                </artifactItem>
+              </artifactItems>
+              <skip>false</skip>
+              <outputDirectory>${basedir}/lib/</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

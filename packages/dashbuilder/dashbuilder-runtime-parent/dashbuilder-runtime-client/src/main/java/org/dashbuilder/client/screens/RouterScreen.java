@@ -99,7 +99,10 @@ public class RouterScreen {
 
     public void doRoute() {
         clientLoader.load(this::route,
-                          (a, t) -> runtimeCommunication.showError(i18n.errorLoadingDashboards(), t));
+                          (a, t) -> {
+                              runtimeCommunication.showWarning(i18n.errorLoadingBackend(), t);
+                              placeManager.goTo(EmptyPerspective.ID);
+                          });
     }
 
     protected void route(RuntimeServiceResponse response) {

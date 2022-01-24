@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./EnvelopeBusController";
+export * from "./EnvelopeClient";

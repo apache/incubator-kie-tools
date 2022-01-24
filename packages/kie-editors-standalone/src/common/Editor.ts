@@ -46,11 +46,11 @@ export const createEditor = (
   return {
     undo: () => {
       stateControl.undo();
-      return Promise.resolve(envelopeApi.notifications.kogitoEditor_editorUndo());
+      return Promise.resolve(envelopeApi.notifications.kogitoEditor_editorUndo.send());
     },
     redo: () => {
       stateControl.redo();
-      return Promise.resolve(envelopeApi.notifications.kogitoEditor_editorRedo());
+      return Promise.resolve(envelopeApi.notifications.kogitoEditor_editorRedo.send());
     },
     close: () => {
       window.removeEventListener("message", listener);

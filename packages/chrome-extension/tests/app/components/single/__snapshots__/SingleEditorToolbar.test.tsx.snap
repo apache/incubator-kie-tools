@@ -79,12 +79,6 @@ exports[`SingleEditorToolbar copied to clipboard message 1`] = `
     >
       See as source
     </button>
-    <button
-      class="btn d-none d-md-inline-block kogito-button"
-      data-testid="open-ext-editor-button"
-    >
-      Open in Test Online Editor
-    </button>
     <div
       class="position-relative"
     >
@@ -122,12 +116,6 @@ exports[`SingleEditorToolbar readonly false | textMode false | textModeAvailable
     >
       See as source
     </button>
-    <button
-      class="btn d-none d-md-inline-block kogito-button"
-      data-testid="open-ext-editor-button"
-    >
-      Open in Test Online Editor
-    </button>
     <div
       class="position-relative"
     >
@@ -163,12 +151,6 @@ exports[`SingleEditorToolbar readonly false | textMode false | textModeAvailable
       data-testid="see-as-source-button"
     >
       See as source
-    </button>
-    <button
-      class="btn d-none d-md-inline-block kogito-button"
-      data-testid="open-ext-editor-button"
-    >
-      Open in Test Online Editor
     </button>
     <div
       class="position-relative"
@@ -208,12 +190,6 @@ exports[`SingleEditorToolbar readonly false | textMode true | textModeAvailable 
     >
       See as diagram
     </button>
-    <button
-      class="btn d-none d-md-inline-block kogito-button"
-      data-testid="open-ext-editor-button"
-    >
-      Open in Test Online Editor
-    </button>
     <div
       class="position-relative"
     >
@@ -243,12 +219,6 @@ exports[`SingleEditorToolbar readonly false | textMode true | textModeAvailable 
       data-testid="see-as-diagram-button"
     >
       See as diagram
-    </button>
-    <button
-      class="btn d-none d-md-inline-block kogito-button"
-      data-testid="open-ext-editor-button"
-    >
-      Open in Test Online Editor
     </button>
     <div
       class="position-relative"
@@ -286,12 +256,6 @@ exports[`SingleEditorToolbar readonly true | textMode false | textModeAvailable 
       disabled=""
     >
       See as source
-    </button>
-    <button
-      class="btn d-none d-md-inline-block kogito-button"
-      data-testid="open-ext-editor-button"
-    >
-      Open in Test Online Editor
     </button>
     <div
       class="position-relative"
@@ -331,12 +295,6 @@ exports[`SingleEditorToolbar readonly true | textMode true | textModeAvailable f
     >
       See as diagram
     </button>
-    <button
-      class="btn d-none d-md-inline-block kogito-button"
-      data-testid="open-ext-editor-button"
-    >
-      Open in Test Online Editor
-    </button>
     <div
       class="position-relative"
     >
@@ -366,12 +324,6 @@ exports[`SingleEditorToolbar see as diagram 1`] = `
       data-testid="see-as-diagram-button"
     >
       See as diagram
-    </button>
-    <button
-      class="btn d-none d-md-inline-block kogito-button"
-      data-testid="open-ext-editor-button"
-    >
-      Open in Test Online Editor
     </button>
     <div
       class="position-relative"
@@ -408,12 +360,6 @@ exports[`SingleEditorToolbar see as source 1`] = `
       data-testid="see-as-source-button"
     >
       See as source
-    </button>
-    <button
-      class="btn d-none d-md-inline-block kogito-button"
-      data-testid="open-ext-editor-button"
-    >
-      Open in Test Online Editor
     </button>
     <div
       class="position-relative"

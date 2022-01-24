@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-import { init } from "@kie-tooling-core/editor/dist/envelope";
-import { EnvelopeBusMessage } from "@kie-tooling-core/envelope-bus/dist/api";
+import * as EditorEnvelope from "@kie-tooling-core/editor/dist/envelope";
 import { Base64PngEditorFactory } from "@kogito-tooling-examples/base64png-editor";
 
-init({
+EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
-  bus: {
-    postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, _?: any) {
-      window.parent.postMessage(message, "*", _);
-    },
-  },
+  bus: { postMessage: (message, targetOrigin, transfer) => window.parent.postMessage(message, "*", transfer) },
   editorFactory: new Base64PngEditorFactory(),
 });

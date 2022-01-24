@@ -285,4 +285,10 @@ public interface CommonConstants extends Messages {
     String mandatoryHelpHeader();
 
     String mandatoryHelpText();
+
+    String external_component_width();
+
+    String external_component_height();
+
+    String external_component_group();
 }

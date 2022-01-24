@@ -17,6 +17,7 @@ package org.dashbuilder.shared.marshalling;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,7 +79,8 @@ public class RuntimeServiceResponseJSONMarshallerTest {
         templates.add(new LayoutTemplate("My Template"));
         RuntimeModel model = new RuntimeModel(new NavTreeBuilder().item("TestId", "TestItem", "Item Description", false).build(),
                                               templates,
-                                              123l);
+                                              123l,
+                                              Collections.emptyList());
         RuntimeServiceResponse response = new RuntimeServiceResponse(DashbuilderRuntimeMode.STATIC,
                                                                      Optional.of(model),
                                                                      Arrays.asList("rm1", "rm2"),

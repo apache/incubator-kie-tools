@@ -15,20 +15,80 @@
  */
 package org.dashbuilder.displayer.client.widgets;
 
+import static org.dashbuilder.displayer.DisplayerAttributeDef.ALLOW_EXPORT_CSV;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.ALLOW_EXPORT_EXCEL;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_3D;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_BGCOLOR;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_HEIGHT;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_LEGENDPOSITION;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_MARGIN_BOTTOM;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_MARGIN_LEFT;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_MARGIN_RIGHT;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_MARGIN_TOP;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_RESIZABLE;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_SHOWLEGEND;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_WIDTH;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.EXPORT_TO_CSV;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.EXPORT_TO_XLS;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.EXTERNAL_COMPONENT_HEIGHT;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.EXTERNAL_COMPONENT_WIDTH;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.FILTER_ENABLED;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.FILTER_LISTENING_ENABLED;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.FILTER_NOTIFICATION_ENABLED;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.FILTER_SELFAPPLY_ENABLED;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.MAP_COLOR_SCHEME;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.METER_CRITICAL;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.METER_END;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.METER_START;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.METER_WARNING;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.REFRESH_INTERVAL;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.REFRESH_STALE_DATA;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.RENDERER;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.SELECTOR_MULTIPLE;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.SELECTOR_SHOW_INPUTS;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.SELECTOR_WIDTH;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.TABLE_COLUMN_PICKER_ENABLED;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.TABLE_PAGESIZE;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.TABLE_SORTCOLUMNID;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.TABLE_SORTENABLED;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.TABLE_SORTORDER;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.TABLE_WIDTH;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.TITLE;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.TITLE_VISIBLE;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.XAXIS_LABELSANGLE;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.XAXIS_SHOWLABELS;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.XAXIS_TITLE;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.YAXIS_SHOWLABELS;
+import static org.dashbuilder.displayer.DisplayerAttributeDef.YAXIS_TITLE;
+import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.CHART_GROUP;
+import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.CHART_LEGEND_GROUP;
+import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.CHART_MARGIN_GROUP;
+import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.COLUMNS_GROUP;
+import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.EXPORT_GROUP;
+import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.FILTER_GROUP;
+import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.GENERAL_GROUP;
+import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.MAP_GROUP;
+import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.METER_GROUP;
+import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.REFRESH_GROUP;
+import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.SELECTOR_GROUP;
+import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.TABLE_GROUP;
+import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.XAXIS_GROUP;
+import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.YAXIS_GROUP;
+import static org.uberfire.ext.properties.editor.model.PropertyEditorType.BOOLEAN;
+import static org.uberfire.ext.properties.editor.model.PropertyEditorType.COLOR;
+import static org.uberfire.ext.properties.editor.model.PropertyEditorType.COMBO;
+import static org.uberfire.ext.properties.editor.model.PropertyEditorType.TEXT;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
+import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.MapColorScheme;
 import org.dashbuilder.displayer.Position;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
@@ -43,8 +103,12 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
 
-import static org.uberfire.ext.properties.editor.model.PropertyEditorType.*;
-import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.*;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Widget;
 
 @Dependent
 public class DisplayerSettingsEditorView extends Composite implements DisplayerSettingsEditor.View {
@@ -126,6 +190,9 @@ public class DisplayerSettingsEditorView extends Composite implements DisplayerS
         attrMapI18n.put(COLUMNS_GROUP, CommonConstants.INSTANCE.common_columns());
         attrMapI18n.put(MAP_GROUP, CommonConstants.INSTANCE.map_group());
         attrMapI18n.put(MAP_COLOR_SCHEME, CommonConstants.INSTANCE.color_scheme());
+        attrMapI18n.put(DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_GROUP, CommonConstants.INSTANCE.external_component_group());
+        attrMapI18n.put(EXTERNAL_COMPONENT_WIDTH, CommonConstants.INSTANCE.external_component_width());
+        attrMapI18n.put(EXTERNAL_COMPONENT_HEIGHT, CommonConstants.INSTANCE.external_component_height());
 
         initWidget(uiBinder.createAndBindUi(this));
     }

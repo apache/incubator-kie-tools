@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.33.1; 1.0" namespace="http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11" name="literal invocation1" triso:logoChoice="Default" id="_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11" xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <itemDefinition name="tLoan" id="_f909c1d5-36e4-4f71-8392-fe3b14ddb6f7">
+        <itemComponent name="amount" id="_579041dc-2bad-42b4-9650-b2cf39175ecc">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="rate" id="_353c0e6f-b344-451e-944e-bec76817b29a">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="term" id="_c7b4a252-df93-4407-8bef-9d30d94125b6">
+            <typeRef>number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <decision name="MonthlyPayment" id="d_MonthlyPayment">
+        <variable typeRef="number" name="MonthlyPayment"/>
+        <informationRequirement id="_0a5a9bc5-490a-4951-8983-9b70b3530864">
+            <requiredInput href="#i_Loan"/>
+        </informationRequirement>
+        <informationRequirement id="_2cd776d1-e0c8-49db-9aba-78f36d2394ba">
+            <requiredInput href="#i_fee"/>
+        </informationRequirement>
+        <knowledgeRequirement id="a83f1594-0b33-47da-9bf6-2b1b81ab4534">
+            <requiredKnowledge href="#b_PMT"/>
+        </knowledgeRequirement>
+        <literalExpression>
+            <text>PMT(Loan.amount, Loan.rate, Loan.term)+fee</text>
+        </literalExpression>
+    </decision>
+    <businessKnowledgeModel name="PMT" id="b_PMT">
+        <variable name="PMT"/>
+        <encapsulatedLogic>
+            <formalParameter typeRef="number" name="p"/>
+            <formalParameter typeRef="number" name="r"/>
+            <formalParameter typeRef="number" name="n"/>
+            <literalExpression typeRef="number">
+                <text>(p*r/12)/(1-(1+r/12)**-n)</text>
+            </literalExpression>
+        </encapsulatedLogic>
+    </businessKnowledgeModel>
+    <inputData name="Loan" id="i_Loan">
+        <variable typeRef="tns:tLoan" name="Loan"/>
+    </inputData>
+    <inputData name="fee" id="i_fee">
+        <variable typeRef="number" name="fee"/>
+    </inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11_D1">
+            <dmndi:Size height="650.0" width="880.0"/>
+            <dmndi:DMNShape dmnElementRef="d_MonthlyPayment" id="_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11_s1">
+                <dc:Bounds height="61.0" width="154.0" x="363.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="b_PMT" id="_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11_s2">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="i_Loan" id="_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11_s3">
+                <dc:Bounds height="60.0" width="153.0" x="364.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="i_fee" id="_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11_s4">
+                <dc:Bounds height="60.0" width="153.0" x="577.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="a83f1594-0b33-47da-9bf6-2b1b81ab4534" id="_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11_e1">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="440.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_0a5a9bc5-490a-4951-8983-9b70b3530864" id="_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11_e2">
+                <di:waypoint x="440.0" y="331.0"/>
+                <di:waypoint x="440.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_2cd776d1-e0c8-49db-9aba-78f36d2394ba" id="_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11_e3">
+                <di:waypoint x="653.0" y="331.0"/>
+                <di:waypoint x="440.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

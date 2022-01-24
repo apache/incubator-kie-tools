@@ -13,10 +13,10 @@ Create and edit BPMN, DMN and SceSim files.
 - Native keyboard shortcuts (Press `shift+/` to display available combinations).
 - Export diagram to SVG (use the SVG icon on the top-right corner).
 
-#### Editing a new BPMN file
+### Editing a new BPMN file
 
 ![alt](./gifs/bpmn.gif?raw=true)
 
-#### Editing a new DMN file
+### Editing a new DMN file
 
 ![alt](./gifs/dmn.gif?raw=true)

@@ -18,36 +18,33 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { PingPongApi, PingPongChannelApi, PingPongEnvelopeApi } from "../../api";
 import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
-import { EmbeddedEnvelopeFactory } from "@kie-tooling-core/envelope/dist/embedded";
 import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
-import { init, PingPongFactory } from "../../envelope";
-import { EnvelopeBusMessage } from "@kie-tooling-core/envelope-bus/dist/api";
+import * as PingPongEnvelope from "../../envelope";
+import { PingPongFactory } from "../../envelope";
+import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tooling-core/envelope/dist/embedded";
 
-export type Props = PingPongChannelApi & {
+export type Props = {
   mapping: {
     title: string;
   };
+  apiImpl: PingPongChannelApi;
   targetOrigin: string;
   name: string;
   pingPongViewFactory: PingPongFactory;
 };
 
 export const EmbeddedDivPingPong = React.forwardRef((props: Props, forwardedRef: React.Ref<PingPongApi>) => {
-  const refDelegate = useCallback((envelopeServer): PingPongApi => ({}), []);
+  const refDelegate = useCallback((): PingPongApi => ({}), []);
 
   const pollInit = useCallback(
     (
       envelopeServer: EnvelopeServer<PingPongChannelApi, PingPongEnvelopeApi>,
       container: () => HTMLDivElement | HTMLIFrameElement
     ) => {
-      init({
+      PingPongEnvelope.init({
         config: { containerType: ContainerType.DIV, envelopeId: envelopeServer.id },
         container: container(),
-        bus: {
-          postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, transfer?: any) {
-            window.postMessage(message, "*", transfer);
-          },
-        },
+        bus: { postMessage: (message, targetOrigin, transfer) => window.postMessage(message, "*", transfer) },
         pingPongViewFactory: props.pingPongViewFactory,
       });
 
@@ -56,18 +53,29 @@ export const EmbeddedDivPingPong = React.forwardRef((props: Props, forwardedRef:
         { name: props.name }
       );
     },
+    [props.name, props.pingPongViewFactory]
+  );
+
+  const config: { containerType: ContainerType.DIV } = useMemo(
+    () => ({
+      containerType: ContainerType.DIV,
+    }),
     []
   );
 
-  const EmbeddedEnvelope = useMemo(() => {
-    return EmbeddedEnvelopeFactory({
-      api: props,
-      origin: props.targetOrigin,
-      refDelegate,
-      pollInit,
-      config: { containerType: ContainerType.DIV },
-    });
-  }, []);
-
-  return <EmbeddedEnvelope ref={forwardedRef} />;
+  return (
+    <EmbeddedDivPingPongEnvelope
+      ref={forwardedRef}
+      apiImpl={props.apiImpl}
+      origin={props.targetOrigin}
+      refDelegate={refDelegate}
+      pollInit={pollInit}
+      config={config}
+    />
+  );
 });
+
+const EmbeddedDivPingPongEnvelope =
+  React.forwardRef<PingPongApi, EmbeddedEnvelopeProps<PingPongChannelApi, PingPongEnvelopeApi, PingPongApi>>(
+    RefForwardingEmbeddedEnvelope
+  );

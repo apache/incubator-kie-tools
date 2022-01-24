@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Reflections>
+    <org.jboss.errai.reflections.scanners.MethodAnnotationsScanner>
+        <entry>
+            <key>org.jboss.errai.reflections.TestModel$AM1</key>
+            <values>
+                <value>org.jboss.errai.reflections.TestModel$C4.m3()</value>
+                <value>org.jboss.errai.reflections.TestModel$C4.m1(int[][], java.lang.String[][])</value>
+                <value>org.jboss.errai.reflections.TestModel$C4.m1(int, java.lang.String[])</value>
+                <value>org.jboss.errai.reflections.TestModel$C4.m1()</value>
+            </values>
+        </entry>
+    </org.jboss.errai.reflections.scanners.MethodAnnotationsScanner>
+    <org.jboss.errai.reflections.scanners.FieldAnnotationsScanner>
+        <entry>
+            <key>org.jboss.errai.reflections.TestModel$AF1</key>
+            <values>
+                <value>org.jboss.errai.reflections.TestModel$C4.f1</value>
+                <value>org.jboss.errai.reflections.TestModel$C4.f2</value>
+            </values>
+        </entry>
+    </org.jboss.errai.reflections.scanners.FieldAnnotationsScanner>
+</Reflections>

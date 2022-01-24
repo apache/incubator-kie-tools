@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.35; 1.0" namespace="http://www.trisotech.com/definitions/_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6" name="tableTest" triso:logoChoice="Default" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <itemDefinition isCollection="true" name="tNumList" id="tNumList">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tA" id="tA">
+        <itemComponent name="name" id="_adf6f96a-c574-4ba7-a305-ea14ad9852b1">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent name="price" id="_d297adac-f086-42a0-989e-04c431270f77">
+            <typeRef>number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="tStringList" id="tStringList">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <inputData name="structA" id="_18b9d486-1ec0-436d-af4b-3e4567e8bca9">
+        <variable typeRef="tA" name="structA"/>
+    </inputData>
+    <inputData name="numB" id="_3b175722-5f96-49e4-a50d-0bf9588c901c">
+        <variable typeRef="number" name="numB"/>
+    </inputData>
+    <inputData name="numC" id="_25cdd674-9b3f-47b1-bace-1d4e3ce50d5d">
+        <variable typeRef="number" name="numC"/>
+    </inputData>
+    <inputData name="dateD" id="_fabdbafc-f28a-466d-ae08-86c5b928dad5">
+        <variable typeRef="date" name="dateD"/>
+    </inputData>
+    <inputData name="dateE" id="_4926f78e-5df0-4d88-8ee7-1a418b08562f">
+        <variable typeRef="date" name="dateE"/>
+    </inputData>
+    <decision name="priceGt10" id="_2683ec7f-fa17-4a1e-9151-8077a10c561f">
+        <variable typeRef="boolean" name="priceGt10"/>
+        <informationRequirement id="_1a34b197-0218-447f-8fa4-204517c0f851">
+            <requiredInput href="#_18b9d486-1ec0-436d-af4b-3e4567e8bca9"/>
+        </informationRequirement>
+        <decisionTable hitPolicy="UNIQUE" outputLabel="priceGt10">
+            <input id="_bfb04e56-12dc-461f-a341-f5522efc7388" label="structA.price">
+                <inputExpression typeRef="number">
+                    <text>structA.price</text>
+                </inputExpression>
+            </input>
+            <output id="_89841156-1ca0-4704-9551-39205fdb7ae2"/>
+            <rule id="_543c9e93-e815-41df-8884-b40f726a847e">
+                <inputEntry id="_543c9e93-e815-41df-8884-b40f726a847e-0">
+                    <text>&gt;10</text>
+                </inputEntry>
+                <outputEntry id="_543c9e93-e815-41df-8884-b40f726a847e-1">
+                    <text>true</text>
+                </outputEntry>
+            </rule>
+            <rule id="_41adf645-547d-4c65-97c1-355c297d02d6">
+                <inputEntry id="_41adf645-547d-4c65-97c1-355c297d02d6-0">
+                    <text>&lt;=10</text>
+                </inputEntry>
+                <outputEntry id="_41adf645-547d-4c65-97c1-355c297d02d6-1">
+                    <text>false</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <decision name="priceInRange" id="_98e08c9d-66de-4f67-8bd9-cc667be27eb3">
+        <variable typeRef="string" name="priceInRange"/>
+        <informationRequirement id="_69b6232a-5432-455b-b6e7-99a23cf5e49b">
+            <requiredInput href="#_3b175722-5f96-49e4-a50d-0bf9588c901c"/>
+        </informationRequirement>
+        <informationRequirement id="_4a3e4d12-54f4-497a-99b7-5314ce2d4504">
+            <requiredInput href="#_25cdd674-9b3f-47b1-bace-1d4e3ce50d5d"/>
+        </informationRequirement>
+        <informationRequirement id="_159303d0-ce30-42cb-bfa5-751b8dac9180">
+            <requiredInput href="#_18b9d486-1ec0-436d-af4b-3e4567e8bca9"/>
+        </informationRequirement>
+        <decisionTable hitPolicy="PRIORITY" outputLabel="priceInRange">
+            <input id="_ea1c33b5-593b-416a-b507-75e419506451" label="structA.price">
+                <inputExpression typeRef="number">
+                    <text>structA.price</text>
+                </inputExpression>
+            </input>
+            <output id="_2d6d203c-7f53-4d4c-bfe1-1ce30c374fad">
+                <outputValues>
+                    <text>"In range", "Not in range"</text>
+                </outputValues>
+            </output>
+            <rule id="_0111b055-b741-48ed-9d34-ee447a683a30">
+                <inputEntry id="_0111b055-b741-48ed-9d34-ee447a683a30-0">
+                    <text>[numB..numC]</text>
+                </inputEntry>
+                <outputEntry id="_0111b055-b741-48ed-9d34-ee447a683a30-1">
+                    <text>"In range"</text>
+                </outputEntry>
+            </rule>
+            <rule id="_feed8519-9afc-485b-a831-eecaf7daedf3">
+                <inputEntry id="_feed8519-9afc-485b-a831-eecaf7daedf3-0">
+                    <text>-</text>
+                </inputEntry>
+                <outputEntry id="_feed8519-9afc-485b-a831-eecaf7daedf3-1">
+                    <text>"Not in range"</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <decision name="dateCompare1" id="_ca5e0efd-3fff-4bf8-8939-85fc3b9c20b8">
+        <variable typeRef="boolean" name="dateCompare1"/>
+        <informationRequirement id="_5e675000-0add-455a-9f70-7c1f42adbe60">
+            <requiredInput href="#_fabdbafc-f28a-466d-ae08-86c5b928dad5"/>
+        </informationRequirement>
+        <decisionTable hitPolicy="UNIQUE" outputLabel="dateCompare1">
+            <input id="_cccfb596-2349-4ff2-bed6-51373e84a7c6" label="dateD">
+                <inputExpression typeRef="date">
+                    <text>dateD</text>
+                </inputExpression>
+            </input>
+            <output id="_81e4c1b4-0638-4fec-9d0a-3a6864b64bdf"/>
+            <rule id="_7b156632-d54a-4097-986d-78dc74254a1d">
+                <inputEntry id="_7b156632-d54a-4097-986d-78dc74254a1d-0">
+                    <text>&gt;date("2016-10-01")</text>
+                </inputEntry>
+                <outputEntry id="_7b156632-d54a-4097-986d-78dc74254a1d-1">
+                    <text>true</text>
+                </outputEntry>
+            </rule>
+            <rule id="_5ccd1858-e7be-47b9-9213-65573af1079c">
+                <inputEntry id="_5ccd1858-e7be-47b9-9213-65573af1079c-0">
+                    <text>&lt;=date("2016-10-01")</text>
+                </inputEntry>
+                <outputEntry id="_5ccd1858-e7be-47b9-9213-65573af1079c-1">
+                    <text>false</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <decision name="dateCompare2" id="_bf3c3a79-9fa2-491f-8065-a990c70b50de">
+        <variable typeRef="boolean" name="dateCompare2"/>
+        <informationRequirement id="fb16cfb1-b6ca-4411-8dab-a90865dae4f3">
+            <requiredInput href="#_fabdbafc-f28a-466d-ae08-86c5b928dad5"/>
+        </informationRequirement>
+        <informationRequirement id="a362b8be-c6c0-424a-85c3-9368a8489f89">
+            <requiredInput href="#_4926f78e-5df0-4d88-8ee7-1a418b08562f"/>
+        </informationRequirement>
+        <decisionTable hitPolicy="UNIQUE" outputLabel="dateCompare2">
+            <input id="_510a77ec-f587-41eb-a3c0-139cb0fd1cb4" label="dateD">
+                <inputExpression typeRef="date">
+                    <text>dateD</text>
+                </inputExpression>
+            </input>
+            <output id="_d296a8b5-41f5-4991-a052-cd19815a5730"/>
+            <rule id="_fb95f9d4-b59b-4eb0-96d1-1898af54d63b">
+                <inputEntry id="_fb95f9d4-b59b-4eb0-96d1-1898af54d63b-0">
+                    <text>&gt;dateE</text>
+                </inputEntry>
+                <outputEntry id="_fb95f9d4-b59b-4eb0-96d1-1898af54d63b-1">
+                    <text>true</text>
+                </outputEntry>
+            </rule>
+            <rule id="_d5cf4c3c-ce7b-4ad3-b9b3-db036bcfb505">
+                <inputEntry id="_d5cf4c3c-ce7b-4ad3-b9b3-db036bcfb505-0">
+                    <text>&lt;=dateE</text>
+                </inputEntry>
+                <outputEntry id="_d5cf4c3c-ce7b-4ad3-b9b3-db036bcfb505-1">
+                    <text>false</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_D1">
+            <dmndi:Size height="650.0" width="1306.0"/>
+            <dmndi:DMNShape dmnElementRef="_18b9d486-1ec0-436d-af4b-3e4567e8bca9" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_s1">
+                <dc:Bounds height="60.0" width="153.0" x="151.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_3b175722-5f96-49e4-a50d-0bf9588c901c" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_s2">
+                <dc:Bounds height="60.0" width="153.0" x="364.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_25cdd674-9b3f-47b1-bace-1d4e3ce50d5d" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_s3">
+                <dc:Bounds height="60.0" width="153.0" x="577.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_fabdbafc-f28a-466d-ae08-86c5b928dad5" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_s4">
+                <dc:Bounds height="60.0" width="153.0" x="790.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_4926f78e-5df0-4d88-8ee7-1a418b08562f" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_s5">
+                <dc:Bounds height="60.0" width="153.0" x="1003.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_2683ec7f-fa17-4a1e-9151-8077a10c561f" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_s6">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_98e08c9d-66de-4f67-8bd9-cc667be27eb3" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_s7">
+                <dc:Bounds height="61.0" width="154.0" x="364.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_ca5e0efd-3fff-4bf8-8939-85fc3b9c20b8" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_s8">
+                <dc:Bounds height="61.0" width="154.0" x="788.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_bf3c3a79-9fa2-491f-8065-a990c70b50de" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_s9">
+                <dc:Bounds height="61.0" width="154.0" x="1002.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="_1a34b197-0218-447f-8fa4-204517c0f851" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_e1">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_69b6232a-5432-455b-b6e7-99a23cf5e49b" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_e2">
+                <di:waypoint x="440.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_4a3e4d12-54f4-497a-99b7-5314ce2d4504" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_e3">
+                <di:waypoint x="653.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_159303d0-ce30-42cb-bfa5-751b8dac9180" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_e4">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_5e675000-0add-455a-9f70-7c1f42adbe60" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_e5">
+                <di:waypoint x="866.0" y="331.0"/>
+                <di:waypoint x="865.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="fb16cfb1-b6ca-4411-8dab-a90865dae4f3" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_e6">
+                <di:waypoint x="866.0" y="331.0"/>
+                <di:waypoint x="1079.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="a362b8be-c6c0-424a-85c3-9368a8489f89" id="_92a0c25f-707e-4fc8-ae2d-2ab51ebe6bb6_e7">
+                <di:waypoint x="1079.0" y="331.0"/>
+                <di:waypoint x="1079.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

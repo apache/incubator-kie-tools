@@ -35,7 +35,7 @@ export class TodoListWebview {
       title: string;
       envelopePath: string;
     },
-    private readonly api: TodoListChannelApi
+    private readonly apiImpl: TodoListChannelApi
   ) {}
 
   public open(pageId: string, opts: { onClose: () => void }) {
@@ -91,7 +91,7 @@ export class TodoListWebview {
     // Configures how the messages coming from the Envelope are received by the EnvelopeServer
     this.context.subscriptions.push(
       webviewPanel.webview.onDidReceiveMessage(
-        (msg) => envelopeServer.receive(msg, this.api),
+        (msg) => envelopeServer.receive(msg, this.apiImpl),
         webviewPanel.webview,
         this.context.subscriptions
       )
@@ -108,7 +108,7 @@ export class TodoListWebview {
     );
 
     // Starts polling using the initPolling method so that the Envelope can connect with the EnvelopeServer
-    envelopeServer.startInitPolling();
+    envelopeServer.startInitPolling(this.apiImpl);
 
     // Returns the MessageBusClient instance so that the containing VS Code Extension can communicate with the Envelope.
     return envelopeServer.manager.clientApi;

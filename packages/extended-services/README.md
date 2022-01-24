@@ -1,4 +1,4 @@
-## KIE Tooling Extended Services
+## KIE Sandbox Extended Services
 
 Powers the DMN Runner and DMN Dev Sandbox features.
 
@@ -21,7 +21,7 @@ Firstly install the following packages:
 
 - `sudo dnf install libappindicator-gtk3`
 
-If you want to have more control over the KIE Tooling Extended Services, it's necessary to enable the App Indicator extension
+If you want to have more control over the KIE Sandbox Extended Services, it's necessary to enable the App Indicator extension
 https://extensions.gnome.org/extension/615/appindicator-support/
 
 ## Misc

@@ -1,0 +1,2 @@
+org.kie.workbench.common.forms.adf.processors.FormDefinitionsProcessor
+org.kie.workbench.common.forms.adf.processors.FieldRendererProcessor

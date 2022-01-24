@@ -25,6 +25,13 @@ declare namespace Cypress {
      * Wait until Kogito editor is loaded.
      */
     loadEditor(): void;
+
+    /**
+     * Search elements by data-ouia component attributes.
+     * @param id string
+     * @param opts optional - config object
+     */
+    ouiaId(id: string, opts?: Record<string, any>): Chainable<Element>;
   }
 }
 
@@ -38,4 +45,14 @@ Cypress.Commands.add("loadEditor", () => {
     cy.get("[data-testid='loading-screen-div']", { timeout: 15000 }).should("be.visible");
     cy.get("[data-testid='loading-screen-div']", { timeout: 60000 }).should("not.exist");
   });
+});
+
+Cypress.Commands.add("ouiaId", { prevSubject: "optional" }, (subject, id: string, options = {}) => {
+  const idSelector = `[data-ouia-component-id='${id}']`;
+
+  if (subject) {
+    cy.wrap(subject, options).find(idSelector, options);
+  } else {
+    cy.get(idSelector, options);
+  }
 });

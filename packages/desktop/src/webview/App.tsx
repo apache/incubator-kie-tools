@@ -39,6 +39,10 @@ enum Pages {
 
 const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 
+const bpmnEnvelope = { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/bpmn-envelope.html" };
+
+const dmnEnvelope = { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/dmn-envelope.html" };
+
 export function App() {
   const [page, setPage] = useState(Pages.HOME);
   const [file, setFile] = useState<EmbeddedEditorFile>({

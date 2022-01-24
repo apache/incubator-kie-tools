@@ -462,7 +462,7 @@
           <logLevel>INFO</logLevel>
           <strict>true</strict>
           <runTarget>index.html</runTarget>
-          <extraJvmArgs>-Xmx4024m -XX:CompileThreshold=7000
+          <extraJvmArgs>-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC
             -Derrai.dynamic_validation.enabled=true
             -Ddashbuilder.runtime.multi=true
             -Ddashbuilder.components.enable=true
@@ -605,7 +605,7 @@
         </plugins>
       </build>
     </profile>
-    <!-- profile to disable GWT compilation of showcase (useful in full downstream 
+    <!-- profile to disable GWT compilation of showcase (useful in full downstream
       builds) -->
     <profile>
       <id>no-showcase</id>

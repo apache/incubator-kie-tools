@@ -395,6 +395,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       <ToolbarItem>
                         <Tooltip content={"Switch to table view"}>
                           <Button
+                            ouiaId="switch-dmn-runner-to-table-view"
                             className={"kogito-tooling--masthead-hoverable"}
                             variant={ButtonVariant.plain}
                             onClick={onChangeToTableView}
