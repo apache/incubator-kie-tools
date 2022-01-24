@@ -131,6 +131,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
           <div className="expression-data-type">
             <label>{dataTypeField}</label>
             <Button
+              ouiaId="manage-data-type-link"
               variant="link"
               className="manage-datatype"
               icon={<CogIcon />}
