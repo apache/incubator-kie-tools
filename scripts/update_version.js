@@ -85,7 +85,7 @@ async function updateMvnPackages(version) {
   const mvnPackages = getPackagesSync().filter((pkg) => fs.existsSync(path.resolve(pkg.location, "pom.xml")));
   const mvnPackagesLernaScope = mvnPackages.map((pkg) => `--scope="${pkg.name}"`).join(" ");
   execSync(
-    `lerna exec 'mvn versions:set versions:commit -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version} -o' ${mvnPackagesLernaScope} --concurrency 1`,
+    `lerna exec 'mvn versions:set versions:commit -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}' ${mvnPackagesLernaScope} --concurrency 1`,
     execOpts
   );
   return version;
@@ -103,7 +103,7 @@ async function updateSpecialInternalMvnPackagesOnStunnerEditors(version) {
 
   for (const module of modules) {
     execSync(
-      `mvn versions:set versions:commit -f ${module} -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version} -o`,
+      `mvn versions:set versions:commit -f ${module} -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}`,
       execOpts
     );
   }
