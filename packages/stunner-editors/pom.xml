@@ -26,7 +26,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito.stunner.editors</groupId>
   <artifactId>stunner-editors-parent</artifactId>
-  <version>0.0.0</version>
+  <version>0.16.0</version>
   <packaging>pom</packaging>
 
   <name>Kogito Editors Java - Parent</name>

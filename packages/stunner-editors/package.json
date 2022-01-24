@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/stunner-editors",
-  "version": "0.0.0",
+  "version": "0.16.0",
   "description": "",
   "private": true,
   "license": "Apache-2.0",
@@ -14,10 +14,10 @@
     "**/dist/*"
   ],
   "dependencies": {
-    "@kogito-tooling/stunner-editors-dmn-loader": "0.0.0"
+    "@kogito-tooling/stunner-editors-dmn-loader": "0.16.0"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
+    "@kogito-tooling/build-env": "0.16.0"
   },
   "scripts": {
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
