@@ -43,7 +43,7 @@
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "copy:images": "cpr ./static/images ./dist/images",
     "build:dev": "rimraf dist && yarn copy:css && yarn copy:images && tsc -p tsconfig.dev.json",
-    "build:prod": "yarn lint && rimraf dist && yarn copy:css && yarn copy:images && tsc -p tsconfig.prod.json && yarn test && yarn test:it",
+    "build:prod": "yarn lint && rimraf dist && yarn copy:css && yarn copy:images && tsc -p tsconfig.prod.json && yarn test",
     "test:watch": "jest --watch",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
     "deploy": "gh-pages -d dist",
