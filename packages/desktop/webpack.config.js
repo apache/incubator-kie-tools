@@ -17,8 +17,8 @@
 const CopyPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const { merge } = require("webpack-merge");
-const common = require("../../config/webpack.common.config");
-const externalAssets = require("@kogito-tooling/external-assets-base");
+const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
+const stunnerEditors = require("@kogito-tooling/stunner-editors");
 
 module.exports = async (env) => [
   merge(common(env), {
@@ -46,12 +46,12 @@ module.exports = async (env) => [
       new CopyPlugin({
         patterns: [
           {
-            from: externalAssets.dmnEditorPath(),
+            from: stunnerEditors.dmnEditorPath(),
             to: "./gwt-editors/dmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
           {
-            from: externalAssets.bpmnEditorPath(),
+            from: stunnerEditors.bpmnEditorPath(),
             to: "./gwt-editors/bpmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },

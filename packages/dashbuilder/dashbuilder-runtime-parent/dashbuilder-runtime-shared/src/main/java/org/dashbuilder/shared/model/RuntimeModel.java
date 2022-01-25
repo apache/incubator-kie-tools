@@ -18,6 +18,7 @@ package org.dashbuilder.shared.model;
 
 import java.util.List;
 
+import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.dashbuilder.navigation.NavTree;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -33,15 +34,19 @@ public class RuntimeModel {
     NavTree navTree;
 
     List<LayoutTemplate> layoutTemplates;
-    
+
+    List<ExternalDataSetDef> clientDataSets;
+
     Long lastModified;
 
     public RuntimeModel(@MapsTo("navTree") final NavTree navTree,
                         @MapsTo("layoutTemplates") final List<LayoutTemplate> layoutTemplates,
-                        @MapsTo("lastModified") Long lastModified) {
+                        @MapsTo("lastModified") Long lastModified,
+                        @MapsTo("clientDataSets") List<ExternalDataSetDef> clientDataSets) {
         this.navTree = navTree;
         this.layoutTemplates = layoutTemplates;
         this.lastModified = lastModified;
+        this.clientDataSets = clientDataSets;
     }
 
     public NavTree getNavTree() {
@@ -51,9 +56,13 @@ public class RuntimeModel {
     public List<LayoutTemplate> getLayoutTemplates() {
         return layoutTemplates;
     }
-    
+
     public Long getLastModified() {
         return lastModified;
+    }
+
+    public List<ExternalDataSetDef> getClientDataSets() {
+        return clientDataSets;
     }
 
 }

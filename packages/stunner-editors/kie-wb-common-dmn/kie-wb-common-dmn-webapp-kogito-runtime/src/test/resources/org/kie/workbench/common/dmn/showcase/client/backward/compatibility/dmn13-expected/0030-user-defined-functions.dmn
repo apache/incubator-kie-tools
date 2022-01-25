@@ -1,0 +1,149 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.actico.com/spec/DMN/0.1.0/0030-user-defined-functions" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_pKGjoH6LEeePe9Zmt-encA" name="0030-user-defined-functions" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.actico.com/spec/DMN/0.1.0/0030-user-defined-functions">
+  <dmn:description>Tests definition of functions in a boxed expression and invocation of those.</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:decision id="_WdFa8IDoEee-MeWXoLgrYg" name="simple function invocation">
+    <dmn:extensionElements/>
+    <dmn:variable id="_0zDvUYDyEeehqsf_bU54Lw" name="simple function invocation" typeRef="string"/>
+    <dmn:informationRequirement id="e1fa4ee4-8ab5-4dfd-96a0-74cbd60d34f2">
+      <dmn:requiredInput href="#_Aq8u4IDpEee-MeWXoLgrYg"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_80651cb0-93f7-44bd-b3b5-a7a2b52193c7">
+      <dmn:requiredInput href="#_vfL7kIDqEeehqsf_bU54Lw"/>
+    </dmn:informationRequirement>
+    <dmn:context id="_eQfF0IDoEee-MeWXoLgrYg">
+      <dmn:contextEntry>
+        <dmn:variable id="_eSTqx4DoEee-MeWXoLgrYg" name="boxedFnDefinition"/>
+        <dmn:functionDefinition id="_e0S9gIDoEee-MeWXoLgrYg" kind="FEEL">
+          <dmn:formalParameter id="_htc78IDoEee-MeWXoLgrYg" name="a" typeRef="string"/>
+          <dmn:formalParameter id="_a6M_IIDrEeehqsf_bU54Lw" name="b" typeRef="string"/>
+          <dmn:literalExpression id="_e4IUpYDoEee-MeWXoLgrYg">
+            <dmn:text>a+b</dmn:text>
+          </dmn:literalExpression>
+        </dmn:functionDefinition>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_nsnCAIDoEee-MeWXoLgrYg" name="literalFnDefinition"/>
+        <dmn:literalExpression id="_nsnCAYDoEee-MeWXoLgrYg">
+          <dmn:text>function(a,b) a + b</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_zTaGAIDoEee-MeWXoLgrYg" typeRef="string">
+          <dmn:text>boxedFnDefinition(stringInputA, stringInputB) + literalFnDefinition(stringInputA, stringInputB)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:decision id="_GNiCIIDzEeehqsf_bU54Lw" name="named function invocation">
+    <dmn:extensionElements/>
+    <dmn:variable id="_eJrSMYDzEeehqsf_bU54Lw" name="named function invocation" typeRef="string"/>
+    <dmn:informationRequirement id="_22db6269-f1f9-47c7-ad84-00274956556c">
+      <dmn:requiredInput href="#_vfL7kIDqEeehqsf_bU54Lw"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="e61c8236-e671-4ced-a93a-994e3b318364">
+      <dmn:requiredInput href="#_Aq8u4IDpEee-MeWXoLgrYg"/>
+    </dmn:informationRequirement>
+    <dmn:context id="_HeJ8gYDzEeehqsf_bU54Lw">
+      <dmn:contextEntry>
+        <dmn:variable id="_HeJ8g4DzEeehqsf_bU54Lw" name="boxedFnDefinition"/>
+        <dmn:functionDefinition id="_HeKjkYDzEeehqsf_bU54Lw" kind="FEEL">
+          <dmn:formalParameter id="_HeKjk4DzEeehqsf_bU54Lw" name="a" typeRef="string"/>
+          <dmn:formalParameter id="_HeKjlYDzEeehqsf_bU54Lw" name="b" typeRef="string"/>
+          <dmn:literalExpression id="_HeKjl4DzEeehqsf_bU54Lw">
+            <dmn:text>a+b</dmn:text>
+          </dmn:literalExpression>
+        </dmn:functionDefinition>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:variable id="_HeKjmYDzEeehqsf_bU54Lw" name="literalFnDefinition"/>
+        <dmn:literalExpression id="_HeKjm4DzEeehqsf_bU54Lw">
+          <dmn:text>function(a,b) a + b</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_HeKjnYDzEeehqsf_bU54Lw" typeRef="string">
+          <dmn:text>boxedFnDefinition(b:stringInputA, a:stringInputB) + literalFnDefinition(b:stringInputA, a:stringInputB)</dmn:text>
+        </dmn:literalExpression>
+      </dmn:contextEntry>
+    </dmn:context>
+  </dmn:decision>
+  <dmn:inputData id="_Aq8u4IDpEee-MeWXoLgrYg" name="stringInputA">
+    <dmn:extensionElements/>
+    <dmn:variable id="_wKKRkYDyEeehqsf_bU54Lw" name="stringInputA" typeRef="string"/>
+  </dmn:inputData>
+  <dmn:inputData id="_vfL7kIDqEeehqsf_bU54Lw" name="stringInputB">
+    <dmn:extensionElements/>
+    <dmn:variable id="_xZw4QYDyEeehqsf_bU54Lw" name="stringInputB" typeRef="string"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_pKGjoH6LEeePe9Zmt-encA_D1" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_eQfF0IDoEee-MeWXoLgrYg"/>
+          <kie:ComponentWidths dmnElementRef="_e0S9gIDoEee-MeWXoLgrYg"/>
+          <kie:ComponentWidths dmnElementRef="_e4IUpYDoEee-MeWXoLgrYg"/>
+          <kie:ComponentWidths dmnElementRef="_nsnCAYDoEee-MeWXoLgrYg"/>
+          <kie:ComponentWidths dmnElementRef="_zTaGAIDoEee-MeWXoLgrYg"/>
+          <kie:ComponentWidths dmnElementRef="_HeJ8gYDzEeehqsf_bU54Lw"/>
+          <kie:ComponentWidths dmnElementRef="_HeKjkYDzEeehqsf_bU54Lw"/>
+          <kie:ComponentWidths dmnElementRef="_HeKjl4DzEeehqsf_bU54Lw"/>
+          <kie:ComponentWidths dmnElementRef="_HeKjm4DzEeehqsf_bU54Lw"/>
+          <kie:ComponentWidths dmnElementRef="_HeKjnYDzEeehqsf_bU54Lw"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_WdFa8IDoEee-MeWXoLgrYg" dmnElementRef="_WdFa8IDoEee-MeWXoLgrYg" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="364" y="150" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_GNiCIIDzEeehqsf_bU54Lw" dmnElementRef="_GNiCIIDzEeehqsf_bU54Lw" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="150" y="150" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_Aq8u4IDpEee-MeWXoLgrYg" dmnElementRef="_Aq8u4IDpEee-MeWXoLgrYg" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="151" y="331" width="153" height="60"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_vfL7kIDqEeehqsf_bU54Lw" dmnElementRef="_vfL7kIDqEeehqsf_bU54Lw" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="364" y="331" width="153" height="60"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-e1fa4ee4-8ab5-4dfd-96a0-74cbd60d34f2" dmnElementRef="e1fa4ee4-8ab5-4dfd-96a0-74cbd60d34f2">
+        <di:waypoint x="227" y="331"/>
+        <di:waypoint x="441" y="211"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_80651cb0-93f7-44bd-b3b5-a7a2b52193c7" dmnElementRef="_80651cb0-93f7-44bd-b3b5-a7a2b52193c7">
+        <di:waypoint x="440" y="331"/>
+        <di:waypoint x="441" y="211"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_22db6269-f1f9-47c7-ad84-00274956556c" dmnElementRef="_22db6269-f1f9-47c7-ad84-00274956556c">
+        <di:waypoint x="440" y="331"/>
+        <di:waypoint x="227" y="211"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-e61c8236-e671-4ced-a93a-994e3b318364" dmnElementRef="e61c8236-e671-4ced-a93a-994e3b318364">
+        <di:waypoint x="227" y="331"/>
+        <di:waypoint x="227" y="211"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

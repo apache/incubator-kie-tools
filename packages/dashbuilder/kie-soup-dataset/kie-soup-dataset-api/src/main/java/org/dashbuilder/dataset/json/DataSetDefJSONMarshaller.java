@@ -110,7 +110,7 @@ public class DataSetDefJSONMarshaller {
     public DataSetProviderType<?> readProviderType(JsonObject json) throws Exception {
         String provider = json.getString(PROVIDER);
         if (isBlank(provider)) {
-            throw new IllegalArgumentException("Missing 'provider' property");
+            provider = DataSetProviderType.EXTERNAL.getName();
         }
         var type = dataSetProviderRegistry.getProviderTypeByName(provider);
         if (type == null) {

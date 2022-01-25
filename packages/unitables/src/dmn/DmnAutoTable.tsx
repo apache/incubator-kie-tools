@@ -308,14 +308,19 @@ export function DmnAutoTable(props: Props) {
                               setHasError={setOutputError}
                               error={<OutputError />}
                             >
-                              <BoxedExpressionProvider expressionDefinition={{ uid: outputUid }} isRunnerTable={true}>
+                              <BoxedExpressionProvider
+                                expressionDefinition={{}}
+                                isRunnerTable={true}
+                                decisionNodeId={outputUid}
+                                dataTypes={[]}
+                              >
                                 <DmnRunnerTable
                                   name={"DMN Runner Output"}
                                   onRowNumberUpdated={onRowNumberUpdated}
                                   onColumnsUpdate={onOutputColumnsUpdate}
                                   output={outputs as DmnRunnerClause[]}
                                   rules={outputRules as DmnRunnerRule[]}
-                                  uid={outputUid}
+                                  id={outputUid}
                                 />
                               </BoxedExpressionProvider>
                             </ErrorBoundary>
@@ -336,7 +341,12 @@ export function DmnAutoTable(props: Props) {
                   }
                 >
                   <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={<InputError />}>
-                    <BoxedExpressionProvider expressionDefinition={{ uid: inputUid }} isRunnerTable={true}>
+                    <BoxedExpressionProvider
+                      expressionDefinition={{}}
+                      isRunnerTable={true}
+                      decisionNodeId={inputUid}
+                      dataTypes={[]}
+                    >
                       <div style={{ display: "flex" }} ref={inputsContainerRef}>
                         <div style={{ display: "flex", flexDirection: "column" }}>
                           <div style={{ width: "50px", height: "55px", border: "1px solid", visibility: "hidden" }}>
@@ -373,7 +383,7 @@ export function DmnAutoTable(props: Props) {
                           onColumnsUpdate={onInputColumnsUpdate}
                           input={inputs}
                           rules={inputRules as DmnRunnerRule[]}
-                          uid={inputUid}
+                          id={inputUid}
                         />
                       </div>
                     </BoxedExpressionProvider>

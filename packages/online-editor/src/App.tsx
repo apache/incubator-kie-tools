@@ -25,7 +25,7 @@ import {
 import { EditorPage } from "./editor/EditorPage";
 import { OnlineI18nContextProvider } from "./i18n";
 import { NoMatchPage } from "./NoMatchPage";
-import { KieToolingExtendedServicesContextProvider } from "./kieToolingExtendedServices/KieToolingExtendedServicesContextProvider";
+import { KieSandboxExtendedServicesContextProvider } from "./kieSandboxExtendedServices/KieSandboxExtendedServicesContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
 import { HomePage } from "./home/HomePage";
@@ -34,6 +34,7 @@ import { NewWorkspaceFromUrlPage } from "./workspace/components/NewWorkspaceFrom
 import { DmnDevSandboxContextProvider } from "./editor/DmnDevSandbox/DmnDevSandboxContextProvider";
 import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
 import { useRoutes } from "./navigation/Hooks";
+import { EnvContextProvider } from "./env/EnvContextProvider";
 
 export function App() {
   return (
@@ -41,7 +42,8 @@ export function App() {
       {nest(
         [OnlineI18nContextProvider, {}],
         [EditorEnvelopeLocatorContextProvider, {}],
-        [KieToolingExtendedServicesContextProvider, {}],
+        [EnvContextProvider, {}],
+        [KieSandboxExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
         [WorkspacesContextProvider, {}],
         [DmnDevSandboxContextProvider, {}],

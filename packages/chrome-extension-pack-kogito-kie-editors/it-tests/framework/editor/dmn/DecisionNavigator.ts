@@ -52,4 +52,11 @@ export default class DecisionNavigator extends PageFragment {
     const node: Element = await this.tools.by(By.xpath(`//li[@data-field='item'][@title='${name}']/div`)).getElement();
     return await node.click();
   }
+
+  public async selectNodeExpression(name: string): Promise<void> {
+    const node: Element = await this.tools
+      .by(By.xpath(`//li[@data-field='item'][@title='${name}']/div/following-sibling::ul/li/div`))
+      .getElement();
+    return await node.click();
+  }
 }

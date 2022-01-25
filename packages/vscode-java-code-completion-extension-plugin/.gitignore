@@ -1,8 +1,0 @@
-.vscode
-.project
-.settings
-target/
-.classpath
-*.iml
-.idea
-lib/

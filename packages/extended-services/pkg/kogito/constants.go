@@ -17,8 +17,8 @@
 package kogito
 
 const NAME = "Kogito"
-const APPNAME = "KIE Tooling Extended Services"
-const SERVER_STATUS = "KIE Tooling Extended Services Status"
+const APPNAME = "KIE Sandbox Extended Services"
+const SERVER_STATUS = "KIE Sandbox Extended Services Status"
 const SERVER_STATUS_ON = SERVER_STATUS + ": ON"
 const SERVER_STATUS_OFF = SERVER_STATUS + ": OFF"
 const START = "Start"

@@ -110,8 +110,9 @@ export function NewWorkspaceFromUrlPage() {
   useEffect(() => {
     async function run() {
       const singleFile = [UrlType.FILE, UrlType.GIST_FILE, UrlType.GITHUB_FILE].includes(importableUrl.type);
+      const shouldAttemptImportingAsGitRepository = !singleFile && importableUrl.type !== UrlType.GIST;
 
-      if (!singleFile) {
+      if (shouldAttemptImportingAsGitRepository) {
         // try to import the URL as a git repository first
         try {
           const url = new URL(queryParamUrl!);

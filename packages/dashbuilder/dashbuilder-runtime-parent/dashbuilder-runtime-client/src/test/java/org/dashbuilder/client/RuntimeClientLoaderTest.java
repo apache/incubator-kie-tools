@@ -16,32 +16,39 @@
 
 package org.dashbuilder.client;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.dashbuilder.client.navigation.NavigationManager;
-import org.dashbuilder.client.perspective.generator.RuntimePerspectiveGenerator;
-import org.dashbuilder.client.plugins.RuntimePerspectivePluginManager;
-import org.dashbuilder.navigation.NavTree;
-import org.dashbuilder.shared.model.RuntimeModel;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.mvp.Command;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import javax.enterprise.event.Event;
+
+import org.dashbuilder.client.external.ExternalDataSetRegister;
+import org.dashbuilder.client.navigation.NavigationManager;
+import org.dashbuilder.client.parser.RuntimeModelClientParserFactory;
+import org.dashbuilder.client.perspective.generator.RuntimePerspectiveGenerator;
+import org.dashbuilder.client.plugins.RuntimePerspectivePluginManager;
+import org.dashbuilder.navigation.NavTree;
+import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
+import org.dashbuilder.shared.model.RuntimeModel;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.mvp.Command;
+
+import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class RuntimeClientLoaderTest {
@@ -61,25 +68,30 @@ public class RuntimeClientLoaderTest {
     @Mock
     RuntimeModelResourceClient runtimeModelResourceClient;
 
+    @Mock
+    ExternalDataSetRegister externalDataSetRegister;
+
+    @Mock
+    RuntimeModelClientParserFactory parserFactory;
+    
+    @Mock
+    Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent;
+    
+    @Mock
+    RuntimeModelContentListener runtimeModelContentListener;
+
+    @InjectMocks
     RuntimeClientLoader runtimeClientLoaderLoader;
 
-    @Before
-    public void setup() {
-        runtimeClientLoaderLoader = new RuntimeClientLoader(runtimeModelResourceClient,
-                                                            runtimePerspectiveGenerator,
-                                                            runtimePerspectivePluginManager,
-                                                            navigationManager,
-                                                            loading);
-    }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testLoadModelSuccess() {
         String modelId = "abc";
-        LayoutTemplate perspective = mock(LayoutTemplate.class);
+        var perspective = mock(LayoutTemplate.class);
         List<LayoutTemplate> perspectives = Arrays.asList(perspective);
-        NavTree navTree = mock(NavTree.class);
-        RuntimeModel runtimeModel = new RuntimeModel(navTree, perspectives, System.currentTimeMillis());
+        var navTree = mock(NavTree.class);
+        var runtimeModel = new RuntimeModel(navTree, perspectives, System.currentTimeMillis(), Collections.emptyList());
         
         doAnswer(answer -> {
             Consumer<Optional<RuntimeModel>> modelConsumer = (Consumer<Optional<RuntimeModel>>) answer.getArgument(1);
@@ -126,7 +138,7 @@ public class RuntimeClientLoaderTest {
     @SuppressWarnings("unchecked")
     public void testLoadModelError() {
         doAnswer(answer -> {
-            Consumer<String> errorConsumer = (Consumer<String>) answer.getArgument(2);
+            var errorConsumer = (Consumer<String>) answer.getArgument(2);
             errorConsumer.accept("some error");
             return null;
         }).when(runtimeModelResourceClient).getRuntimeModel(any(), any(Consumer.class), any());

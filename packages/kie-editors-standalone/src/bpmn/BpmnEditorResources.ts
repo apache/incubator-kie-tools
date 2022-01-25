@@ -16,7 +16,7 @@
 
 import * as fs from "fs";
 import { BaseEditorResources, EditorResources } from "../common/EditorResources";
-import * as externalAssets from "@kogito-tooling/external-assets-base";
+import * as stunnerEditors from "@kogito-tooling/stunner-editors";
 import { getBpmnLanguageData } from "@kogito-tooling/kie-bc-editors/dist/bpmn/api";
 
 export class BpmnEditorResources extends BaseEditorResources {
@@ -122,7 +122,7 @@ export class BpmnEditorResources extends BaseEditorResources {
   }
 
   public getEditorResourcesPath() {
-    return externalAssets.bpmnEditorPath();
+    return stunnerEditors.bpmnEditorPath();
   }
 
   public getTemplatePath() {

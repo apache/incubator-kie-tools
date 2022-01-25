@@ -64,7 +64,7 @@ describe("DMN Runner Test", () => {
     });
   });
 
-  it("Test DMN Runner on DMN sample - table view", () => {
+  it.skip("Test DMN Runner on DMN sample - table view", () => {
     // click Create new decision model button (new DMN)
     cy.get("[data-ouia-component-id='try-dmn-sample-button']").click();
 

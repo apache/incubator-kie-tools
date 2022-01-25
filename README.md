@@ -42,32 +42,14 @@ After installing the tools above, you'll need to download the dependencies and l
 
 - `yarn bootstrap`
 
-To build it, you'll have two choices:
+To build it, you'll have two choices. Note that you always need to specify which package you want to build, so replace `[pkg-name]` with the name of the desired package.
 
-- `yarn build:dev` - This is fast, but not as strict. It skips tests, linters, and some type checks. Be prepared for the CI to fail on your PRs.
-- `yarn build:prod` - The default command to build production-ready packages. Use that to make sure your changes are correct.
+- `yarn build:dev:until [pkg-name]` - This is fast, but not as strict. It skips tests, linters, and some type checks. Be prepared for the CI to fail on your PRs.
+- `yarn build:prod:until [pkg-name]` - The default command to build production-ready packages. Use that to make sure your changes are correct.
 
 **NOTE:** The Kogito Tooling build is parameterized by several Environment Variables. For an extensive list of these variables, please see `packages/build-env/README.md` ([link](/packages/build-env/index.js#L24)).
 
 Final artifacts will be on `packages/*/dist` directories.
-
-## Using custom Editor builds from `kogito-editors-java`
-
-While `kogito-editors-java` is not integrated in this monorepo, we have dedicated environment variables to configure where to copy the Editors from. If those environment variables are empty, the Editors are copied from the installed NPM package on `node_modules`.
-
-#### Examples:
-
-```bash
-export EXTERNAL_RESOURCE_PATH__bpmnEditor=/Users/tiago/redhat/kogito-editors-java/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime/
-```
-
-```bash
-export EXTERNAL_RESOURCE_PATH__dmnEditor=/Users/tiago/redhat/kogito-editors-java/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime/
-```
-
-```bash
-export EXTERNAL_RESOURCE_PATH__scesimEditor=/Users/tiago/redhat/kogito-editors-java/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime
-```
 
 ## Applications
 
@@ -106,3 +88,30 @@ The Kogito Tooling project contains several applications. To develop each one of
 1. After you've successfully built the project following the instructions above, go to `packages/kie-editors-standalone`.
 2. Open a terminal and run `yarn start`. This will start a `webpack serve` instance with the Standalone Editors test page.
 3. From now on you can use the development version of the Standalone DMN Editor by accessing `https://localhost:9001/resources/dmn` and the Standalone BPMN Editor by accessing `https://localhost:9001/resources/bpmn`.
+
+## Libraries
+
+#### Stunner Editors
+
+The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of Kogito Tooling.
+After cloning the repo, start with a fresh build.
+
+`lerna run build:dev --scope=@kogito-tooling/stunner-editors --include-dependencies --stream`
+
+After that, you're ready to start developing the Editors individually.
+
+- BPMN
+
+  - Located at `packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime`.
+  - Run `mvn clean gwt:run` to start.
+
+- DMN
+
+  - Located at `packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing`.
+  - Run `mvn clean gwt:run` to start.
+  - If you want to enable live-reloading capabilities of the React components that are part of the DMN Editor, follow [these steps](./packages/stunner-editors/docs/live-reload-dmn-loader.md).
+
+- Test Scenario
+
+  - Located at `packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-testing`.
+  - Run `mvn clean gwt:run` to start.

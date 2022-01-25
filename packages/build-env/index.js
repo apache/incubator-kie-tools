@@ -72,23 +72,23 @@ const ENV_VARS = {
     default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
     description: "",
   },
-  ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux: {
-    name: "ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux",
-    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_tooling_extended_services_linux_${version}.tar.gz`,
+  ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: {
+    name: "ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux",
+    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_sandbox_extended_services_linux_${version}.tar.gz`,
     description: "",
   },
-  ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs: {
-    name: "ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs",
-    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_tooling_extended_services_macos_${version}.dmg`,
+  ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: {
+    name: "ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs",
+    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_sandbox_extended_services_macos_${version}.dmg`,
     description: "",
   },
-  ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows: {
-    name: "ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows",
-    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_tooling_extended_services_windows_${version}.exe`,
+  ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: {
+    name: "ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows",
+    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_sandbox_extended_services_windows_${version}.exe`,
     description: "",
   },
-  ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion: {
-    name: "ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion",
+  ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: {
+    name: "ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion",
     default: version,
     description: "",
   },
@@ -188,6 +188,71 @@ const ENV_VARS = {
     default: "latest",
     description: "",
   },
+  KIE_SANDBOX__imageRegistry: {
+    name: "KIE_SANDBOX__imageRegistry",
+    default: "quay.io",
+    description: "",
+  },
+  KIE_SANDBOX__imageAccount: {
+    name: "KIE_SANDBOX__imageAccount",
+    default: "kogito_tooling_bot",
+    description: "",
+  },
+  KIE_SANDBOX__imageName: {
+    name: "KIE_SANDBOX__imageName",
+    default: "kie-sandbox-image",
+    description: "",
+  },
+  KIE_SANDBOX__imageBuildTags: {
+    name: "KIE_SANDBOX__imageBuildTags",
+    default: "latest",
+    description: "",
+  },
+  KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry: {
+    name: "KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry",
+    default: "quay.io",
+    description: "",
+  },
+  KIE_SANDBOX_EXTENDED_SERVICES__imageAccount: {
+    name: "KIE_SANDBOX_EXTENDED_SERVICES__imageAccount",
+    default: "kogito_tooling_bot",
+    description: "",
+  },
+  KIE_SANDBOX_EXTENDED_SERVICES__imageName: {
+    name: "KIE_SANDBOX_EXTENDED_SERVICES__imageName",
+    default: "kie-sandbox-extended-services-image",
+    description: "",
+  },
+  KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags: {
+    name: "KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags",
+    default: "latest",
+    description: "",
+  },
+  CORS_PROXY__imageRegistry: {
+    name: "CORS_PROXY__imageRegistry",
+    default: "quay.io",
+    description: "",
+  },
+  CORS_PROXY__imageAccount: {
+    name: "CORS_PROXY__imageAccount",
+    default: "kogito_tooling_bot",
+    description: "",
+  },
+  CORS_PROXY__imageName: {
+    name: "CORS_PROXY__imageName",
+    default: "cors-proxy-image",
+    description: "",
+  },
+  CORS_PROXY__imageBuildTags: {
+    name: "CORS_PROXY__imageBuildTags",
+    default: "latest",
+    description: "",
+  },
+  DMN_LOADER__outputPath: {
+    name: "DMN_LOADER__outputPath",
+    default: "dist",
+    description: "Directory path used to output build artifacts of stunner-editors-dmn-loader",
+  },
 };
 
 module.exports = {
@@ -221,6 +286,25 @@ module.exports = {
     },
   },
 
+  boxedExpressionComponent: {
+    dev: {
+      port: 3015,
+    },
+  },
+
+  feelInputComponent: {
+    dev: {
+      port: 3016,
+      REACT_APP_FEEL_SERVER: "",
+    },
+  },
+
+  importJavaClassesComponent: {
+    dev: {
+      port: 3017,
+    },
+  },
+
   chromeExtension: {
     dev: {
       port: 9000,
@@ -237,12 +321,12 @@ module.exports = {
     },
     gtmId: getOrDefault(ENV_VARS.ONLINE_EDITOR__gtmId),
     buildInfo: getOrDefault(ENV_VARS.ONLINE_EDITOR__buildInfo),
-    kieToolingExtendedServices: {
-      compatibleVersion: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesCompatibleVersion),
+    kieSandboxExtendedServices: {
+      compatibleVersion: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion),
       downloadUrl: {
-        linux: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlLinux),
-        macOs: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlMacOs),
-        windows: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieToolingExtendedServicesDownloadUrlWindows),
+        linux: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux),
+        macOs: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs),
+        windows: getOrDefault(ENV_VARS.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows),
       },
     },
   },
@@ -258,6 +342,7 @@ module.exports = {
       buildTags: getOrDefault(ENV_VARS.DMN_DEV_SANDBOX__baseImageBuildTags),
     },
   },
+
   dashbuilder: {
     baseImage: {
       registry: getOrDefault(ENV_VARS.DASHBUILDER__baseImageRegistry),
@@ -266,6 +351,33 @@ module.exports = {
       authoringName: getOrDefault(ENV_VARS.DASHBUILDER_AUTHORING__baseImageName),
       tag: getOrDefault(ENV_VARS.DASHBUILDER__baseImageTag),
       buildTags: getOrDefault(ENV_VARS.DASHBUILDER__baseImageBuildTags),
+    },
+  },
+
+  kieSandbox: {
+    image: {
+      registry: getOrDefault(ENV_VARS.KIE_SANDBOX__imageRegistry),
+      account: getOrDefault(ENV_VARS.KIE_SANDBOX__imageAccount),
+      name: getOrDefault(ENV_VARS.KIE_SANDBOX__imageName),
+      buildTags: getOrDefault(ENV_VARS.KIE_SANDBOX__imageBuildTags),
+    },
+  },
+
+  extendedServices: {
+    image: {
+      registry: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry),
+      account: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount),
+      name: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__imageName),
+      buildTags: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags),
+    },
+  },
+
+  corsProxy: {
+    image: {
+      registry: getOrDefault(ENV_VARS.CORS_PROXY__imageRegistry),
+      account: getOrDefault(ENV_VARS.CORS_PROXY__imageAccount),
+      name: getOrDefault(ENV_VARS.CORS_PROXY__imageName),
+      buildTags: getOrDefault(ENV_VARS.CORS_PROXY__imageBuildTags),
     },
   },
 
@@ -301,6 +413,12 @@ module.exports = {
     },
     webapp: {
       port: 9100,
+    },
+  },
+
+  stunnerEditors: {
+    dmnLoader: {
+      outputPath: getOrDefault(ENV_VARS.DMN_LOADER__outputPath),
     },
   },
 

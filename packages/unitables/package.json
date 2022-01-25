@@ -8,7 +8,6 @@
   "scripts": {
     "lint": "echo 'Linting....'",
     "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose'",
-    "test:clearCache": "jest --clearCache",
     "build:dev": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json",
     "build:prod": "yarn build:dev",
     "build:watch": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json --watch",
@@ -19,17 +18,17 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/boxed-expression-component": "0.0.0",
     "@kie-tooling-core/i18n": "0.0.0",
     "@kie-tooling-core/notifications": "0.0.0",
+    "@kogito-tooling/boxed-expression-component": "0.0.0",
+    "@types/react-table": "^7.0.25",
     "ajv": "^6.12.6",
     "ajv-errors": "^1.0.1",
+    "lodash": "^4.17.21",
+    "react-table": "^7.6.2",
     "uniforms": "^3.5.5",
     "uniforms-bridge-json-schema": "^3.5.5",
-    "uniforms-patternfly": "^4.7.4",
-    "react-table": "^7.6.2",
-    "@types/react-table": "^7.0.25",
-    "lodash": "^4.17.21"
+    "uniforms-patternfly": "^4.7.4"
   },
   "files": [
     "dist"

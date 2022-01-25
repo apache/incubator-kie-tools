@@ -1,0 +1,53 @@
+<!--
+  ~ Copyright 2017 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<div
+  class="modal fade in"
+  id="about"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+  style="display: block"
+>
+  <div class="modal-dialog">
+    <div data-field="modal-content" class="modal-content about-modal-pf">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          <span class="pficon pficon-close"></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h1>
+          <img data-field="product-image" />
+        </h1>
+        <div class="product-versions-pf">
+          <ul class="list-unstyled">
+            <li>
+              <strong data-i18n-key="Version"></strong>
+              <span data-field="version"></span>
+            </li>
+          </ul>
+        </div>
+        <div class="trademark-pf">
+          <span data-field="trademark-product-name"></span>
+          <span data-i18n-key="LicenseDescription"></span>
+          <br />
+          <strong><span data-field="trademark2"></span></strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

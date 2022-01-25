@@ -1,0 +1,1258 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.actico.com/spec/DMN/1116-feel-time-function" name="1116-feel-time-function" id="_jEk7EPUUEeesLuP4RHs4vA" xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>FEEL built-in function 'time(from [string])', 'time(from [time, date and time])' and 'time(hour,minute,second,offset)' in category conversion functions</description>
+    <itemDefinition name="tfeel-time-function_001_bdf26fdc72_Result" id="_jEusEfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_002_9d2e399b96_Result" id="_jEusFfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_003_d1f0ea5bb9_Result" id="_jEusGfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_004_57aea91d1c_Result" id="_jEusHfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_005_32ea20b34f_Result" id="_jEusIfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_006_e266498180_Result" id="_jEusJfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_007_ee82c7bf12_Result" id="_jEusKfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_008_08078c6c29_Result" id="_jEusLfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_009_804c21ed52_Result" id="_jEusMfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_010_cc773bb44b_Result" id="_jEusNfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_011_ad5b3a26b5_Result" id="_jEusOfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_012_3c2f416fc9_Result" id="_jEusPfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_013_7f22c0bda8_Result" id="_jEusQfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_014_0dc13176e8_Result" id="_jEusRfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_015_376d693a79_Result" id="_jEusSfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_016_c3cccff405_Result" id="_jEusTfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_017_f3683885f5_Result" id="_jEusUfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_018_35f1f2cce8_Result" id="_jEusVfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_019_879be89d63_Result" id="_jEusWfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_020_72b421086e_Result" id="_jEusXfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_021_5c50fa1dff_Result" id="_jEusYfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_022_55e76d3595_Result" id="_jEusZfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_023_5cbbb85435_Result" id="_jEusafUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_024_5f7f735e8f_Result" id="_jEusbfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_025_139b25b795_Result" id="_jEuscfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_026_c5208af118_Result" id="_jEusdfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_027_45082fd26c_Result" id="_jEusefUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_028_eaea7a943c_Result" id="_jEusffUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_029_f0d5c2c16a_Result" id="_jEusgfUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_030_390d4f4648_Result" id="_jEushfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_031_4d086a3b59_Result" id="_jEusifUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_032_d9b0d7f931_Result" id="_jEusjfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_033_8420160da1_Result" id="_jEuskfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_034_13c312c376_Result" id="_jEuslfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_035_fbfce88ac4_Result" id="_jEusmfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_036_eb05fabc01_Result" id="_jEusnfUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_037_eed195f693_Result" id="_jEusofUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_038_05b311131c_Result" id="_jEuspfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_039_5b65992f0d_Result" id="_jEusqfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_040_6c9d17b491_Result" id="_jEusrfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_041_29a448d57e_Result" id="_jEussfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_042_00146f2977_Result" id="_jEustfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_043_2edfae8414_Result" id="_jEusufUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_044_3073ffd026_Result" id="_jEusvfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_045_ad1339e858_Result" id="_jEuswfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_046_7b80221ec1_Result" id="_jEusxfUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_047_33cd7b9b15_Result" id="_jEusyfUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_048_9bedd52886_Result" id="_jEuszfUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_049_617d9e09d6_Result" id="_jEus0fUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_050_524d9a8146_Result" id="_jEus1fUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_051_a71d2a08f7_Result" id="_jEus2fUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_052_d825d58888_Result" id="_jEus3fUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_053_3d956966c0_Result" id="_jEus4fUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_054_fdc3094237_Result" id="_jEus5fUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_055_9b47db6ea4_Result" id="_jEus6fUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_056_a8e828d64d_Result" id="_jEus7fUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_057_d039115cce_Result" id="_jEus8fUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_058_81dd4b1639_Result" id="_jEus9fUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_059_c7e1705fe1_Result" id="_jEus-fUUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_060_0cf4734fae_Result" id="_jE32A_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_061_da2717f085_Result" id="_jE32B_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_062_6cd1313fa9_Result" id="_jE32C_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_063_e85c40b474_Result" id="_jE32D_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_064_df74038c67_Result" id="_jE32E_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_065_79eaef6fee_Result" id="_jE32F_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_066_5116e12fd3_Result" id="_jE32G_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_067_8285edad7b_Result" id="_jE32H_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_068_ad528abb23_Result" id="_jE32I_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_069_5096701e2e_Result" id="_jE32J_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_070_8b2e39f570_Result" id="_jE32K_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_071_cf9417648b_Result" id="_jE32L_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_072_4c8c3835e4_Result" id="_jE32M_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_073_a5fc245959_Result" id="_jE32N_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_074_387d4411ea_Result" id="_jE32O_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_075_1606dda03d_Result" id="_jE32P_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_076_cb117ca612_Result" id="_jE32Q_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_077_a4daad060c_Result" id="_jE32R_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_078_c2fe73418b_Result" id="_jE32S_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_079_d2d226c3cd_Result" id="_jE32T_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_080_2bbb8c86af_Result" id="_jE32U_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_081_69f4e0231e_Result" id="_jE32V_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_082_36a78e5396_Result" id="_jE32W_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-time-function_083_6b608254c7_Result" id="_jE32X_UUEeesLuP4RHs4vA">
+        <typeRef>time</typeRef>
+    </itemDefinition>
+    <decision name="feel-time-function_ErrorCase_001_bdf26fdc72" id="_jEusE_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(null)' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(null)'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_001_bdf26fdc72_Result" name="feel-time-function_ErrorCase_001_bdf26fdc72" id="_jEusFPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusEvUUEeesLuP4RHs4vA">
+            <text>time(null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_002_9d2e399b96" id="_jEusF_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(null,11,45,duration("P0D"))' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(null,11,45,duration("P0D"))'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_002_9d2e399b96_Result" name="feel-time-function_ErrorCase_002_9d2e399b96" id="_jEusGPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusFvUUEeesLuP4RHs4vA">
+            <text>time(null,11,45,duration("P0D"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_003_d1f0ea5bb9" id="_jEusG_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(12,null,45,duration("P0D"))' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(12,null,45,duration("P0D"))'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_003_d1f0ea5bb9_Result" name="feel-time-function_ErrorCase_003_d1f0ea5bb9" id="_jEusHPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusGvUUEeesLuP4RHs4vA">
+            <text>time(12,null,45,duration("P0D"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_004_57aea91d1c" id="_jEusH_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(12,0,null,duration("P0D"))' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(12,0,null,duration("P0D"))'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_004_57aea91d1c_Result" name="feel-time-function_ErrorCase_004_57aea91d1c" id="_jEusIPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusHvUUEeesLuP4RHs4vA">
+            <text>time(12,0,null,duration("P0D"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_005_32ea20b34f" id="_jEusI_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(null,null,45,duration("P0D"))' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(null,null,45,duration("P0D"))'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_005_32ea20b34f_Result" name="feel-time-function_ErrorCase_005_32ea20b34f" id="_jEusJPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusIvUUEeesLuP4RHs4vA">
+            <text>time(null,null,45,duration("P0D"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_006_e266498180" id="_jEusJ_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(null,11,null,duration("P0D"))' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(null,11,null,duration("P0D"))'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_006_e266498180_Result" name="feel-time-function_ErrorCase_006_e266498180" id="_jEusKPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusJvUUEeesLuP4RHs4vA">
+            <text>time(null,11,null,duration("P0D"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_007_ee82c7bf12" id="_jEusK_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(null,11,45,null)' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(null,11,45,null)'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_007_ee82c7bf12_Result" name="feel-time-function_ErrorCase_007_ee82c7bf12" id="_jEusLPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusKvUUEeesLuP4RHs4vA">
+            <text>time(null,11,45,null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_008_08078c6c29" id="_jEusL_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(12,null,null,duration("P0D"))' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(12,null,null,duration("P0D"))'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_008_08078c6c29_Result" name="feel-time-function_ErrorCase_008_08078c6c29" id="_jEusMPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusLvUUEeesLuP4RHs4vA">
+            <text>time(12,null,null,duration("P0D"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_009_804c21ed52" id="_jEusM_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(12,11,null,null)' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(12,11,null,null)'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_009_804c21ed52_Result" name="feel-time-function_ErrorCase_009_804c21ed52" id="_jEusNPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusMvUUEeesLuP4RHs4vA">
+            <text>time(12,11,null,null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_010_cc773bb44b" id="_jEusN_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(12,null,null,null)' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(12,null,null,null)'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_010_cc773bb44b_Result" name="feel-time-function_ErrorCase_010_cc773bb44b" id="_jEusOPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusNvUUEeesLuP4RHs4vA">
+            <text>time(12,null,null,null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_011_ad5b3a26b5" id="_jEusO_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(null,0,null,null)' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(null,0,null,null)'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_011_ad5b3a26b5_Result" name="feel-time-function_ErrorCase_011_ad5b3a26b5" id="_jEusPPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusOvUUEeesLuP4RHs4vA">
+            <text>time(null,0,null,null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_012_3c2f416fc9" id="_jEusP_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(null,null,15,null)' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(null,null,15,null)'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_012_3c2f416fc9_Result" name="feel-time-function_ErrorCase_012_3c2f416fc9" id="_jEusQPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusPvUUEeesLuP4RHs4vA">
+            <text>time(null,null,15,null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_013_7f22c0bda8" id="_jEusQ_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(null,null,null,duration("P0D"))' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(null,null,null,duration("P0D"))'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_013_7f22c0bda8_Result" name="feel-time-function_ErrorCase_013_7f22c0bda8" id="_jEusRPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusQvUUEeesLuP4RHs4vA">
+            <text>time(null,null,null,duration("P0D"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_014_0dc13176e8" id="_jEusR_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(null,null,null,null)' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(null,null,null,null)'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_014_0dc13176e8_Result" name="feel-time-function_ErrorCase_014_0dc13176e8" id="_jEusSPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusRvUUEeesLuP4RHs4vA">
+            <text>time(null,null,null,null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_015_376d693a79" id="_jEusS_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(12,00,00,null)' and expects result: '12:00:00 (time)'</description>
+        <question>Result of FEEL expression 'time(12,00,00,null)'?</question>
+        <allowedAnswers>12:00:00 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_015_376d693a79_Result" name="feel-time-function_015_376d693a79" id="_jEusTPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusSvUUEeesLuP4RHs4vA">
+            <text>time(12,00,00,null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_016_c3cccff405" id="_jEusT_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time()' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time()'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_016_c3cccff405_Result" name="feel-time-function_ErrorCase_016_c3cccff405" id="_jEusUPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusTvUUEeesLuP4RHs4vA">
+            <text>time()</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_017_f3683885f5" id="_jEusU_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("01:02:03")' and expects result: '01:02:03 (time)'</description>
+        <question>Result of FEEL expression 'time("01:02:03")'?</question>
+        <allowedAnswers>01:02:03 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_017_f3683885f5_Result" name="feel-time-function_017_f3683885f5" id="_jEusVPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusUvUUEeesLuP4RHs4vA">
+            <text>time("01:02:03")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_018_35f1f2cce8" id="_jEusV_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("00:00:00")' and expects result: '00:00:00 (time)'</description>
+        <question>Result of FEEL expression 'time("00:00:00")'?</question>
+        <allowedAnswers>00:00:00 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_018_35f1f2cce8_Result" name="feel-time-function_018_35f1f2cce8" id="_jEusWPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusVvUUEeesLuP4RHs4vA">
+            <text>time("00:00:00")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_019_879be89d63" id="_jEusW_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("11:22:33.444")' and expects result: '11:22:33.444 (time)'</description>
+        <question>Result of FEEL expression 'time("11:22:33.444")'?</question>
+        <allowedAnswers>11:22:33.444 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_019_879be89d63_Result" name="feel-time-function_019_879be89d63" id="_jEusXPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusWvUUEeesLuP4RHs4vA">
+            <text>time("11:22:33.444")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_020_72b421086e" id="_jEusX_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("11:22:33.123456789")' and expects result: '11:22:33.123456789 (time)'</description>
+        <question>Result of FEEL expression 'time("11:22:33.123456789")'?</question>
+        <allowedAnswers>11:22:33.123456789 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_020_72b421086e_Result" name="feel-time-function_020_72b421086e" id="_jEusYPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusXvUUEeesLuP4RHs4vA">
+            <text>time("11:22:33.123456789")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_021_5c50fa1dff" id="_jEusY_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("23:59:00Z")' and expects result: '23:59:00Z (time)'</description>
+        <question>Result of FEEL expression 'time("23:59:00Z")'?</question>
+        <allowedAnswers>23:59:00Z (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_021_5c50fa1dff_Result" name="feel-time-function_021_5c50fa1dff" id="_jEusZPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusYvUUEeesLuP4RHs4vA">
+            <text>time("23:59:00Z")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_022_55e76d3595" id="_jEusZ_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("11:00:00Z")' and expects result: '11:00:00Z (time)'</description>
+        <question>Result of FEEL expression 'time("11:00:00Z")'?</question>
+        <allowedAnswers>11:00:00Z (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_022_55e76d3595_Result" name="feel-time-function_022_55e76d3595" id="_jEusaPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusZvUUEeesLuP4RHs4vA">
+            <text>time("11:00:00Z")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_023_5cbbb85435" id="_jEusa_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("00:00:00Z")' and expects result: '00:00:00Z (time)'</description>
+        <question>Result of FEEL expression 'time("00:00:00Z")'?</question>
+        <allowedAnswers>00:00:00Z (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_023_5cbbb85435_Result" name="feel-time-function_023_5cbbb85435" id="_jEusbPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusavUUEeesLuP4RHs4vA">
+            <text>time("00:00:00Z")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_024_5f7f735e8f" id="_jEusb_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("13:20:00+02:00")' and expects result: '13:20:00+02:00 (time)'</description>
+        <question>Result of FEEL expression 'time("13:20:00+02:00")'?</question>
+        <allowedAnswers>13:20:00+02:00 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_024_5f7f735e8f_Result" name="feel-time-function_024_5f7f735e8f" id="_jEuscPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusbvUUEeesLuP4RHs4vA">
+            <text>time("13:20:00+02:00")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_025_139b25b795" id="_jEusc_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("13:20:00-05:00")' and expects result: '13:20:00-05:00 (time)'</description>
+        <question>Result of FEEL expression 'time("13:20:00-05:00")'?</question>
+        <allowedAnswers>13:20:00-05:00 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_025_139b25b795_Result" name="feel-time-function_025_139b25b795" id="_jEusdPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEuscvUUEeesLuP4RHs4vA">
+            <text>time("13:20:00-05:00")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_026_c5208af118" id="_jEusd_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("11:22:33-00:00")' and expects result: '11:22:33Z (time)'</description>
+        <question>Result of FEEL expression 'time("11:22:33-00:00")'?</question>
+        <allowedAnswers>11:22:33Z (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_026_c5208af118_Result" name="feel-time-function_026_c5208af118" id="_jEusePUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusdvUUEeesLuP4RHs4vA">
+            <text>time("11:22:33-00:00")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_027_45082fd26c" id="_jEuse_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("11:22:33+00:00")' and expects result: '11:22:33Z (time)'</description>
+        <question>Result of FEEL expression 'time("11:22:33+00:00")'?</question>
+        <allowedAnswers>11:22:33Z (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_027_45082fd26c_Result" name="feel-time-function_027_45082fd26c" id="_jEusfPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusevUUEeesLuP4RHs4vA">
+            <text>time("11:22:33+00:00")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_028_eaea7a943c" id="_jEusf_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'string(time("00:01:00@Etc/UTC"))' and expects result: '"00:01:00@Etc/UTC" (string)'</description>
+        <question>Result of FEEL expression 'string(time("00:01:00@Etc/UTC"))'?</question>
+        <allowedAnswers>"00:01:00@Etc/UTC" (string)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_028_eaea7a943c_Result" name="feel-time-function_028_eaea7a943c" id="_jEusgPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusfvUUEeesLuP4RHs4vA">
+            <text>string(time("00:01:00@Etc/UTC"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_029_f0d5c2c16a" id="_jEusg_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'string(time("00:01:00@Europe/Paris"))' and expects result: '"00:01:00@Europe/Paris" (string)'</description>
+        <question>Result of FEEL expression 'string(time("00:01:00@Europe/Paris"))'?</question>
+        <allowedAnswers>"00:01:00@Europe/Paris" (string)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_029_f0d5c2c16a_Result" name="feel-time-function_029_f0d5c2c16a" id="_jEushPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusgvUUEeesLuP4RHs4vA">
+            <text>string(time("00:01:00@Europe/Paris"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_030_390d4f4648" id="_jEush_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(date and time("2017-08-10T10:20:00"))' and expects result: '10:20:00 (time)'</description>
+        <question>Result of FEEL expression 'time(date and time("2017-08-10T10:20:00"))'?</question>
+        <allowedAnswers>10:20:00 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_030_390d4f4648_Result" name="feel-time-function_030_390d4f4648" id="_jEusiPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEushvUUEeesLuP4RHs4vA">
+            <text>time(date and time("2017-08-10T10:20:00"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_031_4d086a3b59" id="_jEusi_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(date and time("2017-08-10T10:20:00+00:00"))' and expects result: '10:20:00Z (time)'</description>
+        <question>Result of FEEL expression 'time(date and time("2017-08-10T10:20:00+00:00"))'?</question>
+        <allowedAnswers>10:20:00Z (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_031_4d086a3b59_Result" name="feel-time-function_031_4d086a3b59" id="_jEusjPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusivUUEeesLuP4RHs4vA">
+            <text>time(date and time("2017-08-10T10:20:00+00:00"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_032_d9b0d7f931" id="_jEusj_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(date and time("2017-08-10T10:20:00-00:00"))' and expects result: '10:20:00Z (time)'</description>
+        <question>Result of FEEL expression 'time(date and time("2017-08-10T10:20:00-00:00"))'?</question>
+        <allowedAnswers>10:20:00Z (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_032_d9b0d7f931_Result" name="feel-time-function_032_d9b0d7f931" id="_jEuskPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusjvUUEeesLuP4RHs4vA">
+            <text>time(date and time("2017-08-10T10:20:00-00:00"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_033_8420160da1" id="_jEusk_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(date and time("2017-08-10T10:20:00+01:00"))' and expects result: '10:20:00+01:00 (time)'</description>
+        <question>Result of FEEL expression 'time(date and time("2017-08-10T10:20:00+01:00"))'?</question>
+        <allowedAnswers>10:20:00+01:00 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_033_8420160da1_Result" name="feel-time-function_033_8420160da1" id="_jEuslPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEuskvUUEeesLuP4RHs4vA">
+            <text>time(date and time("2017-08-10T10:20:00+01:00"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_034_13c312c376" id="_jEusl_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(date and time("2017-08-10T10:20:00-01:00"))' and expects result: '10:20:00-01:00 (time)'</description>
+        <question>Result of FEEL expression 'time(date and time("2017-08-10T10:20:00-01:00"))'?</question>
+        <allowedAnswers>10:20:00-01:00 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_034_13c312c376_Result" name="feel-time-function_034_13c312c376" id="_jEusmPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEuslvUUEeesLuP4RHs4vA">
+            <text>time(date and time("2017-08-10T10:20:00-01:00"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_035_fbfce88ac4" id="_jEusm_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(date and time("2017-08-10T10:20:00Z"))' and expects result: '10:20:00Z (time)'</description>
+        <question>Result of FEEL expression 'time(date and time("2017-08-10T10:20:00Z"))'?</question>
+        <allowedAnswers>10:20:00Z (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_035_fbfce88ac4_Result" name="feel-time-function_035_fbfce88ac4" id="_jEusnPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusmvUUEeesLuP4RHs4vA">
+            <text>time(date and time("2017-08-10T10:20:00Z"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_036_eb05fabc01" id="_jEusn_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'string(time(date and time("2017-08-10T10:20:00@Europe/Paris")))' and expects result: '"10:20:00@Europe/Paris" (string)'</description>
+        <question>Result of FEEL expression 'string(time(date and time("2017-08-10T10:20:00@Europe/Paris")))'?</question>
+        <allowedAnswers>"10:20:00@Europe/Paris" (string)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_036_eb05fabc01_Result" name="feel-time-function_036_eb05fabc01" id="_jEusoPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusnvUUEeesLuP4RHs4vA">
+            <text>string(time(date and time("2017-08-10T10:20:00@Europe/Paris")))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_037_eed195f693" id="_jEuso_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'string(time(date and time("2017-09-04T11:20:00@Asia/Dhaka")))' and expects result: '"11:20:00@Asia/Dhaka" (string)'</description>
+        <question>Result of FEEL expression 'string(time(date and time("2017-09-04T11:20:00@Asia/Dhaka")))'?</question>
+        <allowedAnswers>"11:20:00@Asia/Dhaka" (string)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_037_eed195f693_Result" name="feel-time-function_037_eed195f693" id="_jEuspPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusovUUEeesLuP4RHs4vA">
+            <text>string(time(date and time("2017-09-04T11:20:00@Asia/Dhaka")))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_038_05b311131c" id="_jEusp_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(11, 59, 45, null)' and expects result: '11:59:45 (time)'</description>
+        <question>Result of FEEL expression 'time(11, 59, 45, null)'?</question>
+        <allowedAnswers>11:59:45 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_038_05b311131c_Result" name="feel-time-function_038_05b311131c" id="_jEusqPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEuspvUUEeesLuP4RHs4vA">
+            <text>time(11, 59, 45, null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_039_5b65992f0d" id="_jEusq_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(11, 59, 45, duration("PT0H"))' and expects result: '11:59:45Z (time)'</description>
+        <question>Result of FEEL expression 'time(11, 59, 45, duration("PT0H"))'?</question>
+        <allowedAnswers>11:59:45Z (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_039_5b65992f0d_Result" name="feel-time-function_039_5b65992f0d" id="_jEusrPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusqvUUEeesLuP4RHs4vA">
+            <text>time(11, 59, 45, duration("PT0H"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_040_6c9d17b491" id="_jEusr_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(11, 59, 45, duration("PT2H"))' and expects result: '11:59:45+02:00 (time)'</description>
+        <question>Result of FEEL expression 'time(11, 59, 45, duration("PT2H"))'?</question>
+        <allowedAnswers>11:59:45+02:00 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_040_6c9d17b491_Result" name="feel-time-function_040_6c9d17b491" id="_jEussPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusrvUUEeesLuP4RHs4vA">
+            <text>time(11, 59, 45, duration("PT2H"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_041_29a448d57e" id="_jEuss_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(11, 59, 45, duration("-PT2H"))' and expects result: '11:59:45-02:00 (time)'</description>
+        <question>Result of FEEL expression 'time(11, 59, 45, duration("-PT2H"))'?</question>
+        <allowedAnswers>11:59:45-02:00 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_041_29a448d57e_Result" name="feel-time-function_041_29a448d57e" id="_jEustPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEussvUUEeesLuP4RHs4vA">
+            <text>time(11, 59, 45, duration("-PT2H"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_042_00146f2977" id="_jEust_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(11, 59, 00, duration("PT2H1M"))' and expects result: '11:59:00+02:01 (time)'</description>
+        <question>Result of FEEL expression 'time(11, 59, 00, duration("PT2H1M"))'?</question>
+        <allowedAnswers>11:59:00+02:01 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_042_00146f2977_Result" name="feel-time-function_042_00146f2977" id="_jEusuPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEustvUUEeesLuP4RHs4vA">
+            <text>time(11, 59, 00, duration("PT2H1M"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_043_2edfae8414" id="_jEusu_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(11, 59, 00, duration("-PT2H1M"))' and expects result: '11:59:00-02:01 (time)'</description>
+        <question>Result of FEEL expression 'time(11, 59, 00, duration("-PT2H1M"))'?</question>
+        <allowedAnswers>11:59:00-02:01 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_043_2edfae8414_Result" name="feel-time-function_043_2edfae8414" id="_jEusvPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusuvUUEeesLuP4RHs4vA">
+            <text>time(11, 59, 00, duration("-PT2H1M"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_044_3073ffd026" id="_jEusv_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(11, 59, 00, duration("PT2H1M0S"))' and expects result: '11:59:00+02:01 (time)'</description>
+        <question>Result of FEEL expression 'time(11, 59, 00, duration("PT2H1M0S"))'?</question>
+        <allowedAnswers>11:59:00+02:01 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_044_3073ffd026_Result" name="feel-time-function_044_3073ffd026" id="_jEuswPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusvvUUEeesLuP4RHs4vA">
+            <text>time(11, 59, 00, duration("PT2H1M0S"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_045_ad1339e858" id="_jEusw_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(11, 59, 00, duration("-PT2H1M0S"))' and expects result: '11:59:00-02:01 (time)'</description>
+        <question>Result of FEEL expression 'time(11, 59, 00, duration("-PT2H1M0S"))'?</question>
+        <allowedAnswers>11:59:00-02:01 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_045_ad1339e858_Result" name="feel-time-function_045_ad1339e858" id="_jEusxPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEuswvUUEeesLuP4RHs4vA">
+            <text>time(11, 59, 00, duration("-PT2H1M0S"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_046_7b80221ec1" id="_jEusx_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'string(time(11, 59, 45, duration("PT2H45M55S")))' and expects result: '"11:59:45+02:45:55" (string)'</description>
+        <question>Result of FEEL expression 'string(time(11, 59, 45, duration("PT2H45M55S")))'?</question>
+        <allowedAnswers>"11:59:45+02:45:55" (string)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_046_7b80221ec1_Result" name="feel-time-function_046_7b80221ec1" id="_jEusyPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusxvUUEeesLuP4RHs4vA">
+            <text>string(time(11, 59, 45, duration("PT2H45M55S")))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_047_33cd7b9b15" id="_jEusy_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'string(time(11, 59, 45, duration("-PT2H45M55S")))' and expects result: '"11:59:45-02:45:55" (string)'</description>
+        <question>Result of FEEL expression 'string(time(11, 59, 45, duration("-PT2H45M55S")))'?</question>
+        <allowedAnswers>"11:59:45-02:45:55" (string)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_047_33cd7b9b15_Result" name="feel-time-function_047_33cd7b9b15" id="_jEuszPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEusyvUUEeesLuP4RHs4vA">
+            <text>string(time(11, 59, 45, duration("-PT2H45M55S")))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_048_9bedd52886" id="_jEusz_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(11, 59, 45, duration("-PT0H"))' and expects result: '11:59:45Z (time)'</description>
+        <question>Result of FEEL expression 'time(11, 59, 45, duration("-PT0H"))'?</question>
+        <allowedAnswers>11:59:45Z (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_048_9bedd52886_Result" name="feel-time-function_048_9bedd52886" id="_jEus0PUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEuszvUUEeesLuP4RHs4vA">
+            <text>time(11, 59, 45, duration("-PT0H"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_049_617d9e09d6" id="_jEus0_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(date and time(date and time("2017-08-10T10:20:00"),time("23:59:01")))' and expects result: '23:59:01 (time)'</description>
+        <question>Result of FEEL expression 'time(date and time(date and time("2017-08-10T10:20:00"),time("23:59:01")))'?</question>
+        <allowedAnswers>23:59:01 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_049_617d9e09d6_Result" name="feel-time-function_049_617d9e09d6" id="_jEus1PUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEus0vUUEeesLuP4RHs4vA">
+            <text>time(date and time(date and time("2017-08-10T10:20:00"),time("23:59:01")))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_050_524d9a8146" id="_jEus1_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(date and time(date and time("2017-08-10T10:20:00"),time("23:59:01.987654321")))' and expects result: '23:59:01.987654321 (time)'</description>
+        <question>Result of FEEL expression 'time(date and time(date and time("2017-08-10T10:20:00"),time("23:59:01.987654321")))'?</question>
+        <allowedAnswers>23:59:01.987654321 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_050_524d9a8146_Result" name="feel-time-function_050_524d9a8146" id="_jEus2PUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEus1vUUEeesLuP4RHs4vA">
+            <text>time(date and time(date and time("2017-08-10T10:20:00"),time("23:59:01.987654321")))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_051_a71d2a08f7" id="_jEus2_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(date and time(date and time("2017-09-05T10:20:00"),time("09:15:30+02:00")))' and expects result: '09:15:30+02:00 (time)'</description>
+        <question>Result of FEEL expression 'time(date and time(date and time("2017-09-05T10:20:00"),time("09:15:30+02:00")))'?</question>
+        <allowedAnswers>09:15:30+02:00 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_051_a71d2a08f7_Result" name="feel-time-function_051_a71d2a08f7" id="_jEus3PUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEus2vUUEeesLuP4RHs4vA">
+            <text>time(date and time(date and time("2017-09-05T10:20:00"),time("09:15:30+02:00")))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_052_d825d58888" id="_jEus3_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(date and time(date and time("2017-09-05T10:20:00"),time("09:15:30Z")))' and expects result: '09:15:30Z (time)'</description>
+        <question>Result of FEEL expression 'time(date and time(date and time("2017-09-05T10:20:00"),time("09:15:30Z")))'?</question>
+        <allowedAnswers>09:15:30Z (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_052_d825d58888_Result" name="feel-time-function_052_d825d58888" id="_jEus4PUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEus3vUUEeesLuP4RHs4vA">
+            <text>time(date and time(date and time("2017-09-05T10:20:00"),time("09:15:30Z")))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_053_3d956966c0" id="_jEus4_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(date("2017-08-10"))' and expects result: '00:00:00Z (time)'</description>
+        <question>Result of FEEL expression 'time(date("2017-08-10"))'?</question>
+        <allowedAnswers>00:00:00Z (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_053_3d956966c0_Result" name="feel-time-function_053_3d956966c0" id="_jEus5PUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEus4vUUEeesLuP4RHs4vA">
+            <text>time(date("2017-08-10"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_054_fdc3094237" id="_jEus5_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(2017)' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(2017)'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_054_fdc3094237_Result" name="feel-time-function_ErrorCase_054_fdc3094237" id="_jEus6PUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEus5vUUEeesLuP4RHs4vA">
+            <text>time(2017)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_055_9b47db6ea4" id="_jEus6_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time([])' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time([])'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_055_9b47db6ea4_Result" name="feel-time-function_ErrorCase_055_9b47db6ea4" id="_jEus7PUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEus6vUUEeesLuP4RHs4vA">
+            <text>time([])</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_056_a8e828d64d" id="_jEus7_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_056_a8e828d64d_Result" name="feel-time-function_ErrorCase_056_a8e828d64d" id="_jEus8PUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEus7vUUEeesLuP4RHs4vA">
+            <text>time("")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_057_d039115cce" id="_jEus8_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("23:59:60")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("23:59:60")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_057_d039115cce_Result" name="feel-time-function_ErrorCase_057_d039115cce" id="_jEus9PUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEus8vUUEeesLuP4RHs4vA">
+            <text>time("23:59:60")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_058_81dd4b1639" id="_jEus9_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("24:00:01")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("24:00:01")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_058_81dd4b1639_Result" name="feel-time-function_ErrorCase_058_81dd4b1639" id="_jEus-PUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jEus9vUUEeesLuP4RHs4vA">
+            <text>time("24:00:01")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_059_c7e1705fe1" id="_jE32AfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("24:01:00")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("24:01:00")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_059_c7e1705fe1_Result" name="feel-time-function_ErrorCase_059_c7e1705fe1" id="_jE32AvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32APUUEeesLuP4RHs4vA">
+            <text>time("24:01:00")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_060_0cf4734fae" id="_jE32BfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("25:00:00")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("25:00:00")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_060_0cf4734fae_Result" name="feel-time-function_ErrorCase_060_0cf4734fae" id="_jE32BvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32BPUUEeesLuP4RHs4vA">
+            <text>time("25:00:00")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_061_da2717f085" id="_jE32CfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("00:60:00")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("00:60:00")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_061_da2717f085_Result" name="feel-time-function_ErrorCase_061_da2717f085" id="_jE32CvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32CPUUEeesLuP4RHs4vA">
+            <text>time("00:60:00")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_062_6cd1313fa9" id="_jE32DfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("00:00:61")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("00:00:61")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_062_6cd1313fa9_Result" name="feel-time-function_ErrorCase_062_6cd1313fa9" id="_jE32DvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32DPUUEeesLuP4RHs4vA">
+            <text>time("00:00:61")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_063_e85c40b474" id="_jE32EfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("7:00:00")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("7:00:00")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_063_e85c40b474_Result" name="feel-time-function_ErrorCase_063_e85c40b474" id="_jE32EvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32EPUUEeesLuP4RHs4vA">
+            <text>time("7:00:00")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_064_df74038c67" id="_jE32FfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("07:1:00")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("07:1:00")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_064_df74038c67_Result" name="feel-time-function_ErrorCase_064_df74038c67" id="_jE32FvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32FPUUEeesLuP4RHs4vA">
+            <text>time("07:1:00")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_065_79eaef6fee" id="_jE32GfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("07:01:2")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("07:01:2")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_065_79eaef6fee_Result" name="feel-time-function_ErrorCase_065_79eaef6fee" id="_jE32GvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32GPUUEeesLuP4RHs4vA">
+            <text>time("07:01:2")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_066_5116e12fd3" id="_jE32HfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("13:20:00@xyz/abc")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("13:20:00@xyz/abc")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_066_5116e12fd3_Result" name="feel-time-function_ErrorCase_066_5116e12fd3" id="_jE32HvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32HPUUEeesLuP4RHs4vA">
+            <text>time("13:20:00@xyz/abc")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_067_8285edad7b" id="_jE32IfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("13:20:00+19:00")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("13:20:00+19:00")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_067_8285edad7b_Result" name="feel-time-function_ErrorCase_067_8285edad7b" id="_jE32IvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32IPUUEeesLuP4RHs4vA">
+            <text>time("13:20:00+19:00")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_068_ad528abb23" id="_jE32JfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("13:20:00-19:00")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("13:20:00-19:00")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_068_ad528abb23_Result" name="feel-time-function_ErrorCase_068_ad528abb23" id="_jE32JvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32JPUUEeesLuP4RHs4vA">
+            <text>time("13:20:00-19:00")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_069_5096701e2e" id="_jE32KfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("13:20:00+5:00")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("13:20:00+5:00")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_069_5096701e2e_Result" name="feel-time-function_ErrorCase_069_5096701e2e" id="_jE32KvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32KPUUEeesLuP4RHs4vA">
+            <text>time("13:20:00+5:00")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_070_8b2e39f570" id="_jE32LfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("13:20:00+5")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("13:20:00+5")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_070_8b2e39f570_Result" name="feel-time-function_ErrorCase_070_8b2e39f570" id="_jE32LvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32LPUUEeesLuP4RHs4vA">
+            <text>time("13:20:00+5")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_071_cf9417648b" id="_jE32MfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("13:20:00+02:00@Europe/Paris")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("13:20:00+02:00@Europe/Paris")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_071_cf9417648b_Result" name="feel-time-function_ErrorCase_071_cf9417648b" id="_jE32MvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32MPUUEeesLuP4RHs4vA">
+            <text>time("13:20:00+02:00@Europe/Paris")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_072_4c8c3835e4" id="_jE32NfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("7:20")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("7:20")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_072_4c8c3835e4_Result" name="feel-time-function_ErrorCase_072_4c8c3835e4" id="_jE32NvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32NPUUEeesLuP4RHs4vA">
+            <text>time("7:20")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_073_a5fc245959" id="_jE32OfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("07:2")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("07:2")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_073_a5fc245959_Result" name="feel-time-function_ErrorCase_073_a5fc245959" id="_jE32OvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32OPUUEeesLuP4RHs4vA">
+            <text>time("07:2")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_074_387d4411ea" id="_jE32PfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("11:30:00T")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("11:30:00T")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_074_387d4411ea_Result" name="feel-time-function_ErrorCase_074_387d4411ea" id="_jE32PvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32PPUUEeesLuP4RHs4vA">
+            <text>time("11:30:00T")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_075_1606dda03d" id="_jE32QfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time("2012T-12-2511:00:00Z")' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time("2012T-12-2511:00:00Z")'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_075_1606dda03d_Result" name="feel-time-function_ErrorCase_075_1606dda03d" id="_jE32QvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32QPUUEeesLuP4RHs4vA">
+            <text>time("2012T-12-2511:00:00Z")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_076_cb117ca612" id="_jE32RfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(24, 59, 45, null)' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(24, 59, 45, null)'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_076_cb117ca612_Result" name="feel-time-function_ErrorCase_076_cb117ca612" id="_jE32RvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32RPUUEeesLuP4RHs4vA">
+            <text>time(24, 59, 45, null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_077_a4daad060c" id="_jE32SfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(-24, 59, 45, null)' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(-24, 59, 45, null)'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_077_a4daad060c_Result" name="feel-time-function_ErrorCase_077_a4daad060c" id="_jE32SvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32SPUUEeesLuP4RHs4vA">
+            <text>time(-24, 59, 45, null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_078_c2fe73418b" id="_jE32TfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(23, 60, 45, null)' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(23, 60, 45, null)'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_078_c2fe73418b_Result" name="feel-time-function_ErrorCase_078_c2fe73418b" id="_jE32TvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32TPUUEeesLuP4RHs4vA">
+            <text>time(23, 60, 45, null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_ErrorCase_079_d2d226c3cd" id="_jE32UfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(23, 59, 60, null)' and expects result: 'null (time)'</description>
+        <question>Result of FEEL expression 'time(23, 59, 60, null)'?</question>
+        <allowedAnswers>null (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_079_d2d226c3cd_Result" name="feel-time-function_ErrorCase_079_d2d226c3cd" id="_jE32UvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32UPUUEeesLuP4RHs4vA">
+            <text>time(23, 59, 60, null)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_080_2bbb8c86af" id="_jE32VfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(from:date and time("2012-12-24T23:59:00"))' and expects result: '23:59:00 (time)'</description>
+        <question>Result of FEEL expression 'time(from:date and time("2012-12-24T23:59:00"))'?</question>
+        <allowedAnswers>23:59:00 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_080_2bbb8c86af_Result" name="feel-time-function_080_2bbb8c86af" id="_jE32VvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32VPUUEeesLuP4RHs4vA">
+            <text>time(from:date and time("2012-12-24T23:59:00"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_081_69f4e0231e" id="_jE32WfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(from: "12:45:00")' and expects result: '12:45:00 (time)'</description>
+        <question>Result of FEEL expression 'time(from: "12:45:00")'?</question>
+        <allowedAnswers>12:45:00 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_081_69f4e0231e_Result" name="feel-time-function_081_69f4e0231e" id="_jE32WvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32WPUUEeesLuP4RHs4vA">
+            <text>time(from: "12:45:00")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_082_36a78e5396" id="_jE32XfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(hour:11, minute:59, second:0, offset: duration("PT2H1M0S"))' and expects result: '11:59:00+02:01 (time)'</description>
+        <question>Result of FEEL expression 'time(hour:11, minute:59, second:0, offset: duration("PT2H1M0S"))'?</question>
+        <allowedAnswers>11:59:00+02:01 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_082_36a78e5396_Result" name="feel-time-function_082_36a78e5396" id="_jE32XvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32XPUUEeesLuP4RHs4vA">
+            <text>time(hour:11, minute:59, second:0, offset: duration("PT2H1M0S"))</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-time-function_083_6b608254c7" id="_jE32YfUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'time(hour:11, minute:59, second:0, offset: duration("-PT2H"))' and expects result: '11:59:00-02:00 (time)'</description>
+        <question>Result of FEEL expression 'time(hour:11, minute:59, second:0, offset: duration("-PT2H"))'?</question>
+        <allowedAnswers>11:59:00-02:00 (time)</allowedAnswers>
+        <variable typeRef="ns1:tfeel-time-function_083_6b608254c7_Result" name="feel-time-function_083_6b608254c7" id="_jE32YvUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jE32YPUUEeesLuP4RHs4vA">
+            <text>time(hour:11, minute:59, second:0, offset: duration("-PT2H"))</text>
+        </literalExpression>
+    </decision>
+    <knowledgeSource name="DMN 1.1 - 10.3.4.1 Table 58" id="_jEusEPUUEeesLuP4RHs4vA"/>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram name="Page 1" id="_jEk7EPUUEeesLuP4RHs4vA_D2">
+            <dmndi:DMNShape dmnElementRef="_jEusk_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s1">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32PfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s2">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusN_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s3">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusu_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s4">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusa_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s5">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusX_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s6">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEust_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s7">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32FfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s8">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32QfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s9">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEus0_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s10">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusEPUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s11">
+                <dc:Bounds height="69.0" width="100.0" x="303.0" y="292.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusE_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s12">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32OfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s13">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusv_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s14">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32YfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s15">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32HfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s16">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusL_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s17">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusM_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s18">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEuss_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s19">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusb_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s20">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32XfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s21">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32GfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s22">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusY_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s23">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusj_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s24">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusP_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s25">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusr_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s26">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusK_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s27">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusc_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s28">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32WfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s29">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusm_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s30">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusx_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s31">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusV_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s32">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEus9_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s33">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32JfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s34">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32MfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s35">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEus1_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s36">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32RfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s37">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusS_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s38">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusF_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s39">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32EfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s40">
+                <dc:Bounds height="61.0" width="154.0" x="786.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEush_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s41">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusf_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s42">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusI_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s43">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32KfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s44">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusp_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s45">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusR_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s46">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEus6_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s47">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusg_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s48">
+                <dc:Bounds height="61.0" width="154.0" x="956.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32BfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s49">
+                <dc:Bounds height="61.0" width="154.0" x="1126.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusz_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s50">
+                <dc:Bounds height="61.0" width="154.0" x="1126.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32UfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s51">
+                <dc:Bounds height="61.0" width="154.0" x="1126.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEus4_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s52">
+                <dc:Bounds height="61.0" width="154.0" x="1126.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEuse_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s53">
+                <dc:Bounds height="61.0" width="154.0" x="1126.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusQ_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s54">
+                <dc:Bounds height="61.0" width="154.0" x="1126.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEuso_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s55">
+                <dc:Bounds height="61.0" width="154.0" x="1126.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32LfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s56">
+                <dc:Bounds height="61.0" width="154.0" x="1126.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusn_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s57">
+                <dc:Bounds height="61.0" width="154.0" x="1296.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEus7_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s58">
+                <dc:Bounds height="61.0" width="154.0" x="1296.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusH_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s59">
+                <dc:Bounds height="61.0" width="154.0" x="1296.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEus3_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s60">
+                <dc:Bounds height="61.0" width="154.0" x="1296.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32TfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s61">
+                <dc:Bounds height="61.0" width="154.0" x="1296.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32CfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s62">
+                <dc:Bounds height="61.0" width="154.0" x="1296.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusU_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s63">
+                <dc:Bounds height="61.0" width="154.0" x="1296.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32DfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s64">
+                <dc:Bounds height="61.0" width="154.0" x="1296.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusZ_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s65">
+                <dc:Bounds height="61.0" width="154.0" x="1466.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusw_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s66">
+                <dc:Bounds height="61.0" width="154.0" x="1466.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32IfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s67">
+                <dc:Bounds height="61.0" width="154.0" x="1466.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEus8_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s68">
+                <dc:Bounds height="61.0" width="154.0" x="1466.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32NfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s69">
+                <dc:Bounds height="61.0" width="154.0" x="1466.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusG_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s70">
+                <dc:Bounds height="61.0" width="154.0" x="1466.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusT_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s71">
+                <dc:Bounds height="61.0" width="154.0" x="1466.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32SfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s72">
+                <dc:Bounds height="61.0" width="154.0" x="1466.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusi_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s73">
+                <dc:Bounds height="61.0" width="154.0" x="1636.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEus2_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s74">
+                <dc:Bounds height="61.0" width="154.0" x="1636.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusJ_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s75">
+                <dc:Bounds height="61.0" width="154.0" x="1636.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusO_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s76">
+                <dc:Bounds height="61.0" width="154.0" x="1636.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusl_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s77">
+                <dc:Bounds height="61.0" width="154.0" x="1636.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusq_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s78">
+                <dc:Bounds height="61.0" width="154.0" x="1636.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusy_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s79">
+                <dc:Bounds height="61.0" width="154.0" x="1636.0" y="672.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32AfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s80">
+                <dc:Bounds height="61.0" width="154.0" x="1636.0" y="765.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusd_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s81">
+                <dc:Bounds height="61.0" width="154.0" x="1806.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEus5_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s82">
+                <dc:Bounds height="61.0" width="154.0" x="1806.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jE32VfUUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s83">
+                <dc:Bounds height="61.0" width="154.0" x="1806.0" y="296.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jEusW_UUEeesLuP4RHs4vA" id="_jEk7EPUUEeesLuP4RHs4vA_s84">
+                <dc:Bounds height="61.0" width="154.0" x="1806.0" y="393.0"/>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

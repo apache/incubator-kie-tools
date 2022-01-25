@@ -26,7 +26,7 @@ import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "./GitService";
 import { jsonParseWithUrl } from "../../json/JsonParse";
 
 const WORKSPACE_DESCRIPTORS_FS_NAME = "workspaces";
-const NEW_WORKSPACE_DEFAULT_NAME = `Untitled Folder`;
+export const NEW_WORKSPACE_DEFAULT_NAME = `Untitled Folder`;
 
 export class WorkspaceDescriptorService {
   constructor(

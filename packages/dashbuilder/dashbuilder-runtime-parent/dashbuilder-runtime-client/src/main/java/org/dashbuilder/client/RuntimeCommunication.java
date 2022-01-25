@@ -21,6 +21,8 @@ import javax.inject.Inject;
 
 import org.uberfire.workbench.events.NotificationEvent;
 
+import elemental2.dom.DomGlobal;
+
 /**
  * Utility methods to perform user communication
  *
@@ -31,16 +33,32 @@ public class RuntimeCommunication {
     @Inject
     Event<NotificationEvent> wbNotification;
 
-    public void showError(final String message, final Object details) {
-        wbNotification.fire(new NotificationEvent(message, NotificationEvent.NotificationType.ERROR));
+    public void showError(final String message) {
+        showError(message, null);
     }
 
+    public void showError(final String message, Object error) {
+        logError(error);
+        wbNotification.fire(new NotificationEvent(message, NotificationEvent.NotificationType.ERROR));
+    }
+    
     public void showWarning(final String message) {
+        showWarning(message, null);
+    }
+    
+    public void showWarning(final String message, Object error) {
+        logError(error);
         wbNotification.fire(new NotificationEvent(message, NotificationEvent.NotificationType.WARNING));
     }
 
     public void showSuccess(final String message) {
         wbNotification.fire(new NotificationEvent(message, NotificationEvent.NotificationType.SUCCESS));
+    }
+    
+    private void logError(Object error) {
+        if (error != null) {
+            DomGlobal.console.log(error);
+        }
     }
 
 }

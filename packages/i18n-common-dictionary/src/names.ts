@@ -31,7 +31,7 @@ export const names = {
   dmn: "DMN",
   dmnDevSandbox: "DMN Developer Sandbox",
   dmnRunner: "DMN Runner",
-  kieToolingExtendedServices: "KIE Tooling Extended Services",
+  kieSandboxExtendedServices: "KIE Sandbox Extended Services",
   fedora: "Fedora",
   pmml: "PMML",
   dropbox: "Dropbox",

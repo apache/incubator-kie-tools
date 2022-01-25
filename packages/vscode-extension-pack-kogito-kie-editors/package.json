@@ -124,41 +124,51 @@
         "id": "bpmn",
         "extensions": [
           ".bpmn",
-          ".bpmn2"
+          ".bpmn2",
+          ".BPMN",
+          ".BPMN2"
         ],
         "aliases": [
           "bpmn",
           "bpmn2",
+          "BPMN",
+          "BPMN2",
           "Business Process Model and Notation"
         ]
       },
       {
         "id": "dmn",
         "extensions": [
-          ".dmn"
+          ".dmn",
+          ".DMN"
         ],
         "aliases": [
           "dmn",
+          "DMN",
           "Decision Model and Notation"
         ]
       },
       {
         "id": "scesim",
         "extensions": [
-          ".scesim"
+          ".scesim",
+          ".SCESIM"
         ],
         "aliases": [
           "scesim",
+          "SCESIM",
           "Test Scenario"
         ]
       },
       {
         "id": "pmml",
         "extensions": [
-          ".pmml"
+          ".pmml",
+          ".PMML"
         ],
         "aliases": [
           "pmml",
+          "PMML",
           "Predictive Model Markup Language"
         ]
       }
@@ -174,7 +184,7 @@
     "test:it:insider": "rimraf ./test-resources && rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run -t insider --yarn -u -e ./test-resources -o it-tests/settings.json out/*.test.js",
     "test:it:clean": "rimraf ./dist-it-tests && rimraf ./test-resources && rimraf ./out && rimraf ./it-tests-tmp && rimraf test-resou",
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "rimraf dist && yarn lint && webpack && yarn run test && yarn run package:prod && yarn test:it",
+    "build:prod": "rimraf dist && yarn lint && webpack && yarn run test && yarn run package:prod",
     "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
   },
   "dependencies": {
@@ -186,10 +196,8 @@
     "minimatch": "^3.0.4"
   },
   "devDependencies": {
-    "@kogito-tooling/bpmn-editor-unpacked": "^8.5.3",
     "@kogito-tooling/build-env": "0.0.0",
-    "@kogito-tooling/dmn-editor-unpacked": "^8.5.3",
-    "@kogito-tooling/external-assets-base": "0.0.0",
-    "@kogito-tooling/scesim-editor-unpacked": "^8.5.3"
+    "@kogito-tooling/stunner-editors": "0.0.0",
+    "@kie-tooling-core/webpack-base": "0.0.0"
   }
 }

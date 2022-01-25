@@ -31,7 +31,7 @@ var jitexecutor []byte
 func main() {
 	var config config.Config
 	conf := config.GetConfig()
-	port := flag.Int("p", conf.Proxy.Port, "KIE Tooling Extended Services Port")
+	port := flag.Int("p", conf.Proxy.Port, "KIE Sandbox Extended Services Port")
 	flag.Parse()
 	kogito.Systray(*port, jitexecutor)
 }

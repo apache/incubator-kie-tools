@@ -1,0 +1,669 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.actico.com/spec/DMN/1109-feel-replace-function" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_jCDLgPUUEeesLuP4RHs4vA" name="1109-feel-replace-function" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.actico.com/spec/DMN/1109-feel-replace-function">
+  <dmn:description>FEEL built-in function 'replace(input, pattern, replacement, flags?)' in category string functions</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_jCDLgvUUEeesLuP4RHs4vA" name="tfeel-replace-function_001_7637e5a8ed_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLhvUUEeesLuP4RHs4vA" name="tfeel-replace-function_002_b5c242ccd4_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLivUUEeesLuP4RHs4vA" name="tfeel-replace-function_003_bf7aa95050_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLjvUUEeesLuP4RHs4vA" name="tfeel-replace-function_004_55a2186006_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLkvUUEeesLuP4RHs4vA" name="tfeel-replace-function_005_271d93aa68_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLlvUUEeesLuP4RHs4vA" name="tfeel-replace-function_006_9cd005d2e2_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLmvUUEeesLuP4RHs4vA" name="tfeel-replace-function_007_91583e38c9_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLnvUUEeesLuP4RHs4vA" name="tfeel-replace-function_008_8c7c3871f8_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLovUUEeesLuP4RHs4vA" name="tfeel-replace-function_009_b1e4220bc9_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLpvUUEeesLuP4RHs4vA" name="tfeel-replace-function_010_cd4e7a6d9f_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLqvUUEeesLuP4RHs4vA" name="tfeel-replace-function_011_c310665f57_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLrvUUEeesLuP4RHs4vA" name="tfeel-replace-function_012_b0cf9e6723_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLsvUUEeesLuP4RHs4vA" name="tfeel-replace-function_013_f669d03fa9_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLtvUUEeesLuP4RHs4vA" name="tfeel-replace-function_014_cea33baeee_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLuvUUEeesLuP4RHs4vA" name="tfeel-replace-function_015_57ce78ec8a_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLvvUUEeesLuP4RHs4vA" name="tfeel-replace-function_016_1c38095f50_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLwvUUEeesLuP4RHs4vA" name="tfeel-replace-function_017_b9c3c03b87_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLxvUUEeesLuP4RHs4vA" name="tfeel-replace-function_018_aba3349043_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCDLyvUUEeesLuP4RHs4vA" name="tfeel-replace-function_019_6ef91033ad_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCMVcfUUEeesLuP4RHs4vA" name="tfeel-replace-function_020_52d93a8851_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCMVdfUUEeesLuP4RHs4vA" name="tfeel-replace-function_021_e33828e3da_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCMVefUUEeesLuP4RHs4vA" name="tfeel-replace-function_022_bd75fac0bd_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCMVffUUEeesLuP4RHs4vA" name="tfeel-replace-function_023_5c337d3725_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCMVgfUUEeesLuP4RHs4vA" name="tfeel-replace-function_024_4a89220cd6_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCMVhfUUEeesLuP4RHs4vA" name="tfeel-replace-function_025_b7f9525875_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCMVifUUEeesLuP4RHs4vA" name="tfeel-replace-function_026_acb176590a_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCMVjfUUEeesLuP4RHs4vA" name="tfeel-replace-function_027_d8d25f40e5_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCMVkfUUEeesLuP4RHs4vA" name="tfeel-replace-function_028_96e8c698af_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:decision id="_jCDLqPUUEeesLuP4RHs4vA" name="feel-replace-function_010_cd4e7a6d9f">
+    <dmn:description>Tests FEEL expression: 'replace("abracadabra","a.*?a","*")' and expects result: '"*c*bra" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("abracadabra","a.*?a","*")'?</dmn:question>
+    <dmn:allowedAnswers>"*c*bra" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLqfUUEeesLuP4RHs4vA" name="feel-replace-function_010_cd4e7a6d9f" typeRef="ns1:tfeel-replace-function_010_cd4e7a6d9f_Result"/>
+    <dmn:literalExpression id="_jCDLp_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("abracadabra","a.*?a","*")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLlPUUEeesLuP4RHs4vA" name="feel-replace-function_005_271d93aa68">
+    <dmn:description>Tests FEEL expression: 'replace("abc","e","#")' and expects result: '"abc" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("abc","e","#")'?</dmn:question>
+    <dmn:allowedAnswers>"abc" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLlfUUEeesLuP4RHs4vA" name="feel-replace-function_005_271d93aa68" typeRef="ns1:tfeel-replace-function_005_271d93aa68_Result"/>
+    <dmn:literalExpression id="_jCDLk_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("abc","e","#")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCMVi_UUEeesLuP4RHs4vA" name="feel-replace-function_026_acb176590a">
+    <dmn:description>Tests FEEL expression: 'replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"")' and expects result: '"abc" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"")'?</dmn:question>
+    <dmn:allowedAnswers>"abc" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCMVjPUUEeesLuP4RHs4vA" name="feel-replace-function_026_acb176590a" typeRef="ns1:tfeel-replace-function_026_acb176590a_Result"/>
+    <dmn:literalExpression id="_jCMVivUUEeesLuP4RHs4vA">
+      <dmn:text>replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLrPUUEeesLuP4RHs4vA" name="feel-replace-function_011_c310665f57">
+    <dmn:description>Tests FEEL expression: 'replace("abracadabra","a","")' and expects result: '"brcdbr" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("abracadabra","a","")'?</dmn:question>
+    <dmn:allowedAnswers>"brcdbr" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLrfUUEeesLuP4RHs4vA" name="feel-replace-function_011_c310665f57" typeRef="ns1:tfeel-replace-function_011_c310665f57_Result"/>
+    <dmn:literalExpression id="_jCDLq_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("abracadabra","a","")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCMVe_UUEeesLuP4RHs4vA" name="feel-replace-function_022_bd75fac0bd">
+    <dmn:description>Tests FEEL expression: 'replace("abc","[a-z]","#","s")' and expects result: '"###" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("abc","[a-z]","#","s")'?</dmn:question>
+    <dmn:allowedAnswers>"###" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCMVfPUUEeesLuP4RHs4vA" name="feel-replace-function_022_bd75fac0bd" typeRef="ns1:tfeel-replace-function_022_bd75fac0bd_Result"/>
+    <dmn:literalExpression id="_jCMVevUUEeesLuP4RHs4vA">
+      <dmn:text>replace("abc","[a-z]","#","s")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLvPUUEeesLuP4RHs4vA" name="feel-replace-function_015_57ce78ec8a">
+    <dmn:description>Tests FEEL expression: 'replace("darted","^(.*?)d(.*)$","$1c$2")' and expects result: '"carted" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("darted","^(.*?)d(.*)$","$1c$2")'?</dmn:question>
+    <dmn:allowedAnswers>"carted" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLvfUUEeesLuP4RHs4vA" name="feel-replace-function_015_57ce78ec8a" typeRef="ns1:tfeel-replace-function_015_57ce78ec8a_Result"/>
+    <dmn:literalExpression id="_jCDLu_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("darted","^(.*?)d(.*)$","$1c$2")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCMVf_UUEeesLuP4RHs4vA" name="feel-replace-function_023_5c337d3725">
+    <dmn:description>Tests FEEL expression: 'replace("a b c d ","[a-z]","#","x")' and expects result: '"# # # # " (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("a b c d ","[a-z]","#","x")'?</dmn:question>
+    <dmn:allowedAnswers>"# # # # " (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCMVgPUUEeesLuP4RHs4vA" name="feel-replace-function_023_5c337d3725" typeRef="ns1:tfeel-replace-function_023_5c337d3725_Result"/>
+    <dmn:literalExpression id="_jCMVfvUUEeesLuP4RHs4vA">
+      <dmn:text>replace("a b c d ","[a-z]","#","x")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCMVk_UUEeesLuP4RHs4vA" name="feel-replace-function_028_96e8c698af">
+    <dmn:description>Tests FEEL expression: 'replace(input:"abc",pattern:".^[d-z]*",replacement:"#",flags:"smix")' and expects result: '"abc" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace(input:"abc",pattern:".^[d-z]*",replacement:"#",flags:"smix")'?</dmn:question>
+    <dmn:allowedAnswers>"abc" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCMVlPUUEeesLuP4RHs4vA" name="feel-replace-function_028_96e8c698af" typeRef="ns1:tfeel-replace-function_028_96e8c698af_Result"/>
+    <dmn:literalExpression id="_jCMVkvUUEeesLuP4RHs4vA">
+      <dmn:text>replace(input:"abc",pattern:".^[d-z]*",replacement:"#",flags:"smix")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLkPUUEeesLuP4RHs4vA" name="feel-replace-function_004_55a2186006">
+    <dmn:description>Tests FEEL expression: 'replace("abc","def","#")' and expects result: '"abc" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("abc","def","#")'?</dmn:question>
+    <dmn:allowedAnswers>"abc" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLkfUUEeesLuP4RHs4vA" name="feel-replace-function_004_55a2186006" typeRef="ns1:tfeel-replace-function_004_55a2186006_Result"/>
+    <dmn:literalExpression id="_jCDLj_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("abc","def","#")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLnPUUEeesLuP4RHs4vA" name="feel-replace-function_007_91583e38c9">
+    <dmn:description>Tests FEEL expression: 'replace("abc",".^[d-z]","#")' and expects result: '"abc" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("abc",".^[d-z]","#")'?</dmn:question>
+    <dmn:allowedAnswers>"abc" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLnfUUEeesLuP4RHs4vA" name="feel-replace-function_007_91583e38c9" typeRef="ns1:tfeel-replace-function_007_91583e38c9_Result"/>
+    <dmn:literalExpression id="_jCDLm_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("abc",".^[d-z]","#")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLsPUUEeesLuP4RHs4vA" name="feel-replace-function_012_b0cf9e6723">
+    <dmn:description>Tests FEEL expression: 'replace("abracadabra","a(.)","a$1$1")' and expects result: '"abbraccaddabbra" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("abracadabra","a(.)","a$1$1")'?</dmn:question>
+    <dmn:allowedAnswers>"abbraccaddabbra" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLsfUUEeesLuP4RHs4vA" name="feel-replace-function_012_b0cf9e6723" typeRef="ns1:tfeel-replace-function_012_b0cf9e6723_Result"/>
+    <dmn:literalExpression id="_jCDLr_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("abracadabra","a(.)","a$1$1")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLwPUUEeesLuP4RHs4vA" name="feel-replace-function_016_1c38095f50">
+    <dmn:description>Tests FEEL expression: 'replace("reluctant","r.*?t","X")' and expects result: '"Xant" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("reluctant","r.*?t","X")'?</dmn:question>
+    <dmn:allowedAnswers>"Xant" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLwfUUEeesLuP4RHs4vA" name="feel-replace-function_016_1c38095f50" typeRef="ns1:tfeel-replace-function_016_1c38095f50_Result"/>
+    <dmn:literalExpression id="_jCDLv_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("reluctant","r.*?t","X")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCMVj_UUEeesLuP4RHs4vA" name="feel-replace-function_027_d8d25f40e5">
+    <dmn:description>Tests FEEL expression: 'replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"i")' and expects result: '"###" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"i")'?</dmn:question>
+    <dmn:allowedAnswers>"###" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCMVkPUUEeesLuP4RHs4vA" name="feel-replace-function_027_d8d25f40e5" typeRef="ns1:tfeel-replace-function_027_d8d25f40e5_Result"/>
+    <dmn:literalExpression id="_jCMVjvUUEeesLuP4RHs4vA">
+      <dmn:text>replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"i")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLjPUUEeesLuP4RHs4vA" name="feel-replace-function_003_bf7aa95050">
+    <dmn:description>Tests FEEL expression: 'replace("a","[a-z]","#")' and expects result: '"#" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("a","[a-z]","#")'?</dmn:question>
+    <dmn:allowedAnswers>"#" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLjfUUEeesLuP4RHs4vA" name="feel-replace-function_003_bf7aa95050" typeRef="ns1:tfeel-replace-function_003_bf7aa95050_Result"/>
+    <dmn:literalExpression id="_jCDLi_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("a","[a-z]","#")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLoPUUEeesLuP4RHs4vA" name="feel-replace-function_008_8c7c3871f8">
+    <dmn:description>Tests FEEL expression: 'replace("abracadabra","bra","*")' and expects result: '"a*cada*" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("abracadabra","bra","*")'?</dmn:question>
+    <dmn:allowedAnswers>"a*cada*" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLofUUEeesLuP4RHs4vA" name="feel-replace-function_008_8c7c3871f8" typeRef="ns1:tfeel-replace-function_008_8c7c3871f8_Result"/>
+    <dmn:literalExpression id="_jCDLn_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("abracadabra","bra","*")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLxPUUEeesLuP4RHs4vA" name="feel-replace-function_017_b9c3c03b87">
+    <dmn:description>Tests FEEL expression: 'replace("0123456789","(d{3})(d{3})(d{4})","($1) $2-$3")' and expects result: '"(012) 345-6789" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("0123456789","(d{3})(d{3})(d{4})","($1) $2-$3")'?</dmn:question>
+    <dmn:allowedAnswers>"(012) 345-6789" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLxfUUEeesLuP4RHs4vA" name="feel-replace-function_017_b9c3c03b87" typeRef="ns1:tfeel-replace-function_017_b9c3c03b87_Result"/>
+    <dmn:literalExpression id="_jCDLw_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("0123456789","(d{3})(d{3})(d{4})","($1) $2-$3")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCMVc_UUEeesLuP4RHs4vA" name="feel-replace-function_020_52d93a8851">
+    <dmn:description>Tests FEEL expression: 'replace("a.b.c.","[a-z]","#","s")' and expects result: '"#.#.#." (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("a.b.c.","[a-z]","#","s")'?</dmn:question>
+    <dmn:allowedAnswers>"#.#.#." (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCMVdPUUEeesLuP4RHs4vA" name="feel-replace-function_020_52d93a8851" typeRef="ns1:tfeel-replace-function_020_52d93a8851_Result"/>
+    <dmn:literalExpression id="_jCMVcvUUEeesLuP4RHs4vA">
+      <dmn:text>replace("a.b.c.","[a-z]","#","s")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLtPUUEeesLuP4RHs4vA" name="feel-replace-function_013_f669d03fa9">
+    <dmn:description>Tests FEEL expression: 'replace("AAAA","A+","b")' and expects result: '"b" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("AAAA","A+","b")'?</dmn:question>
+    <dmn:allowedAnswers>"b" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLtfUUEeesLuP4RHs4vA" name="feel-replace-function_013_f669d03fa9" typeRef="ns1:tfeel-replace-function_013_f669d03fa9_Result"/>
+    <dmn:literalExpression id="_jCDLs_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("AAAA","A+","b")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCMVg_UUEeesLuP4RHs4vA" name="feel-replace-function_024_4a89220cd6">
+    <dmn:description>Tests FEEL expression: 'replace("abc",".^[d-z]*","smix")' and expects result: '"abc" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("abc",".^[d-z]*","smix")'?</dmn:question>
+    <dmn:allowedAnswers>"abc" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCMVhPUUEeesLuP4RHs4vA" name="feel-replace-function_024_4a89220cd6" typeRef="ns1:tfeel-replace-function_024_4a89220cd6_Result"/>
+    <dmn:literalExpression id="_jCMVgvUUEeesLuP4RHs4vA">
+      <dmn:text>replace("abc",".^[d-z]*","smix")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLpPUUEeesLuP4RHs4vA" name="feel-replace-function_009_b1e4220bc9">
+    <dmn:description>Tests FEEL expression: 'replace("abracadabra","a.*a","*")' and expects result: '"*" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("abracadabra","a.*a","*")'?</dmn:question>
+    <dmn:allowedAnswers>"*" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLpfUUEeesLuP4RHs4vA" name="feel-replace-function_009_b1e4220bc9" typeRef="ns1:tfeel-replace-function_009_b1e4220bc9_Result"/>
+    <dmn:literalExpression id="_jCDLo_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("abracadabra","a.*a","*")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLzPUUEeesLuP4RHs4vA" name="feel-replace-function_019_6ef91033ad">
+    <dmn:description>Tests FEEL expression: 'replace("abc","[a-z]","#","")' and expects result: '"###" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("abc","[a-z]","#","")'?</dmn:question>
+    <dmn:allowedAnswers>"###" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCMVcPUUEeesLuP4RHs4vA" name="feel-replace-function_019_6ef91033ad" typeRef="ns1:tfeel-replace-function_019_6ef91033ad_Result"/>
+    <dmn:literalExpression id="_jCDLy_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("abc","[a-z]","#","")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLiPUUEeesLuP4RHs4vA" name="feel-replace-function_002_b5c242ccd4">
+    <dmn:description>Tests FEEL expression: 'replace("a","[b-z]","#")' and expects result: '"a" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("a","[b-z]","#")'?</dmn:question>
+    <dmn:allowedAnswers>"a" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLifUUEeesLuP4RHs4vA" name="feel-replace-function_002_b5c242ccd4" typeRef="ns1:tfeel-replace-function_002_b5c242ccd4_Result"/>
+    <dmn:literalExpression id="_jCDLh_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("a","[b-z]","#")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLmPUUEeesLuP4RHs4vA" name="feel-replace-function_006_9cd005d2e2">
+    <dmn:description>Tests FEEL expression: 'replace("foobar","^fo*b*","#")' and expects result: '"#ar" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("foobar","^fo*b*","#")'?</dmn:question>
+    <dmn:allowedAnswers>"#ar" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLmfUUEeesLuP4RHs4vA" name="feel-replace-function_006_9cd005d2e2" typeRef="ns1:tfeel-replace-function_006_9cd005d2e2_Result"/>
+    <dmn:literalExpression id="_jCDLl_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("foobar","^fo*b*","#")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:knowledgeSource id="_jCDLgfUUEeesLuP4RHs4vA" name="DMN 1.1 - 10.3.4.3 Table 60">
+    <dmn:extensionElements/>
+  </dmn:knowledgeSource>
+  <dmn:decision id="_jCDLyPUUEeesLuP4RHs4vA" name="feel-replace-function_018_aba3349043">
+    <dmn:description>Tests FEEL expression: 'replace("facetiously","[iouy]","[$0]")' and expects result: '"facet[i][o][u]sl[y]" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("facetiously","[iouy]","[$0]")'?</dmn:question>
+    <dmn:allowedAnswers>"facet[i][o][u]sl[y]" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLyfUUEeesLuP4RHs4vA" name="feel-replace-function_018_aba3349043" typeRef="ns1:tfeel-replace-function_018_aba3349043_Result"/>
+    <dmn:literalExpression id="_jCDLx_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("facetiously","[iouy]","[$0]")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCMVd_UUEeesLuP4RHs4vA" name="feel-replace-function_021_e33828e3da">
+    <dmn:description>Tests FEEL expression: 'replace("abc","[A-Z]","#","i")' and expects result: '"###" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("abc","[A-Z]","#","i")'?</dmn:question>
+    <dmn:allowedAnswers>"###" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCMVePUUEeesLuP4RHs4vA" name="feel-replace-function_021_e33828e3da" typeRef="ns1:tfeel-replace-function_021_e33828e3da_Result"/>
+    <dmn:literalExpression id="_jCMVdvUUEeesLuP4RHs4vA">
+      <dmn:text>replace("abc","[A-Z]","#","i")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLhPUUEeesLuP4RHs4vA" name="feel-replace-function_001_7637e5a8ed">
+    <dmn:description>Tests FEEL expression: 'replace("abcd","(ab)|(a)", "[1=$1][2=$2]")' and expects result: '"[1=ab][2=]cd" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("abcd","(ab)|(a)", "[1=$1][2=$2]")'?</dmn:question>
+    <dmn:allowedAnswers>"[1=ab][2=]cd" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLhfUUEeesLuP4RHs4vA" name="feel-replace-function_001_7637e5a8ed" typeRef="ns1:tfeel-replace-function_001_7637e5a8ed_Result"/>
+    <dmn:literalExpression id="_jCDLg_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("abcd","(ab)|(a)", "[1=$1][2=$2]")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCDLuPUUEeesLuP4RHs4vA" name="feel-replace-function_014_cea33baeee">
+    <dmn:description>Tests FEEL expression: 'replace("AAAA","A+?","b")' and expects result: '"bbbb" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace("AAAA","A+?","b")'?</dmn:question>
+    <dmn:allowedAnswers>"bbbb" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCDLufUUEeesLuP4RHs4vA" name="feel-replace-function_014_cea33baeee" typeRef="ns1:tfeel-replace-function_014_cea33baeee_Result"/>
+    <dmn:literalExpression id="_jCDLt_UUEeesLuP4RHs4vA">
+      <dmn:text>replace("AAAA","A+?","b")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCMVh_UUEeesLuP4RHs4vA" name="feel-replace-function_025_b7f9525875">
+    <dmn:description>Tests FEEL expression: 'replace(input:"abc",pattern:"[a-z]",replacement:"#")' and expects result: '"###" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'replace(input:"abc",pattern:"[a-z]",replacement:"#")'?</dmn:question>
+    <dmn:allowedAnswers>"###" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jCMViPUUEeesLuP4RHs4vA" name="feel-replace-function_025_b7f9525875" typeRef="ns1:tfeel-replace-function_025_b7f9525875_Result"/>
+    <dmn:literalExpression id="_jCMVhvUUEeesLuP4RHs4vA">
+      <dmn:text>replace(input:"abc",pattern:"[a-z]",replacement:"#")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_jCDLgPUUEeesLuP4RHs4vA_D2" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_jCDLp_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLk_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCMVivUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLq_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCMVevUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLu_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCMVfvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCMVkvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLj_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLm_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLr_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLv_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCMVjvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLi_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLn_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLw_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCMVcvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLs_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCMVgvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLo_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLy_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLh_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLl_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLx_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCMVdvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLg_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCDLt_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCMVhvUUEeesLuP4RHs4vA"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLqPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLqPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLlPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLlPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCMVi_UUEeesLuP4RHs4vA" dmnElementRef="_jCMVi_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="292" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLrPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLrPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="385" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCMVe_UUEeesLuP4RHs4vA" dmnElementRef="_jCMVe_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="478" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLvPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLvPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="571" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCMVf_UUEeesLuP4RHs4vA" dmnElementRef="_jCMVf_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="664" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCMVk_UUEeesLuP4RHs4vA" dmnElementRef="_jCMVk_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="761" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLkPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLkPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLnPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLnPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLsPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLsPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="292" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLwPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLwPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="385" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCMVj_UUEeesLuP4RHs4vA" dmnElementRef="_jCMVj_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="478" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLjPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLjPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="571" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLoPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLoPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="664" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLxPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLxPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="761" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCMVc_UUEeesLuP4RHs4vA" dmnElementRef="_jCMVc_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLtPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLtPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCMVg_UUEeesLuP4RHs4vA" dmnElementRef="_jCMVg_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="292" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLpPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLpPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="385" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLzPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLzPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="478" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLiPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLiPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="571" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLmPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLmPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="664" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLgfUUEeesLuP4RHs4vA" dmnElementRef="_jCDLgfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="473" y="757" width="100" height="69"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLyPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLyPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCMVd_UUEeesLuP4RHs4vA" dmnElementRef="_jCMVd_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLhPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLhPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="292" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCDLuPUUEeesLuP4RHs4vA" dmnElementRef="_jCDLuPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="385" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCMVh_UUEeesLuP4RHs4vA" dmnElementRef="_jCMVh_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="478" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

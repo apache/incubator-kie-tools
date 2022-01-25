@@ -16,6 +16,7 @@
 package org.dashbuilder.client.services;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import elemental2.core.Global;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.XMLHttpRequest;
 import jsinterop.base.Js;
 import org.dashbuilder.client.error.ErrorResponseVerifier;
@@ -44,21 +46,26 @@ public class RuntimeBackendComponentFunctionService implements BackendComponentF
 
     @Override
     public List<String> listFunctions() {
-        XMLHttpRequest xhr = new XMLHttpRequest();
-        xhr.open("GET", "/rest/function", false);
-        xhr.send();
-        verifier.verify(xhr);
-        if (xhr.status == 500) {
-            throw new RuntimeException("Not able to list functions: " + xhr.responseText);
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/rest/function", false);
+            xhr.send();
+            verifier.verify(xhr);
+            if (xhr.status == 500) {
+                throw new RuntimeException("Not able to list functions: " + xhr.responseText);
+            }
+            String[] functions = Js.cast(Global.JSON.parse(xhr.responseText));
+            return Arrays.asList(functions);
+        } catch (Exception e) {
+            DomGlobal.console.log("Functions service is not available");
+            return Collections.emptyList();
         }
-        String[] functions = Js.cast(Global.JSON.parse(xhr.responseText));
-        return Arrays.asList(functions);
     }
 
     @Override
     public Object callFunction(String name, Map<String, Object> params) {
-        JsonObject object = buildObject(params);
-        XMLHttpRequest xhr = new XMLHttpRequest();
+        var object = buildObject(params);
+        var xhr = new XMLHttpRequest();
         xhr.open("POST", "/rest/function/" + name, false);
         xhr.setRequestHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         xhr.send(object.toJson());
@@ -70,7 +77,7 @@ public class RuntimeBackendComponentFunctionService implements BackendComponentF
     }
 
     private JsonObject buildObject(Map<String, Object> params) {
-        JsonObject object = Json.createObject();
+        var object = Json.createObject();
         params.forEach((k, v) -> {
             JsonValue value = null;
             if (v instanceof Boolean) {

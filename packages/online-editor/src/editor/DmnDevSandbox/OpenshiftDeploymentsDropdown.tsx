@@ -21,13 +21,7 @@ import { useOnlineI18n } from "../../i18n";
 import { useDmnDevSandbox } from "./DmnDevSandboxContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { SettingsTabs } from "../../settings/SettingsModalBody";
-import {
-  Dropdown,
-  DropdownGroup,
-  DropdownItem,
-  DropdownSeparator,
-  DropdownToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownItem, DropdownSeparator } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { DmnDevSandboxDeploymentDropdownItem } from "./DmnDevSandboxDeploymentDropdownItem";
 import { OpenshiftIcon } from "@patternfly/react-icons/dist/js/icons/openshift-icon";
@@ -35,6 +29,8 @@ import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/compo
 import { TopologyIcon } from "@patternfly/react-icons/dist/js/icons/topology-icon";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
+import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
 
 export function OpenshiftDeploymentsDropdown() {
   const settings = useSettings();
@@ -54,9 +50,7 @@ export function OpenshiftDeploymentsDropdown() {
   const items = useMemo(() => {
     const common = isDmnDevSandboxConnected
       ? [
-          <DropdownSeparator key={"dropdown-dmn-dev-sandbox-separator-deployments-1"} />,
           <DropdownItem
-            style={{ minWidth: "400px" }}
             key={"dropdown-dmn-dev-sandbox-setup-as"}
             component={"button"}
             onClick={openOpenShiftSettings}
@@ -113,26 +107,28 @@ export function OpenshiftDeploymentsDropdown() {
         className="kogito--editor__light-tooltip"
         content={<div>{`You're not connected to any OpenShift instance.`}</div>}
         trigger={!isDmnDevSandboxConnected ? "mouseenter" : ""}
-        position="left"
+        position="auto"
       >
-        <Dropdown
+        <ResponsiveDropdown
           position={"right"}
           onSelect={() => dmnDevSandbox.setDeploymentsDropdownOpen(false)}
+          onClose={() => dmnDevSandbox.setDeploymentsDropdownOpen(false)}
           toggle={
-            <DropdownToggle
+            <ResponsiveDropdownToggle
               toggleIndicator={null}
-              onToggle={(isOpen) => dmnDevSandbox.setDeploymentsDropdownOpen(isDmnDevSandboxConnected && isOpen)}
+              onToggle={() =>
+                dmnDevSandbox.setDeploymentsDropdownOpen((dropdownOpen) => isDmnDevSandboxConnected && !dropdownOpen)
+              }
+              className={"kogito-tooling--masthead-hoverable-dark"}
             >
               <OpenshiftIcon color={!isDmnDevSandboxConnected ? "gray" : undefined} />
-            </DropdownToggle>
+            </ResponsiveDropdownToggle>
           }
           isOpen={dmnDevSandbox.isDeploymentsDropdownOpen}
           isPlain={true}
-          dropdownItems={[
-            <DropdownGroup key={"openshift-deployments-group"} label={"OpenShift deployments"}>
-              {items}
-            </DropdownGroup>,
-          ]}
+          className="kogito--editor__openshift-deployments-dropdown"
+          title="OpenShift deployments"
+          dropdownItems={items}
         />
       </Tooltip>
     </>

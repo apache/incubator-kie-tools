@@ -1,3 +1,13 @@
+# 0.16.0 (alpha)
+
+- [KOGITO-6144](https://issues.redhat.com/browse/KOGITO-6144) - DMN Editor missing xml-prolog for UTF-8 encoding
+- [KOGITO-6193](https://issues.redhat.com/browse/KOGITO-6193) - [DMN Designer] new editor toggle sanity checks are broken
+- [KOGITO-6301](https://issues.redhat.com/browse/KOGITO-6301) - Changing data type doens´t resize the table correctly
+- [KOGITO-6302](https://issues.redhat.com/browse/KOGITO-6302) - Changing data types can break the inputs
+- [KOGITO-6323](https://issues.redhat.com/browse/KOGITO-6323) - DMN "Elbow lines" for association doesn't work
+- [KOGITO-6405](https://issues.redhat.com/browse/KOGITO-6405) - Improve VSCode Java Completion Plugin dependency versions
+- [KOGITO-6572](https://issues.redhat.com/browse/KOGITO-6572) - [DMN Editor] Styling regression
+
 # 0.15.0 (alpha)
 
 - [KOGITO-6222](https://issues.redhat.com/browse/KOGITO-6222) - [DMN Designer] Open Imported DMN from current model

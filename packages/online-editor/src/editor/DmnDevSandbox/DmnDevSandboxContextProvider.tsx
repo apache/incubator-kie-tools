@@ -15,16 +15,17 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useRoutes } from "../../navigation/Hooks";
-import { useKieToolingExtendedServices } from "../../kieToolingExtendedServices/KieToolingExtendedServicesContext";
-import { KieToolingExtendedServicesStatus } from "../../kieToolingExtendedServices/KieToolingExtendedServicesStatus";
+import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { OpenShiftDeployedModel } from "../../openshift/OpenShiftDeployedModel";
 import { DmnDevSandboxContext } from "./DmnDevSandboxContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { isConfigValid } from "../../openshift/OpenShiftSettingsConfig";
 import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { NEW_WORKSPACE_DEFAULT_NAME } from "../../workspace/services/WorkspaceDescriptorService";
 
 interface Props {
   children: React.ReactNode;
@@ -36,7 +37,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const routes = useRoutes();
-  const kieToolingExtendedServices = useKieToolingExtendedServices();
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const workspaces = useWorkspaces();
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -75,9 +76,15 @@ export function DmnDevSandboxContextProvider(props: Props) {
         onlyExtensions: ["dmn"],
       });
 
+      const descriptorService = await workspaces.descriptorService.get(workspaceFile.workspaceId);
+
+      const workspaceName =
+        descriptorService.name !== NEW_WORKSPACE_DEFAULT_NAME ? descriptorService.name : workspaceFile.name;
+
       try {
         await settingsDispatch.openshift.service.deploy({
           targetFilePath: workspaceFile.relativePath,
+          workspaceName,
           workspaceZipBlob: zipBlob,
           config: settings.openshift.config,
           onlineEditorUrl: (baseUrl) =>
@@ -97,7 +104,7 @@ export function DmnDevSandboxContextProvider(props: Props) {
   );
 
   useEffect(() => {
-    if (kieToolingExtendedServices.status !== KieToolingExtendedServicesStatus.RUNNING) {
+    if (kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
       onDisconnect(true);
       return;
     }
@@ -123,26 +130,27 @@ export function DmnDevSandboxContextProvider(props: Props) {
       return;
     }
 
-    if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED) {
-      const loadDeploymentsTask = setInterval(() => {
+    if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
+      const loadDeploymentsTask = window.setInterval(() => {
         settingsDispatch.openshift.service
           .loadDeployments(settings.openshift.config)
           .then((deployments) => setDeployments(deployments))
           .catch((error) => {
             setDeployments([]);
-            clearInterval(loadDeploymentsTask);
+            window.clearInterval(loadDeploymentsTask);
             console.error(error);
           });
       }, LOAD_DEPLOYMENTS_POLLING_TIME);
-      return () => clearInterval(loadDeploymentsTask);
+      return () => window.clearInterval(loadDeploymentsTask);
     }
   }, [
     onDisconnect,
     settings.openshift,
     settingsDispatch.openshift.service,
-    kieToolingExtendedServices.status,
+    kieSandboxExtendedServices.status,
     deployments.length,
     settingsDispatch.openshift,
+    isDeploymentsDropdownOpen,
   ]);
 
   const value = useMemo(

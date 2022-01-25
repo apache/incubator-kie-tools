@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!-- GLOBAL SETTINGS -->
+<div id="settings-panel" class="uf-scroll-panel">
+  <div id="kieSettingsContent" class="tab-pane kie-tab-pane--scesim-panel">
+    <div class="pf-c-form__group">
+      <label for="kieScenarioSettingsName" data-field="nameLabel"></label>
+      <input class="form-control" data-field="fileName" id="kieScenarioSettingsName" type="text" readonly />
+    </div>
+    <br />
+    <div class="pf-c-form__group">
+      <label for="kieScenarioSettingsType" data-field="typeLabel"></label>
+      <span data-field="scenarioType" id="kieScenarioSettingsType"></span>
+    </div>
+    <br />
+    <div data-field="ruleSettings">
+      <div class="checkbox">
+        <label for="kieScenarioSettingsStateless">
+          <input type="checkbox" data-field="stateless" id="kieScenarioSettingsStateless" />
+          <span data-field="statelessLabel"></span>
+        </label>
+      </div>
+      <br />
+      <div class="pf-c-form__group">
+        <label for="kieScenarioSettingsKieSession">KieSession</label>
+        <input class="form-control" data-field="dmoSession" id="kieScenarioSettingsKieSession" />
+      </div>
+      <br />
+      <div class="pf-c-form__group">
+        <label for="kieScenarioSettingsRuleFlowGroup">RuleFlowGroup/AgendaGroup</label>
+        <input class="form-control" data-field="ruleFlowGroup" id="kieScenarioSettingsRuleFlowGroup" />
+      </div>
+    </div>
+    <div data-field="dmnSettings">
+      <div class="pf-c-form__group">
+        <label data-field="dmnFileLabel"></label>
+        <div data-field="dmnFilePathPlaceholder" id="kieScenarioSettingsModelPath"></div>
+        <span class="help-block" data-field="dmnFilePathErrorLabel" style="color: #cc0000"></span>
+      </div>
+      <br />
+      <div class="pf-c-form__group">
+        <label for="kieScenarioSettingsDMNNamespace" data-field="dmnNamespaceLabel"></label>
+        <input
+          class="form-control"
+          data-field="dmnNamespace"
+          id="kieScenarioSettingsDMNNamespace"
+          type="text"
+          readonly
+        />
+      </div>
+      <br />
+      <div class="pf-c-form__group">
+        <label for="kieScenarioSettingsDMNName" data-field="dmnNameLabel"></label>
+        <input class="form-control" data-field="dmnName" id="kieScenarioSettingsDMNName" type="text" readonly />
+      </div>
+    </div>
+    <br />
+    <div class="checkbox">
+      <label for="kieScenarioSettingsSkipFromBuild">
+        <input type="checkbox" data-field="skipFromBuild" id="kieScenarioSettingsSkipFromBuild" />
+        <span data-field="skipFromBuildLabel"></span>
+      </label>
+    </div>
+  </div>
+</div>

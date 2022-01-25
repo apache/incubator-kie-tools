@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0078-feel-infinity" name="0078-feel-infinity" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <description>FEEL Infinity</description>
+
+    <decision name="decision_001" id="_decision_001">
+        <variable name="decision_001"/>
+        <literalExpression>
+            <text>1.0 / 0.0</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision_002" id="_decision_002">
+        <variable name="decision_002"/>
+        <literalExpression>
+            <text>-1.0 / 0.0</text>
+        </literalExpression>
+    </decision>
+
+</definitions>

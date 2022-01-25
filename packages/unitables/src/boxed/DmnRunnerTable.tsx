@@ -16,11 +16,13 @@
 
 import * as React from "react";
 import { useCallback, useLayoutEffect, useMemo } from "react";
-import { ColumnInstance, DataRecord } from "react-table";
+import { Column, ColumnInstance, DataRecord } from "react-table";
 import "@kogito-tooling/boxed-expression-component";
 import {
+  ColumnsUpdateArgs,
   ExpressionProps,
   GroupOperations,
+  RowsUpdateArgs,
   TableHeaderVisibility,
   TableOperation,
 } from "@kogito-tooling/boxed-expression-component/dist/api";
@@ -47,7 +49,7 @@ export interface DmnRunnerTableProps extends ExpressionProps {
   rules?: DmnRunnerRule[];
   /** Callback to be called when row number is updated */
   onRowNumberUpdated: (rowNumber: number, operation?: TableOperation, updatedRowIndex?: number) => void;
-  onColumnsUpdate: (columns: ColumnInstance[]) => void;
+  onColumnsUpdate: (columns: Column[]) => void;
 }
 
 export function DmnRunnerTable(props: DmnRunnerTableProps) {
@@ -235,8 +237,8 @@ export function DmnRunnerTable(props: DmnRunnerTableProps) {
   }, [props.rules, columns]);
 
   const onRowsUpdate = useCallback(
-    (updatedRows, operation?: TableOperation, updatedRowIndex?: number) => {
-      const newRows = updatedRows.map((row: any) =>
+    ({ rows, operation, rowIndex }: RowsUpdateArgs) => {
+      const newRows = rows.map((row: any) =>
         getColumnsAtLastLevel(columns).reduce((filledRow: DataRecord, column) => {
           if (row.rowDelegate) {
             filledRow[column.accessor] = row[column.accessor];
@@ -250,7 +252,7 @@ export function DmnRunnerTable(props: DmnRunnerTableProps) {
           return filledRow;
         }, {})
       );
-      props.onRowNumberUpdated?.(newRows.length, operation, updatedRowIndex);
+      props.onRowNumberUpdated?.(newRows.length, operation, rowIndex);
     },
     [props.onRowNumberUpdated, columns]
   );
@@ -289,7 +291,7 @@ export function DmnRunnerTable(props: DmnRunnerTableProps) {
   }, [columns, searchRecursively]);
 
   const onColumnsUpdate = useCallback(
-    (columns) => {
+    ({ columns }: ColumnsUpdateArgs) => {
       props.onColumnsUpdate(columns);
     },
     [props.onColumnsUpdate]
@@ -299,7 +301,7 @@ export function DmnRunnerTable(props: DmnRunnerTableProps) {
     <div className="expression-container">
       <div className="expression-name-and-logic-type" />
       <div className="expression-container-box" data-ouia-component-id="expression-container">
-        <div className={`dmn-runner-table ${props.uid}`}>
+        <div className={`dmn-runner-table ${props.id}`}>
           <div className={`logic-type-selector logic-type-selected`}>
             <Table
               editableHeader={false}

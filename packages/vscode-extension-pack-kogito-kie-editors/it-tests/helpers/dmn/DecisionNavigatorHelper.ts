@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import { until, WebElement } from "vscode-extension-tester";
+import { By, until, WebElement } from "vscode-extension-tester";
 import { assertWebElementIsDisplayedEnabled } from "../CommonAsserts";
 import { spanComponentWithText } from "../CommonLocators";
+import { ExpressionType } from "./ExpressionType";
 
 /**
  * Class for accessing expanded DMN Decision Navigator panel
@@ -26,14 +27,37 @@ export default class DecisionNavigatorHelper {
 
   /**
    * Selects a DMN diagram node by click it the DMN Decision Navigator panel
-   * Do not use this method to select an expression like 'Decision Table', 'Literal Expression' ...
+   * Do not use this method to select an expression like 'Decision Table', 'Literal Expression'.
+   * Use 'selectNodeExpression' in such case.
    *
    * @param nodeName node name to select
    */
   public async selectDiagramNode(nodeName: string): Promise<DecisionNavigatorHelper> {
     const node: WebElement = await this.getDiagramNode(nodeName);
     await node.click();
+    return this;
+  }
 
+  /**
+   * Selects a DMN diagram node expression by click in the DMN Decision Navigator panel
+   *
+   * @param nodeName node that contains an expression
+   * @param expressionType expression type inside the node
+   */
+  public async selectNodeExpression(
+    nodeName: string,
+    expressionType: ExpressionType
+  ): Promise<DecisionNavigatorHelper> {
+    const expression: WebElement = await this.root
+      .getDriver()
+      .wait(
+        until.elementLocated(
+          By.xpath(`//li[@title='${nodeName}']/ul/li[@title='${expressionType}']/div/span[@data-field='text-content']`)
+        ),
+        5000,
+        `${nodeName} and its ${expressionType} not found in 5 seconds`
+      );
+    await expression.click();
     return this;
   }
 
