@@ -71,7 +71,8 @@ public abstract class BaseExample implements Example {
         MousePanMediator pan = new MousePanMediator(EventFilter.META);
         this.panel.getViewport().pushMediator(pan);
 
-        jsCanvas = new JsCanvas(this.panel, this.layer);
+        jsCanvas = new JsCanvas(this.panel, this.layer, (UUID, state) -> {
+        });
         setupJsCanvasTypes(jsCanvas);
     }
 

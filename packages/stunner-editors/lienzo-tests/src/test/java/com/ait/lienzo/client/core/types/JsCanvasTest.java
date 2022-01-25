@@ -26,10 +26,11 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class JsCanvasTest {
@@ -39,6 +40,9 @@ public class JsCanvasTest {
 
     @Mock
     private JsWiresShape jsWiresShape;
+
+    @Mock
+    JSShapeStateApplier shapeStateApplier;
 
     @Test
     public void testGetBackgroundColor() {
@@ -213,5 +217,21 @@ public class JsCanvasTest {
         assertEquals(null, dimensions);
         dimensions = jsCanvas.getDimensions("");
         assertEquals(null, dimensions);
+    }
+
+    @Test
+    public void testApplyState() {
+        jsCanvas.stateApplier = shapeStateApplier;
+        doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
+
+        jsCanvas.applyState("someId", "None");
+        verify(shapeStateApplier, times(1)).applyState("someId", "None");
+    }
+
+    @Test
+    public void testCenter() {
+        doCallRealMethod().when(jsCanvas).center(anyString());
+        jsCanvas.center("someId");
+        verify(jsCanvas, times(1)).centerNode("someId");
     }
 }
