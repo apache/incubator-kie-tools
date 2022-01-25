@@ -26,6 +26,7 @@ import { act } from "react-dom/test-utils";
 import { fireEvent } from "@testing-library/react";
 import { BoxedExpressionGlobalContext } from "@kogito-tooling/boxed-expression-component/dist/context";
 import {
+  BoxedExpressionEditorGWTService,
   BoxedExpressionProvider,
   BoxedExpressionProviderProps,
   DataType,
@@ -134,6 +135,7 @@ export function usingTestingBoxedExpressionProviderContext(
     ctx: usedCtx,
     wrapper: (
       <BoxedExpressionProvider
+        boxedExpressionEditorGWTService={usedCtx.boxedExpressionEditorGWTService}
         decisionNodeId={usedCtx.decisionNodeId}
         expressionDefinition={usedCtx.expressionDefinition}
         dataTypes={usedCtx.dataTypes}
@@ -146,10 +148,14 @@ export function usingTestingBoxedExpressionProviderContext(
   };
 }
 
-export function wrapComponentInContext(component: JSX.Element): JSX.Element {
+export function wrapComponentInContext(
+  component: JSX.Element,
+  boxedExpressionEditorGWTService?: BoxedExpressionEditorGWTService
+): JSX.Element {
   return (
     <BoxedExpressionGlobalContext.Provider
       value={{
+        boxedExpressionEditorGWTService,
         decisionNodeId: "_00000000-0000-0000-0000-000000000000",
         dataTypes,
         pmmlParams,

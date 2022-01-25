@@ -22,6 +22,8 @@ import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { DataType, ExpressionProps } from "../../api";
 import { useBoxedExpression } from "../../context";
 import { DataTypeSelector } from "./DataTypeSelector";
+import { CogIcon } from "@patternfly/react-icons";
+import { Button } from "@patternfly/react-core";
 
 export interface EditExpressionMenuProps {
   /** Optional children element to be considered for triggering the edit expression menu */
@@ -79,26 +81,31 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     (event) => {
       setExpressionName(event.target.value);
       if (event.type === "blur") {
-        window.beeApi?.notifyUserAction();
+        boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
         onExpressionUpdate({
           name: event.target.value,
           dataType,
         });
       }
     },
-    [dataType, onExpressionUpdate]
+    [boxedExpression.boxedExpressionEditorGWTService, dataType, onExpressionUpdate]
   );
 
   const onDataTypeChange = useCallback(
     (dataType: DataType) => {
-      window.beeApi?.notifyUserAction();
+      boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
       setDataType(dataType);
       onExpressionUpdate({
         name: expressionName,
         dataType: dataType,
       });
     },
-    [expressionName, onExpressionUpdate]
+    [boxedExpression.boxedExpressionEditorGWTService, expressionName, onExpressionUpdate]
+  );
+
+  const openManageDataType = useCallback(
+    () => boxedExpression.boxedExpressionEditorGWTService?.openManageDataType(),
+    [boxedExpression.boxedExpressionEditorGWTService]
   );
 
   return (
@@ -123,6 +130,16 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
           </div>
           <div className="expression-data-type">
             <label>{dataTypeField}</label>
+            <Button
+              ouiaId="manage-data-type-link"
+              variant="link"
+              className="manage-datatype"
+              icon={<CogIcon />}
+              iconPosition="left"
+              onClick={openManageDataType}
+            >
+              {i18n.manage}
+            </Button>
             <DataTypeSelector selectedDataType={dataType} onDataTypeChange={onDataTypeChange} />
           </div>
         </div>
