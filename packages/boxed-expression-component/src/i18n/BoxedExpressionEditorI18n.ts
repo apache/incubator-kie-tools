@@ -58,6 +58,7 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   invocation: string;
   list: string;
   literalExpression: string;
+  manage: string;
   methodSignature: string;
   model: string;
   name: string;

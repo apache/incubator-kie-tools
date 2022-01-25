@@ -70,13 +70,13 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       }
 
       if (value !== newValue) {
-        window.beeApi?.notifyUserAction();
+        boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
         onCellUpdate(rowIndex, columnId, newValue ?? value);
       }
 
       focusTextArea(textarea.current);
     },
-    [mode, columnId, onCellUpdate, rowIndex, value]
+    [boxedExpression.boxedExpressionEditorGWTService, mode, columnId, onCellUpdate, rowIndex, value]
   );
 
   const triggerEditMode = useCallback(() => {
@@ -181,7 +181,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
     if (!value) {
       return "";
     }
-    if (value !== null && typeof value === "object") {
+    if (typeof value === "object") {
       return value[columnId];
     }
     return `${value}`;

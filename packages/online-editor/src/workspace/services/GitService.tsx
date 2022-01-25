@@ -62,6 +62,16 @@ export interface PushArgs {
   };
 }
 
+export interface RemoteRefArgs {
+  fs: KieSandboxFs;
+  dir: string;
+  remoteRef?: string;
+  authInfo?: {
+    username: string;
+    password: string;
+  };
+}
+
 export class GitService {
   public constructor(private readonly corsProxy: string) {}
 
@@ -154,10 +164,15 @@ export class GitService {
     });
   }
 
-  public async getRemoteRef(args: { fs: KieSandboxFs; dir: string; remoteRef?: string }) {
+  public async getRemoteRef(args: RemoteRefArgs) {
     const url = await git.getConfig({ fs: args.fs, path: "remote.origin.url", dir: args.dir });
 
-    const serverRefs = await git.listServerRefs({ http: http, url, corsProxy: this.corsProxy });
+    const serverRefs = await git.listServerRefs({
+      http: http,
+      url,
+      corsProxy: this.corsProxy,
+      onAuth: () => args.authInfo,
+    });
 
     return serverRefs.find((serverRef) =>
       args.remoteRef ? serverRef.ref === args.remoteRef : serverRef.ref === "HEAD"
@@ -175,7 +190,12 @@ export class GitService {
       ref: "HEAD",
     });
 
-    const serverRemoteRef = await this.getRemoteRef({ fs: args.fs, dir: args.dir, remoteRef: args.remoteRef });
+    const serverRemoteRef = await this.getRemoteRef({
+      fs: args.fs,
+      dir: args.dir,
+      remoteRef: args.remoteRef,
+      authInfo: args.authInfo,
+    });
 
     if (serverRemoteRef?.oid && head === serverRemoteRef.oid) return;
 

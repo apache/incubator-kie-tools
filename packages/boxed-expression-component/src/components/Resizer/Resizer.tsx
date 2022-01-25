@@ -179,7 +179,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   const onResizeStop = useCallback(
     (_, data) => {
       const newResizerWidth = widthValue(data.size.width);
-      window.beeApi?.notifyUserAction();
+      boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
       cells.forEach((cell) => {
         const delta = newResizerWidth - initialResizerWidth;
         const cellInitialWidth = widthValue(cell.element.dataset.initialWidth);
@@ -188,7 +188,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
 
       setSupervisorHash("-");
     },
-    [cells, initialResizerWidth, setSupervisorHash, widthValue]
+    [boxedExpression.boxedExpressionEditorGWTService, cells, initialResizerWidth, setSupervisorHash, widthValue]
   );
 
   return (
