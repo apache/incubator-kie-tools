@@ -154,7 +154,7 @@ export class GitService {
     });
   }
 
-  public async getRemoteRef(args: { fs: LightningFS; dir: string; remoteRef?: string }) {
+  public async getRemoteRef(args: { fs: KieSandboxFs; dir: string; remoteRef?: string }) {
     const url = await git.getConfig({ fs: args.fs, path: "remote.origin.url", dir: args.dir });
 
     const serverRefs = await git.listServerRefs({ http: http, url, corsProxy: this.corsProxy });
