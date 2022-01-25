@@ -37,6 +37,7 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
+import elemental2.dom.DomGlobal;
 
 /**
  * A LayerToolbox implementation for WiresShape's.
@@ -84,12 +85,14 @@ public class WiresShapeToolbox
 
     @Override
     public WiresShapeToolbox at(final Direction at) {
+        DomGlobal.console.debug("WireShapeToolbox:::at");
         toolbox.at(at);
         return this;
     }
 
     @Override
     public WiresShapeToolbox offset(final Point2D value) {
+        DomGlobal.console.debug("WireShapeToolbox:::offset");
         this.toolboxOffset.setX(value.getX());
         this.toolboxOffset.setY(value.getY());
         return reposition();
@@ -97,6 +100,7 @@ public class WiresShapeToolbox
 
     @Override
     public WiresShapeToolbox grid(final Point2DGrid grid) {
+        DomGlobal.console.debug("WireShapeToolbox:::grid");
         toolbox.grid(grid);
         // Add some padding to fit the grid with a shape..
         final Point2D go = getGridOffset(grid,
@@ -108,6 +112,7 @@ public class WiresShapeToolbox
 
     @Override
     public WiresShapeToolbox add(final DecoratedItem... items) {
+        DomGlobal.console.debug("WireShapeToolbox:::add");
         toolbox.add(items);
         return this;
     }
@@ -119,22 +124,26 @@ public class WiresShapeToolbox
 
     @Override
     public WiresShapeToolbox show() {
+        DomGlobal.console.debug("WireShapeToolbox:::show");
         toolbox.show();
         return this;
     }
 
     @Override
     public WiresShapeToolbox hide() {
+        DomGlobal.console.debug("WireShapeToolbox:::hide");
         toolbox.hide();
         return this;
     }
 
     public WiresShapeToolbox useShowExecutor(final BiConsumer<Group, Runnable> executor) {
+        DomGlobal.console.debug("WireShapeToolbox:::showExecutor");
         toolbox.useShowExecutor(executor);
         return this;
     }
 
     public WiresShapeToolbox useHideExecutor(final BiConsumer<Group, Runnable> executor) {
+        DomGlobal.console.debug("WireShapeToolbox:::hideExecutor");
         toolbox.useHideExecutor(executor);
         return this;
     }
@@ -158,12 +167,14 @@ public class WiresShapeToolbox
 
     @Override
     public WiresShapeToolbox onMouseEnter(final NodeMouseEnterHandler handler) {
+        DomGlobal.console.debug("WireShapeToolbox:::onMouseEnter");
         toolbox.onMouseEnter(handler);
         return this;
     }
 
     @Override
     public WiresShapeToolbox onMouseExit(final NodeMouseExitHandler handler) {
+        DomGlobal.console.debug("WireShapeToolbox:::onMouseExit");
         toolbox.onMouseExit(handler);
         return this;
     }
@@ -183,6 +194,7 @@ public class WiresShapeToolbox
     }
 
     public void hideAndDestroy() {
+        DomGlobal.console.debug("WireShapeToolbox:::hideAndDestroy");
         toolbox.hide(() -> {
                      },
                      WiresShapeToolbox.this::doDestroy);
@@ -199,12 +211,14 @@ public class WiresShapeToolbox
     }
 
     WiresShapeToolbox reposition() {
+        DomGlobal.console.debug("WireShapeToolbox:::reposition");
         toolbox.offset(toolboxOffset.offset(gridOffset.getX(), gridOffset.getY()));
         return this;
     }
 
     void resize(final double width,
                 final double height) {
+        DomGlobal.console.debug("WireShapeToolbox:::resize");
         toolbox
                 .setGridSize(width,
                              height)
@@ -212,6 +226,7 @@ public class WiresShapeToolbox
     }
 
     private void doDestroy() {
+        DomGlobal.console.debug("WireShapeToolbox:::doDestroy");
         toolbox.destroy();
         wiresMoveHandlerReg.removeHandler();
         wiresDragStartHandlerReg.removeHandler();
@@ -230,16 +245,20 @@ public class WiresShapeToolbox
     }
 
     private void onResize(final AbstractWiresResizeEvent event) {
+        DomGlobal.console.debug("WireShapeToolbox:::onResize");
         shapeOffset((WiresContainer) event.getSource());
         resize(event.getWidth(),
                event.getHeight());
     }
 
     private void onMove(final WiresMoveEvent event) {
+        DomGlobal.console.debug("WireShapeToolbox:::onMove");
         shapeOffset(event.getSource());
     }
 
     private void onMove(final AbstractWiresDragEvent event) {
+
+        DomGlobal.console.debug("WireShapeToolbox:::onMove 2");
         shapeOffset((WiresContainer) event.getSource());
     }
 
