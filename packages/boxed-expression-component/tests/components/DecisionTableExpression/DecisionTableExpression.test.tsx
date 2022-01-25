@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import { DataType, DecisionTableProps, HitPolicy, LogicType } from "@kogito-tooling/boxed-expression-component";
+import {
+  BoxedExpressionEditorGWTService,
+  DataType,
+  DecisionTableProps,
+  HitPolicy,
+  LogicType,
+} from "@kogito-tooling/boxed-expression-component";
 import { fireEvent, render } from "@testing-library/react";
 import {
   flushPromises,
@@ -156,10 +162,18 @@ describe("DecisionTableExpression tests", () => {
 
   test("should append a row, with empty values, except for input column, whose value is dash symbol, when user inserts a row below", async () => {
     const mockedBroadcastDefinition = jest.fn();
-    mockBroadcastDefinition(mockedBroadcastDefinition);
+    const boxedExpressionEditorGWTService = {
+      broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) =>
+        mockedBroadcastDefinition(definition),
+      notifyUserAction: () => {},
+    } as BoxedExpressionEditorGWTService;
+
     const { container, baseElement } = render(
       usingTestingBoxedExpressionI18nContext(
-        wrapComponentInContext(<DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />)
+        wrapComponentInContext(
+          <DecisionTableExpression id="decision-node-id" logicType={LogicType.DecisionTable} />,
+          boxedExpressionEditorGWTService
+        )
       ).wrapper
     );
 
@@ -189,12 +203,4 @@ describe("DecisionTableExpression tests", () => {
       })
     );
   });
-
-  function mockBroadcastDefinition(mockedBroadcastDefinition: jest.Mock) {
-    window.beeApi = _.extend(window.beeApi || {}, {
-      broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) =>
-        mockedBroadcastDefinition(definition),
-      notifyUserAction: () => {},
-    });
-  }
 });

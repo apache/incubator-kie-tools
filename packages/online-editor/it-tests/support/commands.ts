@@ -28,10 +28,10 @@ declare namespace Cypress {
 
     /**
      * Search elements by data-ouia component attributes.
-     * @param id string
+     * @param locator component type and component id according to OUIA specification
      * @param opts optional - config object
      */
-    ouiaId(id: string, opts?: Record<string, any>): Chainable<Element>;
+    ouia(locator: { ouiaType?: string; ouiaId: string }, opts?: Record<string, any>): Chainable<Element>;
   }
 }
 
@@ -47,12 +47,15 @@ Cypress.Commands.add("loadEditor", () => {
   });
 });
 
-Cypress.Commands.add("ouiaId", { prevSubject: "optional" }, (subject, id: string, options = {}) => {
-  const idSelector = `[data-ouia-component-id='${id}']`;
+Cypress.Commands.add("ouia", { prevSubject: "optional" }, (subject, locator, options = {}) => {
+  let selector = `[data-ouia-component-id='${locator.ouiaId}']`;
+  if (locator.ouiaType !== undefined && locator.ouiaType !== "") {
+    selector = `[data-ouia-component-type='${locator.ouiaType}']` + selector;
+  }
 
   if (subject) {
-    cy.wrap(subject, options).find(idSelector, options);
+    cy.wrap(subject, options).find(selector, options);
   } else {
-    cy.get(idSelector, options);
+    cy.get(selector, options);
   }
 });

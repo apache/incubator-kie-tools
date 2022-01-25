@@ -42,6 +42,7 @@ export function BoxedExpressionProvider(props: BoxedExpressionProviderProps) {
   return (
     <BoxedExpressionGlobalContext.Provider
       value={{
+        boxedExpressionEditorGWTService: props.boxedExpressionEditorGWTService,
         decisionNodeId: props.decisionNodeId,
         dataTypes: props.dataTypes,
         pmmlParams: props.pmmlParams,
