@@ -62,6 +62,6 @@ public class ActivationChecker {
     }
 
     private String getRootUri() {
-        return "file://" + this.workspaceUtil.getWorkspace();
+        return this.workspaceUtil.getWorkspace();
     }
 }
