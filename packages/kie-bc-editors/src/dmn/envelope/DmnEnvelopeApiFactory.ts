@@ -111,7 +111,7 @@ export class DmnEditorEnvelopeApiImpl
   }
 
   public async canvas_applyState(uuid: string, state: string) {
-    const editor = this.dmnArgs.view().getEditor();
+    const editor = this.view().getEditor();
     if (!editor) {
       throw new Error("Editor not found.");
     }
@@ -119,7 +119,7 @@ export class DmnEditorEnvelopeApiImpl
   }
 
   public async canvas_centerNode(uuid: string) {
-    const editor = this.dmnArgs.view().getEditor();
+    const editor = this.view().getEditor();
     if (!editor) {
       throw new Error("Editor not found.");
     }
