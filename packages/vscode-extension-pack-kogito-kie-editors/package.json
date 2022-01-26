@@ -29,7 +29,7 @@
   },
   "contributes": {
     "javaExtensions": [
-      "./server/vscode-java-code-completion-extension-plugin-core.jar"
+      "./dist/server/vscode-java-code-completion-extension-plugin-core.jar"
     ],
     "configuration": {
       "title": "Kogito Tooling Dev Test Configuration",
