@@ -39,6 +39,7 @@ import {
   focusTextArea,
   focusUpperCell,
   focusLowerCell,
+  focusCurrentCell,
 } from "./common";
 import { EditableCell } from "./EditableCell";
 import "./Table.css";
@@ -341,7 +342,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
           focusUpperCell(e.currentTarget, rowIndex);
         } else if (key == "ArrowDown") {
           focusLowerCell(e.currentTarget, rowIndex);
-        } else if (key == "Enter") {
+        } else if (key == "Enter" && !showTableHandler) {
           focusTextArea(e.currentTarget.querySelector("textarea"));
         }
         /* FIXME: Table: close the menu if user is moving */
@@ -361,6 +362,8 @@ export const Table: React.FunctionComponent<TableProps> = ({
           ]);
           tableHandlerStateUpdate(target, getColumnsAtLastLevel(tableColumns, headerLevels)[columnIndex]);
           setLastSelectedRowIndex(rowIndex);
+
+          focusCurrentCell(target);
         }
       },
     }),
