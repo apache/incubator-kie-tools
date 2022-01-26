@@ -1,4 +1,4 @@
-name: "Setup Kogito Tooling build environment"
+name: "Setup KIE Tools build environment"
 description: ""
 
 inputs:
@@ -6,7 +6,7 @@ inputs:
     description: "Operating System"
     required: true
   path:
-    description: "kogito-tooling path"
+    description: "kie-tools path"
     required: false
     default: "."
 

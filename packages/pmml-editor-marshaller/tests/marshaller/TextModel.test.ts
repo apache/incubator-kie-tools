@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DataDictionary, Model, PMML, TextModel, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, Model, PMML, TextModel, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import { TEXT_MODEL_1 } from "./TestData_TextModel";
 
 describe("TextModel tests", () => {

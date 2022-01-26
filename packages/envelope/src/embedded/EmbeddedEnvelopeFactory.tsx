@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { ApiDefinition, EnvelopeBusMessage } from "@kie-tooling-core/envelope-bus/dist/api";
-import { EnvelopeServer, EnvelopeServerType } from "@kie-tooling-core/envelope-bus/dist/channel";
+import { ApiDefinition, EnvelopeBusMessage } from "@kie-tools-core/envelope-bus/dist/api";
+import { EnvelopeServer, EnvelopeServerType } from "@kie-tools-core/envelope-bus/dist/channel";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useRef } from "react";
-import { useConnectedEnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/hooks";
+import { useConnectedEnvelopeServer } from "@kie-tools-core/envelope-bus/dist/hooks";
 import type * as CSS from "csstype";
 import { ContainerType } from "../api";
 

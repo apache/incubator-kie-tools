@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { Cyclic, DataField, DataType, OpType } from "@kogito-tooling/pmml-editor-marshaller";
+import { Cyclic, DataField, DataType, OpType } from "@kie-tools/pmml-editor-marshaller";
 import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
 import { Builder } from "../paths";

@@ -21,8 +21,8 @@ import {
   SimplePredicate,
   SimplePredicateOperator,
   True,
-} from "@kogito-tooling/pmml-editor-marshaller";
-import { fromText } from "@kogito-tooling/pmml-editor/dist/editor/components/EditorScorecard/organisms";
+} from "@kie-tools/pmml-editor-marshaller";
+import { fromText } from "@kie-tools/pmml-editor/dist/editor/components/EditorScorecard/organisms";
 
 describe("PredicateConverter", () => {
   test("fromText::undefined", () => {

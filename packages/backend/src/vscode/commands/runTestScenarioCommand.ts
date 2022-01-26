@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { I18n } from "@kie-tooling-core/i18n/dist/core/I18n";
-import { NotificationsApi } from "@kie-tooling-core/notifications/dist/api";
-import { WorkspaceApi } from "@kie-tooling-core/workspace/dist/api";
+import { I18n } from "@kie-tools-core/i18n/dist/core/I18n";
+import { NotificationsApi } from "@kie-tools-core/notifications/dist/api";
+import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
 import * as vscode from "vscode";
 import { CapabilityResponseStatus } from "../../api";
 import { ServiceId, TestResult, TestScenarioRunnerCapability } from "../../channel-api";

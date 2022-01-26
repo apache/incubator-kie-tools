@@ -33,7 +33,7 @@ import {
   SimplePredicate,
   True,
   XML2PMML,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import {
   SCORE_CARD_BASIC_COMPLEX_PARTIAL_SCORE,
   SCORE_CARD_COMPOUND_PREDICATE,
@@ -90,7 +90,7 @@ describe("Scorecard tests", () => {
   });
 
   test("Scorecard::Models::No modelName", () => {
-    const xml: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+    const xml: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
       <Header/>
       <DataDictionary/>
       <Scorecard/>
@@ -651,7 +651,7 @@ describe("Scorecard tests", () => {
   });
 
   function makeScorecardWithIsScorable(isScorable: boolean): Scorecard {
-    const xml: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+    const xml: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
       <Header/>
       <DataDictionary/>
       <Scorecard isScorable="${isScorable}"/>
@@ -680,7 +680,7 @@ describe("Scorecard tests", () => {
   });
 
   function makeScorecardWithUseReasonCodes(useReasonCodes: boolean): Scorecard {
-    const xml: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+    const xml: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4">
       <Header/>
       <DataDictionary/>
       <Scorecard useReasonCodes="${useReasonCodes}"/>

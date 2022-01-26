@@ -16,10 +16,7 @@
 
 import { render } from "@testing-library/react";
 import * as React from "react";
-import {
-  getCellCoordinates,
-  getCellTableId,
-} from "@kogito-tooling/boxed-expression-component/dist/components/Table/common";
+import { getCellCoordinates, getCellTableId } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
 
 describe("TableUtils", () => {
   describe("getCellCoordinates", () => {

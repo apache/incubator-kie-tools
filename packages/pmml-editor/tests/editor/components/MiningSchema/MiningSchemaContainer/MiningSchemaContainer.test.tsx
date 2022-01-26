@@ -15,7 +15,7 @@
  */
 import { fireEvent, render } from "@testing-library/react";
 import * as React from "react";
-import { DataField, DataType, FieldName, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataField, DataType, FieldName, MiningField } from "@kie-tools/pmml-editor-marshaller";
 import MiningSchemaContainer, {
   MiningSchemaContext,
 } from "../../../../../src/editor/components/MiningSchema/MiningSchemaContainer/MiningSchemaContainer";

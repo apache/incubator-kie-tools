@@ -15,22 +15,22 @@
  */
 
 import * as React from "react";
-import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tooling-core/i18n/dist/react-components";
+import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tools-core/i18n/dist/react-components";
 import {
   boxedExpressionEditorDictionaries,
   BoxedExpressionEditorI18n,
   BoxedExpressionEditorI18nContext,
   boxedExpressionEditorI18nDefaults,
-} from "@kogito-tooling/boxed-expression-component/dist/i18n";
+} from "@kie-tools/boxed-expression-component/dist/i18n";
 import { act } from "react-dom/test-utils";
 import { fireEvent } from "@testing-library/react";
-import { BoxedExpressionGlobalContext } from "@kogito-tooling/boxed-expression-component/dist/context";
+import { BoxedExpressionGlobalContext } from "@kie-tools/boxed-expression-component/dist/context";
 import {
   BoxedExpressionEditorGWTService,
   BoxedExpressionProvider,
   BoxedExpressionProviderProps,
   DataType,
-} from "@kogito-tooling/boxed-expression-component";
+} from "@kie-tools/boxed-expression-component";
 
 global.console = { ...global.console, warn: () => ({}) };
 

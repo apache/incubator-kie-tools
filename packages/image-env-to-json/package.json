@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-tooling/image-env-to-json",
+  "name": "@kie-tools/image-env-to-json",
   "version": "0.0.0",
   "private": true,
   "description": "",
@@ -7,14 +7,14 @@
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kogito-tooling.git"
+    "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "dependencies": {
     "commander": "^8.3.0"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0",
-    "@kie-tooling-core/webpack-base": "0.0.0"
+    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/webpack-base": "0.0.0"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts\"",

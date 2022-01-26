@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Editor, KogitoEditorChannelApi, KogitoEditorEnvelopeContextType } from "@kie-tooling-core/editor/dist/api";
-import { DEFAULT_RECT } from "@kie-tooling-core/guided-tour/dist/api";
-import { Notification } from "@kie-tooling-core/notifications/dist/api";
+import { Editor, KogitoEditorChannelApi, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
+import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
 import { PMMLEditor } from "./PMMLEditor";
 

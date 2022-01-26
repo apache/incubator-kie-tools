@@ -15,13 +15,13 @@
  */
 
 import * as vscode from "vscode";
-import { TodoListWebview } from "@kogito-tooling-examples/todo-list-view/dist/vscode";
-import { TodoListEnvelopeApi } from "@kogito-tooling-examples/todo-list-view/dist/api";
-import { MessageBusClientApi, SharedValueProvider } from "@kie-tooling-core/envelope-bus/dist/api";
+import { TodoListWebview } from "@kie-tools-examples/todo-list-view/dist/vscode";
+import { TodoListEnvelopeApi } from "@kie-tools-examples/todo-list-view/dist/api";
+import { MessageBusClientApi, SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 
-const OPEN_TODO_LIST_VIEW_COMMAND_ID = "kogito-tooling-examples.todo-list-view";
-const ADD_TODO_ITEM_COMMAND_ID = "kogito-tooling-examples.todo-list-view.add-item";
-const MARK_ALL_AS_COMPLETED_COMMAND_ID = "kogito-tooling-examples.todo-list-view.mark-all-as-completed";
+const OPEN_TODO_LIST_VIEW_COMMAND_ID = "kie-tools-examples.todo-list-view";
+const ADD_TODO_ITEM_COMMAND_ID = "kie-tools-examples.todo-list-view.add-item";
+const MARK_ALL_AS_COMPLETED_COMMAND_ID = "kie-tools-examples.todo-list-view.mark-all-as-completed";
 
 /**
  * This method is called when the extension is activated.

@@ -18,10 +18,10 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo } from "react";
 import { useDmnRunnerState, useDmnRunnerDispatch } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
-import { DmnAutoTable } from "@kogito-tooling/unitables";
-import { DecisionResult } from "@kogito-tooling/form/dist/dmn";
+import { DmnAutoTable } from "@kie-tools/unitables";
+import { DecisionResult } from "@kie-tools/form/dist/dmn";
 import { PanelId } from "../EditorPageDockDrawer";
-import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tooling-core/keyboard-shortcuts/dist/channel";
+import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
 
 interface Props {
   isReady?: boolean;

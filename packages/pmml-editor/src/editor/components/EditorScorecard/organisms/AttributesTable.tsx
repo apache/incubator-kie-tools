@@ -23,7 +23,7 @@ import {
   Model,
   PMML,
   Scorecard,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import { AttributesTableRow } from "../molecules";
 import "./AttributesTable.scss";
 import { Operation } from "../Operation";

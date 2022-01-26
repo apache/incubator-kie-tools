@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  DataDictionary,
-  Model,
-  PMML,
-  SupportVectorMachineModel,
-  XML2PMML,
-} from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, Model, PMML, SupportVectorMachineModel, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import { SUPPORT_VECTOR_MACHINE_MODEL_1 } from "./TestData_SupportVectorMachineModel";
 
 describe("SupportVectorMachineModel tests", () => {

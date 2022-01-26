@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ApiDefinition } from "@kie-tooling-core/envelope-bus/dist/api";
-import { EnvelopeClient } from "@kie-tooling-core/envelope-bus/dist/envelope";
+import { ApiDefinition } from "@kie-tools-core/envelope-bus/dist/api";
+import { EnvelopeClient } from "@kie-tools-core/envelope-bus/dist/envelope";
 
 export interface EnvelopeApiFactoryArgs<
   ApiToProvide extends ApiDefinition<ApiToProvide>,

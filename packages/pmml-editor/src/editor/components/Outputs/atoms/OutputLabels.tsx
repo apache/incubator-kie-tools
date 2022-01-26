@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { FieldName, OpType, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
+import { FieldName, OpType, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
 import { OutputFieldLabel } from "./OutputFieldLabel";
 import { ValidationEntry } from "../../../validation";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";

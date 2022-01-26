@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { EnvelopeClient } from "@kie-tooling-core/envelope-bus/dist/envelope";
+import { EnvelopeClient } from "@kie-tools-core/envelope-bus/dist/envelope";
 import {
   EnvelopeBusMessage,
   EnvelopeBusMessageDirectSender,
   EnvelopeBusMessagePurpose,
-} from "@kie-tooling-core/envelope-bus/dist/api";
+} from "@kie-tools-core/envelope-bus/dist/api";
 
 interface ApiToConsume {
   setText(text: string): void;

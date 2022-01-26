@@ -33,7 +33,7 @@ import {
   OpType,
   OutlierTreatmentMethod,
   UsageType,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import "./MiningSchemaPropertiesEdit.scss";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";

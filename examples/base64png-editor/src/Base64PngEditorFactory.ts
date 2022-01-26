@@ -19,7 +19,7 @@ import {
   EditorInitArgs,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType,
-} from "@kie-tooling-core/editor/dist/api";
+} from "@kie-tools-core/editor/dist/api";
 import { Base64PngEditorInterface } from "./Base64PngEditorInterface";
 
 /**

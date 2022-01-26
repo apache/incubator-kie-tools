@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { VsCodeBackendProxy } from "@kie-tooling-core/backend/dist/vscode";
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
-import { I18n } from "@kie-tooling-core/i18n/dist/core";
-import { VsCodeWorkspaceApi } from "@kie-tooling-core/workspace/dist/vscode";
+import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
+import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { VsCodeWorkspaceApi } from "@kie-tools-core/workspace/dist/vscode";
 import * as vscode from "vscode";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { generateSvg } from "./generateSvg";
@@ -25,8 +25,8 @@ import { vsCodeI18nDefaults, vsCodeI18nDictionaries } from "./i18n";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorWebviewProvider } from "./KogitoEditorWebviewProvider";
-import { VsCodeNotificationsApi } from "@kie-tooling-core/notifications/dist/vscode";
-import { VsCodeJavaCodeCompletionImpl } from "@kie-tooling-core/vscode-java-code-completion/dist/vscode";
+import { VsCodeNotificationsApi } from "@kie-tools-core/notifications/dist/vscode";
+import { VsCodeJavaCodeCompletionImpl } from "@kie-tools-core/vscode-java-code-completion/dist/vscode";
 
 /**
  * Starts a Kogito extension.

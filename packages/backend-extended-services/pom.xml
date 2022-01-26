@@ -20,14 +20,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.github.kiegroup.kogito.tooling</groupId>
+  <groupId>io.github.kiegroup.kie.tools</groupId>
   <artifactId>backend-extended-services</artifactId>
   <packaging>pom</packaging>
   <version>0.0.0</version>
 
   <name>Backend Extended Services - Parent</name>
   <description>The parent contains all metadata including dependency versions and modules.</description>
-  <url>https://github.com/kiegroup/kogito-tooling</url>
+  <url>https://github.com/kiegroup/kie-tools</url>
   <inceptionYear>2020</inceptionYear>
   <licenses>
     <license>
@@ -38,17 +38,17 @@
 
   <developers>
     <developer>
-      <name>Kie Tooling</name>
-      <email>kietooling@gmail.com</email>
+      <name>KIE Tools</name>
+      <email>kietoolsbot@gmail.com</email>
       <organization>io.github.kiegroup</organization>
       <organizationUrl>https://github.com/kiegroup</organizationUrl>
     </developer>
   </developers>
 
   <scm>
-    <connection>scm:git:git://github.com/kiegroup/kogito-tooling.git</connection>
-    <developerConnection>scm:git:ssh://github.com:kiegroup/kogito-tooling.git</developerConnection>
-    <url>https://github.com/kiegroup/kogito-tooling/tree/main</url>
+    <connection>scm:git:git://github.com/kiegroup/kie-tools.git</connection>
+    <developerConnection>scm:git:ssh://github.com:kiegroup/kie-tools.git</developerConnection>
+    <url>https://github.com/kiegroup/kie-tools/tree/main</url>
   </scm>
 
   <properties>
