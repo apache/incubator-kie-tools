@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import { useCallback, useLayoutEffect, useMemo } from "react";
-import { Column, ColumnInstance, DataRecord } from "react-table";
-import "@kogito-tooling/boxed-expression-component";
+import { Column, ColumnInstance } from "react-table";
+import "@kie-tools/boxed-expression-component";
 import {
   ColumnsUpdateArgs,
   ExpressionProps,
@@ -25,8 +25,8 @@ import {
   RowsUpdateArgs,
   TableHeaderVisibility,
   TableOperation,
-} from "@kogito-tooling/boxed-expression-component/dist/api";
-import { getColumnsAtLastLevel, Table } from "@kogito-tooling/boxed-expression-component/dist/components";
+} from "@kie-tools/boxed-expression-component/dist/api";
+import { getColumnsAtLastLevel, Table } from "@kie-tools/boxed-expression-component/dist/components";
 import "./DmnRunnerTable.css";
 import { DmnRunnerClause, DmnRunnerRule } from "./DmnRunnerTableTypes";
 import { useDmnAutoTableI18n } from "../i18n";
@@ -39,6 +39,8 @@ enum DecisionTableColumnType {
 
 const DASH_SYMBOL = "-";
 const EMPTY_SYMBOL = "";
+
+type DataRecord = Record<string, unknown>;
 
 export interface DmnRunnerTableProps extends ExpressionProps {
   /** Input columns definition */

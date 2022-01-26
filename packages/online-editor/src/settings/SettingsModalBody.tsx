@@ -39,21 +39,21 @@ export function SettingsModalBody() {
       isBox={false}
     >
       <Tab
-        className="kogito-tooling--settings-tab"
+        className="kie-tools--settings-tab"
         eventKey={SettingsTabs.GITHUB}
         title={<TabTitleText>GitHub</TabTitleText>}
       >
         <GitHubSettingsTab />
       </Tab>
       <Tab
-        className="kogito-tooling--settings-tab"
+        className="kie-tools--settings-tab"
         eventKey={SettingsTabs.OPENSHIFT}
         title={<TabTitleText>OpenShift</TabTitleText>}
       >
         <OpenShiftSettingsTab />
       </Tab>
       <Tab
-        className="kogito-tooling--settings-tab"
+        className="kie-tools--settings-tab"
         eventKey={SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES}
         title={<TabTitleText>KIE Sandbox Extended Services</TabTitleText>}
       >

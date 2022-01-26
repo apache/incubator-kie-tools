@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { useMemo } from "react";
-import { Attribute, Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, Characteristic } from "@kie-tools/pmml-editor-marshaller";
 import { useValidationRegistry } from "../../../validation";
 import { AttributeLabel } from "./AttributeLabel";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";

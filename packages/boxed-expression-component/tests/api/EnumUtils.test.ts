@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getEnumKeyByEnumValue } from "@kogito-tooling/boxed-expression-component";
+import { getEnumKeyByEnumValue } from "@kie-tools/boxed-expression-component";
 
 describe("EnumUtils tests", () => {
   test("given an enum value, it should return its key", () => {

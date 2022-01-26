@@ -28,7 +28,7 @@ import {
   PMML,
   Predicate,
   Scorecard,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { PredicateEditor } from "./PredicateEditor";
 import { Operation } from "../Operation";

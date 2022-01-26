@@ -16,10 +16,10 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const patternflyBase = require("@kie-tooling-core/patternfly-base");
+const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
-const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
-const buildEnv = require("@kogito-tooling/build-env");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const buildEnv = require("@kie-tools/build-env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const { EnvironmentPlugin } = require("webpack");

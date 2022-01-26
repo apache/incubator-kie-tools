@@ -20,16 +20,16 @@ const generate = require("@babel/generator").default;
 
 module.exports = function webpackLoader(content, map, meta) {
   const transformations = [
-    { from: /@kie-tooling-core\/(.*)\/dist/g, to: `@kie-tooling-core/$1/src` },
-    { from: /@kogito-tooling\/(.*)\/dist/g, to: `@kogito-tooling/$1/src` },
-    { from: /@kogito-tooling-examples\/(.*)\/dist/g, to: `@kogito-tooling-examples/$1/src` },
-    { from: /@kie-tooling-core\/([\w\d-]*)/g, to: `@kie-tooling-core/$1/src` },
-    { from: /@kogito-tooling\/([\w\d-]*)/g, to: `@kogito-tooling/$1/src` },
-    { from: /@kogito-tooling-examples\/([\w\d-]*)/g, to: `@kogito-tooling-examples/$1/src` },
+    { from: /@kie-tools-core\/(.*)\/dist/g, to: `@kie-tools-core/$1/src` },
+    { from: /@kie-tools\/(.*)\/dist/g, to: `@kie-tools/$1/src` },
+    { from: /@kie-tools-examples\/(.*)\/dist/g, to: `@kie-tools-examples/$1/src` },
+    { from: /@kie-tools-core\/([\w\d-]*)/g, to: `@kie-tools-core/$1/src` },
+    { from: /@kie-tools\/([\w\d-]*)/g, to: `@kie-tools/$1/src` },
+    { from: /@kie-tools-examples\/([\w\d-]*)/g, to: `@kie-tools-examples/$1/src` },
   ];
 
-  const excludes = ["@kie-tooling-core/monaco-editor", "@kogito-tooling/kie-editors-standalone"];
-  const includes = ["@kie-tooling-core", "@kogito-tooling"];
+  const excludes = ["@kie-tools-core/monaco-editor", "@kie-tools/kie-editors-standalone"];
+  const includes = ["@kie-tools-core", "@kie-tools"];
 
   const ast = parser.parse(content, { sourceType: "module", plugins: ["typescript", "jsx", "classProperties"] });
   traverse(ast, {

@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import { act, renderHook } from "@testing-library/react-hooks";
-import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
-import { StateControl } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorRef, useDirtyState } from "@kie-tools-core/editor/dist/embedded";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
 
 describe("useDirtyState", () => {
   let editorRef: EmbeddedEditorRef;

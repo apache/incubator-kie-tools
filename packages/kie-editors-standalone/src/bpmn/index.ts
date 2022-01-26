@@ -15,11 +15,11 @@
  */
 
 import bpmnEnvelopeIndex from "!!raw-loader!../../dist/resources/bpmn/bpmnEnvelopeIndex.html";
-import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
-import { ChannelType, KogitoEditorChannelApi } from "@kie-tooling-core/editor/dist/api";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
+import { ChannelType, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { KogitoEditorChannelApiImpl } from "../envelope/KogitoEditorChannelApiImpl";
-import { StateControl } from "@kie-tooling-core/editor/dist/channel";
-import { ContentType } from "@kie-tooling-core/workspace/dist/api";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
+import { ContentType } from "@kie-tools-core/workspace/dist/api";
 import { createEditor, Editor, StandaloneEditorApi } from "../common/Editor";
 import { BpmnEditorEnvelopeApi } from "../../../kie-bc-editors/dist/bpmn/api";
 import { BpmnEditorDiagramApi } from "../jsdiagram/BpmnEditorDiagramApi";

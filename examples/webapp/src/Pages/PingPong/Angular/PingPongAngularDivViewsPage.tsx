@@ -17,10 +17,10 @@
 import * as React from "react";
 import { useMemo, useRef } from "react";
 import { Page, PageSection } from "@patternfly/react-core";
-import { EmbeddedDivPingPong } from "@kogito-tooling-examples/ping-pong-view/dist/embedded";
+import { EmbeddedDivPingPong } from "@kie-tools-examples/ping-pong-view/dist/embedded";
 import { StatsSidebar } from "../StatsSidebar";
-import { pingPongEnvelopViewRenderDiv } from "@kogito-tooling-examples/ping-pong-view-angular/dist/wc/lib";
-import { PingPongApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { pingPongEnvelopViewRenderDiv } from "@kie-tools-examples/ping-pong-view-angular/dist/wc/lib";
+import { PingPongApi } from "@kie-tools-examples/ping-pong-view/dist/api";
 import { usePingPongApiCallbacks, usePingPongChannelApi } from "../hooks";
 
 export function PingPongAngularDivViewsPage() {

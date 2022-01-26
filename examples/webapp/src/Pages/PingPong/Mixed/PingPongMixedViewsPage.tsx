@@ -17,11 +17,11 @@
 import * as React from "react";
 import { useMemo, useRef } from "react";
 import { Page, PageSection } from "@patternfly/react-core";
-import { EmbeddedDivPingPong, EmbeddedIFramePingPong } from "@kogito-tooling-examples/ping-pong-view/dist/embedded";
-import { PingPongApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { EmbeddedDivPingPong, EmbeddedIFramePingPong } from "@kie-tools-examples/ping-pong-view/dist/embedded";
+import { PingPongApi } from "@kie-tools-examples/ping-pong-view/dist/api";
 import { StatsSidebar } from "../StatsSidebar";
-import { pingPongEnvelopViewRenderDiv as renderReactDiv } from "@kogito-tooling-examples/ping-pong-view-react";
-import { pingPongEnvelopViewRenderDiv as renderAngularDiv } from "@kogito-tooling-examples/ping-pong-view-angular/dist/wc/lib";
+import { pingPongEnvelopViewRenderDiv as renderReactDiv } from "@kie-tools-examples/ping-pong-view-react";
+import { pingPongEnvelopViewRenderDiv as renderAngularDiv } from "@kie-tools-examples/ping-pong-view-angular/dist/wc/lib";
 import { usePingPongApiCallbacks, usePingPongChannelApi } from "../hooks";
 
 const reactEnvelopePath = "envelope/ping-pong-view-react-impl.html";

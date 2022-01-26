@@ -15,7 +15,7 @@
  */
 
 import { Association, PingPongChannelApi, PingPongEnvelopeApi, PingPongInitArgs, PingPongApi } from "../api";
-import { EnvelopeApiFactoryArgs } from "@kie-tooling-core/envelope";
+import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 import { PingPongFactory } from "./PingPongFactory";
 
 export class PingPongEnvelopeApiImpl implements PingPongEnvelopeApi {

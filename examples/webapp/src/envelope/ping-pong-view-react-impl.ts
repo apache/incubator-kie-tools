@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-import { pingPongEnvelopViewRender } from "@kogito-tooling-examples/ping-pong-view-react";
+import { pingPongEnvelopViewRender } from "@kie-tools-examples/ping-pong-view-react";
 
 pingPongEnvelopViewRender(document.getElementById("envelope-app")!);

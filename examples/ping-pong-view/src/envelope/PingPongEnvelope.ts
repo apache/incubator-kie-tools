@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { EnvelopeBus } from "@kie-tooling-core/envelope-bus/dist/api";
-import { Envelope, EnvelopeDivConfig, EnvelopeIFrameConfig } from "@kie-tooling-core/envelope";
+import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
+import { Envelope, EnvelopeDivConfig, EnvelopeIFrameConfig } from "@kie-tools-core/envelope";
 import { PingPongChannelApi, PingPongEnvelopeApi } from "../api";
 import { PingPongFactory } from "./PingPongFactory";
 import { PingPongEnvelopeApiImpl } from "./PingPongEnvelopeApiImpl";

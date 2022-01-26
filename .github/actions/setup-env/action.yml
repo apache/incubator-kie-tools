@@ -1,4 +1,4 @@
-name: "Setup Kogito Tooling build environment"
+name: "Setup KIE Tools build environment"
 description: ""
 
 inputs:
@@ -6,7 +6,7 @@ inputs:
     description: "Operating System"
     required: true
   path:
-    description: "kogito-tooling path"
+    description: "kie-tools path"
     required: false
     default: "."
 
@@ -16,7 +16,7 @@ runs:
     - name: "Setup Node"
       uses: actions/setup-node@v1
       with:
-        node-version: 16.2.0
+        node-version: 16.13.1
 
     - name: "Setup JDK 11"
       uses: actions/setup-java@v1

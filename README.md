@@ -1,17 +1,17 @@
 <p align="center"><img width=55% src="docs/kogito.png"></p>
 
-# Kogito Tooling
+# KIE Tools
 
 **[Kogito](http://kogito.kie.org)** is the next generation of business automation platform focused on cloud-native development, deployment and execution.
 
 This repository contains all the tooling artifacts of the Kogito project.
 
-[![GitHub Stars](https://img.shields.io/github/stars/kiegroup/kogito-tooling.svg)](https://github.com/kiegroup/kogito-tooling/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/kiegroup/kogito-tooling.svg)](https://github.com/kiegroup/kogito-tooling/network/members)
-[![GitHub Issues](https://img.shields.io/github/issues/kiegroup/kogito-tooling.svg)]()
-[![Pull Requests](https://img.shields.io/github/issues-pr/kiegroup/kogito-tooling.svg?style=flat-square)](https://github.com/kiegroup/kogito-tooling/pulls)
-[![Contributors](https://img.shields.io/github/contributors/kiegroup/kogito-tooling.svg?style=flat-square)](https://github.com/kiegroup/kogito-tooling/graphs/contributors)
-[![License](https://img.shields.io/github/license/kiegroup/kogito-tooling.svg)](https://github.com/kiegroup/kogito-tooling/blob/main/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/kiegroup/kie-tools.svg)](https://github.com/kiegroup/kie-tools/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/kiegroup/kie-tools.svg)](https://github.com/kiegroup/kie-tools/network/members)
+[![GitHub Issues](https://img.shields.io/github/issues/kiegroup/kie-tools.svg)]()
+[![Pull Requests](https://img.shields.io/github/issues-pr/kiegroup/kie-tools.svg?style=flat-square)](https://github.com/kiegroup/kie-tools/pulls)
+[![Contributors](https://img.shields.io/github/contributors/kiegroup/kie-tools.svg?style=flat-square)](https://github.com/kiegroup/kie-tools/graphs/contributors)
+[![License](https://img.shields.io/github/license/kiegroup/kie-tools.svg)](https://github.com/kiegroup/kie-tools/blob/main/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/kogito_kie.svg?label=Follow&style=social)](https://twitter.com/kogito_kie?lang=en)
 
 ## Contribute
@@ -20,7 +20,7 @@ This repository contains all the tooling artifacts of the Kogito project.
 
 ## Build from source
 
-To start building the KIE Tooling Core project, you're going to need:
+To start building the KIE Tools project, you're going to need:
 
 - Node `>= 16.2.0` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
 - Yarn `1.22.10` _(To install, run `npm install -g yarn@1.22.10`)_
@@ -47,13 +47,13 @@ To build it, you'll have two choices. Note that you always need to specify which
 - `yarn build:dev:until [pkg-name]` - This is fast, but not as strict. It skips tests, linters, and some type checks. Be prepared for the CI to fail on your PRs.
 - `yarn build:prod:until [pkg-name]` - The default command to build production-ready packages. Use that to make sure your changes are correct.
 
-**NOTE:** The Kogito Tooling build is parameterized by several Environment Variables. For an extensive list of these variables, please see `packages/build-env/README.md` ([link](/packages/build-env/index.js#L24)).
+**NOTE:** The KIE Tools build is parameterized by several Environment Variables. For an extensive list of these variables, please see `packages/build-env/README.md` ([link](/packages/build-env/index.js#L24)).
 
 Final artifacts will be on `packages/*/dist` directories.
 
 ## Applications
 
-The Kogito Tooling project contains several applications. To develop each one of them individually, refer to the instructions below.
+The KIE Tools project contains several applications. To develop each one of them individually, refer to the instructions below.
 
 #### VS Code Extension
 
@@ -93,10 +93,10 @@ The Kogito Tooling project contains several applications. To develop each one of
 
 #### Stunner Editors
 
-The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of Kogito Tooling.
+The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of KIE Tools.
 After cloning the repo, start with a fresh build.
 
-`lerna run build:dev --scope=@kogito-tooling/stunner-editors --include-dependencies --stream`
+`lerna run build:dev --scope=@kie-tools/stunner-editors --include-dependencies --stream`
 
 After that, you're ready to start developing the Editors individually.
 

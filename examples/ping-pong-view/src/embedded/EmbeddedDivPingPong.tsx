@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@
 import * as React from "react";
 import { useCallback, useRef } from "react";
 import { PingPongApi, PingPongChannelApi, PingPongEnvelopeApi } from "../api";
-import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
-import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
+import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 import {
   EmbeddedEnvelopeProps,
   EnvelopeDivConfig,
   RefForwardingEmbeddedEnvelope,
-} from "@kie-tooling-core/envelope/dist/embedded";
+} from "@kie-tools-core/envelope/dist/embedded";
 
 export type EmbeddedDivPingPongProps = {
   apiImpl: PingPongChannelApi;

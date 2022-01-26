@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import * as React from "react";
 import { PingPongReactImpl } from "./PingPongReactImpl";
-import { PingPongFactory } from "@kogito-tooling-examples/ping-pong-view/dist/envelope";
-import { PingPongApi, PingPongChannelApi, PingPongInitArgs } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { PingPongFactory } from "@kie-tools-examples/ping-pong-view/dist/envelope";
+import { PingPongApi, PingPongChannelApi, PingPongInitArgs } from "@kie-tools-examples/ping-pong-view/dist/api";
 
 export class PingPongReactImplFactory implements PingPongFactory {
   constructor(private setView: React.Dispatch<React.SetStateAction<React.ReactElement>>) {}

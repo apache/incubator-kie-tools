@@ -19,8 +19,8 @@ import {
   EnvelopeBusMessageDirectSender,
   EnvelopeBusMessagePurpose,
   FunctionPropertyNames,
-} from "@kie-tooling-core/envelope-bus/dist/api";
-import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
+} from "@kie-tools-core/envelope-bus/dist/api";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 
 interface ApiToProvide {
   setText(text: string): void;
@@ -55,6 +55,7 @@ const delay = (ms: number) => {
 
 describe("new instance", () => {
   test("does nothing", () => {
+    expect(envelopeServer.initialPollingSetting).toBeFalsy();
     expect(envelopeServer.initPolling).toBeFalsy();
     expect(envelopeServer.initPollingTimeout).toBeFalsy();
     expect(sentMessages.length).toEqual(0);
@@ -63,13 +64,19 @@ describe("new instance", () => {
 
 describe("startInitPolling", () => {
   test("polls for init response", async () => {
-    jest.spyOn(envelopeServer, "stopInitPolling");
+    const spy = jest.spyOn(envelopeServer, "stopInitPolling");
 
     envelopeServer.startInitPolling(apiImpl);
+    expect(envelopeServer.initialPollingSetting).toBeTruthy();
+    expect(envelopeServer.initPolling).toBeFalsy();
+    expect(envelopeServer.initPollingTimeout).toBeFalsy();
+
+    await delay(100); // waits for polling setInterval to be set
+
     expect(envelopeServer.initPolling).toBeTruthy();
     expect(envelopeServer.initPollingTimeout).toBeTruthy();
 
-    await delay(100); //waits for setInterval to kick in
+    await delay(100); // waits for polling setInterval to kick in
 
     await incomingMessage({
       targetEnvelopeServerId: envelopeServer.id,
@@ -80,24 +87,39 @@ describe("startInitPolling", () => {
     });
 
     expect(envelopeServer.stopInitPolling).toHaveBeenCalled();
+    expect(envelopeServer.initialPollingSetting).toBeFalsy();
     expect(envelopeServer.initPolling).toBeFalsy();
     expect(envelopeServer.initPollingTimeout).toBeFalsy();
+
+    spy.mockReset();
+    spy.mockRestore();
   });
 
   test("stops polling after timeout", async () => {
-    jest.spyOn(envelopeServer, "stopInitPolling");
+    const spy = jest.spyOn(envelopeServer, "stopInitPolling");
     EnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS = 200;
 
     envelopeServer.startInitPolling(apiImpl);
+    expect(envelopeServer.initialPollingSetting).toBeTruthy();
+    expect(envelopeServer.initPolling).toBeFalsy();
+    expect(envelopeServer.initPollingTimeout).toBeFalsy();
+
+    //more than the timeout
+    await delay(250);
+
     expect(envelopeServer.initPolling).toBeTruthy();
     expect(envelopeServer.initPollingTimeout).toBeTruthy();
 
     //more than the timeout
-    await delay(300);
+    await delay(250);
 
     expect(envelopeServer.stopInitPolling).toHaveBeenCalled();
+    expect(envelopeServer.initialPollingSetting).toBeFalsy();
     expect(envelopeServer.initPolling).toBeFalsy();
     expect(envelopeServer.initPollingTimeout).toBeFalsy();
+
+    spy.mockReset();
+    spy.mockRestore();
   });
 });
 

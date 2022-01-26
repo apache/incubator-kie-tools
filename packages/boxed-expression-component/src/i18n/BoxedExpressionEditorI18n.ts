@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ReferenceDictionary } from "@kie-tooling-core/i18n/dist/core";
-import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
+import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
 interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   addParameter: string;
@@ -58,6 +58,7 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   invocation: string;
   list: string;
   literalExpression: string;
+  manage: string;
   methodSignature: string;
   model: string;
   name: string;

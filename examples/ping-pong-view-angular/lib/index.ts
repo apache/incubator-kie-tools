@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 
 import { NgElement, WithProperties } from "@angular/elements";
-import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
-import "@kogito-tooling-examples/ping-pong-view-angular/dist/wc";
+import { ContainerType } from "@kie-tools-core/envelope/dist/api";
+import "@kie-tools-examples/ping-pong-view-angular/dist/wc";
 
 export const pingPongEnvelopViewRenderDiv = (container: HTMLElement, envelopeId: string) => {
   const element = document.createElement("ping-pong-angular");

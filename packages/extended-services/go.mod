@@ -1,4 +1,4 @@
-module github.com/kiegroup/kogito-tooling/extended-services
+module github.com/kiegroup/kie-tools/extended-services
 
 go 1.16
 

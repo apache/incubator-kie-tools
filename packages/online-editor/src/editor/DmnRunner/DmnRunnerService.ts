@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DmnResult, DmnSchema } from "@kogito-tooling/form/dist/dmn";
+import { DmnResult, DmnSchema } from "@kie-tools/form/dist/dmn";
 
 export interface DmnRunnerModelResource {
   URI: string;

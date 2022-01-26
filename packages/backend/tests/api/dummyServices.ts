@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { HttpService, LocalHttpServer, LocalHttpService, Service } from "@kie-tooling-core/backend/dist/api";
+import { HttpService, LocalHttpServer, LocalHttpService, Service } from "@kie-tools-core/backend/dist/api";
 
 export class DummyLocalHttpServer extends LocalHttpServer {
   public identify(): string {

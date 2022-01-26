@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-tooling/build-env",
+  "name": "@kie-tools/build-env",
   "version": "0.0.0",
   "private": true,
   "description": "",
@@ -12,7 +12,7 @@
   "bin": "./cli.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kogito-tooling.git"
+    "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "scripts": {
     "print-build-env": "rimraf dist && build-env --print-cli-tools-check && build-env --print-env && build-env --print-config && build-env --build-graph",

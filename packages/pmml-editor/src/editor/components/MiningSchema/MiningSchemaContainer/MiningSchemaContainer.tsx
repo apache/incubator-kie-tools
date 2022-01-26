@@ -28,7 +28,7 @@ import MiningSchemaAddFields from "../MiningSchemaAddFields/MiningSchemaAddField
 import MiningSchemaPropertiesEdit from "../MiningSchemaPropertiesEdit/MiningSchemaPropertiesEdit";
 import "./MiningSchemaContainer.scss";
 
-import { DataDictionary, FieldName, MiningField, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, FieldName, MiningField, MiningSchema } from "@kie-tools/pmml-editor-marshaller";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { Interaction } from "../../../types";

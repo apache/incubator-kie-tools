@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
-import { immutableDeepMerge } from "@kie-tooling-core/i18n/dist/core/immutableDeepMerge";
-import { TranslatedDictionary } from "@kie-tooling-core/i18n/dist/core";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
+import { immutableDeepMerge } from "@kie-tools-core/i18n/dist/core/immutableDeepMerge";
+import { TranslatedDictionary } from "@kie-tools-core/i18n/dist/core";
 import { render } from "@testing-library/react";
 import { DummyContext, DummyDictionary, DummyComponent, dummyDefault, interpolationFunction } from "../utils";
 

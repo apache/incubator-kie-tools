@@ -92,6 +92,7 @@ export class EnvelopeServer<
 
   public stopInitPolling() {
     clearTimeout(this.initialPollingSetting!);
+    this.initialPollingSetting = undefined;
     this.manager.currentApiImpl = undefined;
     clearInterval(this.initPolling!);
     this.initPolling = undefined;

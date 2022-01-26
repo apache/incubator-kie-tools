@@ -16,7 +16,7 @@
 
 import "./InvocationExpression.css";
 import * as React from "react";
-import { useCallback, useContext, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import {
   ColumnsUpdateArgs,
   ContextEntries,
@@ -41,7 +41,7 @@ import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { ColumnInstance, DataRecord } from "react-table";
 import { ContextEntryExpressionCell, getContextEntryInfoCell } from "../ContextExpression";
 import * as _ from "lodash";
-import { BoxedExpressionGlobalContext } from "../../context";
+import { useBoxedExpression } from "../../context";
 import { hashfy } from "../Resizer";
 
 const DEFAULT_PARAMETER_NAME = "p-1";
@@ -69,7 +69,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = (i
     );
   }, [invocationProps.bindingEntries]);
 
-  const { setSupervisorHash } = useContext(BoxedExpressionGlobalContext);
+  const { boxedExpressionEditorGWTService, setSupervisorHash } = useBoxedExpression();
 
   const spreadInvocationExpressionDefinition = useCallback(
     (invocationExpressionUpdated?: Partial<InvocationProps>) => {
@@ -101,23 +101,23 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = (i
           updatedDefinition,
           () => {
             setSupervisorHash(hashfy(updatedDefinition));
-            window.beeApi?.broadcastInvocationExpressionDefinition?.(updatedDefinition);
+            boxedExpressionEditorGWTService?.broadcastInvocationExpressionDefinition?.(updatedDefinition);
           },
           ["name", "dataType", "bindingEntries", "invokedFunction", "entryInfoWidth", "entryExpressionWidth"]
         );
       }
     },
-    [invocationProps, rows, setSupervisorHash]
+    [boxedExpressionEditorGWTService, invocationProps, rows, setSupervisorHash]
   );
 
   const onBlurCallback = useCallback(
     (event) => {
       if (invocationProps.invokedFunction != event.target.value) {
-        window.beeApi?.notifyUserAction();
+        boxedExpressionEditorGWTService?.notifyUserAction();
       }
       spreadInvocationExpressionDefinition({ invokedFunction: event.target.value });
     },
-    [spreadInvocationExpressionDefinition, invocationProps.invokedFunction]
+    [boxedExpressionEditorGWTService, spreadInvocationExpressionDefinition, invocationProps.invokedFunction]
   );
 
   const headerCellElement = useMemo(

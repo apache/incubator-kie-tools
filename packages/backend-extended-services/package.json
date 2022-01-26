@@ -1,18 +1,18 @@
 {
-  "name": "@kogito-tooling/backend-extended-services",
+  "name": "@kie-tools/backend-extended-services",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kogito-tooling.git"
+    "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "files": [
     "index.js",
     "**/target/*.jar"
   ],
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
+    "@kie-tools/build-env": "0.0.0"
   },
   "scripts": {
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",

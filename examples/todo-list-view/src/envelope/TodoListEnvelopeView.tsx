@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useState } from "react";
 import { Item, TodoListChannelApi } from "../api";
 import "./styles.scss";
-import { useSharedValue } from "@kie-tooling-core/envelope-bus/dist/hooks";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
 export interface TodoListEnvelopeViewApi {
   setUser(user: string): void;

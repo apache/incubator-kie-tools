@@ -16,11 +16,11 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const patternflyBase = require("@kie-tooling-core/patternfly-base");
-const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
+const patternflyBase = require("@kie-tools-core/patternfly-base");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
-const buildEnv = require("@kogito-tooling/build-env");
-const stunnerEditors = require("@kogito-tooling/stunner-editors");
+const buildEnv = require("@kie-tools/build-env");
+const stunnerEditors = require("@kie-tools/stunner-editors");
 
 module.exports = (env) => [
   merge(common(env), {
@@ -42,7 +42,7 @@ module.exports = (env) => [
         patterns: [
           { from: "./envelope", to: "./envelope" },
           { from: "./static", to: "." },
-          { from: "../ping-pong-view-angular/dist", to: "./envelope/angular" },
+          { from: "../ping-pong-view-angular/dist/app", to: "./envelope/angular" },
           { from: stunnerEditors.dmnEditorPath(), to: "./dmn-editor/dmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
         ],
       }),

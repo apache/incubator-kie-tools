@@ -15,8 +15,8 @@
  */
 
 import { StateControl } from "../../channel";
-import { KogitoGuidedTour } from "@kie-tooling-core/guided-tour/dist/channel";
-import { Tutorial, UserInteraction } from "@kie-tooling-core/guided-tour/dist/api";
+import { KogitoGuidedTour } from "@kie-tools-core/guided-tour/dist/channel";
+import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { KogitoEditorChannelApi, StateControlCommand, EditorContent } from "../../api";
 import {
   KogitoEdit,
@@ -24,9 +24,9 @@ import {
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
-} from "@kie-tooling-core/workspace/dist/api";
+} from "@kie-tools-core/workspace/dist/api";
 import { EmbeddedEditorFile } from "../../channel";
-import { Notification } from "@kie-tooling-core/notifications/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   constructor(

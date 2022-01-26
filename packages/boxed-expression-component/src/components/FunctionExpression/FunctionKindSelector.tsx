@@ -39,11 +39,11 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
 
   const functionKindSelectionCallback = useCallback(
     (hide: () => void) => (event?: React.MouseEvent, itemId?: string | number) => {
-      window.beeApi?.notifyUserAction();
+      boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
       onFunctionKindSelect(itemId as FunctionKind);
       hide();
     },
-    [onFunctionKindSelect]
+    [boxedExpression.boxedExpressionEditorGWTService, onFunctionKindSelect]
   );
 
   const renderFunctionKindItems = useCallback(

@@ -17,8 +17,8 @@
 import * as React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Nav, NavItem, NavList, Page, PageSection, Title } from "@patternfly/react-core";
-import { EmbeddedTodoList, EmbeddedTodoListRef } from "@kogito-tooling-examples/todo-list-view/dist/embedded";
-import { useStateAsSharedValue } from "@kie-tooling-core/envelope-bus/dist/hooks";
+import { EmbeddedTodoList, EmbeddedTodoListRef } from "@kie-tools-examples/todo-list-view/dist/embedded";
+import { useStateAsSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
 export function TodoListViewPage() {
   const embeddedTodoListRef = useRef<EmbeddedTodoListRef>(null);

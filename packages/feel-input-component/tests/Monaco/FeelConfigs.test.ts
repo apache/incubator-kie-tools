@@ -21,7 +21,7 @@ import {
   feelDefaultSuggestions,
   MONACO_FEEL_LANGUAGE,
   MONACO_FEEL_THEME,
-} from "@kogito-tooling/feel-input-component";
+} from "@kie-tools/feel-input-component";
 
 describe("FeelConfigs", () => {
   it("feelTheme", () => {

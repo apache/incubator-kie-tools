@@ -26,8 +26,8 @@ import (
 	"strconv"
 
 	"github.com/getlantern/systray"
-	"github.com/kiegroup/kogito-tooling/extended-services/pkg/config"
-	"github.com/kiegroup/kogito-tooling/extended-services/pkg/images"
+	"github.com/kiegroup/kie-tools/extended-services/pkg/config"
+	"github.com/kiegroup/kie-tools/extended-services/pkg/images"
 )
 
 type KogitoSystray struct {

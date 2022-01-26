@@ -15,7 +15,7 @@
  */
 
 import { useCallback, RefObject, useState, useMemo } from "react";
-import { PingPongApi, PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { PingPongApi, PingPongChannelApi } from "@kie-tools-examples/ping-pong-view/dist/api";
 
 export function usePingPongApiCallbacks(refs: RefObject<PingPongApi>[]) {
   const onClearLogs = useCallback(() => {

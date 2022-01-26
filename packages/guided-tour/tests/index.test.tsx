@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { KogitoGuidedTour } from "@kie-tooling-core/guided-tour/dist";
-import { Tutorial, UserInteraction } from "@kie-tooling-core/guided-tour/dist/api";
+import { KogitoGuidedTour } from "@kie-tools-core/guided-tour/dist";
+import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { GuidedTour } from "@kie-tooling-core/guided-tour/dist/components";
-import { GuidedTourDomUtils, GuidedTourEventBus } from "@kie-tooling-core/guided-tour/dist/core";
+import { GuidedTour } from "@kie-tools-core/guided-tour/dist/components";
+import { GuidedTourDomUtils, GuidedTourEventBus } from "@kie-tools-core/guided-tour/dist/core";
 
 describe("KogitoGuidedTour", () => {
   beforeEach(() => jest.clearAllMocks());
@@ -125,8 +125,8 @@ describe("KogitoGuidedTour", () => {
   });
 });
 
-jest.mock("@kie-tooling-core/guided-tour/dist/components");
-jest.mock("@kie-tooling-core/guided-tour/dist/core");
+jest.mock("@kie-tools-core/guided-tour/dist/components");
+jest.mock("@kie-tools-core/guided-tour/dist/core");
 jest.mock("react-dom", () => ({
   render: jest.fn(),
 }));
