@@ -345,7 +345,11 @@ export const Table: React.FunctionComponent<TableProps> = ({
         } else if (key == "Enter" && !showTableHandler) {
           focusTextArea(e.currentTarget.querySelector("textarea"));
         }
-        /* FIXME: Table: close the menu if user is moving */
+
+        /* close the menu if user is moving */
+        if (/^(tab|arrow)/i.test(key)) {
+          setShowTableHandler(false);
+        }
         /* TODO: FocusUtils: ArrowNavigation with nested tables  */
       },
       onContextMenu: (e: ContextMenuEvent) => {

@@ -129,3 +129,5 @@ export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number):
 
   cellFocus(<HTMLTableDataCellElement>gotoRow?.cells[currCell.cellIndex]);
 };
+
+/* FIXME: substitute HTMLTableDataCellElement with HTMLTableCellElement for deprecation  */

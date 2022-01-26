@@ -73,5 +73,15 @@ describe("Keyboard Navigation Tests", () => {
 
       cy.get("tbody tr:eq(0) td:eq(1) textarea").should("have.text", "TestInput");
     });
+
+    it("Interaction with contextMenu", function () {
+      cy.get("tbody tr:eq(0) td:eq(1)").rightclick();
+
+      cy.get(".table-handler").should("be.visible");
+
+      cy.get("tbody tr:eq(0) td:eq(1)").type("{leftarrow}");
+
+      cy.get(".table-handler", { timeout: 2000 }).should("not.exist");
+    });
   });
 });
