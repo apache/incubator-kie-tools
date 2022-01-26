@@ -15,8 +15,8 @@
  */
 
 import * as __path from "path";
-import { VsCodeNodeResourceContentService } from "@kie-tooling-core/vscode-extension/dist/VsCodeNodeResourceContentService";
-import { ContentType } from "@kie-tooling-core/workspace/dist/api";
+import { VsCodeNodeResourceContentService } from "@kie-tools-core/vscode-extension/dist/VsCodeNodeResourceContentService";
+import { ContentType } from "@kie-tools-core/workspace/dist/api";
 
 const testWorkspace = __path.resolve(__dirname, "test-workspace") + __path.sep;
 

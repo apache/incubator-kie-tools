@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ApiDefinition, EnvelopeBus } from "@kie-tooling-core/envelope-bus/dist/api";
-import { EnvelopeClient } from "@kie-tooling-core/envelope-bus/dist/envelope";
+import { ApiDefinition, EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
+import { EnvelopeClient } from "@kie-tools-core/envelope-bus/dist/envelope";
 import { EnvelopeApiFactory } from "./EnvelopeApiFactory";
 import { ContainerType } from "./api";
 

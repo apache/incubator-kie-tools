@@ -29,15 +29,13 @@ import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/M
 import { QueryParams } from "../navigation/Routes";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 
-export const KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME =
-  "KOGITO-TOOLING-COOKIE__kie-sandbox-extended-services--host";
-export const KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME =
-  "KOGITO-TOOLING-COOKIE__kie-sandbox-extended-services--port";
-const GITHUB_AUTH_TOKEN_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__github-oauth--token";
-const GUIDED_TOUR_ENABLED_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__guided-tour--is-enabled";
-export const OPENSHIFT_NAMESPACE_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__dmn-dev-sandbox--connection-namespace";
-export const OPENSHIFT_HOST_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__dmn-dev-sandbox--connection-host";
-export const OPENSHIFT_TOKEN_COOKIE_NAME = "KOGITO-TOOLING-COOKIE__dmn-dev-sandbox--connection-token";
+export const KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--host";
+export const KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--port";
+const GITHUB_AUTH_TOKEN_COOKIE_NAME = "kie-tools-COOKIE__github-oauth--token";
+const GUIDED_TOUR_ENABLED_COOKIE_NAME = "kie-tools-COOKIE__guided-tour--is-enabled";
+export const OPENSHIFT_NAMESPACE_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-namespace";
+export const OPENSHIFT_HOST_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-host";
+export const OPENSHIFT_TOKEN_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-token";
 
 export enum AuthStatus {
   SIGNED_OUT,
@@ -288,7 +286,7 @@ export function SettingsContextProvider(props: any) {
       <SettingsDispatchContext.Provider value={dispatch}>
         {githubAuthStatus !== AuthStatus.LOADING && <>{props.children}</>}
         <Modal title="Settings" isOpen={isOpen} onClose={close} variant={ModalVariant.large}>
-          <div style={{ height: "calc(100vh * 0.5)" }} className={"kogito-tooling--setings-modal-content"}>
+          <div style={{ height: "calc(100vh * 0.5)" }} className={"kie-tools--setings-modal-content"}>
             <SettingsModalBody />
           </div>
         </Modal>

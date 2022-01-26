@@ -15,7 +15,7 @@
  */
 
 import { DesktopI18n } from "..";
-import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
+import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 
 export const en: DesktopI18n = {
   ...en_common,

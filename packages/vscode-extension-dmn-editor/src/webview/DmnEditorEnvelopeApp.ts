@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { VsCodeDmnEditorFactory } from "@kogito-tooling/kie-bc-editors/dist/dmn/envelope/vscode";
-import * as EditorEnvelope from "@kie-tooling-core/editor/dist/envelope";
+import { VsCodeDmnEditorFactory } from "@kie-tools/kie-bc-editors/dist/dmn/envelope/vscode";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 
 declare const acquireVsCodeApi: any;
 

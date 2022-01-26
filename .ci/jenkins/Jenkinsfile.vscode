@@ -9,11 +9,11 @@ node('rhel8') {
     }
 
     stage('Download VSIX files') {
-        sh 'wget "https://github.com/kiegroup/kogito-tooling/releases/download/$VERSION/vscode_extension_bpmn_editor_$VERSION.vsix"'
-        sh 'wget "https://github.com/kiegroup/kogito-tooling/releases/download/$VERSION/vscode_extension_dmn_editor_$VERSION.vsix"'
-        sh 'wget "https://github.com/kiegroup/kogito-tooling/releases/download/$VERSION/vscode_extension_pmml_editor_$VERSION.vsix"'
-        sh 'wget "https://github.com/kiegroup/kogito-tooling/releases/download/$VERSION/vscode_extension_red_hat_business_automation_bundle_$VERSION.vsix"'
-        sh 'wget "https://github.com/kiegroup/kogito-tooling/releases/download/$VERSION/vscode_extension_kogito_bundle_$VERSION.vsix"'
+        sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_bpmn_editor_$VERSION.vsix"'
+        sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_dmn_editor_$VERSION.vsix"'
+        sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_pmml_editor_$VERSION.vsix"'
+        sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_red_hat_business_automation_bundle_$VERSION.vsix"'
+        sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_kogito_bundle_$VERSION.vsix"'
         sh 'md5sum *.vsix'
     }
 

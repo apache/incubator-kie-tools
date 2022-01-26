@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ReferenceDictionary } from "@kie-tooling-core/i18n/dist/core";
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
 interface VsCodeDictionary extends ReferenceDictionary {
   savedSvg: (fileName: string) => string;

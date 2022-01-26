@@ -15,13 +15,13 @@
  */
 
 import "../../../__mocks__/ReactWithSupervisor";
-import { Cell, CELL_CSS_SELECTOR } from "@kogito-tooling/boxed-expression-component/dist/components/Resizer";
-import { Resizer } from "@kogito-tooling/boxed-expression-component/dist/components/Resizer";
+import { Cell, CELL_CSS_SELECTOR } from "@kie-tools/boxed-expression-component/dist/components/Resizer";
+import { Resizer } from "@kie-tools/boxed-expression-component/dist/components/Resizer";
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, wrapComponentInContext } from "../../test-utils";
 import * as React from "react";
-import { ContextExpression } from "@kogito-tooling/boxed-expression-component/dist/components/ContextExpression";
-import { ContextProps } from "@kogito-tooling/boxed-expression-component";
+import { ContextExpression } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
+import { ContextProps } from "@kie-tools/boxed-expression-component";
 import { act } from "react-dom/test-utils";
 
 let cell: Cell;

@@ -20,8 +20,8 @@ import (
 	_ "embed"
 	"flag"
 
-	"github.com/kiegroup/kogito-tooling/extended-services/pkg/config"
-	"github.com/kiegroup/kogito-tooling/extended-services/pkg/kogito"
+	"github.com/kiegroup/kie-tools/extended-services/pkg/config"
+	"github.com/kiegroup/kie-tools/extended-services/pkg/kogito"
 )
 
 // Embed the jitrunner into the runner variable, to produce a self-contained binary.

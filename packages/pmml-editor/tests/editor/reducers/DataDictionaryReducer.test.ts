@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DataDictionary, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
-import { Actions, AllActions, DataDictionaryReducer } from "@kogito-tooling/pmml-editor/dist/editor/reducers";
+import { DataDictionary, FieldName } from "@kie-tools/pmml-editor-marshaller";
+import { Actions, AllActions, DataDictionaryReducer } from "@kie-tools/pmml-editor/dist/editor/reducers";
 import { Reducer } from "react";
-import { HistoryService } from "@kogito-tooling/pmml-editor/dist/editor/history";
-import { ValidationRegistry } from "@kogito-tooling/pmml-editor/dist/editor/validation";
+import { HistoryService } from "@kie-tools/pmml-editor/dist/editor/history";
+import { ValidationRegistry } from "@kie-tools/pmml-editor/dist/editor/validation";
 
 const historyService = new HistoryService([]);
 const validationRegistry = new ValidationRegistry();

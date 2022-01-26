@@ -1,1 +1,1 @@
-## Kogito Tooling Workspace
+## KIE Tools Workspace

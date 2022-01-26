@@ -16,9 +16,9 @@
 
 import * as React from "react";
 import { useCallback, useImperativeHandle, useLayoutEffect, useMemo, useState } from "react";
-import { PingPongApi, PingPongChannelApi, PingPongInitArgs } from "@kogito-tooling-examples/ping-pong-view/dist/api";
-import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
-import { useSubscription } from "@kie-tooling-core/envelope-bus/dist/hooks";
+import { PingPongApi, PingPongChannelApi, PingPongInitArgs } from "@kie-tools-examples/ping-pong-view/dist/api";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { useSubscription } from "@kie-tools-core/envelope-bus/dist/hooks";
 import "./styles.scss";
 
 interface Props {

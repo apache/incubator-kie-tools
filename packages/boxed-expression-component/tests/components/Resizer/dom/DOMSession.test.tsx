@@ -16,7 +16,7 @@
 
 import { render } from "@testing-library/react";
 import * as React from "react";
-import { Cell, DOMSession } from "@kogito-tooling/boxed-expression-component/dist/components/Resizer";
+import { Cell, DOMSession } from "@kie-tools/boxed-expression-component/dist/components/Resizer";
 import { wrapComponentInContext } from "../../test-utils";
 
 describe("DOMSession", () => {

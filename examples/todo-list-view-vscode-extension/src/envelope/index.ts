@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as TodoListViewEnvelope from "@kogito-tooling-examples/todo-list-view/dist/envelope";
+import * as TodoListViewEnvelope from "@kie-tools-examples/todo-list-view/dist/envelope";
 
 declare global {
   export const acquireVsCodeApi: any;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
+import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { DesktopI18n } from "../DesktopI18n";
 
 export const en: DesktopI18n = {
