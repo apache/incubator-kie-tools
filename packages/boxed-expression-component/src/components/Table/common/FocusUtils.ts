@@ -46,14 +46,14 @@ export const focusNextTextArea = (currentTextArea: HTMLTextAreaElement | null) =
  * @param currentEl the current element
  * @returns the element of the td parent
  */
-export const getParentCell = (currentEl: HTMLElement | null): HTMLTableDataCellElement | null => {
+export const getParentCell = (currentEl: HTMLElement | null): HTMLTableCellElement | null => {
   const cellSelector = "td, th";
 
   if (!currentEl) {
     return null;
   }
 
-  return <HTMLTableDataCellElement>(currentEl.matches(cellSelector) ? currentEl : currentEl.closest(cellSelector));
+  return <HTMLTableCellElement>(currentEl.matches(cellSelector) ? currentEl : currentEl.closest(cellSelector));
 };
 
 /**
@@ -62,7 +62,7 @@ export const getParentCell = (currentEl: HTMLElement | null): HTMLTableDataCellE
  * @param cell the cell to focus
  * @returns
  */
-export const cellFocus = (cell: HTMLTableDataCellElement | null): void => {
+export const cellFocus = (cell: HTMLTableCellElement | null): void => {
   if (!cell) {
     return;
   }
@@ -87,7 +87,7 @@ export const focusCurrentCell = (currentEl: HTMLElement | null): void => {
  * @returns
  */
 export const focusNextCell = (currentEl: HTMLElement | null): void => {
-  cellFocus(<HTMLTableDataCellElement>getParentCell(currentEl)?.nextElementSibling);
+  cellFocus(<HTMLTableCellElement>getParentCell(currentEl)?.nextElementSibling);
 };
 
 /**
@@ -97,7 +97,7 @@ export const focusNextCell = (currentEl: HTMLElement | null): void => {
  * @returns
  */
 export const focusPrevCell = (currentEl: HTMLElement | null): void => {
-  cellFocus(<HTMLTableDataCellElement>getParentCell(currentEl)?.previousElementSibling);
+  cellFocus(<HTMLTableCellElement>getParentCell(currentEl)?.previousElementSibling);
 };
 
 /**
@@ -108,11 +108,11 @@ export const focusPrevCell = (currentEl: HTMLElement | null): void => {
  * @returns
  */
 export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number): void => {
-  const currCell = <HTMLTableDataCellElement>getParentCell(currentEl);
+  const currCell = <HTMLTableCellElement>getParentCell(currentEl);
   const currBody = currCell.closest("tbody");
   const gotoRow = currBody?.rows[rowIndex - 1];
 
-  cellFocus(<HTMLTableDataCellElement>gotoRow?.cells[currCell.cellIndex]);
+  cellFocus(<HTMLTableCellElement>gotoRow?.cells[currCell.cellIndex]);
 };
 
 /**
@@ -123,11 +123,9 @@ export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number):
  * @returns
  */
 export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number): void => {
-  const currCell = <HTMLTableDataCellElement>getParentCell(currentEl);
+  const currCell = <HTMLTableCellElement>getParentCell(currentEl);
   const currBody = currCell.closest("tbody");
   const gotoRow = currBody?.rows[rowIndex + 1];
 
-  cellFocus(<HTMLTableDataCellElement>gotoRow?.cells[currCell.cellIndex]);
+  cellFocus(<HTMLTableCellElement>gotoRow?.cells[currCell.cellIndex]);
 };
-
-/* FIXME: substitute HTMLTableDataCellElement with HTMLTableCellElement for deprecation  */
