@@ -15,7 +15,7 @@
  */
 
 export const SW_SPEC_SCHEMA = {
-  $id: "https://serverlessworkflow.io/schemas/0.6/workflow.json",
+  $id: "https://serverlessworkflow.io/schemas/0.8/workflow.json",
   $schema: "http://json-schema.org/draft-07/schema#",
   description: "Serverless Workflow specification - workflow schema",
   type: "object",
@@ -23,6 +23,11 @@ export const SW_SPEC_SCHEMA = {
     id: {
       type: "string",
       description: "Workflow unique identifier",
+      minLength: 1,
+    },
+    key: {
+      type: "string",
+      description: "Domain-specific workflow identifier",
       minLength: 1,
     },
     name: {
@@ -39,10 +44,63 @@ export const SW_SPEC_SCHEMA = {
       description: "Workflow version",
       minLength: 1,
     },
+    annotations: {
+      type: "array",
+      description:
+        "List of helpful terms describing the workflows intended purpose, subject areas, or other important qualities",
+      minItems: 1,
+      items: {
+        type: "string",
+      },
+      additionalItems: false,
+    },
+    dataInputSchema: {
+      oneOf: [
+        {
+          type: "string",
+          description: "URI of the JSON Schema used to validate the workflow data input",
+          minLength: 1,
+        },
+        {
+          type: "object",
+          description: "Workflow data input schema definition",
+          properties: {
+            schema: {
+              type: "string",
+              description: "URI of the JSON Schema used to validate the workflow data input",
+              minLength: 1,
+            },
+            failOnValidationErrors: {
+              type: "boolean",
+              default: true,
+              description: "Determines if workflow execution should continue if there are validation errors",
+            },
+          },
+          additionalProperties: false,
+          required: ["schema", "failOnValidationErrors"],
+        },
+      ],
+    },
+    secrets: {
+      $ref: "secrets.json#/secrets",
+    },
+    constants: {
+      oneOf: [
+        {
+          type: "string",
+          format: "uri",
+          description: "URI to a resource containing constants data (json or yaml)",
+        },
+        {
+          type: "object",
+          description: "Workflow constants data (object type)",
+        },
+      ],
+    },
     start: {
       $ref: "#/definitions/startdef",
     },
-    schemaVersion: {
+    specVersion: {
       type: "string",
       description: "Serverless Workflow schema version",
       minLength: 1,
@@ -53,14 +111,17 @@ export const SW_SPEC_SCHEMA = {
       default: "jq",
       minLength: 1,
     },
-    execTimeout: {
-      $ref: "#/definitions/exectimeout",
+    timeouts: {
+      $ref: "timeouts.json#/timeouts",
+    },
+    errors: {
+      $ref: "errors.json#/errors",
     },
     keepActive: {
       type: "boolean",
       default: false,
       description:
-        "If 'true', workflow instances is not terminated when there are no active execution paths. Instance can be terminated via 'terminate end definition' or reaching defined 'execTimeout'",
+        "If 'true', workflow instances is not terminated when there are no active execution paths. Instance can be terminated via 'terminate end definition' or reaching defined 'workflowExecTimeout'",
     },
     metadata: {
       $ref: "common.json#/definitions/metadata",
@@ -71,8 +132,16 @@ export const SW_SPEC_SCHEMA = {
     functions: {
       $ref: "functions.json#/functions",
     },
+    autoRetries: {
+      type: "boolean",
+      default: false,
+      description: "If set to true, actions should automatically be retried on unchecked errors. Default is false",
+    },
     retries: {
       $ref: "retries.json#/retries",
+    },
+    auth: {
+      $ref: "auth.json#/auth",
     },
     states: {
       type: "array",
@@ -80,8 +149,8 @@ export const SW_SPEC_SCHEMA = {
       items: {
         anyOf: [
           {
-            title: "Delay State",
-            $ref: "#/definitions/delaystate",
+            title: "Sleep State",
+            $ref: "#/definitions/sleepstate",
           },
           {
             title: "Event State",
@@ -98,10 +167,6 @@ export const SW_SPEC_SCHEMA = {
           {
             title: "Switch State",
             $ref: "#/definitions/switchstate",
-          },
-          {
-            title: "SubFlow State",
-            $ref: "#/definitions/subflowstate",
           },
           {
             title: "Inject State",
@@ -121,8 +186,41 @@ export const SW_SPEC_SCHEMA = {
       minItems: 1,
     },
   },
-  required: ["id", "name", "version", "start", "states"],
+  oneOf: [
+    {
+      required: ["id", "specVersion", "states"],
+    },
+    {
+      required: ["key", "specVersion", "states"],
+    },
+  ],
   definitions: {
+    sleep: {
+      type: "object",
+      properties: {
+        before: {
+          type: "string",
+          description:
+            "Amount of time (ISO 8601 duration format) to sleep before function/subflow invocation. Does not apply if 'eventRef' is defined.",
+        },
+        after: {
+          type: "string",
+          description:
+            "Amount of time (ISO 8601 duration format) to sleep after function/subflow invocation. Does not apply if 'eventRef' is defined.",
+        },
+      },
+      oneOf: [
+        {
+          required: ["before"],
+        },
+        {
+          required: ["after"],
+        },
+        {
+          required: ["before", "after"],
+        },
+      ],
+    },
     crondef: {
       oneOf: [
         {
@@ -150,28 +248,40 @@ export const SW_SPEC_SCHEMA = {
         },
       ],
     },
-    exectimeout: {
-      type: "object",
-      properties: {
-        duration: {
+    continueasdef: {
+      oneOf: [
+        {
           type: "string",
-          description: "Timeout duration (ISO 8601 duration format)",
-          minLength: 1,
-        },
-        interrupt: {
-          type: "boolean",
           description:
-            "If `false`, workflow instance is allowed to finish current execution. If `true`, current workflow execution is abrupted.",
-          default: false,
-        },
-        runBefore: {
-          type: "string",
-          description: "Name of a workflow state to be executed before workflow instance is terminated",
+            "Unique id of the workflow to be continue execution as. Entire state data is passed as data input to next execution",
           minLength: 1,
         },
-      },
-      additionalProperties: false,
-      required: ["duration"],
+        {
+          type: "object",
+          properties: {
+            workflowId: {
+              type: "string",
+              description: "Unique id of the workflow to continue execution as",
+            },
+            version: {
+              type: "string",
+              description: "Version of the workflow to continue execution as",
+              minLength: 1,
+            },
+            data: {
+              type: ["string", "object"],
+              description:
+                "If string type, an expression which selects parts of the states data output to become the workflow data input of continued execution. If object type, a custom object to become the workflow data input of the continued execution",
+            },
+            workflowExecTimeout: {
+              $ref: "timeouts.json#/definitions/workflowExecTimeout",
+              description:
+                "Workflow execution timeout to be used by the workflow continuing execution. Overwrites any specific settings set by that workflow",
+            },
+          },
+          required: ["workflowId"],
+        },
+      ],
     },
     transition: {
       oneOf: [
@@ -213,40 +323,42 @@ export const SW_SPEC_SCHEMA = {
     error: {
       type: "object",
       properties: {
-        error: {
+        errorRef: {
           type: "string",
-          description: "Domain-specific error name, or '*' to indicate all possible errors",
+          description: "Reference to a unique workflow error definition. Used of errorRefs is not used",
           minLength: 1,
         },
-        code: {
-          type: "string",
-          description:
-            "Error code. Can be used in addition to the name to help runtimes resolve to technical errors/exceptions. Should not be defined if error is set to '*'",
-          minLength: 1,
-        },
-        retryRef: {
-          type: "string",
-          description: "References a unique name of a retry definition.",
-          minLength: 1,
+        errorRefs: {
+          type: "array",
+          description: "References one or more workflow error definitions. Used if errorRef is not used",
+          minItems: 1,
+          items: {
+            type: "string",
+          },
+          additionalItems: false,
         },
         transition: {
-          description:
-            "Transition to next state to handle the error. If retryRef is defined, this transition is taken only if retries were unsuccessful.",
+          description: "Transition to next state to handle the error.",
           $ref: "#/definitions/transition",
         },
         end: {
-          description:
-            "End workflow execution in case of this error. If retryRef is defined, this ends workflow only if retries were unsuccessful.",
+          description: "End workflow execution in case of this error.",
           $ref: "#/definitions/end",
         },
       },
       additionalProperties: false,
       oneOf: [
         {
-          required: ["error", "transition"],
+          required: ["errorRef", "transition"],
         },
         {
-          required: ["error", "end"],
+          required: ["errorRef", "end"],
+        },
+        {
+          required: ["errorRefs", "transition"],
+        },
+        {
+          required: ["errorRefs", "end"],
         },
       ],
     },
@@ -260,12 +372,13 @@ export const SW_SPEC_SCHEMA = {
           items: {
             type: "string",
           },
+          uniqueItems: true,
           additionalItems: false,
         },
         actionMode: {
           type: "string",
           enum: ["sequential", "parallel"],
-          description: "Specifies how actions are to be performed (in sequence of parallel)",
+          description: "Specifies how actions are to be performed (in sequence or in parallel)",
           default: "sequential",
         },
         actions: {
@@ -288,6 +401,10 @@ export const SW_SPEC_SCHEMA = {
     action: {
       type: "object",
       properties: {
+        id: {
+          type: "string",
+          description: "Unique action identifier",
+        },
         name: {
           type: "string",
           description: "Unique action definition name",
@@ -300,13 +417,48 @@ export const SW_SPEC_SCHEMA = {
           description: "References a 'trigger' and 'result' reusable event definitions",
           $ref: "#/definitions/eventref",
         },
-        timeout: {
+        subFlowRef: {
+          description: "References a sub-workflow to invoke",
+          $ref: "#/definitions/subflowref",
+        },
+        sleep: {
+          description: "Defines time periods workflow execution should sleep before / after function execution",
+          $ref: "#/definitions/sleep",
+        },
+        retryRef: {
           type: "string",
-          description: "Time period to wait for function execution to complete",
+          description:
+            "References a defined workflow retry definition. If not defined the default retry policy is assumed",
+        },
+        nonRetryableErrors: {
+          type: "array",
+          description:
+            "List of unique references to defined workflow errors for which the action should not be retried. Used only when `autoRetries` is set to `true`",
+          minItems: 1,
+          items: {
+            type: "string",
+          },
+          additionalItems: false,
+        },
+        retryableErrors: {
+          type: "array",
+          description:
+            "List of unique references to defined workflow errors for which the action should be retried. Used only when `autoRetries` is set to `false`",
+          minItems: 1,
+          items: {
+            type: "string",
+          },
+          additionalItems: false,
         },
         actionDataFilter: {
           description: "Action data filter",
           $ref: "#/definitions/actiondatafilter",
+        },
+        condition: {
+          description:
+            "Expression, if defined, must evaluate to true for this action to be performed. If false, action is disregarded",
+          type: "string",
+          minLength: 1,
         },
       },
       additionalProperties: false,
@@ -316,6 +468,9 @@ export const SW_SPEC_SCHEMA = {
         },
         {
           required: ["eventRef"],
+        },
+        {
+          required: ["subFlowRef"],
         },
       ],
     },
@@ -338,6 +493,16 @@ export const SW_SPEC_SCHEMA = {
               type: "object",
               description: "Function arguments/inputs",
             },
+            selectionSet: {
+              type: "string",
+              description: "Only used if function type is 'graphql'. A string containing a valid GraphQL selection set",
+            },
+            invoke: {
+              type: "string",
+              enum: ["sync", "async"],
+              description: "Specifies if the function should be invoked sync or async",
+              default: "sync",
+            },
           },
           additionalProperties: false,
           required: ["refName"],
@@ -356,6 +521,11 @@ export const SW_SPEC_SCHEMA = {
           type: "string",
           description: "Reference to the unique name of a 'consumed' event definition",
         },
+        resultEventTimeout: {
+          type: "string",
+          description:
+            "Maximum amount of time (ISO 8601 format) to wait for the result event. If not defined it should default to the actionExecutionTimeout",
+        },
         data: {
           type: ["string", "object"],
           description:
@@ -368,9 +538,53 @@ export const SW_SPEC_SCHEMA = {
             type: "string",
           },
         },
+        invoke: {
+          type: "string",
+          enum: ["sync", "async"],
+          description: "Specifies if the function should be invoked sync or async. Default is sync.",
+          default: "sync",
+        },
       },
       additionalProperties: false,
       required: ["triggerEventRef", "resultEventRef"],
+    },
+    subflowref: {
+      oneOf: [
+        {
+          type: "string",
+          description: "Unique id of the sub-workflow to be invoked",
+          minLength: 1,
+        },
+        {
+          type: "object",
+          description: "Specifies a sub-workflow to be invoked",
+          properties: {
+            workflowId: {
+              type: "string",
+              description: "Unique id of the sub-workflow to be invoked",
+            },
+            version: {
+              type: "string",
+              description: "Version of the sub-workflow to be invoked",
+              minLength: 1,
+            },
+            onParentComplete: {
+              type: "string",
+              enum: ["continue", "terminate"],
+              description:
+                "If invoke is 'async', specifies how subflow execution should behave when parent workflow completes. Default is 'terminate'",
+              default: "terminate",
+            },
+            invoke: {
+              type: "string",
+              enum: ["sync", "async"],
+              description: "Specifies if the subflow should be invoked sync or async",
+              default: "sync",
+            },
+          },
+          required: ["workflowId"],
+        },
+      ],
     },
     branch: {
       type: "object",
@@ -379,6 +593,19 @@ export const SW_SPEC_SCHEMA = {
         name: {
           type: "string",
           description: "Branch name",
+        },
+        timeouts: {
+          type: "object",
+          description: "State specific timeouts",
+          properties: {
+            actionExecTimeout: {
+              $ref: "timeouts.json#/definitions/actionExecTimeout",
+            },
+            branchExecTimeout: {
+              $ref: "timeouts.json#/definitions/branchExecTimeout",
+            },
+          },
+          required: [],
         },
         actions: {
           type: "array",
@@ -389,24 +616,13 @@ export const SW_SPEC_SCHEMA = {
           },
           additionalItems: false,
         },
-        workflowId: {
-          type: "string",
-          description: "Unique Id of a workflow to be executed in this branch",
-        },
       },
       additionalProperties: false,
-      oneOf: [
-        {
-          required: ["name", "workflowId"],
-        },
-        {
-          required: ["name", "actions"],
-        },
-      ],
+      required: ["name", "actions"],
     },
-    delaystate: {
+    sleepstate: {
       type: "object",
-      description: "Causes the workflow execution to delay for a specified duration",
+      description: "Causes the workflow execution to sleep for a specified duration",
       properties: {
         id: {
           type: "string",
@@ -419,7 +635,7 @@ export const SW_SPEC_SCHEMA = {
         },
         type: {
           type: "string",
-          const: "delay",
+          const: "sleep",
           description: "State type",
         },
         end: {
@@ -430,13 +646,23 @@ export const SW_SPEC_SCHEMA = {
           description: "State data filter",
           $ref: "#/definitions/statedatafilter",
         },
-        timeDelay: {
+        duration: {
           type: "string",
-          description: "Amount of time (ISO 8601 format) to delay",
+          description: "Duration (ISO 8601 duration format) to sleep",
+        },
+        timeouts: {
+          type: "object",
+          description: "State specific timeouts",
+          properties: {
+            stateExecTimeout: {
+              $ref: "timeouts.json#/definitions/stateExecTimeout",
+            },
+          },
+          required: [],
         },
         onErrors: {
           type: "array",
-          description: "States error handling and retries definitions",
+          description: "States error handling definitions",
           items: {
             type: "object",
             $ref: "#/definitions/error",
@@ -444,7 +670,7 @@ export const SW_SPEC_SCHEMA = {
           additionalItems: false,
         },
         transition: {
-          description: "Next transition of the workflow after the time delay",
+          description: "Next transition of the workflow after the workflow sleep",
           $ref: "#/definitions/transition",
         },
         compensatedBy: {
@@ -471,15 +697,15 @@ export const SW_SPEC_SCHEMA = {
         required: ["usedForCompensation"],
       },
       then: {
-        required: ["name", "type", "timeDelay"],
+        required: ["name", "type", "duration"],
       },
       else: {
         oneOf: [
           {
-            required: ["name", "type", "timeDelay", "end"],
+            required: ["name", "type", "duration", "end"],
           },
           {
-            required: ["name", "type", "timeDelay", "transition"],
+            required: ["name", "type", "duration", "transition"],
           },
         ],
       },
@@ -518,9 +744,21 @@ export const SW_SPEC_SCHEMA = {
           },
           additionalItems: false,
         },
-        timeout: {
-          type: "string",
-          description: "Time period to wait for incoming events (ISO 8601 format)",
+        timeouts: {
+          type: "object",
+          description: "State specific timeouts",
+          properties: {
+            stateExecTimeout: {
+              $ref: "timeouts.json#/definitions/stateExecTimeout",
+            },
+            actionExecTimeout: {
+              $ref: "timeouts.json#/definitions/actionExecTimeout",
+            },
+            eventTimeout: {
+              $ref: "timeouts.json#/definitions/eventTimeout",
+            },
+          },
+          required: [],
         },
         stateDataFilter: {
           description: "State data filter",
@@ -528,7 +766,7 @@ export const SW_SPEC_SCHEMA = {
         },
         onErrors: {
           type: "array",
-          description: "States error handling and retries definitions",
+          description: "States error handling definitions",
           items: {
             type: "object",
             $ref: "#/definitions/error",
@@ -602,9 +840,22 @@ export const SW_SPEC_SCHEMA = {
             $ref: "#/definitions/action",
           },
         },
+        timeouts: {
+          type: "object",
+          description: "State specific timeouts",
+          properties: {
+            stateExecTimeout: {
+              $ref: "timeouts.json#/definitions/stateExecTimeout",
+            },
+            actionExecTimeout: {
+              $ref: "timeouts.json#/definitions/actionExecTimeout",
+            },
+          },
+          required: [],
+        },
         onErrors: {
           type: "array",
-          description: "States error handling and retries definitions",
+          description: "States error handling definitions",
           items: {
             type: "object",
             $ref: "#/definitions/error",
@@ -678,6 +929,19 @@ export const SW_SPEC_SCHEMA = {
           description: "State data filter",
           $ref: "#/definitions/statedatafilter",
         },
+        timeouts: {
+          type: "object",
+          description: "State specific timeouts",
+          properties: {
+            stateExecTimeout: {
+              $ref: "timeouts.json#/definitions/stateExecTimeout",
+            },
+            branchExecTimeout: {
+              $ref: "timeouts.json#/definitions/branchExecTimeout",
+            },
+          },
+          required: [],
+        },
         branches: {
           type: "array",
           description: "Branch Definitions",
@@ -689,19 +953,20 @@ export const SW_SPEC_SCHEMA = {
         },
         completionType: {
           type: "string",
-          enum: ["and", "xor", "n_of_m"],
+          enum: ["allOf", "atLeast"],
           description: "Option types on how to complete branch execution.",
-          default: "and",
+          default: "allOf",
         },
-        n: {
+        numCompleted: {
           type: ["number", "string"],
           minimum: 0,
           minLength: 0,
-          description: "Used when completionType is set to 'n_of_m' to specify the 'N' value",
+          description:
+            "Used when completionType is set to 'atLeast' to specify the minimum number of branches that must complete before the state will transition.",
         },
         onErrors: {
           type: "array",
-          description: "States error handling and retries definitions",
+          description: "States error handling definitions",
           items: {
             type: "object",
             $ref: "#/definitions/error",
@@ -752,14 +1017,14 @@ export const SW_SPEC_SCHEMA = {
     switchstate: {
       oneOf: [
         {
-          $ref: "#/definitions/databasedswitch",
+          $ref: "#/definitions/databasedswitchstate",
         },
         {
-          $ref: "#/definitions/eventbasedswitch",
+          $ref: "#/definitions/eventbasedswitchstate",
         },
       ],
     },
-    eventbasedswitch: {
+    eventbasedswitchstate: {
       type: "object",
       description: "Permits transitions to other states based on events",
       properties: {
@@ -781,6 +1046,19 @@ export const SW_SPEC_SCHEMA = {
           description: "State data filter",
           $ref: "#/definitions/statedatafilter",
         },
+        timeouts: {
+          type: "object",
+          description: "State specific timeouts",
+          properties: {
+            stateExecTimeout: {
+              $ref: "timeouts.json#/definitions/stateExecTimeout",
+            },
+            eventTimeout: {
+              $ref: "timeouts.json#/definitions/eventTimeout",
+            },
+          },
+          required: [],
+        },
         eventConditions: {
           type: "array",
           description: "Defines conditions evaluated against events",
@@ -792,21 +1070,17 @@ export const SW_SPEC_SCHEMA = {
         },
         onErrors: {
           type: "array",
-          description: "States error handling and retries definitions",
+          description: "States error handling definitions",
           items: {
             type: "object",
             $ref: "#/definitions/error",
           },
           additionalItems: false,
         },
-        eventTimeout: {
-          type: "string",
-          description: "If eventConditions is used, defines the time period to wait for events (ISO 8601 format)",
-        },
-        default: {
+        defaultCondition: {
           description:
             "Default transition of the workflow if there is no matching data conditions. Can include a transition or end definition",
-          $ref: "#/definitions/defaultdef",
+          $ref: "#/definitions/defaultconditiondef",
         },
         compensatedBy: {
           type: "string",
@@ -823,9 +1097,9 @@ export const SW_SPEC_SCHEMA = {
         },
       },
       additionalProperties: false,
-      required: ["name", "type", "eventConditions"],
+      required: ["name", "type", "eventConditions", "defaultCondition"],
     },
-    databasedswitch: {
+    databasedswitchstate: {
       type: "object",
       description: "Permits transitions to other states based on data conditions",
       properties: {
@@ -847,6 +1121,16 @@ export const SW_SPEC_SCHEMA = {
           description: "State data filter",
           $ref: "#/definitions/statedatafilter",
         },
+        timeouts: {
+          type: "object",
+          description: "State specific timeouts",
+          properties: {
+            stateExecTimeout: {
+              $ref: "timeouts.json#/definitions/stateExecTimeout",
+            },
+          },
+          required: [],
+        },
         dataConditions: {
           type: "array",
           description: "Defines conditions evaluated against state data",
@@ -858,17 +1142,17 @@ export const SW_SPEC_SCHEMA = {
         },
         onErrors: {
           type: "array",
-          description: "States error handling and retries definitions",
+          description: "States error handling definitions",
           items: {
             type: "object",
             $ref: "#/definitions/error",
           },
           additionalItems: false,
         },
-        default: {
+        defaultCondition: {
           description:
             "Default transition of the workflow if there is no matching data conditions. Can include a transition or end definition",
-          $ref: "#/definitions/defaultdef",
+          $ref: "#/definitions/defaultconditiondef",
         },
         compensatedBy: {
           type: "string",
@@ -885,11 +1169,11 @@ export const SW_SPEC_SCHEMA = {
         },
       },
       additionalProperties: false,
-      required: ["name", "type", "dataConditions"],
+      required: ["name", "type", "dataConditions", "defaultCondition"],
     },
-    defaultdef: {
+    defaultconditiondef: {
       type: "object",
-      description: "Default definition. Can be either a transition or end definition",
+      description: "DefaultCondition definition. Can be either a transition or end definition",
       properties: {
         transition: {
           $ref: "#/definitions/transition",
@@ -1028,95 +1312,6 @@ export const SW_SPEC_SCHEMA = {
       additionalProperties: false,
       required: ["condition", "end"],
     },
-    subflowstate: {
-      type: "object",
-      description: "Defines a sub-workflow to be executed",
-      properties: {
-        id: {
-          type: "string",
-          description: "Unique state id",
-          minLength: 1,
-        },
-        name: {
-          type: "string",
-          description: "State name",
-        },
-        type: {
-          type: "string",
-          const: "subflow",
-          description: "State type",
-        },
-        end: {
-          $ref: "#/definitions/end",
-          description: "State end definition",
-        },
-        waitForCompletion: {
-          type: "boolean",
-          default: false,
-          description: "Workflow execution must wait for sub-workflow to finish before continuing",
-        },
-        workflowId: {
-          type: "string",
-          description: "Sub-workflow unique id",
-        },
-        repeat: {
-          $ref: "#/definitions/repeat",
-          description: "SubFlow state repeat exec definition",
-        },
-        stateDataFilter: {
-          description: "State data filter",
-          $ref: "#/definitions/statedatafilter",
-        },
-        onErrors: {
-          type: "array",
-          description: "States error handling and retries definitions",
-          items: {
-            type: "object",
-            $ref: "#/definitions/error",
-          },
-          additionalItems: false,
-        },
-        transition: {
-          description: "Next transition of the workflow after SubFlow has completed execution",
-          $ref: "#/definitions/transition",
-        },
-        compensatedBy: {
-          type: "string",
-          minLength: 1,
-          description: "Unique Name of a workflow state which is responsible for compensation of this state",
-        },
-        usedForCompensation: {
-          type: "boolean",
-          default: false,
-          description: "If true, this state is used to compensate another state. Default is false",
-        },
-        metadata: {
-          $ref: "common.json#/definitions/metadata",
-        },
-      },
-      additionalProperties: false,
-      if: {
-        properties: {
-          usedForCompensation: {
-            const: true,
-          },
-        },
-        required: ["usedForCompensation"],
-      },
-      then: {
-        required: ["name", "type", "workflowId"],
-      },
-      else: {
-        oneOf: [
-          {
-            required: ["name", "type", "workflowId", "end"],
-          },
-          {
-            required: ["name", "type", "workflowId", "transition"],
-          },
-        ],
-      },
-    },
     injectstate: {
       type: "object",
       description: "Inject static data into state data. Does not perform any actions",
@@ -1143,12 +1338,22 @@ export const SW_SPEC_SCHEMA = {
           type: "object",
           description: "JSON object which can be set as states data input and can be manipulated via filters",
         },
+        timeouts: {
+          type: "object",
+          description: "State specific timeouts",
+          properties: {
+            stateExecTimeout: {
+              $ref: "timeouts.json#/definitions/stateExecTimeout",
+            },
+          },
+          required: [],
+        },
         stateDataFilter: {
           description: "State data filter",
           $ref: "#/definitions/statedatafilter",
         },
         transition: {
-          description: "Next transition of the workflow after subflow has completed",
+          description: "Next transition of the workflow after injection has completed",
           $ref: "#/definitions/transition",
         },
         compensatedBy: {
@@ -1224,11 +1429,12 @@ export const SW_SPEC_SCHEMA = {
           description:
             "Name of the iteration parameter that can be referenced in actions/workflow. For each parallel iteration, this param should contain an unique element of the inputCollection array",
         },
-        max: {
+        batchSize: {
           type: ["number", "string"],
           minimum: 0,
           minLength: 0,
-          description: "Specifies how upper bound on how many iterations may run in parallel",
+          description:
+            "Specifies how many iterations may run in parallel at the same time. Used if 'mode' property is set to 'parallel' (default)",
         },
         actions: {
           type: "array",
@@ -1239,9 +1445,18 @@ export const SW_SPEC_SCHEMA = {
           },
           additionalItems: false,
         },
-        workflowId: {
-          type: "string",
-          description: "Unique Id of a workflow to be executed for each of the elements of inputCollection",
+        timeouts: {
+          type: "object",
+          description: "State specific timeouts",
+          properties: {
+            stateExecTimeout: {
+              $ref: "timeouts.json#/definitions/stateExecTimeout",
+            },
+            actionExecTimeout: {
+              $ref: "timeouts.json#/definitions/actionExecTimeout",
+            },
+          },
+          required: [],
         },
         stateDataFilter: {
           description: "State data filter",
@@ -1249,7 +1464,7 @@ export const SW_SPEC_SCHEMA = {
         },
         onErrors: {
           type: "array",
-          description: "States error handling and retries definitions",
+          description: "States error handling definitions",
           items: {
             type: "object",
             $ref: "#/definitions/error",
@@ -1270,6 +1485,12 @@ export const SW_SPEC_SCHEMA = {
           default: false,
           description: "If true, this state is used to compensate another state. Default is false",
         },
+        mode: {
+          type: "string",
+          enum: ["sequential", "parallel"],
+          description: "Specifies how iterations are to be performed (sequentially or in parallel)",
+          default: "parallel",
+        },
         metadata: {
           $ref: "common.json#/definitions/metadata",
         },
@@ -1284,21 +1505,15 @@ export const SW_SPEC_SCHEMA = {
         required: ["usedForCompensation"],
       },
       then: {
-        required: ["name", "type", "inputCollection", "iterationParam", "workflowId"],
+        required: ["name", "type", "inputCollection", "actions"],
       },
       else: {
         oneOf: [
           {
-            required: ["name", "type", "inputCollection", "iterationParam", "workflowId", "end"],
+            required: ["name", "type", "inputCollection", "actions", "end"],
           },
           {
-            required: ["name", "type", "inputCollection", "iterationParam", "workflowId", "transition"],
-          },
-          {
-            required: ["name", "type", "inputCollection", "iterationParam", "actions", "end"],
-          },
-          {
-            required: ["name", "type", "inputCollection", "iterationParam", "actions", "transition"],
+            required: ["name", "type", "inputCollection", "actions", "transition"],
           },
         ],
       },
@@ -1330,9 +1545,21 @@ export const SW_SPEC_SCHEMA = {
           type: "string",
           description: "References an unique callback event name in the defined workflow events",
         },
-        timeout: {
-          type: "string",
-          description: "Time period to wait for incoming events (ISO 8601 format)",
+        timeouts: {
+          type: "object",
+          description: "State specific timeouts",
+          properties: {
+            stateExecTimeout: {
+              $ref: "timeouts.json#/definitions/stateExecTimeout",
+            },
+            actionExecTimeout: {
+              $ref: "timeouts.json#/definitions/actionExecTimeout",
+            },
+            eventTimeout: {
+              $ref: "timeouts.json#/definitions/eventTimeout",
+            },
+          },
+          required: [],
         },
         eventDataFilter: {
           description: "Event data filter",
@@ -1344,7 +1571,7 @@ export const SW_SPEC_SCHEMA = {
         },
         onErrors: {
           type: "array",
-          description: "States error handling and retries definitions",
+          description: "States error handling definitions",
           items: {
             type: "object",
             $ref: "#/definitions/error",
@@ -1383,15 +1610,15 @@ export const SW_SPEC_SCHEMA = {
         required: ["usedForCompensation"],
       },
       then: {
-        required: ["name", "type", "action", "eventRef", "timeout"],
+        required: ["name", "type", "action", "eventRef"],
       },
       else: {
         oneOf: [
           {
-            required: ["name", "type", "action", "eventRef", "timeout", "end"],
+            required: ["name", "type", "action", "eventRef", "end"],
           },
           {
-            required: ["name", "type", "action", "eventRef", "timeout", "transition"],
+            required: ["name", "type", "action", "eventRef", "transition"],
           },
         ],
       },
@@ -1491,6 +1718,9 @@ export const SW_SPEC_SCHEMA = {
               default: false,
               description: "If set to true, triggers workflow compensation. Default is false",
             },
+            continueAs: {
+              $ref: "#/definitions/continueasdef",
+            },
           },
           additionalProperties: false,
           required: [],
@@ -1539,14 +1769,20 @@ export const SW_SPEC_SCHEMA = {
     eventdatafilter: {
       type: "object",
       properties: {
+        useData: {
+          type: "boolean",
+          description:
+            "If set to false, event payload is not added/merged to state data. In this case 'data' and 'toStateData' should be ignored. Default is true.",
+          default: true,
+        },
         data: {
           type: "string",
-          description: "Workflow expression that filters of the event data (payload)",
+          description: "Workflow expression that filters the received event payload (default: '${ . }')",
         },
         toStateData: {
           type: "string",
           description:
-            " Workflow expression that selects a state data element to which the event payload should be added/merged into. If not specified, denotes, the top-level state data element.",
+            " Workflow expression that selects a state data element to which the filtered event should be added/merged into. If not specified, denotes, the top-level state data element.",
         },
       },
       additionalProperties: false,
@@ -1559,6 +1795,12 @@ export const SW_SPEC_SCHEMA = {
           type: "string",
           description: "Workflow expression that selects state data that the state action can use",
         },
+        useResults: {
+          type: "boolean",
+          description:
+            "If set to false, action data results are not added/merged to state data. In this case 'results' and 'toStateData' should be ignored. Default is true.",
+          default: true,
+        },
         results: {
           type: "string",
           description: "Workflow expression that filters the actions data results",
@@ -1567,46 +1809,6 @@ export const SW_SPEC_SCHEMA = {
           type: "string",
           description:
             "Workflow expression that selects a state data element to which the action results should be added/merged into. If not specified, denote, the top-level state data element",
-        },
-      },
-      additionalProperties: false,
-      required: [],
-    },
-    repeat: {
-      type: "object",
-      properties: {
-        expression: {
-          type: "string",
-          description:
-            "Expression evaluated against SubFlow state data. SubFlow will repeat execution as long as this expression is true or until the max property count is reached",
-          minLength: 1,
-        },
-        checkBefore: {
-          type: "boolean",
-          description:
-            "If true, the expression is evaluated before each repeat execution, if false the expression is evaluated after each repeat execution",
-          default: true,
-        },
-        max: {
-          type: "integer",
-          description: "Sets the maximum amount of repeat executions",
-          minimum: 0,
-        },
-        continueOnError: {
-          type: "boolean",
-          description:
-            "If true, repeats executions in a case unhandled errors propagate from the sub-workflow to this state",
-          default: false,
-        },
-        stopOnEvents: {
-          type: "array",
-          description:
-            "List referencing defined consumed workflow events. SubFlow will repeat execution until one of the defined events is consumed, or until the max property count is reached",
-          minItems: 1,
-          items: {
-            type: "string",
-          },
-          additionalItems: false,
         },
       },
       additionalProperties: false,

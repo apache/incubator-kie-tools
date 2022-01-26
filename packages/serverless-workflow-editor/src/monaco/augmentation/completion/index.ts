@@ -15,60 +15,17 @@
  */
 
 import * as monaco from "monaco-editor";
-import * as jsonService from "vscode-json-languageservice";
+import { TextDocument } from "vscode-languageserver-types";
 import { CancellationToken, editor, languages, Position } from "monaco-editor";
 import { MonacoCompletionHelper } from "./helpers";
 import { MonacoAugmentation } from "../MonacoAugmentation";
+import { MonacoLanguage } from "../language";
 
 export type CompletionArgs = {
   model: editor.ITextModel;
   position: Position;
   context: languages.CompletionContext;
   token: CancellationToken;
-};
-
-const jsonLangService = jsonService.getLanguageService({});
-
-const getSuggestions = ({
-  model,
-  position,
-  context,
-  token,
-}: CompletionArgs): languages.ProviderResult<languages.CompletionList> => {
-  const document = jsonService.TextDocument.create("", "json", model.getVersionId(), model.getValue());
-  const offset = document.offsetAt({
-    line: position.lineNumber - 1,
-    character: position.column,
-  });
-
-  const json = jsonLangService.parseJSONDocument(document);
-  const node = json.getNodeFromOffset(offset, true);
-
-  const suggestions: languages.CompletionItem[] = [];
-
-  const consumer = (helperSuggestions: languages.CompletionItem[]): void => {
-    if (helperSuggestions) {
-      suggestions.push(...helperSuggestions);
-    }
-  };
-
-  if (node) {
-    MonacoCompletionHelper.fillSuggestions(consumer, {
-      json,
-      node,
-      document,
-      monacoContext: {
-        model,
-        context,
-        token,
-        position,
-      },
-    });
-  }
-
-  return {
-    suggestions,
-  };
 };
 
 export function initCompletion(augmentation: MonacoAugmentation): void {
@@ -79,16 +36,53 @@ export function initCompletion(augmentation: MonacoAugmentation): void {
       context: languages.CompletionContext,
       token: CancellationToken
     ): languages.ProviderResult<languages.CompletionList> {
-      if (augmentation.language.languageId === "yaml") {
+      if (!augmentation) {
         return null;
       }
 
-      return getSuggestions({
-        model,
-        position,
-        context,
-        token,
+      const language: MonacoLanguage = augmentation.language;
+
+      if (!language.parser) {
+        return null;
+      }
+
+      const document = TextDocument.create("", language.languageId, model.getVersionId(), model.getValue());
+
+      const astDocument = language.parser.parseContent(document);
+
+      const offset = document.offsetAt({
+        line: position.lineNumber - 1,
+        character: position.column,
       });
+
+      const node = astDocument.getNodeFromOffset(offset);
+
+      const suggestions: languages.CompletionItem[] = [];
+
+      const consumer = (helperSuggestions: languages.CompletionItem[]): void => {
+        if (helperSuggestions) {
+          suggestions.push(...helperSuggestions);
+        }
+      };
+
+      if (node) {
+        MonacoCompletionHelper.fillSuggestions(consumer, {
+          astDocument,
+          node,
+          document,
+          language: augmentation.language,
+          monacoContext: {
+            model,
+            context,
+            token,
+            position,
+          },
+        });
+      }
+
+      return {
+        suggestions,
+      };
     },
   });
 }

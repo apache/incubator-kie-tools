@@ -17,6 +17,7 @@
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 const commonConfig = (env) =>
   merge(common(env), {
@@ -43,12 +44,27 @@ module.exports = async (env) => [
     entry: {
       "webview/ServerlessWorkflowEditorEnvelopeApp": "./src/webview/ServerlessWorkflowEditorEnvelopeApp.ts",
     },
+    plugins: [
+      new MonacoWebpackPlugin({
+        languages: ["json"],
+        customLanguages: [
+          {
+            label: "yaml",
+            entry: ["monaco-yaml", "vs/basic-languages/yaml/yaml.contribution"],
+            worker: {
+              id: "monaco-yaml/yamlWorker",
+              entry: "monaco-yaml/lib/esm/yaml.worker",
+            },
+          },
+        ],
+      }),
+    ],
     resolve: {
       alias: {
         // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
         // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
         // `@kiegroup/monaco-editor`. This way, everything works as expected.
-        "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tooling-core/monaco-editor"),
+        //"monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tooling-core/monaco-editor"),
       },
     },
     module: {

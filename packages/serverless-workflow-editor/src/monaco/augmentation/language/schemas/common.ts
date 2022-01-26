@@ -17,7 +17,7 @@
 import { JSONSchema7 } from "json-schema";
 
 export const SW_SPEC_COMMON_SCHEMA: JSONSchema7 = {
-  $id: "https://serverlessworkflow.io/schemas/0.6/common.json",
+  $id: "https://serverlessworkflow.io/schemas/0.8/common.json",
   $schema: "http://json-schema.org/draft-07/schema#",
   description: "Serverless Workflow specification - common schema",
   type: "object",

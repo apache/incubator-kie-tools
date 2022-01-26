@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
+import { ASTContentParser } from "./parser";
+
 export interface MonacoLanguage {
   languageId: string;
 
+  parser?: ASTContentParser;
+
   getDefaultContent: (content: string) => string;
+
+  getStringValue: (object: any) => string;
 }

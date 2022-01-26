@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-export { SW_SPEC_COMMON_SCHEMA } from "./common";
-export { SW_SPEC_EVENTS_SCHEMA } from "./events";
-export { SW_SPEC_FUNCTIONS_SCHEMA } from "./functions";
-export { SW_SPEC_RETRIES_SCHEMA } from "./retries";
-export { SW_SPEC_SCHEMA } from "./workflow";
+import { TextDocument } from "vscode-languageserver-types";
+import { ASTDocument } from "./ASTTypes";
+
+export interface ASTContentParser {
+  parseContent(content: TextDocument): ASTDocument;
+}

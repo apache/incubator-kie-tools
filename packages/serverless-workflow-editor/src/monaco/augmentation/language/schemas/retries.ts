@@ -15,7 +15,7 @@
  */
 
 export const SW_SPEC_RETRIES_SCHEMA = {
-  $id: "https://serverlessworkflow.io/schemas/0.6/retries.json",
+  $id: "https://serverlessworkflow.io/schemas/0.8/retries.json",
   $schema: "http://json-schema.org/draft-07/schema#",
   description: "Serverless Workflow specification - retries schema",
   type: "object",

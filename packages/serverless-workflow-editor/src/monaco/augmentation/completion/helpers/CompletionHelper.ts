@@ -15,7 +15,9 @@
  */
 
 import { CancellationToken, editor, languages, Position } from "monaco-editor";
-import { ASTNode, JSONDocument, TextDocument } from "vscode-json-languageservice";
+import { ASTDocument, ASTNode } from "../../language/parser";
+import { TextDocument } from "vscode-languageserver-types";
+import { MonacoLanguage } from "../../language";
 
 export type MonacoCompletionContext = {
   model: editor.ITextModel;
@@ -26,8 +28,9 @@ export type MonacoCompletionContext = {
 
 export type CompletionContext = {
   node: ASTNode;
-  json: JSONDocument;
+  astDocument: ASTDocument;
   document: TextDocument;
+  language: MonacoLanguage;
   monacoContext: MonacoCompletionContext;
 };
 

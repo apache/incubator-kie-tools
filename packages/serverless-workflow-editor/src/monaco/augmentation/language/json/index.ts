@@ -15,24 +15,62 @@
  */
 
 import * as monaco from "monaco-editor";
+import * as jsonService from "vscode-json-languageservice";
+import { TextDocument } from "vscode-languageserver-types";
 import { MonacoLanguage } from "../MonacoLanguage";
-import { SW_SPEC_SCHEMA_URI } from "../schemas";
+import {
+  SW_SPEC_COMMON_SCHEMA,
+  SW_SPEC_EVENTS_SCHEMA,
+  SW_SPEC_FUNCTIONS_SCHEMA,
+  SW_SPEC_RETRIES_SCHEMA,
+  SW_SPEC_SCHEMA,
+} from "../schemas";
+import { ASTDocument } from "../parser";
+
+monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+  validate: true,
+  allowComments: false,
+  schemas: [
+    {
+      uri: "https://serverlessworkflow.io/schemas/0.8/common.json",
+      fileMatch: ["*"],
+      schema: SW_SPEC_COMMON_SCHEMA,
+    },
+    {
+      uri: "https://serverlessworkflow.io/schemas/0.8/events.json",
+      fileMatch: ["*"],
+      schema: SW_SPEC_EVENTS_SCHEMA,
+    },
+    {
+      uri: "https://serverlessworkflow.io/schemas/0.8/functions.json",
+      fileMatch: ["*"],
+      schema: SW_SPEC_FUNCTIONS_SCHEMA,
+    },
+    {
+      uri: "https://serverlessworkflow.io/schemas/0.8/retries.json",
+      fileMatch: ["*"],
+      schema: SW_SPEC_RETRIES_SCHEMA,
+    },
+    {
+      uri: "https://serverlessworkflow.io/schemas/0.8/workflow.json",
+      fileMatch: ["*"],
+      schema: SW_SPEC_SCHEMA,
+    },
+  ],
+  enableSchemaRequest: true,
+});
+
+const jsonLangService = jsonService.getLanguageService({});
 
 export function lookupJSONLanguage(): MonacoLanguage {
-  monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-    validate: true,
-    allowComments: false,
-    schemas: [
-      {
-        uri: SW_SPEC_SCHEMA_URI,
-        fileMatch: ["*"],
-      },
-    ],
-    enableSchemaRequest: true,
-  });
-
   return {
     languageId: "json",
+
+    parser: {
+      parseContent(content: TextDocument): ASTDocument {
+        return jsonLangService.parseJSONDocument(content) as ASTDocument;
+      },
+    },
 
     getDefaultContent: (content) => {
       if (!content || content.trim() === "") {
@@ -40,5 +78,7 @@ export function lookupJSONLanguage(): MonacoLanguage {
       }
       return content;
     },
+
+    getStringValue: (object) => JSON.stringify(object),
   };
 }

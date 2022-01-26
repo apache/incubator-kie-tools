@@ -1,5 +1,5 @@
 export const SW_SPEC_EVENTS_SCHEMA = {
-  $id: "https://serverlessworkflow.io/schemas/0.6/events.json",
+  $id: "https://serverlessworkflow.io/schemas/0.8/events.json",
   $schema: "http://json-schema.org/draft-07/schema#",
   description: "Serverless Workflow specification - events schema",
   type: "object",
@@ -56,6 +56,12 @@ export const SW_SPEC_EVENTS_SCHEMA = {
             $ref: "#/definitions/correlationDef",
           },
           additionalItems: false,
+        },
+        dataOnly: {
+          type: "boolean",
+          default: true,
+          description:
+            "If `true`, only the Event payload is accessible to consuming Workflow states. If `false`, both event payload and context attributes should be accessible ",
         },
         metadata: {
           $ref: "common.json#/definitions/metadata",

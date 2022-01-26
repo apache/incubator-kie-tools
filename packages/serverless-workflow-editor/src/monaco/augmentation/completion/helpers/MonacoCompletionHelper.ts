@@ -17,15 +17,15 @@
 import { languages } from "monaco-editor";
 import { CompletionContext, CompletionHelper } from "./CompletionHelper";
 import {
-  FullFunctionObjectCompletionHelper,
-  FunctionObjectPropsCompletionHelper,
+  FunctionObjectCompletionHelper,
+  FunctionObjectContentCompletionHelper,
 } from "./FunctionsNodeCompletionHelpers";
 
 class MonacoCompletionHelper {
   private readonly helpers: CompletionHelper[];
 
   constructor() {
-    this.helpers = [new FullFunctionObjectCompletionHelper(), new FunctionObjectPropsCompletionHelper()];
+    this.helpers = [new FunctionObjectCompletionHelper(), new FunctionObjectContentCompletionHelper()];
   }
 
   public fillSuggestions(
