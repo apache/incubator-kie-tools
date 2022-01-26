@@ -123,8 +123,12 @@ describe("Context Expression Tests", () => {
       expect($outputs.eq(3)).to.contain("output-2");
     });
   });
+});
 
-  it("Define nested Relation", () => {
+describe("Nested Relations", () => {
+  before(() => {
+    cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
+
     // Entry point for each new expression
     cy.ouiaId("expression-container").click();
 
@@ -146,12 +150,28 @@ describe("Context Expression Tests", () => {
     // insert one column left
     cy.ouiaType("expression-column-header-cell-info").contains("column-1").rightclick();
     cy.contains("Insert left").click({ force: true });
+  });
 
+  it("Define nested Relation", () => {
     cy.get("th:contains('column-')").should(($siblings) => {
       expect($siblings).to.have.length(3);
       expect($siblings.eq(0)).to.contain("column-3");
       expect($siblings.eq(1)).to.contain("column-1");
       expect($siblings.eq(2)).to.contain("column-2");
     });
+  });
+
+  it("Nested Relation keyboard navigation", () => {
+    cy.get(".context-expression > div > table > tbody > tr:eq(0) td:eq(1)")
+      .click({ force: true })
+      .type("{downarrow}{leftarrow}");
+
+    cy.get(".context-expression > div > table > tbody > tr:eq(1) td:eq(0)")
+      .should("be.focused")
+      .type("{rightarrow}{rightarrow}{rightarrow}");
+
+    cy.get(".context-expression > div > table > tbody > tr:eq(1) td:eq(2)").should("be.focused").type("{uparrow}");
+
+    cy.get(".context-expression > div > table > tbody > tr:eq(0) td:eq(2)").should("be.focused");
   });
 });

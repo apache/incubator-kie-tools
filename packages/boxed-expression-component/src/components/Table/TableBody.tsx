@@ -81,7 +81,8 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           setShowTableHandler(false);
         }
         /* TODO: FocusUtils: ArrowNavigation with nested tables  */
-        /* FIXME: Context type: navigate to last row  */
+        /* FIXME: Context type: the row shrink when the first cell of the last row is focused  */
+        /* FIXME: Context type: close the context menu when table navigate  */
       },
     }),
     [showTableHandler]
@@ -162,12 +163,12 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   const renderAdditiveRow = useMemo(
     () => (
       <Tr className="table-row additive-row">
-        <Td role="cell" className="empty-cell" tabIndex={0}>
+        <Td role="cell" className="empty-cell" {...tdBaseProps(0, 1)}>
           <br />
         </Td>
         {children?.map((child, childIndex) => {
           return (
-            <Td role="cell" key={childIndex} className="row-remainder-content" tabIndex={0}>
+            <Td role="cell" key={childIndex} className="row-remainder-content" {...tdBaseProps(childIndex, 1)}>
               {child}
             </Td>
           );
