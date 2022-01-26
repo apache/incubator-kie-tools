@@ -42,6 +42,7 @@ import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl;
 import org.eclipse.emf.ecore.util.FeatureMap;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.DeclarationList;
@@ -191,12 +192,13 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
 
     public void setProcessVariables(BaseProcessVariables processVariables) {
         String value = processVariables.getValue();
+        value = StringUtils.preFilterVariablesForGenerics(value);
         DeclarationList declarationList = DeclarationList.fromString(value);
 
         List<Property> properties = process.getProperties();
         declarationList.getDeclarations().forEach(decl -> {
             VariableScope.Variable variable =
-                    variableScope.declare(this.process.getId(), decl.getIdentifier(), decl.getType(), decl.getTags());
+                    variableScope.declare(this.process.getId(), decl.getIdentifier(), StringUtils.postFilterForGenerics(decl.getType()), decl.getTags());
             if (!decl.getTags().isEmpty()) {
                 CustomElement.customTags.of(variable.getTypedIdentifier()).set(decl.getTags());
             }

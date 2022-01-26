@@ -369,6 +369,7 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
                                                            assignments,
                                                            datatypes,
                                                            disallowedpropertynames);
+
         assignmentData.setVariableCountsString(hasInputVars,
                                                isSingleInputVar,
                                                hasOutputVars,
@@ -426,7 +427,6 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
 
     protected String formatDataTypes(final List<String> dataTypes) {
 
-        Set<String> set = getSetDataTypes();
         StringBuilder sb = new StringBuilder();
         if (dataTypes != null && !dataTypes.isEmpty()) {
             List<String> formattedDataTypes = new ArrayList<>(dataTypes.size());

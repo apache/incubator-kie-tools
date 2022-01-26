@@ -94,6 +94,11 @@ public class AttributeValueTextBox extends AbstractValidatingTextBox {
     }
 
     @Override
+    public String isBalancedGTLT(String string) {
+        return null;
+    }
+
+    @Override
     protected String makeValidValue(final String value) {
         if (value == null || value.isEmpty()) {
             return "";
