@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { ExpressionContainer } from "@kogito-tooling/boxed-expression-component/dist/components";
+import { ExpressionContainer } from "@kie-tools/boxed-expression-component/dist/components";
 import { render } from "@testing-library/react";
 import * as React from "react";
 import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
-import { DataType, LogicType } from "@kogito-tooling/boxed-expression-component";
+import { DataType, LogicType } from "@kie-tools/boxed-expression-component";
 
 describe("ExpressionContainer tests", () => {
   test("should render ExpressionContainer component", () => {

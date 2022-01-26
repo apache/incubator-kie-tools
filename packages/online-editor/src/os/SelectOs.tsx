@@ -17,7 +17,7 @@
 import { Select, SelectDirection, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { OperatingSystem } from "@kie-tooling-core/operating-system";
+import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { OnlineI18n } from "../i18n";
 
 interface Props {

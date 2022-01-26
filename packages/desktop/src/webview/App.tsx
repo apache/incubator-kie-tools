@@ -26,11 +26,11 @@ import { ElectronFile } from "../common/ElectronFile";
 import { GlobalContext } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { HomePage } from "./home/HomePage";
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
+import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
-import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n";
-import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 
 enum Pages {
   HOME,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { interpolateSettingsValue } from "@kie-tooling-core/vscode-extension/dist/generateSvg";
+import { interpolateSettingsValue } from "@kie-tools-core/vscode-extension/dist/generateSvg";
 
 describe("generateSvg", () => {
   test("Should replace tokens with mapped values", () => {

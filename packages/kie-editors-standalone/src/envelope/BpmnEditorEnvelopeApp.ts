@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import * as EditorEnvelope from "@kie-tooling-core/editor/dist/envelope";
-import { BpmnEditorChannelApi, BpmnEditorEnvelopeApi } from "@kogito-tooling/kie-bc-editors/dist/bpmn/api";
-import { BpmnEditor, BpmnEditorEnvelopeApiImpl } from "@kogito-tooling/kie-bc-editors/dist/bpmn/envelope";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+import { BpmnEditorChannelApi, BpmnEditorEnvelopeApi } from "@kie-tools/kie-bc-editors/dist/bpmn/api";
+import { BpmnEditor, BpmnEditorEnvelopeApiImpl } from "@kie-tools/kie-bc-editors/dist/bpmn/envelope";
 
 const initEnvelope = () => {
   const container = document.getElementById("envelope-app")!;

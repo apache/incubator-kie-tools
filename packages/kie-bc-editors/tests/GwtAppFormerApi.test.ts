@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { GwtAppFormerApi, GwtEditor } from "@kogito-tooling/kie-bc-editors/dist/common/GwtAppFormerApi";
+import { GwtAppFormerApi, GwtEditor } from "@kie-tools/kie-bc-editors/dist/common/GwtAppFormerApi";
 import { DummyEditor } from "./DummyEditor";
-import { Editor } from "@kie-tooling-core/editor/dist/api";
+import { Editor } from "@kie-tools-core/editor/dist/api";
 
 class DummyGwtEditor {
   private wrappedEditor: Editor;

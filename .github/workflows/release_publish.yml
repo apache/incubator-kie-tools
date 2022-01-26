@@ -47,7 +47,7 @@ jobs:
 
   build_and_publish:
     needs: [prepare]
-    uses: kiegroup/kogito-tooling/.github/workflows/release_build.yml@main
+    uses: kiegroup/kie-tools/.github/workflows/release_build.yml@main
     with:
       dry_run: false
       base_ref: ${{ needs.prepare.outputs.release_ref }}
@@ -56,7 +56,7 @@ jobs:
       upload_asset_url: ${{ needs.prepare.outputs.upload_asset_url }}
       runners: ${{ github.event.inputs.runners }}
     secrets:
-      kogito_tooling_bot_token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+      kie_tools_bot_token: ${{ secrets.KIE_TOOLS_BOT_TOKEN }}
       gh_token: ${{ secrets.GITHUB_TOKEN }}
       quay_registry_password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
       google_developer_console_client_id: ${{ secrets.GOOGLE_DEVELOPER_CONSOLE_CLIENT_ID }}

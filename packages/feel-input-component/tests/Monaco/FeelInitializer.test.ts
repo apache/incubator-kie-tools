@@ -21,8 +21,8 @@ import {
   feelTheme,
   feelTokensConfig,
   initializeFeelCompletionItemProvider,
-} from "@kogito-tooling/feel-input-component";
-import * as Monaco from "@kie-tooling-core/monaco-editor";
+} from "@kie-tools/feel-input-component";
+import * as Monaco from "@kie-tools-core/monaco-editor";
 
 describe("FeelInitializer", () => {
   it("initializeFeelLanguage", () => {

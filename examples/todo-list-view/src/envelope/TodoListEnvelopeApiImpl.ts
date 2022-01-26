@@ -17,7 +17,7 @@
 import { TodoListEnvelopeContext } from "./TodoListEnvelopeContext";
 import { Association, TodoListChannelApi, TodoListEnvelopeApi, TodoListInitArgs } from "../api";
 import { TodoListEnvelopeViewApi } from "./TodoListEnvelopeView";
-import { EnvelopeApiFactoryArgs } from "@kie-tooling-core/envelope";
+import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 
 /**
  * Implements the TodoListEnvelopeApi.

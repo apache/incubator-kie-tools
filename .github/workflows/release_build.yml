@@ -26,7 +26,7 @@ on:
         required: false
         default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extension":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false"}'
     secrets:
-      kogito_tooling_bot_token:
+      kie_tools_bot_token:
         required: false
       gh_token:
         required: false
@@ -48,10 +48,10 @@ on:
         required: false
 
 env:
-  KOGITO_TOOLING_BUILD_lint: "false"
-  KOGITO_TOOLING_BUILD_test: "false"
-  KOGITO_TOOLING_BUILD_testIT: "false"
-  KOGITO_TOOLING_BUILD_docker: "true"
+  KIE_TOOLS_BUILD_lint: "false"
+  KIE_TOOLS_BUILD_test: "false"
+  KIE_TOOLS_BUILD_testIT: "false"
+  KIE_TOOLS_BUILD_docker: "true"
   OPENSHIFT_NAMESPACE: "kie-sandbox"
   OPENSHIFT_PART_OF: "kie-sandbox-app"
 
@@ -116,7 +116,7 @@ jobs:
   dmn_dev_sandbox_image:
     env:
       DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
-      DMN_DEV_SANDBOX__baseImageAccount: "kogito_tooling_bot"
+      DMN_DEV_SANDBOX__baseImageAccount: "kie-tools"
       DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
       DMN_DEV_SANDBOX__baseImageTag: "${{ inputs.tag }}"
       DMN_DEV_SANDBOX__baseImageBuildTags: "latest ${{ inputs.tag }}"
@@ -127,14 +127,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners]
     steps:
-      - name: "Checkout kogito-tooling"
+      - name: "Checkout kie-tools"
         uses: actions/checkout@v2
         with:
           ref: ${{ inputs.base_ref }}
           fetch-depth: 0
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
         uses: ./.github/actions/merge-pr-changes
@@ -154,7 +154,7 @@ jobs:
       - name: "Build"
         shell: bash
         run: |
-          lerna run build:prod --scope=@kogito-tooling/dmn-dev-sandbox-deployment-base-image --include-dependencies --stream
+          lerna run build:prod --scope=@kie-tools/dmn-dev-sandbox-deployment-base-image --include-dependencies --stream
 
       - name: "Push dmn-dev-sandbox-deployment-base-image to quay.io"
         if: ${{ !inputs.dry_run }}
@@ -170,17 +170,17 @@ jobs:
     env:
       OPENSHIFT_APP_NAME: "kie-sandbox"
       KIE_SANDBOX__imageRegistry: "quay.io"
-      KIE_SANDBOX__imageAccount: "kogito_tooling_bot"
+      KIE_SANDBOX__imageAccount: "kie-tools"
       KIE_SANDBOX__imageName: "kie-sandbox-image"
       KIE_SANDBOX__imageBuildTags: "latest ${{ inputs.tag }}"
       ONLINE_EDITOR__buildInfo: ""
-      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
-      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
-      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
+      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
+      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
+      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
       ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
       ONLINE_EDITOR__gtmId: "GTM-PQGMKNW"
       DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
-      DMN_DEV_SANDBOX__baseImageAccount: "kogito_tooling_bot"
+      DMN_DEV_SANDBOX__baseImageAccount: "kie-tools"
       DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
       DMN_DEV_SANDBOX__baseImageTag: "${{ inputs.tag }}"
       DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
@@ -192,14 +192,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners, dmn_dev_sandbox_image, kie_sandbox_extended_services_image, cors_proxy_image]
     steps:
-      - name: "Checkout kogito-tooling"
+      - name: "Checkout kie-tools"
         uses: actions/checkout@v2
         with:
           ref: ${{ inputs.base_ref }}
           fetch-depth: 0
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
         uses: ./.github/actions/merge-pr-changes
@@ -212,7 +212,7 @@ jobs:
       - name: "Build"
         shell: bash
         run: |
-          lerna run build:prod --scope=@kogito-tooling/kie-sandbox-image --include-dependencies --stream
+          lerna run build:prod --scope=@kie-tools/kie-sandbox-image --include-dependencies --stream
 
       - name: "Push kie-sandbox-image to quay.io"
         id: push_kie_sandbox_image
@@ -250,7 +250,7 @@ jobs:
     env:
       OPENSHIFT_APP_NAME: "kie-sandbox-extended-services"
       KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry: "quay.io"
-      KIE_SANDBOX_EXTENDED_SERVICES__imageAccount: "kogito_tooling_bot"
+      KIE_SANDBOX_EXTENDED_SERVICES__imageAccount: "kie-tools"
       KIE_SANDBOX_EXTENDED_SERVICES__imageName: "kie-sandbox-extended-services-image"
       KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags: "latest ${{ inputs.tag }}"
 
@@ -261,14 +261,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners]
     steps:
-      - name: "Checkout kogito-tooling"
+      - name: "Checkout kie-tools"
         uses: actions/checkout@v2
         with:
           ref: ${{ inputs.base_ref }}
           fetch-depth: 0
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
         uses: ./.github/actions/merge-pr-changes
@@ -281,7 +281,7 @@ jobs:
       - name: "Build"
         shell: bash
         run: |
-          lerna run build:prod --scope=@kogito-tooling/kie-sandbox-extended-services-image --include-dependencies --stream
+          lerna run build:prod --scope=@kie-tools/kie-sandbox-extended-services-image --include-dependencies --stream
 
       - name: "Push kie-sandbox-extended-services-image to quay.io"
         id: push_kie_sandbox_extended_services_image
@@ -311,7 +311,7 @@ jobs:
     env:
       OPENSHIFT_APP_NAME: "cors-proxy"
       CORS_PROXY__imageRegistry: "quay.io"
-      CORS_PROXY__imageAccount: "kogito_tooling_bot"
+      CORS_PROXY__imageAccount: "kie-tools"
       CORS_PROXY__imageName: "cors-proxy-image"
       CORS_PROXY__imageBuildTags: "latest ${{ inputs.tag }}"
 
@@ -322,14 +322,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners]
     steps:
-      - name: "Checkout kogito-tooling"
+      - name: "Checkout kie-tools"
         uses: actions/checkout@v2
         with:
           ref: ${{ inputs.base_ref }}
           fetch-depth: 0
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
         uses: ./.github/actions/merge-pr-changes
@@ -342,7 +342,7 @@ jobs:
       - name: "Build"
         shell: bash
         run: |
-          lerna run build:prod --scope=@kogito-tooling/cors-proxy-image --include-dependencies --stream
+          lerna run build:prod --scope=@kie-tools/cors-proxy-image --include-dependencies --stream
 
       - name: "Push cors-proxy-image to quay.io"
         id: push_cors_proxy_image
@@ -371,13 +371,13 @@ jobs:
   online_editor:
     env:
       ONLINE_EDITOR__buildInfo: ""
-      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
-      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
-      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kogito-tooling/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
+      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
+      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
+      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
       ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
       ONLINE_EDITOR__gtmId: "GTM-PQGMKNW"
       DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
-      DMN_DEV_SANDBOX__baseImageAccount: "kogito_tooling_bot"
+      DMN_DEV_SANDBOX__baseImageAccount: "kie-tools"
       DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
       DMN_DEV_SANDBOX__baseImageTag: "${{ inputs.tag }}"
       DMN_DEV_SANDBOX__baseImageBuildTags: "latest ${{ inputs.tag }}"
@@ -388,20 +388,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners, dmn_dev_sandbox_image, extended_services]
     steps:
-      - name: "Checkout kogito-tooling"
+      - name: "Checkout kie-tools"
         uses: actions/checkout@v2
         with:
           ref: ${{ inputs.base_ref }}
-          path: ${{ github.workspace }}/kogito-tooling
+          path: ${{ github.workspace }}/kie-tools
           fetch-depth: 0
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./kie-tools/.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
-        uses: ./kogito-tooling/.github/actions/merge-pr-changes
+        uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
-          path: kogito-tooling
+          path: kie-tools
 
       - name: "Checkout kogito-online"
         if: ${{ !inputs.dry_run }}
@@ -409,7 +409,7 @@ jobs:
         with:
           path: ${{ github.workspace }}/kogito-online
           fetch-depth: 0
-          token: ${{ secrets.kogito_tooling_bot_token }}
+          token: ${{ secrets.kie_tools_bot_token }}
           repository: kiegroup/kogito-online
           ref: gh-pages
 
@@ -421,15 +421,15 @@ jobs:
           restore-keys: ${{ runner.os }}-release-m2
 
       - name: "Setup environment"
-        uses: ./kogito-tooling/.github/actions/setup-env
+        uses: ./kie-tools/.github/actions/setup-env
         with:
-          path: kogito-tooling
+          path: kie-tools
           os: ubuntu-latest
 
       - name: "Build"
-        working-directory: ${{ github.workspace }}/kogito-tooling
+        working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          lerna run build:prod --scope=@kogito-tooling/online-editor --include-dependencies --stream
+          lerna run build:prod --scope=@kie-tools/online-editor --include-dependencies --stream
 
       - name: "Deploy to GitHub Pages (kogito-online)"
         if: ${{ !inputs.dry_run }}
@@ -445,15 +445,15 @@ jobs:
           echo "Copy Editor resources"
           rm -rf $EDITORS_DIR
           mkdir -p $EDITORS_DIR
-          cp -r ${{ github.workspace }}/kogito-tooling/packages/stunner-editors/dist/dmn $EDITORS_DIR
-          cp -r ${{ github.workspace }}/kogito-tooling/packages/stunner-editors/dist/bpmn $EDITORS_DIR
-          cp -r ${{ github.workspace }}//kogito-tooling/packages/stunner-editors/dist/scesim $EDITORS_DIR
+          cp -r ${{ github.workspace }}/kie-tools/packages/stunner-editors/dist/dmn $EDITORS_DIR
+          cp -r ${{ github.workspace }}/kie-tools/packages/stunner-editors/dist/bpmn $EDITORS_DIR
+          cp -r ${{ github.workspace }}//kie-tools/packages/stunner-editors/dist/scesim $EDITORS_DIR
           rm -rf ./editors/latest
           ln -s ${{ inputs.tag }} ./editors/latest
 
           echo "Copy Online Editor resources"
           rm -rf ./gwt-editors
-          cp -r ${{ github.workspace }}/kogito-tooling/packages/online-editor/dist/* .
+          cp -r ${{ github.workspace }}/kie-tools/packages/online-editor/dist/* .
           rm -rf ./gwt-editors
           ln -s $EDITORS_DIR gwt-editors
 
@@ -473,20 +473,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners, online_editor]
     steps:
-      - name: "Checkout kogito-tooling"
+      - name: "Checkout kie-tools"
         uses: actions/checkout@v2
         with:
           ref: ${{ inputs.base_ref }}
-          path: ${{ github.workspace }}/kogito-tooling
+          path: ${{ github.workspace }}/kie-tools
           fetch-depth: 0
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./kie-tools/.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
-        uses: ./kogito-tooling/.github/actions/merge-pr-changes
+        uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
-          path: kogito-tooling
+          path: kie-tools
 
       - name: "Checkout kogito-online"
         if: ${{ !inputs.dry_run }}
@@ -494,18 +494,18 @@ jobs:
         with:
           path: ${{ github.workspace }}/kogito-online
           fetch-depth: 0
-          token: ${{ secrets.kogito_tooling_bot_token }}
+          token: ${{ secrets.kie_tools_bot_token }}
           repository: kiegroup/kogito-online
           ref: gh-pages
 
       - name: "Setup environment"
-        uses: ./kogito-tooling/.github/actions/setup-env
+        uses: ./kie-tools/.github/actions/setup-env
         with:
-          path: kogito-tooling
+          path: kie-tools
           os: ubuntu-latest
 
       - name: "Build"
-        working-directory: ${{ github.workspace }}/kogito-tooling
+        working-directory: ${{ github.workspace }}/kie-tools
         run: |
           lerna run build:prod --scope=chrome-extension-pack-kogito-kie-editors --include-dependencies --stream
 
@@ -516,7 +516,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
         with:
           upload_url: ${{ inputs.upload_asset_url }}
-          asset_path: ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip
+          asset_path: ${{ github.workspace }}/kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip
           asset_name: chrome_extension_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
@@ -531,7 +531,7 @@ jobs:
           echo "Copy Chrome Extension resources"
           rm -rf $CHROME_EXTENSION_DIR
           mkdir -p $CHROME_EXTENSION_DIR
-          cp -r ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/{fonts,*-envelope.*} $CHROME_EXTENSION_DIR
+          cp -r ${{ github.workspace }}/kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/{fonts,*-envelope.*} $CHROME_EXTENSION_DIR
           ln -s ../../$EDITORS_DIR/bpmn $CHROME_EXTENSION_DIR/bpmn
           ln -s ../../$EDITORS_DIR/dmn $CHROME_EXTENSION_DIR/dmn
           ln -s ../../$EDITORS_DIR/scesim $CHROME_EXTENSION_DIR/scesim
@@ -546,7 +546,7 @@ jobs:
         id: update_extension
         run: |
           access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.google_developer_console_client_id }}&client_secret=${{ secrets.google_developer_console_client_secret }}&refresh_token=${{ secrets.google_developer_console_refresh_token }}&grant_type=refresh_token" | jq -r '.access_token')
-          uploadResponse=$(curl -X PUT -sS "https://www.googleapis.com/upload/chromewebstore/v1.1/items/${{ secrets.chrome_extension_id }}" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -T ${{ github.workspace }}/kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip)
+          uploadResponse=$(curl -X PUT -sS "https://www.googleapis.com/upload/chromewebstore/v1.1/items/${{ secrets.chrome_extension_id }}" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -T ${{ github.workspace }}/kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip)
           echo "$uploadResponse"
           echo ::set-output name=upload_status::$(echo "$uploadResponse" | jq -r '.uploadState')
 
@@ -580,8 +580,8 @@ jobs:
           fetch-depth: 0
           ref: ${{ inputs.base_ref }}
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
         uses: ./.github/actions/merge-pr-changes
@@ -628,8 +628,8 @@ jobs:
           fetch-depth: 0
           ref: ${{ inputs.base_ref }}
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
         uses: ./.github/actions/merge-pr-changes
@@ -721,8 +721,8 @@ jobs:
           fetch-depth: 0
           ref: ${{ inputs.base_ref }}
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
         uses: ./.github/actions/merge-pr-changes
@@ -735,7 +735,7 @@ jobs:
       - name: "Build"
         shell: bash
         run: |
-          lerna run build:prod --scope=@kogito-tooling/desktop --include-dependencies --stream
+          lerna run build:prod --scope=@kie-tools/desktop --include-dependencies --stream
 
       - name: "Upload Desktop App for Linux (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
@@ -785,8 +785,8 @@ jobs:
           fetch-depth: 0
           ref: ${{ inputs.base_ref }}
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
         uses: ./.github/actions/merge-pr-changes
@@ -813,20 +813,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners, chrome_extension]
     steps:
-      - name: "Checkout kogito-tooling"
+      - name: "Checkout kie-tools"
         uses: actions/checkout@v2
         with:
           ref: ${{ inputs.base_ref }}
-          path: ${{ github.workspace }}/kogito-tooling
+          path: ${{ github.workspace }}/kie-tools
           fetch-depth: 0
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./kie-tools/.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
-        uses: ./kogito-tooling/.github/actions/merge-pr-changes
+        uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
-          path: kogito-tooling
+          path: kie-tools
 
       - name: "Checkout kogito-online"
         if: ${{ !inputs.dry_run }}
@@ -834,20 +834,20 @@ jobs:
         with:
           path: ${{ github.workspace }}/kogito-online
           fetch-depth: 0
-          token: ${{ secrets.kogito_tooling_bot_token }}
+          token: ${{ secrets.kie_tools_bot_token }}
           repository: kiegroup/kogito-online
           ref: gh-pages
 
       - name: "Setup environment"
-        uses: ./kogito-tooling/.github/actions/setup-env
+        uses: ./kie-tools/.github/actions/setup-env
         with:
-          path: kogito-tooling
+          path: kie-tools
           os: ubuntu-latest
 
       - name: "Build"
-        working-directory: ${{ github.workspace }}/kogito-tooling
+        working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          lerna run build:prod --scope=@kogito-tooling/kie-editors-standalone --include-dependencies --stream
+          lerna run build:prod --scope=@kie-tools/kie-editors-standalone --include-dependencies --stream
 
       - name: "Deploy to GitHub Pages (kogito-online)"
         if: ${{ !inputs.dry_run }}
@@ -859,8 +859,8 @@ jobs:
           echo "Copy Chrome Extension resources"
           rm -rf $STANDALONE_EDITORS_DIR
           mkdir $STANDALONE_EDITORS_DIR
-          cp ${{ github.workspace }}/kogito-tooling/packages/kie-editors-standalone/dist/bpmn/index.js $STANDALONE_EDITORS_DIR/bpmn
-          cp ${{ github.workspace }}/kogito-tooling/packages/kie-editors-standalone/dist/dmn/index.js $STANDALONE_EDITORS_DIR/dmn
+          cp ${{ github.workspace }}/kie-tools/packages/kie-editors-standalone/dist/bpmn/index.js $STANDALONE_EDITORS_DIR/bpmn
+          cp ${{ github.workspace }}/kie-tools/packages/kie-editors-standalone/dist/dmn/index.js $STANDALONE_EDITORS_DIR/dmn
 
           echo "Commit changes and push"
           git add .
@@ -885,8 +885,8 @@ jobs:
           fetch-depth: 0
           ref: ${{ inputs.base_ref }}
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
         uses: ./.github/actions/merge-pr-changes
@@ -899,7 +899,7 @@ jobs:
       - name: "Build"
         shell: bash
         run: |
-          lerna run build:prod --scope=@kogito-tooling/extended-services --include-dependencies --stream
+          lerna run build:prod --scope=@kie-tools/extended-services --include-dependencies --stream
 
       - name: "Upload Extended Services for Linux (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
@@ -945,8 +945,8 @@ jobs:
           fetch-depth: 0
           ref: ${{ inputs.base_ref }}
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
         uses: ./.github/actions/merge-pr-changes
@@ -959,7 +959,7 @@ jobs:
       - name: "Build"
         shell: bash
         run: |
-          lerna run build:prod --scope=@kogito-tooling/dashbuilder --include-dependencies --stream
+          lerna run build:prod --scope=@kie-tools/dashbuilder --include-dependencies --stream
 
       - name: "Upload DashBuilder Assets"
         if: ${{ !inputs.dry_run }}
@@ -975,7 +975,7 @@ jobs:
   dashbuilder_images:
     env:
       DASHBUILDER__baseImageRegistry: "quay.io"
-      DASHBUILDER__baseImageAccount: "kogito_tooling_bot"
+      DASHBUILDER__baseImageAccount: "kie-tools"
       DASHBUILDER_AUTHORING__baseImageName: "dashbuilder-authoring"
       DASHBUILDER_RUNTIME__baseImageName: "dashbuilder-runtime"
       DASHBUILDER__baseImageTag: "${{ inputs.tag }}"
@@ -985,31 +985,31 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners]
     steps:
-      - name: "Checkout kogito-tooling"
+      - name: "Checkout kie-tools"
         uses: actions/checkout@v2
         with:
           ref: ${{ inputs.base_ref }}
-          path: ${{ github.workspace }}/kogito-tooling
+          path: ${{ github.workspace }}/kie-tools
           fetch-depth: 0
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./kogito-tooling/.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./kie-tools/.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
-        uses: ./kogito-tooling/.github/actions/merge-pr-changes
+        uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
-          path: kogito-tooling
+          path: kie-tools
 
       - name: "Setup environment"
-        uses: ./kogito-tooling/.github/actions/setup-env
+        uses: ./kie-tools/.github/actions/setup-env
         with:
-          path: kogito-tooling
+          path: kie-tools
           os: ubuntu-latest
 
       - name: "Build Dashbuilder Images"
-        working-directory: ${{ github.workspace }}/kogito-tooling
+        working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          lerna run build:prod --scope=@kogito-tooling/dashbuilder-images --include-dependencies --stream
+          lerna run build:prod --scope=@kie-tools/dashbuilder-images --include-dependencies --stream
 
       - name: "Push dashbuilder-authoring image to quay.io"
         if: ${{ !inputs.dry_run }}

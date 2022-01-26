@@ -20,7 +20,7 @@ import {
   EditorInitArgs,
   KogitoEditorEnvelopeContextType,
   KogitoEditorChannelApi,
-} from "@kie-tooling-core/editor/dist/api";
+} from "@kie-tools-core/editor/dist/api";
 
 export const FACTORY_TYPE = "pmml";
 

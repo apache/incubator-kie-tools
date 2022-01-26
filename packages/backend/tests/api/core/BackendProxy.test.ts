@@ -19,7 +19,7 @@ import {
   BackendProxy,
   CapabilityResponse,
   CapabilityResponseStatus,
-} from "@kie-tooling-core/backend/dist/api";
+} from "@kie-tools-core/backend/dist/api";
 import { createMockedService } from "../dummyServices";
 
 const backendManager = new BackendManagerService({});

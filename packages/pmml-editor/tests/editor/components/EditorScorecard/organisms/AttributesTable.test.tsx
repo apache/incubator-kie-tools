@@ -15,7 +15,7 @@
  */
 import { fireEvent, render } from "@testing-library/react";
 import * as React from "react";
-import { Attribute, Characteristic, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, Characteristic, PMML, Scorecard } from "@kie-tools/pmml-editor-marshaller";
 import { Operation, OperationContext } from "../../../../../dist/editor/components/EditorScorecard";
 import { AttributesTable } from "../../../../../src/editor/components/EditorScorecard/organisms";
 import { Provider } from "react-redux";

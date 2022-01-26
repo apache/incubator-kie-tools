@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { HistoryAwareModelReducer, HistoryService, ModelReducerBinding } from "../history";
-import { Model } from "@kogito-tooling/pmml-editor-marshaller";
+import { Model } from "@kie-tools/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { getModelType, ModelType } from "../PMMLModelHelper";
 import { AllActions } from "./Actions";

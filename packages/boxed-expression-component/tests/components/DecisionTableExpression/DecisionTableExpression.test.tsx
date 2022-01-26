@@ -20,7 +20,7 @@ import {
   DecisionTableProps,
   HitPolicy,
   LogicType,
-} from "@kogito-tooling/boxed-expression-component";
+} from "@kie-tools/boxed-expression-component";
 import { fireEvent, render } from "@testing-library/react";
 import {
   flushPromises,
@@ -29,7 +29,7 @@ import {
   wrapComponentInContext,
 } from "../test-utils";
 import * as React from "react";
-import { DecisionTableExpression } from "@kogito-tooling/boxed-expression-component/dist/components/DecisionTableExpression";
+import { DecisionTableExpression } from "@kie-tools/boxed-expression-component/dist/components/DecisionTableExpression";
 import { openContextMenu } from "../Table/Table.test";
 import * as _ from "lodash";
 import { act } from "react-dom/test-utils";

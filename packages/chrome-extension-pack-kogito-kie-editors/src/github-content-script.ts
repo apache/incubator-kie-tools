@@ -15,7 +15,7 @@
  */
 
 import { ChromeRouter } from "./ChromeRouter";
-import { startExtension } from "@kie-tooling-core/chrome-extension";
+import { startExtension } from "@kie-tools-core/chrome-extension";
 
 const resourcesPathPrefix = new ChromeRouter().getResourcesPathPrefix();
 

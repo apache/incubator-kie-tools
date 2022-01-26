@@ -26,7 +26,7 @@ import {
 import {
   DEFAULT_FIRST_PARAM_NAME,
   FunctionExpression,
-} from "@kogito-tooling/boxed-expression-component/dist/components/FunctionExpression";
+} from "@kie-tools/boxed-expression-component/dist/components/FunctionExpression";
 import * as React from "react";
 import {
   BoxedExpressionEditorGWTService,
@@ -35,7 +35,7 @@ import {
   FunctionKind,
   FunctionProps,
   LogicType,
-} from "@kogito-tooling/boxed-expression-component";
+} from "@kie-tools/boxed-expression-component";
 import { act } from "react-dom/test-utils";
 
 describe("FunctionExpression tests", () => {

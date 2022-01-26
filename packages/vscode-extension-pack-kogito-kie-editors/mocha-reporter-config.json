@@ -1,7 +1,7 @@
 {
   "reporterEnabled": "mocha-jenkins-reporter",
   "mochaJenkinsReporterReporterOptions": {
-    "junit_report_name": "@kogito-tooling/vscode-extension-pack-kogito-kie-editors",
+    "junit_report_name": "@kie-tools/vscode-extension-pack-kogito-kie-editors",
     "junit_report_path": "./dist-it-tests/junit-vscode-it-tests.xml",
     "junit_report_stack": 0
   }

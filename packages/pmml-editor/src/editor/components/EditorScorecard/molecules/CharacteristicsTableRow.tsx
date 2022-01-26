@@ -22,7 +22,7 @@ import {
   CharacteristicPredicateLabel,
   CharacteristicsTableAction,
 } from "../atoms";
-import { Characteristic, DataField } from "@kogito-tooling/pmml-editor-marshaller";
+import { Characteristic, DataField } from "@kie-tools/pmml-editor-marshaller";
 import { IndexedCharacteristic } from "../organisms";
 import "./CharacteristicsTableRow.scss";
 import { useValidationRegistry } from "../../../validation";

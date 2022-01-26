@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { ContentType } from "@kie-tooling-core/workspace/dist/api";
-import { EditorApi, KogitoEditorEnvelopeApi } from "@kie-tooling-core/editor/dist/api";
-import { StateControl } from "@kie-tooling-core/editor/dist/channel";
-import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
+import { ContentType } from "@kie-tools-core/workspace/dist/api";
+import { EditorApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 export interface StandaloneEditorApi extends EditorApi {
   subscribeToContentChanges: StateControl["subscribe"];

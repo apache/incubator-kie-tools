@@ -24,7 +24,7 @@ import {
   RegressionModel,
   RegressionTable,
   XML2PMML,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import {
   LINEAR_REGRESSION_MODEL_1,
   LINEAR_REGRESSION_MODEL_2,

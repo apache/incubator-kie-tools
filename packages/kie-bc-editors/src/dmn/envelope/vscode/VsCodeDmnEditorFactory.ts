@@ -15,9 +15,9 @@
  */
 
 import { DmnEditorChannelApi } from "../../api";
-import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tooling-core/editor/dist/api";
+import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { DmnEditor } from "../DmnEditor";
-import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
+import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import { DmnEditorFactory } from "../DmnEditorFactory";
 import { VsCodeDmnEditorChannelApi } from "./VsCodeDmnEditorChannelApi";
 

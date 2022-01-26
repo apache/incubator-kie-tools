@@ -15,7 +15,7 @@
  */
 import { fireEvent, render } from "@testing-library/react";
 import * as React from "react";
-import { Characteristic, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { Characteristic, PMML } from "@kie-tools/pmml-editor-marshaller";
 import { Operation, OperationContext } from "../../../../../dist/editor/components/EditorScorecard";
 import {
   CharacteristicsTable,

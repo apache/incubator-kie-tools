@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import * as EditorEnvelope from "@kie-tooling-core/editor/dist/envelope";
-import { Base64PngEditorFactory } from "@kogito-tooling-examples/base64png-editor";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+import { Base64PngEditorFactory } from "@kie-tools-examples/base64png-editor";
 
 /**
  * Initialize the Envelope with some args.

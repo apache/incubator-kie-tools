@@ -106,7 +106,7 @@ export function KieSandboxExtendedServicesIcon() {
           id="kie-sandbox-extended-services-button"
           toggleIndicator={null}
           onToggle={toggleKieSandboxExtendedServices}
-          className="kogito-tooling--masthead-hoverable-dark"
+          className="kie-tools--masthead-hoverable-dark"
           data-testid="kie-sandbox-extended-services-button"
         >
           {dropdownToggleIcon}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { PMML } from "@kie-tools/pmml-editor-marshaller";
 import { HistoryService } from "./HistoryProvider";
 
 export interface History {

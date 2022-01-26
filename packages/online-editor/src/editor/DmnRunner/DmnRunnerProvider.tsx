@@ -30,8 +30,8 @@ import { useQueryParams } from "../../queryParams/QueryParamsContext";
 import { useHistory } from "react-router";
 import { useRoutes } from "../../navigation/Hooks";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { Notification } from "@kie-tooling-core/notifications/dist/api";
-import { DmnSchema } from "@kogito-tooling/form/dist/dmn";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
+import { DmnSchema } from "@kie-tools/form/dist/dmn";
 import { useSettings } from "../../settings/SettingsContext";
 
 interface Props {
