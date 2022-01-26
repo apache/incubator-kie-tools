@@ -31,16 +31,7 @@ import { TableComposable } from "@patternfly/react-table";
 import { v4 as uuid } from "uuid";
 import { generateUuid, TableHeaderVisibility, TableOperation, TableProps } from "../../api";
 import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
-import {
-  PASTE_OPERATION,
-  pasteOnTable,
-  focusPrevCell,
-  focusNextCell,
-  focusTextArea,
-  focusUpperCell,
-  focusLowerCell,
-  focusCurrentCell,
-} from "./common";
+import { PASTE_OPERATION, pasteOnTable, focusCurrentCell } from "./common";
 import { EditableCell } from "./EditableCell";
 import "./Table.css";
 import { TableBody } from "./TableBody";
@@ -331,27 +322,6 @@ export const Table: React.FunctionComponent<TableProps> = ({
 
   const tdProps = useCallback(
     (columnIndex: number, rowIndex: number) => ({
-      tabIndex: 0,
-      onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => {
-        const key = e.key;
-        if (key == "ArrowLeft") {
-          focusPrevCell(e.currentTarget);
-        } else if (key == "ArrowRight") {
-          focusNextCell(e.currentTarget);
-        } else if (key == "ArrowUp") {
-          focusUpperCell(e.currentTarget, rowIndex);
-        } else if (key == "ArrowDown") {
-          focusLowerCell(e.currentTarget, rowIndex);
-        } else if (key == "Enter" && !showTableHandler) {
-          focusTextArea(e.currentTarget.querySelector("textarea"));
-        }
-
-        /* close the menu if user is moving */
-        if (/^(tab|arrow)/i.test(key)) {
-          setShowTableHandler(false);
-        }
-        /* TODO: FocusUtils: ArrowNavigation with nested tables  */
-      },
       onContextMenu: (e: ContextMenuEvent) => {
         const target = e.target as HTMLElement;
         if (contextMenuIsAvailable(target)) {
@@ -433,6 +403,8 @@ export const Table: React.FunctionComponent<TableProps> = ({
           onColumnsUpdate={onColumnsUpdateCallback}
           headerVisibility={headerVisibility}
           tdProps={tdProps}
+          showTableHandler={showTableHandler}
+          setShowTableHandler={setShowTableHandler}
         >
           {children}
         </TableBody>

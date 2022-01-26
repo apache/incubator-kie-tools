@@ -20,6 +20,7 @@ import { Tbody, Td, Tr } from "@patternfly/react-table";
 import { Column as IColumn, TableHeaderVisibility } from "../../api";
 import { Cell, Column, Row, TableInstance } from "react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
+import { focusPrevCell, focusNextCell, focusTextArea, focusUpperCell, focusLowerCell } from "./common";
 
 export interface TableBodyProps {
   /** Table instance */
@@ -36,6 +37,10 @@ export interface TableBodyProps {
   onColumnsUpdate?: (columns: Column[]) => void;
   /** Td props */
   tdProps: (cellIndex: number, rowIndex: number) => any;
+  /** Show/hide table handler */
+  showTableHandler: boolean;
+  /** Function to programmatically show/hide table handler */
+  setShowTableHandler: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const TableBody: React.FunctionComponent<TableBodyProps> = ({
@@ -46,8 +51,41 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   getColumnKey,
   onColumnsUpdate,
   tdProps,
+  showTableHandler,
+  setShowTableHandler,
 }) => {
   const headerVisibilityMemo = useMemo(() => headerVisibility ?? TableHeaderVisibility.Full, [headerVisibility]);
+
+  /**
+   * base props for td elements
+   */
+  const tdBaseProps = useCallback(
+    (_columnIndex: number, rowIndex: number) => ({
+      tabIndex: 0,
+      onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => {
+        const key = e.key;
+        if (key == "ArrowLeft") {
+          focusPrevCell(e.currentTarget);
+        } else if (key == "ArrowRight") {
+          focusNextCell(e.currentTarget);
+        } else if (key == "ArrowUp") {
+          focusUpperCell(e.currentTarget, rowIndex);
+        } else if (key == "ArrowDown") {
+          focusLowerCell(e.currentTarget, rowIndex);
+        } else if (key == "Enter" && !showTableHandler) {
+          focusTextArea(e.currentTarget.querySelector("textarea"));
+        }
+
+        /* close the menu if user is moving */
+        if (/^(tab|arrow)/i.test(key)) {
+          setShowTableHandler(false);
+        }
+        /* TODO: FocusUtils: ArrowNavigation with nested tables  */
+        /* FIXME: Context type: navigate to last row  */
+      },
+    }),
+    [showTableHandler]
+  );
 
   const renderCell = useCallback(
     (cellIndex: number, cell: Cell, rowIndex: number, inAForm: boolean) => {
@@ -79,7 +117,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
         cellType += " input";
       }
 
-      const tdProp = tdProps(cellIndex, rowIndex);
+      const tdProp = { ...tdBaseProps(cellIndex, rowIndex), ...tdProps(cellIndex, rowIndex) };
 
       return (
         <Td
@@ -124,12 +162,12 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   const renderAdditiveRow = useMemo(
     () => (
       <Tr className="table-row additive-row">
-        <Td role="cell" className="empty-cell">
+        <Td role="cell" className="empty-cell" tabIndex={0}>
           <br />
         </Td>
         {children?.map((child, childIndex) => {
           return (
-            <Td role="cell" key={childIndex} className="row-remainder-content">
+            <Td role="cell" key={childIndex} className="row-remainder-content" tabIndex={0}>
               {child}
             </Td>
           );
