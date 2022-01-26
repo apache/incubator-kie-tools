@@ -14,8 +14,6 @@
  */
 package org.eclipse.bpmn2.impl;
 
-import com.google.gwt.user.client.rpc.GwtTransient;
-
 import java.util.Collection;
 
 import org.eclipse.bpmn2.BaseElement;
@@ -67,7 +65,6 @@ public class BaseElementImpl extends EObjectImpl implements BaseElement {
 	 * @generated
 	 * @ordered
 	 */
-	@GwtTransient
 	protected EList<Documentation> documentation;
 
 	/**
@@ -78,7 +75,6 @@ public class BaseElementImpl extends EObjectImpl implements BaseElement {
 	 * @generated
 	 * @ordered
 	 */
-	@GwtTransient
 	protected EList<ExtensionAttributeValue> extensionValues;
 
 	/**
@@ -89,7 +85,6 @@ public class BaseElementImpl extends EObjectImpl implements BaseElement {
 	 * @generated
 	 * @ordered
 	 */
-	@GwtTransient
 	protected EList<ExtensionDefinition> extensionDefinitions;
 
 	/**
@@ -110,7 +105,6 @@ public class BaseElementImpl extends EObjectImpl implements BaseElement {
 	 * @generated
 	 * @ordered
 	 */
-	@GwtTransient
 	protected String id = ID_EDEFAULT;
 
 	/**
@@ -121,7 +115,6 @@ public class BaseElementImpl extends EObjectImpl implements BaseElement {
 	 * @generated
 	 * @ordered
 	 */
-	@GwtTransient
 	protected FeatureMap anyAttribute;
 
 	/**

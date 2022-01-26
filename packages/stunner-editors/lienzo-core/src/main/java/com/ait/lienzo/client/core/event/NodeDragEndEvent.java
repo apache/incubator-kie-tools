@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.client.core.shape.Node;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 
 public class NodeDragEndEvent extends AbstractNodeHumanInputEvent<NodeDragEndHandler, Node> {

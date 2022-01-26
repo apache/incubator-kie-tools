@@ -18,10 +18,11 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors;
 
 import javax.validation.constraints.NotNull;
 
+import io.crysknife.ui.databinding.client.api.Bindable;
+
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;

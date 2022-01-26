@@ -56,7 +56,6 @@ public abstract class AbstractFieldElementProcessor implements FormElementProces
                                               FormGenerationContext context) {
 
         FieldDefinition field;
-
         if (element.getPreferredType().equals(FieldType.class)) {
             field = fieldManager.getDefinitionByDataType(element.getTypeInfo());
         } else {
@@ -66,7 +65,6 @@ public abstract class AbstractFieldElementProcessor implements FormElementProces
                 field = fieldManager.getDefinitionByDataType(element.getTypeInfo());
             }
         }
-
         if (field != null) {
             context.getFormDefinition().getFields().add(field);
 

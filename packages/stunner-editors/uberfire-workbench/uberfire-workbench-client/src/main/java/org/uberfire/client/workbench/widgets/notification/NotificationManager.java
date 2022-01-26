@@ -23,11 +23,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RootPanel;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import io.crysknife.client.BeanManager;
+import io.crysknife.client.SyncBeanDef;
+import org.gwtproject.user.client.Command;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.RootPanel;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -41,13 +41,13 @@ public class NotificationManager {
 
     private final Map<PlaceRequest, View> notificationsContainerViewMap = new HashMap<>();
     private final PlaceRequest rootPlaceRequest = new DefaultPlaceRequest("org.uberfire.client.workbench.widgets.notifications.root");
-    private SyncBeanManager iocManager;
+    private BeanManager iocManager;
 
     public NotificationManager() {
     }
 
     @Inject
-    public NotificationManager(final SyncBeanManager iocManager) {
+    public NotificationManager(final BeanManager iocManager) {
         this.iocManager = iocManager;
     }
 
@@ -65,8 +65,8 @@ public class NotificationManager {
         //Lookup, or create, a View specific to the container
         View notificationsContainerView = notificationsContainerViewMap.get(rootPlaceRequest);
         if (notificationsContainerView == null) {
-            final SyncBeanDef<View> containerViewBeanDef = iocManager.lookupBean(View.class);
-            if (containerViewBeanDef != null) {
+           final SyncBeanDef<View> containerViewBeanDef = iocManager.lookupBean(View.class);
+           if (containerViewBeanDef != null) {
                 notificationsContainerView = containerViewBeanDef.getInstance();
                 notificationsContainerView.setContainer(notificationsContainer);
 

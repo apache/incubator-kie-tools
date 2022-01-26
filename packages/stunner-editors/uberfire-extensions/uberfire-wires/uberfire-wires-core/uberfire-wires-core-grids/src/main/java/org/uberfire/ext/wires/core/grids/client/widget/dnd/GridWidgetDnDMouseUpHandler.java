@@ -17,8 +17,8 @@ package org.uberfire.ext.wires.core.grids.client.widget.dnd;
 
 import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.event.NodeMouseUpHandler;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.Command;
+import org.gwtproject.core.client.Scheduler;
+import org.gwtproject.user.client.Command;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 /**

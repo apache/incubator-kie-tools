@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.toolbar.impl;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
@@ -38,6 +39,7 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.command.VisitGrap
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 
 @Default
+@ApplicationScoped
 public class ManagedEditorToolbar
         extends ManagedToolbarDelegate<EditorSession>
         implements EditorToolbar {

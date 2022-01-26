@@ -20,7 +20,7 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Dependent
@@ -35,7 +35,6 @@ public class FieldRendererManagerImpl implements FieldRendererManager {
 
     @Override
     public FieldRenderer getRendererForField(FieldDefinition fieldDefinition) {
-
         Class<? extends FieldRenderer> rendererClass = FieldRendererTypeRegistry.getFieldRenderer(fieldDefinition);
 
         if (rendererClass != null) {

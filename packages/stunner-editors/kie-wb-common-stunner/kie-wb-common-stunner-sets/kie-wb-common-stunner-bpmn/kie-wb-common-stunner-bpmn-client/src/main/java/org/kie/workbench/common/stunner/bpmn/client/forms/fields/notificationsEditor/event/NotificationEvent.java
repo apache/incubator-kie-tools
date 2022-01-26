@@ -16,10 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.notificationsEditor.event;
 
-import org.jboss.errai.common.client.api.annotations.LocalEvent;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.NotificationRow;
 
-@LocalEvent
 public class NotificationEvent {
 
     private NotificationRow row;

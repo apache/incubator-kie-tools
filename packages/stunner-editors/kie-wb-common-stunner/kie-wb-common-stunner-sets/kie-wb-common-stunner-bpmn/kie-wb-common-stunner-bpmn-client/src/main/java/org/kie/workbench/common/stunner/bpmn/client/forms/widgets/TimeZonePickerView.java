@@ -18,8 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.widgets;
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.HasValue;
+import org.gwtproject.user.client.ui.IsWidget;
 
 public interface TimeZonePickerView extends IsWidget {
 

@@ -16,7 +16,7 @@
 
 package org.appformer.kogito.bridge.client.guided.tour;
 
-import org.jboss.errai.ioc.client.api.Disposer;
+import io.crysknife.client.ioc.Disposer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

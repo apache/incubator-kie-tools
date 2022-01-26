@@ -126,7 +126,7 @@ public class AssignmentTest extends AssignmentBaseTest {
     }
 
     /**
-     * Uses prepared examples of constants encoded by com.google.gwt.http.client.URL, which is mocked
+     * Uses prepared examples of constants encoded by org.gwtproject.http.client.URL, which is mocked
      * in the tests.
      */
     @Test

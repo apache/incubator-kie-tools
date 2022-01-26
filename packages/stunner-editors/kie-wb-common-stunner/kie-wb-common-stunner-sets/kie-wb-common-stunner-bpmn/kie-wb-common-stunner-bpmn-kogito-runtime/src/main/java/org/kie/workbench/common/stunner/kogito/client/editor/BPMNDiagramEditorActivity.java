@@ -20,8 +20,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.AbstractActivity;
 import org.uberfire.client.mvp.EditorActivity;
 import org.uberfire.mvp.PlaceRequest;

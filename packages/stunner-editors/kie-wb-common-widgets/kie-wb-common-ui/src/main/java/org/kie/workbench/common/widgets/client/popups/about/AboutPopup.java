@@ -16,11 +16,13 @@
 package org.kie.workbench.common.widgets.client.popups.about;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.uberfire.client.mvp.UberElement;
 
+@Dependent
 public class AboutPopup {
 
     public interface View extends UberElement<AboutPopup> {

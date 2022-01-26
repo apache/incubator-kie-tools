@@ -22,9 +22,9 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.cell.client.SelectionCell;
-import com.google.gwt.user.cellview.client.Column;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import io.crysknife.ui.translation.api.spi.TranslationService;
+import org.gwtproject.cell.client.SelectionCell;
+import org.gwtproject.user.cellview.client.Column;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget.CellEditionHandler;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget.ColumnFieldUpdater;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget.TableEntry;
@@ -47,7 +47,7 @@ public class BooleanEditableColumnGenerator extends AbstractEditableColumnGenera
 
     @Override
     protected Column<TableEntry<Boolean>, String> getEditableColumn(UberfirePagedTable<TableEntry<Boolean>> table,
-                                                                     CellEditionHandler<Boolean> cellEditionHandler) {
+                                                                    CellEditionHandler<Boolean> cellEditionHandler) {
 
         final String yesLiteral = translationService.getTranslation(FormRenderingConstants.BooleanEditableColumnGeneratorYes);
         final String noLiteral = translationService.getTranslation(FormRenderingConstants.BooleanEditableColumnGeneratorNo);

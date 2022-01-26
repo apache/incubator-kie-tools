@@ -18,15 +18,15 @@ package org.uberfire.client.docks.view.bars;
 
 import java.util.function.Consumer;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.ProvidesResize;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.core.client.Scheduler;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.ProvidesResize;
+import org.gwtproject.user.client.ui.RequiresResize;
+import org.gwtproject.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.Heading;
@@ -34,6 +34,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.client.resources.WebAppResource;
+import org.uberfire.client.resources.WebAppResourceImpl;
 import org.uberfire.client.util.CSSLocatorsUtils;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.ouia.OuiaAttribute;
@@ -49,7 +50,7 @@ public class DocksExpandedBar
 
     private static final String OUIA_COMPONENT_TYPE = "expanded-docks-bar";
 
-    private static WebAppResource CSS = GWT.create(WebAppResource.class);
+    private static WebAppResource CSS = new WebAppResourceImpl();
     @UiField
     FlowPanel titlePanel;
 
@@ -60,7 +61,7 @@ public class DocksExpandedBar
 
     Heading title;
     private UberfireDockPosition position;
-    private ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    private ViewBinder uiBinder = new DocksExpandedBar_ViewBinderImpl();
 
     public DocksExpandedBar(UberfireDockPosition position) {
         initWidget(uiBinder.createAndBindUi(this));
@@ -118,7 +119,7 @@ public class DocksExpandedBar
 
     private void createButtons(final String identifier,
                                final ParameterizedCommand<String> closeCommand) {
-        collapse = GWT.create(Button.class);
+        collapse = new Button();
         collapse.setSize(ButtonSize.SMALL);
         collapse.addClickHandler(even -> closeCommand.execute(identifier));
         final String componentType = "collapse-docks-button";
@@ -214,6 +215,7 @@ public class DocksExpandedBar
         return new OuiaComponentIdAttribute(OUIA_COMPONENT_TYPE + "-" + position.getShortName());
     }
 
+    @UiTemplate
     interface ViewBinder
             extends
             UiBinder<Widget, DocksExpandedBar> {

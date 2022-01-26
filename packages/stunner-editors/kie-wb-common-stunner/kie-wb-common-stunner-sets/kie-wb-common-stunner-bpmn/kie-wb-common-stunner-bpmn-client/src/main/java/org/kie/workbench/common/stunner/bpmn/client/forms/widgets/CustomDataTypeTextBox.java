@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.widgets;
 
-import com.google.gwt.regexp.shared.RegExp;
+import org.gwtproject.regexp.shared.RegExp;
 
 public class CustomDataTypeTextBox extends AbstractValidatingTextBox {
 

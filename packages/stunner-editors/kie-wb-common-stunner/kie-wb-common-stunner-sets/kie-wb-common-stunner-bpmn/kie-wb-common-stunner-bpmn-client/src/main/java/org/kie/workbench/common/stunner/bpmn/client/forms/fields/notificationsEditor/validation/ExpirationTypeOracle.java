@@ -17,10 +17,10 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.notificationsEditor.validation;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Expiration;
 
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.notificationsEditor.validation.NotificationValueValidator.checkIfPatternMatch;
@@ -39,13 +39,16 @@ public class ExpirationTypeOracle {
     public static final String REPEATABLE_START_END = REPEATABLE + "/" + ISO_DATE_TIME + "/" + ISO_DATE_TIME + "$";
     public static final String REPEATABLE_DURATION_END = REPEATABLE + "/" + DURATION + "/" + ISO_DATE_TIME + "$";
 
-    private Map<Expiration, List<String>> patterns = ImmutableMap.of(
+    private Map<Expiration, List<String>> patterns; /* = ImmutableMap.of(
             Expiration.TIME_PERIOD, Arrays.asList(REPEATABLE + "/" + PERIOD + "$", "^" + PERIOD + "$"),
             Expiration.DATETIME, Arrays.asList(REPEATABLE + "/" + ISO_DATE_TIME + "/" + PERIOD + "$", "^" + ISO_DATE_TIME + "$"),
-            Expiration.EXPRESSION, Arrays.asList());
+            Expiration.EXPRESSION, Arrays.asList());*/
 
     public ExpirationTypeOracle() {
-
+        patterns = new HashMap<>();
+        patterns.put(Expiration.TIME_PERIOD, Arrays.asList(REPEATABLE + "/" + PERIOD + "$", "^" + PERIOD + "$"));
+        patterns.put(Expiration.DATETIME, Arrays.asList(REPEATABLE + "/" + ISO_DATE_TIME + "/" + PERIOD + "$", "^" + ISO_DATE_TIME + "$"));
+        patterns.put(Expiration.EXPRESSION, Arrays.asList());
     }
 
     public Expiration guess(String maybeIso) {

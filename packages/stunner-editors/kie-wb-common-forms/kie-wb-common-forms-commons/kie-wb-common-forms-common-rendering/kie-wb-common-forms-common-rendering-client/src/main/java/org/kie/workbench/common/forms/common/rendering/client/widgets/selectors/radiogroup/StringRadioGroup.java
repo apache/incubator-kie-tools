@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup;
 
-import com.google.gwt.text.shared.testing.PassthroughParser;
+import org.gwtproject.text.shared.testing.PassthroughParser;
 
 public class StringRadioGroup extends RadioGroupBase<String> {
 

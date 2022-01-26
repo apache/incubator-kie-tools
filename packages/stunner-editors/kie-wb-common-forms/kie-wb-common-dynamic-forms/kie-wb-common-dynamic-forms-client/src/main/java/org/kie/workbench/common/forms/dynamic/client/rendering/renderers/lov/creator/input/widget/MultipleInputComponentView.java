@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget;
 
-import com.google.gwt.view.client.AbstractDataProvider;
+import org.gwtproject.view.client.AbstractDataProvider;
 import org.uberfire.client.mvp.UberElement;
 
 public interface MultipleInputComponentView<TYPE> extends UberElement<MultipleInputComponentView.Presenter<TYPE>> {

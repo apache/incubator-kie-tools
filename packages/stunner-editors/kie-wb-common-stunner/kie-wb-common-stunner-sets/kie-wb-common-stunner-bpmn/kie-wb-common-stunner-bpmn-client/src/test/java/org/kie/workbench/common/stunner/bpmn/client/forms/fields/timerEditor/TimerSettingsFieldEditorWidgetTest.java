@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.timerEditor;
 
-import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorEditorWidgetBaseTest;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
 

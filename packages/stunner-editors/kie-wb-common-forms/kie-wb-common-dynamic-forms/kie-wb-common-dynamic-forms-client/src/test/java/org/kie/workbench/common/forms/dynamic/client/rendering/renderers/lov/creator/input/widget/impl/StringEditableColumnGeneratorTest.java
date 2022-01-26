@@ -17,7 +17,7 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget.impl;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import io.crysknife.ui.translation.api.spi.TranslationService;
 import org.junit.runner.RunWith;
 
 @RunWith(GwtMockitoTestRunner.class)

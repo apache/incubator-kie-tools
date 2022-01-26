@@ -22,18 +22,16 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 
-import org.jboss.errai.validation.client.dynamic.DynamicValidator;
+import io.crysknife.ui.validation.client.dynamic.DynamicValidator;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.DynamicModelConstraints;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.FieldConstraint;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.kie.workbench.common.forms.processing.engine.handling.ModelValidator;
 
 @Dependent
-@Alternative
 public class DynamicModelValidator implements ModelValidator<Map<String, Object>> {
 
     protected DynamicValidator validator;
@@ -48,11 +46,6 @@ public class DynamicModelValidator implements ModelValidator<Map<String, Object>
     @Override
     public boolean validate(Collection<FormField> fields,
                             Map<String, Object> model) {
-
-        if (validator == null) {
-            return true;
-        }
-
         boolean isValid = true;
 
         for (FormField formField : fields) {
@@ -69,11 +62,6 @@ public class DynamicModelValidator implements ModelValidator<Map<String, Object>
     @Override
     public boolean validate(FormField formField,
                             Map<String, Object> model) {
-
-        if (validator == null) {
-            return true;
-        }
-
         if (modelConstraints != null) {
             List<FieldConstraint> fieldConstraints = modelConstraints.getFieldConstraints().get(formField.getFieldBinding());
 

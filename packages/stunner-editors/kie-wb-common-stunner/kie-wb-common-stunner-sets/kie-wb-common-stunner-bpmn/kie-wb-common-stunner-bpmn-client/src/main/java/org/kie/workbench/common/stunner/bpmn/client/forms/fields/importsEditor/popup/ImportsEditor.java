@@ -17,13 +17,16 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.importsEditor.popup;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.ImportsValue;
 
+@Dependent
 public class ImportsEditor implements ImportsEditorView.Presenter {
 
     GetDataCallback callback = null;
+
     @Inject
     ImportsEditorView view;
     private ImportsValue importsValue;

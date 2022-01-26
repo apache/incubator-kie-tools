@@ -24,7 +24,7 @@ import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.toolbox.GroupItem;
 import com.ait.lienzo.client.core.shape.toolbox.ToolboxVisibilityExecutors;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
-import com.google.gwt.user.client.Timer;
+import org.gwtproject.timer.client.Timer;
 
 public abstract class AbstractFocusableGroupItem<T extends AbstractFocusableGroupItem>
         extends AbstractGroupItem<T> {

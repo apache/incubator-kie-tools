@@ -16,12 +16,13 @@
 
 package org.appformer.kogito.bridge.client.guided.tour.service.api;
 
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 /**
  * Native class defined into the Guided Tour component.
  */
-@JsType(isNative = true)
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public interface Mode {
     // empty
 }

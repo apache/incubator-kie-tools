@@ -21,17 +21,20 @@ import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.Button;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Document;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import elemental2.dom.Document;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
 
-import static org.jboss.errai.common.client.dom.DOMUtil.*;
+import static org.jboss.errai.common.client.dom.DOMUtil.addCSSClass;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllElementChildren;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeCSSClass;
 
 @Templated(stylesheet = "InlineNotification.css")
 @Dependent
@@ -39,22 +42,23 @@ public class InlineNotification implements IsElement {
 
     @Inject
     @DataField("alert")
-    private Div alert;
+    private HTMLDivElement alert;
 
     @Inject
     @DataField("message")
-    private Span message;
+    @Named("span")
+    private HTMLElement message;
 
     @Inject
     @DataField("icon")
-    private Span icon;
+    @Named("span")
+    private HTMLElement icon;
 
     @Inject
     @DataField("dismiss")
-    private Button dismiss;
+    private HTMLButtonElement dismiss;
 
-    @Inject
-    private Document document;
+    private Document document = DomGlobal.document;
 
     @Override
     public HTMLElement getElement() {
@@ -62,17 +66,17 @@ public class InlineNotification implements IsElement {
     }
 
     public void setMessage(final String message) {
-        this.message.setTextContent(message);
+        this.message.textContent = message;
     }
 
     public void setMessage(final List<String> messages) {
         removeAllElementChildren(this.message);
-        final HTMLElement ul = document.createElement("ul");
+        final HTMLElement ul = (HTMLElement) document.createElement("ul");
         addCSSClass(ul,
                     "list-unstyled");
         for (String message : messages) {
-            final HTMLElement li = document.createElement("li");
-            li.setTextContent(message);
+            final HTMLElement li = (HTMLElement) document.createElement("li");
+            li.textContent = message;
             ul.appendChild(li);
         }
         this.message.appendChild(ul);

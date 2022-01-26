@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.notificationsEditor.validation;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -25,10 +26,9 @@ import java.util.function.Predicate;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.validation.client.GwtValidation;
+import org.gwtproject.regexp.shared.MatchResult;
+import org.gwtproject.regexp.shared.RegExp;
+import org.gwtproject.validation.client.GwtValidation;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Expiration;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.NotificationRow;
 
@@ -194,10 +194,14 @@ public class NotificationValueValidator implements ConstraintValidator<ValidNoti
     private Predicate<String> isValidDateTimeExpression = (maybeIso)
             -> isRepeatableDateTimeExpression.or(isDateTimeExpression).test(maybeIso);
 
-    public Map<Expiration, Predicate> validators = ImmutableMap.of(
-            Expiration.TIME_PERIOD, isValidRepeatableExpression,
-            Expiration.DATETIME, isValidDateTimeExpression,
-            Expiration.EXPRESSION, isValidRepeatableExpression);
+    public Map<Expiration, Predicate> validators;
+
+    public NotificationValueValidator() {
+        validators = new HashMap<>();
+        validators.put(Expiration.TIME_PERIOD, isValidRepeatableExpression);
+        validators.put(Expiration.DATETIME, isValidDateTimeExpression);
+        validators.put(Expiration.EXPRESSION, isValidRepeatableExpression);
+    }
 
     private static boolean isJavaKeyword(String keyword) {
         return (Arrays.binarySearch(keywords, keyword) >= 0);

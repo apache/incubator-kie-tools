@@ -63,9 +63,9 @@ public abstract class AbstractFieldDefinitionTest<FIELD extends FieldDefinition>
     public void testRequired() {
         FIELD newFieldDefinition = getEmptyFieldDefinition();
         newFieldDefinition.setRequired(true);
-        assertTrue(newFieldDefinition.getRequired());
+        assertTrue(newFieldDefinition.isRequired());
         newFieldDefinition.setRequired(false);
-        assertFalse(newFieldDefinition.getRequired());
+        assertFalse(newFieldDefinition.isRequired());
     }
 
     @Test
@@ -81,9 +81,9 @@ public abstract class AbstractFieldDefinitionTest<FIELD extends FieldDefinition>
     public void testValidateOnChange() {
         FIELD newFieldDefinition = getEmptyFieldDefinition();
         newFieldDefinition.setValidateOnChange(true);
-        assertTrue(newFieldDefinition.getValidateOnChange());
+        assertTrue(newFieldDefinition.isValidateOnChange());
         newFieldDefinition.setValidateOnChange(false);
-        assertFalse(newFieldDefinition.getValidateOnChange());
+        assertFalse(newFieldDefinition.isValidateOnChange());
     }
 
     @Test

@@ -23,7 +23,7 @@ import com.ait.lienzo.client.core.animation.TimedAnimation;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
-import com.google.gwt.user.client.Command;
+import org.gwtproject.user.client.Command;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 /**

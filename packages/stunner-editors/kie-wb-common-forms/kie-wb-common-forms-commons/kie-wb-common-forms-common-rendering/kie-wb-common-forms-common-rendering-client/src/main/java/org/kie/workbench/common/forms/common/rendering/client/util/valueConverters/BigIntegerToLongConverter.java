@@ -18,7 +18,7 @@ package org.kie.workbench.common.forms.common.rendering.client.util.valueConvert
 
 import java.math.BigInteger;
 
-import org.jboss.errai.databinding.client.api.Converter;
+import io.crysknife.ui.databinding.client.api.Converter;
 
 public class BigIntegerToLongConverter implements Converter<BigInteger, Long> {
 

@@ -16,15 +16,17 @@
 
 package org.kie.workbench.common.widgets.client.resources;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.resources.client.ClientBundle;
+import org.gwtproject.resources.client.ImageResource;
+import org.gwtproject.resources.client.Resource;
 
+@Resource
 public interface ItemImages
         extends
         ClientBundle {
 
-    public static final ItemImages INSTANCE = GWT.create( ItemImages.class );
+    public static final ItemImages INSTANCE = new ItemImagesImpl();
 
     @Source("images/items/new_item.gif")
     ImageResource newItem();

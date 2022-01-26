@@ -20,7 +20,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDiagramSavedEvent;
@@ -43,8 +42,8 @@ public class ClientDiagramServiceImpl<M extends Metadata, D extends Diagram<Grap
 
     public ClientDiagramServiceImpl(final ShapeManager shapeManager,
                                     final SessionManager sessionManager,
-                                    final Caller<S> diagramServiceCaller,
-                                    final Caller<DiagramLookupService> diagramLookupServiceCaller,
+                                    final S diagramServiceCaller,
+                                    final DiagramLookupService diagramLookupServiceCaller,
                                     final Event<SessionDiagramSavedEvent> saveEvent) {
         super(shapeManager,
               sessionManager,
@@ -56,12 +55,12 @@ public class ClientDiagramServiceImpl<M extends Metadata, D extends Diagram<Grap
     @Inject
     public ClientDiagramServiceImpl(final ShapeManager shapeManager,
                                     final SessionManager sessionManager,
-                                    final Caller<DiagramLookupService> diagramLookupServiceCaller,
+                                    final DiagramLookupService diagramLookupServiceCaller,
                                     final Event<SessionDiagramSavedEvent> saveEvent,
-                                    final Caller<DiagramService> diagramServiceCaller) {
+                                    final DiagramService diagramServiceCaller) {
         super(shapeManager,
               sessionManager,
-              (Caller<S>) diagramServiceCaller,
+              (S) diagramServiceCaller,
               diagramLookupServiceCaller,
               saveEvent);
     }

@@ -18,14 +18,14 @@ package org.kie.workbench.common.stunner.lienzo.primitive;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.Transform;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.RootPanel;
+import org.gwtproject.event.dom.client.MouseDownEvent;
+import org.gwtproject.event.dom.client.MouseMoveEvent;
+import org.gwtproject.event.dom.client.MouseMoveHandler;
+import org.gwtproject.event.dom.client.MouseUpEvent;
+import org.gwtproject.event.dom.client.MouseUpHandler;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.timer.client.Timer;
+import org.gwtproject.user.client.ui.RootPanel;
 
 public abstract class AbstractDragProxy<T> {
 

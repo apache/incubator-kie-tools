@@ -23,11 +23,13 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@Ignore
 public class SignalRefTest {
 
     private static final String MVEL_COMPLEX_OBJECT_EXPRESSION = "#{myObj.property}";

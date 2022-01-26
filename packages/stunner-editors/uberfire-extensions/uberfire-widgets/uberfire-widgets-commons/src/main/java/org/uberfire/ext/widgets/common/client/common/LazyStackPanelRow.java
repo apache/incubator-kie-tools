@@ -15,11 +15,11 @@
  */
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.animation.client.Animation;
-import com.google.gwt.dom.client.Style.Overflow;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.animation.client.Animation;
+import org.gwtproject.dom.client.Style.Overflow;
+import org.gwtproject.user.client.ui.SimplePanel;
+import org.gwtproject.user.client.ui.VerticalPanel;
+import org.gwtproject.user.client.ui.Widget;
 
 public class LazyStackPanelRow extends VerticalPanel {
 

@@ -21,15 +21,21 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>errai-common</artifactId>
+      <artifactId>compat</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-    </dependency>
-
-
   </dependencies>
 
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.java</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+  </build>
 </project>

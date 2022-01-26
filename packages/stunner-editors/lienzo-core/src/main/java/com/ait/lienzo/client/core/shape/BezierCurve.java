@@ -25,14 +25,11 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /**
  * Bezier curves are defined with two anchor points and two control points.
  * This class represents a cubic Bezier curve.
  */
-@JsType
 public class BezierCurve extends AbstractMultiPointShape<BezierCurve> {
 
     /**
@@ -47,17 +44,14 @@ public class BezierCurve extends AbstractMultiPointShape<BezierCurve> {
      * @param ex  x value for the second anchor point
      * @param ey  y value for the second anchor point
      */
-    @JsIgnore
     public BezierCurve(final double sx, final double sy, final double c1x, final double c1y, final double c2x, final double c2y, final double ex, final double ey) {
         this(new Point2D(sx, sy), new Point2D(c1x, c1y), new Point2D(c2x, c2y), new Point2D(ex, ey));
     }
 
-    @JsIgnore
     public BezierCurve(final double c1x, final double c1y, final double c2x, final double c2y, final double ex, final double ey) {
         this(0, 0, c1x, c1y, c2x, c2y, ex, ey);
     }
 
-    @JsIgnore
     public BezierCurve(final Point2D c1, final Point2D c2, final Point2D ep) {
         this(new Point2D(0, 0), c1, c2, ep);
     }

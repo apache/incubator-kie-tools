@@ -20,9 +20,9 @@
 <module>
 
   <!-- Inherit the core Web Toolkit stuff. -->
-  <inherits name="com.google.gwt.i18n.I18N"/>
-  <inherits name="com.google.gwt.http.HTTP"/>
-  <inherits name="com.google.gwt.user.User"/>
+  <inherits name="org.gwtproject.i18n.I18N"/>
+  <inherits name="org.gwtproject.http.HTTP"/>
+  <inherits name="org.gwtproject.user.User"/>
 
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>

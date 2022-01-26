@@ -1,0 +1,5 @@
+/*
+ * @externs
+*/
+
+function Moment(){};

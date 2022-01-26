@@ -16,24 +16,35 @@
 
 package org.uberfire.client.views.pfly.monaco.jsinterop;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import org.gwtproject.core.client.JavaScriptObject;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true, namespace = "window", name = "monaco")
+//@JsType(isNative = true, namespace = "window", name = "monaco")
 public class MonacoLanguages {
 
-    public native void register(final JavaScriptObject language);
+    public void register(final JavaScriptObject language) {
+        throw new Error(MonacoLanguages.class.getCanonicalName()+".register");
 
-    public native void setMonarchTokensProvider(final String languageId,
-                                                final JavaScriptObject languageDefinition);
+    };
 
-    public native void registerCompletionItemProvider(final String languageId,
-                                                      final JavaScriptObject completionItemProvider);
+    public void setMonarchTokensProvider(final String languageId,
+                                                final JavaScriptObject languageDefinition){
+        throw new Error(MonacoLanguages.class.getCanonicalName()+".setMonarchTokensProvider");
 
-    @JsProperty(name = "languages")
-    public static native MonacoLanguages get();
+    };
+
+    public void registerCompletionItemProvider(final String languageId,
+                                                      final JavaScriptObject completionItemProvider){
+        throw new Error(MonacoLanguages.class.getCanonicalName()+".registerCompletionItemProvider");
+
+    };
+
+    //@JsProperty(name = "languages")
+    public static MonacoLanguages get() {
+        throw new Error(MonacoLanguages.class.getCanonicalName()+".get");
+    };
 
     @JsFunction
     public interface ProvideCompletionItemsFunction {

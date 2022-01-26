@@ -17,26 +17,28 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import org.jboss.errai.common.client.dom.Anchor;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
+import elemental2.dom.HTMLLabelElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Event;
-import org.jboss.errai.common.client.dom.Label;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.common.client.dom.TextInput;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.ForEvent;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.views.pfly.widgets.JQueryProducer;
 import org.uberfire.client.views.pfly.widgets.Popover;
 
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 @Templated
+@Dependent
 public class ConditionParamView
         implements IsElement,
                    ConditionParamPresenter.View {
@@ -45,31 +47,33 @@ public class ConditionParamView
 
     @Inject
     @DataField("param-group")
-    private Div paramGroup;
+    private HTMLDivElement paramGroup;
 
     @Inject
     @DataField("param-label")
-    private Label paramLabel;
+    private HTMLLabelElement paramLabel;
 
     @Inject
     @DataField("param-input")
-    private TextInput paramInput;
+    private HTMLInputElement paramInput;
 
     @Inject
     @DataField("param-input-help")
-    private Anchor paramInputHelp;
+    private HTMLAnchorElement paramInputHelp;
 
     @Inject
     private JQueryProducer.JQuery<Popover> paramInputHelpPopover;
 
     @Inject
     @DataField("param-error")
-    private Span paramError;
+    @Named("span")
+    private HTMLElement paramError;
 
     private ConditionParamPresenter presenter;
 
     @PostConstruct
     public void init() {
+        paramInput.type = "text";
         paramInputHelpPopover.wrap(paramInputHelp).popover();
     }
 
@@ -80,19 +84,19 @@ public class ConditionParamView
 
     @Override
     public void setName(String name) {
-        paramLabel.setTextContent(name);
+        paramLabel.textContent = (name);
     }
 
     @Override
     public String getName() {
-        return paramLabel.getTextContent();
+        return paramLabel.textContent;
     }
 
     @Override
     public void setHelp(String help) {
         if (!isEmpty(help)) {
             paramInputHelp.setAttribute(DATA_CONTENT_ATTR, help);
-            paramInputHelp.getStyle().removeProperty("display");
+            paramInputHelp.style.removeProperty("display");
         }
     }
 
@@ -104,33 +108,33 @@ public class ConditionParamView
 
     @Override
     public String getValue() {
-        return paramInput.getValue();
+        return paramInput.value;
     }
 
     @Override
     public void setValue(String value) {
-        paramInput.setValue(value);
+        paramInput.value = (value);
     }
 
     @Override
     public void clearError() {
         DOMUtil.removeCSSClass(paramGroup, "has-error");
-        paramError.setTextContent(null);
+        paramError.textContent = (null);
     }
 
     @Override
     public void setError(String error) {
         DOMUtil.addCSSClass(paramGroup, "has-error");
-        paramError.setTextContent(error);
+        paramError.textContent = (error);
     }
 
     @Override
     public void setReadonly(boolean readonly) {
-        paramInput.setReadOnly(readonly);
+        paramInput.readOnly = (readonly);
     }
 
     @EventHandler("param-input")
-    private void onValueChange(@ForEvent("change") final Event event) {
+    public void onValueChange(@ForEvent("change") final elemental2.dom.Event event) {
         presenter.onValueChange();
     }
 }

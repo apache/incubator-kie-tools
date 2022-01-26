@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
@@ -29,6 +30,7 @@ import org.uberfire.mvp.Command;
 
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
+@Dependent
 public class ConditionParamPresenter {
 
     static final String PARAM_MUST_BE_COMPLETED_ERROR = "ConditionParamPresenter.ParamMustBeCompletedErrorMessage";

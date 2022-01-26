@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
@@ -52,6 +53,7 @@ import static org.kie.workbench.common.stunner.core.client.util.ClientUtils.getS
 import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getParent;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
+@Dependent
 public class VariableSearchService implements LiveSearchService<String> {
 
     private static final String CASE_VARIABLE_PREFIX = "caseFile_";

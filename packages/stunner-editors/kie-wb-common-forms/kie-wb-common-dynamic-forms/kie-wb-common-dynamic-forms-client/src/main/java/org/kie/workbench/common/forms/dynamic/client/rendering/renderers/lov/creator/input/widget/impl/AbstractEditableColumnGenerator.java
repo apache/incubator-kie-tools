@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget.impl;
 
-import com.google.gwt.user.cellview.client.Column;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import io.crysknife.ui.translation.api.spi.TranslationService;
+import org.gwtproject.user.cellview.client.Column;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget.CellEditionHandler;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget.EditableColumnGenerator;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget.TableEntry;
@@ -43,11 +43,11 @@ public abstract class AbstractEditableColumnGenerator<TYPE> implements EditableC
             column = getReadOnlyColumn();
         } else {
             column = getEditableColumn(table,
-                                       cellEditionHandler);
+                    cellEditionHandler);
         }
 
         table.addColumn(column,
-                        translationService.getTranslation(FormRenderingConstants.EditableColumnGeneratorValueHeader));
+                translationService.getTranslation(FormRenderingConstants.EditableColumnGeneratorValueHeader));
     }
 
     protected abstract Column<TableEntry<TYPE>, ?> getEditableColumn(UberfirePagedTable<TableEntry<TYPE>> table,

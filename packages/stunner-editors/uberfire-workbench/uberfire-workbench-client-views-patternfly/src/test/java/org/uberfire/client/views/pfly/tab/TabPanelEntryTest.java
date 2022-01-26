@@ -18,9 +18,9 @@ package org.uberfire.client.views.pfly.tab;
 
 import java.util.function.Consumer;
 
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtproject.user.client.ui.Widget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

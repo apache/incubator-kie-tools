@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.client.validation;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.validation.Validator;
 
 import org.kie.workbench.common.stunner.core.validation.impl.AbstractModelBeanValidator;
@@ -25,19 +24,20 @@ import org.kie.workbench.common.stunner.core.validation.impl.AbstractModelBeanVa
 @ApplicationScoped
 public class ClientModelValidator extends AbstractModelBeanValidator {
 
-    private final Validator beanValidator;
+    //private final Validator beanValidator;
 
     protected ClientModelValidator() {
-        this(null);
+        //this(null);
     }
 
-    @Inject
-    public ClientModelValidator(final Validator beanValidator) {
-        this.beanValidator = beanValidator;
-    }
+    //@Inject
+/*    public ClientModelValidator(*//*final Validator beanValidator*//*) {
+        //this.beanValidator = beanValidator;
+    }*/
 
     @Override
     protected Validator getBeanValidator() {
-        return beanValidator;
+        //return beanValidator;
+        throw new Error(getClass().getCanonicalName()+".getBeanValidator");
     }
 }

@@ -22,10 +22,12 @@ import java.util.List;
 import javax.validation.ConstraintValidatorContext;
 
 import com.google.gwt.junit.client.GWTTestCase;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentValue;
 import org.kie.workbench.common.stunner.bpmn.forms.validation.reassignment.ReassignmentValueValidator;
 
+@Ignore
 public class ReassignmentValueValidatorTest extends GWTTestCase {
 
     private ReassignmentValueValidator validator;

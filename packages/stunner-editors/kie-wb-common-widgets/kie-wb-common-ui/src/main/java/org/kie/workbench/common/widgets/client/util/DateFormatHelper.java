@@ -18,7 +18,7 @@ package org.kie.workbench.common.widgets.client.util;
 
 import java.util.Date;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
+import org.gwtproject.i18n.client.DateTimeFormat;
 
 public class DateFormatHelper {
 

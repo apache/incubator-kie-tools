@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.google.gwt.user.client.ui.HTML;
+import io.crysknife.ui.databinding.client.api.Converter;
+import io.crysknife.ui.translation.api.spi.TranslationService;
 import org.gwtbootstrap3.client.ui.ValueListBox;
-import org.jboss.errai.databinding.client.api.Converter;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.gwtproject.user.client.ui.HTML;
 import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ValueConvertersFactory;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.util.DefaultValueListBoxRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
@@ -68,17 +68,17 @@ public abstract class AbstractListBoxFieldRenderer<FIELD extends ListBoxBaseDefi
 
         if (renderMode.equals(RenderMode.PRETTY_MODE)) {
             formGroup.render(new HTML(),
-                             field);
+                    field);
         } else {
             String inputId = generateUniqueId();
             widgetList.setId(inputId);
             widgetList.setName(fieldNS);
             widgetList.setEnabled(!field.getReadOnly());
             refreshSelectorOptions();
-            
+
             formGroup.render(inputId,
-                             widgetList,
-                             field);
+                    widgetList,
+                    field);
 
             registerFieldRendererPart(widgetList);
         }
@@ -91,16 +91,16 @@ public abstract class AbstractListBoxFieldRenderer<FIELD extends ListBoxBaseDefi
                                 TYPE selectedValue) {
         List<TYPE> values = optionsValues.keySet().stream().collect(Collectors.toList());
 
-        if (field.getAddEmptyOption()) {
+        if (field.isAddEmptyOption()) {
             if (!values.contains(null)) {
                 values.add(0,
-                           null);
+                        null);
                 optionsValues.put(null,
-                                  translationService.getTranslation(FormRenderingConstants.ListBoxFieldRendererEmptyOptionText));
+                        translationService.getTranslation(FormRenderingConstants.ListBoxFieldRendererEmptyOptionText));
             } else {
                 Collections.swap(values,
-                                 values.indexOf(null),
-                                 0);
+                        values.indexOf(null),
+                        0);
             }
         }
 

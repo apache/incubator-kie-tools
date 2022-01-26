@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.multipleSubform.binding;
 
-import org.jboss.errai.databinding.client.BindableProxy;
+import io.crysknife.ui.databinding.client.BindableProxy;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 

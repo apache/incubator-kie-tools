@@ -18,7 +18,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.databinding.client.api.Converter;
+import io.crysknife.ui.databinding.client.api.Converter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

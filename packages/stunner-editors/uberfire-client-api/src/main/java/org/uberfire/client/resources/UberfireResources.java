@@ -15,15 +15,14 @@
  */
 package org.uberfire.client.resources;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
+import org.gwtproject.resources.client.ClientBundle;
 import org.uberfire.client.resources.images.UberfireImageResources;
 
 public interface UberfireResources
         extends
         ClientBundle {
 
-    public static final UberfireResources INSTANCE = GWT.create(UberfireResources.class);
+    public static final UberfireResources INSTANCE = null;
 
     UberfireImageResources images();
 }

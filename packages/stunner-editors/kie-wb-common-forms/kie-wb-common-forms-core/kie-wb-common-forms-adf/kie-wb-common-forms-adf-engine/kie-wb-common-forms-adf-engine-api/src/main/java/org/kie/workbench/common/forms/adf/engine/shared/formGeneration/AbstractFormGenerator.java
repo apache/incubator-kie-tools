@@ -136,7 +136,6 @@ public abstract class AbstractFormGenerator implements FormGenerator {
     protected void processElements(FormGenerationContext context) {
         context.getFormDefinitionSettings().getFormElements().forEach(formElement -> {
             FormElementProcessor processor = processors.get(formElement.getClass());
-
             if (processor != null) {
 
                 FormElementFilter filter  = context.getFilter(formElement.getName());

@@ -19,7 +19,7 @@ package org.kie.workbench.common.widgets.client.widget;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 
 @Dependent
 public class KieSelectOptionsListPresenter extends ListPresenter<KieSelectOption, KieSelectOptionElement> {

@@ -16,22 +16,21 @@
 
 package org.uberfire.ext.widgets.common.client.dropdown.items;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.DomEvent;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import org.jboss.errai.common.client.dom.Anchor;
+import elemental2.dom.*;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.event.dom.client.KeyCodes;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.ListItem;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
+@Dependent
 public class LiveSearchSelectorDropDownItemViewImpl<TYPE> implements LiveSearchSelectorDropDownItemView<TYPE>,
                                                                      IsElement {
 
@@ -40,19 +39,21 @@ public class LiveSearchSelectorDropDownItemViewImpl<TYPE> implements LiveSearchS
 
     @Inject
     @DataField
-    private ListItem item;
+    private HTMLLIElement item;
 
     @Inject
     @DataField
-    private Anchor itemAnchor;
+    private HTMLAnchorElement itemAnchor;
 
     @Inject
     @DataField
-    private Span itemText;
+    @Named("span")
+    private HTMLElement itemText;
 
     @Inject
     @DataField
-    private Span itemIcon;
+    @Named("span")
+    private HTMLElement itemIcon;
 
     private LiveSearchSelectorDropDownItem presenter;
 
@@ -62,7 +63,7 @@ public class LiveSearchSelectorDropDownItemViewImpl<TYPE> implements LiveSearchS
 
     @Override
     public void render(String value) {
-        itemText.setTextContent(value);
+        itemText.textContent = (value);
     }
 
     @Override
@@ -73,7 +74,7 @@ public class LiveSearchSelectorDropDownItemViewImpl<TYPE> implements LiveSearchS
 
     @Override
     public void select() {
-        item.setClassName("appformer-live-search-selector-dditem selected");
+        item.className = ("appformer-live-search-selector-dditem selected");
         if (iconVisible) {
             DOMUtil.removeCSSClass(itemIcon, ICON_HIDDEN_CLASSNAME);
             DOMUtil.addCSSClass(itemIcon, ICON_VISIBLE_CLASSNAME);
@@ -82,7 +83,7 @@ public class LiveSearchSelectorDropDownItemViewImpl<TYPE> implements LiveSearchS
 
     @Override
     public void reset() {
-        item.setClassName("appformer-live-search-selector-dditem");
+        item.className = ("appformer-live-search-selector-dditem");
         DOMUtil.removeCSSClass(itemIcon, ICON_VISIBLE_CLASSNAME);
         DOMUtil.addCSSClass(itemIcon, ICON_HIDDEN_CLASSNAME);
     }
@@ -101,7 +102,7 @@ public class LiveSearchSelectorDropDownItemViewImpl<TYPE> implements LiveSearchS
         this.multiSelect = multiSelect;
     }
 
-    private void onItemSelected(DomEvent event) {
+    private void onItemSelected(Event event) {
         presenter.onItemClick();
 
         if (multiSelect) {
@@ -110,13 +111,13 @@ public class LiveSearchSelectorDropDownItemViewImpl<TYPE> implements LiveSearchS
     }
 
     @EventHandler("itemAnchor")
-    public void onItemClick(ClickEvent event) {
+    public void onItemClick(@ForEvent("click")Event event) {
         onItemSelected(event);
     }
 
     @EventHandler("itemAnchor")
-    void onEnterKeyDown(KeyDownEvent event) {
-        if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+    void onEnterKeyDown(@ForEvent("keydown") KeyboardEvent event) {
+        if (event.code.equals(KeyCodes.KEY_ENTER)) {
             onItemSelected(event);
         }
     }

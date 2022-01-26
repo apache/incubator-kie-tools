@@ -22,11 +22,13 @@ import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.emf.common.util.EList;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.kie.workbench.common.stunner.bpmn.client.emf.Bpmn2Marshalling.marshall;
 import static org.kie.workbench.common.stunner.bpmn.client.emf.Bpmn2Marshalling.unmarshall;
 
+@Ignore
 public class Bpmn2MarshallingTest extends GWTTestCase {
 
     @Test

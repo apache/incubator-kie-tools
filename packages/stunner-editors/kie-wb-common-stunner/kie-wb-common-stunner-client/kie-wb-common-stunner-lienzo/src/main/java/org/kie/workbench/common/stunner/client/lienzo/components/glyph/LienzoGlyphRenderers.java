@@ -26,7 +26,7 @@ import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Group;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.components.glyph.GlyphRenderer;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 

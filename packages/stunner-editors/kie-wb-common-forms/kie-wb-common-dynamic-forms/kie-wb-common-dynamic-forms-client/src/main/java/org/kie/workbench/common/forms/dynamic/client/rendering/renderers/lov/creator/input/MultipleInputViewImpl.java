@@ -18,23 +18,25 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.cr
 
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasValue;
+import elemental2.dom.HTMLDivElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.HasValue;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
+@Dependent
 public class MultipleInputViewImpl<TYPE> extends Composite implements MultipleInputView<TYPE> {
 
     private Presenter<TYPE> presenter;
 
     @Inject
     @DataField
-    private Div container;
+    private HTMLDivElement container;
 
     @Override
     public void init(Presenter<TYPE> presenter) {

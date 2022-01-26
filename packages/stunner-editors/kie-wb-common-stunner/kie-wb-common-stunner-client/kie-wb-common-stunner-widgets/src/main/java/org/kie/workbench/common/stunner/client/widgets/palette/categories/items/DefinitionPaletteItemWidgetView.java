@@ -31,9 +31,9 @@ public interface DefinitionPaletteItemWidgetView extends UberElement<DefinitionP
 
         DefaultPaletteItem getItem();
 
-        void onMouseDown(int clientX,
-                         int clientY,
-                         int x,
-                         int y);
+        void onMouseDown(double clientX,
+                         double clientY,
+                         double x,
+                         double y);
     }
 }

@@ -18,8 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.client.resources;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
+import org.gwtproject.resources.client.CssResource;
+import org.gwtproject.resources.client.ImageResource;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStrip;
 

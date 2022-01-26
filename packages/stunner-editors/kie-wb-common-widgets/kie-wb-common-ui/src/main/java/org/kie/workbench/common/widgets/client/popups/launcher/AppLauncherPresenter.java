@@ -23,7 +23,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.workbench.common.widgets.client.popups.launcher.events.AppLauncherAddEvent;
 import org.kie.workbench.common.widgets.client.popups.launcher.events.AppLauncherRemoveEvent;
 import org.kie.workbench.common.widgets.client.popups.launcher.events.AppLauncherUpdatedEvent;

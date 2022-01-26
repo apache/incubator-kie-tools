@@ -18,16 +18,20 @@ package org.kie.workbench.common.forms.adf.engine.client.formGeneration;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.IOC;
+import io.crysknife.client.BeanManager;
 import org.kie.workbench.common.forms.service.shared.meta.processing.MetaDataEntryProcessor;
 import org.kie.workbench.common.forms.service.shared.meta.processing.impl.AbstractMetaDataEntryManager;
 
 @ApplicationScoped
 public class ClientMetaDataEntryManager extends AbstractMetaDataEntryManager {
 
+    @Inject
+    BeanManager beanManager;
+
     @PostConstruct
     public void init() {
-        IOC.getBeanManager().lookupBeans(MetaDataEntryProcessor.class).forEach(beanDef -> registerProcessor(beanDef.getInstance()));
+        beanManager.<MetaDataEntryProcessor>lookupBeans(MetaDataEntryProcessor.class).forEach(beanDef -> registerProcessor(beanDef.getInstance()));
     }
 }

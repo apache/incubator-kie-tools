@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.kogito.client;
 
-import org.jboss.errai.ioc.client.api.EntryPoint;
+//import org.jboss.errai.ioc.client.api.EntryPoint;
 
-@EntryPoint
+//@EntryPoint
 public class KogitoClientEntryPoint {
 
 }

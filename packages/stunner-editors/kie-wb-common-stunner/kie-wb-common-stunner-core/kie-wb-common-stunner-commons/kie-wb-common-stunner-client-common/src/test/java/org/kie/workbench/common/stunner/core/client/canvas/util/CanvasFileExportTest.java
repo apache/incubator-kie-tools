@@ -29,9 +29,10 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.uberfire.ext.editor.commons.client.file.exports.FileExport;
 import org.uberfire.ext.editor.commons.client.file.exports.ImageDataUriContent;
+import org.uberfire.ext.editor.commons.client.file.exports.ImageFileExport;
 import org.uberfire.ext.editor.commons.client.file.exports.PdfDocument;
+import org.uberfire.ext.editor.commons.client.file.exports.PdfFileExport;
 import org.uberfire.ext.editor.commons.client.file.exports.svg.IContext2D;
 import org.uberfire.ext.editor.commons.client.file.exports.svg.SvgFileExport;
 import org.uberfire.ext.editor.commons.file.exports.FileExportsPreferences;
@@ -60,10 +61,10 @@ public class CanvasFileExportTest {
     private CanvasExport<AbstractCanvasHandler> canvasExport;
 
     @Mock
-    private FileExport<ImageDataUriContent> imageFileExport;
+    private ImageFileExport imageFileExport;
 
     @Mock
-    private FileExport<PdfDocument> pdfFileExport;
+    private PdfFileExport pdfFileExport;
 
     @Mock
     private SvgFileExport svgFileExport;

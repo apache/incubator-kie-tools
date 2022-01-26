@@ -16,7 +16,7 @@
 
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 
 /**
  * Interface to inject a Presenter into a View for MVP-based Widget

@@ -16,12 +16,18 @@
 package org.uberfire.ext.widgets.table.client;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.gwtproject.resources.client.GWT3Resources;
 import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 import org.uberfire.ext.widgets.table.client.resources.UFTableResources;
 
-@EntryPoint
+@ApplicationScoped
+@GWT3Resources(
+        cssResource = @GWT3Resources.CssResource(
+                conversionMode = "strict"
+        )
+)
 public class TableEntryPoint {
 
     @PostConstruct

@@ -19,18 +19,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.event.logical.shared.CloseHandler;
+import org.gwtproject.event.logical.shared.HasSelectionHandlers;
+import org.gwtproject.event.logical.shared.OpenEvent;
+import org.gwtproject.event.logical.shared.OpenHandler;
+import org.gwtproject.event.logical.shared.SelectionEvent;
+import org.gwtproject.event.logical.shared.SelectionHandler;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.resources.client.ImageResource;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.FlexTable;
+import org.gwtproject.user.client.ui.SimplePanel;
+import org.gwtproject.user.client.ui.Widget;
 
 /**
  * The GWT StackPanel is not working as we want. So doing a custom one.
@@ -119,7 +119,7 @@ public class LazyStackPanel extends Composite
 
         header.addCloseHandler(new CloseHandler<AbstractLazyStackPanelHeader>() {
 
-            public void onClose(com.google.gwt.event.logical.shared.CloseEvent<AbstractLazyStackPanelHeader> event) {
+            public void onClose(org.gwtproject.event.logical.shared.CloseEvent<AbstractLazyStackPanelHeader> event) {
                 selectRow(row);
             }
         });

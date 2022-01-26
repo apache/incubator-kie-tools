@@ -16,10 +16,9 @@
 
 package org.kie.workbench.common.stunner.forms.client;
 
-import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import io.crysknife.ui.translation.api.annotations.Bundle;
 
-@EntryPoint
+//@EntryPoint
 @Bundle("resources/i18n/FormsClientConstants.properties")
 public class FormsClientEntryPoint {
 

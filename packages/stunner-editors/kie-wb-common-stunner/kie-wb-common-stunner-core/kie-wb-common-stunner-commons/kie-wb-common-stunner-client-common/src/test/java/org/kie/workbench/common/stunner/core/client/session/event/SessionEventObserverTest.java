@@ -19,8 +19,7 @@ package org.kie.workbench.common.stunner.core.client.session.event;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.inject.Instance;
-
+import io.crysknife.client.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +40,7 @@ public class SessionEventObserverTest {
     private static final int HANDLERS = 10;
 
     @Mock
-    private Instance<SessionDiagramOpenedHandler> sessionDiagramOpenedHandlersInstance;
+    private ManagedInstance<SessionDiagramOpenedHandler> sessionDiagramOpenedHandlersInstance;
 
     private List<SessionDiagramOpenedHandler> allSessionDiagramOpenedHandlers = new ArrayList<>();
 
@@ -50,7 +49,7 @@ public class SessionEventObserverTest {
     private List<SessionDiagramOpenedHandler> dontAcceptsDiagramSessionDiagramOpenedHandlers = new ArrayList<>();
 
     @Mock
-    private Instance<SessionDiagramSavedHandler> sessionDiagramSavedHandlersInstance;
+    private ManagedInstance<SessionDiagramSavedHandler> sessionDiagramSavedHandlersInstance;
 
     private List<SessionDiagramSavedHandler> allSessionDiagramSavedHandlers = new ArrayList<>();
 

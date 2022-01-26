@@ -121,6 +121,8 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
             view.setTableDisplayStyle();
         }
         as.add(createVariableRow());
+        view.setVariableRows(as);
+
         VariableListItemWidgetView widget = view.getVariableWidget(view.getVariableRowsCount() - 1);
 
         widget.setDataTypes(dataTypeListBoxValues);
@@ -254,7 +256,10 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         if (isBoundToNodes(variableRow.getName())) {
             // error popup was here
         } else {
-            view.getVariableRows().remove(variableRow);
+            List<VariableRow> variableRows = view.getVariableRows();
+            variableRows.remove(variableRow);
+            view.setVariableRows(variableRows);
+
             doSave();
         }
     }

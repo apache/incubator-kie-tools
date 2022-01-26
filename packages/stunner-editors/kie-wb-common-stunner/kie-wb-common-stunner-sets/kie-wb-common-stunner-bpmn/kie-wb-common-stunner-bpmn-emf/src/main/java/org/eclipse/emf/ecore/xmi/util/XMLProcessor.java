@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Node;
+import org.gwtproject.xml.client.Document;
+import org.gwtproject.xml.client.Node;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EStructuralFeature;

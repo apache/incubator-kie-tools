@@ -16,22 +16,24 @@
 
 package org.kie.workbench.common.stunner.forms.client.widgets.container;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLDivElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.forms.client.widgets.container.displayer.FormDisplayer;
 
 @Templated
+@Dependent
 public class FormsContainerViewImpl implements FormsContainerView,
                                                IsElement {
 
     @Inject
     @DataField
-    private Div content;
+    private HTMLDivElement content;
 
     @Override
     public void addDisplayer(FormDisplayer displayer) {

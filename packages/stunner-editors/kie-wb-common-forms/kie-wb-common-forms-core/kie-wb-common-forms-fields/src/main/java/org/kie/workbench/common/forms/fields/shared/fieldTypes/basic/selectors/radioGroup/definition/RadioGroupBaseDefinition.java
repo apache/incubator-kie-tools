@@ -41,7 +41,7 @@ public abstract class RadioGroupBaseDefinition<OPTIONS extends SelectorOption<TY
         return FIELD_TYPE;
     }
 
-    public Boolean getInline() {
+    public Boolean isInline() {
         return inline;
     }
 
@@ -54,7 +54,7 @@ public abstract class RadioGroupBaseDefinition<OPTIONS extends SelectorOption<TY
         super.doCopyFrom(other);
         if (other instanceof RadioGroupBaseDefinition) {
             RadioGroupBaseDefinition otherRadio = (RadioGroupBaseDefinition) other;
-            setInline(otherRadio.getInline());
+            setInline(otherRadio.isInline());
         }
     }
 }

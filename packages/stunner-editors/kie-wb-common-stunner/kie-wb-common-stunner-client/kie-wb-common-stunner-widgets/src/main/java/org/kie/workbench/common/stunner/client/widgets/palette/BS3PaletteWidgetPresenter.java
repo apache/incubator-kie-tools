@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.palette;
 
 import java.util.function.Consumer;
 
-import org.jboss.errai.common.client.api.IsElement;
+import io.crysknife.client.IsElement;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteItemMouseEvent;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 

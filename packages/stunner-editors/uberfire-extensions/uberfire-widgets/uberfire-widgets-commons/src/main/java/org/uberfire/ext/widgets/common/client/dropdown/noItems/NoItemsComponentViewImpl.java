@@ -16,37 +16,41 @@
 
 package org.uberfire.ext.widgets.common.client.dropdown.noItems;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
 
 @Templated
+@Dependent
 public class NoItemsComponentViewImpl implements NoItemsComponentView,
                                                  IsElement {
     @Inject
     @DataField
-    private Div container;
+    private HTMLDivElement container;
 
     @Inject
     @DataField
-    private Span message;
+    @Named("span")
+    private HTMLElement message;
 
     @Override
     public void setMessage(String msg) {
-        message.setTextContent(msg);
+        message.textContent = (msg);
     }
 
     @Override
     public void hide() {
-        container.setHidden(true);
+        container.style.display = "none";
     }
 
     @Override
     public void show() {
-        container.setHidden(false);
+        container.style.display = "inline";
     }
 }

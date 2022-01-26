@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.fieldSet;
 
-import org.jboss.errai.common.client.api.IsElement;
+import io.crysknife.client.IsElement;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.FormGroupView;
 
 public interface FieldSetFormGroupView extends FormGroupView,

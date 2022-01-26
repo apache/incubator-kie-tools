@@ -49,9 +49,7 @@ public abstract class AbstractSelectorDataProviderManager implements SelectorDat
     @Override
     public SelectorData getDataFromProvider(FormRenderingContext context,
                                             String provider) {
-
         SelectorDataProvider dataProvider = providers.get(provider);
-
         if (dataProvider == null) {
             return null;
         }

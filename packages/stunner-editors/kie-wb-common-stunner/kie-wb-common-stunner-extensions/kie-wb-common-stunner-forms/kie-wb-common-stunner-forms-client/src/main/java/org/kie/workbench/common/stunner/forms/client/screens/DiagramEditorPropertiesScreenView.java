@@ -17,25 +17,28 @@ package org.kie.workbench.common.stunner.forms.client.screens;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
+
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
 @Templated
 public class DiagramEditorPropertiesScreenView implements IsElement {
 
+    @DataField
     private FlowPanel loadingPanel;
+
+    @DataField
     private FlowPanel widgetPanel;
 
     @Inject
-    public DiagramEditorPropertiesScreenView(final @DataField FlowPanel loadingPanel,
-                                             final @DataField FlowPanel widgetPanel) {
+    public DiagramEditorPropertiesScreenView(FlowPanel loadingPanel, FlowPanel widgetPanel) {
         this.loadingPanel = loadingPanel;
         this.widgetPanel = widgetPanel;
     }

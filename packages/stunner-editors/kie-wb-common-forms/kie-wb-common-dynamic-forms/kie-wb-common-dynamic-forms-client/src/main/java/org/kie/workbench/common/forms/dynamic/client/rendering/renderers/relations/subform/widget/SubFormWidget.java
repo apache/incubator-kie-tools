@@ -17,13 +17,14 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.TakesValue;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.user.client.TakesValue;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.FlowPanel;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
@@ -32,6 +33,7 @@ import org.kie.workbench.common.forms.processing.engine.handling.IsNestedModel;
 import org.kie.workbench.common.forms.processing.engine.handling.NeedsFlush;
 
 @Templated
+@Dependent
 public class SubFormWidget extends Composite implements TakesValue<Object>,
                                                         IsNestedModel,
                                                         NeedsFlush {

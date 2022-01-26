@@ -18,8 +18,8 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.i18n.client.NumberFormat;
-import org.jboss.errai.databinding.client.api.Converter;
+import io.crysknife.ui.databinding.client.api.Converter;
+import org.gwtproject.i18n.client.NumberFormat;
 import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.slider.Slider;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.slider.converters.IntegerToDoubleConverter;

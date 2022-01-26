@@ -16,8 +16,8 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.HTML;
+import org.gwtproject.event.dom.client.ClickHandler;
+import org.gwtproject.user.client.ui.HTML;
 
 public class ClickableLabel extends HTML {
 

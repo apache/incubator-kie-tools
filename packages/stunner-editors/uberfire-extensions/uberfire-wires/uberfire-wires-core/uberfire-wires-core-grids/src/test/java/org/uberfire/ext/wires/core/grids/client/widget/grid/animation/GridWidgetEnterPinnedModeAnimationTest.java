@@ -23,7 +23,7 @@ import java.util.Set;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.google.gwt.user.client.Command;
+import org.gwtproject.user.client.Command;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

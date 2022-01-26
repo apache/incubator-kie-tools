@@ -21,9 +21,9 @@ import java.util.List;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.Command;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.views.pfly.notifications.animations.LinearFadeOutAnimation;
 import org.uberfire.client.workbench.widgets.notification.NotificationManager;

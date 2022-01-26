@@ -27,8 +27,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
-@WithClassesToStub(TextBoxDOMElement.class)
+//@RunWith(GwtMockitoTestRunner.class)
+//@WithClassesToStub(TextBoxDOMElement.class)
 public class TextBoxSingletonDOMElementFactoryTest extends BaseSingletonDOMElementFactoryTest {
 
     public static final String VALUE = "val";

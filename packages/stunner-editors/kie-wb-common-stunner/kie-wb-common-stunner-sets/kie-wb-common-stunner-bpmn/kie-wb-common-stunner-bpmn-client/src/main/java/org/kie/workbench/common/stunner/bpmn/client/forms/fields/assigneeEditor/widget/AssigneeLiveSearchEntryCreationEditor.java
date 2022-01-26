@@ -19,8 +19,8 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import elemental2.dom.HTMLElement;
+import io.crysknife.ui.translation.api.spi.TranslationService;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerBPMNConstants;
 import org.uberfire.ext.widgets.common.client.dropdown.InlineCreationEditor;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchEntry;
@@ -29,7 +29,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
 public class AssigneeLiveSearchEntryCreationEditor implements InlineCreationEditor<String>,
-                                                              AssigneeLiveSearchEntryCreationEditorView.Presenter {
+        AssigneeLiveSearchEntryCreationEditorView.Presenter {
 
     private TranslationService translationService;
     private AssigneeLiveSearchEntryCreationEditorView view;

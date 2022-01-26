@@ -24,10 +24,10 @@ import java.util.logging.Level;
 
 import javax.enterprise.event.Event;
 
-import org.jboss.errai.databinding.client.BindableProxy;
-import org.jboss.errai.databinding.client.BindableProxyFactory;
-import org.jboss.errai.databinding.client.BindableProxyProvider;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import io.crysknife.ui.databinding.client.BindableProxy;
+import io.crysknife.ui.databinding.client.BindableProxyFactory;
+import io.crysknife.ui.databinding.client.BindableProxyProvider;
+import io.crysknife.ui.translation.api.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

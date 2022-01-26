@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def;
 
-import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.api.IsElement;
+import io.crysknife.client.IsElement;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.ValidableFormGroupView;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 

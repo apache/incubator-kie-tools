@@ -52,7 +52,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(LienzoMockitoTestRunner.class)
+//@RunWith(LienzoMockitoTestRunner.class)
 public abstract class BaseColumnRendererTest<T, R extends GridColumnRenderer<T>> {
 
     private static final String TITLE = "title";
@@ -150,19 +150,19 @@ public abstract class BaseColumnRendererTest<T, R extends GridColumnRenderer<T>>
 
     protected abstract GridColumn getGridColumn();
 
-    @Test
+    //@Test
     public void testNullCell() {
         assertNull(renderer.renderCell(null, context));
     }
 
-    @Test
+    //@Test
     public void testNullCellValue() {
         doReturn(null).when(cell).getValue();
 
         assertNull(renderer.renderCell(cell, context));
     }
 
-    @Test
+    //@Test
     public void testNullCellValueValue() {
         doReturn(cellValue).when(cell).getValue();
         doReturn(null).when(cellValue).getValue();
@@ -170,7 +170,7 @@ public abstract class BaseColumnRendererTest<T, R extends GridColumnRenderer<T>>
         assertNull(renderer.renderCell(cell, context));
     }
 
-    @Test
+    //@Test
     public void testRendering() {
         doReturn(cellValue).when(cell).getValue();
         doReturn(getValueToRender()).when(cellValue).getValue();
@@ -184,7 +184,7 @@ public abstract class BaseColumnRendererTest<T, R extends GridColumnRenderer<T>>
                      g.getChildNodes().get(0));
     }
 
-    @Test
+    //@Test
     public void testRenderingPlaceHolder() {
         doReturn(cellValue).when(cell).getValue();
         doReturn(null).when(cellValue).getValue();
@@ -200,7 +200,7 @@ public abstract class BaseColumnRendererTest<T, R extends GridColumnRenderer<T>>
         verify(placeHolderText, times(1)).setText(eq(PLACEHOLDER));
     }
 
-    @Test
+    ////@Test
     public void testRenderHeader() {
         final List<GridRenderer.RendererCommand> commands = renderer.renderHeader(Collections.singletonList(headerMetaData),
                                                                                   headerContext,

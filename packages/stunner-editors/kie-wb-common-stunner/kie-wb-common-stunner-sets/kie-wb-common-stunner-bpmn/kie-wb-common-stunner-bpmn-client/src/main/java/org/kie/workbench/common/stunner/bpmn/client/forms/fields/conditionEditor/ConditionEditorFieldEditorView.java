@@ -16,77 +16,85 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Event;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.RadioInput;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.ForEvent;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
+@Dependent
 public class ConditionEditorFieldEditorView
         implements IsElement,
                    ConditionEditorFieldEditorPresenter.View {
 
     @Inject
     @DataField("simple-condition-radio")
-    private RadioInput simpleCondition;
+    private HTMLInputElement simpleCondition;
 
     @Inject
     @DataField("script-condition-label-span")
-    private Span scriptConditionLabelSpan;
+    @Named("span")
+    private HTMLElement scriptConditionLabelSpan;
 
     @Inject
     @DataField("script-condition-radio")
-    private RadioInput scriptCondition;
+    private HTMLInputElement scriptCondition;
 
     @Inject
     @DataField("script-condition-label")
-    private Span scriptLabel;
+    @Named("span")
+    private HTMLElement scriptLabel;
 
     @Inject
     @DataField("simple-condition-label")
-    private Span conditionLabel;
+    @Named("span")
+    private HTMLElement conditionLabel;
 
     @Inject
     @DataField("editor-container")
-    private Div editorContainer;
+    private HTMLDivElement editorContainer;
 
     @Inject
     @DataField("editor-error-form")
-    private Div editorErrorForm;
+    private HTMLDivElement editorErrorForm;
 
     @Inject
     @DataField("editor-error")
-    private Span editorError;
+    @Named("span")
+    private HTMLElement editorError;
 
     private ConditionEditorFieldEditorPresenter presenter;
 
     @Override
     public void init(ConditionEditorFieldEditorPresenter presenter) {
+        simpleCondition.type = "radio";
+        scriptCondition.type = "radio";
+
         this.presenter = presenter;
     }
 
     @Override
     public void setSimpleConditionChecked(boolean checked) {
-        simpleCondition.setChecked(checked);
+        simpleCondition.checked = (checked);
     }
 
     @Override
     public void setSimpleConditionEnabled(boolean enabled) {
-        simpleCondition.setDisabled(!enabled);
+        simpleCondition.checked = (!enabled);
     }
 
     @Override
     public void setScriptConditionChecked(boolean checked) {
-        scriptCondition.setChecked(checked);
+        scriptCondition.checked = (checked);
     }
 
     @Override
@@ -98,32 +106,32 @@ public class ConditionEditorFieldEditorView
     @Override
     public void showError(String error) {
         DOMUtil.addCSSClass(editorErrorForm, "has-error");
-        editorError.setTextContent(error);
+        editorError.textContent = (error);
     }
 
     @Override
     public void clearError() {
         DOMUtil.removeCSSClass(editorErrorForm, "has-error");
-        editorError.setTextContent(null);
+        editorError.textContent = (null);
     }
 
     @Override
     public void setSingleOptionSelection() {
-        simpleCondition.setHidden(true);
-        scriptCondition.setHidden(true);
-        scriptLabel.setHidden(true);
-        conditionLabel.setTextContent(scriptLabel.getTextContent());
-        scriptLabel.setTextContent("");
+        simpleCondition.hidden = (true);
+        scriptCondition.hidden = (true);
+        scriptLabel.hidden = (true);
+        conditionLabel.textContent = (scriptLabel.textContent);
+        scriptLabel.textContent = ("");
         scriptConditionLabelSpan.setAttribute("style", "margin-left: 0px;");
     }
 
     @EventHandler("simple-condition-radio")
-    private void onSimpleConditionChange(@ForEvent("change") final Event event) {
+    public void onSimpleConditionChange(@ForEvent("change") final elemental2.dom.Event event) {
         presenter.onSimpleConditionSelected();
     }
 
     @EventHandler("script-condition-radio")
-    private void onScriptConditionChange(@ForEvent("change") final Event event) {
+    public void onScriptConditionChange(@ForEvent("change") final elemental2.dom.Event event) {
         presenter.onScriptEditorSelected();
     }
 }

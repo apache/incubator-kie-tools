@@ -18,7 +18,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 
 public interface ConfigErrorDisplayerView extends IsWidget {
 

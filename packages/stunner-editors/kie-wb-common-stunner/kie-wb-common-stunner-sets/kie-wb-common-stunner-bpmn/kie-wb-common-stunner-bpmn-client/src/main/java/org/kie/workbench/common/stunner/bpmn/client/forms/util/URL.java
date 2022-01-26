@@ -17,44 +17,44 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 
 /**
- * This class is a proxy for a GWT static class {@link com.google.gwt.http.client.URL()} with native method to make it
+ * This class is a proxy for a GWT static class {@link org.gwtproject.http.client.URL()} with native method to make it
  * testable without static mocking dependency.
  */
 public class URL {
 
     /**
-     * Proxy method for {@link com.google.gwt.http.client.URL#encodeQueryString(String s)} ()}
+     * Proxy method for {@link org.gwtproject.http.client.URL#encodeQueryString(String s)} ()}
      * @param s a string to encode
      * * @return encoded string value
      */
     public String encodeQueryString(String s) {
-        return com.google.gwt.http.client.URL.encodeQueryString(s);
+        return org.gwtproject.http.client.URL.encodeQueryString(s);
     }
 
     /**
-     * Proxy method for {@link com.google.gwt.http.client.URL#decodeQueryString(String s)}
+     * Proxy method for {@link org.gwtproject.http.client.URL#decodeQueryString(String s)}
      * @param s a string to decode
      * @return decoded string value
      */
     public String decodeQueryString(String s) {
-        return com.google.gwt.http.client.URL.decodeQueryString(s);
+        return org.gwtproject.http.client.URL.decodeQueryString(s);
     }
 
     /**
-     * Proxy method for {@link com.google.gwt.http.client.URL#encode(String s)} ()}
+     * Proxy method for {@link org.gwtproject.http.client.URL#encode(String s)} ()}
      * @param s a string to encode
      * @return encoded string value
      */
     public String encode(String s) {
-        return com.google.gwt.http.client.URL.encode(s);
+        return org.gwtproject.http.client.URL.encode(s);
     }
 
     /**
-     * Proxy method for {@link com.google.gwt.http.client.URL#decode(String s)}
+     * Proxy method for {@link org.gwtproject.http.client.URL#decode(String s)}
      * @param s a string to decode
      * @return decoded string value
      */
     public String decode(String s) {
-        return com.google.gwt.http.client.URL.decode(s);
+        return org.gwtproject.http.client.URL.decode(s);
     }
 }

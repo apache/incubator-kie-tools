@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.definition.clone;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
@@ -32,20 +33,20 @@ public class DefaultCloneProcess extends AbstractCloneProcess {
     }
 
     @Inject
-    public DefaultCloneProcess(FactoryManager factoryManager, AdapterManager adapterManager) {
+    public DefaultCloneProcess(ManagedInstance<FactoryManager> factoryManager, ManagedInstance<AdapterManager> adapterManager) {
         super(factoryManager, adapterManager);
     }
 
     @Override
     public <S, T> T clone(S source, T target) {
-        final DefinitionAdapter<Object> definitionAdapter = adapterManager.forDefinition();
+        final DefinitionAdapter<Object> definitionAdapter = adapterManager.get().forDefinition();
         final String namePropertyField = definitionAdapter.getMetaPropertyField(source, PropertyMetaTypes.NAME);
         final String targetNamePropertyField = definitionAdapter.getMetaPropertyField(target, PropertyMetaTypes.NAME);
         final Object nameProperty = definitionAdapter.getProperty(source, namePropertyField).get();
         final Object targetNameProperty = definitionAdapter.getProperty(target, targetNamePropertyField).get();
-        final Object namePropertyValue = adapterManager.forProperty().getValue(nameProperty);
+        final Object namePropertyValue = adapterManager.get().forProperty().getValue(nameProperty);
 
-        adapterManager.forProperty().setValue(targetNameProperty, namePropertyValue);
+        adapterManager.get().forProperty().setValue(targetNameProperty, namePropertyValue);
         return target;
     }
 }

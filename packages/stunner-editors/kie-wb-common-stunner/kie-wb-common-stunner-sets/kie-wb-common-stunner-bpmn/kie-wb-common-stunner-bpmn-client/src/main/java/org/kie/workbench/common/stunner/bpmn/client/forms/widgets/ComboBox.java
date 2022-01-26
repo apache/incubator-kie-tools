@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.widgets;
 
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.TextBox;
@@ -25,6 +26,7 @@ import org.gwtbootstrap3.client.ui.ValueListBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 
+@Dependent
 public class ComboBox implements ComboBoxView.ComboBoxPresenter {
 
     protected ListBoxValues listBoxValues;
@@ -60,6 +62,7 @@ public class ComboBox implements ComboBoxView.ComboBoxPresenter {
         this.expressionPrompt = customPrompt;
         this.modelPresenter = modelPresenter;
         this.notifyModelChanges = notifyModelChanges;
+
         view.init(this,
                   modelPresenter,
                   listBox,

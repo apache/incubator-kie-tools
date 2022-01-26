@@ -18,8 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.reassignmentsE
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.HasValue;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.ReassignmentRow;
 
 public interface ReassignmentWidgetView extends IsWidget {

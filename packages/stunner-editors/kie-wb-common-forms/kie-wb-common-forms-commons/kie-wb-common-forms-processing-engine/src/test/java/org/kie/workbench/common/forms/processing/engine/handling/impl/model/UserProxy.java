@@ -18,9 +18,9 @@ package org.kie.workbench.common.forms.processing.engine.handling.impl.model;
 import java.util.Date;
 import java.util.Map;
 
-import org.jboss.errai.databinding.client.BindableProxy;
-import org.jboss.errai.databinding.client.BindableProxyAgent;
-import org.jboss.errai.databinding.client.PropertyType;
+import io.crysknife.ui.databinding.client.BindableProxy;
+import io.crysknife.ui.databinding.client.BindableProxyAgent;
+import io.crysknife.ui.databinding.client.PropertyType;
 
 public class UserProxy extends User implements BindableProxy<User> {
 

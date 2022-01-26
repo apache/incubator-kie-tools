@@ -31,7 +31,7 @@ public abstract class BasicTypeFieldProvider<FIELD extends FieldDefinition> impl
     protected List<String> supportedTypes = new ArrayList<>();
 
     @PostConstruct
-    protected void registerFields() {
+    public void registerFields() {
         doRegisterFields();
     }
 

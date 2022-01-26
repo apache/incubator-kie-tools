@@ -20,18 +20,19 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.text.shared.Renderer;
+import elemental2.dom.Event;
+import elemental2.dom.HTMLInputElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.ValueListBox;
-import org.jboss.errai.common.client.dom.Event;
-import org.jboss.errai.common.client.dom.TextInput;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.ForEvent;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.gwtproject.text.shared.Renderer;
 import org.kie.workbench.common.stunner.bpmn.client.forms.DataTypeNamesService;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
@@ -50,6 +51,7 @@ import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.multiple
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.multipleInstanceVariableEditor.MultipleInstanceVariableEditorPresenter.getRealType;
 
 @Templated
+@Dependent
 public class MultipleInstanceVariableEditorView
         implements IsElement,
                    MultipleInstanceVariableEditorPresenter.View,
@@ -57,7 +59,7 @@ public class MultipleInstanceVariableEditorView
 
     @Inject
     @DataField("variableName")
-    private TextInput variableName;
+    private HTMLInputElement variableName;
 
     protected Variable variable;
 
@@ -90,6 +92,8 @@ public class MultipleInstanceVariableEditorView
 
     @Override
     public void init(MultipleInstanceVariableEditorPresenter presenter) {
+        variableName.type = "text";
+
         this.presenter = presenter;
 
         dataTypeComboBox.init(this,
@@ -122,7 +126,7 @@ public class MultipleInstanceVariableEditorView
 
     @Override
     public void setVariableName(String variableName) {
-        this.variableName.setValue(getNonNullName(variableName));
+        this.variableName.value = (getNonNullName(variableName));
     }
 
     @Override
@@ -132,7 +136,7 @@ public class MultipleInstanceVariableEditorView
 
     @Override
     public String getVariableName() {
-        return variableName.getValue();
+        return variableName.value;
     }
 
     @Override
@@ -152,12 +156,12 @@ public class MultipleInstanceVariableEditorView
 
     @Override
     public void setReadOnly(boolean readOnly) {
-        variableName.setDisabled(readOnly);
+        variableName.disabled = (readOnly);
         dataType.setEnabled(!readOnly);
     }
 
     @EventHandler
-    private void onVariableChange(@ForEvent("change") final Event event) {
+    public void onVariableChange(@ForEvent("change") final Event event) {
         presenter.onVariableChange();
     }
 

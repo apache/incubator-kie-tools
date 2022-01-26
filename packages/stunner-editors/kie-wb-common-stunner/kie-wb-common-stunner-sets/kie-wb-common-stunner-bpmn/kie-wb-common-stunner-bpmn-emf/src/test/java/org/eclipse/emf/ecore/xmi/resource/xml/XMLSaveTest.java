@@ -16,8 +16,8 @@
 
 package org.eclipse.emf.ecore.xmi.resource.xml;
 
-import com.google.gwt.xml.client.Attr;
-import com.google.gwt.xml.client.Node;
+import org.gwtproject.xml.client.Attr;
+import org.gwtproject.xml.client.Node;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.impl.BaseElementImpl;
 import org.eclipse.emf.ecore.EClass;

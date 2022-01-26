@@ -30,7 +30,7 @@ import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.client.widget.RootPanel;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
-import com.google.gwt.resources.client.ImageResource;
+import org.gwtproject.resources.client.ImageResource;
 import elemental2.dom.HTMLImageElement;
 import elemental2.dom.Image;
 import elemental2.dom.ImageData;

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 
 import org.kie.workbench.common.stunner.core.graph.processing.layout.ReorderedGraph;
@@ -33,6 +34,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.La
  * Assign each vertex in a graph to a layer, using the longest path algorithm.
  */
 @Default
+@Dependent
 public final class LongestPathVertexLayerer implements VertexLayerer {
 
     private Vertex[] vertices;

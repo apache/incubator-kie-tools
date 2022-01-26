@@ -16,8 +16,9 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets.slider;
 
-import com.google.gwt.dom.client.Element;
+import org.gwtbootstrap3.extras.slider.client.ui.base.SliderCommand;
 import org.gwtbootstrap3.extras.slider.client.ui.base.constants.HandleType;
+import org.gwtproject.dom.client.Element;
 
 /*
     Patch class to avoid error descrived on: https://github.com/gwtproject/gwt/issues/9242
@@ -40,8 +41,11 @@ public class Slider extends org.gwtbootstrap3.extras.slider.client.ui.Slider {
     }
 
     @Override
-    protected native void setValue(Element e,
-                                   Double value) /*-{
+    public void setValue(Element e,
+                                   Double value) {
+        JSlider.jQuery(e).slider(SliderCommand.SET_VALUE, value);
+
+    }/*-{
         $wnd.jQuery(e).slider(@org.gwtbootstrap3.extras.slider.client.ui.base.SliderCommand::SET_VALUE, value);
     }-*/;
 }

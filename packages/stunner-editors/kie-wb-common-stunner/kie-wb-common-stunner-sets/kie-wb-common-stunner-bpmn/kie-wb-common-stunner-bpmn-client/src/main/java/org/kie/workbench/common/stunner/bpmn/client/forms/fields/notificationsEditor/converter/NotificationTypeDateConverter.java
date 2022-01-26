@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.notificationsEditor.converter;
 
-import org.jboss.errai.databinding.client.api.Converter;
-import org.jboss.errai.databinding.client.api.DefaultConverter;
+import io.crysknife.ui.databinding.client.api.Converter;
+import io.crysknife.ui.databinding.client.api.DefaultConverter;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.NotificationType;
 
 @DefaultConverter

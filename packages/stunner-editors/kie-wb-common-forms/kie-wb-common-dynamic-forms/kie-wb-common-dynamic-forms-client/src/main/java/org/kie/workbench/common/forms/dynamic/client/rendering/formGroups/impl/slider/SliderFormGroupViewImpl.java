@@ -20,19 +20,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.user.client.ui.Widget;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.labels.label.FieldLabel;
 import org.kie.workbench.common.forms.dynamic.client.rendering.util.FormsElementWrapperWidgetUtil;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Templated
+@Dependent
 public class SliderFormGroupViewImpl implements SliderFormGroupView {
 
     private static final String PART_SLIDER_LABEL = "Slider Label";
@@ -43,11 +45,11 @@ public class SliderFormGroupViewImpl implements SliderFormGroupView {
 
     @Inject
     @DataField
-    protected Div fieldContainer;
+    protected HTMLDivElement fieldContainer;
 
     @Inject
     @DataField
-    protected Div helpBlock;
+    protected HTMLDivElement helpBlock;
 
     @Inject
     private FormsElementWrapperWidgetUtil wrapperWidgetUtil;

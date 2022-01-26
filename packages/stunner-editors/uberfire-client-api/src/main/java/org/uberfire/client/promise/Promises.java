@@ -27,9 +27,9 @@ import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
 import elemental2.promise.Promise;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.core.client.JavaScriptObject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;

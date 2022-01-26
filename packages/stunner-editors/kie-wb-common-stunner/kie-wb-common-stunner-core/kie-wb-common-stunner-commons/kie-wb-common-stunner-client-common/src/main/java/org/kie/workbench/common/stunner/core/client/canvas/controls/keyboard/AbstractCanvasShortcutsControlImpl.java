@@ -18,9 +18,9 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard;
 
 import java.util.Iterator;
 
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
@@ -34,12 +34,12 @@ public abstract class AbstractCanvasShortcutsControlImpl extends AbstractCanvasH
         implements CanvasControl.SessionAware<EditorSession>,
                    KeyboardControl.KeyShortcutCallback {
 
-    protected final Instance<KeyboardShortcut> keyboardShortcutActions;
+    protected final ManagedInstance<KeyboardShortcut> keyboardShortcutActions;
 
     protected EditorSession editorSession;
 
     @Inject
-    public AbstractCanvasShortcutsControlImpl(final Instance<KeyboardShortcut> keyboardShortcutActions) {
+    public AbstractCanvasShortcutsControlImpl(final ManagedInstance<KeyboardShortcut> keyboardShortcutActions) {
         this.keyboardShortcutActions = keyboardShortcutActions;
     }
 

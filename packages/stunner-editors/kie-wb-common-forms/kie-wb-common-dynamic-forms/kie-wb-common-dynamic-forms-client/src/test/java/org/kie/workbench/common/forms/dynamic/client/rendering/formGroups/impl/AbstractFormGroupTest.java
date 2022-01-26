@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl;
 
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMock;
+import org.gwtproject.user.client.ui.Widget;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;

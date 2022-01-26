@@ -18,8 +18,8 @@ package com.ait.lienzo.client.core.image;
 
 import com.ait.lienzo.client.core.style.Style;
 import com.ait.lienzo.client.widget.RootPanel;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.impl.ImageResourcePrototype;
+import org.gwtproject.resources.client.ImageResource;
+import org.gwtproject.resources.client.impl.ImageResourcePrototype;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLImageElement;
@@ -102,12 +102,12 @@ public abstract class ImageLoader {
 
         String urlAsString = resource.getSafeUri().asString();
         if (resource instanceof ImageResourcePrototype.Bundle) {
-            // lifted from com.google.gwt.user.client.ui.impl.ClippedImageImpl adjust
+            // lifted from org.gwtproject.user.client.ui.impl.ClippedImageImpl adjust
             image.style.background = "url(\"" + urlAsString + "\") no-repeat " + (-resource.getLeft() + "px ") + (-resource.getTop() + "px");
             image.style.width = CSSProperties.WidthUnionType.of(resource.getHeight());
             image.style.height = CSSProperties.HeightUnionType.of(resource.getHeight());
         } else {
-            // lifted from com.google.gwt.user.client.ui.Image setResource
+            // lifted from org.gwtproject.user.client.ui.Image setResource
             image.src = urlAsString;
             image.width = resource.getWidth();
             image.height = resource.getHeight();

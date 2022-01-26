@@ -17,25 +17,25 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.Event;
-import org.jboss.errai.common.client.dom.Button;
+import elemental2.dom.Event;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.cell.client.CheckboxCell;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.user.cellview.client.Column;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.SinkNative;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.forms.dynamic.client.resources.i18n.FormRenderingConstants;
 import org.uberfire.ext.widgets.table.client.UberfirePagedTable;
 
 @Templated
+@Dependent
 public class MultipleInputComponentViewImpl<TYPE> implements MultipleInputComponentView<TYPE>,
                                                              IsElement {
 
@@ -45,51 +45,56 @@ public class MultipleInputComponentViewImpl<TYPE> implements MultipleInputCompon
 
     private UberfirePagedTable<TableEntry<TYPE>> tableWidget;
 
-    @Inject
-    private TranslationService translationService;
+    //@Inject
+    //private TranslationService translationService;
 
     @Inject
     @DataField
-    private Div toolbar;
+    private HTMLDivElement toolbar;
 
     @Inject
     @DataField
-    private Button addButton;
+    private HTMLButtonElement addButton;
 
     @Inject
     @DataField
-    private Button removeButton;
+    private HTMLButtonElement removeButton;
 
     @Inject
     @DataField
-    private Button promoteButton;
+    private HTMLButtonElement promoteButton;
 
     @Inject
     @DataField
-    private Button degradeButton;
+    private HTMLButtonElement degradeButton;
 
     @Inject
     @DataField
-    private Div table;
+    private HTMLDivElement table;
 
     @Inject
     @DataField
-    private Div errorContainer;
+    private HTMLDivElement errorContainer;
 
     @Inject
     @DataField
-    private Div errorMessage;
+    private HTMLDivElement errorMessage;
 
     @Inject
     @DataField
-    private Button hideErrorButton;
+    private HTMLButtonElement hideErrorButton;
 
     @PostConstruct
     public void init() {
-        addButton.setTitle(translationService.getTranslation(FormRenderingConstants.LOVCreationComponentViewImplAddButton));
-        removeButton.setTitle(translationService.getTranslation(FormRenderingConstants.LOVCreationComponentViewImplRemoveButton));
-        promoteButton.setTitle(translationService.getTranslation(FormRenderingConstants.LOVCreationComponentViewImplMoveUp));
-        degradeButton.setTitle(translationService.getTranslation(FormRenderingConstants.LOVCreationComponentViewImplMoveDown));
+        addButton.title = "addButton";
+        removeButton.title = "removeButton";
+        promoteButton.title = "moveUp";
+        degradeButton.title = "moveDown";
+
+        //addButton.setTitle(translationService.getTranslation(FormRenderingConstants.LOVCreationComponentViewImplAddButton));
+        //removeButton.setTitle(translationService.getTranslation(FormRenderingConstants.LOVCreationComponentViewImplRemoveButton));
+        //promoteButton.setTitle(translationService.getTranslation(FormRenderingConstants.LOVCreationComponentViewImplMoveUp));
+        //degradeButton.setTitle(translationService.getTranslation(FormRenderingConstants.LOVCreationComponentViewImplMoveDown));
     }
 
     @Override
@@ -99,9 +104,9 @@ public class MultipleInputComponentViewImpl<TYPE> implements MultipleInputCompon
 
     @Override
     public void setReadOnly(boolean readOnly) {
-        toolbar.getStyle().removeProperty("display");
+        toolbar.style.removeProperty("display");
         if(readOnly) {
-            toolbar.getStyle().setProperty("display", "none");
+            toolbar.style.setProperty("display", "none");
         }
     }
 
@@ -143,7 +148,8 @@ public class MultipleInputComponentViewImpl<TYPE> implements MultipleInputCompon
                                        new CellEdtionHandlerImpl(),
                                        presenter.isReadOnly());
 
-        tableWidget.setEmptyTableCaption(translationService.getTranslation(FormRenderingConstants.LOVCreationComponentViewImplNoItems));
+        tableWidget.setEmptyTableCaption("noItems");
+        //tableWidget.setEmptyTableCaption(translationService.getTranslation(FormRenderingConstants.LOVCreationComponentViewImplNoItems));
 
         enableRemoveButton(false);
         enablePromoteButton(false);
@@ -157,17 +163,17 @@ public class MultipleInputComponentViewImpl<TYPE> implements MultipleInputCompon
 
     @Override
     public void enableRemoveButton(boolean enable) {
-        removeButton.setDisabled(!enable);
+        removeButton.disabled = (!enable);
     }
 
     @Override
     public void enablePromoteButton(boolean enable) {
-        promoteButton.setDisabled(!enable);
+        promoteButton.disabled = (!enable);
     }
 
     @Override
     public void enableDegradeButton(boolean enable) {
-        degradeButton.setDisabled(!enable);
+        degradeButton.disabled = (!enable);
     }
 
     @Override
@@ -185,47 +191,47 @@ public class MultipleInputComponentViewImpl<TYPE> implements MultipleInputCompon
         tableWidget.redraw();
     }
 
-    @SinkNative(Event.ONCLICK)
+    //@SinkNative(Event.ONCLICK)
     @EventHandler("addButton")
-    public void onAdd(Event event) {
+    public void onAdd(@ForEvent("click") Event event) {
         hideErrorMessage();
         presenter.newElement();
     }
 
-    @SinkNative(Event.ONCLICK)
+    //@SinkNative(Event.ONCLICK)
     @EventHandler("removeButton")
-    public void onRemove(Event event) {
+    public void onRemove(@ForEvent("click") Event event) {
         hideErrorMessage();
         presenter.removeSelectedValues();
     }
 
-    @SinkNative(Event.ONCLICK)
+    //@SinkNative(Event.ONCLICK)
     @EventHandler("promoteButton")
-    public void onPromote(Event event) {
+    public void onPromote(@ForEvent("click")  Event event) {
         hideErrorMessage();
         presenter.promoteSelectedValues();
     }
 
-    @SinkNative(Event.ONCLICK)
+    //@SinkNative(Event.ONCLICK)
     @EventHandler("degradeButton")
-    public void onDegrade(Event event) {
+    public void onDegrade(@ForEvent("click")  Event event) {
         hideErrorMessage();
         presenter.degradeSelectedValues();
     }
 
-    @SinkNative(Event.ONCLICK)
+    //@SinkNative(Event.ONCLICK)
     @EventHandler("hideErrorButton")
-    public void onHideErrorButton(Event event) {
+    public void onHideErrorButton(@ForEvent("click")  Event event) {
         hideErrorMessage();
     }
 
     public void hideErrorMessage() {
-        this.errorContainer.getStyle().setProperty("display", "none");
+        this.errorContainer.style.setProperty("display", "none");
     }
 
     public void showErrorMessage(String msg) {
-        this.errorContainer.getStyle().removeProperty("display");
-        this.errorMessage.setTextContent(msg);
+        this.errorContainer.style.removeProperty("display");
+        this.errorMessage.textContent = (msg);
     }
 
     class CellEdtionHandlerImpl implements CellEditionHandler<TYPE> {

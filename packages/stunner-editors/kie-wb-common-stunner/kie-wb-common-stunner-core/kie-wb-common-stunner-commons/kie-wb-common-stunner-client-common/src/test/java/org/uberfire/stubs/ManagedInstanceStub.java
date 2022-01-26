@@ -20,7 +20,7 @@ import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 
 public class ManagedInstanceStub<T> implements ManagedInstance<T> {
 

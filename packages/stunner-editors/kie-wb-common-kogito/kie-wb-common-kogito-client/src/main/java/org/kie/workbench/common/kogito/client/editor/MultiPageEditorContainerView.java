@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.kogito.client.editor;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.client.workbench.widgets.multipage.Page;

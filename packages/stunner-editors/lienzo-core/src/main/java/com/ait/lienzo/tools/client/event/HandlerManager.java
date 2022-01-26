@@ -82,7 +82,10 @@ public class HandlerManager {
             firingDepth++;
             for (int i = 0; i < handlers.length; i++) {
                 try {
-                    event.dispatch(handlers.getAt(i));
+                    EventHandler eventHandler = handlers.getAt(i);
+                    if(eventHandler != null) {
+                        event.dispatch(eventHandler);
+                    }
                 } catch (Throwable var11) {
                     if (causes == null) {
                         causes = new JsSet<>();

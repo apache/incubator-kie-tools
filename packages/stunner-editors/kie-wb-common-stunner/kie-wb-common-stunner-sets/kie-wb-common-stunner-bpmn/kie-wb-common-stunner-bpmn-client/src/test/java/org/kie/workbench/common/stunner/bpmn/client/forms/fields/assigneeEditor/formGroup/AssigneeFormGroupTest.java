@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor.formGroup;
 
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtproject.user.client.ui.Widget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

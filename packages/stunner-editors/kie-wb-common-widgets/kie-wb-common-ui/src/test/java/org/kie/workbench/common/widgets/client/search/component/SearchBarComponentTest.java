@@ -30,7 +30,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
+//@RunWith(GwtMockitoTestRunner.class)
 public class SearchBarComponentTest {
 
     @Mock
@@ -47,18 +47,18 @@ public class SearchBarComponentTest {
         component.init(index);
     }
 
-    @Test
+    //@Test
     public void testSetup() {
         component.setup();
         verify(view).init(component);
     }
 
-    @Test
+    //@Test
     public void testGetView() {
         assertEquals(view, component.getView());
     }
 
-    @Test
+    //@Test
     public void testSearchWhenTermIsEmpty() {
 
         final String term = "";
@@ -69,7 +69,7 @@ public class SearchBarComponentTest {
         verify(component).updateViewNumber();
     }
 
-    @Test
+    //@Test
     public void testSearchWhenTermIsNotEmpty() {
 
         final String term = "something";
@@ -80,7 +80,7 @@ public class SearchBarComponentTest {
         verify(component).updateViewNumber();
     }
 
-    @Test
+    //@Test
     public void testNextResult() {
 
         component.nextResult();
@@ -89,7 +89,7 @@ public class SearchBarComponentTest {
         verify(component).updateViewNumber();
     }
 
-    @Test
+    //@Test
     public void testPreviousResult() {
 
         component.previousResult();
@@ -98,7 +98,7 @@ public class SearchBarComponentTest {
         verify(component).updateViewNumber();
     }
 
-    @Test
+    //@Test
     public void testResetIndex() {
 
         component.closeIndex();
@@ -107,7 +107,7 @@ public class SearchBarComponentTest {
         verify(component).updateViewNumber();
     }
 
-    @Test
+    //@Test
     public void testUpdateViewNumber() {
 
         final int currentResultNumber = 2;

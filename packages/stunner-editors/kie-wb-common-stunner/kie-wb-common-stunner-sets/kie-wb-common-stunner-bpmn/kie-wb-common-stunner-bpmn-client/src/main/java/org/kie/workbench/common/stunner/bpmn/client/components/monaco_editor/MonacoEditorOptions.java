@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.components.monaco_editor;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.json.client.JSONBoolean;
-import com.google.gwt.json.client.JSONNumber;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
+import org.gwtproject.core.client.JavaScriptObject;
+import org.gwtproject.json.client.JSONBoolean;
+import org.gwtproject.json.client.JSONNumber;
+import org.gwtproject.json.client.JSONObject;
+import org.gwtproject.json.client.JSONString;
+import org.gwtproject.json.client.JSONValue;
 
 public class MonacoEditorOptions {
 

@@ -21,6 +21,7 @@ package org.appformer.kogito.bridge.client.notifications;
 
 import java.util.List;
 
+import jsinterop.annotations.JsPackage;
 import org.uberfire.workbench.model.bridge.Notification;
 import org.uberfire.workbench.model.bridge.NotificationSeverity;
 import org.uberfire.workbench.model.bridge.NotificationType;
@@ -36,7 +37,7 @@ import jsinterop.annotations.JsType;
  * Alerts supports severities {@link NotificationSeverity#INFO} and {@link NotificationSeverity#ERROR}. Any other
  * severity will be treated as INFO.
  */
-@JsType(isNative = true)
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "envelope")
 public interface NotificationsApi {
 
     /**

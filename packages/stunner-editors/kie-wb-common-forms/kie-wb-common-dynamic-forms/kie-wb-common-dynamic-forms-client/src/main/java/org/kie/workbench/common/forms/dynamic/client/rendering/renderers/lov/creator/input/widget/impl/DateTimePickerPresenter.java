@@ -21,8 +21,8 @@ import java.util.Date;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
 import org.uberfire.mvp.Command;
 
 @Dependent

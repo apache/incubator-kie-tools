@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.event.keyboard;
 
-import com.google.gwt.event.dom.client.KeyCodes;
+import org.gwtproject.event.dom.client.KeyCodes;
 
 public interface KeyboardEvent {
 

@@ -16,16 +16,18 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget.impl;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLDivElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.gwtbootstrap3.extras.datetimepicker.client.ui.DateTimePicker;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
+@Dependent
 public class DateTimePickerPresenterViewImpl implements DateTimePickerPresenterView,
                                                         IsElement {
 
@@ -35,7 +37,7 @@ public class DateTimePickerPresenterViewImpl implements DateTimePickerPresenterV
 
     @Inject
     @DataField
-    private Div container;
+    private HTMLDivElement container;
 
     private DateTimePicker dateTimePicker = new DateTimePicker();
 

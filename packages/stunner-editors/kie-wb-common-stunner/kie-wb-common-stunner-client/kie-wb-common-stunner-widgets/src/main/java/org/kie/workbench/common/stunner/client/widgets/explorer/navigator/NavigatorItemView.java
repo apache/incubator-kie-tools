@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.explorer.navigator;
 
-import com.google.gwt.safehtml.shared.SafeUri;
+import org.gwtproject.safehtml.shared.SafeUri;
 import org.uberfire.client.mvp.UberView;
 
 public interface NavigatorItemView<P extends NavigatorItem> extends UberView<P> {

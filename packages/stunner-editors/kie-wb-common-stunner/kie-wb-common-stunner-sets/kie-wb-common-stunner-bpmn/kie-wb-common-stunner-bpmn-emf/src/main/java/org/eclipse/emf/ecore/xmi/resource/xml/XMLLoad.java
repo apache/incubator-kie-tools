@@ -20,12 +20,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.gwt.xml.client.CDATASection;
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.NamedNodeMap;
-import com.google.gwt.xml.client.Node;
-import com.google.gwt.xml.client.ProcessingInstruction;
+import org.gwtproject.xml.client.CDATASection;
+import org.gwtproject.xml.client.Document;
+import org.gwtproject.xml.client.Element;
+import org.gwtproject.xml.client.NamedNodeMap;
+import org.gwtproject.xml.client.Node;
+import org.gwtproject.xml.client.ProcessingInstruction;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.xmi.XMLResource;

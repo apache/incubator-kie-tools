@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.forms.processing.engine.handling.impl.test;
 
-import org.jboss.errai.databinding.client.BindableProxy;
-import org.jboss.errai.databinding.client.api.DataBinder;
+import io.crysknife.ui.databinding.client.BindableProxy;
+import io.crysknife.ui.databinding.client.api.DataBinder;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandlerManager;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.kie.workbench.common.forms.processing.engine.handling.FormValidator;

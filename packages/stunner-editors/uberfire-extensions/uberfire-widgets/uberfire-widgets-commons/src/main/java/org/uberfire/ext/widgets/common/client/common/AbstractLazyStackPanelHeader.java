@@ -15,14 +15,14 @@
  */
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.HasCloseHandlers;
-import com.google.gwt.event.logical.shared.HasOpenHandlers;
-import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.SimplePanel;
+import org.gwtproject.event.logical.shared.CloseEvent;
+import org.gwtproject.event.logical.shared.CloseHandler;
+import org.gwtproject.event.logical.shared.HasCloseHandlers;
+import org.gwtproject.event.logical.shared.HasOpenHandlers;
+import org.gwtproject.event.logical.shared.OpenEvent;
+import org.gwtproject.event.logical.shared.OpenHandler;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.ui.SimplePanel;
 
 public abstract class AbstractLazyStackPanelHeader extends SimplePanel
         implements

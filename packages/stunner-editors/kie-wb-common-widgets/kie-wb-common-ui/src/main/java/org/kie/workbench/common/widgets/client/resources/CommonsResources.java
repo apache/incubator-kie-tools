@@ -15,14 +15,16 @@
  */
 package org.kie.workbench.common.widgets.client.resources;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.resources.client.ClientBundle;
+import org.gwtproject.resources.client.Resource;
 
+@Resource
 public interface CommonsResources
         extends
         ClientBundle {
 
-    CommonsResources INSTANCE = GWT.create( CommonsResources.class );
+    CommonsResources INSTANCE = new CommonsResourcesImpl();
 
     @Source("css/CommonsCss.css")
     CommonsCss css();

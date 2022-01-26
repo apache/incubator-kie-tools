@@ -16,12 +16,11 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import org.gwtproject.i18n.client.Messages;
 
 public interface StunnerFormsClientFieldsConstants extends Messages {
 
-    StunnerFormsClientFieldsConstants CONSTANTS = GWT.create(StunnerFormsClientFieldsConstants.class);
+    StunnerFormsClientFieldsConstants CONSTANTS = new StunnerFormsClientFieldsConstants_();
 
     String Add();
 

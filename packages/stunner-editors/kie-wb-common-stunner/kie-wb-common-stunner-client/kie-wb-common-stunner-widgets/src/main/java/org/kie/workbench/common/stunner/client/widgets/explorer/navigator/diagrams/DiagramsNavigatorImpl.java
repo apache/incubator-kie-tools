@@ -27,9 +27,9 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import com.google.gwt.logging.client.LogConfiguration;
-import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import elemental2.dom.DomGlobal;
+import io.crysknife.client.ManagedInstance;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.client.widgets.event.LoadDiagramEvent;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.Navigator;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorItem;
@@ -189,9 +189,11 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
 
     private void log(final Level level,
                      final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
+        DomGlobal.console.log(message);
+
+/*        if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level,
                        message);
-        }
+        }*/
     }
 }

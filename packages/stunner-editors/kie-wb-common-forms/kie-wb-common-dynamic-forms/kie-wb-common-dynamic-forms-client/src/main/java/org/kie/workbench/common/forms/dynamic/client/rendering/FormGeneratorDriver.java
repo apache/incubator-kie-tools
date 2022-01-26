@@ -24,14 +24,14 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.BeanManager;
+import io.crysknife.client.ManagedInstance;
+import io.crysknife.client.SyncBeanDef;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
-import org.jboss.errai.common.client.dom.Document;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.util.FormsElementWrapperWidgetUtil;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
@@ -49,21 +49,19 @@ public class FormGeneratorDriver implements LayoutGeneratorDriver {
     static final String CONTAINER_TAG = "div";
     static final String ROW_CLASS = "row";
 
-    private SyncBeanManager beanManager;
+    private BeanManager beanManager;
     private ManagedInstance<LayoutDragComponent> instance;
     private FormsElementWrapperWidgetUtil wrapperWidgetUtil;
-    private Document document;
 
     private List<FieldLayoutComponent> layoutComponents = new ArrayList<>();
     private Map<String, Class<? extends LayoutDragComponent>> componentsCache = new HashMap<>();
     private FormRenderingContext renderingContext;
 
     @Inject
-    public FormGeneratorDriver(SyncBeanManager beanManager, ManagedInstance<LayoutDragComponent> instance, FormsElementWrapperWidgetUtil wrapperWidgetUtil, Document document) {
+    public FormGeneratorDriver(BeanManager beanManager, ManagedInstance<LayoutDragComponent> instance, FormsElementWrapperWidgetUtil wrapperWidgetUtil) {
         this.beanManager = beanManager;
         this.instance = instance;
         this.wrapperWidgetUtil = wrapperWidgetUtil;
-        this.document = document;
     }
 
     public FormRenderingContext getRenderingContext() {
@@ -76,23 +74,23 @@ public class FormGeneratorDriver implements LayoutGeneratorDriver {
 
     @Override
     public HTMLElement createContainer() {
-        HTMLElement container = document.createElement(CONTAINER_TAG);
-        container.setClassName(ColumnSize.MD_12.getCssName());
+        HTMLElement container = (HTMLElement)DomGlobal.document.createElement(CONTAINER_TAG);
+        container.className = (ColumnSize.MD_12.getCssName());
         return container;
     }
 
     @Override
     public HTMLElement createRow(LayoutRow layoutRow) {
-        HTMLElement row = document.createElement(CONTAINER_TAG);
-        row.setClassName(ROW_CLASS);
+        HTMLElement row = (HTMLElement)DomGlobal.document.createElement(CONTAINER_TAG);
+        row.className = (ROW_CLASS);
         return row;
     }
 
     @Override
     public HTMLElement createColumn(LayoutColumn layoutColumn) {
-        HTMLElement column = document.createElement(CONTAINER_TAG);
+        HTMLElement column = (HTMLElement)DomGlobal.document.createElement(CONTAINER_TAG);
         String colSize = ColumnSizeBuilder.buildColumnSize(new Integer(layoutColumn.getSpan()));
-        column.setClassName(colSize);
+        column.className = (colSize);
         return column;
     }
 
@@ -111,14 +109,10 @@ public class FormGeneratorDriver implements LayoutGeneratorDriver {
         Class<? extends LayoutDragComponent> clazz = componentsCache.get(layoutComponent.getDragTypeName());
         if (clazz == null) {
             SyncBeanDef dragTypeDef = beanManager.lookupBeans(layoutComponent.getDragTypeName()).iterator().next();
-
             componentsCache.put(layoutComponent.getDragTypeName(), dragTypeDef.getBeanClass());
-
             clazz = dragTypeDef.getBeanClass();
         }
-
         LayoutDragComponent dragComponent = instance.select(clazz).get();
-
         if (dragComponent instanceof FieldLayoutComponent) {
             FieldLayoutComponent fieldComponent = (FieldLayoutComponent) dragComponent;
 

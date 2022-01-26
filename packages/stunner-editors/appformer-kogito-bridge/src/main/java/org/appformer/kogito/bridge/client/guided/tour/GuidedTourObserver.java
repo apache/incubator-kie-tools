@@ -18,8 +18,8 @@ package org.appformer.kogito.bridge.client.guided.tour;
 
 import java.util.Optional;
 
+import io.crysknife.client.ioc.Disposer;
 import org.appformer.kogito.bridge.client.guided.tour.service.GuidedTourService;
-import org.jboss.errai.ioc.client.api.Disposer;
 
 /**
  * {@link GuidedTourObserver} implementation must events and notifies the {@link GuidedTourBridge}.
@@ -46,6 +46,7 @@ public abstract class GuidedTourObserver<T extends GuidedTourObserver> {
 
     @SuppressWarnings("unchecked")
     protected void dispose() {
-        selfDisposer.dispose((T) this);
+        if(selfDisposer != null)
+            selfDisposer.dispose((T) this);
     }
 }

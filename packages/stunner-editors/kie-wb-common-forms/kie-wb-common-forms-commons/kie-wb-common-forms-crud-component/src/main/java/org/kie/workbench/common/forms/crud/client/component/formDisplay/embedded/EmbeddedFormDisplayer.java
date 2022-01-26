@@ -19,8 +19,8 @@ package org.kie.workbench.common.forms.crud.client.component.formDisplay.embedde
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.AbstractFormDisplayer;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormView;
 

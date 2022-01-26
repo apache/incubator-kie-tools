@@ -16,25 +16,24 @@
 
 package org.kie.workbench.common.widgets.client.popups.about;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Image;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLImageElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.uberfire.client.views.pfly.widgets.Modal;
 
 @Templated
+@Dependent
 public class AboutPopupView implements AboutPopup.View,
                                        IsElement {
 
     private AboutPopup presenter;
-
-    @Inject
-    private TranslationService translationService;
 
     @Inject
     @DataField("about")
@@ -42,23 +41,26 @@ public class AboutPopupView implements AboutPopup.View,
 
     @Inject
     @DataField("modal-content")
-    private Div modalContent;
+    private HTMLDivElement modalContent;
 
     @Inject
     @DataField("product-image")
-    private Image productImage;
+    private HTMLImageElement productImage;
 
     @Inject
     @DataField("version")
-    private Span version;
+    @Named("span")
+    private HTMLElement version;
 
     @Inject
     @DataField("trademark-product-name")
-    private Span trademarkProductName;
+    @Named("span")
+    private HTMLElement trademarkProductName;
 
     @Inject
     @DataField("trademark2")
-    private Span trademark2;
+    @Named("span")
+    private HTMLElement trademark2;
 
     @Override
     public void init(final AboutPopup presenter) {
@@ -72,28 +74,28 @@ public class AboutPopupView implements AboutPopup.View,
 
     @Override
     public void setProductName(final String productName) {
-        this.productImage.setAlt(productName);
-        this.trademarkProductName.setTextContent(productName);
+        this.productImage.alt = (productName);
+        this.trademarkProductName.textContent = (productName);
     }
 
     @Override
     public void setProductVersion(final String productVersion) {
-        this.version.setTextContent(productVersion);
+        this.version.textContent = (productVersion);
     }
 
     @Override
     public void setProductLicense(final String productLicense) {
-        this.trademark2.setTextContent(productLicense);
+        this.trademark2.textContent = (productLicense);
     }
 
     @Override
     public void setProductImageUrl(final String productImageUrl) {
-        this.productImage.setSrc(productImageUrl);
+        this.productImage.src = (productImageUrl);
     }
 
     @Override
     public void setBackgroundImageUrl(final String backgroundImageUrl) {
-        this.modalContent.getStyle().setProperty("background-image",
+        this.modalContent.style.setProperty("background-image",
                                                  "url(" + backgroundImageUrl + ")");
     }
 }

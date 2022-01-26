@@ -15,8 +15,8 @@
  */
 package org.uberfire.ext.widgets.table.client;
 
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.Header;
+import org.gwtproject.user.cellview.client.Column;
+import org.gwtproject.user.cellview.client.Header;
 
 public class ColumnMeta<T> implements Comparable {
 

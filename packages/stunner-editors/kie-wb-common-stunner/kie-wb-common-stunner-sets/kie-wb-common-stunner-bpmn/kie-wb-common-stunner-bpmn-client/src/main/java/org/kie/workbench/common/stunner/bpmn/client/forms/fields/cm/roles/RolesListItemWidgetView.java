@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.cm.roles;
 
-import com.google.gwt.user.client.TakesValue;
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.ui.client.widget.HasModel;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.databinding.client.api.HasModel;
+import org.gwtproject.user.client.TakesValue;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.KeyValueRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType;
 

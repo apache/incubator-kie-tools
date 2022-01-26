@@ -21,8 +21,8 @@ import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.google.gwt.animation.client.AnimationScheduler;
-import com.google.gwt.user.client.Command;
+import org.gwtproject.animation.client.AnimationScheduler;
+import org.gwtproject.user.client.Command;
 
 public class GridLayerRedrawManager {
 

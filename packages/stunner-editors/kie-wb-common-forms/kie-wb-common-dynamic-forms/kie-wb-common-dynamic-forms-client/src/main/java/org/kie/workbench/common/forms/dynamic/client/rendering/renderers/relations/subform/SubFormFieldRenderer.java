@@ -45,7 +45,6 @@ public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition, 
 
     @Override
     protected FormGroup getFormGroup(RenderMode renderMode) {
-
         String nestedNS = renderingContext.getNamespace() + FormRenderingContext.NAMESPACE_SEPARATOR + field.getName();
 
         FormRenderingContext nestedContext = renderingContext.getCopyFor(nestedNS, field.getNestedForm(), null);

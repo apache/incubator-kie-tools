@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.lienzo.components.views;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Named;
 
 import org.kie.workbench.common.stunner.core.client.components.views.AbstractCanvasTooltip;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -26,6 +27,7 @@ import org.kie.workbench.common.stunner.lienzo.primitive.PrimitiveTooltip;
  * A Canvas tooltip for texts.
  */
 @Dependent
+@Named("LienzoTextTooltip")
 public class LienzoTextTooltip extends AbstractCanvasTooltip<String> {
 
     private final PrimitiveTooltip tooltip;

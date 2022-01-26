@@ -19,8 +19,8 @@ package org.kie.workbench.common.stunner.core.client.canvas.util;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gwt.logging.client.LogConfiguration;
-import com.google.gwt.user.client.Timer;
+import elemental2.dom.DomGlobal;
+import org.gwtproject.timer.client.Timer;
 
 public class CanvasLoadingObserver {
 
@@ -93,9 +93,12 @@ public class CanvasLoadingObserver {
 
     private static void log(final Level level,
                             final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
+
+        DomGlobal.console.log(message);
+
+/*        if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level,
                        message);
-        }
+        }*/
     }
 }

@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.comboBoxEditor;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 
 public interface ComboBoxWidgetView extends IsWidget {

@@ -23,9 +23,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.databinding.client.BindableListWrapper;
+import io.crysknife.ui.databinding.client.BindableListWrapper;
 import org.kie.workbench.common.forms.dynamic.client.config.ClientSelectorDataProviderManager;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
@@ -37,13 +35,14 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.S
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.SelectorOption;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeListener;
 
+
 public abstract class SelectorFieldRenderer<FIELD extends SelectorFieldBaseDefinition<OPTION, TYPE>, OPTION extends SelectorOption<TYPE>, TYPE> extends FieldRenderer<FIELD, DefaultFormGroup> {
 
     @Inject
     protected SelectorDataProviderManager clientProviderManager;
 
-    @Inject
-    protected Caller<BackendSelectorDataProviderService> backendSelectorDataProviderService;
+    //@Inject
+    protected BackendSelectorDataProviderService backendSelectorDataProviderService;
 
     @Override
     public void init(FormRenderingContext renderingContext,
@@ -63,13 +62,15 @@ public abstract class SelectorFieldRenderer<FIELD extends SelectorFieldBaseDefin
                         renderingContext,
                         field.getDataProvider()));
             } else {
-                backendSelectorDataProviderService.call(new RemoteCallback<SelectorData>() {
+                throw new Error(getClass().getCanonicalName()+".refreshSelectorOptions");
+
+/*                backendSelectorDataProviderService.call(new RemoteCallback<SelectorData>() {
                     @Override
                     public void callback(SelectorData data) {
                         refreshSelectorOptions(data);
                     }
                 }).getDataFromProvider(renderingContext,
-                                       field.getDataProvider());
+                                       field.getDataProvider());*/
             }
         } else {
             refreshSelectorOptions(field.getOptions());

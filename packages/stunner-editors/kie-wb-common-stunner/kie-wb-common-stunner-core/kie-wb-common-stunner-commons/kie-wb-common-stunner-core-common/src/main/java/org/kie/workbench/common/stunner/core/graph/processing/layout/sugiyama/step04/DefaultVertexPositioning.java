@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 
 import org.kie.workbench.common.stunner.core.graph.processing.layout.OrientedEdgeImpl;
@@ -39,6 +40,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.Or
  * 3. The space between layers is the same
  */
 @Default
+@Dependent
 public class DefaultVertexPositioning implements VertexPositioning {
 
     static final int DEFAULT_VERTEX_SPACE = 75;

@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import org.eclipse.bpmn2.Auditing;
 import org.eclipse.bpmn2.CategoryValue;
 import org.eclipse.bpmn2.DataObjectReference;
@@ -25,6 +24,7 @@ import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Monitoring;
 import org.eclipse.bpmn2.impl.FlowNodeImpl;
 import org.eclipse.emf.common.util.EList;
+import org.gwtproject.safehtml.shared.SafeHtmlUtils;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomElement;
 
 public class LanePropertyWriter extends BasePropertyWriter {

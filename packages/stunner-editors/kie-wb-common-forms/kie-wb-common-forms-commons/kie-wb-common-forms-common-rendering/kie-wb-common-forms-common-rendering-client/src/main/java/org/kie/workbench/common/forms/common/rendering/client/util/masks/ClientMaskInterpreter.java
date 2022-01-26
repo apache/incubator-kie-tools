@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.util.masks;
 
-import org.jboss.errai.databinding.client.HasProperties;
-import org.jboss.errai.databinding.client.api.DataBinder;
+import io.crysknife.ui.databinding.client.HasProperties;
+import io.crysknife.ui.databinding.client.api.DataBinder;
 import org.kie.workbench.common.forms.commons.rendering.shared.util.masks.MaskInterpreter;
 import org.kie.workbench.common.forms.commons.rendering.shared.util.masks.ModelInterpreter;
 

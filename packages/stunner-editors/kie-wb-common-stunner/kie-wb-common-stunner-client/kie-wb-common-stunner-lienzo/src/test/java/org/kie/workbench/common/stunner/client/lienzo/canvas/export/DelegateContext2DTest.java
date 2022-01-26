@@ -30,7 +30,6 @@ import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.core.client.GWT;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLCanvasElement;
 import elemental2.dom.Path2D;
@@ -58,6 +57,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -123,7 +123,7 @@ public class DelegateContext2DTest {
     @Before
     public void setUp() throws Exception {
         htmlElement = new HTMLCanvasElement();
-        element = GWT.create(HTMLCanvasElement.class);
+        element = mock(HTMLCanvasElement.class);
         when(nativeClassConverter.convert(any(Element.class), eq(HTMLCanvasElement.class)))
                 .thenReturn(htmlElement);
         when(canvasHandler.getDiagram()).thenReturn(diagram);

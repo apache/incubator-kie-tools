@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.forms.client.screens;
 
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

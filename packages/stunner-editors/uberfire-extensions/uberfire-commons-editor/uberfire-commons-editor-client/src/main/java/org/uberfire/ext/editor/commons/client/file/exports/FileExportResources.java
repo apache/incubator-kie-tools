@@ -16,16 +16,16 @@
 
 package org.uberfire.ext.editor.commons.client.file.exports;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.TextResource;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.resources.client.ClientBundle;
+import org.gwtproject.resources.client.TextResource;
 
 /**
  * Static resources related to the file export.
  */
 public interface FileExportResources extends ClientBundle {
 
-    FileExportResources INSTANCE = GWT.create(FileExportResources.class);
+    FileExportResources INSTANCE = new FileExportResources_default_InlineClientBundleGenerator();
 
     // The File Saver js.
     @Source("js/FileSaver.min.js")

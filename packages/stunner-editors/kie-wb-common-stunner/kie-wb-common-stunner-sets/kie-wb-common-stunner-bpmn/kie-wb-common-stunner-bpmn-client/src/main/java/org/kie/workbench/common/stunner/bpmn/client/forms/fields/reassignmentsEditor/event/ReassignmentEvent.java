@@ -16,10 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.reassignmentsEditor.event;
 
-import org.jboss.errai.common.client.api.annotations.LocalEvent;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.ReassignmentRow;
 
-@LocalEvent
 public class ReassignmentEvent {
 
     private ReassignmentRow row;

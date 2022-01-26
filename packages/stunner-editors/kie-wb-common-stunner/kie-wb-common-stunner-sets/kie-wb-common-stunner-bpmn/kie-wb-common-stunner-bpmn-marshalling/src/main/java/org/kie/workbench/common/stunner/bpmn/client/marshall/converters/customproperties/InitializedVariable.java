@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customp
 import java.util.Optional;
 import java.util.Set;
 
-import com.google.gwt.http.client.URL;
 import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
@@ -29,11 +28,12 @@ import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
+import org.gwtproject.http.client.URL;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Ids;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.VariableScope;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.util.FormalExpressionBodyHandler;
 
-import static com.google.gwt.http.client.URL.decodeQueryString;
+import static org.gwtproject.http.client.URL.decodeQueryString;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.EXPRESSION;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.urlDecode;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;

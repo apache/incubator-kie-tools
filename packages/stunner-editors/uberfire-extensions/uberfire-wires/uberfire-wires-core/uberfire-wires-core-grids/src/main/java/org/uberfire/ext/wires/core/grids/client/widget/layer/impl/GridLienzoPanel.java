@@ -18,17 +18,17 @@ package org.uberfire.ext.wires.core.grids.client.widget.layer.impl;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.client.widget.panel.impl.LienzoFixedPanel;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ScrollEvent;
-import com.google.gwt.event.dom.client.ScrollHandler;
-import com.google.gwt.event.logical.shared.AttachEvent;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.ProvidesResize;
-import com.google.gwt.user.client.ui.RequiresResize;
+import org.gwtproject.core.client.Scheduler;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.event.dom.client.ScrollEvent;
+import org.gwtproject.event.dom.client.ScrollHandler;
+import org.gwtproject.event.logical.shared.AttachEvent;
+import org.gwtproject.user.client.ui.AbsolutePanel;
+import org.gwtproject.user.client.ui.FocusPanel;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.ProvidesResize;
+import org.gwtproject.user.client.ui.RequiresResize;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -89,6 +89,8 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
     protected GridLienzoPanel(final LienzoFixedPanel lienzoPanel) {
         this.lienzoPanel = lienzoPanel;
         this.lienzoPanelWidget = ElementWrapperWidget.getWidget(lienzoPanel.getElement());
+
+        //this.lienzoPanelWidget = lienzoPanel.getElement();
         this.gridLienzoScrollHandler = new GridLienzoScrollHandler(this);
 
         setupPanels();

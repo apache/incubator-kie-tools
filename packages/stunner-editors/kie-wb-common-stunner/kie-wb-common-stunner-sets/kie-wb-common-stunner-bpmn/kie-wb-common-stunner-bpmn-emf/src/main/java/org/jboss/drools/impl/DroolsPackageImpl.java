@@ -2,10 +2,9 @@
  */
 package org.jboss.drools.impl;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.math.BigInteger;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import org.eclipse.emf.common.util.Reflect;
 
 import org.eclipse.emf.ecore.EAttribute;

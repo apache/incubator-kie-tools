@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.IsElement;
+import io.crysknife.client.IsElement;
 
 public abstract class FieldEditorPresenter<T> {
 

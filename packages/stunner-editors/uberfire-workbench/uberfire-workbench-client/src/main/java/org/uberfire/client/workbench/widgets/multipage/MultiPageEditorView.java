@@ -16,7 +16,7 @@
 
 package org.uberfire.client.workbench.widgets.multipage;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 
 public interface MultiPageEditorView extends IsWidget {
 

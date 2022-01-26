@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.imp
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -34,6 +35,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 @Default
 @Element
 @Dependent
+@Named("ElementBuilderControlImpl")
 public class ElementBuilderControlImpl extends AbstractElementBuilderControl {
 
     @Inject

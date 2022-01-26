@@ -22,7 +22,8 @@ import com.ait.lienzo.client.core.event.NodeMouseDownHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.DragMode;
-import com.google.gwt.dom.client.Style;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.dom.style.shared.Cursor;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
@@ -93,11 +94,11 @@ public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
                 state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.GRID_MOVE);
                 activeGridWidget.setDragMode(DragMode.SAME_LAYER);
                 activeGridWidget.setDraggable(true);
-                setCursor(Style.Cursor.MOVE);
+                setCursor(Cursor.MOVE);
         }
     }
 
-    private void setCursor(final Style.Cursor cursor) {
+    private void setCursor(final Cursor cursor) {
         layer.getViewport().getElement().style.cursor = cursor.getCssName();
         state.setCursor(cursor);
     }

@@ -16,10 +16,11 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.metaDataEditor;
 
-import org.jboss.errai.ui.client.widget.HasModel;
+import io.crysknife.ui.databinding.client.api.HasModel;
+import org.gwtproject.user.client.TakesValue;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.MetaDataRow;
 
-public interface MetaDataListItemWidgetView extends HasModel<MetaDataRow> {
+public interface MetaDataListItemWidgetView extends TakesValue<MetaDataRow>, HasModel<MetaDataRow> {
 
     void init();
 
@@ -27,7 +28,7 @@ public interface MetaDataListItemWidgetView extends HasModel<MetaDataRow> {
 
     void notifyModelChanged();
 
-    String getValue();
+    MetaDataRow getValue();
 
     void setValue(final String value);
 

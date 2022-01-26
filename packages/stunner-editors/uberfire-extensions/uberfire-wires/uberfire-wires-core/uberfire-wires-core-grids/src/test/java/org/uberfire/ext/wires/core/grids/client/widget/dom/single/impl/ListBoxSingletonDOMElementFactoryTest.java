@@ -28,8 +28,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
-@WithClassesToStub(ListBoxDOMElement.class)
+//@RunWith(GwtMockitoTestRunner.class)
+//@WithClassesToStub(ListBoxDOMElement.class)
 public class ListBoxSingletonDOMElementFactoryTest extends BaseSingletonDOMElementFactoryTest {
 
     public static final String VALUE = "val";

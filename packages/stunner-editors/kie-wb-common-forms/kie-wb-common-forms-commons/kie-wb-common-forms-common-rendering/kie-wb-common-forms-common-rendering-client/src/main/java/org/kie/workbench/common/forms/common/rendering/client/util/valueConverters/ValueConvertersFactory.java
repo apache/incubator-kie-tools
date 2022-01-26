@@ -21,7 +21,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.errai.databinding.client.api.Converter;
+import io.crysknife.ui.databinding.client.api.Converter;
 
 public class ValueConvertersFactory {
 

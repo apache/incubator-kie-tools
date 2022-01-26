@@ -21,12 +21,13 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.event.legacy.shared.GwtEvent;
+import org.gwtproject.event.logical.shared.ValueChangeEvent;
+import org.gwtproject.event.logical.shared.ValueChangeHandler;
+import org.gwtproject.event.shared.Event;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget.MultipleInputComponent;
 
 @Dependent
@@ -81,7 +82,6 @@ public class MultipleInput<TYPE> implements IsWidget,
                                           ValueChangeEvent.getType());
     }
 
-    @Override
     public void fireEvent(GwtEvent<?> event) {
         asWidget().fireEvent(event);
     }
@@ -101,5 +101,10 @@ public class MultipleInput<TYPE> implements IsWidget,
 
     public void setReadOnly(boolean readOnly) {
         component.setReadOnly(readOnly);
+    }
+
+    @Override
+    public void fireEvent(Event<?> event) {
+        asWidget().fireEvent(event);
     }
 }

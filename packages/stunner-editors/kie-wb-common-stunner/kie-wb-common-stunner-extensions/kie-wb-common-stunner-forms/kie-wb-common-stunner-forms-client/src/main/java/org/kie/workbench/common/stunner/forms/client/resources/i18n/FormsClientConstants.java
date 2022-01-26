@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.forms.client.resources.i18n;
 
-import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
+import  io.crysknife.ui.translation.api.annotations.TranslationKey;
 
 public interface FormsClientConstants {
 

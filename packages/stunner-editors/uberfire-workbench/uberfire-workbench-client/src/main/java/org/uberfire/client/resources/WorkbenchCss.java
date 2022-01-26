@@ -15,7 +15,7 @@
  */
 package org.uberfire.client.resources;
 
-import com.google.gwt.resources.client.CssResource;
+import org.gwtproject.resources.client.CssResource;
 
 /**
  * GWT managed CSS for Workbench

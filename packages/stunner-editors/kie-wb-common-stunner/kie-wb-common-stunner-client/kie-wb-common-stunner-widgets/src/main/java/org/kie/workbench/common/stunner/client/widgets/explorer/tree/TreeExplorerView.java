@@ -22,14 +22,14 @@ import java.util.function.BiPredicate;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.uberfire.ext.widgets.core.client.tree.Tree;
 import org.uberfire.ext.widgets.core.client.tree.TreeItem;
@@ -37,7 +37,7 @@ import org.uberfire.ext.widgets.core.client.tree.TreeItem;
 @Dependent
 public class TreeExplorerView extends Composite implements TreeExplorer.View {
 
-    static ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    static ViewBinder uiBinder = new TreeExplorerView_ViewBinderImpl();
 
     @UiField
     Tree<TreeItem> tree;
@@ -226,6 +226,7 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
         };
     }
 
+    @UiTemplate
     interface ViewBinder extends UiBinder<Widget, TreeExplorerView> {
 
     }

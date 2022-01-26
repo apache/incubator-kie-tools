@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets.picture.widget;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 
 public interface PictureWidgetView extends IsWidget {
 

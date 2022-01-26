@@ -41,7 +41,7 @@ public abstract class ListBoxBaseDefinition<OPTIONS extends SelectorOption<TYPE>
         return FIELD_TYPE;
     }
 
-    public Boolean getAddEmptyOption() {
+    public Boolean isAddEmptyOption() {
         return addEmptyOption;
     }
 

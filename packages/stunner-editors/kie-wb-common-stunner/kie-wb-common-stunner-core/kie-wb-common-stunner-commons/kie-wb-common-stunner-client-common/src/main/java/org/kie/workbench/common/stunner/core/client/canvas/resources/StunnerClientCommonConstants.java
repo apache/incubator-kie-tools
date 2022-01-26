@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.resources;
 
-import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
+import  io.crysknife.ui.translation.api.annotations.TranslationKey;
 
 public class StunnerClientCommonConstants {
 

@@ -16,15 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.service;
 
-import org.jboss.errai.common.client.api.Caller;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
 import org.kie.workbench.common.stunner.core.service.DiagramService;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.uberfire.mocks.CallerMock;
 
 import static org.mockito.Mockito.mock;
 
@@ -50,11 +47,10 @@ public class ClientDiagramServiceTest extends AbstractClientDiagramServiceTest<M
     @Override
     @SuppressWarnings("unchecked")
     protected ClientDiagramServiceImpl makeTestClientDiagramService() {
-        final Caller<DiagramLookupService> diagramLookupServiceCaller = new CallerMock<>(diagramLookupService);
         return new ClientDiagramServiceImpl(shapeManager,
                                             sessionManager,
-                                            diagramServiceCaller,
-                                            diagramLookupServiceCaller,
+                                            diagramService,
+                                            diagramLookupService,
                                             sessionDiagramSavedEvent);
     }
 }

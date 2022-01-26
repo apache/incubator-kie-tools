@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets;
 
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.HasValue;
+import org.gwtproject.event.logical.shared.ValueChangeHandler;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.ui.HasValue;
 
 public interface FormWidget<T> extends HasValue<T> {
 

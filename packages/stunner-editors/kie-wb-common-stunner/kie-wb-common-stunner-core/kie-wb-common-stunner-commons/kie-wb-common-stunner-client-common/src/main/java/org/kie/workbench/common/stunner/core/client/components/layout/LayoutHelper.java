@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.components.layout;
 
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -30,6 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutExecu
 import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutService;
 
 @Default
+@Singleton
 public class LayoutHelper {
 
     private final LayoutService layoutService;

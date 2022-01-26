@@ -23,7 +23,7 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteItemMouseEvent;
@@ -73,11 +73,12 @@ public class DefinitionPaletteItemWidget implements DefinitionPaletteItemWidgetV
     }
 
     @Override
-    public void onMouseDown(int clientX,
-                            int clientY,
-                            int x,
-                            int y) {
+    public void onMouseDown(double clientX,
+                            double clientY,
+                            double x,
+                            double y) {
         if (itemMouseDownCallback != null) {
+
             itemMouseDownCallback.accept(new PaletteItemMouseEvent(item.getId(),
                                                                    clientX,
                                                                    clientY,

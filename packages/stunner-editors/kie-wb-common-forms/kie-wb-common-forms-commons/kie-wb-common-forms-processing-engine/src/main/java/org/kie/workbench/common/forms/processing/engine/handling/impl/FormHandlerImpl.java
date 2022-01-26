@@ -22,14 +22,14 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import io.crysknife.ui.databinding.client.BindableProxy;
+import io.crysknife.ui.databinding.client.BindableProxyFactory;
+import io.crysknife.ui.databinding.client.PropertyChangeUnsubscribeHandle;
+import io.crysknife.ui.databinding.client.api.Converter;
+import io.crysknife.ui.databinding.client.api.DataBinder;
+import io.crysknife.ui.databinding.client.api.StateSync;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Assert;
-import org.jboss.errai.databinding.client.BindableProxy;
-import org.jboss.errai.databinding.client.BindableProxyFactory;
-import org.jboss.errai.databinding.client.PropertyChangeUnsubscribeHandle;
-import org.jboss.errai.databinding.client.api.Converter;
-import org.jboss.errai.databinding.client.api.DataBinder;
-import org.jboss.errai.databinding.client.api.StateSync;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandlerManager;
 import org.kie.workbench.common.forms.processing.engine.handling.Form;
@@ -93,7 +93,6 @@ public class FormHandlerImpl<T> implements FormHandler<T> {
         Assert.notNull("FormField cannot be null!", formField);
 
         IsWidget widget = formField.getWidget();
-
         form.addField(formField);
 
         if (formField.isBindable()) {

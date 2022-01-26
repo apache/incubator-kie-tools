@@ -1,14 +1,14 @@
 .appformer-live-search-selector-dditem {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .appformer-live-search-selector-dditem-icon-hidden {
-  display: none;
+    display:none;
 }
 
 .appformer-live-search-selector-dditem-icon-visible {
-  margin-left: 5px;
-  cursor: pointer;
-  float: right;
-  display: block !important;
+    margin-left: 5px;
+    cursor: pointer;
+    float: right;
+    display:block !important;
 }

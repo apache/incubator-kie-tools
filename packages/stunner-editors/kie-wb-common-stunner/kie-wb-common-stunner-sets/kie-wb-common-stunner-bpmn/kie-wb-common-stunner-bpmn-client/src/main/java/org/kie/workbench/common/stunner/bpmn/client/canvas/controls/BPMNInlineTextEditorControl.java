@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.client.canvas.controls;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseIntermediateEvent;
@@ -29,14 +28,14 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.CanvasInlineTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.InlineTextEditorBox;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.TextEditorBox;
-import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
+import org.kie.workbench.common.stunner.core.client.components.views.FloatingWidgetView;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 @BPMN
 public class BPMNInlineTextEditorControl extends CanvasInlineTextEditorControl {
 
     @Inject
-    public BPMNInlineTextEditorControl(FloatingView<IsWidget> floatingView,
+    public BPMNInlineTextEditorControl(FloatingWidgetView floatingView,
                                        @InlineTextEditorBox TextEditorBox<AbstractCanvasHandler, Element> textEditorBox) {
         super(floatingView, textEditorBox);
     }

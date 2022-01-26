@@ -155,19 +155,19 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     protected void onDestroy() {
     }
 
-    void onShapeRemovedEvent(final @Observes CanvasShapeRemovedEvent shapeRemovedEvent) {
+    public void onShapeRemovedEvent(final @Observes CanvasShapeRemovedEvent shapeRemovedEvent) {
         checkNotNull("event",
                      shapeRemovedEvent);
         handleShapeRemovedEvent(shapeRemovedEvent);
     }
 
-    void onCanvasElementSelectedEvent(final @Observes CanvasSelectionEvent event) {
+    public void onCanvasElementSelectedEvent(final @Observes CanvasSelectionEvent event) {
         checkNotNull("event",
                      event);
         handleCanvasElementSelectedEvent(event);
     }
 
-    void onCanvasClearSelectionEvent(final @Observes CanvasClearSelectionEvent event) {
+    public void onCanvasClearSelectionEvent(final @Observes CanvasClearSelectionEvent event) {
         checkNotNull("event",
                      event);
         handleCanvasClearSelectionEvent(event);

@@ -18,8 +18,8 @@ package org.kie.workbench.common.forms.adf.engine.client.formGeneration.util;
 
 import javax.enterprise.context.Dependent;
 
-import org.jboss.errai.databinding.client.BindableProxy;
-import org.jboss.errai.databinding.client.api.DataBinder;
+import io.crysknife.ui.databinding.client.BindableProxy;
+import io.crysknife.ui.databinding.client.api.DataBinder;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.util.impl.AbstractPropertyValueExtractor;
 
 @Dependent

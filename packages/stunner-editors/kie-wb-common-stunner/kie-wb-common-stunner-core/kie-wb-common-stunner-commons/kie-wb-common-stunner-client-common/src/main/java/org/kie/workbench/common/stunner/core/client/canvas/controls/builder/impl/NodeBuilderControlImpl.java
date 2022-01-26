@@ -21,6 +21,7 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -60,7 +61,8 @@ public class NodeBuilderControlImpl
     @Inject
     public NodeBuilderControlImpl(final ClientDefinitionManager clientDefinitionManager,
                                   final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
-                                  final @Default @Element AbstractElementBuilderControl elementBuilderControl) {
+                                  final @Default @Element @Named("ElementBuilderControlImpl")
+                                               AbstractElementBuilderControl elementBuilderControl) {
         this.clientDefinitionManager = clientDefinitionManager;
         this.commandFactory = commandFactory;
         this.elementBuilderControl = elementBuilderControl;

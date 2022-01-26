@@ -16,6 +16,7 @@
 
 package org.appformer.kogito.bridge.client.stateControl.registry.interop;
 
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.appformer.kogito.bridge.client.stateControl.interop.StateControlCommand;
 
@@ -24,7 +25,7 @@ import org.appformer.kogito.bridge.client.stateControl.interop.StateControlComma
  *
  * @param <C> anything that can be considered a Command
  */
-@JsType(isNative = true)
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public interface KogitoJSCommandRegistry<C> {
 
     /**

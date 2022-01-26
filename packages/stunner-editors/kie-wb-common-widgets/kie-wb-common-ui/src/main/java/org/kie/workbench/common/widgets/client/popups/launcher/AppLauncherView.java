@@ -19,15 +19,14 @@ package org.kie.workbench.common.widgets.client.popups.launcher;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Composite;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Element;
-import org.jboss.errai.common.client.dom.NodeList;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-
-import static com.google.common.base.Strings.isNullOrEmpty;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.Node;
+import elemental2.dom.NodeList;
+import org.gwtproject.user.client.ui.Composite;
+import io.crysknife.client.ManagedInstance;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
 
 @Dependent
 @Templated(stylesheet = "AppLauncherView.css")
@@ -38,19 +37,19 @@ public class AppLauncherView extends Composite implements AppLauncherPresenter.A
 
     @Inject
     @DataField("left-column")
-    private Div leftColumn;
+    private HTMLDivElement leftColumn;
 
     @Inject
     @DataField("right-column")
-    private Div rightColumn;
+    private HTMLDivElement rightColumn;
 
     public void addAppLauncher(final String name, final String url, final String iconClass) {
         final AppLauncherItemView app = appLauncherItemViews.get();
         app.setName(name);
-        app.setIcon(isNullOrEmpty(iconClass) ? "fa-cube" : iconClass);
+        app.setIcon((iconClass == null || iconClass.isEmpty()) ? "fa-cube" : iconClass);
         app.setURL(url);
 
-        if (leftColumn.getChildNodes().getLength() == rightColumn.getChildNodes().getLength()) {
+        if (leftColumn.childNodes.getLength() == rightColumn.childNodes.getLength()) {
             leftColumn.appendChild(app.getElement());
         } else {
             rightColumn.appendChild(app.getElement());
@@ -65,10 +64,10 @@ public class AppLauncherView extends Composite implements AppLauncherPresenter.A
     }
 
     public void removeAllNodes(final Element element) {
-        final NodeList nodeList = element.getChildNodes();
+        final NodeList nodeList = element.childNodes;
         int length = nodeList.getLength();
         for (int i = 0; i < length; i++) {
-            element.removeChild(nodeList.item(0));
+            element.removeChild((Node)nodeList.item(0));
         }
     }
 

@@ -18,9 +18,9 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relati
 
 import javax.enterprise.context.Dependent;
 
-import org.jboss.errai.databinding.client.BindableProxy;
-import org.jboss.errai.databinding.client.BindableProxyFactory;
-import org.jboss.errai.databinding.client.api.DataBinder;
+import io.crysknife.ui.databinding.client.BindableProxy;
+import io.crysknife.ui.databinding.client.BindableProxyFactory;
+import io.crysknife.ui.databinding.client.api.DataBinder;
 import org.kie.workbench.common.forms.dynamic.service.shared.AbstractFormRenderingContext;
 
 @Dependent

@@ -18,11 +18,11 @@ package org.uberfire.client.docks.view.items;
 
 import java.util.function.Consumer;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.resources.client.ImageResource;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.Image;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
@@ -63,7 +63,7 @@ public abstract class AbstractDockItem extends Composite implements OuiaComponen
 
     void configureText(final Button itemButton,
                        final String text) {
-        Span itemButtonText = GWT.create(Span.class);
+        Span itemButtonText = new Span();
         itemButtonText.setText(text);
         itemButton.insert(itemButtonText,
                           0);

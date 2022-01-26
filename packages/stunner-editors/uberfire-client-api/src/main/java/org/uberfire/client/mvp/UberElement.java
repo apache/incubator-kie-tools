@@ -16,8 +16,6 @@
 
 package org.uberfire.client.mvp;
 
-import org.jboss.errai.common.client.api.IsElement;
-
 /**
  * Interface to inject a Presenter into a View for MVP-based Element
  * implementations. Due to limitations with CDI it is not possible to {@code @Inject}
@@ -30,5 +28,5 @@ import org.jboss.errai.common.client.api.IsElement;
  * @deprecated Use {@link UberElemental} and elemental2 instead.
  */
 @Deprecated
-public interface UberElement<T> extends IsElement, HasPresenter<T> {
+public interface UberElement<T> extends io.crysknife.client.IsElement, HasPresenter<T> {
 }

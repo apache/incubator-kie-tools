@@ -25,7 +25,7 @@ import org.gwtbootstrap3.client.ui.html.Text;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.StringPopupColumn;
 
-@WithClassesToStub({Text.class})
+//@WithClassesToStub({Text.class})
 public class StringColumnRendererTest extends BaseColumnRendererTest<String, StringColumnRenderer> {
 
     @Override

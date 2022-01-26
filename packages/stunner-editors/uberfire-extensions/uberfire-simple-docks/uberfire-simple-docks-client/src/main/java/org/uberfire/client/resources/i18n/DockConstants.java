@@ -16,14 +16,17 @@
 
 package org.uberfire.client.resources.i18n;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.i18n.client.Message;
+import org.gwtproject.i18n.client.Messages;
 
+@Message
 public interface DockConstants
         extends
         Messages {
 
-    public static final DockConstants INSTANCE = GWT.create(DockConstants.class);
+    public static final DockConstants INSTANCE =
+            DockConstantsFactory.get();
 
     String OK();
 }

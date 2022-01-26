@@ -16,12 +16,12 @@
 
 package org.appformer.kogito.bridge.client.guided.tour;
 
+import io.crysknife.client.ioc.Disposer;
 import org.appformer.kogito.bridge.client.guided.tour.GuidedTourCustomSelectorPositionProvider.PositionProviderFunction;
 import org.appformer.kogito.bridge.client.guided.tour.observers.GlobalHTMLObserver;
 import org.appformer.kogito.bridge.client.guided.tour.service.GuidedTourService;
 import org.appformer.kogito.bridge.client.guided.tour.service.api.Tutorial;
 import org.appformer.kogito.bridge.client.guided.tour.service.api.UserInteraction;
-import org.jboss.errai.ioc.client.api.Disposer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -126,7 +126,7 @@ public class GuidedTourBridgeTest {
     class GlobalHTMLObserverFake extends GlobalHTMLObserver {
 
         GlobalHTMLObserverFake(final Disposer<GlobalHTMLObserver> selfDisposer) {
-            super(selfDisposer);
+            //super(selfDisposer);
         }
 
         @Override

@@ -19,36 +19,28 @@ package org.kie.workbench.common.forms.dynamic.client.init.impl;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.kie.workbench.common.forms.dynamic.client.helper.MapModelBindingHelper;
 import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGenerator;
-import org.kie.workbench.common.forms.dynamic.client.processing.engine.handling.DynamicModelValidator;
 import org.kie.workbench.common.forms.dynamic.service.shared.DynamicContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
-import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.DynamicModelConstraints;
-import org.kie.workbench.common.forms.model.JavaFormModel;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldStateValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
-import org.kie.workbench.common.forms.processing.engine.handling.FormValidator;
-import org.kie.workbench.common.forms.processing.engine.handling.impl.FieldChangeHandlerManagerImpl;
-import org.kie.workbench.common.forms.processing.engine.handling.impl.FormHandlerImpl;
-import org.kie.workbench.common.forms.processing.engine.handling.impl.FormValidatorImpl;
 
 @Dependent
 @DynamicContext
 public class DynamicFormHandlerGenerator implements FormHandlerGenerator<MapModelRenderingContext> {
 
-    protected DynamicValidator validator;
+    //protected DynamicValidator validator;
 
     private MapModelBindingHelper helper;
 
     protected FieldStateValidator fieldStateValidator;
 
     @Inject
-    public DynamicFormHandlerGenerator(DynamicValidator validator,
+    public DynamicFormHandlerGenerator(//DynamicValidator validator,
                                        FieldStateValidator fieldStateValidator,
                                        MapModelBindingHelper helper) {
-        this.validator = validator;
+        //this.validator = validator;
         this.fieldStateValidator = fieldStateValidator;
         this.helper = helper;
     }
@@ -56,7 +48,9 @@ public class DynamicFormHandlerGenerator implements FormHandlerGenerator<MapMode
     @Override
     public FormHandler generateFormHandler(MapModelRenderingContext context) {
 
-        DynamicModelValidator dynamicValidator = new DynamicModelValidator(validator);
+        throw new Error(getClass().getCanonicalName() + ".generateFormHandler");
+
+/*        DynamicModelValidator dynamicValidator = new DynamicModelValidator(validator);
 
         if (context.getRootForm().getModel() instanceof JavaFormModel) {
             DynamicModelConstraints constraints = context.getModelConstraints().get(((JavaFormModel) context.getRootForm().getModel()).getType());
@@ -67,15 +61,15 @@ public class DynamicFormHandlerGenerator implements FormHandlerGenerator<MapMode
         }
 
         FormValidator formValidator = new FormValidatorImpl(dynamicValidator,
-                                                            fieldStateValidator);
+                fieldStateValidator);
 
         FormHandler handler = new FormHandlerImpl(formValidator,
-                                                  new FieldChangeHandlerManagerImpl());
+                new FieldChangeHandlerManagerImpl());
 
         if (context.getParentContext() == null) {
             helper.initContext(context);
         }
 
-        return handler;
+        return handler;*/
     }
 }

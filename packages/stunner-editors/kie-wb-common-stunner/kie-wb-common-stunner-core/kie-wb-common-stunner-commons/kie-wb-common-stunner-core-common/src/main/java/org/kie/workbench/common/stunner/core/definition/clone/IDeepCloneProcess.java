@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.definition.clone;
 
-import javax.enterprise.inject.Alternative;
-
 /**
  * <p>This interface represent a type that has been injected in the {@link CloneManagerImpl}</p>
  * <p>All classes that implements {@link IDeepCloneProcess} (e.g. {@link DeepCloneProcess}) can specify a different strategy for cloning </p>

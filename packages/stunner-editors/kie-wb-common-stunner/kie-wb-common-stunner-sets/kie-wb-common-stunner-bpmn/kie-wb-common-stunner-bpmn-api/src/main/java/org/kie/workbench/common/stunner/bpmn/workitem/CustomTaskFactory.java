@@ -19,9 +19,9 @@ package org.kie.workbench.common.stunner.bpmn.workitem;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.definition.DefinitionFactory;
@@ -40,7 +40,7 @@ public class CustomTaskFactory
     }
 
     @Inject
-    public CustomTaskFactory(final Instance<WorkItemDefinitionRegistry> registry) {
+    public CustomTaskFactory(final ManagedInstance<WorkItemDefinitionRegistry> registry) {
         this.registry = registry::get;
     }
 

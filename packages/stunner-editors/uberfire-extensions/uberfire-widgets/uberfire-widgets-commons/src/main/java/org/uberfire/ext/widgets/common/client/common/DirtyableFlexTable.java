@@ -18,9 +18,9 @@ package org.uberfire.ext.widgets.common.client.common;
 
 import java.util.Iterator;
 
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.FlexTable;
+import org.gwtproject.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import org.gwtproject.user.client.ui.Widget;
 
 public class DirtyableFlexTable
         extends FlexTable

@@ -19,17 +19,15 @@ package org.kie.workbench.common.forms.dynamic.client.rendering;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.generator.AbstractLayoutGenerator;
 
-@Any
 @Dependent
 public class FormLayoutGenerator extends AbstractLayoutGenerator {
 

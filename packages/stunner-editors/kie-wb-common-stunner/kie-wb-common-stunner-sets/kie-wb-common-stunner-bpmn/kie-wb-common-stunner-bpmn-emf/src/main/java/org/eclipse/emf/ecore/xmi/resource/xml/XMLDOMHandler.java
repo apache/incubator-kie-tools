@@ -17,8 +17,8 @@ package org.eclipse.emf.ecore.xmi.resource.xml;
 
 import java.util.HashMap;
 
-import com.google.gwt.xml.client.Attr;
-import com.google.gwt.xml.client.Node;
+import org.gwtproject.xml.client.Attr;
+import org.gwtproject.xml.client.Node;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;

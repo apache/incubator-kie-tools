@@ -22,7 +22,9 @@ import java.util.Objects;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import elemental2.dom.DomGlobal;
 import elemental2.promise.Promise;
+import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.util.ConverterUtils;
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientService;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
@@ -35,6 +37,7 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
@@ -96,13 +99,21 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
     public void transform(final String fileName,
                           final String xml,
                           final ServiceCallback<Diagram> callback) {
+        DomGlobal.console.log(getClass().getCanonicalName()+".transform " + fileName + " " + xml);
+
+
         doTransform(createDiagramTitleFromFilePath(fileName), xml, callback);
     }
 
     private void doTransform(final String fileName,
                              final String xml,
                              final ServiceCallback<Diagram> callback) {
+        DomGlobal.console.log(getClass().getCanonicalName()+".doTransform " + fileName + " " + xml);
+
+
         final Metadata metadata = createMetadata();
+
+
         widService
                 .call(metadata)
                 .then(wid -> {
@@ -118,7 +129,7 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
 
     private Diagram doTransform(final String fileName,
                                 final String xml) {
-
+        DomGlobal.console.log("and doTransform " + fileName + " '" + xml +"'");
         if (Objects.isNull(xml) || xml.isEmpty()) {
             return createNewDiagram(fileName);
         }
@@ -126,8 +137,9 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
     }
 
     public Promise<String> transform(final Diagram diagram) {
-        String raw = marshalling.marshall(convert(diagram));
-        return promises.resolve(raw);
+        //String raw = marshalling.marshall(convert(diagram));
+        //return promises.resolve(raw);
+        throw new Error(getClass().getCanonicalName()+".transform");
     }
 
     private void updateDiagramSet(Node<Definition<BPMNDiagram>, ?> diagramNode, String name) {
@@ -151,13 +163,13 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
 
     private Diagram createNewDiagram(String fileName) {
         final String title = createDiagramTitleFromFilePath(fileName);
-        final String defSetId = BPMNClientMarshalling.getDefinitionSetId();
+        final String defSetId = getDefinitionSetId();
         final Metadata metadata = createMetadata();
+
         metadata.setTitle(title);
         final Diagram diagram = factoryManager.newDiagram(title,
-                                                          defSetId,
-                                                          metadata);
-
+                defSetId,
+                metadata);
         final Node<Definition<BPMNDiagram>, ?> diagramNode = GraphUtils.getFirstNode((Graph<?, Node>) diagram.getGraph(), BPMNDiagramImpl.class);
 
         updateDiagramSet(diagramNode, fileName);
@@ -179,16 +191,24 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
         final String title = diagramNode.getContent().getDefinition().getDiagramSet().getName().getValue();
         metadata.setTitle(title);
         final Diagram diagram = diagramFactory.build(title,
-                                                     metadata,
-                                                     graph);
+                metadata,
+                graph);
         updateClientMetadata(diagram);
         return diagram;
     }
 
     private Metadata createMetadata() {
-        return new MetadataImpl.MetadataImplBuilder(BPMNClientMarshalling.getDefinitionSetId(),
-                                                    definitionManager)
+        return new MetadataImpl.MetadataImplBuilder(getDefinitionSetId(),
+                definitionManager)
                 .build();
+    }
+
+    public static String getDefinitionSetId() {
+        return BindableAdapterUtils.getDefinitionSetId(getDefinitionSetClass());
+    }
+
+    public static Class<?> getDefinitionSetClass() {
+        return BPMNDefinitionSet.class;
     }
 
     private void updateClientMetadata(final Diagram diagram) {
@@ -203,7 +223,7 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
 
     private DiagramImpl convert(final Diagram diagram) {
         return new DiagramImpl(diagram.getName(),
-                               diagram.getGraph(),
-                               diagram.getMetadata());
+                diagram.getGraph(),
+                diagram.getMetadata());
     }
 }

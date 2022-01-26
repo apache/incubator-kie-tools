@@ -17,7 +17,7 @@
 package com.ait.lienzo.client.core.image;
 
 import com.ait.lienzo.tools.client.collection.NFastStringMap;
-import com.google.gwt.resources.client.ImageResource;
+import org.gwtproject.resources.client.ImageResource;
 import elemental2.dom.HTMLImageElement;
 
 public final class ImageCache {

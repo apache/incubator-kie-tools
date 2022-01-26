@@ -19,24 +19,25 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relati
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.TakesValue;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.view.client.AsyncDataProvider;
-import com.google.gwt.view.client.HasData;
-import org.jboss.errai.databinding.client.BindableProxy;
-import org.jboss.errai.databinding.client.HasProperties;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import io.crysknife.client.BeanManager;
+import io.crysknife.ui.databinding.client.BindableProxy;
+import io.crysknife.ui.databinding.client.HasProperties;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import io.crysknife.ui.translation.api.spi.TranslationService;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.user.client.TakesValue;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.view.client.AsyncDataProvider;
+import org.gwtproject.view.client.HasData;
 import org.kie.workbench.common.forms.crud.client.component.CrudActionsHelper;
 import org.kie.workbench.common.forms.crud.client.component.CrudComponent;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.FormDisplayer;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormView;
-import org.kie.workbench.common.forms.crud.client.resources.i18n.CrudComponentConstants;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.multipleSubform.binding.BindingHelper;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.multipleSubform.binding.BindingHelpers;
@@ -51,6 +52,7 @@ import org.kie.workbench.common.forms.processing.engine.handling.IsNestedModel;
 import org.uberfire.ext.widgets.table.client.ColumnMeta;
 
 @Templated
+@Dependent
 public class MultipleSubFormWidget extends Composite implements TakesValue<List<Object>>,
                                                                 IsNestedModel {
 
@@ -62,6 +64,9 @@ public class MultipleSubFormWidget extends Composite implements TakesValue<List<
     @Inject
     @DataField
     private FlowPanel content;
+
+    @Inject
+    private BeanManager beanManager;
 
     protected ColumnGeneratorManager columnGeneratorManager;
 
@@ -220,7 +225,7 @@ public class MultipleSubFormWidget extends Composite implements TakesValue<List<
             @Override
             public void createInstance() {
                 IsFormView form = getCreateInstanceForm();
-                crudComponent.displayForm(translationService.getTranslation(CrudComponentConstants.CrudComponentViewImplNewInstanceTitle),
+                crudComponent.displayForm("newInstanceTitle",
                                           form,
                                           new FormDisplayer.FormDisplayerCallback() {
 
@@ -250,7 +255,7 @@ public class MultipleSubFormWidget extends Composite implements TakesValue<List<
             @Override
             public void editInstance(int index) {
                 IsFormView form = getEditInstanceForm(index);
-                crudComponent.displayForm(translationService.getTranslation(CrudComponentConstants.CrudComponentViewImplEditInstanceTitle),
+                crudComponent.displayForm("editInstanceTitle",
                                           form,
                                           new FormDisplayer.FormDisplayerCallback() {
 
@@ -330,7 +335,7 @@ public class MultipleSubFormWidget extends Composite implements TakesValue<List<
 
         isReadOnly = field.getReadOnly() || !renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE);
 
-        bindingHelper = BindingHelpers.getHelper(renderingContext,
+        bindingHelper = BindingHelpers.getHelper(beanManager, renderingContext,
                                                  field);
 
         initCrud();

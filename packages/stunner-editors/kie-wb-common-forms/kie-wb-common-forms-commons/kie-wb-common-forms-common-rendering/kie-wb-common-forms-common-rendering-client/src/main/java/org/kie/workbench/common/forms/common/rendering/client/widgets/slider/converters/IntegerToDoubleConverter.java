@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets.slider.converters;
 
-import org.jboss.errai.databinding.client.api.Converter;
+import io.crysknife.ui.databinding.client.api.Converter;
 
 public class IntegerToDoubleConverter implements Converter<Integer, Double> {
 

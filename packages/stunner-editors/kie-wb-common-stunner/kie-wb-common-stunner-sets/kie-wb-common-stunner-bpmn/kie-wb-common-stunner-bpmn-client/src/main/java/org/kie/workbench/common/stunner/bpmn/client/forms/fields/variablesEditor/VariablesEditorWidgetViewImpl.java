@@ -22,29 +22,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.TableCellElement;
-import com.google.gwt.dom.client.TableElement;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasValue;
+import io.crysknife.ui.databinding.client.components.ListComponent;
+import io.crysknife.ui.databinding.client.components.ListContainer;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.jboss.errai.ui.client.widget.ListWidget;
-import org.jboss.errai.ui.client.widget.Table;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.gwtproject.dom.client.Document;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.dom.client.TableCellElement;
+import org.gwtproject.dom.client.TableElement;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.event.logical.shared.ValueChangeEvent;
+import org.gwtproject.event.logical.shared.ValueChangeHandler;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.HasValue;
 import org.kie.workbench.common.stunner.bpmn.client.forms.DataTypeNamesService;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
@@ -107,8 +108,8 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
      */
     @Inject
     @DataField
-    @Table(root = "tbody")
-    protected ListWidget<VariableRow, VariableListItemWidgetViewImpl> variableRows;
+    @ListContainer("tbody")
+    protected ListComponent<VariableRow, VariableListItemWidgetViewImpl> variableRows;
 
     @Inject
     protected Event<NotificationEvent> notification;
@@ -145,7 +146,7 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
         }
     }
 
-    void onRefreshFormPropertiesEvent(@Observes RefreshFormPropertiesEvent event) {
+    public void onRefreshFormPropertiesEvent(@Observes RefreshFormPropertiesEvent event) {
         if (!event.equals(refreshFormPropertiesEvent)) {
             String value = getValue();
             getDataTypes(value,
@@ -258,9 +259,13 @@ public class VariablesEditorWidgetViewImpl extends Composite implements Variable
 
     @Override
     public void doSave() {
-        String newValue = presenter.serializeVariables(getVariableRows());
+        String newValue = presenter.serializeVariables(removeEmptyVars(getVariableRows()));
         setValue(newValue,
                  true);
+    }
+
+    private List<VariableRow> removeEmptyVars(List<VariableRow> roles) {
+        return roles.stream().filter(row -> !StringUtils.isEmpty(row.getName())).collect(Collectors.toList());
     }
 
     protected void initView() {

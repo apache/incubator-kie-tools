@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.adf.engine.client.formGeneration;
 
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import io.crysknife.ui.translation.api.spi.TranslationService;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.AbstractI18nHelper;
 import org.kie.workbench.common.forms.adf.service.definitions.I18nSettings;
 

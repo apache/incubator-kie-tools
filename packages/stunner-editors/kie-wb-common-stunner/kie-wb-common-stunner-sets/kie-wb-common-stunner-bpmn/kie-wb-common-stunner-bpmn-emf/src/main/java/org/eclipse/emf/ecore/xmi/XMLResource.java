@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Node;
-import com.google.gwt.xml.client.XMLParser;
+import org.gwtproject.xml.client.Document;
+import org.gwtproject.xml.client.Node;
+import org.gwtproject.xml.client.XMLParser;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;

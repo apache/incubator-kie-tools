@@ -17,23 +17,28 @@
 package org.kie.workbench.common.stunner.client.widgets.marshaller;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.view.client.ListDataProvider;
+import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLTextAreaElement;
-import org.jboss.errai.common.client.dom.Element;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import jsinterop.base.Js;
+import org.gwtbootstrap3.client.shared.js.EventHandler;
+import org.gwtbootstrap3.client.shared.js.JQuery;
+import org.gwtproject.cell.client.Cell;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.safehtml.shared.SafeHtmlUtils;
+import org.gwtproject.user.cellview.client.Column;
+import org.gwtproject.user.cellview.client.TextColumn;
+import org.gwtproject.user.client.Event;
+import org.gwtproject.view.client.ListDataProvider;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
-import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.uberfire.client.util.Clipboard;
@@ -44,6 +49,7 @@ import org.uberfire.ext.widgets.table.client.UberfirePagedTable;
 import org.uberfire.mvp.Command;
 
 @Templated
+@Dependent
 public class MarshallingResponsePopupView
         implements MarshallingResponsePopup.View,
                    IsElement {
@@ -121,7 +127,7 @@ public class MarshallingResponsePopupView
     public void setInlineNotification(String notificationMessage, InlineNotification.InlineNotificationType notificationType) {
         popupInlineNotification.setMessage(notificationMessage);
         popupInlineNotification.setType(notificationType);
-        popupInlineNotification.getElement().getStyle().removeProperty("display");
+        popupInlineNotification.getElement().style.removeProperty("display");
     }
 
     @Override
@@ -190,7 +196,16 @@ public class MarshallingResponsePopupView
         setOnShownCommand(modal.getElement(), () -> messagesTable.redraw());
     }
 
-    private native void setOnShownCommand(final Element e, final Command onShownCommand) /*-{
+    private void setOnShownCommand(final Element e, final Command onShownCommand) {
+        JQuery modal = JQuery.$(Js.<org.gwtproject.dom.client.Element>uncheckedCast(e));
+        modal.on("shown.bs.modal", new EventHandler() {
+            @Override
+            public void callEventHandler(Event event) {
+                onShownCommand.execute();
+            }
+        });
+
+    }/*-{
         $wnd.jQuery(e).on('shown.bs.modal', function () {
             onShownCommand.@org.uberfire.mvp.Command::execute()();
         });

@@ -16,10 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama;
 
+import javax.enterprise.context.Dependent;
+
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.GraphProcessor;
 
+@Dependent
 public class GraphProcessorImpl implements GraphProcessor {
 
     public Iterable<? extends Node> getNodes(final Graph<?, ?> graph) {

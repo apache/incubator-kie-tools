@@ -16,14 +16,15 @@
 
 package org.kie.workbench.common.widgets.client.popups.list;
 
-import com.google.gwt.cell.client.TextCell;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.cell.client.TextCell;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.Image;
+import org.gwtproject.user.client.ui.Label;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.kie.workbench.common.widgets.client.widget.WidthCalculator;
 
@@ -40,13 +41,14 @@ public class ConversionMessageWidget extends Composite {
     @UiField
     Label label;
 
+    @UiTemplate
     interface ConversionMessageWidgetBinder
             extends
             UiBinder<Widget, ConversionMessageWidget> {
 
     }
 
-    private static ConversionMessageWidgetBinder uiBinder = GWT.create(ConversionMessageWidgetBinder.class);
+    private static ConversionMessageWidgetBinder uiBinder = new ConversionMessageWidget_ConversionMessageWidgetBinderImpl();
 
     public ConversionMessageWidget(final MessageType messageType, final String message) {
         initWidget(uiBinder.createAndBindUi(this));

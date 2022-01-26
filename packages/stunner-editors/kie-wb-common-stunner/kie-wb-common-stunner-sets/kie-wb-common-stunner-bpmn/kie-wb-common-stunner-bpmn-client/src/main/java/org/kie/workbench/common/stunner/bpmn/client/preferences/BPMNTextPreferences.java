@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.client.preferences;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Specializes;
 
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.client.shape.factory.BPMNShapeFactory;
@@ -30,7 +29,6 @@ import org.kie.workbench.common.stunner.core.client.preferences.StunnerTextPrefe
  * {@link BPMNShapeFactory} injects these properties when creating the shapes.
  */
 @Dependent
-@Specializes
 public class BPMNTextPreferences extends StunnerTextPreferences {
 
     //Constant values from BPMNSVGViewFactory.PATH_CSS

@@ -17,14 +17,13 @@
 package org.kie.workbench.common.forms.dynamic.client;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import elemental2.dom.HTMLElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.FlowPanel;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FormLayoutGenerator;
 import org.kie.workbench.common.forms.dynamic.client.rendering.util.FormsElementWrapperWidgetUtil;
@@ -36,7 +35,6 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 public class DynamicFormRendererViewImpl extends Composite implements DynamicFormRenderer.DynamicFormRendererView {
 
     @Inject
-    @Any
     private FormLayoutGenerator layoutGenerator;
 
     @Inject
@@ -58,7 +56,6 @@ public class DynamicFormRendererViewImpl extends Composite implements DynamicFor
     @Override
     public void render(FormRenderingContext context) {
         clear();
-
         if (context != null) {
             layoutContent = layoutGenerator.buildLayout(context);
             formContent.add(wrapperWidgetUtil.getWidget(this, layoutContent));

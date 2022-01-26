@@ -19,7 +19,7 @@ import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.user.client.Command;
+import org.gwtproject.user.client.Command;
 import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
 import org.junit.Test;

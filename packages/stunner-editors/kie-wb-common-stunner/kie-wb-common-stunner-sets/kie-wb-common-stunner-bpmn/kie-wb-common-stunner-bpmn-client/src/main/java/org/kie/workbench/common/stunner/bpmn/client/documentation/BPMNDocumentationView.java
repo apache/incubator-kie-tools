@@ -22,11 +22,10 @@ import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import elemental2.dom.HTMLElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import elemental2.dom.HTMLDivElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.kie.workbench.common.stunner.bpmn.documentation.BPMNDocumentationService;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
@@ -46,9 +45,8 @@ public class BPMNDocumentationView extends DefaultDiagramDocumentationView {
     private BPMNDocumentationService documentationService;
 
     @Inject
-    @Named("documentationDiv")
     @DataField
-    private HTMLElement documentationDiv;
+    private HTMLDivElement documentationDiv;
 
     @Inject
     @DataField
@@ -63,7 +61,7 @@ public class BPMNDocumentationView extends DefaultDiagramDocumentationView {
     protected BPMNDocumentationView(final BPMNDocumentationService documentationService,
                                     final ClientTranslationService clientTranslationService,
                                     final PrintHelper printHelper,
-                                    final HTMLElement documentationDiv,
+                                    final HTMLDivElement documentationDiv,
                                     final Button printButton) {
         this.documentationService = documentationService;
         this.clientTranslationService = clientTranslationService;

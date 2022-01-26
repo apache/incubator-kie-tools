@@ -18,14 +18,14 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.widgets;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.regexp.shared.RegExp;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtproject.event.dom.client.BlurEvent;
+import org.gwtproject.event.dom.client.BlurHandler;
+import org.gwtproject.event.dom.client.KeyCodes;
+import org.gwtproject.event.dom.client.KeyPressEvent;
+import org.gwtproject.event.dom.client.KeyPressHandler;
+import org.gwtproject.event.logical.shared.ValueChangeEvent;
+import org.gwtproject.regexp.shared.RegExp;
 import org.uberfire.workbench.events.NotificationEvent;
 
 public abstract class AbstractValidatingTextBox extends TextBox {

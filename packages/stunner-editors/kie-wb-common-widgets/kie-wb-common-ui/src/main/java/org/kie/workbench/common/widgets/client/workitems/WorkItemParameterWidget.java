@@ -15,8 +15,8 @@
  */
 package org.kie.workbench.common.widgets.client.workitems;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
 
 /**

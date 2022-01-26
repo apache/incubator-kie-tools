@@ -25,7 +25,7 @@ import com.ait.lienzo.client.core.shape.IPathClipper;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.google.gwt.core.client.GWT;
+import org.gwtproject.core.client.GWT;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -192,7 +192,7 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
                                      final int headerRowIndex,
                                      final double blockWidth,
                                      final double rowHeight) {
-        final Group headerGroup = GWT.create(Group.class);
+        final Group headerGroup = new Group();
         final String title = headerMetaData.get(headerRowIndex).getTitle();
         final Text t = context.getRenderer().getTheme().getHeaderText();
         t.setText(title);

@@ -17,11 +17,12 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.gwt.regexp.shared.RegExp;
+import org.gwtproject.regexp.shared.RegExp;
 import org.kie.workbench.common.stunner.core.util.Patterns;
 
 /**
@@ -168,7 +169,14 @@ public class StringUtils {
      * @param value
      * @return
      */
+    //TODO
     public static Set<String> getSetDataTypes(String value) {
+        //TODO
+        if(value == null || value.isEmpty()) {
+            return Collections.EMPTY_SET;
+        }
+
+
         Set<String> types = new HashSet<>();
         if (value == null) {
             return types;

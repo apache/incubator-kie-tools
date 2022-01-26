@@ -21,14 +21,15 @@ import java.util.Objects;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.event.dom.client.KeyCodes;
+import org.gwtproject.event.legacy.shared.GwtEvent;
+import org.gwtproject.event.logical.shared.ValueChangeEvent;
+import org.gwtproject.event.logical.shared.ValueChangeHandler;
+import org.gwtproject.event.shared.Event;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.ui.HasValue;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 
 @Dependent
 public class DecimalBox implements IsWidget,
@@ -76,7 +77,6 @@ public class DecimalBox implements IsWidget,
                                           ValueChangeEvent.getType());
     }
 
-    @Override
     public void fireEvent(GwtEvent<?> event) {
         view.asWidget().fireEvent(event);
     }
@@ -139,5 +139,10 @@ public class DecimalBox implements IsWidget,
 
     public void setMaxLength(Integer maxLength) {
         view.setMaxLength(maxLength);
+    }
+
+    @Override
+    public void fireEvent(Event<?> event) {
+        view.asWidget().fireEvent(event);
     }
 }

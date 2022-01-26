@@ -19,7 +19,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.co
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.databinding.client.api.Converter;
+import io.crysknife.ui.databinding.client.api.Converter;
 
 public class ListToListConverter implements Converter<List, List> {
 

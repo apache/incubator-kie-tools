@@ -16,19 +16,26 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets.picture.widget;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.CanvasElement;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.VideoElement;
+import jsinterop.annotations.JsConstructor;
+import org.gwtproject.core.client.JavaScriptObject;
+import org.gwtproject.dom.client.CanvasElement;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.dom.client.VideoElement;
 
 public class PictureWidgetDriver extends JavaScriptObject {
 
+    @JsConstructor
     protected PictureWidgetDriver() {
     }
 
-    public static native PictureWidgetDriver create(VideoElement video,
+    public static PictureWidgetDriver create(VideoElement video,
                                                     CanvasElement canvas,
-                                                    Element image) /*-{
+                                                    Element image) {
+        throw new Error(PictureWidgetDriver.class.getClass().getCanonicalName()+".create");
+
+
+
+    }/*-{
         return {
             video: video,
             canvas: canvas,
@@ -37,8 +44,11 @@ public class PictureWidgetDriver extends JavaScriptObject {
         };
     }-*/;
 
-    public final native void startStreaming(double width,
-                                            double height) /*-{
+    public final void startStreaming(double width,
+                                            double height) {
+        throw new Error(getClass().getCanonicalName()+".startStreaming");
+
+    }/*-{
         if (this.streaming) {
             @org.kie.workbench.common.forms.common.rendering.client.widgets.picture.widget.PictureWidgetDriver::stopStreaming(*)(this);
         }
@@ -114,7 +124,10 @@ public class PictureWidgetDriver extends JavaScriptObject {
 
     }-*/;
 
-    public final native String takePicture() /*-{
+    public final String takePicture()  {
+        throw new Error(getClass().getCanonicalName()+".takePicture");
+
+    }/*-{
         var context = this.canvas.getContext('2d');
         if (this.width && this.height) {
             this.canvas.width = this.width;
@@ -135,7 +148,9 @@ public class PictureWidgetDriver extends JavaScriptObject {
         }
     }
 
-    public final native void doStopStreaming() /*-{
+    public final void doStopStreaming() {
+        throw new Error(getClass().getCanonicalName()+".doStopStreaming");
+    }/*-{
         try {
             this.streaming = false;
             if (this.video) {

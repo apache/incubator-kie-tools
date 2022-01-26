@@ -59,7 +59,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(LienzoMockitoTestRunner.class)
+//@RunWith(LienzoMockitoTestRunner.class)
 public class ColumnRenderingStrategyMergedTest {
 
     private static final double ROW_HEIGHT = 50;
@@ -148,21 +148,21 @@ public class ColumnRenderingStrategyMergedTest {
         when(gridData.getColumns()).thenReturn(Arrays.asList(gridColumn, mock(GridColumn.class)));
     }
 
-    @Test
+    //@Test
     public void testGetCellHeightCells3() {
         doReturn(3).when(gridCell).getMergedCellCount();
         final List<Double> allRowHeights = new ArrayList<>(Collections.nCopies(3, BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT));
         assertThat(ColumnRenderingStrategyMerged.getCellHeight(0, allRowHeights, gridCell)).isEqualTo(BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT * 3);
     }
 
-    @Test
+    //@Test
     public void testGetCellHeightCells4() {
         doReturn(4).when(gridCell).getMergedCellCount();
         final List<Double> allRowHeights = new ArrayList<>(Collections.nCopies(4, BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT));
         assertThat(ColumnRenderingStrategyMerged.getCellHeight(0, allRowHeights, gridCell)).isEqualTo(BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT * 4);
     }
 
-    @Test
+    //@Test
     public void testIsCollapsedCellMixedValueThreeDifferentValues() {
         when(gridData.getRow(anyInt())).thenReturn(gridRow);
         when(gridRow.getHeight()).thenReturn(BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT);
@@ -179,7 +179,7 @@ public class ColumnRenderingStrategyMergedTest {
         assertThat(ColumnRenderingStrategyMerged.isCollapsedCellMixedValue(gridData, 2, 0)).isTrue();
     }
 
-    @Test
+    //@Test
     public void testIsCollapsedCellMixedValueOneDifferentValue_1() {
         when(gridData.getRow(anyInt())).thenReturn(gridRow);
         when(gridRow.getHeight()).thenReturn(BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT);
@@ -196,7 +196,7 @@ public class ColumnRenderingStrategyMergedTest {
         assertThat(ColumnRenderingStrategyMerged.isCollapsedCellMixedValue(gridData, 2, 0)).isTrue();
     }
 
-    @Test
+    //@Test
     public void testIsCollapsedCellMixedValueOneDifferentValue_2() {
         when(gridData.getRow(anyInt())).thenReturn(gridRow);
         when(gridRow.getHeight()).thenReturn(BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT);
@@ -213,7 +213,7 @@ public class ColumnRenderingStrategyMergedTest {
         assertThat(ColumnRenderingStrategyMerged.isCollapsedCellMixedValue(gridData, 2, 0)).isTrue();
     }
 
-    @Test
+    //@Test
     public void testIsCollapsedCellMixedValueOneDifferentValue_3() {
         when(gridData.getRow(anyInt())).thenReturn(gridRow);
         when(gridRow.getHeight()).thenReturn(BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT);
@@ -230,7 +230,7 @@ public class ColumnRenderingStrategyMergedTest {
         assertThat(ColumnRenderingStrategyMerged.isCollapsedCellMixedValue(gridData, 2, 0)).isTrue();
     }
 
-    @Test
+    //@Test
     public void testIsCollapsedCellMixedValue() {
         when(gridData.getRow(anyInt())).thenReturn(gridRow);
         when(gridRow.getHeight()).thenReturn(BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT);
@@ -247,7 +247,7 @@ public class ColumnRenderingStrategyMergedTest {
         assertThat(ColumnRenderingStrategyMerged.isCollapsedCellMixedValue(gridData, 2, 0)).isFalse();
     }
 
-    @Test
+    //@Test
     public void testIsCollapsedRowMixedValueThreeDifferentValues() {
         final GridCell<String> cellOne = gridCellWithMockedMergedCellCount("one", 3);
         final GridCell<String> cellTwo = gridCellWithMockedMergedCellCount("two", 0);
@@ -268,7 +268,7 @@ public class ColumnRenderingStrategyMergedTest {
         assertThat(ColumnRenderingStrategyMerged.isCollapsedRowMultiValue(gridData, gridColumn, cellThree, 2)).isTrue();
     }
 
-    @Test
+    //@Test
     public void testIsCollapsedRowMixedValueOneDifferentValue_1() {
         final GridCell<String> cellOne = gridCellWithMockedMergedCellCount("one", 3);
         final GridCell<String> cellTwo = gridCellWithMockedMergedCellCount("one", 0);
@@ -289,7 +289,7 @@ public class ColumnRenderingStrategyMergedTest {
         assertThat(ColumnRenderingStrategyMerged.isCollapsedRowMultiValue(gridData, gridColumn, cellThree, 2)).isTrue();
     }
 
-    @Test
+    //@Test
     public void testIsCollapsedRowMixedValueOneDifferentValue_2() {
         final GridCell<String> cellOne = gridCellWithMockedMergedCellCount("one", 3);
         final GridCell<String> cellTwo = gridCellWithMockedMergedCellCount("two", 0);
@@ -310,7 +310,7 @@ public class ColumnRenderingStrategyMergedTest {
         assertThat(ColumnRenderingStrategyMerged.isCollapsedRowMultiValue(gridData, gridColumn, cellThree, 2)).isTrue();
     }
 
-    @Test
+    //@Test
     public void testIsCollapsedRowMixedValueOneDifferentValue_3() {
         final GridCell<String> cellOne = gridCellWithMockedMergedCellCount("one", 3);
         final GridCell<String> cellTwo = gridCellWithMockedMergedCellCount("one", 0);
@@ -331,7 +331,7 @@ public class ColumnRenderingStrategyMergedTest {
         assertThat(ColumnRenderingStrategyMerged.isCollapsedRowMultiValue(gridData, gridColumn, cellThree, 2)).isTrue();
     }
 
-    @Test
+    //@Test
     public void testIsCollapsedRowMixedValue() {
         final GridCell<String> cellOne = gridCellWithMockedMergedCellCount("one", 3);
         final GridCell<String> cellTwo = gridCellWithMockedMergedCellCount("one", 0);
@@ -362,7 +362,7 @@ public class ColumnRenderingStrategyMergedTest {
         };
     }
 
-    @Test
+    //@Test
     @SuppressWarnings("unchecked")
     public void testRenderNotSelectionLayer_Unmerged() {
         final GridCell cellOne = gridCellWithMockedMergedCellCount("one", 1);
@@ -470,7 +470,7 @@ public class ColumnRenderingStrategyMergedTest {
         verify(group).add(columnGroup);
     }
 
-    @Test
+    //@Test
     @SuppressWarnings("unchecked")
     public void testRenderNotSelectionLayer_Merged() {
         final GridCell cellOne = gridCellWithMockedMergedCellCount("one", 3);

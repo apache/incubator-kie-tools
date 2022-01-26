@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
@@ -30,6 +31,7 @@ import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContex
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ExecutionOrder;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 
+@Dependent
 public class ExecutionOrderProvider
         implements SelectorDataProvider {
 

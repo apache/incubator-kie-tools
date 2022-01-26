@@ -19,28 +19,28 @@ package org.uberfire.ext.widgets.table.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.cell.client.Cell.Context;
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Cursor;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.Header;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
+import org.gwtproject.cell.client.AbstractCell;
+import org.gwtproject.cell.client.Cell.Context;
+import org.gwtproject.dom.client.DivElement;
+import org.gwtproject.dom.client.Document;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.dom.client.NativeEvent;
+import org.gwtproject.dom.client.SpanElement;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.dom.client.Style.Cursor;
+import org.gwtproject.dom.client.Style.Position;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.safehtml.shared.SafeHtmlUtils;
+import org.gwtproject.user.cellview.client.Column;
+import org.gwtproject.user.cellview.client.Header;
+import org.gwtproject.user.client.Event;
+import org.gwtproject.user.client.Event.NativePreviewEvent;
+import org.gwtproject.user.client.Event.NativePreviewHandler;
 import org.gwtbootstrap3.client.ui.gwt.DataGrid;
 import org.kie.soup.commons.validation.PortablePreconditions;
 
-import static com.google.gwt.dom.client.Style.Unit.PX;
+import static org.gwtproject.dom.style.shared.Unit.*;
 
 /**
  * A column header that supports resizing and moving
@@ -50,11 +50,11 @@ import static com.google.gwt.dom.client.Style.Unit.PX;
  */
 public abstract class ResizableMovableHeader<T> extends Header<String> {
 
-    private static final Cursor MOVE_CURSOR = Cursor.MOVE;
+    private static final org.gwtproject.dom.style.shared.Cursor MOVE_CURSOR = Cursor.MOVE;
     private static final String MOVE_COLOR = "gray";
     private static final int MOVE_HANDLE_WIDTH = 32;
 
-    private static final Cursor RESIZE_CURSOR = Cursor.COL_RESIZE;
+    private static final org.gwtproject.dom.style.shared.Cursor RESIZE_CURSOR = Cursor.COL_RESIZE;
     private static final String RESIZE_COLOR = "gray";
     private static final int RESIZE_HANDLE_WIDTH = 8;
 
@@ -205,7 +205,7 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
             source.appendChild(handles);
         }
 
-        private SpanElement createSpanElement(final Cursor cursor,
+        private SpanElement createSpanElement(final org.gwtproject.dom.style.shared.Cursor cursor,
                                               final double left,
                                               final double width) {
             final SpanElement span = document.createSpanElement();

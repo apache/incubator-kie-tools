@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.scriptEditor;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.adf.rendering.Renderer;
@@ -27,6 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeFieldDefiniti
 import org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeFieldType;
 
 @Renderer(type = ScriptTypeFieldType.class)
+@Dependent
 public class ScriptTypeFieldRenderer
         extends FieldRenderer<ScriptTypeFieldDefinition, DefaultFormGroup> {
 

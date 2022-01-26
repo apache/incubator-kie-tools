@@ -88,8 +88,12 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
+			<groupId>org.gwtproject.resources</groupId>
+			<artifactId>gwt-resources-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.gwtproject.timer</groupId>
+			<artifactId>gwt-timer</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.google.jsinterop</groupId>

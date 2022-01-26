@@ -17,10 +17,11 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.scriptEditor.ScriptTypeFieldEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
@@ -34,6 +35,7 @@ import org.uberfire.client.mvp.UberElement;
 
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
+@Dependent
 public class ConditionEditorFieldEditorPresenter
         extends FieldEditorPresenter<ScriptTypeValue> {
 

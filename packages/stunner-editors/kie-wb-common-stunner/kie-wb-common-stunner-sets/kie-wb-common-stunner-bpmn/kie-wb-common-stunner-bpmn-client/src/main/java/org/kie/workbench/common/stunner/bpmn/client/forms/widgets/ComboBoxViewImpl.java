@@ -18,13 +18,16 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.widgets;
 
 import java.util.List;
 
-import com.google.gwt.event.dom.client.FocusEvent;
+import javax.enterprise.context.Dependent;
+
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.ValueListBox;
+import org.gwtproject.event.dom.client.FocusEvent;
 
 /**
  * ComboBox based on a ValueListBox<String> and a TextBox
  */
+@Dependent
 public class ComboBoxViewImpl implements ComboBoxView {
 
     protected ComboBoxView.ComboBoxPresenter presenter;

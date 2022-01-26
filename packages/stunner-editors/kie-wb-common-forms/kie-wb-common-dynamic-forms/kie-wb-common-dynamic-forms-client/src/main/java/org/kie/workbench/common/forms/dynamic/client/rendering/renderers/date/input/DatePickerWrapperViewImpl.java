@@ -18,28 +18,29 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.date.i
 
 import java.util.Date;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.RootPanel;
+import elemental2.dom.Event;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker;
 import org.gwtbootstrap3.extras.datetimepicker.client.ui.DateTimePicker;
-import org.jboss.errai.common.client.dom.Button;
+import org.gwtproject.event.logical.shared.ValueChangeHandler;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.HasValue;
+import org.gwtproject.user.client.ui.RootPanel;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.SinkNative;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.forms.dynamic.client.resources.i18n.FormRenderingConstants;
 import org.uberfire.client.views.pfly.widgets.JQueryProducer;
 import org.uberfire.client.views.pfly.widgets.Popover;
 
 @Templated
+@Dependent
 public class DatePickerWrapperViewImpl extends Composite implements DatePickerWrapperView {
 
     private Presenter presenter;
@@ -51,20 +52,21 @@ public class DatePickerWrapperViewImpl extends Composite implements DatePickerWr
     @Inject
     private JQueryProducer.JQuery<Popover> jQueryPopover;
 
-    @Inject
-    TranslationService translationService;
+    //@Inject
+    //TranslationService translationService;
 
     @Inject
     @DataField
-    private Span selector;
+    @Named("span")
+    private HTMLElement selector;
 
     @Inject
     @DataField
-    private Button clearBtn;
+    private HTMLButtonElement clearBtn;
 
     @Inject
     @DataField
-    private Button showCalendarBtn;
+    private HTMLButtonElement showCalendarBtn;
 
     @Override
     public void setPresenter(Presenter presenter) {
@@ -166,16 +168,16 @@ public class DatePickerWrapperViewImpl extends Composite implements DatePickerWr
             datePicker.hide();
         }
         disabledClearButton = true;
-        clearBtn.setDisabled(true);
-        showCalendarBtn.setDisabled(true);
+        clearBtn.disabled = (true);
+        showCalendarBtn.disabled = (true);
     }
 
     public void initialiseTooltips() {
 
-        clearBtn.setAttribute("data-content",
-                              translationService.getTranslation(FormRenderingConstants.DatePickerWrapperViewImplClearDateTooltip));
-        showCalendarBtn.setAttribute("data-content",
-                                     translationService.getTranslation(FormRenderingConstants.DatePickerWrapperViewImplShowDateTooltip));
+        clearBtn.setAttribute("data-content", "clearDateTooltip");
+                              //translationService.getTranslation(FormRenderingConstants.DatePickerWrapperViewImplClearDateTooltip));
+        showCalendarBtn.setAttribute("data-content", "showDateTooltip");
+                                     //translationService.getTranslation(FormRenderingConstants.DatePickerWrapperViewImplShowDateTooltip));
         jQueryPopover.wrap(clearBtn).popover();
         jQueryPopover.wrap(showCalendarBtn).popover();
     }
@@ -185,17 +187,17 @@ public class DatePickerWrapperViewImpl extends Composite implements DatePickerWr
         return presenter;
     }
 
-    @SinkNative(Event.ONCLICK)
+    //@SinkNative(Event.ONCLICK)
     @EventHandler("clearBtn")
-    public void onClear(Event event) {
+    public void onClear(@ForEvent("click") Event event) {
         if (!disabledClearButton) {
             this.presenter.setValue(null, true);
         }
     }
 
-    @SinkNative(Event.ONCLICK)
+    //@SinkNative(Event.ONCLICK)
     @EventHandler("showCalendarBtn")
-    public void onShowCalendar(Event event) {
+    public void onShowCalendar(@ForEvent("click")  Event event) {
         if (!disabledClearButton) {
             if (showtime) {
                 dateTimePicker.show();

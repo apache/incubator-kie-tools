@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.multipleSubform.columns;
 
-import com.google.gwt.user.cellview.client.Column;
-import org.jboss.errai.databinding.client.HasProperties;
+import io.crysknife.ui.databinding.client.HasProperties;
+import org.gwtproject.user.cellview.client.Column;
 
 public interface ColumnGenerator<T> {
 

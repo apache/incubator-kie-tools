@@ -16,16 +16,16 @@
 
 package org.eclipse.emf.ecore.xmi.util;
 
-import com.google.gwt.xml.client.Attr;
-import com.google.gwt.xml.client.CDATASection;
-import com.google.gwt.xml.client.Comment;
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.NamedNodeMap;
-import com.google.gwt.xml.client.Node;
-import com.google.gwt.xml.client.NodeList;
-import com.google.gwt.xml.client.ProcessingInstruction;
-import com.google.gwt.xml.client.Text;
+import org.gwtproject.xml.client.Attr;
+import org.gwtproject.xml.client.CDATASection;
+import org.gwtproject.xml.client.Comment;
+import org.gwtproject.xml.client.Document;
+import org.gwtproject.xml.client.Element;
+import org.gwtproject.xml.client.NamedNodeMap;
+import org.gwtproject.xml.client.Node;
+import org.gwtproject.xml.client.NodeList;
+import org.gwtproject.xml.client.ProcessingInstruction;
+import org.gwtproject.xml.client.Text;
 
 import static org.kie.workbench.common.stunner.bpmn.client.emf.Bpmn2Marshalling.logError;
 

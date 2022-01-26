@@ -1,6 +1,6 @@
 package org.uberfire.client.util;
 
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import elemental2.dom.DomGlobal;
 import org.uberfire.client.mvp.EditorActivity;
 
 public class JSFunctions {
@@ -9,7 +9,9 @@ public class JSFunctions {
         // Empty
     }
 
-    public static native void nativeRegisterGwtEditorProvider() /*-{
+    public static void nativeRegisterGwtEditorProvider() {
+        DomGlobal.console.log(JSFunctions.class.getCanonicalName()+".nativeRegisterGwtEditorProvider");
+    }/*-{
 
         console.log("registerGWTEditorProvider");
 
@@ -64,11 +66,17 @@ public class JSFunctions {
 
     }-*/;
 
-    public static native void nativeRegisterGwtClientBean(final String id, final SyncBeanDef<EditorActivity> bean) /*-{
+    //public static native void nativeRegisterGwtClientBean(final String id, final SyncBeanDef<EditorActivity> bean) /*-{
+
+    public static void nativeRegisterGwtClientBean(final String id, final Object bean) {
+        DomGlobal.console.log(JSFunctions.class.getCanonicalName()+".nativeRegisterGwtEditorProvider BLOCKED");
+    }/*-{
         $wnd.gwtEditorBeans.set(id, new $wnd.GWTEditorSupplier(bean));
     }-*/;
 
-    public static native void notifyJSReady() /*-{
+    public static void notifyJSReady() {
+        DomGlobal.console.log(JSFunctions.class.getCanonicalName()+".nativeRegisterGwtEditorProvider");
+    }/*-{
         if ($wnd.appFormerGwtFinishedLoading) {
             $wnd.appFormerGwtFinishedLoading();
         }

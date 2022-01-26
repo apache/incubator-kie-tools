@@ -23,7 +23,7 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.CollapsedDefaultPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteItemMouseEvent;
@@ -73,10 +73,10 @@ public class CollapsedDefinitionPaletteItemWidget implements CollapsedDefinition
     }
 
     @Override
-    public void onMouseDown(final int clientX,
-                            final int clientY,
-                            final int x,
-                            final int y) {
+    public void onMouseDown(final double clientX,
+                            final double clientY,
+                            final double x,
+                            final double y) {
         if (itemMouseDownCallback != null) {
             itemMouseDownCallback.accept(new PaletteItemMouseEvent(item.getId(),
                                                                    clientX,

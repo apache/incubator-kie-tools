@@ -18,7 +18,7 @@ package org.kie.workbench.common.forms.crud.client.component;
 
 import java.util.List;
 
-import com.google.gwt.view.client.AsyncDataProvider;
+import org.gwtproject.view.client.AsyncDataProvider;
 import org.uberfire.ext.widgets.table.client.ColumnMeta;
 
 public interface CrudActionsHelper<MODEL> {

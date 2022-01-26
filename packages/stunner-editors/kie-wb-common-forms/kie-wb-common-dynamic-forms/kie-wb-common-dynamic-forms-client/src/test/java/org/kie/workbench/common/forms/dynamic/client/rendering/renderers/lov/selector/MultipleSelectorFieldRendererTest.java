@@ -19,7 +19,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.se
 import java.util.Arrays;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import io.crysknife.ui.translation.api.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,8 +72,8 @@ public class MultipleSelectorFieldRendererTest extends AbstractFieldRendererTest
 
         verify(selector).setMaxItems(fieldDefinition.getMaxDropdownElements());
         verify(selector).setEnabled(true);
-        verify(selector).setFilterEnabled(fieldDefinition.getAllowFilter());
-        verify(selector).setClearSelectionEnabled(fieldDefinition.getAllowClearSelection());
+        verify(selector).setFilterEnabled(fieldDefinition.isAllowFilter());
+        verify(selector).setClearSelectionEnabled(fieldDefinition.isAllowClearSelection());
 
         verify(formGroup).render(any(), eq(fieldDefinition));
     }

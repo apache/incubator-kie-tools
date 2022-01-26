@@ -20,19 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import elemental2.dom.Element;
 import elemental2.dom.HTMLTableElement;
 import elemental2.dom.HTMLTableSectionElement;
-import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
+import org.jboss.errai.common.client.dom.DOMUtil;
 
 import static java.util.stream.Collectors.toList;
 
 public abstract class ListPresenter<T, P extends ListItemPresenter<T, ?, ?>> {
-
-    private static final Elemental2DomUtil elemental2DomUtil = new Elemental2DomUtil();
 
     private final Function<T, P> itemPresenters;
 
@@ -60,7 +57,7 @@ public abstract class ListPresenter<T, P extends ListItemPresenter<T, ?, ?>> {
 
         handleTable();
 
-        elemental2DomUtil.removeAllElementChildren(this.listElement);
+        DOMUtil.removeAllElementChildren(this.listElement);
         this.objects.forEach(this::addToListElement);
     }
 
@@ -75,7 +72,7 @@ public abstract class ListPresenter<T, P extends ListItemPresenter<T, ?, ?>> {
 
         handleTable();
 
-        elemental2DomUtil.removeAllElementChildren(this.listElement);
+        DOMUtil.removeAllElementChildren(this.listElement);
         presenters.forEach(this::addPresenter);
     }
 

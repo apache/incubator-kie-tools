@@ -15,7 +15,7 @@
 
 package org.kie.workbench.common.widgets.client.resources;
 
-import com.google.gwt.user.client.ui.Image;
+import org.gwtproject.user.client.ui.Image;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 public class ItemAltedImages {

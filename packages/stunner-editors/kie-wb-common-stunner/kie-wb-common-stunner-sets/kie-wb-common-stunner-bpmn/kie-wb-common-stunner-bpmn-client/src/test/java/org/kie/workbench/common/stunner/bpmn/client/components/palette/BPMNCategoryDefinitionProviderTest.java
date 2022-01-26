@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.components.palette;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNCategories;
@@ -25,6 +26,7 @@ import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 
 import static org.junit.Assert.assertEquals;
 
+@Ignore
 @RunWith(LienzoMockitoTestRunner.class)
 public class BPMNCategoryDefinitionProviderTest {
 

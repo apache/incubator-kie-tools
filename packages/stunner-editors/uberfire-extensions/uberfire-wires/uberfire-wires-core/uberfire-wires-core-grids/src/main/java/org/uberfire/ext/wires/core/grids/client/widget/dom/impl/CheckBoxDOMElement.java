@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.dom.impl;
 
-import com.google.gwt.dom.client.Style;
+import org.gwtproject.dom.client.Style;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;

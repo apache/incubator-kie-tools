@@ -19,7 +19,7 @@
 
 <module>
 
-  <inherits name='com.google.gwt.user.User'/>
+  <inherits name='org.gwtproject.user.User'/>
   <inherits name="org.kie.workbench.common.stunner.client.StunnerLienzo"/>
 
   <source path="client"/>

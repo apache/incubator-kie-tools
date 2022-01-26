@@ -33,21 +33,24 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.eclipselabs</groupId>
-      <artifactId>org.eclipse.emf.gwt.ecore</artifactId>
+      <groupId>org.kie.kogito.stunner.editors.emf</groupId>
+      <artifactId>ecore</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.eclipselabs</groupId>
-      <artifactId>org.eclipse.emf.gwt.common</artifactId>
+      <groupId>org.kie.kogito.stunner.editors.emf</groupId>
+      <artifactId>common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
+      <groupId>org.gwtproject.xml</groupId>
+      <artifactId>gwt-xml</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.gwtproject.json</groupId>
+      <artifactId>gwt-json</artifactId>
+    </dependency>
     <!-- Testing scope. -->
 
     <dependency>
@@ -71,12 +74,6 @@
     <dependency>
       <groupId>com.google.gwt.gwtmockito</groupId>
       <artifactId>gwtmockito</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.spec.javax.annotation</groupId>
-      <artifactId>jboss-annotations-api_1.2_spec</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -110,6 +107,17 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.java</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
     <plugins>
       <!-- Skip the checkstyle plugin execution for generated classes. -->
       <plugin>

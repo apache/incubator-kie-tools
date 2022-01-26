@@ -16,7 +16,7 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.http.client.URL;
+import org.gwtproject.http.client.URL;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;

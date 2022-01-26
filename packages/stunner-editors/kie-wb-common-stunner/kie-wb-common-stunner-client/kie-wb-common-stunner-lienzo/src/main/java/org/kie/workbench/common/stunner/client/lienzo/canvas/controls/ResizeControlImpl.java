@@ -134,7 +134,7 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
         }
     }
 
-    private void CanvasClearSelectionEvent(@Observes CanvasClearSelectionEvent clearSelectionEvent) {
+    protected void CanvasClearSelectionEvent(@Observes CanvasClearSelectionEvent clearSelectionEvent) {
         checkNotNull("clearSelectionEvent",
                      clearSelectionEvent);
         if (isSameCanvas(clearSelectionEvent)) {

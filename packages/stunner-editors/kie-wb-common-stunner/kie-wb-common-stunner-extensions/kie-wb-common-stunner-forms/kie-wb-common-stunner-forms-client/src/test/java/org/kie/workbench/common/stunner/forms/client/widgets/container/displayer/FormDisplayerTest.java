@@ -18,9 +18,9 @@ package org.kie.workbench.common.stunner.forms.client.widgets.container.displaye
 
 import java.util.Arrays;
 
-import org.jboss.errai.databinding.client.BindableProxy;
-import org.jboss.errai.databinding.client.BindableProxyFactory;
-import org.jboss.errai.databinding.client.BindableProxyProvider;
+import io.crysknife.ui.databinding.client.BindableProxy;
+import io.crysknife.ui.databinding.client.BindableProxyFactory;
+import io.crysknife.ui.databinding.client.BindableProxyProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

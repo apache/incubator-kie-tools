@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import io.crysknife.client.BeanManager;
+import io.crysknife.client.SyncBeanDef;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 public class DynamicRendererEntryPointTest {
 
     @Mock
-    private SyncBeanManager beanManager;
+    private BeanManager beanManager;
 
     private DynamicRendererEntryPoint entryPoint;
 

@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.resources;
 
-import com.google.gwt.resources.client.CssResource;
+import org.gwtproject.resources.client.CssResource;
 
 public interface StunnerCommonCssResource extends CssResource {
 

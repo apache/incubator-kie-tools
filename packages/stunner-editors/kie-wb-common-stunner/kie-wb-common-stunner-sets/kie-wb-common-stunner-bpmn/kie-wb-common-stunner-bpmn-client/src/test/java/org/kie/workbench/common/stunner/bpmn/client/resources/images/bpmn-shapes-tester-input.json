@@ -310,7 +310,7 @@
         "refs": "eventLink"
       }
     },
-    {
+  {
       "id": "intermediateMessageCatchingEvent",
       "name": "Catching Intermediate Event - Message",
       "shape": {

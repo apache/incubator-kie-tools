@@ -22,7 +22,9 @@ package org.uberfire.client.views.pfly.monaco.jsinterop;
  */
 public class MonacoStandaloneCodeEditorHelper {
 
-    public static native boolean isSuggestWidgetVisible(final MonacoStandaloneCodeEditor codeEditor) /*-{
+    public static boolean isSuggestWidgetVisible(final MonacoStandaloneCodeEditor codeEditor) {
+        throw new Error(MonacoStandaloneCodeEditorHelper.class.getCanonicalName()+".isSuggestWidgetVisible");
+    }/*-{
         return codeEditor._contentWidgets['editor.widget.suggestWidget'] && codeEditor._contentWidgets['editor.widget.suggestWidget'].widget.state === 3;
     }-*/;
 }

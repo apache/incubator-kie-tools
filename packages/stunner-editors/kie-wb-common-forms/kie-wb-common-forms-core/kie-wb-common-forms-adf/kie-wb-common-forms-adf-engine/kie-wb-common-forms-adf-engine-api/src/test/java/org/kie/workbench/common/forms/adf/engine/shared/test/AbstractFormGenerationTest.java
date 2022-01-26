@@ -113,7 +113,7 @@ public class AbstractFormGenerationTest {
             assertEquals(fieldElement.isReadOnly(),
                          field.getReadOnly());
             assertEquals(fieldElement.isRequired(),
-                         field.getRequired());
+                         field.isRequired());
             assertEquals(fieldElement.getBinding(),
                          field.getBinding());
             verify(i18nHelper,

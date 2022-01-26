@@ -22,9 +22,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.extras.notify.client.ui.Notify;
+import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.forms.client.resources.i18n.FormsClientConstants;
 
@@ -49,7 +49,7 @@ public class FormGenerationNotifier {
     }
 
     @PostConstruct
-    private void init() {
+    public void init() {
         messageNotifier = this::doShowNotification;
         errorNotifier = this::doShowError;
     }

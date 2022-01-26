@@ -23,10 +23,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.Condition;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.FunctionDef;
@@ -39,6 +40,7 @@ import org.uberfire.ext.widgets.common.client.dropdown.SingleLiveSearchSelection
 
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
+@Dependent
 public class SimpleConditionEditorPresenter
         extends FieldEditorPresenter<Condition> {
 

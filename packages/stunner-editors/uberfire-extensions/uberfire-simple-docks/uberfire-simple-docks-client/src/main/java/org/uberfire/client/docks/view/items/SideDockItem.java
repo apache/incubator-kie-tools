@@ -16,23 +16,24 @@
 
 package org.uberfire.client.docks.view.items;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.event.dom.client.ClickHandler;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Tooltip;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.uberfire.client.resources.WebAppResource;
+import org.uberfire.client.resources.WebAppResourceImpl;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.mvp.ParameterizedCommand;
 
 public class SideDockItem extends AbstractSideDockItem {
 
-    private static WebAppResource CSS = GWT.create(WebAppResource.class);
+    private static WebAppResource CSS = WebAppResource.INSTANCE;
     private final ParameterizedCommand<String> openCommand;
     private final ParameterizedCommand<String> closeCommand;
 
@@ -44,7 +45,7 @@ public class SideDockItem extends AbstractSideDockItem {
 
     private boolean opened;
 
-    private ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    private ViewBinder uiBinder = new SideDockItem_ViewBinderImpl();
 
     SideDockItem(final UberfireDock dock,
                  final ParameterizedCommand<String> openCommand,
@@ -122,6 +123,7 @@ public class SideDockItem extends AbstractSideDockItem {
         return opened;
     }
 
+    @UiTemplate
     interface ViewBinder
             extends
             UiBinder<Widget, SideDockItem> {

@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.timerEditor;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorEditorWidget;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
 
+@Dependent
 public class TimerSettingsFieldEditorWidget
         extends FieldEditorEditorWidget<TimerSettingsValue, TimerSettingsFieldEditorPresenter> {
 

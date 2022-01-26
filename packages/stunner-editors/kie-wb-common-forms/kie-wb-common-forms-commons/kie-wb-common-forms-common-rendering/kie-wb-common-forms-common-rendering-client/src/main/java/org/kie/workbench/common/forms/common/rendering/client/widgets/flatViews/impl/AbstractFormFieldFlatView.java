@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets.flatViews.impl;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.HTML;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.flatViews.FormFieldFlatView;
 
 public abstract class AbstractFormFieldFlatView<T> extends Composite implements FormFieldFlatView<T> {

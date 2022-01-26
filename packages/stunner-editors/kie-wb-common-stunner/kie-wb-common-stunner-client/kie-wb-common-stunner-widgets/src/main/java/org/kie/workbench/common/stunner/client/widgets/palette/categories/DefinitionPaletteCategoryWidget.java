@@ -24,8 +24,8 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.group.DefinitionPaletteGroupWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteCategory;
@@ -143,10 +143,10 @@ public class DefinitionPaletteCategoryWidget implements DefinitionPaletteCategor
     }
 
     @Override
-    public void onMouseDown(int clientX,
-                            int clientY,
-                            int x,
-                            int y) {
+    public void onMouseDown(double clientX,
+                            double clientY,
+                            double x,
+                            double y) {
         if (itemMouseDownCallback != null) {
             itemMouseDownCallback.accept(new PaletteItemMouseEvent(category.getId(),
                                                                    clientX,

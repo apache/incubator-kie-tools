@@ -21,13 +21,15 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import io.crysknife.ui.translation.api.spi.TranslationService;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 
+@Dependent
 public class SignalScopeProvider
         implements SelectorDataProvider {
 
@@ -36,11 +38,11 @@ public class SignalScopeProvider
         DEFAULT("",
                 "org.kie.workbench.common.stunner.bpmn.client.dataproviders.default"),
         PROCESS_INSTANCE("processInstance",
-                         "org.kie.workbench.common.stunner.bpmn.client.dataproviders.processInstance"),
+                "org.kie.workbench.common.stunner.bpmn.client.dataproviders.processInstance"),
         PROJECT("project",
                 "org.kie.workbench.common.stunner.bpmn.client.dataproviders.project"),
         EXTERNAL("external",
-                 "org.kie.workbench.common.stunner.bpmn.client.dataproviders.external");
+                "org.kie.workbench.common.stunner.bpmn.client.dataproviders.external");
 
         private final String value;
 
@@ -74,15 +76,15 @@ public class SignalScopeProvider
     protected void init() {
         valuePosition = new HashMap<>();
         valuePosition.put(null,
-                          -1);
+                -1);
         valuePosition.put(SCOPE.DEFAULT.value(),
-                          0);
+                0);
         valuePosition.put(SCOPE.PROCESS_INSTANCE.value(),
-                          1);
+                1);
         valuePosition.put(SCOPE.PROJECT.value(),
-                          2);
+                2);
         valuePosition.put(SCOPE.EXTERNAL.value(),
-                          3);
+                3);
     }
 
     @Override
@@ -96,9 +98,9 @@ public class SignalScopeProvider
         Map<Object, String> values = new TreeMap<>((o1, o2) -> valuePosition.get(o1).compareTo(valuePosition.get(o2)));
         Arrays.stream(SCOPE.values())
                 .forEach(scope -> values.put(scope.value(),
-                                             translationService.getTranslation(scope.i18nKey())));
+                        translationService.getTranslation(scope.i18nKey())));
 
         return new SelectorData(values,
-                                SCOPE.DEFAULT.value());
+                SCOPE.DEFAULT.value());
     }
 }

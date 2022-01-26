@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.comboBoxEditor;
 
-import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.gwtproject.user.client.ui.Composite;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.comboBoxEditor.annotation.FixedValues;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 
@@ -26,18 +26,28 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
  * Combobox with fixed list of values, it doesn't allow custom values to be inserted.
  */
 @FixedValues
-@Templated("ComboBoxWidget.html")
-public class ComboBoxFixedValuesWidgetViewImpl extends ComboBoxWidgetViewImpl implements ComboBoxFixedValuesWidgetView {
+//@Templated("ComboBoxWidget.html")
+@Dependent
+public class ComboBoxFixedValuesWidgetViewImpl extends Composite implements ComboBoxFixedValuesWidgetView {
 
-    @PostConstruct
-    public void init() {
-        super.init();
-        //Do not allow custom values to be inserted on the combobox
-        valueComboBox.setShowCustomValues(false);
+    @Override
+    public void setComboBoxValues(ListBoxValues valueListBoxValues) {
+        throw new Error(getClass().getCanonicalName()+".setComboBoxValues see ComboBoxWidgetViewImpl");
     }
 
     @Override
-    public void setComboBoxValues(final ListBoxValues valueListBoxValues) {
-        valueComboBox.setListBoxValues(valueListBoxValues);
+    public void setValue(String value) {
+        throw new Error(getClass().getCanonicalName()+".setValue see ComboBoxWidgetViewImpl");
+
+    }
+
+    @Override
+    public String getValue() {
+        throw new Error(getClass().getCanonicalName()+".getValue see ComboBoxWidgetViewImpl");
+    }
+
+    @Override
+    public void setReadOnly(boolean readOnly) {
+
     }
 }

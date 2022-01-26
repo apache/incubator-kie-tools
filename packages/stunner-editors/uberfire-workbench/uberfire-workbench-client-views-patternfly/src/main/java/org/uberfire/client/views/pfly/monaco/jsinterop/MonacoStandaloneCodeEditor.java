@@ -16,15 +16,15 @@
 
 package org.uberfire.client.views.pfly.monaco.jsinterop;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.NativeEvent;
+import org.gwtproject.core.client.JavaScriptObject;
+import org.gwtproject.dom.client.NativeEvent;
 import elemental2.core.JsObject;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+@JsType(isNative = true, namespace = JsPackage.GLOBAL,name = "monaco.editor")
 public class MonacoStandaloneCodeEditor {
 
     public JsObject _contentWidgets;

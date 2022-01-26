@@ -16,20 +16,24 @@
 
 package org.uberfire.ext.widgets.common.client.dropdown.footer;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import org.jboss.errai.common.client.dom.Anchor;
+import elemental2.dom.Event;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.event.dom.client.ClickEvent;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
+@Dependent
 public class LiveSearchFooterViewImpl implements LiveSearchFooterView,
                                                  IsElement {
 
@@ -37,27 +41,29 @@ public class LiveSearchFooterViewImpl implements LiveSearchFooterView,
 
     @Inject
     @DataField
-    private Div container;
+    private HTMLDivElement container;
 
     @Inject
     @DataField
-    private Div footer;
+    private HTMLDivElement footer;
 
     @Inject
     @DataField
-    private Anchor newEntryAnchor;
+    private HTMLAnchorElement newEntryAnchor;
 
     @Inject
     @DataField
-    private Span newEntryAnchorLabel;
+    @Named("span")
+    private HTMLElement newEntryAnchorLabel;
 
     @Inject
     @DataField
-    private Anchor resetAnchor;
+    private HTMLAnchorElement resetAnchor;
 
     @Inject
     @DataField
-    private Span resetAnchorLabel;
+    @Named("span")
+    private HTMLElement resetAnchorLabel;
 
     @Override
     public void init(Presenter presenter) {
@@ -66,22 +72,30 @@ public class LiveSearchFooterViewImpl implements LiveSearchFooterView,
 
     @Override
     public void setResetLabel(String resetLabel) {
-        resetAnchorLabel.setTextContent(resetLabel);
+        resetAnchorLabel.textContent = (resetLabel);
     }
 
     @Override
     public void setNewEntryLabel(String newEntryLabel) {
-        newEntryAnchorLabel.setTextContent(newEntryLabel);
+        newEntryAnchorLabel.textContent = (newEntryLabel);
     }
 
     @Override
     public void showReset(boolean show) {
-        resetAnchor.setHidden(!show);
+        if (show) {
+            resetAnchor.style.display = "inline";
+        } else {
+            resetAnchor.style.display = "none";
+        }
     }
 
     @Override
     public void showAddNewEntry(boolean show) {
-        newEntryAnchor.setHidden(!show);
+        if (show) {
+            resetAnchor.style.display = "inline";
+        } else {
+            resetAnchor.style.display = "none";
+        }
     }
 
     @Override
@@ -97,13 +111,13 @@ public class LiveSearchFooterViewImpl implements LiveSearchFooterView,
     }
 
     @EventHandler("newEntryAnchor")
-    public void onNewEntryPresed(ClickEvent clickEvent) {
+    public void onNewEntryPresed(@ForEvent("click") Event clickEvent) {
         clickEvent.stopPropagation();
         presenter.onNewEntryPressed();
     }
 
     @EventHandler("resetAnchor")
-    public void onResetPressed(ClickEvent clickEvent) {
+    public void onResetPressed(@ForEvent("click") Event clickEvent) {
         presenter.onResetPressed();
     }
 }

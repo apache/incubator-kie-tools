@@ -16,18 +16,17 @@
 
 package org.kie.workbench.common.stunner.core.definition.clone;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.soup.commons.util.Maps;
-
 @ApplicationScoped
 public class CloneManagerImpl implements CloneManager {
 
-    private final Map<ClonePolicy, CloneProcess> cloneProcessMap;
+    private final Map<ClonePolicy, CloneProcess> cloneProcessMap = new HashMap<>();
 
     public CloneManagerImpl() {
         this(null, null, null);
@@ -35,11 +34,9 @@ public class CloneManagerImpl implements CloneManager {
 
     @Inject
     public CloneManagerImpl(IDeepCloneProcess deepCloneProcess, DefaultCloneProcess defaultCloneProcess, NoneCloneProcess noneCloneProcess) {
-        this.cloneProcessMap = new Maps.Builder<ClonePolicy, CloneProcess>()
-                .put(ClonePolicy.ALL, deepCloneProcess)
-                .put(ClonePolicy.DEFAULT, defaultCloneProcess)
-                .put(ClonePolicy.NONE, noneCloneProcess)
-                .build();
+        this.cloneProcessMap.put(ClonePolicy.ALL, deepCloneProcess);
+        this.cloneProcessMap.put(ClonePolicy.DEFAULT, defaultCloneProcess);
+        this.cloneProcessMap.put(ClonePolicy.NONE, noneCloneProcess);
     }
 
     private CloneProcess cloneProcess(ClonePolicy clonePolicy) {

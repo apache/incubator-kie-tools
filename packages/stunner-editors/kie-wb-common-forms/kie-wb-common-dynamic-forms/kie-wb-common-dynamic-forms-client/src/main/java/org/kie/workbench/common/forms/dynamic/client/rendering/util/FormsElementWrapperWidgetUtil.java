@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.util;
 
-import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
+import org.gwtproject.user.client.ui.Widget;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 
 /**
@@ -33,15 +33,6 @@ public interface FormsElementWrapperWidgetUtil {
      * @return a {@link Widget} wrapping the given {@link HTMLElement}
      */
     Widget getWidget(Object source, HTMLElement element);
-
-    /**
-     * Generates a {@link Widget} ({@link ElementWrapperWidget}) for a specific {@link elemental2.dom.HTMLElement} and keeps a reference
-     * to the view (source) that is using it.
-     * @param source The view object that requires the {@link Widget} to be generated
-     * @param element The {@link elemental2.dom.HTMLElement} that needs to be converted into a {@link Widget}
-     * @return a {@link Widget} wrapping the given {@link elemental2.dom.HTMLElement}
-     */
-    Widget getWidget(Object source, elemental2.dom.HTMLElement element);
 
     /**
      * Clears and detaches all the {@link ElementWrapperWidget} generated for a given view (source).

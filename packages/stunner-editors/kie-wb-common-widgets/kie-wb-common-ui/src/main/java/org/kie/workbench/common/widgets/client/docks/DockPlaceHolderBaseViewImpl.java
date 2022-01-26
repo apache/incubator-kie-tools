@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.widgets.client.docks;
 
-import com.google.gwt.user.client.ui.SimplePanel;
+import org.gwtproject.user.client.ui.SimplePanel;
 
 public class DockPlaceHolderBaseViewImpl
         extends SimplePanel

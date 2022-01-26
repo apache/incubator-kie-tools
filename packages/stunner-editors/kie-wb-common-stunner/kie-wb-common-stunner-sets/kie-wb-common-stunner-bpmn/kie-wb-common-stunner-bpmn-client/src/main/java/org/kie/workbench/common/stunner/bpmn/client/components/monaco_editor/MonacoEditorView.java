@@ -21,20 +21,19 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import jsinterop.base.Js;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Element;
-import org.jboss.errai.common.client.dom.Event;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.Node;
-import org.jboss.errai.common.client.dom.NodeList;
-import org.jboss.errai.common.client.dom.Option;
-import org.jboss.errai.common.client.dom.Select;
-import org.jboss.errai.common.client.dom.Window;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.ForEvent;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLCollection;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLOptionElement;
+import elemental2.dom.HTMLSelectElement;
+import elemental2.dom.Node;
+import elemental2.dom.NodeList;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoEditor;
@@ -52,34 +51,34 @@ public class MonacoEditorView implements UberElement<MonacoEditorPresenter> {
 
     @Inject
     @DataField
-    Div rootContainer;
+    HTMLDivElement rootContainer;
 
     @Inject
     @DataField("monacoEditor")
-    Div monacoEditor;
+    HTMLDivElement monacoEditor;
 
     @Inject
     @DataField("loadingEditor")
-    Div loadingEditor;
+    HTMLDivElement loadingEditor;
 
     @Inject
     @DataField("monacoLanguageSelector")
-    Select languageSelector;
+    HTMLSelectElement languageSelector;
 
     MonacoStandaloneCodeEditor editor;
     private MonacoEditorPresenter presenter;
-    protected Integer lastWidth = 0;
+    protected double lastWidth = 0;
     protected ResizeObserver resizeObserver = null;
 
     @Override
     public void init(final MonacoEditorPresenter presenter) {
         this.presenter = presenter;
-        this.languageSelector.setTitle(StunnerFormsClientFieldsConstants.CONSTANTS.Language());
+        this.languageSelector.title = (StunnerFormsClientFieldsConstants.CONSTANTS.Language());
     }
 
     @EventHandler("monacoLanguageSelector")
-    void onLanguageChanged(@ForEvent("change") final Event event) {
-        presenter.onLanguageChanged(languageSelector.getValue());
+    void onLanguageChanged(@ForEvent("change") final elemental2.dom.Event event) {
+        presenter.onLanguageChanged(languageSelector.value);
     }
 
     void addLanguage(final String text,
@@ -88,7 +87,7 @@ public class MonacoEditorView implements UberElement<MonacoEditorPresenter> {
     }
 
     void setLanguage(String lang) {
-        languageSelector.setValue(lang);
+        languageSelector.value = (lang);
     }
 
     void setValue(String value) {
@@ -98,7 +97,7 @@ public class MonacoEditorView implements UberElement<MonacoEditorPresenter> {
     }
 
     void setLanguageReadOnly(boolean readOnly) {
-        languageSelector.setDisabled(readOnly);
+        languageSelector.disabled = (readOnly);
     }
 
     public String getValue() {
@@ -106,12 +105,12 @@ public class MonacoEditorView implements UberElement<MonacoEditorPresenter> {
     }
 
     public String getLanguage() {
-        return languageSelector.getValue();
+        return languageSelector.value;
     }
 
     public void load(MonacoEditorOptions options,
                      Runnable callback) {
-        load(MonacoEditor.get().create(Js.uncheckedCast(this.monacoEditor),
+        load(MonacoEditor.create(monacoEditor,
                                        options.toJavaScriptObject()),
              options.getWidthPx(),
              options.getHeightPx());
@@ -120,11 +119,11 @@ public class MonacoEditorView implements UberElement<MonacoEditorPresenter> {
 
     // Workaround for refreshing Monaco editor and get scrollbars visible when the accordion is expanded
     void attachListenerToPanelTitle() {
-        final NodeList titleNodes = getParentInDepth(rootContainer, DEPTH).getElementsByClassName(PANEL_TITLE);
+        final HTMLCollection<Element> titleNodes = getParentInDepth(rootContainer, DEPTH).getElementsByClassName(PANEL_TITLE);
         for (int i = 0; i < titleNodes.getLength(); i++) {
-            titleNodes.item(i)
+            (titleNodes.item(i))
                     .addEventListener(EVENT_NAME,
-                                      event -> presenter.onLanguageChanged(languageSelector.getValue()),
+                                      event -> presenter.onLanguageChanged(languageSelector.value),
                                       false);
         }
 
@@ -132,34 +131,34 @@ public class MonacoEditorView implements UberElement<MonacoEditorPresenter> {
             resizeObserver = new ResizeObserver(event -> onResize());
 
             if (observeCommand == null) {
-                observeCommand = () -> resizeObserver.observe((elemental2.dom.Element) monacoEditor.getParentElement().getParentNode());
+                observeCommand = () -> resizeObserver.observe((elemental2.dom.Element) monacoEditor.parentElement.parentNode);
             }
             observeCommand.execute();
         }
     }
 
     protected void onResize() {
-        if (lastWidth == monacoEditor.getBoundingClientRect().getWidth().intValue() + 2) { // no point in resizing
+        if (lastWidth == monacoEditor.getBoundingClientRect().width + 2) { // no point in resizing
             return;
         }
 
         if (presenter == null) {
-            resizeObserver.unobserve((elemental2.dom.Element) monacoEditor.getParentElement().getParentNode());
+            resizeObserver.unobserve((elemental2.dom.Element) monacoEditor.parentElement.parentNode);
             resizeObserver = null;
             observeCommand = null;
             return;
         }
-        lastWidth = monacoEditor.getBoundingClientRect().getWidth().intValue();
-        presenter.setWidthPx(lastWidth - 2);
+        lastWidth = monacoEditor.getBoundingClientRect().width;
+        presenter.setWidthPx((int)lastWidth - 2);
         presenter.requestRefresh();
-        presenter.onLanguageChanged(languageSelector.getValue());
+        presenter.onLanguageChanged(languageSelector.value);
     }
 
-    protected com.google.gwt.user.client.Command observeCommand = null;
+    protected org.gwtproject.user.client.Command observeCommand = null;
 
     static Element getParentInDepth(final Element element, int depth) {
         if (null != element && depth > 0) {
-            Element parent = element.getParentElement();
+            Element parent = element.parentElement;
             return null != parent ?
                     getParentInDepth(parent, --depth)
                     :
@@ -172,6 +171,8 @@ public class MonacoEditorView implements UberElement<MonacoEditorPresenter> {
               int width,
               int height) {
         this.editor = editor;
+        this.editor.focus();
+
         this.editor.onDidBlurEditorWidget(event -> presenter.onValueChanged());
         this.editor.layout(MonacoEditorOptions
                                    .createDimensions(width, height)
@@ -179,13 +180,13 @@ public class MonacoEditorView implements UberElement<MonacoEditorPresenter> {
     }
 
     void loadingStarts() {
-        monacoEditor.getStyle().setProperty(DISPLAY, NONE);
-        loadingEditor.getStyle().removeProperty(DISPLAY);
+        monacoEditor.style.setProperty(DISPLAY, NONE);
+        loadingEditor.style.removeProperty(DISPLAY);
     }
 
     void loadingEnds() {
-        monacoEditor.getStyle().removeProperty(DISPLAY);
-        loadingEditor.getStyle().setProperty(DISPLAY, NONE);
+        monacoEditor.style.removeProperty(DISPLAY);
+        loadingEditor.style.setProperty(DISPLAY, NONE);
     }
 
     public void dispose() {
@@ -208,19 +209,19 @@ public class MonacoEditorView implements UberElement<MonacoEditorPresenter> {
         return rootContainer;
     }
 
-    private static void clear(Div div) {
-        NodeList childNodes = div.getChildNodes();
+    private static void clear(HTMLDivElement div) {
+        NodeList childNodes = div.childNodes;
         for (int i = 0; i < childNodes.getLength(); i++) {
-            Node node = childNodes.item(i);
+            Node node = (Node)childNodes.item(i);
             div.removeChild(node);
         }
     }
 
-    private static Option createOption(final String text,
-                                       final String value) {
-        final Option option = (Option) Window.getDocument().createElement("option");
-        option.setTextContent(text);
-        option.setValue(value);
+    private static HTMLOptionElement createOption(final String text,
+                                                  final String value) {
+        final HTMLOptionElement option = (HTMLOptionElement) DomGlobal.document.createElement("option");
+        option.textContent = (text);
+        option.value = (value);
         return option;
     }
 }

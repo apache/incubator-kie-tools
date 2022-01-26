@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.definition.clone;
 
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
 public class NoneCloneProcess implements CloneProcess {
 
     @Override

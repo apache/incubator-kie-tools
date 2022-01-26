@@ -53,7 +53,7 @@ public class DynamicFormModelGenerator {
 
     public StaticModelFormRenderingContext getContextForModel(Object model, FormElementFilter... filters) {
         PortablePreconditions.checkNotNull("model",
-                                           model);
+                model);
 
         Optional<FormElementFilter[]> optional = Optional.ofNullable(filters);
         Stream<FormElementFilter> streamFilter = optional.map(value -> Stream.of(value)).orElseGet(Stream::empty);
@@ -62,7 +62,7 @@ public class DynamicFormModelGenerator {
         List<FormElementFilter> nestedFormFilters = new ArrayList<>();
 
         streamFilter.forEach(filter -> {
-            if(!filter.getElementName().contains(".")) {
+            if (!filter.getElementName().contains(".")) {
                 rootFormElemenFilters.add(filter);
             } else {
                 nestedFormFilters.add(filter);
@@ -70,7 +70,6 @@ public class DynamicFormModelGenerator {
         });
 
         FormDefinition formDefinition = formBuildingService.generateFormForModel(model, rootFormElemenFilters.stream().toArray(FormElementFilter[]::new));
-
         if (formDefinition == null) {
             return null;
         }
@@ -83,7 +82,7 @@ public class DynamicFormModelGenerator {
         if (context.getModel() != null) {
             initNestedFormSettings(formDefinition, context.getModel(), context, nestedFormFilters);
         } else {
-            initNestedFormSettings(formDefinition,null, context, nestedFormFilters);
+            initNestedFormSettings(formDefinition, null, context, nestedFormFilters);
         }
 
         return context;
@@ -100,10 +99,10 @@ public class DynamicFormModelGenerator {
 
                 if (!context.getAvailableForms().containsKey(((HasNestedForm) field).getNestedForm())) {
                     addNestedForm(model,
-                                  hasNestedForm.getNestedForm(),
-                                  field.getName(),
-                                  context,
-                                  getNestedFiltersStream(field.getName(), nestedFormFilters));
+                            hasNestedForm.getNestedForm(),
+                            field.getName(),
+                            context,
+                            getNestedFiltersStream(field.getName(), nestedFormFilters));
                 }
             } else if (field instanceof IsCRUDDefinition) {
                 IsCRUDDefinition isCRUDDefinitionField = (IsCRUDDefinition) field;
@@ -124,7 +123,7 @@ public class DynamicFormModelGenerator {
                             return;
                         }
                         isCRUDDefinitionField.getColumnMetas().add(new TableColumnMeta(nestedField.getLabel(),
-                                                                                       nestedField.getBinding()));
+                                nestedField.getBinding()));
                     });
                 }
             }
@@ -147,7 +146,7 @@ public class DynamicFormModelGenerator {
             if (parentModel != null) {
 
                 Object value = propertyValueExtractor.readPropertyValue(parentModel,
-                                                                        fieldName);
+                        fieldName);
 
                 if (value != null) {
                     addNestedForm(value, context, nestedElementFilters);
@@ -166,11 +165,11 @@ public class DynamicFormModelGenerator {
         if (!context.getAvailableForms().containsKey(className)) {
             FormDefinition nested = formBuildingService.generateFormForClassName(className, nestedFormFilters.stream().toArray(FormElementFilter[]::new));
             context.getAvailableForms().put(className,
-                                            nested);
+                    nested);
             initNestedFormSettings(nested,
-                                   null,
-                                   context,
-                                   nestedFormFilters);
+                    null,
+                    context,
+                    nestedFormFilters);
         }
     }
 
@@ -180,10 +179,10 @@ public class DynamicFormModelGenerator {
         if (!context.getAvailableForms().containsKey(model.getClass().getName())) {
             FormDefinition nested = formBuildingService.generateFormForModel(model, nestedFormFilters.stream().toArray(FormElementFilter[]::new));
             context.getAvailableForms().put(model.getClass().getName(),
-                                            nested);
+                    nested);
             initNestedFormSettings(nested,
-                                   model,
-                                   context, nestedFormFilters);
+                    model,
+                    context, nestedFormFilters);
         }
     }
 }

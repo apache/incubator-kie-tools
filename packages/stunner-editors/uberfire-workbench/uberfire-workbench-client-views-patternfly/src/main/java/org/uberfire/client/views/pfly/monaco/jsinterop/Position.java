@@ -16,10 +16,11 @@
 
 package org.uberfire.client.views.pfly.monaco.jsinterop;
 
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true)
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name= "Object")
 public class Position {
 
     @JsProperty

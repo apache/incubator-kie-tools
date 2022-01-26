@@ -20,18 +20,20 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLTableRowElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.databinding.client.api.AutoBound;
+import io.crysknife.ui.databinding.client.api.Bound;
+import io.crysknife.ui.databinding.client.api.DataBinder;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.jboss.errai.databinding.client.api.DataBinder;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.AutoBound;
-import org.jboss.errai.ui.shared.api.annotations.Bound;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.KeyValueRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
@@ -42,6 +44,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.ALPHA_NUM_REGEXP;
 
 @Templated("RolesEditorWidget.html#tableRow")
+@Dependent
 public class RolesListItemWidgetViewImpl implements RolesListItemWidgetView,
                                                     IsElement {
 
@@ -94,6 +97,10 @@ public class RolesListItemWidgetViewImpl implements RolesListItemWidgetView,
 
     @PostConstruct
     public void init() {
+
+        DomGlobal.console.warn(getClass().getCanonicalName() + ": databinding is not finished!!!");
+
+
         role.setRegExp(ALPHA_NUM_REGEXP, INVALID_CHARACTERS_MESSAGE, INVALID_CHARACTERS_MESSAGE);
         role.addChangeHandler((e) -> handleValueChanged());
         cardinality.addChangeHandler((e) -> handleValueChanged());

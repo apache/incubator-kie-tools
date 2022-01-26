@@ -17,8 +17,8 @@ package org.uberfire.client.mvp;
 
 import java.util.List;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
 import org.uberfire.workbench.model.bridge.Notification;
 

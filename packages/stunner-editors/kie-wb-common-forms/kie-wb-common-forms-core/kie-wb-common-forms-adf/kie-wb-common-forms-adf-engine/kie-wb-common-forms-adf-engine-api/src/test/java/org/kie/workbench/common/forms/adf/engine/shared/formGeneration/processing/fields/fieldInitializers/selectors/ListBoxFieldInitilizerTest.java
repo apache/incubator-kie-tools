@@ -71,7 +71,7 @@ public class ListBoxFieldInitilizerTest {
                                context);
 
         verify(field).setAddEmptyOption(true);
-        assertTrue(field.getAddEmptyOption());
+        assertTrue(field.isAddEmptyOption());
     }
 
     @Test
@@ -85,7 +85,7 @@ public class ListBoxFieldInitilizerTest {
                                context);
 
         verify(field).setAddEmptyOption(false);
-        assertFalse(field.getAddEmptyOption());
+        assertFalse(field.isAddEmptyOption());
     }
 
     @Test
@@ -95,7 +95,7 @@ public class ListBoxFieldInitilizerTest {
                                context);
 
         verify(field, never()).setAddEmptyOption(anyBoolean());
-        assertTrue(field.getAddEmptyOption());
+        assertTrue(field.isAddEmptyOption());
     }
 
     @Test
@@ -109,6 +109,6 @@ public class ListBoxFieldInitilizerTest {
                                context);
 
         verify(field).setAddEmptyOption(false);
-        assertFalse(field.getAddEmptyOption());
+        assertFalse(field.isAddEmptyOption());
     }
 }

@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.crud.client.component.formDisplay;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 
 public interface FormDisplayer extends IsWidget {
 

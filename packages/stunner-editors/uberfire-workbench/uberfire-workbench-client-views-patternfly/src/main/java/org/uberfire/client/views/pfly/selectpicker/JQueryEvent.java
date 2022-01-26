@@ -19,7 +19,9 @@ package org.uberfire.client.views.pfly.selectpicker;
 import elemental2.dom.Element;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true)
+import static jsinterop.annotations.JsPackage.GLOBAL;
+
+@JsType(isNative = true, namespace = GLOBAL, name = "Object")
 public abstract class JQueryEvent {
 
     public Element target;

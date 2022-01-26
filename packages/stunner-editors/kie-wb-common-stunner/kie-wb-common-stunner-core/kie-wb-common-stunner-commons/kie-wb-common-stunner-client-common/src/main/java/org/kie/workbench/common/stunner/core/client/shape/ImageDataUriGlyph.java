@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.shape;
 
-import com.google.gwt.safehtml.shared.SafeUri;
+import org.gwtproject.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 /**

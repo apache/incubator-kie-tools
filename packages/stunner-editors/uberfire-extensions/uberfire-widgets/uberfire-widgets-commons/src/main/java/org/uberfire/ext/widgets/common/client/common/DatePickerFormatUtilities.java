@@ -18,7 +18,7 @@ package org.uberfire.ext.widgets.common.client.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
+import org.gwtproject.i18n.client.DateTimeFormat;
 
 /**
  * Utilties to handle conversion between GWT's DateFormat to BS3's DateFormat
@@ -108,7 +108,7 @@ public class DatePickerFormatUtilities {
      * yyyy full numeric representation of a year, 4 digits
      * <p>
      * GWT's DateFormat constants:
-     * @see com.google.gwt.i18n.client.DateTimeFormat
+     * @see org.gwtproject.i18n.client.DateTimeFormat
      * <p>
      * G	era designator	Text	AD
      * y	year	Number	1996

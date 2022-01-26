@@ -16,8 +16,8 @@
 
 package org.uberfire.client.views.pfly.widgets;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.SimplePanel;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.SimplePanel;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.Popover;
 import org.gwtbootstrap3.client.ui.constants.IconType;

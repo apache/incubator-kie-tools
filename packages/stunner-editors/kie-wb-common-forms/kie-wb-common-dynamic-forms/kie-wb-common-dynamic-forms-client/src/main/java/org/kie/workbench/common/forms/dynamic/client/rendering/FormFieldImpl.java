@@ -19,7 +19,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Assert;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.ValidableFormGroup;
@@ -58,7 +58,7 @@ public abstract class FormFieldImpl<F extends FieldDefinition> implements FormFi
 
     @Override
     public boolean isValidateOnChange() {
-        return field.getValidateOnChange();
+        return field.isValidateOnChange();
     }
 
     @Override
@@ -85,7 +85,7 @@ public abstract class FormFieldImpl<F extends FieldDefinition> implements FormFi
 
     @Override
     public boolean isRequired() {
-        return field.getRequired();
+        return field.isRequired();
     }
 
     protected abstract void doSetReadOnly(boolean readOnly);

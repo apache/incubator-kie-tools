@@ -19,12 +19,12 @@ package org.kie.workbench.common.stunner.client.widgets.views.session;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.HTMLLabelElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.user.client.ui.Widget;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 
 @Dependent
@@ -34,7 +34,7 @@ public class ScreenErrorViewImpl implements ScreenErrorView,
 
     @Inject
     @DataField
-    private Label message;
+    private HTMLLabelElement message;
 
     @Override
     public ScreenErrorView showError(final ClientRuntimeError error) {
@@ -43,8 +43,8 @@ public class ScreenErrorViewImpl implements ScreenErrorView,
 
     @Override
     public ScreenErrorView showMessage(final String message) {
-        this.message.setTitle(message);
-        this.message.setText(message);
+        this.message.title = (message);
+        this.message.textContent = (message);
         return this;
     }
 

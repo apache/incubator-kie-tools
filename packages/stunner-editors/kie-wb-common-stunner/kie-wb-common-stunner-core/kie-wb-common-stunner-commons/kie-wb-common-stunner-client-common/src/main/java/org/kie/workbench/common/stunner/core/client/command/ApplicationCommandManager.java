@@ -29,7 +29,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -121,7 +121,7 @@ public class ApplicationCommandManager
         commandManagerInstances.destroyAll();
     }
 
-    void onSessionDestroyed(@Observes SessionDestroyedEvent event) {
+    public void onSessionDestroyed(@Observes SessionDestroyedEvent event) {
         final String sessionUUID = event.getSessionUUID();
         final RegistryAwareCommandManager commandManager = getCommandManagers().get(sessionUUID);
         commandManagerInstances.destroy(commandManager);

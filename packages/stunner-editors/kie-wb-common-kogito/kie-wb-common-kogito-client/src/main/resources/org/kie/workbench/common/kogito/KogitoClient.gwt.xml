@@ -19,7 +19,7 @@
 
 <module>
 
-  <inherits name="com.google.gwt.user.User"/>
+  <inherits name="org.gwtproject.user.User"/>
 
   <inherits name="org.jboss.errai.ioc.Container"/>
   <inherits name="org.jboss.errai.ui.UI"/>

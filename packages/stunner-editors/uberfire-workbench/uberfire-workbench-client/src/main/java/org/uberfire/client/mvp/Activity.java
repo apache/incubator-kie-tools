@@ -15,7 +15,7 @@
  */
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.uberfire.mvp.PlaceRequest;

@@ -16,7 +16,7 @@
 
 package org.uberfire.ext.widgets.common.client.resources;
 
-import com.google.gwt.user.client.ui.Image;
+import org.gwtproject.user.client.ui.Image;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 
 /**

@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gwt.logging.client.LogConfiguration;
-import com.google.gwt.user.client.Timer;
+import elemental2.dom.DomGlobal;
+import org.gwtproject.timer.client.Timer;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
@@ -145,9 +145,10 @@ public class CanvasHighlightVisitor {
 
     private void log(final Level level,
                      final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
+        DomGlobal.console.log(message);
+/*        if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level,
                        message);
-        }
+        }*/
     }
 }

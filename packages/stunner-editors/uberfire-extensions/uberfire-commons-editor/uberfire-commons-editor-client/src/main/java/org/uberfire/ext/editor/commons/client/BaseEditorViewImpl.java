@@ -16,8 +16,7 @@
 
 package org.uberfire.ext.editor.commons.client;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.Composite;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 

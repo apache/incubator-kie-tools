@@ -15,7 +15,7 @@
  */
 package org.uberfire.client.views.pfly.notifications.animations;
 
-import com.google.gwt.animation.client.Animation;
+import org.gwtproject.animation.client.Animation;
 
 /**
  * An animation that can be sequenced to run in a list of animations. In reality

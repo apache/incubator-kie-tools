@@ -16,7 +16,7 @@
 
 package org.uberfire.client.views.pfly.selectpicker;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import org.gwtproject.core.client.JavaScriptObject;
 import elemental2.dom.Element;
 import elemental2.dom.Node;
 import jsinterop.annotations.JsFunction;
@@ -26,7 +26,7 @@ import jsinterop.annotations.JsType;
 
 import static jsinterop.annotations.JsPackage.GLOBAL;
 
-@JsType(isNative = true)
+@JsType(isNative = true, namespace = GLOBAL, name = "jQuery")
 public abstract class JQuery {
 
     @JsProperty(namespace = GLOBAL, name = "jQuery")

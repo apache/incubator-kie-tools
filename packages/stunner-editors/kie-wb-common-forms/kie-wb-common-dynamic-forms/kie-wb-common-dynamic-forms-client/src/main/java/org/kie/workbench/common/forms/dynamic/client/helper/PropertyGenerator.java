@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.dynamic.client.helper;
 
-import org.jboss.errai.databinding.client.PropertyType;
+import io.crysknife.ui.databinding.client.PropertyType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 public interface PropertyGenerator<F extends FieldDefinition> {

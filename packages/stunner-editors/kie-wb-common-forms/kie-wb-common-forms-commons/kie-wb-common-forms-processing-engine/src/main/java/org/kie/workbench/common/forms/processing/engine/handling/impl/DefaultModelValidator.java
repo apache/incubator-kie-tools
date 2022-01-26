@@ -27,8 +27,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Path;
 import javax.validation.Validator;
 
-import com.google.gwt.core.client.GWT;
-import org.jboss.errai.databinding.client.BindableProxy;
+import org.gwtproject.core.client.GWT;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 import org.kie.workbench.common.forms.processing.engine.handling.ModelValidator;
 
@@ -49,10 +48,6 @@ public class DefaultModelValidator<MODEL> implements ModelValidator<MODEL> {
     public boolean validate(Collection<FormField> fields,
                             MODEL model) {
         boolean isValid = true;
-
-        if (model instanceof BindableProxy) {
-            model = ((BindableProxy<MODEL>)model).deepUnwrap();
-        }
 
         try {
             Set<ConstraintViolation<Object>> result = validator.validate(model);
@@ -101,23 +96,17 @@ public class DefaultModelValidator<MODEL> implements ModelValidator<MODEL> {
     @Override
     public boolean validate(FormField formField,
                             MODEL model) {
-        boolean isValid = true;
-
-        if (model instanceof BindableProxy) {
-            model = ((BindableProxy<MODEL>)model).deepUnwrap();
-        }
-
         try {
             Set<ConstraintViolation<Object>> result = validator.validate(model);
 
             for (ConstraintViolation<Object> constraintViolation : result) {
 
                 String propertyName = getFieldNameFromConstraint(constraintViolation,
-                                                                 formField.getFieldName().contains(
-                                                                         NESTED_PROPERTY_SEPARATOR));
+                        formField.getFieldName().contains(
+                                NESTED_PROPERTY_SEPARATOR));
 
                 if (checkBinding(formField,
-                                 propertyName)) {
+                        propertyName)) {
                     formField.showError(constraintViolation.getMessage());
                     return false;
                 }
@@ -126,7 +115,7 @@ public class DefaultModelValidator<MODEL> implements ModelValidator<MODEL> {
             GWT.log("Error trying to validate model: model does not any validation constraint. ");
         }
 
-        return isValid;
+        return true;
     }
 
     protected boolean checkBinding(FormField formField,

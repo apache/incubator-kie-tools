@@ -19,8 +19,8 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.notificationsE
 import java.util.Date;
 import java.util.List;
 
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.regexp.shared.MatchResult;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Expiration;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.NotificationRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.NotificationType;

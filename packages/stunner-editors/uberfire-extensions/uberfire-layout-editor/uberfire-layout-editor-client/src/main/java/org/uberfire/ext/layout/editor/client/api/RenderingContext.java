@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.layout.editor.client.api;
 
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.Widget;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 
 /**

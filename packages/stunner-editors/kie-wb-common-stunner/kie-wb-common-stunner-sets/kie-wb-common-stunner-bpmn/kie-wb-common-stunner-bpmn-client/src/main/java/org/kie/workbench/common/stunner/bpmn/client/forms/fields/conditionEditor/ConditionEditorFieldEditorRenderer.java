@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.adf.rendering.Renderer;
@@ -29,6 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.ConditionEditorFieldTyp
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 
 @Renderer(type = ConditionEditorFieldType.class)
+@Dependent
 public class ConditionEditorFieldEditorRenderer
         extends FieldRenderer<ConditionEditorFieldDefinition, DefaultFormGroup> {
 

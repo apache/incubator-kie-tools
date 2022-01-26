@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 public interface CanvasPanel extends IsWidget {

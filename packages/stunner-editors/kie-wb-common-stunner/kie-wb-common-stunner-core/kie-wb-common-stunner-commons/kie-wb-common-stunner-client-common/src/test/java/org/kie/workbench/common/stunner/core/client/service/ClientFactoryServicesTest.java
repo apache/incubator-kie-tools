@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.stunner.core.client.service;
 
-import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +25,6 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.service.FactoryService;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.uberfire.mocks.CallerMock;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -50,9 +48,7 @@ public class ClientFactoryServicesTest {
 
     @Before
     public void setup() throws Exception {
-        Caller<FactoryService> factoryServiceCaller = new CallerMock<>(factoryService);
-        this.tested = new ClientFactoryService(clientFactoryManager,
-                                               factoryServiceCaller);
+        this.tested = new ClientFactoryService(clientFactoryManager);
     }
 
     @Test

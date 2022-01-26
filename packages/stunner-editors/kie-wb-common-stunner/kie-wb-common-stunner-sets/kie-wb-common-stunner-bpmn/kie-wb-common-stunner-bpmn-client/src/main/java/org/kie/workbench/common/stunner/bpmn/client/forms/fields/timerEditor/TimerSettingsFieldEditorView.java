@@ -22,32 +22,33 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
+import elemental2.dom.HTMLOptionElement;
+import elemental2.dom.HTMLSelectElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.gwtbootstrap3.extras.datetimepicker.client.ui.DateTimePicker;
 import org.gwtbootstrap3.extras.datetimepicker.client.ui.base.constants.DateTimePickerPosition;
-import org.jboss.errai.common.client.dom.Anchor;
-import org.jboss.errai.common.client.dom.Button;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Event;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.Option;
-import org.jboss.errai.common.client.dom.RadioInput;
-import org.jboss.errai.common.client.dom.Select;
-import org.jboss.errai.common.client.dom.TextInput;
-import org.jboss.errai.common.client.dom.Window;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.ForEvent;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.gwtproject.i18n.client.DateTimeFormat;
+import org.gwtproject.user.client.Event;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.uberfire.client.views.pfly.widgets.JQueryProducer;
 import org.uberfire.client.views.pfly.widgets.Popover;
 import org.uberfire.commons.Pair;
 
 @Templated
+@Dependent
 public class TimerSettingsFieldEditorView
         implements IsElement,
                    TimerSettingsFieldEditorPresenter.View {
@@ -88,76 +89,76 @@ public class TimerSettingsFieldEditorView
 
     @Inject
     @DataField("duration-timer")
-    private RadioInput durationTimer;
+    private HTMLInputElement durationTimer;
 
     @Inject
     @DataField("duration-timer-help")
-    private Anchor durationTimerHelp;
+    private HTMLAnchorElement durationTimerHelp;
 
     @Inject
     private JQueryProducer.JQuery<Popover> durationTimerHelpPopover;
 
     @Inject
     @DataField("duration-timer-params")
-    private Div durationTimerParamsContainer;
+    private HTMLDivElement durationTimerParamsContainer;
 
     @Inject
     @DataField("time-duration")
-    private TextInput timeDuration;
+    private HTMLInputElement timeDuration;
 
     @Inject
     @DataField("multiple-timer")
-    private RadioInput multipleTimer;
+    private HTMLInputElement multipleTimer;
 
     @Inject
     @DataField("multiple-timer-help")
-    private Anchor multipleTimerHelp;
+    private HTMLAnchorElement multipleTimerHelp;
 
     @Inject
     private JQueryProducer.JQuery<Popover> multipleTimerHelpPopover;
 
     @Inject
     @DataField("multiple-timer-params")
-    private Div multipleTimerParamsContainer;
+    private HTMLDivElement multipleTimerParamsContainer;
 
     @Inject
     @DataField("time-cycle-language")
-    private Select timeCycleLanguage;
+    private HTMLSelectElement timeCycleLanguage;
 
     @Inject
     @DataField("time-cycle")
-    private TextInput timeCycle;
+    private HTMLInputElement timeCycle;
 
     @Inject
     @DataField("date-timer")
-    private RadioInput dateTimer;
+    private HTMLInputElement dateTimer;
 
     @Inject
     @DataField("date-timer-help")
-    private Anchor dateTimerHelp;
+    private HTMLAnchorElement dateTimerHelp;
 
     @Inject
     private JQueryProducer.JQuery<Popover> dateTimerHelpPopover;
 
     @Inject
     @DataField("date-timer-params")
-    private Div dateTimerParamsContainer;
+    private HTMLDivElement dateTimerParamsContainer;
 
     @Inject
     @DataField("time-date")
-    private TextInput timeDate;
+    private HTMLInputElement timeDate;
 
     @DataField("time-date-time-picker")
     private DateTimePicker timeDateTimePicker = new DateTimePicker();
 
     @Inject
     @DataField("time-date-time-picker-button")
-    private Button pickerButton;
+    private HTMLButtonElement pickerButton;
 
     @Inject
     private ClientTranslationService translationService;
 
-    private Supplier<Option> optionSupplier = () -> (Option) Window.getDocument().createElement("option");
+    private Supplier<HTMLOptionElement> optionSupplier = () -> (HTMLOptionElement) DomGlobal.document.createElement("option");
 
     private TimerSettingsFieldEditorPresenter presenter;
 
@@ -168,6 +169,15 @@ public class TimerSettingsFieldEditorView
 
     @PostConstruct
     public void init() {
+        timeCycle.type = "text";
+        timeDuration.type = "text";
+        timeDate.type = "text";
+        dateTimer.type = "radio";
+        multipleTimer.type = "radio";
+        durationTimer.type = "radio";
+
+
+
         timeDuration.setAttribute(PLACEHOLDER_ATTR,
                                   translationService.getValue(TimeDuration_Placeholder));
         timeCycle.setAttribute(PLACEHOLDER_ATTR,
@@ -200,22 +210,22 @@ public class TimerSettingsFieldEditorView
 
     @Override
     public void setTimeDuration(String timeDuration) {
-        this.timeDuration.setValue(timeDuration);
+        this.timeDuration.value = (timeDuration);
     }
 
     @Override
     public String getTimeDuration() {
-        return timeDuration.getValue();
+        return timeDuration.value;
     }
 
     @Override
     public void setTimeDate(String timeDate) {
-        this.timeDate.setValue(timeDate);
+        this.timeDate.value = (timeDate);
     }
 
     @Override
     public String getTimeDate() {
-        return timeDate.getValue();
+        return timeDate.value;
     }
 
     @Override
@@ -225,22 +235,22 @@ public class TimerSettingsFieldEditorView
 
     @Override
     public void setTimeCycle(String timeCycle) {
-        this.timeCycle.setValue(timeCycle);
+        this.timeCycle.value = (timeCycle);
     }
 
     @Override
     public String getTimeCycle() {
-        return timeCycle.getValue();
+        return timeCycle.value;
     }
 
     @Override
     public void setTimeCycleLanguage(String timeCycleLanguage) {
-        this.timeCycleLanguage.setValue(timeCycleLanguage);
+        this.timeCycleLanguage.value = (timeCycleLanguage);
     }
 
     @Override
     public String getTimeCycleLanguage() {
-        return timeCycleLanguage.getValue();
+        return timeCycleLanguage.value;
     }
 
     @Override
@@ -249,22 +259,22 @@ public class TimerSettingsFieldEditorView
         options.forEach(option ->
                                 timeCycleLanguage.add(newOption(option.getK1(),
                                                                 option.getK2())));
-        timeCycleLanguage.setValue(selectedValue);
+        timeCycleLanguage.value = (selectedValue);
     }
 
     @Override
     public void setMultipleTimerChecked(boolean value) {
-        multipleTimer.setChecked(value);
+        multipleTimer.checked = (value);
     }
 
     @Override
     public void setDurationTimerChecked(boolean value) {
-        durationTimer.setChecked(value);
+        durationTimer.checked = (value);
     }
 
     @Override
     public void setDateTimerChecked(boolean value) {
-        dateTimer.setChecked(value);
+        dateTimer.checked = (value);
     }
 
     @Override
@@ -328,14 +338,14 @@ public class TimerSettingsFieldEditorView
 
     @Override
     public void setReadOnly(final boolean readOnly) {
-        durationTimer.setDisabled(readOnly);
-        timeDuration.setDisabled(readOnly);
-        multipleTimer.setDisabled(readOnly);
-        timeCycleLanguage.setDisabled(readOnly);
-        timeCycle.setDisabled(readOnly);
-        dateTimer.setDisabled(readOnly);
-        timeDate.setDisabled(readOnly);
-        pickerButton.setDisabled(readOnly);
+        durationTimer.disabled = (readOnly);
+        timeDuration.disabled = (readOnly);
+        multipleTimer.disabled = (readOnly);
+        timeCycleLanguage.disabled = (readOnly);
+        timeCycle.disabled = (readOnly);
+        dateTimer.disabled = (readOnly);
+        timeDate.disabled = (readOnly);
+        pickerButton.disabled = (readOnly);
     }
 
     private String getDurationTimerHtmlHelpText() {
@@ -361,29 +371,29 @@ public class TimerSettingsFieldEditorView
     private void showElement(HTMLElement element,
                              boolean show) {
         if (show) {
-            element.getStyle().removeProperty("display");
+            element.style.removeProperty("display");
         } else {
-            element.getStyle().setProperty("display",
+            element.style.setProperty("display",
                                            "none");
         }
     }
 
-    private Option newOption(final String text,
-                             final String value) {
-        final Option option = newOption();
-        option.setTextContent(text);
-        option.setValue(value);
+    private HTMLOptionElement newOption(final String text,
+                                        final String value) {
+        final HTMLOptionElement option = newOption();
+        option.textContent = (text);
+        option.value = (value);
         return option;
     }
 
-    private Option newOption() {
+    private HTMLOptionElement newOption() {
         return optionSupplier.get();
     }
 
     /**
      * For testing purposes
      */
-    void setOptionSupplier(Supplier<Option> optionSupplier) {
+    void setOptionSupplier(Supplier<HTMLOptionElement> optionSupplier) {
         this.optionSupplier = optionSupplier;
     }
 

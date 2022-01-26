@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.util;
 
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.gwtproject.user.client.ui.Widget;
 
 public class DropDownMenus {
 

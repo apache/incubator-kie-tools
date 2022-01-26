@@ -15,7 +15,6 @@
 package org.eclipse.dd.di.impl;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import org.eclipse.bpmn2.Bpmn2Package;
 
 import org.eclipse.bpmn2.di.BpmnDiPackage;

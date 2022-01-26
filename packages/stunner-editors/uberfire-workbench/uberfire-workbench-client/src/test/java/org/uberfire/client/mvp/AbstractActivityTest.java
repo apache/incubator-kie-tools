@@ -16,7 +16,7 @@
 
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.junit.Assert;
 import org.junit.Test;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;

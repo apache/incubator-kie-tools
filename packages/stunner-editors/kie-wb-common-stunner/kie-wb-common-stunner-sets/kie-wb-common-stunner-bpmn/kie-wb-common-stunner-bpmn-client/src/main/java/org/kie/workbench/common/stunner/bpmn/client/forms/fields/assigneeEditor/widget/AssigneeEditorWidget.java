@@ -25,14 +25,13 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import io.crysknife.client.ManagedInstance;
+import io.crysknife.ui.translation.api.spi.TranslationService;
+import org.gwtproject.event.logical.shared.ValueChangeEvent;
+import org.gwtproject.event.logical.shared.ValueChangeHandler;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerBPMNConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Assignee;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
@@ -41,7 +40,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
 public class AssigneeEditorWidget implements IsWidget,
-                                             AssigneeEditorWidgetView.Presenter {
+        AssigneeEditorWidgetView.Presenter {
 
     private AssigneeEditorWidgetView view;
 
@@ -111,8 +110,8 @@ public class AssigneeEditorWidget implements IsWidget,
         String oldValue = value;
 
         value = serializeAssignees(assigneeRows.stream()
-                                           .map(AssigneeListItem::getAssignee)
-                                           .collect(Collectors.toList()));
+                .map(AssigneeListItem::getAssignee)
+                .collect(Collectors.toList()));
 
         ValueChangeEvent.fireIfNotEqual(this, oldValue, value);
     }
@@ -173,8 +172,7 @@ public class AssigneeEditorWidget implements IsWidget,
         view.enableAddButton();
     }
 
-    @Override
-    public void fireEvent(GwtEvent<?> gwtEvent) {
+    public void fireEvent(org.gwtproject.event.shared.Event<?> gwtEvent) {
         view.asWidget().fireEvent(gwtEvent);
     }
 

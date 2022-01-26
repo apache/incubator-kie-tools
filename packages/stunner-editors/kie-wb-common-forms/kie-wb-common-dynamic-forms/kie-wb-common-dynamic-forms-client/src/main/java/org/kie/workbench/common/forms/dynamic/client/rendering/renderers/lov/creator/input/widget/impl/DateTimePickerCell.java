@@ -22,18 +22,18 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.cell.client.AbstractEditableCell;
-import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.text.shared.SafeHtmlRenderer;
-import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
+import jsinterop.base.Js;
+import org.gwtproject.cell.client.AbstractEditableCell;
+import org.gwtproject.cell.client.ValueUpdater;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.dom.client.NativeEvent;
+import org.gwtproject.i18n.client.DateTimeFormat;
+import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.text.shared.SafeHtmlRenderer;
+import org.gwtproject.text.shared.SimpleSafeHtmlRenderer;
 
-import static com.google.gwt.dom.client.BrowserEvents.CLICK;
-import static com.google.gwt.dom.client.BrowserEvents.KEYDOWN;
+import static org.gwtproject.dom.client.BrowserEvents.CLICK;
+import static org.gwtproject.dom.client.BrowserEvents.KEYDOWN;
 
 @Dependent
 public class DateTimePickerCell extends AbstractEditableCell<Date, Date> {
@@ -125,7 +125,7 @@ public class DateTimePickerCell extends AbstractEditableCell<Date, Date> {
 
             dateTimePicker.setDate(date);
 
-            lastParent.appendChild((Node) dateTimePicker.getElement());
+            lastParent.appendChild(Js.uncheckedCast(dateTimePicker.getElement()));
 
             dateTimePicker.show();
         }

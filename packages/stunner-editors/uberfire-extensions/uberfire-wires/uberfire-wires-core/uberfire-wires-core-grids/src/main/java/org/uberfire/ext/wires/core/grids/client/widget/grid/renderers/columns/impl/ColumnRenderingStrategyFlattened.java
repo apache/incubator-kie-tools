@@ -23,7 +23,7 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPathClipper;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.types.Transform;
-import com.google.gwt.core.client.GWT;
+import org.gwtproject.core.client.GWT;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -88,7 +88,7 @@ public class ColumnRenderingStrategyFlattened {
         //Column content
         commands.add((GridRenderer.RenderBodyGridContentCommand) (rc) -> {
             if (columnRenderingConstraint.apply(rc.isSelectionLayer(), column)) {
-                final Group columnGroup = GWT.create(Group.class);
+                final Group columnGroup = new Group();
                 columnGroup.setX(x);
                 final int columnIndex = model.getColumns().indexOf(column);
                 for (int rowIndex = minVisibleRowIndex; rowIndex <= maxVisibleRowIndex; rowIndex++) {
@@ -118,7 +118,7 @@ public class ColumnRenderingStrategyFlattened {
                 }
 
                 //Clip Column Group
-                final BoundingBoxPathClipperFactory boundingBoxPathClipperFactory = GWT.create(BoundingBoxPathClipperFactory.class);
+                final BoundingBoxPathClipperFactory boundingBoxPathClipperFactory = new BoundingBoxPathClipperFactory();
                 final IPathClipper clipper = boundingBoxPathClipperFactory.newClipper(0,
                                                                                       0,
                                                                                       columnWidth,

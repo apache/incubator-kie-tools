@@ -20,21 +20,15 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
-import org.kie.workbench.common.forms.adf.definitions.annotations.layout.Column;
-import org.kie.workbench.common.forms.adf.definitions.annotations.layout.Layout;
 
-@Portable
+/*@Portable
 @Bindable
 @FormDefinition(
         i18n = @I18nSettings(keyPreffix = "FieldProperties.selector.options"),
         layout = @Layout({@Column, @Column, @Column}),
         startElement = "value"
-)
+)*/
 public class DefaultSelectorOption<T> implements SelectorOption<Object> {
 
     @FormField(

@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.gwt.xml.client.Attr;
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.Node;
+import org.gwtproject.xml.client.Attr;
+import org.gwtproject.xml.client.Document;
+import org.gwtproject.xml.client.Element;
+import org.gwtproject.xml.client.Node;
 import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.CompensateEventDefinition;

@@ -27,6 +27,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import elemental2.dom.DomGlobal;
 import org.uberfire.client.docks.view.DocksBar;
 import org.uberfire.client.docks.view.DocksBars;
 import org.uberfire.client.workbench.docks.UberfireDock;
@@ -53,7 +54,7 @@ public class UberfireDocksImpl implements UberfireDocks {
         this.dockReadyEvent = dockReadyEvent;
     }
 
-    protected void setup(@Observes UberfireDockContainerReadyEvent event) {
+    public void setup(@Observes UberfireDockContainerReadyEvent event) {
         docksBars.setup();
 
         updateAllDocks();

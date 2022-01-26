@@ -16,9 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.definition.clone;
 
+import java.lang.annotation.Annotation;
+import java.util.Iterator;
+
+import io.crysknife.client.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.util.ClassUtils;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -30,8 +36,89 @@ public class DeepCloneProcessTest extends AbstractCloneProcessTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        deepCloneProcess = new DeepCloneProcess(new ManagedInstance<FactoryManager>() {
 
-        deepCloneProcess = new DeepCloneProcess(factoryManager, adapterManager, new ClassUtils());
+            @Override
+            public FactoryManager get() {
+                return factoryManager;
+            }
+
+            @Override
+            public Iterator iterator() {
+                return null;
+            }
+
+            @Override
+            public ManagedInstance select(Annotation... qualifiers) {
+                return null;
+            }
+
+            @Override
+            public boolean isUnsatisfied() {
+                return false;
+            }
+
+            @Override
+            public boolean isAmbiguous() {
+                return false;
+            }
+
+            @Override
+            public void destroy(FactoryManager instance) {
+
+            }
+
+            @Override
+            public void destroyAll() {
+
+            }
+
+            @Override
+            public ManagedInstance select(Class subtype, Annotation... qualifiers) {
+                return null;
+            }
+        }, new ManagedInstance<AdapterManager>() {
+
+            @Override
+            public AdapterManager get() {
+                return adapterManager;
+            }
+
+            @Override
+            public Iterator iterator() {
+                return null;
+            }
+
+            @Override
+            public ManagedInstance select(Annotation... qualifiers) {
+                return null;
+            }
+
+            @Override
+            public boolean isUnsatisfied() {
+                return false;
+            }
+
+            @Override
+            public boolean isAmbiguous() {
+                return false;
+            }
+
+            @Override
+            public void destroy(AdapterManager instance) {
+
+            }
+
+            @Override
+            public void destroyAll() {
+
+            }
+
+            @Override
+            public ManagedInstance select(Class subtype, Annotation... qualifiers) {
+                return null;
+            }
+        }, new ClassUtils());
     }
 
     @Test

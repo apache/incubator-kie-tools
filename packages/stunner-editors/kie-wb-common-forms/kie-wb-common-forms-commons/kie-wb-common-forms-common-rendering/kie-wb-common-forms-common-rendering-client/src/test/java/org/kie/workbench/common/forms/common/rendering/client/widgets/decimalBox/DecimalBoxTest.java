@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets.decimalBox;
 
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+
+import org.gwtproject.event.dom.client.KeyCodes;
+import org.gwtproject.event.legacy.shared.GwtEvent;
+import org.gwtproject.event.logical.shared.ValueChangeHandler;
+import org.gwtproject.user.client.ui.Widget;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,7 +1,7 @@
 package org.uberfire.client.workbench.docks;
 
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtproject.resources.client.ImageResource;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;

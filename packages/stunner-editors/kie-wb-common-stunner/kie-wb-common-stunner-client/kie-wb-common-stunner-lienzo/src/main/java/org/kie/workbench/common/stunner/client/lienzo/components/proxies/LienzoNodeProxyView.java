@@ -21,10 +21,12 @@ import javax.enterprise.context.Dependent;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.proxy.AbstractWiresProxy;
 import com.ait.lienzo.client.core.shape.wires.proxy.WiresShapeProxy;
+import org.kie.workbench.common.stunner.core.client.components.proxies.NodeShapeQualifier;
 import org.kie.workbench.common.stunner.core.client.shape.NodeShape;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 
 @Dependent
+@NodeShapeQualifier
 public class LienzoNodeProxyView
         extends LienzoShapeProxyView<NodeShape> {
 

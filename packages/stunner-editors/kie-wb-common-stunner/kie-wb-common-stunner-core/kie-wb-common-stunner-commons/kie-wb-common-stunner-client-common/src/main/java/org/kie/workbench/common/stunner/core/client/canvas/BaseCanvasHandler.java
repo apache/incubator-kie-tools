@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gwt.logging.client.LogConfiguration;
+import elemental2.dom.DomGlobal;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
@@ -451,9 +451,12 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
 
     private void log(final Level level,
                      final String message) {
+        DomGlobal.console.log(message);
+
+/*
         if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level,
                        message);
-        }
+        }*/
     }
 }

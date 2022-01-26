@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.notificationsEditor.widget;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,23 +27,15 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.validation.Validator;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.gwt.dom.client.LabelElement;
-import com.google.gwt.dom.client.ParagraphElement;
-import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.user.client.ui.Composite;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLInputElement;
+import io.crysknife.ui.databinding.client.api.AutoBound;
+import io.crysknife.ui.databinding.client.api.Bound;
+import io.crysknife.ui.databinding.client.api.DataBinder;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 import org.gwtbootstrap3.client.ui.TextArea;
@@ -53,11 +46,18 @@ import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
-import org.jboss.errai.databinding.client.api.DataBinder;
-import org.jboss.errai.ui.shared.api.annotations.AutoBound;
-import org.jboss.errai.ui.shared.api.annotations.Bound;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.gwtproject.dom.client.LabelElement;
+import org.gwtproject.dom.client.ParagraphElement;
+import org.gwtproject.dom.client.SpanElement;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.event.dom.client.KeyCodes;
+import org.gwtproject.event.dom.client.KeyDownEvent;
+import org.gwtproject.event.dom.client.KeyDownHandler;
+import org.gwtproject.event.logical.shared.ValueChangeEvent;
+import org.gwtproject.i18n.client.DateTimeFormat;
+import org.gwtproject.regexp.shared.MatchResult;
+import org.gwtproject.regexp.shared.RegExp;
+import org.gwtproject.user.client.ui.Composite;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.selector.input.MultipleSelectorInput;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor.AssigneeLiveSearchService;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Expiration;
@@ -469,9 +469,11 @@ public class NotificationEditorWidgetViewImpl extends Composite implements Notif
         taskExpiration.addValueChangeHandler(this::onTaskExpressionChange);
         repeatCount.value = "1";
 
-        panels = ImmutableMap.of(Expiration.TIME_PERIOD.getName(), timeperiodDiv,
-                                 Expiration.EXPRESSION.getName(), expressionDiv,
-                                 Expiration.DATETIME.getName(), datetimeDiv);
+        panels = new HashMap<>();
+        panels.put(Expiration.TIME_PERIOD.getName(), timeperiodDiv);
+        panels.put(Expiration.EXPRESSION.getName(), expressionDiv);
+        panels.put(Expiration.DATETIME.getName(), datetimeDiv);
+
         initPopover();
     }
 

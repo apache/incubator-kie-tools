@@ -19,9 +19,9 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.label
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
@@ -55,7 +55,7 @@ public class FieldLabel implements IsElement,
 
         view.renderForInputId(inputId,
                               fieldDefinition.getLabel(),
-                              fieldDefinition.getRequired(),
+                              fieldDefinition.isRequired(),
                               fieldDefinition.getHelpMessage());
     }
 
@@ -73,7 +73,7 @@ public class FieldLabel implements IsElement,
 
         view.renderForInput(isWidget,
                             fieldDefinition.getLabel(),
-                            fieldDefinition.getRequired(),
+                            fieldDefinition.isRequired(),
                             fieldDefinition.getHelpMessage());
     }
 

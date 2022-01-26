@@ -14,8 +14,6 @@
  */
 package org.eclipse.bpmn2.impl;
 
-import com.google.gwt.user.client.rpc.GwtTransient;
-
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.CallActivity;
 
@@ -57,7 +55,6 @@ public class CallActivityImpl extends ActivityImpl implements CallActivity {
 	 * @generated
 	 * @ordered
 	 */
-	@GwtTransient
 	protected String calledElement = CALLED_ELEMENT_EDEFAULT;
 
 	/**

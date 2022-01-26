@@ -19,11 +19,11 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl;
 import java.util.Collections;
 import java.util.Map;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.Widget;
+import io.crysknife.client.IsElement;
+import org.gwtproject.dom.style.shared.Visibility;
+import org.gwtproject.user.client.ui.Widget;
 
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 public interface FormGroupView extends IsElement {
@@ -31,7 +31,7 @@ public interface FormGroupView extends IsElement {
     void render(Widget widget, FieldDefinition field);
 
     default void setVisible(boolean visible) {
-        DOMUtil.addEnumStyleName(getElement(), visible ? Style.Visibility.VISIBLE : Style.Visibility.HIDDEN);
+        DOMUtil.addEnumStyleName(getElement(), visible ? Visibility.VISIBLE : Visibility.HIDDEN);
     }
     
     default Map<String, Widget> getViewPartsWidgets() {

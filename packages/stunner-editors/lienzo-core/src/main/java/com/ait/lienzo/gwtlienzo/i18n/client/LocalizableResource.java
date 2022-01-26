@@ -73,7 +73,7 @@ public interface LocalizableResource {
      * <p>
      * Examples:
      * <ul>
-     * <li>&#64;Generate(format = "com.google.gwt.i18n.server.PropertyCatalogFactory")
+     * <li>&#64;Generate(format = "org.gwtproject.i18n.server.PropertyCatalogFactory")
      * <br>generates properties files for all locales, and the names will be
      *      of the form MyMessages_locale.properties
      * <li>&#64;Generate(format = {"com.example.ProprietaryFormat1",
@@ -95,8 +95,8 @@ public interface LocalizableResource {
 
         /**
          * Fully-qualified class names of the generator classes. Each class must
-         * implement com.google.gwt.i18n.server.MessageCatalogFactory
-         * (com.google.gwt.i18n.rebind.format.MessageCatalogFormat still works, but
+         * implement org.gwtproject.i18n.server.MessageCatalogFactory
+         * (org.gwtproject.i18n.rebind.format.MessageCatalogFormat still works, but
          * is deprecated).
          * <p>
          * Strings are used here instead of class literals because the generators
@@ -158,7 +158,7 @@ public interface LocalizableResource {
     @Target(ElementType.TYPE)
     public @interface GenerateKeys {
 
-        String value() default "com.google.gwt.i18n.server.keygen.MD5KeyGenerator";
+        String value() default "org.gwtproject.i18n.server.keygen.MD5KeyGenerator";
     }
 
     /**

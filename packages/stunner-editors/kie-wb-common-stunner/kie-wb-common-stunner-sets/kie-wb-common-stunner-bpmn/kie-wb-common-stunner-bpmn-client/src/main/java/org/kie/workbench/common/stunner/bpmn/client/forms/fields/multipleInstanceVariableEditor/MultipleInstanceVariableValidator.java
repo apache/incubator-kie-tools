@@ -20,8 +20,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.regexp.shared.SplitResult;
+import org.gwtproject.regexp.shared.RegExp;
+import org.gwtproject.regexp.shared.SplitResult;
 import org.kie.workbench.common.forms.processing.engine.handling.CustomFieldValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.ValidationResult;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;

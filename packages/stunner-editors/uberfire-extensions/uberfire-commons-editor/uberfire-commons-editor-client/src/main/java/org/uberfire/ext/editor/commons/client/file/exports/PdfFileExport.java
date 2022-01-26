@@ -16,10 +16,15 @@
 
 package org.uberfire.ext.editor.commons.client.file.exports;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Typed;
+
 import org.uberfire.ext.editor.commons.client.file.exports.jso.JsPdf;
 import org.uberfire.ext.editor.commons.client.file.exports.jso.JsPdfSettings;
 import org.uberfire.ext.editor.commons.file.exports.PdfExportPreferences;
 
+@Typed(PdfFileExport.class)
+@Dependent
 public class PdfFileExport implements FileExport<PdfDocument> {
 
     @Override

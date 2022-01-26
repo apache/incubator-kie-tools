@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.s
 import java.util.HashSet;
 import java.util.Objects;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 
 import org.kie.workbench.common.stunner.core.graph.processing.layout.OrientedEdgeImpl;
@@ -30,6 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.Or
  * Break cycles in a graph reversing some edges.
  */
 @Default
+@Dependent
 public final class ReverseEdgesCycleBreaker implements CycleBreaker {
 
     private LayeredGraph graph;

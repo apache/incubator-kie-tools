@@ -24,7 +24,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 public interface KeyboardOperation {
 
     /**
-     * Gets the @{link com.google.gwt.event.dom.client.KeyCodes} that this operation matches.
+     * Gets the @{link org.gwtproject.event.dom.client.KeyCodes} that this operation matches.
      * @return A key code.
      */
     int getKeyCode();

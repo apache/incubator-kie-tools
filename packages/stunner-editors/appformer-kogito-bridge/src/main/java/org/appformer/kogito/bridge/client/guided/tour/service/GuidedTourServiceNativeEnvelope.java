@@ -16,12 +16,13 @@
 
 package org.appformer.kogito.bridge.client.guided.tour.service;
 
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import org.appformer.kogito.bridge.client.guided.tour.service.api.Tutorial;
 import org.appformer.kogito.bridge.client.guided.tour.service.api.UserInteraction;
 
-@JsType(isNative = true, namespace = "window", name = "envelope")
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "envelope")
 public class GuidedTourServiceNativeEnvelope {
 
     public native void refresh(final UserInteraction userInteraction);

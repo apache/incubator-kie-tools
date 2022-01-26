@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.multipleInstanceVariableEditor;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorEditorWidget;
 
+@Dependent
 public class MultipleInstanceVariableEditorWidget
         extends FieldEditorEditorWidget<String, MultipleInstanceVariableEditorPresenter> {
 

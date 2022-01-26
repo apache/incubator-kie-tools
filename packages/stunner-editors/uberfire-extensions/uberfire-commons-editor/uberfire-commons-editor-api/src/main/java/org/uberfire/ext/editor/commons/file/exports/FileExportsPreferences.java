@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.editor.commons.file.exports;
 
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
 public class FileExportsPreferences {
 
     String pdfOrientation = format(PdfExportPreferences.Orientation.PORTRAIT);

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.forms.service.fieldProviders;
 
 import javax.enterprise.inject.Model;
+import javax.inject.Singleton;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
 import org.kie.workbench.common.forms.model.TypeInfo;
@@ -24,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.MultipleInstanceVariabl
 import org.kie.workbench.common.stunner.bpmn.forms.model.MultipleInstanceVariableFieldType;
 
 @Model
+@Singleton
 public class MultipleInstanceVariableFieldProvider extends BasicTypeFieldProvider<MultipleInstanceVariableFieldDefinition> {
 
     @Override

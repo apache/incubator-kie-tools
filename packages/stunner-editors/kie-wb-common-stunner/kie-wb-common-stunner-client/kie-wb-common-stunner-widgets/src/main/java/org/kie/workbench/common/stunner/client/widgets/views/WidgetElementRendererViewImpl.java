@@ -19,12 +19,12 @@ package org.kie.workbench.common.stunner.client.widgets.views;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.HTMLDivElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 
 @Templated
@@ -34,7 +34,7 @@ public class WidgetElementRendererViewImpl implements WidgetElementRendererView,
 
     @Inject
     @DataField
-    private Div content;
+    private HTMLDivElement content;
 
     @Override
     public WidgetElementRendererView setWidget(final IsWidget widget) {

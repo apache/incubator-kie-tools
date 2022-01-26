@@ -15,12 +15,12 @@
  */
 package org.uberfire.ext.widgets.common.client.common.popups.footers;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiHandler;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalFooter;
@@ -33,7 +33,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
  */
 public class ModalFooterForceSaveReOpenCancelButtons extends ModalFooter {
 
-    private static ModalFooterForceSaveReOpenCancelButtonsBinder uiBinder = GWT.create(ModalFooterForceSaveReOpenCancelButtonsBinder.class);
+    private static ModalFooterForceSaveReOpenCancelButtonsBinder uiBinder = new ModalFooterForceSaveReOpenCancelButtons_ModalFooterForceSaveReOpenCancelButtonsBinderImpl();
 
     private final Command forceSaveCommand;
     private final Command reopenCommand;
@@ -86,6 +86,7 @@ public class ModalFooterForceSaveReOpenCancelButtons extends ModalFooter {
         panel.hide();
     }
 
+    @UiTemplate
     interface ModalFooterForceSaveReOpenCancelButtonsBinder
             extends
             UiBinder<Widget, ModalFooterForceSaveReOpenCancelButtons> {

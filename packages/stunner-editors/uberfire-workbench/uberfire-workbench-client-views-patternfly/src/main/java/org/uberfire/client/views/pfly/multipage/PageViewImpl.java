@@ -16,10 +16,10 @@
 
 package org.uberfire.client.views.pfly.multipage;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.ScrollPanel;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.RequiresResize;
+import org.gwtproject.user.client.ui.ScrollPanel;
 import org.uberfire.client.workbench.widgets.multipage.PageView;
 
 public class PageViewImpl extends Composite implements PageView,

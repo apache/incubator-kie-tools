@@ -19,7 +19,7 @@
 
 <module>
 
-  <inherits name='com.google.gwt.user.User'/>
+  <inherits name='org.gwtproject.user.User'/>
   <inherits name="org.gwtbootstrap3.extras.datetimepicker.DateTimePicker" />
   <inherits name="org.uberfire.UberfireClientAPI"/>
   <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient"/>

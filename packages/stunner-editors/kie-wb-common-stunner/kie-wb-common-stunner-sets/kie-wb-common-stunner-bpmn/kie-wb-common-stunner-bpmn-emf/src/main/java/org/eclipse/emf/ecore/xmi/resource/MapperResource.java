@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.core.shared.GWT;
+import org.gwtproject.core.shared.GWT;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.Callback;
 import org.eclipse.emf.common.util.URI;

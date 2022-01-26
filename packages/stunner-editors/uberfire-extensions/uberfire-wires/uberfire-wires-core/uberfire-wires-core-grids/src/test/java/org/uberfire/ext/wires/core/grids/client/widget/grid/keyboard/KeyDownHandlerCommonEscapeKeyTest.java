@@ -19,7 +19,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.keyboard;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.runner.RunWith;
 
-@RunWith(LienzoMockitoTestRunner.class)
+//@RunWith(LienzoMockitoTestRunner.class)
 public class KeyDownHandlerCommonEscapeKeyTest extends BaseKeyDownHandlerCommonTest {
 
     @Override

@@ -17,22 +17,24 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import org.jboss.errai.common.client.dom.Anchor;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.uberfire.client.views.pfly.widgets.JQueryProducer;
 import org.uberfire.client.views.pfly.widgets.Popover;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
 
 @Templated
+@Dependent
 public class SimpleConditionEditorView
         implements IsElement,
                    SimpleConditionEditorPresenter.View {
@@ -45,7 +47,7 @@ public class SimpleConditionEditorView
 
     @Inject
     @DataField("variable-selector-form")
-    private Div variableSelectorForm;
+    private HTMLDivElement variableSelectorForm;
 
     @Inject
     @DataField("variable-selector")
@@ -53,18 +55,19 @@ public class SimpleConditionEditorView
 
     @Inject
     @DataField("variable-selector-help")
-    private Anchor variableSelectorHelp;
+    private HTMLAnchorElement variableSelectorHelp;
 
     @Inject
     private JQueryProducer.JQuery<Popover> variableSelectorHelpPopover;
 
     @Inject
     @DataField("variable-selector-error")
-    private Span variableSelectorError;
+    @Named("span")
+    private HTMLElement variableSelectorError;
 
     @Inject
     @DataField("condition-selector-form")
-    private Div conditionSelectorForm;
+    private HTMLDivElement conditionSelectorForm;
 
     @Inject
     @DataField("condition-selector")
@@ -72,18 +75,19 @@ public class SimpleConditionEditorView
 
     @Inject
     @DataField("condition-selector-error")
-    private Span conditionSelectorError;
+    @Named("span")
+    private HTMLElement conditionSelectorError;
 
     @Inject
     @DataField("condition-selector-help")
-    private Anchor conditionSelectorHelp;
+    private HTMLAnchorElement conditionSelectorHelp;
 
     @Inject
     private JQueryProducer.JQuery<Popover> conditionSelectorHelpPopover;
 
     @Inject
     @DataField("condition-params")
-    private Div conditionParams;
+    private HTMLDivElement conditionParams;
 
     @Inject
     private ClientTranslationService translationService;
@@ -114,25 +118,25 @@ public class SimpleConditionEditorView
     @Override
     public void setVariableError(String error) {
         DOMUtil.addCSSClass(variableSelectorForm, "has-error");
-        variableSelectorError.setTextContent(error);
+        variableSelectorError.textContent = (error);
     }
 
     @Override
     public void clearVariableError() {
         DOMUtil.removeCSSClass(variableSelectorForm, "has-error");
-        variableSelectorError.setTextContent(null);
+        variableSelectorError.textContent = (null);
     }
 
     @Override
     public void setConditionError(String error) {
         DOMUtil.addCSSClass(conditionSelectorForm, "has-error");
-        conditionSelectorError.setTextContent(error);
+        conditionSelectorError.textContent = (error);
     }
 
     @Override
     public void clearConditionError() {
         DOMUtil.removeCSSClass(conditionSelectorForm, "has-error");
-        conditionSelectorError.setTextContent(null);
+        conditionSelectorError.textContent = (null);
     }
 
     @Override

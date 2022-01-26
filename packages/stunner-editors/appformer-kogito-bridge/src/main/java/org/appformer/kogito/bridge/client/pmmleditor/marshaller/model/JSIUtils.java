@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import elemental2.core.JsArray;
 import jsinterop.base.Js;
 import jsinterop.base.JsArrayLike;
 
@@ -29,21 +30,15 @@ public class JSIUtils {
     }
 
     /**
-     * Helper method to create a new, empty <code>JsArrayLike</code>
-     * @return
-     */
-    public static native <D> JsArrayLike<D> getNativeArray() /*-{
-        return [];
-    }-*/;
-
-    /**
      * Returns a <code>JsArrayLike</code> where each element represents the <b>unwrapped</b> object (i.e. object.value) of the original one.
      * It the original <code>JsArrayLike</code> is <code>null</code>, returns a new, empty one
      * @param original
      * @param <D>
      * @return
      */
-    public static native <D> JsArrayLike<D> getUnwrappedElementsArray(final JsArrayLike<D> original) /*-{
+    public static <D> JsArrayLike<D> getUnwrappedElementsArray(final JsArray<D> original) {
+        throw new Error(JSIUtils.class.getCanonicalName()+".getUnwrappedElementsArray");
+    }/*-{
         var toReturn = [];
         if (original != null) {
             toReturn = original.map(function (arrayItem) {

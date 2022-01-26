@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets.decimalBox;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.FormWidget;
 
 public interface DecimalBoxView extends IsWidget,

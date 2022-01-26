@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
@@ -47,6 +48,7 @@ import org.uberfire.commons.Pair;
 import static org.kie.workbench.common.stunner.core.client.util.ClientUtils.getSelectedNode;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
+@Dependent
 public class ProcessCompensationRefProvider implements SelectorDataProvider {
 
     private final SessionManager sessionManager;

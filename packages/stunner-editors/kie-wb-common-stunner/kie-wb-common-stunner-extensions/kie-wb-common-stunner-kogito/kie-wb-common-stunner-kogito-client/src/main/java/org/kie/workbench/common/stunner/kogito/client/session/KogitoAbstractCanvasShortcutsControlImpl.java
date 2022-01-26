@@ -16,8 +16,7 @@
 
 package org.kie.workbench.common.stunner.kogito.client.session;
 
-import javax.enterprise.inject.Instance;
-
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.AbstractCanvasShortcutsControlImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.shortcut.KeyboardShortcut;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -26,7 +25,7 @@ import static org.kie.workbench.common.stunner.core.client.canvas.controls.keybo
 
 public class KogitoAbstractCanvasShortcutsControlImpl extends AbstractCanvasShortcutsControlImpl {
 
-    public KogitoAbstractCanvasShortcutsControlImpl(Instance<KeyboardShortcut> keyboardShortcutActions) {
+    public KogitoAbstractCanvasShortcutsControlImpl(ManagedInstance<KeyboardShortcut> keyboardShortcutActions) {
         super(keyboardShortcutActions);
     }
 

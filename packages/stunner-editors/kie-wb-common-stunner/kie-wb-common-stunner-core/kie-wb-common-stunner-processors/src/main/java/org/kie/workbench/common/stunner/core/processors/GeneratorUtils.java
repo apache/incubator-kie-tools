@@ -102,7 +102,7 @@ public class GeneratorUtils extends org.uberfire.annotations.processors.Generato
         return getUniqueAnnotatedMethod(originalClassElement,
                                         processingEnvironment,
                                         annotationName,
-                                        // elementUtils.getTypeElement( "com.google.gwt.user.client.ui.IsWidget" ).asType(),
+                                        // elementUtils.getTypeElement( "org.gwtproject.user.client.ui.IsWidget" ).asType(),
                                         elementUtils.getTypeElement(returnClassName).asType(),
                                         NO_PARAMS);
     }

@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.widgets.table.client.resources;
 
-import com.google.gwt.resources.client.CssResource;
+import org.gwtproject.resources.client.CssResource;
 
 public interface UFTableCss
         extends

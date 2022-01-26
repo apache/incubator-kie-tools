@@ -23,8 +23,8 @@ import java.util.stream.StreamSupport;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import io.crysknife.client.ManagedInstance;
+import io.crysknife.ui.translation.api.spi.TranslationService;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -70,6 +70,12 @@ public class ClientTranslationService extends AbstractTranslationService {
     @Override
     public String getValue(final String key,
                            final Object... args) {
+        StringBuffer sb = new StringBuffer(key);
+        sb.append(":");
+        for (Object arg : args) {
+            sb.append(arg);
+        }
+
         return erraiTranslationService.format(key,
                                               args);
     }

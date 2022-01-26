@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.soup.commons.util.Lists;
@@ -28,6 +29,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.Tim
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.commons.Pair;
 
+@Dependent
 public class TimerSettingsFieldEditorPresenter
         extends FieldEditorPresenter<TimerSettingsValue> {
 

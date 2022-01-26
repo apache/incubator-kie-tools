@@ -18,8 +18,8 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.se
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.HasValue;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.FormWidget;
 
 public interface MultipleSelectorInputView<TYPE> extends IsWidget,

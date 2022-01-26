@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.util.valueConverters;
 
-import org.jboss.errai.databinding.client.api.Converter;
+import io.crysknife.ui.databinding.client.api.Converter;
 
 public class ObjectToStringConverter implements Converter<Object, String> {
 

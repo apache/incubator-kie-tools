@@ -19,18 +19,18 @@ package org.uberfire.ext.widgets.core.client.tree;
 import java.util.Iterator;
 import java.util.function.Supplier;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.HasCloseHandlers;
-import com.google.gwt.event.logical.shared.HasOpenHandlers;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import org.gwtproject.event.logical.shared.CloseEvent;
+import org.gwtproject.event.logical.shared.CloseHandler;
+import org.gwtproject.event.logical.shared.HasCloseHandlers;
+import org.gwtproject.event.logical.shared.HasOpenHandlers;
+import org.gwtproject.event.logical.shared.HasSelectionHandlers;
+import org.gwtproject.event.logical.shared.OpenEvent;
+import org.gwtproject.event.logical.shared.OpenHandler;
+import org.gwtproject.event.logical.shared.SelectionEvent;
+import org.gwtproject.event.logical.shared.SelectionHandler;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.FlowPanel;
 import org.uberfire.ext.widgets.core.client.resources.TreeNavigatorResources;
 
 public class Tree<T extends TreeItem> extends Composite implements HasSelectionHandlers<T>,
@@ -125,7 +125,7 @@ public class Tree<T extends TreeItem> extends Composite implements HasSelectionH
     }
 
     public Iterable<T> getItems() {
-        return () -> new T.TreeItemIterator<T>(container);
+        return () -> new TreeItem.TreeItemIterator<>(container);
     }
 
     public boolean isEmpty() {

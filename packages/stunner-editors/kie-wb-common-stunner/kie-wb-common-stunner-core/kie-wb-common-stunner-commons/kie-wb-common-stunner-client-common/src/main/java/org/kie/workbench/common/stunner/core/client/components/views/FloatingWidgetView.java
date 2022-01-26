@@ -18,13 +18,13 @@ package org.kie.workbench.common.stunner.core.client.components.views;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RootPanel;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.event.dom.client.MouseOutEvent;
+import org.gwtproject.event.dom.client.MouseOverEvent;
+import org.gwtproject.timer.client.Timer;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.RootPanel;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.GWTHandlerRegistration;
 import org.uberfire.mvp.Command;
 

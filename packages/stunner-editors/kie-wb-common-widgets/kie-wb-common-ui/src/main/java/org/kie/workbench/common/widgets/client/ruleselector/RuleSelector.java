@@ -19,12 +19,12 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasEnabled;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.event.logical.shared.HasValueChangeHandlers;
+import org.gwtproject.event.logical.shared.ValueChangeHandler;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.HasEnabled;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.extras.select.client.ui.Option;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
@@ -44,7 +44,7 @@ public class RuleSelector
     private boolean ruleNamesLoaded = false;
     private Optional<Command> onRulesLoadedCommand = Optional.empty();
 
-    private Select ruleNameSelector = GWT.create(Select.class);
+    private Select ruleNameSelector = new Select();
 
     public RuleSelector() {
         ruleNameSelector.setEnabled(false);
@@ -84,7 +84,7 @@ public class RuleSelector
 
     Option makeRuleNameOption(final String ruleName,
                               final String value) {
-        final Option o = GWT.create(Option.class);
+        final Option o = new Option();
         final String simpleRuleName = getSimpleRuleName(ruleName);
         o.setText(simpleRuleName);
         o.setValue(value);

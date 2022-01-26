@@ -24,11 +24,12 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import elemental2.promise.IThenable;
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.ui.client.widget.HasModel;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.databinding.client.api.HasModel;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
@@ -40,6 +41,7 @@ import org.uberfire.client.mvp.UberElement;
 import static java.util.stream.Collectors.toMap;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.createDataTypeDisplayName;
 
+@Dependent
 public class MultipleInstanceVariableEditorPresenter extends FieldEditorPresenter<String> {
 
     public interface View extends UberElement<MultipleInstanceVariableEditorPresenter>,

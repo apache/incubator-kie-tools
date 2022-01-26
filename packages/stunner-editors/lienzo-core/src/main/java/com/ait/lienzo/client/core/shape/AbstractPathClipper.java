@@ -100,7 +100,7 @@ public abstract class AbstractPathClipper implements IPathClipper {
     abstract protected boolean apply(Context2D context);
 
     @JsType
-    public static final class PathClipperJSO {
+    public static class PathClipperJSO {
 
         private String type;
 

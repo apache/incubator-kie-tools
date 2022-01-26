@@ -16,12 +16,12 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.DecoratedPopupPanel;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.timer.client.Timer;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.user.client.ui.DecoratedPopupPanel;
+import org.gwtproject.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.html.Span;
 import org.uberfire.ext.widgets.common.client.animations.LinearFadeInAnimation;
 import org.uberfire.ext.widgets.common.client.animations.LinearFadeOutAnimation;

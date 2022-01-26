@@ -32,7 +32,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper.RenderingInformation;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
-import static com.google.gwt.event.dom.client.KeyCodes.KEY_RIGHT;
+import static org.gwtproject.event.dom.client.KeyCodes.KEY_RIGHT;
 
 public abstract class BaseKeyboardOperation implements KeyboardOperation {
 

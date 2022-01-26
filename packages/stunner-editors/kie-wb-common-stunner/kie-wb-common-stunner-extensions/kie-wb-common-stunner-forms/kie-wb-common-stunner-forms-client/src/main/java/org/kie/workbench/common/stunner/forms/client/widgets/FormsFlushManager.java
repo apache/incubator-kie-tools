@@ -40,7 +40,7 @@ public class FormsFlushManager {
         }
     }
 
-    void onFormsOpenedEvent(@Observes FormPropertiesOpened event) {
+    public void onFormsOpenedEvent(@Observes FormPropertiesOpened event) {
         formElementUUID = event.getUuid();
     }
 

@@ -20,10 +20,11 @@ import elemental2.dom.Element;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
+import org.gwtproject.core.client.JsArrayString;
 
 import static jsinterop.annotations.JsPackage.GLOBAL;
 
-@JsType(isNative = true)
+@JsType(isNative = true, namespace = GLOBAL, name = "jQuery")
 public abstract class JQuerySelectPicker {
 
     @JsMethod(namespace = GLOBAL, name = "jQuery")
@@ -32,6 +33,7 @@ public abstract class JQuerySelectPicker {
     @JsMethod(namespace = GLOBAL, name = "jQuery")
     public native static JQuerySelectPicker $(final String selector);
 
+    public native JQuerySelectPicker selectpicker();
     public native JQuerySelectPicker selectpicker(final String method);
 
     public native JQuerySelectPicker selectpicker(final String method,
@@ -43,6 +45,12 @@ public abstract class JQuerySelectPicker {
     public native JQuerySelectPicker off(final String event);
 
     public native String val();
+
+    public native void val(JsArrayString value);
+
+    public native void val(String value);
+
+    public native JQuerySelectPicker empty();
 
     @JsFunction
     public interface CallbackFunction {

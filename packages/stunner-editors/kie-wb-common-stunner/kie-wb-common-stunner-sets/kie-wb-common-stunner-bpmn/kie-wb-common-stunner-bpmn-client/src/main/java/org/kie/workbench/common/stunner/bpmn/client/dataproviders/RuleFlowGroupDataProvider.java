@@ -52,7 +52,7 @@ public class RuleFlowGroupDataProvider {
         return groups;
     }
 
-    void onRuleFlowGroupDataChanged(final @Observes RuleFlowGroupDataEvent event) {
+    public void onRuleFlowGroupDataChanged(final @Observes RuleFlowGroupDataEvent event) {
         setRuleFlowGroupNames(toList(event.getGroups()));
     }
 

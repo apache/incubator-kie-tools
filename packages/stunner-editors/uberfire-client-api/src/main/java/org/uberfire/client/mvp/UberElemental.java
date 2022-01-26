@@ -15,7 +15,7 @@
 
 package org.uberfire.client.mvp;
 
-import org.jboss.errai.common.client.api.elemental2.IsElement;
+import io.crysknife.client.IsElement;
 
 /**
  * Interface to inject a Presenter into a View for MVP-based Element

@@ -15,14 +15,14 @@
  */
 package org.kie.workbench.common.widgets.client.widget;
 
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.RootPanel;
+import org.gwtproject.cell.client.Cell;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.dom.client.Style.Position;
+import org.gwtproject.dom.client.Style.Unit;
+import org.gwtproject.dom.client.Style.Visibility;
+import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.user.client.DOM;
+import org.gwtproject.user.client.ui.RootPanel;
 
 import java.util.List;
 

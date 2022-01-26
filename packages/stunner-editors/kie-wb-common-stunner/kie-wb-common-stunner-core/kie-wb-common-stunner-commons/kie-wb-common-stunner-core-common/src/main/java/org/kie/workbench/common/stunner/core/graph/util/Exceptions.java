@@ -16,8 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.graph.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import elemental2.dom.DomGlobal;
 
 /**
  * Utility class that allows working with functional programming and streams easier when having exceptions.
@@ -34,13 +33,11 @@ public class Exceptions {
         T get() throws Exception;
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Exceptions.class);
-
     public static <T> T swallow(final Supplier<T> supplier, final T defaultReturn) {
         try {
             return supplier.get();
         } catch (Exception e) {
-            LOGGER.debug("Exception swallowed", e.getMessage());
+            DomGlobal.console.debug("Exception swallowed", e.getMessage());
             return defaultReturn;
         }
     }

@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.layer.pinning;
 
-import com.google.gwt.user.client.Command;
+import org.gwtproject.user.client.Command;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 /**

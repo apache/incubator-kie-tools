@@ -16,17 +16,18 @@
 
 package org.kie.workbench.common.widgets.client.resources.i18n;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import org.gwtproject.i18n.client.Message;
+import org.gwtproject.i18n.client.Messages;
 
 /**
  * EnumEditor I18N constants
  */
+@Message
 public interface CommonConstants
         extends
         Messages {
 
-    CommonConstants INSTANCE = GWT.create( CommonConstants.class );
+    CommonConstants INSTANCE = CommonConstantsFactory.get();
 
     String InvalidDateFormatMessage();
 

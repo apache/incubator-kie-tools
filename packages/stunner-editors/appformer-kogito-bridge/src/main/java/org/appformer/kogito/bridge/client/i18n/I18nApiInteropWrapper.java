@@ -18,10 +18,11 @@ package org.appformer.kogito.bridge.client.i18n;
 
 import elemental2.promise.Promise;
 import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true, namespace = "window", name = "envelope")
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "envelope")
 public class I18nApiInteropWrapper {
 
     @JsMethod

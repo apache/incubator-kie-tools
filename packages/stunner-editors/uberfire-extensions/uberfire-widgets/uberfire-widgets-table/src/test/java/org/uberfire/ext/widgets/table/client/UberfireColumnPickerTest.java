@@ -18,13 +18,13 @@ package org.uberfire.ext.widgets.table.client;
 
 import java.util.Arrays;
 
-import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.cell.client.TextCell;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.Header;
-import com.google.gwt.user.cellview.client.TextHeader;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwtmockito.GwtMock;
+import org.gwtproject.cell.client.CheckboxCell;
+import org.gwtproject.cell.client.TextCell;
+import org.gwtproject.user.cellview.client.Column;
+import org.gwtproject.user.cellview.client.Header;
+import org.gwtproject.user.cellview.client.TextHeader;
+import org.gwtproject.user.client.ui.VerticalPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.gwt.DataGrid;
 import org.gwtbootstrap3.client.ui.gwt.Widget;

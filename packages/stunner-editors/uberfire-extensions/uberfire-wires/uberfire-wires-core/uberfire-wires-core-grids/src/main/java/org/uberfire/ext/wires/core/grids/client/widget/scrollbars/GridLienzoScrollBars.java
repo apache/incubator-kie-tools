@@ -16,7 +16,7 @@
 
 package org.uberfire.ext.wires.core.grids.client.widget.scrollbars;
 
-import com.google.gwt.user.client.ui.Panel;
+import org.gwtproject.user.client.ui.Panel;
 
 /*
  * Represents browser scrollbars in the Grid Lienzo context,

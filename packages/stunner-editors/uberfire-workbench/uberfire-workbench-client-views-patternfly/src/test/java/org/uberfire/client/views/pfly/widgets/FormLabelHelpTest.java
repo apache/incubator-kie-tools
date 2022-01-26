@@ -16,7 +16,7 @@
 
 package org.uberfire.client.views.pfly.widgets;
 
-import com.google.gwt.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.FlowPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.junit.Before;

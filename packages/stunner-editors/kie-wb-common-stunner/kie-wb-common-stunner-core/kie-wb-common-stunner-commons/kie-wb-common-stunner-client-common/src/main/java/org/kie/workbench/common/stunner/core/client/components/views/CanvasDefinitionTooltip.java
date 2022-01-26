@@ -20,6 +20,7 @@ import java.util.function.Function;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -49,7 +50,10 @@ public class CanvasDefinitionTooltip implements CanvasTooltip<CanvasDefinitionTo
     @Inject
     public CanvasDefinitionTooltip(final DefinitionManager definitionManager,
                                    final DefinitionsCacheRegistry registry,
-                                   final CanvasTooltip<String> textTooltip) {
+                                   final @Named("LienzoTextTooltip") CanvasTooltip<String> textTooltip) {
+
+
+
         this(textTooltip,
              defId -> getDefinitionTitle(definitionManager,
                                          registry,

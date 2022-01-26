@@ -18,7 +18,7 @@ package org.uberfire.ext.widgets.common.client.dropdown.items;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchSelectorItem;
 import org.uberfire.mvp.Command;
 

@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.emf;
 import java.io.IOException;
 import java.util.function.Consumer;
 
-import com.google.gwt.core.client.GWT;
+import org.gwtproject.core.client.GWT;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
 import org.eclipse.emf.ecore.xmi.XMLResource;

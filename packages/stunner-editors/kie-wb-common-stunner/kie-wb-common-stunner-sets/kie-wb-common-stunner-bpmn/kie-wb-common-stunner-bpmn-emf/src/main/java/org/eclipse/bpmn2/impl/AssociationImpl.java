@@ -14,8 +14,6 @@
  */
 package org.eclipse.bpmn2.impl;
 
-import com.google.gwt.user.client.rpc.GwtTransient;
-
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.AssociationDirection;
 import org.eclipse.bpmn2.BaseElement;
@@ -62,7 +60,6 @@ public class AssociationImpl extends ArtifactImpl implements Association {
 	 * @generated
 	 * @ordered
 	 */
-	@GwtTransient
 	protected AssociationDirection associationDirection = ASSOCIATION_DIRECTION_EDEFAULT;
 
 	/**
@@ -73,7 +70,6 @@ public class AssociationImpl extends ArtifactImpl implements Association {
 	 * @generated
 	 * @ordered
 	 */
-	@GwtTransient
 	protected BaseElement sourceRef;
 
 	/**
@@ -84,7 +80,6 @@ public class AssociationImpl extends ArtifactImpl implements Association {
 	 * @generated
 	 * @ordered
 	 */
-	@GwtTransient
 	protected BaseElement targetRef;
 
 	/**

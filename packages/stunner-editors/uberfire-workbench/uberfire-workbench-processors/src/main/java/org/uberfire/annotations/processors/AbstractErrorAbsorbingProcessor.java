@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Set;
+
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -46,17 +47,6 @@ public abstract class AbstractErrorAbsorbingProcessor extends AbstractProcessor 
         } catch (ClassNotFoundException e) {
             rememberedInitError = e;
         }
-    }
-
-    private static AnnotationMirror findAnnotationMirror(Element target,
-                                                         TypeElement annotationType) {
-        final Name annotationTypeName = annotationType.getQualifiedName();
-        for (AnnotationMirror am : target.getAnnotationMirrors()) {
-            if (GeneratorUtils.getQualifiedName(am).contentEquals(annotationTypeName)) {
-                return am;
-            }
-        }
-        return null;
     }
 
     /**
@@ -112,6 +102,27 @@ public abstract class AbstractErrorAbsorbingProcessor extends AbstractProcessor 
     }
 
     /**
+     * Same contract as {@link #process(Set, RoundEnvironment)}, except that any
+     * exceptions thrown are caught and printed as messages of type
+     * {@link Kind#ERROR}. This is done to keep Eclipse JDT from going into an
+     * infinite processing loop.
+     */
+    protected abstract boolean processWithExceptions(
+            Set<? extends TypeElement> annotations,
+            RoundEnvironment roundEnv) throws Exception;
+
+    private static AnnotationMirror findAnnotationMirror(Element target,
+                                                         TypeElement annotationType) {
+        final Name annotationTypeName = annotationType.getQualifiedName();
+        for (AnnotationMirror am : target.getAnnotationMirrors()) {
+            if (GeneratorUtils.getQualifiedName(am).contentEquals(annotationTypeName)) {
+                return am;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Subclasses must call this from their constructors if something throws an
      * exception during initialization of the instance. Once this method has
      * been called with a non-null throwable, the
@@ -125,25 +136,21 @@ public abstract class AbstractErrorAbsorbingProcessor extends AbstractProcessor 
     }
 
     /**
-     * Same contract as {@link #process(Set, RoundEnvironment)}, except that any
-     * exceptions thrown are caught and printed as messages of type
-     * {@link Kind#ERROR}. This is done to keep Eclipse JDT from going into an
-     * infinite processing loop.
-     */
-    protected abstract boolean processWithExceptions(
-            Set<? extends TypeElement> annotations,
-            RoundEnvironment roundEnv) throws Exception;
-
-    /**
      * Writes the given code to javac's Filer.
      */
     protected final void writeCode(final String packageName,
                                    final String className,
                                    final StringBuffer code) throws IOException {
-        JavaFileObject jfo = processingEnv.getFiler().createSourceFile(packageName + "." + className);
-        try (Writer w = jfo.openWriter();
-             BufferedWriter bw = new BufferedWriter(w)) {
-            bw.append(code);
+
+        System.out.println(packageName + ". " + className);
+        try {
+            JavaFileObject jfo = processingEnv.getFiler().createSourceFile(packageName + "." + className);
+            try (Writer w = jfo.openWriter();
+                 BufferedWriter bw = new BufferedWriter(w)) {
+                bw.append(code);
+            }
+        } catch (javax.annotation.processing.FilerException e) {
+
         }
     }
 }

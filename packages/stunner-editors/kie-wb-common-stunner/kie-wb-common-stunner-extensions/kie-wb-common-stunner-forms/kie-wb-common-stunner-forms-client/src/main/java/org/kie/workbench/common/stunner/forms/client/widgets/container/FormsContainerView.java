@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.forms.client.widgets.container;
 
-import org.jboss.errai.common.client.api.IsElement;
+import io.crysknife.client.IsElement;
 import org.kie.workbench.common.stunner.forms.client.widgets.container.displayer.FormDisplayer;
 
 public interface FormsContainerView extends IsElement {

@@ -22,9 +22,9 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 @ApplicationScoped
@@ -38,20 +38,20 @@ public class SessionEventObserver {
     }
 
     @Inject
-    public SessionEventObserver(@Any final Instance<SessionDiagramOpenedHandler> sessionDiagramOpenedHandlersInstance,
-                                @Any final Instance<SessionDiagramSavedHandler> sessionDiagramSavedHandlersInstance) {
+    public SessionEventObserver(@Any final ManagedInstance<SessionDiagramOpenedHandler> sessionDiagramOpenedHandlersInstance,
+                                @Any final ManagedInstance<SessionDiagramSavedHandler> sessionDiagramSavedHandlersInstance) {
         sessionDiagramOpenedHandlersInstance.iterator().forEachRemaining(handler -> this.sessionDiagramOpenedHandlers.add(handler));
         sessionDiagramSavedHandlersInstance.iterator().forEachRemaining(handler -> this.sessionDiagramSavedHandlers.add(handler));
     }
 
-    void onSessionDiagramOpenedEvent(@Observes final SessionDiagramOpenedEvent event) {
+    public void onSessionDiagramOpenedEvent(@Observes final SessionDiagramOpenedEvent event) {
         final Diagram currentDiagram = event.getSession().getCanvasHandler().getDiagram();
         sessionDiagramOpenedHandlers.stream()
                 .filter(handler -> handler.accepts(currentDiagram))
                 .forEach(handler -> handler.onSessionDiagramOpened(event.getSession()));
     }
 
-    void onSessionDiagramSavedEvent(@Observes final SessionDiagramSavedEvent event) {
+    public void onSessionDiagramSavedEvent(@Observes final SessionDiagramSavedEvent event) {
         final Diagram currentDiagram = event.getSession().getCanvasHandler().getDiagram();
         sessionDiagramSavedHandlers.stream()
                 .filter(handler -> handler.accepts(currentDiagram))

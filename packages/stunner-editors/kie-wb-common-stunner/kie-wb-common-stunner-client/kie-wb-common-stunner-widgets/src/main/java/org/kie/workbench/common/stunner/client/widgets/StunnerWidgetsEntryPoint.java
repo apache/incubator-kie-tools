@@ -16,10 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.widgets;
 
-import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import io.crysknife.ui.translation.api.annotations.Bundle;
 
-@EntryPoint
+//@EntryPoint
 @Bundle("resources/i18n/StunnerWidgetsConstants.properties")
 public class StunnerWidgetsEntryPoint {
 

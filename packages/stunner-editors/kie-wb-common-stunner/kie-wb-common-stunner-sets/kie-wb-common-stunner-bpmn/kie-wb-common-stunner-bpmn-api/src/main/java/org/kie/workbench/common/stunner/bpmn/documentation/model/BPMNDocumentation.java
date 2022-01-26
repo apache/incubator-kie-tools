@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.documentation.model;
 
-import com.google.gwt.core.client.GWT;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -42,7 +41,7 @@ public class BPMNDocumentation implements DiagramDocumentation {
         instance.process = process;
         instance.elementsDetails = elementsDetails;
         instance.diagramImage = diagramImage;
-        instance.moduleName = GWT.getModuleName();
+        //instance.moduleName = GWT.getModuleName();
         return instance;
     }
 

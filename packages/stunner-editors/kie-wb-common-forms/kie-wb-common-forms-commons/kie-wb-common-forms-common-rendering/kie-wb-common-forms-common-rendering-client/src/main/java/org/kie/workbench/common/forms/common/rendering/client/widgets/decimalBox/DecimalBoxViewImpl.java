@@ -16,25 +16,34 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets.decimalBox;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasValue;
-import org.jboss.errai.common.client.dom.TextInput;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.SinkNative;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import elemental2.dom.Event;
+import elemental2.dom.HTMLInputElement;
+import elemental2.dom.KeyboardEvent;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.HasValue;
 
 @Templated
+@Dependent
 public class DecimalBoxViewImpl extends Composite implements DecimalBoxView {
 
     private DecimalBox presenter;
 
     @Inject
     @DataField
-    private TextInput input;
+    private HTMLInputElement input;
+
+    @PostConstruct
+    protected void init() {
+        input.type = "text";
+    }
 
     @Override
     public void setPresenter(DecimalBox presenter) {
@@ -43,12 +52,12 @@ public class DecimalBoxViewImpl extends Composite implements DecimalBoxView {
 
     @Override
     public void setValue(String value) {
-        input.setValue(value);
+        input.value = (value);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        input.setDisabled(!enabled);
+        input.disabled = (!enabled);
     }
 
     public void updateValue(Event event) {
@@ -57,12 +66,12 @@ public class DecimalBoxViewImpl extends Composite implements DecimalBoxView {
 
     @Override
     public String getTextValue() {
-        return input.getValue();
+        return input.value;
     }
 
     @Override
     public void setId(String id) {
-        input.setId(id);
+        input.id = (id);
     }
 
     @Override
@@ -73,13 +82,13 @@ public class DecimalBoxViewImpl extends Composite implements DecimalBoxView {
 
     @Override
     public void setMaxLength(Integer maxLength) {
-        input.setMaxLength(maxLength);
+        input.maxLength = (maxLength);
     }
 
-    public void onKeyDown(Event event) {
+    public void onKeyDown(KeyboardEvent event) {
 
-        int key = event.getKeyCode();
-        boolean isShiftPressed = event.getShiftKey();
+        int key = Integer.parseInt(event.code);
+        boolean isShiftPressed = event.shiftKey;
 
         if (presenter.isInvalidKeyCode(key,
                                        isShiftPressed)) {
@@ -88,14 +97,14 @@ public class DecimalBoxViewImpl extends Composite implements DecimalBoxView {
         }
     }
 
-    @SinkNative(Event.ONKEYDOWN | Event.ONCHANGE)
+    //@SinkNative(Event.ONKEYDOWN | Event.ONCHANGE)
     @EventHandler("input")
-    public void onEvent(Event event) {
-        switch (event.getTypeInt()) {
-            case Event.ONCHANGE:
+    public void onEvent(@ForEvent({"keydown","change"}) KeyboardEvent event) {
+        switch (event.code) {
+            case "change":
                 updateValue(event);
                 break;
-            case Event.ONKEYDOWN:
+            case "keydown":
                 onKeyDown(event);
                 break;
             default:

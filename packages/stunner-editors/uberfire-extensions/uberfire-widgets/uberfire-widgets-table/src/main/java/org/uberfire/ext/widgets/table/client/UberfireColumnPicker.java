@@ -20,13 +20,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.event.dom.client.ClickHandler;
+import org.gwtproject.event.logical.shared.CloseEvent;
+import org.gwtproject.event.logical.shared.CloseHandler;
+import org.gwtproject.user.client.ui.PopupPanel;
+import org.gwtproject.user.client.ui.VerticalPanel;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -39,7 +39,7 @@ public class UberfireColumnPicker<T> {
 
     protected final DataGrid<T> dataGrid;
     protected final List<ColumnMeta<T>> columnMetaList = new ArrayList<>();
-    protected final PopupPanel popup = GWT.create(PopupPanel.class);
+    protected final PopupPanel popup = new PopupPanel();
     protected List<ColumnChangedHandler> columnChangedHandler = new ArrayList<>();
 
     protected DataGrid<T> getDataGrid() {
@@ -193,7 +193,7 @@ public class UberfireColumnPicker<T> {
 
     protected void showColumnPickerPopup(final int left,
                                          final int top) {
-        VerticalPanel popupContent = GWT.create(VerticalPanel.class);
+        VerticalPanel popupContent = new VerticalPanel();
 
         initCheckBoxs(popupContent);
 
@@ -208,7 +208,7 @@ public class UberfireColumnPicker<T> {
     protected void initCheckBoxs(VerticalPanel popupContent) {
         for (final ColumnMeta<T> columnMeta : columnMetaList) {
             if (addThisColumnToPopup(columnMeta)) {
-                final CheckBox checkBox = GWT.create(CheckBox.class);
+                final CheckBox checkBox = new CheckBox();
                 checkBox.setText((String) columnMeta.getHeader().getValue());
                 checkBox.setName((String) columnMeta.getHeader().getValue());
                 checkBox.setValue(columnMeta.isVisible());
@@ -232,7 +232,7 @@ public class UberfireColumnPicker<T> {
     }
 
     public Button createToggleButton() {
-        final Button button = GWT.create(Button.class);
+        final Button button = new Button();
         button.addStyleName(UFTableResources.INSTANCE.CSS().columnPickerButton());
         button.setDataToggle(Toggle.BUTTON);
         button.setIcon(IconType.LIST_UL);

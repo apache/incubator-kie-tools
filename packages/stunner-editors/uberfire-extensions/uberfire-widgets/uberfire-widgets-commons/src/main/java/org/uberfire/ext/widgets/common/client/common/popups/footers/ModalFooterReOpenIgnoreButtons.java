@@ -15,12 +15,12 @@
  */
 package org.uberfire.ext.widgets.common.client.common.popups.footers;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiHandler;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalFooter;
@@ -33,7 +33,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
  */
 public class ModalFooterReOpenIgnoreButtons extends ModalFooter {
 
-    private static ModalFooterReOpenIgnoreButtonsBinder uiBinder = GWT.create(ModalFooterReOpenIgnoreButtonsBinder.class);
+    private static ModalFooterReOpenIgnoreButtonsBinder uiBinder = new ModalFooterReOpenIgnoreButtons_ModalFooterReOpenIgnoreButtonsBinderImpl();
 
     private final Command actionCommand;
     private final Command ignoreCommand;
@@ -73,6 +73,7 @@ public class ModalFooterReOpenIgnoreButtons extends ModalFooter {
         panel.hide();
     }
 
+    @UiTemplate
     interface ModalFooterReOpenIgnoreButtonsBinder
             extends
             UiBinder<Widget, ModalFooterReOpenIgnoreButtons> {

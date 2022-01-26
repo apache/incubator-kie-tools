@@ -16,8 +16,8 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Composite;
+import org.gwtproject.user.client.Event;
+import org.gwtproject.user.client.ui.Composite;
 
 public abstract class DirtyableComposite extends Composite
         implements
@@ -28,7 +28,9 @@ public abstract class DirtyableComposite extends Composite
     public DirtyableComposite() {
     }
 
-    public static native int getHeight() /*-{
+    public static int getHeight() {
+        throw new Error(DirtyableComposite.class.getCanonicalName()+".getHeight");
+    }/*-{
         var yScroll;
 
         if ($wnd.innerHeight && $wnd.scrollMaxY) {
@@ -57,7 +59,10 @@ public abstract class DirtyableComposite extends Composite
         return pageHeight;
     }-*/;
 
-    public static native int getWidth() /*-{
+    public static int getWidth()  {
+        throw new Error(DirtyableComposite.class.getCanonicalName()+".getWidth");
+
+    }/*-{
         var xScroll;
 
         if ($wnd.innerHeight && $wnd.scrollMaxY) {

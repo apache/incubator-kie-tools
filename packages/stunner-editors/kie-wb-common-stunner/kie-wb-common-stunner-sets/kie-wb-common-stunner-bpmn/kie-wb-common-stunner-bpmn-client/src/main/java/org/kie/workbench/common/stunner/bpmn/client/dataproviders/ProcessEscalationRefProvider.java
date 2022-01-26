@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.dataproviders;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.definition.EndEscalationEvent;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.uberfire.commons.Pair;
 
+@Dependent
 public class ProcessEscalationRefProvider extends AbstractProcessFilteredNodeProvider {
 
     private static final Predicate<Node> startEscalationEventsFilter = node -> ((View) node.getContent()).getDefinition() instanceof StartEscalationEvent;

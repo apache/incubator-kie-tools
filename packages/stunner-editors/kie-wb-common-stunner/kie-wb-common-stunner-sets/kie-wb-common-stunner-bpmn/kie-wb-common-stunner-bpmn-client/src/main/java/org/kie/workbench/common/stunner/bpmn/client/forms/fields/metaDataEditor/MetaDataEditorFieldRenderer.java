@@ -95,9 +95,15 @@ public class MetaDataEditorFieldRenderer extends FieldRenderer<MetaDataEditorFie
         }
         MetaDataRow newAttribute = new MetaDataRow();
         as.add(newAttribute);
-        MetaDataListItemWidgetView widget = view.getMetaDataWidget(view.getMetaDataRowsCount() - 1);
 
-        widget.setParentWidget(this);
+
+        view.setMetaDataRows(as);
+
+/*        view.addMetaDataRow(newAttribute);
+
+        for (int i = 0; i < view.getMetaDataRowsCount(); i++) {
+            view.getMetaDataWidget(i).setParentWidget(this);
+        }*/
     }
 
     @Override
@@ -157,7 +163,9 @@ public class MetaDataEditorFieldRenderer extends FieldRenderer<MetaDataEditorFie
 
     @Override
     public void removeMetaData(final MetaDataRow metaDataRow) {
-        view.getMetaDataRows().remove(metaDataRow);
+        List<MetaDataRow> updated = view.getMetaDataRows();
+        updated.remove(metaDataRow);
+        view.setMetaDataRows(updated);
         doSave();
     }
 

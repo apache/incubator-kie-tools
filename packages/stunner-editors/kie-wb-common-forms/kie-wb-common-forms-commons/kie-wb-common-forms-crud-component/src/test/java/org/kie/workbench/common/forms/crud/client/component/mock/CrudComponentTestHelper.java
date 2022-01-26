@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.view.client.AsyncDataProvider;
-import com.google.gwt.view.client.HasData;
+import org.gwtproject.user.cellview.client.TextColumn;
+import org.gwtproject.view.client.AsyncDataProvider;
+import org.gwtproject.view.client.HasData;
 import org.kie.workbench.common.forms.crud.client.component.CrudActionsHelper;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormView;
 import org.uberfire.ext.widgets.table.client.ColumnMeta;

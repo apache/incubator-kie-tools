@@ -19,8 +19,9 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.de
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import io.crysknife.ui.databinding.client.api.Bindable;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;

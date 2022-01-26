@@ -18,7 +18,7 @@ package org.kie.workbench.common.forms.common.rendering.client.util.valueConvert
 
 import java.math.BigDecimal;
 
-import org.jboss.errai.databinding.client.api.Converter;
+import io.crysknife.ui.databinding.client.api.Converter;
 
 public class BigDecimalToDoubleConverter implements Converter<BigDecimal, Double> {
 

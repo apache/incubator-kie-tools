@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import io.crysknife.client.BeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +48,7 @@ import static org.mockito.Mockito.when;
 public class SVGShapeFactoryTest {
 
     @Mock
-    private SyncBeanManager beanManager;
+    private BeanManager beanManager;
 
     @Mock
     private Object definition;

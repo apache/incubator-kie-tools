@@ -28,6 +28,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -58,7 +59,7 @@ public class MultipleInstanceVariableEditorViewTest {
         multipleInstanceVariableEditorView.dataTypeComboBox = dataTypeComboBox;
         multipleInstanceVariableEditorView.clientDataTypesService = clientDataTypesService;
 
-        final TextBox textBox = new TextBox();
+        final TextBox textBox = mock(TextBox.class);
 
         multipleInstanceVariableEditorView.setTextBoxModelValue(textBox, "MyModel");
         verify(clientDataTypesService, times(1)).add("MyModel", null);

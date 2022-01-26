@@ -15,6 +15,6 @@
  */
 
 .modal-dialog .modal-content.about-modal-pf {
-  min-height: 30em;
-  background-size: cover;
+    min-height: 30em;
+    background-size: cover;
 }

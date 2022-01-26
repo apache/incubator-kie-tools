@@ -22,7 +22,8 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.databinding.client.BindableProxyFactory;
+import io.crysknife.client.ManagedInstance;
+import io.crysknife.ui.databinding.client.BindableProxyFactory;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
@@ -42,8 +43,8 @@ public class DeepCloneProcess extends AbstractCloneProcess implements IDeepClone
     }
 
     @Inject
-    public DeepCloneProcess(final FactoryManager factoryManager,
-                            final AdapterManager adapterManager,
+    public DeepCloneProcess(final ManagedInstance<FactoryManager> factoryManager,
+                            final ManagedInstance<AdapterManager> adapterManager,
                             final ClassUtils classUtils) {
         super(factoryManager,
               adapterManager);
@@ -54,7 +55,7 @@ public class DeepCloneProcess extends AbstractCloneProcess implements IDeepClone
     @SuppressWarnings("all")
     public <S, T> T clone(final S source,
                           final T target) {
-        final AdapterRegistry adapters = adapterManager.registry();
+        final AdapterRegistry adapters = adapterManager.get().registry();
         final DefinitionAdapter<Object> sourceDefinitionAdapter = adapters.getDefinitionAdapter(source.getClass());
         for (String field : sourceDefinitionAdapter.getPropertyFields(source)) {
             Optional<?> property = sourceDefinitionAdapter.getProperty(source, field);

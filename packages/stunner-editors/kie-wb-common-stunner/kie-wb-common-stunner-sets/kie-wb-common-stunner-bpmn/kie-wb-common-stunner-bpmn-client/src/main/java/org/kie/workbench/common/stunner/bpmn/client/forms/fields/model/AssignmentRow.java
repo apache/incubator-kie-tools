@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.model;
 
-import org.jboss.errai.databinding.client.api.Bindable;
+import io.crysknife.ui.databinding.client.api.Bindable;
 
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.nonEmpty;

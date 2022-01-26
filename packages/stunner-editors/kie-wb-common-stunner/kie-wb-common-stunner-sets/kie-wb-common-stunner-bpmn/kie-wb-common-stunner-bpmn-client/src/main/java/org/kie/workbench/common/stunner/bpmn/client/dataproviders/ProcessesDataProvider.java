@@ -51,7 +51,7 @@ public class ProcessesDataProvider {
         return processIds;
     }
 
-    void onProcessesUpdatedEvent(final @Observes ProcessDataEvent event) {
+    public void onProcessesUpdatedEvent(final @Observes ProcessDataEvent event) {
         setProcessIds(toList(event.getProcessIds()));
     }
 

@@ -22,8 +22,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.databinding.client.api.Converter;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import io.crysknife.ui.databinding.client.api.Converter;
 import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
@@ -46,7 +45,7 @@ public class MultipleSelectorFieldRenderer<TYPE> extends FieldRenderer<AbstractM
 
     private MultipleSelectorInput<TYPE> selector;
 
-    private TranslationService translationService;
+    //private TranslationService translationService;
 
     private LiveSearchService<TYPE> searchService = new LiveSearchService<TYPE>() {
         @Override
@@ -89,10 +88,11 @@ public class MultipleSelectorFieldRenderer<TYPE> extends FieldRenderer<AbstractM
     };
 
     @Inject
-    public MultipleSelectorFieldRenderer(MultipleSelectorInput<TYPE> selector,
-                                         TranslationService translationService) {
+    public MultipleSelectorFieldRenderer(MultipleSelectorInput<TYPE> selector
+            //,TranslationService translationService
+    ) {
         this.selector = selector;
-        this.translationService = translationService;
+       // this.translationService = translationService;
     }
 
     @Override
@@ -106,8 +106,8 @@ public class MultipleSelectorFieldRenderer<TYPE> extends FieldRenderer<AbstractM
                       new MultipleLiveSearchSelectionHandler<>(field.getMaxElementsOnTitle()));
         selector.setMaxItems(field.getMaxDropdownElements());
         selector.setEnabled(!field.getReadOnly() && renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE));
-        selector.setFilterEnabled(field.getAllowFilter());
-        selector.setClearSelectionEnabled(field.getAllowClearSelection());
+        selector.setFilterEnabled(field.isAllowFilter());
+        selector.setClearSelectionEnabled(field.isAllowClearSelection());
 
         if (renderMode.equals(RenderMode.PRETTY_MODE)) {
             selector.setEnabled(false);

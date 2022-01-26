@@ -17,8 +17,10 @@
 package org.kie.workbench.common.forms.crud.client.component;
 
 import com.google.gwtmockito.GwtMock;
+
+import io.crysknife.ui.translation.api.spi.TranslationService;
+
 import junit.framework.TestCase;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.FormDisplayer;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.FormDisplayer.FormDisplayerCallback;

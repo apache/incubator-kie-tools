@@ -21,10 +21,11 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
 import org.kie.workbench.common.stunner.bpmn.client.components.monaco_editor.MonacoEditorLanguage;
 import org.kie.workbench.common.stunner.bpmn.client.components.monaco_editor.MonacoEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenter;
@@ -37,6 +38,7 @@ import static org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode.C
 import static org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode.DROOLS_CONDITION;
 import static org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode.FLOW_CONDITION;
 
+@Dependent
 public class ScriptTypeFieldEditorPresenter
         extends FieldEditorPresenter<ScriptTypeValue> {
 

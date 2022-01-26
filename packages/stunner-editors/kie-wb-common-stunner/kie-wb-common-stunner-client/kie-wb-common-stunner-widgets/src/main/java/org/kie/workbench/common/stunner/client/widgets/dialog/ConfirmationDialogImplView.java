@@ -19,14 +19,15 @@ package org.kie.workbench.common.stunner.client.widgets.dialog;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLParagraphElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -111,13 +112,13 @@ public class ConfirmationDialogImplView implements ConfirmationDialogImpl.View {
     }
 
     @EventHandler("yes-button")
-    public void onYesButtonClick(final ClickEvent e) {
+    public void onYesButtonClick(@ForEvent("click") final Event e) {
         presenter.hide();
         onYesAction.execute();
     }
 
     @EventHandler("no-button")
-    public void onNoButtonClick(final ClickEvent e) {
+    public void onNoButtonClick(@ForEvent("click") final Event e) {
         presenter.hide();
         onNoAction.execute();
     }

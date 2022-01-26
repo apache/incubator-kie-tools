@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.metaDataEditor
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.MetaDataRow;
 import org.uberfire.backend.vfs.Path;
 

@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.processing.engine.handling;
 
-import org.jboss.errai.common.client.api.IsElement;
+import io.crysknife.client.IsElement;
 
 /**
  * Container for {@link FormField}

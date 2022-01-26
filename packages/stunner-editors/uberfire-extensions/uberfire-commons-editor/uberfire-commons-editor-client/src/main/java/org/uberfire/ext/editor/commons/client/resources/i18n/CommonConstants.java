@@ -16,14 +16,15 @@
 
 package org.uberfire.ext.editor.commons.client.resources.i18n;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import org.gwtproject.i18n.client.Message;
+import org.gwtproject.i18n.client.Messages;
 
+@Message
 public interface CommonConstants
         extends
         Messages {
 
-    public static final CommonConstants INSTANCE = GWT.create(CommonConstants.class);
+    public static final CommonConstants INSTANCE = CommonConstantsFactory.get();
 
     String SavePopupTitle();
 

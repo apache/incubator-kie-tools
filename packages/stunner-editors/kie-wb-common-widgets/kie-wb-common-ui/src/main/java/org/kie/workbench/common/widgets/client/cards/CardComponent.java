@@ -18,7 +18,7 @@ package org.kie.workbench.common.widgets.client.cards;
 
 import java.util.function.Function;
 
-import com.google.gwt.dom.client.Style.HasCssName;
+import org.gwtproject.dom.client.Style.HasCssName;
 import elemental2.dom.HTMLElement;
 
 public interface CardComponent {

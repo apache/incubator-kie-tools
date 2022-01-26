@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.comboBoxEditor
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
@@ -32,7 +31,6 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldDefinition;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 
-@Dependent
 public abstract class AbstractComboBoxFieldRenderer<T extends ComboBoxFieldDefinition>
         extends SelectorFieldRenderer<T, StringSelectorOption, String> {
 

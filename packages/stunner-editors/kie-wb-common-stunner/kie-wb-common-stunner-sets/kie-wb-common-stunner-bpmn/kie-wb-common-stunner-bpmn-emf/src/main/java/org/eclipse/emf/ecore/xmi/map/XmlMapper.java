@@ -19,8 +19,8 @@ package org.eclipse.emf.ecore.xmi.map;
 import java.io.IOException;
 import java.util.Map;
 
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.XMLParser;
+import org.gwtproject.xml.client.Document;
+import org.gwtproject.xml.client.XMLParser;
 import org.eclipse.emf.common.util.Callback;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.xmi.XMLResource;

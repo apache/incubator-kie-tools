@@ -107,7 +107,7 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
         }
     }
 
-    void onCommandAdded(final @Observes RegisterChangedEvent registerChangedEvent) {
+    public void onCommandAdded(final @Observes RegisterChangedEvent registerChangedEvent) {
         checkNotNull("registerChangedEvent",
                      registerChangedEvent);
         if (!Objects.isNull(getSession())
@@ -116,7 +116,7 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
         }
     }
 
-    void onCurrentRegistryChanged(final @Observes CurrentRegistryChangedEvent currentRegistryChangedEvent) {
+    public void onCurrentRegistryChanged(final @Observes CurrentRegistryChangedEvent currentRegistryChangedEvent) {
         checkState();
     }
 

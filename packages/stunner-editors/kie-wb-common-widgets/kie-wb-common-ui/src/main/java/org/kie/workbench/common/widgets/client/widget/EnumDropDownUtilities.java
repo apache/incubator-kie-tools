@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.Command;
+import org.gwtproject.core.client.Scheduler;
+import org.gwtproject.user.client.Command;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.kie.soup.commons.util.ListSplitter;
 import org.kie.soup.project.datamodel.oracle.DropDownData;

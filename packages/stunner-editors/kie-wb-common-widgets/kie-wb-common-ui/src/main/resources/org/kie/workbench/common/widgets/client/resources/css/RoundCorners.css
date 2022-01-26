@@ -14,109 +14,109 @@
  * limitations under the License.
  */
 @sprite .whiteTopLeftCornerClass {
-  gwt-image: "whiteTopLeftCorner";
-  height: 4px;
-  width: 4px;
+    gwt-image: 'whiteTopLeftCorner';
+    height: 4px;
+    width: 4px;
 }
 
 @sprite .whiteTopRightCornerClass {
-  gwt-image: "whiteTopRightCorner";
-  height: 4px;
-  width: 4px;
+    gwt-image: 'whiteTopRightCorner';
+    height: 4px;
+    width: 4px;
 }
 
 @sprite .whiteBottomLeftCornerClass {
-  gwt-image: "whiteBottomLeftCorner";
-  height: 4px;
-  width: 4px;
+    gwt-image: 'whiteBottomLeftCorner';
+    height: 4px;
+    width: 4px;
 }
 
 @sprite .whiteBottomRightCornerClass {
-  gwt-image: "whiteBottomRightCorner";
-  height: 4px;
-  width: 4px;
+    gwt-image: 'whiteBottomRightCorner';
+    height: 4px;
+    width: 4px;
 }
 
 .whiteBottomClass {
-  border-bottom: 1px solid #bbbbbb;
-  height: 3px;
-  width: 100%;
+    border-bottom: 1px solid #bbbbbb;
+    height: 3px;
+    width: 100%;
 }
 
 .whiteTopClass {
-  border-top: 1px solid #bbbbbb;
-  height: 3px;
-  width: 100%;
+    border-top: 1px solid #bbbbbb;
+    height: 3px;
+    width: 100%;
 }
 
 .whiteSideLeftClass {
-  border-left: 1px solid #bbbbbb;
-  height: 100%;
-  width: 3px;
+    border-left: 1px solid #bbbbbb;
+    height: 100%;
+    width: 3px;
 }
 
 .whiteSideRightClass {
-  border-right: 1px solid #bbbbbb;
-  height: 100%;
-  width: 3px;
+    border-right: 1px solid #bbbbbb;
+    height: 100%;
+    width: 3px;
 }
 
 .whiteCenterClass {
 }
 
 @sprite .greyTopLeftCornerClass {
-  gwt-image: "greyTopLeftCorner";
-  height: 4px;
-  width: 4px;
+    gwt-image: 'greyTopLeftCorner';
+    height: 4px;
+    width: 4px;
 }
 
 @sprite .greyTopRightCornerClass {
-  gwt-image: "greyTopRightCorner";
-  height: 4px;
-  width: 4px;
+    gwt-image: 'greyTopRightCorner';
+    height: 4px;
+    width: 4px;
 }
 
 @sprite .greyBottomLeftCornerClass {
-  gwt-image: "greyBottomLeftCorner";
-  height: 4px;
-  width: 4px;
+    gwt-image: 'greyBottomLeftCorner';
+    height: 4px;
+    width: 4px;
 }
 
 @sprite .greyBottomRightCornerClass {
-  gwt-image: "greyBottomRightCorner";
-  height: 4px;
-  width: 4px;
+    gwt-image: 'greyBottomRightCorner';
+    height: 4px;
+    width: 4px;
 }
 
 @sprite .greyBottomClass {
-  gwt-image: "greyBottom";
-  height: 4px;
-  width: 100%;
+    gwt-image: 'greyBottom';
+    height: 4px;
+    width: 100%;
 }
 
 @sprite .greyTopClass {
-  gwt-image: "greyTop";
-  height: 4px;
-  width: 100%;
+    gwt-image: 'greyTop';
+    height: 4px;
+    width: 100%;
 }
 
 @sprite .greySideLeftClass {
-  gwt-image: "greySideLeft";
-  height: 100%;
-  width: 4px;
+    gwt-image: 'greySideLeft';
+    height: 100%;
+    width: 4px;
 }
 
 @sprite .greySideRightClass {
-  gwt-image: "greySideRight";
-  height: 100%;
-  width: 4px;
+    gwt-image: 'greySideRight';
+    height: 100%;
+    width: 4px;
 }
 
 .greyCenterClass {
-  background: #e3e3e3;
+    background: #E3E3E3;
 }
 
 .clean-textarea {
-  border: none !important;
-  width: 95%;
+    border: none !important;
+    width: 95%;
 }

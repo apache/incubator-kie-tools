@@ -18,13 +18,13 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.artifacts;
 
 import javax.enterprise.event.Event;
 
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.ValueListBox;
+import org.gwtproject.event.dom.client.ChangeHandler;
+import org.gwtproject.event.dom.client.ClickHandler;
+import org.gwtproject.event.dom.client.KeyDownHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

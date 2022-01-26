@@ -16,12 +16,12 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.safehtml.shared.SafeHtmlUtils;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.ui.HTML;
+import org.gwtproject.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterForceSaveReOpenCancelButtons;
@@ -33,7 +33,7 @@ public abstract class AbstractConcurrentChangePopup extends BaseModal {
 
     @UiField
     protected HTML message;
-    private AbstractConcurrentChangePopupWidgetBinder uiBinder = GWT.create(AbstractConcurrentChangePopupWidgetBinder.class);
+    private AbstractConcurrentChangePopupWidgetBinder uiBinder = new AbstractConcurrentChangePopup_AbstractConcurrentChangePopupWidgetBinderImpl();
 
     protected AbstractConcurrentChangePopup(final String content,
                                             final Command onIgnore,
@@ -78,6 +78,7 @@ public abstract class AbstractConcurrentChangePopup extends BaseModal {
         message.setHTML(SafeHtmlUtils.fromTrustedString(content));
     }
 
+    @UiTemplate
     interface AbstractConcurrentChangePopupWidgetBinder
             extends
             UiBinder<Widget, AbstractConcurrentChangePopup> {

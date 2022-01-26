@@ -16,17 +16,17 @@
 
 package org.uberfire.ext.widgets.table.client;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.user.cellview.client.AbstractPager;
-import com.google.gwt.user.cellview.client.SimplePager;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.view.client.HasRows;
-import com.google.gwt.view.client.Range;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.event.dom.client.ClickHandler;
+import org.gwtproject.i18n.client.NumberFormat;
+import org.gwtproject.resources.client.CssResource;
+import org.gwtproject.user.cellview.client.AbstractPager;
+import org.gwtproject.user.cellview.client.SimplePager;
+import org.gwtproject.user.client.ui.HTML;
+import org.gwtproject.user.client.ui.HasVerticalAlignment;
+import org.gwtproject.user.client.ui.HorizontalPanel;
+import org.gwtproject.view.client.HasRows;
+import org.gwtproject.view.client.Range;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.ext.widgets.table.client.resources.UberfireSimplePagerResources;

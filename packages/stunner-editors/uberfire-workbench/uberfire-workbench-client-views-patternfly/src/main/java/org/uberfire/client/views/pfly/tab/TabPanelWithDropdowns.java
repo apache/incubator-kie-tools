@@ -24,16 +24,16 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.DomGlobal;
+import io.crysknife.client.internal.collections.Multimap;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.HorizontalPanel;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.gwtbootstrap3.client.shared.event.TabShowEvent;
 import org.gwtbootstrap3.client.shared.event.TabShowHandler;
 import org.gwtbootstrap3.client.shared.event.TabShownEvent;
@@ -50,8 +50,8 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 
-import static com.google.gwt.i18n.client.HasDirection.Direction.LTR;
-import static com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant.endOf;
+import static org.gwtproject.i18n.client.HasDirection.Direction.LTR;
+import static org.gwtproject.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant.endOf;
 
 /**
  * A Bootstrap3 TabPanel which supports a mix of normal tabs and tabs that are dropdown menus. Selecting an item from a
@@ -60,7 +60,7 @@ import static com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAli
 @Dependent
 public class TabPanelWithDropdowns extends Composite {
 
-    private static TabPanelWithDropdownsBinder uiBinder = GWT.create(TabPanelWithDropdownsBinder.class);
+    private static TabPanelWithDropdownsBinder uiBinder = new TabPanelWithDropdowns_TabPanelWithDropdownsBinderImpl();
     /**
      * Widgets we have created that can have the CSS style name "active" added to them. When a new tab is selected, all
      * of these widgets get the "active" style removed from them.
@@ -96,7 +96,7 @@ public class TabPanelWithDropdowns extends Composite {
      * tab is removed. This is <i>not</i> a record of registrations we've handed out at the panel level: those are
      * managed by this widget's HandlerManager.
      */
-    private final Multimap<TabPanelEntry, HandlerRegistration> tabHandlerRegistrations = HashMultimap.create();
+    private final Multimap<TabPanelEntry, HandlerRegistration> tabHandlerRegistrations = new Multimap<>();
     /**
      * All tabs (both top-level and nested) that have content associated with them. In other words, everything except
      * the dropdown tabs themselves.
@@ -246,9 +246,12 @@ public class TabPanelWithDropdowns extends Composite {
      * @param tab the item to remove.
      */
     public boolean remove(TabPanelEntry tab) {
-        for (HandlerRegistration registration : tabHandlerRegistrations.removeAll(tab)) {
+        for (HandlerRegistration registration : tabHandlerRegistrations.get(tab)) {
             registration.removeHandler();
         }
+
+        tabHandlerRegistrations.removeAll(tab);
+
         boolean removed = tabBar.remove(tab.getTabWidget());
         tabContent.remove(tab.getContentPane());
         activatableWidgets.remove(tab.getTabWidget());
@@ -371,6 +374,7 @@ public class TabPanelWithDropdowns extends Composite {
         this.getWidgetsPanel().setCellHorizontalAlignment(customWidget, endOf(LTR));
     }
 
+    @UiTemplate
     interface TabPanelWithDropdownsBinder
             extends
             UiBinder<TabPanel, TabPanelWithDropdowns> {
@@ -385,7 +389,7 @@ public class TabPanelWithDropdowns extends Composite {
 
         private final AnchorListItem owningTab;
         private final List<TabPanelEntry> contents = new ArrayList<TabPanelEntry>();
-        private final Multimap<TabPanelEntry, HandlerRegistration> tabHandlerRegistrations = HashMultimap.create();
+        private final Multimap<TabPanelEntry, HandlerRegistration> tabHandlerRegistrations = new Multimap<>();
 
         public DropDownTab(AnchorListItem owningTab) {
             this.owningTab = owningTab;
@@ -438,9 +442,15 @@ public class TabPanelWithDropdowns extends Composite {
                 tab.getContentPane().removeFromParent();
                 tab.getTabWidget().removeFromParent();
 
-                for (HandlerRegistration handlerRegistration : tabHandlerRegistrations.removeAll(tab)) {
+                for (HandlerRegistration handlerRegistration : tabHandlerRegistrations.get(tab)) {
                     handlerRegistration.removeHandler();
                 }
+
+                tabHandlerRegistrations.removeAll(tab);
+
+/*                for (HandlerRegistration handlerRegistration : tabHandlerRegistrations.removeAll(tab)) {
+                    handlerRegistration.removeHandler();
+                }*/
 
                 activatableWidgets.remove(tab.getTabWidget());
                 allContentTabs.remove(tab);

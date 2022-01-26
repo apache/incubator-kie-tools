@@ -17,14 +17,15 @@ package org.kie.workbench.common.widgets.client.workitems;
 
 import java.util.Set;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.event.dom.client.ChangeEvent;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiHandler;
 
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.ui.HTMLPanel;
+import org.gwtproject.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.ListBox;
@@ -36,6 +37,7 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
  */
 public class WorkItemStringParameterWidget extends WorkItemParameterWidget {
 
+    @UiTemplate
     interface WorkItemStringParameterWidgetBinder
             extends
             UiBinder<HTMLPanel, WorkItemStringParameterWidget> {
@@ -51,7 +53,7 @@ public class WorkItemStringParameterWidget extends WorkItemParameterWidget {
     @UiField
     ListBox lstAvailableBindings;
 
-    private static WorkItemStringParameterWidgetBinder uiBinder = GWT.create(WorkItemStringParameterWidgetBinder.class);
+    private static WorkItemStringParameterWidgetBinder uiBinder = new WorkItemStringParameterWidget_WorkItemStringParameterWidgetBinderImpl();
 
     public WorkItemStringParameterWidget(PortableStringParameterDefinition ppd,
                                          IBindingProvider bindingProvider,
@@ -62,8 +64,8 @@ public class WorkItemStringParameterWidget extends WorkItemParameterWidget {
         this.parameterEditor.setEnabled(!isReadOnly);
 
         //Setup widget to select a literal value
-        if (ppd.getValue() != null) {
-            this.parameterEditor.setText(ppd.getValue());
+        if (ppd.isValue() != null) {
+            this.parameterEditor.setText(ppd.isValue());
         }
 
         //Setup widget to use bindings

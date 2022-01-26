@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.core.documentation;
 
 import java.util.function.Supplier;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 public interface DocumentationView<D extends Diagram> extends IsWidget {

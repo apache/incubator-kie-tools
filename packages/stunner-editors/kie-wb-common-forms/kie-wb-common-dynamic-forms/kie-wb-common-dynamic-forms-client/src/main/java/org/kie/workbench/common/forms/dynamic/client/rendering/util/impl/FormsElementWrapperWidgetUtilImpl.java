@@ -25,8 +25,8 @@ import java.util.function.Function;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 
-import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
+import org.gwtproject.user.client.ui.Widget;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.util.FormsElementWrapperWidgetUtil;
 
@@ -36,10 +36,6 @@ public class FormsElementWrapperWidgetUtilImpl implements FormsElementWrapperWid
     private Map<Object, List<ElementWrapperWidget<?>>> mappedWidgets = new HashMap<>();
 
     public Widget getWidget(Object source, HTMLElement element) {
-        return getWidget(source, element, ElementWrapperWidget::getWidget);
-    }
-
-    public Widget getWidget(Object source, elemental2.dom.HTMLElement element) {
         return getWidget(source, element, ElementWrapperWidget::getWidget);
     }
 

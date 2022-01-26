@@ -17,21 +17,23 @@
 package org.kie.workbench.common.stunner.forms.client.widgets;
 
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLDivElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
+@Dependent
 public class FormPropertiesWidgetViewImpl implements FormPropertiesWidgetView,
                                                      IsElement {
 
     @Inject
     @DataField
-    private Div formContent;
+    private HTMLDivElement formContent;
 
     private Presenter presenter;
 

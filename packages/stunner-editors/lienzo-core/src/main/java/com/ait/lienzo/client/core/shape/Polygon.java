@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
+import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
@@ -34,10 +35,8 @@ import jsinterop.annotations.JsType;
  * A polygon is traditionally a plane figure that is bounded by a closed path,
  * composed of a finite sequence of straight line segments.
  */
-@JsType
 public class Polygon extends AbstractMultiPointShape<Polygon> {
 
-    @JsProperty
     private double cornerRadius;
 
     /**
@@ -51,19 +50,16 @@ public class Polygon extends AbstractMultiPointShape<Polygon> {
         setPoints(points);
     }
 
-    @JsIgnore
     public Polygon(final Point2DArray points, final double corner) {
         this(points);
 
         setCornerRadius(corner);
     }
 
-    @JsIgnore
     public Polygon(final Point2D... points) {
         this(new Point2DArray().push(points));
     }
 
-    @JsIgnore
     public Polygon(double... array) {
         this(Point2DArray.fromArrayOfDouble(array));
     }

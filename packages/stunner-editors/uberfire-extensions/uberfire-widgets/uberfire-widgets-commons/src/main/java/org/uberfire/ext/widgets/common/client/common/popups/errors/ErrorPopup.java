@@ -15,13 +15,13 @@
  */
 package org.uberfire.ext.widgets.common.client.common.popups.errors;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.safehtml.shared.SafeHtmlUtils;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.Command;
+import org.gwtproject.user.client.ui.HTML;
+import org.gwtproject.user.client.ui.Widget;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.gwtbootstrap3.client.shared.event.ModalShowEvent;
@@ -35,7 +35,7 @@ import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
  */
 public class ErrorPopup extends BaseModal {
 
-    private static ErrorPopupWidgetBinder uiBinder = GWT.create(ErrorPopupWidgetBinder.class);
+    private static ErrorPopupWidgetBinder uiBinder = new ErrorPopup_ErrorPopupWidgetBinderImpl();
     private static ErrorPopup instance = new ErrorPopup();
     @UiField
     protected HTML message;
@@ -85,6 +85,7 @@ public class ErrorPopup extends BaseModal {
         this.message.setHTML(SafeHtmlUtils.fromTrustedString(message));
     }
 
+    @UiTemplate
     interface ErrorPopupWidgetBinder
             extends
             UiBinder<Widget, ErrorPopup> {

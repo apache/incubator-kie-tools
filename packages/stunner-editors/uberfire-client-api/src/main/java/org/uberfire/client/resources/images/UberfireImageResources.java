@@ -16,8 +16,8 @@
 
 package org.uberfire.client.resources.images;
 
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
+import org.gwtproject.resources.client.ClientBundle;
+import org.gwtproject.resources.client.ImageResource;
 
 public interface UberfireImageResources
         extends

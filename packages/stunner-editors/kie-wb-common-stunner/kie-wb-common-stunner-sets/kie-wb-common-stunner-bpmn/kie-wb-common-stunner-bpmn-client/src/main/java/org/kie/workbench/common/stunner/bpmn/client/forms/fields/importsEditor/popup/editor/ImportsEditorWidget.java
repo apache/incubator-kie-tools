@@ -22,10 +22,10 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.Widget;
 
-import static com.google.gwt.dom.client.Style.Display.NONE;
-import static com.google.gwt.dom.client.Style.Display.TABLE;
+import static org.gwtproject.dom.client.Style.Display.NONE;
+import static org.gwtproject.dom.client.Style.Display.TABLE;
 
 public abstract class ImportsEditorWidget<T> implements ImportsEditorWidgetView.Presenter<T> {
 

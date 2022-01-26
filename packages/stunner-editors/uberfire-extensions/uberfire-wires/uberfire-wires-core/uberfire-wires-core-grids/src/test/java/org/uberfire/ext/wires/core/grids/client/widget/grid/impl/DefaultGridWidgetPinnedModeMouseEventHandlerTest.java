@@ -19,7 +19,7 @@ import java.util.Optional;
 
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.user.client.Command;
+import org.gwtproject.user.client.Command;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -18,11 +18,10 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.importsEditor;
 
 import java.util.ArrayList;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockito;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtproject.event.dom.client.ClickEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,7 +58,7 @@ public class ImportsFieldEditorWidgetTest {
     public void setUp() {
         GwtMockito.initMocks(this);
 
-        tested = GWT.create(ImportsFieldEditorWidget.class);
+        tested = mock(ImportsFieldEditorWidget.class);
         tested.importsEditor = mock(ImportsEditor.class);
         tested.importsButton = mock(Button.class);
         tested.importsTextBox = mock(TextBox.class);

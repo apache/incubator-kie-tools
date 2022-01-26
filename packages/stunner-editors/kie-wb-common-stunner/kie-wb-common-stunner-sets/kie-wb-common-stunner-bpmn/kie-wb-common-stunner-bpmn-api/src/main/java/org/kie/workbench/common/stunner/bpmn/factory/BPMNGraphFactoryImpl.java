@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.client.rule.ClientRuleManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
@@ -82,7 +83,7 @@ public class BPMNGraphFactoryImpl
     @Inject
     public BPMNGraphFactoryImpl(final DefinitionManager definitionManager,
                                 final FactoryManager factoryManager,
-                                final RuleManager ruleManager,
+                                final ClientRuleManager ruleManager,
                                 final GraphCommandManager graphCommandManager,
                                 final GraphCommandFactory graphCommandFactory,
                                 final GraphIndexBuilder<?> indexBuilder) {

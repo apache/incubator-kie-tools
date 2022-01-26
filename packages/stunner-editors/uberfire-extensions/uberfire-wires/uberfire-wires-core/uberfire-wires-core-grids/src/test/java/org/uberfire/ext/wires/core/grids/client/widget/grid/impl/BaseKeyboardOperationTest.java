@@ -38,8 +38,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper.RenderingInformation;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 
-import static com.google.gwt.event.dom.client.KeyCodes.KEY_LEFT;
-import static com.google.gwt.event.dom.client.KeyCodes.KEY_RIGHT;
+import static org.gwtproject.event.dom.client.KeyCodes.KEY_LEFT;
+import static org.gwtproject.event.dom.client.KeyCodes.KEY_RIGHT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

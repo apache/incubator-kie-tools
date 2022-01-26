@@ -18,8 +18,9 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.inpu
 
 import java.util.Date;
 
+import io.crysknife.ui.databinding.client.api.Bindable;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.input.AbstractMultipleInputFieldDefinition;

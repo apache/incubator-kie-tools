@@ -16,11 +16,10 @@
 
 package org.uberfire.ext.widgets.common.client.dropdown;
 
-import org.jboss.errai.common.client.api.IsElement;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
+import io.crysknife.client.IsElement;
 
-public interface InlineCreationEditor<TYPE> extends EntryCreationEditor<TYPE>, IsElement{
+public interface InlineCreationEditor<TYPE> extends EntryCreationEditor<TYPE>,
+                                                    IsElement {
 
     void clear();
 }

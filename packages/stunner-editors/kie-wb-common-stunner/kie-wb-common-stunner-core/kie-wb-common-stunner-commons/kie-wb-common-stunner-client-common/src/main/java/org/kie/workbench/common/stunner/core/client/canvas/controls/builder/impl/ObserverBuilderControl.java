@@ -100,7 +100,7 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
     }
 
     @SuppressWarnings("unchecked")
-    void onBuildCanvasShape(final @Observes BuildCanvasShapeEvent event) {
+    public void onBuildCanvasShape(final @Observes BuildCanvasShapeEvent event) {
         checkNotNull("event",
                      event);
         if (null != canvasHandler) {
@@ -147,7 +147,7 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
                 getCanvasElement().getOwnerDocument().getScrollTop();
     }
 
-    private com.google.gwt.user.client.Element getCanvasElement() {
+    private org.gwtproject.dom.client.Element getCanvasElement() {
         return canvasHandler.getAbstractCanvas().getView().asWidget().getElement();
     }
 }

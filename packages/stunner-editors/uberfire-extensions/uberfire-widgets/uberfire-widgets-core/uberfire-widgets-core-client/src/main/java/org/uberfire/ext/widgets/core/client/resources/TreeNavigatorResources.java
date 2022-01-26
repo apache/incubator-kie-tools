@@ -15,18 +15,19 @@
  */
 package org.uberfire.ext.widgets.core.client.resources;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
+import org.gwtproject.resources.client.ClientBundle;
+import org.gwtproject.resources.client.CssResource;
+import org.gwtproject.resources.client.Resource;
 
 /**
  * Wizard resources
  */
+@Resource
 public interface TreeNavigatorResources
         extends
         ClientBundle {
 
-    public static final TreeNavigatorResources INSTANCE = GWT.create(TreeNavigatorResources.class);
+    public static final TreeNavigatorResources INSTANCE = new TreeNavigatorResourcesImpl();
 
     @Source("css/TreeNavigator.css")
     NavigatorStyle css();

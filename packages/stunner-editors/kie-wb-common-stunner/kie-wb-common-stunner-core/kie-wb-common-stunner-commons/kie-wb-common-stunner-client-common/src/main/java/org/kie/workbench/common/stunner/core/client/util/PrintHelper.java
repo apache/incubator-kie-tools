@@ -114,12 +114,16 @@ public class PrintHelper {
         return DomGlobal.window;
     }
 
-    private native Element nativeAsElement(final Object object)/*-{
+    private Element nativeAsElement(final Object object) {
+        throw new Error(getClass().getCanonicalName()+".nativeAsElement");
+    }/*-{
         // Query selection from another window returns only JavaScriptObjects, causing ClassCastException.
         return object;
     }-*/;
 
-    private native HTMLDocument nativeGetWindowDocument(final Window window)/*-{
+    private HTMLDocument nativeGetWindowDocument(final Window window) {
+        throw new Error(getClass().getCanonicalName()+".nativeGetWindowDocument");
+    }/*-{
         // Replace this method by Elemental2 implementation (https://github.com/google/elemental2/issues/60).
         return window.document;
     }-*/;

@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -54,6 +55,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.st
  * with a better node disposition and less edges crossing.
  */
 @Default
+@Singleton
 public class SugiyamaLayoutService extends AbstractLayoutService {
 
     private final CycleBreaker cycleBreaker;

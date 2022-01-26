@@ -18,12 +18,11 @@ package org.kie.workbench.common.forms.common.rendering.client;
 
 import javax.annotation.PostConstruct;
 
-import com.google.gwt.core.client.ScriptInjector;
+import io.crysknife.ui.translation.api.annotations.Bundle;
 import org.gwtbootstrap3.extras.typeahead.client.TypeaheadClientBundle;
-import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import org.gwtproject.core.client.ScriptInjector;
 
-@EntryPoint
+//@EntryPoint
 @Bundle("resources/i18n/FormWidgetsConstants.properties")
 public class FormWidgetsEntryPoint {
 

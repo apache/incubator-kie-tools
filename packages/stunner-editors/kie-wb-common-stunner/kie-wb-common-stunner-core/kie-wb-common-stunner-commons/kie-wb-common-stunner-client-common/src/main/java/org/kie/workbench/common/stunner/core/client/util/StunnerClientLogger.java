@@ -24,8 +24,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.logging.client.LogConfiguration;
+import elemental2.dom.DomGlobal;
+import org.gwtproject.core.client.GWT;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -247,17 +247,20 @@ public class StunnerClientLogger {
     }
 
     public static void log(final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
+        DomGlobal.console.log(message);
+
+/*        if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(Level.INFO,
                        message);
-        }
+        }*/
     }
 
     public static void log(final Level level,
                            final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
+        DomGlobal.console.log(message);
+/*        if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level,
                        message);
-        }
+        }*/
     }
 }

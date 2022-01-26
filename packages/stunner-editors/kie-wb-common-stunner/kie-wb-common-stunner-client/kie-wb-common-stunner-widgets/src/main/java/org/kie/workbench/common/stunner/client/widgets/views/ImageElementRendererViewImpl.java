@@ -19,15 +19,16 @@ package org.kie.workbench.common.stunner.client.widgets.views;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.safehtml.shared.SafeUri;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import jsinterop.base.Js;
 import org.gwtbootstrap3.client.ui.Image;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.safehtml.shared.SafeUri;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.core.client.components.views.ImageElementRendererView;
 
 @Templated
@@ -37,16 +38,16 @@ public class ImageElementRendererViewImpl implements ImageElementRendererView,
 
     @Inject
     @DataField
-    private Div content;
+    private HTMLDivElement content;
 
     @Inject
     @DataField
-    private Div icon;
+    private HTMLDivElement icon;
 
     public ImageElementRendererView setDOMContent(final String content,
                                                   final int width,
                                                   final int height) {
-        icon.setInnerHTML(content);
+        icon.innerHTML = (content);
         resize(width,
                height);
         return this;
@@ -65,22 +66,22 @@ public class ImageElementRendererViewImpl implements ImageElementRendererView,
 
     private void resize(final int widthPx,
                         final int heightPx) {
-        icon.getStyle().setProperty("width",
-                                    widthPx + Style.Unit.PX.name());
-        icon.getStyle().setProperty("height",
-                                    heightPx + Style.Unit.PX.name());
-        if (DOMUtil.getFirstChildElement(icon).isPresent()) {
-            HTMLElement svgElement = (HTMLElement) DOMUtil.getFirstChildElement(icon).get();
-            svgElement.getStyle().setProperty("width",
-                                              widthPx + Style.Unit.PX.name());
-            svgElement.getStyle().setProperty("height",
-                                              heightPx + Style.Unit.PX.name());
-            svgElement.getStyle().setProperty("position",
-                                              "absolute");
-            svgElement.getStyle().setProperty("top",
-                                              "0px");
-            svgElement.getStyle().setProperty("left",
-                                              "0px");
-        }
+        icon.style.setProperty("width",
+                               widthPx + Style.Unit.PX.name());
+        icon.style.setProperty("height",
+                               heightPx + Style.Unit.PX.name());
+
+        HTMLElement svgElement = Js.uncheckedCast(icon.firstElementChild);
+
+        svgElement.style.setProperty("width",
+                                     widthPx + Style.Unit.PX.name());
+        svgElement.style.setProperty("height",
+                                     heightPx + Style.Unit.PX.name());
+        svgElement.style.setProperty("position",
+                                     "absolute");
+        svgElement.style.setProperty("top",
+                                     "0px");
+        svgElement.style.setProperty("left",
+                                     "0px");
     }
 }

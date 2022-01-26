@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.crud.client.component.mock;
 
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import io.crysknife.ui.translation.api.spi.TranslationService;
 import org.kie.workbench.common.forms.crud.client.component.CrudComponent;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.embedded.EmbeddedFormDisplayer;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.modal.ModalFormDisplayer;

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.multipleInstanceVariableEditor;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.adf.rendering.Renderer;
@@ -35,6 +36,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import static org.kie.workbench.common.stunner.core.client.util.ClientUtils.getSelectedNode;
 
 @Renderer(type = MultipleInstanceVariableFieldType.class)
+@Dependent
 public class MultipleInstanceVariableFieldRenderer
         extends FieldRenderer<MultipleInstanceVariableFieldDefinition, DefaultFormGroup> {
 

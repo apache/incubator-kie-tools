@@ -18,9 +18,10 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.diagram;
 
 import javax.validation.constraints.NotNull;
 
+import io.crysknife.ui.databinding.client.api.Bindable;
+
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;

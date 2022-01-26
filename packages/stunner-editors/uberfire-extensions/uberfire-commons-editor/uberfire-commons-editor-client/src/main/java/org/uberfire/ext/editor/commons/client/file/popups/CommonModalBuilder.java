@@ -16,13 +16,12 @@
 
 package org.uberfire.ext.editor.commons.client.file.popups;
 
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.HTMLElement;
+import io.crysknife.ui.databinding.client.ElementWrapperWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
-import org.jboss.errai.ui.shared.TemplateUtil;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
 public class CommonModalBuilder {
@@ -44,20 +43,8 @@ public class CommonModalBuilder {
         return this;
     }
 
-    public CommonModalBuilder addBody(elemental2.dom.HTMLElement element) {
-        this.getModal().add(buildPanel(element,
-                             makeModalBody()));
-        return this;
-    }
-
     public CommonModalBuilder addFooter(ModalFooter footer) {
         this.getModal().add(footer);
-        return this;
-    }
-
-    public CommonModalBuilder addFooter(HTMLElement element) {
-        this.getModal().add(buildPanel(element,
-                             makeModalFooter()));
         return this;
     }
 
@@ -85,14 +72,6 @@ public class CommonModalBuilder {
         return new ModalFooter();
     }
 
-    protected FlowPanel buildPanel(final HTMLElement element,
-                                 final FlowPanel panel) {
-
-        final HTMLElement htmlElement = TemplateUtil.asErraiElement(element);
-        panel.add(build(htmlElement));
-        return panel;
-    }
-
     protected FlowPanel buildPanel(elemental2.dom.HTMLElement element,
                                  FlowPanel panel) {
         panel.add(build(element));
@@ -103,7 +82,4 @@ public class CommonModalBuilder {
         return ElementWrapperWidget.getWidget(element);
     }
 
-    private Widget build(elemental2.dom.HTMLElement element) {
-        return ElementWrapperWidget.getWidget(element);
-    }
 }

@@ -20,18 +20,17 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import elemental2.dom.HTMLButtonElement;
-import elemental2.dom.HTMLElement;
-import elemental2.dom.HTMLInputElement;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import elemental2.dom.*;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import io.crysknife.ui.translation.api.spi.TranslationService;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.event.dom.client.KeyUpEvent;
 
-import static com.google.gwt.event.dom.client.KeyCodes.KEY_ENTER;
-import static com.google.gwt.event.dom.client.KeyCodes.KEY_ESCAPE;
+import static org.gwtproject.event.dom.client.KeyCodes.KEY_ENTER;
+import static org.gwtproject.event.dom.client.KeyCodes.KEY_ESCAPE;
 import static org.kie.workbench.common.widgets.client.resources.i18n.KieWorkbenchWidgetsConstants.SearchBarComponentView_Find;
 
 @Templated
@@ -99,41 +98,41 @@ public class SearchBarComponentView implements SearchBarComponent.View {
     }
 
     @EventHandler("search-button")
-    public void onSearchButtonClick(final ClickEvent clickEvent) {
+    public void onSearchButtonClick(@ForEvent("click") final MouseEvent clickEvent) {
         toggle();
         clickEvent.preventDefault();
         clickEvent.stopPropagation();
     }
 
     @EventHandler("next-element")
-    public void onNextElementClick(final ClickEvent clickEvent) {
+    public void onNextElementClick(@ForEvent("click") final MouseEvent clickEvent) {
         presenter.nextResult();
         clickEvent.preventDefault();
         clickEvent.stopPropagation();
     }
 
     @EventHandler("prev-element")
-    public void onPrevElementClick(final ClickEvent clickEvent) {
+    public void onPrevElementClick(@ForEvent("click") final MouseEvent clickEvent) {
         presenter.previousResult();
         clickEvent.preventDefault();
         clickEvent.stopPropagation();
     }
 
     @EventHandler("close-search")
-    public void onCloseSearchClick(final ClickEvent clickEvent) {
+    public void onCloseSearchClick(@ForEvent("click") final MouseEvent clickEvent) {
         disableSearch();
         clickEvent.preventDefault();
         clickEvent.stopPropagation();
     }
 
     @EventHandler("search-input")
-    public void onSearchInputKeyPress(final KeyUpEvent keyEvent) {
-        final int keyCode = keyEvent.getNativeKeyCode();
+    public void onSearchInputKeyPress(@ForEvent("keypress")final KeyboardEvent keyEvent) {
+        final String keyCode = keyEvent.code;
         switch (keyCode) {
-            case KEY_ENTER:
+            case "Enter":
                 search(inputElement.value);
                 break;
-            case KEY_ESCAPE:
+            case "Escape":
                 disableSearch();
                 break;
         }

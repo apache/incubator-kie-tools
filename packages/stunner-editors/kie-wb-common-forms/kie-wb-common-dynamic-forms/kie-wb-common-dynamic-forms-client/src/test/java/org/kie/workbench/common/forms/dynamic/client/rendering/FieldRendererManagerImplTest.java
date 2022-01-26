@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.forms.dynamic.client.rendering;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

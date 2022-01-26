@@ -46,7 +46,7 @@ public class PropertyDecorators {
     }
 
     @PostConstruct
-    private void init() {
+    public void init() {
         decorators =
                 new Maps.Builder<Class<?>, Function<Object, PropertyDecorator>>()
                         .put(AssignmentsInfo.class,

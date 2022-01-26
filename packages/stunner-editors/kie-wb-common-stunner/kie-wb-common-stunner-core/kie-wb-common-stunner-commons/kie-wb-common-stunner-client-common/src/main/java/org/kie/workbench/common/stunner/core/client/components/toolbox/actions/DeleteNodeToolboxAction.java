@@ -26,7 +26,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
@@ -105,7 +105,6 @@ public class DeleteNodeToolboxAction implements ToolboxAction<AbstractCanvasHand
                                                              final String uuid,
                                                              final MouseClickEvent event) {
         if (confirmDelete.test(this)) {
-
             final Metadata metadata = canvasHandler.getDiagram().getMetadata();
             final Annotation qualifier = definitionUtils.getQualifier(metadata.getDefinitionSetId());
             final CanvasCommandFactory<AbstractCanvasHandler> commandFactory = lookup(commandFactories, qualifier);

@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import io.crysknife.ui.databinding.client.api.DataBinder;
+import io.crysknife.ui.databinding.client.components.ListComponent;
 import org.gwtbootstrap3.client.ui.Button;
-import org.jboss.errai.databinding.client.api.DataBinder;
-import org.jboss.errai.databinding.client.components.ListComponent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

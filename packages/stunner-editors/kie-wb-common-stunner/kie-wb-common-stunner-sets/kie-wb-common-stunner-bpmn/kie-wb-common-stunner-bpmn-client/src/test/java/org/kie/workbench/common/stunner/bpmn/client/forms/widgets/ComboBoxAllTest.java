@@ -22,6 +22,7 @@ import java.util.List;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.ValueListBox;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
@@ -46,6 +47,7 @@ import static org.mockito.Mockito.when;
  * The tests in this class run ComboBox, ComboBoxView and ListBoxValues
  * through some realistic user interactions.
  */
+@Ignore
 @RunWith(GwtMockitoTestRunner.class)
 public class ComboBoxAllTest {
 

@@ -25,11 +25,12 @@ import java.util.stream.StreamSupport;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DeleteNodeConfirmation;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
@@ -52,6 +53,7 @@ import static org.kie.workbench.common.stunner.core.client.canvas.resources.Stun
 import static org.kie.workbench.common.stunner.core.graph.util.NodeDefinitionHelper.getContentDefinitionId;
 
 @Default
+@Dependent
 public class DeleteNodeConfirmationImpl implements DeleteNodeConfirmation {
 
     private SessionManager sessionManager;

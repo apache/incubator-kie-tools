@@ -21,10 +21,9 @@ import javax.enterprise.context.ApplicationScoped;
 
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
-import org.jboss.errai.ioc.client.api.EntryPoint;
 
 @ApplicationScoped
-@EntryPoint
+//@EntryPoint
 public class StunnerLienzoCore {
 
     /**

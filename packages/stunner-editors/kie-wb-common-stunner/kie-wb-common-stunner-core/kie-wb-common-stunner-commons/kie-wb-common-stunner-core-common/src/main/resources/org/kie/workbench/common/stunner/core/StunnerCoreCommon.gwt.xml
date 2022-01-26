@@ -19,7 +19,7 @@
 
 <module>
 
-  <inherits name='com.google.gwt.user.User'/>
+  <inherits name='org.gwtproject.user.User'/>
   <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreApi"/>
   <inherits name="org.hibernate.validator.HibernateValidator" />
   <inherits name="org.jboss.errai.validation.Validation" />

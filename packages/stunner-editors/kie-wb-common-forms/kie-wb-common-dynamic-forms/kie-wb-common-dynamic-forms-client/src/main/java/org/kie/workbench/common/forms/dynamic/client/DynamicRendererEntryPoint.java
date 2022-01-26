@@ -18,38 +18,37 @@ package org.kie.workbench.common.forms.dynamic.client;
 
 import java.util.Collection;
 
-import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import io.crysknife.client.BeanManager;
+import io.crysknife.client.SyncBeanDef;
+import io.crysknife.ui.translation.api.annotations.Bundle;
 import org.kie.workbench.common.forms.adf.rendering.FieldRendererTypesProvider;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRendererTypeRegistry;
 
-@EntryPoint
+//@EntryPoint
 @Bundle("resources/i18n/FormRenderingConstants.properties")
+@ApplicationScoped
 public class DynamicRendererEntryPoint {
 
-    private SyncBeanManager beanManager;
+    private BeanManager beanManager;
 
     @Inject
-    public DynamicRendererEntryPoint(SyncBeanManager beanManager) {
+    public DynamicRendererEntryPoint(BeanManager beanManager) {
         this.beanManager = beanManager;
     }
 
-    @PostConstruct
+    //@PostConstruct
     public void init() {
         populateFieldRenderersRegistry();
     }
 
     private void populateFieldRenderersRegistry() {
-
         Collection<SyncBeanDef<FieldRendererTypesProvider>> providers = beanManager.lookupBeans(FieldRendererTypesProvider.class);
 
         providers.forEach(providerDef -> {
-            FieldRendererTypesProvider provider = providerDef.newInstance();
+            FieldRendererTypesProvider provider = providerDef.getInstance();
 
             FieldRendererTypeRegistry.load(provider);
 

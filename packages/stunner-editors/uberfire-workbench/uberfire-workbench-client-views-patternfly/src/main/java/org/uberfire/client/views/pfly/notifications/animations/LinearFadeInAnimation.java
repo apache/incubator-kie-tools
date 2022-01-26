@@ -15,7 +15,7 @@
  */
 package org.uberfire.client.views.pfly.notifications.animations;
 
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.Widget;
 
 /**
  * A linear animation to fade a Widget from 0.0 to 1.0 opacity

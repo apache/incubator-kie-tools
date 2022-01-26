@@ -34,7 +34,7 @@ import com.ait.lienzo.gwtlienzo.i18n.client.LocalizableResource;
  *
  * <p>
  * Locale is specified at run time using a meta tag or query string as described
- * for {@link com.google.gwt.i18n.client.Localizable}.
+ * for {@link org.gwtproject.i18n.client.Localizable}.
  * </p>
  *
  * <h3>Extending <code>Constants</code></h3>
@@ -47,7 +47,7 @@ import com.ait.lienzo.gwtlienzo.i18n.client.LocalizableResource;
  * rather than a default properties file (and some key generators may require the value
  * to be given in the source file via annotations). For example,
  * <p>
- * {@example com.google.gwt.examples.i18n.NumberFormatConstants}
+ * {@example org.gwtproject.examples.i18n.NumberFormatConstants}
  * <p>
  * expects to find properties named <code>decimalSeparator</code> and
  * <code>thousandsSeparator</code> in an associated properties file. For
@@ -59,19 +59,19 @@ import com.ait.lienzo.gwtlienzo.i18n.client.LocalizableResource;
  * The following example demonstrates how to use constant accessors defined in
  * the interface above:
  * <p>
- * {@example com.google.gwt.examples.i18n.NumberFormatConstantsExample#useNumberFormatConstants()}
+ * {@example org.gwtproject.examples.i18n.NumberFormatConstantsExample#useNumberFormatConstants()}
  * </p>
  *
  * <p>
  * Here is the same example using annotations to store the default values:
  * <p>
- * {@example com.google.gwt.examples.i18n.NumberFormatConstantsAnnot}
+ * {@example org.gwtproject.examples.i18n.NumberFormatConstantsAnnot}
  * </p>
  *
  * <p>
  * It is also possible to change the property name bound to a constant accessor
  * using the {@code @Key} annotation. For example,
- * {@example com.google.gwt.examples.i18n.NumberFormatConstantsWithAltKey}
+ * {@example org.gwtproject.examples.i18n.NumberFormatConstantsWithAltKey}
  * <p>
  * would match the names of the following properties:
  * <p>
@@ -163,7 +163,7 @@ import com.ait.lienzo.gwtlienzo.i18n.client.LocalizableResource;
  * a different file to enter the default values, is that you can make use
  * of compile-time constants and not worrying about quoting commas.  For example:
  * <p>
- * {@example com.google.gwt.examples.i18n.AnnotConstants}
+ * {@example org.gwtproject.examples.i18n.AnnotConstants}
  * </p>
  *
  * <h3>Binding to Properties Files</h3>
@@ -211,7 +211,7 @@ import com.ait.lienzo.gwtlienzo.i18n.client.LocalizableResource;
  *
  * </table> where <code>x</code> and <code>Y</code> are language and locale
  * codes, as described in the documentation for
- * {@link com.google.gwt.i18n.client.Localizable}.  Note that default values
+ * {@link org.gwtproject.i18n.client.Localizable}.  Note that default values
  * supplied in the source file in annotations take precedence over those in
  * the default properties file, if it is also present.
  *
@@ -226,14 +226,14 @@ import com.ait.lienzo.gwtlienzo.i18n.client.LocalizableResource;
  *
  * <h3>Required Module</h3>
  * Modules that use this interface should inherit
- * <code>com.google.gwt.i18n.I18N</code>.
+ * <code>org.gwtproject.i18n.I18N</code>.
  * <p>
  * {@gwt.include com/google/gwt/examples/i18n/InheritsExample.gwt.xml}
  *
  * <h3>Note</h3>
  * You should not directly implement this interface or interfaces derived from
  * it since an implementation is generated automatically when message interfaces
- * are created using {@link com.google.gwt.core.client.GWT#create(Class)}.
+ * are created using {@link org.gwtproject.core.client.GWT#create(Class)}.
  */
 public interface Constants extends LocalizableResource {
 

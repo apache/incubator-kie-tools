@@ -20,9 +20,8 @@ import java.lang.annotation.Annotation;
 import java.util.Iterator;
 
 import javax.enterprise.inject.Instance;
-import javax.enterprise.util.TypeLiteral;
 
-import com.google.common.collect.Iterators;
+import com.google.gwt.thirdparty.guava.common.collect.Iterators;
 
 public class MockInstanceImpl<T> implements Instance<T> {
 
@@ -68,8 +67,4 @@ public class MockInstanceImpl<T> implements Instance<T> {
         return instances[0];
     }
 
-    @Override
-    public <U extends T> Instance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
-        return null;
-    }
 }

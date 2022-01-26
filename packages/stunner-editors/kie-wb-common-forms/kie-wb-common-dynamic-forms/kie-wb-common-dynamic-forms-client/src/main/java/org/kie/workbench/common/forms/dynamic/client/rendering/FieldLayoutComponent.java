@@ -23,15 +23,17 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import io.crysknife.ui.translation.api.spi.TranslationService;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormLayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
+
+
 
 @Dependent
 public class FieldLayoutComponent implements FormLayoutComponent,
@@ -50,7 +52,8 @@ public class FieldLayoutComponent implements FormLayoutComponent,
     protected FormRenderingContext renderingContext;
 
     @Inject
-    public FieldLayoutComponent(FieldRendererManager fieldRendererManager, TranslationService translationService) {
+    public FieldLayoutComponent(FieldRendererManager fieldRendererManager,
+            TranslationService translationService) {
         this.fieldRendererManager = fieldRendererManager;
         this.translationService = translationService;
     }

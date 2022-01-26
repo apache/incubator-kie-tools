@@ -19,7 +19,7 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.AbstractValidableFormGroup;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 

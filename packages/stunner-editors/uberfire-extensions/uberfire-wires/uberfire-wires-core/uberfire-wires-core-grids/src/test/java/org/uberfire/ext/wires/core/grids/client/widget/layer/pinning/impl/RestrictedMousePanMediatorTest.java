@@ -25,7 +25,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.dom.client.Style;
+import org.gwtproject.dom.client.Style;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.MouseEvent;
 import org.junit.Before;

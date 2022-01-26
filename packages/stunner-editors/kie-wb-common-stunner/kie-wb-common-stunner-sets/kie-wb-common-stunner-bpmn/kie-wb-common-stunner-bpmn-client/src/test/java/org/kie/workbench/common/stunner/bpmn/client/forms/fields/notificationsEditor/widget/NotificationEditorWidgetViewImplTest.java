@@ -58,7 +58,7 @@ public class NotificationEditorWidgetViewImplTest extends GWTTestCase {
         doCallRealMethod().when(test).getEscDomHandler();
     }
 
-    @Test
+    //@Test
     public void testISO8601BuilderExpression() {
         String result = NotificationEditorWidgetViewImpl.ISO8601Builder.get()
                 .setRepeatable(false)
@@ -77,7 +77,7 @@ public class NotificationEditorWidgetViewImplTest extends GWTTestCase {
         Assert.assertNotNull(test.getEscDomHandler());
     }
 
-    @Test
+    //@Test
     public void testISO8601BuilderExpressionRepeatable() {
         String result = NotificationEditorWidgetViewImpl.ISO8601Builder.get()
                 .setRepeatable(false)

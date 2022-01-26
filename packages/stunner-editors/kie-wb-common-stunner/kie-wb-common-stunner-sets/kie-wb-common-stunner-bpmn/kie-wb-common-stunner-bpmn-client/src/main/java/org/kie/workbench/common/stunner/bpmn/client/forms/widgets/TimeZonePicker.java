@@ -23,17 +23,18 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.TextResource;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.event.legacy.shared.GwtEvent;
+import org.gwtproject.event.logical.shared.ValueChangeEvent;
+import org.gwtproject.event.logical.shared.ValueChangeHandler;
+import org.gwtproject.event.shared.Event;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.json.client.JSONObject;
+import org.gwtproject.json.client.JSONParser;
+import org.gwtproject.resources.client.ClientBundle;
+import org.gwtproject.resources.client.Resource;
+import org.gwtproject.resources.client.TextResource;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Dependent
@@ -90,14 +91,19 @@ public class TimeZonePicker implements IsWidget,
         return view.asWidget().addHandler(handler, ValueChangeEvent.getType());
     }
 
-    @Override
     public void fireEvent(GwtEvent<?> event) {
         view.asWidget().fireEvent(event);
     }
 
+    @Override
+    public void fireEvent(Event<?> event) {
+        view.asWidget().fireEvent(event);
+    }
+
+    @Resource
     interface TimeZone extends ClientBundle {
 
-        TimeZone INSTANCE = GWT.create(TimeZone.class);
+        TimeZone INSTANCE = new TimeZonePicker_TimeZoneImpl();
 
         @Source("timezones.json")
         TextResource asJson();

@@ -68,7 +68,7 @@ public class DatePickerFieldRendererTest extends AbstractFieldRendererTest<org.k
     }
 
     private void testGetFormGroup(boolean showTime) {
-        when(fieldDefinition.getShowTime()).thenReturn(showTime);
+        when(fieldDefinition.isShowTime()).thenReturn(showTime);
 
         renderer.getFormGroup(RenderMode.EDIT_MODE);
 

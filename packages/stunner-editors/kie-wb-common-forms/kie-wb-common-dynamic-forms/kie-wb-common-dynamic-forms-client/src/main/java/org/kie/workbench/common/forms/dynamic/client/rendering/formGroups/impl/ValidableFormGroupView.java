@@ -18,8 +18,8 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl;
 
 import java.util.Arrays;
 
+import elemental2.dom.HTMLElement;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
-import org.jboss.errai.common.client.dom.HTMLElement;
 
 import static org.jboss.errai.common.client.dom.DOMUtil.addEnumStyleName;
 import static org.jboss.errai.common.client.dom.DOMUtil.removeEnumStyleName;
@@ -30,12 +30,12 @@ public interface ValidableFormGroupView extends FormGroupView {
 
     default void clearErrors() {
         Arrays.stream(ValidationState.values()).forEach(state -> removeEnumStyleName(getElement(), state));
-        getHelpBlock().setTextContent("");
+        getHelpBlock().textContent = ("");
     }
 
     default void setValidationMessage(String message, ValidationState state) {
         clearErrors();
         addEnumStyleName(getElement(), state);
-        getHelpBlock().setTextContent(message);
+        getHelpBlock().textContent = (message);
     }
 }

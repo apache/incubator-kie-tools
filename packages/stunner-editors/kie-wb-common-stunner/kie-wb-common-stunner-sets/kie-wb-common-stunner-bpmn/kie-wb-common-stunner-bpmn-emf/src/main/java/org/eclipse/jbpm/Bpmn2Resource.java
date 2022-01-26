@@ -23,10 +23,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import bpsim.BpsimPackage;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Node;
-import com.google.gwt.xml.client.XMLParser;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.xml.client.Document;
+import org.gwtproject.xml.client.Node;
+import org.gwtproject.xml.client.XMLParser;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.dd.dc.DcPackage;

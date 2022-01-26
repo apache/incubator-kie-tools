@@ -16,11 +16,12 @@
 
 package org.kie.workbench.common.widgets.client.popups.list;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.ui.VerticalPanel;
+import org.gwtproject.user.client.ui.Widget;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
 
@@ -29,13 +30,14 @@ import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterO
  */
 public class PopupListWidget extends BaseModal {
 
+    @UiTemplate
     interface PopupListWidgetBinder
             extends
             UiBinder<Widget, PopupListWidget> {
 
     }
 
-    private static PopupListWidgetBinder uiBinder = GWT.create(PopupListWidgetBinder.class);
+    private static PopupListWidgetBinder uiBinder = new PopupListWidget_PopupListWidgetBinderImpl();
 
     @UiField
     protected VerticalPanel list;

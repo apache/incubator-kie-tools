@@ -18,8 +18,8 @@ package org.kie.workbench.common.stunner.kogito.client.docks;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import io.crysknife.ui.translation.api.spi.TranslationService;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
 import org.kie.workbench.common.stunner.client.widgets.screens.DiagramEditorExplorerScreen;
 import org.uberfire.client.workbench.docks.UberfireDocks;

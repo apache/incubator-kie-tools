@@ -18,7 +18,7 @@ package org.uberfire.client.views.pfly.notifications.animations;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.animation.client.Animation;
+import org.gwtproject.animation.client.Animation;
 
 /**
  * Run a list of animations in order.

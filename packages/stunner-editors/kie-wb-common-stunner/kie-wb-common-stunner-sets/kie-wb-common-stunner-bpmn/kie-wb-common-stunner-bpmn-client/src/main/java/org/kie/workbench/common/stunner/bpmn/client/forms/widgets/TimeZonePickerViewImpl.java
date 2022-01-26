@@ -27,13 +27,13 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.ui.Composite;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.extras.select.client.ui.Option;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.gwtproject.user.client.ui.Composite;
 
 @Dependent
 @Templated(value = "TimeZonePicker.html")

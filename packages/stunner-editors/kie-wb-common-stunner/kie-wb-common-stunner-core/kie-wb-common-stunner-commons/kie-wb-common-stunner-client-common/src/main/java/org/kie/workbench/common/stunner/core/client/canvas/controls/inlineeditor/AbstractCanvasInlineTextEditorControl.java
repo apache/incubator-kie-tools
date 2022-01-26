@@ -18,13 +18,13 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineedito
 
 import javax.enterprise.event.Observes;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.dom.client.MouseWheelEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.touch.client.Point;
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.DomGlobal;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
+import org.gwtproject.core.client.Scheduler;
+import org.gwtproject.event.dom.client.MouseWheelEvent;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.touch.client.Point;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -126,7 +126,7 @@ public abstract class AbstractCanvasInlineTextEditorControl
     protected void doInit() {
         super.doInit();
         getTextEditorBox().initialize(canvasHandler,
-                                      () -> scheduleDeferredCommand(AbstractCanvasInlineTextEditorControl.this::hide));
+                () -> scheduleDeferredCommand(AbstractCanvasInlineTextEditorControl.this::hide));
 
         getFloatingView()
                 .hide()
@@ -175,9 +175,9 @@ public abstract class AbstractCanvasInlineTextEditorControl
             }
         };
         hasEventHandlers.addHandler(ViewEventType.TEXT_DBL_CLICK,
-                                    clickHandler);
+                clickHandler);
         registerHandler(shape.getUUID(),
-                        clickHandler);
+                clickHandler);
     }
 
     void onEnableInlineEdit(@Observes InlineTextEditEvent event) {
@@ -210,9 +210,9 @@ public abstract class AbstractCanvasInlineTextEditorControl
             }
         };
         hasEventHandlers.addHandler(ViewEventType.TEXT_ENTER,
-                                    enterHandler);
+                enterHandler);
         registerHandler(shape.getUUID(),
-                        enterHandler);
+                enterHandler);
     }
 
     private void changeMouseCursorOnTextExit(final Shape<?> shape, final HasEventHandlers hasEventHandlers) {
@@ -223,9 +223,9 @@ public abstract class AbstractCanvasInlineTextEditorControl
             }
         };
         hasEventHandlers.addHandler(ViewEventType.TEXT_EXIT,
-                                    exitHandler);
+                exitHandler);
         registerHandler(shape.getUUID(),
-                        exitHandler);
+                exitHandler);
     }
 
     boolean allowOnlyVisualChanges(final Element element) {
@@ -289,8 +289,8 @@ public abstract class AbstractCanvasInlineTextEditorControl
             getFloatingView().clearTimeOut();
 
             getTextEditorBox().show(item,
-                                    fixBoundaryX(editorBoxWidth, floatingViewPositionX),
-                                    fixBoundaryY(editorBoxHeight, floatingViewPositionY));
+                    fixBoundaryX(editorBoxWidth, floatingViewPositionX),
+                    fixBoundaryY(editorBoxHeight, floatingViewPositionY));
             getFloatingView().show();
         }
 
@@ -599,7 +599,7 @@ public abstract class AbstractCanvasInlineTextEditorControl
 
     void onKeyDownEvent(final Key... keys) {
         if (KeysMatcher.doKeysMatch(keys,
-                                    Key.ESC)) {
+                Key.ESC)) {
             rollback();
         }
     }
@@ -610,7 +610,7 @@ public abstract class AbstractCanvasInlineTextEditorControl
                 .getPanel()
                 .asWidget()
                 .addDomHandler(this::onMouseWheel,
-                               MouseWheelEvent.getType());
+                        MouseWheelEvent.getType());
     }
 
     void onMouseWheel(final MouseWheelEvent event) {

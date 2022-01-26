@@ -16,12 +16,13 @@
 
 package org.uberfire.ext.widgets.common.client.common.popups.footers;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiHandler;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalFooter;
@@ -31,7 +32,7 @@ import org.uberfire.mvp.Command;
 
 public class ModalFooterYesNoCancelButtons extends ModalFooter {
 
-    private static ModalFooterYesNoCancelButtonsBinder uiBinder = GWT.create(ModalFooterYesNoCancelButtonsBinder.class);
+    private static ModalFooterYesNoCancelButtonsBinder uiBinder = new ModalFooterYesNoCancelButtons_ModalFooterYesNoCancelButtonsBinderImpl();
 
     private final Command yesCommand;
 
@@ -183,6 +184,7 @@ public class ModalFooterYesNoCancelButtons extends ModalFooter {
         this.closeModalAfterAction = closeModalAfterAction;
     }
 
+    @UiTemplate
     interface ModalFooterYesNoCancelButtonsBinder
             extends
             UiBinder<Widget, ModalFooterYesNoCancelButtons> {

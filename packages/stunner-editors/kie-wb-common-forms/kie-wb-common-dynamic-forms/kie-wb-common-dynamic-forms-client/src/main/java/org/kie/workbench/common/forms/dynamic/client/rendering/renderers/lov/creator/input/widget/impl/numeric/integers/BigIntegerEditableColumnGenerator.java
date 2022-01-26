@@ -21,7 +21,7 @@ import java.math.BigInteger;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import io.crysknife.ui.translation.api.spi.TranslationService;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget.CellEditionHandler;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget.TableEntry;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget.impl.numeric.AbstractNumericEditableColumnGenerator;
@@ -42,8 +42,8 @@ public class BigIntegerEditableColumnGenerator extends AbstractNumericEditableCo
 
     @Override
     public boolean doValidate(String flatValue,
-                                 TableEntry<BigInteger> model,
-                                 CellEditionHandler<BigInteger> cellEditionHandler) {
+                              TableEntry<BigInteger> model,
+                              CellEditionHandler<BigInteger> cellEditionHandler) {
         if (flatValue != null && !flatValue.isEmpty()) {
             try {
                 doConvert(flatValue);

@@ -18,12 +18,12 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.select
 
 import java.util.Map;
 
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.ui.HTML;
+import io.crysknife.ui.databinding.client.api.Converter;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Radio;
-import org.jboss.errai.databinding.client.api.Converter;
+import org.gwtproject.safehtml.shared.SafeHtml;
+import org.gwtproject.safehtml.shared.SafeHtmlUtils;
+import org.gwtproject.user.client.ui.HTML;
 import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ValueConvertersFactory;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup.RadioGroupBase;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
@@ -48,7 +48,7 @@ public abstract class RadioGroupFieldRendererBase<FIELD extends RadioGroupBaseDe
         for (TYPE key : optionsValues.keySet()) {
             Radio radio;
             SafeHtml text = getOptionLabel(optionsValues.get(key));
-            if (field.getInline()) {
+            if (field.isInline()) {
                 radio = new InlineRadio(field.getId(),
                                         text);
             } else {

@@ -16,8 +16,8 @@
 
 package org.uberfire.client.docks.view.bars;
 
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.FlowPanel;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.user.client.ui.FlowPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;

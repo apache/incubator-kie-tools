@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
@@ -37,6 +38,7 @@ import static java.util.stream.Collectors.toList;
  * Order vertices inside layers trying to reduce crossing between edges.
  */
 @Default
+@Dependent
 public final class DefaultVertexOrdering implements VertexOrdering {
 
     private final VertexLayerPositioning vertexPositioning;

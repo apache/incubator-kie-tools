@@ -24,7 +24,7 @@ import elemental2.dom.Document;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.Text;
-import org.jboss.errai.common.client.api.elemental2.IsElement;
+import io.crysknife.client.IsElement;
 import org.uberfire.mvp.Command;
 
 @Dependent

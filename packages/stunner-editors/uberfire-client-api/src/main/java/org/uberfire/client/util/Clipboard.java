@@ -18,6 +18,7 @@ package org.uberfire.client.util;
 
 import javax.enterprise.context.Dependent;
 
+import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLInputElement;
 import elemental2.dom.HTMLTextAreaElement;
 
@@ -34,7 +35,9 @@ public class Clipboard {
         return copy();
     }
 
-    public native boolean copy() /*-{
+    public boolean copy() {
+        throw new Error(getClass().getCanonicalName() + ".copy");
+    }/*-{
         return $doc.execCommand("Copy");
     }-*/;
 }

@@ -22,10 +22,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import io.crysknife.client.BeanManager;
+import io.crysknife.client.SyncBeanDef;
+import io.crysknife.ui.translation.api.spi.TranslationService;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.AbstractFormGenerator;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.I18nHelper;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.layout.LayoutGenerator;
@@ -39,6 +38,9 @@ public class ClientFormGenerator extends AbstractFormGenerator {
     protected TranslationService translationService;
 
     @Inject
+    private BeanManager beanManager;
+
+    @Inject
     public ClientFormGenerator(LayoutGenerator layoutGenerator,
                                TranslationService translationService) {
         super(layoutGenerator);
@@ -47,10 +49,8 @@ public class ClientFormGenerator extends AbstractFormGenerator {
 
     @PostConstruct
     public void initialize() {
-        SyncBeanManager beanManager = IOC.getBeanManager();
 
         Collection<SyncBeanDef<FormElementProcessor>> processors = beanManager.lookupBeans(FormElementProcessor.class);
-
         processors.stream()
                 .map(SyncBeanDef::getInstance)
                 .forEach(processor -> {

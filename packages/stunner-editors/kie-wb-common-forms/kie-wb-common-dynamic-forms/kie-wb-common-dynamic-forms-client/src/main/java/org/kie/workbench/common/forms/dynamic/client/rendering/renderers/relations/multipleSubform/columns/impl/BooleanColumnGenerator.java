@@ -17,15 +17,13 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.multipleSubform.columns.impl;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Any;
 
-import com.google.gwt.user.cellview.client.Column;
-import org.jboss.errai.databinding.client.HasProperties;
+import io.crysknife.ui.databinding.client.HasProperties;
+import org.gwtproject.user.cellview.client.Column;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.multipleSubform.columns.ColumnGenerator;
 import org.uberfire.ext.widgets.table.client.CheckboxCellImpl;
 
 @Dependent
-@Any
 public class BooleanColumnGenerator implements ColumnGenerator<Boolean> {
 
     @Override

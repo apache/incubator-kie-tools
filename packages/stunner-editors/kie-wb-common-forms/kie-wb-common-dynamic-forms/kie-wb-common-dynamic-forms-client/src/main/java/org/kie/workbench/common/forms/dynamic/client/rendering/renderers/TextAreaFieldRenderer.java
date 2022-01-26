@@ -19,9 +19,9 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.renderers;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.HTML;
+import io.crysknife.ui.databinding.client.api.Converter;
 import org.gwtbootstrap3.client.ui.TextArea;
-import org.jboss.errai.databinding.client.api.Converter;
+import org.gwtproject.user.client.ui.HTML;
 import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.forms.common.rendering.client.util.valueConverters.ObjectToStringConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;

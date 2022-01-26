@@ -18,8 +18,9 @@ package org.kie.workbench.common.stunner.bpmn;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import io.crysknife.ui.databinding.client.api.Bindable;
+
 import org.jboss.errai.common.client.api.annotations.NonPortable;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;

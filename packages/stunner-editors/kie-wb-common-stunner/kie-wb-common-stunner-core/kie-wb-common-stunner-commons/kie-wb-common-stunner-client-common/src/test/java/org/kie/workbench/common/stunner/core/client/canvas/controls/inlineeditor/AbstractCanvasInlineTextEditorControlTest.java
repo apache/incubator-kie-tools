@@ -15,9 +15,9 @@
  */
 package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
+import org.gwtproject.core.client.Scheduler;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.Transform;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
-import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
+import org.kie.workbench.common.stunner.core.client.components.views.FloatingWidgetView;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -98,7 +98,7 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
     private static final String ORIENTATION_HORIZONTAL = "HORIZONTAL";
 
     @Mock
-    protected FloatingView<IsWidget> floatingView;
+    protected FloatingWidgetView floatingView;
 
     @Mock
     protected TextEditorBox<AbstractCanvasHandler, Element> textEditorBox;

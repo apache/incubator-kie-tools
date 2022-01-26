@@ -16,12 +16,11 @@
 
 package org.kie.workbench.common.stunner.bpmn;
 
-import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import io.crysknife.client.ManagedInstance;
+import io.crysknife.ui.translation.api.annotations.Bundle;
 import org.kie.workbench.common.stunner.bpmn.client.forms.filters.AssociationFilterProvider;
 import org.kie.workbench.common.stunner.bpmn.client.forms.filters.CatchingIntermediateEventFilterProvider;
 import org.kie.workbench.common.stunner.bpmn.client.forms.filters.StartEventFilterProvider;
@@ -44,10 +43,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.forms.client.formFilters.FormFiltersProviderFactory;
 import org.kie.workbench.common.stunner.forms.client.formFilters.StunnerFormElementFilterProvider;
-import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 
-@EntryPoint
+//@EntryPoint
 @Bundle("resources/i18n/StunnerBPMNConstants.properties")
+@ApplicationScoped
 public class StunnerBPMNEntryPoint {
 
     private SessionManager sessionManager;
@@ -60,9 +59,9 @@ public class StunnerBPMNEntryPoint {
         this.managedFilters = managedFilters;
     }
 
-    @PostConstruct
+    //@PostConstruct
     public void init() {
-        PatternFlyBootstrapper.ensureMonacoEditorLoaderIsAvailable();
+        //PatternFlyBootstrapper.ensureMonacoEditorLoaderIsAvailable();
 
         FormFiltersProviderFactory.registerProvider(new StartEventFilterProvider(sessionManager, StartNoneEvent.class));
         FormFiltersProviderFactory.registerProvider(new StartEventFilterProvider(sessionManager, StartCompensationEvent.class));

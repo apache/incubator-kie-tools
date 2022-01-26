@@ -23,20 +23,20 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasValue;
-import org.jboss.errai.common.client.dom.Event;
-import org.jboss.errai.common.client.dom.Option;
-import org.jboss.errai.common.client.dom.Select;
-import org.jboss.errai.common.client.dom.TextInput;
-import org.jboss.errai.common.client.dom.Window;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.ForEvent;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLInputElement;
+import elemental2.dom.HTMLOptionElement;
+import elemental2.dom.HTMLSelectElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.event.logical.shared.ValueChangeEvent;
+import org.gwtproject.event.logical.shared.ValueChangeHandler;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.Event;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.HasValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.service.GenericServiceTaskValue;
 
 @Dependent
@@ -49,22 +49,25 @@ public class GenericServiceTaskEditorWidget extends Composite implements HasValu
 
     @Inject
     @DataField("implementation")
-    private Select implementation;
+    private HTMLSelectElement implementation;
 
     @Inject
     @DataField("serviceInterface")
-    private TextInput serviceInterface;
+    private HTMLInputElement serviceInterface;
 
     @Inject
     @DataField("serviceOperation")
-    private TextInput serviceOperation;
+    private HTMLInputElement serviceOperation;
 
     private GenericServiceTaskValue value = new GenericServiceTaskValue();
 
     @PostConstruct
     public void init() {
+        serviceInterface.type = "text";
+        serviceOperation.type = "text";
+
         setServiceImplementationOptions(getImplementationOptions());
-        implementation.setValue(JAVA);
+        implementation.value = (JAVA);
     }
 
     public void setServiceImplementationOptions(List<String> options) {
@@ -74,21 +77,21 @@ public class GenericServiceTaskEditorWidget extends Composite implements HasValu
     }
 
     public void setReadOnly(boolean readOnly) {
-        implementation.setDisabled(readOnly);
-        serviceInterface.setDisabled(readOnly);
-        serviceOperation.setDisabled(readOnly);
+        implementation.disabled = (readOnly);
+        serviceInterface.disabled = (readOnly);
+        serviceOperation.disabled = (readOnly);
     }
 
-    Option newOption(final String text,
-                             final String value) {
-        final Option option = (Option) Window.getDocument().createElement("option");
-        option.setTextContent(text);
-        option.setValue(value);
+    HTMLOptionElement newOption(final String text,
+                                final String value) {
+        final HTMLOptionElement option = (HTMLOptionElement) DomGlobal.document.createElement("option");
+        option.textContent = (text);
+        option.value = (value);
         return option;
     }
 
-    void clearSelect(Select select) {
-        int options = select.getOptions().getLength();
+    void clearSelect(HTMLSelectElement select) {
+        int options = select.options.getLength();
         for (int i = 0; i < options; i++) {
             select.remove(0);
         }
@@ -132,9 +135,9 @@ public class GenericServiceTaskEditorWidget extends Composite implements HasValu
         GenericServiceTaskValue oldValue = value;
         value = newValue;
 
-        implementation.setValue(value.getServiceImplementation());
-        serviceInterface.setValue(value.getServiceInterface());
-        serviceOperation.setValue(value.getServiceOperation());
+        implementation.value = (value.getServiceImplementation());
+        serviceInterface.value = (value.getServiceInterface());
+        serviceOperation.value = (value.getServiceOperation());
 
         if (fireEvents) {
             ValueChangeEvent.fireIfNotEqual(this,
@@ -151,9 +154,9 @@ public class GenericServiceTaskEditorWidget extends Composite implements HasValu
 
     protected void onChange() {
         GenericServiceTaskValue newValue = new GenericServiceTaskValue();
-        newValue.setServiceOperation(serviceOperation.getValue());
-        newValue.setServiceInterface(serviceInterface.getValue());
-        newValue.setServiceImplementation(implementation.getValue());
+        newValue.setServiceOperation(serviceOperation.value);
+        newValue.setServiceInterface(serviceInterface.value);
+        newValue.setServiceImplementation(implementation.value);
         setValue(newValue, true);
     }
 }

@@ -16,11 +16,11 @@
 
 package org.uberfire.client.util;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.dom.client.Style.Position;
+import org.gwtproject.dom.client.Style.Unit;
+import org.gwtproject.user.client.ui.Widget;
 
 public class Layouts {
 

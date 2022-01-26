@@ -23,8 +23,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.ScriptInjector;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.core.client.ScriptInjector;
 import org.uberfire.ext.editor.commons.template.TemplateRenderer;
 import org.uberfire.ext.editor.commons.template.mustache.MustacheTemplateRenderer;
 

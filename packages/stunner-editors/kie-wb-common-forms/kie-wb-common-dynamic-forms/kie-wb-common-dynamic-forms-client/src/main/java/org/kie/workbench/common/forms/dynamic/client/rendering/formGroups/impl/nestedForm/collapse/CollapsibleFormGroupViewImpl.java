@@ -20,26 +20,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.dom.Anchor;
+import elemental2.dom.Event;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import jsinterop.base.Js;
+import org.gwtproject.dom.client.Document;
+import org.gwtproject.user.client.ui.SimplePanel;
+import org.gwtproject.user.client.ui.Widget;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.labels.help.FieldHelp;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.labels.required.FieldRequired;
 import org.kie.workbench.common.forms.dynamic.client.rendering.util.FormsElementWrapperWidgetUtil;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Templated
+@Dependent
 public class CollapsibleFormGroupViewImpl implements IsElement,
                                                      CollapsibleFormGroupView {
 
@@ -53,26 +59,27 @@ public class CollapsibleFormGroupViewImpl implements IsElement,
 
     @Inject
     @DataField
-    private Anchor anchor;
+    private HTMLAnchorElement anchor;
 
     @Inject
     @DataField
-    private Span anchorText;
+    @Named("span")
+    private HTMLElement anchorText;
 
     @Inject
     @DataField
-    private Div panel;
+    private HTMLDivElement panel;
 
     @DataField
     private SimplePanel container = new SimplePanel();
 
     @Inject
     @DataField
-    private Div formGroup;
+    private HTMLDivElement formGroup;
 
     @Inject
     @DataField
-    private Div helpBlock;
+    private HTMLDivElement helpBlock;
 
     @Inject
     private FormsElementWrapperWidgetUtil wrapperWidgetUtil;
@@ -89,15 +96,14 @@ public class CollapsibleFormGroupViewImpl implements IsElement,
     @Override
     public void render(Widget widget,
                        FieldDefinition field) {
-
         String id = Document.get().createUniqueId();
         anchor.setAttribute("data-target", "#" + id);
-        panel.setId(id);
+        panel.id = (id);
 
-        formGroup.setHidden(true);
-        anchorText.setTextContent(field.getLabel());
+        formGroup.hidden = (true);
+        anchorText.textContent = (field.getLabel());
 
-        if (field.getRequired()) {
+        if (field.isRequired()) {
             anchor.appendChild(fieldRequired.getElement());
         }
 
@@ -115,7 +121,8 @@ public class CollapsibleFormGroupViewImpl implements IsElement,
 
     @Override
     public void click() {
-        anchor.click();
+        Js.<HTMLInputElement>uncheckedCast(anchor).click();
+        //anchor.click();
     }
 
     @Override
@@ -135,7 +142,7 @@ public class CollapsibleFormGroupViewImpl implements IsElement,
     }
 
     @EventHandler("anchor")
-    public void onClick(ClickEvent clickEvent) {
+    public void onClick(@ForEvent("click") Event clickEvent) {
         presenter.notifyClick();
     }
 

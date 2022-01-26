@@ -19,21 +19,21 @@ package org.uberfire.ext.widgets.common.client.dropdown;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.user.client.ui.Composite;
-import org.jboss.errai.common.client.dom.Button;
+import elemental2.dom.Event;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
+import elemental2.dom.HTMLUListElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtbootstrap3.client.ui.html.Span;
+import org.gwtproject.user.client.ui.Composite;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Input;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.common.client.dom.UnorderedList;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.ext.widgets.common.client.dropdown.footer.LiveSearchFooter;
 import org.uberfire.ext.widgets.common.client.dropdown.noItems.NoItemsComponent;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
@@ -45,35 +45,36 @@ public class LiveSearchDropDownView<TYPE> extends Composite
 
     @Inject
     @DataField
-    Div mainPanel;
+    HTMLDivElement mainPanel;
 
     @Inject
     @DataField
-    Div dropDownPanel;
+    HTMLDivElement dropDownPanel;
 
     @Inject
     @DataField
-    Button dropDownButton;
+    HTMLButtonElement dropDownButton;
 
     @Inject
     @DataField
-    Span dropDownText;
+    @Named("span")
+    HTMLElement dropDownText;
 
     @Inject
     @DataField
-    Div searchPanel;
+    HTMLDivElement searchPanel;
 
     @Inject
     @DataField
-    Input searchInput;
+    HTMLInputElement searchInput;
 
     @Inject
     @DataField
-    UnorderedList dropDownMenu;
+    HTMLUListElement dropDownMenu;
 
     @Inject
     @DataField
-    Div spinnerPanel;
+    HTMLDivElement spinnerPanel;
 
     @Inject
     @DataField
@@ -117,21 +118,21 @@ public class LiveSearchDropDownView<TYPE> extends Composite
 
     @Override
     public void setMaxHeight(int maxHeight) {
-        dropDownMenu.getStyle().setProperty("max-height",
+        dropDownMenu.style.setProperty("max-height",
                                             maxHeight + "px");
     }
 
     @Override
     public void setWidth(int minWidth) {
-        dropDownButton.getStyle().setProperty("width",
+        dropDownButton.style.setProperty("width",
                                               minWidth + "px");
-        dropDownPanel.getStyle().setProperty("width",
+        dropDownPanel.style.setProperty("width",
                                              minWidth + "px");
     }
 
     @Override
     public void setSearchEnabled(boolean enabled) {
-        searchPanel.setHidden(!enabled);
+        searchPanel.hidden = !enabled;
     }
 
     @Override
@@ -149,7 +150,7 @@ public class LiveSearchDropDownView<TYPE> extends Composite
     }
 
     private void refreshFooter() {
-        liveSearchFooter.getElement().setHidden(!resetEnabled && !newItemEnabled);
+        liveSearchFooter.getElement().hidden = (!resetEnabled && !newItemEnabled);
     }
 
     @Override
@@ -183,17 +184,17 @@ public class LiveSearchDropDownView<TYPE> extends Composite
 
     @Override
     public void setSelectedValue(String selectedItem) {
-        dropDownText.setTextContent(selectedItem);
+        dropDownText.textContent = (selectedItem);
     }
 
     @Override
     public void setDropDownText(String text) {
-        dropDownText.setTextContent(text);
+        dropDownText.textContent = (text);
     }
 
     @Override
     public void clearSearch() {
-        searchInput.setValue("");
+        searchInput.value = ("");
     }
 
     @Override
@@ -204,22 +205,22 @@ public class LiveSearchDropDownView<TYPE> extends Composite
 
     @Override
     public void searchInProgress(String msg) {
-        spinnerText.setTextContent(msg);
-        spinnerPanel.getStyle().removeProperty("display");
-        dropDownMenu.getStyle().setProperty("display",
+        spinnerText.setText(msg);
+        spinnerPanel.style.removeProperty("display");
+        dropDownMenu.style.setProperty("display",
                                             "none");
     }
 
     @Override
     public void searchFinished() {
-        spinnerPanel.getStyle().setProperty("display",
+        spinnerPanel.style.setProperty("display",
                                             "none");
-        dropDownMenu.getStyle().removeProperty("display");
+        dropDownMenu.style.removeProperty("display");
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        dropDownButton.setDisabled(!enabled);
+        dropDownButton.disabled = (!enabled);
     }
 
     @Override
@@ -264,30 +265,30 @@ public class LiveSearchDropDownView<TYPE> extends Composite
     }
 
     @EventHandler("searchInput")
-    void onSearchChanged(KeyUpEvent event) {
-        String pattern = searchInput.getValue();
+    void onSearchChanged(@ForEvent("keyup") Event event) {
+        String pattern = searchInput.value;
         presenter.search(pattern);
     }
 
     @EventHandler("searchInput")
-    void onSearchClick(ClickEvent event) {
+    void onSearchClick(@ForEvent("click") Event event) {
         // Capture and ignore in order to avoid the drop-down to hide
         event.stopPropagation();
     }
 
     @EventHandler("searchInput")
-    void onSearchOver(MouseOverEvent event) {
+    void onSearchOverMouseOverEvent(@ForEvent("mouseover") Event event) {
         searchInput.focus();
     }
 
     @EventHandler("searchInput")
-    void onSearchOver(KeyDownEvent event) {
+    void onSearchOverKeyDownEvent(@ForEvent("keydown") Event event) {
         // Capture and ignore in order to avoid the js errors
         event.stopPropagation();
     }
 
     @EventHandler("dropDownButton")
-    void onDropDownClick(ClickEvent event) {
+    void onDropDownClick(@ForEvent("click") Event event) {
         presenter.onItemsShown();
     }
 }

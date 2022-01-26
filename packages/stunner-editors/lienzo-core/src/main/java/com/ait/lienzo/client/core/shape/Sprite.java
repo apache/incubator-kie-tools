@@ -30,7 +30,7 @@ import com.ait.lienzo.client.core.types.SpriteBehaviorMap;
 import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.tools.client.Timer;
-import com.google.gwt.resources.client.ImageResource;
+import org.gwtproject.resources.client.ImageResource;
 import elemental2.dom.HTMLImageElement;
 import jsinterop.annotations.JsProperty;
 

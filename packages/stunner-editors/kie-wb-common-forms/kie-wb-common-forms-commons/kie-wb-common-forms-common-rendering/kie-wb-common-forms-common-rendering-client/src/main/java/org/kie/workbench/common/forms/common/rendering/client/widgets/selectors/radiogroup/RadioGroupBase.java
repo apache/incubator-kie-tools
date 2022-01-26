@@ -18,8 +18,8 @@ package org.kie.workbench.common.forms.common.rendering.client.widgets.selectors
 
 import java.text.ParseException;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.text.shared.Parser;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.text.shared.Parser;
 
 /*
 This class fixes an issue on GWT-BS3 StringRadioGroup. It seems that it doesn't unselect the previous selected radio

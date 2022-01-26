@@ -468,6 +468,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                     defMetaTypes.setIndex(propertyMetaType, index);
                 }
             });
+
             processingContext.getDefinitionAnnotations().getPropertyFieldNames().put(defintionClassName, propertyFieldNames);
             processingContext.getDefinitionAnnotations().getTypedPropertyFields().put(defintionClassName, typedPropertyFields);
             processingContext.getMetaPropertyTypesFields().put(defintionClassName, defMetaTypes);

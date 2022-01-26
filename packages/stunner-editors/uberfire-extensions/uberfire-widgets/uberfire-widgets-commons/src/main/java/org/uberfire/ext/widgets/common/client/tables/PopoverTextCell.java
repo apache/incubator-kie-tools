@@ -16,21 +16,29 @@
 
 package org.uberfire.ext.widgets.common.client.tables;
 
-import com.google.common.base.Strings;
-import com.google.gwt.cell.client.AbstractSafeHtmlCell;
-import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
-import com.google.gwt.user.client.DOM;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-import static com.google.gwt.dom.client.BrowserEvents.MOUSEOUT;
-import static com.google.gwt.dom.client.BrowserEvents.MOUSEOVER;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import jsinterop.annotations.JsFunction;
+import jsinterop.base.JsPropertyMap;
+import org.gwtbootstrap3.client.shared.js.JQuery;
+import org.gwtproject.cell.client.AbstractSafeHtmlCell;
+import org.gwtproject.cell.client.ValueUpdater;
+import org.gwtproject.core.client.Scheduler;
+import org.gwtproject.dom.client.DivElement;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.dom.client.NativeEvent;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.safehtml.shared.SafeHtml;
+import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.text.shared.SimpleSafeHtmlRenderer;
+import org.gwtproject.user.client.DOM;
+
+import static org.gwtbootstrap3.client.shared.js.JQuery.$;
+import static org.gwtproject.dom.client.BrowserEvents.MOUSEOUT;
+import static org.gwtproject.dom.client.BrowserEvents.MOUSEOVER;
 
 /**
  * An extension to the normal TextCell that renders a Bootstrap Popover when text overflows.
@@ -56,7 +64,7 @@ public class PopoverTextCell extends AbstractSafeHtmlCell<String> {
                           SafeHtmlBuilder sb) {
         hideAllPopover();
         final String content = data.asString();
-        if (Strings.isNullOrEmpty(content)) {
+        if (content == null || content.isEmpty()) {
             return;
         }
 
@@ -108,20 +116,36 @@ public class PopoverTextCell extends AbstractSafeHtmlCell<String> {
         }
     }
 
-    private native void hideAllPopover() /*-{
+    private void hideAllPopover() {
+        $(".popover").popover("hide");
+
+    }/*-{
         $wnd.jQuery('.popover').popover('hide');
     }-*/;
 
-    private native void hidePopover(String id) /*-{
+    private void hidePopover(String id) {
+        $("#" + id).popover("hide");
+
+    }/*-{
         $wnd.jQuery('#' + id).popover('hide');
     }-*/;
 
-    private native void showPopover(String id) /*-{
+    private void showPopover(String id) {
+        $("#" + id).popover("show");
+
+    }/*-{
         $wnd.jQuery('#' + id).popover('show');
     }-*/;
 
+    //m_showPopover__java_lang_String_$p_org_uberfire_ext_widgets_common_client_tables_PopoverTextCell
+
+    private void initPopover2(String id,
+                                    String placement) {
+
+    }
+
     private native void initPopover(String id,
-                                    String placement) /*-{
+                                    String placement);/*-{
         var jQueryId = '#' + id;
         var div = $wnd.jQuery(jQueryId);
 
@@ -136,6 +160,12 @@ public class PopoverTextCell extends AbstractSafeHtmlCell<String> {
             container: 'body'
         });
     }-*/;
+
+    @FunctionalInterface
+    @JsFunction
+    private interface OnContent {
+        String apply();
+    }
 
     public enum Placement {
 

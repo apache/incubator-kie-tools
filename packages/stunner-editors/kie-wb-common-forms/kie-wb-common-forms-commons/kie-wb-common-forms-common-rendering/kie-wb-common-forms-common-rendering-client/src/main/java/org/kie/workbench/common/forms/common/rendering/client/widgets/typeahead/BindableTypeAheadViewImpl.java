@@ -19,14 +19,17 @@ package org.kie.workbench.common.forms.common.rendering.client.widgets.typeahead
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasValue;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.gwtbootstrap3.extras.typeahead.client.base.Dataset;
 import org.gwtbootstrap3.extras.typeahead.client.ui.Typeahead;
+
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.HasValue;
+
 import org.jboss.errai.common.client.api.Assert;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.common.rendering.client.util.masks.ClientMaskInterpreter;
 import org.kie.workbench.common.forms.commons.rendering.shared.util.masks.MaskInterpreter;
 

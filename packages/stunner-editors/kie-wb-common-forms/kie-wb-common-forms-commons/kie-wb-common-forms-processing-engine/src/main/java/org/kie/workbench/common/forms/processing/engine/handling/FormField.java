@@ -18,7 +18,7 @@ package org.kie.workbench.common.forms.processing.engine.handling;
 
 import java.util.Collection;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 
 public interface FormField {
 

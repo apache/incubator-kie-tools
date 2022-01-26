@@ -25,7 +25,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Timer;
+import org.gwtproject.timer.client.Timer;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -203,7 +203,7 @@ public class FormsCanvasSessionHandler {
         render(element);
     }
 
-    protected void scheduleRender(final com.google.gwt.user.client.Command command) {
+    protected void scheduleRender(final org.gwtproject.user.client.Command command) {
         new Timer() {
             @Override
             public void run() {

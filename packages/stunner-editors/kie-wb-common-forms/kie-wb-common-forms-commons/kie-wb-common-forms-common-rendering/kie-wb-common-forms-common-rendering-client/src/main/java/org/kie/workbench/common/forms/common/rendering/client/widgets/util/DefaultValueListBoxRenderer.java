@@ -19,7 +19,7 @@ package org.kie.workbench.common.forms.common.rendering.client.widgets.util;
 import java.io.IOException;
 import java.util.Map;
 
-import com.google.gwt.text.shared.Renderer;
+import org.gwtproject.text.shared.Renderer;
 
 public class DefaultValueListBoxRenderer<T> implements Renderer<T> {
 

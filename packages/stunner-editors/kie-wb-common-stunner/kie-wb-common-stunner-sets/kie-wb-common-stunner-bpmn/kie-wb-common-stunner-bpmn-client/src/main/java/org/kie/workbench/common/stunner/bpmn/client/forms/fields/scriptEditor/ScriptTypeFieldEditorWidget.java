@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.scriptEditor;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorEditorWidget;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode;
 
+@Dependent
 public class ScriptTypeFieldEditorWidget
         extends FieldEditorEditorWidget<ScriptTypeValue, ScriptTypeFieldEditorPresenter> {
 

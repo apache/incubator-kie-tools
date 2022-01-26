@@ -18,18 +18,20 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.
 
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.LIElement;
-import com.google.gwt.dom.client.UListElement;
-import com.google.gwt.user.client.ui.Composite;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import io.crysknife.ui.translation.api.spi.TranslationService;
+import org.gwtproject.dom.client.Document;
+import org.gwtproject.dom.client.LIElement;
+import org.gwtproject.dom.client.UListElement;
+import org.gwtproject.user.client.ui.Composite;
 import org.jboss.errai.common.client.api.Assert;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
+@Dependent
 public class ConfigErrorDisplayerViewImpl extends Composite implements ConfigErrorDisplayerView {
 
     @DataField

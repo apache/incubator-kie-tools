@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.views;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 
 /**
  * Just a simple view that wraps any widget.

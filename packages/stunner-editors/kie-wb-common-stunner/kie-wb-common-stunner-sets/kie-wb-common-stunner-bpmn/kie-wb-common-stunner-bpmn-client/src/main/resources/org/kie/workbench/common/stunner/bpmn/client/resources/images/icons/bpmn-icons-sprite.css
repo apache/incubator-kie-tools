@@ -15,9 +15,9 @@
  */
 @url bpmnImageUrl bpmnIconsSprite;
 .iconsSprite {
-  background-image: bpmnImageUrl !important;
-  -webkit-print-color-adjust: exact !important;
-  color-adjust: exact !important;
-  width: 16px;
-  height: 16px;
+    background-image: bpmnImageUrl !important;
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    width: 16px;
+    height: 16px;
 }

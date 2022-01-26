@@ -16,19 +16,21 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor.formGroup;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.user.client.ui.Widget;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.labels.label.FieldLabel;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Templated
+@Dependent
 public class AssigneeFormGroupViewImpl implements IsElement,
                                                   AssigneeFormGroupView {
 
@@ -38,15 +40,15 @@ public class AssigneeFormGroupViewImpl implements IsElement,
 
     @Inject
     @DataField
-    protected Div fieldContainer;
+    protected HTMLDivElement fieldContainer;
 
     @Inject
     @DataField
-    private Div formGroup;
+    private HTMLDivElement formGroup;
 
     @Inject
     @DataField
-    protected Div helpBlock;
+    protected HTMLDivElement helpBlock;
 
     @Override
     public void render(Widget widget,

@@ -18,9 +18,9 @@ package org.uberfire.client.views.pfly.tab;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.ui.ProvidesResize;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.ProvidesResize;
+import org.gwtproject.user.client.ui.RequiresResize;
+import org.gwtproject.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.TabPane;
 import org.uberfire.client.util.Layouts;
 

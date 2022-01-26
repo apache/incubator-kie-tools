@@ -111,7 +111,7 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     }
 
     @SuppressWarnings("unchecked")
-    void onCommandExecuted(final @Observes CanvasCommandExecutedEvent commandExecutedEvent) {
+    public void onCommandExecuted(final @Observes CanvasCommandExecutedEvent commandExecutedEvent) {
         checkNotNull("commandExecutedEvent",
                      commandExecutedEvent);
         if (null != getSession() && getSession().getCanvasHandler().equals(commandExecutedEvent.getCanvasHandler())) {
@@ -123,7 +123,7 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     }
 
     @SuppressWarnings("unchecked")
-    void onCommandUndoExecuted(final @Observes CanvasCommandUndoneEvent commandUndoExecutedEvent) {
+    public void onCommandUndoExecuted(final @Observes CanvasCommandUndoneEvent commandUndoExecutedEvent) {
         checkNotNull("commandUndoExecutedEvent",
                      commandUndoExecutedEvent);
         CanvasHandler canvasHandler = commandUndoExecutedEvent.getCanvasHandler();
@@ -135,7 +135,7 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
         }
     }
 
-    void onCurrentRegistryChanged(final @Observes CurrentRegistryChangedEvent currentRegistryChangedEvent) {
+    public void onCurrentRegistryChanged(final @Observes CurrentRegistryChangedEvent currentRegistryChangedEvent) {
         checkState();
     }
 

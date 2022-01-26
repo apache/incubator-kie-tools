@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.forms.client.widgets;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
 import org.uberfire.client.mvp.UberElement;
 
 public interface FormPropertiesWidgetView extends UberElement<FormPropertiesWidgetView.Presenter> {

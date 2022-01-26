@@ -17,14 +17,18 @@
 package org.kie.workbench.common.stunner.client.lienzo.components.proxies;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Named;
 
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.proxy.AbstractWiresProxy;
 import com.ait.lienzo.client.core.shape.wires.proxy.WiresConnectorProxy;
+import org.kie.workbench.common.stunner.core.client.components.proxies.EdgeShapeQualifier;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 
 @Dependent
+@EdgeShapeQualifier
+@Named("LienzoConnectorProxyView")
 public class LienzoConnectorProxyView
         extends LienzoShapeProxyView<EdgeShape> {
 

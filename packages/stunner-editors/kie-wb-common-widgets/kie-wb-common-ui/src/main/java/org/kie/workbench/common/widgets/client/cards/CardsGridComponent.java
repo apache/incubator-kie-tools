@@ -24,8 +24,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.widgets.client.cards.frame.CardFrameComponent;
 import org.uberfire.client.mvp.UberElemental;
 

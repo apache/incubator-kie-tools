@@ -16,16 +16,20 @@
 
 package org.kie.workbench.common.widgets.client.widget;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
+import elemental2.dom.Event;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
 import elemental2.dom.HTMLSelectElement;
-import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
 
 @Templated
+@Dependent
 public class KieSelectElementView implements KieSelectElement.View,
                                              IsElement {
 
@@ -41,7 +45,7 @@ public class KieSelectElementView implements KieSelectElement.View,
     }
 
     @EventHandler("select")
-    private void onSelectChanged(final ChangeEvent ignore) {
+    public void onSelectChanged(@ForEvent("onchange") final Event ignore) {
         presenter.onChange();
     }
 
@@ -59,7 +63,9 @@ public class KieSelectElementView implements KieSelectElement.View,
         clear(select);
     }
 
-    private native void clear(final HTMLSelectElement select)/*-{
+    private void clear(final HTMLSelectElement select) {
+        JQuerySelectPicker.$(select).empty().selectpicker("refresh");
+    }/*-{
        $wnd.jQuery(select).empty().selectpicker('refresh');
     }-*/;
 
@@ -68,7 +74,10 @@ public class KieSelectElementView implements KieSelectElement.View,
         setValue(select, value);
     }
 
-    public native void setValue(final HTMLSelectElement select, final String value) /*-{
+    public void setValue(final HTMLSelectElement select, final String value) {
+        JQuerySelectPicker.$(select).val(value);
+        JQuerySelectPicker.$(select).selectpicker("refresh");
+    }/*-{
         $wnd.jQuery(select).val(value);
         $wnd.jQuery(select).selectpicker('refresh');
     }-*/;
@@ -78,7 +87,10 @@ public class KieSelectElementView implements KieSelectElement.View,
         return select.value;
     }
 
-    private native void selectpicker(final HTMLSelectElement select)/*-{
+    private void selectpicker(final HTMLSelectElement select) {
+        JQuerySelectPicker.$(select).selectpicker();
+
+    }/*-{
         $wnd.jQuery(select).selectpicker();
     }-*/;
 }

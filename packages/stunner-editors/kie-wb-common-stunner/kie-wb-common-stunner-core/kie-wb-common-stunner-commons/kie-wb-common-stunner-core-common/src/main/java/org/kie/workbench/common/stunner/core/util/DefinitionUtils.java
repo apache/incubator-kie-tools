@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import io.crysknife.annotation.CircularDependency;
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
@@ -48,6 +49,7 @@ import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegis
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
+@CircularDependency
 public class DefinitionUtils {
 
     private final DefinitionManager definitionManager;

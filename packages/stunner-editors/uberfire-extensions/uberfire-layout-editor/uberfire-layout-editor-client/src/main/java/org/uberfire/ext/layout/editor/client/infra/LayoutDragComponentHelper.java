@@ -16,30 +16,28 @@
 
 package org.uberfire.ext.layout.editor.client.infra;
 
+import io.crysknife.client.BeanManager;
+import io.crysknife.client.SyncBeanDef;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
+
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
-
 @Dependent
 public class LayoutDragComponentHelper {
 
-    private SyncBeanManager beanManager;
+    private BeanManager beanManager;
 
     private List<Object> instances = new ArrayList<>();
 
     @Inject
-    public LayoutDragComponentHelper(SyncBeanManager beanManager) {
+    public LayoutDragComponentHelper(BeanManager beanManager) {
         this.beanManager = beanManager;
     }
 
@@ -78,6 +76,6 @@ public class LayoutDragComponentHelper {
     }
 
     protected void destroy(Object o) {
-        IOC.getBeanManager().destroyBean(o);
+        beanManager.destroyBean(o);
     }
 }

@@ -19,13 +19,14 @@ package org.kie.workbench.common.widgets.client.popups.alert;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.Composite;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import elemental2.dom.HTMLElement;
+import org.gwtproject.safehtml.shared.SafeHtml;
+import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.user.client.ui.Composite;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
 
@@ -36,7 +37,8 @@ public class AlertPopupViewImpl extends Composite
 
     @Inject
     @DataField("alert-message")
-    Span alertMessage;
+    @Named("span")
+    private HTMLElement alertMessage;
 
     private final BaseModal modal;
 
@@ -55,7 +57,7 @@ public class AlertPopupViewImpl extends Composite
     public void alert( final String title,
                        final String message ) {
         this.modal.setTitle( title );
-        this.alertMessage.setInnerHTML( getSafeHtml( message ).asString() );
+        this.alertMessage.innerHTML = ( getSafeHtml( message ).asString() );
         modal.show();
     }
 

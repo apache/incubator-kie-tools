@@ -16,13 +16,14 @@
 
 package org.uberfire.client.views.pfly.sys;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.TextResource;
+import org.gwtproject.resources.client.ClientBundle;
+import org.gwtproject.resources.client.Resource;
+import org.gwtproject.resources.client.TextResource;
 
+@Resource
 public interface PatternFlyClientBundle extends ClientBundle {
 
-    PatternFlyClientBundle INSTANCE = GWT.create(PatternFlyClientBundle.class);
+    PatternFlyClientBundle INSTANCE = new PatternFlyClientBundleImpl();
 
     @Source("org/uberfire/client/views/static/bootstrap-select/js/bootstrap-select.min.js")
     TextResource bootstrapSelect();

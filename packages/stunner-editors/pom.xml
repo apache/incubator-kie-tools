@@ -79,22 +79,11 @@
   </repositories>
 
   <modules>
-    <!-- ERRAI -->
-    <module>errai-bom</module>
-    <module>errai-common</module>
-    <module>errai-javax-enterprise</module>
-    <module>errai-ioc</module>
-    <module>errai-codegen</module>
-    <module>errai-cdi</module>
-    <module>errai-ui</module>
-    <module>errai-data-binding</module>
-    <module>errai-validation</module>
-    <module>errai-reflections</module>
-    <module>errai-config</module>
-    <module>errai-codegen-gwt</module>
-    <module>errai-api</module>
+    <!-- compat -->
+    <module>compat</module>
+    <module>emf</module>
 
-    <!-- APPFORMER -->
+    <!-- APPFORMER  -->
     <module>appformer-bom</module>
     <module>appformer-client-api</module>
     <module>appformer-kogito-bridge</module>
@@ -109,17 +98,22 @@
     <module>kie-wb-common-widgets</module>
     <module>kie-wb-common-forms</module>
     <module>kie-wb-common-stunner</module>
+<!--
     <module>kie-wb-common-dmn</module>
+-->
     <module>kie-wb-common-kogito</module>
 
-    <!-- DROOLS-WB -->
+    <!-- DROOLS-WB
     <module>drools-wb-bom</module>
-    <module>drools-wb-screens</module>
 
+    <module>drools-wb-screens</module>
+-->
     <!-- LIENZO -->
     <module>lienzo-core</module>
     <module>lienzo-tests</module>
+<!--
     <module>lienzo-webapp</module>
+-->
 
   </modules>
 
@@ -232,64 +226,20 @@
     <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
     <code.coverage.disabled>false</code.coverage.disabled>
     <version.org.kogito.gwt-jsonix-schema-compiler>1.3.0</version.org.kogito.gwt-jsonix-schema-compiler>
+
+    <org.gwtproject.version>HEAD-SNAPSHOT</org.gwtproject.version>
+    <org.treblereel.j2cl.processors.version>0.3</org.treblereel.j2cl.processors.version>
+    <org.treblereel.gwt.nio.version>1.1</org.treblereel.gwt.nio.version>
+    <org.crysknife.version>0.3-SNAPSHOT</org.crysknife.version>
+    <org.gwtbootstrap3.version>1.2-SNAPSHOT</org.gwtbootstrap3.version>
   </properties>
 
   <dependencyManagement>
     <dependencies>
-      <!-- Common BOMs -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
       <dependency>
         <groupId>com.google.elemental2</groupId>
         <artifactId>elemental2-dom</artifactId>
         <version>${version.com.google.elemental2}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <!-- All errai's modules and third-party versions are defined in this POM -->
-      <dependency>
-        <groupId>org.kie.kogito.stunner.editors</groupId>
-        <artifactId>errai-bom</artifactId>
-        <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -311,15 +261,32 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.jsoup</groupId>
+        <artifactId>jsoup</artifactId>
+        <version>1.11.3</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.treblereel.gwt.xml.mapper</groupId>
+        <artifactId>common</artifactId>
+        <version>0.4</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.treblereel.gwt.xml.mapper</groupId>
+        <artifactId>api</artifactId>
+        <version>0.4</version>
+      </dependency>
 
       <!-- All drools-wb's modules and third-party versions are defined in this POM -->
-      <dependency>
+<!--      <dependency>
         <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>drools-wb-bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
+      </dependency>-->
 
       <!-- Lienzo artifacts for kogito stream -->
       <dependency>
@@ -351,6 +318,72 @@
         <artifactId>log4j-to-slf4j</artifactId>
         <version>${version.org.apache.logging.log4j}</version>
       </dependency>
+
+      <!-- J2CL Deps -->
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.editors</groupId>
+        <artifactId>compat</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.editors.emf</groupId>
+        <artifactId>common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.editors.emf</groupId>
+        <artifactId>ecore</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.gwtproject</groupId>
+        <artifactId>gwt-bom</artifactId>
+        <version>${org.gwtproject.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>io.crysknife</groupId>
+        <artifactId>bom</artifactId>
+        <version>${org.crysknife.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.treblereel.gwt.nio</groupId>
+        <artifactId>gwt-nio</artifactId>
+        <version>${org.treblereel.gwt.nio.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.treblereel.j2cl.processors</groupId>
+        <artifactId>annotations</artifactId>
+        <version>${org.treblereel.j2cl.processors.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.treblereel.j2cl.processors</groupId>
+        <artifactId>processors</artifactId>
+        <version>${org.treblereel.j2cl.processors.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.gwtbootstrap3</groupId>
+        <artifactId>gwtbootstrap3</artifactId>
+        <version>${org.gwtbootstrap3.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.gwtbootstrap3</groupId>
+        <artifactId>gwtbootstrap3-extras</artifactId>
+        <version>${org.gwtbootstrap3.version}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -850,9 +883,92 @@
                           <ignoreClass>*</ignoreClass>
                         </ignoreClasses>
                       </dependency>
-                    </dependencies>
+                      <dependency>
+                        <groupId>io.crysknife</groupId>
+                        <artifactId>crysknife-annotations</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.gwtproject.editor</groupId>
+                        <artifactId>gwt-editor</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.gwtproject.resources</groupId>
+                        <artifactId>gwt-resources-processor</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.gwtproject.i18n</groupId>
+                        <artifactId>gwt-i18n-processor</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.gwtproject.uibinder</groupId>
+                        <artifactId>gwt-uibinder-processor</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.gwtproject.editor</groupId>
+                        <artifactId>gwt-validation-api</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.kie.kogito.stunner.editors</groupId>
+                        <artifactId>compat</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>javax.validation</groupId>
+                        <artifactId>validation-api</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.treblereel.gwt.xml.mapper</groupId>
+                        <artifactId>common</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                  </dependencies>
                     <findAllDuplicates>true</findAllDuplicates>
                   </banDuplicateClasses>
+                  <requirePluginVersions>
+                    <message>One or more plugins do not have valid
+                      version! The version needs to be
+                      explicitly
+                      specified, can not be a -SNAPSHOT version and can
+                      not be one of
+                      the special (and buggy) Maven
+                      versions (LATEST, RELEASE).
+                    </message>
+                    <unCheckedPluginList>com.vertispan.j2cl:j2cl-maven-plugin</unCheckedPluginList>
+                  </requirePluginVersions>
                 </rules>
                 <fail>true</fail>
               </configuration>

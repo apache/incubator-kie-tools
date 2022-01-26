@@ -18,7 +18,7 @@ package org.uberfire.client.workbench.docks;
 
 import java.util.Objects;
 
-import com.google.gwt.resources.client.ImageResource;
+import org.gwtproject.resources.client.ImageResource;
 import org.uberfire.mvp.PlaceRequest;
 
 public class UberfireDock {

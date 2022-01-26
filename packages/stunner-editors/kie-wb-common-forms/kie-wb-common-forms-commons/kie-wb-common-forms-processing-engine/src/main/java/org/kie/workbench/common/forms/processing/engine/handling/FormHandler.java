@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.processing.engine.handling;
 
-import org.jboss.errai.databinding.client.api.Converter;
+import io.crysknife.ui.databinding.client.api.Converter;
 
 /**
  * Provides API to handle the input changes allowing to add callbacks and run

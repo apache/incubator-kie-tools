@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets.selectors.radiogroup;
 
-import com.google.gwt.text.client.DoubleParser;
+import org.gwtproject.text.client.DoubleParser;
 
 public class DecimalRadioGroup extends RadioGroupBase<Double> {
 

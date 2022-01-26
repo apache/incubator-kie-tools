@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.FunctionDef;
@@ -32,6 +33,7 @@ import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchService;
 import org.uberfire.mvp.Command;
 
+@Dependent
 public class FunctionSearchService implements LiveSearchService<String> {
 
     private Path path;

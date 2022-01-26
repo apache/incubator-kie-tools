@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.stunner.shapes.def.picture;
 
-import com.google.gwt.safehtml.shared.SafeUri;
+import org.gwtproject.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.core.client.ThumbProvider;
 
 public interface PictureProvider<S> extends ThumbProvider<S> {

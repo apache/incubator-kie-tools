@@ -20,10 +20,10 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import io.crysknife.ui.databinding.client.api.Converter;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Assert;
-import org.jboss.errai.databinding.client.api.Converter;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormView;
 import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGeneratorManager;
@@ -106,6 +106,7 @@ public class DynamicFormRenderer implements IsWidget,
         PortablePreconditions.checkNotNull("model",
                                            model);
         FormRenderingContext context = dynamicFormModelGenerator.getContextForModel(model);
+
         if (context != null) {
             doRenderDefaultForm(context,
                                 model,

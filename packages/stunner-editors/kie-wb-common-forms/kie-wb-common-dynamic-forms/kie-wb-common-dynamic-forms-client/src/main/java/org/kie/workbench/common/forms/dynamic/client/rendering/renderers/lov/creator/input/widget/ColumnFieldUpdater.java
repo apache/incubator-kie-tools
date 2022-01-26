@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.creator.input.widget;
 
-import com.google.gwt.cell.client.EditTextCell;
-import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.user.cellview.client.Column;
+import org.gwtproject.cell.client.EditTextCell;
+import org.gwtproject.cell.client.FieldUpdater;
+import org.gwtproject.user.cellview.client.Column;
 import org.uberfire.ext.widgets.table.client.UberfirePagedTable;
 
 public abstract class ColumnFieldUpdater<TYPE, FLAT_TYPE> implements FieldUpdater<TableEntry<TYPE>, FLAT_TYPE> {

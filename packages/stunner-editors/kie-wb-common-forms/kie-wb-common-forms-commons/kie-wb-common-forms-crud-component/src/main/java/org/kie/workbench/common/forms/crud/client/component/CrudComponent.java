@@ -20,11 +20,11 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.AsyncDataProvider;
-import com.google.gwt.view.client.HasData;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import io.crysknife.ui.translation.api.spi.TranslationService;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
+import org.gwtproject.view.client.AsyncDataProvider;
+import org.gwtproject.view.client.HasData;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.FormDisplayer;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.FormDisplayer.FormDisplayerCallback;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormView;
@@ -75,7 +75,8 @@ public class CrudComponent<MODEL, FORM_MODEL> implements IsWidget {
     public CrudComponent(final CrudComponentView<MODEL, FORM_MODEL> view,
                          final EmbeddedFormDisplayer embeddedFormDisplayer,
                          final ModalFormDisplayer modalFormDisplayer,
-                         final TranslationService translationService) {
+                         final TranslationService translationService
+    ) {
         this.view = view;
         this.embeddedFormDisplayer = embeddedFormDisplayer;
         this.modalFormDisplayer = modalFormDisplayer;

@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.s
 import java.util.Collections;
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.graph.processing.layout.Vertex;
@@ -28,6 +29,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.Or
 /**
  * Transpose vertices inside a layer in order to reduce edge crossing.
  */
+@Dependent
 public class VerticesTransposer {
 
     private final LayerCrossingCount crossingCount;

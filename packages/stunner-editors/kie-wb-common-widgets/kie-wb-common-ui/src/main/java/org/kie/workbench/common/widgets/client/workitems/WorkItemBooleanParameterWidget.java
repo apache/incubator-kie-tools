@@ -17,14 +17,15 @@ package org.kie.workbench.common.widgets.client.workitems;
 
 import java.util.Set;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.event.dom.client.ChangeEvent;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiHandler;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.ui.HTMLPanel;
 
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.workitems.PortableBooleanParameterDefinition;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.ListBox;
@@ -35,6 +36,7 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
  */
 public class WorkItemBooleanParameterWidget extends WorkItemParameterWidget {
 
+    @UiTemplate
     interface WorkItemBooleanParameterWidgetBinder
             extends
             UiBinder<HTMLPanel, WorkItemBooleanParameterWidget> {
@@ -50,7 +52,7 @@ public class WorkItemBooleanParameterWidget extends WorkItemParameterWidget {
     @UiField
     ListBox lstAvailableBindings;
 
-    private static WorkItemBooleanParameterWidgetBinder uiBinder = GWT.create(WorkItemBooleanParameterWidgetBinder.class);
+    private static WorkItemBooleanParameterWidgetBinder uiBinder = new WorkItemBooleanParameterWidget_WorkItemBooleanParameterWidgetBinderImpl();
 
     public WorkItemBooleanParameterWidget(PortableBooleanParameterDefinition ppd,
                                           IBindingProvider bindingProvider,
@@ -62,7 +64,7 @@ public class WorkItemBooleanParameterWidget extends WorkItemParameterWidget {
 
         //Setup widget to select a literal value
         boolean isItemSelected = false;
-        Boolean selectedItem = ppd.getValue();
+        Boolean selectedItem = ppd.isValue();
         if (ppd.getValues() != null) {
             for (int index = 0; index < ppd.getValues().length; index++) {
                 Boolean item = ppd.getValues()[index];

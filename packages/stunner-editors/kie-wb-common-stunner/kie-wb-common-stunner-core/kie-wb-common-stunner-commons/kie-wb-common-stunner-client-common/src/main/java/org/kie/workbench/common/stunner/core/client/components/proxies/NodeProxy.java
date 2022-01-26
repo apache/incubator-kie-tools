@@ -52,7 +52,7 @@ public class NodeProxy implements ShapeProxy {
 
     @Inject
     public NodeProxy(final ElementProxy proxy,
-                     final ShapeProxyView<NodeShape> view) {
+                     @NodeShapeQualifier final ShapeProxyView<NodeShape> view) {
         this.proxy = proxy;
         this.view = view;
     }

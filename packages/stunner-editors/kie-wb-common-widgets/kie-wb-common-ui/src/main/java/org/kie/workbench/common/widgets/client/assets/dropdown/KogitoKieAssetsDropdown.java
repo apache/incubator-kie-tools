@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.widgets.client.assets.dropdown;
 
-import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import io.crysknife.client.IsElement;
 
 public abstract class KogitoKieAssetsDropdown extends AbstractKieAssetsDropdown {
 

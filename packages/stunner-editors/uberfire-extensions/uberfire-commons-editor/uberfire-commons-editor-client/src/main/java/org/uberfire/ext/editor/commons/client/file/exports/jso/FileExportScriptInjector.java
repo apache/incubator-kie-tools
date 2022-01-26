@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.google.gwt.core.client.ScriptInjector;
+import org.gwtproject.core.client.ScriptInjector;
 import org.uberfire.ext.editor.commons.client.file.exports.FileExportResources;
 
 /**

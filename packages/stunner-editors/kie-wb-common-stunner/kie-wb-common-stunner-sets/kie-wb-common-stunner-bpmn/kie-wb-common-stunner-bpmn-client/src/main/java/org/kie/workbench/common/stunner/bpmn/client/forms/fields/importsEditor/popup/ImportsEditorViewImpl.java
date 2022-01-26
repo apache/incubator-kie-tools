@@ -18,9 +18,9 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.importsEditor.
 
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Style;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.Container;
@@ -28,6 +28,7 @@ import org.gwtbootstrap3.client.ui.Row;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.gwtbootstrap3.client.ui.constants.Pull;
+import org.gwtproject.dom.client.Style;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.importsEditor.popup.editor.defaultImport.DefaultImportsEditorWidget;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.importsEditor.popup.editor.wsdlImport.WSDLImportsEditorWidget;
@@ -35,6 +36,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.WSDLImport;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
+@Dependent
 public class ImportsEditorViewImpl extends BaseModal implements ImportsEditorView {
 
     @Inject

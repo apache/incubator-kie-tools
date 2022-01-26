@@ -14,19 +14,20 @@
   ~ limitations under the License.
   -->
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
+<head>
     <title>BPMN - SVG Shapes Tester</title>
     <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
     <script src="/kie-wb-common-stunner/kie-wb-common-stunner-svg-gen/org/kie/workbench/common/stunner/svg/gen/tester/svg-stencil-tester.js"></script>
-  </head>
-  <body>
-    <div id="testerPanel"></div>
-    <script type="text/javascript">
-      const tester = new SVGStencilTester("bpmn-shapes-tester-input.json");
-      tester.addDiagram("bpmn-shapes-tester-example1.json");
-      tester.addDiagram("bpmn-shapes-tester-example2.json");
-      tester.show("testerPanel");
-    </script>
-  </body>
+</head>
+<body>
+<div id="testerPanel"></div>
+<script type="text/javascript">
+    const tester = new SVGStencilTester("bpmn-shapes-tester-input.json");
+    tester.addDiagram("bpmn-shapes-tester-example1.json");
+    tester.addDiagram("bpmn-shapes-tester-example2.json");
+    tester.show("testerPanel");
+</script>
+</body>
 </html>

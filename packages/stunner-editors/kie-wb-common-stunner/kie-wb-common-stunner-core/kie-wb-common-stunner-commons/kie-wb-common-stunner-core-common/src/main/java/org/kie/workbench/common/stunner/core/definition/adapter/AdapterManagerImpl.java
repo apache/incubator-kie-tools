@@ -16,21 +16,27 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import io.crysknife.annotation.CircularDependency;
 import org.kie.workbench.common.stunner.core.definition.adapter.bootstrap.BootstrapAdapterFactory;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
+import org.kie.workbench.common.stunner.core.registry.impl.AdapterRegistryImpl;
 
 @ApplicationScoped
+@CircularDependency
 public class AdapterManagerImpl implements AdapterManager {
 
-    private final AdapterRegistry registry;
-    private final DefinitionSetAdapter<Object> definitionSetAdapter;
-    private final DefinitionSetRuleAdapter<Object> definitionSetRuleAdapter;
-    private final DefinitionAdapter<Object> definitionAdapter;
-    private final PropertyAdapter<Object, Object> propertyAdapter;
+    private AdapterRegistry registry;
+    private DefinitionSetAdapter<Object> definitionSetAdapter;
+    private DefinitionSetRuleAdapter<Object> definitionSetRuleAdapter;
+    private DefinitionAdapter<Object> definitionAdapter;
+    private PropertyAdapter<Object, Object> propertyAdapter;
+
+    private BootstrapAdapterFactory bootstrapAdapterFactory;
 
     protected AdapterManagerImpl() {
         this.registry = null;
@@ -43,8 +49,20 @@ public class AdapterManagerImpl implements AdapterManager {
     @Inject
     public AdapterManagerImpl(final RegistryFactory registryFactory,
                               final BootstrapAdapterFactory bootstrapAdapterFactory) {
-        this(registryFactory.newAdapterRegistry(),
-             bootstrapAdapterFactory);
+        //this(new AdapterRegistryImpl(),
+        //     bootstrapAdapterFactory);
+
+        this.registry = new AdapterRegistryImpl();
+        this.bootstrapAdapterFactory = bootstrapAdapterFactory;
+    }
+
+    @PostConstruct
+    public void init() {
+
+        this.definitionSetAdapter = bootstrapAdapterFactory.newDefinitionSetAdapter(registry);
+        this.definitionSetRuleAdapter = bootstrapAdapterFactory.newDefinitionSetRuleAdapter(registry);
+        this.definitionAdapter = bootstrapAdapterFactory.newDefinitionAdapter(registry);
+        this.propertyAdapter = bootstrapAdapterFactory.newPropertyAdapter(registry);
     }
 
     AdapterManagerImpl(final AdapterRegistry registry,
@@ -55,6 +73,7 @@ public class AdapterManagerImpl implements AdapterManager {
         this.definitionAdapter = bootstrapAdapterFactory.newDefinitionAdapter(registry);
         this.propertyAdapter = bootstrapAdapterFactory.newPropertyAdapter(registry);
     }
+
 
     @Override
     public DefinitionSetAdapter<Object> forDefinitionSet() {

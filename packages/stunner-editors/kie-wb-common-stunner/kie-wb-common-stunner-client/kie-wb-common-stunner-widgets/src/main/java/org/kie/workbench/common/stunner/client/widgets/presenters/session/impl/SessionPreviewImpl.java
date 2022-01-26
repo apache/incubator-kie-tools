@@ -27,7 +27,7 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasDecoratorFactory;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
@@ -79,7 +79,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 public class SessionPreviewImpl<S extends AbstractSession>
         extends AbstractSessionViewer<S>
         implements SessionDiagramPreview<S>,
-                   CommandRequestLifecycle {
+        CommandRequestLifecycle {
 
     private final DefinitionUtils definitionUtils;
     private final GraphUtils graphUtils;
@@ -135,7 +135,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
         this.isCommandAllowed = c -> true;
         this.diagramPreview =
                 new DiagramPreviewProxy<Diagram>(view,
-                                                 preferencesRegistries) {
+                        preferencesRegistries) {
                     @Override
                     public SelectionControl<AbstractCanvasHandler, Element> getSelectionControl() {
                         return selectionControl;
@@ -219,12 +219,13 @@ public class SessionPreviewImpl<S extends AbstractSession>
         final Annotation qualifier = definitionUtils.getQualifier(diagram.getMetadata().getDefinitionSetId());
         final BaseCanvasHandler delegate = InstanceUtils.lookup(canvasHandlers, qualifier);
         canvas = InstanceUtils.lookup(canvases, qualifier);
+
         canvasPanel = InstanceUtils.lookup(canvasPanels, qualifier);
         canvasHandler = new SessionPreviewCanvasHandlerProxy(delegate,
-                                                             definitionUtils.getDefinitionManager(),
-                                                             graphUtils,
-                                                             shapeManager,
-                                                             textPropertyProviderFactory);
+                definitionUtils.getDefinitionManager(),
+                graphUtils,
+                shapeManager,
+                textPropertyProviderFactory);
         mediatorsControl = InstanceUtils.lookup(mediatorControls, qualifier);
         selectionControl = InstanceUtils.lookup(selectionControls, qualifier);
         commandFactory = InstanceUtils.lookup(canvasCommandFactories, qualifier);
@@ -303,28 +304,28 @@ public class SessionPreviewImpl<S extends AbstractSession>
     @SuppressWarnings("unchecked")
     void commandExecutedFired(@Observes CanvasCommandExecutedEvent commandExecutedEvent) {
         checkNotNull("commandExecutedEvent",
-                     commandExecutedEvent);
+                commandExecutedEvent);
         final Command<AbstractCanvasHandler, CanvasViolation> command = commandExecutedEvent.getCommand();
         if (isCommandAllowed.test(command)) {
             final AbstractCanvasHandler context = (AbstractCanvasHandler) commandExecutedEvent.getCanvasHandler();
             final CommandResult<CanvasViolation> result = commandExecutedEvent.getResult();
             onExecute(context,
-                      command,
-                      result);
+                    command,
+                    result);
         }
     }
 
     @SuppressWarnings("unchecked")
     void commandUndoExecutedFired(@Observes CanvasCommandUndoneEvent commandUndoExecutedEvent) {
         checkNotNull("commandUndoExecutedEvent",
-                     commandUndoExecutedEvent);
+                commandUndoExecutedEvent);
         final Command<AbstractCanvasHandler, CanvasViolation> command = commandUndoExecutedEvent.getCommand();
         if (isCommandAllowed.test(command)) {
             final AbstractCanvasHandler context = (AbstractCanvasHandler) commandUndoExecutedEvent.getCanvasHandler();
             final CommandResult<CanvasViolation> result = commandUndoExecutedEvent.getResult();
             onUndo(context,
-                   command,
-                   result);
+                    command,
+                    result);
         }
     }
 
@@ -332,9 +333,9 @@ public class SessionPreviewImpl<S extends AbstractSession>
                            final Command<AbstractCanvasHandler, CanvasViolation> command,
                            final CommandResult<CanvasViolation> result) {
         if (isOperationAllowed(context,
-                               result)) {
+                result)) {
             getCommandManager().execute(getDiagramViewer().getHandler(),
-                                        command);
+                    command);
         }
     }
 
@@ -342,9 +343,9 @@ public class SessionPreviewImpl<S extends AbstractSession>
                         final Command<AbstractCanvasHandler, CanvasViolation> command,
                         final CommandResult<CanvasViolation> result) {
         if (isOperationAllowed(context,
-                               result)) {
+                result)) {
             getCommandManager().undo(getDiagramViewer().getHandler(),
-                                     command);
+                    command);
         }
     }
 

@@ -79,7 +79,7 @@ public abstract class AbstractMultipleSelectorFieldDefinition<TYPE> extends Abst
         this.maxElementsOnTitle = maxElementsOnTitle;
     }
 
-    public Boolean getAllowFilter() {
+    public Boolean isAllowFilter() {
         return allowFilter;
     }
 
@@ -87,7 +87,7 @@ public abstract class AbstractMultipleSelectorFieldDefinition<TYPE> extends Abst
         this.allowFilter = allowFilter;
     }
 
-    public Boolean getAllowClearSelection() {
+    public Boolean isAllowClearSelection() {
         return allowClearSelection;
     }
 

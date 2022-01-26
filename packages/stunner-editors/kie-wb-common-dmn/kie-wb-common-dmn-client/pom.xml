@@ -39,11 +39,6 @@
       <artifactId>javax.annotation-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-    </dependency>
-
     <!-- Stunner -->
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>

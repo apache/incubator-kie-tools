@@ -18,8 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.importsEditor.
 
 import java.util.List;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.dom.style.shared.Display;
+import org.gwtproject.user.client.ui.Widget;
 
 public interface ImportsEditorWidgetView<T> {
 
@@ -33,7 +33,7 @@ public interface ImportsEditorWidgetView<T> {
 
     ImportListItemWidgetView<T> getImportWidget(final int index);
 
-    void setDisplayStyle(final Style.Display displayStyle);
+    void setDisplayStyle(final Display displayStyle);
 
     void setTitle(final String title);
 
