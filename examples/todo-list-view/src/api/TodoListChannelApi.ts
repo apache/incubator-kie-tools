@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { SharedValueProvider } from "@kie-tooling-core/envelope-bus/dist/api";
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 
 /**
  * Methods provided by the Channel that can be consumed by the Envelope.

@@ -19,7 +19,7 @@ import {
   ResourceContentOptions,
   ResourceListOptions,
   ResourcesList,
-} from "@kie-tooling-core/workspace/dist/api";
+} from "@kie-tools-core/workspace/dist/api";
 import * as React from "react";
 import { createContext, useContext } from "react";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
@@ -27,7 +27,7 @@ import { WorkspaceService } from "./services/WorkspaceService";
 import { basename, extname, parse } from "path";
 import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
-import KieSandboxFs from "@kogito-tooling/kie-sandbox-fs";
+import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import { GitService } from "./services/GitService";
 import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";

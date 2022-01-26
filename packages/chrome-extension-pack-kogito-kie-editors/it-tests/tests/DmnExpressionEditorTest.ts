@@ -33,7 +33,7 @@ beforeEach(async () => {
 
 test.skip(TEST_NAME, async () => {
   const WEB_PAGE =
-    "https://github.com/kiegroup/kogito-tooling/tree/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples";
+    "https://github.com/kiegroup/kie-tools/tree/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples";
   const FILE_NAME = "test.dmn";
   const BKM_NODE_NAME = "MyModel";
 

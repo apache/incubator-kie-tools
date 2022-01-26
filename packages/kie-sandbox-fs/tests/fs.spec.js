@@ -1,4 +1,4 @@
-import KieSandboxFs from "@kogito-tooling/kie-sandbox-fs";
+import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 
 const fs = new KieSandboxFs("testfs", { wipe: true });
 

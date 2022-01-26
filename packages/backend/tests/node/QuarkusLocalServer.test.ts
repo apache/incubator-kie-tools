@@ -20,8 +20,8 @@ import * as fs from "fs";
 import * as portfinder from "portfinder";
 import * as sinon from "sinon";
 import * as stream from "stream";
-import { QuarkusLocalServer } from "@kie-tooling-core/backend/dist/node";
-import * as utils from "@kie-tooling-core/backend/dist/node/utils";
+import { QuarkusLocalServer } from "@kie-tools-core/backend/dist/node";
+import * as utils from "@kie-tools-core/backend/dist/node/utils";
 
 jest.mock("fs");
 

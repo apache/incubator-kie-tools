@@ -19,7 +19,7 @@ import {
   ResourceContent,
   ResourceContentOptions,
   ResourcesList,
-} from "@kie-tooling-core/workspace/dist/api";
+} from "@kie-tools-core/workspace/dist/api";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
@@ -31,7 +31,7 @@ import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLo
 import { join } from "path";
 import { WorkspaceEvents } from "./hooks/WorkspaceHooks";
 import { Buffer } from "buffer";
-import KieSandboxFs from "@kogito-tooling/kie-sandbox-fs";
+import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";

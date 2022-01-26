@@ -1,4 +1,4 @@
-# @kogito-tooling/kie-sandbox-fs
+# @kie-tools/kie-sandbox-fs
 
 This package is a fork of [LightningFS](https://github.com/isomorphic-git/lightning-fs).
 

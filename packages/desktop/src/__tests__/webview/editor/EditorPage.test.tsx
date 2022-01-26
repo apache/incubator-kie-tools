@@ -24,13 +24,13 @@ const onClose = jest.fn(() => null);
 const onFilenameChange = jest.fn((filePath: string) => null);
 
 function mockFunctions() {
-  const original = jest.requireActual("@kie-tooling-core/editor/dist/embedded");
+  const original = jest.requireActual("@kie-tools-core/editor/dist/embedded");
   return {
     ...original,
     useDirtyState: jest.fn(() => true).mockImplementationOnce(() => false),
   };
 }
-jest.mock("@kie-tooling-core/editor/dist/embedded", () => mockFunctions());
+jest.mock("@kie-tools-core/editor/dist/embedded", () => mockFunctions());
 
 describe("EditorPage", () => {
   describe("Unsaved Alert", () => {

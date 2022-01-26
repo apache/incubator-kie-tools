@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { startExtension } from "@kie-tooling-core/chrome-extension";
+import { startExtension } from "@kie-tools-core/chrome-extension";
 
 const resourcesPathPrefix = process.env["WEBPACK_REPLACE__targetOrigin"];
 

@@ -17,8 +17,8 @@ import { fireEvent, render } from "@testing-library/react";
 import * as React from "react";
 import { Operation, OperationContext } from "../../../../../../src/editor/components/EditorScorecard";
 import OutputFieldsTable from "../../../../../../src/editor/components/Outputs/organisms/OutputFieldsTable";
-import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
-import { DataType } from "@kogito-tooling/pmml-editor-marshaller/src";
+import { FieldName, OutputField } from "@kie-tools/pmml-editor-marshaller";
+import { DataType } from "@kie-tools/pmml-editor-marshaller/src";
 
 const setSelectedOutputIndex = jest.fn((index) => {});
 const validateOutputFieldName = jest.fn((index, name) => true);

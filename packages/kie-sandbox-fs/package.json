@@ -2,7 +2,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "name": "@kogito-tooling/kie-sandbox-fs",
+  "name": "@kie-tools/kie-sandbox-fs",
   "version": "0.0.0",
   "description": "In-browser FS based on KieSandboxFs",
   "main": "dist/index.js",
@@ -25,7 +25,7 @@
     "dexie": "^3.0.3"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0",
+    "@kie-tools/build-env": "0.0.0",
     "karma": "^6.3.9",
     "karma-browserstack-launcher": "^1.5.1",
     "karma-chrome-launcher": "^3.1.0",

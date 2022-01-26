@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import KieSandboxFs from "@kogito-tooling/kie-sandbox-fs";
-import DefaultBackend from "@kogito-tooling/kie-sandbox-fs/dist/DefaultBackend";
-import DexieBackend from "@kogito-tooling/kie-sandbox-fs/dist/DexieBackend";
+import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
+import DefaultBackend from "@kie-tools/kie-sandbox-fs/dist/DefaultBackend";
+import DexieBackend from "@kie-tools/kie-sandbox-fs/dist/DexieBackend";
 
 export class FsCache {
   private fsCache = new Map<string, KieSandboxFs>();

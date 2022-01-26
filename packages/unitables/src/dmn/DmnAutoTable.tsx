@@ -16,17 +16,17 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { TableOperation } from "@kogito-tooling/boxed-expression-component/dist/api";
+import { TableOperation } from "@kie-tools/boxed-expression-component/dist/api";
 import { ErrorBoundary } from "../common/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { DmnRunnerClause, DmnRunnerRule, DmnRunnerTable } from "../boxed";
-import { NotificationSeverity } from "@kie-tooling-core/notifications/dist/api";
+import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
 import { dmnAutoTableDictionaries, DmnAutoTableI18nContext, dmnAutoTableI18nDefaults } from "../i18n";
-import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import nextId from "react-id-generator";
-import { BoxedExpressionProvider } from "@kogito-tooling/boxed-expression-component/dist/components";
+import { BoxedExpressionProvider } from "@kie-tools/boxed-expression-component/dist/components";
 import { ColumnInstance } from "react-table";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
@@ -37,7 +37,7 @@ import { DmnAutoRowApi } from "./DmnAutoRow";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useGrid } from "../core/Grid";
-import { DmnSchema } from "@kogito-tooling/form/dist/dmn";
+import { DmnSchema } from "@kie-tools/form/dist/dmn";
 
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
@@ -367,7 +367,7 @@ export function DmnAutoTable(props: Props) {
                                 }}
                               >
                                 <Button
-                                  className={"kogito-tooling--masthead-hoverable"}
+                                  className={"kie-tools--masthead-hoverable"}
                                   variant={ButtonVariant.plain}
                                   onClick={() => updateDataWithModel(i)}
                                 >

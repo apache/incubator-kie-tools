@@ -19,7 +19,7 @@ const path = require("path");
 const execSync = require("child_process").execSync;
 const { getPackagesSync } = require("@lerna/project");
 const yaml = require("js-yaml");
-const buildEnv = require("@kogito-tooling/build-env");
+const buildEnv = require("@kie-tools/build-env");
 
 const CHROME_EXTENSION_MANIFEST_DEV_JSON = path.resolve(
   "./packages/chrome-extension-pack-kogito-kie-editors/manifest.dev.json"

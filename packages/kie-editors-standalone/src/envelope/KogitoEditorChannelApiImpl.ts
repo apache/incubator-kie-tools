@@ -21,12 +21,12 @@ import {
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
-} from "@kie-tooling-core/workspace/dist/api";
-import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tooling-core/editor/dist/api";
-import { Tutorial, UserInteraction } from "@kie-tooling-core/guided-tour/dist/api";
-import { EmbeddedEditorFile, StateControl } from "@kie-tooling-core/editor/dist/channel";
+} from "@kie-tools-core/workspace/dist/api";
+import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
+import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
 import { Minimatch } from "minimatch";
-import { Notification } from "@kie-tooling-core/notifications/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   constructor(

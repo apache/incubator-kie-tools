@@ -15,7 +15,7 @@
  */
 
 import "../../__mocks__/ReactWithSupervisor";
-import { DataType, LogicType } from "@kogito-tooling/boxed-expression-component";
+import { DataType, LogicType } from "@kie-tools/boxed-expression-component";
 import { fireEvent, render } from "@testing-library/react";
 import {
   flushPromises,
@@ -24,7 +24,7 @@ import {
 } from "../test-utils";
 import { act } from "react-dom/test-utils";
 import * as React from "react";
-import { LogicTypeSelector } from "@kogito-tooling/boxed-expression-component/dist/components/LogicTypeSelector";
+import { LogicTypeSelector } from "@kie-tools/boxed-expression-component/dist/components/LogicTypeSelector";
 import * as _ from "lodash";
 
 jest.useFakeTimers();

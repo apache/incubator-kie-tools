@@ -15,10 +15,10 @@
  */
 import { fireEvent, render } from "@testing-library/react";
 import * as React from "react";
-import { LandingPage } from "@kogito-tooling/pmml-editor/dist/editor/components/LandingPage/templates";
+import { LandingPage } from "@kie-tools/pmml-editor/dist/editor/components/LandingPage/templates";
 import { Provider } from "react-redux";
 import { createStore, Store } from "redux";
-import { PMML, Scorecard, TreeModel } from "@kogito-tooling/pmml-editor-marshaller";
+import { PMML, Scorecard, TreeModel } from "@kie-tools/pmml-editor-marshaller";
 
 const PATH: string = "path";
 

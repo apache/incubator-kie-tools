@@ -20,7 +20,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
-import { DataDictionary, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, MiningField } from "@kie-tools/pmml-editor-marshaller";
 import { MiningSchemaContext } from "../MiningSchemaContainer/MiningSchemaContainer";
 import useOnclickOutside from "react-cool-onclickoutside";
 import MiningSchemaFieldLabels from "../MiningSchemaFieldLabels/MiningSchemaFieldLabels";

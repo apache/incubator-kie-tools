@@ -15,7 +15,7 @@
  */
 
 const path = require("path");
-const buildEnv = require("@kogito-tooling/build-env");
+const buildEnv = require("@kie-tools/build-env");
 
 module.exports = (env) => {
   const transpileOnly = buildEnv.global.webpack(env).transpileOnly;

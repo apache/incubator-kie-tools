@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoEditorEnvelopeApi } from "@kie-tooling-core/editor/dist/api";
+import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 
 export interface SceSimEditorEnvelopeApi extends KogitoEditorEnvelopeApi {
   mySceSimEnvelopeMethod(): Promise<string>;

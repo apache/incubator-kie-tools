@@ -15,7 +15,7 @@
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
-import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataField, FieldName } from "@kie-tools/pmml-editor-marshaller";
 import { Reducer } from "react";
 import {
   hasIntervals,

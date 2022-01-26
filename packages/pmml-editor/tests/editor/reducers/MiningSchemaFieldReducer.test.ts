@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { FieldName, MiningField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
-import { Actions, AllActions } from "@kogito-tooling/pmml-editor/dist/editor/reducers";
+import { FieldName, MiningField, Model, PMML, Scorecard } from "@kie-tools/pmml-editor-marshaller";
+import { Actions, AllActions } from "@kie-tools/pmml-editor/dist/editor/reducers";
 import { Reducer } from "react";
-import { HistoryService } from "@kogito-tooling/pmml-editor/dist/editor/history";
-import { MiningSchemaFieldReducer } from "@kogito-tooling/pmml-editor/dist/editor/reducers/MiningSchemaFieldReducer";
-import { ValidationRegistry } from "@kogito-tooling/pmml-editor/dist/editor/validation";
+import { HistoryService } from "@kie-tools/pmml-editor/dist/editor/history";
+import { MiningSchemaFieldReducer } from "@kie-tools/pmml-editor/dist/editor/reducers/MiningSchemaFieldReducer";
+import { ValidationRegistry } from "@kie-tools/pmml-editor/dist/editor/validation";
 
 const historyService = new HistoryService([]);
 const validationRegistry = new ValidationRegistry();

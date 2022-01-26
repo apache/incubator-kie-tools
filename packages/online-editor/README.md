@@ -19,5 +19,5 @@ More suitable for running `it-tests` completely.
 > **NOTE:**
 > Before test development, you may need to build `online-editor` as:
 >
-> - `kogito-tooling$ yarn bootstrap`
-> - `kogito-tooling$ yarn build:dev:until @kogito-tooling/online-editor`
+> - `kie-tools$ yarn bootstrap`
+> - `kie-tools$ yarn build:dev:until @kie-tools/online-editor`

@@ -28,7 +28,7 @@ import {
   EmptyStateNoCharacteristics,
   EmptyStateNoMatchingCharacteristics,
 } from "../molecules";
-import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
+import { Characteristic } from "@kie-tools/pmml-editor-marshaller";
 import { isEqual } from "lodash";
 import { findIncrementalName } from "../../../PMMLModelHelper";
 import { useBatchDispatch, useHistoryService } from "../../../history";

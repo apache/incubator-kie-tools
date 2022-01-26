@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import DexieBackend from "@kogito-tooling/kie-sandbox-fs/dist/DexieBackend";
+import DexieBackend from "@kie-tools/kie-sandbox-fs/dist/DexieBackend";
 
 export class InMemoryBackend {
   constructor(public readonly dexieBackend: DexieBackend, public fs = new Map<string, any>()) {}

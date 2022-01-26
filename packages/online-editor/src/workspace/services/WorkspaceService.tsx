@@ -23,7 +23,7 @@ import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
 import { extname, join, relative } from "path";
 import { Minimatch } from "minimatch";
-import KieSandboxFs from "@kogito-tooling/kie-sandbox-fs";
+import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./WorkspaceFsService";
 import { WorkspaceOrigin } from "../model/WorkspaceOrigin";

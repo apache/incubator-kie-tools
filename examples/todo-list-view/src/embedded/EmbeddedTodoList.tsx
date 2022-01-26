@@ -16,10 +16,10 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { TodoListApi, TodoListChannelApi, TodoListEnvelopeApi } from "../api";
-import { ContainerType } from "@kie-tooling-core/envelope/dist/api";
-import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tooling-core/envelope/dist/embedded";
+import { ContainerType } from "@kie-tools-core/envelope/dist/api";
+import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tools-core/envelope/dist/embedded";
 
 export type EmbeddedTodoListRef = TodoListApi & {
   envelopeServer: EnvelopeServer<TodoListChannelApi, TodoListEnvelopeApi>;

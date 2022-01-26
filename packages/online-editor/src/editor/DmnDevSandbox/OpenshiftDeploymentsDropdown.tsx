@@ -119,7 +119,7 @@ export function OpenshiftDeploymentsDropdown() {
               onToggle={() =>
                 dmnDevSandbox.setDeploymentsDropdownOpen((dropdownOpen) => isDmnDevSandboxConnected && !dropdownOpen)
               }
-              className={"kogito-tooling--masthead-hoverable-dark"}
+              className={"kie-tools--masthead-hoverable-dark"}
             >
               <OpenshiftIcon color={!isDmnDevSandboxConnected ? "gray" : undefined} />
             </ResponsiveDropdownToggle>

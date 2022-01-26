@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { Nav, NavItem, Title, Card, NavList } from "@patternfly/react-core";
-import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 
 const samplePaths = [
   { fileName: "sample", path: "examples/sample.base64png" },

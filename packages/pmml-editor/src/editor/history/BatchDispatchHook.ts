@@ -17,7 +17,7 @@
 import { useDispatch } from "react-redux";
 import { HistoryService } from "./HistoryProvider";
 import { Dispatch } from "redux";
-import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { PMML } from "@kie-tools/pmml-editor-marshaller";
 import { Actions } from "../reducers";
 
 export const useBatchDispatch = (service: HistoryService, getCurrentState: () => PMML | undefined): Dispatch<any> => {

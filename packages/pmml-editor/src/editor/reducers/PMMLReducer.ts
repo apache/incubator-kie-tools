@@ -15,7 +15,7 @@
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareValidatingReducer, HistoryService } from "../history";
-import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { PMML } from "@kie-tools/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { ValidationRegistry } from "../validation";
 import { Builder } from "../paths";

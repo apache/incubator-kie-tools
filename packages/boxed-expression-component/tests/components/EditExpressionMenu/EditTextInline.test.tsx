@@ -16,7 +16,7 @@
 
 import { fireEvent, render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
-import { EditTextInline } from "@kogito-tooling/boxed-expression-component/dist/components/EditExpressionMenu";
+import { EditTextInline } from "@kie-tools/boxed-expression-component/dist/components/EditExpressionMenu";
 import * as React from "react";
 import * as _ from "lodash";
 

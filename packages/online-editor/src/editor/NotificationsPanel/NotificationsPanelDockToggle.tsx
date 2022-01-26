@@ -19,7 +19,7 @@ import { useCallback, useImperativeHandle, useMemo, useState } from "react";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { PanelId } from "../EditorPageDockDrawer";
-import { Notification } from "@kie-tooling-core/notifications/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 interface PropsCommon {

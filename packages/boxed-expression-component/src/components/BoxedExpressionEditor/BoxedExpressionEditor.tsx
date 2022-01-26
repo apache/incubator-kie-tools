@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BoxedExpressionEditorGWTService, DataTypeProps, ExpressionProps, PMMLParams } from "../../api";

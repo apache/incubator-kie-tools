@@ -1,4 +1,4 @@
-import KieSandboxFs from "@kogito-tooling/kie-sandbox-fs";
+import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import DexieBackend from "../src/DexieBackend";
 import DefaultBackend from "../src/DefaultBackend";
 

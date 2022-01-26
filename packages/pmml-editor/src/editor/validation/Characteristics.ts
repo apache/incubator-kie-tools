@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { Characteristic, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
+import { Characteristic, MiningField } from "@kie-tools/pmml-editor-marshaller";
 import { ValidationRegistry } from "./ValidationRegistry";
 import { areAttributesReasonCodesMissing, validateAttributes } from "./Attributes";
 import { ValidationEntry } from "./ValidationRegistry";

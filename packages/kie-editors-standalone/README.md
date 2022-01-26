@@ -10,13 +10,13 @@ A comprehensive API is also provided for setup and interaction with the Editor.
 
 - To add it to your `package.json` file:
 
-  - `npm install @kogito-tooling/kie-editors-standalone`
+  - `npm install @kie-tools/kie-editors-standalone`
 
 - To import each Editor library:
 
-  - `import * as DmnEditor from "@kogito-tooling/kie-editors-standalone/dist/dmn"`
+  - `import * as DmnEditor from "@kie-tools/kie-editors-standalone/dist/dmn"`
 
-  - `import * as BpmnEditor from "@kogito-tooling/kie-editors-standalone/dist/bpmn"`
+  - `import * as BpmnEditor from "@kie-tools/kie-editors-standalone/dist/bpmn"`
 
 ### Usage
 
@@ -64,7 +64,7 @@ The returned object will contain the methods needed to manipulate the Editor:
 - `redo(): void`: Redo the last undone change in the Editor. This will also fire the subscribed callbacks of content changes.
 - `close(): void`: Closes the Editor.
 - `getElementPosition(selector: string): Promise<Rect>`: Provides an alternative for extending the standard query selector when the element lives inside a canvas or even a video component. The `selector` parameter must follow the format of "\<PROVIDER\>:::\<SELECT\>“, e.g. “Canvas:::MySquare” or “Video:::PresenterHand”. Returns a `Rect` representing the element position.
-- `envelopeApi: MessageBusClientApi<KogitoEditorEnvelopeApi>`: Advanced Editor API. See more details in [MessageBusClientApi](https://github.com/kiegroup/kogito-tooling/blob/main/packages/envelope-bus/src/api/index.ts#L43-L56) and [KogitoEditorEnvelopeApi](https://github.com/kiegroup/kogito-tooling/blob/main/packages/editor/src/api/KogitoEditorEnvelopeApi.ts#L34-L41).
+- `envelopeApi: MessageBusClientApi<KogitoEditorEnvelopeApi>`: Advanced Editor API. See more details in [MessageBusClientApi](https://github.com/kiegroup/kie-tools/blob/main/packages/envelope-bus/src/api/index.ts#L43-L56) and [KogitoEditorEnvelopeApi](https://github.com/kiegroup/kie-tools/blob/main/packages/editor/src/api/KogitoEditorEnvelopeApi.ts#L34-L41).
 - `canvas`: Canvas API that exposes methods to manipulate the canvas.
   - `getNodeIds(): Promise<string[]>`: Returns a Promise containing the ID attributes of all nodes displayed in editors canvas.
   - `getBackgroundColor(uuid: string): Promise<string>`: Returns a Promise containing the background color of a node with provided UUID.
