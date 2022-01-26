@@ -47,7 +47,7 @@ jobs:
 
   build_and_publish:
     needs: [prepare]
-    uses: kiegroup/kogito-tooling/.github/workflows/release_build.yml@main
+    uses: ./.github/workflows/release_build.yml
     with:
       dry_run: false
       base_ref: ${{ steps.prepare.outputs.release_ref }}
