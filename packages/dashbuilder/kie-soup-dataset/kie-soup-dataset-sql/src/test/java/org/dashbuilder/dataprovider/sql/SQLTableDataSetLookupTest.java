@@ -28,12 +28,18 @@ import org.dashbuilder.dataset.filter.FilterFactory;
 import org.dashbuilder.dataset.group.DateIntervalType;
 import org.junit.Test;
 
-import static org.dashbuilder.dataset.ExpenseReportsData.*;
-import static org.dashbuilder.dataprovider.sql.SQLFactory.*;
-import static org.dashbuilder.dataset.filter.FilterFactory.*;
-import static org.dashbuilder.dataset.group.AggregateFunctionType.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.dashbuilder.dataprovider.sql.SQLFactory.delete;
+import static org.dashbuilder.dataprovider.sql.SQLFactory.insert;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_AMOUNT;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DEPARTMENT;
+import static org.dashbuilder.dataset.filter.FilterFactory.between;
+import static org.dashbuilder.dataset.filter.FilterFactory.equalsTo;
+import static org.dashbuilder.dataset.filter.FilterFactory.in;
+import static org.dashbuilder.dataset.filter.FilterFactory.notEqualsTo;
+import static org.dashbuilder.dataset.filter.FilterFactory.notIn;
+import static org.dashbuilder.dataset.group.AggregateFunctionType.SUM;
+import static org.junit.Assert.assertTrue;
 
 public class SQLTableDataSetLookupTest extends SQLDataSetTestBase {
 

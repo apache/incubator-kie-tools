@@ -16,6 +16,7 @@
 package org.uberfire.client.views.pfly.tab;
 
 import java.util.Collection;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;

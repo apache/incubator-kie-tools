@@ -16,11 +16,6 @@
 
 package org.dashbuilder.dataprovider.sql;
 
-import static org.dashbuilder.dataprovider.sql.SQLFactory.dropTable;
-import static org.dashbuilder.dataprovider.sql.SQLFactory.table;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -29,6 +24,9 @@ import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.def.SQLDataSetDef;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class SQLColumnsTypeTest extends SQLDataSetTestBase {
     

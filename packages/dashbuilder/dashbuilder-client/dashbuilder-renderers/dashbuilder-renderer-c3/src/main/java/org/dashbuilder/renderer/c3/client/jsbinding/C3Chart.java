@@ -16,7 +16,6 @@
 package org.dashbuilder.renderer.c3.client.jsbinding;
 
 import com.google.gwt.dom.client.DivElement;
-
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;

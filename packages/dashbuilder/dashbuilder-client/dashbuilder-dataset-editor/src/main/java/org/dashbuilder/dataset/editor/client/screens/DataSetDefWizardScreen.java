@@ -15,6 +15,14 @@
  */
 package org.dashbuilder.dataset.editor.client.screens;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.dashbuilder.client.widgets.dataset.editor.DataSetEditor;
 import org.dashbuilder.client.widgets.dataset.editor.workflow.DataSetEditorWorkflow;
@@ -22,7 +30,11 @@ import org.dashbuilder.client.widgets.dataset.editor.workflow.DataSetEditorWorkf
 import org.dashbuilder.client.widgets.dataset.editor.workflow.create.DataSetBasicAttributesWorkflow;
 import org.dashbuilder.client.widgets.dataset.editor.workflow.create.DataSetProviderTypeWorkflow;
 import org.dashbuilder.client.widgets.dataset.editor.workflow.edit.DataSetEditWorkflow;
-import org.dashbuilder.client.widgets.dataset.event.*;
+import org.dashbuilder.client.widgets.dataset.event.CancelRequestEvent;
+import org.dashbuilder.client.widgets.dataset.event.ErrorEvent;
+import org.dashbuilder.client.widgets.dataset.event.SaveRequestEvent;
+import org.dashbuilder.client.widgets.dataset.event.TabChangedEvent;
+import org.dashbuilder.client.widgets.dataset.event.TestDataSetRequestEvent;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.DataColumn;
@@ -51,14 +63,6 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 

@@ -21,13 +21,27 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.uberfire.ext.layout.editor.api.css.CssValueType.*;
-import static org.uberfire.ext.layout.editor.api.css.CssAlignment.*;
+import static org.uberfire.ext.layout.editor.api.css.CssAlignment.CENTER;
+import static org.uberfire.ext.layout.editor.api.css.CssAlignment.LEFT;
+import static org.uberfire.ext.layout.editor.api.css.CssAlignment.RIGHT;
 import static org.uberfire.ext.layout.editor.api.css.CssFloat.INHERIT;
 import static org.uberfire.ext.layout.editor.api.css.CssFloat.INITIAL;
-import static org.uberfire.ext.layout.editor.api.css.CssTextDecoration.*;
-import static org.uberfire.ext.layout.editor.api.css.CssFontWeight.*;
-import static org.uberfire.ext.layout.editor.api.css.CssFontSize.*;
+import static org.uberfire.ext.layout.editor.api.css.CssFontSize.LARGE;
+import static org.uberfire.ext.layout.editor.api.css.CssFontSize.MEDIUM;
+import static org.uberfire.ext.layout.editor.api.css.CssFontSize.SMALL;
+import static org.uberfire.ext.layout.editor.api.css.CssFontSize.XX_LARGE;
+import static org.uberfire.ext.layout.editor.api.css.CssFontSize.XX_SMALL;
+import static org.uberfire.ext.layout.editor.api.css.CssFontSize.X_LARGE;
+import static org.uberfire.ext.layout.editor.api.css.CssFontSize.X_SMALL;
+import static org.uberfire.ext.layout.editor.api.css.CssFontWeight.BOLDER;
+import static org.uberfire.ext.layout.editor.api.css.CssFontWeight.LIGHTER;
+import static org.uberfire.ext.layout.editor.api.css.CssFontWeight.NORMAL;
+import static org.uberfire.ext.layout.editor.api.css.CssTextDecoration.LINE_THROUGH;
+import static org.uberfire.ext.layout.editor.api.css.CssTextDecoration.NONE;
+import static org.uberfire.ext.layout.editor.api.css.CssTextDecoration.OVERLINE;
+import static org.uberfire.ext.layout.editor.api.css.CssTextDecoration.UNDERLINE;
+import static org.uberfire.ext.layout.editor.api.css.CssValueType.LENGTH;
+import static org.uberfire.ext.layout.editor.api.css.CssValueType.PERCENTAGE;
 
 /**
  * A CSS property definition including what value types are supported and what is the list of allowed values available

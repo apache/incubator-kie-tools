@@ -16,6 +16,7 @@
 package org.dashbuilder.displayer.client.widgets.filter;
 
 import java.util.Date;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.GWT;

@@ -17,6 +17,7 @@
 package org.uberfire.client.views.pfly.menu.megamenu.menuitem;
 
 import java.util.stream.Stream;
+
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.Anchor;

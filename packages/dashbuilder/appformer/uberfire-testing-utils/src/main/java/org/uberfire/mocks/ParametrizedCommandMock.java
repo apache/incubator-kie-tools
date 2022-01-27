@@ -1,9 +1,9 @@
 package org.uberfire.mocks;
 
-import static org.mockito.Mockito.doAnswer;
-
 import org.mockito.stubbing.Stubber;
 import org.uberfire.mvp.ParameterizedCommand;
+
+import static org.mockito.Mockito.doAnswer;
 
 public class ParametrizedCommandMock {
 

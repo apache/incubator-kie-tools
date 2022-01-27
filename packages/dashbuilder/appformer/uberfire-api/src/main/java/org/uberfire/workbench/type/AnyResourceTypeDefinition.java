@@ -18,7 +18,6 @@ package org.uberfire.workbench.type;
 
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.category.Category;
-import org.uberfire.workbench.category.Others;
 
 public class AnyResourceTypeDefinition implements ResourceTypeDefinition {
 

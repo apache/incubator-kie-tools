@@ -15,7 +15,22 @@
  */
 package org.dashbuilder.renderer.c3.client;
 
-import static org.mockito.Mockito.when;
+import org.dashbuilder.displayer.DisplayerSettings;
+import org.dashbuilder.renderer.c3.client.charts.area.C3AreaChartDisplayer;
+import org.dashbuilder.renderer.c3.client.charts.bar.C3BarChartDisplayer;
+import org.dashbuilder.renderer.c3.client.charts.bubble.C3BubbleChartDisplayer;
+import org.dashbuilder.renderer.c3.client.charts.line.C3LineChartDisplayer;
+import org.dashbuilder.renderer.c3.client.charts.meter.C3MeterChartDisplayer;
+import org.dashbuilder.renderer.c3.client.charts.pie.C3PieChartDisplayer;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
 import static org.dashbuilder.displayer.DisplayerSubType.AREA_STACKED;
 import static org.dashbuilder.displayer.DisplayerSubType.BAR;
 import static org.dashbuilder.displayer.DisplayerSubType.BAR_STACKED;
@@ -35,22 +50,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import org.dashbuilder.displayer.DisplayerSettings;
-import org.dashbuilder.renderer.c3.client.charts.area.C3AreaChartDisplayer;
-import org.dashbuilder.renderer.c3.client.charts.bar.C3BarChartDisplayer;
-import org.dashbuilder.renderer.c3.client.charts.bubble.C3BubbleChartDisplayer;
-import org.dashbuilder.renderer.c3.client.charts.line.C3LineChartDisplayer;
-import org.dashbuilder.renderer.c3.client.charts.meter.C3MeterChartDisplayer;
-import org.dashbuilder.renderer.c3.client.charts.pie.C3PieChartDisplayer;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class C3RendererTest {

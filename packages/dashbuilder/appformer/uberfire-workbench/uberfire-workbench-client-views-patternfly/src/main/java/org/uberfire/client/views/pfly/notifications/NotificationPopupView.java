@@ -19,7 +19,6 @@ package org.uberfire.client.views.pfly.notifications;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import org.gwtbootstrap3.client.ui.Alert;
-
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.uberfire.client.resources.WorkbenchResources;

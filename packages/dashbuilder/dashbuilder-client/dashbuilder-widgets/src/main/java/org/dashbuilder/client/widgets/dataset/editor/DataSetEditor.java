@@ -15,17 +15,17 @@
  */
 package org.dashbuilder.client.widgets.dataset.editor;
 
-import static org.dashbuilder.dataprovider.DataSetProviderType.BEAN;
-import static org.dashbuilder.dataprovider.DataSetProviderType.CSV;
-import static org.dashbuilder.dataprovider.DataSetProviderType.SQL;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 import java.util.List;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.editor.client.EditorDelegate;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.client.widgets.dataset.editor.attributes.DataSetDefBackendCacheAttributesEditor;
 import org.dashbuilder.client.widgets.dataset.editor.attributes.DataSetDefBasicAttributesEditor;
 import org.dashbuilder.client.widgets.dataset.editor.attributes.DataSetDefCacheAttributesEditorView;
@@ -50,11 +50,10 @@ import org.dashbuilder.displayer.client.Displayer;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 
-import com.google.gwt.editor.client.EditorDelegate;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import static org.dashbuilder.dataprovider.DataSetProviderType.BEAN;
+import static org.dashbuilder.dataprovider.DataSetProviderType.CSV;
+import static org.dashbuilder.dataprovider.DataSetProviderType.SQL;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * <p>Data Set Editor presenter.</p>

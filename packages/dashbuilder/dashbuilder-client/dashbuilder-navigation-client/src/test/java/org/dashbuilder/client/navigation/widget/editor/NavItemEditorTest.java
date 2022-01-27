@@ -14,16 +14,7 @@
  */
 package org.dashbuilder.client.navigation.widget.editor;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.client.navigation.event.NavItemEditCancelledEvent;
 import org.dashbuilder.client.navigation.event.NavItemEditStartedEvent;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
@@ -41,7 +32,15 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class NavItemEditorTest {

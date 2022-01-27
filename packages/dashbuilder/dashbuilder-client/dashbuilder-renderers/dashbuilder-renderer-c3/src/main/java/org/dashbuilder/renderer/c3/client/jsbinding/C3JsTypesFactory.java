@@ -17,10 +17,9 @@ package org.dashbuilder.renderer.c3.client.jsbinding;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import elemental2.core.JsObject;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3Point.RadiusCallback;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3Tick.FormatterCallback;
-
-import elemental2.core.JsObject;
 
 /**
  * Build C3 JS Types

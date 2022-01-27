@@ -23,7 +23,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.resources.UberfireResources;
 import org.uberfire.client.resources.i18n.UberfireConstants;
-import org.uberfire.workbench.category.Category;
 import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.type.AnyResourceTypeDefinition;
 

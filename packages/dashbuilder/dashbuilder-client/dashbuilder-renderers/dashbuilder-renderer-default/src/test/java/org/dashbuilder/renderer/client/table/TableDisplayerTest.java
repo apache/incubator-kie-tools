@@ -34,13 +34,31 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
-import static org.dashbuilder.dataset.ExpenseReportsData.*;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_AMOUNT;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_CITY;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DATE;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DEPARTMENT;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_EMPLOYEE;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_ID;
 import static org.dashbuilder.dataset.group.AggregateFunctionType.COUNT;
 import static org.dashbuilder.dataset.group.AggregateFunctionType.MIN;
 import static org.dashbuilder.dataset.sort.SortOrder.ASCENDING;
 import static org.dashbuilder.dataset.sort.SortOrder.DESCENDING;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class TableDisplayerTest extends AbstractDisplayerTest {

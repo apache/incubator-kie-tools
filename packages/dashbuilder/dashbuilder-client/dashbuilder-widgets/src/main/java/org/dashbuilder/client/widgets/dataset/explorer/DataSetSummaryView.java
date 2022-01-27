@@ -15,6 +15,8 @@
  */
 package org.dashbuilder.client.widgets.dataset.explorer;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -26,8 +28,6 @@ import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.Row;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.html.Span;
-
-import javax.enterprise.context.Dependent;
 
 /**
  * <p>Default view for DataSetSummary presenter.</p>

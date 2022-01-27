@@ -15,8 +15,6 @@
  */
 package org.dashbuilder.client.navigation;
 
-import java.util.List;
-
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.NavTree;
 import org.uberfire.mvp.Command;

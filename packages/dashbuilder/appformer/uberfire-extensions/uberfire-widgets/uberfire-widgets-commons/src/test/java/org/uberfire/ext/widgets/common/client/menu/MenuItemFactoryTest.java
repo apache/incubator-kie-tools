@@ -30,9 +30,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.widgets.common.client.menu.MenuItemFactory.MenuItemViewHolder;
 import org.uberfire.mvp.Command;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MenuItemFactoryTest {

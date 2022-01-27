@@ -1,9 +1,9 @@
 package org.dashbuilder.dataset.validation;
 
-import org.dashbuilder.dataset.date.TimeAmount;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
+import org.dashbuilder.dataset.date.TimeAmount;
 
 /**
  * <p>JSR303 annotation implementation for <code>org.dashbuilder.common.shared.validation.IsTimeInterval</code>.</p>

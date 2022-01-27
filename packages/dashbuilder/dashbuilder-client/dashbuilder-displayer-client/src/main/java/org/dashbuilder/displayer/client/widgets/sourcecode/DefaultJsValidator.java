@@ -18,6 +18,7 @@ package org.dashbuilder.displayer.client.widgets.sourcecode;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

@@ -15,10 +15,10 @@
  */
 package org.dashbuilder.dataset.json;
 
-import static org.dashbuilder.dataset.json.DataSetDefJSONMarshaller.isBlank;
-
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.dashbuilder.json.JsonObject;
+
+import static org.dashbuilder.dataset.json.DataSetDefJSONMarshaller.isBlank;
 
 public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<ExternalDataSetDef> {
 

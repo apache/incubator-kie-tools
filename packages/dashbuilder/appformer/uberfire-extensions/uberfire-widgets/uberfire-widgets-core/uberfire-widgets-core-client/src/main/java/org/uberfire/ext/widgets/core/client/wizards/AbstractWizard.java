@@ -17,6 +17,7 @@
 package org.uberfire.ext.widgets.core.client.wizards;
 
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;

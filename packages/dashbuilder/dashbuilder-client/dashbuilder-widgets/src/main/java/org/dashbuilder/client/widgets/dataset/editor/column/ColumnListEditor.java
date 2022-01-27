@@ -15,6 +15,14 @@
  */
 package org.dashbuilder.client.widgets.dataset.editor.column;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.editor.client.EditorDelegate;
 import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.editor.client.adapters.EditorSource;
@@ -29,13 +37,6 @@ import org.dashbuilder.dataset.client.editor.DataColumnDefEditor;
 import org.dashbuilder.dataset.def.DataColumnDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.UberView;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * <p>Data Set column list editor presenter.</p>

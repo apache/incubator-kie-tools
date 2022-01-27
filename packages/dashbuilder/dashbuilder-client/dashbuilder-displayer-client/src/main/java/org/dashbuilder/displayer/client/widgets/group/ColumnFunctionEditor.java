@@ -15,8 +15,9 @@
  */
 package org.dashbuilder.displayer.client.widgets.group;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;

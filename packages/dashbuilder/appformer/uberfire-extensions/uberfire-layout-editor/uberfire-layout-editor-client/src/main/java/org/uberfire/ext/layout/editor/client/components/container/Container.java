@@ -47,7 +47,14 @@ import org.uberfire.ext.layout.editor.client.components.rows.RowDnDEvent;
 import org.uberfire.ext.layout.editor.client.components.rows.RowDrop;
 import org.uberfire.ext.layout.editor.client.event.LayoutEditorElementSelectEvent;
 import org.uberfire.ext.layout.editor.client.event.LayoutEditorElementUnselectEvent;
-import org.uberfire.ext.layout.editor.client.infra.*;
+import org.uberfire.ext.layout.editor.client.infra.BeanHelper;
+import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
+import org.uberfire.ext.layout.editor.client.infra.DnDManager;
+import org.uberfire.ext.layout.editor.client.infra.LayoutEditorCssHelper;
+import org.uberfire.ext.layout.editor.client.infra.LayoutEditorFocusController;
+import org.uberfire.ext.layout.editor.client.infra.LayoutTemplateAdapter;
+import org.uberfire.ext.layout.editor.client.infra.RowResizeEvent;
+import org.uberfire.ext.layout.editor.client.infra.UniqueIDGenerator;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.mvp.ParameterizedCommand;
 

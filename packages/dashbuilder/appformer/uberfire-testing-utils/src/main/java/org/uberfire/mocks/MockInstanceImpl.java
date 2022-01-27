@@ -19,6 +19,7 @@ package org.uberfire.mocks;
 
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
+
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.TypeLiteral;
 

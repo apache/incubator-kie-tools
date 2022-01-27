@@ -15,15 +15,15 @@
  */
 package org.uberfire.ext.layout.editor.client;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.jboss.errai.common.client.api.IsElement;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.ext.layout.editor.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutComponentPalettePresenter;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = LayoutComponentPaletteScreen.SCREEN_ID)

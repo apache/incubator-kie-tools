@@ -18,6 +18,7 @@
 package org.uberfire.ext.widgets.common.client.select;
 
 import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 

@@ -15,14 +15,6 @@
  */
 package org.dashbuilder.client.navigation.plugin;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.dashbuilder.navigation.workbench.NavWorkbenchCtx.perspective;
-import static org.mockito.ArgumentMatchers.anyObject;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -49,6 +41,14 @@ import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.dashbuilder.navigation.workbench.NavWorkbenchCtx.perspective;
+import static org.mockito.ArgumentMatchers.anyObject;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PerspectivePluginManagerImplTest {

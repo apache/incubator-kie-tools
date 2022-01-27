@@ -16,8 +16,6 @@
 
 package org.uberfire.ext.editor.commons.client.menu;
 
-import static org.uberfire.workbench.model.menu.MenuFactory.newSimpleItem;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -51,6 +49,8 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
+
+import static org.uberfire.workbench.model.menu.MenuFactory.newSimpleItem;
 
 public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
 

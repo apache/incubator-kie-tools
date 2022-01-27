@@ -15,6 +15,14 @@
  */
 package org.dashbuilder.client.widgets.dataset.editor.column;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.editor.client.EditorDelegate;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeUri;
@@ -29,14 +37,6 @@ import org.dashbuilder.dataset.client.resources.bundles.DataSetClientResources;
 import org.dashbuilder.dataset.def.DataColumnDef;
 import org.gwtbootstrap3.client.ui.constants.Placement;
 import org.kie.soup.commons.validation.PortablePreconditions;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * <p>Data Set column  type editor presenter.</p>
