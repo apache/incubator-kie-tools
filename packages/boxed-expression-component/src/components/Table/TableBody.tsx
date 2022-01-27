@@ -81,7 +81,6 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           setShowTableHandler(false);
         }
         /* TODO: FocusUtils: ArrowNavigation with nested tables  */
-        /* FIXME: Context type: the row shrink when the first cell of the last row is focused  */
         /* FIXME: Context type: close the context menu when table navigate  */
       },
     }),

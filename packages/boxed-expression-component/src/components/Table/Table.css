@@ -100,6 +100,7 @@
   margin: -1px -1px;
   z-index: 1;
 }
+.expression-container .table-component table tbody td.empty-cell:focus,
 .expression-container .table-component table tbody td.counter-cell:focus {
   margin: 0;
 }
