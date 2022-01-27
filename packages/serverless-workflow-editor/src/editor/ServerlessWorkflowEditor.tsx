@@ -89,7 +89,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
         },
         getPreview: (): Promise<string> => {
           // Line breaks replaced due to https://github.com/mermaid-js/mermaid/issues/1766
-          const svgContent = svgContainer.current!.innerHTML.replace("<br>", "<br/>");
+          const svgContent = svgContainer.current!.innerHTML.replaceAll("<br>", "<br/>");
           return Promise.resolve(svgContent);
         },
         undo: (): Promise<void> => {

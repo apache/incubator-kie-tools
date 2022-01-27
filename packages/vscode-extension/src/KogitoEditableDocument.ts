@@ -65,7 +65,13 @@ export class KogitoEditableDocument implements CustomDocument {
   }
 
   get fileExtension() {
-    return this.uri.fsPath.split(".").pop()!;
+    const lastSlashIndex = this.uri.fsPath.lastIndexOf("/");
+    const fileName = this.uri.fsPath.substring(lastSlashIndex + 1);
+
+    const firstDotIndex = fileName.indexOf(".");
+    const fileExtension = fileName.substring(firstDotIndex + 1);
+
+    return fileExtension;
   }
 
   public async save(destination: Uri, cancellation: CancellationToken): Promise<void> {

@@ -66,25 +66,25 @@ export async function generateSvg(args: {
       })
     : undefined;
 
+  const fileExtensionWithDot = parsedPath.base.substring(parsedPath.base.indexOf("."));
+
   const tokens: Record<SettingsValueInterpolationToken, string> = {
     "${workspaceFolder}": workspace?.uri.fsPath ?? parsedPath.dir,
     "${fileDirname}": parsedPath.dir,
-    "${fileExtname}": parsedPath.ext,
+    "${fileExtname}": fileExtensionWithDot,
     "${fileBasename}": parsedPath.base,
-    "${fileBasenameNoExtension}": parsedPath.name,
+    "${fileBasenameNoExtension}": parsedPath.base.substring(0, parsedPath.base.indexOf(".")),
   };
 
-  const fileExtensionNoDot = parsedPath.ext.replace(".", "");
-
-  const svgFilenameTemplateId = `kogito.${fileExtensionNoDot}.svgFilenameTemplate`;
-  const svgFilePathTemplateId = `kogito.${fileExtensionNoDot}.svgFilePath`;
+  const svgFilenameTemplateId = `kogito${fileExtensionWithDot}.svgFilenameTemplate`;
+  const svgFilePathTemplateId = `kogito${fileExtensionWithDot}.svgFilePath`;
 
   const svgFilenameTemplate = vscode.workspace.getConfiguration().get(svgFilenameTemplateId, "");
   const svgFilePathTemplate = vscode.workspace.getConfiguration().get(svgFilePathTemplateId, "");
 
   if (__path.parse(svgFilenameTemplate).dir) {
     vscode.window.showErrorMessage(
-      `The kogito.${fileExtensionNoDot}.svgFilenameTemplate setting should be a valid filename, without a path prefix. Current value: ${svgFilenameTemplate}`
+      `The kogito${fileExtensionWithDot}.svgFilenameTemplate setting should be a valid filename, without a path prefix. Current value: ${svgFilenameTemplate}`
     );
     return;
   }

@@ -33,8 +33,8 @@ export function activate(context: vscode.ExtensionContext) {
     extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
     context: context,
     viewType: "kieKogitoWebviewEditorsServerlessWorkflow",
-    generateSvgCommandId: "",
-    silentlyGenerateSvgCommandId: "",
+    generateSvgCommandId: "extension.kogito.getPreviewSvgSw",
+    silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgSw",
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping(
         "**/*.sw.+(json|yml|yaml)",
