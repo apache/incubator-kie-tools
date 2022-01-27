@@ -18,7 +18,7 @@ import * as buildEnv from "@kie-tools/build-env";
 
 describe("Try sample test", () => {
   beforeEach(() => {
-    cy.visit(`https://localhost:${buildEnv.onlineEditor.dev.port}/`);
+    cy.visit(Cypress.env("ONLINE_EDITOR_URL") ?? `https://localhost:${buildEnv.onlineEditor.dev.port}/`);
   });
 
   it("should create BPMN sample", () => {
