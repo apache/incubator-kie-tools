@@ -17,9 +17,9 @@
 import * as React from "react";
 import { useContext } from "react";
 import { en } from "./locales";
-import { I18nContextType } from "@kie-tooling-core/i18n/dist/react-components";
+import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
 import { DmnAutoTableI18n } from "./DmnAutoTableI18n";
-import { I18nDefaults, I18nDictionaries } from "@kie-tooling-core/i18n/dist/core";
+import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
 
 export const dmnAutoTableI18nDefaults: I18nDefaults<DmnAutoTableI18n> = {
   locale: "en",

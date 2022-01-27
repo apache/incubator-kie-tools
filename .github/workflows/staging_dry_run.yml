@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   dry_run:
-    uses: kiegroup/kogito-tooling/.github/workflows/staging_build.yml@main
+    uses: ./.github/workflows/staging_build.yml
     with:
       dry_run: true
       base_ref: ${{ github.event.pull_request && github.base_ref || github.ref }}

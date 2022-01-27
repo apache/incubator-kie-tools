@@ -15,7 +15,7 @@
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { Attribute, CompoundPredicate, Predicate, SimplePredicate } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, CompoundPredicate, Predicate, SimplePredicate } from "@kie-tools/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
 import { Builder } from "../paths";

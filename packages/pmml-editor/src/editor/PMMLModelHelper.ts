@@ -41,7 +41,7 @@ import {
   TextModel,
   TimeSeriesModel,
   TreeModel,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import { Builder } from "./paths";
 import { get } from "lodash";
 

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kie-tooling-core/editor/dist/api";
-import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kie-tooling-core/editor/dist/embedded";
+import { ChannelType } from "@kie-tools-core/editor/dist/api";
+import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -28,7 +28,7 @@ import { FileSaveActions } from "../../common/ElectronFile";
 import { GlobalContext } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDesktopI18n } from "../common/i18n";
-import * as monaco from "@kie-tooling-core/monaco-editor";
+import * as monaco from "@kie-tools-core/monaco-editor";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 
 interface Props {

@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-import { BackendProxy } from "@kie-tooling-core/backend/dist/api";
+import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import {
   KogitoEdit,
   ResourceContentRequest,
   ResourceContentService,
   ResourceListRequest,
   WorkspaceApi,
-} from "@kie-tooling-core/workspace/dist/api";
-import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tooling-core/editor/dist/api";
-import { Tutorial, UserInteraction } from "@kie-tooling-core/guided-tour/dist/api";
+} from "@kie-tools-core/workspace/dist/api";
+import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import * as __path from "path";
 import * as vscode from "vscode";
 import { KogitoEditor } from "./KogitoEditor";
-import { Notification, NotificationsApi } from "@kie-tooling-core/notifications/dist/api";
+import { Notification, NotificationsApi } from "@kie-tools-core/notifications/dist/api";
 import { VsCodeI18n } from "./i18n";
-import { I18n } from "@kie-tooling-core/i18n/dist/core";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
 import {
   JavaCodeCompletionApi,
   JavaCodeCompletionAccessor,
   JavaCodeCompletionClass,
   JavaCodeCompletionChannelApi,
-} from "@kie-tooling-core/vscode-java-code-completion/dist/api";
+} from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaCodeCompletionChannelApi {
   private readonly decoder = new TextDecoder("utf-8");

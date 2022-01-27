@@ -92,7 +92,7 @@ export const tabWithTitle = (title: string): By => {
  * This is a common spinner used by envelope and will always be present.
  */
 export const kogitoLoadingSpinner = (): By => {
-  return By.className("kogito-tooling--loading-screen-spinner");
+  return By.className("kie-tools--loading-screen-spinner");
 };
 
 /**

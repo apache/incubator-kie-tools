@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-const buildEnv = require("@kogito-tooling/build-env");
+const buildEnv = require("@kie-tools/build-env");
 const path = require("path");
 const fs = require("fs");
 
 module.exports = {
   quarkusRunnerPath: () => {
-    const packageRoot = path.dirname(require.resolve("@kogito-tooling/backend-extended-services"));
+    const packageRoot = path.dirname(require.resolve("@kie-tools/backend-extended-services"));
     const jarPath = `${packageRoot}/kogito-extended-services-quarkus/target/kogito-extended-services-quarkus-${buildEnv.global.version}-runner.jar`;
     if (!fs.existsSync(jarPath)) {
       console.error(`Quarkus Runner not found at path '${jarPath}'`);

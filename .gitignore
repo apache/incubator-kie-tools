@@ -175,3 +175,10 @@ packages/dashbuilder/**/gwt-unitCache
 packages/dashbuilder/dashbuilder-authoring/src/main/webapp/WEB-INF/lib/
 packages/dashbuilder/dashbuilder-authoring/src/main/webapp/WEB-INF/classes/
 packages/dashbuilder/**/dependency-reduced-pom.xml
+
+
+#kie-sandbox-fs
+packages/kie-sandbox-fs/dist
+packages/kie-sandbox-fs/coverage
+packages/kie-sandbox-fs/junit
+packages/kie-sandbox-fs/*-0.0.0-development.tgz

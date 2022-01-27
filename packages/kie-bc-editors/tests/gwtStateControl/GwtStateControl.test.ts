@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { GwtStateControlService } from "@kogito-tooling/kie-bc-editors/dist/common/gwtStateControl";
-import { StateControlApi } from "@kogito-tooling/kie-bc-editors/dist/common/api/StateControlApi";
+import { GwtStateControlService } from "@kie-tools/kie-bc-editors/dist/common/gwtStateControl";
+import { StateControlApi } from "@kie-tools/kie-bc-editors/dist/common/api/StateControlApi";
 
 const innerMessageHandler = jest.fn();
 

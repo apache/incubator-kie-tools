@@ -17,9 +17,9 @@
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import * as __path from "path";
 import * as vscode from "vscode";
-import { WorkspaceApi } from "@kie-tooling-core/workspace/dist/api";
+import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
 import { VsCodeI18n } from "./i18n";
-import { I18n } from "@kie-tooling-core/i18n/dist/core";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
 
 const encoder = new TextEncoder();
 

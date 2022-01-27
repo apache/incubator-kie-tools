@@ -44,7 +44,7 @@ import {
   useRoutes,
 } from "../navigation/Hooks";
 import { AuthStatus, GithubScopes, useSettings, useSettingsDispatch } from "../settings/SettingsContext";
-import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
+import { EmbeddedEditorRef, useDirtyState } from "@kie-tools-core/editor/dist/embedded";
 import { useHistory } from "react-router";
 import { EmbedModal } from "./EmbedModal";
 import { Alerts, AlertsController, useAlert } from "../alerts/Alerts";
@@ -1306,7 +1306,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
               <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                 <FlexItem>
                   <Button
-                    className={"kogito-tooling--masthead-hoverable"}
+                    className={"kie-tools--masthead-hoverable"}
                     variant={ButtonVariant.plain}
                     onClick={() => history.push({ pathname: routes.home.path({}) })}
                   >
@@ -1753,7 +1753,7 @@ export function KebabDropdown(props: {
 }) {
   return (
     <Dropdown
-      className={"kogito-tooling--masthead-hoverable"}
+      className={"kie-tools--masthead-hoverable"}
       isOpen={props.state[0]}
       isPlain={true}
       position={DropdownPosition.right}

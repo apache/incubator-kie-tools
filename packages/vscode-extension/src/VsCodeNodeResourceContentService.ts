@@ -22,7 +22,7 @@ import {
   ResourceListOptions,
   ResourcesList,
   SearchType,
-} from "@kie-tooling-core/workspace/dist/api";
+} from "@kie-tools-core/workspace/dist/api";
 
 import * as minimatch from "minimatch";
 import * as vscode from "vscode";

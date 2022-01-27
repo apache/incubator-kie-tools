@@ -16,7 +16,7 @@
 import * as React from "react";
 import { BaseSyntheticEvent, useEffect, useMemo, useState } from "react";
 import { GenericSelector } from "../atoms";
-import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kogito-tooling/pmml-editor-marshaller";
+import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kie-tools/pmml-editor-marshaller";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";

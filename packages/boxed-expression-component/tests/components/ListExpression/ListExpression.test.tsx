@@ -17,9 +17,9 @@
 import "../../__mocks__/ReactWithSupervisor";
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
-import { LogicType } from "@kogito-tooling/boxed-expression-component";
+import { LogicType } from "@kie-tools/boxed-expression-component";
 import * as React from "react";
-import { ListExpression } from "@kogito-tooling/boxed-expression-component/dist/components/ListExpression";
+import { ListExpression } from "@kie-tools/boxed-expression-component/dist/components/ListExpression";
 
 describe("ListExpression tests", () => {
   test("should show a table without header, with one row and one column", () => {

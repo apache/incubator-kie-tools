@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Closure, DataDictionary, DataField, FieldName, Interval } from "@kogito-tooling/pmml-editor-marshaller";
+import { Closure, DataDictionary, DataField, FieldName, Interval } from "@kie-tools/pmml-editor-marshaller";
 import { ConstraintType, DDDataField } from "./DataDictionaryContainer/DataDictionaryContainer";
 
 export const convertPMML2DD = (PMMLDataDictionary: DataDictionary | undefined): DDDataField[] => {

@@ -1,3 +1,3 @@
-## Kogito Tooling Editor API
+## KIE Tools Editor API
 
 Interfaces to define Editors.

@@ -20,7 +20,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/js/components/FormSelect";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
+import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
 import { GenericSelector, GenericSelectorOption } from "../../EditorScorecard/atoms";
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { useValidationRegistry } from "../../../validation";

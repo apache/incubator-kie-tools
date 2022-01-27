@@ -20,7 +20,7 @@ import {
   ImportJavaClassesWizardI18nContext,
   importJavaClassesWizardI18nDefaults,
 } from "../../i18n";
-import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { ImportJavaClassesWizard } from "./ImportJavaClassesWizard";
 import { GWTLayerService, JavaCodeCompletionService } from "./services";
 

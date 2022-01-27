@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CapabilityResponse, CapabilityResponseStatus } from "@kie-tooling-core/backend/dist/api";
+import { CapabilityResponse, CapabilityResponseStatus } from "@kie-tools-core/backend/dist/api";
 
 describe("utility methods to create a CapabilityResponse", () => {
   test("should be an empty OK response", () => {

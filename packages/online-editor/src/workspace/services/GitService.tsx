@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import LightningFS from "@isomorphic-git/lightning-fs";
+import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import git, { STAGE, WORKDIR } from "isomorphic-git";
 import http from "isomorphic-git/http/web";
 
@@ -24,7 +24,7 @@ export const GIT_ORIGIN_REMOTE_NAME = "origin";
 export const GIT_DEFAULT_BRANCH = "main";
 
 export interface CloneArgs {
-  fs: LightningFS;
+  fs: KieSandboxFs;
   repositoryUrl: URL;
   sourceBranch: string;
   dir: string;
@@ -39,7 +39,7 @@ export interface CloneArgs {
 }
 
 export interface CommitArgs {
-  fs: LightningFS;
+  fs: KieSandboxFs;
   message: string;
   targetBranch: string;
   dir: string;
@@ -50,13 +50,23 @@ export interface CommitArgs {
 }
 
 export interface PushArgs {
-  fs: LightningFS;
+  fs: KieSandboxFs;
   dir: string;
   ref: string;
   remoteRef?: string;
   remote: string;
   force: boolean;
   authInfo: {
+    username: string;
+    password: string;
+  };
+}
+
+export interface RemoteRefArgs {
+  fs: KieSandboxFs;
+  dir: string;
+  remoteRef?: string;
+  authInfo?: {
     username: string;
     password: string;
   };
@@ -85,7 +95,7 @@ export class GitService {
     }
   }
 
-  public async branch(args: { fs: LightningFS; dir: string; name: string; checkout: boolean }) {
+  public async branch(args: { fs: KieSandboxFs; dir: string; name: string; checkout: boolean }) {
     await git.branch({
       fs: args.fs,
       dir: args.dir,
@@ -94,7 +104,7 @@ export class GitService {
     });
   }
 
-  public async addRemote(args: { fs: LightningFS; dir: string; name: string; url: string; force: boolean }) {
+  public async addRemote(args: { fs: KieSandboxFs; dir: string; name: string; url: string; force: boolean }) {
     await git.addRemote({
       fs: args.fs,
       dir: args.dir,
@@ -130,7 +140,7 @@ export class GitService {
   }
 
   public async pull(args: {
-    fs: LightningFS;
+    fs: KieSandboxFs;
     dir: string;
     ref: string;
     author: {
@@ -154,10 +164,15 @@ export class GitService {
     });
   }
 
-  public async getRemoteRef(args: { fs: LightningFS; dir: string; remoteRef?: string }) {
+  public async getRemoteRef(args: RemoteRefArgs) {
     const url = await git.getConfig({ fs: args.fs, path: "remote.origin.url", dir: args.dir });
 
-    const serverRefs = await git.listServerRefs({ http: http, url, corsProxy: this.corsProxy });
+    const serverRefs = await git.listServerRefs({
+      http: http,
+      url,
+      corsProxy: this.corsProxy,
+      onAuth: () => args.authInfo,
+    });
 
     return serverRefs.find((serverRef) =>
       args.remoteRef ? serverRef.ref === args.remoteRef : serverRef.ref === "HEAD"
@@ -175,7 +190,12 @@ export class GitService {
       ref: "HEAD",
     });
 
-    const serverRemoteRef = await this.getRemoteRef({ fs: args.fs, dir: args.dir, remoteRef: args.remoteRef });
+    const serverRemoteRef = await this.getRemoteRef({
+      fs: args.fs,
+      dir: args.dir,
+      remoteRef: args.remoteRef,
+      authInfo: args.authInfo,
+    });
 
     if (serverRemoteRef?.oid && head === serverRemoteRef.oid) return;
 
@@ -192,7 +212,7 @@ export class GitService {
     });
   }
 
-  public async add(args: { fs: LightningFS; dir: string; relativePath: string }) {
+  public async add(args: { fs: KieSandboxFs; dir: string; relativePath: string }) {
     await git.add({
       fs: args.fs,
       dir: args.dir,
@@ -200,7 +220,7 @@ export class GitService {
     });
   }
 
-  public async setupGitConfig(fs: LightningFS, dir: string, config: { name: string; email: string }): Promise<void> {
+  public async setupGitConfig(fs: KieSandboxFs, dir: string, config: { name: string; email: string }): Promise<void> {
     await git.setConfig({
       fs: fs,
       dir: dir,
@@ -216,7 +236,7 @@ export class GitService {
     });
   }
 
-  async init(args: { fs: LightningFS; dir: string }) {
+  async init(args: { fs: KieSandboxFs; dir: string }) {
     await git.init({
       fs: args.fs,
       dir: args.dir,
@@ -225,7 +245,7 @@ export class GitService {
     });
   }
 
-  async isIgnored(args: { fs: LightningFS; dir: string; filepath: string }) {
+  async isIgnored(args: { fs: KieSandboxFs; dir: string; filepath: string }) {
     return await git.isIgnored({
       fs: args.fs,
       dir: args.dir,
@@ -233,7 +253,7 @@ export class GitService {
     });
   }
 
-  async rm(args: { fs: LightningFS; dir: string; relativePath: string }) {
+  async rm(args: { fs: KieSandboxFs; dir: string; relativePath: string }) {
     await git.remove({
       fs: args.fs,
       dir: args.dir,
@@ -241,12 +261,12 @@ export class GitService {
     });
   }
 
-  async hasLocalChanges(args: { fs: LightningFS; dir: string }) {
+  async hasLocalChanges(args: { fs: KieSandboxFs; dir: string }) {
     const files = await this.unstagedModifiedFileRelativePaths(args);
     return files.length > 0;
   }
 
-  public async unstagedModifiedFileRelativePaths(args: { fs: LightningFS; dir: string }): Promise<string[]> {
+  public async unstagedModifiedFileRelativePaths(args: { fs: KieSandboxFs; dir: string }): Promise<string[]> {
     const cache = {};
     const pseudoStatusMatrix = await git.walk({
       cache,
@@ -294,7 +314,7 @@ export class GitService {
     return pseudoStatusMatrix.filter((row: any) => row[_WORKDIR] !== row[_STAGE]).map((row: any) => row[_FILE]);
   }
 
-  public async resolveRef(args: { fs: LightningFS; dir: string; ref: string }) {
+  public async resolveRef(args: { fs: KieSandboxFs; dir: string; ref: string }) {
     return git.resolveRef({
       fs: args.fs,
       dir: args.dir,

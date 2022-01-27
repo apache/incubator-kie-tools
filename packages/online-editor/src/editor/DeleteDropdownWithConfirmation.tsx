@@ -30,7 +30,7 @@ export function DeleteDropdownWithConfirmation(props: { onDelete: () => void; it
   return (
     <Dropdown
       onClick={(e) => e.stopPropagation()}
-      className={"kogito-tooling--masthead-hoverable"}
+      className={"kie-tools--masthead-hoverable"}
       onSelect={() => setDeleteDropdownOpen(false)}
       isOpen={isDeleteDropdownOpen}
       isPlain={true}

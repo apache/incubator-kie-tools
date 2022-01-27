@@ -20,7 +20,7 @@ import "./CharacteristicLabel.scss";
 import { ValidationEntry } from "../../../validation";
 import { ValidationIndicatorLabel } from "../../EditorCore/atoms";
 import { toText } from "../organisms";
-import { DataField, Predicate } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataField, Predicate } from "@kie-tools/pmml-editor-marshaller";
 
 interface CharacteristicLabelProps {
   name: string;

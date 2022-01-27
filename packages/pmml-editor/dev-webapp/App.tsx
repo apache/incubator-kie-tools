@@ -20,7 +20,7 @@ import { useRef, useState } from "react";
 import { PMMLEmptyState } from "./EmptyState";
 import type { Property } from "csstype";
 import { HistoryButtons, Theme } from "./HistoryButtons";
-import { Notification } from "@kie-tooling-core/notifications/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import "./App.scss";
 
 let editor: PMMLEditor;

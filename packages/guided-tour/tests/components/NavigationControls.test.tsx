@@ -18,9 +18,9 @@ import * as React from "react";
 import { act } from "react-dom/test-utils";
 import { render, renderedComponent, setupContainer, teardownContainer, triggerClick, useContextMock } from "../utils";
 
-import { NavigationControls } from "@kie-tooling-core/guided-tour/dist/components";
-import { KogitoGuidedTour } from "@kie-tooling-core/guided-tour/dist";
-import { DemoMode } from "@kie-tooling-core/guided-tour/dist/api";
+import { NavigationControls } from "@kie-tools-core/guided-tour/dist/components";
+import { KogitoGuidedTour } from "@kie-tools-core/guided-tour/dist";
+import { DemoMode } from "@kie-tools-core/guided-tour/dist/api";
 
 describe("NavigationControls", () => {
   beforeEach(setupContainer);

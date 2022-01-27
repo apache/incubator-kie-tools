@@ -1,11 +1,11 @@
 {
-  "name": "@kogito-tooling/vscode-java-code-completion-extension-plugin",
+  "name": "@kie-tools/vscode-java-code-completion-extension-plugin",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kogito-tooling.git"
+    "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "main": "index.js",
   "types": "index.d.ts",
@@ -19,7 +19,7 @@
     "glob": "^7.1.6"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
+    "@kie-tools/build-env": "0.0.0"
   },
   "scripts": {
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",

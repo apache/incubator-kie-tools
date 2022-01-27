@@ -16,9 +16,10 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { DataTypeProps, PMMLParams } from "../api";
+import { BoxedExpressionEditorGWTService, DataTypeProps, PMMLParams } from "../api";
 
 export interface BoxedExpressionGlobalContextProps {
+  boxedExpressionEditorGWTService?: BoxedExpressionEditorGWTService;
   decisionNodeId: string;
   pmmlParams?: PMMLParams;
   dataTypes: DataTypeProps[];

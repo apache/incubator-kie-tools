@@ -21,7 +21,7 @@ import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/M
 import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
 import { CloseIcon } from "@patternfly/react-icons/dist/js/icons/close-icon";
 import { WarningTriangleIcon } from "@patternfly/react-icons/dist/js/icons/warning-triangle-icon";
-import { FieldName, MiningSchema, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { FieldName, MiningSchema, Output, OutputField } from "@kie-tools/pmml-editor-marshaller";
 import { OutputsContainer } from "./OutputsContainer";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { useValidationRegistry } from "../../../validation";

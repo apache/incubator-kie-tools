@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as TodoListViewEnvelope from "@kogito-tooling-examples/todo-list-view/dist/envelope";
+import * as TodoListViewEnvelope from "@kie-tools-examples/todo-list-view/dist/envelope";
 
 TodoListViewEnvelope.init({
   container: document.getElementById("envelope-app")!,
