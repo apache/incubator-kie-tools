@@ -16,17 +16,13 @@
 
 package org.jboss.errai.reflections.serializers;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import org.jboss.errai.reflections.Reflections;
-import org.jboss.errai.reflections.ReflectionsException;
-import org.jboss.errai.reflections.util.ConfigurationBuilder;
-import org.jboss.errai.reflections.util.Utils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -38,8 +34,18 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
-import java.util.Map;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import org.jboss.errai.reflections.Reflections;
+import org.jboss.errai.reflections.ReflectionsException;
+import org.jboss.errai.reflections.util.ConfigurationBuilder;
+import org.jboss.errai.reflections.util.Utils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * serialization of Reflections to xml

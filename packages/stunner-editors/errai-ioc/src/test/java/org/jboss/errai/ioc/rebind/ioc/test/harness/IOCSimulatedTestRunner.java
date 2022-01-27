@@ -27,6 +27,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
+import com.google.gwt.junit.JUnitShell;
+import junit.framework.TestCase;
+import junit.framework.TestResult;
 import org.jboss.errai.codegen.exception.GenerationException;
 import org.jboss.errai.common.client.api.tasks.AsyncTask;
 import org.jboss.errai.common.client.api.tasks.TaskManager;
@@ -44,11 +47,6 @@ import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.ParentRunner;
-
-import com.google.gwt.junit.JUnitShell;
-
-import junit.framework.TestCase;
-import junit.framework.TestResult;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

@@ -19,10 +19,9 @@ package org.jboss.errai.ioc.rebind.ioc.graph.impl;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.google.common.collect.Iterators;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraph;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.Injectable;
-
-import com.google.common.collect.Iterators;
 
 /**
  * @see DependencyGraph

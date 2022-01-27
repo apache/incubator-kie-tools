@@ -16,13 +16,13 @@
 
 package org.jboss.errai.databinding.client.test;
 
-import static org.junit.Assert.assertEquals;
-
 import org.jboss.errai.databinding.client.MockHandler;
 import org.jboss.errai.databinding.client.PropertyChangeHandlerSupport;
 import org.jboss.errai.databinding.client.api.handler.property.PropertyChangeEvent;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for {@link PropertyChangeHandlerSupport}.

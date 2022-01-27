@@ -23,6 +23,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.groups.Default;
 
+import com.google.gwt.user.client.ui.TextBox;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.test.AbstractErraiIOCTest;
@@ -32,8 +33,6 @@ import org.jboss.errai.validation.client.ModuleWithInjectedValidator;
 import org.jboss.errai.validation.client.TestGroup;
 import org.jboss.errai.validation.client.TestModel;
 import org.jboss.errai.validation.client.TestModelWithoutConstraints;
-
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * Integration test for injected {@link BeanValidator}s.

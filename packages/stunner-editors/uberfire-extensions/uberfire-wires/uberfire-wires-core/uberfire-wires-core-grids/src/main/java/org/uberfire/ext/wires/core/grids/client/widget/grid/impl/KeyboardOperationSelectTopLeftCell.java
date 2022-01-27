@@ -17,7 +17,6 @@
 package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
 import com.google.gwt.event.dom.client.KeyCodes;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 

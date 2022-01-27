@@ -15,13 +15,12 @@
  */
 package org.uberfire.ext.widgets.common.client.common;
 
+import com.google.gwt.dom.client.Element;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.Popover;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Placement;
 import org.gwtbootstrap3.client.ui.constants.Trigger;
-
-import com.google.gwt.dom.client.Element;
 
 /**
  * This is handy for in-place context help.

@@ -26,7 +26,6 @@ import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.Scenari
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.model.KogitoDMNModel;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.services.ScenarioSimulationKogitoDMNMarshallerService;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
-
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;

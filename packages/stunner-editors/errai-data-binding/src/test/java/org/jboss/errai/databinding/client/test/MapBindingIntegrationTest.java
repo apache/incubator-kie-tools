@@ -16,13 +16,14 @@
 
 package org.jboss.errai.databinding.client.test;
 
-import static org.jboss.errai.databinding.client.components.ListComponent.forIsWidgetComponent;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.user.client.ui.IntegerBox;
+import com.google.gwt.user.client.ui.TextBox;
 import org.jboss.errai.databinding.client.BindableListWrapper;
 import org.jboss.errai.databinding.client.BindableProxy;
 import org.jboss.errai.databinding.client.DataBindingModuleBootstrapper;
@@ -34,9 +35,7 @@ import org.jboss.errai.databinding.client.api.Convert;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.databinding.client.components.ListComponent;
 
-import com.google.gwt.junit.client.GWTTestCase;
-import com.google.gwt.user.client.ui.IntegerBox;
-import com.google.gwt.user.client.ui.TextBox;
+import static org.jboss.errai.databinding.client.components.ListComponent.forIsWidgetComponent;
 
 /**
  * Tests binding to lists with the {@link DataBinder}.

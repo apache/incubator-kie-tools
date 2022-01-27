@@ -16,13 +16,21 @@ package org.eclipse.dd.di.util;
 
 import java.util.Map;
 
-import org.eclipse.dd.di.*;
-
+import org.eclipse.dd.di.DiPackage;
+import org.eclipse.dd.di.Diagram;
+import org.eclipse.dd.di.DiagramElement;
+import org.eclipse.dd.di.DocumentRoot;
+import org.eclipse.dd.di.Edge;
+import org.eclipse.dd.di.Label;
+import org.eclipse.dd.di.LabeledEdge;
+import org.eclipse.dd.di.LabeledShape;
+import org.eclipse.dd.di.Node;
+import org.eclipse.dd.di.Plane;
+import org.eclipse.dd.di.Shape;
+import org.eclipse.dd.di.Style;
 import org.eclipse.emf.common.util.DiagnosticChain;
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.util.EObjectValidator;
 
 /**

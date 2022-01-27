@@ -16,15 +16,6 @@
 
 package org.jboss.errai.ioc.rebind.ioc.injector.api;
 
-import static org.apache.commons.lang3.Validate.notNull;
-import static org.jboss.errai.codegen.util.PrivateAccessUtil.getPrivateFieldAccessorName;
-import static org.jboss.errai.codegen.util.PrivateAccessUtil.getPrivateMethodName;
-import static org.jboss.errai.codegen.util.Stmt.invokeStatic;
-import static org.jboss.errai.codegen.util.Stmt.loadStatic;
-import static org.jboss.errai.codegen.util.Stmt.loadVariable;
-import static org.jboss.errai.codegen.util.Stmt.nestedCall;
-import static org.jboss.errai.ioc.rebind.ioc.bootstrapper.FactoryGenerator.getLocalVariableName;
-
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 
@@ -45,6 +36,15 @@ import org.jboss.errai.codegen.util.CDIAnnotationUtils;
 import org.jboss.errai.ioc.client.api.CodeDecorator;
 import org.jboss.errai.ioc.client.container.Factory;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.Injectable;
+
+import static org.apache.commons.lang3.Validate.notNull;
+import static org.jboss.errai.codegen.util.PrivateAccessUtil.getPrivateFieldAccessorName;
+import static org.jboss.errai.codegen.util.PrivateAccessUtil.getPrivateMethodName;
+import static org.jboss.errai.codegen.util.Stmt.invokeStatic;
+import static org.jboss.errai.codegen.util.Stmt.loadStatic;
+import static org.jboss.errai.codegen.util.Stmt.loadVariable;
+import static org.jboss.errai.codegen.util.Stmt.nestedCall;
+import static org.jboss.errai.ioc.rebind.ioc.bootstrapper.FactoryGenerator.getLocalVariableName;
 
 /**
  * Contains metadata for an element of a particular {@link DecorableType}.

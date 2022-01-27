@@ -16,14 +16,13 @@
 
 package org.jboss.errai.ioc.rebind.ioc.bootstrapper;
 
+import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.TreeLogger;
 import org.jboss.errai.codegen.builder.ClassStructureBuilder;
 import org.jboss.errai.ioc.client.container.Factory;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraph;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.Injectable;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.InjectionContext;
-
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 
 /**
  * Used by the {@link FactoryGenerator} for generating the body of

@@ -16,13 +16,14 @@
 
 package org.jboss.errai.ioc.client.api.builtin;
 
+import java.lang.annotation.Annotation;
+
+import javax.inject.Singleton;
+
 import org.jboss.errai.common.client.api.extension.InitVotes;
 import org.jboss.errai.ioc.client.api.ContextualTypeProvider;
 import org.jboss.errai.ioc.client.api.IOCProvider;
 import org.jboss.errai.ioc.client.api.InitBallot;
-
-import javax.inject.Singleton;
-import java.lang.annotation.Annotation;
 
 /**
  * @author Mike Brock .

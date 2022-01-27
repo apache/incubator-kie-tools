@@ -16,9 +16,9 @@
 
 package org.jboss.errai.common.client.util;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertArrayEquals;
 
 /**
  * Tests for the base64 codec. Most of the testing is to ensure that the padding

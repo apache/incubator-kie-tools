@@ -16,11 +16,11 @@
 
 package org.jboss.errai.enterprise.client.cdi;
 
-
-import javax.enterprise.inject.Any;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.enterprise.inject.Any;
 
 import org.jboss.errai.enterprise.client.cdi.api.Message;
 import org.jboss.errai.enterprise.client.cdi.api.MessageCallback;

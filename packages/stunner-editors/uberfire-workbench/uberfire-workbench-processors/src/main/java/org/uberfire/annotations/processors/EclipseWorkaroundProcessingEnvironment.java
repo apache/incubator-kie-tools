@@ -18,6 +18,7 @@ package org.uberfire.annotations.processors;
 
 import java.util.Locale;
 import java.util.Map;
+
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;

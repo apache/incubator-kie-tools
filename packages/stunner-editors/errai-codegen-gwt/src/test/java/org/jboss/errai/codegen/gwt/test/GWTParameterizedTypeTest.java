@@ -16,17 +16,16 @@
 
 package org.jboss.errai.codegen.gwt.test;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
-
-import org.jboss.errai.codegen.meta.MetaType;
-import org.jboss.errai.codegen.meta.impl.gwt.GWTParameterizedType;
-import org.junit.Test;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import org.jboss.errai.codegen.meta.MetaType;
+import org.jboss.errai.codegen.meta.impl.gwt.GWTParameterizedType;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class GWTParameterizedTypeTest {
 

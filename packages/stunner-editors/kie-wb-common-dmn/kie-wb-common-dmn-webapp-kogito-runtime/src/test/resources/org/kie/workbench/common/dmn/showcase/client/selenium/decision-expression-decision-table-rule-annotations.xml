@@ -5,7 +5,6 @@
                  xmlns:kie="http://www.drools.org/kie/dmn/1.2"
                  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
                  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
-                 xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
                  id="_88C2C70C-3D41-4317-A19F-5B71A7350570"
                  name="C21BE9FD-EA09-4357-9546-69B433F0329F"
                  typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"

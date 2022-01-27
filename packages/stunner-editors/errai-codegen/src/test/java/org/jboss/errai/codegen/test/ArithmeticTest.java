@@ -16,13 +16,13 @@
 
 package org.jboss.errai.codegen.test;
 
-import static org.junit.Assert.assertEquals;
-
 import org.jboss.errai.codegen.ArithmeticExpression;
 import org.jboss.errai.codegen.ArithmeticOperator;
 import org.jboss.errai.codegen.meta.MetaClassFactory;
 import org.jboss.errai.codegen.util.Arith;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class ArithmeticTest {
 

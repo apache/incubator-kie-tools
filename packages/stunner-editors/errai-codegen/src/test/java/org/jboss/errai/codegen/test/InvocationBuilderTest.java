@@ -16,8 +16,12 @@
 
 package org.jboss.errai.codegen.test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.util.TypeLiteral;
 
 import org.jboss.errai.codegen.Context;
 import org.jboss.errai.codegen.Variable;
@@ -33,11 +37,8 @@ import org.jboss.errai.codegen.test.model.Foo;
 import org.jboss.errai.codegen.util.Refs;
 import org.junit.Test;
 
-import javax.enterprise.util.TypeLiteral;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests the generation of method invocations using the {@link StatementBuilder} API.

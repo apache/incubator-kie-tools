@@ -16,8 +16,6 @@
 
 package org.jboss.errai.ioc.rebind.ioc.injector.api;
 
-import static java.util.Collections.unmodifiableCollection;
-
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
@@ -36,6 +34,9 @@ import javax.enterprise.inject.Stereotype;
 import javax.inject.Qualifier;
 import javax.inject.Scope;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import org.jboss.errai.codegen.meta.HasAnnotations;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.common.client.api.Assert;
@@ -54,9 +55,7 @@ import org.jboss.errai.reflections.util.SimplePackageFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
+import static java.util.Collections.unmodifiableCollection;
 
 /**
  * At every rebind phase, a single {@link InjectionContext} is used. It contains

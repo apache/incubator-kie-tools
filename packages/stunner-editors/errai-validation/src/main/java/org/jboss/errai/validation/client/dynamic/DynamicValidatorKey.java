@@ -35,9 +35,8 @@ import java.util.TreeSet;
 
 import javax.validation.Constraint;
 
-import org.jboss.errai.common.client.logging.util.StringFormat;
-
 import com.google.gwt.regexp.shared.RegExp;
+import org.jboss.errai.common.client.logging.util.StringFormat;
 
 /**
  * Used for looking up {@link GeneratedDynamicValidator GeneratedDynamicValidators}.

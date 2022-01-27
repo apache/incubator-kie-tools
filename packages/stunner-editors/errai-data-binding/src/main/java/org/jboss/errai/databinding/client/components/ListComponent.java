@@ -25,17 +25,16 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.databinding.client.api.Bindable;
-import org.jboss.errai.databinding.client.api.handler.list.BindableListChangeHandler;
-
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.TableSectionElement;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.databinding.client.api.Bindable;
+import org.jboss.errai.databinding.client.api.handler.list.BindableListChangeHandler;
 
 /**
  * A component that binds a list of {@link Bindable} models to a displayed list of UI components. Supports selection of

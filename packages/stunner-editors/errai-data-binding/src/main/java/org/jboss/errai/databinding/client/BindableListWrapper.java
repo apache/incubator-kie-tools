@@ -26,12 +26,11 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import org.jboss.errai.common.client.api.Assert;
 import org.jboss.errai.databinding.client.api.handler.list.BindableListChangeHandler;
 import org.jboss.errai.databinding.client.api.handler.property.PropertyChangeEvent;
 import org.jboss.errai.databinding.client.api.handler.property.PropertyChangeHandler;
-
-import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Wraps a List<M> to notify change handlers of all operations that mutate the underlying list.
