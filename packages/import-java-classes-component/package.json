@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@kie-tools-core/i18n": "0.0.0",
-    "@kie-tool-core/vscode-java-code-completion": "0.0.0",
+    "@kie-tools-core/vscode-java-code-completion": "0.0.0",
     "@kie-tools/i18n-common-dictionary": "0.0.0"
   },
   "devDependencies": {
