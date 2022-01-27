@@ -17,7 +17,7 @@
 import {
   JavaCodeCompletionAccessor,
   JavaCodeCompletionClass,
-} from "@kie-tooling-core/vscode-java-code-completion/dist/api";
+} from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
 /**
  * This interface defines all the API methods which ImportJavaClasses component can use to dialog with the Code Completion Extension

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
+import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import { JavaClass } from "../components/ImportJavaClasses/model/JavaClass";
 
 export {};
