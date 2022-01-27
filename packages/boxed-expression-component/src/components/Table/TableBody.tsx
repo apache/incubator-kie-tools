@@ -160,15 +160,15 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
     [getRowKey, renderCell, tableInstance]
   );
 
-  const renderAdditiveRow = useMemo(
-    () => (
+  const renderAdditiveRow = useCallback(
+    (rowIndex: number) => (
       <Tr className="table-row additive-row">
-        <Td role="cell" className="empty-cell" {...tdBaseProps(0, 1)}>
+        <Td role="cell" className="empty-cell" {...tdBaseProps(0, rowIndex)}>
           <br />
         </Td>
         {children?.map((child, childIndex) => {
           return (
-            <Td role="cell" key={childIndex} className="row-remainder-content" {...tdBaseProps(childIndex, 1)}>
+            <Td role="cell" key={childIndex} className="row-remainder-content" {...tdBaseProps(childIndex, rowIndex)}>
               {child}
             </Td>
           );
@@ -184,7 +184,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
       {...(tableInstance.getTableBodyProps() as any)}
     >
       {tableInstance.rows.map((row: Row, rowIndex: number) => renderBodyRow(row, rowIndex))}
-      {children ? renderAdditiveRow : null}
+      {children ? renderAdditiveRow(tableInstance.rows.length) : null}
     </Tbody>
   );
 };
