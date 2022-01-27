@@ -24,7 +24,7 @@ import {
   SimplePredicate,
   SimpleSetPredicate,
   True,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import { ValidationEntry, ValidationRegistry } from "./ValidationRegistry";
 import { ValidationLevel } from "./ValidationLevel";
 import { Builder, PredicateBuilder } from "../paths";

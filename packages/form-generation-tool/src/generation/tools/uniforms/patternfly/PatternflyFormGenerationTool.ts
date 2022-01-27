@@ -17,7 +17,7 @@
 import unescape from "lodash/unescape";
 import { FormAssetType, FormAsset, FormStyle, FormConfig, FormGenerationTool, FormSchema } from "../../../types";
 
-import { renderForm } from "@kogito-tooling/uniforms-patternfly-codegen/dist";
+import { renderForm } from "@kie-tools/uniforms-patternfly-codegen/dist";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { getUniformsSchema } from "../utils/UniformsSchemaUtils";
 

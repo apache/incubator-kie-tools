@@ -21,14 +21,7 @@ import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import "./OutputFieldRow.scss";
-import {
-  DataType,
-  FieldName,
-  OpType,
-  OutputField,
-  RankOrder,
-  ResultFeature,
-} from "@kogito-tooling/pmml-editor-marshaller";
+import { DataType, FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
 import { OutputLabelsEditMode } from "../atoms";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { ValidatedType } from "../../../types";

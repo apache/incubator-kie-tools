@@ -11,7 +11,7 @@ This package contains the `Containerfile` and scripts to build a container image
 Enable the image to be built:
 
 ```bash
-$ export KOGITO_TOOLING_BUILD_docker=true
+$ export KIE_TOOLS_BUILD_docker=true
 ```
 
 The image name and tags can be customized by setting the following environment variables:
@@ -28,7 +28,7 @@ Default values can be found [here](../build-env/index.js).
 After setting up the environment variables, run the following in the root folder of the repository to build the package:
 
 ```bash
-$ lerna run build:prod --scope=@kogito-tooling/cors-proxy-image --include-dependencies --stream
+$ lerna run build:prod --scope=@kie-tools/cors-proxy-image --include-dependencies --stream
 ```
 
 Then check out the image:
@@ -42,7 +42,7 @@ $ podman images
 Start up a new container with:
 
 ```bash
-$ podman run -p 8080:8080 -i --rm quay.io/kogito_tooling_bot/cors-proxy-image:latest
+$ podman run -p 8080:8080 -i --rm quay.io/kie-tools/cors-proxy-image:latest
 ```
 
 The service will be up at http://localhost:8080

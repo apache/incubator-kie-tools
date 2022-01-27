@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { applyDOMSupervisor, Cell } from "@kogito-tooling/boxed-expression-component/dist/components/Resizer/dom";
+import { applyDOMSupervisor, Cell } from "@kie-tools/boxed-expression-component/dist/components/Resizer/dom";
 
 const fakeCells = [fakeCell(0), fakeCell(2), fakeCell(4), fakeCell(8)];
 
@@ -40,8 +40,8 @@ describe("ResizerSupervisorDOM", () => {
   });
 });
 
-jest.mock("@kogito-tooling/boxed-expression-component/dist/components/Resizer/dom", () => {
-  const actualResizerDOM = jest.requireActual("@kogito-tooling/boxed-expression-component/dist/components/Resizer/dom");
+jest.mock("@kie-tools/boxed-expression-component/dist/components/Resizer/dom", () => {
+  const actualResizerDOM = jest.requireActual("@kie-tools/boxed-expression-component/dist/components/Resizer/dom");
   return {
     ...actualResizerDOM,
     DOMSession: jest.fn(() => ({

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { GuidedTourEventBus } from "@kie-tooling-core/guided-tour/dist/core";
+import { GuidedTourEventBus } from "@kie-tools-core/guided-tour/dist/core";
 import { act } from "react-dom/test-utils";
-import { Rect, UserInteraction } from "@kie-tooling-core/guided-tour/dist/api";
+import { Rect, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 
 describe("GuidedTourEventBus", () => {
   beforeEach(() => {

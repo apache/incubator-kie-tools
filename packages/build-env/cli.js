@@ -92,18 +92,18 @@ async function main() {
     g.setEdgeAttribut("arrowhead", "dot");
     g.setEdgeAttribut("arrowsize", "0.5");
 
-    const root = g.addNode("kiegroup/kogito-tooling");
+    const root = g.addNode("kiegroup/kie-tools");
     root.set("shape", "folder");
 
     for (const pkgName in resMatrix) {
       const displayPkgName = pkgName;
 
       const pkgProperties = (() => {
-        if (pkgName.startsWith("@kogito-tooling-examples") || pkgName.startsWith("kogito-tooling-examples-")) {
+        if (pkgName.startsWith("@kie-tools-examples") || pkgName.startsWith("kie-tools-examples-")) {
           return { color: "orange", nodeStyle: "dashed, rounded" };
         } else if (packageMap.get(pkgName)?.private) {
           return { color: "black", nodeStyle: "dashed, rounded" };
-        } else if (pkgName.startsWith("@kie-tooling-core")) {
+        } else if (pkgName.startsWith("@kie-tools-core")) {
           return { color: "purple", nodeStyle: "rounded" };
         } else {
           return { color: "blue", nodeStyle: "rounded" };

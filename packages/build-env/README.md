@@ -1,12 +1,12 @@
 ## Build env
 
-This package contains the tooling to handle environment variables and other build-related scripting necessary to build the Kogito Tooling project.
+This package contains the tooling to handle environment variables and other build-related scripting necessary to build the KIE Tools project.
 
 ---
 
 #### Packages dependency graph
 
-![Kogito Tooling packages dependency graph](https://g.gravizo.com/source/svg?https%3A%2F%2Fraw.githubusercontent.com%2Fkiegroup%2Fkogito-tooling%2Fmain%2Fpackages%2Fbuild-env%2Fgraph.dot)
+![KIE Tools packages dependency graph](https://g.gravizo.com/source/svg?https%3A%2F%2Fraw.githubusercontent.com%2Fkiegroup%2Fkie-tools%2Fmain%2Fpackages%2Fbuild-env%2Fgraph.dot)
 
 Nodes:
 

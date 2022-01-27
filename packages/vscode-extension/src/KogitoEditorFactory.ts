@@ -17,11 +17,11 @@
 import * as vscode from "vscode";
 import { Uri, Webview } from "vscode";
 import * as __path from "path";
-import { NotificationsApi } from "@kie-tooling-core/notifications/dist/api";
-import { BackendProxy } from "@kie-tooling-core/backend/dist/api";
-import { ResourceContentService } from "@kie-tooling-core/workspace/dist/api";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
-import { WorkspaceApi } from "@kie-tooling-core/workspace/dist/api";
+import { NotificationsApi } from "@kie-tools-core/notifications/dist/api";
+import { BackendProxy } from "@kie-tools-core/backend/dist/api";
+import { ResourceContentService } from "@kie-tools-core/workspace/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { KogitoEditor } from "./KogitoEditor";
@@ -29,9 +29,9 @@ import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
-import { I18n } from "@kie-tooling-core/i18n/dist/core";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "./i18n";
-import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
+import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
 export class KogitoEditorFactory {
   constructor(

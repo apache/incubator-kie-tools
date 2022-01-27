@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tooling-core/backend/dist/i18n";
-import { VsCodeBackendProxy } from "@kie-tooling-core/backend/dist/vscode";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
-import { I18n } from "@kie-tooling-core/i18n/dist/core";
-import * as KogitoVsCode from "@kie-tooling-core/vscode-extension";
+import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
+import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
+import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
 
 let backendProxy: VsCodeBackendProxy;

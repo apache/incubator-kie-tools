@@ -27,7 +27,7 @@ import {
   SimplePredicate,
   SimpleSetPredicate,
   True,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
 import { CharacteristicsActions } from "./CharacteristicsReducer";

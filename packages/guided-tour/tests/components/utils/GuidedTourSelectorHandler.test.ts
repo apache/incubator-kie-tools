@@ -16,9 +16,9 @@
 
 import { act } from "react-dom/test-utils";
 
-import { useSelectorHandler } from "@kie-tooling-core/guided-tour/dist/components/utils";
-import { KogitoGuidedTour } from "@kie-tooling-core/guided-tour/dist";
-import { DEFAULT_RECT, Rect } from "@kie-tooling-core/guided-tour/dist/api";
+import { useSelectorHandler } from "@kie-tools-core/guided-tour/dist/components/utils";
+import { KogitoGuidedTour } from "@kie-tools-core/guided-tour/dist";
+import { DEFAULT_RECT, Rect } from "@kie-tools-core/guided-tour/dist/api";
 
 describe("useSelectorHandler", () => {
   beforeEach(() => {

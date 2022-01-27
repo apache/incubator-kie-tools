@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { FieldName, MiningField, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
-import { Actions, AllActions } from "@kogito-tooling/pmml-editor/dist/editor/reducers";
+import { FieldName, MiningField, Model, PMML, Scorecard } from "@kie-tools/pmml-editor-marshaller";
+import { Actions, AllActions } from "@kie-tools/pmml-editor/dist/editor/reducers";
 import { Reducer } from "react";
-import { HistoryService } from "@kogito-tooling/pmml-editor/dist/editor/history";
-import { DelegatingModelReducer } from "@kogito-tooling/pmml-editor/dist/editor/reducers/DelegatingModelReducer";
+import { HistoryService } from "@kie-tools/pmml-editor/dist/editor/history";
+import { DelegatingModelReducer } from "@kie-tools/pmml-editor/dist/editor/reducers/DelegatingModelReducer";
 
 const service = new HistoryService([]);
 const miningFields: MiningField[] = [{ name: "field1" as FieldName }];

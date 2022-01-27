@@ -22,28 +22,28 @@ const get = (envVar) => process.env[envVar.name];
 const getOrDefault = (envVar) => get(envVar) ?? envVar.default;
 
 const ENV_VARS = {
-  KOGITO_TOOLING_BUILD_lint: {
-    name: "KOGITO_TOOLING_BUILD_lint",
+  KIE_TOOLS_BUILD_lint: {
+    name: "KIE_TOOLS_BUILD_lint",
     default: `${true}`,
     description: "",
   },
-  KOGITO_TOOLING_BUILD_test: {
-    name: "KOGITO_TOOLING_BUILD_test",
+  KIE_TOOLS_BUILD_test: {
+    name: "KIE_TOOLS_BUILD_test",
     default: `${true}`,
     description: "",
   },
-  KOGITO_TOOLING_BUILD_testIT: {
-    name: "KOGITO_TOOLING_BUILD_testIT",
+  KIE_TOOLS_BUILD_testIT: {
+    name: "KIE_TOOLS_BUILD_testIT",
     default: `${false}`,
     description: "",
   },
-  KOGITO_TOOLING_BUILD_docker: {
-    name: "KOGITO_TOOLING_BUILD_docker",
+  KIE_TOOLS_BUILD_docker: {
+    name: "KIE_TOOLS_BUILD_docker",
     default: `${false}`,
     description: "",
   },
-  KOGITO_TOOLING_BUILD_examples: {
-    name: "KOGITO_TOOLING_BUILD_examples",
+  KIE_TOOLS_BUILD_examples: {
+    name: "KIE_TOOLS_BUILD_examples",
     default: `${false}`,
     description: "",
   },
@@ -74,17 +74,17 @@ const ENV_VARS = {
   },
   ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: {
     name: "ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux",
-    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_sandbox_extended_services_linux_${version}.tar.gz`,
+    default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_linux_${version}.tar.gz`,
     description: "",
   },
   ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: {
     name: "ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs",
-    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_sandbox_extended_services_macos_${version}.dmg`,
+    default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_macos_${version}.dmg`,
     description: "",
   },
   ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: {
     name: "ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows",
-    default: `https://github.com/kiegroup/kogito-tooling/releases/download/${version}/kie_sandbox_extended_services_windows_${version}.exe`,
+    default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_windows_${version}.exe`,
     description: "",
   },
   ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: {
@@ -104,7 +104,7 @@ const ENV_VARS = {
   },
   DMN_DEV_SANDBOX__baseImageAccount: {
     name: "DMN_DEV_SANDBOX__baseImageAccount",
-    default: "kogito_tooling_bot",
+    default: "kie-tools",
     description: "",
   },
   DMN_DEV_SANDBOX__baseImageName: {
@@ -165,7 +165,7 @@ const ENV_VARS = {
   },
   DASHBUILDER__baseImageAccount: {
     name: "DASHBUILDER__baseImageAccount",
-    default: "kogito_tooling_bot",
+    default: "kie-tools",
     description: "",
   },
   DASHBUILDER_RUNTIME__baseImageName: {
@@ -195,7 +195,7 @@ const ENV_VARS = {
   },
   KIE_SANDBOX__imageAccount: {
     name: "KIE_SANDBOX__imageAccount",
-    default: "kogito_tooling_bot",
+    default: "kie-tools",
     description: "",
   },
   KIE_SANDBOX__imageName: {
@@ -215,7 +215,7 @@ const ENV_VARS = {
   },
   KIE_SANDBOX_EXTENDED_SERVICES__imageAccount: {
     name: "KIE_SANDBOX_EXTENDED_SERVICES__imageAccount",
-    default: "kogito_tooling_bot",
+    default: "kie-tools",
     description: "",
   },
   KIE_SANDBOX_EXTENDED_SERVICES__imageName: {
@@ -235,7 +235,7 @@ const ENV_VARS = {
   },
   CORS_PROXY__imageAccount: {
     name: "CORS_PROXY__imageAccount",
-    default: "kogito_tooling_bot",
+    default: "kie-tools",
     description: "",
   },
   CORS_PROXY__imageName: {
@@ -259,11 +259,11 @@ module.exports = {
   global: {
     version: version,
     build: {
-      lint: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_lint)),
-      test: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_test)),
-      testIT: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_testIT)),
-      docker: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_docker)),
-      examples: str2bool(getOrDefault(ENV_VARS.KOGITO_TOOLING_BUILD_examples)),
+      lint: str2bool(getOrDefault(ENV_VARS.KIE_TOOLS_BUILD_lint)),
+      test: str2bool(getOrDefault(ENV_VARS.KIE_TOOLS_BUILD_test)),
+      testIT: str2bool(getOrDefault(ENV_VARS.KIE_TOOLS_BUILD_testIT)),
+      docker: str2bool(getOrDefault(ENV_VARS.KIE_TOOLS_BUILD_docker)),
+      examples: str2bool(getOrDefault(ENV_VARS.KIE_TOOLS_BUILD_examples)),
     },
     webpack: (webpackEnv) => {
       if (webpackEnv.dev) {

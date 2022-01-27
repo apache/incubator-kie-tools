@@ -15,11 +15,11 @@
  */
 
 import * as React from "react";
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
+import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { useCallback, useRef, useState } from "react";
 import { Nav, NavItem, NavList, TextInput } from "@patternfly/react-core";
-import { EmbeddedEditorRef, useDirtyState } from "@kie-tooling-core/editor/dist/embedded";
-import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorRef, useDirtyState } from "@kie-tools-core/editor/dist/embedded";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 
 function extractFileExtension(fileName: string) {
   return fileName.match(/[.]/)

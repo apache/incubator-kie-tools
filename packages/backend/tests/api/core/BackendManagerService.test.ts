@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { BackendManagerService, HttpBridge } from "@kie-tooling-core/backend/dist/api";
+import { BackendManagerService, HttpBridge } from "@kie-tools-core/backend/dist/api";
 import { createMockedService, DummyHttpService, DummyLocalHttpServer, DummyLocalHttpService } from "../dummyServices";
 
 const localHttpServer = new DummyLocalHttpServer();

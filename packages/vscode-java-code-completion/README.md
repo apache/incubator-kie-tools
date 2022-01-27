@@ -1,4 +1,4 @@
-# Kogito Tooling Java Code Completion
+# KIE Tools Java Code Completion
 
 This package provides a type-safe Java Code Completion library for a Typescript project.
 
@@ -6,8 +6,8 @@ This package provides a type-safe Java Code Completion library for a Typescript 
 
 Can be installed with `yarn` or `npm`:
 
-- `yarn add @kie-tooling-core/vscode-java-code-completion`
-- `npm install @kie-tooling-core/vscode-java-code-completion`
+- `yarn add @kie-tools-core/vscode-java-code-completion`
+- `npm install @kie-tools-core/vscode-java-code-completion`
 
 ## Usage
 
@@ -18,9 +18,9 @@ The library is separated into two submodules:
 
   to use the core:
 
-  - `import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-java-code-completion/dist/api"`
-  - `import { JavaCodeCompletionAccessor } from "@kie-tooling-core/vscode-java-code-completion/dist/api"`
-  - `import { JavaCodeCompletionClass } from "@kie-tooling-core/vscode-java-code-completion/dist/api"`
+  - `import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api"`
+  - `import { JavaCodeCompletionAccessor } from "@kie-tools-core/vscode-java-code-completion/dist/api"`
+  - `import { JavaCodeCompletionClass } from "@kie-tools-core/vscode-java-code-completion/dist/api"`
 
 - vscode
 
@@ -29,8 +29,8 @@ The library is separated into two submodules:
   to use the vscode classes:
 
   ```ts
-  import { JavaCodeCompletionApi } from "@kie-tooling-core/vscode-java-code-completion/dist/api";
-  import { VsCodeJavaCodeCompletionImpl } from "@kie-tooling-core/vscode-java-code-completion/dist/vscode";
+  import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
+  import { VsCodeJavaCodeCompletionImpl } from "@kie-tools-core/vscode-java-code-completion/dist/vscode";
 
   const api: VsCodeJavaCodeCompletionApi = new VsCodeJavaCodeCompletionImpl();
   ```

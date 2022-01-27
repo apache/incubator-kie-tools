@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tooling-core/vscode-extension",
+  "name": "@kie-tools-core/vscode-extension",
   "displayName": "KIE :: Kogito Editors",
   "description": "",
   "version": "0.0.0",
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kogito-tooling.git"
+    "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "publisher": "kie-group",
   "scripts": {
@@ -24,15 +24,15 @@
     "build:prod": "rimraf dist && yarn lint && tsc -p tsconfig.prod.json && yarn test"
   },
   "dependencies": {
-    "@kie-tooling-core/backend": "0.0.0",
-    "@kie-tooling-core/editor": "0.0.0",
-    "@kie-tooling-core/i18n": "0.0.0",
-    "@kie-tooling-core/keyboard-shortcuts": "0.0.0",
-    "@kie-tooling-core/vscode-java-code-completion": "0.0.0",
-    "@kie-tooling-core/workspace": "0.0.0",
+    "@kie-tools-core/backend": "0.0.0",
+    "@kie-tools-core/editor": "0.0.0",
+    "@kie-tools-core/i18n": "0.0.0",
+    "@kie-tools-core/keyboard-shortcuts": "0.0.0",
+    "@kie-tools-core/vscode-java-code-completion": "0.0.0",
+    "@kie-tools-core/workspace": "0.0.0",
     "minimatch": "^3.0.4"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
+    "@kie-tools/build-env": "0.0.0"
   }
 }

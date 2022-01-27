@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-tooling/jitexecutor-native",
+  "name": "@kie-tools/jitexecutor-native",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -9,6 +9,6 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kogito-tooling.git"
+    "url": "https://github.com/kiegroup/kie-tools.git"
   }
 }

@@ -244,7 +244,7 @@ export function HomePage() {
         />
       </PageSection>
       {buildInfo && (
-        <div className={"kogito-tooling--build-info"}>
+        <div className={"kie-tools--build-info"}>
           <Label>{buildInfo}</Label>
         </div>
       )}
@@ -563,7 +563,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                     isOpen={isNewFileDropdownMenuOpen}
                     toggle={
                       <DropdownToggle
-                        className={"kogito-tooling--masthead-hoverable"}
+                        className={"kie-tools--masthead-hoverable"}
                         toggleIndicator={null}
                         onToggle={setNewFileDropdownMenuOpen}
                       >

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { PMMLDocumentData } from "@kogito-tooling/pmml-editor-marshaller";
+import { PMMLDocumentData } from "@kie-tools/pmml-editor-marshaller";
 
 /**
  * PUBLIC ENVELOPE API

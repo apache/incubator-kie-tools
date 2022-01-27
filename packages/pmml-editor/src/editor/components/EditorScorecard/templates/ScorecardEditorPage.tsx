@@ -26,7 +26,7 @@ import {
   OutputField,
   PMML,
   Scorecard,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import { CharacteristicsContainer, CorePropertiesTable } from "../organisms";
 import { getModelName } from "../../..";
 import { Actions } from "../../../reducers";

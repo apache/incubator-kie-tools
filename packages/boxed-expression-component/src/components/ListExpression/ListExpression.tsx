@@ -16,7 +16,7 @@
 
 import "./ListExpression.css";
 import * as React from "react";
-import { useCallback, useContext, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import {
   ContextEntryRecord,
   DataType,
@@ -36,13 +36,13 @@ import { Table } from "../Table";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { DataRecord, Row } from "react-table";
 import { hashfy } from "../Resizer";
-import { BoxedExpressionGlobalContext } from "../../context";
+import { useBoxedExpression } from "../../context";
 
 const LIST_EXPRESSION_MIN_WIDTH = 430;
 
 export const ListExpression: React.FunctionComponent<ListProps> = (listExpression: ListProps) => {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { setSupervisorHash } = useContext(BoxedExpressionGlobalContext);
+  const { boxedExpressionEditorGWTService, setSupervisorHash } = useBoxedExpression();
 
   const generateLiteralExpression = useMemo(
     () =>
@@ -108,13 +108,13 @@ export const ListExpression: React.FunctionComponent<ListProps> = (listExpressio
             listExpression.onUpdatingRecursiveExpression?.(updatedDefinition);
           } else {
             setSupervisorHash(hashfy(updatedDefinition));
-            window.beeApi?.broadcastListExpressionDefinition?.(updatedDefinition as ListProps);
+            boxedExpressionEditorGWTService?.broadcastListExpressionDefinition?.(updatedDefinition as ListProps);
           }
         },
         ["width", "items"]
       );
     },
-    [listExpression, items, setSupervisorHash]
+    [boxedExpressionEditorGWTService, listExpression, items, setSupervisorHash]
   );
 
   const setListWidth = useCallback(

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { EditorEnvelopeLocator, EnvelopeMapping, ChannelType } from "@kie-tooling-core/editor/dist/api";
-import { KogitoEdit } from "@kie-tooling-core/workspace/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping, ChannelType } from "@kie-tools-core/editor/dist/api";
+import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 import * as React from "react";
-import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
-import { EmbeddedEditor, EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
+import { EmbeddedEditor, EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { incomingMessage } from "./EmbeddedEditorTestUtils";
 import { render } from "@testing-library/react";
-import { EnvelopeBusMessagePurpose } from "@kie-tooling-core/envelope-bus/dist/api";
+import { EnvelopeBusMessagePurpose } from "@kie-tools-core/envelope-bus/dist/api";
 
 describe("EmbeddedEditor::ONLINE", () => {
   const file: EmbeddedEditorFile = {

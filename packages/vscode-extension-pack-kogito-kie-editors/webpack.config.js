@@ -15,11 +15,11 @@
  */
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const patternflyBase = require("@kie-tooling-core/patternfly-base");
+const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
-const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
-const stunnerEditors = require("@kogito-tooling/stunner-editors");
-const vscodeJavaCodeCompletionExtensionPlugin = require("@kogito-tooling/vscode-java-code-completion-extension-plugin");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const stunnerEditors = require("@kie-tools/stunner-editors");
+const vscodeJavaCodeCompletionExtensionPlugin = require("@kie-tools/vscode-java-code-completion-extension-plugin");
 
 module.exports = async (env) => [
   merge(common(env), {
@@ -101,8 +101,8 @@ module.exports = async (env) => [
       alias: {
         // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
         // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
-        // `@kie-tooling-core/monaco-editor`. This way, everything works as expected.
-        "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tooling-core/monaco-editor"),
+        // `@kie-tools-core/monaco-editor`. This way, everything works as expected.
+        "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tools-core/monaco-editor"),
       },
     },
     module: {

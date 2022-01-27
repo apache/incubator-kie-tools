@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import { GlobalContext, GlobalContextType } from "../webview/common/GlobalContext";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
-import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tooling-core/i18n/dist/react-components";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tools-core/i18n/dist/react-components";
 import { desktopI18nDefaults, desktopI18nDictionaries, DesktopI18nContext } from "../webview/common/i18n";
 import { DesktopI18n } from "../webview/common/i18n";
 

@@ -17,9 +17,9 @@
 import { fireEvent, render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 import * as React from "react";
-import { EditExpressionMenu } from "@kogito-tooling/boxed-expression-component/dist/components/EditExpressionMenu";
+import { EditExpressionMenu } from "@kie-tools/boxed-expression-component/dist/components/EditExpressionMenu";
 import { activatePopover } from "../PopoverMenu/PopoverMenu.test";
-import { DataType, ExpressionProps, LogicType } from "@kogito-tooling/boxed-expression-component";
+import { DataType, ExpressionProps, LogicType } from "@kie-tools/boxed-expression-component";
 import * as _ from "lodash";
 import { act } from "react-dom/test-utils";
 
@@ -99,6 +99,28 @@ describe("EditExpressionMenu tests", () => {
 
     expect(container.querySelector(".expression-data-type label")).toBeTruthy();
     expect(container.querySelector(".expression-data-type label")!.innerHTML).toBe(dataTypeFieldLabel);
+  });
+
+  test("should render manage data type button", async () => {
+    const { container } = render(
+      usingTestingBoxedExpressionI18nContext(
+        <div>
+          <div id="container">Popover</div>
+          <EditExpressionMenu
+            selectedExpressionName="Expression Name"
+            arrowPlacement={() => document.getElementById("container")!}
+            appendTo={() => document.getElementById("container")!}
+            onExpressionUpdate={(expression) => {
+              console.log(expression);
+            }}
+          />
+        </div>
+      ).wrapper
+    );
+
+    await activatePopover(container as HTMLElement);
+
+    expect(container.querySelector("button.manage-datatype")).toBeTruthy();
   });
 
   test("should render undefined as data type, when it is not pre-selected", async () => {
