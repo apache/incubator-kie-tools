@@ -55,13 +55,13 @@ public class ActivationChecker {
 
     public String getActivatorUri() {
         if (this.existActivator() && StringUtils.isNotEmpty(this.activatorUri)) {
-            return "file://" + this.activatorUri;
+            return this.activatorUri;
         } else {
             throw new ActivationCheckerException("Activator URI is not present");
         }
     }
 
     private String getRootUri() {
-        return "file://" + this.workspaceUtil.getWorkspace();
+        return this.workspaceUtil.getWorkspace();
     }
 }
