@@ -97,6 +97,11 @@ const ENV_VARS = {
     default: undefined,
     description: "",
   },
+  ONLINE_EDITOR__url: {
+    name: "ONLINE_EDITOR__url",
+    default: undefined,
+    description: "",
+  },
   DMN_DEV_SANDBOX__baseImageRegistry: {
     name: "DMN_DEV_SANDBOX__baseImageRegistry",
     default: "quay.io",
@@ -317,6 +322,7 @@ module.exports = {
 
   onlineEditor: {
     dev: {
+      urlProperty: ENV_VARS.ONLINE_EDITOR__url.name,
       port: 9001,
     },
     gtmId: getOrDefault(ENV_VARS.ONLINE_EDITOR__gtmId),

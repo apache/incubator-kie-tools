@@ -18,7 +18,9 @@ import * as buildEnv from "@kie-tools/build-env";
 
 describe("DMN Runner Test", () => {
   beforeEach(() => {
-    cy.visit(Cypress.env("ONLINE_EDITOR_URL") ?? `https://localhost:${buildEnv.onlineEditor.dev.port}/`);
+    cy.visit(
+      Cypress.env(buildEnv.onlineEditor.dev.urlProperty) ?? `https://localhost:${buildEnv.onlineEditor.dev.port}/`
+    );
   });
 
   it("Test DMN Runner on DMN sample", () => {

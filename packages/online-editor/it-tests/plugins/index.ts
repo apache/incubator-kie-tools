@@ -14,4 +14,8 @@
  * limitations under the License.
  */
 
-module.exports = (on: any, config: any) => {};
+module.exports = (on: any, config: any) => {
+  // use regular env. properties instead of the ones with the "CYPRESS_" prefix
+  config.env = process.env;
+  return config;
+};
