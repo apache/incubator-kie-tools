@@ -177,4 +177,16 @@ describe("Nested Relations", () => {
 
     cy.get(".context-expression > div > table > tbody > tr:eq(1) td:eq(2)").should("be.focused");
   });
+
+  it("Interaction with contextMenu", function () {
+    cy.get(".context-expression > div > table > tbody > tr:eq(2) td:eq(2)")
+      .rightclick()
+      .type("{leftarrow}")
+      .should("be.focused")
+      .click()
+      .type("{leftarrow}")
+      .should("be.focused")
+      .type("{esc}{leftarrow}")
+      .should("not.be.focused");
+  });
 });

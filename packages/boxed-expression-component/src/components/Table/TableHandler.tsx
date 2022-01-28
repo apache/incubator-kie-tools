@@ -15,13 +15,13 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useContext, useCallback, useEffect, useMemo, useState } from "react";
 import { DataType, generateUuid, TableHandlerConfiguration, TableOperation } from "../../api";
 import * as _ from "lodash";
 import { Column, ColumnInstance, DataRecord } from "react-table";
 import { Popover } from "@patternfly/react-core";
 import { TableHandlerMenu } from "./TableHandlerMenu";
-import { useBoxedExpression } from "../../context";
+import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
 import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./Table";
 import { DEFAULT_MIN_WIDTH } from "../Resizer";
 
@@ -76,6 +76,8 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
 
   const [selectedColumn, setSelectedColumn] = useState(lastSelectedColumn.placeholderOf || lastSelectedColumn);
   const [selectedRowIndex, setSelectedRowIndex] = useState(lastSelectedRowIndex);
+
+  const globalContext = useContext(BoxedExpressionGlobalContext);
 
   useEffect(() => {
     setSelectedColumn(lastSelectedColumn.placeholderOf || lastSelectedColumn);
@@ -265,6 +267,7 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
           );
       }
       setShowTableHandler(false);
+      globalContext.setIsContextMenuOpen(false);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [updateTargetColumns, generateRow, onRowsUpdate, selectedRowIndex, setShowTableHandler, tableRows]
@@ -285,7 +288,10 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
       distance={5}
       position={"right"}
       isVisible={showTableHandler}
-      shouldClose={() => setShowTableHandler(false)}
+      shouldClose={() => {
+        setShowTableHandler(false);
+        globalContext.setIsContextMenuOpen(false);
+      }}
       shouldOpen={(showFunction) => showFunction?.()}
       reference={() => tableHandlerTarget}
       appendTo={boxedExpression.editorRef?.current ?? undefined}

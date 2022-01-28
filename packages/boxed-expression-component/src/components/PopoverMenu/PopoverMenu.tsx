@@ -35,6 +35,19 @@ export interface PopoverMenuProps {
   hasAutoWidth?: boolean;
   /** Popover min width */
   minWidth?: string;
+  /** True to show the popover programmatically */
+  isVisible?: boolean;
+  /**
+   * Callback function that is only invoked when isVisible is also controlled. Called when the popover Close button is
+   * clicked, Enter key was used on it, or the ESC key is used.
+   * Note: The tip argument is no longer passed and has been deprecated.
+   */
+  shouldClose?: () => void;
+  /**
+   * Callback function that is only invoked when isVisible is also controlled. Called when the Enter key is
+   * used on the focused trigger
+   */
+  shouldOpen?: () => void;
 }
 
 export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
@@ -46,6 +59,9 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
   className,
   hasAutoWidth,
   minWidth,
+  isVisible,
+  shouldClose,
+  shouldOpen,
 }: PopoverMenuProps) => {
   return (
     <Popover
@@ -58,6 +74,9 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
       id="menu-selector"
       reference={arrowPlacement}
       appendTo={appendTo}
+      isVisible={isVisible}
+      shouldClose={shouldClose}
+      shouldOpen={shouldOpen}
       headerContent={
         <div className="selector-menu-title" data-ouia-component-id="expression-popover-menu-title">
           {title}

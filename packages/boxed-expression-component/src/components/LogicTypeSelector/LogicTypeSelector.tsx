@@ -16,7 +16,7 @@
 
 import "./LogicTypeSelector.css";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useState, useContext, useEffect, useCallback, useMemo } from "react";
 import {
   ContextProps,
   DataType,
@@ -40,7 +40,7 @@ import { PopoverMenu } from "../PopoverMenu";
 import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core";
 import * as _ from "lodash";
 import { useContextMenuHandler } from "../../hooks";
-import { useBoxedExpression } from "../../context";
+import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
 import { DecisionTableExpression } from "../DecisionTableExpression";
 import { ListExpression } from "../ListExpression";
 import { InvocationExpression } from "../InvocationExpression";
@@ -72,6 +72,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
   isHeadless,
   onUpdatingRecursiveExpression,
 }) => {
+  const [isBuildLogicSelectorMenuVisible, setIsBuildLogicSelectorMenuVisible] = useState(false);
   const { i18n } = useBoxedExpressionEditorI18n();
   const boxedExpression = useBoxedExpression();
 
@@ -98,6 +99,8 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
     setContextMenuVisibility,
     targetElement,
   } = useContextMenuHandler(boxedExpression.editorRef?.current ?? document);
+
+  const globalContext = useContext(BoxedExpressionGlobalContext);
 
   const renderExpression = useMemo(() => {
     switch (expression.logicType) {
@@ -165,6 +168,9 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
         appendTo={getAppendToPlacement()}
         className="logic-type-popover"
         hasAutoWidth
+        isVisible={isBuildLogicSelectorMenuVisible}
+        shouldClose={() => setIsBuildLogicSelectorMenuVisible(false)}
+        shouldOpen={() => setIsBuildLogicSelectorMenuVisible(true)}
         body={
           <Menu onSelect={onLogicTypeSelect}>
             <MenuList>{renderLogicTypeItems()}</MenuList>
@@ -172,7 +178,14 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
         }
       />
     ),
-    [i18n.selectLogicType, getArrowPlacement, getAppendToPlacement, onLogicTypeSelect, renderLogicTypeItems]
+    [
+      i18n.selectLogicType,
+      getArrowPlacement,
+      getAppendToPlacement,
+      onLogicTypeSelect,
+      renderLogicTypeItems,
+      isBuildLogicSelectorMenuVisible,
+    ]
   );
 
   const executeClearAction = useCallback(() => {
@@ -210,6 +223,10 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
 
     return !selectedExpression.noClearAction && contextMenuVisibility && clickedOnAllowedTableSection;
   }, [contextMenuVisibility, selectedExpression.noClearAction, targetElement]);
+
+  useEffect(() => {
+    globalContext.setIsContextMenuOpen(contextMenuVisibility || isBuildLogicSelectorMenuVisible);
+  }, [contextMenuVisibility, isBuildLogicSelectorMenuVisible]);
 
   const cssClasses = useMemo(() => {
     const classes = [];

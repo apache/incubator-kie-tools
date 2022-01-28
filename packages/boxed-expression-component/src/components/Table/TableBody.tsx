@@ -15,12 +15,13 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useContext } from "react";
 import { Tbody, Td, Tr } from "@patternfly/react-table";
 import { Column as IColumn, TableHeaderVisibility } from "../../api";
 import { Cell, Column, Row, TableInstance } from "react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import { focusPrevCell, focusNextCell, focusTextArea, focusUpperCell, focusLowerCell } from "./common";
+import { BoxedExpressionGlobalContext } from "../../context";
 
 export interface TableBodyProps {
   /** Table instance */
@@ -52,9 +53,10 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   onColumnsUpdate,
   tdProps,
   showTableHandler,
-  setShowTableHandler,
 }) => {
   const headerVisibilityMemo = useMemo(() => headerVisibility ?? TableHeaderVisibility.Full, [headerVisibility]);
+
+  const globalContext = useContext(BoxedExpressionGlobalContext);
 
   /**
    * base props for td elements
@@ -64,6 +66,12 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
       tabIndex: 0,
       onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => {
         const key = e.key;
+
+        if (globalContext.isContextMenuOpen) {
+          e.preventDefault();
+          return;
+        }
+
         if (key == "ArrowLeft") {
           focusPrevCell(e.currentTarget);
         } else if (key == "ArrowRight") {
@@ -72,19 +80,13 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           focusUpperCell(e.currentTarget, rowIndex);
         } else if (key == "ArrowDown") {
           focusLowerCell(e.currentTarget, rowIndex);
-        } else if (key == "Enter" && !showTableHandler) {
+        } else if (key == "Enter" && !globalContext.isContextMenuOpen) {
           focusTextArea(e.currentTarget.querySelector("textarea"));
         }
-
-        /* close the menu if user is moving */
-        if (/^(tab|arrow)/i.test(key)) {
-          setShowTableHandler(false);
-        }
         /* TODO: FocusUtils: ArrowNavigation with nested tables  */
-        /* FIXME: Context type: close the context menu when table navigate  */
       },
     }),
-    [showTableHandler]
+    [globalContext.isContextMenuOpen]
   );
 
   const renderCell = useCallback(

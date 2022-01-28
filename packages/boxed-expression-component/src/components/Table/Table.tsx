@@ -247,6 +247,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
       setTableHandlerTarget(target);
       globalContext.currentlyOpenedHandlerCallback?.(false);
       setShowTableHandler(true);
+      globalContext.setIsContextMenuOpen(true);
       globalContext.setCurrentlyOpenedHandlerCallback?.(() => setShowTableHandler);
       setLastSelectedColumn(column);
     },
