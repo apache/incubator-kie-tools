@@ -16,8 +16,8 @@
 
 import { render } from "@testing-library/react";
 import { flushPromises, usingTestingBoxedExpressionI18nContext } from "../test-utils";
-import { HitPolicySelector } from "@kogito-tooling/boxed-expression-component/dist/components/DecisionTableExpression";
-import { BuiltinAggregation, HitPolicy } from "@kogito-tooling/boxed-expression-component";
+import { HitPolicySelector } from "@kie-tools/boxed-expression-component/dist/components/DecisionTableExpression";
+import { BuiltinAggregation, HitPolicy } from "@kie-tools/boxed-expression-component";
 import * as React from "react";
 import * as _ from "lodash";
 import { act } from "react-dom/test-utils";

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-.boxed-expression-editor .parameters-editor-popover .parameters-editor {
+.boxed-expression-provider .parameters-editor-popover .parameters-editor {
   padding: 8px 14px;
 }
 
-.boxed-expression-editor .parameters-editor-popover .parameters-editor * {
+.boxed-expression-provider .parameters-editor-popover .parameters-editor * {
   font-size: var(--small-font-size);
 }
 
-.boxed-expression-editor .parameters-editor-popover .parameters-editor .parameters-container {
+.boxed-expression-provider .parameters-editor-popover .parameters-editor .parameters-container {
   height: 200px;
   overflow-y: scroll;
   margin-top: 10px;
@@ -30,14 +30,14 @@
   padding: 0 5px 5px 5px;
 }
 
-.boxed-expression-editor .parameters-editor-popover .parameters-editor .parameters-container .parameter-entry {
+.boxed-expression-provider .parameters-editor-popover .parameters-editor .parameters-container .parameter-entry {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   padding-top: 5px;
 }
 
-.boxed-expression-editor
+.boxed-expression-provider
   .parameters-editor-popover
   .parameters-editor
   .parameters-container
@@ -46,7 +46,7 @@
   width: 30%;
 }
 
-.boxed-expression-editor
+.boxed-expression-provider
   .parameters-editor-popover
   .parameters-editor
   .parameters-container
@@ -55,7 +55,7 @@
   width: 40%;
 }
 
-.boxed-expression-editor
+.boxed-expression-provider
   .parameters-editor-popover
   .parameters-editor
   .parameters-container

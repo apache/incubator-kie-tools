@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tooling-core/monaco-editor",
+  "name": "@kie-tools-core/monaco-editor",
   "version": "0.0.0",
   "description": "Single-file build of monaco-editor.",
   "main": "dist/standalone/monaco.min.js",
@@ -18,7 +18,7 @@
     "monaco-editor": "^0.23.0"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
+    "@kie-tools/build-env": "0.0.0"
   },
   "keywords": [
     "monaco"

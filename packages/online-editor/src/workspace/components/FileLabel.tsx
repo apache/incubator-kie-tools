@@ -17,11 +17,21 @@
 import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
 import * as React from "react";
 
-const labelColors = new Map<string, { color: LabelProps["color"]; label: string }>([
-  ["bpmn", { color: "green", label: "Workflow" }],
-  ["bpmn2", { color: "green", label: "Workflow" }],
-  ["dmn", { color: "blue", label: "Decision" }],
-  ["pmml", { color: "purple", label: "Scorecard" }],
+type LabelColorType = { color: LabelProps["color"]; label: string };
+
+const bpmnLabel: LabelColorType = { color: "green", label: "Workflow" };
+const dmnLabel: LabelColorType = { color: "blue", label: "Decision" };
+const pmmlLabel: LabelColorType = { color: "purple", label: "Scorecard" };
+
+const labelColors = new Map<string, LabelColorType>([
+  ["bpmn", bpmnLabel],
+  ["BPMN", bpmnLabel],
+  ["bpmn2", bpmnLabel],
+  ["BPMN2", bpmnLabel],
+  ["dmn", dmnLabel],
+  ["DMN", dmnLabel],
+  ["pmml", pmmlLabel],
+  ["PMML", pmmlLabel],
 ]);
 
 export function FileLabel(props: { style?: LabelProps["style"]; extension: string }) {

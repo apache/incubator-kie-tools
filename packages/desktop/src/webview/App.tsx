@@ -26,11 +26,11 @@ import { ElectronFile } from "../common/ElectronFile";
 import { GlobalContext } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { HomePage } from "./home/HomePage";
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
+import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
-import { I18nDictionariesProvider } from "@kie-tooling-core/i18n/dist/react-components";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n";
-import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 
 enum Pages {
   HOME,
@@ -38,6 +38,10 @@ enum Pages {
 }
 
 const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
+
+const bpmnEnvelope = { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/bpmn-envelope.html" };
+
+const dmnEnvelope = { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/dmn-envelope.html" };
 
 export function App() {
   const [page, setPage] = useState(Pages.HOME);
@@ -65,9 +69,12 @@ export function App() {
     () => ({
       targetOrigin: window.location.origin,
       mapping: new Map([
-        ["bpmn", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/bpmn-envelope.html" }],
-        ["bpmn2", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/bpmn-envelope.html" }],
-        ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/dmn-envelope.html" }],
+        ["bpmn", bpmnEnvelope],
+        ["bpmn2", bpmnEnvelope],
+        ["BPMN", bpmnEnvelope],
+        ["BPMN2", bpmnEnvelope],
+        ["dmn", dmnEnvelope],
+        ["DMN", dmnEnvelope],
       ]),
     }),
     []

@@ -17,7 +17,7 @@ import * as React from "react";
 import { BaseSyntheticEvent, useMemo } from "react";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { Attribute, Characteristic, DataField, MiningField } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, Characteristic, DataField, MiningField } from "@kie-tools/pmml-editor-marshaller";
 import "./AttributesTableRow.scss";
 import { AttributeLabels, AttributesTableAction } from "../atoms";
 import { useValidationRegistry } from "../../../validation";

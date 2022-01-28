@@ -82,4 +82,9 @@ public class BoxedExpressionService {
     public static void notifyUserAction() {
         expressionEditor.notifyUserAction();
     }
+
+    @JsMethod
+    public static void openManageDataType() {
+        expressionEditor.openManageDataType();
+    }
 }

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { SceSimEditorFactory } from "@kogito-tooling/kie-bc-editors/dist/scesim/envelope";
-import * as EditorEnvelope from "@kie-tooling-core/editor/dist/envelope";
+import { SceSimEditorFactory } from "@kie-tools/kie-bc-editors/dist/scesim/envelope";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 
 declare const acquireVsCodeApi: any;
 

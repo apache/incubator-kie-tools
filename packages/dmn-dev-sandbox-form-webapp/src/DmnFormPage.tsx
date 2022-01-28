@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
-import { DecisionResult, DmnForm, DmnFormResult, extractDifferences } from "@kogito-tooling/form/dist/dmn";
+import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
+import { DecisionResult, DmnForm, DmnFormResult, extractDifferences } from "@kie-tools/form/dist/dmn";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";

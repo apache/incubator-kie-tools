@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { FeelInput, FeelInputRef } from "@kogito-tooling/feel-input-component";
-import * as Monaco from "@kie-tooling-core/monaco-editor";
+import { FeelInput, FeelInputRef } from "@kie-tools/feel-input-component";
+import * as Monaco from "@kie-tools-core/monaco-editor";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CellProps } from "../../api";
@@ -71,13 +71,13 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       }
 
       if (value !== newValue) {
-        window.beeApi?.notifyUserAction();
+        boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
         onCellUpdate(rowIndex, columnId, newValue ?? value);
       }
 
       focusTextArea(textarea.current);
     },
-    [mode, columnId, onCellUpdate, rowIndex, value]
+    [boxedExpression.boxedExpressionEditorGWTService, mode, columnId, onCellUpdate, rowIndex, value]
   );
 
   const triggerEditMode = useCallback(() => {
@@ -192,7 +192,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
     if (!value) {
       return "";
     }
-    if (value !== null && typeof value === "object") {
+    if (typeof value === "object") {
       return value[columnId];
     }
     return `${value}`;

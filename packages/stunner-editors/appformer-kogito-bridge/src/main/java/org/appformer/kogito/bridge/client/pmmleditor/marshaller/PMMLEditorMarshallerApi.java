@@ -19,7 +19,7 @@ package org.appformer.kogito.bridge.client.pmmleditor.marshaller;
 import org.appformer.kogito.bridge.client.pmmleditor.marshaller.model.PMMLDocumentData;
 
 /**
- * API which interfaces with PMMLEditor Marshaller available into Kogito Tooling.
+ * API which interfaces with PMMLEditor Marshaller available into KIE Tools.
  */
 public interface PMMLEditorMarshallerApi {
 

@@ -21,11 +21,11 @@ import {
   Predicate,
   Scorecard,
   SimplePredicate,
-} from "@kogito-tooling/pmml-editor-marshaller";
-import { Actions, AllActions, ScorecardReducer } from "@kogito-tooling/pmml-editor/dist/editor/reducers";
+} from "@kie-tools/pmml-editor-marshaller";
+import { Actions, AllActions, ScorecardReducer } from "@kie-tools/pmml-editor/dist/editor/reducers";
 import { Reducer } from "react";
-import { HistoryService } from "@kogito-tooling/pmml-editor/dist/editor/history";
-import { ValidationRegistry } from "@kogito-tooling/pmml-editor/dist/editor/validation";
+import { HistoryService } from "@kie-tools/pmml-editor/dist/editor/history";
+import { ValidationRegistry } from "@kie-tools/pmml-editor/dist/editor/validation";
 
 const historyService = new HistoryService([]);
 const validationRegistry = new ValidationRegistry();

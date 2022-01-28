@@ -16,8 +16,8 @@
 
 import { fireEvent, render } from "@testing-library/react";
 import * as React from "react";
-import { Resizer } from "@kogito-tooling/boxed-expression-component/dist/components/Resizer";
-import { SelectionBox } from "@kogito-tooling/boxed-expression-component/dist/components/SelectionBox";
+import { Resizer } from "@kie-tools/boxed-expression-component/dist/components/Resizer";
+import { SelectionBox } from "@kie-tools/boxed-expression-component/dist/components/SelectionBox";
 import "../../__mocks__/ReactWithSupervisor";
 import { wrapComponentInContext } from "../test-utils";
 

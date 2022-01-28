@@ -29,8 +29,8 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.base_ref }}
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
         uses: ./.github/actions/merge-pr-changes
@@ -43,27 +43,27 @@ jobs:
       - name: "Build dependencies"
         shell: bash
         env:
-          KOGITO_TOOLING_BUILD_examples: "true"
+          KIE_TOOLS_BUILD_examples: "true"
         run: |
           export REF=${{ github.base_ref }} &&
           export SCOPE=$(diff <(echo "$(lerna ls --since $REF --include-dependencies --all | cut -d' ' -f1)") <(echo "$(lerna ls --since $REF  --all | cut -d' ' -f1)") --changed-group-format='%<%>' --unchanged-group-format='' | xargs -I{} echo -n ' --scope="{}"') &&
           echo $REF $SCOPE &&
           yarn run-script-if --silent --env SCOPE --eq "" \
             --then "echo No dependencies to build." \
-            --else "lerna run --stream --concurrency 1 build:dev $SCOPE"
+            --else "lerna run --stream build:dev $SCOPE"
 
       - name: "Build changed and dependents"
         env:
           WEBPACK__minimize: "false"
-          KOGITO_TOOLING_BUILD_lint: "true"
-          KOGITO_TOOLING_BUILD_test: "true"
-          KOGITO_TOOLING_BUILD_testIT: ${{ matrix.os == 'ubuntu-latest' }}
-          KOGITO_TOOLING_BUILD_docker: "true"
-          KOGITO_TOOLING_BUILD_examples: "true"
+          KIE_TOOLS_BUILD_lint: "true"
+          KIE_TOOLS_BUILD_test: "true"
+          KIE_TOOLS_BUILD_testIT: ${{ matrix.os == 'ubuntu-latest' }}
+          KIE_TOOLS_BUILD_docker: "true"
+          KIE_TOOLS_BUILD_examples: "true"
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
-          lerna run build:prod --stream --concurrency 1 --since ${{ github.base_ref }}
+          lerna run build:prod --stream --since ${{ github.base_ref }}
 
       - name: "Check generated resources (you should commit those!)"
         shell: bash

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { StateControl } from "@kie-tooling-core/editor/dist/channel";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
 
 describe("StateControl", () => {
   let stateControl: StateControl;

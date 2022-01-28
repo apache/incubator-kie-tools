@@ -31,10 +31,10 @@ import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/di
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { NotificationSeverity } from "@kie-tooling-core/notifications/dist/api";
+import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
 import { dmnFormI18n } from "./i18n";
 import { diff } from "deep-object-diff";
-import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
+import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import "./styles.scss";
 import { ErrorBoundary } from "../common/ErrorBoundary";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
@@ -148,7 +148,7 @@ export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotif
         case EvaluationStatus.SUCCEEDED:
           return (
             <>
-              <div className={"kogito-tooling__dmn-form-result__evaluation"}>
+              <div className={"kie-tools__dmn-form-result__evaluation"}>
                 <CheckCircleIcon />
                 {props.notificationsPanel ? (
                   <a onClick={openExecutionTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
@@ -163,7 +163,7 @@ export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotif
         case EvaluationStatus.SKIPPED:
           return (
             <>
-              <div className={"kogito-tooling__dmn-form-result__evaluation"}>
+              <div className={"kie-tools__dmn-form-result__evaluation"}>
                 <InfoCircleIcon />
                 {props.notificationsPanel ? (
                   <a onClick={openExecutionTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
@@ -178,7 +178,7 @@ export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotif
         case EvaluationStatus.FAILED:
           return (
             <>
-              <div className={"kogito-tooling__dmn-form-result__evaluation"}>
+              <div className={"kie-tools__dmn-form-result__evaluation"}>
                 <ExclamationCircleIcon />
                 {props.notificationsPanel ? (
                   <a onClick={openExecutionTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>

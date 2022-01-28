@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useLayoutEffect, useMemo } from "react";
 import { Column, ColumnInstance, DataRecord } from "react-table";
-import "@kogito-tooling/boxed-expression-component";
+import "@kie-tools/boxed-expression-component";
 import {
   ColumnsUpdateArgs,
   ExpressionProps,
@@ -25,8 +25,8 @@ import {
   RowsUpdateArgs,
   TableHeaderVisibility,
   TableOperation,
-} from "@kogito-tooling/boxed-expression-component/dist/api";
-import { getColumnsAtLastLevel, Table } from "@kogito-tooling/boxed-expression-component/dist/components";
+} from "@kie-tools/boxed-expression-component/dist/api";
+import { getColumnsAtLastLevel, Table } from "@kie-tools/boxed-expression-component/dist/components";
 import "./DmnRunnerTable.css";
 import { DmnRunnerClause, DmnRunnerRule } from "./DmnRunnerTableTypes";
 import { useDmnAutoTableI18n } from "../i18n";

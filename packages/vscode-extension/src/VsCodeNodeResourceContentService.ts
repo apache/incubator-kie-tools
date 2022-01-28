@@ -22,10 +22,10 @@ import {
   ResourceListOptions,
   ResourcesList,
   SearchType,
-} from "@kie-tooling-core/workspace/dist/api";
+} from "@kie-tools-core/workspace/dist/api";
 
-import * as fs from "fs";
 import * as minimatch from "minimatch";
+import * as vscode from "vscode";
 
 /**
  * Implementation of a ResourceContentService using the Node filesystem APIs. This should only be used when the edited
@@ -40,24 +40,25 @@ export class VsCodeNodeResourceContentService implements ResourceContentService 
 
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
     return new Promise<ResourcesList>((resolve, reject) => {
-      fs.readdir(this.rootFolder, { withFileTypes: true }, (err, files) => {
-        if (err) {
-          resolve(new ResourcesList(pattern, []));
-        } else {
+      vscode.workspace.fs.readDirectory(vscode.Uri.parse(this.rootFolder)).then(
+        (files) => {
           const paths = files
-            .filter((file) => {
+            .filter(([name, depth]) => {
               let fileName;
               if (opts?.type === SearchType.TRAVERSAL) {
-                fileName = this.rootFolder + file.name;
+                fileName = this.rootFolder + name;
               } else {
-                fileName = file.name;
+                fileName = name;
               }
-              return file.isFile() && minimatch(fileName, pattern);
+              return depth === 1 && minimatch(name, pattern);
             })
-            .map((file) => this.rootFolder + file.name);
+            .map(([name]) => this.rootFolder + name);
           resolve(new ResourcesList(pattern, paths));
+        },
+        (_err) => {
+          resolve(new ResourcesList(pattern, []));
         }
-      });
+      );
     });
   }
 
@@ -70,23 +71,17 @@ export class VsCodeNodeResourceContentService implements ResourceContentService 
 
     if (opts?.type === ContentType.BINARY) {
       return new Promise<ResourceContent | undefined>((resolve, reject) => {
-        fs.readFile(assetPath, (err, data) => {
-          if (err) {
-            resolve(new ResourceContent(path, undefined, ContentType.BINARY));
-          } else {
-            resolve(new ResourceContent(path, Buffer.from(data).toString("base64"), ContentType.BINARY));
-          }
-        });
+        vscode.workspace.fs.readFile(vscode.Uri.parse(assetPath)).then(
+          (data) => resolve(new ResourceContent(path, Buffer.from(data).toString("base64"), ContentType.BINARY)),
+          (_err) => resolve(new ResourceContent(path, undefined, ContentType.BINARY))
+        );
       });
     }
     return new Promise<ResourceContent | undefined>((resolve, reject) => {
-      fs.readFile(assetPath, (err, data) => {
-        if (err) {
-          resolve(new ResourceContent(path, undefined));
-        } else {
-          resolve(new ResourceContent(path, Buffer.from(data).toString(), ContentType.TEXT));
-        }
-      });
+      vscode.workspace.fs.readFile(vscode.Uri.parse(assetPath)).then(
+        (data) => resolve(new ResourceContent(path, Buffer.from(data).toString(), ContentType.TEXT)),
+        (_err) => resolve(new ResourceContent(path, undefined))
+      );
     });
   }
 }

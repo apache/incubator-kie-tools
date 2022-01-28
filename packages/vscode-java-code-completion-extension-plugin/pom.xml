@@ -17,7 +17,7 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>io.github.kiegroup.kogito.tooling</groupId>
+  <groupId>io.github.kiegroup.kie.tools</groupId>
   <artifactId>vscode-java-code-completion-extension-plugin</artifactId>
   <version>0.0.0</version>
   <packaging>pom</packaging>
@@ -33,7 +33,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <tycho.version>2.3.0</tycho.version>
     <tycho.extras.version>${tycho.version}</tycho.extras.version>
-    <tycho.scmUrl>scm:git:https://github.com/kiegroup/kogito-tooling.git</tycho.scmUrl>
+    <tycho.scmUrl>scm:git:https://github.com/kiegroup/kie-tools.git</tycho.scmUrl>
     <tycho.generateSourceReferences>true</tycho.generateSourceReferences>
     <jdt.ls.version>1.7.0-SNAPSHOT</jdt.ls.version>
 
