@@ -1572,10 +1572,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@isomorphic-git/cors-proxy@2.7.0":
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/@isomorphic-git/cors-proxy/-/cors-proxy-2.7.0.tgz#beed0ff418714d47076241aff81ae9a4df7fd7ef"
-  integrity sha512-aCOYJRMy4KySn2W9jSXo31wLI2TeGXwXqD88QIiA3e+TQgNSu2toSnYUHzqQuxs457Pjw84fg5rH02a8v1EPtA==
+"@isomorphic-git/cors-proxy@^2.7.1":
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/@isomorphic-git/cors-proxy/-/cors-proxy-2.7.1.tgz#096740b8c77c07e72dfd2de394c8369ac33c4258"
+  integrity sha512-5P4bcOiwCJoYi6lf3pkTtFz6eQWaJsJD3IS75VQBgAoFFfNUlMw5Ufqd/UMFeqy6FJNgGCbuSHdfoKUx+pAlhA==
   dependencies:
     cross-env "^5.2.0"
     daemonize-process "^1.0.9"
@@ -1585,20 +1585,10 @@
     node-fetch "^2.6.0"
     tree-kill "^1.2.1"
 
-"@isomorphic-git/idb-keyval@3.3.2", "@isomorphic-git/idb-keyval@^3.3.2":
+"@isomorphic-git/idb-keyval@^3.3.2":
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/@isomorphic-git/idb-keyval/-/idb-keyval-3.3.2.tgz#c0509a6c5987d8a62efb3e47f2815bcc5eda2489"
   integrity sha512-r8/AdpiS0/WJCNR/t/gsgL+M8NMVj/ek7s60uz3LmpCaTF2mEVlZJlB01ZzalgYzRLXwSPC92o+pdzjM7PN/pA==
-
-"@isomorphic-git/lightning-fs@^4.4.1":
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/@isomorphic-git/lightning-fs/-/lightning-fs-4.4.1.tgz#0df8ab07e89ce06b5443eceba91834c3c68a2698"
-  integrity sha512-E9bYtiHF6pPh0N8Sx5Nvq0F1RL6Wdtq43PUmbAKAAYTi51F3MmMg9MkCOQT40Xc0TYhZcJMEP/wnH4mXaCxSsQ==
-  dependencies:
-    "@isomorphic-git/idb-keyval" "3.3.2"
-    isomorphic-textencoder "1.0.1"
-    just-debounce-it "1.1.0"
-    just-once "1.1.0"
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.0.0"
@@ -1832,6 +1822,11 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
+"@kie-tools/jitexecutor-native@1.12.0-Final":
+  version "1.12.0-Final"
+  resolved "https://registry.yarnpkg.com/@kie-tools/jitexecutor-native/-/jitexecutor-native-1.12.0-Final.tgz#a07207f2c8c0452ba247823af26ba5ad693bdb6d"
+  integrity sha512-8mglRmsYN9cYlexjY7P/S4d/5zBTXyKIMJwGc19PNQoNKgphAQQ3V8htrSJaBAyOevnyHFDRi1qQ5Zu0rXA5VQ==
+
 "@kie/npm-treatment-tool@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@kie/npm-treatment-tool/-/npm-treatment-tool-1.1.1.tgz#67b0d237645127a4e53a9be5b6ddc478c2bbf948"
@@ -1854,11 +1849,6 @@
     koa-compose "^4.1.0"
     methods "^1.1.2"
     path-to-regexp "^6.1.0"
-
-"@kogito-tooling/jitexecutor-native@1.12.0-Final":
-  version "1.12.0-Final"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/jitexecutor-native/-/jitexecutor-native-1.12.0-Final.tgz#e5b570820b8d05ef95e1c7bb0437bf288e3ec719"
-  integrity sha512-8VP79FSy4+dsJk03lTA9JQOAXWnl3GCzz11v3rkOX04ivi9+uTNzD5ZjhbhE+T95jOrW5jbvBgcj7s1Bs4pmvw==
 
 "@lerna/add@4.0.0":
   version "4.0.0"
@@ -3265,13 +3255,6 @@
   version "2.2.34"
   resolved "https://registry.yarnpkg.com/@types/invariant/-/invariant-2.2.34.tgz#05e4f79f465c2007884374d4795452f995720bbe"
   integrity sha512-lYUtmJ9BqUN688fGY1U1HZoWT1/Jrmgigx2loq4ZcJpICECm/Om3V314BxdzypO0u5PORKGMM6x0OXaljV1YFg==
-
-"@types/isomorphic-git__lightning-fs@^4.4.2":
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/@types/isomorphic-git__lightning-fs/-/isomorphic-git__lightning-fs-4.4.2.tgz#aead17cb1ab1a965b69a5247a7d4087336ad5df7"
-  integrity sha512-dGKrVNnTBKglqcRqurIXtuzwlGN/lD4fwFShu7aD6Sba7PEMU46zSpxoeuZEvy6/Gcs4PPZQRblk+CZ1UVNOTQ==
-  dependencies:
-    "@types/node" "*"
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
   version "2.0.1"
@@ -8019,10 +8002,10 @@ devtools-protocol@0.0.818844:
   resolved "https://registry.yarnpkg.com/devtools-protocol/-/devtools-protocol-0.0.818844.tgz#d1947278ec85b53e4c8ca598f607a28fa785ba9e"
   integrity sha512-AD1hi7iVJ8OD0aMLQU5VK0XH9LDlA1+BcPIgrAxPfaibx2DbWucuyOhc4oyQCbnvDDO68nN6/LcKfqTP343Jjg==
 
-devtools-protocol@0.0.937139:
-  version "0.0.937139"
-  resolved "https://registry.yarnpkg.com/devtools-protocol/-/devtools-protocol-0.0.937139.tgz#bdee3751fdfdb81cb701fd3afa94b1065dafafcf"
-  integrity sha512-daj+rzR3QSxsPRy5vjjthn58axO8c11j58uY0lG5vvlJk/EiOdCWOptGdkXDjtuRHr78emKq0udHCXM4trhoDQ==
+devtools-protocol@0.0.948846:
+  version "0.0.948846"
+  resolved "https://registry.yarnpkg.com/devtools-protocol/-/devtools-protocol-0.0.948846.tgz#bff47e2d1dba060130fa40ed2e5f78b916ba285f"
+  integrity sha512-5fGyt9xmMqUl2VI7+rnUkKCiAQIpLns8sfQtTENy5L70ktbNw0Z3TFJ1JoFNYdx/jffz4YXU45VF75wKZD7sZQ==
 
 devtools@6.12.1:
   version "6.12.1"
@@ -11408,7 +11391,7 @@ isomorphic-git@^1.10.1:
     sha.js "^2.4.9"
     simple-get "^3.0.2"
 
-isomorphic-textencoder@1.0.1, isomorphic-textencoder@^1.0.1:
+isomorphic-textencoder@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/isomorphic-textencoder/-/isomorphic-textencoder-1.0.1.tgz#38dcd3b4416d29cd33e274f64b99ae567cd15e83"
   integrity sha512-676hESgHullDdHDsj469hr+7t3i/neBKU9J7q1T4RHaWwLAsaQnywC0D1dIUId0YZ+JtVrShzuBk1soo0+GVcQ==
@@ -12196,11 +12179,6 @@ junk@^3.1.0:
   resolved "https://registry.yarnpkg.com/junk/-/junk-3.1.0.tgz#31499098d902b7e98c5d9b9c80f43457a88abfa1"
   integrity sha512-pBxcB3LFc8QVgdggvZWyeys+hnrNWg4OcZIU/1X59k5jQdLBlCsYGRQaz234SqoRLTCgMH00fY0xRJH+F9METQ==
 
-just-debounce-it@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/just-debounce-it/-/just-debounce-it-1.1.0.tgz#8e92578effc155358a44f458c52ffbee66983bef"
-  integrity sha512-87Nnc0qZKgBZuhFZjYVjSraic0x7zwjhaTMrCKlj0QYKH6lh0KbFzVnfu6LHan03NO7J8ygjeBeD0epejn5Zcg==
-
 just-debounce-it@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/just-debounce-it/-/just-debounce-it-3.0.1.tgz#8c8a4c9327c9523366ec79ac9a959a938153bd2f"
@@ -12210,11 +12188,6 @@ just-extend@^4.0.2:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/just-extend/-/just-extend-4.2.1.tgz#ef5e589afb61e5d66b24eca749409a8939a8c744"
   integrity sha512-g3UB796vUFIY90VIv/WX3L2c8CS2MdWUww3CNrYmqza1Fg0DURc2K/O4YrnklBdQarSJ/y8JnJYDGc+1iumQjg==
-
-just-once@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/just-once/-/just-once-1.1.0.tgz#fe81a185ebaeeb0947a7e705bf01cb6808db0ad8"
-  integrity sha512-+rZVpl+6VyTilK7vB/svlMPil4pxqIJZkbnN7DKZTOzyXfun6ZiFeq2Pk4EtCEHZ0VU4EkdFzG8ZK5F3PErcDw==
 
 just-once@^2.0.1:
   version "2.0.1"
@@ -13804,13 +13777,6 @@ node-addon-api@^1.6.0:
   resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-1.7.2.tgz#3df30b95720b53c24e59948b49532b662444f54d"
   integrity sha512-ibPK3iA+vaY1eEjESkQkM0BbCqFOaZMiXRTtdB0u7b4djtY6JnsjvPdUHVMg6xQt3B8fpTTWHI9A+ADjM9frzg==
 
-node-fetch@2.6.5:
-  version "2.6.5"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.5.tgz#42735537d7f080a7e5f78b6c549b7146be1742fd"
-  integrity sha512-mmlIVHJEu5rnIxgEgez6b9GgWXbkZj5YZ7fx+2r94a2E+Uirsp6HsPTPlomfdHtpt/B0cdKviwkoaM6pyvUOpQ==
-  dependencies:
-    whatwg-url "^5.0.0"
-
 node-fetch@2.6.7, node-fetch@^2.6.0, node-fetch@^2.6.6:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
@@ -15389,16 +15355,16 @@ puppeteer-core@^5.1.0:
     unbzip2-stream "^1.3.3"
     ws "^7.2.3"
 
-puppeteer@^12.0.1:
-  version "12.0.1"
-  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-12.0.1.tgz#ae79d0e174a07563e0bf2e05c94ccafce3e70033"
-  integrity sha512-YQ3GRiyZW0ddxTW+iiQcv2/8TT5c3+FcRUCg7F8q2gHqxd5akZN400VRXr9cHQKLWGukmJLDiE72MrcLK9tFHQ==
+puppeteer@^13.1.2:
+  version "13.1.2"
+  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-13.1.2.tgz#d6ef3295d7551200b7e52076a3cc1b731eff4294"
+  integrity sha512-ozVM8Tdg0patMtm/xAr3Uh7rQ28vBpbTHLP+ECmoAxG/s4PKrVLN764H/poLux7Ln77jHThOd8OBJj5mTuA6Iw==
   dependencies:
     debug "4.3.2"
-    devtools-protocol "0.0.937139"
+    devtools-protocol "0.0.948846"
     extract-zip "2.0.1"
     https-proxy-agent "5.0.0"
-    node-fetch "2.6.5"
+    node-fetch "2.6.7"
     pkg-dir "4.2.0"
     progress "2.0.3"
     proxy-from-env "1.1.0"
