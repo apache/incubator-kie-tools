@@ -16,7 +16,7 @@
 
 import { ChromeRouter } from "./ChromeRouter";
 import { startExtension } from "@kie-tools-core/chrome-extension";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tooling-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 
 const resourcesPathPrefix = new ChromeRouter().getResourcesPathPrefix();
 

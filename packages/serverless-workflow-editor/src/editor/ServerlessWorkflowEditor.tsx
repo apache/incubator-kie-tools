@@ -21,8 +21,8 @@ import {
   DrawerContentBody,
   DrawerPanelBody,
 } from "@patternfly/react-core/dist/js/components/Drawer";
-import { KogitoEdit } from "@kie-tooling-core/workspace/dist/api";
-import { Notification } from "@kie-tooling-core/notifications/dist/api";
+import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { MermaidDiagram } from "../diagram";
 import { useEffect, useImperativeHandle, useRef, useState } from "react";

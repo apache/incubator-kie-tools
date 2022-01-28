@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { extractOpenFilePath } from "@kie-tooling-core/chrome-extension/dist/app/utils";
+import { extractOpenFilePath } from "@kie-tools-core/chrome-extension/dist/app/utils";
 
 describe("runScriptOnPage", () => {
   test("test 1", async () => {

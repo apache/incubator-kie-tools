@@ -21,7 +21,7 @@ import { ServerlessWorkflowEmptyState } from "./EmptyState";
 import type { Property } from "csstype";
 import { HistoryButtons, Theme } from "./HistoryButtons";
 import "./App.scss";
-import { EditorApi } from "@kie-tooling-core/editor/dist/api";
+import { EditorApi } from "@kie-tools-core/editor/dist/api";
 
 type State = string | undefined;
 

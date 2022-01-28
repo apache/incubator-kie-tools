@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ServerlessWorkflowEditorFactory } from "@kogito-tooling/serverless-workflow-editor";
-import * as EditorEnvelope from "@kie-tooling-core/editor/dist/envelope";
+import { ServerlessWorkflowEditorFactory } from "@kie-tools/serverless-workflow-editor";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 
 declare const acquireVsCodeApi: any;
 

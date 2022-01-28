@@ -18,9 +18,9 @@ import {
   EditorApi,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType,
-} from "@kie-tooling-core/editor/dist/api";
-import { DEFAULT_RECT } from "@kie-tooling-core/guided-tour/dist/api";
-import { Notification } from "@kie-tooling-core/notifications/dist/api";
+} from "@kie-tools-core/editor/dist/api";
+import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
 import { ServerlessWorkflowEditor } from "./ServerlessWorkflowEditor";
 
