@@ -15,20 +15,47 @@
  */
 
 import * as React from "react";
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { WorkspacesDmnInputsContext } from "./WorkspacesDmnInputsContext";
 import { WorkspaceDmnRunnerInputsService } from "../services/WorkspaceDmnRunnerInputsService";
-import { useWorkspaces } from "./WorkspacesContext";
+import { decoder, useWorkspaces, WorkspaceFile } from "./WorkspacesContext";
+import { InputRow } from "../../editor/DmnRunner/DmnRunnerContext";
+import { WorkspaceDmnRunnerEvents } from "../hooks/WorkspaceDmnRunnerInput";
 
 export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildren<{}>) {
   const workspaces = useWorkspaces();
 
-  const workspaceDmnRunnerInputs = useMemo(() => {
+  const dmnRunnerService = useMemo(() => {
     return new WorkspaceDmnRunnerInputsService(workspaces.storageService);
   }, [workspaces.storageService]);
 
+  const updateInputRows = useCallback(
+    (workspaceFile: WorkspaceFile) =>
+      async (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => {
+        if (!workspaceFile || !dmnRunnerService) {
+          return;
+        }
+        if (typeof newInputRows === "function") {
+          const data = await dmnRunnerService.getDmnRunnerData(workspaceFile);
+          const previousInputRows = await data
+            ?.getFileContents()
+            .then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
+          const currentInputRows = newInputRows(previousInputRows ?? [{}]);
+          await dmnRunnerService.createOrOverwriteDmnRunnerData(workspaceFile, currentInputRows);
+          // const broadcastChannel = new BroadcastChannel(workspaceFile.workspaceId + "__dmn_runner");
+          // const workspaceEvent: WorkspaceDmnRunnerEvents = { type: "UPDATE_INPUTS", relativePath };
+          // broadcastChannel.postMessage(workspaceEvent);
+          // setInputRows(currentInputRows);
+        } else {
+          // Change to updateDmnRunnerInput;
+          await dmnRunnerService.createOrOverwriteDmnRunnerData(workspaceFile, newInputRows);
+        }
+      },
+    [dmnRunnerService]
+  );
+
   return (
-    <WorkspacesDmnInputsContext.Provider value={{ workspaceDmnRunnerInputs }}>
+    <WorkspacesDmnInputsContext.Provider value={{ dmnRunnerService, updateInputRows }}>
       {props.children}
     </WorkspacesDmnInputsContext.Provider>
   );

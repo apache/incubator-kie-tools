@@ -85,7 +85,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     contentFlexDirection: "row",
     buttonPosition: ButtonPosition.OUTPUT,
   });
-  const { workspaceDmnRunnerInputs } = useWorkspacesDmnRunnerInputs();
+  const dmnRunnerWorkspace = useWorkspacesDmnRunnerInputs();
 
   const onResize = useCallback((width: number) => {
     // FIXME: PatternFly bug. The first interaction without resizing the splitter will result in width === 0.
@@ -180,10 +180,10 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   // Update outputs column on form change
   useEffect(() => {
     if (dmnRunnerState.isExpanded && dmnRunnerState.mode === DmnRunnerMode.FORM) {
-      updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]);
+      updateDmnRunnerResults(dmnRunnerWorkspace.inputRows[dmnRunnerState.currentInputRowIndex]);
     }
   }, [
-    dmnRunnerState.inputRows,
+    dmnRunnerWorkspace.inputRows,
     dmnRunnerState.currentInputRowIndex,
     updateDmnRunnerResults,
     dmnRunnerState.isExpanded,
@@ -194,21 +194,21 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   useEffect(() => {
     if (dmnRunnerState.error) {
       // if there is an error generating the form, the last form data is submitted
-      updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]);
+      updateDmnRunnerResults(dmnRunnerWorkspace.inputRows[dmnRunnerState.currentInputRowIndex]);
     } else if (previousFormError) {
       setTimeout(() => {
         formRef.current?.submit();
-        Object.keys(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex] ?? {}).forEach((propertyName) => {
+        Object.keys(dmnRunnerWorkspace.inputRows[dmnRunnerState.currentInputRowIndex] ?? {}).forEach((propertyName) => {
           formRef.current?.change(
             propertyName,
-            dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]?.[propertyName]
+            dmnRunnerWorkspace.inputRows[dmnRunnerState.currentInputRowIndex]?.[propertyName]
           );
         });
       }, 0);
     }
   }, [
     dmnRunnerState.error,
-    dmnRunnerState.inputRows,
+    dmnRunnerWorkspace.inputRows,
     dmnRunnerState.currentInputRowIndex,
     updateDmnRunnerResults,
     previousFormError,
@@ -262,13 +262,13 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const setFormData = useCallback(
     (newFormData) => {
-      dmnRunnerDispatch.updateInputRows((previousData: Array<InputRow>) => {
+      dmnRunnerWorkspace.updateInputRows(props.workspaceFile)((previousData: Array<InputRow>) => {
         const newData = [...previousData];
         newData[dmnRunnerState.currentInputRowIndex] = newFormData;
         return newData;
       });
     },
-    [dmnRunnerState.currentInputRowIndex, dmnRunnerDispatch]
+    [props.workspaceFile, dmnRunnerState.currentInputRowIndex, dmnRunnerWorkspace.updateInputRows]
   );
 
   const [selectedRow, selectRow] = useState<string>("");
@@ -280,7 +280,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const rowOptions = useMemo(
     () =>
-      dmnRunnerState.inputRows.map((_, rowIndex) => (
+      dmnRunnerWorkspace.inputRows.map((_, rowIndex) => (
         <DropdownItem
           component={"button"}
           key={rowIndex}
@@ -292,21 +292,21 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           Row {rowIndex + 1}
         </DropdownItem>
       )),
-    [dmnRunnerState.inputRows]
+    [dmnRunnerWorkspace.inputRows]
   );
 
   const formData = useMemo(() => {
-    return dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex];
-  }, [dmnRunnerState.inputRows, dmnRunnerState.currentInputRowIndex]);
+    return dmnRunnerWorkspace.inputRows[dmnRunnerState.currentInputRowIndex];
+  }, [dmnRunnerWorkspace.inputRows, dmnRunnerState.currentInputRowIndex]);
 
   const onAddNewRow = useCallback(() => {
-    dmnRunnerDispatch.updateInputRows((previousData: Array<InputRow>) => {
+    dmnRunnerWorkspace.updateInputRows(props.workspaceFile)((previousData: Array<InputRow>) => {
       const newData = [...previousData, {}];
       dmnRunnerDispatch.setCurrentInputRowIndex(newData.length - 1);
       selectRow(`Row ${newData.length}`);
       return newData;
     });
-  }, [dmnRunnerDispatch]);
+  }, [props.workspaceFile, dmnRunnerWorkspace.updateInputRows]);
 
   const onChangeToTableView = useCallback(() => {
     dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
@@ -346,7 +346,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                     alignItems={{ default: "alignItemsCenter" }}
                   >
                     <FlexItem>
-                      {dmnRunnerState.inputRows.length <= 1 ? (
+                      {dmnRunnerWorkspace.inputRows.length <= 1 ? (
                         <Button
                           variant={ButtonVariant.plain}
                           className={"kogito-tooling--masthead-hoverable"}
@@ -413,7 +413,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                             className={"kogito-tooling--masthead-hoverable"}
                             variant={ButtonVariant.plain}
                             onClick={() => {
-                              workspaceDmnRunnerInputs.deleteDmnRunnerData(props.workspaceFile);
+                              dmnRunnerWorkspace.dmnRunnerService.deleteDmnRunnerData(props.workspaceFile);
                             }}
                           >
                             <TrashIcon />

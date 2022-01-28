@@ -16,9 +16,15 @@
 
 import { createContext, useContext } from "react";
 import { WorkspaceDmnRunnerInputsService } from "../services/WorkspaceDmnRunnerInputsService";
+import { InputRow } from "../../editor/DmnRunner/DmnRunnerContext";
+import { WorkspaceFile } from "./WorkspacesContext";
 
 interface WorkspacesDmnInputsType {
-  workspaceDmnRunnerInputs: WorkspaceDmnRunnerInputsService;
+  dmnRunnerService: WorkspaceDmnRunnerInputsService;
+  inputRows: Array<InputRow>;
+  updateInputRows: (
+    workspaceFile: WorkspaceFile
+  ) => (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => void;
 }
 
 export const WorkspacesDmnInputsContext = createContext<WorkspacesDmnInputsType>({} as any);

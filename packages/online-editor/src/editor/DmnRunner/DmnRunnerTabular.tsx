@@ -22,17 +22,20 @@ import { DmnAutoTable } from "@kogito-tooling/unitables";
 import { DecisionResult } from "@kogito-tooling/form/dist/dmn";
 import { PanelId } from "../EditorPageDockDrawer";
 import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tooling-core/keyboard-shortcuts/dist/channel";
+import { useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../../workspace";
 
 interface Props {
   isReady?: boolean;
   setPanelOpen: React.Dispatch<React.SetStateAction<PanelId>>;
   dmnRunnerResults: Array<DecisionResult[] | undefined>;
   setDmnRunnerResults: React.Dispatch<React.SetStateAction<Array<DecisionResult[] | undefined>>>;
+  workspaceFile: WorkspaceFile;
 }
 
 export function DmnRunnerTabular(props: Props) {
   const dmnRunnerState = useDmnRunnerState();
   const dmnRunnerDispatch = useDmnRunnerDispatch();
+  const dmnRunnerWorkspace = useWorkspacesDmnRunnerInputs();
 
   const updateDmnRunnerResults = useCallback(
     async (inputRows: Array<InputRow>) => {
@@ -71,8 +74,8 @@ export function DmnRunnerTabular(props: Props) {
   );
 
   useEffect(() => {
-    updateDmnRunnerResults(dmnRunnerState.inputRows);
-  }, [dmnRunnerState.inputRows]);
+    updateDmnRunnerResults(dmnRunnerWorkspace.inputRows);
+  }, [dmnRunnerWorkspace.inputRows]);
 
   const openRow = useCallback(
     (rowIndex: number) => {
@@ -93,8 +96,8 @@ export function DmnRunnerTabular(props: Props) {
       {dmnRunnerState.jsonSchema && (
         <DmnAutoTable
           jsonSchema={dmnRunnerState.jsonSchema}
-          inputRows={dmnRunnerState.inputRows}
-          setInputRows={dmnRunnerDispatch.updateInputRows}
+          inputRows={dmnRunnerWorkspace.inputRows}
+          setInputRows={dmnRunnerWorkspace.updateInputRows(props.workspaceFile)}
           results={props.dmnRunnerResults}
           error={dmnRunnerState.error}
           setError={dmnRunnerDispatch.setError}

@@ -41,9 +41,12 @@ export class WorkspaceDmnRunnerInputsService {
       return;
     }
 
-    await this.storageService.deleteFile(
+    await this.storageService.createOrOverwriteFile(
       await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
-      `/${workspaceFile.relativePath}`
+      new StorageFile({
+        getFileContents: () => Promise.resolve(encoder.encode(JSON.stringify([{}]))),
+        path: `/${workspaceFile.relativePath}`,
+      })
     );
   }
 
@@ -78,6 +81,6 @@ export class WorkspaceDmnRunnerInputsService {
   }
 
   private static getDmnRunnerDataStoreName(workspaceId: string) {
-    return `${workspaceId}__dmn_runner_data`;
+    return `${workspaceId}__dmn_runner`;
   }
 }

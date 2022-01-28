@@ -17,7 +17,7 @@
 import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
-import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace";
+import { decoder, useWorkspaces, useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../../workspace";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext, InputRow } from "./DmnRunnerContext";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
@@ -32,7 +32,6 @@ import { useRoutes } from "../../navigation/Hooks";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { Notification } from "@kie-tooling-core/notifications/dist/api";
 import { DmnSchema } from "@kogito-tooling/form/dist/dmn";
-import { useWorkspaceDmnRunnerInputs } from "../../workspace/hooks/WorkspaceDmnRunnerInput";
 import { useSettings } from "../../settings/SettingsContext";
 
 interface Props {
@@ -50,11 +49,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const workspaces = useWorkspaces();
   const settings = useSettings();
-  const [inputRows, updateInputRows] = useWorkspaceDmnRunnerInputs(
-    props.workspaceId,
-    props.fileRelativePath,
-    props.workspaceFile
-  );
+  const dmnRunnerWorkspace = useWorkspacesDmnRunnerInputs();
 
   const [error, setError] = useState(false);
   const [jsonSchema, setJsonSchema] = useState<DmnSchema | undefined>(undefined);
@@ -156,7 +151,9 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
 
     try {
-      updateInputRows([jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!) as InputRow]);
+      dmnRunnerWorkspace.updateInputRows(props.workspaceFile)([
+        jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!) as InputRow,
+      ]);
       setExpanded(true);
     } catch (e) {
       console.error(`Cannot parse "${QueryParams.DMN_RUNNER_FORM_INPUTS}"`, e);
@@ -166,7 +163,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         search: routes.editor.queryArgs(queryParams).without(QueryParams.DMN_RUNNER_FORM_INPUTS).toString(),
       });
     }
-  }, [jsonSchema, history, routes, queryParams, updateInputRows]);
+  }, [jsonSchema, history, routes, queryParams, dmnRunnerWorkspace.updateInputRows, props.workspaceFile]);
 
   const prevKieSandboxExtendedServicesStatus = usePrevious(kieSandboxExtendedServices.status);
   useEffect(() => {
@@ -198,14 +195,12 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       setExpanded,
       setError,
       setMode,
-      updateInputRows,
     }),
-    [preparePayload, updateInputRows]
+    [preparePayload]
   );
 
   const dmnRunnerState = useMemo(
     () => ({
-      inputRows,
       currentInputRowIndex,
       error,
       isExpanded,
@@ -214,7 +209,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       service,
       status,
     }),
-    [inputRows, error, jsonSchema, isExpanded, mode, service, status, currentInputRowIndex]
+    [error, jsonSchema, isExpanded, mode, service, status, currentInputRowIndex]
   );
 
   return (

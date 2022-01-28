@@ -58,7 +58,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
   const dmnRunnerDispatch = useDmnRunnerDispatch();
   const settings = useSettings();
   const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems(props.workspace);
-  const { workspaceDmnRunnerInputs } = useWorkspacesDmnRunnerInputs();
+  const { dmnRunnerService } = useWorkspacesDmnRunnerInputs();
 
   const toggleDmnRunnerDrawer = useCallback(() => {
     if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
@@ -171,7 +171,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
                 key={"delete-inputs"}
                 component={"button"}
                 icon={<TrashIcon />}
-                onClick={() => workspaceDmnRunnerInputs.deleteDmnRunnerData(props.workspaceFile)}
+                onClick={() => dmnRunnerService.deleteDmnRunnerData(props.workspaceFile)}
               >
                 delete inputs
               </DropdownItem>

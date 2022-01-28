@@ -24,41 +24,10 @@ export function useWorkspaceDmnRunnerInputs(
   workspaceId: string | undefined,
   relativePath: string | undefined,
   workspaceFile: WorkspaceFile
-): [Array<InputRow>, (value: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => void] {
+) {
   const workspaces = useWorkspaces();
-  const { workspaceDmnRunnerInputs } = useWorkspacesDmnRunnerInputs();
+  const { dmnRunnerService } = useWorkspacesDmnRunnerInputs();
   const [inputRows, setInputRows] = useState<Array<InputRow>>([{}]);
-
-  const refresh = useCallback(
-    async (workspaceId: string, relativePath: string, canceled: Holder<boolean>) => {
-      workspaceDmnRunnerInputs?.getDmnRunnerData(workspaceFile).then((workspaceFile) => {
-        if (canceled.get()) {
-          return;
-        }
-
-        workspaceFile?.getFileContents().then((inputRows) => {
-          if (canceled.get()) {
-            return;
-          }
-
-          setInputRows(JSON.parse(decoder.decode(inputRows)));
-        });
-      });
-    },
-    [workspaceDmnRunnerInputs, workspaceFile]
-  );
-
-  useCancelableEffect(
-    useCallback(
-      ({ canceled }) => {
-        if (!relativePath || !workspaceId) {
-          return;
-        }
-        refresh(workspaceId, relativePath, canceled);
-      },
-      [relativePath, workspaceId, refresh]
-    )
-  );
 
   useCancelableEffect(
     useCallback(
@@ -82,16 +51,13 @@ export function useWorkspaceDmnRunnerInputs(
               0,
               data.newRelativePath.lastIndexOf(".")
             );
-            workspaceDmnRunnerInputs?.renameDmnRunnerData(workspaceFile, newRelativePathWithoutExtension);
+            dmnRunnerService?.renameDmnRunnerData(workspaceFile, newRelativePathWithoutExtension);
           }
-          // if (data.type === "DELETE") {
-          //   if (canceled.get()) {
-          //     return;
-          //   }
-          //   workspaceDmnRunnerInputs?.delete(workspaceId);
-          // }
-          if (data.type === "UPDATE" || data.type === "DELETE" || data.type === "ADD") {
-            refresh(workspaceId, data.relativePath, canceled);
+          if (data.type === "DELETE") {
+            if (canceled.get()) {
+              return;
+            }
+            dmnRunnerService?.delete(workspaceId);
           }
         };
 
@@ -100,57 +66,43 @@ export function useWorkspaceDmnRunnerInputs(
           broadcastChannel.close();
         };
       },
-      [relativePath, workspaceId, workspaces, workspaceDmnRunnerInputs, workspaceFile]
+      [relativePath, workspaceId, workspaces, dmnRunnerService, workspaceFile]
     )
   );
 
-  const getInputRows = useCallback(() => {
-    if (!workspaceFile || !workspaceDmnRunnerInputs) {
-      return Promise.resolve([{}]);
-    }
-    return workspaceDmnRunnerInputs.getDmnRunnerData(workspaceFile).then((data) => {
-      if (!data) {
-        return [{}];
-      }
-      return data.getFileContents().then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
-    });
-  }, [workspaceDmnRunnerInputs, workspaceFile]);
-
-  const updateInputRows = useCallback(
-    async (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => {
-      if (!workspaceFile || !workspaceDmnRunnerInputs) {
-        return;
-      }
-      if (typeof newInputRows === "function") {
-        const data = await workspaceDmnRunnerInputs.getDmnRunnerData(workspaceFile);
-        const previousInputRows = await data
-          ?.getFileContents()
-          .then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
-        const currentInputRows = newInputRows(previousInputRows ?? [{}]);
-        await workspaceDmnRunnerInputs.createOrOverwriteDmnRunnerData(workspaceFile, currentInputRows);
-        setInputRows(currentInputRows);
-      } else {
-        // Change to updateDmnRunnerInput;
-        await workspaceDmnRunnerInputs.createOrOverwriteDmnRunnerData(workspaceFile, newInputRows);
-      }
-    },
-    [workspaceDmnRunnerInputs, workspaceFile]
-  );
-
-  useEffect(() => {
-    let runEffect = true;
-    getInputRows().then((inputRows) => {
-      // Avoid setState on unmounted component
-      if (!runEffect) {
-        return;
-      }
-      setInputRows(inputRows);
-    });
-
-    return () => {
-      runEffect = false;
-    };
-  }, [getInputRows]);
-
-  return [inputRows, updateInputRows];
+  // const getInputRows = useCallback(() => {
+  //   if (!workspaceFile || !dmnRunnerService) {
+  //     return Promise.resolve([{}]);
+  //   }
+  //   return dmnRunnerService.getDmnRunnerData(workspaceFile).then((data) => {
+  //     if (!data) {
+  //       return [{}];
+  //     }
+  //     return data.getFileContents().then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
+  //   });
+  // }, [dmnRunnerService, workspaceFile]);
+  //
+  // useEffect(() => {
+  //   let runEffect = true;
+  //   getInputRows().then((inputRows) => {
+  //     // Avoid setState on unmounted component
+  //     if (!runEffect) {
+  //       return;
+  //     }
+  //     setInputRows(inputRows);
+  //   });
+  //
+  //   return () => {
+  //     runEffect = false;
+  //   };
+  // }, [getInputRows]);
 }
+
+export type WorkspaceDmnRunnerEvents =
+  | { type: "MOVE"; newRelativePath: string; oldRelativePath: string }
+  | { type: "RENAME"; newRelativePath: string; oldRelativePath: string }
+  | { type: "UPDATE"; relativePath: string }
+  | { type: "DELETE"; relativePath: string }
+  | { type: "ADD"; relativePath: string }
+  | { type: "INPUTS_UPDATED"; relativePath: string }
+  | { type: "INPUTS_DELETED"; relativePath: string };

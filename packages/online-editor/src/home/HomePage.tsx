@@ -266,7 +266,7 @@ export function WorkspaceLoadingCard() {
 
 export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
   const workspaces = useWorkspaces();
-  const { workspaceDmnRunnerInputs } = useWorkspacesDmnRunnerInputs();
+  const { dmnRunnerService } = useWorkspacesDmnRunnerInputs();
   return (
     <Card isSelected={false} isSelectable={true} isHoverable={true} isCompact={true}>
       <CardHeader>
@@ -289,7 +289,7 @@ export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
           <DeleteDropdownWithConfirmation
             onDelete={() => {
               workspaces.deleteWorkspace({ workspaceId: props.workspace.workspaceId });
-              workspaceDmnRunnerInputs.delete(props.workspace.workspaceId);
+              dmnRunnerService.delete(props.workspace.workspaceId);
             }}
             item={
               <>
@@ -310,7 +310,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
   const workspaces = useWorkspaces();
   const [isHovered, setHovered] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceId);
-  const { workspaceDmnRunnerInputs } = useWorkspacesDmnRunnerInputs();
+  const { dmnRunnerService } = useWorkspacesDmnRunnerInputs();
 
   const editableFiles = useMemo(() => {
     return (
@@ -384,7 +384,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                     <DeleteDropdownWithConfirmation
                       onDelete={() => {
                         workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
-                        workspaceDmnRunnerInputs.delete(props.workspaceId);
+                        dmnRunnerService.delete(props.workspaceId);
                       }}
                       item={
                         <Flex flexWrap={{ default: "nowrap" }}>
@@ -453,7 +453,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                     <DeleteDropdownWithConfirmation
                       onDelete={() => {
                         workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
-                        workspaceDmnRunnerInputs.delete(props.workspaceId);
+                        dmnRunnerService.delete(props.workspaceId);
                       }}
                       item={
                         <>
