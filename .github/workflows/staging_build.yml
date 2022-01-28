@@ -72,6 +72,8 @@ jobs:
       CORS_PROXY__imageName: "cors-proxy-image"
       CORS_PROXY__imageBuildTags: "${{ inputs.tag }}-prerelease"
 
+      DEPLOY_TAG: "${{ inputs.tag }}-prerelease"
+
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -167,7 +169,8 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: ./kie-tools/.github/actions/deploy-openshift
         with:
-          image_url: ${{ steps.push_kie_sandbox_extended_services_image.outputs.registry-path }}
+          image_tag: ${{ env.DEPLOY_TAG }}
+          image_url: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry }}/${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount }}/${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageName }}:${{ env.DEPLOY_TAG }}"
           app_name: "staging-kie-sandbox-extended-services"
           part_of: ${{ env.OPENSHIFT_PART_OF }}
           openshift_server: ${{ secrets.openshift_server }}
@@ -191,7 +194,8 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: ./kie-tools/.github/actions/deploy-openshift
         with:
-          image_url: ${{ steps.push_cors_proxy_image.outputs.registry-path }}
+          image_tag: ${{ env.DEPLOY_TAG }}
+          image_url: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}/${{ env.CORS_PROXY__imageName }}:${{ env.DEPLOY_TAG }}"
           app_name: "staging-cors-proxy"
           part_of: ${{ env.OPENSHIFT_PART_OF }}
           openshift_server: ${{ secrets.openshift_server }}
@@ -222,7 +226,8 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: ./kie-tools/.github/actions/deploy-openshift
         with:
-          image_url: ${{ steps.push_kie_sandbox_image.outputs.registry-path }}
+          image_tag: ${{ env.DEPLOY_TAG }}
+          image_url: "${{ env.KIE_SANDBOX__imageRegistry }}/${{ env.KIE_SANDBOX__imageAccount }}/${{ env.KIE_SANDBOX__imageName }}:${{ env.DEPLOY_TAG }}"
           app_name: "staging-kie-sandbox"
           part_of: ${{ env.OPENSHIFT_PART_OF }}
           openshift_server: ${{ secrets.openshift_server }}

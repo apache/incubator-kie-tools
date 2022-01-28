@@ -237,7 +237,8 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: ./.github/actions/deploy-openshift
         with:
-          image_url: ${{ steps.push_kie_sandbox_image.outputs.registry-path }}
+          image_tag: ${{ inputs.tag }}
+          image_url: "${{ env.KIE_SANDBOX__imageRegistry }}/${{ env.KIE_SANDBOX__imageAccount }}/${{ env.KIE_SANDBOX__imageName }}:${{ inputs.tag }}"
           app_name: ${{ env.OPENSHIFT_APP_NAME }}
           part_of: ${{ env.OPENSHIFT_PART_OF }}
           openshift_server: ${{ secrets.openshift_server }}
@@ -299,7 +300,8 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: ./.github/actions/deploy-openshift
         with:
-          image_url: ${{ steps.push_kie_sandbox_extended_services_image.outputs.registry-path }}
+          image_tag: ${{ inputs.tag }}
+          image_url: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry }}/${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount }}/${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageName }}:${{ inputs.tag }}"
           app_name: ${{ env.OPENSHIFT_APP_NAME }}
           part_of: ${{ env.OPENSHIFT_PART_OF }}
           openshift_server: ${{ secrets.openshift_server }}
@@ -360,7 +362,8 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: ./.github/actions/deploy-openshift
         with:
-          image_url: ${{ steps.push_cors_proxy_image.outputs.registry-path }}
+          image_tag: ${{ inputs.tag }}
+          image_url: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}/${{ env.CORS_PROXY__imageName }}:${{ inputs.tag }}"
           app_name: ${{ env.OPENSHIFT_APP_NAME }}
           part_of: ${{ env.OPENSHIFT_PART_OF }}
           openshift_server: ${{ secrets.openshift_server }}
