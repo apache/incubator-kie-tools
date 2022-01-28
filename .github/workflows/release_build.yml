@@ -215,7 +215,6 @@ jobs:
           lerna run build:prod --scope=@kie-tools/kie-sandbox-image --include-dependencies --stream
 
       - name: "Push kie-sandbox-image to quay.io"
-        id: push_kie_sandbox_image
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
@@ -285,7 +284,6 @@ jobs:
           lerna run build:prod --scope=@kie-tools/kie-sandbox-extended-services-image --include-dependencies --stream
 
       - name: "Push kie-sandbox-extended-services-image to quay.io"
-        id: push_kie_sandbox_extended_services_image
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
@@ -347,7 +345,6 @@ jobs:
           lerna run build:prod --scope=@kie-tools/cors-proxy-image --include-dependencies --stream
 
       - name: "Push cors-proxy-image to quay.io"
-        id: push_cors_proxy_image
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
