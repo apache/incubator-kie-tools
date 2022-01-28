@@ -185,8 +185,6 @@ describe("Nested Relations", () => {
       .should("be.focused")
       .click()
       .type("{leftarrow}")
-      .should("be.focused")
-      .type("{esc}{leftarrow}")
-      .should("not.be.focused");
+      .should("be.focused");
   });
 });

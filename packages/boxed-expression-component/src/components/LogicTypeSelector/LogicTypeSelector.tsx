@@ -72,7 +72,6 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
   isHeadless,
   onUpdatingRecursiveExpression,
 }) => {
-  const [isBuildLogicSelectorMenuVisible, setIsBuildLogicSelectorMenuVisible] = useState(false);
   const { i18n } = useBoxedExpressionEditorI18n();
   const boxedExpression = useBoxedExpression();
 
@@ -169,9 +168,6 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
         appendTo={getAppendToPlacement()}
         className="logic-type-popover"
         hasAutoWidth
-        isVisible={isBuildLogicSelectorMenuVisible}
-        shouldClose={() => setIsBuildLogicSelectorMenuVisible(false)}
-        shouldOpen={() => setIsBuildLogicSelectorMenuVisible(true)}
         body={
           <Menu onSelect={onLogicTypeSelect}>
             <MenuList>{renderLogicTypeItems()}</MenuList>
@@ -179,14 +175,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
         }
       />
     ),
-    [
-      i18n.selectLogicType,
-      getArrowPlacement,
-      getAppendToPlacement,
-      onLogicTypeSelect,
-      renderLogicTypeItems,
-      isBuildLogicSelectorMenuVisible,
-    ]
+    [i18n.selectLogicType, getArrowPlacement, getAppendToPlacement, onLogicTypeSelect, renderLogicTypeItems]
   );
 
   const executeClearAction = useCallback(() => {
@@ -226,8 +215,8 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
   }, [contextMenuVisibility, selectedExpression.noClearAction, targetElement]);
 
   useEffect(() => {
-    globalContext.setIsContextMenuOpen(contextMenuVisibility || isBuildLogicSelectorMenuVisible);
-  }, [contextMenuVisibility, isBuildLogicSelectorMenuVisible]);
+    globalContext.setIsContextMenuOpen(contextMenuVisibility);
+  }, [contextMenuVisibility]);
 
   const cssClasses = useMemo(() => {
     const classes = [];
