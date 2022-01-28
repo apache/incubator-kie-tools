@@ -362,6 +362,13 @@
           {{/drdType}}
         </h4>
         <p>{{drdDescription}}</p>
+        {{#drdQuestion}}
+        <p class="external-links-title">Question:</p>
+        <p>{{drdQuestion}}</p>
+        {{/drdQuestion}} {{#drdAllowedAnswers}}
+        <p class="external-links-title">Allowed Answers:</p>
+        <p>{{drdAllowedAnswers}}</p>
+        {{/drdAllowedAnswers}}
         <ul class="data-types">
           {{#hasExternalLinks}}
           <p class="external-links-title">{{i18n.externalLinks}}</p>

@@ -32,6 +32,10 @@ public class DMNDocumentationDRD {
 
     private String drdType;
 
+    private String drdQuestion;
+
+    private String drdAllowedAnswers;
+
     private String drdDescription;
 
     private String drdBoxedExpressionImage;
@@ -47,6 +51,8 @@ public class DMNDocumentationDRD {
     @JsOverlay
     public static DMNDocumentationDRD create(final String drdName,
                                              final String drdType,
+                                             final String drdQuestion,
+                                             final String drdAllowedAnswers,
                                              final String drdDescription,
                                              final String drdBoxedExpressionImage,
                                              final List<DMNDocumentationExternalLink> externalLinks,
@@ -56,6 +62,8 @@ public class DMNDocumentationDRD {
 
         drd.drdName = drdName;
         drd.drdType = drdType;
+        drd.drdQuestion = drdQuestion;
+        drd.drdAllowedAnswers = drdAllowedAnswers;
         drd.drdDescription = drdDescription;
         drd.drdBoxedExpressionImage = drdBoxedExpressionImage;
         drd.drdExternalLinks = asJsArray(externalLinks);
@@ -72,6 +80,16 @@ public class DMNDocumentationDRD {
     @JsOverlay
     public final String getDrdType() {
         return drdType;
+    }
+
+    @JsOverlay
+    public final String getDrdQuestion() {
+        return drdQuestion;
+    }
+
+    @JsOverlay
+    public final String getDrdAllowedAnswers() {
+        return drdAllowedAnswers;
     }
 
     @JsOverlay

@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.property.dmn.DMNExternalLink;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.common.BoxedExpressionHelper;
@@ -133,9 +134,18 @@ public class DMNDocumentationDRDsFactory {
         final String name = getName(drgElement);
         final String description = getDescription(drgElement);
         final String type = getType(drgElement);
+        final String question = getQuestion(drgElement);
+        final String allowedAnswers = getAllowedAnswers(drgElement);
         final String image = getNodeImage(diagram, node);
         final List<DMNDocumentationExternalLink> externalLinks = getExternalLinks(drgElement);
-        return DMNDocumentationDRD.create(name, type, description, image, externalLinks, !externalLinks.isEmpty());
+        return DMNDocumentationDRD.create(name,
+                                          type,
+                                          question,
+                                          allowedAnswers,
+                                          description,
+                                          image,
+                                          externalLinks,
+                                          !externalLinks.isEmpty());
     }
 
     private List<DMNDocumentationExternalLink> getExternalLinks(final DRGElement drgElement) {
@@ -154,6 +164,20 @@ public class DMNDocumentationDRDsFactory {
     private String getType(final DRGElement drgElement) {
         if (drgElement instanceof HasVariable) {
             return getType(((HasVariable) drgElement).getVariable().getTypeRef());
+        }
+        return NONE;
+    }
+
+    private String getQuestion(final DRGElement drgElement) {
+        if (drgElement instanceof Decision) {
+            return ((Decision) drgElement).getQuestion().getValue();
+        }
+        return NONE;
+    }
+
+    private String getAllowedAnswers(final DRGElement drgElement) {
+        if (drgElement instanceof Decision) {
+            return ((Decision) drgElement).getAllowedAnswers().getValue();
         }
         return NONE;
     }
