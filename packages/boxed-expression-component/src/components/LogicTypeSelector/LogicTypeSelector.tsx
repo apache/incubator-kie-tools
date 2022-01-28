@@ -156,6 +156,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
       window.beeApi?.notifyUserAction();
       const selectedLogicType = itemId as LogicType;
       onLogicTypeUpdating(selectedLogicType);
+      globalContext.setIsContextMenuOpen(false);
     },
     [onLogicTypeUpdating]
   );
