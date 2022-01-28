@@ -189,7 +189,7 @@ describe("DMN Expression Editor Test", () => {
     });
   });
 
-  it("Change BKM Decition Table from Any to Custom Data Type", () => {
+  it.skip("Change BKM Decition Table from Any to Custom Data Type", () => {
     cy.get("#upload-field").attachFile("testModelWithCustomDataType.dmn", { subjectType: "drag-n-drop" });
 
     // wait until loading dialog disappears
@@ -221,7 +221,7 @@ describe("DMN Expression Editor Test", () => {
     });
   });
 
-  it("Change BKM Decition Table from Any to Custom Data Type", () => {
+  it.skip("Change BKM Decition Table from Any to Custom Data Type", () => {
     cy.get("#upload-field").attachFile("testModelWithCustomDataType.dmn", { subjectType: "drag-n-drop" });
 
     // wait until loading dialog disappears
