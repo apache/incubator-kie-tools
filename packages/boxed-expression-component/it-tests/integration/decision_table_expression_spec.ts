@@ -16,70 +16,66 @@
 
 import * as buildEnv from "@kogito-tooling/build-env";
 
-describe("Keyboard Navigation Tests", () => {
-  beforeEach(() => {
+describe("Decision Table Keyboard Navigation Tests", () => {
+  before(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
+
+    // Entry point for each new expression
+    cy.ouiaId("expression-container").click();
+
+    // Define new expression as Relation
+    cy.ouiaId("expression-popover-menu").contains("Decision Table").click({ force: true });
+
+    cy.get(".editable-cell:eq(0)").rightclick();
+
+    cy.ouiaId("expression-table-handler-menu").contains("Insert below").click({ force: true });
+
+    cy.get(".editable-cell:eq(0)").rightclick();
+
+    cy.ouiaId("expression-table-handler-menu").contains("Insert below").click({ force: true });
+
+    cy.get(".editable-cell:eq(0)").rightclick();
+
+    cy.contains("Insert right").click({ force: true });
   });
 
-  describe("Decision Table Keyboard Navigation Tests", () => {
-    beforeEach("Creates a decision table", () => {
-      // Entry point for each new expression
-      cy.ouiaId("expression-container").click();
+  it("Navigate around", () => {
+    cy.get(".editable-cell:eq(0)").type(
+      "{rightarrow}{rightarrow}{rightarrow}{leftarrow}{downarrow}{downarrow}{leftarrow}"
+    );
 
-      // Define new expression as Relation
-      cy.ouiaId("expression-popover-menu").contains("Decision Table").click({ force: true });
+    cy.get("tbody tr:eq(2) td:eq(2)").should("be.focused");
+    cy.get("tbody tr:eq(2) td:eq(1)").should("not.be.focused");
+  });
 
-      cy.get(".editable-cell:eq(0)").rightclick();
+  it("Go against edges", () => {
+    cy.get("tbody tr:eq(0) td:eq(1)")
+      .click({ force: true })
+      .type("{uparrow}{uparrow}{uparrow}")
+      .should("be.focused")
+      .type("{rightarrow}{rightarrow}{rightarrow}{rightarrow}");
 
-      cy.ouiaId("expression-table-handler-menu").contains("Insert below").click({ force: true });
+    cy.get("tbody tr:eq(0) td:eq(4)")
+      .should("be.focused")
+      .click({ force: true })
+      .type("{downarrow}{downarrow}{downarrow}{downarrow}");
 
-      cy.get(".editable-cell:eq(0)").rightclick();
+    cy.get("tbody tr:eq(2) td:eq(4)").should("be.focused");
+  });
 
-      cy.ouiaId("expression-table-handler-menu").contains("Insert below").click({ force: true });
+  it("Edit cells with enter/esc", function () {
+    cy.get("tbody tr:eq(0) td:eq(1)").click({ force: true }).type("{enter}TestInput");
 
-      cy.get(".editable-cell:eq(0)").rightclick();
+    cy.get("tbody tr:eq(0) td:eq(2)").click({ force: true });
 
-      cy.contains("Insert right").click({ force: true });
-    });
+    cy.get("tbody tr:eq(0) td:eq(1) textarea").should("have.text", "TestInput");
+  });
 
-    it("Navigate around", () => {
-      cy.get(".editable-cell:eq(0)").type(
-        "{rightarrow}{rightarrow}{rightarrow}{leftarrow}{downarrow}{downarrow}{leftarrow}"
-      );
+  it("Interaction with contextMenu", function () {
+    cy.get("tbody tr:eq(0) td:eq(1)").rightclick();
 
-      cy.get("tbody tr:eq(2) td:eq(2)").should("be.focused");
-      cy.get("tbody tr:eq(2) td:eq(1)").should("not.be.focused");
-    });
+    cy.get("tbody tr:eq(0) td:eq(1)").type("{leftarrow}").should("be.focused");
 
-    it("Go against edges", () => {
-      cy.get("tbody tr:eq(0) td:eq(1)")
-        .click({ force: true })
-        .type("{uparrow}{uparrow}{uparrow}")
-        .should("be.focused")
-        .type("{rightarrow}{rightarrow}{rightarrow}{rightarrow}");
-
-      cy.get("tbody tr:eq(0) td:eq(4)")
-        .should("be.focused")
-        .click({ force: true })
-        .type("{downarrow}{downarrow}{downarrow}{downarrow}");
-
-      cy.get("tbody tr:eq(2) td:eq(4)").should("be.focused");
-    });
-
-    it("Edit cells with enter/esc", function () {
-      cy.get("tbody tr:eq(0) td:eq(1)").click({ force: true }).type("{enter}TestInput");
-
-      cy.get("tbody tr:eq(0) td:eq(2)").click({ force: true });
-
-      cy.get("tbody tr:eq(0) td:eq(1) textarea").should("have.text", "TestInput");
-    });
-
-    it("Interaction with contextMenu", function () {
-      cy.get("tbody tr:eq(0) td:eq(1)").rightclick();
-
-      cy.get("tbody tr:eq(0) td:eq(1)").type("{leftarrow}").should("be.focused");
-
-      cy.get(".table-handler").should("be.visible");
-    });
+    cy.get(".table-handler").should("be.visible");
   });
 });
