@@ -73,6 +73,10 @@
       <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
       <scope>test</scope>
     </dependency>
+      <dependency>
+          <groupId>io.crysknife.ui.validation</groupId>
+          <artifactId>api</artifactId>
+      </dependency>
   </dependencies>
 
   <build>

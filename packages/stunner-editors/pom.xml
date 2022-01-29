@@ -270,13 +270,13 @@
       <dependency>
         <groupId>org.treblereel.gwt.xml.mapper</groupId>
         <artifactId>common</artifactId>
-        <version>0.4</version>
+        <version>0.5-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.treblereel.gwt.xml.mapper</groupId>
         <artifactId>api</artifactId>
-        <version>0.4</version>
+        <version>0.5-SNAPSHOT</version>
       </dependency>
 
       <!-- All drools-wb's modules and third-party versions are defined in this POM -->

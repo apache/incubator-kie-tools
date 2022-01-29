@@ -18,7 +18,7 @@ public class MonacoLoader {
 
         Monaco INSTANCE = new MonacoLoader_MonacoImpl();
 
-        @ClientBundle.Source("monaco.min.js")
+        @ClientBundle.Source("monaco.min.js.txt")
         TextResource monaco();
     }
 

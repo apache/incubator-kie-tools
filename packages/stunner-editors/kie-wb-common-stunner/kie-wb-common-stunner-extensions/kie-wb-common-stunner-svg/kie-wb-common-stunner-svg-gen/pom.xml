@@ -92,11 +92,12 @@
     <dependency>
       <groupId>net.sourceforge.cssparser</groupId>
       <artifactId>cssparser</artifactId>
+      <version>0.9.29</version>
     </dependency>
-
     <dependency>
-      <groupId>org.w3c.css</groupId>
-      <artifactId>sac</artifactId>
+      <groupId>org.w3c</groupId>
+      <artifactId>dom</artifactId>
+      <version>2.3.0-jaxb-1.0.6</version>
     </dependency>
 
     <!-- Testing scope. -->

@@ -16,6 +16,7 @@
 
 package org.eclipse.emf.ecore.xmi.util;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtproject.xml.client.Attr;
 import org.gwtproject.xml.client.CDATASection;
 import org.gwtproject.xml.client.Comment;
@@ -26,7 +27,6 @@ import org.gwtproject.xml.client.Node;
 import org.gwtproject.xml.client.NodeList;
 import org.gwtproject.xml.client.ProcessingInstruction;
 import org.gwtproject.xml.client.Text;
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

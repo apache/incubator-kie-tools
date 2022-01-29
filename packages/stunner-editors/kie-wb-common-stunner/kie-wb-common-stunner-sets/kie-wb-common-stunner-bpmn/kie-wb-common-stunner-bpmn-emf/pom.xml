@@ -51,6 +51,11 @@
       <groupId>org.gwtproject.json</groupId>
       <artifactId>gwt-json</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.treblereel.gwt.xml.mapper</groupId>
+      <artifactId>api</artifactId>
+    </dependency>
     <!-- Testing scope. -->
 
     <dependency>

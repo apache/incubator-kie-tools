@@ -273,6 +273,7 @@
           <include>**/*.html</include>
           <include>**/*.css</include>
           <include>**/*.java</include>
+          <include>**/*.svg</include>
         </includes>
       </resource>
       <resource>

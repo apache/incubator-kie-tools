@@ -68,7 +68,7 @@ public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
             return false;
         }
         //Initialize the generator
-        generator = SVGGeneratorFactory.newGenerator();
+        generator = SVGGeneratorFactory.newGenerator(processingEnv.getFiler());
         // Process SVG Shape View Factories for the annotated types.
         final Elements elementUtils = processingEnv.getElementUtils();
         for (Element e : roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(ANNOTATION_SVGSHAPE_VIEW_FACTORY))) {

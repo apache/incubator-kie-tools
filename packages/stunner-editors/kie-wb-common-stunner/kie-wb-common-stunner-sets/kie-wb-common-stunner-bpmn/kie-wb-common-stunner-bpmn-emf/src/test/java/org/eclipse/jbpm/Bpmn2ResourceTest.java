@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import bpsim.BpsimPackage;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtproject.xml.client.Document;
 import org.gwtproject.xml.client.XMLParser;
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.dd.dc.DcPackage;
