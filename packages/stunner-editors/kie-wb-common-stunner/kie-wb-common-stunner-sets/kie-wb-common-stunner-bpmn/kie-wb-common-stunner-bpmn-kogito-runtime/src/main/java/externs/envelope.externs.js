@@ -2,5 +2,4 @@
  * @externs
  */
 
-
-var envelope = function(){}
+var envelope = function () {};

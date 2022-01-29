@@ -2,5 +2,4 @@
  * @externs
  */
 
-
-var jsPDF = function(){}
+var jsPDF = function () {};

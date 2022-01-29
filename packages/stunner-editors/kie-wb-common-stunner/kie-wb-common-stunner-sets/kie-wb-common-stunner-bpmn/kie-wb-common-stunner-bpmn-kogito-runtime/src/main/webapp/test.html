@@ -16,56 +16,56 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>BPMN Editor Test</title>
 
     <script>
-        function loadDiagram(diagram) {
-            var path = "somePath";
-            window.frames.editorFrame.contentWindow.gwtEditorBeans.get("BPMNDiagramEditor").get().setContent(path, diagram);
-            document.getElementById("download_btn").disabled = false;
-        }
+      function loadDiagram(diagram) {
+        var path = "somePath";
+        window.frames.editorFrame.contentWindow.gwtEditorBeans.get("BPMNDiagramEditor").get().setContent(path, diagram);
+        document.getElementById("download_btn").disabled = false;
+      }
 
-        function download() {
-                window.frames.editorFrame.contentWindow.gwtEditorBeans.get("BPMNDiagramEditor").get().getContent().then(
-                    function(process) {
-                        var d = document.createElement('a');
-                        d.setAttribute('href', 'data:text/xml;charset=utf-8,' + encodeURIComponent(process));
-                        d.setAttribute('download', "process.bpmn");
-                        d.style.display = 'none';
+      function download() {
+        window.frames.editorFrame.contentWindow.gwtEditorBeans
+          .get("BPMNDiagramEditor")
+          .get()
+          .getContent()
+          .then(function (process) {
+            var d = document.createElement("a");
+            d.setAttribute("href", "data:text/xml;charset=utf-8," + encodeURIComponent(process));
+            d.setAttribute("download", "process.bpmn");
+            d.style.display = "none";
 
-                        document.body.appendChild(d);
-                        d.click();
-                        document.body.removeChild(d);
-                    }
-                );
-        }
+            document.body.appendChild(d);
+            d.click();
+            document.body.removeChild(d);
+          });
+      }
 
-        var openFile = function (event) {
-            var input = event.target;
-            var reader = new FileReader();
-            reader.onload = function () {
-                var diagram = reader.result;
-                loadDiagram(diagram)
-            };
-
-            reader.readAsText(input.files[0]);
+      var openFile = function (event) {
+        var input = event.target;
+        var reader = new FileReader();
+        reader.onload = function () {
+          var diagram = reader.result;
+          loadDiagram(diagram);
         };
+
+        reader.readAsText(input.files[0]);
+      };
     </script>
+  </head>
+  <body>
+    <div id="editor">
+      Wait until the editor is loaded to open a BPMN file:<br />
+      <input type="button" onclick="loadDiagram('')" value="Create new Diagram" />
+      or
+      <input type="file" onchange="openFile(event)" value="Choose BPMN2 file" accept="bpmn,bpmn2,txt" />
+      When you are ready you can
+      <input type="button" id="download_btn" value="Download the process" onclick="download()" disabled />
+    </div>
 
-</head>
-<body>
-
-<div id="editor">
-    Wait until the editor is loaded to open a BPMN file:<br>
-    <input type="button" onclick="loadDiagram('')" value="Create new Diagram"/>
-    or
-    <input type="file" onchange="openFile(event)" value="Choose BPMN2 file" accept="bpmn,bpmn2,txt"/>
-    When you are ready you can
-    <input type="button" id="download_btn" value="Download the process" onclick="download()" disabled/>
-</div>
-
-<iframe id="editorFrame" src="index.html" width="100%" height="880px" frameBorder="0" scrolling="no"></iframe>
-</body>
+    <iframe id="editorFrame" src="index.html" width="100%" height="880px" frameborder="0" scrolling="no"></iframe>
+  </body>
 </html>

@@ -2,5 +2,4 @@
  * @externs
  */
 
-
-var C2S = function(){}
+var C2S = function () {};

@@ -15,33 +15,31 @@
   -->
 
 <div>
-    <div class="form-group toolbar-pf-find kie-toolbar-find">
+  <div class="form-group toolbar-pf-find kie-toolbar-find">
+    <button data-field="search-button" class="btn btn-link btn-find" type="button">
+      <span class="fa fa-search"></span>
+    </button>
 
-        <button data-field="search-button" class="btn btn-link btn-find" type="button">
-            <span class="fa fa-search"></span>
+    <button data-field="search-container" class="hidden find-pf-dropdown-container kie-find-pf-dropdown-container">
+      <input data-field="search-input" type="text" class="form-control" />
+      <span class="find-pf-nums">
+        <span data-field="current-result">0</span>
+        <span data-i18n-key="Of"></span>
+        <span data-field="total-of-results">0</span>
+      </span>
+
+      <div class="find-pf-buttons">
+        <button data-field="prev-element" class="btn btn-link" type="button">
+          <span class="fa fa-angle-up"></span>
         </button>
-
-        <button data-field="search-container" class="hidden find-pf-dropdown-container kie-find-pf-dropdown-container">
-
-            <input data-field="search-input" type="text" class="form-control">
-            <span class="find-pf-nums">
-                <span data-field="current-result">0</span>
-                <span data-i18n-key="Of"></span>
-                <span data-field="total-of-results">0</span>
-            </span>
-
-            <div class="find-pf-buttons">
-                <button data-field="prev-element" class="btn btn-link" type="button">
-                    <span class="fa fa-angle-up"></span>
-                </button>
-                <button data-field="next-element" class="btn btn-link" type="button">
-                    <span class="fa fa-angle-down"></span>
-                </button>
-                <div class="find-splitter"></div>
-                <button data-field="close-search" class="btn btn-link btn-find-close" type="button">
-                    <span class="pficon pficon-close"></span>
-                </button>
-            </div>
+        <button data-field="next-element" class="btn btn-link" type="button">
+          <span class="fa fa-angle-down"></span>
         </button>
-    </div>
+        <div class="find-splitter"></div>
+        <button data-field="close-search" class="btn btn-link btn-find-close" type="button">
+          <span class="pficon pficon-close"></span>
+        </button>
+      </div>
+    </button>
+  </div>
 </div>

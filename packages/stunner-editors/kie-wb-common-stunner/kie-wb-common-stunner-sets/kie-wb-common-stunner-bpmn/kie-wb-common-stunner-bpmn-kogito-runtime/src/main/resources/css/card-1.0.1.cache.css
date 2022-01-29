@@ -1,21 +1,21 @@
 .flip {
-    -webkit-perspective: 800px;
-    -moz-perspective: 800px;
-    -ms-perspective: 800px;
-    -o-perspective: 800px;
-    perspective: 800px;
-    position: relative;
-    min-height: 100px;
-    width: 100%;
+  -webkit-perspective: 800px;
+  -moz-perspective: 800px;
+  -ms-perspective: 800px;
+  -o-perspective: 800px;
+  perspective: 800px;
+  position: relative;
+  min-height: 100px;
+  width: 100%;
 }
 
 /*Horizontal Flip*/
 .flip .card.flipped {
-    -webkit-transform: rotateY(180deg);
-    -moz-transform: rotateY(180deg);
-    -ms-transform: rotateY(180deg);
-    -o-transform: rotateY(180deg);
-    transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  transform: rotateY(180deg);
 }
 
 /*Vertical Flip*/
@@ -28,48 +28,48 @@
 /*}*/
 
 .flip .card {
-    width: 100%;
-    min-height: 100px;
-    height: 100%;
-    border: 1px solid #CCC;
-    -webkit-transform-style: preserve-3d;
-    -moz-transform-style: preserve-3d;
-    -ms-transform-style: preserve-3d;
-    -o-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-    -webkit-transition: 1.0s;
-    -moz-transition: 1.0s;
-    -ms-transition: 1.0s;
-    -o-transition: 1.0s;
-    transition: 1.0s;
+  width: 100%;
+  min-height: 100px;
+  height: 100%;
+  border: 1px solid #ccc;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-transition: 1s;
+  -moz-transition: 1s;
+  -ms-transition: 1s;
+  -o-transition: 1s;
+  transition: 1s;
 }
 
 .flip .card .face {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    padding: 5px;
-    -webkit-backface-visibility: hidden;
-    -moz-backface-visibility: hidden;
-    -ms-backface-visibility: hidden;
-    -o-backface-visibility: hidden;
-    backface-visibility: hidden;
-    z-index: 2;
-    transform: rotateX(0deg); /* Fix for firefox backface-visibility bug. */
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  padding: 5px;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  z-index: 2;
+  transform: rotateX(0deg); /* Fix for firefox backface-visibility bug. */
 }
 
 .flip .card .front {
-    position: absolute;
-    z-index: 1;
+  position: absolute;
+  z-index: 1;
 }
 
 /*Horizontal Flip*/
 .flip .card .back {
-    -webkit-transform: rotateY(180deg);
-    -moz-transform: rotateY(180deg);
-    -ms-transform: rotateY(180deg);
-    -o-transform: rotateY(180deg);
-    transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  transform: rotateY(180deg);
 }
 
 /*Vertical Flip*/
@@ -82,8 +82,8 @@
 /*}*/
 
 .trigger {
-    cursor: pointer;
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
+  cursor: pointer;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
 }

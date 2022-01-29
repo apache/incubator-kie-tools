@@ -25,7 +25,7 @@
  * @interface
  * @author takahashikzn
  */
-function Moment() {};
+function Moment() {}
 
 /**
  * @typedef {{seconds:?number, minutes:?number, hours:?number, weeks:?number, months:?number, years:?number}}
@@ -41,233 +41,233 @@ Moment.MomentLike;
  * @interface
  * @author takahashikzn
  */
-Moment.Duration = function() {};
+Moment.Duration = function () {};
 
 /**
  * @nosideeffects
  * @type {(function():!Moment|function(!Moment.MomentLike):!Moment|function(!string, !(string|Array<!string>)=):!Moment)}
  */
-function moment() {};
+function moment() {}
 
 /**
  * @since 1.2.0
  * @type {function():!Moment}
  */
-Moment.prototype.clone = function() {};
+Moment.prototype.clone = function () {};
 
 /**
  * @since 1.6.0
  * @type {(function(number, string):!Moment.Duration|function(number):!Moment.Duration|function(Object):!Moment.Duration|function(string):!Moment.Duration)}
  */
-Moment.prototype.duration = function() {};
+Moment.prototype.duration = function () {};
 
 /**
  * @since 1.6.0
  * @param {!number=} a
  * @return {!Moment}
  */
-Moment.prototype.unix = function(a) {};
+Moment.prototype.unix = function (a) {};
 
 /**
  * @since 1.5.0
  * @type {(function():!Moment|function(!Moment.MomentLike):!Moment|function(!string, !string=, !string=):!Moment|function(!string, !Array<!string>):!Moment)}
  */
-Moment.prototype.utc = function() {};
+Moment.prototype.utc = function () {};
 
 /**
  * @since 2.9.0
  * @type {function():!number|function(!(number|string)):!Moment}
  */
-Moment.prototype.utcOffset = function() {};
+Moment.prototype.utcOffset = function () {};
 
 /**
  * @since 2.3.0
  * @param {!string} a
  * @return {!Moment}
  */
-Moment.prototype.parseZone = function(a) {};
+Moment.prototype.parseZone = function (a) {};
 
 /**
  * @nosideeffects
  * @since 1.7.0
  * @return {!boolean}
  */
-Moment.prototype.isValid = function() {};
+Moment.prototype.isValid = function () {};
 
 /**
  * @since 1.3.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.millisecond = function() {};
+Moment.prototype.millisecond = function () {};
 
 /**
  * @since 1.3.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.milliseconds = function() {};
+Moment.prototype.milliseconds = function () {};
 
 /**
  * @since 1.0.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.second = function() {};
+Moment.prototype.second = function () {};
 
 /**
  * @since 1.0.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.seconds = function() {};
+Moment.prototype.seconds = function () {};
 
 /**
  * @since 1.0.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.minute = function() {};
+Moment.prototype.minute = function () {};
 
 /**
  * @since 1.0.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.minutes = function() {};
+Moment.prototype.minutes = function () {};
 
 /**
  * @since 1.0.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.hour = function() {};
+Moment.prototype.hour = function () {};
 
 /**
  * @since 1.0.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.hours = function() {};
+Moment.prototype.hours = function () {};
 
 /**
  * @since 1.0.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.date = function() {};
+Moment.prototype.date = function () {};
 
 /**
  * @since 1.0.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.dates = function() {};
+Moment.prototype.dates = function () {};
 
 /**
  * @since 1.3.0
  * @type {(function():!number|function(!(number|string)):!Moment)}
  */
-Moment.prototype.day = function() {};
+Moment.prototype.day = function () {};
 
 /**
  * @since 1.3.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.days = function() {};
+Moment.prototype.days = function () {};
 
 /**
  * @since 2.1.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.weekday = function() {};
+Moment.prototype.weekday = function () {};
 
 /**
  * @since 2.1.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.isoWeekday = function() {};
+Moment.prototype.isoWeekday = function () {};
 
 /**
  * @since 2.0.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.dayOfYear = function() {};
+Moment.prototype.dayOfYear = function () {};
 
 /**
  * @since 2.0.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.week = function() {};
+Moment.prototype.week = function () {};
 
 /**
  * @since 2.0.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.weeks = function() {};
+Moment.prototype.weeks = function () {};
 
 /**
  * @since 2.0.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.isoWeek = function() {};
+Moment.prototype.isoWeek = function () {};
 
 /**
  * @since 2.0.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.isoWeeks = function() {};
+Moment.prototype.isoWeeks = function () {};
 
 /**
  * @since 1.0.0
  * @type {(function():!number|function(!(number|string)):!Moment)}
  */
-Moment.prototype.month = function() {};
+Moment.prototype.month = function () {};
 
 /**
  * @since 1.0.0
  * @type {(function():!number|function(!(number|string)):!Moment)}
  */
-Moment.prototype.months = function() {};
+Moment.prototype.months = function () {};
 
 /**
  * @since 2.6.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.quarter = function() {};
+Moment.prototype.quarter = function () {};
 
 /**
  * @since 1.0.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.year = function() {};
+Moment.prototype.year = function () {};
 
 /**
  * @since 1.0.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.years = function() {};
+Moment.prototype.years = function () {};
 
 /**
  * @since 2.1.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.weekYear = function() {};
+Moment.prototype.weekYear = function () {};
 
 /**
  * @since 2.1.0
  * @type {(function():!number|function(!number):!Moment)}
  */
-Moment.prototype.isoWeekYear = function() {};
-
-/**
- * @since 2.6.0
- * @return {!number}
- */
-Moment.prototype.weeksInYear = function() {};
+Moment.prototype.isoWeekYear = function () {};
 
 /**
  * @since 2.6.0
  * @return {!number}
  */
-Moment.prototype.isoWeeksInYear = function() {};
+Moment.prototype.weeksInYear = function () {};
+
+/**
+ * @since 2.6.0
+ * @return {!number}
+ */
+Moment.prototype.isoWeeksInYear = function () {};
 
 /**
  * @since 2.2.1
  * @param {!string} unit
  * @return {!number}
  */
-Moment.prototype.get = function(unit) {};
+Moment.prototype.get = function (unit) {};
 
 /**
  * @since 2.2.1
@@ -275,20 +275,20 @@ Moment.prototype.get = function(unit) {};
  * @param {!number} value
  * @return {!Moment}
  */
-Moment.prototype.set = function(unit, value) {};
+Moment.prototype.set = function (unit, value) {};
 
 /**
  * @since 1.0.0
  * @type {(function(!string, !number):!Moment|function(!number, !string):!Moment|function(!Moment.Duration):!Moment|function(!Moment.DateRecord):!Moment)}
  */
-Moment.prototype.add = function() {};
+Moment.prototype.add = function () {};
 
 /**
  * @nosideeffects
  * @since 1.0.0
  * @type {(function(!string, !number):!Moment|function(!number, !string):!Moment|function(!Moment.Duration):!Moment|function(!Moment.DateRecord):!Moment)}
  */
-Moment.prototype.subtract = function() {};
+Moment.prototype.subtract = function () {};
 
 /**
  * @nosideeffects
@@ -296,7 +296,7 @@ Moment.prototype.subtract = function() {};
  * @param {!string} a
  * @return {!Moment}
  */
-Moment.prototype.startOf = function(a) {};
+Moment.prototype.startOf = function (a) {};
 
 /**
  * @nosideeffects
@@ -304,7 +304,7 @@ Moment.prototype.startOf = function(a) {};
  * @param {!string} a
  * @return {!Moment}
  */
-Moment.prototype.endOf = function(a) {};
+Moment.prototype.endOf = function (a) {};
 
 /**
  * @nosideeffects
@@ -312,7 +312,7 @@ Moment.prototype.endOf = function(a) {};
  * @param {function(!Moment.MomentLike):!Moment|function(...Moment):!Moment} a
  * @return {!Moment}
  */
-Moment.prototype.max = function(a) {};
+Moment.prototype.max = function (a) {};
 
 /**
  * @nosideeffects
@@ -320,13 +320,13 @@ Moment.prototype.max = function(a) {};
  * @param {function(!Moment.MomentLike):!Moment|function(...Moment):!Moment} a
  * @return {!Moment}
  */
-Moment.prototype.min = function(a) {};
+Moment.prototype.min = function (a) {};
 
 /**
  * @since 1.5.0
  * @return {!Moment}
  */
-Moment.prototype.local = function() {};
+Moment.prototype.local = function () {};
 
 /**
  * @nosideeffects
@@ -334,7 +334,7 @@ Moment.prototype.local = function() {};
  * @param {!string=} a
  * @return {!string}
  */
-Moment.prototype.format = function(a) {};
+Moment.prototype.format = function (a) {};
 
 /**
  * @nosideeffects
@@ -342,7 +342,7 @@ Moment.prototype.format = function(a) {};
  * @param {!boolean=} a
  * @return {!string}
  */
-Moment.prototype.fromNow = function(a) {};
+Moment.prototype.fromNow = function (a) {};
 
 /**
  * @nosideeffects
@@ -351,7 +351,7 @@ Moment.prototype.fromNow = function(a) {};
  * @param {!boolean=} b
  * @return {!string}
  */
-Moment.prototype.from = function(a, b) {};
+Moment.prototype.from = function (a, b) {};
 
 /**
  * @nosideeffects
@@ -359,7 +359,7 @@ Moment.prototype.from = function(a, b) {};
  * @param {!boolean=} a
  * @return {!string}
  */
-Moment.prototype.toNow = function(a) {};
+Moment.prototype.toNow = function (a) {};
 
 /**
  * @nosideeffects
@@ -368,14 +368,14 @@ Moment.prototype.toNow = function(a) {};
  * @param {!boolean=} b
  * @return {!string}
  */
-Moment.prototype.to = function(a, b) {};
+Moment.prototype.to = function (a, b) {};
 
 /**
  * @nosideeffects
  * @since 1.3.0
  * @return {!string}
  */
-Moment.prototype.calendar = function() {};
+Moment.prototype.calendar = function () {};
 
 /**
  * @nosideeffects
@@ -385,56 +385,56 @@ Moment.prototype.calendar = function() {};
  * @param {!boolean=} c
  * @return {!number}
  */
-Moment.prototype.diff = function(a, b, c) {};
+Moment.prototype.diff = function (a, b, c) {};
 
 /**
  * @nosideeffects
  * @since 1.0.0
  * @return {!number}
  */
-Moment.prototype.valueOf = function() {};
+Moment.prototype.valueOf = function () {};
 
 /**
  * @deprecated
  * @since 1.2.0
  * @type {(function():!number|function(!(number|string)):!Moment)}
  */
-Moment.prototype.zone = function() {};
+Moment.prototype.zone = function () {};
 
 /**
  * @nosideeffects
  * @since 1.5.0
  * @return {!number}
  */
-Moment.prototype.daysInMonth = function() {};
+Moment.prototype.daysInMonth = function () {};
 
 /**
  * @nosideeffects
  * @since 1.0.0
  * @return {!Date}
  */
-Moment.prototype.toDate = function() {};
+Moment.prototype.toDate = function () {};
 
 /**
  * @nosideeffects
  * @since 2.0.0
  * @return {!Moment.DateRecord}
  */
-Moment.prototype.toJSON = function() {};
+Moment.prototype.toJSON = function () {};
 
 /**
  * @nosideeffects
  * @since 2.1.0
  * @return {!string}
  */
-Moment.prototype.toISOString = function() {};
+Moment.prototype.toISOString = function () {};
 
 /**
  * @nosideeffects
  * @since 2.10.0
  * @return {!Moment.DateRecord}
  */
-Moment.prototype.toObject = function() {};
+Moment.prototype.toObject = function () {};
 
 /**
  * @nosideeffects
@@ -443,7 +443,7 @@ Moment.prototype.toObject = function() {};
  * @param {!string=} b
  * @return {!boolean}
  */
-Moment.prototype.isBefore = function(a, b) {};
+Moment.prototype.isBefore = function (a, b) {};
 
 /**
  * @nosideeffects
@@ -452,7 +452,7 @@ Moment.prototype.isBefore = function(a, b) {};
  * @param {!string=} b
  * @return {!boolean}
  */
-Moment.prototype.isSame = function(a, b) {};
+Moment.prototype.isSame = function (a, b) {};
 
 /**
  * @nosideeffects
@@ -461,7 +461,7 @@ Moment.prototype.isSame = function(a, b) {};
  * @param {!string=} b
  * @return {!boolean}
  */
-Moment.prototype.isAfter = function(a, b) {};
+Moment.prototype.isAfter = function (a, b) {};
 
 /**
  * @nosideeffects
@@ -470,7 +470,7 @@ Moment.prototype.isAfter = function(a, b) {};
  * @param {string=} b
  * @return {boolean}
  */
-Moment.prototype.isSameOrAfter = function(a, b) {};
+Moment.prototype.isSameOrAfter = function (a, b) {};
 
 /**
  * @nosideeffects
@@ -479,7 +479,7 @@ Moment.prototype.isSameOrAfter = function(a, b) {};
  * @param {string=} b
  * @return {boolean}
  */
-Moment.prototype.isSameOrBefore = function(a, b) {};
+Moment.prototype.isSameOrBefore = function (a, b) {};
 
 /**
  * @nosideeffects
@@ -489,28 +489,28 @@ Moment.prototype.isSameOrBefore = function(a, b) {};
  * @param {!string=} c
  * @return {!boolean}
  */
-Moment.prototype.isBetween = function(a, b, c) {};
+Moment.prototype.isBetween = function (a, b, c) {};
 
 /**
  * @nosideeffects
  * @since 1.0.0
  * @return {!boolean}
  */
-Moment.prototype.isLearYear = function() {};
+Moment.prototype.isLearYear = function () {};
 
 /**
  * @nosideeffects
  * @since 1.0.0
  * @return {!boolean}
  */
-Moment.prototype.isDST = function() {};
+Moment.prototype.isDST = function () {};
 
 /**
  * @nosideeffects
  * @since 2.3.0
  * @return {!boolean}
  */
-Moment.prototype.isDSTShifted = function() {};
+Moment.prototype.isDSTShifted = function () {};
 
 /**
  * @nosideeffects
@@ -518,7 +518,7 @@ Moment.prototype.isDSTShifted = function() {};
  * @param {?} a
  * @return {!boolean}
  */
-Moment.prototype.isMoment = function(a) {};
+Moment.prototype.isMoment = function (a) {};
 
 /**
  * @nosideeffects
@@ -526,14 +526,14 @@ Moment.prototype.isMoment = function(a) {};
  * @param {?} a
  * @return {!boolean}
  */
-Moment.prototype.isDate = function(a) {};
+Moment.prototype.isDate = function (a) {};
 
 /**
  * @nosideeffects
  * @since 1.6.0
  * @type {(function(!number, !string=):!Moment.Duration|function(!Moment.DateRecord):!Moment.Duration)}
  */
-Moment.prototype.duration = function() {};
+Moment.prototype.duration = function () {};
 
 /**
  * @nosideeffects
@@ -541,124 +541,124 @@ Moment.prototype.duration = function() {};
  * @param {!boolean=} a
  * @return {!string}
  */
-Moment.Duration.prototype.humanize = function(a) {};
+Moment.Duration.prototype.humanize = function (a) {};
 
 /**
  * @nosideeffects
  * @since 1.6.0
  * @return {!number}
  */
-Moment.Duration.prototype.milliseconds = function() {};
+Moment.Duration.prototype.milliseconds = function () {};
 
 /**
  * @nosideeffects
  * @since 1.6.0
  * @return {!number}
  */
-Moment.Duration.prototype.asMilliseconds = function() {};
+Moment.Duration.prototype.asMilliseconds = function () {};
 
 /**
  * @nosideeffects
  * @since 1.6.0
  * @return {!number}
  */
-Moment.Duration.prototype.seconds = function() {};
+Moment.Duration.prototype.seconds = function () {};
 
 /**
  * @nosideeffects
  * @since 1.6.0
  * @return {!number}
  */
-Moment.Duration.prototype.asSeconds = function() {};
+Moment.Duration.prototype.asSeconds = function () {};
 
 /**
  * @nosideeffects
  * @since 1.6.0
  * @return {!number}
  */
-Moment.Duration.prototype.minutes = function() {};
+Moment.Duration.prototype.minutes = function () {};
 
 /**
  * @nosideeffects
  * @since 1.6.0
  * @return {!number}
  */
-Moment.Duration.prototype.asMinutes = function() {};
+Moment.Duration.prototype.asMinutes = function () {};
 
 /**
  * @nosideeffects
  * @since 1.6.0
  * @return {!number}
  */
-Moment.Duration.prototype.hours = function() {};
+Moment.Duration.prototype.hours = function () {};
 
 /**
  * @nosideeffects
  * @since 1.6.0
  * @return {!number}
  */
-Moment.Duration.prototype.asHours = function() {};
+Moment.Duration.prototype.asHours = function () {};
 
 /**
  * @nosideeffects
  * @since 1.6.0
  * @return {!number}
  */
-Moment.Duration.prototype.days = function() {};
+Moment.Duration.prototype.days = function () {};
 
 /**
  * @nosideeffects
  * @since 1.6.0
  * @return {!number}
  */
-Moment.Duration.prototype.asDays = function() {};
+Moment.Duration.prototype.asDays = function () {};
 
 /**
  * @nosideeffects
  * @since 1.6.0
  * @return {!number}
  */
-Moment.Duration.prototype.months = function() {};
+Moment.Duration.prototype.months = function () {};
 
 /**
  * @nosideeffects
  * @since 1.6.0
  * @return {!number}
  */
-Moment.Duration.prototype.asMonths = function() {};
+Moment.Duration.prototype.asMonths = function () {};
 
 /**
  * @nosideeffects
  * @since 1.6.0
  * @return {!number}
  */
-Moment.Duration.prototype.years = function() {};
+Moment.Duration.prototype.years = function () {};
 
 /**
  * @nosideeffects
  * @since 1.6.0
  * @return {!number}
  */
-Moment.Duration.prototype.asYears = function() {};
+Moment.Duration.prototype.asYears = function () {};
 
 /**
  * @since 2.1.0
  * @type {(function(!number, !string):!Moment.Duration|function(!number):!Moment.Duration|function(!Moment.Duration):!Moment.Duration|function(Object):!Moment.Duration)}
  */
-Moment.Duration.prototype.add = function() {};
+Moment.Duration.prototype.add = function () {};
 
 /**
  * @since 2.1.0
  * @type {(function(!number, !string):!Moment.Duration|function(!number):!Moment.Duration|function(!Moment.Duration):!Moment.Duration|function(Object):!Moment.Duration)}
  */
-Moment.Duration.prototype.subtract = function() {};
+Moment.Duration.prototype.subtract = function () {};
 
 /**
  * @since 2.1.0
  * @param {!string} a
  * @return {!number}
  */
-Moment.Duration.prototype.as = function(a) {};
+Moment.Duration.prototype.as = function (a) {};
 
 /**
  * @nosideeffects
@@ -666,14 +666,14 @@ Moment.Duration.prototype.as = function(a) {};
  * @param {!string} unit
  * @return {!number}
  */
-Moment.Duration.prototype.get = function(unit) {};
+Moment.Duration.prototype.get = function (unit) {};
 
 /**
  * @nosideeffects
  * @since 2.9.0
  * @return {!string}
  */
-Moment.Duration.prototype.toJSON = function() {};
+Moment.Duration.prototype.toJSON = function () {};
 
 /* === Utilities === */
 
@@ -682,14 +682,14 @@ Moment.Duration.prototype.toJSON = function() {};
  * @param {!string} unit
  * @return {!string}
  */
-Moment.normalizeUnits = function(unit) {};
+Moment.normalizeUnits = function (unit) {};
 
 /**
  * @since 2.3.0
  * @param {?} a
  * @return {!Moment}
  */
-Moment.invalid = function(a) {};
+Moment.invalid = function (a) {};
 
 /* === Locale === */
 
@@ -697,7 +697,7 @@ Moment.invalid = function(a) {};
  * @since 2.8.0
  * @interface
  */
-Moment.Locale = function() {};
+Moment.Locale = function () {};
 
 /**
  * @nosideeffects
@@ -705,7 +705,7 @@ Moment.Locale = function() {};
  * @param {!string=} a
  * @return {!Moment.Locale}
  */
-Moment.prototype.localeData = function(a) {};
+Moment.prototype.localeData = function (a) {};
 
 /**
  * @nosideeffects
@@ -713,7 +713,7 @@ Moment.prototype.localeData = function(a) {};
  * @param {!Moment} a
  * @return {!string}
  */
-Moment.Locale.prototype.months = function(a) {};
+Moment.Locale.prototype.months = function (a) {};
 
 /**
  * @nosideeffects
@@ -721,7 +721,7 @@ Moment.Locale.prototype.months = function(a) {};
  * @param {!Moment} a
  * @return {!string}
  */
-Moment.Locale.prototype.monthsShort = function(a) {};
+Moment.Locale.prototype.monthsShort = function (a) {};
 
 /**
  * @nosideeffects
@@ -729,7 +729,7 @@ Moment.Locale.prototype.monthsShort = function(a) {};
  * @param {!string} a
  * @return {!number}
  */
-Moment.Locale.prototype.monthParse = function(a) {};
+Moment.Locale.prototype.monthParse = function (a) {};
 
 /**
  * @nosideeffects
@@ -737,7 +737,7 @@ Moment.Locale.prototype.monthParse = function(a) {};
  * @param {!Moment} a
  * @return {!string}
  */
-Moment.Locale.prototype.weekdays = function(a) {};
+Moment.Locale.prototype.weekdays = function (a) {};
 
 /**
  * @nosideeffects
@@ -745,7 +745,7 @@ Moment.Locale.prototype.weekdays = function(a) {};
  * @param {!Moment} a
  * @return {!string}
  */
-Moment.Locale.prototype.weekdaysShort = function(a) {};
+Moment.Locale.prototype.weekdaysShort = function (a) {};
 
 /**
  * @nosideeffects
@@ -753,7 +753,7 @@ Moment.Locale.prototype.weekdaysShort = function(a) {};
  * @param {!Moment} a
  * @return {!string}
  */
-Moment.Locale.prototype.weekdaysMin = function(a) {};
+Moment.Locale.prototype.weekdaysMin = function (a) {};
 
 /**
  * @nosideeffects
@@ -761,7 +761,7 @@ Moment.Locale.prototype.weekdaysMin = function(a) {};
  * @param {!string} a
  * @return {!number}
  */
-Moment.Locale.prototype.weekdaysParse = function(a) {};
+Moment.Locale.prototype.weekdaysParse = function (a) {};
 
 /**
  * @nosideeffects
@@ -769,7 +769,7 @@ Moment.Locale.prototype.weekdaysParse = function(a) {};
  * @param {!string} a
  * @return {!string}
  */
-Moment.Locale.prototype.longDateFormat = function(a) {};
+Moment.Locale.prototype.longDateFormat = function (a) {};
 
 /**
  * @nosideeffects
@@ -777,7 +777,7 @@ Moment.Locale.prototype.longDateFormat = function(a) {};
  * @param {!string} a
  * @return {!boolean}
  */
-Moment.Locale.prototype.isPM = function(a) {};
+Moment.Locale.prototype.isPM = function (a) {};
 
 /**
  * @nosideeffects
@@ -787,7 +787,7 @@ Moment.Locale.prototype.isPM = function(a) {};
  * @param {!boolean} c
  * @return {!string}
  */
-Moment.Locale.prototype.meridiem = function(a, b, c) {};
+Moment.Locale.prototype.meridiem = function (a, b, c) {};
 
 /**
  * @nosideeffects
@@ -796,7 +796,7 @@ Moment.Locale.prototype.meridiem = function(a, b, c) {};
  * @param {!Moment} b
  * @return {!string}
  */
-Moment.Locale.prototype.calendar = function(a, b) {};
+Moment.Locale.prototype.calendar = function (a, b) {};
 
 /**
  * @nosideeffects
@@ -807,7 +807,7 @@ Moment.Locale.prototype.calendar = function(a, b) {};
  * @param {!boolean} d
  * @return {!string}
  */
-Moment.Locale.prototype.relativeTime = function(a, b, c, d) {};
+Moment.Locale.prototype.relativeTime = function (a, b, c, d) {};
 
 /**
  * @nosideeffects
@@ -816,7 +816,7 @@ Moment.Locale.prototype.relativeTime = function(a, b, c, d) {};
  * @param {!string} b
  * @return {!string}
  */
-Moment.Locale.prototype.pastFuture = function(a, b) {};
+Moment.Locale.prototype.pastFuture = function (a, b) {};
 
 /**
  * @nosideeffects
@@ -824,7 +824,7 @@ Moment.Locale.prototype.pastFuture = function(a, b) {};
  * @param {!number} a
  * @return {!string}
  */
-Moment.Locale.prototype.ordinal = function(a) {};
+Moment.Locale.prototype.ordinal = function (a) {};
 
 /**
  * @nosideeffects
@@ -832,7 +832,7 @@ Moment.Locale.prototype.ordinal = function(a) {};
  * @param {!string} a
  * @return {!string}
  */
-Moment.Locale.prototype.preparse = function(a) {};
+Moment.Locale.prototype.preparse = function (a) {};
 
 /**
  * @nosideeffects
@@ -840,7 +840,7 @@ Moment.Locale.prototype.preparse = function(a) {};
  * @param {!string} a
  * @return {!string}
  */
-Moment.Locale.prototype.postformat = function(a) {};
+Moment.Locale.prototype.postformat = function (a) {};
 
 /**
  * @nosideeffects
@@ -848,25 +848,25 @@ Moment.Locale.prototype.postformat = function(a) {};
  * @param {!Moment} a
  * @return {!number}
  */
-Moment.Locale.prototype.week = function(a) {};
+Moment.Locale.prototype.week = function (a) {};
 
 /**
  * @nosideeffects
  * @since 2.8.0
  * @return {!string}
  */
-Moment.Locale.prototype.invalidDate = function() {};
+Moment.Locale.prototype.invalidDate = function () {};
 
 /**
  * @nosideeffects
  * @since 2.8.0
  * @return {!number}
  */
-Moment.Locale.prototype.firstDayOfWeek = function() {};
+Moment.Locale.prototype.firstDayOfWeek = function () {};
 
 /**
  * @nosideeffects
  * @since 2.8.0
  * @return {!number}
  */
-Moment.Locale.prototype.firstDayOfYear = function() {};
+Moment.Locale.prototype.firstDayOfYear = function () {};

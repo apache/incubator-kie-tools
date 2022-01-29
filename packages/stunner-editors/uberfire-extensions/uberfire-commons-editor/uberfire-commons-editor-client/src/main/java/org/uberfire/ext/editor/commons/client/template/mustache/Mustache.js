@@ -2,5 +2,4 @@
  * @externs
  */
 
-
-var Mustache = function(){}
+var Mustache = function () {};

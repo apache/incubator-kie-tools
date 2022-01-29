@@ -15,104 +15,105 @@
  */
 
 .notification {
-    border: 0;
-    margin: 0;
-    padding: 0;
-    z-index: 100000;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  z-index: 100000;
 }
 
 .uf-scroll-panel {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  width: 100%;
 }
 
 @external .navbar-fixed-top, .navbar-fixed-bottom;
 
-.navbar-fixed-top, .navbar-fixed-bottom {
-    position: static !important;
+.navbar-fixed-top,
+.navbar-fixed-bottom {
+  position: static !important;
 }
 
 /* Styles prefixed with uf- are not obfuscated and can be overridden in application stylesheets. */
 @external .uf-*, .js-*;
 
 .uf-no-select {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .uf-perspective-container {
-    height: 100%;
+  height: 100%;
 }
 
 .uf-perspective-row-12 {
-    height: 100%;
+  height: 100%;
 }
 
 .uf-perspective-row-11 {
-    height: 91.66666667%;
+  height: 91.66666667%;
 }
 
 .uf-perspective-row-10 {
-    height: 83.33333333%;
+  height: 83.33333333%;
 }
 
 .uf-perspective-row-9 {
-    height: 75%;
+  height: 75%;
 }
 
 .uf-perspective-row-8 {
-    height: 66.66666667%;
+  height: 66.66666667%;
 }
 
 .uf-perspective-row-7 {
-    height: 58.33333333%;
+  height: 58.33333333%;
 }
 
 .uf-perspective-row-6 {
-    height: 50%;
+  height: 50%;
 }
 
 .uf-perspective-row-5 {
-    height: 41.66666667%;
+  height: 41.66666667%;
 }
 
 .uf-perspective-row-4 {
-    height: 33.33333333%;
+  height: 33.33333333%;
 }
 
 .uf-perspective-row-3 {
-    height: 25%;
+  height: 25%;
 }
 
 .uf-perspective-row-2 {
-    height: 16.66666667%;
+  height: 16.66666667%;
 }
 
 .uf-perspective-row-1 {
-    height: 8.33333333%;
+  height: 8.33333333%;
 }
 
 .uf-perspective-col {
-    height: 100%;
+  height: 100%;
 }
 
 .uf-perspective-rendered-col {
-    padding-left: 0;
-    padding-right: 0;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .uf-perspective-rendered-row {
-    margin-left: 0;
-    margin-right: 0;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .uf-perspective-rendered-container {
-    width: 100%;
-    max-width: none;
-    padding: 0;
+  width: 100%;
+  max-width: none;
+  padding: 0;
 }
 .uf-le-overflow {
-    overflow: auto;
+  overflow: auto;
 }

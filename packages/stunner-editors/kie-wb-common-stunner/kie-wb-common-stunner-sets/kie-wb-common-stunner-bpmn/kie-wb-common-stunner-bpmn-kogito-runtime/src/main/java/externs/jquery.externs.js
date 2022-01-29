@@ -32,7 +32,7 @@
  */
 
 /**
-* @param {...*} var_args
-* @return {Object}
-*/
-jQuery.prototype.popovers = function(var_args) {};
+ * @param {...*} var_args
+ * @return {Object}
+ */
+jQuery.prototype.popovers = function (var_args) {};

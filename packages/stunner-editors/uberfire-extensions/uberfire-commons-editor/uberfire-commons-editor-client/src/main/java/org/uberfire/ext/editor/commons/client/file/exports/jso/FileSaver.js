@@ -2,5 +2,4 @@
  * @externs
  */
 
-
-var JsFileSaver = function(){}
+var JsFileSaver = function () {};

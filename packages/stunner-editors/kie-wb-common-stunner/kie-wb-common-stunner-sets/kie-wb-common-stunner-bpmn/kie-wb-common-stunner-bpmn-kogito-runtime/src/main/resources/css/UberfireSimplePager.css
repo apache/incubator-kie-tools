@@ -15,12 +15,12 @@
  */
 
 .pageDetails {
-    padding: 4px 8px;
-    text-align: center;
+  padding: 4px 8px;
+  text-align: center;
 }
 
 .button {
-    padding: 4px;
-    cursor: pointer;
-    cursor: hand;
+  padding: 4px;
+  cursor: pointer;
+  cursor: hand;
 }
