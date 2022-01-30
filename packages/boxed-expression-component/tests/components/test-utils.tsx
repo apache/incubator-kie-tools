@@ -161,6 +161,8 @@ export function wrapComponentInContext(
         pmmlParams,
         supervisorHash: "",
         setSupervisorHash: jest.fn,
+        isContextMenuOpen: false,
+        setIsContextMenuOpen: jest.fn,
         editorRef: { current: document.body as HTMLDivElement },
         currentlyOpenedHandlerCallback: jest.fn,
         setCurrentlyOpenedHandlerCallback: jest.fn,
