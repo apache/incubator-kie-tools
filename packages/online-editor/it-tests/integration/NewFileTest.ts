@@ -18,7 +18,7 @@ import * as buildEnv from "@kie-tools/build-env";
 
 describe("New file test", () => {
   beforeEach(() => {
-    cy.visit(`https://localhost:${buildEnv.onlineEditor.dev.port}/`);
+    cy.visit("/");
   });
 
   it("should create new empty BPMN", () => {
