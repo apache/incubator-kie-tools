@@ -129,3 +129,37 @@ export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number):
 
   cellFocus(<HTMLTableCellElement>gotoRow?.cells[currCell.cellIndex]);
 };
+
+/**
+ * Focus Inside Cell of a react-table. Can focus an input or a nested table inside a cell.
+ *
+ * @param currentEl the crrent element
+ * @returns
+ */
+export const focusInsideCell = (currentEl: HTMLElement | null): void => {
+  if (!currentEl) {
+    return;
+  }
+
+  const nestedTbody = <HTMLTableSectionElement>currentEl.querySelector("table > tbody");
+
+  if (!nestedTbody) {
+    focusTextArea(currentEl.querySelector("textarea"));
+  } else {
+    cellFocus(nestedTbody.rows[0].cells[1]);
+  }
+};
+
+/**
+ * Focus Parent Cell of a cell.
+ *
+ * @param currCell the current cell
+ * @returns
+ */
+export const focusParentCell = (currCell: HTMLElement | null): void => {
+  if (!currCell) {
+    return;
+  }
+
+  cellFocus(currCell.parentElement?.closest("td") || null);
+};

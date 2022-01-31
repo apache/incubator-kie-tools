@@ -178,6 +178,29 @@ describe("Nested Relations", () => {
     cy.get(".context-expression > div > table > tbody > tr:eq(1) td:eq(2)").should("be.focused");
   });
 
+  it("Navigate inside nested tables", () => {
+    cy.get(".context-expression > div > table > tbody > tr:eq(0) td:eq(2)")
+      .as("parentCell")
+      .click({ force: true })
+      .type("{enter}")
+      .find("table")
+      .as("nestedTable")
+      .find("tr:eq(1) td:eq(1)")
+      .should("be.focused")
+      .type("{leftarrow}{leftarrow}{leftarrow}");
+
+    cy.get("@nestedTable")
+      .find("tr:eq(1) td:eq(0)")
+      .should("be.focused")
+      .type("{rightarrow}{rightarrow}{rightarrow}{rightarrow}{downarrow}{downarrow}");
+
+    cy.get("@nestedTable").find("tr:eq(1) td:eq(3)").should("be.focused").type("{esc}");
+
+    cy.get("@parentCell").should("be.focused").type("{leftarrow}");
+
+    cy.get(".context-expression > div > table > tbody > tr:eq(0) td:eq(1)").should("be.focused");
+  });
+
   it("Interaction with contextMenu", function () {
     cy.get(".context-expression > div > table > tbody > tr:eq(2) td:eq(2)")
       .rightclick()
@@ -185,6 +208,9 @@ describe("Nested Relations", () => {
       .should("be.focused")
       .click()
       .type("{leftarrow}")
-      .should("be.focused");
+      .should("be.focused")
+      .type("{esc}");
+
+    cy.get(".pf-c-popover__content").should("not.exist");
   });
 });

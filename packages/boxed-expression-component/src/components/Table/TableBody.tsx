@@ -20,7 +20,16 @@ import { Tbody, Td, Tr } from "@patternfly/react-table";
 import { Column as IColumn, TableHeaderVisibility } from "../../api";
 import { Cell, Column, Row, TableInstance } from "react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
-import { focusPrevCell, focusNextCell, focusTextArea, focusUpperCell, focusLowerCell } from "./common";
+import {
+  focusPrevCell,
+  focusNextCell,
+  focusTextArea,
+  focusUpperCell,
+  focusLowerCell,
+  focusInsideCell,
+  getParentCell,
+  focusParentCell,
+} from "./common";
 import { BoxedExpressionGlobalContext } from "../../context";
 
 export interface TableBodyProps {
@@ -72,18 +81,25 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           return;
         }
 
-        if (key == "ArrowLeft") {
-          focusPrevCell(e.currentTarget);
-        } else if (key == "ArrowRight") {
-          focusNextCell(e.currentTarget);
-        } else if (key == "ArrowUp") {
-          focusUpperCell(e.currentTarget, rowIndex);
-        } else if (key == "ArrowDown") {
-          focusLowerCell(e.currentTarget, rowIndex);
-        } else if (key == "Enter" && !globalContext.isContextMenuOpen) {
-          focusTextArea(e.currentTarget.querySelector("textarea"));
+        //prevent the parent cell catch this event if there is a nested table
+        if (e.currentTarget !== getParentCell(e.target as HTMLElement)) {
+          return;
         }
-        /* TODO: FocusUtils: ArrowNavigation with nested tables  */
+
+        if (key === "ArrowLeft") {
+          focusPrevCell(e.currentTarget);
+        } else if (key === "ArrowRight") {
+          focusNextCell(e.currentTarget);
+        } else if (key === "ArrowUp") {
+          focusUpperCell(e.currentTarget, rowIndex);
+        } else if (key === "ArrowDown") {
+          focusLowerCell(e.currentTarget, rowIndex);
+        } else if (key === "Enter" && !globalContext.isContextMenuOpen) {
+          focusInsideCell(e.currentTarget);
+          /* TODO: TableBody: open the context menu when press enter if is a context cell*/
+        } else if (key === "Escape") {
+          focusParentCell(e.currentTarget);
+        }
       },
     }),
     [globalContext.isContextMenuOpen]
