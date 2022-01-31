@@ -63,10 +63,18 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
   }
 
   public async kogitoEditor_contentRequest() {
-    return vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri).then((contentArray) => {
-      this.initialBackup = undefined;
-      return { content: this.decoder.decode(contentArray), path: this.editor.document.relativePath };
-    });
+    let contentArray: Uint8Array;
+    try {
+      contentArray = await vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri);
+    } catch (e) {
+      // If file doesn't exist, we create an empty one.
+      // This is important for the use-case where users type `code new-file.dmn` on a terminal.
+      await vscode.workspace.fs.writeFile(this.editor.document.uri, new Uint8Array());
+      return { content: "", path: this.editor.document.relativePath };
+    }
+
+    this.initialBackup = undefined;
+    return { content: this.decoder.decode(contentArray), path: this.editor.document.relativePath };
   }
 
   public kogitoEditor_setContentError(editorContent: EditorContent) {
