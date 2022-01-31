@@ -18,7 +18,7 @@ import * as buildEnv from "@kie-tools/build-env";
 
 describe("Upload file test", () => {
   beforeEach(() => {
-    cy.visit(Cypress.env("ONLINE_EDITOR_URL") ?? `https://localhost:${buildEnv.onlineEditor.dev.port}/`);
+    cy.visit("/");
   });
 
   it("should upload BPMN file", () => {

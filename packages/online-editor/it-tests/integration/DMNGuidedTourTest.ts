@@ -18,9 +18,7 @@ import * as buildEnv from "@kie-tools/build-env";
 
 describe("DMN Guided Tour Test", () => {
   beforeEach(() => {
-    cy.visit(
-      Cypress.env(buildEnv.onlineEditor.dev.urlProperty) ?? `https://localhost:${buildEnv.onlineEditor.dev.port}/`
-    );
+    cy.visit("/");
   });
 
   it("follow first guided tour instruction", () => {

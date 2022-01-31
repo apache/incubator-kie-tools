@@ -21,9 +21,7 @@ describe("Open from source test", () => {
     "https://raw.githubusercontent.com/kiegroup/kie-tools/main/packages/online-editor/it-tests/fixtures/";
 
   beforeEach(() => {
-    cy.visit(
-      Cypress.env(buildEnv.onlineEditor.dev.urlProperty) ?? `https://localhost:${buildEnv.onlineEditor.dev.port}/`
-    );
+    cy.visit("/");
   });
 
   it("should open BPMN file from GitHub url", () => {
