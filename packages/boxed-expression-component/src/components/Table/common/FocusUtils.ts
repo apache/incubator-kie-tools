@@ -142,11 +142,14 @@ export const focusInsideCell = (currentEl: HTMLElement | null): void => {
   }
 
   const nestedTbody = <HTMLTableSectionElement>currentEl.querySelector("table > tbody");
+  const cellWithPopoverMenu = <HTMLElement>currentEl.querySelector(".with-popover-menu, .logic-type-not-present");
 
-  if (!nestedTbody) {
-    focusTextArea(currentEl.querySelector("textarea"));
-  } else {
+  if (nestedTbody) {
     cellFocus(nestedTbody.rows[0].cells[1]);
+  } else if (cellWithPopoverMenu) {
+    cellWithPopoverMenu.click();
+  } else {
+    focusTextArea(currentEl.querySelector("textarea"));
   }
 };
 

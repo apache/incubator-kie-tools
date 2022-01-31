@@ -203,6 +203,7 @@ describe("Nested Relations", () => {
 
   it("Interaction with contextMenu", function () {
     cy.get(".context-expression > div > table > tbody > tr:eq(2) td:eq(2)")
+      .as("firstEl")
       .rightclick()
       .type("{leftarrow}")
       .should("be.focused")

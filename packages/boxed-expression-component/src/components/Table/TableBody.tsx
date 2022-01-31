@@ -96,7 +96,6 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           focusLowerCell(e.currentTarget, rowIndex);
         } else if (key === "Enter" && !globalContext.isContextMenuOpen) {
           focusInsideCell(e.currentTarget);
-          /* TODO: TableBody: open the context menu when press enter if is a context cell*/
         } else if (key === "Escape") {
           focusParentCell(e.currentTarget);
         }
