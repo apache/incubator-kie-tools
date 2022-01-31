@@ -131,21 +131,18 @@ public class DMNDocumentationDRDsFactory {
                                                           final Node<View, Edge> node,
                                                           final DRGElement drgElement) {
 
-        final String name = getName(drgElement);
-        final String description = getDescription(drgElement);
-        final String type = getType(drgElement);
-        final String question = getQuestion(drgElement);
-        final String allowedAnswers = getAllowedAnswers(drgElement);
-        final String image = getNodeImage(diagram, node);
+        DMNDocumentationDRD dmnDocumentationDRD = DMNDocumentationDRD.create();
+        dmnDocumentationDRD.setDrdName(getName(drgElement));
+        dmnDocumentationDRD.setDrdDescription(getDescription(drgElement));
+        dmnDocumentationDRD.setDrdType(getType(drgElement));
+        dmnDocumentationDRD.setDrdQuestion(getQuestion(drgElement));
+        dmnDocumentationDRD.setDrdAllowedAnswers(getAllowedAnswers(drgElement));
+        dmnDocumentationDRD.setDrdBoxedExpressionImage(getNodeImage(diagram, node));
         final List<DMNDocumentationExternalLink> externalLinks = getExternalLinks(drgElement);
-        return DMNDocumentationDRD.create(name,
-                                          type,
-                                          question,
-                                          allowedAnswers,
-                                          description,
-                                          image,
-                                          externalLinks,
-                                          !externalLinks.isEmpty());
+        dmnDocumentationDRD.setDrdExternalLinks(externalLinks);
+        dmnDocumentationDRD.setHasExternalLinks(!externalLinks.isEmpty());
+
+        return dmnDocumentationDRD;
     }
 
     private List<DMNDocumentationExternalLink> getExternalLinks(final DRGElement drgElement) {
