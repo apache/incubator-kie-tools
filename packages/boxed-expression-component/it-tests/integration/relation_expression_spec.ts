@@ -123,4 +123,21 @@ describe("Relation Expression Tests", () => {
       cy.ouiaId("expression-column-3").should("have.text", "");
     });
   });
+
+  it("Keyboard navigation", () => {
+    // Entry point for each new expression
+    cy.ouiaId("expression-container").click();
+
+    defineRelationExpression(3, 1);
+
+    cy.ouiaId("expression-grid-table").contains("row 0 column 0").rightclick();
+    cy.ouiaId("expression-table-handler-menu").contains("Insert below").click({ force: true });
+
+    cy.ouiaId("expression-row-1").within(($row) => {
+      cy.ouiaId("expression-column-1").type(
+        "{rightarrow}{rightarrow}{rightarrow}{rightarrow}{uparrow}{downarrow}{enter}Newtext"
+      );
+      cy.ouiaId("expression-column-3").click({ force: true }).find("textarea").should("have.text", "Newtext");
+    });
+  });
 });
