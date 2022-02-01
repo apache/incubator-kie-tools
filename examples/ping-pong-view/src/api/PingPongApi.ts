@@ -18,7 +18,6 @@
  * The API of a PingPongViewApi.
  *
  * These methods are what the "external world" knows about this component.
- * In this case, there are no direct interactions with a Ping-Pong View.
  */
 export interface PingPongApi {
   clearLogs(): void;

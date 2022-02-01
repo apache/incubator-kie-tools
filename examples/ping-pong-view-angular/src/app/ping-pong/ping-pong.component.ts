@@ -41,8 +41,8 @@ export class PingPongComponent implements OnInit {
     // Initialize log with a starting message.
     this.pingPongApiService.log.next({ line: "Logs will show up here", time: 0 });
 
-    // Initialize envelope with config (stating that we are in an iframe),
-    // the bus, ou factory (in this case, a service that implements the "create" method).
+    // Initialize envelope with the container config, the bus,
+    // and factory (in this case, a service that implements the "create" method).
     PingPongViewEnvelope.init({
       config: { containerType: this.containerType, envelopeId: this.envelopeId! },
       bus: { postMessage: (message, _targetOrigin, transfer) => window.parent.postMessage(message, "*", transfer) },
