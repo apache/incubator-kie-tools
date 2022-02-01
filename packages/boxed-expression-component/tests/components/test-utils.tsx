@@ -112,7 +112,22 @@ export function usingTestingBoxedExpressionI18nContext(
     ctx: usedCtx,
     wrapper: (
       <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
-        {usedCtx.children}
+        <BoxedExpressionGlobalContext.Provider
+          value={{
+            decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+            dataTypes,
+            pmmlParams,
+            supervisorHash: "",
+            setSupervisorHash: jest.fn,
+            isContextMenuOpen: false,
+            setIsContextMenuOpen: jest.fn,
+            editorRef: { current: document.body as HTMLDivElement },
+            currentlyOpenedHandlerCallback: jest.fn,
+            setCurrentlyOpenedHandlerCallback: jest.fn,
+          }}
+        >
+          {usedCtx.children}
+        </BoxedExpressionGlobalContext.Provider>
       </I18nDictionariesProvider>
     ),
   };

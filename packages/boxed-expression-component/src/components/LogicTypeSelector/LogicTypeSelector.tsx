@@ -216,7 +216,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
 
   useEffect(() => {
     globalContext.setIsContextMenuOpen(contextMenuVisibility);
-  }, [contextMenuVisibility]);
+  }, [contextMenuVisibility]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const cssClasses = useMemo(() => {
     const classes = [];

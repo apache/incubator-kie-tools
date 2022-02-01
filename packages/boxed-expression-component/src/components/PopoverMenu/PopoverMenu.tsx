@@ -15,10 +15,10 @@
  */
 
 import * as React from "react";
-import { useContext, useCallback } from "react";
+import { useCallback } from "react";
 import { Popover } from "@patternfly/react-core";
 import "./PopoverMenu.css";
-import { BoxedExpressionGlobalContext } from "../../context";
+import { useBoxedExpression } from "../../context";
 
 export interface PopoverMenuProps {
   /** Optional children element to be considered for triggering the popover */
@@ -49,15 +49,15 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
   hasAutoWidth,
   minWidth,
 }: PopoverMenuProps) => {
-  const globalContext = useContext(BoxedExpressionGlobalContext);
+  const { setIsContextMenuOpen } = useBoxedExpression();
 
   const onHidden = useCallback(() => {
-    globalContext.setIsContextMenuOpen(false);
-  }, [globalContext]);
+    setIsContextMenuOpen(false);
+  }, [setIsContextMenuOpen]);
 
   const onShown = useCallback(() => {
-    globalContext.setIsContextMenuOpen(true);
-  }, [globalContext]);
+    setIsContextMenuOpen(true);
+  }, [setIsContextMenuOpen]);
 
   return (
     <Popover

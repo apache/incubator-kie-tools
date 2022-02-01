@@ -147,7 +147,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
         </Td>
       );
     },
-    [getColumnKey, onColumnsUpdate, tableInstance, tdProps]
+    [getColumnKey, onColumnsUpdate, tableInstance, tdProps, tdBaseProps]
   );
 
   const renderBodyRow = useCallback(
@@ -191,7 +191,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
         })}
       </Tr>
     ),
-    [children]
+    [children, tdBaseProps]
   );
 
   return (
