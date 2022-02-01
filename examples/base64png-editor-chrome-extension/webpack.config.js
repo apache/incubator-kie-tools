@@ -33,7 +33,6 @@ module.exports = (env) => {
     },
     devServer: {
       compress: true,
-      watchContentBase: true,
       https: true,
       port: buildEnv.examples.chromeExtensionEnvelope.port,
     },

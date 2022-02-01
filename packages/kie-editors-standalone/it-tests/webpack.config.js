@@ -37,11 +37,12 @@ module.exports = (env) =>
       "@kie-tools/kie-editors-standalone/dist/bpmn": "BpmnEditor",
     },
     devServer: {
-      contentBase: [path.join(__dirname, "dist"), path.join(__dirname, "../dist/")],
+      static: [{ directory: path.join(__dirname, "dist") }, { directory: path.join(__dirname, "../dist/") }],
       compress: true,
-      inline: true,
       historyApiFallback: true,
-      overlay: true,
+      client: {
+        overlay: true,
+      },
       open: false,
       port: buildEnv.standaloneEditors.dev.port,
     },
