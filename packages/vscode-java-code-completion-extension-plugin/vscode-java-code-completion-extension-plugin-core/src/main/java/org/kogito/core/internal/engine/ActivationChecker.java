@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
 import org.kogito.core.internal.util.WorkspaceUtil;
 
@@ -54,8 +53,8 @@ public class ActivationChecker {
     }
 
     public String getActivatorUri() {
-        if (this.existActivator() && StringUtils.isNotEmpty(this.activatorUri)) {
-            return this.activatorUri;
+        if (this.existActivator() && this.activatorUri != null && !this.activatorUri.isEmpty()) {
+            return "file://" + this.activatorUri;
         } else {
             throw new ActivationCheckerException("Activator URI is not present");
         }
