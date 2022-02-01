@@ -23,6 +23,7 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const stunnerEditors = require("@kie-tools/stunner-editors");
 const { EnvironmentPlugin } = require("webpack");
 const buildEnv = require("@kie-tools/build-env");
+const path = require("path");
 
 function getRouterArgs() {
   const targetOrigin = buildEnv.chromeExtension.routerTargetOrigin;
@@ -57,9 +58,8 @@ module.exports = async (env) => {
       "scesim-envelope": "./src/envelope/SceSimEditorEnvelopeApp.ts",
     },
     devServer: {
-      contentBase: ["dist"],
+      static: [{ directory: path.join(__dirname, "./dist") }],
       compress: true,
-      watchContentBase: true,
       https: true,
       port: buildEnv.chromeExtension.dev.port,
     },
