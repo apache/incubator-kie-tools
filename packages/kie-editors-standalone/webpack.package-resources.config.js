@@ -33,9 +33,7 @@ module.exports = (env) =>
     },
     devServer: {
       historyApiFallback: false,
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: [path.join(__dirname, "./dist")],
+      static: [{ directory: path.join(__dirname, "./dist") }],
       compress: true,
       port: buildEnv.standaloneEditors.dev.port,
     },

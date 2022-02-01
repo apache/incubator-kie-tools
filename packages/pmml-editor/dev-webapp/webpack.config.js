@@ -58,15 +58,13 @@ module.exports = (env) =>
       },
     },
     devServer: {
+      client: {
+        overlay: true,
+      },
       historyApiFallback: true,
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: path.join(__dirname),
       compress: true,
       port: buildEnv.pmmlEditor.dev.port,
       open: false,
-      inline: true,
       hot: true,
-      overlay: true,
     },
   });
