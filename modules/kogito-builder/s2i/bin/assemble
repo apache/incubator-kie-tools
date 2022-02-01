@@ -20,11 +20,17 @@ log_info "----> RUNTIME_TYPE has been set to $runtime_type"
 # Configure GraalVM memory limits
 
 case ${runtime_type} in 
-    "quarkus") 
-              CONFIGURE_SCRIPTS=(
+    "quarkus")
+	if [ "${NATIVE^^}" == "TRUE" ]; then
+	      CONFIGURE_SCRIPTS=(
                 "${KOGITO_HOME}"/launch/configure-maven.sh
                 "${KOGITO_HOME}"/launch/memory-limit.sh
               )
+	else
+	      CONFIGURE_SCRIPTS=(
+                "${KOGITO_HOME}"/launch/configure-maven.sh
+              )
+	fi
     ;;
     "springboot") 
               CONFIGURE_SCRIPTS=(
