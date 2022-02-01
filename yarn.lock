@@ -10303,10 +10303,10 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
-isomorphic-git@^1.10.1:
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/isomorphic-git/-/isomorphic-git-1.10.1.tgz#2f3a3d2d41baf6a88e046a21e0527bc13a21d663"
-  integrity sha512-abbPpKkykIVDJ92rtYoD4AOuT5/7PABHR2fDBrsm7H0r2ZT+MGpPL/FynrEJM6nTcFSieaIDxnHNGhfHO/v+bA==
+isomorphic-git@^1.11.1:
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/isomorphic-git/-/isomorphic-git-1.11.1.tgz#d0b8858c2a10fd849850de860d59ebc7685b2735"
+  integrity sha512-SUjsx//K0HPk7wnUOOkp13/PjyfY9XsLJq6KG2OVqimykdzC2OtTM9IFlXIPuU1vQa0NjzmmJLlygCx8narvUg==
   dependencies:
     async-lock "^1.1.0"
     clean-git-ref "^2.0.1"
@@ -10318,7 +10318,7 @@ isomorphic-git@^1.10.1:
     pify "^4.0.1"
     readable-stream "^3.4.0"
     sha.js "^2.4.9"
-    simple-get "^3.0.2"
+    simple-get "^4.0.1"
 
 isomorphic-textencoder@^1.0.1:
   version "1.0.1"
@@ -13529,10 +13529,10 @@ pkg-dir@4.2.0, pkg-dir@^4.1.0, pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-pkg-fetch@3.2.5:
-  version "3.2.5"
-  resolved "https://registry.yarnpkg.com/pkg-fetch/-/pkg-fetch-3.2.5.tgz#4f9328b6a212ecc0e0861fcfb13c6229cc97f587"
-  integrity sha512-jPtyX2VTbG+9yaeGsJEBT+3qVN8qfxxfn7n2lmcx1FDSPsr8jwXDRf6BeCNBV+M5aEQmmtpMeKs7ZILQ9YlSPA==
+pkg-fetch@3.2.6:
+  version "3.2.6"
+  resolved "https://registry.yarnpkg.com/pkg-fetch/-/pkg-fetch-3.2.6.tgz#8473e1da5763522c4c3c051917db7274b75836fa"
+  integrity sha512-Q8fx6SIT022g0cdSE4Axv/xpfHeltspo2gg1KsWRinLQZOTRRAtOOaEFghA1F3jJ8FVsh8hGrL/Pb6Ea5XHIFw==
   dependencies:
     chalk "^4.1.2"
     fs-extra "^9.1.0"
@@ -13543,10 +13543,10 @@ pkg-fetch@3.2.5:
     tar-fs "^2.1.1"
     yargs "^16.2.0"
 
-pkg@^5.5.1:
-  version "5.5.1"
-  resolved "https://registry.yarnpkg.com/pkg/-/pkg-5.5.1.tgz#eb5076b12d0c6341ef6ae73d0d49a2681cb6ee81"
-  integrity sha512-3IiUgwYRQBfXcmdBakjqttRrhpruZ1h/UCobtra2IN4S29eJhgxr39Dd8EZxUikgSLUH3v/eUWO3ZInSmlSXpw==
+pkg@^5.5.2:
+  version "5.5.2"
+  resolved "https://registry.yarnpkg.com/pkg/-/pkg-5.5.2.tgz#c21ca9b5cb48feceb3b158c17df855ada350086d"
+  integrity sha512-pD0UB2ud01C6pVv2wpGsTYJrXI/bnvGRYvMLd44wFzA1p+A2jrlTGFPAYa7YEYzmitXhx23PqalaG1eUEnSwcA==
   dependencies:
     "@babel/parser" "7.16.2"
     "@babel/types" "7.16.0"
@@ -13557,7 +13557,7 @@ pkg@^5.5.1:
     into-stream "^6.0.0"
     minimist "^1.2.5"
     multistream "^4.1.0"
-    pkg-fetch "3.2.5"
+    pkg-fetch "3.2.6"
     prebuild-install "6.1.4"
     progress "^2.0.3"
     resolve "^1.20.0"
@@ -15298,12 +15298,21 @@ simple-concat@^1.0.0:
   resolved "https://registry.yarnpkg.com/simple-concat/-/simple-concat-1.0.1.tgz#f46976082ba35c2263f1c8ab5edfe26c41c9552f"
   integrity sha512-cSFtAPtRhljv69IK0hTVZQ+OfE9nePi/rtJmw5UjHeVyVroEqJXP1sFztKUy1qU+xvz3u/sfYJLa947b7nAN2Q==
 
-simple-get@^3.0.2, simple-get@^3.0.3:
+simple-get@^3.0.3:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/simple-get/-/simple-get-3.1.0.tgz#b45be062435e50d159540b576202ceec40b9c6b3"
   integrity sha512-bCR6cP+aTdScaQCnQKbPKtJOKDp/hj9EDLJo3Nw4y1QksqaovlW/bnptB6/c1e+qmNIDHRK+oXFDdEqBT8WzUA==
   dependencies:
     decompress-response "^4.2.0"
+    once "^1.3.1"
+    simple-concat "^1.0.0"
+
+simple-get@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/simple-get/-/simple-get-4.0.1.tgz#4a39db549287c979d352112fa03fd99fd6bc3543"
+  integrity sha512-brv7p5WgH0jmQJr1ZDDfKDOSeWWg+OVypG99A/5vYGPqJ6pxiaHLy8nxtFjBA7oMa01ebA9gfh1uMCFqOuXxvA==
+  dependencies:
+    decompress-response "^6.0.0"
     once "^1.3.1"
     simple-concat "^1.0.0"
 
