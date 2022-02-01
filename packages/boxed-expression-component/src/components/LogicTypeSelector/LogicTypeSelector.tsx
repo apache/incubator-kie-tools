@@ -156,8 +156,9 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
       const selectedLogicType = itemId as LogicType;
       onLogicTypeUpdating(selectedLogicType);
       globalContext.setIsContextMenuOpen(false);
+      console.log("onLogicTypeSelect");
     },
-    [boxedExpression.boxedExpressionEditorGWTService, onLogicTypeUpdating]
+    [boxedExpression.boxedExpressionEditorGWTService, onLogicTypeUpdating, globalContext]
   );
 
   const buildLogicSelectorMenu = useMemo(
