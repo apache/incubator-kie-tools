@@ -14,12 +14,12 @@ The first run will take quite a while since maven will download all the required
 
 ## Usage
 
-Once compiled you need to copy the generated JAR in a folder inside the extension, and you need to configure that location path in _contributes_ section in pacakge.json
+Once compiled you need to copy the generated JAR in a folder inside the extension, and you need to configure that location path in _contributes_ section in package.json
 
 ```json
 "contributes": {
     "javaExtensions": [
-      "./server/vscode-java-code-completion-extension-plugin.jar"
+      "./dist/server/vscode-java-code-completion-extension-plugin-core.jar"
     ],
     ...
 }
