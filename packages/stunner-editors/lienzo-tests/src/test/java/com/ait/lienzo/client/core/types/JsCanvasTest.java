@@ -31,7 +31,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
 @RunWith(LienzoMockitoTestRunner.class)
 public class JsCanvasTest {
 
@@ -220,12 +219,54 @@ public class JsCanvasTest {
     }
 
     @Test
-    public void testApplyState() {
+    public void testApplyStateNulls() {
         jsCanvas.stateApplier = shapeStateApplier;
         doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
 
-        jsCanvas.applyState("someId", "None");
-        verify(shapeStateApplier, times(1)).applyState("someId", "None");
+        jsCanvas.applyState(null, null);
+        verify(shapeStateApplier, never()).applyState(anyString(), anyString());
+
+        jsCanvas.applyState("someId", null);
+        verify(shapeStateApplier, never()).applyState(anyString(), anyString());
+
+        jsCanvas.applyState(null, "none");
+        verify(shapeStateApplier, never()).applyState(anyString(), anyString());
+    }
+
+    @Test
+    public void testApplyStateNone() {
+        jsCanvas.stateApplier = shapeStateApplier;
+        doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
+
+        jsCanvas.applyState("someId", "none");
+        verify(shapeStateApplier, times(1)).applyState("someId", "none");
+    }
+
+    @Test
+    public void testApplyStateSelected() {
+        jsCanvas.stateApplier = shapeStateApplier;
+        doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
+
+        jsCanvas.applyState("someId", "selected");
+        verify(shapeStateApplier, times(1)).applyState("someId", "selected");
+    }
+
+    @Test
+    public void testApplyStateHighlight() {
+        jsCanvas.stateApplier = shapeStateApplier;
+        doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
+
+        jsCanvas.applyState("someId", "highlight");
+        verify(shapeStateApplier, times(1)).applyState("someId", "highlight");
+    }
+
+    @Test
+    public void testApplyStateInvalid() {
+        jsCanvas.stateApplier = shapeStateApplier;
+        doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
+
+        jsCanvas.applyState("someId", "invalid");
+        verify(shapeStateApplier, times(1)).applyState("someId", "invalid");
     }
 
     @Test
@@ -233,5 +274,12 @@ public class JsCanvasTest {
         doCallRealMethod().when(jsCanvas).center(anyString());
         jsCanvas.center("someId");
         verify(jsCanvas, times(1)).centerNode("someId");
+    }
+
+    @Test
+    public void testCenterNull() {
+        doCallRealMethod().when(jsCanvas).center(anyString());
+        jsCanvas.center(null);
+        verify(jsCanvas, never()).centerNode(anyString());
     }
 }

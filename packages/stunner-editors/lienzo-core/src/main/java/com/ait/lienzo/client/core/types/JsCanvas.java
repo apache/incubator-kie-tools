@@ -263,11 +263,15 @@ public class JsCanvas implements JsCanvasNodeLister {
     }
 
     public void applyState(String UUID, String state) {
-        stateApplier.applyState(UUID, state);
+        if (UUID != null && state != null) {
+            stateApplier.applyState(UUID, state);
+        }
     }
 
     public void center(String UUID) {
-        centerNode(UUID);
+        if (UUID != null) {
+            centerNode(UUID);
+        }
     }
 
     public void centerNode(String UUID) {

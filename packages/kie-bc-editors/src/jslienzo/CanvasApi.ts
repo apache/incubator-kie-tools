@@ -85,7 +85,7 @@ export interface CanvasApi {
    * Applies state to a node with provided UUID.
    *
    * @param uuid ID attribute of a target node
-   * @param state attribute of a target node
+   * @param state attribute of a target node valid states ('none', 'selected', 'highlight', 'invalid')
    */
   applyState(uuid: string, state: string): void;
 

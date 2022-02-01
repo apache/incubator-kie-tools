@@ -18,5 +18,10 @@ package com.ait.lienzo.client.core.types;
 
 public interface JSShapeStateApplier {
 
+    /**
+     * Applies state to given node
+     * @param UUID UUID of the node to change the state
+     * @param state State to be changed, valid values ('none', 'selected', 'highlight', 'invalid')
+     */
     void applyState(String UUID, String state);
 }

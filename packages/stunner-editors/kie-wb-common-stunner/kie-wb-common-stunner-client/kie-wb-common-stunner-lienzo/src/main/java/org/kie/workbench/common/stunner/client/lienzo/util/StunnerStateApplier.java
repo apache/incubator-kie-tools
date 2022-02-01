@@ -43,6 +43,8 @@ public abstract class StunnerStateApplier implements JSShapeStateApplier {
                 case "invalid":
                     shapeState = ShapeState.INVALID;
                     break;
+                default:
+                    //Nothing to do if not valid value
             }
 
             if (shapeState != null) {
