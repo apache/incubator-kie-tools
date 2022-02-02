@@ -31,11 +31,11 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <tycho.version>2.6.0</tycho.version>
+    <tycho.version>2.3.0</tycho.version>
     <tycho.extras.version>${tycho.version}</tycho.extras.version>
     <tycho.scmUrl>scm:git:https://github.com/kiegroup/kie-tools.git</tycho.scmUrl>
     <tycho.generateSourceReferences>true</tycho.generateSourceReferences>
-    <jdt.ls.version>1.8.0-SNAPSHOT</jdt.ls.version>
+    <jdt.ls.version>1.7.0-SNAPSHOT</jdt.ls.version>
 
     <tycho.test.platformArgs />
     <tycho.test.jvmArgs>-Xmx512m ${tycho.test.platformArgs}</tycho.test.jvmArgs>
@@ -81,6 +81,7 @@
         <artifactId>target-platform-configuration</artifactId>
         <version>${tycho.version}</version>
         <configuration>
+          <resolver>p2</resolver>
           <target>
             <artifact>
               <groupId>org.eclipse.jdt.ls</groupId>
@@ -88,6 +89,8 @@
               <version>${jdt.ls.version}</version>
             </artifact>
           </target>
+          <resolver>p2</resolver>
+          <pomDependencies>consider</pomDependencies>
           <ignoreTychoRepositories>true</ignoreTychoRepositories>
         </configuration>
       </plugin>

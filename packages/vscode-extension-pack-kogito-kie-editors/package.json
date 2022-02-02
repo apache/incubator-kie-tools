@@ -29,7 +29,7 @@
   },
   "contributes": {
     "javaExtensions": [
-      "./dist/server/vscode-java-code-completion-extension-plugin-core.jar"
+      "./server/vscode-java-code-completion-extension-plugin-core.jar"
     ],
     "configuration": {
       "title": "KIE Tools Dev Test Configuration",

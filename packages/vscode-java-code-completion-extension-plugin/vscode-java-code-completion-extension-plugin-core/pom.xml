@@ -12,10 +12,10 @@
   <description>vscode-java-code-completion-extension-plugin-core</description>
 
   <properties>
-    <version.com.google.code.gson>2.8.9</version.com.google.code.gson>
+    <version.com.google.code.gson>2.8.5</version.com.google.code.gson>
     <version.org.freemarker>2.3.31</version.org.freemarker>
-    <version.org.junit.jupiter>5.8.2</version.org.junit.jupiter>
-    <version.org.assertj>3.22.0</version.org.assertj>
+    <version.org.junit.jupiter>5.7.2</version.org.junit.jupiter>
+    <version.org.assertj>3.21.0</version.org.assertj>
   </properties>
 
   <dependencyManagement>
