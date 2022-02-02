@@ -16,12 +16,12 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const patternflyBase = require("@kie-tooling-core/patternfly-base");
+const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
-const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
-const stunnerEditors = require("@kogito-tooling/stunner-editors");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const stunnerEditors = require("@kie-tools/stunner-editors");
 const { EnvironmentPlugin } = require("webpack");
-const buildEnv = require("@kogito-tooling/build-env");
+const buildEnv = require("@kie-tools/build-env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const { ProvidePlugin } = require("webpack");
@@ -100,10 +100,7 @@ module.exports = async (env, argv) => {
           { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
           { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
           {
-            from: path.join(
-              path.dirname(require.resolve("@kogito-tooling/pmml-editor/package.json")),
-              "/static/images"
-            ),
+            from: path.join(path.dirname(require.resolve("@kie-tools/pmml-editor/package.json")), "/static/images"),
             to: "./images",
           },
         ],
@@ -116,8 +113,8 @@ module.exports = async (env, argv) => {
       alias: {
         // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
         // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
-        // `@kie-tooling-core/monaco-editor`. This way, everything works as expected.
-        "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tooling-core/monaco-editor"),
+        // `@kie-tools-core/monaco-editor`. This way, everything works as expected.
+        "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tools-core/monaco-editor"),
       },
     },
     module: {
@@ -126,9 +123,7 @@ module.exports = async (env, argv) => {
     devServer: {
       https: true,
       historyApiFallback: false,
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
+      static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
       port: buildEnv.onlineEditor.dev.port,
     },

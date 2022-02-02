@@ -19,10 +19,10 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useOnlineI18n } from "../../i18n";
-import { EmbeddedEditorRef } from "@kie-tooling-core/editor/dist/embedded";
+import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 
-const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tooling-core/monaco-editor");
+const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tools-core/monaco-editor");
 
 export function TextEditorModal(props: {
   editor: EmbeddedEditorRef | undefined;

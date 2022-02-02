@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-import { BackendProxy } from "@kie-tooling-core/backend/dist/api";
+import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import {
   KogitoEdit,
   ResourceContentRequest,
   ResourceContentService,
   ResourceListRequest,
   WorkspaceApi,
-} from "@kie-tooling-core/workspace/dist/api";
-import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tooling-core/editor/dist/api";
-import { Tutorial, UserInteraction } from "@kie-tooling-core/guided-tour/dist/api";
+} from "@kie-tools-core/workspace/dist/api";
+import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import * as __path from "path";
 import * as vscode from "vscode";
 import { KogitoEditor } from "./KogitoEditor";
-import { Notification, NotificationsApi } from "@kie-tooling-core/notifications/dist/api";
+import { Notification, NotificationsApi } from "@kie-tools-core/notifications/dist/api";
 import { VsCodeI18n } from "./i18n";
-import { I18n } from "@kie-tooling-core/i18n/dist/core";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
 import {
   JavaCodeCompletionApi,
   JavaCodeCompletionAccessor,
   JavaCodeCompletionClass,
-} from "@kie-tooling-core/vscode-java-code-completion/dist/api";
+  JavaCodeCompletionChannelApi,
+} from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
-export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
+export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaCodeCompletionChannelApi {
   private readonly decoder = new TextDecoder("utf-8");
 
   constructor(
@@ -62,10 +63,18 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   }
 
   public async kogitoEditor_contentRequest() {
-    return vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri).then((contentArray) => {
-      this.initialBackup = undefined;
-      return { content: this.decoder.decode(contentArray), path: this.editor.document.relativePath };
-    });
+    let contentArray: Uint8Array;
+    try {
+      contentArray = await vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri);
+    } catch (e) {
+      // If file doesn't exist, we create an empty one.
+      // This is important for the use-case where users type `code new-file.dmn` on a terminal.
+      await vscode.workspace.fs.writeFile(this.editor.document.uri, new Uint8Array());
+      return { content: "", path: this.editor.document.relativePath };
+    }
+
+    this.initialBackup = undefined;
+    return { content: this.decoder.decode(contentArray), path: this.editor.document.relativePath };
   }
 
   public kogitoEditor_setContentError(editorContent: EditorContent) {
@@ -137,13 +146,13 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     this.notificationsApi.kogitoNotifications_removeNotifications(path);
   }
 
-  public kogitoJavaCodeCompletion_getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {
+  public kogitoJavaCodeCompletion__getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {
     return this.javaCodeCompletionApi.getAccessors(fqcn, query);
   }
-  public kogitoJavaCodeCompletion_getClasses(query: string): Promise<JavaCodeCompletionClass[]> {
+  public kogitoJavaCodeCompletion__getClasses(query: string): Promise<JavaCodeCompletionClass[]> {
     return this.javaCodeCompletionApi.getClasses(query);
   }
-  public kogitoJavaCodeCompletion_isLanguageServerAvailable(): Promise<boolean> {
+  public kogitoJavaCodeCompletion__isLanguageServerAvailable(): Promise<boolean> {
     return this.javaCodeCompletionApi.isLanguageServerAvailable();
   }
 }

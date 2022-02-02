@@ -3,8 +3,6 @@ name: "CI :: Monorepo"
 on:
   pull_request:
     branches: "**"
-    paths:
-      - "packages/**"
 
 concurrency:
   group: monorepo-pr-ci-${{ github.event.pull_request.number }}
@@ -29,43 +27,68 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.base_ref }}
 
-      - name: "Setup kogito-tooling-bot"
-        uses: ./.github/actions/setup-kogito-tooling-bot
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
+        id: merge_changes
         uses: ./.github/actions/merge-pr-changes
 
+      - name: "Check if should run or not"
+        id: check_diff_paths
+        shell: bash
+        run: |
+          # If there are no changed files in dirs that are not `packages` or `examples`,
+          # it means that all changed files are in either `packages` or `examples`, so we should run the normal CI.
+
+          read -r -a DIFF_PATHS <<< $(git diff --name-only ${{ steps.merge_changes.outputs.base_sha }} ${{ steps.merge_changes.outputs.head_sha }} -- ':!packages' ':!examples')
+          echo $DIFF_PATHS
+
+          if [ ${#DIFF_PATHS[@]} -eq 0 ]; then
+            echo '`CI` will run.'
+            echo "::set-output name=should_run::true"
+          else
+            echo '`CI :: Full` is already running, no need to run this one.'
+            echo "::set-output name=should_run::false"
+          fi
+
+          echo "Done"
+
       - name: "Setup environment"
+        if: steps.check_diff_paths.outputs.should_run == 'true'
         uses: ./.github/actions/setup-env
         with:
           os: ${{ matrix.os }}
 
       - name: "Build dependencies"
+        if: steps.check_diff_paths.outputs.should_run == 'true'
         shell: bash
         env:
-          KOGITO_TOOLING_BUILD_examples: "true"
+          KIE_TOOLS_BUILD_examples: "true"
         run: |
-          export REF=${{ github.base_ref }} &&
+          export REF=${{ steps.merge_changes.outputs.base_sha }} &&
           export SCOPE=$(diff <(echo "$(lerna ls --since $REF --include-dependencies --all | cut -d' ' -f1)") <(echo "$(lerna ls --since $REF  --all | cut -d' ' -f1)") --changed-group-format='%<%>' --unchanged-group-format='' | xargs -I{} echo -n ' --scope="{}"') &&
           echo $REF $SCOPE &&
           yarn run-script-if --silent --env SCOPE --eq "" \
             --then "echo No dependencies to build." \
-            --else "lerna run --stream --concurrency 1 build:dev $SCOPE"
+            --else "lerna run --stream build:dev $SCOPE"
 
       - name: "Build changed and dependents"
+        if: steps.check_diff_paths.outputs.should_run == 'true'
         env:
           WEBPACK__minimize: "false"
-          KOGITO_TOOLING_BUILD_lint: "true"
-          KOGITO_TOOLING_BUILD_test: "true"
-          KOGITO_TOOLING_BUILD_testIT: ${{ matrix.os == 'ubuntu-latest' }}
-          KOGITO_TOOLING_BUILD_docker: "true"
-          KOGITO_TOOLING_BUILD_examples: "true"
+          KIE_TOOLS_BUILD_lint: "true"
+          KIE_TOOLS_BUILD_test: "true"
+          KIE_TOOLS_BUILD_testIT: ${{ matrix.os == 'ubuntu-latest' }}
+          KIE_TOOLS_BUILD_docker: "true"
+          KIE_TOOLS_BUILD_examples: "true"
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
-          lerna run build:prod --stream --concurrency 1 --since ${{ github.base_ref }}
+          lerna run build:prod --stream --since ${{ steps.merge_changes.outputs.base_sha }}
 
       - name: "Check generated resources (you should commit those!)"
+        if: steps.check_diff_paths.outputs.should_run == 'true'
         shell: bash
         run: |
           git diff
@@ -73,7 +96,7 @@ jobs:
 
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2
-        if: always() && !cancelled()
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
         with:
           name: artifacts-${{ matrix.os }}
           if-no-files-found: warn
@@ -84,7 +107,7 @@ jobs:
 
       - name: "Upload IT Tests artifacts"
         uses: actions/upload-artifact@v2
-        if: always() && !cancelled()
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
         with:
           name: it-tests-artifacts-${{ matrix.os }}
           if-no-files-found: warn

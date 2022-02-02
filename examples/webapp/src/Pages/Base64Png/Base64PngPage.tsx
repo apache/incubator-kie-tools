@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kie-tooling-core/editor/dist/api";
+import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
-import { EditorEnvelopeLocator } from "@kie-tooling-core/editor/dist/api";
+import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { useMemo, useState } from "react";
 import { Page } from "@patternfly/react-core";
-import { EmbeddedEditor } from "@kie-tooling-core/editor/dist/embedded";
-import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditor } from "@kie-tools-core/editor/dist/embedded";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { Base64PngGallery } from "./Base64PngGallery";
 
 /**
@@ -29,7 +29,7 @@ import { Base64PngGallery } from "./Base64PngGallery";
  */
 export function Base64PngPage() {
   /**
-   * State that handles the file. It's important to type with the File type of the @kogito-tooling/dist/embedded.
+   * State that handles the file. It's important to type with the File type of the @kie-tools/dist/embedded.
    * It's initialized with an empty file with the base64png extension. The file is used by the EmbeddedEditor to set the content on the Editor. Updating the file will trigger a re-render on the Editor because the EmbeddedEditor will set updated content on the Editor.
    */
   const [file, setFile] = useState<EmbeddedEditorFile>({

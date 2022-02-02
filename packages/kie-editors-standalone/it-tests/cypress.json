@@ -8,11 +8,11 @@
   "reporter": "junit",
   "reporterOptions": {
     "mochaFile": "./results/junit-[hash].xml",
-    "testsuitesTitle": "@kogito-tooling",
+    "testsuitesTitle": "@kie-tools",
     "testCaseSwitchClassnameAndName": true,
     "suiteTitleSeparatedBy": ".",
     "useFullSuiteTitle": true,
-    "rootSuiteTitle": "@kogito-tooling/kie-editors-standalone"
+    "rootSuiteTitle": "@kie-tools/kie-editors-standalone"
   },
   "video": true
 }

@@ -16,10 +16,10 @@
 
 import { render } from "@testing-library/react";
 import { EDIT_EXPRESSION_NAME, updateElementViaPopover, usingTestingBoxedExpressionI18nContext } from "../test-utils";
-import { ContextEntryInfoCell } from "@kogito-tooling/boxed-expression-component/dist/components/ContextExpression";
+import { ContextEntryInfoCell } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
 import * as _ from "lodash";
 import * as React from "react";
-import { DataType } from "@kogito-tooling/boxed-expression-component";
+import { DataType } from "@kie-tools/boxed-expression-component";
 import { DataRecord } from "react-table";
 
 jest.useFakeTimers();

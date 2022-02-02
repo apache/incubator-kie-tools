@@ -16,11 +16,15 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
+import java.util.Optional;
+
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.client.editors.expressions.commands.UpdateCanvasNodeNameCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.ExpressionState;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -53,12 +57,19 @@ public class SaveCurrentStateCommandTest {
     @Mock
     private ExpressionEditorView view;
 
+    @Mock
+    private UpdateCanvasNodeNameCommand updateCanvasNodeNameCommand;
+
+    private Optional<HasName> hasName = Optional.empty();
+
     @Before
     public void setup() {
         command = spy(new SaveCurrentStateCommand(hasExpression,
                                                   editorSelectedEvent,
                                                   view,
-                                                  NODE_UUID));
+                                                  NODE_UUID,
+                                                  hasName,
+                                                  updateCanvasNodeNameCommand));
     }
 
     @Test

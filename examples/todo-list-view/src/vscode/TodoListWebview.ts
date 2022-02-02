@@ -16,7 +16,7 @@
 
 import * as vscode from "vscode";
 import { Uri, ViewColumn } from "vscode";
-import { EnvelopeServer } from "@kie-tooling-core/envelope-bus/dist/channel";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { TodoListChannelApi, TodoListEnvelopeApi } from "../api";
 
 /**

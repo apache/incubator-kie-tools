@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as buildEnv from "@kogito-tooling/build-env";
+import * as buildEnv from "@kie-tools/build-env";
 
 describe("Basic user's interaction", () => {
   beforeEach(() => {

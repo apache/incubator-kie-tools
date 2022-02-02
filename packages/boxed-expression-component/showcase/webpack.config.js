@@ -17,9 +17,9 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
-const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
-const patternflyBase = require("@kie-tooling-core/patternfly-base");
-const buildEnv = require("@kogito-tooling/build-env");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const patternflyBase = require("@kie-tools-core/patternfly-base");
+const buildEnv = require("@kie-tools/build-env");
 
 module.exports = (env) =>
   merge(common(env), {
@@ -48,20 +48,18 @@ module.exports = (env) =>
       alias: {
         // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
         // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
-        // `@kie-tooling-core/monaco-editor`. This way, everything works as expected.
-        "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tooling-core/monaco-editor"),
+        // `@kie-tools-core/monaco-editor`. This way, everything works as expected.
+        "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tools-core/monaco-editor"),
       },
     },
     devServer: {
       historyApiFallback: true,
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: path.join(__dirname),
       compress: true,
       port: buildEnv.boxedExpressionComponent.dev.port,
       open: false,
-      inline: true,
       hot: true,
-      overlay: true,
+      client: {
+        overlay: true,
+      },
     },
   });

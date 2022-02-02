@@ -17,12 +17,13 @@
 const CopyPlugin = require("copy-webpack-plugin");
 const ZipPlugin = require("zip-webpack-plugin");
 const packageJson = require("./package.json");
-const patternflyBase = require("@kie-tooling-core/patternfly-base");
+const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
-const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
-const stunnerEditors = require("@kogito-tooling/stunner-editors");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const stunnerEditors = require("@kie-tools/stunner-editors");
 const { EnvironmentPlugin } = require("webpack");
-const buildEnv = require("@kogito-tooling/build-env");
+const buildEnv = require("@kie-tools/build-env");
+const path = require("path");
 
 function getRouterArgs() {
   const targetOrigin = buildEnv.chromeExtension.routerTargetOrigin;
@@ -57,9 +58,8 @@ module.exports = async (env) => {
       "scesim-envelope": "./src/envelope/SceSimEditorEnvelopeApp.ts",
     },
     devServer: {
-      contentBase: ["dist"],
+      static: [{ directory: path.join(__dirname, "./dist") }],
       compress: true,
-      watchContentBase: true,
       https: true,
       port: buildEnv.chromeExtension.dev.port,
     },

@@ -16,11 +16,11 @@
 
 const CopyPlugin = require("copy-webpack-plugin");
 const ZipPlugin = require("zip-webpack-plugin");
-const patternflyBase = require("@kie-tooling-core/patternfly-base");
+const patternflyBase = require("@kie-tools-core/patternfly-base");
 const packageJson = require("./package.json");
-const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
-const buildEnv = require("@kogito-tooling/build-env");
+const buildEnv = require("@kie-tools/build-env");
 const { EnvironmentPlugin } = require("webpack");
 
 module.exports = (env) => {
@@ -33,7 +33,6 @@ module.exports = (env) => {
     },
     devServer: {
       compress: true,
-      watchContentBase: true,
       https: true,
       port: buildEnv.examples.chromeExtensionEnvelope.port,
     },
@@ -46,7 +45,7 @@ module.exports = (env) => {
         ],
       }),
       new ZipPlugin({
-        filename: "kogito_tooling_examples_base64-chrome_extension_" + packageJson.version + ".zip",
+        filename: "kie_tools_examples_base64-chrome_extension_" + packageJson.version + ".zip",
         pathPrefix: "dist",
       }),
       new EnvironmentPlugin({

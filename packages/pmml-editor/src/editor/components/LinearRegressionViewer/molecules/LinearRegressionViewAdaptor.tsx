@@ -26,7 +26,7 @@ import {
   PMML,
   RegressionModel,
   RegressionTable,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import { Line, LinearRegressionView, Range } from "./LinearRegressionView";
 import { useSelector } from "react-redux";
 

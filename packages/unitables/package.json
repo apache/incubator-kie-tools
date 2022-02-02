@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-tooling/unitables",
+  "name": "@kie-tools/unitables",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -7,7 +7,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "lint": "echo 'Linting....'",
-    "test": "run-script-if --env KOGITO_TOOLING_BUILD_test -c 'jest --silent --verbose'",
+    "test": "run-script-if --env KIE_TOOLS_BUILD_test -c 'jest --silent --verbose'",
     "build:dev": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json",
     "build:prod": "yarn build:dev",
     "build:watch": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json --watch",
@@ -15,12 +15,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kogito-tooling.git"
+    "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "dependencies": {
-    "@kie-tooling-core/i18n": "0.0.0",
-    "@kie-tooling-core/notifications": "0.0.0",
-    "@kogito-tooling/boxed-expression-component": "0.0.0",
+    "@kie-tools-core/i18n": "0.0.0",
+    "@kie-tools-core/notifications": "0.0.0",
+    "@kie-tools/boxed-expression-component": "0.0.0",
+    "@kie-tools/form": "0.0.0",
     "@types/react-table": "^7.0.25",
     "ajv": "^6.12.6",
     "ajv-errors": "^1.0.1",

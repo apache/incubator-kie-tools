@@ -28,5 +28,5 @@ export async function initApp(): Promise<Application> {
 export async function waitLoading(client: SpectronClient) {
   // wait until loading popup disappears
   await client.$("[data-testid='loading-screen-div']");
-  await client.$(".kogito-tooling--keyboard-shortcuts-icon");
+  await client.$(".kie-tools--keyboard-shortcuts-icon");
 }

@@ -1,0 +1,67 @@
+{
+  "publishConfig": {
+    "access": "public"
+  },
+  "name": "@kie-tools/kie-sandbox-fs",
+  "version": "0.0.0",
+  "description": "In-browser FS based on KieSandboxFs",
+  "main": "dist/index.js",
+  "unpkg": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "superblocktxt": "src/superblocktxt.js"
+  },
+  "scripts": {
+    "test": "karma start --single-run --watch",
+    "copy:src": "copyfiles -u 1 \"src/**/*.{js,ts}\" dist/",
+    "build:dev": "rimraf dist && yarn copy:src",
+    "build:prod": "rimraf dist && yarn copy:src && yarn test"
+  },
+  "dependencies": {
+    "@isomorphic-git/idb-keyval": "^3.3.2",
+    "isomorphic-textencoder": "^1.0.1",
+    "just-debounce-it": "^3.0.1",
+    "just-once": "^2.0.1",
+    "dexie": "^3.0.3"
+  },
+  "devDependencies": {
+    "@kie-tools/build-env": "0.0.0",
+    "karma": "^6.3.9",
+    "karma-browserstack-launcher": "^1.5.1",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-edge-launcher": "^0.4.2",
+    "karma-fail-fast-reporter": "^1.0.5",
+    "karma-firefox-launcher": "^2.1.2",
+    "karma-ie-launcher": "^1.0.0",
+    "karma-jasmine": "^4.0.1",
+    "karma-junit-reporter": "^2.0.1",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-verbose-reporter": "^0.0.6",
+    "karma-webpack": "^5.0.0",
+    "puppeteer": "^13.1.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "browser",
+    "fs",
+    "indexeddb",
+    "idb"
+  ],
+  "contributors": [
+    {
+      "name": "William Hilton",
+      "email": "wmhilton@gmail.com"
+    },
+    {
+      "name": "Tiago Bento",
+      "email": "tfernand@redhat.com"
+    }
+  ],
+  "license": "MIT"
+}

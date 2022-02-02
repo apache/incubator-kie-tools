@@ -16,10 +16,10 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const patternflyBase = require("@kie-tooling-core/patternfly-base");
+const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
-const common = require("@kie-tooling-core/webpack-base/webpack.common.config");
-const buildEnv = require("@kogito-tooling/build-env");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const buildEnv = require("@kie-tools/build-env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const { EnvironmentPlugin } = require("webpack");
@@ -66,9 +66,7 @@ module.exports = async (env, argv) => {
     },
     devServer: {
       historyApiFallback: false,
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
+      static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
       port: buildEnv.dmnFormWebApp.dev.port,
     },

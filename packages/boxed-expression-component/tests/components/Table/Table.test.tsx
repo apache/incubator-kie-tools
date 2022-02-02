@@ -19,15 +19,15 @@ import * as _ from "lodash";
 import * as React from "react";
 import { act } from "react-dom/test-utils";
 import { ColumnInstance, DataRecord } from "react-table";
-import { PASTE_OPERATION } from "@kogito-tooling/boxed-expression-component/dist/components/Table/common";
+import { PASTE_OPERATION } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
 import {
   ColumnsUpdateArgs,
   DataType,
   RowsUpdateArgs,
   TableHandlerConfiguration,
   TableOperation,
-} from "@kogito-tooling/boxed-expression-component";
-import { Table } from "@kogito-tooling/boxed-expression-component";
+} from "@kie-tools/boxed-expression-component";
+import { Table } from "@kie-tools/boxed-expression-component";
 import {
   activateNameAndDataTypePopover,
   EDIT_EXPRESSION_DATA_TYPE,
@@ -38,7 +38,7 @@ import {
   usingTestingBoxedExpressionProviderContext,
   wrapComponentInContext,
 } from "../test-utils";
-import { DEFAULT_MIN_WIDTH } from "@kogito-tooling/boxed-expression-component/dist/components/Resizer";
+import { DEFAULT_MIN_WIDTH } from "@kie-tools/boxed-expression-component/dist/components/Resizer";
 
 jest.useFakeTimers();
 

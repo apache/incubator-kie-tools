@@ -452,6 +452,12 @@ public class DMNEditorConstants {
     public static final String DMNDocumentationI18n_ExternalLinks = "DMNDocumentationI18n.ExternalLinks";
 
     @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_Question = "DMNDocumentationI18n.Question";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_AllowedAnswers = "DMNDocumentationI18n.AllowedAnswers";
+
+    @TranslationKey(defaultValue = "")
     public static final String DMNDocumentationI18n_NoDRDs = "DMNDocumentationI18n.NoDRDs";
 
     @TranslationKey(defaultValue = "")

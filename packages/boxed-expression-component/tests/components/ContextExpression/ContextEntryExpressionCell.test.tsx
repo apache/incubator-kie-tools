@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { DataType, LogicType } from "@kogito-tooling/boxed-expression-component";
+import { DataType, LogicType } from "@kie-tools/boxed-expression-component";
 import { render } from "@testing-library/react";
 import { flushPromises, usingTestingBoxedExpressionI18nContext } from "../test-utils";
-import { ContextEntryExpressionCell } from "@kogito-tooling/boxed-expression-component/dist/components/ContextExpression";
+import { ContextEntryExpressionCell } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
 import * as _ from "lodash";
 import * as React from "react";
 import { DataRecord } from "react-table";

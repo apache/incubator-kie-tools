@@ -219,7 +219,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
           <Dropdown
             style={{ position: "relative" }}
             position={"left"}
-            className={"kogito-tooling--masthead-hoverable"}
+            className={"kie-tools--masthead-hoverable"}
             isOpen={isFilesDropdownOpen}
             isPlain={true}
             toggle={
@@ -791,7 +791,7 @@ export function FilesDropdownModeIcons(props: {
     <>
       {props.filesDropdownMode === FilesDropdownMode.CAROUSEL && (
         <Button
-          className={"kogito-tooling--masthead-hoverable"}
+          className={"kie-tools--masthead-hoverable"}
           variant="plain"
           aria-label="Switch to list view"
           onClick={(e) => {
@@ -805,7 +805,7 @@ export function FilesDropdownModeIcons(props: {
       {(props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ||
         props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS) && (
         <Button
-          className={"kogito-tooling--masthead-hoverable"}
+          className={"kie-tools--masthead-hoverable"}
           variant="plain"
           aria-label="Switch to carousel view"
           onClick={(e) => {

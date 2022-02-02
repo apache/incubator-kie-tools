@@ -1,3 +1,7 @@
+# 0.16.0 (alpha)
+
+- _(No new features)_
+
 # 0.15.0 (alpha)
 
 - _(No new features)_

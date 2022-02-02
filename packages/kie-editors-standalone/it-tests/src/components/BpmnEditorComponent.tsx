@@ -16,7 +16,7 @@
 
 import * as React from "react";
 
-import * as BpmnEditor from "@kogito-tooling/kie-editors-standalone/dist/bpmn";
+import * as BpmnEditor from "@kie-tools/kie-editors-standalone/dist/bpmn";
 import { EditorComponent, Props } from "./EditorComponent";
 
 export const BpmnEditorComponent = (props: Props) => {

@@ -15,7 +15,7 @@
  */
 
 import { PingPongChannelApi, PingPongInitArgs } from "../api";
-import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { PingPong } from "./PingPong";
 
 export interface PingPongFactory {

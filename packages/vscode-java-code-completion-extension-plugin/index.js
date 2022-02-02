@@ -24,7 +24,7 @@ module.exports = {
     const path = nodePath.resolve(
       __dirname,
       nodeModulesDir +
-        "/@kogito-tooling/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin-core/target/vscode-java-code-completion-extension-plugin-core.jar"
+        "/@kie-tools/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin-core/target/vscode-java-code-completion-extension-plugin-core.jar"
     );
 
     if (!nodeFs.existsSync(path)) {

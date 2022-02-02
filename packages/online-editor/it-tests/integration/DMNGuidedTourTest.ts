@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import * as buildEnv from "@kogito-tooling/build-env";
+import * as buildEnv from "@kie-tools/build-env";
 
 describe("DMN Guided Tour Test", () => {
   beforeEach(() => {
-    cy.visit(`https://localhost:${buildEnv.onlineEditor.dev.port}/`);
+    cy.visit("/");
   });
 
   it("follow first guided tour instruction", () => {

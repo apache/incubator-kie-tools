@@ -1,6 +1,10 @@
 name: "Deploy to OpenShift"
+description: ""
 
 inputs:
+  image_tag:
+    description: "Container Image Tag"
+    required: true
   image_url:
     description: "Container Image URL"
     required: true
@@ -58,17 +62,28 @@ runs:
 
         if ! oc get deploy ${{ inputs.app_name }} > /dev/null 2>&1; then
           echo "Create the app '${{ inputs.app_name }}'"
-          oc new-app ${{ inputs.image_url }} --name=${{ inputs.app_name }} --env-file=${{ inputs.deployment_envvars_file_path }}
+
+          oc create imagestream ${{ inputs.app_name }}
+          oc import-image ${{ inputs.app_name }}:${{ inputs.image_tag }} --from=${{ inputs.image_url }} --confirm
+          oc tag ${{ inputs.app_name }}:${{ inputs.image_tag }} ${{ inputs.app_name }}:latest
+
+          oc label imagestreams/${{ inputs.app_name }} app=${{ inputs.app_name }}
+          oc label imagestreams/${{ inputs.app_name }} app.kubernetes.io/component=${{ inputs.app_name }}
+          oc label imagestreams/${{ inputs.app_name }} app.kubernetes.io/instance=${{ inputs.app_name }}
+          oc label imagestreams/${{ inputs.app_name }} app.kubernetes.io/part-of=${{ inputs.part_of }}
+
+          oc new-app ${{ inputs.app_name }}:latest --name=${{ inputs.app_name }} --env-file=${{ inputs.deployment_envvars_file_path }}
           oc create route edge --service=${{ inputs.app_name }}
 
-          oc label imagestreams/${{ inputs.app_name }} app.kubernetes.io/part-of=${{ inputs.part_of }}
           oc label services/${{ inputs.app_name }} app.kubernetes.io/part-of=${{ inputs.part_of }}
           oc label routes/${{ inputs.app_name }} app.kubernetes.io/part-of=${{ inputs.part_of }}
           oc label deployments/${{ inputs.app_name }} app.kubernetes.io/part-of=${{ inputs.part_of }}
           oc label deployments/${{ inputs.app_name }} app.openshift.io/runtime=${{ inputs.deployment_icon }}
         else
           echo "App '${{ inputs.app_name }}' already exists. Update the ImageStream instead."
-          oc import-image ${{ inputs.app_name }}:latest
+          oc tag -d ${{ inputs.app_name }}:latest
+          oc import-image ${{ inputs.app_name }}:${{ inputs.image_tag }} --from=${{ inputs.image_url }} --confirm
+          oc tag ${{ inputs.app_name }}:${{ inputs.image_tag }} ${{ inputs.app_name }}:latest
           cat ${{ inputs.deployment_envvars_file_path }} | oc set env deploy/${{ inputs.app_name }} -
         fi
 

@@ -16,13 +16,13 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { EditorApi, KogitoEditorEnvelopeContextType } from "@kie-tooling-core/editor/dist/api";
+import { EditorApi, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { EmptyState, EmptyStateIcon, Nav, NavItem, NavList, Page, Switch, Title } from "@patternfly/react-core";
-import { DEFAULT_RECT } from "@kie-tooling-core/guided-tour/dist/api";
+import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import "./styles.scss";
 import { Base64PngEdit, Base64PngStateControl } from "./Base64PngStateControl";
-import { KogitoEditorChannelApi } from "@kie-tooling-core/editor/dist/api";
+import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 
 const INITIAL_CONTRAST = "100";
 const INITIAL_BRIGHTNESS = "100";
@@ -32,7 +32,7 @@ const INITIAL_GRAYSCALE = "0";
 const INITIAL_INVERT = "0";
 
 /**
- * envelopeContext All the features and information provided by the Kogito Tooling Envelope.
+ * envelopeContext All the features and information provided by the KIE Tools Envelope.
  */
 interface Props {
   envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>;
@@ -42,7 +42,7 @@ interface Props {
  * This is an Editor component. By exposing its `ref` implementing EditorApi, this component exposes its imperative
  * handles and gives control to its parent. To be able to do that, it's necessary to create a RefForwardingComponent.
  *
- * The EditorApi is a contract created by Kogito Tooling, which determines the necessary methods for an Editor to
+ * The EditorApi is a contract created by KIE Tools, which determines the necessary methods for an Editor to
  * implement so that the Channel can manipulate its contents and retrieve valuable information.
  *
  * @param props Any props that are necessary for this Editor to work. In this case..
@@ -98,7 +98,7 @@ export const Base64PngEditor = React.forwardRef<EditorApi, Props>((props, forwar
     const height = imageRef.current!.height;
 
     return `
-<svg version="1.1" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" 
+<svg version="1.1" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"
      xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink">
     <image width="${width}" height="${height}" xlink:href="data:image/png;base64,${editorContent}" />

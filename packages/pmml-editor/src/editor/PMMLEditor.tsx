@@ -26,7 +26,7 @@ import {
   ModelReducer,
   PMMLReducer,
 } from "./reducers";
-import { Model, PMML, PMML2XML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { Model, PMML, PMML2XML, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import { Provider } from "react-redux";
 import mergeReducers from "combine-reducer";
 import { HistoryContext, HistoryService } from "./history";
@@ -39,8 +39,8 @@ import { SingleEditorRouter } from "./components/EditorCore/organisms";
 import { PMMLModelMapping, PMMLModels, SupportedCapability } from "./PMMLModelHelper";
 import { Operation, OperationContext } from "./components/EditorScorecard";
 import { toNotifications, ValidationContext, ValidationRegistry } from "./validation";
-import { KogitoEdit } from "@kie-tooling-core/workspace/dist/api";
-import { Notification } from "@kie-tooling-core/notifications/dist/api";
+import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Builder } from "./paths";
 
 const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
@@ -60,7 +60,7 @@ interface Props {
   ready: () => void;
 
   /**
-   * Delegation for KogitoToolingWorkspaceApi.kogitoWorkspace_newEdit(edit) to signal to the Channel
+   * Delegation for KIEToolsWorkspaceApi.kogitoWorkspace_newEdit(edit) to signal to the Channel
    * that a change has taken place. Increases the decoupling of the PMMLEditor from the Channel.
    * @param edit An object representing the unique change.
    */
