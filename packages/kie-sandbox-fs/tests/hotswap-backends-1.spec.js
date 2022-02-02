@@ -4,7 +4,7 @@ const fs = new KieSandboxFs();
 const pfs = fs.promises;
 
 describe("hotswap backends", () => {
-  it("re-init with new backend", async () => {
+  xit("re-init with new backend", async () => {
     // write a file
     fs.init("testfs-1", { wipe: true });
     await pfs.writeFile("/a.txt", "HELLO");
