@@ -112,6 +112,10 @@ public class UserTaskPropertyWriter extends MultipleInstanceActivityPropertyWrit
         this.priority.set(priority);
     }
 
+    public String getPriority() {
+        return this.priority.get();
+    }
+
     public void setSubject(String subject) {
         this.subject.set(subject);
     }
