@@ -203,7 +203,7 @@ public class FillExpressionCommandTest {
                                          final Event<ExpressionEditorChanged> editorSelectedEvent,
                                          final String nodeUUID,
                                          final ExpressionEditorView view) {
-            super(hasExpression, expressionProps, editorSelectedEvent, nodeUUID, view, itemDefinitionUtils);
+            super(hasExpression, expressionProps, editorSelectedEvent, nodeUUID, view, itemDefinitionUtils, Optional.empty());
         }
 
         @Override
