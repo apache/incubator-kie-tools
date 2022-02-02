@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { PingPongApi } from "../api";
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
 
-export interface PingPong extends PingPongApi {
-  reactComponent?(): React.ReactNode;
-}
+import { AppComponent } from "./app.component";
+import { PingPongModule } from "./ping-pong/ping-pong.module";
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule, PingPongModule],
+  providers: [],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
