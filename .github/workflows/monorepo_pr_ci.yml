@@ -66,7 +66,7 @@ jobs:
         env:
           KIE_TOOLS_BUILD_examples: "true"
         run: |
-          export REF=${{ github.base_ref }} &&
+          export REF=${{ steps.merge_changes.outputs.base_sha }} &&
           export SCOPE=$(diff <(echo "$(lerna ls --since $REF --include-dependencies --all | cut -d' ' -f1)") <(echo "$(lerna ls --since $REF  --all | cut -d' ' -f1)") --changed-group-format='%<%>' --unchanged-group-format='' | xargs -I{} echo -n ' --scope="{}"') &&
           echo $REF $SCOPE &&
           yarn run-script-if --silent --env SCOPE --eq "" \
@@ -85,7 +85,7 @@ jobs:
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
-          lerna run build:prod --stream --since ${{ github.base_ref }}
+          lerna run build:prod --stream --since ${{ steps.merge_changes.outputs.base_sha }}
 
       - name: "Check generated resources (you should commit those!)"
         if: steps.check_diff_paths.outputs.should_run == 'true'
