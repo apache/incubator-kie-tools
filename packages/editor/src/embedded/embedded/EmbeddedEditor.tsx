@@ -81,7 +81,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   const [isReady, setReady] = useState(false);
 
   const envelopeMapping = useMemo(
-    () => props.editorEnvelopeLocator.getEnvelopeMapping(props.file.path || props.file.fileName),
+    () => props.editorEnvelopeLocator.getEnvelopeMapping(props.file.fileName + "." + props.file.fileExtension),
     [props.editorEnvelopeLocator, props.file]
   );
 
