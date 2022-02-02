@@ -46,7 +46,7 @@ jobs:
           read -r -a DIFF_PATHS <<< $(git diff --name-only ${{ steps.merge_changes.outputs.base_sha }} ${{ steps.merge_changes.outputs.head_sha }} -- ':!packages' ':!examples')
           echo $DIFF_PATHS
 
-          if [ ${{ ! github.event.pull_request }} ]; then
+          if [ ! ${{ github.event.pull_request }} ]; then
             echo 'Push to the main branch happened, should run'
             echo "::set-output name=should_run::true"
           elif [ ${#DIFF_PATHS[@]} -eq 0 ]; then
