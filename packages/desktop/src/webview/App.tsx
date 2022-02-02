@@ -22,7 +22,7 @@ import "@patternfly/patternfly/base/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.scss";
 import "@patternfly/patternfly/patternfly.scss";
 import "../../static/resources/style.css";
-import { ElectronFile } from "../common/ElectronFile";
+import { ElectronFile, UNSAVED_FILE_NAME } from "../common/ElectronFile";
 import { GlobalContext } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { HomePage } from "./home/HomePage";
@@ -126,7 +126,7 @@ export function App() {
 
   useEffect(() => {
     electron.ipcRenderer.on("openFile", (event: IpcRendererEvent, data: { file: ElectronFile }) => {
-      if (editorEnvelopeLocator.hasMappingFor(data.file.filePath)) {
+      if (data.file.filePath === UNSAVED_FILE_NAME || editorEnvelopeLocator.hasMappingFor(data.file.filePath)) {
         if (page === Pages.EDITOR) {
           setPage(Pages.HOME);
         }
