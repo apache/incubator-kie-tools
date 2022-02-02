@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner;
 
+import elemental2.dom.DomGlobal;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.PropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
@@ -45,6 +46,7 @@ public class FlowElementConverter {
     }
 
     public Result<PropertyWriter> toFlowElement(Node<View<? extends BPMNViewDefinition>, ?> node) {
+        DomGlobal.console.debug("toFlowElement::" + node);
         BPMNViewDefinition def = node.getContent().getDefinition();
         if (def instanceof BaseStartEvent) {
             return Result.success(converterFactory.startEventConverter().toFlowElement(cast(node)));
