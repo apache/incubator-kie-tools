@@ -10,8 +10,8 @@
   },
   "scripts": {
     "build": "rimraf dist && webpack",
-    "build:dev": "yarn run run-script-if --bool $(build-env global.build.examples) --then \"yarn run build --env dev\"",
-    "build:prod": "yarn run run-script-if --bool $(build-env global.build.examples) --then \"yarn run build\"",
+    "build:dev": "yarn run run-script-if --bool \"$(build-env global.build.examples)\" --then \"yarn run build --env dev\"",
+    "build:prod": "yarn run run-script-if --bool \"$(build-env global.build.examples)\" --then \"yarn run build\"",
     "serve-envelope": "webpack-dev-server"
   },
   "babel": {

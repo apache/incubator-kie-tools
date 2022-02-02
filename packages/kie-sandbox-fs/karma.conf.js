@@ -146,7 +146,6 @@ module.exports = function (config) {
       "karma-firefox-launcher",
       "karma-jasmine",
       "karma-junit-reporter",
-      "karma-sauce-launcher",
       "karma-verbose-reporter",
       "karma-webpack",
     ],

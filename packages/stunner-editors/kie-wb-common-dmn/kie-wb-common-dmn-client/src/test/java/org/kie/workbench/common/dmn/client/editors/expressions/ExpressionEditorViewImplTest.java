@@ -80,11 +80,8 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelContainer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
@@ -701,15 +698,13 @@ public class ExpressionEditorViewImplTest {
 
         final CompositeCommand.Builder commandBuilder = mock(CompositeCommand.Builder.class);
         doReturn(commandBuilder).when(view).createCommandBuilder();
-
         doNothing().when(view).addExpressionCommand(any(), eq(commandBuilder));
-        doNothing().when(view).addUpdatePropertyNameCommand(commandBuilder);
         doNothing().when(view).execute(commandBuilder);
+        doReturn(Optional.empty()).when(view).getHasName();
 
         view.notifyUserAction();
 
         verify(view).addExpressionCommand(captor.capture(), eq(commandBuilder));
-        verify(view).addUpdatePropertyNameCommand(commandBuilder);
         verify(view).execute(commandBuilder);
 
         final SaveCurrentStateCommand command = captor.getValue();
@@ -725,35 +720,6 @@ public class ExpressionEditorViewImplTest {
         view.openManageDataType();
 
         verify(dataTypePageActiveEvent).fire(any(DataTypePageTabActiveEvent.class));
-    }
-
-    @Test
-    public void testAddUpdatePropertyNameCommand() {
-
-        final CompositeCommand.Builder commandBuilder = mock(CompositeCommand.Builder.class);
-        final Index graphIndex = mock(Index.class);
-        final org.kie.workbench.common.stunner.core.graph.Element element = mock(org.kie.workbench.common.stunner.core.graph.Element.class);
-        final Definition definition = mock(Definition.class);
-        final Object theDefinition = mock(Object.class);
-        final HasName hasName = mock(HasName.class);
-        final Optional<HasName> optionalHasName = Optional.of(hasName);
-        final Name name = mock(Name.class);
-        final String nameId = "nameId";
-        final CanvasCommand<AbstractCanvasHandler> updateCommand = mock(CanvasCommand.class);
-
-        doReturn(optionalHasName).when(view).getHasName();
-
-        when(hasName.getValue()).thenReturn(name);
-        when(definition.getDefinition()).thenReturn(theDefinition);
-        when(canvasCommandFactory.updatePropertyValue(element, nameId, name)).thenReturn(updateCommand);
-        when(definitionUtils.getNameIdentifier(theDefinition)).thenReturn(nameId);
-        when(element.getContent()).thenReturn(definition);
-        when(graphIndex.get(NODE_UUID)).thenReturn(element);
-        when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
-
-        view.addUpdatePropertyNameCommand(commandBuilder);
-
-        verify(commandBuilder).addCommand(updateCommand);
     }
 
     @Test
