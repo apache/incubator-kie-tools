@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.property.dmn.DMNExternalLink;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.common.BoxedExpressionHelper;
@@ -130,12 +131,18 @@ public class DMNDocumentationDRDsFactory {
                                                           final Node<View, Edge> node,
                                                           final DRGElement drgElement) {
 
-        final String name = getName(drgElement);
-        final String description = getDescription(drgElement);
-        final String type = getType(drgElement);
-        final String image = getNodeImage(diagram, node);
+        DMNDocumentationDRD dmnDocumentationDRD = DMNDocumentationDRD.create();
+        dmnDocumentationDRD.setDrdName(getName(drgElement));
+        dmnDocumentationDRD.setDrdDescription(getDescription(drgElement));
+        dmnDocumentationDRD.setDrdType(getType(drgElement));
+        dmnDocumentationDRD.setDrdQuestion(getQuestion(drgElement));
+        dmnDocumentationDRD.setDrdAllowedAnswers(getAllowedAnswers(drgElement));
+        dmnDocumentationDRD.setDrdBoxedExpressionImage(getNodeImage(diagram, node));
         final List<DMNDocumentationExternalLink> externalLinks = getExternalLinks(drgElement);
-        return DMNDocumentationDRD.create(name, type, description, image, externalLinks, !externalLinks.isEmpty());
+        dmnDocumentationDRD.setDrdExternalLinks(externalLinks);
+        dmnDocumentationDRD.setHasExternalLinks(!externalLinks.isEmpty());
+
+        return dmnDocumentationDRD;
     }
 
     private List<DMNDocumentationExternalLink> getExternalLinks(final DRGElement drgElement) {
@@ -154,6 +161,20 @@ public class DMNDocumentationDRDsFactory {
     private String getType(final DRGElement drgElement) {
         if (drgElement instanceof HasVariable) {
             return getType(((HasVariable) drgElement).getVariable().getTypeRef());
+        }
+        return NONE;
+    }
+
+    private String getQuestion(final DRGElement drgElement) {
+        if (drgElement instanceof Decision) {
+            return ((Decision) drgElement).getQuestion().getValue();
+        }
+        return NONE;
+    }
+
+    private String getAllowedAnswers(final DRGElement drgElement) {
+        if (drgElement instanceof Decision) {
+            return ((Decision) drgElement).getAllowedAnswers().getValue();
         }
         return NONE;
     }
