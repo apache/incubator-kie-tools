@@ -32,6 +32,10 @@ public class DMNDocumentationDRD {
 
     private String drdType;
 
+    private String drdQuestion;
+
+    private String drdAllowedAnswers;
+
     private String drdDescription;
 
     private String drdBoxedExpressionImage;
@@ -45,23 +49,9 @@ public class DMNDocumentationDRD {
     }
 
     @JsOverlay
-    public static DMNDocumentationDRD create(final String drdName,
-                                             final String drdType,
-                                             final String drdDescription,
-                                             final String drdBoxedExpressionImage,
-                                             final List<DMNDocumentationExternalLink> externalLinks,
-                                             final boolean hasExternalLinks) {
+    public static DMNDocumentationDRD create() {
 
-        final DMNDocumentationDRD drd = new DMNDocumentationDRD();
-
-        drd.drdName = drdName;
-        drd.drdType = drdType;
-        drd.drdDescription = drdDescription;
-        drd.drdBoxedExpressionImage = drdBoxedExpressionImage;
-        drd.drdExternalLinks = asJsArray(externalLinks);
-        drd.hasExternalLinks = hasExternalLinks;
-
-        return drd;
+        return new DMNDocumentationDRD();
     }
 
     @JsOverlay
@@ -72,6 +62,16 @@ public class DMNDocumentationDRD {
     @JsOverlay
     public final String getDrdType() {
         return drdType;
+    }
+
+    @JsOverlay
+    public final String getDrdQuestion() {
+        return drdQuestion;
+    }
+
+    @JsOverlay
+    public final String getDrdAllowedAnswers() {
+        return drdAllowedAnswers;
     }
 
     @JsOverlay
@@ -92,5 +92,45 @@ public class DMNDocumentationDRD {
     @JsOverlay
     public final boolean getHasExternalLinks() {
         return hasExternalLinks;
+    }
+
+    @JsOverlay
+    public final void setDrdName(String drdName) {
+        this.drdName = drdName;
+    }
+
+    @JsOverlay
+    public final void setDrdType(String drdType) {
+        this.drdType = drdType;
+    }
+
+    @JsOverlay
+    public final void setDrdQuestion(String drdQuestion) {
+        this.drdQuestion = drdQuestion;
+    }
+
+    @JsOverlay
+    public final void setDrdAllowedAnswers(String drdAllowedAnswers) {
+        this.drdAllowedAnswers = drdAllowedAnswers;
+    }
+
+    @JsOverlay
+    public final void setDrdDescription(String drdDescription) {
+        this.drdDescription = drdDescription;
+    }
+
+    @JsOverlay
+    public final void setDrdBoxedExpressionImage(String drdBoxedExpressionImage) {
+        this.drdBoxedExpressionImage = drdBoxedExpressionImage;
+    }
+
+    @JsOverlay
+    public final void setDrdExternalLinks(List<DMNDocumentationExternalLink> drdExternalLinks) {
+        this.drdExternalLinks = asJsArray(drdExternalLinks);
+    }
+
+    @JsOverlay
+    public final void setHasExternalLinks(boolean hasExternalLinks) {
+        this.hasExternalLinks = hasExternalLinks;
     }
 }
