@@ -42,6 +42,7 @@ module.exports = (env) => [
         patterns: [
           { from: "./envelope", to: "./envelope" },
           { from: "./static", to: "." },
+          { from: "../ping-pong-view-angular/dist/app", to: "./envelope/angular" },
           { from: stunnerEditors.dmnEditorPath(), to: "./dmn-editor/dmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
         ],
       }),

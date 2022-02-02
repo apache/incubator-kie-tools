@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,4 +14,17 @@
  * limitations under the License.
  */
 
-export * from "./EmbeddedDivPingPong";
+import { PingPongApiService } from "./ping-pong-api.service";
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+
+import { PingPongComponent } from "./ping-pong.component";
+
+@NgModule({
+  declarations: [PingPongComponent],
+  imports: [BrowserModule],
+  exports: [PingPongComponent],
+  providers: [PingPongApiService],
+  bootstrap: [PingPongComponent],
+})
+export class PingPongModule {}
