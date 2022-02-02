@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.commands;
 
+import java.util.Optional;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,7 +74,8 @@ public class FillRelationExpressionCommandTest {
                                                         editorSelectedEvent,
                                                         nodeUUID,
                                                         view,
-                                                        itemDefinitionUtils));
+                                                        itemDefinitionUtils,
+                                                        Optional.empty()));
         doNothing().when(command).fill(any(), any());
     }
 
