@@ -21,7 +21,9 @@ import java.util.Optional;
 import javax.enterprise.event.Event;
 
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
@@ -31,7 +33,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ExpressionProps;
-import org.kie.workbench.common.dmn.client.editors.expressions.util.HasExpressionUtils;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.HasNameUtils;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 
@@ -43,19 +45,22 @@ public abstract class FillExpressionCommand<E extends ExpressionProps> {
     private final Event<ExpressionEditorChanged> editorSelectedEvent;
     private final ExpressionEditorView view;
     private final ItemDefinitionUtils itemDefinitionUtils;
+    private final Optional<HasName> hasName;
 
     public FillExpressionCommand(final HasExpression hasExpression,
                                  final E expressionProps,
                                  final Event<ExpressionEditorChanged> editorSelectedEvent,
                                  final String nodeUUID,
                                  final ExpressionEditorView view,
-                                 final ItemDefinitionUtils itemDefinitionUtils) {
+                                 final ItemDefinitionUtils itemDefinitionUtils,
+                                 final Optional<HasName> hasName) {
         this.hasExpression = hasExpression;
         this.expressionProps = expressionProps;
         this.nodeUUID = nodeUUID;
         this.editorSelectedEvent = editorSelectedEvent;
         this.view = view;
         this.itemDefinitionUtils = itemDefinitionUtils;
+        this.hasName = hasName;
     }
 
     public HasExpression getHasExpression() {
@@ -106,6 +111,11 @@ public abstract class FillExpressionCommand<E extends ExpressionProps> {
             @SuppressWarnings("unchecked")
             final HasVariable<InformationItemPrimary> hasVariable = (HasVariable<InformationItemPrimary>) hasExpression;
             hasVariable.getVariable().setTypeRef(typeRef);
+        } else if (hasExpression.getExpression() != null) {
+            final DMNModelInstrumentedBase parent = hasExpression.getExpression().asDMNModelInstrumentedBase().getParent();
+            if (parent instanceof HasVariable) {
+                ((HasVariable<InformationItemPrimary>) parent).getVariable().setTypeRef(typeRef);
+            }
         }
     }
 
@@ -117,13 +127,14 @@ public abstract class FillExpressionCommand<E extends ExpressionProps> {
         } else if (itemDefinitionType.isPresent()) {
             final Name name = itemDefinitionType.get().getName();
             return new QName(QName.NULL_NS_URI,
-                                name.getValue(),
-                                QName.DEFAULT_NS_PREFIX);
+                             name.getValue(),
+                             QName.DEFAULT_NS_PREFIX);
         }
         return BuiltInType.UNDEFINED.asQName();
     }
 
     void setExpressionName(final String expressionName) {
-        HasExpressionUtils.setExpressionName(getHasExpression(), expressionName);
+        final HasName fallbackHasName = hasExpression instanceof HasName ? (HasName) hasExpression : HasName.NOP;
+        HasNameUtils.setName(hasName.orElse(fallbackHasName), expressionName);
     }
 }

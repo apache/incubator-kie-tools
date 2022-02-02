@@ -7,20 +7,40 @@ inputs:
     required: false
     default: "."
 
+outputs:
+  base_sha:
+    description: "Base SHA"
+    value: ${{ steps.merge_changes.outputs.base_sha }}
+  head_sha:
+    description: "Head SHA"
+    value: ${{ steps.merge_changes.outputs.head_sha }}
+
 runs:
   using: "composite"
   steps:
     - name: "Merge changes"
+      id: merge_changes
       shell: bash
       run: |
         echo "STEP: Merge changes"
         cd ${{ inputs.path }}
         if [ ${{ github.event.pull_request }} ]; then
           user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
+
           echo "Merge changes from $user/${{ github.head_ref }}"
           git remote add $user https://github.com/$user/kie-tools.git
           git fetch $user
+
+          echo "Before merging..."
+          git log -n 1
+          echo "::set-output name=base_sha::$(git rev-parse HEAD)"
+
           git merge --squash $user/${{ github.head_ref }}
+          git commit --no-edit
+
+          echo "After merging..."
+          git log -n 1
+          echo "::set-output name=head_sha::$(git rev-parse HEAD)"
         else
           echo "Skip merge, not a pull request"
         fi

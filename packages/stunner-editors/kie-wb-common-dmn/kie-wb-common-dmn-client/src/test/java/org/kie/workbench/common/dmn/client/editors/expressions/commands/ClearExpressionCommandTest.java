@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.commands;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
@@ -63,7 +64,8 @@ public class ClearExpressionCommandTest {
                                                             editorSelectedEvent,
                                                             nodeUUID,
                                                             view,
-                                                            itemDefinitionUtils);
+                                                            itemDefinitionUtils,
+                                                            Optional.empty());
     }
 
     @Test

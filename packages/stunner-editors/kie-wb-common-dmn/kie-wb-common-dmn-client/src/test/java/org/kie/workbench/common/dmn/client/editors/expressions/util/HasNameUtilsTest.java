@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.editors.expressions.util;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.mockito.ArgumentCaptor;
@@ -31,21 +30,21 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class HasExpressionUtilsTest {
+public class HasNameUtilsTest {
 
-    @Mock(extraInterfaces = HasName.class)
-    private HasExpression hasExpression;
+    @Mock
+    private HasName hasName;
 
     private final static String EXPRESSION_NAME = "expression name";
 
     @Test
-    public void testSetExpressionName_WhenHaveName() {
+    public void testSetName_WhenHaveNameObject() {
 
         final Name name = mock(Name.class);
 
-        when(((HasName) hasExpression).getName()).thenReturn(name);
+        when(hasName.getName()).thenReturn(name);
 
-        HasExpressionUtils.setExpressionName(hasExpression, EXPRESSION_NAME);
+        HasNameUtils.setName(hasName, EXPRESSION_NAME);
 
         verify(name).setValue(EXPRESSION_NAME);
     }
@@ -54,9 +53,9 @@ public class HasExpressionUtilsTest {
     public void testSetExpressionName_WhenNameIsNull() {
 
         final ArgumentCaptor<Name> nameCaptor = ArgumentCaptor.forClass(Name.class);
-        HasExpressionUtils.setExpressionName(hasExpression, EXPRESSION_NAME);
+        HasNameUtils.setName(hasName, EXPRESSION_NAME);
 
-        verify((HasName) hasExpression).setName(nameCaptor.capture());
+        verify(hasName).setName(nameCaptor.capture());
 
         final Name currentName = nameCaptor.getValue();
 
