@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+.ping-pong-view--line {
+  font-family: "monospace";
+}
+
 .ping-pong-view--header {
   display: flex;
   justify-content: space-between;
@@ -26,4 +30,46 @@
   padding: 10px;
   background-color: black;
   color: white;
+  font-size: 12px;
+  line-height: 16px;
+  margin: 0;
+}
+
+.ping-pong-view--main {
+  border: 2px solid green;
+  padding: 10px;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+.ping-pong-view--main h2 {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.ping-pong-view--main p {
+  margin: 8px 0;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.ping-pong-view--main button {
+  font-size: 16px;
+  line-height: 18px;
+  margin: 0;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.ping-pong-view--container {
+  border: 2px solid red;
+}
+
+.ping-pong-view--p-iframe {
+  color: green;
+}
+
+.ping-pong-view--p-ping-pong {
+  color: red;
 }

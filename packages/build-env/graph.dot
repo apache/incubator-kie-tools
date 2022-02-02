@@ -12,6 +12,7 @@ digraph G {
   "@kie-tools-core/vscode-extension" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-examples/ping-pong-view" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-core/envelope" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kie-tools-examples/ping-pong-view-angular" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/ping-pong-view-react" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/todo-list-view" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "kie-tools-examples-todo-list-view-vscode-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -77,6 +78,7 @@ digraph G {
   "kie-tools-examples-base64png-editor-vscode-extension" -> "@kie-tools-examples/base64png-editor" [ style = "solid", color = "orange" ];
   "kie-tools-examples-base64png-editor-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/ping-pong-view" -> "@kie-tools-core/envelope" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/ping-pong-view-angular" -> "@kie-tools-examples/ping-pong-view" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/ping-pong-view-react" -> "@kie-tools-examples/ping-pong-view" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/todo-list-view" -> "@kie-tools-core/envelope" [ style = "solid", color = "orange" ];
   "kie-tools-examples-todo-list-view-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "orange" ];
@@ -84,6 +86,7 @@ digraph G {
   "kie-tools-examples-todo-list-view-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools-examples/base64png-editor" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools-examples/ping-pong-view-react" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/webapp" -> "@kie-tools-examples/ping-pong-view-angular" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools-examples/todo-list-view" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools/kie-editors-standalone" [ style = "solid", color = "orange" ];
   "@kie-tools-core/backend" -> "@kie-tools-core/notifications" [ style = "solid", color = "purple" ];

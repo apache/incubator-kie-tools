@@ -1,0 +1,23 @@
+<div class="ping-pong-view--main">
+  <h2>This is an implementation of Ping-Pong View in Angular</h2>
+
+  <p class="ping-pong-view--p-iframe">
+    The envelope boundary border is green. It can be an iFrame or a Div. (It's possible to use Div if using web
+    components made from Angular components)
+  </p>
+  <p class="ping-pong-view--p-ping-pong">The Ping-Pong View implementation border is red</p>
+
+  <div class="ping-pong-view--container">
+    <i>#{{ pingPongApiService.initArgs?.name }}</i>
+
+    <div class="ping-pong-view--header">
+      <span>Hello from Angular!</span>
+      <button (click)="pingPongApiService.ping()">Ping others!</button>
+    </div>
+    <div class="ping-pong-view--log">
+      <p *ngFor="let entry of log | async" class="ping-pong-view--line">
+        {{ entry.line }}
+      </p>
+    </div>
+  </div>
+</div>
