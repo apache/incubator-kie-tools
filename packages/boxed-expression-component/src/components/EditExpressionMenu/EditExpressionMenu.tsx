@@ -91,28 +91,29 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     [boxedExpression.boxedExpressionEditorGWTService, dataType, onExpressionUpdate]
   );
 
-  const onDataTypeChange = useCallback(
-    (dataType: DataType) => {
-      boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
-      setDataType(dataType);
-      onExpressionUpdate({
-        name: expressionName,
-        dataType: dataType,
-      });
-    },
-    [boxedExpression.boxedExpressionEditorGWTService, expressionName, onExpressionUpdate]
-  );
+  const onDataTypeChange = useCallback((dataType: DataType) => {
+    setDataType(dataType);
+  }, []);
 
   const openManageDataType = useCallback(
     () => boxedExpression.boxedExpressionEditorGWTService?.openManageDataType(),
     [boxedExpression.boxedExpressionEditorGWTService]
   );
 
+  const onHidden = useCallback(() => {
+    boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
+    onExpressionUpdate({
+      name: expressionName,
+      dataType: dataType,
+    });
+  }, [boxedExpression.boxedExpressionEditorGWTService, expressionName, onExpressionUpdate, dataType]);
+
   return (
     <PopoverMenu
       title={title}
       arrowPlacement={arrowPlacement}
       appendTo={appendTo}
+      onHidden={onHidden}
       body={
         <div className="edit-expression-menu">
           <div className="expression-name">
@@ -140,7 +141,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
             >
               {i18n.manage}
             </Button>
-            <DataTypeSelector selectedDataType={dataType} onDataTypeChange={onDataTypeChange} />
+            <DataTypeSelector menuAppendTo={} selectedDataType={dataType} onDataTypeChange={onDataTypeChange} />
           </div>
         </div>
       }

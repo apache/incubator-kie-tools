@@ -35,6 +35,10 @@ export interface PopoverMenuProps {
   hasAutoWidth?: boolean;
   /** Popover min width */
   minWidth?: string;
+  /**
+   * Lifecycle function invoked when the popover has fully transitioned out.
+   */
+  onHidden?: () => void;
 }
 
 export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
@@ -46,6 +50,7 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
   className,
   hasAutoWidth,
   minWidth,
+  onHidden,
 }: PopoverMenuProps) => {
   return (
     <Popover
@@ -64,6 +69,7 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
         </div>
       }
       bodyContent={body}
+      onHidden={onHidden}
     >
       {children}
     </Popover>
