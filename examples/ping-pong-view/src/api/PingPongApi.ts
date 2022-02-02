@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,8 @@
  * The API of a PingPongViewApi.
  *
  * These methods are what the "external world" knows about this component.
- * In this case, there are no direct interactions with a Ping-Pong View.
  */
-// tslint:disable-next-line:no-empty-interface
-export interface PingPongApi {}
+export interface PingPongApi {
+  clearLogs(): void;
+  getLastPingTimestamp(): Promise<number>;
+}
