@@ -21,6 +21,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_AllowedAnswers;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_DataTypes;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_DiagramDoesNotHaveElements;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_DmnModel;
@@ -34,6 +35,7 @@ import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConsta
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_NoDRDs;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_NoDataTypes;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_NoExternalLinks;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_Question;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_TableOfContents;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -67,6 +69,10 @@ public class DMNDocumentationI18n {
 
     private String externalLinks;
 
+    private String question;
+
+    private String allowedAnswers;
+
     @JsOverlay
     public static DMNDocumentationI18n create(final TranslationService translationService) {
 
@@ -86,6 +92,8 @@ public class DMNDocumentationI18n {
         i18n.diagramDoesNotHaveElements = translationService.format(DMNDocumentationI18n_DiagramDoesNotHaveElements);
         i18n.noExternalLinks = translationService.format(DMNDocumentationI18n_NoExternalLinks);
         i18n.externalLinks = translationService.format(DMNDocumentationI18n_ExternalLinks);
+        i18n.question = translationService.format(DMNDocumentationI18n_Question);
+        i18n.allowedAnswers = translationService.format(DMNDocumentationI18n_AllowedAnswers);
 
         return i18n;
     }
