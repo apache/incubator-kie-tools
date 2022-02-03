@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 import * as React from "react";
+import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import {
   Drawer,
-  DrawerPanelContent,
   DrawerContent,
   DrawerContentBody,
   DrawerPanelBody,
+  DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { MermaidDiagram } from "../diagram";
-import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
 import { MonacoEditor, MonacoEditorRef } from "../monaco/MonacoEditor";
@@ -140,9 +140,9 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   );
 
   return (
-    <Drawer isExpanded={true} isInline style={{ height: "100vh" }}>
+    <Drawer isExpanded={true} isInline={true}>
       <DrawerContent panelContent={panelContent}>
-        <DrawerContentBody>
+        <DrawerContentBody style={{ overflowY: "hidden" }}>
           {path !== "" && (
             <MonacoEditor
               content={originalContent}

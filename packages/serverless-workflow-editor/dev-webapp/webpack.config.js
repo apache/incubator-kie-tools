@@ -88,14 +88,8 @@ module.exports = (env) =>
     },
     devServer: {
       historyApiFallback: true,
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: path.join(__dirname),
+      static: [{ directory: path.join(__dirname) }],
       compress: true,
       port: buildEnv.serverlessWorkflowEditor.dev.port,
-      open: false,
-      inline: true,
-      hot: true,
-      overlay: true,
     },
   });

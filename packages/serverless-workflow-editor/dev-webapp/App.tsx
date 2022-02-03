@@ -22,6 +22,7 @@ import type { Property } from "csstype";
 import { HistoryButtons, Theme } from "./HistoryButtons";
 import "./App.scss";
 import { EditorApi } from "@kie-tools-core/editor/dist/api";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
 type State = string | undefined;
 
@@ -50,20 +51,23 @@ export const App = () => {
   const container = useRef<HTMLDivElement | null>(null);
 
   return (
-    <div>
+    <Page>
       {content === undefined && (
-        <ServerlessWorkflowEmptyState
-          newContent={(type: string) => {
-            setContent("");
-            editor.current!.setContent(`new-document.sw.${type}`, "").finally();
-          }}
-          setContent={(path: string, content: string) => {
-            setContent(content);
-            editor.current!.setContent(path, content).finally();
-          }}
-        />
+        <PageSection isFilled={true}>
+          <ServerlessWorkflowEmptyState
+            newContent={(type: string) => {
+              setContent("");
+              editor.current!.setContent(`new-document.sw.${type}`, "").finally();
+            }}
+            setContent={(path: string, content: string) => {
+              setContent(content);
+              editor.current!.setContent(path, content).finally();
+            }}
+          />
+        </PageSection>
       )}
-      <div style={{ display: displayServerlessWorkflowEditor() }}>
+
+      <PageSection padding={{ default: "noPadding" }} style={{ display: displayServerlessWorkflowEditor() }}>
         <HistoryButtons
           undo={undo}
           redo={redo}
@@ -79,6 +83,13 @@ export const App = () => {
           }}
           validate={validate}
         />
+      </PageSection>
+      <PageSection
+        padding={{ default: "noPadding" }}
+        style={{ display: displayServerlessWorkflowEditor() }}
+        isFilled={true}
+        hasOverflowScroll={false}
+      >
         <div ref={container} className="editor-container">
           <ServerlessWorkflowEditor
             ref={editor}
@@ -93,7 +104,7 @@ export const App = () => {
             }}
           />
         </div>
-      </div>
-    </div>
+      </PageSection>
+    </Page>
   );
 };

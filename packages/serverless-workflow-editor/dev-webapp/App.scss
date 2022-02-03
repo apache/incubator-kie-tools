@@ -15,8 +15,9 @@
  */
 
 .editor-container {
-  padding-top: 48px;
+  height: 100%;
 }
+
 ::deep .react-monaco-editor-container {
   height: 100%;
 }
