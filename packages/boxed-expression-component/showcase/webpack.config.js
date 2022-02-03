@@ -54,14 +54,12 @@ module.exports = (env) =>
     },
     devServer: {
       historyApiFallback: true,
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: path.join(__dirname),
       compress: true,
       port: buildEnv.boxedExpressionComponent.dev.port,
       open: false,
-      inline: true,
       hot: true,
-      overlay: true,
+      client: {
+        overlay: true,
+      },
     },
   });

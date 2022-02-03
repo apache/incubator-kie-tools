@@ -20,7 +20,7 @@ describe("Dmn Editable - Expression.", () => {
     cy.loadEditors(["dmn-editable"]);
   });
 
-  // TODO - unskip once kogito-editors-java bump is available
+  // https://issues.redhat.com/browse/KOGITO-6707
   it.skip("Test New Expression Editor Can Be Activated", () => {
     cy.editor("dmn-editable").find("[data-field='kie-palette']").should("be.visible");
 

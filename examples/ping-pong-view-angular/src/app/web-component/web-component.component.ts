@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,4 +14,14 @@
  * limitations under the License.
  */
 
-export * from "./EmbeddedIFramePingPong";
+import { Component, Input } from "@angular/core";
+import { ContainerType } from "@kie-tools-core/envelope/dist/api";
+
+@Component({
+  selector: "ping-pong-wc",
+  template: `<app-ping-pong [containerType]="containerType" [envelopeId]="envelopeId"></app-ping-pong>`,
+})
+export class PingPongWcComponent {
+  @Input("containertype") containerType: ContainerType;
+  @Input("envelopeid") envelopeId: string;
+}

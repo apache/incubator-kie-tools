@@ -66,9 +66,7 @@ module.exports = async (env, argv) => {
     },
     devServer: {
       historyApiFallback: false,
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
+      static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
       port: buildEnv.dmnFormWebApp.dev.port,
     },

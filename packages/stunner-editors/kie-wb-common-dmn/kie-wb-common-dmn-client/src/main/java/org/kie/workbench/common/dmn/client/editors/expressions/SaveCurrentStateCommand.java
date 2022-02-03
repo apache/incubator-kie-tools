@@ -17,10 +17,13 @@
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.client.editors.expressions.commands.UpdateCanvasNodeNameCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.ExpressionState;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -34,6 +37,8 @@ public class SaveCurrentStateCommand extends AbstractCanvasCommand {
     private final Event<ExpressionEditorChanged> editorSelectedEvent;
     private final ExpressionEditorView view;
     private final String nodeUUID;
+    private final Optional<HasName> hasName;
+    private final UpdateCanvasNodeNameCommand updateCanvasNodeCommand;
 
     private ExpressionState originalState;
     private ExpressionState stateBeforeUndo;
@@ -41,16 +46,26 @@ public class SaveCurrentStateCommand extends AbstractCanvasCommand {
     public SaveCurrentStateCommand(final HasExpression hasExpression,
                                    final Event<ExpressionEditorChanged> editorSelectedEvent,
                                    final ExpressionEditorView view,
-                                   final String nodeUUID) {
+                                   final String nodeUUID,
+                                   final Optional<HasName> hasName,
+                                   final UpdateCanvasNodeNameCommand updateCanvasNodeNameCommand) {
         this.hasExpression = hasExpression;
         this.editorSelectedEvent = editorSelectedEvent;
         this.view = view;
         this.nodeUUID = nodeUUID;
+        this.hasName = hasName;
+        this.updateCanvasNodeCommand = updateCanvasNodeNameCommand;
         this.originalState = new ExpressionState(hasExpression,
                                                  editorSelectedEvent,
                                                  view,
-                                                 nodeUUID);
+                                                 nodeUUID,
+                                                 hasName,
+                                                 updateCanvasNodeCommand);
         originalState.saveCurrentState();
+    }
+
+    public Optional<HasName> getHasName() {
+        return hasName;
     }
 
     public HasExpression getHasExpression() {
@@ -99,7 +114,9 @@ public class SaveCurrentStateCommand extends AbstractCanvasCommand {
             final ExpressionState newStateBeforeUndo = new ExpressionState(getHasExpression(),
                                                                            getEditorSelectedEvent(),
                                                                            getView(),
-                                                                           getNodeUUID());
+                                                                           getNodeUUID(),
+                                                                           getHasName(),
+                                                                           updateCanvasNodeCommand);
             newStateBeforeUndo.saveCurrentState();
             setStateBeforeUndo(newStateBeforeUndo);
         }

@@ -21,6 +21,7 @@
     "@kie-tools-core/i18n": "0.0.0",
     "@kie-tools-core/notifications": "0.0.0",
     "@kie-tools/boxed-expression-component": "0.0.0",
+    "@kie-tools/form": "0.0.0",
     "@types/react-table": "^7.0.25",
     "ajv": "^6.12.6",
     "ajv-errors": "^1.0.1",

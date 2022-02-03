@@ -42,15 +42,14 @@ module.exports = (env) => [
         patterns: [
           { from: "./envelope", to: "./envelope" },
           { from: "./static", to: "." },
+          { from: "../ping-pong-view-angular/dist/app", to: "./envelope/angular" },
           { from: stunnerEditors.dmnEditorPath(), to: "./dmn-editor/dmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
         ],
       }),
     ],
     devServer: {
       historyApiFallback: false,
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
+      static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
       port: buildEnv.examples.webapp.port,
     },

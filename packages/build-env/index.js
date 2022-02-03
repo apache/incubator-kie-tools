@@ -97,6 +97,11 @@ const ENV_VARS = {
     default: undefined,
     description: "",
   },
+  ONLINE_EDITOR__cypressUrl: {
+    name: "ONLINE_EDITOR__cypressUrl",
+    default: "https://localhost:9001/",
+    description: "",
+  },
   DMN_DEV_SANDBOX__baseImageRegistry: {
     name: "DMN_DEV_SANDBOX__baseImageRegistry",
     default: "quay.io",
@@ -317,6 +322,7 @@ module.exports = {
 
   onlineEditor: {
     dev: {
+      cypressUrl: getOrDefault(ENV_VARS.ONLINE_EDITOR__cypressUrl),
       port: 9001,
     },
     gtmId: getOrDefault(ENV_VARS.ONLINE_EDITOR__gtmId),

@@ -46,7 +46,6 @@ export function isInputWithInsideProperties(toBeDetermined: InputFields): toBeDe
 interface OutputField {
   dataType: DataType;
   width?: number;
-  j;
   name: string;
 }
 

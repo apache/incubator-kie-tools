@@ -34,9 +34,10 @@ import {
   JavaCodeCompletionApi,
   JavaCodeCompletionAccessor,
   JavaCodeCompletionClass,
+  JavaCodeCompletionChannelApi,
 } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
-export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
+export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaCodeCompletionChannelApi {
   private readonly decoder = new TextDecoder("utf-8");
 
   constructor(
@@ -62,10 +63,18 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   }
 
   public async kogitoEditor_contentRequest() {
-    return vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri).then((contentArray) => {
-      this.initialBackup = undefined;
-      return { content: this.decoder.decode(contentArray), path: this.editor.document.relativePath };
-    });
+    let contentArray: Uint8Array;
+    try {
+      contentArray = await vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri);
+    } catch (e) {
+      // If file doesn't exist, we create an empty one.
+      // This is important for the use-case where users type `code new-file.dmn` on a terminal.
+      await vscode.workspace.fs.writeFile(this.editor.document.uri, new Uint8Array());
+      return { content: "", path: this.editor.document.relativePath };
+    }
+
+    this.initialBackup = undefined;
+    return { content: this.decoder.decode(contentArray), path: this.editor.document.relativePath };
   }
 
   public kogitoEditor_setContentError(editorContent: EditorContent) {
@@ -137,13 +146,13 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     this.notificationsApi.kogitoNotifications_removeNotifications(path);
   }
 
-  public kogitoJavaCodeCompletion_getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {
+  public kogitoJavaCodeCompletion__getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {
     return this.javaCodeCompletionApi.getAccessors(fqcn, query);
   }
-  public kogitoJavaCodeCompletion_getClasses(query: string): Promise<JavaCodeCompletionClass[]> {
+  public kogitoJavaCodeCompletion__getClasses(query: string): Promise<JavaCodeCompletionClass[]> {
     return this.javaCodeCompletionApi.getClasses(query);
   }
-  public kogitoJavaCodeCompletion_isLanguageServerAvailable(): Promise<boolean> {
+  public kogitoJavaCodeCompletion__isLanguageServerAvailable(): Promise<boolean> {
     return this.javaCodeCompletionApi.isLanguageServerAvailable();
   }
 }
