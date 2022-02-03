@@ -2,7 +2,7 @@ name: "CI :: Daily cleanup (kogito-online-ci)"
 
 on:
   schedule:
-    - cron: "0 1 * * *"
+    - cron: "0 1 * * *" # 1am UTC everyday
   workflow_dispatch:
 
 jobs:
