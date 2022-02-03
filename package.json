@@ -120,6 +120,7 @@
     "selenium-webdriver": "^4.1.0",
     "semver": "^7.3.5",
     "sinon": "^11.1.1",
+    "sonarqube-scanner": "^2.8.1",
     "source-map-loader": "^2.0.2",
     "spectron": "^14.0.0",
     "start-server-and-test": "^1.12.1",

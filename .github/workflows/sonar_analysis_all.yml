@@ -1,0 +1,54 @@
+name: "Sonar :: kie-tools"
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build for Sonar
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ github.base_ref }}
+
+      - name: "Merge Changes"
+        if: ${{ github.event.pull_request }}
+        shell: bash
+        run: |
+          user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
+          git remote add $user https://github.com/$user/kie-tools.git
+          git fetch $user
+          git merge --squash $user/${{ github.head_ref }}
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ${{ runner.os }}
+
+      - name: "Cache SonarCloud packages"
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar-stunner-editors
+          restore-keys: ${{ runner.os }}-sonar-stunner-editors
+
+      - name: "Build with Maven :: dashbuilder"
+        run: |
+          cd packages/dashbuilder
+          mvn clean package --fail-at-end -Prun-code-coverage
+
+      - name: "Build with Maven :: stunner-editors"
+        run: |
+          cd packages/stunner-editors
+          mvn clean install --fail-at-end -Prun-code-coverage -pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing,!lienzo-webapp'
+
+      - name: "Analyze with Sonar"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          SONARCLOUD_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          yarn sonar-scanner -Dsonar.projectKey=kiegroup_kie-tools -Dsonar.organization=kiegroup -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ env.SONARCLOUD_TOKEN }} -Dsonar.sources=packages -Dsonar.java.binaries=packages/dashbuilder,packages/stunner-editors -Dsonar.exclusions=**/uberfire-widgets-core-ace/**,**/test-resources/**

@@ -11,6 +11,7 @@ pipeline {
         label 'kie-rhel7 && kie-mem8g'
     }
     tools {
+        nodejs 'nodejs-16.2.0'
         maven 'kie-maven-3.6.3'
         jdk 'kie-jdk11'
     }
@@ -31,15 +32,24 @@ pipeline {
                 }
             }
         }
-        stage('Build KIE Tools - Stunner Editors') {
+        stage('Build KIE Tools java modules') {
             steps {
                 script {
+                    mvnCmd = getMavenCommand('kie-tools/packages/dashbuilder')
+                    mvnCmd.run('wrapper:wrapper')
+                }
+                script {
+                    mvnCmd = getMavenCommand('kie-tools/packages/dashbuilder')
+                    mvnCmd.withProfiles(['full'])
+                    mvnCmd.withProperty('gwt.compiler.skip', true)
+                    mvnCmd.withProperty('skipTests', true)
+                    mvnCmd.run('clean package')
+                }
+                script {
                     mvnCmd = getMavenCommand('kie-tools/packages/stunner-editors')
-                    if (isNormalPRCheck() && isSonarCloudEnabled()) {
-                        mvnCmd.withProfiles(['run-code-coverage'])
-                    }
-                    mvnCmd.withOptions(["-pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing,!lienzo-webapp'"])
-                    mvnCmd.run('clean install')
+                    mvnCmd.withProperty('gwt.compiler.skip', true)
+                    mvnCmd.withProperty('skipTests', true)
+                    mvnCmd.run('clean package')
                 }
             }
             post {
@@ -50,20 +60,14 @@ pipeline {
                 }
             }
         }
-        stage('Analyze KIE Tools - Stunner Editors by SonarCloud') {
+        stage('Analyze KIE Tools by SonarCloud') {
             when {
                 expression { isNormalPRCheck() && isSonarCloudEnabled() }
             }
             steps {
                 script {
                     if (isSonarCloudEnabled()) {
-                        getMavenCommand('kie-tools/packages/stunner-editors')
-                                .withOptions(['-e', '-nsu', "-pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing,!lienzo-webapp'"])
-                                .withProperty('sonar.projectKey', 'org.kie.kogito:kogito-tooling')
-                                .withProperty('sonar.organization', 'kiegroup')
-                                .withProperty('sonar.host.url', 'https://sonarcloud.io')
-                                .withProperty('sonar.login', env['SONARCLOUD_TOKEN'])
-                                .run('validate org.sonarsource.scanner.maven:sonar-maven-plugin:sonar')
+                        sh "yarn sonar-scanner -Dsonar.projectKey=kiegroup_kie-tools -Dsonar.organization=kiegroup -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SONARCLOUD_TOKEN} -Dsonar.sources=packages -Dsonar.java.binaries=packages/dashbuilder,packages/stunner-editors -Dsonar.exclusions=**/uberfire-widgets-core-ace/**,**/test-resources/**"
                     }
                 }
             }
