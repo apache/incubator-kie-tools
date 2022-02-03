@@ -80,7 +80,7 @@ const KEY_CODES = new Map<string, string>([
   ["z", "KeyZ"],
 ]);
 
-const IGNORED_TAGS = ["INPUT", "TEXTAREA", "SELECT", "OPTION"];
+const IGNORED_TAGS = ["INPUT", "TEXTAREA", "SELECT", "OPTION", "TD"];
 
 export class DefaultKeyboardShortcutsService {
   private eventIdentifiers = 1;
