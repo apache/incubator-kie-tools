@@ -18,7 +18,6 @@ export * from "./components";
 export * from "./api";
 import * as React from "react";
 import { DataType } from "./api";
-import { TableResizerProps } from "react-table";
 
 declare module "react-table" {
   export interface ContextMenuEvent {
@@ -67,9 +66,5 @@ declare module "react-table" {
     isCountColumn: boolean;
     /** Disabling table handler on the header of this column */
     disableHandlerOnHeader?: boolean;
-  }
-
-  export interface DataRecord {
-    [columnName: string]: unknown;
   }
 }

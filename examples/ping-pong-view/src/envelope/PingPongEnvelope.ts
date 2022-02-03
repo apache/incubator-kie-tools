@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,36 +16,24 @@
 
 import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
 import { Envelope, EnvelopeDivConfig, EnvelopeIFrameConfig } from "@kie-tools-core/envelope";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { PingPongChannelApi, PingPongEnvelopeApi } from "../api";
 import { PingPongFactory } from "./PingPongFactory";
-import { PingPongEnvelopeContext } from "./PingPongEnvelopeContext";
-import { PingPongEnvelopeView, PingPongEnvelopeViewApi } from "./PingPongEnvelopeView";
 import { PingPongEnvelopeApiImpl } from "./PingPongEnvelopeApiImpl";
+
+export type PingPongViewType = HTMLElement | void;
 
 export function init(args: {
   config: EnvelopeDivConfig | EnvelopeIFrameConfig;
-  container: HTMLElement;
   bus: EnvelopeBus;
   pingPongViewFactory: PingPongFactory;
 }) {
-  const envelope = new Envelope<
-    PingPongEnvelopeApi,
-    PingPongChannelApi,
-    PingPongEnvelopeViewApi,
-    PingPongEnvelopeContext
-  >(args.bus, args.config);
+  const envelope = new Envelope<PingPongEnvelopeApi, PingPongChannelApi, PingPongViewType, {}>(args.bus, args.config);
 
-  const envelopeViewDelegate = async () => {
-    const ref = React.createRef<PingPongEnvelopeViewApi>();
-    return new Promise<() => PingPongEnvelopeViewApi>((res) => {
-      ReactDOM.render(<PingPongEnvelopeView ref={ref} />, args.container, () => res(() => ref.current!));
-    });
-  };
-
-  const context: PingPongEnvelopeContext = {};
-  return envelope.start(envelopeViewDelegate, context, {
-    create: (apiFactoryArgs) => new PingPongEnvelopeApiImpl(apiFactoryArgs, args.pingPongViewFactory),
-  });
+  return envelope.start(
+    () => Promise.resolve(() => {}),
+    {},
+    {
+      create: (apiFactoryArgs) => new PingPongEnvelopeApiImpl(apiFactoryArgs, args.pingPongViewFactory),
+    }
+  );
 }
