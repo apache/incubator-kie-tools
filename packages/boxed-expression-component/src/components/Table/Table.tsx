@@ -247,6 +247,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
       setTableHandlerTarget(target);
       globalContext.currentlyOpenedHandlerCallback?.(false);
       setShowTableHandler(true);
+      /* FIXME: Could you please replace the remaning globalContext usages with the boxedExpression (line 91)? So we can remove the useContext from this file.  */
       globalContext.setIsContextMenuOpen(true);
       globalContext.setCurrentlyOpenedHandlerCallback?.(() => setShowTableHandler);
       setLastSelectedColumn(column);
@@ -319,6 +320,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
     [defaultCell, readOnlyCells]
   );
 
+  /* FIXME: Unused constant.  */
   const commonCellProps = {};
 
   const tdProps = useCallback(

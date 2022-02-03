@@ -60,6 +60,7 @@ export function BoxedExpressionEditor(props: BoxedExpressionEditorProps) {
   });
 
   useEffect(() => {
+    console.log("useEffect");
     setExpressionDefinition({
       ...props.expressionDefinition,
       noClearAction,
@@ -67,10 +68,10 @@ export function BoxedExpressionEditor(props: BoxedExpressionEditorProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.expressionDefinition]);
 
-  const onExpressionChange = useCallback(
-    (updatedExpression: ExpressionProps) => setExpressionDefinition(updatedExpression),
-    []
-  );
+  const onExpressionChange = useCallback((updatedExpression: ExpressionProps) => {
+    console.log("onExpressionChange");
+    setExpressionDefinition(updatedExpression);
+  }, []);
 
   return (
     <I18nDictionariesProvider

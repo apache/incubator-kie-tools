@@ -16,6 +16,8 @@
 
 import * as buildEnv from "@kie-tools/build-env";
 
+/* FIXME: use decision_table_expression.ts and rename it to decision_table_expression_spec.ts  */
+/* FIXME: locators introduced in cypress tests are heavily index based  */
 describe("Decision Table Keyboard Navigation Tests", () => {
   before(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);

@@ -125,6 +125,7 @@ describe("Context Expression Tests", () => {
   });
 });
 
+/* FIXME: locators introduced in cypress tests are heavily index based  */
 describe("Context Expression Tests :: Nested Relations", () => {
   before(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);

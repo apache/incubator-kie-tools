@@ -108,6 +108,7 @@ export function usingTestingBoxedExpressionI18nContext(
     children,
     ...ctx,
   };
+  /* FIXME: We should keep the contexts independent. This context is already available by using the usingTestingBoxedExpressionProviderContext or wrapComponentInContext methods, no need to pass it here.  */
   return {
     ctx: usedCtx,
     wrapper: (
