@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ResourceContentOptions, ResourceListOptions } from "@kie-tooling-core/workspace/dist/api";
+import { ResourceContentOptions, ResourceListOptions } from "@kie-tools-core/workspace/dist/api";
 
 /**
  * PUBLIC ENVELOPE API

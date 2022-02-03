@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-tooling/feel-input-component",
+  "name": "@kie-tools/feel-input-component",
   "version": "0.0.0",
   "description": "FEEL (Friendly Enough Expression Language) input component (with code-completion/highlight support)",
   "license": "Apache-2.0",
@@ -16,15 +16,15 @@
     "deploy": "gh-pages -d dist-dev"
   },
   "dependencies": {
-    "@kie-tooling-core/i18n": "0.0.0",
-    "@kie-tooling-core/monaco-editor": "0.0.0",
-    "@kogito-tooling/i18n-common-dictionary": "0.0.0",
+    "@kie-tools-core/i18n": "0.0.0",
+    "@kie-tools-core/monaco-editor": "0.0.0",
+    "@kie-tools/i18n-common-dictionary": "0.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0",
-    "@kie-tooling-core/webpack-base": "0.0.0"
+    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/webpack-base": "0.0.0"
   },
   "babel": {
     "presets": [

@@ -22,9 +22,9 @@ import {
   usingTestingBoxedExpressionI18nContext,
   usingTestingBoxedExpressionProviderContext,
 } from "../test-utils";
-import { DataType, LogicType } from "@kogito-tooling/boxed-expression-component";
+import { DataType, LogicType } from "@kie-tools/boxed-expression-component";
 import * as React from "react";
-import { InvocationExpression } from "@kogito-tooling/boxed-expression-component/dist/components/InvocationExpression";
+import { InvocationExpression } from "@kie-tools/boxed-expression-component/dist/components/InvocationExpression";
 
 describe("InvocationExpression tests", () => {
   test("should show a table with two levels visible header, with one row and two columns", () => {
@@ -109,7 +109,7 @@ describe("InvocationExpression tests", () => {
   });
 });
 
-jest.mock("@kogito-tooling/boxed-expression-component", () => ({
-  ...(jest.requireActual("@kogito-tooling/boxed-expression-component") as Record<string, unknown>),
+jest.mock("@kie-tools/boxed-expression-component", () => ({
+  ...(jest.requireActual("@kie-tools/boxed-expression-component") as Record<string, unknown>),
   getHandlerConfiguration: jest.fn(),
 }));

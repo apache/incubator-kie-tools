@@ -37,8 +37,8 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/kiegroup/kogito-tooling/extended-services/pkg/config"
-	"github.com/kiegroup/kogito-tooling/extended-services/pkg/utils"
+	"github.com/kiegroup/kie-tools/extended-services/pkg/config"
+	"github.com/kiegroup/kie-tools/extended-services/pkg/utils"
 	"github.com/phayes/freeport"
 )
 

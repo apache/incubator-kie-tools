@@ -17,10 +17,10 @@
 import * as React from "react";
 import { fireEvent } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
-import { useSyncedKeyboardEvents } from "@kie-tooling-core/keyboard-shortcuts/dist/channel";
-import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
-import { KeyboardShortcutsEnvelopeApi } from "@kie-tooling-core/keyboard-shortcuts/dist/api";
-import { messageBusClientApiMock } from "@kie-tooling-core/envelope-bus/dist-tests/common";
+import { useSyncedKeyboardEvents } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { KeyboardShortcutsEnvelopeApi } from "@kie-tools-core/keyboard-shortcuts/dist/api";
+import { messageBusClientApiMock } from "@kie-tools-core/envelope-bus/dist-tests/common";
 
 let envelopeApi: MessageBusClientApi<KeyboardShortcutsEnvelopeApi>;
 

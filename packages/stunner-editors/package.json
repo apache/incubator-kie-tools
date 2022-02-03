@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-tooling/stunner-editors",
+  "name": "@kie-tools/stunner-editors",
   "version": "0.0.0",
   "description": "",
   "private": true,
@@ -8,16 +8,16 @@
   "types": "index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kogito-tooling.git"
+    "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "files": [
     "**/dist/*"
   ],
   "dependencies": {
-    "@kogito-tooling/stunner-editors-dmn-loader": "0.0.0"
+    "@kie-tools/stunner-editors-dmn-loader": "0.0.0"
   },
   "devDependencies": {
-    "@kogito-tooling/build-env": "0.0.0"
+    "@kie-tools/build-env": "0.0.0"
   },
   "scripts": {
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",

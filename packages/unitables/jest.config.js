@@ -25,7 +25,7 @@ module.exports = {
   },
   moduleNameMapper: {
     "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMock.js",
-    "@kie-tooling-core/monaco-editor": "<rootDir>/tests/__mocks__/monacoMock.js",
+    "@kie-tools-core/monaco-editor": "<rootDir>/tests/__mocks__/monacoMock.js",
   },
   setupFilesAfterEnv: ["./tests/jest.setup.ts"],
 };

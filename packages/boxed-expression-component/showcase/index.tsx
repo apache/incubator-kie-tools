@@ -33,7 +33,7 @@ import {
   RelationProps,
 } from "../src";
 import { Button, Modal } from "@patternfly/react-core";
-import { CopyIcon, PenIcon } from "@patternfly/react-icons";
+import { PenIcon } from "@patternfly/react-icons";
 import { dataTypes, pmmlParams } from "../tests/components/test-utils";
 import "../src/components/BoxedExpressionEditor/base-no-reset-wrapped.css";
 import ReactJson from "react-json-view";
@@ -52,7 +52,7 @@ export const App: React.FunctionComponent = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   //Defining global function that will be available in the Window namespace and used by the BoxedExpressionEditor component
-  window.beeApi = {
+  const boxedExpressionEditorGWTService = {
     resetExpressionDefinition: (definition: ExpressionProps) => setExpressionDefinition(definition),
     broadcastLiteralExpressionDefinition: (definition: LiteralExpressionProps) => setExpressionDefinition(definition),
     broadcastRelationExpressionDefinition: (definition: RelationProps) => setExpressionDefinition(definition),
@@ -62,12 +62,8 @@ export const App: React.FunctionComponent = () => {
     broadcastFunctionExpressionDefinition: (definition: FunctionProps) => setExpressionDefinition(definition),
     broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) => setExpressionDefinition(definition),
     notifyUserAction(): void {},
+    openManageDataType(): void {},
   };
-
-  const copyToClipboard = useCallback(
-    () => navigator.clipboard.writeText(JSON.stringify(expressionDefinition)),
-    [expressionDefinition]
-  );
 
   const onTypedExpressionChange = useCallback((e) => {
     setTypedExpressionDefinition(e.target.value);
@@ -100,6 +96,7 @@ export const App: React.FunctionComponent = () => {
     <div className="showcase">
       <div className="boxed-expression">
         <BoxedExpressionEditor
+          boxedExpressionEditorGWTService={boxedExpressionEditorGWTService}
           decisionNodeId="_00000000-0000-0000-0000-000000000000"
           expressionDefinition={expressionDefinition}
           dataTypes={dataTypes}
@@ -111,13 +108,6 @@ export const App: React.FunctionComponent = () => {
         <div className="buttons">
           <Button
             variant="secondary"
-            icon={<CopyIcon />}
-            iconPosition="left"
-            onClick={copyToClipboard}
-            ouiaId="copy-expression-json"
-          />
-          <Button
-            variant="secondary"
             icon={<PenIcon />}
             iconPosition="left"
             onClick={handleModalToggle}
@@ -126,7 +116,7 @@ export const App: React.FunctionComponent = () => {
         </div>
 
         <pre>
-          <ReactJson src={expressionDefinition} name={false} />
+          <ReactJson src={expressionDefinition} name={false} enableClipboard />
         </pre>
       </div>
 

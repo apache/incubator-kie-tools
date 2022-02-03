@@ -51,7 +51,7 @@ describe("utils::jsonParseWithUrl", () => {
       myDate: Date.now(),
       myObject: {
         myNumber: 2,
-        myUrl: new URL("https://github.com/kiegroup/kogito-tooling"),
+        myUrl: new URL("https://github.com/kiegroup/kie-tools"),
       },
       myUrlOne: new URL("https://www.example.com"),
       myUrlTwo: new URL("http://www.example.com/path/to/file.txt"),

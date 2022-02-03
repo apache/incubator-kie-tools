@@ -17,9 +17,9 @@
 import * as React from "react";
 import { fireEvent, render } from "@testing-library/react";
 import { usingCurrentTutorialContext, usingTestingGuidedTourI18nContext } from "../test_context";
-import { Dialog } from "@kie-tooling-core/guided-tour/dist/components";
-import { KogitoGuidedTour } from "@kie-tooling-core/guided-tour/dist";
-import { AutoMode, DemoMode, Tutorial } from "@kie-tooling-core/guided-tour/dist/api";
+import { Dialog } from "@kie-tools-core/guided-tour/dist/components";
+import { KogitoGuidedTour } from "@kie-tools-core/guided-tour/dist";
+import { AutoMode, DemoMode, Tutorial } from "@kie-tools-core/guided-tour/dist/api";
 
 jest.useFakeTimers();
 

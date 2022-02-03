@@ -16,8 +16,8 @@
 
 import * as fs from "fs";
 import { BaseEditorResources, EditorResources } from "../common/EditorResources";
-import * as stunnerEditors from "@kogito-tooling/stunner-editors";
-import { getBpmnLanguageData } from "@kogito-tooling/kie-bc-editors/dist/bpmn/api";
+import * as stunnerEditors from "@kie-tools/stunner-editors";
+import { getBpmnLanguageData } from "@kie-tools/kie-bc-editors/dist/bpmn/api";
 
 export class BpmnEditorResources extends BaseEditorResources {
   public get(args: { resourcesPathPrefix: string }) {

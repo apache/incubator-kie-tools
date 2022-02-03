@@ -23,6 +23,7 @@ import * as React from "react";
 import { ChangeEvent, useCallback } from "react";
 import { DataType, EntryInfo, generateNextAvailableEntryName, generateUuid } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
+import { useBoxedExpression } from "../../context";
 
 export interface EditParametersProps {
   /** List of parameters */
@@ -32,10 +33,11 @@ export interface EditParametersProps {
 }
 
 export const EditParameters: React.FunctionComponent<EditParametersProps> = ({ parameters, setParameters }) => {
+  const { boxedExpressionEditorGWTService } = useBoxedExpression();
   const { i18n } = useBoxedExpressionEditorI18n();
 
   const addParameter = useCallback(() => {
-    window.beeApi?.notifyUserAction();
+    boxedExpressionEditorGWTService?.notifyUserAction();
     setParameters([
       ...parameters,
       {
@@ -44,36 +46,36 @@ export const EditParameters: React.FunctionComponent<EditParametersProps> = ({ p
         dataType: DataType.Undefined,
       },
     ]);
-  }, [parameters, setParameters]);
+  }, [boxedExpressionEditorGWTService, parameters, setParameters]);
 
   const onNameChange = useCallback(
     (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
       const parametersCopy = [...parameters].map((parameter) => Object.assign({}, parameter));
       if (parametersCopy[index].name != event.target.value) {
-        window.beeApi?.notifyUserAction();
+        boxedExpressionEditorGWTService?.notifyUserAction();
       }
       parametersCopy[index].name = event.target.value;
       setParameters([...parametersCopy]);
     },
-    [parameters, setParameters]
+    [boxedExpressionEditorGWTService, parameters, setParameters]
   );
 
   const onDataTypeChange = useCallback(
     (index: number) => (dataType: DataType) => {
-      window.beeApi?.notifyUserAction();
+      boxedExpressionEditorGWTService?.notifyUserAction();
       const parametersCopy = [...parameters].map((parameter) => Object.assign({}, parameter));
       parametersCopy[index].dataType = dataType;
       setParameters([...parametersCopy]);
     },
-    [parameters, setParameters]
+    [boxedExpressionEditorGWTService, parameters, setParameters]
   );
 
   const onParameterRemove = useCallback(
     (index: number) => () => {
-      window.beeApi?.notifyUserAction();
+      boxedExpressionEditorGWTService?.notifyUserAction();
       setParameters([...parameters.slice(0, index), ...parameters.slice(index + 1)]);
     },
-    [parameters, setParameters]
+    [boxedExpressionEditorGWTService, parameters, setParameters]
   );
 
   return (

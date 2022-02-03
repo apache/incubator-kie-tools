@@ -144,7 +144,7 @@ export function LearnMorePage() {
                     <Button
                       type={"button"}
                       variant={"link"}
-                      onClick={(event) => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
+                      onClick={(event) => externalLink(event, "https://github.com/kiegroup/kie-tools/releases")}
                       ouiaId="chrome-ext-button"
                     >
                       {i18n.learnMorePage.getChromeExtension}
@@ -155,7 +155,7 @@ export function LearnMorePage() {
                     <Button
                       type={"button"}
                       variant={"link"}
-                      onClick={(event) => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
+                      onClick={(event) => externalLink(event, "https://github.com/kiegroup/kie-tools/releases")}
                       ouiaId="vs-code-button"
                     >
                       {i18n.learnMorePage.getVsCodeExtension}

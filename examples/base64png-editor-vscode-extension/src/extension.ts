@@ -15,10 +15,10 @@
  */
 
 import * as vscode from "vscode";
-import * as KogitoVsCode from "@kie-tooling-core/vscode-extension";
-import { VsCodeBackendProxy } from "@kie-tooling-core/backend/dist/vscode";
-import { I18n } from "@kie-tooling-core/i18n/dist/core";
-import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tooling-core/backend/dist/i18n";
+import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
+import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
 import * as path from "path";
 import * as fs from "fs";
 
@@ -41,7 +41,7 @@ export function activate(context: vscode.ExtensionContext) {
    * @params args.editorEnvelopeLocator.mapping A map associating a file extension with the respective envelope path and resources path.
    */
   KogitoVsCode.startExtension({
-    extensionName: "kogito-tooling-examples.base64png-editor-vscode-extension",
+    extensionName: "kie-tools-examples.base64png-editor-vscode-extension",
     context: context,
     viewType: "kieKogitoWebviewBase64PNGEditor",
     generateSvgCommandId: "extension.kogito.getPreviewSvg",

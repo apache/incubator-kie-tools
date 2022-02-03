@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { BayesianNetworkModel, DataDictionary, Model, PMML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { BayesianNetworkModel, DataDictionary, Model, PMML, XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import { BAYESIAN_NETWORK_MODEL_1 } from "./TestData_BayesianNetworkModel";
 
 describe("BayesianNetworkModel tests", () => {

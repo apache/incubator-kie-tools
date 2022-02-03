@@ -26,7 +26,7 @@ export function SettingsButton() {
       variant={ButtonVariant.plain}
       onClick={() => settingsDispatch.open()}
       aria-label="Settings"
-      className={"kogito-tooling--masthead-hoverable-dark"}
+      className={"kie-tools--masthead-hoverable-dark"}
     >
       <CogIcon />
     </Button>

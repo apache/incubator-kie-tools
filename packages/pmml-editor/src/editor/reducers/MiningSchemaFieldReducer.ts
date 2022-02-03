@@ -24,7 +24,7 @@ import {
   OpType,
   OutlierTreatmentMethod,
   UsageType,
-} from "@kogito-tooling/pmml-editor-marshaller";
+} from "@kie-tools/pmml-editor-marshaller";
 import { ValidationRegistry } from "../validation";
 import { Builder } from "../paths";
 import {

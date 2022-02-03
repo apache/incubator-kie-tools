@@ -16,8 +16,8 @@
 
 import { act } from "react-dom/test-utils";
 
-import { useUserInteractions } from "@kie-tooling-core/guided-tour/dist/components/utils";
-import { BlockMode, DemoMode, UserInteraction } from "@kie-tooling-core/guided-tour/dist/api";
+import { useUserInteractions } from "@kie-tools-core/guided-tour/dist/components/utils";
+import { BlockMode, DemoMode, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 
 describe("GuidedTourUserInteractions", () => {
   describe("useUserInteractions", () => {

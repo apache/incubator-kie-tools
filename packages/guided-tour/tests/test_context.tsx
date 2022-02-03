@@ -15,15 +15,15 @@
  */
 
 import * as React from "react";
-import { CurrentTutorialContext, CurrentTutorialContextType } from "@kie-tooling-core/guided-tour/dist/contexts";
-import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tooling-core/i18n/dist/react-components";
+import { CurrentTutorialContext, CurrentTutorialContextType } from "@kie-tools-core/guided-tour/dist/contexts";
+import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tools-core/i18n/dist/react-components";
 import {
   GuidedTourI18nContext,
   guidedTourI18nDefaults,
   guidedTourI18nDictionaries,
-} from "@kie-tooling-core/guided-tour/dist/i18n";
-import { GuidedTourI18n } from "@kie-tooling-core/guided-tour/dist/i18n";
-import { DEFAULT_RECT, Rect, Tutorial } from "@kie-tooling-core/guided-tour/dist/api";
+} from "@kie-tools-core/guided-tour/dist/i18n";
+import { GuidedTourI18n } from "@kie-tools-core/guided-tour/dist/i18n";
+import { DEFAULT_RECT, Rect, Tutorial } from "@kie-tools-core/guided-tour/dist/api";
 
 export function usingCurrentTutorialContext(children: React.ReactElement, ctx?: Partial<CurrentTutorialContextType>) {
   const currentTutorialContext: CurrentTutorialContextType = {

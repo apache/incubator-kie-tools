@@ -54,7 +54,7 @@ Cypress.Commands.add("loadEditors", (editorIds: string[], options?: Record<strin
       }
       for (const id in editorIds) {
         cy.iframe("div#" + editorIds[id] + " iframe", opts)
-          .find(".kogito-tooling--keyboard-shortcuts-icon", { timeout: 120000, ...opts })
+          .find(".kie-tools--keyboard-shortcuts-icon", { timeout: 120000, ...opts })
           .should("be.visible");
       }
     });

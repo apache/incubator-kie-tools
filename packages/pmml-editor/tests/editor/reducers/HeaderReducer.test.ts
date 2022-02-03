@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Header, PMML } from "@kogito-tooling/pmml-editor-marshaller";
-import { Actions, AllActions, HeaderReducer } from "@kogito-tooling/pmml-editor/dist/editor/reducers";
+import { Header, PMML } from "@kie-tools/pmml-editor-marshaller";
+import { Actions, AllActions, HeaderReducer } from "@kie-tools/pmml-editor/dist/editor/reducers";
 import { Reducer } from "react";
-import { HistoryService } from "@kogito-tooling/pmml-editor/dist/editor/history";
+import { HistoryService } from "@kie-tools/pmml-editor/dist/editor/history";
 
 const service = new HistoryService([]);
 const header: Header = { description: "" };

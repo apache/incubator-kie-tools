@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { ResourceContentRequest, ResourceListRequest } from "@kie-tooling-core/workspace/dist/api";
-import { EmbeddedEditor, useEditorRef } from "@kie-tooling-core/editor/dist/embedded";
-import { ChannelType } from "@kie-tooling-core/editor/dist/api";
+import { ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
+import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
+import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useImperativeHandle, useMemo } from "react";
 import { runScriptOnPage } from "../../utils";

@@ -18,7 +18,7 @@ import { joinName } from "uniforms";
 import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useMemo, useRef } from "react";
 import { AutoField } from "./AutoField";
-import { DataType } from "@kogito-tooling/boxed-expression-component/dist/api";
+import { DataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { DmnRunnerRule } from "../boxed";
 import { DecisionResult, DmnSchemaProperties, DmnValidator, FORMS_ID, Result } from "../dmn";
 import { ColumnInstance } from "react-table";

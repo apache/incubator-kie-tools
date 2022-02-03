@@ -20,7 +20,7 @@ import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Tex
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { InputRow, useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
-import { Notification } from "@kie-tooling-core/notifications/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { useOnlineI18n } from "../../i18n";
@@ -31,11 +31,11 @@ import {
   DmnFormResult,
   DmnResult,
   extractDifferences,
-} from "@kogito-tooling/form/dist/dmn";
+} from "@kie-tools/form/dist/dmn";
 import { usePrevious } from "../../reactExt/Hooks";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { I18nWrapped } from "@kie-tooling-core/i18n/dist/react-components";
+import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../../workspace";
 import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
@@ -349,7 +349,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       {dmnRunnerWorkspace.inputRows.length <= 1 ? (
                         <Button
                           variant={ButtonVariant.plain}
-                          className={"kogito-tooling--masthead-hoverable"}
+                          className={"kie-tools--masthead-hoverable"}
                           style={{ cursor: "default" }}
                         >
                           <TextContent>
@@ -359,7 +359,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       ) : (
                         <div>
                           <Dropdown
-                            className={"kogito-tooling--masthead-hoverable"}
+                            className={"kie-tools--masthead-hoverable"}
                             isPlain={true}
                             aria-label="Select Row Input"
                             toggle={
@@ -386,7 +386,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       <ToolbarItem>
                         <Tooltip content={"Add new input row"}>
                           <Button
-                            className={"kogito-tooling--masthead-hoverable"}
+                            className={"kie-tools--masthead-hoverable"}
                             variant={ButtonVariant.plain}
                             onClick={onAddNewRow}
                           >
@@ -398,7 +398,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                         <Tooltip content={"Switch to table view"}>
                           <Button
                             ouiaId="switch-dmn-runner-to-table-view"
-                            className={"kogito-tooling--masthead-hoverable"}
+                            className={"kie-tools--masthead-hoverable"}
                             variant={ButtonVariant.plain}
                             onClick={onChangeToTableView}
                           >

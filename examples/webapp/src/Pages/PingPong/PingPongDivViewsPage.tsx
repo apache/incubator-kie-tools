@@ -17,10 +17,10 @@
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { Page, PageSection } from "@patternfly/react-core";
-import { EmbeddedDivPingPong } from "@kogito-tooling-examples/ping-pong-view/dist/embedded/div";
-import { PingPongChannelApi } from "@kogito-tooling-examples/ping-pong-view/dist/api";
+import { EmbeddedDivPingPong } from "@kie-tools-examples/ping-pong-view/dist/embedded/div";
+import { PingPongChannelApi } from "@kie-tools-examples/ping-pong-view/dist/api";
 import { StatsSidebar } from "./StatsSidebar";
-import { PingPongReactImplFactory } from "@kogito-tooling-examples/ping-pong-view-react";
+import { PingPongReactImplFactory } from "@kie-tools-examples/ping-pong-view-react";
 
 let pings = 0;
 let pongs = 0;

@@ -15,9 +15,9 @@
  */
 
 import { GwtStateControlCommand } from "./GwtStateControlCommand";
-import { KogitoEditorChannelApi } from "@kie-tooling-core/editor/dist/api";
-import { MessageBusClientApi } from "@kie-tooling-core/envelope-bus/dist/api";
-import { KogitoEdit } from "@kie-tooling-core/workspace/dist/api";
+import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 
 /**
  * PUBLIC GWT EDITORS API

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EmbeddedEditorFile } from "@kie-tooling-core/editor/dist/channel";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 
 describe("EmbeddedEditorFile", () => {
   test("With content", async () => {
