@@ -125,7 +125,7 @@ describe("Context Expression Tests", () => {
   });
 });
 
-describe("Nested Relations", () => {
+describe("Context Expression Tests :: Nested Relations", () => {
   before(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
 
@@ -152,7 +152,7 @@ describe("Nested Relations", () => {
     cy.contains("Insert left").click({ force: true });
   });
 
-  it("Define nested Relation", () => {
+  it("Check nested Relation", () => {
     cy.get("th:contains('column-')").should(($siblings) => {
       expect($siblings).to.have.length(3);
       expect($siblings.eq(0)).to.contain("column-3");
@@ -161,6 +161,7 @@ describe("Nested Relations", () => {
     });
   });
 
+  /* FIXME: My understanding is, to test nested relation, the focused cell should be one of "nested 1", "nested 2" or "nested 3", like attached. Created manually, not as result of your tests.  */
   it("Nested Relation keyboard navigation", () => {
     cy.get(".context-expression > div > table > tbody > tr:eq(0) td:eq(1)").rightclick();
     cy.contains("Insert below").click({ force: true });

@@ -66,6 +66,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   const headerVisibilityMemo = useMemo(() => headerVisibility ?? TableHeaderVisibility.Full, [headerVisibility]);
 
   const globalContext = useContext(BoxedExpressionGlobalContext);
+  /* FIXME: No need to call useContext since we are already calling a function that returns it: useBoxedExpression()  */
 
   /**
    * base props for td elements

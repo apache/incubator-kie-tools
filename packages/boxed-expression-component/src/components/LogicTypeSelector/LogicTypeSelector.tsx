@@ -100,6 +100,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
   } = useContextMenuHandler(boxedExpression.editorRef?.current ?? document);
 
   const globalContext = useContext(BoxedExpressionGlobalContext);
+  /* FIXME: No need to call useContext since we are already calling a function that returns it: useBoxedExpression()  */
 
   const renderExpression = useMemo(() => {
     switch (expression.logicType) {
@@ -156,6 +157,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
       const selectedLogicType = itemId as LogicType;
       onLogicTypeUpdating(selectedLogicType);
       globalContext.setIsContextMenuOpen(false);
+      /* FIXME: Please, remove console.log  */
       console.log("onLogicTypeSelect");
     },
     [boxedExpression.boxedExpressionEditorGWTService, onLogicTypeUpdating, globalContext]
@@ -218,6 +220,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
   useEffect(() => {
     globalContext.setIsContextMenuOpen(contextMenuVisibility);
   }, [contextMenuVisibility]); // eslint-disable-line react-hooks/exhaustive-deps
+  /* FIXME: Probably we don't need to set a callback for useEffect (which requires a re-render), and maybe you can change setIsContextMenuOpen inside the custom hook useContextMenuHandler  */
 
   const cssClasses = useMemo(() => {
     const classes = [];

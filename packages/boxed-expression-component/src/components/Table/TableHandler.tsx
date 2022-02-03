@@ -78,6 +78,7 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
   const [selectedRowIndex, setSelectedRowIndex] = useState(lastSelectedRowIndex);
 
   const globalContext = useContext(BoxedExpressionGlobalContext);
+  /* FIXME: No need to call useContext since we are already calling a function that returns it: useBoxedExpression()  */
 
   useEffect(() => {
     setSelectedColumn(lastSelectedColumn.placeholderOf || lastSelectedColumn);
