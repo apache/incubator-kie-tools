@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import * as buildEnv from "@kie-tools/build-env";
-
 describe("Upload file test", () => {
   beforeEach(() => {
     cy.visit("/");
