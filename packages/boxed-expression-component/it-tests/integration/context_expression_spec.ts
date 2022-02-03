@@ -162,8 +162,7 @@ describe("Context Expression Tests :: Nested Relations", () => {
     });
   });
 
-  /* FIXME: My understanding is, to test nested relation, the focused cell should be one of "nested 1", "nested 2" or "nested 3", like attached. Created manually, not as result of your tests.  */
-  it("Nested Relation keyboard navigation", () => {
+  it("Context Expression keyboard navigation", () => {
     cy.get(".context-expression > div > table > tbody > tr:eq(0) td:eq(1)").rightclick();
     cy.contains("Insert below").click({ force: true });
 
