@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+
+SOURCES_DIR=/tmp/artifacts
+SCRIPT_DIR=$(dirname "${0}")
+ADDED_DIR="${SCRIPT_DIR}"/added
+
+cp -v "${SOURCES_DIR}"/data-index-service-oracle-runner.jar "${KOGITO_HOME}"/bin/
+
+cp -v "${ADDED_DIR}"/kogito-app-launch.sh "${KOGITO_HOME}"
+chmod +x-w "${KOGITO_HOME}"/kogito-app-launch.sh
+

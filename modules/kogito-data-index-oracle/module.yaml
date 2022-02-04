@@ -1,0 +1,12 @@
+schema_version: 1
+name: org.kie.kogito.dataindex.oracle
+version: "2.0.0-snapshot"
+
+artifacts:
+  - name: data-index-service-oracle-runner.jar
+    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/data-index-service-oracle/2.0.0-SNAPSHOT/data-index-service-oracle-2.0.0-20220124.043203-5-runner.jar
+    md5: 9dd485c017dc9e61efaadc27fcf4c0ba
+
+execute:
+  - script: configure
+
