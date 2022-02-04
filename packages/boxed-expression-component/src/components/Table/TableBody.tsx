@@ -23,7 +23,6 @@ import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import {
   focusPrevCell,
   focusNextCell,
-  focusTextArea,
   focusUpperCell,
   focusLowerCell,
   focusInsideCell,
