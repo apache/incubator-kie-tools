@@ -87,6 +87,8 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           return;
         }
 
+        /* FIXME: Direct input for textarea cells same way of Google Spreadsheet  */
+
         if (key === "ArrowLeft") {
           focusPrevCell(e.currentTarget);
         } else if (key === "ArrowRight") {

@@ -140,7 +140,6 @@ describe.skip("Decision Table Expression Tests", () => {
   });
 });
 
-/* FIXME: locators introduced in cypress tests are heavily index based  */
 describe("Decision Table Keyboard Navigation Tests", () => {
   before(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
@@ -151,56 +150,86 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     // Define new expression as Relation
     cy.ouiaId("expression-popover-menu").contains("Decision Table").click({ force: true });
 
-    cy.get(".editable-cell:eq(0)").rightclick();
+    // open contextMenu from first input cell
+    cy.ouiaId("expression-column-1").as("firstInputCell").rightclick();
 
+    // create a row below
     cy.ouiaId("expression-table-handler-menu").contains("Insert below").click({ force: true });
 
-    cy.get(".editable-cell:eq(0)").rightclick();
+    // open contextMenu from first input cell
+    cy.get("@firstInputCell").rightclick();
 
+    // create a row below
     cy.ouiaId("expression-table-handler-menu").contains("Insert below").click({ force: true });
 
-    cy.get(".editable-cell:eq(0)").rightclick();
+    // open contextMenu from first input cell
+    cy.get("@firstInputCell").rightclick();
 
+    // create a column right
     cy.contains("Insert right").click({ force: true });
+
+    // write some text in the table
+    cy.get(".data-cell").each((cell, cellIndex) => {
+      cy.wrap(cell).type(`{enter}cell ${cellIndex + 1}`);
+    });
+    //click outside to finish editing
+    cy.get("body").click();
   });
 
   it("Navigate around", () => {
-    cy.get(".editable-cell:eq(0)").type(
+    // from the cell 1, go to cell 10
+    cy.contains("td", /cell 1/).type(
       "{rightarrow}{rightarrow}{rightarrow}{leftarrow}{downarrow}{downarrow}{leftarrow}"
     );
 
-    cy.get("tbody tr:eq(2) td:eq(2)").should("be.focused");
-    cy.get("tbody tr:eq(2) td:eq(1)").should("not.be.focused");
+    // check the cell 10 is focused
+    cy.contains("td", /cell 10/).should("be.focused");
+    // check the cell 9 is focused
+    cy.contains("td", /cell 9/).should("not.be.focused");
   });
 
   it("Go against edges", () => {
-    cy.get("tbody tr:eq(0) td:eq(1)")
+    // from the cell 1, go to cell 4
+    cy.contains("td", /cell 1/)
       .click({ force: true })
       .type("{uparrow}{uparrow}{uparrow}")
       .should("be.focused")
       .type("{rightarrow}{rightarrow}{rightarrow}{rightarrow}");
 
-    cy.get("tbody tr:eq(0) td:eq(4)")
+    // from the cell 4, go to cell 12
+    cy.contains("td", /cell 4/)
       .should("be.focused")
       .click({ force: true })
       .type("{downarrow}{downarrow}{downarrow}{downarrow}");
 
-    cy.get("tbody tr:eq(2) td:eq(4)").should("be.focused");
+    // check the cell 12 is focused
+    cy.contains("td", /cell 12/).should("be.focused");
   });
 
   it("Edit cells with enter/esc", function () {
-    cy.get("tbody tr:eq(0) td:eq(1)").click({ force: true }).type("{enter}TestInput");
+    // from the cell 1, enter edit mode and write TestInput
+    cy.contains("td", /cell 1/)
+      .as("cell-1")
+      .click({ force: true })
+      .type("{enter}TestInput");
 
-    cy.get("tbody tr:eq(0) td:eq(2)").click({ force: true });
+    // click on cell 2
+    cy.contains("td", /cell 2/).click({ force: true });
 
-    cy.get("tbody tr:eq(0) td:eq(1) textarea").should("have.text", "TestInput");
+    // check the cell 1 now has "TestInput" text
+    cy.get("@cell-1").should("contain.text", "TestInput");
   });
 
   it("Interaction with contextMenu", function () {
-    cy.get("tbody tr:eq(0) td:eq(1)").rightclick();
+    // rightclick on cell 2
+    cy.contains("td", /cell 2/).rightclick();
 
-    cy.get("tbody tr:eq(0) td:eq(1)").type("{leftarrow}").should("be.focused");
+    // try to navigate left with no success
+    cy.contains("td", /cell 2/)
+      .type("{leftarrow}")
+      .should("be.focused");
 
+    // check the contextMenu is open
     cy.get(".table-handler").should("be.visible");
   });
 });

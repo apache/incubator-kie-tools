@@ -128,16 +128,20 @@ describe("Relation Expression Tests", () => {
     // Entry point for each new expression
     cy.ouiaId("expression-container").click();
 
-    defineRelationExpression(3, 1);
+    defineRelationExpression(3, 2);
 
-    cy.ouiaId("expression-grid-table").contains("row 0 column 0").rightclick();
-    cy.ouiaId("expression-table-handler-menu").contains("Insert below").click({ force: true });
+    // go to first cell and open contextMenu
+    cy.contains("td", "row 0 column 0").rightclick();
 
-    cy.ouiaId("expression-row-1").within(($row) => {
-      cy.ouiaId("expression-column-1").type(
-        "{rightarrow}{rightarrow}{rightarrow}{rightarrow}{uparrow}{downarrow}{enter}Newtext"
-      );
-      cy.ouiaId("expression-column-3").click({ force: true }).find("textarea").should("have.text", "Newtext");
-    });
+    // memorize the row 1 column 2 cell
+    cy.contains("td", "row 1 column 2").as("row1col2");
+
+    // go to 2nd row 2nd cell then navigate to around and stop at 2nd row 4rd cell. Then write text
+    cy.contains("td", "row 1 column 1").type(
+      "{rightarrow}{rightarrow}{rightarrow}{rightarrow}{uparrow}{downarrow}{enter}Newtext"
+    );
+
+    // exit edit mode and check 2nd row 4rd cell has the new text
+    cy.get("@row1col2").click({ force: true }).should("contain.text", "Newtext");
   });
 });

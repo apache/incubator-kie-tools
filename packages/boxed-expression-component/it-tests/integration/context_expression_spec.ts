@@ -125,7 +125,6 @@ describe("Context Expression Tests", () => {
   });
 });
 
-/* FIXME: locators introduced in cypress tests are heavily index based  */
 describe("Context Expression Tests :: Nested Relations", () => {
   before(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
@@ -151,6 +150,16 @@ describe("Context Expression Tests :: Nested Relations", () => {
     // insert one column left
     cy.ouiaType("expression-column-header-cell-info").contains("column-1").rightclick();
     cy.contains("Insert left").click({ force: true });
+
+    // write some text in the innerTable
+    cy.get("table table")
+      .ouiaId("expression-row-0")
+      .find(".data-cell")
+      .each((el, index) => {
+        cy.wrap(el).type("nested " + (index + 1));
+      });
+    //click outside to finish editing
+    cy.get("body").click();
   });
 
   it("Check nested Relation", () => {
@@ -163,48 +172,61 @@ describe("Context Expression Tests :: Nested Relations", () => {
   });
 
   it("Context Expression keyboard navigation", () => {
-    cy.get(".context-expression > div > table > tbody > tr:eq(0) td:eq(1)").rightclick();
+    // right click on the first data cell
+    cy.contains("td", "ContextEntry-1").as("firstCell").rightclick();
+
+    // insert row below
     cy.contains("Insert below").click({ force: true });
 
-    cy.get(".context-expression > div > table > tbody > tr:eq(0) td:eq(1)")
-      .click({ force: true })
-      .type("{downarrow}{leftarrow}");
+    // select first data cell then navigate to counter-cell 2
+    cy.get("@firstCell").click({ force: true }).type("{downarrow}{leftarrow}");
 
-    cy.get(".context-expression > div > table > tbody > tr:eq(1) td:eq(0)")
+    // from counter cell 2 navigate to last cell
+    cy.ouiaId("expression-row-1")
+      .ouiaId("expression-column-0")
       .should("be.focused")
       .type("{rightarrow}{rightarrow}{rightarrow}{downarrow}");
 
-    cy.get(".context-expression > div > table > tbody > tr:eq(2) td:eq(2)").should("be.focused").type("{uparrow}");
+    // from last cell navigate to the upper cell
+    cy.ouiaId("OUIA-Generated-TableRow-2").contains("td", "Select expression").should("be.focused").type("{uparrow}");
 
-    cy.get(".context-expression > div > table > tbody > tr:eq(1) td:eq(2)").should("be.focused");
+    // check if the expression cell of the 2nd row is focused
+    cy.ouiaId("expression-row-1").ouiaId("expression-column-2").should("be.focused");
   });
 
   it("Navigate inside nested tables", () => {
-    cy.get(".context-expression > div > table > tbody > tr:eq(0) td:eq(2)")
+    // from the 3rd cell navigate inside the nested table and left to the edge
+    cy.ouiaId("expression-row-0")
+      .ouiaId("expression-column-2")
+      .not("td td")
       .as("parentCell")
       .click({ force: true })
       .type("{enter}")
-      .find("table")
-      .as("nestedTable")
-      .find("tr:eq(1) td:eq(1)")
+      .contains("td", "nested 1")
       .should("be.focused")
       .type("{leftarrow}{leftarrow}{leftarrow}");
 
-    cy.get("@nestedTable")
-      .find("tr:eq(1) td:eq(0)")
+    // from the counter-cell of the inner table navigate to "nested 3"
+    cy.get("table table")
+      .find(".counter-cell")
+      .closest("td")
       .should("be.focused")
       .type("{rightarrow}{rightarrow}{rightarrow}{rightarrow}{downarrow}{downarrow}");
 
-    cy.get("@nestedTable").find("tr:eq(1) td:eq(3)").should("be.focused").type("{esc}");
+    // navigate back to the cell of the parent table
+    cy.contains("td", "nested 3").should("be.focused").type("{esc}");
 
+    // navigate left
     cy.get("@parentCell").should("be.focused").type("{leftarrow}");
 
-    cy.get(".context-expression > div > table > tbody > tr:eq(0) td:eq(1)").should("be.focused");
+    // check parent table is focused
+    cy.ouiaId("expression-column-1").not("table table").should("be.focused");
   });
 
   it("Interaction with contextMenu", function () {
-    cy.get(".context-expression > div > table > tbody > tr:eq(2) td:eq(2)")
-      .as("firstEl")
+    // open contextMenu and expression menu from the expression cell of the 2nd row and check you are not able to navigate. Then close the contextMenu.
+    cy.ouiaId("OUIA-Generated-TableRow-2")
+      .contains("td", "Select expression")
       .rightclick()
       .type("{leftarrow}")
       .should("be.focused")
@@ -213,6 +235,7 @@ describe("Context Expression Tests :: Nested Relations", () => {
       .should("be.focused")
       .type("{esc}");
 
+    // check the menu is closed
     cy.get(".pf-c-popover__content").should("not.exist");
   });
 });
