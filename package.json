@@ -49,7 +49,7 @@
     "@types/vscode": "^1.56.0",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
-    "@vscode/test-web": "^0.0.15",
+    "@vscode/test-web": "^0.0.22",
     "babel-loader": "^8.2.2",
     "chai": "^4.3.4",
     "chromedriver": "^96.0.0",
