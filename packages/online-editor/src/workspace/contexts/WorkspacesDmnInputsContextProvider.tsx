@@ -18,9 +18,10 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { WorkspacesDmnInputsContext } from "./WorkspacesDmnInputsContext";
 import { WorkspaceDmnRunnerInputsService } from "../services/WorkspaceDmnRunnerInputsService";
-import { decoder, useWorkspaces, WorkspaceFile } from "./WorkspacesContext";
+import { decoder, encoder, useWorkspaces, WorkspaceFile } from "./WorkspacesContext";
 import { InputRow } from "../../editor/DmnRunner/DmnRunnerContext";
 import { WorkspaceDmnRunnerEvents } from "../hooks/WorkspaceDmnRunnerInput";
+import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 
 export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildren<{}>) {
   const workspaces = useWorkspaces();
@@ -29,26 +30,49 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
     return new WorkspaceDmnRunnerInputsService(workspaces.storageService);
   }, [workspaces.storageService]);
 
+  // const updateInputRows = useCallback(
+  //   (workspaceFile: WorkspaceFile) =>
+  //     async (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => {
+  //       if (!workspaceFile || !dmnRunnerService) {
+  //         return;
+  //       }
+  //       if (typeof newInputRows === "function") {
+  //         const data = await dmnRunnerService.getDmnRunnerData(workspaceFile);
+  //         const previousInputRows = await data
+  //           ?.getFileContents()
+  //           .then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
+  //         const currentInputRows = newInputRows(previousInputRows ?? [{}]);
+  //         await dmnRunnerService.createOrOverwriteDmnRunnerData(workspaceFile, currentInputRows);
+  //         const broadcastChannel = new BroadcastChannel(workspaceFile.workspaceId + "__dmn_runner_inputs");
+  //         const workspaceEvent: WorkspaceDmnRunnerEvents = { type: "UPDATE", relativePath: workspaceFile.relativePath };
+  //         broadcastChannel.postMessage(workspaceEvent);
+  //       } else {
+  //         await dmnRunnerService.createOrOverwriteDmnRunnerData(workspaceFile, newInputRows);
+  //       }
+  //     },
+  //   [dmnRunnerService]
+  // );
+  // : () => Promise.resolve(encoder.encode(JSON.stringify(dmnRunnerData)))
+
   const updateInputRows = useCallback(
     (workspaceFile: WorkspaceFile) =>
       async (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => {
-        if (!workspaceFile || !dmnRunnerService) {
-          return;
-        }
         if (typeof newInputRows === "function") {
           const data = await dmnRunnerService.getDmnRunnerData(workspaceFile);
           const previousInputRows = await data
             ?.getFileContents()
             .then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
-          const currentInputRows = newInputRows(previousInputRows ?? [{}]);
-          await dmnRunnerService.createOrOverwriteDmnRunnerData(workspaceFile, currentInputRows);
-          // const broadcastChannel = new BroadcastChannel(workspaceFile.workspaceId + "__dmn_runner");
-          // const workspaceEvent: WorkspaceDmnRunnerEvents = { type: "UPDATE_INPUTS", relativePath };
-          // broadcastChannel.postMessage(workspaceEvent);
-          // setInputRows(currentInputRows);
+          await dmnRunnerService.updateDmnRunnerInputs(
+            workspaceFile,
+            () => Promise.resolve(JSON.stringify(newInputRows(previousInputRows ?? [{}]))),
+            { broadcast: true }
+          );
         } else {
-          // Change to updateDmnRunnerInput;
-          await dmnRunnerService.createOrOverwriteDmnRunnerData(workspaceFile, newInputRows);
+          await dmnRunnerService.updateDmnRunnerInputs(
+            workspaceFile,
+            () => Promise.resolve(JSON.stringify(newInputRows)),
+            { broadcast: true }
+          );
         }
       },
     [dmnRunnerService]

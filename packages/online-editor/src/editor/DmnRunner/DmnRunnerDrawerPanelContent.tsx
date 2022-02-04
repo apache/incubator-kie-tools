@@ -46,7 +46,7 @@ import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
-import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { useWorkspaceDmnRunnerInputs } from "../../workspace/hooks/WorkspaceDmnRunnerInput";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -86,6 +86,11 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     buttonPosition: ButtonPosition.OUTPUT,
   });
   const dmnRunnerWorkspace = useWorkspacesDmnRunnerInputs();
+  const inputRows = useWorkspaceDmnRunnerInputs(
+    props.workspaceFile.workspaceId,
+    props.workspaceFile.relativePath,
+    props.workspaceFile
+  );
 
   const onResize = useCallback((width: number) => {
     // FIXME: PatternFly bug. The first interaction without resizing the splitter will result in width === 0.
@@ -180,10 +185,10 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   // Update outputs column on form change
   useEffect(() => {
     if (dmnRunnerState.isExpanded && dmnRunnerState.mode === DmnRunnerMode.FORM) {
-      updateDmnRunnerResults(dmnRunnerWorkspace.inputRows[dmnRunnerState.currentInputRowIndex]);
+      updateDmnRunnerResults(inputRows[dmnRunnerState.currentInputRowIndex]);
     }
   }, [
-    dmnRunnerWorkspace.inputRows,
+    inputRows,
     dmnRunnerState.currentInputRowIndex,
     updateDmnRunnerResults,
     dmnRunnerState.isExpanded,
@@ -194,25 +199,16 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   useEffect(() => {
     if (dmnRunnerState.error) {
       // if there is an error generating the form, the last form data is submitted
-      updateDmnRunnerResults(dmnRunnerWorkspace.inputRows[dmnRunnerState.currentInputRowIndex]);
+      updateDmnRunnerResults(inputRows[dmnRunnerState.currentInputRowIndex]);
     } else if (previousFormError) {
       setTimeout(() => {
         formRef.current?.submit();
-        Object.keys(dmnRunnerWorkspace.inputRows[dmnRunnerState.currentInputRowIndex] ?? {}).forEach((propertyName) => {
-          formRef.current?.change(
-            propertyName,
-            dmnRunnerWorkspace.inputRows[dmnRunnerState.currentInputRowIndex]?.[propertyName]
-          );
+        Object.keys(inputRows[dmnRunnerState.currentInputRowIndex] ?? {}).forEach((propertyName) => {
+          formRef.current?.change(propertyName, inputRows[dmnRunnerState.currentInputRowIndex]?.[propertyName]);
         });
       }, 0);
     }
-  }, [
-    dmnRunnerState.error,
-    dmnRunnerWorkspace.inputRows,
-    dmnRunnerState.currentInputRowIndex,
-    updateDmnRunnerResults,
-    previousFormError,
-  ]);
+  }, [dmnRunnerState.error, inputRows, dmnRunnerState.currentInputRowIndex, updateDmnRunnerResults, previousFormError]);
 
   const openValidationTab = useCallback(() => {
     props.editorPageDock?.toggle(PanelId.NOTIFICATIONS_PANEL);
@@ -280,7 +276,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const rowOptions = useMemo(
     () =>
-      dmnRunnerWorkspace.inputRows.map((_, rowIndex) => (
+      inputRows.map((_, rowIndex) => (
         <DropdownItem
           component={"button"}
           key={rowIndex}
@@ -292,12 +288,12 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           Row {rowIndex + 1}
         </DropdownItem>
       )),
-    [dmnRunnerWorkspace.inputRows]
+    [inputRows]
   );
 
   const formData = useMemo(() => {
-    return dmnRunnerWorkspace.inputRows[dmnRunnerState.currentInputRowIndex];
-  }, [dmnRunnerWorkspace.inputRows, dmnRunnerState.currentInputRowIndex]);
+    return inputRows[dmnRunnerState.currentInputRowIndex];
+  }, [inputRows, dmnRunnerState.currentInputRowIndex]);
 
   const onAddNewRow = useCallback(() => {
     dmnRunnerWorkspace.updateInputRows(props.workspaceFile)((previousData: Array<InputRow>) => {
@@ -346,7 +342,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                     alignItems={{ default: "alignItemsCenter" }}
                   >
                     <FlexItem>
-                      {dmnRunnerWorkspace.inputRows.length <= 1 ? (
+                      {inputRows.length <= 1 ? (
                         <Button
                           variant={ButtonVariant.plain}
                           className={"kie-tools--masthead-hoverable"}
@@ -403,20 +399,6 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                             onClick={onChangeToTableView}
                           >
                             <TableIcon />
-                          </Button>
-                        </Tooltip>
-                      </ToolbarItem>
-                      <ToolbarItem>
-                        <Tooltip content={"Delete inputs data"}>
-                          <Button
-                            ouiaId="delete-dmn-runner-inputs"
-                            className={"kogito-tooling--masthead-hoverable"}
-                            variant={ButtonVariant.plain}
-                            onClick={() => {
-                              dmnRunnerWorkspace.dmnRunnerService.deleteDmnRunnerData(props.workspaceFile);
-                            }}
-                          >
-                            <TrashIcon />
                           </Button>
                         </Tooltip>
                       </ToolbarItem>

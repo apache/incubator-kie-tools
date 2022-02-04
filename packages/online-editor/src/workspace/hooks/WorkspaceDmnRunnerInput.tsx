@@ -38,8 +38,8 @@ export function useWorkspaceDmnRunnerInputs(
 
         const uniqueFileIdentifier = workspaces.getUniqueFileIdentifier({ workspaceId, relativePath });
 
-        console.debug("Subscribing to " + uniqueFileIdentifier);
-        const broadcastChannel = new BroadcastChannel(uniqueFileIdentifier);
+        console.debug("Subscribing to " + uniqueFileIdentifier + "__dmn_runner_inputs");
+        const broadcastChannel = new BroadcastChannel(uniqueFileIdentifier + "__dmn_runner_inputs");
         broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileEvents>) => {
           // create new message related to the change of the input;
           console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(data)}`);
@@ -70,32 +70,34 @@ export function useWorkspaceDmnRunnerInputs(
     )
   );
 
-  // const getInputRows = useCallback(() => {
-  //   if (!workspaceFile || !dmnRunnerService) {
-  //     return Promise.resolve([{}]);
-  //   }
-  //   return dmnRunnerService.getDmnRunnerData(workspaceFile).then((data) => {
-  //     if (!data) {
-  //       return [{}];
-  //     }
-  //     return data.getFileContents().then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
-  //   });
-  // }, [dmnRunnerService, workspaceFile]);
-  //
-  // useEffect(() => {
-  //   let runEffect = true;
-  //   getInputRows().then((inputRows) => {
-  //     // Avoid setState on unmounted component
-  //     if (!runEffect) {
-  //       return;
-  //     }
-  //     setInputRows(inputRows);
-  //   });
-  //
-  //   return () => {
-  //     runEffect = false;
-  //   };
-  // }, [getInputRows]);
+  const getInputRows = useCallback(() => {
+    if (!workspaceFile || !dmnRunnerService) {
+      return Promise.resolve([{}]);
+    }
+    return dmnRunnerService.getDmnRunnerData(workspaceFile).then((data) => {
+      if (!data) {
+        return [{}];
+      }
+      return data.getFileContents().then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
+    });
+  }, [dmnRunnerService, workspaceFile]);
+
+  useEffect(() => {
+    let runEffect = true;
+    getInputRows().then((inputRows) => {
+      // Avoid setState on unmounted component
+      if (!runEffect) {
+        return;
+      }
+      setInputRows(inputRows);
+    });
+
+    return () => {
+      runEffect = false;
+    };
+  }, [getInputRows]);
+
+  return inputRows;
 }
 
 export type WorkspaceDmnRunnerEvents =

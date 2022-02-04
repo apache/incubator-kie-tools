@@ -17,12 +17,16 @@
 import { FsCache } from "./FsCache";
 import { encoder, WorkspaceFile } from "../contexts";
 import { StorageFile, StorageService } from "./StorageService";
+import { InputRow } from "../../editor/DmnRunner/DmnRunnerContext";
+import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
+import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
+import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 
 export class WorkspaceDmnRunnerInputsService {
   constructor(private readonly storageService: StorageService, private readonly fsCache = new FsCache()) {}
 
-  public async getWorkspaceDmnRunnerDataFs(workspaceId: string) {
-    return this.fsCache.getOrCreateFs(`${workspaceId}__dmn_runner_data`);
+  public getWorkspaceDmnRunnerDataFs(workspaceId: string) {
+    return this.fsCache.getOrCreateFs(`${workspaceId}__dmn_runner_inputs`);
   }
 
   public async getDmnRunnerData(workspaceFile: WorkspaceFile) {
@@ -50,14 +54,48 @@ export class WorkspaceDmnRunnerInputsService {
     );
   }
 
-  public async createOrOverwriteDmnRunnerData(workspaceFile: WorkspaceFile, dmnRunnerData: Array<object>) {
+  public async createOrOverwriteDmnRunnerData(workspaceFile: WorkspaceFile, dmnRunnerData: Array<InputRow>) {
     await this.storageService.createOrOverwriteFile(
-      await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
+      this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
       new StorageFile({
         getFileContents: () => Promise.resolve(encoder.encode(JSON.stringify(dmnRunnerData))),
         path: `/${workspaceFile.relativePath}`,
       })
     );
+  }
+
+  // public async updateDmnRunnerInputs(workspaceFile: WorkspaceFile, dmnRunnerData: Array<InputRow>) {
+  //   return this.storageService.updateFile(
+  //     await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
+  //     new StorageFile({
+  //       getFileContents: () => Promise.resolve(encoder.encode(JSON.stringify(dmnRunnerData))),
+  //       path: `/${workspaceFile.relativePath}`,
+  //     })
+  //   );
+  // }
+
+  public async updateDmnRunnerInputs(
+    workspaceFile: WorkspaceFile,
+    getNewContents: () => Promise<string>,
+    broadcastArgs: { broadcast: boolean }
+  ): Promise<void> {
+    await this.storageService.updateFile(
+      await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
+      new StorageFile({
+        getFileContents: () => getNewContents().then((c) => encoder.encode(c)),
+        path: `/${workspaceFile.relativePath}`,
+      })
+    );
+
+    if (broadcastArgs.broadcast) {
+      const broadcastChannel = new BroadcastChannel(
+        WorkspaceDmnRunnerInputsService.getDmnRunnerDataStoreName(workspaceFile.workspaceId)
+      );
+      broadcastChannel.postMessage({
+        type: "UPDATE",
+        relativePath: workspaceFile.relativePath,
+      } as WorkspaceFileEvents);
+    }
   }
 
   public async renameDmnRunnerData(workspaceFile: WorkspaceFile, newFileNameWithoutExtension: string) {
@@ -81,6 +119,6 @@ export class WorkspaceDmnRunnerInputsService {
   }
 
   private static getDmnRunnerDataStoreName(workspaceId: string) {
-    return `${workspaceId}__dmn_runner`;
+    return `${workspaceId}__dmn_runner_inputs`;
   }
 }

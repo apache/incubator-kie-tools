@@ -21,7 +21,6 @@ import { WorkspaceFile } from "./WorkspacesContext";
 
 interface WorkspacesDmnInputsType {
   dmnRunnerService: WorkspaceDmnRunnerInputsService;
-  inputRows: Array<InputRow>;
   updateInputRows: (
     workspaceFile: WorkspaceFile
   ) => (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => void;
