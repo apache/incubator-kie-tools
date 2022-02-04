@@ -3,7 +3,7 @@ name: "Release :: Dry Run"
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 11 * * *" # 11am UTC everyday
+    - cron: "0 4 * * *" # 4am UTC everyday
   pull_request:
     branches: "**"
     paths:
