@@ -67,9 +67,6 @@ public class TaskConverterPriorityTest {
 
     PropertyWriterFactory propertyWriterFactory;
 
-    private static final ScriptTypeListValue ON_ENTRY_ACTION = new ScriptTypeListValue();
-    private static final ScriptTypeListValue ON_EXIT_ACTION = new ScriptTypeListValue();
-
     @Mock
     TaskGeneralSet general;
 

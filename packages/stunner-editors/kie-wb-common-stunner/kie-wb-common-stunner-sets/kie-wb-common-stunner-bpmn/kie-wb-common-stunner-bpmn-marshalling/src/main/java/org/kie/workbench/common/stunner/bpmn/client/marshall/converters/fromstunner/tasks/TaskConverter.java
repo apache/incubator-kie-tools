@@ -145,7 +145,7 @@ public class TaskConverter {
         return p;
     }
 
-    private PropertyWriter userTask(Node<View<BaseUserTask>, ?> n) {
+    public PropertyWriter userTask(Node<View<BaseUserTask>, ?> n) {
         org.eclipse.bpmn2.UserTask task = bpmn2.createUserTask();
         task.setId(n.getUUID());
         BaseUserTask definition = n.getContent().getDefinition();
