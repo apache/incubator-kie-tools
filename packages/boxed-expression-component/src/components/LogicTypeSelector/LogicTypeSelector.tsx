@@ -153,6 +153,9 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
       boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
       const selectedLogicType = itemId as LogicType;
       onLogicTypeUpdating(selectedLogicType);
+      if (!isHeadless) {
+        boxedExpression.boxedExpressionEditorGWTService?.onLogicTypeSelect(selectedLogicType);
+      }
     },
     [boxedExpression.boxedExpressionEditorGWTService, onLogicTypeUpdating]
   );
