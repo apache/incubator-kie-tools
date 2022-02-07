@@ -17,16 +17,15 @@
 import { FsCache } from "./FsCache";
 import { encoder, WorkspaceFile } from "../contexts";
 import { StorageFile, StorageService } from "./StorageService";
-import { InputRow } from "../../editor/DmnRunner/DmnRunnerContext";
-import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
-import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
+import { join } from "path";
+import { WorkspaceDmnRunnerEvents } from "../hooks/WorkspaceDmnRunnerInput";
 
 export class WorkspaceDmnRunnerInputsService {
   constructor(private readonly storageService: StorageService, private readonly fsCache = new FsCache()) {}
 
   public getWorkspaceDmnRunnerDataFs(workspaceId: string) {
-    return this.fsCache.getOrCreateFs(`${workspaceId}__dmn_runner_inputs`);
+    return this.fsCache.getOrCreateFs(this.getDmnRunnerDataStoreName(workspaceId));
   }
 
   public async getDmnRunnerData(workspaceFile: WorkspaceFile) {
@@ -54,47 +53,50 @@ export class WorkspaceDmnRunnerInputsService {
     );
   }
 
-  public async createOrOverwriteDmnRunnerData(workspaceFile: WorkspaceFile, dmnRunnerData: Array<InputRow>) {
+  public async createOrOverwriteDmnRunnerData(workspaceFile: WorkspaceFile, dmnRunnerData: string) {
     await this.storageService.createOrOverwriteFile(
       this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
       new StorageFile({
-        getFileContents: () => Promise.resolve(encoder.encode(JSON.stringify(dmnRunnerData))),
+        getFileContents: () => Promise.resolve(encoder.encode(dmnRunnerData)),
         path: `/${workspaceFile.relativePath}`,
       })
     );
+    const broadcastChannel = new BroadcastChannel(
+      this.getUniqueFileIdentifier({
+        workspaceId: workspaceFile.workspaceId,
+        relativePath: workspaceFile.relativePath,
+      })
+    );
+    broadcastChannel.postMessage({
+      type: "ADD",
+      relativePath: workspaceFile.relativePath,
+    } as WorkspaceFileEvents);
   }
-
-  // public async updateDmnRunnerInputs(workspaceFile: WorkspaceFile, dmnRunnerData: Array<InputRow>) {
-  //   return this.storageService.updateFile(
-  //     await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
-  //     new StorageFile({
-  //       getFileContents: () => Promise.resolve(encoder.encode(JSON.stringify(dmnRunnerData))),
-  //       path: `/${workspaceFile.relativePath}`,
-  //     })
-  //   );
-  // }
 
   public async updateDmnRunnerInputs(
     workspaceFile: WorkspaceFile,
-    getNewContents: () => Promise<string>,
+    dmnRunnerData: string,
     broadcastArgs: { broadcast: boolean }
   ): Promise<void> {
     await this.storageService.updateFile(
       await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
       new StorageFile({
-        getFileContents: () => getNewContents().then((c) => encoder.encode(c)),
+        getFileContents: () => Promise.resolve(encoder.encode(dmnRunnerData)),
         path: `/${workspaceFile.relativePath}`,
       })
     );
 
     if (broadcastArgs.broadcast) {
       const broadcastChannel = new BroadcastChannel(
-        WorkspaceDmnRunnerInputsService.getDmnRunnerDataStoreName(workspaceFile.workspaceId)
+        this.getUniqueFileIdentifier({
+          workspaceId: workspaceFile.workspaceId,
+          relativePath: workspaceFile.relativePath,
+        })
       );
       broadcastChannel.postMessage({
         type: "UPDATE",
-        relativePath: workspaceFile.relativePath,
-      } as WorkspaceFileEvents);
+        dmnRunnerData,
+      } as WorkspaceDmnRunnerEvents);
     }
   }
 
@@ -115,10 +117,22 @@ export class WorkspaceDmnRunnerInputsService {
   }
 
   public async delete(workspaceId: string) {
-    indexedDB.deleteDatabase(WorkspaceDmnRunnerInputsService.getDmnRunnerDataStoreName(workspaceId));
+    indexedDB.deleteDatabase(this.getDmnRunnerDataStoreName(workspaceId));
   }
 
-  private static getDmnRunnerDataStoreName(workspaceId: string) {
-    return `${workspaceId}__dmn_runner_inputs`;
+  public getDmnRunnerInputsLabel() {
+    return "__dmn_runner_inputs";
+  }
+
+  public getDmnRunnerDataStoreName(workspaceId: string) {
+    return `${workspaceId}${this.getDmnRunnerInputsLabel()}`;
+  }
+
+  public getAbsolutePath(args: { workspaceId: string; relativePath?: string }) {
+    return join("/", args.relativePath ?? "");
+  }
+
+  public getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }) {
+    return args.workspaceId + this.getDmnRunnerInputsLabel() + this.getAbsolutePath(args);
   }
 }

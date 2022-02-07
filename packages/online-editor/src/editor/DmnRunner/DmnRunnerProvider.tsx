@@ -109,8 +109,9 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       return;
     }
 
+    dmnRunnerWorkspace.createInputRows(props.workspaceFile)();
     updateFormSchema();
-  }, [updateFormSchema, props.workspaceFile.extension]);
+  }, [updateFormSchema, props.workspaceFile.extension, props.workspaceFile]);
 
   const validate = useCallback(async () => {
     if (props.workspaceFile.extension !== "dmn") {

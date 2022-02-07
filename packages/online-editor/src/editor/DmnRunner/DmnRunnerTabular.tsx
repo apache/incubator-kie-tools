@@ -16,13 +16,13 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo } from "react";
-import { useDmnRunnerState, useDmnRunnerDispatch, InputRow } from "./DmnRunnerContext";
+import { InputRow, useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DmnAutoTable } from "@kie-tools/unitables";
 import { DecisionResult } from "@kie-tools/form/dist/dmn";
 import { PanelId } from "../EditorPageDockDrawer";
 import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
-import { useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../../workspace";
+import { WorkspaceFile } from "../../workspace";
 import { useWorkspaceDmnRunnerInputs } from "../../workspace/hooks/WorkspaceDmnRunnerInput";
 
 interface Props {
@@ -36,8 +36,7 @@ interface Props {
 export function DmnRunnerTabular(props: Props) {
   const dmnRunnerState = useDmnRunnerState();
   const dmnRunnerDispatch = useDmnRunnerDispatch();
-  const dmnRunnerWorkspace = useWorkspacesDmnRunnerInputs();
-  const inputRows = useWorkspaceDmnRunnerInputs(
+  const [inputRows, setInputRows] = useWorkspaceDmnRunnerInputs(
     props.workspaceFile.workspaceId,
     props.workspaceFile.relativePath,
     props.workspaceFile
@@ -103,7 +102,7 @@ export function DmnRunnerTabular(props: Props) {
         <DmnAutoTable
           jsonSchema={dmnRunnerState.jsonSchema}
           inputRows={inputRows}
-          setInputRows={dmnRunnerWorkspace.updateInputRows(props.workspaceFile)}
+          setInputRows={setInputRows}
           results={props.dmnRunnerResults}
           error={dmnRunnerState.error}
           setError={dmnRunnerDispatch.setError}

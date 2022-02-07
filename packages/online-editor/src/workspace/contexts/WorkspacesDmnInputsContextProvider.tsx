@@ -30,29 +30,18 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
     return new WorkspaceDmnRunnerInputsService(workspaces.storageService);
   }, [workspaces.storageService]);
 
-  // const updateInputRows = useCallback(
-  //   (workspaceFile: WorkspaceFile) =>
-  //     async (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => {
-  //       if (!workspaceFile || !dmnRunnerService) {
-  //         return;
-  //       }
-  //       if (typeof newInputRows === "function") {
-  //         const data = await dmnRunnerService.getDmnRunnerData(workspaceFile);
-  //         const previousInputRows = await data
-  //           ?.getFileContents()
-  //           .then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
-  //         const currentInputRows = newInputRows(previousInputRows ?? [{}]);
-  //         await dmnRunnerService.createOrOverwriteDmnRunnerData(workspaceFile, currentInputRows);
-  //         const broadcastChannel = new BroadcastChannel(workspaceFile.workspaceId + "__dmn_runner_inputs");
-  //         const workspaceEvent: WorkspaceDmnRunnerEvents = { type: "UPDATE", relativePath: workspaceFile.relativePath };
-  //         broadcastChannel.postMessage(workspaceEvent);
-  //       } else {
-  //         await dmnRunnerService.createOrOverwriteDmnRunnerData(workspaceFile, newInputRows);
-  //       }
-  //     },
-  //   [dmnRunnerService]
-  // );
-  // : () => Promise.resolve(encoder.encode(JSON.stringify(dmnRunnerData)))
+  const createInputRows = useCallback(
+    (workspaceFile: WorkspaceFile) => async () => {
+      if (!workspaceFile || !dmnRunnerService) {
+        return;
+      }
+      const data = await dmnRunnerService.getDmnRunnerData(workspaceFile);
+      if (!data) {
+        await dmnRunnerService.createOrOverwriteDmnRunnerData(workspaceFile, JSON.stringify([{}]));
+      }
+    },
+    [dmnRunnerService]
+  );
 
   const updateInputRows = useCallback(
     (workspaceFile: WorkspaceFile) =>
@@ -64,22 +53,27 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
             .then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
           await dmnRunnerService.updateDmnRunnerInputs(
             workspaceFile,
-            () => Promise.resolve(JSON.stringify(newInputRows(previousInputRows ?? [{}]))),
+            JSON.stringify(newInputRows(previousInputRows ?? [{}])),
             { broadcast: true }
           );
         } else {
-          await dmnRunnerService.updateDmnRunnerInputs(
-            workspaceFile,
-            () => Promise.resolve(JSON.stringify(newInputRows)),
-            { broadcast: true }
-          );
+          await dmnRunnerService.updateDmnRunnerInputs(workspaceFile, JSON.stringify(newInputRows), {
+            broadcast: true,
+          });
         }
       },
     [dmnRunnerService]
   );
 
+  const getUniqueFileIdentifier = useCallback(
+    (args: { workspaceId: string; relativePath: string }) => dmnRunnerService.getUniqueFileIdentifier(args),
+    [dmnRunnerService]
+  );
+
   return (
-    <WorkspacesDmnInputsContext.Provider value={{ dmnRunnerService, updateInputRows }}>
+    <WorkspacesDmnInputsContext.Provider
+      value={{ dmnRunnerService, updateInputRows, getUniqueFileIdentifier, createInputRows }}
+    >
       {props.children}
     </WorkspacesDmnInputsContext.Provider>
   );

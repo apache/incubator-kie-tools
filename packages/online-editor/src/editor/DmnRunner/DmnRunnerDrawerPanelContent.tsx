@@ -37,7 +37,7 @@ import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import { useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../../workspace";
+import { WorkspaceFile } from "../../workspace";
 import { EditorPageDockDrawerRef, PanelId } from "../EditorPageDockDrawer";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
@@ -85,8 +85,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     contentFlexDirection: "row",
     buttonPosition: ButtonPosition.OUTPUT,
   });
-  const dmnRunnerWorkspace = useWorkspacesDmnRunnerInputs();
-  const inputRows = useWorkspaceDmnRunnerInputs(
+  const [inputRows, setInputRows] = useWorkspaceDmnRunnerInputs(
     props.workspaceFile.workspaceId,
     props.workspaceFile.relativePath,
     props.workspaceFile
@@ -258,13 +257,13 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const setFormData = useCallback(
     (newFormData) => {
-      dmnRunnerWorkspace.updateInputRows(props.workspaceFile)((previousData: Array<InputRow>) => {
+      setInputRows((previousData: Array<InputRow>) => {
         const newData = [...previousData];
         newData[dmnRunnerState.currentInputRowIndex] = newFormData;
         return newData;
       });
     },
-    [props.workspaceFile, dmnRunnerState.currentInputRowIndex, dmnRunnerWorkspace.updateInputRows]
+    [dmnRunnerState.currentInputRowIndex, setInputRows]
   );
 
   const [selectedRow, selectRow] = useState<string>("");
@@ -296,13 +295,13 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   }, [inputRows, dmnRunnerState.currentInputRowIndex]);
 
   const onAddNewRow = useCallback(() => {
-    dmnRunnerWorkspace.updateInputRows(props.workspaceFile)((previousData: Array<InputRow>) => {
+    setInputRows((previousData: Array<InputRow>) => {
       const newData = [...previousData, {}];
       dmnRunnerDispatch.setCurrentInputRowIndex(newData.length - 1);
       selectRow(`Row ${newData.length}`);
       return newData;
     });
-  }, [props.workspaceFile, dmnRunnerWorkspace.updateInputRows]);
+  }, [setInputRows, dmnRunnerDispatch]);
 
   const onChangeToTableView = useCallback(() => {
     dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);

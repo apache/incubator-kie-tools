@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-import { useCallback, useEffect, useState } from "react";
-import { decoder, useWorkspaces, useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../";
-import { WorkspaceFileEvents } from "./WorkspaceFileHooks";
+import React, { useCallback, useEffect, useState } from "react";
+import { decoder, useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../";
 import { InputRow } from "../../editor/DmnRunner/DmnRunnerContext";
-import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
+import { useCancelableEffect } from "../../reactExt/Hooks";
 
 export function useWorkspaceDmnRunnerInputs(
   workspaceId: string | undefined,
   relativePath: string | undefined,
   workspaceFile: WorkspaceFile
-) {
-  const workspaces = useWorkspaces();
-  const { dmnRunnerService } = useWorkspacesDmnRunnerInputs();
+): [Array<InputRow>, React.Dispatch<React.SetStateAction<Array<InputRow>>>] {
+  const { dmnRunnerService, updateInputRows, getUniqueFileIdentifier } = useWorkspacesDmnRunnerInputs();
   const [inputRows, setInputRows] = useState<Array<InputRow>>([{}]);
 
   useCancelableEffect(
@@ -36,12 +34,11 @@ export function useWorkspaceDmnRunnerInputs(
           return;
         }
 
-        const uniqueFileIdentifier = workspaces.getUniqueFileIdentifier({ workspaceId, relativePath });
+        const uniqueFileIdentifier = getUniqueFileIdentifier({ workspaceId, relativePath });
 
-        console.debug("Subscribing to " + uniqueFileIdentifier + "__dmn_runner_inputs");
-        const broadcastChannel = new BroadcastChannel(uniqueFileIdentifier + "__dmn_runner_inputs");
-        broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceFileEvents>) => {
-          // create new message related to the change of the input;
+        console.debug("Subscribing to " + uniqueFileIdentifier);
+        const broadcastChannel = new BroadcastChannel(uniqueFileIdentifier);
+        broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceDmnRunnerEvents>) => {
           console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(data)}`);
           if (data.type === "MOVE" || data.type == "RENAME") {
             if (canceled.get()) {
@@ -59,6 +56,12 @@ export function useWorkspaceDmnRunnerInputs(
             }
             dmnRunnerService?.delete(workspaceId);
           }
+          if (data.type === "UPDATE") {
+            if (canceled.get()) {
+              return;
+            }
+            setInputRows(JSON.parse(data.dmnRunnerData));
+          }
         };
 
         return () => {
@@ -66,7 +69,7 @@ export function useWorkspaceDmnRunnerInputs(
           broadcastChannel.close();
         };
       },
-      [relativePath, workspaceId, workspaces, dmnRunnerService, workspaceFile]
+      [relativePath, workspaceId, getUniqueFileIdentifier, dmnRunnerService, workspaceFile]
     )
   );
 
@@ -97,14 +100,20 @@ export function useWorkspaceDmnRunnerInputs(
     };
   }, [getInputRows]);
 
-  return inputRows;
+  const doSomething = useCallback(
+    (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => {
+      setInputRows(newInputRows);
+      updateInputRows(workspaceFile)(newInputRows);
+    },
+    [updateInputRows, workspaceFile]
+  );
+
+  return [inputRows, doSomething];
 }
 
 export type WorkspaceDmnRunnerEvents =
   | { type: "MOVE"; newRelativePath: string; oldRelativePath: string }
   | { type: "RENAME"; newRelativePath: string; oldRelativePath: string }
-  | { type: "UPDATE"; relativePath: string }
+  | { type: "UPDATE"; dmnRunnerData: string }
   | { type: "DELETE"; relativePath: string }
-  | { type: "ADD"; relativePath: string }
-  | { type: "INPUTS_UPDATED"; relativePath: string }
-  | { type: "INPUTS_DELETED"; relativePath: string };
+  | { type: "ADD"; relativePath: string };
