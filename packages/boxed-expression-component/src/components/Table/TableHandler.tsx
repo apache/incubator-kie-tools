@@ -77,9 +77,6 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
   const [selectedColumn, setSelectedColumn] = useState(lastSelectedColumn.placeholderOf || lastSelectedColumn);
   const [selectedRowIndex, setSelectedRowIndex] = useState(lastSelectedRowIndex);
 
-  const globalContext = useContext(BoxedExpressionGlobalContext);
-  /* FIXME: No need to call useContext since we are already calling a function that returns it: useBoxedExpression()  */
-
   useEffect(() => {
     setSelectedColumn(lastSelectedColumn.placeholderOf || lastSelectedColumn);
   }, [lastSelectedColumn]);
@@ -268,7 +265,7 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
           );
       }
       setShowTableHandler(false);
-      globalContext.setIsContextMenuOpen(false);
+      boxedExpression.setIsContextMenuOpen(false);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [updateTargetColumns, generateRow, onRowsUpdate, selectedRowIndex, setShowTableHandler, tableRows]
@@ -291,7 +288,7 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
       isVisible={showTableHandler}
       shouldClose={() => {
         setShowTableHandler(false);
-        globalContext.setIsContextMenuOpen(false);
+        boxedExpression.setIsContextMenuOpen(false);
       }}
       shouldOpen={(showFunction) => showFunction?.()}
       reference={() => tableHandlerTarget}

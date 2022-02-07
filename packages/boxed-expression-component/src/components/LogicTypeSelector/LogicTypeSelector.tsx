@@ -40,7 +40,7 @@ import { PopoverMenu } from "../PopoverMenu";
 import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core";
 import * as _ from "lodash";
 import { useContextMenuHandler } from "../../hooks";
-import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
+import { useBoxedExpression } from "../../context";
 import { DecisionTableExpression } from "../DecisionTableExpression";
 import { ListExpression } from "../ListExpression";
 import { InvocationExpression } from "../InvocationExpression";

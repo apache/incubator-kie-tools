@@ -16,7 +16,7 @@
 
 import * as _ from "lodash";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Column,
   ColumnInstance,
@@ -30,7 +30,7 @@ import {
 import { TableComposable } from "@patternfly/react-table";
 import { v4 as uuid } from "uuid";
 import { generateUuid, TableHeaderVisibility, TableOperation, TableProps } from "../../api";
-import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
+import { useBoxedExpression } from "../../context";
 import { PASTE_OPERATION, pasteOnTable, focusCurrentCell } from "./common";
 import { EditableCell } from "./EditableCell";
 import "./Table.css";
@@ -97,8 +97,6 @@ export const Table: React.FunctionComponent<TableProps> = ({
     (groupType?: string) => (getColumnPrefix ? getColumnPrefix(groupType) : "column-"),
     [getColumnPrefix]
   );
-
-  const globalContext = useContext(BoxedExpressionGlobalContext);
 
   const generateNumberOfRowsSubColumnRecursively: (column: ColumnInstance, headerLevels: number) => void = useCallback(
     (column, headerLevels) => {
@@ -245,14 +243,13 @@ export const Table: React.FunctionComponent<TableProps> = ({
   const tableHandlerStateUpdate = useCallback(
     (target: HTMLElement, column: ColumnInstance) => {
       setTableHandlerTarget(target);
-      globalContext.currentlyOpenedHandlerCallback?.(false);
+      boxedExpression.currentlyOpenedHandlerCallback?.(false);
       setShowTableHandler(true);
-      /* FIXME: Could you please replace the remaning globalContext usages with the boxedExpression (line 91)? So we can remove the useContext from this file.  */
-      globalContext.setIsContextMenuOpen(true);
-      globalContext.setCurrentlyOpenedHandlerCallback?.(() => setShowTableHandler);
+      boxedExpression.setIsContextMenuOpen(true);
+      boxedExpression.setCurrentlyOpenedHandlerCallback?.(() => setShowTableHandler);
       setLastSelectedColumn(column);
     },
-    [globalContext]
+    [boxedExpression]
   );
 
   const getColumnOperations = useCallback(
