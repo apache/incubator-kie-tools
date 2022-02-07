@@ -108,17 +108,16 @@ export const focusPrevCell = (currentEl: HTMLElement | null): void => {
  * @returns
  */
 export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number): void => {
-  /* FIXME: Please, make it consistent with the currentEl. Use currentCell and currentBody  */
-  const currCell = <HTMLTableCellElement>getParentCell(currentEl);
+  const currentCell = <HTMLTableCellElement>getParentCell(currentEl);
 
-  if (!currCell) {
+  if (!currentCell) {
     return;
   }
 
-  const currBody = currCell.closest("tbody");
-  const gotoRow = currBody?.rows[rowIndex - 1];
+  const currentBody = currentCell.closest("tbody");
+  const gotoRow = currentBody?.rows[rowIndex - 1];
 
-  cellFocus(<HTMLTableCellElement>gotoRow?.cells[currCell.cellIndex]);
+  cellFocus(<HTMLTableCellElement>gotoRow?.cells[currentCell.cellIndex]);
 };
 
 /**
@@ -129,16 +128,15 @@ export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number):
  * @returns
  */
 export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number): void => {
-  /* FIXME: Please, make it consistent with the currentEl. Use currentCell and currentBody  */
-  const currCell = <HTMLTableCellElement>getParentCell(currentEl);
+  const currentCell = <HTMLTableCellElement>getParentCell(currentEl);
 
-  if (!currCell) {
+  if (!currentCell) {
     return;
   }
-  const currBody = currCell.closest("tbody");
-  const gotoRow = currBody?.rows[rowIndex + 1];
+  const currentBody = currentCell.closest("tbody");
+  const gotoRow = currentBody?.rows[rowIndex + 1];
 
-  cellFocus(<HTMLTableCellElement>gotoRow?.cells[currCell.cellIndex]);
+  cellFocus(<HTMLTableCellElement>gotoRow?.cells[currentCell.cellIndex]);
 };
 
 /**
@@ -167,13 +165,13 @@ export const focusInsideCell = (currentEl: HTMLElement | null): void => {
 /**
  * Focus Parent Cell of a cell.
  *
- * @param currCell the current cell
+ * @param currentCell the current cell
  * @returns
  */
-export const focusParentCell = (currCell: HTMLElement | null): void => {
-  if (!currCell) {
+export const focusParentCell = (currentCell: HTMLElement | null): void => {
+  if (!currentCell) {
     return;
   }
 
-  cellFocus(currCell.parentElement?.closest("td") || null);
+  cellFocus(currentCell.parentElement?.closest("td") || null);
 };
