@@ -25,7 +25,7 @@ import { VsCodeI18n } from "./i18n";
 import { Uri } from "vscode";
 
 /**
- * Produces instances of KogitoEditorChannelApi to be used if we want to provide the extension a channel api with
+ * Produces instances of KogitoEditorChannelApi to be used if we want to provide the extension a Channel API with
  * custom features.
  */
 export interface KogitoEditorChannelApiProducer {
