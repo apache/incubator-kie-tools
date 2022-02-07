@@ -490,8 +490,10 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     public void onLogicTypeSelect(final String selectedLogicType) {
-        final ExpressionType expressionType = ExpressionType.getTypeByText(selectedLogicType);
-        expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expressionType).ifPresent(this::enrichModelExpression);
+        expressionEditorDefinitionsSupplier
+                .get()
+                .getExpressionEditorDefinition(ExpressionType.getTypeByText(selectedLogicType))
+                .ifPresent(this::enrichModelExpression);
     }
 
     void executeExpressionCommand(final FillExpressionCommand expressionCommand) {
