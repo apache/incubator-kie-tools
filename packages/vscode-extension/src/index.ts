@@ -68,7 +68,7 @@ export async function startExtension(args: {
     vsCodeJavaCodeCompletionChannelApi,
     args.viewType,
     vsCodeI18n,
-    args?.channelApiProducer
+    args.channelApiProducer
   );
 
   const editorWebviewProvider = new KogitoEditorWebviewProvider(
