@@ -231,7 +231,7 @@ export class StorageService {
       })
     );
 
-    return files.reduce((paths: T[], path: T) => {
+    return files.reduce((paths: T[], path) => {
       return path ? paths.concat(path) : paths;
     }, []) as T[];
   }

@@ -20,7 +20,7 @@ describe("Dmn Read Only.", () => {
     cy.loadEditors(["dmn-read-only"]);
   });
 
-  it("Test Load File And View", () => {
+  it.skip("Test Load File And View", () => {
     cy.editor("dmn-read-only").find("[data-field='palettePanel']").should("not.be.visible");
 
     cy.editor("dmn-read-only")

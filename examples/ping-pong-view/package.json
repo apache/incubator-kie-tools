@@ -11,10 +11,9 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "scripts": {
-    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
-    "build": "rimraf dist && yarn copy:css && tsc",
-    "build:dev": "yarn run run-script-if --bool $(build-env global.build.examples) --then \"yarn run build\"",
-    "build:prod": "yarn run run-script-if --bool $(build-env global.build.examples) --then \"yarn run build\""
+    "build": "rimraf dist && tsc",
+    "build:dev": "yarn run run-script-if --bool \"$(build-env global.build.examples)\" --then \"yarn run build\"",
+    "build:prod": "yarn run run-script-if --bool \"$(build-env global.build.examples)\" --then \"yarn run build\""
   },
   "dependencies": {
     "@kie-tools-core/envelope": "0.0.0",

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.util;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
@@ -28,6 +29,7 @@ import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.commands.UpdateCanvasNodeNameCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 
 public class ExpressionState {
@@ -36,6 +38,9 @@ public class ExpressionState {
     private final Event<ExpressionEditorChanged> editorSelectedEvent;
     private final ExpressionEditorView view;
     private final String nodeUUID;
+    private final Optional<HasName> hasName;
+    private final UpdateCanvasNodeNameCommand updateCanvasNodeCommand;
+
     private Expression savedExpression;
     private String savedExpressionName;
     private QName savedTypeRef;
@@ -43,11 +48,19 @@ public class ExpressionState {
     public ExpressionState(final HasExpression hasExpression,
                            final Event<ExpressionEditorChanged> editorSelectedEvent,
                            final ExpressionEditorView view,
-                           final String nodeUUID) {
+                           final String nodeUUID,
+                           final Optional<HasName> hasName,
+                           final UpdateCanvasNodeNameCommand updateCanvasNodeNameCommand) {
         this.hasExpression = hasExpression;
         this.editorSelectedEvent = editorSelectedEvent;
         this.view = view;
         this.nodeUUID = nodeUUID;
+        this.hasName = hasName;
+        this.updateCanvasNodeCommand = updateCanvasNodeNameCommand;
+    }
+
+    public Optional<HasName> getHasName() {
+        return hasName;
     }
 
     public ExpressionEditorView getView() {
@@ -107,7 +120,13 @@ public class ExpressionState {
     }
 
     void setExpressionName(final String expressionName) {
-        HasExpressionUtils.setExpressionName(getHasExpression(), expressionName);
+        final HasName fallbackHasName = getFallbackHasName();
+        HasNameUtils.setName(getHasName().orElse(fallbackHasName), expressionName);
+        updateCanvasNodeCommand.execute(getNodeUUID(), getHasName().orElse(null));
+    }
+
+    HasName getFallbackHasName() {
+        return getHasExpression() instanceof HasName ? (HasName) getHasExpression() : HasName.NOP;
     }
 
     void restoreExpression() {
@@ -128,10 +147,8 @@ public class ExpressionState {
     }
 
     void saveCurrentExpressionName() {
-        if (getHasExpression() instanceof HasName) {
-            final HasName hasName = (HasName) getHasExpression();
-            setSavedExpressionName(hasName.getName().getValue());
-        }
+        final HasName fallbackHasName = getFallbackHasName();
+        setSavedExpressionName(getHasName().orElse(fallbackHasName).getName().getValue());
     }
 
     QName getCurrentTypeRef() {

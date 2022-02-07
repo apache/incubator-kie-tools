@@ -22,7 +22,7 @@
     "@kie-tools/unitables": "0.0.0",
     "@kie-tools/kie-sandbox-fs": "0.0.0",
     "@octokit/rest": "^18.5.3",
-    "isomorphic-git": "^1.10.1",
+    "isomorphic-git": "^1.11.1",
     "jszip": "^3.7.1",
     "buffer": "^6.0.3",
     "moment": "^2.29.1",

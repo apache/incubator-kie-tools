@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.commands;
 
+import java.util.Optional;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import junit.framework.TestCase;
 import org.junit.Before;
@@ -70,7 +72,8 @@ public class FillListExpressionCommandTest extends TestCase {
                                                     editorSelectedEvent,
                                                     "nodeUUID",
                                                     view,
-                                                    itemDefinitionUtils));
+                                                    itemDefinitionUtils,
+                                                    Optional.empty()));
         doNothing().when(command).fill(any(), any());
     }
 

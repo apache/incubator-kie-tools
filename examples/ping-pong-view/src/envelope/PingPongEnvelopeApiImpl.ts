@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,31 @@
  * limitations under the License.
  */
 
-import { Association, PingPongChannelApi, PingPongEnvelopeApi, PingPongInitArgs } from "../api";
+import { Association, PingPongChannelApi, PingPongEnvelopeApi, PingPongInitArgs, PingPongApi } from "../api";
 import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
-import { PingPongEnvelopeViewApi } from "./PingPongEnvelopeView";
-import { PingPongEnvelopeContext } from "./PingPongEnvelopeContext";
 import { PingPongFactory } from "./PingPongFactory";
 
 export class PingPongEnvelopeApiImpl implements PingPongEnvelopeApi {
   constructor(
-    private readonly args: EnvelopeApiFactoryArgs<
-      PingPongEnvelopeApi,
-      PingPongChannelApi,
-      PingPongEnvelopeViewApi,
-      PingPongEnvelopeContext
-    >,
+    private readonly args: EnvelopeApiFactoryArgs<PingPongEnvelopeApi, PingPongChannelApi, void, {}>,
     private readonly pingPongViewFactory: PingPongFactory
   ) {}
 
+  pingPongApi?: () => PingPongApi | null;
+
   public async pingPongView__init(association: Association, initArgs: PingPongInitArgs) {
     this.args.envelopeClient.associate(association.origin, association.envelopeServerId);
-    const view = await this.args.viewDelegate();
-    const pingPong = this.pingPongViewFactory.create(initArgs, this.args.envelopeClient.manager.clientApi);
-    await view().setView(pingPong);
+    this.pingPongApi = this.pingPongViewFactory.create(initArgs, this.args.envelopeClient.manager.clientApi);
+  }
+
+  public async pingPongView__clearLogs() {
+    this.pingPongApi?.()?.clearLogs();
+  }
+
+  public async pingPongView__getLastPingTimestamp() {
+    const api = this.pingPongApi?.();
+    if (!api) return Promise.resolve(0);
+
+    return api.getLastPingTimestamp();
   }
 }

@@ -47,7 +47,7 @@
         border-bottom: 1px solid #dddddd;
       }
 
-      .kie-dmn-documentation .external-links-title {
+      .kie-dmn-documentation .node-detail-title {
         font-weight: bold;
       }
 
@@ -161,7 +161,7 @@
         vertical-align: middle;
         font-weight: bold;
         padding-right: 5px;
-        white-space: nowrap;
+        white-space: pre-wrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
@@ -362,9 +362,16 @@
           {{/drdType}}
         </h4>
         <p>{{drdDescription}}</p>
+        {{#drdQuestion}}
+        <p class="node-detail-title">{{i18n.question}}</p>
+        <p>{{drdQuestion}}</p>
+        {{/drdQuestion}} {{#drdAllowedAnswers}}
+        <p class="node-detail-title">{{i18n.allowedAnswers}}</p>
+        <p>{{drdAllowedAnswers}}</p>
+        {{/drdAllowedAnswers}}
         <ul class="data-types">
           {{#hasExternalLinks}}
-          <p class="external-links-title">{{i18n.externalLinks}}</p>
+          <p class="node-detail-title">{{i18n.externalLinks}}</p>
           {{/hasExternalLinks}} {{#drdExternalLinks}}
           <li style="padding-left: calc(30px * {{level}})">
             <span class="normal">{{description}}</span>

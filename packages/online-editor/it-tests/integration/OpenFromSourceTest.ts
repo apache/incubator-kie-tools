@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import * as buildEnv from "@kie-tools/build-env";
-
 describe("Open from source test", () => {
   const SAMPLES_URL: string =
     "https://raw.githubusercontent.com/kiegroup/kie-tools/main/packages/online-editor/it-tests/fixtures/";
