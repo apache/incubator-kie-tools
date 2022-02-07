@@ -317,9 +317,6 @@ export const Table: React.FunctionComponent<TableProps> = ({
     [defaultCell, readOnlyCells]
   );
 
-  /* FIXME: Unused constant.  */
-  const commonCellProps = {};
-
   const tdProps = useCallback(
     (columnIndex: number, rowIndex: number) => ({
       onContextMenu: (e: ContextMenuEvent) => {
