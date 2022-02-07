@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import * as buildEnv from "@kie-tools/build-env";
-
 describe("DMN Expression Editor Test", () => {
   beforeEach(() => {
     cy.visit("/");
@@ -71,8 +69,7 @@ describe("DMN Expression Editor Test", () => {
     });
   });
 
-  // TODO - unskip once kogito-editors-java bump is available
-  it.skip("Test New Expresssion editor - decision table", () => {
+  it("Test New Expresssion editor - decision table", () => {
     // click Create new decision model button (new DMN)
     cy.ouia({ ouiaId: "try-dmn-sample-button" }).click();
 

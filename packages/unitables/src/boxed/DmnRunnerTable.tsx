@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useLayoutEffect, useMemo } from "react";
-import { Column, ColumnInstance, DataRecord } from "react-table";
+import { Column, ColumnInstance } from "react-table";
 import "@kie-tools/boxed-expression-component";
 import {
   ColumnsUpdateArgs,
@@ -39,6 +39,8 @@ enum DecisionTableColumnType {
 
 const DASH_SYMBOL = "-";
 const EMPTY_SYMBOL = "";
+
+type DataRecord = Record<string, unknown>;
 
 export interface DmnRunnerTableProps extends ExpressionProps {
   /** Input columns definition */

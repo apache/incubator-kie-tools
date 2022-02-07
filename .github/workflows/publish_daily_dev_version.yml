@@ -2,7 +2,7 @@ name: "CI :: Daily dev version"
 
 on:
   schedule:
-    - cron: "0 9 * * *" # 9am UTC everyday, editors snapshots should be available by then
+    - cron: "0 2 * * *" # 2am UTC everyday
   workflow_dispatch:
 
 jobs:

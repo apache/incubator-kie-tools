@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import * as buildEnv from "@kie-tools/build-env";
-
 describe("Test DMN Documentation tab", () => {
   beforeEach(() => {
-    cy.visit(`https://localhost:${buildEnv.onlineEditor.dev.port}/`);
+    cy.visit("/");
   });
 
   it("Decision Question and Allowed Answers are present", () => {
