@@ -44,4 +44,8 @@ public interface EditorActivity extends Activity {
     default Promise<Void> redo() {
         throw new UnsupportedOperationException("The editor does not support redo.");
     }
+
+    default Promise<Void> searchDomainObject(final String uuid) {
+        throw new UnsupportedOperationException("The editor does not support search domain object.");
+    }
 }

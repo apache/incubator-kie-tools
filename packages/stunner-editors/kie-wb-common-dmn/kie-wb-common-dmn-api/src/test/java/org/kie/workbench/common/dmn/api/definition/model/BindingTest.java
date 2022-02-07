@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
@@ -38,6 +39,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,6 +49,9 @@ public class BindingTest {
     private static final String ITEM_ID = "ITEM-ID";
     private static final String DESCRIPTION = "DESCRIPTION";
     private static final String INFORMATION_ITEM_NAME = "INFORMATION-ITEM-NAME";
+    private static final String UUID = "uuid";
+    private static final String ANOTHER_UUID = "another uuid";
+
     private Binding binding;
 
     @Before
@@ -119,5 +124,64 @@ public class BindingTest {
         assertEquals(DESCRIPTION, target.getParameter().getDescription().getValue());
         assertEquals(INFORMATION_ITEM_NAME, target.getParameter().getName().getValue());
         assertEquals(BuiltInType.BOOLEAN.asQName(), target.getParameter().getTypeRef());
+    }
+
+    @Test
+    public void testFindDomainObject_WhenParameterMatches() {
+
+        final Binding binding = new Binding();
+        final String uuid = "uuid";
+
+        final InformationItem parameter = new InformationItem(new Id(uuid),
+                                                              null,
+                                                              null,
+                                                              null);
+
+        binding.setParameter(parameter);
+
+        final DomainObject result = binding.findDomainObject(uuid);
+
+        assertEquals(parameter, result);
+    }
+
+    @Test
+    public void testFindDomainObject_WhenParameterDoesNotMatches() {
+
+        final Binding binding = new Binding();
+
+        final Expression expression = mock(Expression.class);
+        final DomainObject expressionDomainObject = mock(DomainObject.class);
+
+        final InformationItem parameter = new InformationItem(new Id(ANOTHER_UUID),
+                                                              null,
+                                                              null,
+                                                              null);
+
+        binding.setExpression(expression);
+        binding.setParameter(parameter);
+
+        when(expression.findDomainObject(UUID)).thenReturn(expressionDomainObject);
+
+        final DomainObject result = binding.findDomainObject(UUID);
+
+        assertEquals(expressionDomainObject, result);
+        verify(expression).findDomainObject(UUID);
+    }
+
+    @Test
+    public void testFindDomainObject_WhenParameterDoesNotMatchesAndExpressionIsNull() {
+
+        final Binding binding = new Binding();
+
+        final InformationItem parameter = new InformationItem(new Id(ANOTHER_UUID),
+                                                              null,
+                                                              null,
+                                                              null);
+
+        binding.setParameter(parameter);
+
+        final DomainObject result = binding.findDomainObject(UUID);
+
+        assertNull(result);
     }
 }

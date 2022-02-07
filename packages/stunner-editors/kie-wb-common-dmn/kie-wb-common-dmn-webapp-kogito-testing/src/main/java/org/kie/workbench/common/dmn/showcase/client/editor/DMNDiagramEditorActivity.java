@@ -114,6 +114,11 @@ public class DMNDiagramEditorActivity extends AbstractActivity implements Editor
         return realPresenter.redo();
     }
 
+    @Override
+    public Promise<Void> searchDomainObject(String uuid) {
+        return realPresenter.searchDomainObject(uuid);
+    }
+
     @FunctionalInterface
     @JsFunction
     public interface DoAction {

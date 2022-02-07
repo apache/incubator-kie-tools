@@ -26,6 +26,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
@@ -36,6 +37,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -44,6 +46,8 @@ public class ContextEntryTest {
     private static final String ITEM_ID = "item-id";
     private static final String DESCRIPTION = "description";
     private static final String INFORMATION_ITEM_NAME = "item-name";
+    private static final String UUID = "uuid";
+    private static final String ANOTHER_UUID = "another uuid";
     private ContextEntry contextEntry;
 
     @Before
@@ -87,5 +91,62 @@ public class ContextEntryTest {
         assertEquals(DESCRIPTION, target.getVariable().getDescription().getValue());
         assertEquals(INFORMATION_ITEM_NAME, target.getVariable().getName().getValue());
         assertEquals(BuiltInType.BOOLEAN.asQName(), target.getVariable().getTypeRef());
+    }
+
+    @Test
+    public void testFindDomainObject_WhenVariableMatches() {
+
+        final ContextEntry contextEntry = new ContextEntry();
+
+        final InformationItem variable = new InformationItem(new Id(UUID),
+                                                             null,
+                                                             null,
+                                                             null);
+
+        contextEntry.setVariable(variable);
+
+        final DomainObject result = contextEntry.findDomainObject(UUID);
+
+        assertEquals(variable, result);
+    }
+
+    @Test
+    public void testFindDomainObject_WhenVariableDoesNotMatches() {
+
+        final ContextEntry contextEntry = new ContextEntry();
+        final Expression expression = mock(Expression.class);
+        final DomainObject expressionDomainObject = mock(DomainObject.class);
+
+        final InformationItem variable = new InformationItem(new Id(ANOTHER_UUID),
+                                                             null,
+                                                             null,
+                                                             null);
+
+        contextEntry.setVariable(variable);
+        contextEntry.setExpression(expression);
+
+        when(expression.findDomainObject(UUID)).thenReturn(expressionDomainObject);
+
+        final DomainObject result = contextEntry.findDomainObject(UUID);
+
+        assertEquals(result, expressionDomainObject);
+        verify(expression).findDomainObject(UUID);
+    }
+
+    @Test
+    public void testFindDomainObject_WhenVariableDoesNotMatchesAndExpressionIsNull() {
+
+        final ContextEntry contextEntry = new ContextEntry();
+
+        final InformationItem variable = new InformationItem(new Id(ANOTHER_UUID),
+                                                             null,
+                                                             null,
+                                                             null);
+
+        contextEntry.setVariable(variable);
+
+        final DomainObject result = contextEntry.findDomainObject(UUID);
+
+        assertNull(result);
     }
 }

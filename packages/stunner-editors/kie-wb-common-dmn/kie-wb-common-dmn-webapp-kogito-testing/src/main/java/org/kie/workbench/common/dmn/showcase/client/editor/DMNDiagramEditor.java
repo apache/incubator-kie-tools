@@ -36,11 +36,13 @@ import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocusUtils;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
+import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
+import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.showcase.client.feel.FEELDemoEditor;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
@@ -192,6 +194,14 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
     public void openFEELEditor() {
         dialogBox.center();
         dialogBox.show();
+    }
+
+    public Promise<Void> searchDomainObject(final String uuid) {
+        return promises.create((resolve, reject) -> {
+            final DMNSession session = sessionManager.getCurrentSession();
+            final ExpressionEditorView.Presenter expressionEditor = session.getExpressionEditor();
+            expressionEditor.getView().selectDomainObject(uuid);
+        });
     }
 
     public Promise<Void> undo() {

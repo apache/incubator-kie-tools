@@ -26,6 +26,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Collections.singletonList;
@@ -41,6 +42,7 @@ public class LiteralExpressionTest {
     private static final String DESCRIPTION = "DESCRIPTION";
     private static final String TEXT = "TEXT";
     private static final String EXPRESSION_LANGUAGE = "EXPRESSION-LANGUAGE";
+    private static final String UUID = "uuid";
     private LiteralExpression literalExpression;
 
     @Before
@@ -83,5 +85,30 @@ public class LiteralExpressionTest {
         assertEquals(TEXT, target.getText().getValue());
         assertNull(target.getImportedValues());
         assertEquals(EXPRESSION_LANGUAGE, target.getExpressionLanguage().getValue());
+    }
+
+    @Test
+    public void testFindDomainObject() {
+
+        final LiteralExpression literalExpression = new LiteralExpression(new Id(UUID),
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          null);
+
+        final DomainObject foundDomainObject = literalExpression.findDomainObject(UUID);
+
+        assertEquals(literalExpression, foundDomainObject);
+    }
+
+    @Test
+    public void testFindDomainObject_WhenNothingHasBeenFound() {
+
+        final LiteralExpression literalExpression = new LiteralExpression();
+
+        final DomainObject foundDomainObject = literalExpression.findDomainObject(UUID);
+
+        assertNull(foundDomainObject);
     }
 }

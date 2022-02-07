@@ -22,6 +22,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
@@ -36,6 +37,11 @@ public class ExpressionTest {
             @Override
             public Expression copy() {
                 return expression;
+            }
+
+            @Override
+            public DomainObject findDomainObject(final String uuid) {
+                return null;
             }
 
             @Override

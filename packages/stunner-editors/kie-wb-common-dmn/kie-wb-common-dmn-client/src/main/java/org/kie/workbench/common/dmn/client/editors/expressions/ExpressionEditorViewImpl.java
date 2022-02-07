@@ -38,11 +38,13 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
+import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
+import org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
@@ -99,6 +101,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Domai
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
@@ -111,6 +114,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperati
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
+import static java.util.Objects.isNull;
 import static java.util.stream.Stream.concat;
 import static org.kie.workbench.common.dmn.api.definition.model.ItemDefinition.ITEM_DEFINITION_COMPARATOR;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BUILT_IN_TYPE_COMPARATOR;
@@ -403,6 +407,37 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     @Override
     public void clear() {
         getExpressionContainerGrid().clearExpressionType();
+    }
+
+    @Override
+    public void selectDomainObject(final String uuid) {
+        fireDomainObjectSelectionEvent(findDomainObject(uuid));
+    }
+
+    DomainObject findDomainObject(final String uuid) {
+
+        if (matches(hasExpression, uuid)) {
+            return (DomainObject) hasExpression;
+        } else {
+            final DomainObject domainObject = hasExpression.getExpression().findDomainObject(uuid);
+            if (!isNull(domainObject)) {
+                return domainObject;
+            }
+            return new NOPDomainObject();
+        }
+    }
+
+    boolean matches(final HasExpression hasExpression,
+                    final String uuid) {
+         return hasExpression instanceof DomainObject
+                 && DomainObjectSearcherHelper.matches(((DomainObject) hasExpression), uuid);
+    }
+
+    void fireDomainObjectSelectionEvent(final DomainObject domainObject) {
+
+        final DomainObjectSelectionEvent event = new DomainObjectSelectionEvent(sessionManager.getCurrentSession().getCanvasHandler(),
+                                                                                domainObject);
+        this.domainObjectSelectionEvent.fire(event);
     }
 
     public void resetExpressionDefinition(final ExpressionProps expressionProps) {

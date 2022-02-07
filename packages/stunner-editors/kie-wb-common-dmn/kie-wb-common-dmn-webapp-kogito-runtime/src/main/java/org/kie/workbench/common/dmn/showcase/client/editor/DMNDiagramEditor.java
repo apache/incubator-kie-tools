@@ -220,6 +220,13 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
         });
     }
 
+    public Promise<Void> searchDomainObject(String uuid) {
+        return promises.create((resolve, reject) -> {
+            //commands.getUndoSessionCommand().execute();
+        });
+    }
+
+
     private DMNDiagramEditor.View getView() {
         return (DMNDiagramEditor.View) getBaseEditorView();
     }

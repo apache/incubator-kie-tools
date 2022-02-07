@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -24,6 +25,8 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRefs;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
+import org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getNotNullHasTypeRefs;
@@ -31,7 +34,8 @@ import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRe
 @Portable
 public class ContextEntry extends DMNModelInstrumentedBase implements HasExpression,
                                                                       HasTypeRefs,
-                                                                      HasVariable<InformationItem> {
+                                                                      HasVariable<InformationItem>,
+                                                                      HasDomainObject {
 
     public static final String DEFAULT_EXPRESSION_VALUE = "null // auto-filled by the editor to avoid missing empty expression.";
 
@@ -102,5 +106,19 @@ public class ContextEntry extends DMNModelInstrumentedBase implements HasExpress
         hasTypeRefs.addAll(getNotNullHasTypeRefs(getVariable()));
 
         return hasTypeRefs;
+    }
+
+    @Override
+    public DomainObject findDomainObject(final String uuid) {
+
+        if (DomainObjectSearcherHelper.matches(variable, uuid)) {
+            return variable;
+        }
+
+        if (!Objects.isNull(expression)) {
+            return expression.findDomainObject(uuid);
+        }
+
+        return null;
     }
 }

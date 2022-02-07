@@ -27,15 +27,18 @@ import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition.Kind
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -44,6 +47,7 @@ public class FunctionDefinitionTest {
 
     private static final String FUNCTION_ID = "FUNCTION-ID";
     private static final String DESCRIPTION = "DESCRIPTION";
+    private static final String UUID = "uuid";
     private FunctionDefinition functionDefinition;
 
     @Before
@@ -117,5 +121,53 @@ public class FunctionDefinitionTest {
     @Test
     public void testKindFromValueWithDefault() {
         assertEquals(Kind.FEEL, Kind.fromValue("Something"));
+    }
+
+    @Test
+    public void testFindDomainObject_FromFormalParameter() {
+
+        final FunctionDefinition functionDefinition = new FunctionDefinition();
+        final InformationItem formalParameter1 = mock(InformationItem.class);
+        final InformationItem formalParameter2 = mock(InformationItem.class);
+        final InformationItem formalParameter3 = mock(InformationItem.class);
+
+        when(formalParameter3.getDomainObjectUUID()).thenReturn(UUID);
+
+        functionDefinition.getFormalParameter().addAll(asList(formalParameter1, formalParameter2, formalParameter3));
+
+        final DomainObject actual = functionDefinition.findDomainObject(UUID);
+
+        assertEquals(formalParameter3, actual);
+    }
+
+    @Test
+    public void testFindDomainObject_FromExpression() {
+
+        final FunctionDefinition functionDefinition = new FunctionDefinition();
+        final InformationItem formalParameter1 = mock(InformationItem.class);
+        final InformationItem formalParameter2 = mock(InformationItem.class);
+        final InformationItem formalParameter3 = mock(InformationItem.class);
+        final Expression expression = mock(Expression.class);
+        final DomainObject expectedDomainObject = mock(DomainObject.class);
+
+        when(expression.findDomainObject(UUID)).thenReturn(expectedDomainObject);
+
+        functionDefinition.setExpression(expression);
+        functionDefinition.getFormalParameter().addAll(asList(formalParameter1, formalParameter2, formalParameter3));
+
+        final DomainObject actual = functionDefinition.findDomainObject(UUID);
+
+        assertEquals(expectedDomainObject, actual);
+        verify(expression).findDomainObject(UUID);
+    }
+
+    @Test
+    public void testFindDomainObject_WhenNothingHasBeenFound() {
+
+        final FunctionDefinition functionDefinition = new FunctionDefinition();
+
+        final DomainObject actual = functionDefinition.findDomainObject(UUID);
+
+        assertNull(actual);
     }
 }
