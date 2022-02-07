@@ -16,7 +16,7 @@
 
 import "./LogicTypeSelector.css";
 import * as React from "react";
-import { useState, useContext, useEffect, useCallback, useMemo } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 import {
   ContextProps,
   DataType,
@@ -99,8 +99,7 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
     targetElement,
   } = useContextMenuHandler(boxedExpression.editorRef?.current ?? document);
 
-  const globalContext = useContext(BoxedExpressionGlobalContext);
-  /* FIXME: No need to call useContext since we are already calling a function that returns it: useBoxedExpression()  */
+  const { setIsContextMenuOpen } = useBoxedExpression();
 
   const renderExpression = useMemo(() => {
     switch (expression.logicType) {
@@ -156,11 +155,9 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
       boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
       const selectedLogicType = itemId as LogicType;
       onLogicTypeUpdating(selectedLogicType);
-      globalContext.setIsContextMenuOpen(false);
-      /* FIXME: Please, remove console.log  */
-      console.log("onLogicTypeSelect");
+      setIsContextMenuOpen(false);
     },
-    [boxedExpression.boxedExpressionEditorGWTService, onLogicTypeUpdating, globalContext]
+    [boxedExpression.boxedExpressionEditorGWTService, onLogicTypeUpdating, setIsContextMenuOpen]
   );
 
   const buildLogicSelectorMenu = useMemo(
@@ -218,9 +215,8 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
   }, [contextMenuVisibility, selectedExpression.noClearAction, targetElement]);
 
   useEffect(() => {
-    globalContext.setIsContextMenuOpen(contextMenuVisibility);
+    setIsContextMenuOpen(contextMenuVisibility);
   }, [contextMenuVisibility]); // eslint-disable-line react-hooks/exhaustive-deps
-  /* FIXME: Probably we don't need to set a callback for useEffect (which requires a re-render), and maybe you can change setIsContextMenuOpen inside the custom hook useContextMenuHandler  */
 
   const cssClasses = useMemo(() => {
     const classes = [];

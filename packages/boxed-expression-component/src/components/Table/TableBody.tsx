@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useContext } from "react";
+import { useCallback, useMemo } from "react";
 import { Tbody, Td, Tr } from "@patternfly/react-table";
 import { Column as IColumn, TableHeaderVisibility } from "../../api";
 import { Cell, Column, Row, TableInstance } from "react-table";
@@ -29,7 +29,7 @@ import {
   getParentCell,
   focusParentCell,
 } from "./common";
-import { BoxedExpressionGlobalContext } from "../../context";
+import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
 
 export interface TableBodyProps {
   /** Table instance */
@@ -64,8 +64,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
 }) => {
   const headerVisibilityMemo = useMemo(() => headerVisibility ?? TableHeaderVisibility.Full, [headerVisibility]);
 
-  const globalContext = useContext(BoxedExpressionGlobalContext);
-  /* FIXME: No need to call useContext since we are already calling a function that returns it: useBoxedExpression()  */
+  const { isContextMenuOpen } = useBoxedExpression();
 
   /**
    * base props for td elements
@@ -76,7 +75,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
       onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => {
         const key = e.key;
 
-        if (globalContext.isContextMenuOpen) {
+        if (isContextMenuOpen) {
           e.preventDefault();
           return;
         }
@@ -96,14 +95,14 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           focusUpperCell(e.currentTarget, rowIndex);
         } else if (key === "ArrowDown") {
           focusLowerCell(e.currentTarget, rowIndex);
-        } else if (key === "Enter" && !globalContext.isContextMenuOpen) {
+        } else if (key === "Enter" && !isContextMenuOpen) {
           focusInsideCell(e.currentTarget);
         } else if (key === "Escape") {
           focusParentCell(e.currentTarget);
         }
       },
     }),
-    [globalContext.isContextMenuOpen]
+    [isContextMenuOpen]
   );
 
   const renderCell = useCallback(
