@@ -91,6 +91,11 @@
           "type": "string",
           "default": "${fileDirname}",
           "markdownDescription": "Where to save generated SVG files (defaults to same path as the file: `${fileDirname}`)."
+        },
+        "kogito.sw.specsStoragePath": {
+          "type": "string",
+          "default": "${fileDirname}/specs",
+          "markdownDescription": "Folder where Openapi spec files are stored (defaults to a 'specs' folder in the same path as the sw file)."
         }
       }
     },

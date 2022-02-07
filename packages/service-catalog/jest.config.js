@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-import "@patternfly/react-core/dist/styles/base.css";
-
-export * from "./ServerlessWorkflowEditor";
-export * from "./ServerlessWorkflowEditorFactory";
-export * from "./ServerlessWorkflowEditorView";
-export * from "./ServerlessWorkflowEditorInterface";
-export * from "./ServerlessWorkflowChannelApi";
+module.exports = {
+  reporters: ["default"],
+  moduleDirectories: ["node_modules"],
+  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
+  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
+  transform: {
+    "^.+\\.jsx?$": "babel-jest",
+    "^.+\\.tsx?$": "ts-jest",
+  },
+  moduleNameMapper: {
+    "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMock.js",
+  },
+};
