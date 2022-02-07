@@ -23,9 +23,10 @@ interface WorkspacesDmnInputsType {
   dmnRunnerService: WorkspaceDmnRunnerInputsService;
   getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }): string;
   createInputRows: (workspaceFile: WorkspaceFile) => () => Promise<void>;
-  updateInputRows: (
-    workspaceFile: WorkspaceFile
-  ) => (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => void;
+  updatePersistedInputRows: (
+    workspaceFile: WorkspaceFile,
+    newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)
+  ) => void;
 }
 
 export const WorkspacesDmnInputsContext = createContext<WorkspacesDmnInputsType>({} as any);

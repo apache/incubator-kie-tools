@@ -25,6 +25,8 @@ export type InputRow = { [x: string]: string };
 export interface DmnRunnerContextType {
   currentInputRowIndex: number;
   error: boolean;
+  inputRows: Array<InputRow>;
+  inputRowsUpdated: boolean;
   isExpanded: boolean;
   mode: DmnRunnerMode;
   jsonSchema?: DmnSchema;
@@ -37,6 +39,7 @@ export interface DmnRunnerCallbacksContextType {
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentInputRowIndex: React.Dispatch<React.SetStateAction<number>>;
+  setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>;
   setMode: React.Dispatch<React.SetStateAction<DmnRunnerMode>>;
 }
 

@@ -43,7 +43,7 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
     [dmnRunnerService]
   );
 
-  const updateInputRows = useCallback(
+  const updatePersistedInputRows = useCallback(
     (workspaceFile: WorkspaceFile) =>
       async (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => {
         if (typeof newInputRows === "function") {
@@ -72,7 +72,7 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
 
   return (
     <WorkspacesDmnInputsContext.Provider
-      value={{ dmnRunnerService, updateInputRows, getUniqueFileIdentifier, createInputRows }}
+      value={{ dmnRunnerService, updatePersistedInputRows, getUniqueFileIdentifier, createInputRows }}
     >
       {props.children}
     </WorkspacesDmnInputsContext.Provider>

@@ -33,6 +33,7 @@ import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnSchema } from "@kie-tools/form/dist/dmn";
 import { useSettings } from "../../settings/SettingsContext";
+import { useWorkspaceDmnRunnerInputs } from "../../workspace/hooks/WorkspaceDmnRunnerInput";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
@@ -50,6 +51,11 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const workspaces = useWorkspaces();
   const settings = useSettings();
   const dmnRunnerWorkspace = useWorkspacesDmnRunnerInputs();
+  const { inputRows, setInputRows, inputRowsUpdated } = useWorkspaceDmnRunnerInputs(
+    props.workspaceId,
+    props.fileRelativePath,
+    props.workspaceFile
+  );
 
   const [error, setError] = useState(false);
   const [jsonSchema, setJsonSchema] = useState<DmnSchema | undefined>(undefined);
@@ -152,9 +158,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
 
     try {
-      dmnRunnerWorkspace.updateInputRows(props.workspaceFile)([
-        jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!) as InputRow,
-      ]);
+      setInputRows([jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!) as InputRow]);
       setExpanded(true);
     } catch (e) {
       console.error(`Cannot parse "${QueryParams.DMN_RUNNER_FORM_INPUTS}"`, e);
@@ -164,7 +168,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         search: routes.editor.queryArgs(queryParams).without(QueryParams.DMN_RUNNER_FORM_INPUTS).toString(),
       });
     }
-  }, [jsonSchema, history, routes, queryParams, dmnRunnerWorkspace.updateInputRows, props.workspaceFile]);
+  }, [jsonSchema, history, routes, queryParams, setInputRows, props.workspaceFile]);
 
   const prevKieSandboxExtendedServicesStatus = usePrevious(kieSandboxExtendedServices.status);
   useEffect(() => {
@@ -195,22 +199,25 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       setCurrentInputRowIndex,
       setExpanded,
       setError,
+      setInputRows,
       setMode,
     }),
-    [preparePayload]
+    [preparePayload, setInputRows]
   );
 
   const dmnRunnerState = useMemo(
     () => ({
       currentInputRowIndex,
       error,
+      inputRows,
+      inputRowsUpdated,
       isExpanded,
-      mode,
       jsonSchema,
+      mode,
       service,
       status,
     }),
-    [error, jsonSchema, isExpanded, mode, service, status, currentInputRowIndex]
+    [currentInputRowIndex, error, jsonSchema, isExpanded, inputRows, mode, service, status]
   );
 
   return (

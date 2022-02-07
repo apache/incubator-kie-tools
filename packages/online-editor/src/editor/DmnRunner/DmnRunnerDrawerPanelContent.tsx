@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
@@ -46,7 +46,6 @@ import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
-import { useWorkspaceDmnRunnerInputs } from "../../workspace/hooks/WorkspaceDmnRunnerInput";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -85,11 +84,6 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     contentFlexDirection: "row",
     buttonPosition: ButtonPosition.OUTPUT,
   });
-  const [inputRows, setInputRows] = useWorkspaceDmnRunnerInputs(
-    props.workspaceFile.workspaceId,
-    props.workspaceFile.relativePath,
-    props.workspaceFile
-  );
 
   const onResize = useCallback((width: number) => {
     // FIXME: PatternFly bug. The first interaction without resizing the splitter will result in width === 0.
@@ -184,10 +178,10 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   // Update outputs column on form change
   useEffect(() => {
     if (dmnRunnerState.isExpanded && dmnRunnerState.mode === DmnRunnerMode.FORM) {
-      updateDmnRunnerResults(inputRows[dmnRunnerState.currentInputRowIndex]);
+      updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]);
     }
   }, [
-    inputRows,
+    dmnRunnerState.inputRows,
     dmnRunnerState.currentInputRowIndex,
     updateDmnRunnerResults,
     dmnRunnerState.isExpanded,
@@ -198,16 +192,25 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   useEffect(() => {
     if (dmnRunnerState.error) {
       // if there is an error generating the form, the last form data is submitted
-      updateDmnRunnerResults(inputRows[dmnRunnerState.currentInputRowIndex]);
+      updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]);
     } else if (previousFormError) {
       setTimeout(() => {
         formRef.current?.submit();
-        Object.keys(inputRows[dmnRunnerState.currentInputRowIndex] ?? {}).forEach((propertyName) => {
-          formRef.current?.change(propertyName, inputRows[dmnRunnerState.currentInputRowIndex]?.[propertyName]);
+        Object.keys(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex] ?? {}).forEach((propertyName) => {
+          formRef.current?.change(
+            propertyName,
+            dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]?.[propertyName]
+          );
         });
       }, 0);
     }
-  }, [dmnRunnerState.error, inputRows, dmnRunnerState.currentInputRowIndex, updateDmnRunnerResults, previousFormError]);
+  }, [
+    dmnRunnerState.error,
+    dmnRunnerState.inputRows,
+    dmnRunnerState.currentInputRowIndex,
+    updateDmnRunnerResults,
+    previousFormError,
+  ]);
 
   const openValidationTab = useCallback(() => {
     props.editorPageDock?.toggle(PanelId.NOTIFICATIONS_PANEL);
@@ -257,13 +260,13 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const setFormData = useCallback(
     (newFormData) => {
-      setInputRows((previousData: Array<InputRow>) => {
+      dmnRunnerDispatch.setInputRows((previousData: Array<InputRow>) => {
         const newData = [...previousData];
         newData[dmnRunnerState.currentInputRowIndex] = newFormData;
         return newData;
       });
     },
-    [dmnRunnerState.currentInputRowIndex, setInputRows]
+    [dmnRunnerState.currentInputRowIndex, dmnRunnerDispatch.setInputRows]
   );
 
   const [selectedRow, selectRow] = useState<string>("");
@@ -275,7 +278,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const rowOptions = useMemo(
     () =>
-      inputRows.map((_, rowIndex) => (
+      dmnRunnerState.inputRows.map((_, rowIndex) => (
         <DropdownItem
           component={"button"}
           key={rowIndex}
@@ -287,26 +290,32 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           Row {rowIndex + 1}
         </DropdownItem>
       )),
-    [inputRows]
+    [dmnRunnerState.inputRows]
   );
 
   const formData = useMemo(() => {
-    return inputRows[dmnRunnerState.currentInputRowIndex];
-  }, [inputRows, dmnRunnerState.currentInputRowIndex]);
+    return dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex];
+  }, [dmnRunnerState.inputRows, dmnRunnerState.currentInputRowIndex]);
 
   const onAddNewRow = useCallback(() => {
-    setInputRows((previousData: Array<InputRow>) => {
+    dmnRunnerDispatch.setInputRows((previousData: Array<InputRow>) => {
       const newData = [...previousData, {}];
       dmnRunnerDispatch.setCurrentInputRowIndex(newData.length - 1);
       selectRow(`Row ${newData.length}`);
       return newData;
     });
-  }, [setInputRows, dmnRunnerDispatch]);
+  }, [dmnRunnerDispatch.setInputRows, dmnRunnerDispatch]);
 
   const onChangeToTableView = useCallback(() => {
     dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
     props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABULAR);
   }, [dmnRunnerDispatch, props.editorPageDock]);
+
+  useLayoutEffect(() => {
+    if (dmnRunnerState.inputRowsUpdated) {
+      // add loading view;
+    }
+  }, [dmnRunnerState.inputRowsUpdated]);
 
   return (
     <DrawerPanelContent
@@ -341,7 +350,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                     alignItems={{ default: "alignItemsCenter" }}
                   >
                     <FlexItem>
-                      {inputRows.length <= 1 ? (
+                      {dmnRunnerState.inputRows.length <= 1 ? (
                         <Button
                           variant={ButtonVariant.plain}
                           className={"kie-tools--masthead-hoverable"}
