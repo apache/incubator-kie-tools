@@ -79,6 +79,9 @@ const BoxedExpressionWrapper: React.FunctionComponent<BoxedExpressionEditorWrapp
     openManageDataType(): void {
       window.beeApiWrapper?.openManageDataType();
     },
+    onLogicTypeSelect(selectedLogicType: string): void {
+      window.beeApiWrapper?.onLogicTypeSelect(selectedLogicType);
+    },
     resetExpressionDefinition: (definition: ExpressionProps) => {
       setExpressionDefinition(definition);
       window.beeApiWrapper?.resetExpressionDefinition?.(definition);

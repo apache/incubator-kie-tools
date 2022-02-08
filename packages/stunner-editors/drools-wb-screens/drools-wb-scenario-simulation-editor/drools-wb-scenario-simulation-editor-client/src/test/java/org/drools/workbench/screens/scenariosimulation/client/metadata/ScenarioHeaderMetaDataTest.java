@@ -20,7 +20,7 @@ import org.drools.workbench.screens.scenariosimulation.client.factories.Scenario
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
