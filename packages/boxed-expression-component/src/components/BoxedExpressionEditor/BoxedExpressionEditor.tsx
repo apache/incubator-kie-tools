@@ -60,7 +60,6 @@ export function BoxedExpressionEditor(props: BoxedExpressionEditorProps) {
   });
 
   useEffect(() => {
-    console.log("useEffect");
     setExpressionDefinition({
       ...props.expressionDefinition,
       noClearAction,
@@ -69,7 +68,6 @@ export function BoxedExpressionEditor(props: BoxedExpressionEditorProps) {
   }, [props.expressionDefinition]);
 
   const onExpressionChange = useCallback((updatedExpression: ExpressionProps) => {
-    console.log("onExpressionChange");
     setExpressionDefinition(updatedExpression);
   }, []);
 
