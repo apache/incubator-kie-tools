@@ -40,6 +40,7 @@ export interface DmnRunnerCallbacksContextType {
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentInputRowIndex: React.Dispatch<React.SetStateAction<number>>;
   setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>;
+  setInputRowsUpdated: React.Dispatch<React.SetStateAction<boolean>>;
   setMode: React.Dispatch<React.SetStateAction<DmnRunnerMode>>;
 }
 

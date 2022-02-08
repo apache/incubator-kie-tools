@@ -44,24 +44,26 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
   );
 
   const updatePersistedInputRows = useCallback(
-    (workspaceFile: WorkspaceFile) =>
-      async (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => {
-        if (typeof newInputRows === "function") {
-          const data = await dmnRunnerService.getDmnRunnerData(workspaceFile);
-          const previousInputRows = await data
-            ?.getFileContents()
-            .then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
-          await dmnRunnerService.updateDmnRunnerInputs(
-            workspaceFile,
-            JSON.stringify(newInputRows(previousInputRows ?? [{}])),
-            { broadcast: true }
-          );
-        } else {
-          await dmnRunnerService.updateDmnRunnerInputs(workspaceFile, JSON.stringify(newInputRows), {
-            broadcast: true,
-          });
-        }
-      },
+    async (
+      workspaceFile: WorkspaceFile,
+      newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)
+    ) => {
+      if (typeof newInputRows === "function") {
+        const data = await dmnRunnerService.getDmnRunnerData(workspaceFile);
+        const previousInputRows = await data
+          ?.getFileContents()
+          .then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
+        await dmnRunnerService.updateDmnRunnerInputs(
+          workspaceFile,
+          JSON.stringify(newInputRows(previousInputRows ?? [{}])),
+          { broadcast: true }
+        );
+      } else {
+        await dmnRunnerService.updateDmnRunnerInputs(workspaceFile, JSON.stringify(newInputRows), {
+          broadcast: true,
+        });
+      }
+    },
     [dmnRunnerService]
   );
 

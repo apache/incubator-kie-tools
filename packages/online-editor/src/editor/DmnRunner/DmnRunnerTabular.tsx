@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { InputRow, useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DmnAutoTable } from "@kie-tools/unitables";
@@ -23,6 +23,7 @@ import { DecisionResult } from "@kie-tools/form/dist/dmn";
 import { PanelId } from "../EditorPageDockDrawer";
 import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
 import { WorkspaceFile } from "../../workspace";
+import { DmnRunnerLoading } from "./DmnRunnerLoading";
 
 interface Props {
   isReady?: boolean;
@@ -96,25 +97,21 @@ export function DmnRunnerTabular(props: Props) {
     useMemo(() => [".unitables--dmn-runner-drawer"], [])
   );
 
-  useLayoutEffect(() => {
-    if (dmnRunnerState.inputRowsUpdated) {
-      // add loading view;
-    }
-  }, [dmnRunnerState.inputRowsUpdated]);
-
   return (
     <div style={{ height: "100%" }}>
-      {dmnRunnerState.jsonSchema && (
-        <DmnAutoTable
-          jsonSchema={dmnRunnerState.jsonSchema}
-          inputRows={dmnRunnerState.inputRows}
-          setInputRows={dmnRunnerDispatch.setInputRows}
-          results={props.dmnRunnerResults}
-          error={dmnRunnerState.error}
-          setError={dmnRunnerDispatch.setError}
-          openRow={openRow}
-        />
-      )}
+      <DmnRunnerLoading>
+        {dmnRunnerState.jsonSchema && (
+          <DmnAutoTable
+            jsonSchema={dmnRunnerState.jsonSchema}
+            inputRows={dmnRunnerState.inputRows}
+            setInputRows={dmnRunnerDispatch.setInputRows}
+            results={props.dmnRunnerResults}
+            error={dmnRunnerState.error}
+            setError={dmnRunnerDispatch.setError}
+            openRow={openRow}
+          />
+        )}
+      </DmnRunnerLoading>
     </div>
   );
 }

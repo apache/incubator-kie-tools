@@ -46,6 +46,7 @@ import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
+import { DmnRunnerLoading } from "./DmnRunnerLoading";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -422,25 +423,27 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                 </PageSection>
                 <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
                   <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
-                    <DmnForm
-                      name={selectedRow}
-                      formData={formData}
-                      setFormData={setFormData}
-                      formError={dmnRunnerState.error}
-                      setFormError={dmnRunnerDispatch.setError}
-                      formSchema={dmnRunnerState.jsonSchema}
-                      id={"form"}
-                      formRef={formRef}
-                      showInlineError={true}
-                      autosave={true}
-                      autosaveDelay={AUTO_SAVE_DELAY}
-                      placeholder={true}
-                      errorsField={() => <></>}
-                      submitField={() => <></>}
-                      locale={locale}
-                      notificationsPanel={true}
-                      openValidationTab={openValidationTab}
-                    />
+                    <DmnRunnerLoading>
+                      <DmnForm
+                        name={selectedRow}
+                        formData={formData}
+                        setFormData={setFormData}
+                        formError={dmnRunnerState.error}
+                        setFormError={dmnRunnerDispatch.setError}
+                        formSchema={dmnRunnerState.jsonSchema}
+                        id={"form"}
+                        formRef={formRef}
+                        showInlineError={true}
+                        autosave={true}
+                        autosaveDelay={AUTO_SAVE_DELAY}
+                        placeholder={true}
+                        errorsField={() => <></>}
+                        submitField={() => <></>}
+                        locale={locale}
+                        notificationsPanel={true}
+                        openValidationTab={openValidationTab}
+                      />
+                    </DmnRunnerLoading>
                   </PageSection>
                 </div>
               </Page>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { decoder, useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../";
 import { InputRow } from "../../editor/DmnRunner/DmnRunnerContext";
 import { useCancelableEffect } from "../../reactExt/Hooks";
@@ -23,6 +23,7 @@ interface WorkspaceDmnRunnerInput {
   inputRows: Array<InputRow>;
   setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>;
   inputRowsUpdated: boolean;
+  setInputRowsUpdated: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function useWorkspaceDmnRunnerInputs(
@@ -33,6 +34,7 @@ export function useWorkspaceDmnRunnerInputs(
   const { dmnRunnerService, updatePersistedInputRows, getUniqueFileIdentifier } = useWorkspacesDmnRunnerInputs();
   const [inputRows, setInputRows] = useState<Array<InputRow>>([{}]);
   const [inputRowsUpdated, setInputRowsUpdated] = useState<boolean>(false);
+  const lastInputRows = useRef<string>();
 
   useCancelableEffect(
     useCallback(
@@ -67,6 +69,10 @@ export function useWorkspaceDmnRunnerInputs(
             if (canceled.get()) {
               return;
             }
+            if (data.dmnRunnerData === lastInputRows.current) {
+              return;
+            }
+            lastInputRows.current = data.dmnRunnerData;
             setInputRows(JSON.parse(data.dmnRunnerData));
             setInputRowsUpdated(true);
           }
@@ -81,36 +87,56 @@ export function useWorkspaceDmnRunnerInputs(
     )
   );
 
-  // const getInputRows = useCallback(() => {
-  //   if (!workspaceFile || !dmnRunnerService) {
-  //     return Promise.resolve([{}]);
-  //   }
-  //   return dmnRunnerService.getDmnRunnerData(workspaceFile).then((data) => {
-  //     if (!data) {
-  //       return [{}];
-  //     }
-  //     return data.getFileContents().then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
-  //   });
-  // }, [dmnRunnerService, workspaceFile]);
-  //
-  // useEffect(() => {
-  //   let runEffect = true;
-  //   getInputRows().then((inputRows) => {
-  //     // Avoid setState on unmounted component
-  //     if (!runEffect) {
-  //       return;
-  //     }
-  //     setInputRows(inputRows);
-  //   });
-  //
-  //   return () => {
-  //     runEffect = false;
-  //   };
-  // }, [getInputRows]);
+  // On first render load the inputs;
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (!workspaceFile || !dmnRunnerService) {
+          return;
+        }
+
+        dmnRunnerService.getDmnRunnerData(workspaceFile).then((data) => {
+          if (canceled.get()) {
+            return;
+          }
+          if (!data) {
+            return;
+          }
+
+          data.getFileContents().then((content) => {
+            if (canceled.get()) {
+              return;
+            }
+            const inputRows = decoder.decode(content);
+            lastInputRows.current = inputRows;
+            setInputRows(JSON.parse(inputRows) as Array<InputRow>);
+          });
+        });
+      },
+      [dmnRunnerService, workspaceFile]
+    )
+  );
 
   const setInputRowsAndUpdatePersistence = useCallback(
     (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => {
+      if (typeof newInputRows === "function") {
+        setInputRows((previous) => {
+          const inputRows = newInputRows(previous);
+          if (JSON.stringify(inputRows) === lastInputRows.current) {
+            return previous;
+          }
+          lastInputRows.current = JSON.stringify(inputRows);
+          updatePersistedInputRows(workspaceFile, newInputRows);
+          return inputRows;
+        });
+        return;
+      }
+
+      if (JSON.stringify(newInputRows) === lastInputRows.current) {
+        return;
+      }
       setInputRows(newInputRows);
+      lastInputRows.current = JSON.stringify(newInputRows);
       updatePersistedInputRows(workspaceFile, newInputRows);
     },
     [updatePersistedInputRows, workspaceFile]
@@ -120,6 +146,7 @@ export function useWorkspaceDmnRunnerInputs(
     inputRows,
     setInputRows: setInputRowsAndUpdatePersistence,
     inputRowsUpdated,
+    setInputRowsUpdated,
   };
 }
 

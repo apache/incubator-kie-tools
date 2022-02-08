@@ -51,7 +51,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const workspaces = useWorkspaces();
   const settings = useSettings();
   const dmnRunnerWorkspace = useWorkspacesDmnRunnerInputs();
-  const { inputRows, setInputRows, inputRowsUpdated } = useWorkspaceDmnRunnerInputs(
+  const { inputRows, setInputRows, inputRowsUpdated, setInputRowsUpdated } = useWorkspaceDmnRunnerInputs(
     props.workspaceId,
     props.fileRelativePath,
     props.workspaceFile
@@ -200,9 +200,10 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       setExpanded,
       setError,
       setInputRows,
+      setInputRowsUpdated,
       setMode,
     }),
-    [preparePayload, setInputRows]
+    [preparePayload, setInputRows, setInputRowsUpdated]
   );
 
   const dmnRunnerState = useMemo(
@@ -217,7 +218,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       service,
       status,
     }),
-    [currentInputRowIndex, error, jsonSchema, isExpanded, inputRows, mode, service, status]
+    [currentInputRowIndex, error, inputRows, inputRowsUpdated, isExpanded, jsonSchema, mode, service, status]
   );
 
   return (
