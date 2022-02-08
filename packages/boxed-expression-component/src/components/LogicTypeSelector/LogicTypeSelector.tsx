@@ -214,10 +214,6 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
     return !selectedExpression.noClearAction && contextMenuVisibility && clickedOnAllowedTableSection;
   }, [contextMenuVisibility, selectedExpression.noClearAction, targetElement]);
 
-  useEffect(() => {
-    setIsContextMenuOpen(contextMenuVisibility);
-  }, [contextMenuVisibility]); // eslint-disable-line react-hooks/exhaustive-deps
-
   const cssClasses = useMemo(() => {
     const classes = [];
     if (!isHeadless) {
