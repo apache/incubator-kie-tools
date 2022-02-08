@@ -87,4 +87,9 @@ public class BoxedExpressionService {
     public static void openManageDataType() {
         expressionEditor.openManageDataType();
     }
+
+    @JsMethod
+    public static void onLogicTypeSelect(final String selectedLogicType) {
+        expressionEditor.onLogicTypeSelect(selectedLogicType);
+    }
 }
