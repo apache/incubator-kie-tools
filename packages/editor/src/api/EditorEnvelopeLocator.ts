@@ -20,6 +20,7 @@ export class EnvelopeMapping {
   public matcher: IMinimatch;
 
   constructor(
+    public readonly type: string,
     public readonly filePathGlob: string,
     public readonly resourcesPathPrefix: string,
     public readonly envelopePath: string

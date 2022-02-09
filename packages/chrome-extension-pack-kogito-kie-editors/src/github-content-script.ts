@@ -32,8 +32,18 @@ startExtension({
     },
   },
   editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
-    new EnvelopeMapping("**/*.bpmn?(2)", `${resourcesPathPrefix}/bpmn`, `${resourcesPathPrefix}/bpmn-envelope.html`),
-    new EnvelopeMapping("**/*.dmn", `${resourcesPathPrefix}/dmn`, `${resourcesPathPrefix}/dmn-envelope.html`),
-    new EnvelopeMapping("**/*.scesim", `${resourcesPathPrefix}/scesim`, `${resourcesPathPrefix}/scesim-envelope.html`),
+    new EnvelopeMapping(
+      "bpmn",
+      "**/*.bpmn?(2)",
+      `${resourcesPathPrefix}/bpmn`,
+      `${resourcesPathPrefix}/bpmn-envelope.html`
+    ),
+    new EnvelopeMapping("dmn", "**/*.dmn", `${resourcesPathPrefix}/dmn`, `${resourcesPathPrefix}/dmn-envelope.html`),
+    new EnvelopeMapping(
+      "scesim",
+      "**/*.scesim",
+      `${resourcesPathPrefix}/scesim`,
+      `${resourcesPathPrefix}/scesim-envelope.html`
+    ),
   ]),
 });

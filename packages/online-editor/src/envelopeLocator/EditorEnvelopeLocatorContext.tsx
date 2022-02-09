@@ -26,9 +26,9 @@ export function EditorEnvelopeLocatorContextProvider(props: { children: React.Re
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () =>
       new EditorEnvelopeLocator(window.location.origin, [
-        new EnvelopeMapping("**/*.bpmn?(2)", "gwt-editors/bpmn", "bpmn-envelope.html"),
-        new EnvelopeMapping("**/*.dmn", "gwt-editors/dmn", "dmn-envelope.html"),
-        new EnvelopeMapping("**/*.pmml", "", "pmml-envelope.html"),
+        new EnvelopeMapping("bpmn", "**/*.bpmn?(2)", "gwt-editors/bpmn", "bpmn-envelope.html"),
+        new EnvelopeMapping("dmn", "**/*.dmn", "gwt-editors/dmn", "dmn-envelope.html"),
+        new EnvelopeMapping("pmml", "**/*.pmml", "", "pmml-envelope.html"),
       ]),
     []
   );

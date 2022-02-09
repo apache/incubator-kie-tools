@@ -45,7 +45,7 @@ export function Base64PngPage() {
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () =>
       new EditorEnvelopeLocator(window.location.origin, [
-        new EnvelopeMapping("base64png", `envelope/`, `envelope/base64-editor.html`),
+        new EnvelopeMapping("base64png", "**/*.base64png", `envelope/`, `envelope/base64-editor.html`),
       ]),
     [file]
   );

@@ -31,6 +31,7 @@ import * as __path from "path";
 import { KogitoEditor } from "./KogitoEditor";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { VsCodeOutputLogger } from "./VsCodeOutputLogger";
+import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 
 export class KogitoEditableDocument implements CustomDocument {
   private readonly encoder = new TextEncoder();
@@ -49,7 +50,8 @@ export class KogitoEditableDocument implements CustomDocument {
     public readonly initialBackup: Uri | undefined,
     public readonly editorStore: KogitoEditorStore,
     private readonly vsCodeI18n: I18n<VsCodeI18n>,
-    private readonly vsCodeNotifications: VsCodeNotificationsApi
+    private readonly vsCodeNotifications: VsCodeNotificationsApi,
+    private readonly editorEnvelopeLocator: EditorEnvelopeLocator
   ) {}
 
   public dispose() {
@@ -72,6 +74,10 @@ export class KogitoEditableDocument implements CustomDocument {
     const fileExtension = fileName.substring(firstDotIndex + 1);
 
     return fileExtension;
+  }
+
+  get fileType() {
+    return this.editorEnvelopeLocator.getEnvelopeMapping(this.uri.fsPath)?.type;
   }
 
   public async save(destination: Uri, cancellation: CancellationToken): Promise<void> {
@@ -105,7 +111,7 @@ export class KogitoEditableDocument implements CustomDocument {
   }
 
   private executeOnSaveHook() {
-    const hookId = `kogito.${this.fileExtension}.runOnSave`;
+    const hookId = `kogito.${this.fileType}.runOnSave`;
     const hook = vscode.workspace.getConfiguration().get(hookId, "");
 
     if (hook) {

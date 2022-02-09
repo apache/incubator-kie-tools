@@ -53,7 +53,7 @@
         "displayName": "Serverless Workflow Editor",
         "selector": [
           {
-            "filenamePattern": "*.{sw.json,sw.yml}"
+            "filenamePattern": "*.{sw.json,sw.yaml,sw.yml}"
           }
         ]
       }
@@ -63,10 +63,12 @@
         "id": "serverless-workflow",
         "extensions": [
           ".sw.json",
+          ".sw.yaml",
           ".sw.yml"
         ],
         "aliases": [
           "sw.json",
+          "sw.yaml",
           "sw.yml",
           "Serverless workflow description"
         ]
@@ -75,50 +77,20 @@
     "configuration": {
       "title": "Serverless Workflow Editor",
       "properties": {
-        "kogito.sw.json.runOnSave": {
+        "kogito.sw.runOnSave": {
           "type": "string",
           "default": "extension.kogito.silentlyGenerateSvgSw",
           "markdownDescription": "Execute a command on each save operation of the Serverless Workflow file."
         },
-        "kogito.sw.yml.runOnSave": {
-          "type": "string",
-          "default": "extension.kogito.silentlyGenerateSvgSw",
-          "markdownDescription": "Execute a command on each save operation of the Serverless Workflow file."
-        },
-        "kogito.sw.yaml.runOnSave": {
-          "type": "string",
-          "default": "extension.kogito.silentlyGenerateSvgSw",
-          "markdownDescription": "Execute a command on each save operation of the Serverless Workflow file."
-        },
-        "kogito.sw.json.svgFilenameTemplate": {
+        "kogito.sw.svgFilenameTemplate": {
           "type": "string",
           "default": "${fileBasenameNoExtension}.svg",
           "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}.svg`)."
         },
-        "kogito.sw.yml.svgFilenameTemplate": {
-          "type": "string",
-          "default": "${fileBasenameNoExtension}.svg",
-          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}.svg`)."
-        },
-        "kogito.sw.yaml.svgFilenameTemplate": {
-          "type": "string",
-          "default": "${fileBasenameNoExtension}.svg",
-          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}.svg`)."
-        },
-        "kogito.sw.json.svgFilePath": {
+        "kogito.sw.svgFilePath": {
           "type": "string",
           "default": "${fileDirname}",
-          "markdownDescription": "Where to save generated SVG files (defaults to same path as .sw.json file: `${fileDirname}`)."
-        },
-        "kogito.sw.yml.svgFilePath": {
-          "type": "string",
-          "default": "${fileDirname}",
-          "markdownDescription": "Where to save generated SVG files (defaults to same path as .sw.yml file: `${fileDirname}`)."
-        },
-        "kogito.sw.yaml.svgFilePath": {
-          "type": "string",
-          "default": "${fileDirname}",
-          "markdownDescription": "Where to save generated SVG files (defaults to same path as .sw.yaml file: `${fileDirname}`)."
+          "markdownDescription": "Where to save generated SVG files (defaults to same path as the file: `${fileDirname}`)."
         }
       }
     },

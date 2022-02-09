@@ -24,7 +24,7 @@ import { DesktopI18n } from "../webview/common/i18n";
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const usedCtx: GlobalContextType = {
     editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
-      new EnvelopeMapping("dmn", "", "envelope/envelope.html"),
+      new EnvelopeMapping("dmn", "**/*.dmn", "", "envelope/envelope.html"),
     ]),
     file: { fileName: "test.dmn", fileExtension: "dmn", getFileContents: () => Promise.resolve(""), isReadOnly: false },
     ...ctx,

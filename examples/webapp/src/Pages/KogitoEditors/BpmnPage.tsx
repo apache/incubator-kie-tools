@@ -51,11 +51,13 @@ export function BpmnPage() {
     return new EditorEnvelopeLocator(window.location.origin, [
       new EnvelopeMapping(
         "bpmn",
+        "**/*.bpmn",
         "https://kiegroup.github.io/kogito-online/editors/latest/bpmn",
         "https://kiegroup.github.io/kogito-online/bpmn-envelope.html"
       ),
       new EnvelopeMapping(
-        "bpmn2",
+        "bpmn",
+        "**/*.bpmn2",
         "https://kiegroup.github.io/kogito-online/editors/latest/bpmn",
         "https://kiegroup.github.io/kogito-online/bpmn-envelope.html"
       ),

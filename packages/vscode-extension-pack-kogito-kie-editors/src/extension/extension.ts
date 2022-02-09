@@ -51,10 +51,20 @@ export async function activate(context: vscode.ExtensionContext) {
     generateSvgCommandId: "extension.kogito.getPreviewSvg",
     silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvg",
     editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
-      new EnvelopeMapping("**/*.bpmn?(2)", "dist/webview/editors/bpmn", "dist/webview/BpmnEditorEnvelopeApp.js"),
-      new EnvelopeMapping("**/*.dmn", "dist/webview/editors/dmn", "dist/webview/DmnEditorEnvelopeApp.js"),
-      new EnvelopeMapping("**/*.scesim", "dist/webview/editors/scesim", "dist/webview/SceSimEditorEnvelopeApp.js"),
-      new EnvelopeMapping("**/*.pmml", "dist/webview/editors/pmml", "dist/webview/PMMLEditorEnvelopeApp.js"),
+      new EnvelopeMapping(
+        "bpmn",
+        "**/*.bpmn?(2)",
+        "dist/webview/editors/bpmn",
+        "dist/webview/BpmnEditorEnvelopeApp.js"
+      ),
+      new EnvelopeMapping("dmn", "**/*.dmn", "dist/webview/editors/dmn", "dist/webview/DmnEditorEnvelopeApp.js"),
+      new EnvelopeMapping(
+        "scesim",
+        "**/*.scesim",
+        "dist/webview/editors/scesim",
+        "dist/webview/SceSimEditorEnvelopeApp.js"
+      ),
+      new EnvelopeMapping("pmml", "**/*.pmml", "dist/webview/editors/pmml", "dist/webview/PMMLEditorEnvelopeApp.js"),
     ]),
     backendProxy: backendProxy,
   });

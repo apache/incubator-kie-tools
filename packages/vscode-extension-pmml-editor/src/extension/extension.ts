@@ -41,7 +41,7 @@ export function activate(context: vscode.ExtensionContext) {
     generateSvgCommandId: "",
     silentlyGenerateSvgCommandId: "",
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
-      new EnvelopeMapping("**/*.pmml", "dist/webview/PmmlEditorEnvelopeApp.js", "dist/webview/editors/pmml"),
+      new EnvelopeMapping("pmml", "**/*.pmml", "dist/webview/PmmlEditorEnvelopeApp.js", "dist/webview/editors/pmml"),
     ]),
     backendProxy: backendProxy,
   });

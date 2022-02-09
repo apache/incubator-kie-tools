@@ -46,7 +46,7 @@ export function DmnPage() {
    */
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(() => {
     return new EditorEnvelopeLocator(window.location.origin, [
-      new EnvelopeMapping("dmn", "../dmn-editor/dmn/", "envelope/dmn-editor.html"),
+      new EnvelopeMapping("dmn", "**/*.dmn", "../dmn-editor/dmn/", "envelope/dmn-editor.html"),
     ]);
   }, []);
 

@@ -37,6 +37,7 @@ export function activate(context: vscode.ExtensionContext) {
     silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgSw",
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping(
+        "sw",
         "**/*.sw.+(json|yml|yaml)",
         "dist/webview/ServerlessWorkflowEditorEnvelopeApp.js",
         "dist/webview/editors/serverless-workflow"

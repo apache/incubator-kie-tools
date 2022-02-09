@@ -32,7 +32,7 @@ describe("EmbeddedEditor::ONLINE", () => {
   };
 
   const editorEnvelopeLocator = new EditorEnvelopeLocator("localhost:8888", [
-    new EnvelopeMapping("**/*.dmn", "envelope", "envelope/envelope.html"),
+    new EnvelopeMapping("dmn", "**/*.dmn", "envelope", "envelope/envelope.html"),
   ]);
 
   const channelType = ChannelType.ONLINE;

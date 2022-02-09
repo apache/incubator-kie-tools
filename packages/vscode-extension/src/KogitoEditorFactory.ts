@@ -116,6 +116,7 @@ export class KogitoEditorFactory {
       [...this.editorEnvelopeLocator.envelopeMappings].reduce((envelopeMappings, mapping) => {
         envelopeMappings.push(
           new EnvelopeMapping(
+            mapping.type,
             mapping.filePathGlob,
             this.getWebviewPath(webview, mapping.envelopePath),
             this.getWebviewPath(webview, mapping.resourcesPathPrefix)
