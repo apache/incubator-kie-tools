@@ -80,4 +80,19 @@ export interface CanvasEditorApi {
    * @param uuid ID attribute of a target node
    */
   getDimensions(uuid: string): Promise<number[]>;
+
+  /**
+   * Applies the state to a node given the UUID.
+   *
+   * @param uuid ID attribute of a target node
+   * @state state attribute of a target node
+   */
+  applyState(uuid: string, state: string): Promise<void>;
+
+  /**
+   * Centers a node in the viewable canvas with provided UUID.
+   *
+   * @param uuid ID attribute of a target node
+   */
+  centerNode(uuid: string): Promise<void>;
 }
