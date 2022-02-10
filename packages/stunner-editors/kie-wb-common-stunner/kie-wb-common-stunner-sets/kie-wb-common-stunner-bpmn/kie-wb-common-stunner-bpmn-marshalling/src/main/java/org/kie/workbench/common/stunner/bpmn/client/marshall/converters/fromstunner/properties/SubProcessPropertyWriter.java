@@ -29,6 +29,7 @@ import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNEdge;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.DeclarationList;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.ElementContainer;
@@ -95,12 +96,13 @@ public class SubProcessPropertyWriter extends MultipleInstanceActivityPropertyWr
 
     public void setProcessVariables(BaseProcessVariables processVariables) {
         String value = processVariables.getValue();
+        value = StringUtils.preFilterVariablesForGenerics(value);
         DeclarationList declarationList = DeclarationList.fromString(value);
 
         List<Property> properties = process.getProperties();
         declarationList.getDeclarations().forEach(decl -> {
             VariableScope.Variable variable =
-                    variableScope.declare(this.process.getId(), decl.getIdentifier(), decl.getType());
+                    variableScope.declare(this.process.getId(), decl.getIdentifier(), StringUtils.postFilterForGenerics(decl.getType()));
             if (!decl.getTags().isEmpty()) {
                 CustomElement.customTags.of(variable.getTypedIdentifier()).set(decl.getTags());
             }
