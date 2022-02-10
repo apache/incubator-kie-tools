@@ -206,30 +206,72 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.contains("td", /cell 12/).should("be.focused");
   });
 
-  it("Edit cells with enter/esc", function () {
+  it("Edit cells appending text selecting Td", function () {
     // from the cell 1, enter edit mode and write TestInput
     cy.contains("td", /cell 1/)
       .as("cell-1")
-      .click({ force: true })
-      .type("{enter}TestInput");
+      .type("{enter}TestAppend");
 
     // click on cell 2
     cy.contains("td", /cell 2/).click({ force: true });
 
     // check the cell 1 now has "TestInput" text
-    cy.get("@cell-1").should("contain.text", "TestInput");
+    cy.get("@cell-1").find(".editable-cell-textarea").should("have.text", "cell 1TestAppend");
+  });
+
+  it("Edit cells appending text selecting TextArea", function () {
+    // from the cell 5, enter edit mode and write TestInput
+    cy.contains(".editable-cell ", /cell 5/)
+      .as("textarea-5")
+      .type("{enter}")
+      .type("TestAppend");
+
+    // click on cell 6
+    cy.contains("td", /cell 6/).click({ force: true });
+
+    // check the cell 5 now has "TestInput" text
+    cy.get("@textarea-5").find(".editable-cell-textarea").should("have.text", "-cell 5TestAppend");
+  });
+
+  it("Edit cells overwriting text selecting Td", function () {
+    // from the cell 2, enter edit mode and write TestInput
+    cy.contains("td", /cell 2/)
+      .as("cell-2")
+      .type("TestOverwrite");
+
+    // click on cell 3
+    cy.contains("td", /cell 3/).click({ force: true });
+
+    // check the cell 1 now has "TestInput" text
+    cy.get("@cell-2").find(".editable-cell-textarea").should("have.text", "TestOverwrite");
+  });
+
+  it("Edit cells overwriting text selecting TextArea", function () {
+    // from the cell 6, enter edit mode and write TestInput
+    cy.contains(".editable-cell ", /cell 6/)
+      .as("textarea-6")
+      .type("TestOverwrite");
+
+    // click on cell 7
+    cy.contains("td", /cell 7/).click({ force: true });
+
+    // check the cell 1 now has "TestInput" text
+    cy.get("@textarea-6").find(".editable-cell-textarea").should("have.text", "TestOverwrite");
   });
 
   it("Interaction with contextMenu", function () {
-    // rightclick on cell 2
-    cy.contains("td", /cell 2/).rightclick();
-
-    // try to navigate left with no success
-    cy.contains("td", /cell 2/)
-      .type("{leftarrow}")
-      .should("be.focused");
+    // rightclick on cell 3
+    cy.contains("td", /cell 3/)
+      .as("cell-3")
+      .rightclick();
 
     // check the contextMenu is open
     cy.get(".table-handler").should("be.visible");
+
+    // try to navigate left with no success
+    cy.get("@cell-3").type("{leftarrow}").should("be.focused");
+
+    // close the menu
+    cy.get("body").type("{esc}");
   });
 });

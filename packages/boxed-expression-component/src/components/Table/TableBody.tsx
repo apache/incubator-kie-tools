@@ -85,7 +85,10 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           return;
         }
 
-        /* FIXME: Direct input for textarea cells same way of Google Spreadsheet  */
+        /* FIXME: View mode: Tab/shift+tab should move focus one cell to the right/left. At the last cell on a line tab should advance to the first row on the next line.*/
+        /* FIXME: Edit mode: Tab/shift+tab should end editing and advance the focus to the next cell to the right. Currently it ends editing but you lose the focus rectangle and have to hit tab again to get it back. You can’t type “AA” tab “BB” to put AA in cell 1 and BB in cell 2, especially if there is already text in the cells.*/
+
+        const isFiredFromThis = e.currentTarget === e.target;
 
         if (key === "ArrowLeft") {
           focusPrevCell(e.currentTarget);
@@ -95,10 +98,14 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           focusUpperCell(e.currentTarget, rowIndex);
         } else if (key === "ArrowDown") {
           focusLowerCell(e.currentTarget, rowIndex);
-        } else if (key === "Enter" && !isContextMenuOpen) {
-          focusInsideCell(e.currentTarget);
         } else if (key === "Escape") {
           focusParentCell(e.currentTarget);
+        } else if (!isContextMenuOpen && isFiredFromThis) {
+          if (key === "Enter") {
+            focusInsideCell(e.currentTarget);
+          } else {
+            focusInsideCell(e.currentTarget, true);
+          }
         }
       },
     }),

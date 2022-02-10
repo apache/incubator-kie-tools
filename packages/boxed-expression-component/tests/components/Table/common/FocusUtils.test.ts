@@ -22,8 +22,10 @@ import {
   focusInsideCell,
   getParentCell,
   focusParentCell,
+  cellFocus,
+  focusCurrentCell,
+  focusTextArea,
 } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
-import { cellFocus, focusCurrentCell } from "../../../../src/components/Table/common";
 
 /**
  * Create Mock HTML Table.
@@ -279,6 +281,34 @@ describe("FocusUtils tests", () => {
 
       focusInsideCell(emptyCell);
       expect(mockEmptyCellFocus).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("focusTextArea tests", () => {
+    it("should fail", () => {
+      // @ts-ignore
+      expect(() => focusTextArea()).not.toThrowError();
+      expect(() => focusTextArea(null)).not.toThrowError();
+    });
+
+    it("should focus the textarea without erasing content", () => {
+      const elementToBeFocused = document.createElement("textarea");
+      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
+
+      elementToBeFocused.innerHTML = "TextArea Value";
+      focusTextArea(elementToBeFocused);
+      expect(mockElementToBeFocused).toHaveBeenCalled();
+      expect(elementToBeFocused.value).toBe("TextArea Value");
+    });
+
+    it("should focus the textarea without content", () => {
+      const elementToBeFocused = document.createElement("textarea");
+      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
+
+      elementToBeFocused.value = "TextArea Value";
+      focusTextArea(elementToBeFocused, true);
+      expect(mockElementToBeFocused).toHaveBeenCalled();
+      expect(elementToBeFocused.value).toBe("");
     });
   });
 

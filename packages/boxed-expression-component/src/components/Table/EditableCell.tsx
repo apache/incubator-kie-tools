@@ -130,6 +130,22 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
     [triggerEditMode, value, triggerReadMode, onCellUpdate, rowIndex, columnId, boxedExpression.editorRef]
   );
 
+  const onTextAreaKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLElement>) => {
+      const key = e.key;
+      const isFiredFromThis = e.currentTarget === e.target;
+
+      if (!isFiredFromThis) {
+        return;
+      }
+
+      if (key !== "Enter") {
+        (e.target as HTMLTextAreaElement).value = "";
+      }
+    },
+    [value]
+  );
+
   // Feel Handlers ===========================================================
 
   const onFeelBlur = useCallback(
@@ -216,6 +232,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
           onChange={onTextAreaChange}
           onBlur={onTextAreaBlur}
           readOnly={readOnly}
+          onKeyDown={onTextAreaKeyDown}
         />
         <FeelInput
           ref={feelInputRef}

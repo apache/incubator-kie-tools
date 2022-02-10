@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-export const focusTextArea = (textarea?: HTMLTextAreaElement | null) => {
-  const value = textarea?.value || "";
-  textarea?.focus();
-  textarea?.setSelectionRange(value.length, value.length);
+export const focusTextArea = (textarea?: HTMLTextAreaElement | null, eraseContent = false) => {
+  if (!textarea) {
+    return;
+  }
+
+  if (eraseContent) {
+    textarea.value = "";
+  }
+
+  const value = textarea.value || "";
+  textarea.focus();
+  textarea.setSelectionRange(value.length, value.length);
 };
 
 export const blurActiveElement = () => {
@@ -143,9 +151,10 @@ export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number):
  * Focus Inside Cell of a react-table. Can focus an input or a nested table inside a cell.
  *
  * @param currentEl the crrent element
+ * @param eraseContent set to true to Erase the Content, valid only for textarea cells
  * @returns
  */
-export const focusInsideCell = (currentEl: HTMLElement | null): void => {
+export const focusInsideCell = (currentEl: HTMLElement | null, eraseContent = false): void => {
   if (!currentEl) {
     return;
   }
@@ -158,7 +167,7 @@ export const focusInsideCell = (currentEl: HTMLElement | null): void => {
   } else if (cellWithPopoverMenu) {
     cellWithPopoverMenu.click();
   } else {
-    focusTextArea(currentEl.querySelector("textarea"));
+    focusTextArea(currentEl.querySelector("textarea"), eraseContent);
   }
 };
 

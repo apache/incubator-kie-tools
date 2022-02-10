@@ -16,7 +16,7 @@
 
 import "./LogicTypeSelector.css";
 import * as React from "react";
-import { useEffect, useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import {
   ContextProps,
   DataType,
