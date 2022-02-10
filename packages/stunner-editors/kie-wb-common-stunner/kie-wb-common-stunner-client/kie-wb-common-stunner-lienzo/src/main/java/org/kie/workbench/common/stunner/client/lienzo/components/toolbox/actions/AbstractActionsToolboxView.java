@@ -108,8 +108,10 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
     }
 
     protected void drawTopLayer() {
-        canvas.getView().getLayer().getTopLayer().setVisible(true);
-        canvas.getView().getLayer().getTopLayer().draw();
+        if (canvas != null) {
+            canvas.getView().getLayer().getTopLayer().setVisible(true);
+            canvas.getView().getLayer().getTopLayer().draw();
+        }
     }
 
     @Override
