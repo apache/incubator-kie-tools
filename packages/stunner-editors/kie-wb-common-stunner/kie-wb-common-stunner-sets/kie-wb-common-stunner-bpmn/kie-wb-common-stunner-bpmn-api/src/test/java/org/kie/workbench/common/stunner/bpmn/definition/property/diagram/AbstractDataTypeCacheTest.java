@@ -84,7 +84,7 @@ public class AbstractDataTypeCacheTest {
             }
 
             @Override
-            protected List<String> getDataTypes(String variables) {
+            protected List<String> getDataTypes(String variables, boolean isTwoColonFormat) {
                 return defaultDataTypes;
             }
         };
