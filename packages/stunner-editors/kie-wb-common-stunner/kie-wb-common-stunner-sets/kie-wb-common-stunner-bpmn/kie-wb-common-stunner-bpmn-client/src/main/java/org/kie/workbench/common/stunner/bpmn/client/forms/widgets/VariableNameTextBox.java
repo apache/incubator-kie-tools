@@ -94,6 +94,11 @@ public class VariableNameTextBox extends AbstractValidatingTextBox {
         return null;
     }
 
+    @Override
+    public String isBalancedGTLT(String string) {
+        return null;
+    }
+
     /**
      * Tests whether a value is in the list of invalid values
      * @param value

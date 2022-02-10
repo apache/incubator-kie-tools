@@ -25,6 +25,7 @@ import java.util.stream.StreamSupport;
 
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.DataObject;
@@ -107,6 +108,7 @@ public class VariablesProvider
 
     private void addPropertyVariableToResult(Collection<Pair<Object, String>> result, String element) {
         if (element.length() > 0) {
+            element = StringUtils.preFilterVariablesTwoSemicolonForGenerics(element);
             List<String> list = Arrays.asList(element.split(","));
             list.forEach(s1 -> {
                 String value = s1.split(":")[0];

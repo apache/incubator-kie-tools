@@ -263,7 +263,7 @@ public class AssignmentListItemWidgetViewImplTest {
     @Test
     public void testDataTypeHandlerSpace() {
         view.init();
-        verify(customDataType, times(1)).setRegExp(eq(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_REGEXP), anyString(), anyString());
+        verify(customDataType, times(1)).setRegExp(eq(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_GT_LT_REGEXP), anyString(), anyString(), anyString());
         verify(customDataType, times(1)).addKeyDownHandler(keyDownHandlerCaptor.capture());
         KeyDownHandler handler = keyDownHandlerCaptor.getValue();
         doReturn((int) ' ').when(keyDownEvent).getNativeKeyCode();
