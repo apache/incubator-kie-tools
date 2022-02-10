@@ -178,6 +178,13 @@ jobs:
           deployment_envvars_file_path: ./deployment.env
           deployment_icon: "js"
 
+      - name: "Upload Serverless Workflow VS Code Extension (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: vscode-extension-serverless-workflow-editor
+          path: kie-tools/packages/vscode-extension-serverless-workflow-editor/dist/vscode_extension_serverless_workflow_editor_${{ steps.version.outputs.version }}.vsix
+
       - name: "Upload VS Code Extension (dev) (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v1

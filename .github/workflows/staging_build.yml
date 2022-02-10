@@ -333,6 +333,17 @@ jobs:
           asset_name: STAGING__vscode_extension_pmml_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
+      - name: "STAGING: Upload VS Code Extension - Serverless Workflow Editor (prod) (Ubuntu only)"
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kie-tools/packages/vscode-extension-serverless-workflow-editor/dist/vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
+          asset_name: STAGING__vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
+          asset_content_type: application/zip
+
       - name: "STAGING: Upload Chrome Extension (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
