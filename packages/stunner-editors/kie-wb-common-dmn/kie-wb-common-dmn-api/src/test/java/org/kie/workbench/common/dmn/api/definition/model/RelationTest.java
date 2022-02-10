@@ -110,7 +110,24 @@ public class RelationTest {
     }
 
     @Test
-    public void testFindDomainObject() {
+    public void testFindDomainObject_WhenColumnMatches() {
+
+        final Relation relation = new Relation();
+        final InformationItem informationItem1 = mock(InformationItem.class);
+        final InformationItem informationItem2 = mock(InformationItem.class);
+        final InformationItem informationItem3 = mock(InformationItem.class);
+
+        when(informationItem3.getDomainObjectUUID()).thenReturn(UUID);
+
+        relation.getColumn().addAll(Arrays.asList(informationItem1, informationItem2, informationItem3));
+
+        final DomainObject actual = relation.findDomainObject(UUID);
+
+        assertEquals(informationItem3, actual);
+    }
+
+    @Test
+    public void testFindDomainObject_WhenRowMatches() {
 
         final Relation relation = new Relation();
         final List list1 = mock(List.class);
@@ -137,7 +154,11 @@ public class RelationTest {
         final List list1 = mock(List.class);
         final List list2 = mock(List.class);
         final List list3 = mock(List.class);
+        final InformationItem informationItem1 = mock(InformationItem.class);
+        final InformationItem informationItem2 = mock(InformationItem.class);
+        final InformationItem informationItem3 = mock(InformationItem.class);
 
+        relation.getColumn().addAll(Arrays.asList(informationItem1, informationItem2, informationItem3));
         relation.getRow().addAll(Arrays.asList(list1, list2, list3));
 
         final DomainObject actual = relation.findDomainObject(UUID);

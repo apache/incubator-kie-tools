@@ -16,6 +16,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,7 @@ import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.find;
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.getDomainObject;
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getFlatHasTypeRefs;
 
 @Portable
@@ -71,6 +73,10 @@ public class Relation extends Expression {
 
     @Override
     public DomainObject findDomainObject(final String uuid) {
+        final DomainObject domainObject = getDomainObject(getColumn(), uuid);
+        if (!Objects.isNull(domainObject)) {
+            return domainObject;
+        }
         return find(getRow(), uuid);
     }
 

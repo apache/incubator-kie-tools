@@ -44,7 +44,6 @@ import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
-import org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
@@ -117,6 +116,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.Restri
 import static java.util.Objects.isNull;
 import static java.util.stream.Stream.concat;
 import static org.kie.workbench.common.dmn.api.definition.model.ItemDefinition.ITEM_DEFINITION_COMPARATOR;
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.matches;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BUILT_IN_TYPE_COMPARATOR;
 
 @Templated
@@ -381,7 +381,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         if (hasExpression instanceof Decision) {
             decisionNodeId = ((Decision) hasExpression).getId().getValue();
         } else if (hasExpression.getExpression() instanceof FunctionDefinition) {
-            decisionNodeId = ((BusinessKnowledgeModel) hasExpression.getExpression().asDMNModelInstrumentedBase().getParent()).getId().getValue();
+            decisionNodeId = getBusinessKnowledgeModel().getId().getValue();
         }
         DMNLoader.renderBoxedExpressionEditor(
                 ".kie-dmn-new-expression-editor",
@@ -416,8 +416,10 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     DomainObject findDomainObject(final String uuid) {
 
-        if (matches(hasExpression, uuid)) {
+        if (innerExpressionMatches(uuid)) {
             return (DomainObject) hasExpression;
+        } else if (businessKnowledgeModelMatches(uuid)) {
+            return getBusinessKnowledgeModel();
         } else {
             final DomainObject domainObject = hasExpression.getExpression().findDomainObject(uuid);
             if (!isNull(domainObject)) {
@@ -427,10 +429,19 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         }
     }
 
-    boolean matches(final HasExpression hasExpression,
-                    final String uuid) {
-         return hasExpression instanceof DomainObject
-                 && DomainObjectSearcherHelper.matches(((DomainObject) hasExpression), uuid);
+    BusinessKnowledgeModel getBusinessKnowledgeModel() {
+        return ((BusinessKnowledgeModel) hasExpression.getExpression().asDMNModelInstrumentedBase().getParent());
+    }
+
+    boolean innerExpressionMatches(final String uuid) {
+        return hasExpression instanceof DomainObject
+                && matches(((DomainObject) hasExpression), uuid);
+    }
+
+    boolean businessKnowledgeModelMatches(final String uuid) {
+
+        return hasExpression.getExpression() instanceof FunctionDefinition
+                && matches(getBusinessKnowledgeModel(), uuid);
     }
 
     void fireDomainObjectSelectionEvent(final DomainObject domainObject) {
