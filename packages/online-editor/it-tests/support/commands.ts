@@ -27,6 +27,12 @@ declare namespace Cypress {
     loadEditor(): void;
 
     /**
+     * Confirm 'Automatic Layout' dialogue.
+     * Please notice, such dialogue appears only if <DMNDI/> tag is missing in the diagram.
+     */
+    confirmAutomaticLayoutDialogue(): void;
+
+    /**
      * Search elements by data-ouia component attributes.
      * @param locator component type and component id according to OUIA specification
      * @param opts optional - config object
@@ -43,6 +49,17 @@ Cypress.Commands.add("getEditor", () => {
 Cypress.Commands.add("loadEditor", () => {
   cy.getEditor().within(() => {
     cy.get("[data-testid='loading-screen-div']", { timeout: 15000 }).should("be.visible");
+    cy.get("[data-testid='loading-screen-div']", { timeout: 60000 }).should("not.exist");
+  });
+});
+
+Cypress.Commands.add("confirmAutomaticLayoutDialogue", () => {
+  cy.getEditor().within(() => {
+    cy.get("[data-testid='loading-screen-div']", { timeout: 15000 }).should("exist");
+    cy.get(".spinner", { timeout: 15000 }).should("be.visible");
+    cy.get(".modal-title").contains("Automatic Layout").should("be.visible");
+    cy.get("[data-field='yes-button']").click();
+    cy.get(".spinner", { timeout: 15000 }).should("not.exist");
     cy.get("[data-testid='loading-screen-div']", { timeout: 60000 }).should("not.exist");
   });
 });
