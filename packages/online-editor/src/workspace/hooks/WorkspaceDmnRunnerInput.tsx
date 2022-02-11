@@ -24,6 +24,8 @@ interface WorkspaceDmnRunnerInput {
   setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>;
   inputRowsUpdated: boolean;
   setInputRowsUpdated: React.Dispatch<React.SetStateAction<boolean>>;
+  outputRowsUpdated: boolean;
+  setOutputRowsUpdated: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function useWorkspaceDmnRunnerInputs(
@@ -34,6 +36,7 @@ export function useWorkspaceDmnRunnerInputs(
   const { dmnRunnerService, updatePersistedInputRows, getUniqueFileIdentifier } = useWorkspacesDmnRunnerInputs();
   const [inputRows, setInputRows] = useState<Array<InputRow>>([{}]);
   const [inputRowsUpdated, setInputRowsUpdated] = useState<boolean>(false);
+  const [outputRowsUpdated, setOutputRowsUpdated] = useState<boolean>(false);
   const lastInputRows = useRef<string>();
 
   useCancelableEffect(
@@ -117,6 +120,19 @@ export function useWorkspaceDmnRunnerInputs(
     )
   );
 
+  useEffect(() => {
+    if (lastInputRows.current !== JSON.stringify(inputRows)) {
+      lastInputRows.current = JSON.stringify(inputRows);
+
+      const timeout = setTimeout(() => {
+        updatePersistedInputRows(workspaceFile, inputRows);
+      }, 200);
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [inputRows, updatePersistedInputRows, workspaceFile]);
+
   const setInputRowsAndUpdatePersistence = useCallback(
     (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => {
       if (typeof newInputRows === "function") {
@@ -125,21 +141,16 @@ export function useWorkspaceDmnRunnerInputs(
           if (JSON.stringify(inputRows) === lastInputRows.current) {
             return previous;
           }
-          lastInputRows.current = JSON.stringify(inputRows);
-          updatePersistedInputRows(workspaceFile, newInputRows);
           return inputRows;
         });
         return;
       }
-
       if (JSON.stringify(newInputRows) === lastInputRows.current) {
         return;
       }
       setInputRows(newInputRows);
-      lastInputRows.current = JSON.stringify(newInputRows);
-      updatePersistedInputRows(workspaceFile, newInputRows);
     },
-    [updatePersistedInputRows, workspaceFile]
+    []
   );
 
   return {
@@ -147,6 +158,8 @@ export function useWorkspaceDmnRunnerInputs(
     setInputRows: setInputRowsAndUpdatePersistence,
     inputRowsUpdated,
     setInputRowsUpdated,
+    outputRowsUpdated,
+    setOutputRowsUpdated,
   };
 }
 

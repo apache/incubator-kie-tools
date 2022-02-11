@@ -145,6 +145,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   const updateDmnRunnerResults = useCallback(
     async (formData: object) => {
       if (dmnRunnerState.status !== DmnRunnerStatus.AVAILABLE) {
+        dmnRunnerDispatch.setOutputRowsUpdated(true);
         return;
       }
 
@@ -167,9 +168,11 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           if (differences?.length !== 0) {
             setDmnRunnerResponseDiffs(differences);
           }
+          dmnRunnerDispatch.setOutputRowsUpdated(true);
           return result.decisionResults;
         });
       } catch (e) {
+        dmnRunnerDispatch.setOutputRowsUpdated(true);
         setDmnRunnerResults(undefined);
       }
     },
@@ -331,99 +334,99 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
         drawerErrorMessage
       ) : (
         <ErrorBoundary error={drawerErrorMessage} setHasError={setDrawerError} ref={errorBoundaryRef}>
-          <div
-            className={"kogito--editor__dmn-runner"}
-            style={{ flexDirection: dmnRunnerStylesConfig.contentFlexDirection }}
-          >
+          <DmnRunnerLoading>
             <div
-              className={"kogito--editor__dmn-runner-content"}
-              style={{
-                width: dmnRunnerStylesConfig.contentWidth,
-                height: dmnRunnerStylesConfig.contentHeight,
-              }}
+              className={"kogito--editor__dmn-runner"}
+              style={{ flexDirection: dmnRunnerStylesConfig.contentFlexDirection }}
             >
-              <Page className={"kogito--editor__dmn-runner-content-page"}>
-                <PageSection className={"kogito--editor__dmn-runner-content-header"}>
-                  <Flex
-                    flexWrap={{ default: "nowrap" }}
-                    style={{ width: "100%" }}
-                    justifyContent={{ default: "justifyContentSpaceBetween" }}
-                    alignItems={{ default: "alignItemsCenter" }}
-                  >
-                    <FlexItem>
-                      {dmnRunnerState.inputRows.length <= 1 ? (
-                        <Button
-                          variant={ButtonVariant.plain}
-                          className={"kie-tools--masthead-hoverable"}
-                          style={{ cursor: "default" }}
-                        >
-                          <TextContent>
-                            <Text component={"h3"}>{i18n.terms.inputs}</Text>
-                          </TextContent>
-                        </Button>
-                      ) : (
-                        <div>
-                          <Dropdown
-                            className={"kie-tools--masthead-hoverable"}
-                            isPlain={true}
-                            aria-label="Select Row Input"
-                            toggle={
-                              <DropdownToggle
-                                toggleIndicator={null}
-                                onToggle={() => openRowSelection((prevState) => !prevState)}
-                              >
-                                <TextContent>
-                                  <Text component={"h3"}>
-                                    {i18n.terms.inputs} (Row {dmnRunnerState.currentInputRowIndex + 1}){" "}
-                                    <CaretDownIcon />
-                                  </Text>
-                                </TextContent>
-                              </DropdownToggle>
-                            }
-                            onSelect={onSelectRow}
-                            dropdownItems={rowOptions}
-                            isOpen={rowSelectionIsOpen}
-                          />
-                        </div>
-                      )}
-                    </FlexItem>
-                    <FlexItem>
-                      <ToolbarItem>
-                        <Tooltip content={"Add new input row"}>
+              <div
+                className={"kogito--editor__dmn-runner-content"}
+                style={{
+                  width: dmnRunnerStylesConfig.contentWidth,
+                  height: dmnRunnerStylesConfig.contentHeight,
+                }}
+              >
+                <Page className={"kogito--editor__dmn-runner-content-page"}>
+                  <PageSection className={"kogito--editor__dmn-runner-content-header"}>
+                    <Flex
+                      flexWrap={{ default: "nowrap" }}
+                      style={{ width: "100%" }}
+                      justifyContent={{ default: "justifyContentSpaceBetween" }}
+                      alignItems={{ default: "alignItemsCenter" }}
+                    >
+                      <FlexItem>
+                        {dmnRunnerState.inputRows.length <= 1 ? (
                           <Button
-                            className={"kie-tools--masthead-hoverable"}
                             variant={ButtonVariant.plain}
-                            onClick={onAddNewRow}
-                          >
-                            <PlusIcon />
-                          </Button>
-                        </Tooltip>
-                      </ToolbarItem>
-                      <ToolbarItem>
-                        <Tooltip content={"Switch to table view"}>
-                          <Button
-                            ouiaId="switch-dmn-runner-to-table-view"
                             className={"kie-tools--masthead-hoverable"}
-                            variant={ButtonVariant.plain}
-                            onClick={onChangeToTableView}
+                            style={{ cursor: "default" }}
                           >
-                            <TableIcon />
+                            <TextContent>
+                              <Text component={"h3"}>{i18n.terms.inputs}</Text>
+                            </TextContent>
                           </Button>
-                        </Tooltip>
-                      </ToolbarItem>
-                    </FlexItem>
-                  </Flex>
-                  {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
-                    <DrawerCloseButton
-                      onClick={(e: any) => {
-                        dmnRunnerDispatch.setExpanded(false);
-                      }}
-                    />
-                  )}
-                </PageSection>
-                <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
-                  <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
-                    <DmnRunnerLoading>
+                        ) : (
+                          <div>
+                            <Dropdown
+                              className={"kie-tools--masthead-hoverable"}
+                              isPlain={true}
+                              aria-label="Select Row Input"
+                              toggle={
+                                <DropdownToggle
+                                  toggleIndicator={null}
+                                  onToggle={() => openRowSelection((prevState) => !prevState)}
+                                >
+                                  <TextContent>
+                                    <Text component={"h3"}>
+                                      {i18n.terms.inputs} (Row {dmnRunnerState.currentInputRowIndex + 1}){" "}
+                                      <CaretDownIcon />
+                                    </Text>
+                                  </TextContent>
+                                </DropdownToggle>
+                              }
+                              onSelect={onSelectRow}
+                              dropdownItems={rowOptions}
+                              isOpen={rowSelectionIsOpen}
+                            />
+                          </div>
+                        )}
+                      </FlexItem>
+                      <FlexItem>
+                        <ToolbarItem>
+                          <Tooltip content={"Add new input row"}>
+                            <Button
+                              className={"kie-tools--masthead-hoverable"}
+                              variant={ButtonVariant.plain}
+                              onClick={onAddNewRow}
+                            >
+                              <PlusIcon />
+                            </Button>
+                          </Tooltip>
+                        </ToolbarItem>
+                        <ToolbarItem>
+                          <Tooltip content={"Switch to table view"}>
+                            <Button
+                              ouiaId="switch-dmn-runner-to-table-view"
+                              className={"kie-tools--masthead-hoverable"}
+                              variant={ButtonVariant.plain}
+                              onClick={onChangeToTableView}
+                            >
+                              <TableIcon />
+                            </Button>
+                          </Tooltip>
+                        </ToolbarItem>
+                      </FlexItem>
+                    </Flex>
+                    {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
+                      <DrawerCloseButton
+                        onClick={(e: any) => {
+                          dmnRunnerDispatch.setExpanded(false);
+                        }}
+                      />
+                    )}
+                  </PageSection>
+                  <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
+                    <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
                       <DmnForm
                         name={selectedRow}
                         formData={formData}
@@ -443,41 +446,41 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                         notificationsPanel={true}
                         openValidationTab={openValidationTab}
                       />
-                    </DmnRunnerLoading>
+                    </PageSection>
+                  </div>
+                </Page>
+              </div>
+              <div
+                className={"kogito--editor__dmn-runner-content"}
+                style={{
+                  width: dmnRunnerStylesConfig.contentWidth,
+                  height: dmnRunnerStylesConfig.contentHeight,
+                }}
+              >
+                <Page className={"kogito--editor__dmn-runner-content-page"}>
+                  <PageSection className={"kogito--editor__dmn-runner-content-header"}>
+                    <TextContent>
+                      <Text component={"h3"}>{i18n.terms.outputs}</Text>
+                    </TextContent>
+                    {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
+                      <DrawerCloseButton onClick={(e: any) => dmnRunnerDispatch.setExpanded(false)} />
+                    )}
                   </PageSection>
-                </div>
-              </Page>
+                  <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
+                    <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
+                      <DmnFormResult
+                        results={dmnRunnerResults}
+                        differences={dmnRunnerResponseDiffs}
+                        locale={locale}
+                        notificationsPanel={true}
+                        openExecutionTab={openExecutionTab}
+                      />
+                    </PageSection>
+                  </div>
+                </Page>
+              </div>
             </div>
-            <div
-              className={"kogito--editor__dmn-runner-content"}
-              style={{
-                width: dmnRunnerStylesConfig.contentWidth,
-                height: dmnRunnerStylesConfig.contentHeight,
-              }}
-            >
-              <Page className={"kogito--editor__dmn-runner-content-page"}>
-                <PageSection className={"kogito--editor__dmn-runner-content-header"}>
-                  <TextContent>
-                    <Text component={"h3"}>{i18n.terms.outputs}</Text>
-                  </TextContent>
-                  {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
-                    <DrawerCloseButton onClick={(e: any) => dmnRunnerDispatch.setExpanded(false)} />
-                  )}
-                </PageSection>
-                <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
-                  <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
-                    <DmnFormResult
-                      results={dmnRunnerResults}
-                      differences={dmnRunnerResponseDiffs}
-                      locale={locale}
-                      notificationsPanel={true}
-                      openExecutionTab={openExecutionTab}
-                    />
-                  </PageSection>
-                </div>
-              </Page>
-            </div>
-          </div>
+          </DmnRunnerLoading>
         </ErrorBoundary>
       )}
     </DrawerPanelContent>

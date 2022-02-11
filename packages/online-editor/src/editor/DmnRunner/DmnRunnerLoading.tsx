@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import * as React from "react";
+import { useCallback, useMemo } from "react";
 import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 
 interface DmnRunnerLoading {
@@ -25,44 +25,31 @@ interface DmnRunnerLoading {
 export function DmnRunnerLoading(props: DmnRunnerLoading) {
   const dmnRunnerState = useDmnRunnerState();
   const dmnRunnerDispatch = useDmnRunnerDispatch();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onAnimationEnd = useCallback(
     (e: React.AnimationEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      setIsLoading(false);
       dmnRunnerDispatch.setInputRowsUpdated(false);
+      dmnRunnerDispatch.setOutputRowsUpdated(false);
     },
     [dmnRunnerDispatch]
   );
 
   const loadingScreenClassName = useMemo(() => {
-    if (dmnRunnerState.inputRowsUpdated) {
-      return "loading";
+    if (dmnRunnerState.inputRowsUpdated && dmnRunnerState.outputRowsUpdated) {
+      return "kie-tools--dmn-runner-loading";
     }
     return "";
-  }, [dmnRunnerState.inputRowsUpdated]);
-
-  useLayoutEffect(() => {
-    if (dmnRunnerState.inputRowsUpdated) {
-      setIsLoading(true);
-    }
-  }, [dmnRunnerState.inputRowsUpdated]);
+  }, [dmnRunnerState.inputRowsUpdated, dmnRunnerState.outputRowsUpdated]);
 
   return (
     <>
-      {isLoading ? (
-        <div id="kie-tools--dmn-runner-loading-screen" className="kie-tools--dmn-runner-loading-screen">
-          <div
-            className={`kie-tools--loading-screen ${loadingScreenClassName}`}
-            onAnimationEnd={onAnimationEnd}
-            data-testid={"dmn-runner-loading-screen-div"}
-          />
+      <div id="kie-tools--dmn-runner-loading-screen" className="kie-tools--dmn-runner-loading-screen">
+        <div className={loadingScreenClassName} onAnimationEnd={onAnimationEnd}>
+          <div key={loadingScreenClassName}>{props.children}</div>
         </div>
-      ) : (
-        props.children
-      )}
+      </div>
     </>
   );
 }

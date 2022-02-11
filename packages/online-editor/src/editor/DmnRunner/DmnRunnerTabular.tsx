@@ -40,6 +40,7 @@ export function DmnRunnerTabular(props: Props) {
   const updateDmnRunnerResults = useCallback(
     async (inputRows: Array<InputRow>) => {
       if (!props.isReady) {
+        dmnRunnerDispatch.setOutputRowsUpdated(true);
         return;
       }
 
@@ -66,7 +67,9 @@ export function DmnRunnerTabular(props: Props) {
           }
         }
         props.setDmnRunnerResults(runnerResults);
+        dmnRunnerDispatch.setOutputRowsUpdated(true);
       } catch (err) {
+        dmnRunnerDispatch.setOutputRowsUpdated(true);
         return undefined;
       }
     },

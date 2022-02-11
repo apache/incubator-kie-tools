@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DmnSchema } from "@kie-tools/form/dist/dmn";
+import { DecisionResult, DmnSchema } from "@kie-tools/form/dist/dmn";
 import * as React from "react";
 import { useContext } from "react";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
@@ -28,8 +28,9 @@ export interface DmnRunnerContextType {
   inputRows: Array<InputRow>;
   inputRowsUpdated: boolean;
   isExpanded: boolean;
-  mode: DmnRunnerMode;
   jsonSchema?: DmnSchema;
+  mode: DmnRunnerMode;
+  outputRowsUpdated: boolean;
   service: DmnRunnerService;
   status: DmnRunnerStatus;
 }
@@ -41,6 +42,7 @@ export interface DmnRunnerCallbacksContextType {
   setCurrentInputRowIndex: React.Dispatch<React.SetStateAction<number>>;
   setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>;
   setInputRowsUpdated: React.Dispatch<React.SetStateAction<boolean>>;
+  setOutputRowsUpdated: React.Dispatch<React.SetStateAction<boolean>>;
   setMode: React.Dispatch<React.SetStateAction<DmnRunnerMode>>;
 }
 

@@ -654,17 +654,7 @@ section.kie-tools--settings-tab {
   position: relative;
 }
 
-.loading {
-  animation-name: fade-out;
+.kie-tools--dmn-runner-loading {
+  animation-name: highlight;
   animation-duration: 400ms;
-}
-
-@keyframes fade-out {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
 }
