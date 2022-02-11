@@ -33,6 +33,8 @@ public abstract class AbstractValidatingTextBox extends TextBox {
     @Inject
     private Event<NotificationEvent> notification;
 
+    private static int lastKey = 0;
+
     public AbstractValidatingTextBox() {
         super();
         setup();
@@ -46,18 +48,21 @@ public abstract class AbstractValidatingTextBox extends TextBox {
             public void onKeyPress(final KeyPressEvent event) {
                 // Permit navigation
                 int keyCode = getKeyCodeFromKeyPressEvent(event);
+                boolean repeatingDots = (keyCode == KeyCodes.KEY_DELETE && lastKey == KeyCodes.KEY_DELETE);
+                lastKey = keyCode;
+
                 if (event.isControlKeyDown()) {
                     return;
                 }
                 if (!event.isShiftKeyDown()) {
-                    if (keyCode == KeyCodes.KEY_BACKSPACE
+                    if ((keyCode == KeyCodes.KEY_BACKSPACE
                             || keyCode == KeyCodes.KEY_DELETE
                             || keyCode == KeyCodes.KEY_LEFT
                             || keyCode == KeyCodes.KEY_RIGHT
                             || keyCode == KeyCodes.KEY_ENTER
                             || keyCode == KeyCodes.KEY_TAB
                             || keyCode == KeyCodes.KEY_HOME
-                            || keyCode == KeyCodes.KEY_END) {
+                            || keyCode == KeyCodes.KEY_END) && !repeatingDots) {
                         return;
                     }
                 }
@@ -85,15 +90,31 @@ public abstract class AbstractValidatingTextBox extends TextBox {
                 String validationError = isValidValue(value,
                                                       true);
                 if (validationError != null) {
-                    fireValidationError(validationError);
-                    String validValue = makeValidValue(value);
-                    me.setValue(validValue);
-                    ValueChangeEvent.fire(AbstractValidatingTextBox.this,
-                                          validValue);
+                    fireValidation(value, validationError, me);
+                } else {
+                    validationError = isBalancedGTLT(value);
+                    if (validationError != null) {
+                        fireValidation(value, validationError, me);
+                    }
                 }
             }
         });
     }
+
+    private void fireValidation(String value, String validationError, TextBox me) {
+        fireValidationError(validationError);
+        String validValue = makeValidValue(value);
+        me.setValue(validValue);
+        ValueChangeEvent.fire(AbstractValidatingTextBox.this,
+                              validValue);
+    }
+
+    /**
+     * Tests whether a string has balanced <> hence indicating if it looks like valid generics format
+     * @param string
+     * @return an error message to be reported
+     */
+    public abstract String isBalancedGTLT(String string);
 
     /**
      * Tests whether a value is valid

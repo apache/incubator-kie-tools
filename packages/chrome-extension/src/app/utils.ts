@@ -126,3 +126,15 @@ export function extractOpenFileExtension(url: string) {
     ?.match(/[\w\d]+/)
     ?.pop();
 }
+
+export function extractOpenFilePath(url: string) {
+  const lastDotIndex = url.lastIndexOf(".");
+  const splittedUrl = url.split(".");
+  const fileExtension = splittedUrl
+    .pop()
+    ?.match(/[\w\d]+/)
+    ?.pop();
+  const filePathWithoutExtension = url.substring(0, lastDotIndex + 1);
+
+  return (filePathWithoutExtension ? filePathWithoutExtension : "") + (fileExtension ? fileExtension : "");
+}

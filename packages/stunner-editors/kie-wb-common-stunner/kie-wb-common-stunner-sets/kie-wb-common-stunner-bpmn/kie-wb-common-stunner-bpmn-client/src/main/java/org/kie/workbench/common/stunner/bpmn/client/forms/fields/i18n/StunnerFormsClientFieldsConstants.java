@@ -89,6 +89,8 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
 
     String Removed_invalid_characters_from_name();
 
+    String Unbalanced_GT_LT_from_name();
+
     String Removed_invalid_characters_from_value();
 
     String A_Data_Input_with_this_name_already_exists();

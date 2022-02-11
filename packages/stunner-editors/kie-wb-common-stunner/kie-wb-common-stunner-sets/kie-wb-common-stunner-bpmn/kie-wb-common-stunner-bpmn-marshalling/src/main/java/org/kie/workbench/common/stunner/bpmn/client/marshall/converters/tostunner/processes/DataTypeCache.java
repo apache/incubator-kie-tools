@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.inject.Singleton;
 
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.DeclarationList;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.ParsedAssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.BpmnNode;
@@ -65,10 +66,21 @@ public class DataTypeCache extends AbstractDataTypeCache {
         return dataTypes;
     }
 
-    protected List<String> getDataTypes(String variables) {
+    protected List<String> getDataTypes(String variables, boolean isTwoColonFormat) {
+        if (isTwoColonFormat) {
+            variables = StringUtils.preFilterVariablesTwoSemicolonForGenerics(variables);
+        } else {
+            variables = StringUtils.preFilterVariablesForGenerics(variables);
+        }
+
         List<String> dataTypeList = new ArrayList<>();
         DeclarationList list = DeclarationList.fromString(variables);
-        list.getDeclarations().forEach(var -> dataTypeList.add(var.getType()));
+        list.getDeclarations().forEach(var -> {
+            final String s = StringUtils.postFilterForGenerics(var.getType());
+            if (StringUtils.isOkWithGenericsFormat(s)) {
+                dataTypeList.add(s);
+            }
+        });
         return dataTypeList;
     }
 

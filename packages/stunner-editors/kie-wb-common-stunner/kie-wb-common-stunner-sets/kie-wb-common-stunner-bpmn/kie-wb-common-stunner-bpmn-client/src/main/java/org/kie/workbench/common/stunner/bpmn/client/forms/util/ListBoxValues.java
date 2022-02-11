@@ -169,7 +169,9 @@ public class ListBoxValues {
             if (currentEditValuePrompt != null) {
                 acceptableValuesWithCustomValues.remove(currentEditValuePrompt);
             }
+
             int editPromptIndex = acceptableValuesWithCustomValues.indexOf(currentValue);
+
             if (editPromptIndex > -1) {
                 editPromptIndex++;
             } else if (acceptableValuesWithCustomValues.size() > 1) {

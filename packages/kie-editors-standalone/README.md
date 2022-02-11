@@ -74,3 +74,5 @@ The returned object will contain the methods needed to manipulate the Editor:
   - `getLocation(uuid: string): Promise<number[]>`: Returns a Promise containing the canvas location of a node with provided UUID.
   - `getAbsoluteLocation(uuid: string): Promise<number[]>`: Returns a Promise containing the window location for a node with provided UUID.
   - `getDimensions(uuid: string): Promise<number[]>`: Returns a Promise containing the dimensions of a node with provided UUID.
+  - `applyState(uuid: string, state: string): Promise<void>`: Applies state to a node given the UUID [None, Selected, Highlight, Invalid].
+  - `centerNode(uuid: string): Promise<void>`: Centers node on viewable Canvas.

@@ -44,6 +44,7 @@ public class CustomDataTypeTextBoxTest {
 
     private static final String ERROR_REMOVED = "some error reg exp";
     private static final String ERROR_TYPED = "some error reg exp2";
+    private static final String ERROR_UNBALANCED = "some error reg exp3";
 
     @Captor
     private ArgumentCaptor<BlurHandler> blurCaptor;
@@ -65,6 +66,7 @@ public class CustomDataTypeTextBoxTest {
         textBox = GWT.create(CustomDataTypeTextBox.class);
         doCallRealMethod().when(textBox).setRegExp(anyString(),
                                                    anyString(),
+                                                   anyString(),
                                                    anyString());
         doCallRealMethod().when(textBox).isValidValue(anyString(),
                                                       anyBoolean());
@@ -75,9 +77,12 @@ public class CustomDataTypeTextBoxTest {
         doCallRealMethod().when(textBox).setup();
         doCallRealMethod().when(textBox).addBlurHandler(any(BlurHandler.class));
         doCallRealMethod().when(textBox).addKeyPressHandler(any(KeyPressHandler.class));
-        textBox.setRegExp(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_REGEXP,
+        doCallRealMethod().when(textBox).isBalancedGTLT(anyString());
+
+        textBox.setRegExp(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_GT_LT_REGEXP,
                           ERROR_REMOVED,
-                          ERROR_TYPED);
+                          ERROR_TYPED,
+                          ERROR_UNBALANCED);
     }
 
     @Test
@@ -133,7 +138,7 @@ public class CustomDataTypeTextBoxTest {
         assertEquals("ab21",
                      makeValidResult);
         makeValidResult = textBox.makeValidValue("<a#b$2%1.3-4_5>");
-        assertEquals("ab21.34_5",
+        assertEquals("<ab21.34_5>",
                      makeValidResult);
     }
 
@@ -182,7 +187,27 @@ public class CustomDataTypeTextBoxTest {
                      isValidResult);
         isValidResult = textBox.isValidValue("<a#$%1>",
                                              false);
-        assertEquals(ERROR_TYPED + ": <#$%>",
+
+        assertEquals(ERROR_TYPED + ": #$%", isValidResult);
+    }
+
+    @Test
+    public void testIsBalancedGTLT() {
+        String isValidResult;
+        isValidResult = textBox.isBalancedGTLT("List<String>");
+        assertEquals(null,
+                     isValidResult);
+        isValidResult = textBox.isBalancedGTLT("List<String");
+        assertEquals(ERROR_UNBALANCED,
+                     isValidResult);
+        isValidResult = textBox.isBalancedGTLT("ListString>");
+        assertEquals(ERROR_UNBALANCED,
+                     isValidResult);
+        isValidResult = textBox.isBalancedGTLT("List<List<String>>");
+        assertEquals(null,
+                     isValidResult);
+        isValidResult = textBox.isBalancedGTLT("List<List<String>");
+        assertEquals(ERROR_UNBALANCED,
                      isValidResult);
     }
 

@@ -65,6 +65,89 @@ public class StringUtilsTest {
     }
 
     @Test
+    public void testCreateDataTypeDisplayNameWithGenerics() {
+        //if < > in string, it should not apply FQDN
+        assertEquals("java.util.Map<java.util.List<String>, String>",
+                     StringUtils.createDataTypeDisplayName("java.util.Map<java.util.List<String>, String>"));
+    }
+
+    @Test
+    public void testIsGenericsFormatOk() {
+        //ok
+        assertTrue("Should be ok generics format", StringUtils.isOkWithGenericsFormat("String"));
+        assertTrue("Should be ok generics format", StringUtils.isOkWithGenericsFormat("List"));
+    }
+
+    @Test
+    public void testIsGenericsFormatCorrectMap() {
+        assertTrue("Should be ok generics format", StringUtils.isOkWithGenericsFormat("Map<String,String>"));
+    }
+
+    @Test
+    public void testIsGenericsFormatInCorrectMap() {
+        assertFalse("Should NOT be ok generics format", StringUtils.isOkWithGenericsFormat("Map<String><String>"));
+    }
+
+    @Test
+    public void testIsGenericsFormatUnbalanced() {
+        assertFalse("Should NOT be ok generics format", StringUtils.isOkWithGenericsFormat("Map<String, String"));
+    }
+
+    @Test
+    public void testIsGenericsFormatCorrectList() {
+        assertTrue("Should be ok generics format", StringUtils.isOkWithGenericsFormat("List<String>"));
+    }
+
+    @Test
+    public void testIsGenericsFormatInCorrectList() {
+        assertFalse("Should NOT be ok generics format", StringUtils.isOkWithGenericsFormat("List<List<String>"));
+    }
+
+    @Test
+    public void testIsGenericsFormatCorrectSet() {
+        assertTrue("Should be ok generics format", StringUtils.isOkWithGenericsFormat("Set<String>"));
+    }
+
+    @Test
+    public void testIsGenericsFormatInCorrectSet() {
+        assertFalse("Should NOT be ok generics format", StringUtils.isOkWithGenericsFormat("Set<Set<String>"));
+    }
+
+    @Test
+    public void testIsGenericsFormatCorrectStack() {
+        assertTrue("Should be ok generics format", StringUtils.isOkWithGenericsFormat("Stack<String>"));
+    }
+
+    @Test
+    public void testIsGenericsFormatInCorrectStack() {
+        assertFalse("Should NOT be ok generics format", StringUtils.isOkWithGenericsFormat("Stack<Stack<String>"));
+    }
+
+    @Test
+    public void testPreFilterVariablesForGenerics() {
+        assertEquals("Bad Formad", "map:Map<String*String>:", StringUtils.preFilterVariablesForGenerics("map:Map<String,String>:"));
+        assertEquals("Bad Formad", "list:List<String>:", StringUtils.preFilterVariablesForGenerics("list:List<String>:"));
+        assertEquals("Should be null", null, StringUtils.preFilterVariablesForGenerics(null));
+        assertEquals("Should be empy", "", StringUtils.preFilterVariablesForGenerics(""));
+    }
+
+    @Test
+    public void testPreFilterVariablesTwoSemicolonForGenerics() {
+        assertEquals("Bad Formad", "map:Map<String*String>", StringUtils.preFilterVariablesTwoSemicolonForGenerics("map:Map<String,String>"));
+        assertEquals("Bad Formad", "list:List<String>", StringUtils.preFilterVariablesTwoSemicolonForGenerics("list:List<String>"));
+        assertEquals("Should be null", null, StringUtils.preFilterVariablesTwoSemicolonForGenerics(null));
+        assertEquals("Should be empy", "", StringUtils.preFilterVariablesTwoSemicolonForGenerics(""));
+    }
+
+    @Test
+    public void testPostFilterForGenerics() {
+        assertEquals("Bad Formad", "map:Map<String,String>", StringUtils.postFilterForGenerics("map:Map<String*String>"));
+        assertEquals("Bad Formad", "list:List<Map<String,String>>", StringUtils.postFilterForGenerics("list:List<Map<String*String>>"));
+        assertEquals("Should be null", null, StringUtils.postFilterForGenerics(null));
+        assertEquals("Should be empy", "", StringUtils.postFilterForGenerics(""));
+    }
+
+    @Test
     public void testRegexSequence() {
 
         String test1 = "123Test";
