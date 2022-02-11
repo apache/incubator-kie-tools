@@ -30,6 +30,6 @@ declare namespace Cypress {
      * Requires the selected element to have the focus.
      * https://github.com/cypress-io/cypress/issues/299
      */
-    typeTab: () => Chainable<Element>;
+    typeTab: (shiftKey?: boolean) => Chainable<Element>;
   }
 }

@@ -173,7 +173,7 @@ export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number, 
   const gotoRow = currentBody?.rows[rowIndex - 1];
   const gotoCellIndex = cellIndex === undefined ? currentCell.cellIndex : cellIndex;
 
-  cellFocus(<HTMLTableCellElement>gotoRow?.cells[gotoCellIndex]);
+  cellFocus(<HTMLTableCellElement>gotoRow?.cells[gotoCellIndex] || currentCell);
 };
 
 /**
@@ -194,7 +194,7 @@ export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number, 
   const gotoRow = currentBody?.rows[rowIndex + 1];
   const gotoCellIndex = cellIndex === undefined ? currentCell.cellIndex : cellIndex;
 
-  cellFocus(<HTMLTableCellElement>gotoRow?.cells[gotoCellIndex]);
+  cellFocus(<HTMLTableCellElement>gotoRow?.cells[gotoCellIndex] || currentCell);
 };
 
 /**

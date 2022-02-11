@@ -89,7 +89,6 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           if (e.shiftKey) {
             focusPrevDataCell(e.currentTarget, rowIndex);
           } else {
-            /* FIXME: When edit the last cell of a row, press tab -> focus is lost */
             focusNextDataCell(e.currentTarget, rowIndex);
           }
         } else if (key === "ArrowLeft") {

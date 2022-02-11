@@ -178,13 +178,12 @@ describe("FocusUtils tests", () => {
       expect(mockElementToBeFocused).toHaveBeenCalled();
     });
 
-    it("should not change the focus", () => {
+    it("should keep the focus to the current cell", () => {
       const element = mockTbody.rows[2].cells[5];
       const mockElementFocus = jest.spyOn(element, "focus");
 
       focusNextDataCell(element, 2);
-      focusNextDataCell(element, 2);
-      expect(mockElementFocus).not.toHaveBeenCalled();
+      expect(mockElementFocus).toHaveBeenCalled();
     });
   });
 
@@ -244,20 +243,20 @@ describe("FocusUtils tests", () => {
       expect(mockElementToBeFocused).toHaveBeenCalled();
     });
 
-    it("should not change the focus", () => {
+    it("should keep the focus to the current cell", () => {
       const element = mockTbody.rows[0].cells[1];
       const mockElementFocus = jest.spyOn(element, "focus");
 
       focusPrevDataCell(element, 0);
-      expect(mockElementFocus).not.toHaveBeenCalled();
+      expect(mockElementFocus).toHaveBeenCalled();
     });
 
-    it("should not change the focus from the first counter-cell", () => {
+    it("should keep the focus to the current counter cell", () => {
       const element = mockTbody.rows[0].cells[0];
       const mockElementFocus = jest.spyOn(element, "focus");
 
       focusPrevDataCell(element, 0);
-      expect(mockElementFocus).not.toHaveBeenCalled();
+      expect(mockElementFocus).toHaveBeenCalled();
     });
   });
 
@@ -279,12 +278,12 @@ describe("FocusUtils tests", () => {
       expect(mockElementToBeFocused).toHaveBeenCalled();
     });
 
-    it("should not change the focus", () => {
+    it("should keep the focus to the current cell", () => {
       const element = mockTbody.rows[0].cells[5];
       const mockElementFocus = jest.spyOn(element, "focus");
 
       focusUpperCell(element, 0);
-      expect(mockElementFocus).not.toHaveBeenCalled();
+      expect(mockElementFocus).toHaveBeenCalled();
     });
   });
 
@@ -306,12 +305,12 @@ describe("FocusUtils tests", () => {
       expect(mockElementToBeFocused).toHaveBeenCalled();
     });
 
-    it("should not change the focus", () => {
+    it("should keep the focus to the current cell", () => {
       const element = mockTbody.rows[2].cells[5];
       const mockElementFocus = jest.spyOn(element, "focus");
 
       focusLowerCell(element, 2);
-      expect(mockElementFocus).not.toHaveBeenCalled();
+      expect(mockElementFocus).toHaveBeenCalled();
     });
   });
 
