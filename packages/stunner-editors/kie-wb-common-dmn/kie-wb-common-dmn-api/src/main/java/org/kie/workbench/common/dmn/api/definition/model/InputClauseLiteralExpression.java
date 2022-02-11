@@ -255,16 +255,16 @@ public class InputClauseLiteralExpression extends DMNModelInstrumentedBase imple
     }
 
     @Override
-    public DomainObject findDomainObject(final String uuid) {
+    public Optional<DomainObject> findDomainObject(final String uuid) {
 
         if (matches(this, uuid)) {
-            return this;
+            return Optional.of(this);
         }
 
         if (matches(getImportedValues(), uuid)) {
-            return getImportedValues();
+            return Optional.of(getImportedValues());
         }
 
-        return null;
+        return Optional.empty();
     }
 }

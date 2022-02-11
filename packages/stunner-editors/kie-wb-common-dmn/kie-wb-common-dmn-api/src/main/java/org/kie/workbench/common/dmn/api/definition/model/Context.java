@@ -65,7 +65,7 @@ public class Context extends Expression {
     }
 
     @Override
-    public DomainObject findDomainObject(final String uuid) {
+    public Optional<DomainObject> findDomainObject(final String uuid) {
         return DomainObjectSearcherHelper.find(getContextEntry(), uuid);
     }
 

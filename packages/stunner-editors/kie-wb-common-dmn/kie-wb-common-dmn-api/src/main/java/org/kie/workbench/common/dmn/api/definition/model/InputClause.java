@@ -179,10 +179,10 @@ public class InputClause extends DMNElement implements HasTypeRefs,
     }
 
     @Override
-    public DomainObject findDomainObject(final String uuid) {
+    public Optional<DomainObject> findDomainObject(final String uuid) {
 
         if (matches(this, uuid)) {
-            return this;
+            return Optional.of(this);
         }
 
         return inputExpression.findDomainObject(uuid);

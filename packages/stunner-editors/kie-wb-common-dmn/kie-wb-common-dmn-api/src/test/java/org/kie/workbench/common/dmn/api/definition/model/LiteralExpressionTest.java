@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.api.definition.model;
 
+import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,9 +33,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LiteralExpressionTest {
@@ -97,9 +101,10 @@ public class LiteralExpressionTest {
                                                                           null,
                                                                           null);
 
-        final DomainObject foundDomainObject = literalExpression.findDomainObject(UUID);
+        final Optional<DomainObject> foundDomainObject = literalExpression.findDomainObject(UUID);
 
-        assertEquals(literalExpression, foundDomainObject);
+        assertTrue(foundDomainObject.isPresent());
+        assertEquals(literalExpression, foundDomainObject.get());
     }
 
     @Test
@@ -107,8 +112,8 @@ public class LiteralExpressionTest {
 
         final LiteralExpression literalExpression = new LiteralExpression();
 
-        final DomainObject foundDomainObject = literalExpression.findDomainObject(UUID);
+        final Optional<DomainObject> foundDomainObject = literalExpression.findDomainObject(UUID);
 
-        assertNull(foundDomainObject);
+        assertFalse(foundDomainObject.isPresent());
     }
 }

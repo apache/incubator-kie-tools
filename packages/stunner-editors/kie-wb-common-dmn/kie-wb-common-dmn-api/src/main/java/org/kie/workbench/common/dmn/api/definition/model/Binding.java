@@ -17,7 +17,6 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -25,10 +24,11 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRefs;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
-import org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static java.util.Objects.isNull;
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.matches;
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getNotNullHasTypeRefs;
 
 @Portable
@@ -117,16 +117,16 @@ public class Binding extends DMNModelInstrumentedBase implements HasExpression,
     }
 
     @Override
-    public DomainObject findDomainObject(final String uuid) {
+    public Optional<DomainObject> findDomainObject(final String uuid) {
 
-        if (DomainObjectSearcherHelper.matches(getParameter(), uuid)) {
-            return getParameter();
+        if (matches(getParameter(), uuid)) {
+            return Optional.of(getParameter());
         }
 
-        if (!Objects.isNull(getExpression())) {
+        if (!isNull(getExpression())) {
             return getExpression().findDomainObject(uuid);
         }
 
-        return null;
+        return Optional.empty();
     }
 }

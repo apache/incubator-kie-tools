@@ -77,10 +77,10 @@ public class FunctionDefinition extends Expression implements HasExpression {
     }
 
     @Override
-    public DomainObject findDomainObject(final String uuid) {
+    public Optional<DomainObject> findDomainObject(final String uuid) {
 
-        final DomainObject domainObject = getDomainObject(getFormalParameter(), uuid);
-        if (!Objects.isNull(domainObject)) {
+        final Optional<DomainObject> domainObject = getDomainObject(getFormalParameter(), uuid);
+        if (domainObject.isPresent()) {
             return domainObject;
         }
 
@@ -88,7 +88,7 @@ public class FunctionDefinition extends Expression implements HasExpression {
             return getExpression().findDomainObject(uuid);
         }
 
-        return null;
+        return Optional.empty();
     }
 
     private List<InformationItem> cloneFormalParameterList() {

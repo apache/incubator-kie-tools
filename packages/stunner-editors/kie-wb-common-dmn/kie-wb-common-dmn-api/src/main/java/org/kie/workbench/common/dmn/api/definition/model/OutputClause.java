@@ -227,16 +227,16 @@ public class OutputClause extends DMNElement implements HasTypeRef,
     }
 
     @Override
-    public DomainObject findDomainObject(final String uuid) {
+    public Optional<DomainObject> findDomainObject(final String uuid) {
 
         if (matches(this, uuid)) {
-            return this;
+            return Optional.of(this);
         }
 
         if (matches(getDefaultOutputEntry(), uuid)) {
-            return getDefaultOutputEntry();
+            return Optional.of(getDefaultOutputEntry());
         }
 
-        return null;
+        return Optional.empty();
     }
 }

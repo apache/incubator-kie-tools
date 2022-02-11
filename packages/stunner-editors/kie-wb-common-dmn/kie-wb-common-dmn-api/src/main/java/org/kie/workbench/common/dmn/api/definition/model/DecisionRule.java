@@ -17,7 +17,6 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -131,10 +130,10 @@ public class DecisionRule extends DMNElement implements HasTypeRefs,
     }
 
     @Override
-    public DomainObject findDomainObject(final String uuid) {
+    public Optional<DomainObject> findDomainObject(final String uuid) {
 
-        final DomainObject domainObject = getDomainObject(getInputEntry(), uuid);
-        if (!Objects.isNull(domainObject)) {
+        final Optional<DomainObject> domainObject = getDomainObject(getInputEntry(), uuid);
+        if (domainObject.isPresent()) {
             return domainObject;
         }
 

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,9 +30,10 @@ import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class InputClauseLiteralExpressionTest {
 
@@ -82,9 +84,10 @@ public class InputClauseLiteralExpressionTest {
                                                                                           null,
                                                                                           null);
 
-        final DomainObject actual = inputClause.findDomainObject(uuid);
+        final Optional<DomainObject> actual = inputClause.findDomainObject(uuid);
 
-        assertEquals(inputClause, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(inputClause, actual.get());
     }
 
     @Test
@@ -99,9 +102,10 @@ public class InputClauseLiteralExpressionTest {
                                                                                           null,
                                                                                           importedValues);
 
-        final DomainObject actual = inputClause.findDomainObject(uuid);
+        final Optional<DomainObject> actual = inputClause.findDomainObject(uuid);
 
-        assertEquals(inputClause, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(inputClause, actual.get());
     }
 
     @Test
@@ -109,8 +113,8 @@ public class InputClauseLiteralExpressionTest {
 
         final InputClauseLiteralExpression inputClause = new InputClauseLiteralExpression();
 
-        final DomainObject actual = inputClause.findDomainObject("some id");
+        final Optional<DomainObject> actual = inputClause.findDomainObject("some id");
 
-        assertNull(actual);
+        assertFalse(actual.isPresent());
     }
 }

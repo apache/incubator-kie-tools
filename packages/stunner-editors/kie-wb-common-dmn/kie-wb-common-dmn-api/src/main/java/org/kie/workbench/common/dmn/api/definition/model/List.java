@@ -67,13 +67,13 @@ public class List extends Expression {
     }
 
     @Override
-    public DomainObject findDomainObject(final String uuid) {
+    public Optional<DomainObject> findDomainObject(final String uuid) {
         return getExpression().stream()
                 .filter(hasExpression -> !isNull(hasExpression.getExpression()))
                 .map(hasExpression -> hasExpression.getExpression().findDomainObject(uuid))
-                .filter(domainObject -> !isNull(domainObject))
-                .findFirst()
-                .orElse(null);
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
     }
 
     private Function<HasExpression, HasExpression> expressionWrapperMappingFn(final List clonedList) {

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.api.definition.model;
 
+import java.util.Optional;
+
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 
 /**
@@ -26,7 +28,7 @@ public interface HasDomainObject {
     /**
      * Find a {@link DomainObject} with the given UUID.
      * @param uuid The UUID.
-     * @return The {@link DomainObject} or null if none is found.
+     * @return The {@link DomainObject} or empty if none is found.
      */
-    DomainObject findDomainObject(final String uuid);
+    Optional<DomainObject> findDomainObject(final String uuid);
 }

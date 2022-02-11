@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,7 +45,6 @@ import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-
 public class InvocationTest {
 
     private static final String INVOCATION_ID = "INVOCATION-ID";
@@ -116,13 +116,13 @@ public class InvocationTest {
         final Invocation invocation = new Invocation();
         invocation.setExpression(expression);
 
+        when(expression.findDomainObject(UUID)).thenReturn(Optional.of(expectedDomainObject));
 
-        when(expression.findDomainObject(UUID)).thenReturn(expectedDomainObject);
-
-        final DomainObject actual = invocation.findDomainObject(UUID);
+        final Optional<DomainObject> actual = invocation.findDomainObject(UUID);
 
         verify(expression).findDomainObject(UUID);
-        assertEquals(expectedDomainObject, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(expectedDomainObject, actual.get());
     }
 
     @Test
@@ -138,15 +138,16 @@ public class InvocationTest {
         invocation.getBinding().addAll(Arrays.asList(binding1, binding2, binding3));
         invocation.setExpression(expression);
 
-        when(binding3.findDomainObject(UUID)).thenReturn(expectedDomainObject);
+        when(binding3.findDomainObject(UUID)).thenReturn(Optional.of(expectedDomainObject));
 
-        final DomainObject actual = invocation.findDomainObject(UUID);
+        final Optional<DomainObject> actual = invocation.findDomainObject(UUID);
 
         verify(expression).findDomainObject(UUID);
         verify(binding1).findDomainObject(UUID);
         verify(binding2).findDomainObject(UUID);
         verify(binding3).findDomainObject(UUID);
 
-        assertEquals(expectedDomainObject, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(expectedDomainObject, actual.get());
     }
 }

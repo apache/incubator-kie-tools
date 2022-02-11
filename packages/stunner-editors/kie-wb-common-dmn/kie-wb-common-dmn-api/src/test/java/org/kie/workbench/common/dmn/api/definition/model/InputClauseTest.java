@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +34,7 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -105,9 +107,10 @@ public class InputClauseTest {
                                                         null,
                                                         null);
 
-        final DomainObject actual = inputClause.findDomainObject(UUID);
+        final Optional<DomainObject> actual = inputClause.findDomainObject(UUID);
 
-        assertEquals(inputClause, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(inputClause, actual.get());
     }
 
     @Test
@@ -121,11 +124,12 @@ public class InputClauseTest {
 
         final DomainObject expectedDomainObject = mock(DomainObject.class);
 
-        when(expression.findDomainObject(UUID)).thenReturn(expectedDomainObject);
+        when(expression.findDomainObject(UUID)).thenReturn(Optional.of(expectedDomainObject));
 
-        final DomainObject actual = inputClause.findDomainObject(UUID);
+        final Optional<DomainObject> actual = inputClause.findDomainObject(UUID);
 
-        assertEquals(expectedDomainObject, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(expectedDomainObject, actual.get());
         verify(expression).findDomainObject(UUID);
     }
 

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,9 +32,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -107,9 +109,10 @@ public class OutputClauseTest {
                                                            null,
                                                            null);
 
-        final DomainObject foundDomainObject = outputClause.findDomainObject(UUID);
+        final Optional<DomainObject> foundDomainObject = outputClause.findDomainObject(UUID);
 
-        assertEquals(outputClause, foundDomainObject);
+        assertTrue(foundDomainObject.isPresent());
+        assertEquals(outputClause, foundDomainObject.get());
     }
 
     @Test
@@ -125,9 +128,10 @@ public class OutputClauseTest {
 
         outputClause.setDefaultOutputEntry(literalExpression);
 
-        final DomainObject foundDomainObject = outputClause.findDomainObject(UUID);
+        final Optional<DomainObject> foundDomainObject = outputClause.findDomainObject(UUID);
 
-        assertEquals(literalExpression, foundDomainObject);
+        assertTrue(foundDomainObject.isPresent());
+        assertEquals(literalExpression, foundDomainObject.get());
     }
 
     @Test
@@ -135,9 +139,9 @@ public class OutputClauseTest {
 
         final OutputClause outputClause = new OutputClause();
 
-        final DomainObject foundDomainObject = outputClause.findDomainObject(UUID);
+        final Optional<DomainObject> foundDomainObject = outputClause.findDomainObject(UUID);
 
-        assertNull(foundDomainObject);
+        assertFalse(foundDomainObject.isPresent());
     }
 
     private OutputClauseUnaryTests buildOutputClauseUnaryTests() {

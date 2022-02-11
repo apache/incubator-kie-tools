@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,9 +34,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -109,13 +110,13 @@ public class ListTest {
         final HasExpression hasExpression3 = mock(HasExpression.class);
         final HasExpression hasExpression4 = mock(HasExpression.class);
 
-        final Expression expressionThatReturnsNull = mock(Expression.class);
+        final Expression expressionThatReturnsEmpty = mock(Expression.class);
         final Expression expression = mock(Expression.class);
         final DomainObject domainObject = mock(DomainObject.class);
 
-        when(expression.findDomainObject(UUID)).thenReturn(domainObject);
-        when(expressionThatReturnsNull.findDomainObject(UUID)).thenReturn(null);
-        when(hasExpression3.getExpression()).thenReturn(expressionThatReturnsNull);
+        when(expression.findDomainObject(UUID)).thenReturn(Optional.of(domainObject));
+        when(expressionThatReturnsEmpty.findDomainObject(UUID)).thenReturn(Optional.empty());
+        when(hasExpression3.getExpression()).thenReturn(expressionThatReturnsEmpty);
         when(hasExpression4.getExpression()).thenReturn(expression);
 
         list.getExpression().addAll(Arrays.asList(hasExpression1,
@@ -123,9 +124,10 @@ public class ListTest {
                                                   hasExpression3,
                                                   hasExpression4));
 
-        final DomainObject foundDomainObject = list.findDomainObject(UUID);
+        final Optional<DomainObject> foundDomainObject = list.findDomainObject(UUID);
 
-        assertEquals(domainObject, foundDomainObject);
+        assertTrue(foundDomainObject.isPresent());
+        assertEquals(domainObject, foundDomainObject.get());
     }
 
     @Test
@@ -142,8 +144,8 @@ public class ListTest {
                                                   hasExpression3,
                                                   hasExpression4));
 
-        final DomainObject foundDomainObject = list.findDomainObject(UUID);
+        final Optional<DomainObject> foundDomainObject = list.findDomainObject(UUID);
 
-        assertNull(foundDomainObject);
+        assertFalse(foundDomainObject.isPresent());
     }
 }

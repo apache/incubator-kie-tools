@@ -25,10 +25,10 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRefs;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
-import org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.matches;
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getNotNullHasTypeRefs;
 
 @Portable
@@ -109,16 +109,16 @@ public class ContextEntry extends DMNModelInstrumentedBase implements HasExpress
     }
 
     @Override
-    public DomainObject findDomainObject(final String uuid) {
+    public Optional<DomainObject> findDomainObject(final String uuid) {
 
-        if (DomainObjectSearcherHelper.matches(variable, uuid)) {
-            return variable;
+        if (matches(variable, uuid)) {
+            return Optional.of(variable);
         }
 
         if (!Objects.isNull(expression)) {
             return expression.findDomainObject(uuid);
         }
 
-        return null;
+        return Optional.empty();
     }
 }

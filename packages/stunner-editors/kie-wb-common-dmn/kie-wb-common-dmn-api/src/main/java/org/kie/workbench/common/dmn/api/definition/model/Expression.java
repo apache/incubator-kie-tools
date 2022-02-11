@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
@@ -56,9 +57,9 @@ public abstract class Expression extends DMNElement implements HasTypeRef,
     /**
      * Find a {@link DomainObject} in the expression with the given the UUID.
      * @param uuid The UUID of the {@link DomainObject}.
-     * @return The found domain object or null if the object was not found.
+     * @return The found domain object or empty if the object was not found.
      */
-    public abstract DomainObject findDomainObject(final String uuid);
+    public abstract Optional<DomainObject> findDomainObject(final String uuid);
 
     // -----------------------
     // DMN properties

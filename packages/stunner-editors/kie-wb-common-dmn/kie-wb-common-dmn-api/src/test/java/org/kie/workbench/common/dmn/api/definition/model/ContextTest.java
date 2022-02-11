@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,6 +34,7 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -100,17 +102,18 @@ public class ContextTest {
         final ContextEntry entry3 = mock(ContextEntry.class);
         final DomainObject expectedDomainObject = mock(DomainObject.class);
 
-        when(entry1.findDomainObject(UUID)).thenReturn(null);
-        when(entry2.findDomainObject(UUID)).thenReturn(null);
-        when(entry3.findDomainObject(UUID)).thenReturn(expectedDomainObject);
+        when(entry1.findDomainObject(UUID)).thenReturn(Optional.empty());
+        when(entry2.findDomainObject(UUID)).thenReturn(Optional.empty());
+        when(entry3.findDomainObject(UUID)).thenReturn(Optional.of(expectedDomainObject));
 
         context.getContextEntry().add(entry1);
         context.getContextEntry().add(entry2);
         context.getContextEntry().add(entry3);
 
-        final DomainObject actual = context.findDomainObject(UUID);
+        final Optional<DomainObject> actual = context.findDomainObject(UUID);
 
-        assertEquals(expectedDomainObject, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(expectedDomainObject, actual.get());
         verify(entry1).findDomainObject(UUID);
         verify(entry2).findDomainObject(UUID);
         verify(entry3).findDomainObject(UUID);

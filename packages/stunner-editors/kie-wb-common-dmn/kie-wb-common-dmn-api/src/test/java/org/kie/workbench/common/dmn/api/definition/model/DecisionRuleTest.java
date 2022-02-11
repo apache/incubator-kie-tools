@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,9 +31,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -97,9 +98,10 @@ public class DecisionRuleTest {
         decisionRule.getInputEntry().add(inputEntry2);
         decisionRule.getInputEntry().add(inputEntry3);
 
-        final DomainObject actual = decisionRule.findDomainObject(UUID);
+        final Optional<DomainObject> actual = decisionRule.findDomainObject(UUID);
 
-        assertEquals(inputEntry2, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(inputEntry2, actual.get());
     }
 
     @Test
@@ -123,9 +125,10 @@ public class DecisionRuleTest {
         decisionRule.getOutputEntry().add(outputEntry2);
         decisionRule.getOutputEntry().add(outputEntry3);
 
-        final DomainObject actual = decisionRule.findDomainObject(UUID);
+        final Optional<DomainObject> actual = decisionRule.findDomainObject(UUID);
 
-        assertEquals(outputEntry2, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(outputEntry2, actual.get());
     }
 
     @Test
@@ -142,9 +145,9 @@ public class DecisionRuleTest {
         decisionRule.getOutputEntry().add(outputEntry1);
         decisionRule.getOutputEntry().add(outputEntry2);
 
-        final DomainObject actual = decisionRule.findDomainObject(UUID);
+        final Optional<DomainObject> actual = decisionRule.findDomainObject(UUID);
 
-        assertNull(actual);
+        assertFalse(actual.isPresent());
     }
 
     @Test
@@ -159,9 +162,10 @@ public class DecisionRuleTest {
 
         decisionRule.getInputEntry().addAll(asList(input1, input2, input3));
 
-        final DomainObject actual = decisionRule.findDomainObject(UUID);
+        final Optional<DomainObject> actual = decisionRule.findDomainObject(UUID);
 
-        assertEquals(input3, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(input3, actual.get());
     }
 
     @Test
@@ -180,9 +184,10 @@ public class DecisionRuleTest {
 
         when(output3.getDomainObjectUUID()).thenReturn(UUID);
 
-        final DomainObject actual = decisionRule.findDomainObject(UUID);
+        final Optional<DomainObject> actual = decisionRule.findDomainObject(UUID);
 
-        assertEquals(output3, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(output3, actual.get());
     }
 
     @Test
@@ -190,9 +195,9 @@ public class DecisionRuleTest {
 
         final DecisionRule decisionRule = new DecisionRule();
 
-        final DomainObject actual = decisionRule.findDomainObject(UUID);
+        final Optional<DomainObject> actual = decisionRule.findDomainObject(UUID);
 
-        assertNull(actual);
+        assertFalse(actual.isPresent());
     }
 }
 

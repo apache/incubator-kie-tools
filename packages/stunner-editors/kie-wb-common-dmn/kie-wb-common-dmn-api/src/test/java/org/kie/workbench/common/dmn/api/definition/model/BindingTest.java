@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +33,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -43,7 +45,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-
 public class BindingTest {
 
     private static final String ITEM_ID = "ITEM-ID";
@@ -139,9 +140,10 @@ public class BindingTest {
 
         binding.setParameter(parameter);
 
-        final DomainObject result = binding.findDomainObject(uuid);
+        final Optional<DomainObject> result = binding.findDomainObject(uuid);
 
-        assertEquals(parameter, result);
+        assertTrue(result.isPresent());
+        assertEquals(parameter, result.get());
     }
 
     @Test
@@ -150,7 +152,7 @@ public class BindingTest {
         final Binding binding = new Binding();
 
         final Expression expression = mock(Expression.class);
-        final DomainObject expressionDomainObject = mock(DomainObject.class);
+        final Optional<DomainObject> expressionDomainObject =  Optional.of(mock(DomainObject.class));
 
         final InformationItem parameter = new InformationItem(new Id(ANOTHER_UUID),
                                                               null,
@@ -162,7 +164,7 @@ public class BindingTest {
 
         when(expression.findDomainObject(UUID)).thenReturn(expressionDomainObject);
 
-        final DomainObject result = binding.findDomainObject(UUID);
+        final Optional<DomainObject> result = binding.findDomainObject(UUID);
 
         assertEquals(expressionDomainObject, result);
         verify(expression).findDomainObject(UUID);
@@ -180,8 +182,8 @@ public class BindingTest {
 
         binding.setParameter(parameter);
 
-        final DomainObject result = binding.findDomainObject(UUID);
+        final Optional<DomainObject> result = binding.findDomainObject(UUID);
 
-        assertNull(result);
+        assertFalse(result.isPresent());
     }
 }

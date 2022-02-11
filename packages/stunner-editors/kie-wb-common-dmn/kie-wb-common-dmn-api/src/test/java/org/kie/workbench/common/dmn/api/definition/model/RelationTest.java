@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,9 +33,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -121,9 +122,10 @@ public class RelationTest {
 
         relation.getColumn().addAll(Arrays.asList(informationItem1, informationItem2, informationItem3));
 
-        final DomainObject actual = relation.findDomainObject(UUID);
+        final Optional<DomainObject> actual = relation.findDomainObject(UUID);
 
-        assertEquals(informationItem3, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(informationItem3, actual.get());
     }
 
     @Test
@@ -135,13 +137,13 @@ public class RelationTest {
         final List list3 = mock(List.class);
         final DomainObject expectedDomainObject = mock(DomainObject.class);
 
-        when(list3.findDomainObject(UUID)).thenReturn(expectedDomainObject);
+        when(list3.findDomainObject(UUID)).thenReturn(Optional.of(expectedDomainObject));
 
         relation.getRow().addAll(Arrays.asList(list1, list2, list3));
 
-        final DomainObject actual = relation.findDomainObject(UUID);
-
-        assertEquals(expectedDomainObject, actual);
+        final Optional<DomainObject> actual = relation.findDomainObject(UUID);
+        assertTrue(actual.isPresent());
+        assertEquals(expectedDomainObject, actual.get());
         verify(list1).findDomainObject(UUID);
         verify(list2).findDomainObject(UUID);
         verify(list3).findDomainObject(UUID);
@@ -161,9 +163,9 @@ public class RelationTest {
         relation.getColumn().addAll(Arrays.asList(informationItem1, informationItem2, informationItem3));
         relation.getRow().addAll(Arrays.asList(list1, list2, list3));
 
-        final DomainObject actual = relation.findDomainObject(UUID);
+        final Optional<DomainObject> actual = relation.findDomainObject(UUID);
 
-        assertNull(actual);
+        assertFalse(actual.isPresent());
 
         verify(list1).findDomainObject(UUID);
         verify(list2).findDomainObject(UUID);

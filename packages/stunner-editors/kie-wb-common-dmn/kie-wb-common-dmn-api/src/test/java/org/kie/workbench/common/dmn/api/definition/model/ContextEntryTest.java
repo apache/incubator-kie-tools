@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,9 +32,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -105,9 +108,10 @@ public class ContextEntryTest {
 
         contextEntry.setVariable(variable);
 
-        final DomainObject result = contextEntry.findDomainObject(UUID);
+        final Optional<DomainObject> result = contextEntry.findDomainObject(UUID);
 
-        assertEquals(variable, result);
+        assertTrue(result.isPresent());
+        assertEquals(variable, result.get());
     }
 
     @Test
@@ -125,11 +129,12 @@ public class ContextEntryTest {
         contextEntry.setVariable(variable);
         contextEntry.setExpression(expression);
 
-        when(expression.findDomainObject(UUID)).thenReturn(expressionDomainObject);
+        when(expression.findDomainObject(UUID)).thenReturn(Optional.of(expressionDomainObject));
 
-        final DomainObject result = contextEntry.findDomainObject(UUID);
+        final Optional<DomainObject> result = contextEntry.findDomainObject(UUID);
 
-        assertEquals(result, expressionDomainObject);
+        assertTrue(result.isPresent());
+        assertEquals(result.get(), expressionDomainObject);
         verify(expression).findDomainObject(UUID);
     }
 
@@ -145,8 +150,8 @@ public class ContextEntryTest {
 
         contextEntry.setVariable(variable);
 
-        final DomainObject result = contextEntry.findDomainObject(UUID);
+        final Optional<DomainObject> result = contextEntry.findDomainObject(UUID);
 
-        assertNull(result);
+        assertFalse(result.isPresent());
     }
 }

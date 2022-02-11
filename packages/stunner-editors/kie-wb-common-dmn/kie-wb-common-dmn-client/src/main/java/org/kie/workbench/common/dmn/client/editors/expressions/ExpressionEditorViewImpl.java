@@ -113,7 +113,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperati
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
-import static java.util.Objects.isNull;
 import static java.util.stream.Stream.concat;
 import static org.kie.workbench.common.dmn.api.definition.model.ItemDefinition.ITEM_DEFINITION_COMPARATOR;
 import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.matches;
@@ -421,9 +420,9 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         } else if (businessKnowledgeModelMatches(uuid)) {
             return getBusinessKnowledgeModel();
         } else {
-            final DomainObject domainObject = hasExpression.getExpression().findDomainObject(uuid);
-            if (!isNull(domainObject)) {
-                return domainObject;
+            final Optional<DomainObject> domainObject = hasExpression.getExpression().findDomainObject(uuid);
+            if (domainObject.isPresent()) {
+                return domainObject.get();
             }
             return new NOPDomainObject();
         }

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,8 +41,8 @@ public class ExpressionTest {
             }
 
             @Override
-            public DomainObject findDomainObject(final String uuid) {
-                return null;
+            public Optional<DomainObject> findDomainObject(final String uuid) {
+                return Optional.empty();
             }
 
             @Override

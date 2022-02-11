@@ -17,7 +17,6 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -102,15 +101,15 @@ public class DecisionTable extends Expression {
     }
 
     @Override
-    public DomainObject findDomainObject(final String uuid) {
+    public Optional<DomainObject> findDomainObject(final String uuid) {
 
-        DomainObject domainObject = find(getInput(), uuid);
-        if (!Objects.isNull(domainObject)) {
+        Optional<DomainObject> domainObject = find(getInput(), uuid);
+        if (domainObject.isPresent()) {
             return domainObject;
         }
 
         domainObject = find(getOutput(), uuid);
-        if (!Objects.isNull(domainObject)) {
+        if (domainObject.isPresent()) {
             return domainObject;
         }
 

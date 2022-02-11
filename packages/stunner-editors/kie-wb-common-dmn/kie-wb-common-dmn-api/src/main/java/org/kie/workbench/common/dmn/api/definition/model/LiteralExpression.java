@@ -106,11 +106,11 @@ public class LiteralExpression extends Expression implements IsLiteralExpression
     }
 
     @Override
-    public DomainObject findDomainObject(final String uuid) {
+    public Optional<DomainObject> findDomainObject(final String uuid) {
         if (matches(this, uuid)) {
-            return this;
+            return Optional.of(this);
         }
-        return null;
+        return Optional.empty();
     }
 
     // -----------------------

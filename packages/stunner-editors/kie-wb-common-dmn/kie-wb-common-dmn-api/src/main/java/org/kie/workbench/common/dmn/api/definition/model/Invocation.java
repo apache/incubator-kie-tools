@@ -74,13 +74,14 @@ public class Invocation extends Expression implements HasExpression {
     }
 
     @Override
-    public DomainObject findDomainObject(final String uuid) {
+    public Optional<DomainObject> findDomainObject(final String uuid) {
 
-        DomainObject domainObject = null;
+        Optional<DomainObject> domainObject = Optional.empty();
         if (!Objects.isNull(getExpression())) {
             domainObject = getExpression().findDomainObject(uuid);
         }
-        if (!Objects.isNull(domainObject)) {
+
+        if (domainObject.isPresent()) {
             return domainObject;
         }
 

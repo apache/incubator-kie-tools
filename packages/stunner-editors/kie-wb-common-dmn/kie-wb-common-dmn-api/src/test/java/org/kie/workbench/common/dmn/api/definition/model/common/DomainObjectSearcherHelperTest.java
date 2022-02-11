@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.api.definition.model.common;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,21 +41,21 @@ public class DomainObjectSearcherHelperTest {
     @Test
     public void testFind() {
 
-
         final DomainObject domainObject = mock(DomainObject.class);
         final HasDomainObject hasDo1 = mock(HasDomainObject.class);
         final HasDomainObject hasDo2 = mock(HasDomainObject.class);
         final HasDomainObject hasDo3 = mock(HasDomainObject.class);
         final HasDomainObject hasDo4 = mock(HasDomainObject.class);
-        when(hasDo4.findDomainObject(UUID)).thenReturn(domainObject);
+        when(hasDo4.findDomainObject(UUID)).thenReturn(Optional.of(domainObject));
 
         final List<HasDomainObject> list = Arrays.asList(hasDo1,
                                                          hasDo2,
                                                          hasDo3,
                                                          hasDo4);
-        final DomainObject result = DomainObjectSearcherHelper.find(list, UUID);
+        final Optional<DomainObject> result = DomainObjectSearcherHelper.find(list, UUID);
 
-        assertEquals(domainObject, result);
+        assertTrue(result.isPresent());
+        assertEquals(domainObject, result.get());
 
         verify(hasDo1).findDomainObject(UUID);
         verify(hasDo2).findDomainObject(UUID);
@@ -76,9 +77,9 @@ public class DomainObjectSearcherHelperTest {
                                                       domainObject2,
                                                       domainObject3);
 
-        assertEquals(domainObject3, DomainObjectSearcherHelper.getDomainObject(list, uuid3));
-        assertEquals(domainObject2, DomainObjectSearcherHelper.getDomainObject(list, uuid2));
-        assertEquals(domainObject1, DomainObjectSearcherHelper.getDomainObject(list, uuid1));
+        assertEquals(domainObject3, DomainObjectSearcherHelper.getDomainObject(list, uuid3).get());
+        assertEquals(domainObject2, DomainObjectSearcherHelper.getDomainObject(list, uuid2).get());
+        assertEquals(domainObject1, DomainObjectSearcherHelper.getDomainObject(list, uuid1).get());
     }
 
     @Test

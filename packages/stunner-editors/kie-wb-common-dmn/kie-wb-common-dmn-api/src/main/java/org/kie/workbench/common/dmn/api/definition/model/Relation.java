@@ -16,7 +16,6 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -72,9 +71,9 @@ public class Relation extends Expression {
     }
 
     @Override
-    public DomainObject findDomainObject(final String uuid) {
-        final DomainObject domainObject = getDomainObject(getColumn(), uuid);
-        if (!Objects.isNull(domainObject)) {
+    public Optional<DomainObject> findDomainObject(final String uuid) {
+        final Optional<DomainObject> domainObject = getDomainObject(getColumn(), uuid);
+        if (domainObject.isPresent()) {
             return domainObject;
         }
         return find(getRow(), uuid);

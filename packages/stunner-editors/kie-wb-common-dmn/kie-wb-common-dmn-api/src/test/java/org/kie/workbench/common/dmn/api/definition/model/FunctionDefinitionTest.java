@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,9 +33,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -135,9 +137,10 @@ public class FunctionDefinitionTest {
 
         functionDefinition.getFormalParameter().addAll(asList(formalParameter1, formalParameter2, formalParameter3));
 
-        final DomainObject actual = functionDefinition.findDomainObject(UUID);
+        final Optional<DomainObject> actual = functionDefinition.findDomainObject(UUID);
 
-        assertEquals(formalParameter3, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(formalParameter3, actual.get());
     }
 
     @Test
@@ -150,14 +153,15 @@ public class FunctionDefinitionTest {
         final Expression expression = mock(Expression.class);
         final DomainObject expectedDomainObject = mock(DomainObject.class);
 
-        when(expression.findDomainObject(UUID)).thenReturn(expectedDomainObject);
+        when(expression.findDomainObject(UUID)).thenReturn(Optional.of(expectedDomainObject));
 
         functionDefinition.setExpression(expression);
         functionDefinition.getFormalParameter().addAll(asList(formalParameter1, formalParameter2, formalParameter3));
 
-        final DomainObject actual = functionDefinition.findDomainObject(UUID);
+        final Optional<DomainObject> actual = functionDefinition.findDomainObject(UUID);
 
-        assertEquals(expectedDomainObject, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(expectedDomainObject, actual.get());
         verify(expression).findDomainObject(UUID);
     }
 
@@ -166,8 +170,8 @@ public class FunctionDefinitionTest {
 
         final FunctionDefinition functionDefinition = new FunctionDefinition();
 
-        final DomainObject actual = functionDefinition.findDomainObject(UUID);
+        final Optional<DomainObject> actual = functionDefinition.findDomainObject(UUID);
 
-        assertNull(actual);
+        assertFalse(actual.isPresent());
     }
 }

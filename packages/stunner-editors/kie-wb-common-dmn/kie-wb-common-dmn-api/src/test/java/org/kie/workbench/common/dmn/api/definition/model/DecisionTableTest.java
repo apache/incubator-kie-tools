@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,9 +33,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator.SUM;
 import static org.mockito.Mockito.doReturn;
@@ -142,17 +143,18 @@ public class DecisionTableTest {
         final InputClause input2 = mock(InputClause.class);
         final InputClause input3 = mock(InputClause.class);
 
-        when(input3.findDomainObject(UUID)).thenReturn(input3);
+        when(input3.findDomainObject(UUID)).thenReturn(Optional.of(input3));
 
         decisionTable.getInput().addAll(asList(input1, input2, input3));
 
-        final DomainObject actual = decisionTable.findDomainObject(UUID);
+        final Optional<DomainObject> actual = decisionTable.findDomainObject(UUID);
 
         verify(input1).findDomainObject(UUID);
         verify(input2).findDomainObject(UUID);
         verify(input3).findDomainObject(UUID);
 
-        assertEquals(input3, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(input3, actual.get());
     }
 
     @Test
@@ -166,12 +168,12 @@ public class DecisionTableTest {
         final OutputClause output2 = mock(OutputClause.class);
         final OutputClause output3 = mock(OutputClause.class);
 
-        when(output3.findDomainObject(UUID)).thenReturn(output3);
+        when(output3.findDomainObject(UUID)).thenReturn(Optional.of(output3));
 
         decisionTable.getInput().addAll(asList(input1, input2, input3));
         decisionTable.getOutput().addAll(asList(output1, output2, output3));
 
-        final DomainObject actual = decisionTable.findDomainObject(UUID);
+        final Optional<DomainObject> actual = decisionTable.findDomainObject(UUID);
 
         verify(input1).findDomainObject(UUID);
         verify(input2).findDomainObject(UUID);
@@ -181,7 +183,8 @@ public class DecisionTableTest {
         verify(output2).findDomainObject(UUID);
         verify(output3).findDomainObject(UUID);
 
-        assertEquals(output3, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(output3, actual.get());
     }
 
     @Test
@@ -199,13 +202,13 @@ public class DecisionTableTest {
         final DecisionRule decisionRule3 = mock(DecisionRule.class);
         final DomainObject expectedDomainObject = mock(DomainObject.class);
 
-        when(decisionRule3.findDomainObject(UUID)).thenReturn(expectedDomainObject);
+        when(decisionRule3.findDomainObject(UUID)).thenReturn(Optional.of(expectedDomainObject));
 
         decisionTable.getInput().addAll(asList(input1, input2, input3));
         decisionTable.getOutput().addAll(asList(output1, output2, output3));
         decisionTable.getRule().addAll(asList(decisionRule1, decisionRule2, decisionRule3));
 
-        final DomainObject actual = decisionTable.findDomainObject(UUID);
+        final Optional<DomainObject> actual = decisionTable.findDomainObject(UUID);
 
         verify(input1).findDomainObject(UUID);
         verify(input2).findDomainObject(UUID);
@@ -219,7 +222,8 @@ public class DecisionTableTest {
         verify(decisionRule2).findDomainObject(UUID);
         verify(decisionRule3).findDomainObject(UUID);
 
-        assertEquals(expectedDomainObject, actual);
+        assertTrue(actual.isPresent());
+        assertEquals(expectedDomainObject, actual.get());
     }
 
     @Test
@@ -227,8 +231,8 @@ public class DecisionTableTest {
 
         final DecisionTable decisionTable = new DecisionTable();
 
-        final DomainObject actual = decisionTable.findDomainObject(UUID);
+        final Optional<DomainObject> actual = decisionTable.findDomainObject(UUID);
 
-        assertNull(actual);
+        assertFalse(actual.isPresent());
     }
 }

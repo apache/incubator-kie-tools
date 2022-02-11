@@ -18,11 +18,10 @@ package org.kie.workbench.common.dmn.api.definition.model.common;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.kie.workbench.common.dmn.api.definition.model.HasDomainObject;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
-
-import static java.util.Objects.isNull;
 
 /**
  * Utility class to find {@link DomainObject}.
@@ -41,16 +40,16 @@ public class DomainObjectSearcherHelper {
      * @param <D>  A class that implements {@link HasDomainObject}
      * @return The found {@link DomainObject} or null if none was found.
      */
-    public static <D extends HasDomainObject> DomainObject find(final List<D> list,
-                                                                final String uuid) {
+    public static <D extends HasDomainObject> Optional<DomainObject> find(final List<D> list,
+                                                                          final String uuid) {
         for (final D hasDomainObject : list) {
-            final DomainObject result = hasDomainObject.findDomainObject(uuid);
-            if (!isNull(result)) {
+            final Optional<DomainObject> result = hasDomainObject.findDomainObject(uuid);
+            if (result.isPresent()) {
                 return result;
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -59,17 +58,17 @@ public class DomainObjectSearcherHelper {
      * @param list The list.
      * @param uuid The given UUID.
      * @param <D>  A class that implements {@link DomainObject}
-     * @return The found {@link DomainObject} or null if none was found.
+     * @return The found {@link DomainObject} or empty if none was found.
      */
-    public static <D extends DomainObject> DomainObject getDomainObject(final List<D> list,
+    public static <D extends DomainObject> Optional<DomainObject> getDomainObject(final List<D> list,
                                                                         final String uuid) {
         for (final D domainObject : list) {
             if (Objects.equals(domainObject.getDomainObjectUUID(), uuid)) {
-                return domainObject;
+                return Optional.of(domainObject);
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**
