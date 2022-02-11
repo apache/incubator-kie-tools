@@ -66,7 +66,9 @@ export function useWorkspaceDmnRunnerInputs(
             if (canceled.get()) {
               return;
             }
-            dmnRunnerService?.delete(workspaceId);
+            lastInputRows.current = data.dmnRunnerData;
+            setInputRows(JSON.parse(data.dmnRunnerData));
+            setInputRowsUpdated(true);
           }
           if (data.type === "UPDATE") {
             if (canceled.get()) {
@@ -167,5 +169,5 @@ export type WorkspaceDmnRunnerEvents =
   | { type: "MOVE"; newRelativePath: string; oldRelativePath: string }
   | { type: "RENAME"; newRelativePath: string; oldRelativePath: string }
   | { type: "UPDATE"; dmnRunnerData: string }
-  | { type: "DELETE"; relativePath: string }
+  | { type: "DELETE"; dmnRunnerData: string }
   | { type: "ADD"; relativePath: string };

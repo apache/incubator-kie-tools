@@ -43,6 +43,8 @@ import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../../workspace";
+import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
+import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
@@ -164,6 +166,25 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               }}
             >
               as Table
+            </DropdownItem>,
+            <>
+              <Divider />
+              <DropdownItem
+                key={"delete-inputs"}
+                component={"button"}
+                icon={<DownloadIcon />}
+                // onClick={() => dmnRunnerDispatch.download()}
+              >
+                download inputs
+              </DropdownItem>
+            </>,
+            <DropdownItem
+              key={"delete-inputs"}
+              component={"button"}
+              icon={<UploadIcon />}
+              // onClick={() => dmnRunnerDispatch.load()}
+            >
+              load inputs
             </DropdownItem>,
             <>
               <Divider />

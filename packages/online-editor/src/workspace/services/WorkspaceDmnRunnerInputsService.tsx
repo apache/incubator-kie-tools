@@ -44,13 +44,26 @@ export class WorkspaceDmnRunnerInputsService {
       return;
     }
 
+    const emptyDmnRunnerData = JSON.stringify([{}]);
+
     await this.storageService.createOrOverwriteFile(
       await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
       new StorageFile({
-        getFileContents: () => Promise.resolve(encoder.encode(JSON.stringify([{}]))),
+        getFileContents: () => Promise.resolve(encoder.encode(emptyDmnRunnerData)),
         path: `/${workspaceFile.relativePath}`,
       })
     );
+
+    const broadcastChannel = new BroadcastChannel(
+      this.getUniqueFileIdentifier({
+        workspaceId: workspaceFile.workspaceId,
+        relativePath: workspaceFile.relativePath,
+      })
+    );
+    broadcastChannel.postMessage({
+      type: "DELETE",
+      dmnRunnerData: emptyDmnRunnerData,
+    } as WorkspaceDmnRunnerEvents);
   }
 
   public async createOrOverwriteDmnRunnerData(workspaceFile: WorkspaceFile, dmnRunnerData: string) {
@@ -73,11 +86,7 @@ export class WorkspaceDmnRunnerInputsService {
     } as WorkspaceFileEvents);
   }
 
-  public async updateDmnRunnerInputs(
-    workspaceFile: WorkspaceFile,
-    dmnRunnerData: string,
-    broadcastArgs: { broadcast: boolean }
-  ): Promise<void> {
+  public async updateDmnRunnerInputs(workspaceFile: WorkspaceFile, dmnRunnerData: string): Promise<void> {
     await this.storageService.updateFile(
       await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
       new StorageFile({
@@ -86,18 +95,16 @@ export class WorkspaceDmnRunnerInputsService {
       })
     );
 
-    if (broadcastArgs.broadcast) {
-      const broadcastChannel = new BroadcastChannel(
-        this.getUniqueFileIdentifier({
-          workspaceId: workspaceFile.workspaceId,
-          relativePath: workspaceFile.relativePath,
-        })
-      );
-      broadcastChannel.postMessage({
-        type: "UPDATE",
-        dmnRunnerData,
-      } as WorkspaceDmnRunnerEvents);
-    }
+    const broadcastChannel = new BroadcastChannel(
+      this.getUniqueFileIdentifier({
+        workspaceId: workspaceFile.workspaceId,
+        relativePath: workspaceFile.relativePath,
+      })
+    );
+    broadcastChannel.postMessage({
+      type: "UPDATE",
+      dmnRunnerData,
+    } as WorkspaceDmnRunnerEvents);
   }
 
   public async renameDmnRunnerData(workspaceFile: WorkspaceFile, newFileNameWithoutExtension: string) {
