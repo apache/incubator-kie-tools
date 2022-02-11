@@ -16,7 +16,7 @@
 
 import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
-import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { useMemo, useState } from "react";
 import { Page } from "@patternfly/react-core";
 import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
@@ -45,18 +45,9 @@ export function DmnPage() {
    * On this example, we're using a local envelope. To do this, it's necessary to copy the files from the @kie-tools/kie-bc-editors-unpacked on the webpack.config
    */
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(() => {
-    return {
-      targetOrigin: window.location.origin,
-      mapping: new Map([
-        [
-          "dmn",
-          {
-            resourcesPathPrefix: "../dmn-editor/dmn/",
-            envelopePath: "envelope/dmn-editor.html",
-          },
-        ],
-      ]),
-    };
+    return new EditorEnvelopeLocator(window.location.origin, [
+      new EnvelopeMapping("dmn", "**/*.dmn", "../dmn-editor/dmn/", "envelope/dmn-editor.html"),
+    ]);
   }, []);
 
   return (

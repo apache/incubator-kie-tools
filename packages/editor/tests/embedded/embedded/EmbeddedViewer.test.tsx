@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorEnvelopeLocator, ChannelType } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping, ChannelType } from "@kie-tools-core/editor/dist/api";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import * as React from "react";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
@@ -25,16 +25,15 @@ import { EnvelopeBusMessagePurpose } from "@kie-tools-core/envelope-bus/dist/api
 
 describe("EmbeddedViewer::ONLINE", () => {
   const file: EmbeddedEditorFile = {
-    fileName: "test",
+    fileName: "test.dmn",
     fileExtension: "dmn",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
   };
 
-  const editorEnvelopeLocator: EditorEnvelopeLocator = {
-    targetOrigin: "localhost:8888",
-    mapping: new Map([["dmn", { envelopePath: "envelope/envelope.html", resourcesPathPrefix: "envelope" }]]),
-  };
+  const editorEnvelopeLocator = new EditorEnvelopeLocator("localhost:8888", [
+    new EnvelopeMapping("dmn", "**/*.dmn", "envelope", "envelope/envelope.html"),
+  ]);
 
   const channelType = ChannelType.ONLINE;
   const envelopeServerId = "test-bus-id";

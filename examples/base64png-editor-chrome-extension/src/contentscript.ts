@@ -15,6 +15,7 @@
  */
 
 import { startExtension } from "@kie-tools-core/chrome-extension";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 
 const resourcesPathPrefix = process.env["WEBPACK_REPLACE__targetOrigin"];
 
@@ -31,16 +32,12 @@ startExtension({
   name: "Kogito Base64 PNG React Editor",
   extensionIconUrl: chrome.extension.getURL("/resources/kie_icon_rgb_fullcolor_default.svg"),
   githubAuthTokenCookieName: "github-oauth-token-base64-editors",
-  editorEnvelopeLocator: {
-    targetOrigin: window.location.origin,
-    mapping: new Map([
-      [
-        "base64png",
-        {
-          resourcesPathPrefix: `${resourcesPathPrefix}/dist/`,
-          envelopePath: `${resourcesPathPrefix}/dist/envelope/index.html`,
-        },
-      ],
-    ]),
-  },
+  editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
+    new EnvelopeMapping(
+      "base64png",
+      "**/*.base64png",
+      `${resourcesPathPrefix}/dist/`,
+      `${resourcesPathPrefix}/dist/envelope/index.html`
+    ),
+  ]),
 });

@@ -19,6 +19,7 @@
     "@kie-tools/i18n-common-dictionary": "0.0.0",
     "@kie-tools/kie-bc-editors": "0.0.0",
     "@kie-tools/pmml-editor": "0.0.0",
+    "@kie-tools/serverless-workflow-editor": "0.0.0",
     "@kie-tools/unitables": "0.0.0",
     "@kie-tools/kie-sandbox-fs": "0.0.0",
     "@octokit/rest": "^18.5.3",

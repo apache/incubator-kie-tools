@@ -36,15 +36,9 @@ import {
 import { ChromeExtensionI18n } from "@kie-tools-core/chrome-extension/dist/app/i18n";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
-  const txtEnvelopeMapping: EnvelopeMapping = {
-    envelopePath: "chrome-testing://https://my-url.com/",
-    resourcesPathPrefix: "envelope",
-  };
-
-  const editorEnvelopeLocator: EditorEnvelopeLocator = {
-    targetOrigin: "localhost:8888",
-    mapping: new Map([["txt", txtEnvelopeMapping]]),
-  };
+  const editorEnvelopeLocator = new EditorEnvelopeLocator("localhost:8888", [
+    new EnvelopeMapping("txt", "**/*.txt", "envelope", "chrome-testing://https://my-url.com/"),
+  ]);
 
   const usedCtx: GlobalContextType = {
     id: "test-extension123",

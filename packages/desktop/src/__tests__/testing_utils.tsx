@@ -16,19 +16,16 @@
 
 import * as React from "react";
 import { GlobalContext, GlobalContextType } from "../webview/common/GlobalContext";
-import { EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tools-core/i18n/dist/react-components";
 import { desktopI18nDefaults, desktopI18nDictionaries, DesktopI18nContext } from "../webview/common/i18n";
 import { DesktopI18n } from "../webview/common/i18n";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
-  const dmnEnvelopeMapping: EnvelopeMapping = {
-    envelopePath: "envelope/envelope.html",
-    resourcesPathPrefix: "",
-  };
-
   const usedCtx: GlobalContextType = {
-    editorEnvelopeLocator: { targetOrigin: window.location.origin, mapping: new Map([["dmn", dmnEnvelopeMapping]]) },
+    editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
+      new EnvelopeMapping("dmn", "**/*.dmn", "", "envelope/envelope.html"),
+    ]),
     file: { fileName: "test.dmn", fileExtension: "dmn", getFileContents: () => Promise.resolve(""), isReadOnly: false },
     ...ctx,
   };

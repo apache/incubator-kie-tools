@@ -20,6 +20,7 @@ import * as vscode from "vscode";
 import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 
 const encoder = new TextEncoder();
 
@@ -43,6 +44,7 @@ export async function generateSvg(args: {
   workspaceApi: WorkspaceApi;
   vsCodeI18n: I18n<VsCodeI18n>;
   displayNotification: boolean;
+  editorEnvelopeLocator: EditorEnvelopeLocator;
 }) {
   const i18n = args.vsCodeI18n.getCurrent();
 
@@ -66,25 +68,26 @@ export async function generateSvg(args: {
       })
     : undefined;
 
+  const fileExtensionWithDot = parsedPath.base.substring(parsedPath.base.indexOf("."));
+  const fileType = args.editorEnvelopeLocator.getEnvelopeMapping(parsedPath.base)?.type;
+
   const tokens: Record<SettingsValueInterpolationToken, string> = {
     "${workspaceFolder}": workspace?.uri.fsPath ?? parsedPath.dir,
     "${fileDirname}": parsedPath.dir,
-    "${fileExtname}": parsedPath.ext,
+    "${fileExtname}": fileExtensionWithDot,
     "${fileBasename}": parsedPath.base,
-    "${fileBasenameNoExtension}": parsedPath.name,
+    "${fileBasenameNoExtension}": parsedPath.base.substring(0, parsedPath.base.indexOf(".")),
   };
 
-  const fileExtensionNoDot = parsedPath.ext.replace(".", "");
-
-  const svgFilenameTemplateId = `kogito.${fileExtensionNoDot}.svgFilenameTemplate`;
-  const svgFilePathTemplateId = `kogito.${fileExtensionNoDot}.svgFilePath`;
+  const svgFilenameTemplateId = `kogito.${fileType}.svgFilenameTemplate`;
+  const svgFilePathTemplateId = `kogito.${fileType}.svgFilePath`;
 
   const svgFilenameTemplate = vscode.workspace.getConfiguration().get(svgFilenameTemplateId, "");
   const svgFilePathTemplate = vscode.workspace.getConfiguration().get(svgFilePathTemplateId, "");
 
   if (__path.parse(svgFilenameTemplate).dir) {
     vscode.window.showErrorMessage(
-      `The kogito.${fileExtensionNoDot}.svgFilenameTemplate setting should be a valid filename, without a path prefix. Current value: ${svgFilenameTemplate}`
+      `The kogito.${fileType}.svgFilenameTemplate setting should be a valid filename, without a path prefix. Current value: ${svgFilenameTemplate}`
     );
     return;
   }
