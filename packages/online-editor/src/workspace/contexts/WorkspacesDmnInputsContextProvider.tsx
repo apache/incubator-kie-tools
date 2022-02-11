@@ -15,13 +15,11 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { WorkspacesDmnInputsContext } from "./WorkspacesDmnInputsContext";
 import { WorkspaceDmnRunnerInputsService } from "../services/WorkspaceDmnRunnerInputsService";
-import { decoder, encoder, useWorkspaces, WorkspaceFile } from "./WorkspacesContext";
+import { decoder, useWorkspaces, WorkspaceFile } from "./WorkspacesContext";
 import { InputRow } from "../../editor/DmnRunner/DmnRunnerContext";
-import { WorkspaceDmnRunnerEvents } from "../hooks/WorkspaceDmnRunnerInput";
-import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 
 export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildren<{}>) {
   const workspaces = useWorkspaces();
@@ -76,6 +74,26 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
     [dmnRunnerService]
   );
 
+  const getInputRowsForDownload = useCallback(
+    async (workspaceFile: WorkspaceFile) => {
+      const data = await dmnRunnerService.getDmnRunnerData(workspaceFile);
+      return await data?.getFileContents().then((content) => new Blob([content], { type: "application/json" }));
+    },
+    [dmnRunnerService]
+  );
+
+  const uploadInputRows = useCallback(
+    async (workspaceFile: WorkspaceFile, file: File) => {
+      const content = await new Promise<string>((res) => {
+        const reader = new FileReader();
+        reader.onload = (event: ProgressEvent<FileReader>) => res(decoder.decode(event.target?.result as ArrayBuffer));
+        reader.readAsArrayBuffer(file);
+      });
+      await dmnRunnerService.createOrOverwriteDmnRunnerData(workspaceFile, content);
+    },
+    [dmnRunnerService]
+  );
+
   return (
     <WorkspacesDmnInputsContext.Provider
       value={{
@@ -84,6 +102,8 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
         getUniqueFileIdentifier,
         createInputRows,
         deletePersistedInputRows,
+        getInputRowsForDownload,
+        uploadInputRows,
       }}
     >
       {props.children}

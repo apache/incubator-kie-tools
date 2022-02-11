@@ -28,6 +28,8 @@ interface WorkspacesDmnInputsType {
     workspaceFile: WorkspaceFile,
     newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)
   ) => void;
+  getInputRowsForDownload: (workspaceFile: WorkspaceFile) => Promise<Blob | undefined>;
+  uploadInputRows: (workspaceFile: WorkspaceFile, file: File) => void;
 }
 
 export const WorkspacesDmnInputsContext = createContext<WorkspacesDmnInputsType>({} as any);
