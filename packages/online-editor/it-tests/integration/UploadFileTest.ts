@@ -168,6 +168,13 @@ describe("Upload file test", () => {
     cy.get("[data-ouia-component-id='set-content-error-alert']").should("be.visible");
   });
 
+  it("DMN Automatic Layout dialogue should appear when opening file without DMNDI", () => {
+    // upload dmn file from fixtures directory by drag and drop
+    cy.get("#upload-field").attachFile("testModelWithoutLayout.dmn", { subjectType: "drag-n-drop" });
+
+    cy.confirmAutomaticLayoutDialogue();
+  });
+
   it("should upload PMML file", () => {
     // upload pmml file from fixtures directory by drag and drop
     cy.get("#upload-field").attachFile("testScoreCard.pmml", { subjectType: "drag-n-drop" });

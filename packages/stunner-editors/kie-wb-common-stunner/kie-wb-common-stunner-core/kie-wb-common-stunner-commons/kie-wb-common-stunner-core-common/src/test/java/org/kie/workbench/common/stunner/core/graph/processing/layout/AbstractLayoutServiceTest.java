@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.layout;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -30,6 +34,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.when;
 
@@ -57,19 +62,17 @@ public class AbstractLayoutServiceTest {
     @Test
     public void getLayoutInformationThreshold() {
         when(n1.getUUID()).thenReturn(UUID.uuid());
-        when(n2.getUUID()).thenReturn(UUID.uuid());
-        final GraphNodeStoreImpl store = new GraphNodeStoreImpl();
-        store.add(n1);
 
-        doCallRealMethod().when(layoutService).getLayoutInformationThreshold(graph);
-        when(graph.nodes()).thenReturn(store);
+        final List<Node> nodes = new ArrayList<>(Collections.singletonList(n1));
 
-        double threshold = layoutService.getLayoutInformationThreshold(graph);
+        doCallRealMethod().when(layoutService).getLayoutInformationThreshold(any());
+
+        double threshold = layoutService.getLayoutInformationThreshold(nodes);
         assertEquals(0.25, threshold, 0.01);
 
-        store.add(n2);
+        nodes.add(n2);
 
-        threshold = layoutService.getLayoutInformationThreshold(graph);
+        threshold = layoutService.getLayoutInformationThreshold(nodes);
         assertEquals(0.50, threshold, 0.01);
     }
 
@@ -82,7 +85,7 @@ public class AbstractLayoutServiceTest {
         store.add(n1);
 
         doCallRealMethod().when(layoutService).hasLayoutInformation(graph);
-        doCallRealMethod().when(layoutService).getLayoutInformationThreshold(graph);
+        doCallRealMethod().when(layoutService).getLayoutInformationThreshold(any());
 
         when(graph.nodes()).thenReturn(store);
         assertFalse(layoutService.hasLayoutInformation(graph));
