@@ -21,6 +21,7 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
 import * as path from "path";
 import * as fs from "fs";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 
 let backendProxy: VsCodeBackendProxy;
 
@@ -46,18 +47,9 @@ export function activate(context: vscode.ExtensionContext) {
     viewType: "kieKogitoWebviewBase64PNGEditor",
     generateSvgCommandId: "extension.kogito.getPreviewSvg",
     silentlyGenerateSvgCommandId: "",
-    editorEnvelopeLocator: {
-      targetOrigin: "vscode",
-      mapping: new Map([
-        [
-          "base64png",
-          {
-            resourcesPathPrefix: `dist/`,
-            envelopePath: `dist/envelope/index.js`,
-          },
-        ],
-      ]),
-    },
+    editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
+      new EnvelopeMapping("base64png", "**/*.base64png", `dist/`, `dist/envelope/index.js`),
+    ]),
     backendProxy: backendProxy,
   });
 

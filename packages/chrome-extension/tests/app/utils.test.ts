@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { extractOpenFilePath } from "@kie-tools-core/chrome-extension/dist/app/utils";
+
 describe("runScriptOnPage", () => {
   test("test 1", async () => {
     expect(true).toBeTruthy();
@@ -59,5 +61,29 @@ describe("kogitoMenuContainer", () => {
 describe("extractOpenFileExtension", () => {
   test("test 1", async () => {
     expect(true).toBeTruthy();
+  });
+});
+
+describe("extractOpenFilePath", () => {
+  test("test file with simple format", async () => {
+    expect(extractOpenFilePath("/path/to/file/filename.format1")).toBe("/path/to/file/filename.format1");
+  });
+
+  test("test file with composed format", async () => {
+    expect(extractOpenFilePath("/path/to/file/filename.format1.format2")).toBe(
+      "/path/to/file/filename.format1.format2"
+    );
+  });
+
+  test("test path with simple format and other parameters", async () => {
+    expect(extractOpenFilePath("/path/to/file/filename.format1&otherParameters")).toBe(
+      "/path/to/file/filename.format1"
+    );
+  });
+
+  test("test path with simple format and other parameters", async () => {
+    expect(extractOpenFilePath("/path/to/file/filename.format1.format2&otherParameters")).toBe(
+      "/path/to/file/filename.format1.format2"
+    );
   });
 });

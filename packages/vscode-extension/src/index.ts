@@ -77,7 +77,8 @@ export async function startExtension(args: {
     editorStore,
     editorFactory,
     vsCodeI18n,
-    vsCodeNotificationsApi
+    vsCodeNotificationsApi,
+    args.editorEnvelopeLocator
   );
 
   args.context.subscriptions.push(
@@ -93,6 +94,7 @@ export async function startExtension(args: {
         workspaceApi: workspaceApi,
         vsCodeI18n: vsCodeI18n,
         displayNotification: true,
+        editorEnvelopeLocator: args.editorEnvelopeLocator,
       })
     )
   );
@@ -104,6 +106,7 @@ export async function startExtension(args: {
         workspaceApi: workspaceApi,
         vsCodeI18n: vsCodeI18n,
         displayNotification: false,
+        editorEnvelopeLocator: args.editorEnvelopeLocator,
       })
     )
   );
