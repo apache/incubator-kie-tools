@@ -400,8 +400,6 @@ export const Table: React.FunctionComponent<TableProps> = ({
           onColumnsUpdate={onColumnsUpdateCallback}
           headerVisibility={headerVisibility}
           tdProps={tdProps}
-          showTableHandler={showTableHandler}
-          setShowTableHandler={setShowTableHandler}
         >
           {children}
         </TableBody>

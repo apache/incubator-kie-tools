@@ -28,8 +28,10 @@ import {
   focusInsideCell,
   getParentCell,
   focusParentCell,
+  focusPrevDataCell,
+  focusNextDataCell,
 } from "./common";
-import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
+import { useBoxedExpression } from "../../context";
 
 export interface TableBodyProps {
   /** Table instance */
@@ -46,10 +48,6 @@ export interface TableBodyProps {
   onColumnsUpdate?: (columns: Column[]) => void;
   /** Td props */
   tdProps: (cellIndex: number, rowIndex: number) => any;
-  /** Show/hide table handler */
-  showTableHandler: boolean;
-  /** Function to programmatically show/hide table handler */
-  setShowTableHandler: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const TableBody: React.FunctionComponent<TableBodyProps> = ({
@@ -60,7 +58,6 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   getColumnKey,
   onColumnsUpdate,
   tdProps,
-  showTableHandler,
 }) => {
   const headerVisibilityMemo = useMemo(() => headerVisibility ?? TableHeaderVisibility.Full, [headerVisibility]);
 
@@ -85,18 +82,15 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           return;
         }
 
-        /* FIXME: View mode: Tab/shift+tab should move focus one cell to the right/left. At the last cell on a line tab should advance to the first row on the next line.*/
-        /* FIXME: Edit mode: Tab/shift+tab should end editing and advance the focus to the next cell to the right. Currently it ends editing but you lose the focus rectangle and have to hit tab again to get it back. You can’t type “AA” tab “BB” to put AA in cell 1 and BB in cell 2, especially if there is already text in the cells.*/
-
         const isFiredFromThis = e.currentTarget === e.target;
 
         if (key === "Tab") {
           e.preventDefault();
           if (e.shiftKey) {
-            focusPrevCell(e.currentTarget);
+            focusPrevDataCell(e.currentTarget, rowIndex);
           } else {
             /* FIXME: When edit the last cell of a row, press tab -> focus is lost */
-            focusNextCell(e.currentTarget);
+            focusNextDataCell(e.currentTarget, rowIndex);
           }
         } else if (key === "ArrowLeft") {
           focusPrevCell(e.currentTarget);

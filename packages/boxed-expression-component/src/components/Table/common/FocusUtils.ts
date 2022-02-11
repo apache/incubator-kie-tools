@@ -99,6 +99,29 @@ export const focusNextCell = (currentEl: HTMLElement | null): void => {
 };
 
 /**
+ * Focus Next Data Cell of a react-table. Works from any element inside a cell or a cell itself.
+ *
+ * @param currentEl the crrent element
+ * @param rowIndex the current row index
+ * @returns
+ */
+export const focusNextDataCell = (currentEl: HTMLElement | null, rowIndex: number): void => {
+  const currentCell = getParentCell(currentEl);
+
+  if (!currentCell) {
+    return;
+  }
+
+  const nextCell = <HTMLTableCellElement>currentCell.nextElementSibling;
+
+  if (!nextCell) {
+    focusLowerCell(currentCell, rowIndex, 1);
+  } else {
+    cellFocus(nextCell);
+  }
+};
+
+/**
  * Focus Prev Cell of a react-table. Works from any element inside a cell or a cell itself.
  *
  * @param currentEl the crrent element
@@ -109,13 +132,37 @@ export const focusPrevCell = (currentEl: HTMLElement | null): void => {
 };
 
 /**
+ * Focus Prev Cell of a react-table. Works from any element inside a cell or a cell itself.
+ *
+ * @param currentEl the crrent element
+ * @param rowIndex the current row index
+ * @returns
+ */
+export const focusPrevDataCell = (currentEl: HTMLElement | null, rowIndex: number): void => {
+  const currentCell = getParentCell(currentEl);
+
+  if (!currentCell) {
+    return;
+  }
+
+  const lastCellIndex = (<HTMLTableRowElement>currentCell.parentElement).cells.length - 1;
+  const cellIndex = currentCell.cellIndex;
+
+  if (cellIndex <= 1) {
+    focusUpperCell(currentCell, rowIndex, lastCellIndex);
+  } else {
+    focusPrevCell(currentCell);
+  }
+};
+
+/**
  * Focus Upper Cell of a react-table. Works from any element inside a cell or a cell itself.
  *
  * @param currentEl the crrent element
  * @param rowIndex the current row index
  * @returns
  */
-export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number): void => {
+export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number, cellIndex?: number): void => {
   const currentCell = <HTMLTableCellElement>getParentCell(currentEl);
 
   if (!currentCell) {
@@ -124,8 +171,9 @@ export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number):
 
   const currentBody = currentCell.closest("tbody");
   const gotoRow = currentBody?.rows[rowIndex - 1];
+  const gotoCellIndex = cellIndex === undefined ? currentCell.cellIndex : cellIndex;
 
-  cellFocus(<HTMLTableCellElement>gotoRow?.cells[currentCell.cellIndex]);
+  cellFocus(<HTMLTableCellElement>gotoRow?.cells[gotoCellIndex]);
 };
 
 /**
@@ -133,9 +181,10 @@ export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number):
  *
  * @param currentEl the crrent element
  * @param rowIndex the current row index
+ * @param cellIndex the cell index to focus
  * @returns
  */
-export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number): void => {
+export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number, cellIndex?: number): void => {
   const currentCell = <HTMLTableCellElement>getParentCell(currentEl);
 
   if (!currentCell) {
@@ -143,8 +192,9 @@ export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number):
   }
   const currentBody = currentCell.closest("tbody");
   const gotoRow = currentBody?.rows[rowIndex + 1];
+  const gotoCellIndex = cellIndex === undefined ? currentCell.cellIndex : cellIndex;
 
-  cellFocus(<HTMLTableCellElement>gotoRow?.cells[currentCell.cellIndex]);
+  cellFocus(<HTMLTableCellElement>gotoRow?.cells[gotoCellIndex]);
 };
 
 /**

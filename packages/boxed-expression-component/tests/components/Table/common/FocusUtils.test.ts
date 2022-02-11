@@ -25,6 +25,8 @@ import {
   cellFocus,
   focusCurrentCell,
   focusTextArea,
+  focusNextDataCell,
+  focusPrevDataCell,
 } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
 
 /**
@@ -138,10 +140,50 @@ describe("FocusUtils tests", () => {
     });
 
     it("should not change the focus", () => {
-      const element = mockTbody.rows[0].cells[5];
+      const element = mockTbody.rows[2].cells[5];
       const mockElementFocus = jest.spyOn(element, "focus");
 
       focusNextCell(element);
+      focusNextCell(element);
+      expect(mockElementFocus).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("focusNextDataCell tests", () => {
+    it("should fail", () => {
+      // @ts-ignore
+      expect(() => focusNextDataCell()).not.toThrowError();
+      expect(() => focusNextDataCell(null, 0)).not.toThrowError();
+    });
+
+    it("should focus the next cell", () => {
+      const element = mockTbody.rows[0].cells[1];
+      const elementToBeFocused = mockTbody.rows[0].cells[2];
+      const mockElementFocus = jest.spyOn(element, "focus");
+      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
+
+      focusNextDataCell(element, 0);
+      expect(mockElementFocus).not.toHaveBeenCalled();
+      expect(mockElementToBeFocused).toHaveBeenCalled();
+    });
+
+    it("should focus the first cell of the next line", () => {
+      const element = mockTbody.rows[0].cells[5];
+      const elementToBeFocused = mockTbody.rows[1].cells[1];
+      const mockElementFocus = jest.spyOn(element, "focus");
+      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
+
+      focusNextDataCell(element, 0);
+      expect(mockElementFocus).not.toHaveBeenCalled();
+      expect(mockElementToBeFocused).toHaveBeenCalled();
+    });
+
+    it("should not change the focus", () => {
+      const element = mockTbody.rows[2].cells[5];
+      const mockElementFocus = jest.spyOn(element, "focus");
+
+      focusNextDataCell(element, 2);
+      focusNextDataCell(element, 2);
       expect(mockElementFocus).not.toHaveBeenCalled();
     });
   });
@@ -169,6 +211,52 @@ describe("FocusUtils tests", () => {
       const mockElementFocus = jest.spyOn(element, "focus");
 
       focusPrevCell(element);
+      expect(mockElementFocus).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("focusPrevDataCell tests", () => {
+    it("should fail", () => {
+      // @ts-ignore
+      expect(() => focusPrevDataCell()).not.toThrowError();
+      expect(() => focusPrevDataCell(null, 0)).not.toThrowError();
+    });
+
+    it("should focus the previous cell", () => {
+      const element = mockTbody.rows[0].cells[2];
+      const elementToBeFocused = mockTbody.rows[0].cells[1];
+      const mockElementFocus = jest.spyOn(element, "focus");
+      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
+
+      focusPrevDataCell(element, 0);
+      expect(mockElementFocus).not.toHaveBeenCalled();
+      expect(mockElementToBeFocused).toHaveBeenCalled();
+    });
+
+    it("should focus the last cell of the previous line", () => {
+      const element = mockTbody.rows[1].cells[1];
+      const elementToBeFocused = mockTbody.rows[0].cells[5];
+      const mockElementFocus = jest.spyOn(element, "focus");
+      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
+
+      focusPrevDataCell(element, 1);
+      expect(mockElementFocus).not.toHaveBeenCalled();
+      expect(mockElementToBeFocused).toHaveBeenCalled();
+    });
+
+    it("should not change the focus", () => {
+      const element = mockTbody.rows[0].cells[1];
+      const mockElementFocus = jest.spyOn(element, "focus");
+
+      focusPrevDataCell(element, 0);
+      expect(mockElementFocus).not.toHaveBeenCalled();
+    });
+
+    it("should not change the focus from the first counter-cell", () => {
+      const element = mockTbody.rows[0].cells[0];
+      const mockElementFocus = jest.spyOn(element, "focus");
+
+      focusPrevDataCell(element, 0);
       expect(mockElementFocus).not.toHaveBeenCalled();
     });
   });

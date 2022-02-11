@@ -58,3 +58,12 @@ Cypress.Commands.add("ouiaType", { prevSubject: "optional" }, (subject, type: st
     el = cy.get(typeSelector, options);
   }
 });
+
+Cypress.Commands.add("typeTab", () => {
+  cy.focused().trigger("keydown", {
+    keyCode: 9,
+    which: 9,
+    shiftKey: false,
+    ctrlKey: false,
+  });
+});
