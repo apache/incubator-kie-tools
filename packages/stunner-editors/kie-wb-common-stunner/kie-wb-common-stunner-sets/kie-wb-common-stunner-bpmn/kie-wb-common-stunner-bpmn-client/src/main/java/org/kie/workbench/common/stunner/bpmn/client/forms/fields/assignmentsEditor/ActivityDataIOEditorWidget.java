@@ -122,6 +122,7 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
         newAssignment.setVariableType(variableType);
         as.add(newAssignment);
         AssignmentListItemWidgetView widget = view.getAssignmentWidget(view.getAssignmentsCount() - 1);
+
         widget.setDataTypes(dataTypeListBoxValues);
         widget.setProcessVariables(processVarListBoxValues);
         widget.setShowExpressions(getShowExpression());

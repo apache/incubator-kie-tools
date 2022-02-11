@@ -63,4 +63,12 @@ export class DmnEditorImpl extends GwtEditorWrapper implements DmnEditor {
   public getDimensions(uuid: string) {
     return window.canvas.getDimensions(uuid);
   }
+
+  public applyState(uuid: string, state: string) {
+    window.canvas.applyState(uuid, state);
+  }
+
+  public centerNode(uuid: string) {
+    window.canvas.centerNode(uuid);
+  }
 }

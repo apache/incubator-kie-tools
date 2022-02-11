@@ -45,6 +45,7 @@ import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourB
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
+import org.kie.workbench.common.stunner.client.lienzo.util.StunnerStateApplier;
 import org.kie.workbench.common.stunner.client.widgets.editor.EditorSessionCommands;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
@@ -55,6 +56,7 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.util.WindowJSType;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
@@ -153,7 +155,12 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
         if (canvas != null) {
             LienzoPanel panel = (LienzoPanel) canvas.getView().getPanel();
             LienzoBoundsPanel lienzoPanel = panel.getView();
-            JsCanvas jsCanvas = new JsCanvas(lienzoPanel, lienzoPanel.getLayer());
+            JsCanvas jsCanvas = new JsCanvas(lienzoPanel, lienzoPanel.getLayer(), new StunnerStateApplier() {
+                @Override
+                public Shape getShape(String uuid) {
+                    return stunnerEditor.getCanvasHandler().getCanvas().getShape(uuid);
+                }
+            });
             setupJsCanvasTypeNative(jsCanvas);
         }
     }

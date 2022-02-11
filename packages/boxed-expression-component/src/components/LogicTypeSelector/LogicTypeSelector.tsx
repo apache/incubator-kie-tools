@@ -156,6 +156,9 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
       const selectedLogicType = itemId as LogicType;
       onLogicTypeUpdating(selectedLogicType);
       setIsContextMenuOpen(false);
+      if (!isHeadless) {
+        boxedExpression.boxedExpressionEditorGWTService?.onLogicTypeSelect(selectedLogicType);
+      }
     },
     [boxedExpression.boxedExpressionEditorGWTService, onLogicTypeUpdating, setIsContextMenuOpen]
   );

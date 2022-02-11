@@ -39,4 +39,5 @@ export interface BoxedExpressionEditorGWTService {
   broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) => void;
   notifyUserAction: () => void;
   openManageDataType: () => void;
+  onLogicTypeSelect: (selectedLogicType: string) => void;
 }

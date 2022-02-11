@@ -72,7 +72,9 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.P
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.BoxedExpressionService;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.ExpressionPropsFiller;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
@@ -487,6 +489,13 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         dataTypePageActiveEvent.fire(new DataTypePageTabActiveEvent());
     }
 
+    public void onLogicTypeSelect(final String selectedLogicType) {
+        expressionEditorDefinitionsSupplier
+                .get()
+                .getExpressionEditorDefinition(ExpressionType.getTypeByText(selectedLogicType))
+                .ifPresent(this::enrichModelExpression);
+    }
+
     void executeExpressionCommand(final FillExpressionCommand expressionCommand) {
         expressionCommand.execute();
         updateCanvasNodeNameCommand.execute(getNodeUUID(), getHasName().orElse(null));
@@ -571,6 +580,17 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                     .toArray(EntryInfo[]::new);
             return new ModelsFromDocument(modelName, parametersFromModel);
         };
+    }
+
+    private void enrichModelExpression(final ExpressionEditorDefinition<Expression> expressionExpressionEditorDefinition) {
+        final Optional<Expression> modelExpression = expressionExpressionEditorDefinition.getModelClass();
+        expressionExpressionEditorDefinition.enrich(Optional.of(getNodeUUID()), hasExpression, modelExpression);
+        modelExpression.ifPresent(this::reloadNewBoxedExpressionEditorWithUpdatedModel);
+    }
+
+    private void reloadNewBoxedExpressionEditorWithUpdatedModel(final Expression expression) {
+        getHasExpression().setExpression(expression);
+        loadNewBoxedExpressionEditor();
     }
 
     @EventHandler("returnToLink")

@@ -143,7 +143,7 @@ public class AssignmentListItemWidgetTest {
         widget.init();
         verify(widget,
                times(1)).init();
-        verify(customDataType, times(1)).setRegExp(eq(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_REGEXP), anyString(), anyString());
+        verify(customDataType, times(1)).setRegExp(eq(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_GT_LT_REGEXP), anyString(), anyString(), anyString());
         verify(dataTypeComboBox,
                times(1)).init(widget,
                               false,
