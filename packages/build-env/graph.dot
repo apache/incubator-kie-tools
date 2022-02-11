@@ -57,6 +57,7 @@ digraph G {
   "@kie-tools/online-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/workspace" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/run-script-if" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -68,6 +69,7 @@ digraph G {
   "vscode-extension-pack-kogito-kie-editors" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "vscode-extension-pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-red-hat-business-automation-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "vscode-extension-serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-examples/base64png-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/base64png-editor-chrome-extension" -> "@kie-tools-core/chrome-extension" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/base64png-editor-chrome-extension" -> "@kie-tools-examples/base64png-editor" [ style = "solid", color = "orange" ];
@@ -145,6 +147,7 @@ digraph G {
   "@kie-tools-core/notifications" -> "@kie-tools-core/workspace" [ style = "solid", color = "purple" ];
   "@kie-tools/online-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/pmml-editor" [ style = "solid", color = "black" ];
+  "@kie-tools/online-editor" -> "@kie-tools/serverless-workflow-editor" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/unitables" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/kie-sandbox-fs" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/extended-services" [ style = "dashed", color = "black" ];
@@ -157,6 +160,7 @@ digraph G {
   "@kie-tools/pmml-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/pmml-editor-marshaller" -> "@kie-tools/build-env" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/run-script-if" -> "@kie-tools/build-env" [ style = "dashed", color = "purple" ];
+  "@kie-tools/serverless-workflow-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/stunner-editors" -> "@kie-tools/stunner-editors-dmn-loader" [ style = "solid", color = "black" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/import-java-classes-component" [ style = "solid", color = "blue" ];
@@ -186,6 +190,8 @@ digraph G {
   "vscode-extension-pmml-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "vscode-extension-pmml-editor" -> "@kie-tools/pmml-editor" [ style = "solid", color = "blue" ];
   "vscode-extension-red-hat-business-automation-bundle" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "vscode-extension-serverless-workflow-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
+  "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-editor" [ style = "solid", color = "blue" ];
   "@kie-tools-core/vscode-java-code-completion" -> "@kie-tools/build-env" [ style = "dashed", color = "purple" ];
   "@kie-tools/vscode-java-code-completion-extension-plugin" -> "@kie-tools/build-env" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/webpack-base" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];

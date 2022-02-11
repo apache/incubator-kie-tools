@@ -3,10 +3,19 @@
   "version": "0.0.0",
   "license": "Apache-2.0",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "examples/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "examples/*"
+    ],
+    "nohoist": [
+      "@kogito-tooling/serverless-workflow-editor",
+      "@kogito-tooling/serverless-workflow-editor/mermaid",
+      "@kogito-tooling/serverless-workflow-editor/mermaid/**",
+      "@kogito-tooling/serverless-workflow-editor/@types/mermaid",
+      "@kogito-tooling/serverless-workflow-editor/@types/mermaid/**"
+    ]
+  },
   "scripts": {
     "bootstrap": "yarn",
     "env:print": "build-env --print-env",
@@ -23,6 +32,8 @@
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
+    "@kie/npm-treatment-tool": "^1.1.1",
+    "@severlessworkflow/sdk-typescript": "^1.0.0",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^11.2.6",
@@ -45,6 +56,7 @@
     "@types/semver": "^7.3.6",
     "@types/simpl-schema": "^1.12.0",
     "@types/sinon": "^10.0.2",
+    "@types/svg-pan-zoom": "^3.4.0",
     "@types/underscore": "^1.11.2",
     "@types/vscode": "^1.56.0",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
@@ -113,6 +125,7 @@
     "start-server-and-test": "^1.12.1",
     "stream": "^0.0.2",
     "style-loader": "^2.0.0",
+    "svg-pan-zoom": "^3.6.1",
     "symlink-dir": "^5.0.1",
     "ts-jest": "^26.5.6",
     "ts-loader": "^9.1.2",

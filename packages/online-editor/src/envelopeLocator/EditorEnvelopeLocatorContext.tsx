@@ -22,25 +22,14 @@ export type SupportedFileExtensions = "bpmn" | "bpmn2" | "BPMN" | "BPMN2" | "dmn
 
 export const EditorEnvelopeLocatorContext = React.createContext<EditorEnvelopeLocator>({} as any);
 
-const bpmnEnvelope = { resourcesPathPrefix: "gwt-editors/bpmn", envelopePath: "bpmn-envelope.html" };
-const dmnEnvelope = { resourcesPathPrefix: "gwt-editors/dmn", envelopePath: "dmn-envelope.html" };
-const pmmlEnvelope = { resourcesPathPrefix: "", envelopePath: "pmml-envelope.html" };
-
 export function EditorEnvelopeLocatorContextProvider(props: { children: React.ReactNode }) {
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
-    () => ({
-      targetOrigin: window.location.origin,
-      mapping: new Map<SupportedFileExtensions, EnvelopeMapping>([
-        ["bpmn", bpmnEnvelope],
-        ["bpmn2", bpmnEnvelope],
-        ["BPMN", bpmnEnvelope],
-        ["BPMN2", bpmnEnvelope],
-        ["dmn", dmnEnvelope],
-        ["DMN", dmnEnvelope],
-        ["pmml", pmmlEnvelope],
-        ["PMML", pmmlEnvelope],
+    () =>
+      new EditorEnvelopeLocator(window.location.origin, [
+        new EnvelopeMapping("bpmn", "**/*.bpmn?(2)", "gwt-editors/bpmn", "bpmn-envelope.html"),
+        new EnvelopeMapping("dmn", "**/*.dmn", "gwt-editors/dmn", "dmn-envelope.html"),
+        new EnvelopeMapping("pmml", "**/*.pmml", "", "pmml-envelope.html"),
       ]),
-    }),
     []
   );
 

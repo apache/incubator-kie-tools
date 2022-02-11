@@ -229,8 +229,8 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return ifAllowed({ type: UrlType.GIT, url });
     }
 
-    if (![...editorEnvelopeLocator.mapping.keys()].includes(extension)) {
-      return { type: UrlType.INVALID, error: `Unsupported extension '${extension}'`, url: urlString };
+    if (!editorEnvelopeLocator.hasMappingFor(url.pathname)) {
+      return { type: UrlType.INVALID, error: `Unsupported extension for '${url.pathname}'`, url: urlString };
     }
 
     return ifAllowed({ type: UrlType.FILE, url });

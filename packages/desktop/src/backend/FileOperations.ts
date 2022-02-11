@@ -151,10 +151,11 @@ export class FileOperations {
   public openSample(filePath: string) {
     Files.read(FS.newFile(filePath))
       .then((content) => {
+        const fileExtension = extractFileExtension(filePath);
         this.window.webContents.send("openFile", {
           file: {
-            filePath: SAMPLE,
-            fileType: extractFileExtension(filePath),
+            filePath: SAMPLE + "." + fileExtension,
+            fileType: fileExtension,
             fileContent: content,
           },
         });
