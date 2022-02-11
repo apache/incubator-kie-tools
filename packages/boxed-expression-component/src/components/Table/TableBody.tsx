@@ -84,6 +84,8 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
 
         const isFiredFromThis = e.currentTarget === e.target;
 
+        /* FIXME: select a td, then press shift -> focus is lost */
+
         if (key === "Tab") {
           e.preventDefault();
           if (e.shiftKey) {
