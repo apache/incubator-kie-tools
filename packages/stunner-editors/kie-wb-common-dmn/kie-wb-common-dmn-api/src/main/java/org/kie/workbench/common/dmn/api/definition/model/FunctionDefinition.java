@@ -28,8 +28,10 @@ import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.getDomainObject;
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getFlatHasTypeRefs;
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getNotNullHasTypeRefs;
 
@@ -72,6 +74,21 @@ public class FunctionDefinition extends Expression implements HasExpression {
         clonedFunctionDefinition.kind = kind;
         clonedFunctionDefinition.getAdditionalAttributes().putAll(cloneAdditionalAttributes());
         return clonedFunctionDefinition;
+    }
+
+    @Override
+    public Optional<DomainObject> findDomainObject(final String uuid) {
+
+        final Optional<DomainObject> domainObject = getDomainObject(getFormalParameter(), uuid);
+        if (domainObject.isPresent()) {
+            return domainObject;
+        }
+
+        if (!Objects.isNull(getExpression())) {
+            return getExpression().findDomainObject(uuid);
+        }
+
+        return Optional.empty();
     }
 
     private List<InformationItem> cloneFormalParameterList() {
