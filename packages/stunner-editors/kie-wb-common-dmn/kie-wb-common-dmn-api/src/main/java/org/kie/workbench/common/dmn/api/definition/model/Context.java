@@ -22,9 +22,11 @@ import java.util.stream.Collectors;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getFlatHasTypeRefs;
@@ -60,6 +62,11 @@ public class Context extends Expression {
                 .map(contextEntryList -> contextEntryList.stream().map(ContextEntry::copy).collect(Collectors.toList()))
                 .orElse(null);
         return clonedContext;
+    }
+
+    @Override
+    public Optional<DomainObject> findDomainObject(final String uuid) {
+        return DomainObjectSearcherHelper.find(getContextEntry(), uuid);
     }
 
     public List<ContextEntry> getContextEntry() {

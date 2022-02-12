@@ -61,6 +61,9 @@ public class JSFunctions {
         $wnd.GWTEditor.prototype.redo = function () {
             return this.instance.@org.uberfire.client.mvp.EditorActivity::redo()();
         };
+        $wnd.GWTEditor.prototype.searchDomainObject = function (uuid) {
+            return this.instance.@org.uberfire.client.mvp.EditorActivity::searchDomainObject(Ljava/lang/String;)(uuid);
+        };
 
     }-*/;
 

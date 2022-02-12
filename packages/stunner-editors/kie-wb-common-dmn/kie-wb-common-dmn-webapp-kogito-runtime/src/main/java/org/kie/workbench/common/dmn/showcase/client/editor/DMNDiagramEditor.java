@@ -220,6 +220,12 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
         });
     }
 
+    public Promise<Void> searchDomainObject(final String uuid) {
+        return promises.create((resolve, reject) -> {
+            throw new UnsupportedOperationException("This diagram does not support search for domain objects");
+        });
+    }
+
     private DMNDiagramEditor.View getView() {
         return (DMNDiagramEditor.View) getBaseEditorView();
     }

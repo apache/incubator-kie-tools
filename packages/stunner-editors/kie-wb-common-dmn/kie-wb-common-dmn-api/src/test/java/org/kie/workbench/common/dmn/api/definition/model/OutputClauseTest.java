@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,12 +27,15 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -46,6 +50,7 @@ public class OutputClauseTest {
     private static final String TEXT = "TEXT";
     private static final String CLAUSE_ID = "CLAUSE_ID";
     private static final String UNARY_ID = "UNARY_ID";
+    private static final String UUID = "uuid";
     private OutputClause outputClause;
 
     @Before
@@ -92,6 +97,51 @@ public class OutputClauseTest {
         assertNotEquals(UNARY_ID, target.getOutputValues().getId().getValue());
         assertEquals(TEXT, target.getOutputValues().getText().getValue());
         assertEquals(ConstraintType.ENUMERATION, target.getOutputValues().getConstraintType());
+    }
+
+    @Test
+    public void testFindDomainObject_WhenOutputClauseMatches() {
+
+        final OutputClause outputClause = new OutputClause(new Id(UUID),
+                                                           null,
+                                                           null,
+                                                           null,
+                                                           null,
+                                                           null);
+
+        final Optional<DomainObject> foundDomainObject = outputClause.findDomainObject(UUID);
+
+        assertTrue(foundDomainObject.isPresent());
+        assertEquals(outputClause, foundDomainObject.get());
+    }
+
+    @Test
+    public void testFindDomainObject_WhenDefaultOutputEntryMatches() {
+
+        final OutputClause outputClause = new OutputClause();
+
+        final OutputClauseLiteralExpression literalExpression = new OutputClauseLiteralExpression(new Id(UUID),
+                                                                                                  null,
+                                                                                                  null,
+                                                                                                  null,
+                                                                                                  null);
+
+        outputClause.setDefaultOutputEntry(literalExpression);
+
+        final Optional<DomainObject> foundDomainObject = outputClause.findDomainObject(UUID);
+
+        assertTrue(foundDomainObject.isPresent());
+        assertEquals(literalExpression, foundDomainObject.get());
+    }
+
+    @Test
+    public void testFindDomainObject_WhenNothingMatches() {
+
+        final OutputClause outputClause = new OutputClause();
+
+        final Optional<DomainObject> foundDomainObject = outputClause.findDomainObject(UUID);
+
+        assertFalse(foundDomainObject.isPresent());
     }
 
     private OutputClauseUnaryTests buildOutputClauseUnaryTests() {
