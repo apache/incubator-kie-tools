@@ -92,4 +92,9 @@ public class BoxedExpressionService {
     public static void onLogicTypeSelect(final String selectedLogicType) {
         expressionEditor.onLogicTypeSelect(selectedLogicType);
     }
+
+    @JsMethod
+    public static void selectObject(final String uuid) {
+        expressionEditor.selectDomainObject(uuid);
+    }
 }

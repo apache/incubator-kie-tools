@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,10 +28,12 @@ import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -38,6 +41,7 @@ import static org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregato
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,6 +51,7 @@ public class DecisionTableTest {
     private static final String TABLE_ID = "TABLE-ID";
     private static final String DESCRIPTION = "DESCRIPTION";
     private static final String OUTPUT_LABEL = "OUTPUT-LABEL";
+    private static final String UUID = "uuid";
     private DecisionTable decisionTable;
 
     @Before
@@ -128,5 +133,106 @@ public class DecisionTableTest {
         assertEquals(SUM, target.getAggregation());
         assertEquals(DecisionTableOrientation.RULE_AS_ROW, target.getPreferredOrientation());
         assertEquals(OUTPUT_LABEL, target.getOutputLabel());
+    }
+
+    @Test
+    public void testFindDomainObject_FromInput() {
+
+        final DecisionTable decisionTable = new DecisionTable();
+        final InputClause input1 = mock(InputClause.class);
+        final InputClause input2 = mock(InputClause.class);
+        final InputClause input3 = mock(InputClause.class);
+
+        when(input3.findDomainObject(UUID)).thenReturn(Optional.of(input3));
+
+        decisionTable.getInput().addAll(asList(input1, input2, input3));
+
+        final Optional<DomainObject> actual = decisionTable.findDomainObject(UUID);
+
+        verify(input1).findDomainObject(UUID);
+        verify(input2).findDomainObject(UUID);
+        verify(input3).findDomainObject(UUID);
+
+        assertTrue(actual.isPresent());
+        assertEquals(input3, actual.get());
+    }
+
+    @Test
+    public void testFindDomainObject_FromOutput() {
+
+        final DecisionTable decisionTable = new DecisionTable();
+        final InputClause input1 = mock(InputClause.class);
+        final InputClause input2 = mock(InputClause.class);
+        final InputClause input3 = mock(InputClause.class);
+        final OutputClause output1 = mock(OutputClause.class);
+        final OutputClause output2 = mock(OutputClause.class);
+        final OutputClause output3 = mock(OutputClause.class);
+
+        when(output3.findDomainObject(UUID)).thenReturn(Optional.of(output3));
+
+        decisionTable.getInput().addAll(asList(input1, input2, input3));
+        decisionTable.getOutput().addAll(asList(output1, output2, output3));
+
+        final Optional<DomainObject> actual = decisionTable.findDomainObject(UUID);
+
+        verify(input1).findDomainObject(UUID);
+        verify(input2).findDomainObject(UUID);
+        verify(input3).findDomainObject(UUID);
+
+        verify(output1).findDomainObject(UUID);
+        verify(output2).findDomainObject(UUID);
+        verify(output3).findDomainObject(UUID);
+
+        assertTrue(actual.isPresent());
+        assertEquals(output3, actual.get());
+    }
+
+    @Test
+    public void testFindDomainObject_FromRule() {
+
+        final DecisionTable decisionTable = new DecisionTable();
+        final InputClause input1 = mock(InputClause.class);
+        final InputClause input2 = mock(InputClause.class);
+        final InputClause input3 = mock(InputClause.class);
+        final OutputClause output1 = mock(OutputClause.class);
+        final OutputClause output2 = mock(OutputClause.class);
+        final OutputClause output3 = mock(OutputClause.class);
+        final DecisionRule decisionRule1 = mock(DecisionRule.class);
+        final DecisionRule decisionRule2 = mock(DecisionRule.class);
+        final DecisionRule decisionRule3 = mock(DecisionRule.class);
+        final DomainObject expectedDomainObject = mock(DomainObject.class);
+
+        when(decisionRule3.findDomainObject(UUID)).thenReturn(Optional.of(expectedDomainObject));
+
+        decisionTable.getInput().addAll(asList(input1, input2, input3));
+        decisionTable.getOutput().addAll(asList(output1, output2, output3));
+        decisionTable.getRule().addAll(asList(decisionRule1, decisionRule2, decisionRule3));
+
+        final Optional<DomainObject> actual = decisionTable.findDomainObject(UUID);
+
+        verify(input1).findDomainObject(UUID);
+        verify(input2).findDomainObject(UUID);
+        verify(input3).findDomainObject(UUID);
+
+        verify(output1).findDomainObject(UUID);
+        verify(output2).findDomainObject(UUID);
+        verify(output3).findDomainObject(UUID);
+
+        verify(decisionRule1).findDomainObject(UUID);
+        verify(decisionRule2).findDomainObject(UUID);
+        verify(decisionRule3).findDomainObject(UUID);
+
+        assertTrue(actual.isPresent());
+        assertEquals(expectedDomainObject, actual.get());
+    }
+
+    @Test
+    public void testFindDomainObject_WhenNothingHasBeenFound() {
+
+        final DecisionTable decisionTable = new DecisionTable();
+
+        final Optional<DomainObject> actual = decisionTable.findDomainObject(UUID);
+
+        assertFalse(actual.isPresent());
     }
 }
