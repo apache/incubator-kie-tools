@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,32 +23,32 @@ import { WorkspaceDmnRunnerEvents } from "../hooks/WorkspaceDmnRunnerInput";
 export class WorkspaceDmnRunnerInputsService {
   constructor(private readonly storageService: StorageService, private readonly fsCache = new FsCache()) {}
 
-  public getWorkspaceDmnRunnerDataFs(workspaceId: string) {
-    return this.fsCache.getOrCreateFs(this.getDmnRunnerDataStoreName(workspaceId));
+  public getWorkspaceDmnRunnerInputsFs(workspaceId: string) {
+    return this.fsCache.getOrCreateFs(this.getDmnRunnerInputsStoreName(workspaceId));
   }
 
-  public async getDmnRunnerData(workspaceFile: WorkspaceFile) {
+  public async getDmnRunnerInputs(workspaceFile: WorkspaceFile) {
     return this.storageService.getFile(
-      await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
+      await this.getWorkspaceDmnRunnerInputsFs(workspaceFile.workspaceId),
       `/${workspaceFile.relativePath}`
     );
   }
 
-  public async deleteDmnRunnerData(workspaceFile: WorkspaceFile) {
-    const dmnRunnerDataFile = await this.getDmnRunnerData(workspaceFile);
-    if (!dmnRunnerDataFile) {
+  public async deleteDmnRunnerInputs(workspaceFile: WorkspaceFile) {
+    const dmnRunnerInputsFile = await this.getDmnRunnerInputs(workspaceFile);
+    if (!dmnRunnerInputsFile) {
       console.debug(
-        `Can't delete DMN Runner data, because it doesn't exist for file '${workspaceFile.relativePath}' on Workspace '${workspaceFile.workspaceId}'`
+        `Can't delete DMN Runner inputs, because it doesn't exist for file '${workspaceFile.relativePath}' on Workspace '${workspaceFile.workspaceId}'`
       );
       return;
     }
 
-    const emptyDmnRunnerData = JSON.stringify([{}]);
+    const emptyDmnRunnerInputs = JSON.stringify([{}]);
 
     await this.storageService.createOrOverwriteFile(
-      await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
+      await this.getWorkspaceDmnRunnerInputsFs(workspaceFile.workspaceId),
       new StorageFile({
-        getFileContents: () => Promise.resolve(encoder.encode(emptyDmnRunnerData)),
+        getFileContents: () => Promise.resolve(encoder.encode(emptyDmnRunnerInputs)),
         path: `/${workspaceFile.relativePath}`,
       })
     );
@@ -61,15 +61,15 @@ export class WorkspaceDmnRunnerInputsService {
     );
     broadcastChannel.postMessage({
       type: "DELETE",
-      dmnRunnerData: emptyDmnRunnerData,
+      dmnRunnerInputs: emptyDmnRunnerInputs,
     } as WorkspaceDmnRunnerEvents);
   }
 
-  public async createOrOverwriteDmnRunnerData(workspaceFile: WorkspaceFile, dmnRunnerData: string) {
+  public async createOrOverwriteDmnRunnerInputs(workspaceFile: WorkspaceFile, dmnRunnerInputs: string) {
     await this.storageService.createOrOverwriteFile(
-      this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
+      this.getWorkspaceDmnRunnerInputsFs(workspaceFile.workspaceId),
       new StorageFile({
-        getFileContents: () => Promise.resolve(encoder.encode(dmnRunnerData)),
+        getFileContents: () => Promise.resolve(encoder.encode(dmnRunnerInputs)),
         path: `/${workspaceFile.relativePath}`,
       })
     );
@@ -81,16 +81,16 @@ export class WorkspaceDmnRunnerInputsService {
     );
     broadcastChannel.postMessage({
       type: "ADD",
-      dmnRunnerData,
+      dmnRunnerInputs,
       relativePath: workspaceFile.relativePath,
     } as WorkspaceDmnRunnerEvents);
   }
 
-  public async updateDmnRunnerInputs(workspaceFile: WorkspaceFile, dmnRunnerData: string): Promise<void> {
+  public async updateDmnRunnerInputs(workspaceFile: WorkspaceFile, dmnRunnerInputs: string): Promise<void> {
     await this.storageService.updateFile(
-      await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
+      await this.getWorkspaceDmnRunnerInputsFs(workspaceFile.workspaceId),
       new StorageFile({
-        getFileContents: () => Promise.resolve(encoder.encode(dmnRunnerData)),
+        getFileContents: () => Promise.resolve(encoder.encode(dmnRunnerInputs)),
         path: `/${workspaceFile.relativePath}`,
       })
     );
@@ -103,35 +103,35 @@ export class WorkspaceDmnRunnerInputsService {
     );
     broadcastChannel.postMessage({
       type: "UPDATE",
-      dmnRunnerData,
+      dmnRunnerInputs,
     } as WorkspaceDmnRunnerEvents);
   }
 
-  public async renameDmnRunnerData(workspaceFile: WorkspaceFile, newFileNameWithoutExtension: string) {
-    const dmnRunnerDataFile = await this.getDmnRunnerData(workspaceFile);
-    if (!dmnRunnerDataFile) {
+  public async renameDmnRunnerInputs(workspaceFile: WorkspaceFile, newFileNameWithoutExtension: string) {
+    const dmnRunnerInputsFile = await this.getDmnRunnerInputs(workspaceFile);
+    if (!dmnRunnerInputsFile) {
       console.debug(
-        `Can't rename DMN Runner data, because it doesn't exist for file '${workspaceFile.relativePath}' on Workspace '${workspaceFile.workspaceId}'`
+        `Can't rename DMN Runner inputs, because it doesn't exist for file '${workspaceFile.relativePath}' on Workspace '${workspaceFile.workspaceId}'`
       );
       return;
     }
 
     return this.storageService.renameFile(
-      await this.getWorkspaceDmnRunnerDataFs(workspaceFile.workspaceId),
-      dmnRunnerDataFile,
+      await this.getWorkspaceDmnRunnerInputsFs(workspaceFile.workspaceId),
+      dmnRunnerInputsFile,
       `${newFileNameWithoutExtension}`
     );
   }
 
   public async delete(workspaceId: string) {
-    indexedDB.deleteDatabase(this.getDmnRunnerDataStoreName(workspaceId));
+    indexedDB.deleteDatabase(this.getDmnRunnerInputsStoreName(workspaceId));
   }
 
   public getDmnRunnerInputsLabel() {
     return "__dmn_runner_inputs";
   }
 
-  public getDmnRunnerDataStoreName(workspaceId: string) {
+  public getDmnRunnerInputsStoreName(workspaceId: string) {
     return `${workspaceId}${this.getDmnRunnerInputsLabel()}`;
   }
 

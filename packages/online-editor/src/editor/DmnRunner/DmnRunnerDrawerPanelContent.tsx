@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
@@ -327,12 +327,6 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
     props.editorPageDock?.toggle(PanelId.DMN_RUNNER_TABULAR);
   }, [dmnRunnerDispatch, props.editorPageDock]);
-
-  useLayoutEffect(() => {
-    if (dmnRunnerState.inputRowsUpdated) {
-      // add loading view;
-    }
-  }, [dmnRunnerState.inputRowsUpdated]);
 
   return (
     <DrawerPanelContent

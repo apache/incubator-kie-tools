@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,25 +60,25 @@ export function useWorkspaceDmnRunnerInputs(
               0,
               data.newRelativePath.lastIndexOf(".")
             );
-            dmnRunnerService?.renameDmnRunnerData(workspaceFile, newRelativePathWithoutExtension);
+            dmnRunnerService?.renameDmnRunnerInputs(workspaceFile, newRelativePathWithoutExtension);
           }
           if (data.type === "DELETE") {
             if (canceled.get()) {
               return;
             }
-            lastInputRows.current = data.dmnRunnerData;
-            setInputRows(JSON.parse(data.dmnRunnerData));
+            lastInputRows.current = data.dmnRunnerInputs;
+            setInputRows(JSON.parse(data.dmnRunnerInputs));
             setInputRowsUpdated(true);
           }
           if (data.type === "UPDATE" || data.type === "ADD") {
             if (canceled.get()) {
               return;
             }
-            if (data.dmnRunnerData === lastInputRows.current) {
+            if (data.dmnRunnerInputs === lastInputRows.current) {
               return;
             }
-            lastInputRows.current = data.dmnRunnerData;
-            setInputRows(JSON.parse(data.dmnRunnerData));
+            lastInputRows.current = data.dmnRunnerInputs;
+            setInputRows(JSON.parse(data.dmnRunnerInputs));
             setInputRowsUpdated(true);
           }
         };
@@ -100,15 +100,15 @@ export function useWorkspaceDmnRunnerInputs(
           return;
         }
 
-        dmnRunnerService.getDmnRunnerData(workspaceFile).then((data) => {
+        dmnRunnerService.getDmnRunnerInputs(workspaceFile).then((inputs) => {
           if (canceled.get()) {
             return;
           }
-          if (!data) {
+          if (!inputs) {
             return;
           }
 
-          data.getFileContents().then((content) => {
+          inputs.getFileContents().then((content) => {
             if (canceled.get()) {
               return;
             }
@@ -168,6 +168,6 @@ export function useWorkspaceDmnRunnerInputs(
 export type WorkspaceDmnRunnerEvents =
   | { type: "MOVE"; newRelativePath: string; oldRelativePath: string }
   | { type: "RENAME"; newRelativePath: string; oldRelativePath: string }
-  | { type: "UPDATE"; dmnRunnerData: string }
-  | { type: "DELETE"; dmnRunnerData: string }
-  | { type: "ADD"; relativePath: string; dmnRunnerData: string };
+  | { type: "UPDATE"; dmnRunnerInputs: string }
+  | { type: "DELETE"; dmnRunnerInputs: string }
+  | { type: "ADD"; relativePath: string; dmnRunnerInputs: string };

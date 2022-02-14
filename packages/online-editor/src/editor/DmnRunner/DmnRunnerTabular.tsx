@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { InputRow, useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DmnAutoTable } from "@kie-tools/unitables";
@@ -24,6 +24,7 @@ import { PanelId } from "../EditorPageDockDrawer";
 import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
 import { WorkspaceFile } from "../../workspace";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
+import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 
 interface Props {
   isReady?: boolean;
@@ -38,15 +39,17 @@ export function DmnRunnerTabular(props: Props) {
   const dmnRunnerDispatch = useDmnRunnerDispatch();
 
   const updateDmnRunnerResults = useCallback(
-    async (inputRows: Array<InputRow>) => {
+    async (inputRows: Array<InputRow>, canceled: Holder<boolean>) => {
       if (!props.isReady) {
         dmnRunnerDispatch.setOutputRowsUpdated(true);
         return;
       }
 
-      const payloads = await Promise.all(inputRows.map((data) => dmnRunnerDispatch.preparePayload(data)));
-
       try {
+        if (canceled.get()) {
+          return;
+        }
+        const payloads = await Promise.all(inputRows.map((data) => dmnRunnerDispatch.preparePayload(data)));
         const results = await Promise.all(
           payloads.map((payload) => {
             if (payload === undefined) {
@@ -55,6 +58,9 @@ export function DmnRunnerTabular(props: Props) {
             return dmnRunnerState.service.result(payload);
           })
         );
+        if (canceled.get()) {
+          return;
+        }
 
         const runnerResults: Array<DecisionResult[] | undefined> = [];
         for (const result of results) {
@@ -77,14 +83,19 @@ export function DmnRunnerTabular(props: Props) {
   );
 
   // Debounce to avoid multiple updates caused by uniforms library
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      updateDmnRunnerResults(dmnRunnerState.inputRows);
-    }, 100);
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [dmnRunnerState.inputRows]);
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        const timeout = setTimeout(() => {
+          updateDmnRunnerResults(dmnRunnerState.inputRows, canceled);
+        }, 100);
+        return () => {
+          clearTimeout(timeout);
+        };
+      },
+      [dmnRunnerState.inputRows]
+    )
+  );
 
   const openRow = useCallback(
     (rowIndex: number) => {
@@ -92,7 +103,7 @@ export function DmnRunnerTabular(props: Props) {
       dmnRunnerDispatch.setCurrentInputRowIndex(rowIndex);
       props.setPanelOpen(PanelId.NONE);
     },
-    [dmnRunnerDispatch]
+    [dmnRunnerDispatch, props.setPanelOpen]
   );
 
   useElementsThatStopKeyboardEventsPropagation(

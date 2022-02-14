@@ -26,14 +26,7 @@ import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { GIT_DEFAULT_BRANCH, GitService } from "../services/GitService";
 import { StorageFile, StorageService } from "../services/StorageService";
 import { WorkspaceService } from "../services/WorkspaceService";
-import {
-  decoder,
-  encoder,
-  LocalFile,
-  WorkspaceFile,
-  WorkspacesContext,
-  WorkspacesContextType,
-} from "./WorkspacesContext";
+import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
 import { join } from "path";
 import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
@@ -49,10 +42,10 @@ const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_FILE_DEFAULT_NAME = "Untitled";
 
 interface Props {
-  Context: React.Context<WorkspacesContextType>;
+  children: React.ReactNode;
 }
 
-export function WorkspacesContextProvider({ children, Context = WorkspacesContext }: React.PropsWithChildren<Props>) {
+export function WorkspacesContextProvider({ children }: Props) {
   const env = useEnv();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const storageService = useMemo(() => new StorageService(), []);
@@ -504,5 +497,5 @@ export function WorkspacesContextProvider({ children, Context = WorkspacesContex
     ]
   );
 
-  return <Context.Provider value={value}>{children}</Context.Provider>;
+  return <WorkspacesContext.Provider value={value}>{children}</WorkspacesContext.Provider>;
 }

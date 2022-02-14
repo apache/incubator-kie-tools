@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,9 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
       if (!workspaceFile || !dmnRunnerService) {
         return;
       }
-      const data = await dmnRunnerService.getDmnRunnerData(workspaceFile);
-      if (!data) {
-        await dmnRunnerService.createOrOverwriteDmnRunnerData(workspaceFile, JSON.stringify([{}]));
+      const inputs = await dmnRunnerService.getDmnRunnerInputs(workspaceFile);
+      if (!inputs) {
+        await dmnRunnerService.createOrOverwriteDmnRunnerInputs(workspaceFile, JSON.stringify([{}]));
       }
     },
     [dmnRunnerService]
@@ -47,8 +47,8 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
       newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)
     ) => {
       if (typeof newInputRows === "function") {
-        const data = await dmnRunnerService.getDmnRunnerData(workspaceFile);
-        const previousInputRows = await data
+        const inputs = await dmnRunnerService.getDmnRunnerInputs(workspaceFile);
+        const previousInputRows = await inputs
           ?.getFileContents()
           .then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
         await dmnRunnerService.updateDmnRunnerInputs(
@@ -64,7 +64,7 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
 
   const deletePersistedInputRows = useCallback(
     async (workspaceFile: WorkspaceFile) => {
-      await dmnRunnerService.deleteDmnRunnerData(workspaceFile);
+      await dmnRunnerService.deleteDmnRunnerInputs(workspaceFile);
     },
     [dmnRunnerService]
   );
@@ -76,8 +76,8 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
 
   const getInputRowsForDownload = useCallback(
     async (workspaceFile: WorkspaceFile) => {
-      const data = await dmnRunnerService.getDmnRunnerData(workspaceFile);
-      return await data?.getFileContents().then((content) => new Blob([content], { type: "application/json" }));
+      const inputs = await dmnRunnerService.getDmnRunnerInputs(workspaceFile);
+      return await inputs?.getFileContents().then((content) => new Blob([content], { type: "application/json" }));
     },
     [dmnRunnerService]
   );
@@ -89,7 +89,7 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
         reader.onload = (event: ProgressEvent<FileReader>) => res(decoder.decode(event.target?.result as ArrayBuffer));
         reader.readAsArrayBuffer(file);
       });
-      await dmnRunnerService.createOrOverwriteDmnRunnerData(workspaceFile, content);
+      await dmnRunnerService.createOrOverwriteDmnRunnerInputs(workspaceFile, content);
     },
     [dmnRunnerService]
   );
