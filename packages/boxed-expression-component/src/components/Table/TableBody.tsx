@@ -71,6 +71,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
       tabIndex: 0,
       onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => {
         const key = e.key;
+        const isModKey = e.altKey || e.ctrlKey || e.shiftKey || key === "AltGraph";
 
         if (isContextMenuOpen) {
           e.preventDefault();
@@ -83,8 +84,6 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
         }
 
         const isFiredFromThis = e.currentTarget === e.target;
-
-        /* FIXME: select a td, then press shift -> focus is lost */
 
         if (key === "Tab") {
           e.preventDefault();
@@ -103,7 +102,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           focusLowerCell(e.currentTarget, rowIndex);
         } else if (key === "Escape") {
           focusParentCell(e.currentTarget);
-        } else if (!isContextMenuOpen && isFiredFromThis) {
+        } else if (!isContextMenuOpen && isFiredFromThis && !isModKey) {
           if (key === "Enter") {
             focusInsideCell(e.currentTarget);
           } else {
