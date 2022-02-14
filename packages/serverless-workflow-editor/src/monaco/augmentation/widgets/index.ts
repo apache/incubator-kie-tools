@@ -12,11 +12,9 @@ function toLens(
   id: string,
   commandDelegate: (args: { position: Position }) => CodeLens["command"]
 ) {
-  const node = jsonc.findNodeAtLocation(rootNode, jsonPath);
-  const nodes = node ? [node] : [];
-
+  const nodes = findNodesAtLocation(rootNode, jsonPath);
   return nodes.map((node) => {
-    const position = model.getPositionAt(node.offset);
+    const position = model.getPositionAt(node.parent!.offset);
 
     return {
       id,
@@ -51,6 +49,11 @@ export function initJsonWidgets(commands: SwfMonacoEditorCommands): void {
             title: "Edit States",
             arguments: [{ position }],
           })),
+          ...toLens(model, rootNode, ["functions", "*", "name"], "Rename", ({ position }) => ({
+            id: commands["FunctionsWidget"],
+            title: "Rename",
+            arguments: [{ position }],
+          })),
         ],
 
         dispose: () => {},
@@ -68,42 +71,46 @@ export function initJsonWidgets(commands: SwfMonacoEditorCommands): void {
   return;
 }
 
-// export function findNodesAtLocation(root: jsonc.Node | undefined, path: JSONPath): jsonc.Node[] {
-//   if (!root) {
-//     return [];
-//   }
-//   const nodes = [];
-//   let node = root;
-//   for (const segment of path) {
-//     if (typeof segment === "string") {
-//       if (node.type !== "object" || !Array.isArray(node.children)) {
-//         return [];
-//       }
-//       if (segment === "*") {
-//         return nodes;
-//       }
-//       let found = false;
-//       for (const propertyNode of node.children) {
-//         if (
-//           Array.isArray(propertyNode.children) &&
-//           propertyNode.children[0].value === segment &&
-//           propertyNode.children.length === 2
-//         ) {
-//           node = propertyNode.children[1];
-//           found = true;
-//           break;
-//         }
-//       }
-//       if (!found) {
-//         return [];
-//       }
-//     } else {
-//       const index = <number>segment;
-//       if (node.type !== "array" || index < 0 || !Array.isArray(node.children) || index >= node.children.length) {
-//         return [];
-//       }
-//       node = node.children[index];
-//     }
-//   }
-//   return nodes;
-// }
+export function findNodesAtLocation(root: jsonc.Node | undefined, path: JSONPath): jsonc.Node[] {
+  if (!root) {
+    return [];
+  }
+
+  let nodes: jsonc.Node[] = [root];
+
+  for (const segment of path) {
+    if (segment === "*") {
+      nodes = nodes.flatMap((s) => s.children ?? []);
+      continue;
+    }
+
+    if (typeof segment === "number") {
+      const index = segment as number;
+      nodes = nodes.flatMap((n) => {
+        if (n.type !== "array" || index < 0 || !Array.isArray(n.children) || index >= n.children.length) {
+          return [];
+        }
+
+        return [n.children[index]];
+      });
+    }
+
+    if (typeof segment === "string") {
+      nodes = nodes.flatMap((n) => {
+        if (n.type !== "object" || !Array.isArray(n.children)) {
+          return [];
+        }
+
+        for (const prop of n.children) {
+          if (Array.isArray(prop.children) && prop.children[0].value === segment && prop.children.length === 2) {
+            return [prop.children[1]];
+          }
+        }
+
+        return [];
+      });
+    }
+  }
+
+  return nodes;
+}

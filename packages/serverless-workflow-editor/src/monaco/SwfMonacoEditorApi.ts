@@ -66,6 +66,7 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
       language: this.language,
       scrollBeyondLastLine: false,
       automaticLayout: true,
+      fontSize: 14,
     });
 
     this.editor = editorInstance;
