@@ -32,7 +32,7 @@ import {
   DmnResult,
   extractDifferences,
 } from "@kie-tools/form/dist/dmn";
-import { usePrevious } from "../../reactExt/Hooks";
+import { Holder, useCancelableEffect, usePrevious } from "../../reactExt/Hooks";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
@@ -143,7 +143,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   );
 
   const updateDmnRunnerResults = useCallback(
-    async (formData: object) => {
+    async (formData: object, canceled: Holder<boolean>) => {
       if (dmnRunnerState.status !== DmnRunnerStatus.AVAILABLE) {
         dmnRunnerDispatch.setOutputRowsUpdated(true);
         return;
@@ -152,6 +152,9 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
       try {
         const payload = await dmnRunnerDispatch.preparePayload(formData);
         const result = await dmnRunnerState.service.result(payload);
+        if (canceled.get()) {
+          return;
+        }
 
         if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
           dmnRunnerDispatch.setError(true);
@@ -159,7 +162,6 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
         }
 
         setExecutionNotifications(result);
-
         setDmnRunnerResults((previousDmnRunnerResult: DecisionResult[]) => {
           if (!result || !result.decisionResults) {
             return;
@@ -168,9 +170,10 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           if (differences?.length !== 0) {
             setDmnRunnerResponseDiffs(differences);
           }
-          dmnRunnerDispatch.setOutputRowsUpdated(true);
           return result.decisionResults;
         });
+
+        dmnRunnerDispatch.setOutputRowsUpdated(true);
       } catch (e) {
         dmnRunnerDispatch.setOutputRowsUpdated(true);
         setDmnRunnerResults(undefined);
@@ -180,41 +183,51 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   );
 
   // Update outputs column on form change
-  useEffect(() => {
-    if (dmnRunnerState.isExpanded && dmnRunnerState.mode === DmnRunnerMode.FORM) {
-      updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]);
-    }
-  }, [
-    dmnRunnerState.inputRows,
-    dmnRunnerState.currentInputRowIndex,
-    updateDmnRunnerResults,
-    dmnRunnerState.isExpanded,
-    dmnRunnerState.mode,
-  ]);
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (dmnRunnerState.isExpanded && dmnRunnerState.mode === DmnRunnerMode.FORM) {
+          updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex], canceled);
+        }
+      },
+      [
+        dmnRunnerState.inputRows,
+        dmnRunnerState.currentInputRowIndex,
+        updateDmnRunnerResults,
+        dmnRunnerState.isExpanded,
+        dmnRunnerState.mode,
+      ]
+    )
+  );
 
   const previousFormError = usePrevious(dmnRunnerState.error);
-  useEffect(() => {
-    if (dmnRunnerState.error) {
-      // if there is an error generating the form, the last form data is submitted
-      updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]);
-    } else if (previousFormError) {
-      setTimeout(() => {
-        formRef.current?.submit();
-        Object.keys(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex] ?? {}).forEach((propertyName) => {
-          formRef.current?.change(
-            propertyName,
-            dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]?.[propertyName]
-          );
-        });
-      }, 0);
-    }
-  }, [
-    dmnRunnerState.error,
-    dmnRunnerState.inputRows,
-    dmnRunnerState.currentInputRowIndex,
-    updateDmnRunnerResults,
-    previousFormError,
-  ]);
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (dmnRunnerState.error) {
+          // if there is an error generating the form, the last form data is submitted
+          updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex], canceled);
+        } else if (previousFormError) {
+          setTimeout(() => {
+            formRef.current?.submit();
+            Object.keys(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex] ?? {}).forEach((propertyName) => {
+              formRef.current?.change(
+                propertyName,
+                dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]?.[propertyName]
+              );
+            });
+          }, 0);
+        }
+      },
+      [
+        dmnRunnerState.error,
+        dmnRunnerState.inputRows,
+        dmnRunnerState.currentInputRowIndex,
+        updateDmnRunnerResults,
+        previousFormError,
+      ]
+    )
+  );
 
   const openValidationTab = useCallback(() => {
     props.editorPageDock?.toggle(PanelId.NOTIFICATIONS_PANEL);

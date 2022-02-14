@@ -17,7 +17,6 @@
 import { FsCache } from "./FsCache";
 import { encoder, WorkspaceFile } from "../contexts";
 import { StorageFile, StorageService } from "./StorageService";
-import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
 import { join } from "path";
 import { WorkspaceDmnRunnerEvents } from "../hooks/WorkspaceDmnRunnerInput";
 
@@ -82,8 +81,9 @@ export class WorkspaceDmnRunnerInputsService {
     );
     broadcastChannel.postMessage({
       type: "ADD",
+      dmnRunnerData,
       relativePath: workspaceFile.relativePath,
-    } as WorkspaceFileEvents);
+    } as WorkspaceDmnRunnerEvents);
   }
 
   public async updateDmnRunnerInputs(workspaceFile: WorkspaceFile, dmnRunnerData: string): Promise<void> {

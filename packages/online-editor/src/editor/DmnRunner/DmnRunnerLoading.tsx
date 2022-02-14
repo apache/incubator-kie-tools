@@ -46,8 +46,8 @@ export function DmnRunnerLoading(props: DmnRunnerLoading) {
   return (
     <>
       <div id="kie-tools--dmn-runner-loading-screen" className="kie-tools--dmn-runner-loading-screen">
-        <div className={loadingScreenClassName} onAnimationEnd={onAnimationEnd}>
-          <div key={loadingScreenClassName}>{props.children}</div>
+        <div key={loadingScreenClassName} className={loadingScreenClassName} onAnimationEnd={onAnimationEnd}>
+          {props.children}
         </div>
       </div>
     </>

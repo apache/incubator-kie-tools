@@ -207,14 +207,6 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               icon={<UploadIcon />}
               onClick={() => uploadDmnRunnerInputsRef.current?.click()}
             >
-              <input
-                ref={uploadDmnRunnerInputsRef}
-                type="file"
-                multiple={false}
-                style={{ display: "none" }}
-                onChange={(e) => handleDmnRunnerInputsUpload(e)}
-                accept={".json"}
-              />
               load inputs
             </DropdownItem>,
             <>
@@ -230,8 +222,18 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
             </>,
           ]}
         />
-        <a ref={downloadDmnRunnerInputsRef} />
       </FeatureDependentOnKieSandboxExtendedServices>
+      <a ref={downloadDmnRunnerInputsRef} />
+      <input
+        ref={uploadDmnRunnerInputsRef}
+        type="file"
+        style={{ display: "none" }}
+        onChange={handleDmnRunnerInputsUpload}
+        accept={".json"}
+        onClick={(event: any) => {
+          event.target.value = null;
+        }}
+      />
     </>
   );
 }

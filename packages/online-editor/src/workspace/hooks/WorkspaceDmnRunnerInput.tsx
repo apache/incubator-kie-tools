@@ -70,7 +70,7 @@ export function useWorkspaceDmnRunnerInputs(
             setInputRows(JSON.parse(data.dmnRunnerData));
             setInputRowsUpdated(true);
           }
-          if (data.type === "UPDATE") {
+          if (data.type === "UPDATE" || data.type === "ADD") {
             if (canceled.get()) {
               return;
             }
@@ -170,4 +170,4 @@ export type WorkspaceDmnRunnerEvents =
   | { type: "RENAME"; newRelativePath: string; oldRelativePath: string }
   | { type: "UPDATE"; dmnRunnerData: string }
   | { type: "DELETE"; dmnRunnerData: string }
-  | { type: "ADD"; relativePath: string };
+  | { type: "ADD"; relativePath: string; dmnRunnerData: string };
