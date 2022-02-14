@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,15 +27,18 @@ import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -42,6 +46,8 @@ public class ContextTest {
 
     private static final String CONTEXT_ID = "CONTEXT-ID";
     private static final String DESCRIPTION = "DESCRIPTION";
+    private static final String UUID = "uuid";
+
     private Context context;
 
     @Before
@@ -86,5 +92,30 @@ public class ContextTest {
         assertNotEquals(CONTEXT_ID, target.getId().getValue());
         assertEquals(DESCRIPTION, target.getDescription().getValue());
         assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+    }
+
+    @Test
+    public void testFindDomainObject() {
+
+        final ContextEntry entry1 = mock(ContextEntry.class);
+        final ContextEntry entry2 = mock(ContextEntry.class);
+        final ContextEntry entry3 = mock(ContextEntry.class);
+        final DomainObject expectedDomainObject = mock(DomainObject.class);
+
+        when(entry1.findDomainObject(UUID)).thenReturn(Optional.empty());
+        when(entry2.findDomainObject(UUID)).thenReturn(Optional.empty());
+        when(entry3.findDomainObject(UUID)).thenReturn(Optional.of(expectedDomainObject));
+
+        context.getContextEntry().add(entry1);
+        context.getContextEntry().add(entry2);
+        context.getContextEntry().add(entry3);
+
+        final Optional<DomainObject> actual = context.findDomainObject(UUID);
+
+        assertTrue(actual.isPresent());
+        assertEquals(expectedDomainObject, actual.get());
+        verify(entry1).findDomainObject(UUID);
+        verify(entry2).findDomainObject(UUID);
+        verify(entry3).findDomainObject(UUID);
     }
 }

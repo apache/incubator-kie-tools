@@ -20,7 +20,7 @@ import * as __path from "path";
 import { NotificationsApi } from "@kie-tools-core/notifications/dist/api";
 import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import { ResourceContentService } from "@kie-tools-core/workspace/dist/api";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
@@ -32,6 +32,7 @@ import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "./i18n";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
+import { KogitoEditorChannelApiProducer } from "./KogitoEditorChannelApiProducer";
 
 export class KogitoEditorFactory {
   constructor(
@@ -44,7 +45,8 @@ export class KogitoEditorFactory {
     private readonly notificationsApi: NotificationsApi,
     private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     private readonly viewType: string,
-    private readonly i18n: I18n<VsCodeI18n>
+    private readonly i18n: I18n<VsCodeI18n>,
+    private readonly channelApiProducer?: KogitoEditorChannelApiProducer
   ) {}
 
   public configureNew(webviewPanel: vscode.WebviewPanel, document: KogitoEditableDocument) {
@@ -57,7 +59,7 @@ export class KogitoEditorFactory {
     const editorEnvelopeLocator = this.getEditorEnvelopeLocatorForWebview(webviewPanel.webview);
     const resourceContentService = this.createResourceContentService(document.uri.fsPath, document.relativePath);
 
-    const envelopeMapping = editorEnvelopeLocator.mapping.get(document.fileExtension);
+    const envelopeMapping = editorEnvelopeLocator.getEnvelopeMapping(document.uri.fsPath);
     if (!envelopeMapping) {
       throw new Error(`No envelope mapping found for '${document.fileExtension}'`);
     }
@@ -72,7 +74,31 @@ export class KogitoEditorFactory {
       this.messageBroadcaster
     );
 
-    const editorChannelApiImpl = new KogitoEditorChannelApiImpl(
+    const editorChannelApi = this.getChannelApi(editor, resourceContentService);
+
+    this.editorStore.addAsActive(editor);
+    editor.startListening(editorChannelApi);
+    editor.startInitPolling(editorChannelApi);
+    editor.setupPanelActiveStatusChange();
+    editor.setupPanelOnDidDispose();
+    editor.setupWebviewContent();
+  }
+
+  private getChannelApi(editor: KogitoEditor, resourceContentService: ResourceContentService): KogitoEditorChannelApi {
+    if (this.channelApiProducer) {
+      return this.channelApiProducer.get(
+        editor,
+        resourceContentService,
+        this.workspaceApi,
+        this.backendProxy,
+        this.notificationsApi,
+        this.javaCodeCompletionApi,
+        this.viewType,
+        this.i18n
+      );
+    }
+
+    return new KogitoEditorChannelApiImpl(
       editor,
       resourceContentService,
       this.workspaceApi,
@@ -82,26 +108,23 @@ export class KogitoEditorFactory {
       this.viewType,
       this.i18n
     );
-
-    this.editorStore.addAsActive(editor);
-    editor.startListening(editorChannelApiImpl);
-    editor.startInitPolling(editorChannelApiImpl);
-    editor.setupPanelActiveStatusChange();
-    editor.setupPanelOnDidDispose();
-    editor.setupWebviewContent();
   }
 
   private getEditorEnvelopeLocatorForWebview(webview: vscode.Webview): EditorEnvelopeLocator {
-    return {
-      targetOrigin: this.editorEnvelopeLocator.targetOrigin,
-      mapping: [...this.editorEnvelopeLocator.mapping.entries()].reduce((mapping, [fileExtension, m]) => {
-        mapping.set(fileExtension, {
-          envelopePath: this.getWebviewPath(webview, m.envelopePath),
-          resourcesPathPrefix: this.getWebviewPath(webview, m.resourcesPathPrefix),
-        });
-        return mapping;
-      }, new Map<string, EnvelopeMapping>()),
-    };
+    return new EditorEnvelopeLocator(
+      this.editorEnvelopeLocator.targetOrigin,
+      [...this.editorEnvelopeLocator.envelopeMappings].reduce((envelopeMappings, mapping) => {
+        envelopeMappings.push(
+          new EnvelopeMapping(
+            mapping.type,
+            mapping.filePathGlob,
+            this.getWebviewPath(webview, mapping.envelopePath),
+            this.getWebviewPath(webview, mapping.resourcesPathPrefix)
+          )
+        );
+        return envelopeMappings;
+      }, [] as EnvelopeMapping[])
+    );
   }
 
   private getWebviewPath(webview: Webview, relativePath: string) {

@@ -425,7 +425,7 @@ export function WorkspacesMenuItems(props: {
                       description={`${workspaceFiles.get(descriptor.workspaceId)!.length} files, ${
                         workspaceFiles
                           .get(descriptor.workspaceId)!
-                          .filter((f) => [...editorEnvelopeLocator.mapping.keys()].includes(f.extension)).length
+                          .filter((f) => editorEnvelopeLocator.hasMappingFor(f.relativePath)).length
                       } models`}
                       direction={"down"}
                       drilldownMenu={
@@ -588,12 +588,12 @@ export function FilesMenuItems(props: {
   );
 
   const models = useMemo(
-    () => sortedAndFilteredFiles.filter((file) => [...editorEnvelopeLocator.mapping.keys()].includes(file.extension)),
+    () => sortedAndFilteredFiles.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)),
     [editorEnvelopeLocator, sortedAndFilteredFiles]
   );
 
   const otherFiles = useMemo(
-    () => sortedAndFilteredFiles.filter((file) => ![...editorEnvelopeLocator.mapping.keys()].includes(file.extension)),
+    () => sortedAndFilteredFiles.filter((file) => !editorEnvelopeLocator.hasMappingFor(file.relativePath)),
     [editorEnvelopeLocator, sortedAndFilteredFiles]
   );
 

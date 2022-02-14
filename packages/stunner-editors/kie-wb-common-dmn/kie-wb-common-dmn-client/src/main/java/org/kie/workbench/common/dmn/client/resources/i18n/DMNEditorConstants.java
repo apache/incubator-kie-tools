@@ -452,6 +452,12 @@ public class DMNEditorConstants {
     public static final String DMNDocumentationI18n_ExternalLinks = "DMNDocumentationI18n.ExternalLinks";
 
     @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_Question = "DMNDocumentationI18n.Question";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_AllowedAnswers = "DMNDocumentationI18n.AllowedAnswers";
+
+    @TranslationKey(defaultValue = "")
     public static final String DMNDocumentationI18n_NoDRDs = "DMNDocumentationI18n.NoDRDs";
 
     @TranslationKey(defaultValue = "")
@@ -516,4 +522,10 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String StructureTypesTooltipView_ViewDataType = "StructureTypesTooltipView.ViewDataType";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AutomaticLayout_Label = "AutomaticLayout.Label";
+
+    @TranslationKey(defaultValue = "")
+    public static final String AutomaticLayout_DiagramDoesNotHaveLayout = "AutomaticLayout.DiagramDoesNotHaveLayout";
 }

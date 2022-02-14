@@ -38,6 +38,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
+import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
@@ -57,6 +58,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillInvo
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillListExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillLiteralExpressionCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.FillRelationExpressionCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.commands.UpdateCanvasNodeNameCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.ContextProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DataTypeProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.DecisionTableProps;
@@ -71,7 +73,9 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.P
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.BoxedExpressionService;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.ExpressionPropsFiller;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
@@ -96,8 +100,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Domai
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
-import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
@@ -112,6 +115,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.Restri
 
 import static java.util.stream.Stream.concat;
 import static org.kie.workbench.common.dmn.api.definition.model.ItemDefinition.ITEM_DEFINITION_COMPARATOR;
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.matches;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BUILT_IN_TYPE_COMPARATOR;
 
 @Templated
@@ -165,7 +169,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private Event<ExpressionEditorChanged> editorSelectedEvent;
     private Event<DataTypePageTabActiveEvent> dataTypePageActiveEvent;
     private PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider;
-    private DefinitionUtils definitionUtils;
     private ItemDefinitionUtils itemDefinitionUtils;
 
     private DMNGridPanel gridPanel;
@@ -177,6 +180,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private HasExpression hasExpression;
     private Optional<HasName> hasName;
     private boolean isOnlyVisualChangeAllowed;
+    private UpdateCanvasNodeNameCommand updateCanvasNodeNameCommand;
 
     public ExpressionEditorViewImpl() {
         //CDI proxy
@@ -223,7 +227,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.editorSelectedEvent = editorSelectedEvent;
         this.dataTypePageActiveEvent = dataTypePageActiveEvent;
         this.pmmlDocumentMetadataProvider = pmmlDocumentMetadataProvider;
-        this.definitionUtils = definitionUtils;
         this.itemDefinitionUtils = itemDefinitionUtils;
 
         this.tryIt = tryIt;
@@ -232,6 +235,9 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.newBoxedExpression = newBoxedExpression;
         this.dmnExpressionType = dmnExpressionType;
         this.dmnExpressionEditor = dmnExpressionEditor;
+        this.updateCanvasNodeNameCommand = new UpdateCanvasNodeNameCommand(sessionManager,
+                                                                           definitionUtils,
+                                                                           canvasCommandFactory);
     }
 
     @Override
@@ -374,7 +380,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         if (hasExpression instanceof Decision) {
             decisionNodeId = ((Decision) hasExpression).getId().getValue();
         } else if (hasExpression.getExpression() instanceof FunctionDefinition) {
-            decisionNodeId = ((BusinessKnowledgeModel) hasExpression.getExpression().asDMNModelInstrumentedBase().getParent()).getId().getValue();
+            decisionNodeId = getBusinessKnowledgeModel().getId().getValue();
         }
         DMNLoader.renderBoxedExpressionEditor(
                 ".kie-dmn-new-expression-editor",
@@ -402,13 +408,56 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         getExpressionContainerGrid().clearExpressionType();
     }
 
+    @Override
+    public void selectDomainObject(final String uuid) {
+        fireDomainObjectSelectionEvent(findDomainObject(uuid));
+    }
+
+    DomainObject findDomainObject(final String uuid) {
+
+        if (innerExpressionMatches(uuid)) {
+            return (DomainObject) hasExpression;
+        } else if (businessKnowledgeModelMatches(uuid)) {
+            return getBusinessKnowledgeModel();
+        } else {
+            final Optional<DomainObject> domainObject = hasExpression.getExpression().findDomainObject(uuid);
+            if (domainObject.isPresent()) {
+                return domainObject.get();
+            }
+            return new NOPDomainObject();
+        }
+    }
+
+    BusinessKnowledgeModel getBusinessKnowledgeModel() {
+        return ((BusinessKnowledgeModel) hasExpression.getExpression().asDMNModelInstrumentedBase().getParent());
+    }
+
+    boolean innerExpressionMatches(final String uuid) {
+        return hasExpression instanceof DomainObject
+                && matches(((DomainObject) hasExpression), uuid);
+    }
+
+    boolean businessKnowledgeModelMatches(final String uuid) {
+
+        return hasExpression.getExpression() instanceof FunctionDefinition
+                && matches(getBusinessKnowledgeModel(), uuid);
+    }
+
+    void fireDomainObjectSelectionEvent(final DomainObject domainObject) {
+
+        final DomainObjectSelectionEvent event = new DomainObjectSelectionEvent(sessionManager.getCurrentSession().getCanvasHandler(),
+                                                                                domainObject);
+        this.domainObjectSelectionEvent.fire(event);
+    }
+
     public void resetExpressionDefinition(final ExpressionProps expressionProps) {
         executeExpressionCommand(new ClearExpressionCommand(getHasExpression(),
                                                             expressionProps,
                                                             getEditorSelectedEvent(),
                                                             getNodeUUID(),
                                                             this,
-                                                            itemDefinitionUtils));
+                                                            itemDefinitionUtils,
+                                                            getHasName()));
     }
 
     public void broadcastLiteralExpressionDefinition(final LiteralProps literalProps) {
@@ -417,7 +466,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                   getEditorSelectedEvent(),
                                                                   getNodeUUID(),
                                                                   this,
-                                                                  itemDefinitionUtils));
+                                                                  itemDefinitionUtils,
+                                                                  getHasName()));
     }
 
     public void broadcastContextExpressionDefinition(final ContextProps contextProps) {
@@ -426,7 +476,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                   getEditorSelectedEvent(),
                                                                   getNodeUUID(),
                                                                   this,
-                                                                  itemDefinitionUtils));
+                                                                  itemDefinitionUtils,
+                                                                  getHasName()));
     }
 
     public void broadcastRelationExpressionDefinition(final RelationProps relationProps) {
@@ -435,7 +486,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                    getEditorSelectedEvent(),
                                                                    getNodeUUID(),
                                                                    this,
-                                                                   itemDefinitionUtils));
+                                                                   itemDefinitionUtils,
+                                                                   getHasName()));
     }
 
     public void broadcastListExpressionDefinition(final ListProps listProps) {
@@ -444,7 +496,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                getEditorSelectedEvent(),
                                                                getNodeUUID(),
                                                                this,
-                                                               itemDefinitionUtils));
+                                                               itemDefinitionUtils,
+                                                               getHasName()));
     }
 
     public void broadcastInvocationExpressionDefinition(final InvocationProps invocationProps) {
@@ -453,7 +506,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                      getEditorSelectedEvent(),
                                                                      getNodeUUID(),
                                                                      this,
-                                                                     itemDefinitionUtils));
+                                                                     itemDefinitionUtils,
+                                                                     getHasName()));
     }
 
     public void broadcastFunctionExpressionDefinition(final FunctionProps functionProps) {
@@ -462,7 +516,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                    getEditorSelectedEvent(),
                                                                    getNodeUUID(),
                                                                    this,
-                                                                   itemDefinitionUtils));
+                                                                   itemDefinitionUtils,
+                                                                   getHasName()));
     }
 
     public void broadcastDecisionTableExpressionDefinition(final DecisionTableProps decisionTableProps) {
@@ -471,27 +526,24 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                                         getEditorSelectedEvent(),
                                                                         getNodeUUID(),
                                                                         this,
-                                                                        itemDefinitionUtils));
-    }
-
-    public void notifyUserAction() {
-        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = createCommandBuilder();
-        final SaveCurrentStateCommand expressionCommand = new SaveCurrentStateCommand(getHasExpression(),
-                                                                                      getEditorSelectedEvent(),
-                                                                                      this,
-                                                                                      getNodeUUID());
-        addExpressionCommand(expressionCommand, commandBuilder);
-        addUpdatePropertyNameCommand(commandBuilder);
-
-        execute(commandBuilder);
+                                                                        itemDefinitionUtils,
+                                                                        getHasName()));
     }
 
     public void openManageDataType() {
         dataTypePageActiveEvent.fire(new DataTypePageTabActiveEvent());
     }
 
+    public void onLogicTypeSelect(final String selectedLogicType) {
+        expressionEditorDefinitionsSupplier
+                .get()
+                .getExpressionEditorDefinition(ExpressionType.getTypeByText(selectedLogicType))
+                .ifPresent(this::enrichModelExpression);
+    }
+
     void executeExpressionCommand(final FillExpressionCommand expressionCommand) {
         expressionCommand.execute();
+        updateCanvasNodeNameCommand.execute(getNodeUUID(), getHasName().orElse(null));
     }
 
     void toggleBetaBoxedExpressionEditor(final boolean enabled) {
@@ -575,6 +627,17 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         };
     }
 
+    private void enrichModelExpression(final ExpressionEditorDefinition<Expression> expressionExpressionEditorDefinition) {
+        final Optional<Expression> modelExpression = expressionExpressionEditorDefinition.getModelClass();
+        expressionExpressionEditorDefinition.enrich(Optional.of(getNodeUUID()), hasExpression, modelExpression);
+        modelExpression.ifPresent(this::reloadNewBoxedExpressionEditorWithUpdatedModel);
+    }
+
+    private void reloadNewBoxedExpressionEditorWithUpdatedModel(final Expression expression) {
+        getHasExpression().setExpression(expression);
+        loadNewBoxedExpressionEditor();
+    }
+
     @EventHandler("returnToLink")
     void onClickReturnToLink(final ClickEvent event) {
         presenter.exit();
@@ -629,6 +692,19 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         return nodeUUID;
     }
 
+    public void notifyUserAction() {
+        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder = createCommandBuilder();
+        final SaveCurrentStateCommand expressionCommand = new SaveCurrentStateCommand(getHasExpression(),
+                                                                                      getEditorSelectedEvent(),
+                                                                                      this,
+                                                                                      getNodeUUID(),
+                                                                                      getHasName(),
+                                                                                      updateCanvasNodeNameCommand);
+        addExpressionCommand(expressionCommand, commandBuilder);
+
+        execute(commandBuilder);
+    }
+
     void execute(final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder) {
         sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                       commandBuilder.build());
@@ -641,18 +717,6 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     Optional<HasName> getHasName() {
         return hasName;
-    }
-
-    void addUpdatePropertyNameCommand(final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder) {
-        final AbstractCanvasHandler canvasHandler = (AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler();
-        final Element element = canvasHandler.getGraphIndex().get(getNodeUUID());
-        if (element.getContent() instanceof Definition) {
-            final Definition definition = (Definition) element.getContent();
-            final String nameId = definitionUtils.getNameIdentifier(definition.getDefinition());
-            commandBuilder.addCommand(canvasCommandFactory.updatePropertyValue(element,
-                                                                               nameId,
-                                                                               getHasName().orElse(HasName.NOP).getValue()));
-        }
     }
 
     CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> createCommandBuilder() {

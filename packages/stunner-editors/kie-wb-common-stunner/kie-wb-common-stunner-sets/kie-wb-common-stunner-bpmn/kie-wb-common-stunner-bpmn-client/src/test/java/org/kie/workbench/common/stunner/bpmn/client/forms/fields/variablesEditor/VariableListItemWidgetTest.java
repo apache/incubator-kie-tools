@@ -179,12 +179,13 @@ public class VariableListItemWidgetTest {
         verify(customDataType,
                times(1)).setRegExp(customValueRegExpCaptor.capture(),
                                    anyString(),
+                                   anyString(),
                                    anyString());
         RegExp customValueRegExp = RegExp.compile(customValueRegExpCaptor.getValue());
         assertEquals(false, customValueRegExp.test("a 1"));
-        assertEquals(false, customValueRegExp.test("<a1"));
-        assertEquals(false, customValueRegExp.test("a1>"));
-        assertEquals(false, customValueRegExp.test("<a1>"));
+        assertEquals(true, customValueRegExp.test("<a1"));
+        assertEquals(true, customValueRegExp.test("a1>"));
+        assertEquals(true, customValueRegExp.test("<a1>"));
         assertEquals(false, customValueRegExp.test("<a1/>"));
         assertEquals(false, customValueRegExp.test("<a1\\>"));
         assertEquals(false, customValueRegExp.test("a@1"));

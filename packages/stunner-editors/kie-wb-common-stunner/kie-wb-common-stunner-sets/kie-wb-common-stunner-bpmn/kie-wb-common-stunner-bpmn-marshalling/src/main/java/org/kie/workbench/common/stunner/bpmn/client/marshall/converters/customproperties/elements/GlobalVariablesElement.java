@@ -29,6 +29,7 @@ import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.jboss.drools.DroolsFactory;
 import org.jboss.drools.GlobalType;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 
 import static org.jboss.drools.DroolsPackage.Literals.DOCUMENT_ROOT__GLOBAL;
 
@@ -71,6 +72,7 @@ public class GlobalVariablesElement extends ElementDefinition<String> {
 
     @Override
     protected void setStringValue(BaseElement element, String value) {
+        value = StringUtils.preFilterVariablesTwoSemicolonForGenerics(value);
         Stream.of(value.split(","))
                 .map(GlobalVariablesElement::extensionOf)
                 .forEach(getExtensionElements(element)::add);
@@ -83,6 +85,7 @@ public class GlobalVariablesElement extends ElementDefinition<String> {
     }
 
     static GlobalType globalTypeDataOf(String variable) {
+        variable = StringUtils.postFilterForGenerics(variable);
         GlobalType globalType = DroolsFactory.eINSTANCE.createGlobalType();
         String[] properties = variable.split(":", -1);
         globalType.setIdentifier(properties[0]);

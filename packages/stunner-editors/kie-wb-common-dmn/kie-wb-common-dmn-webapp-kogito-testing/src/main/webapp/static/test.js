@@ -70,6 +70,13 @@ function redo() {
   window.frames.editorFrame.contentWindow.gwtEditorBeans.get("DMNDiagramEditor").get().redo();
 }
 
+function search() {
+  window.frames.editorFrame.contentWindow.gwtEditorBeans
+    .get("DMNDiagramEditor")
+    .get()
+    .searchDomainObject(document.getElementById("input-search").value);
+}
+
 const openFile = (event) => {
   const input = event.target;
   const reader = new FileReader();

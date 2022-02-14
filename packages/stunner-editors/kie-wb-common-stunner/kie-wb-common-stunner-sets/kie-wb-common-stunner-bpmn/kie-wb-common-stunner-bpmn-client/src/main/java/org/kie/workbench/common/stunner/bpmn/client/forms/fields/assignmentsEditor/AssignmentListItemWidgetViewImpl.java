@@ -204,9 +204,10 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
                 ValueChangeEvent.fire(name, EMPTY_VALUE);
             }
         });
-        customDataType.setRegExp(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_REGEXP,
+        customDataType.setRegExp(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_GT_LT_REGEXP,
                                  StunnerFormsClientFieldsConstants.CONSTANTS.Removed_invalid_characters_from_name(),
-                                 StunnerFormsClientFieldsConstants.CONSTANTS.Invalid_character_in_name());
+                                 StunnerFormsClientFieldsConstants.CONSTANTS.Invalid_character_in_name(),
+                                 StunnerFormsClientFieldsConstants.CONSTANTS.Unbalanced_GT_LT_from_name());
         customDataType.addKeyDownHandler(event -> {
             int iChar = event.getNativeKeyCode();
             if (iChar == ' ') {

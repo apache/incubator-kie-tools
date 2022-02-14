@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.matches;
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getNotNullHasTypeRefs;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
@@ -52,7 +53,8 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.model.InputClause"),
         startElement = "id")
 public class InputClause extends DMNElement implements HasTypeRefs,
-                                                       DomainObject {
+                                                       DomainObject,
+                                                       HasDomainObject {
 
     @Category
     private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
@@ -174,5 +176,15 @@ public class InputClause extends DMNElement implements HasTypeRefs,
                                          description != null ? description.hashCode() : 0,
                                          inputExpression != null ? inputExpression.hashCode() : 0,
                                          inputValues != null ? inputValues.hashCode() : 0);
+    }
+
+    @Override
+    public Optional<DomainObject> findDomainObject(final String uuid) {
+
+        if (matches(this, uuid)) {
+            return Optional.of(this);
+        }
+
+        return inputExpression.findDomainObject(uuid);
     }
 }

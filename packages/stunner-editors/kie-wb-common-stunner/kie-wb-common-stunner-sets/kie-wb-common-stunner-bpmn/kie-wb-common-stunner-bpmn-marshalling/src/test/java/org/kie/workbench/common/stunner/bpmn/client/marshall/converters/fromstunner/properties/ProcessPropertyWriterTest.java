@@ -177,7 +177,7 @@ public class ProcessPropertyWriterTest {
 
     @Test
     public void processVariablesNoTags() {
-        ProcessVariables processVariables = new ProcessVariables("GV1:Boolean,GV2:Boolean,GV3:Integer");
+        ProcessVariables processVariables = new ProcessVariables("GV1:Boolean:,GV2:Boolean:,GV3:Integer:");
         p.setProcessVariables(processVariables);
 
         final ProcessPropertyReader pp = new ProcessPropertyReader(

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import * as buildEnv from "@kie-tools/build-env";
-
 describe("Upload file test", () => {
   beforeEach(() => {
     cy.visit("/");
@@ -168,6 +166,13 @@ describe("Upload file test", () => {
     cy.get("[data-ouia-component-id='dmn-guided-tour']").should("not.be.visible");
 
     cy.get("[data-ouia-component-id='set-content-error-alert']").should("be.visible");
+  });
+
+  it("DMN Automatic Layout dialogue should appear when opening file without DMNDI", () => {
+    // upload dmn file from fixtures directory by drag and drop
+    cy.get("#upload-field").attachFile("testModelWithoutLayout.dmn", { subjectType: "drag-n-drop" });
+
+    cy.confirmAutomaticLayoutDialogue();
   });
 
   it("should upload PMML file", () => {

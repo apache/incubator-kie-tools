@@ -25,12 +25,15 @@ import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRefs;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.getDomainObject;
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getFlatHasTypeRefs;
 
 @Portable
-public class DecisionRule extends DMNElement implements HasTypeRefs {
+public class DecisionRule extends DMNElement implements HasTypeRefs,
+                                                        HasDomainObject {
 
     private List<UnaryTests> inputEntry;
     private List<LiteralExpression> outputEntry;
@@ -124,5 +127,16 @@ public class DecisionRule extends DMNElement implements HasTypeRefs {
                                          inputEntry != null ? inputEntry.hashCode() : 0,
                                          outputEntry != null ? outputEntry.hashCode() : 0,
                                          annotationEntry != null ? annotationEntry.hashCode() : 0);
+    }
+
+    @Override
+    public Optional<DomainObject> findDomainObject(final String uuid) {
+
+        final Optional<DomainObject> domainObject = getDomainObject(getInputEntry(), uuid);
+        if (domainObject.isPresent()) {
+            return domainObject;
+        }
+
+        return getDomainObject(getOutputEntry(), uuid);
     }
 }

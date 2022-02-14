@@ -75,4 +75,6 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
     void reloadEditor();
 
     void clear();
+
+    void selectDomainObject(final String uuid);
 }

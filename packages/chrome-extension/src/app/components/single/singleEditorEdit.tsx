@@ -20,6 +20,7 @@ import * as ReactDOM from "react-dom";
 import {
   createAndGetMainContainer,
   extractOpenFileExtension,
+  extractOpenFilePath,
   iframeFullscreenContainer,
   removeAllChildren,
 } from "../../utils";
@@ -39,13 +40,14 @@ export function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo }) {
   }
 
   const openFileExtension = extractOpenFileExtension(window.location.href);
+  const openFilePath = extractOpenFilePath(window.location.href);
   if (!openFileExtension) {
     args.logger.log(`Unable to determine file extension from URL.`);
     return;
   }
 
-  if (!args.editorEnvelopeLocator.mapping.has(openFileExtension)) {
-    args.logger.log(`No enhanced editor available for "${openFileExtension}" format.`);
+  if (!args.editorEnvelopeLocator.hasMappingFor(openFilePath)) {
+    args.logger.log(`No enhanced editor available for "${openFilePath}" format.`);
     return;
   }
 

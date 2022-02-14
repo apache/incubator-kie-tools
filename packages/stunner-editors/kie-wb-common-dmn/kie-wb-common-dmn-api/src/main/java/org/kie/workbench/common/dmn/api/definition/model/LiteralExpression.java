@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.matches;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
 
@@ -102,6 +103,14 @@ public class LiteralExpression extends Expression implements IsLiteralExpression
         clonedLiteralExpression.importedValues = Optional.ofNullable(importedValues).map(ImportedValues::copy).orElse(null);
         clonedLiteralExpression.expressionLanguage = Optional.ofNullable(expressionLanguage).map(ExpressionLanguage::copy).orElse(null);
         return clonedLiteralExpression;
+    }
+
+    @Override
+    public Optional<DomainObject> findDomainObject(final String uuid) {
+        if (matches(this, uuid)) {
+            return Optional.of(this);
+        }
+        return Optional.empty();
     }
 
     // -----------------------

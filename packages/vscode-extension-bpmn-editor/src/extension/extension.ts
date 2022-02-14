@@ -16,6 +16,7 @@
 
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
 import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
@@ -28,26 +29,20 @@ export function activate(context: vscode.ExtensionContext) {
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
 
-  const bpmnEnvelope = {
-    envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
-    resourcesPathPrefix: "dist/webview/editors/bpmn",
-  };
-
   KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-bpmn-editor",
     context: context,
     viewType: "kieKogitoWebviewEditorsBpmn",
     generateSvgCommandId: "extension.kogito.getPreviewSvgBpmn",
     silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgBpmn",
-    editorEnvelopeLocator: {
-      targetOrigin: "vscode",
-      mapping: new Map([
-        ["bpmn", bpmnEnvelope],
-        ["bpmn2", bpmnEnvelope],
-        ["BPMN", bpmnEnvelope],
-        ["BPMN2", bpmnEnvelope],
-      ]),
-    },
+    editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
+      new EnvelopeMapping(
+        "bpmn",
+        "**/*.bpmn?(2)",
+        "dist/webview/BpmnEditorEnvelopeApp.js",
+        "dist/webview/editors/bpmn"
+      ),
+    ]),
     backendProxy: backendProxy,
   });
 

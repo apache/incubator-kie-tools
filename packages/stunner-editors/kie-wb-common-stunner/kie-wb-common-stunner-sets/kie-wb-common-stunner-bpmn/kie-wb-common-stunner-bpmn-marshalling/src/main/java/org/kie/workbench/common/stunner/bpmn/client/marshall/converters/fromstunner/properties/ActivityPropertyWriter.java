@@ -29,6 +29,7 @@ import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.InputSet;
 import org.eclipse.bpmn2.OutputSet;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.InitializedVariable.InitializedInputVariable;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.InitializedVariable.InitializedOutputVariable;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.ParsedAssignmentsInfo;
@@ -66,12 +67,15 @@ public class ActivityPropertyWriter extends PropertyWriter {
     }
 
     public void setAssignmentsInfo(AssignmentsInfo info) {
+        info.setValue(StringUtils.preFilterVariablesTwoSemicolonForGenerics(info.getValue()));
         final ParsedAssignmentsInfo assignmentsInfo = ParsedAssignmentsInfo.of(info);
         final List<InitializedInputVariable> inputs = assignmentsInfo.createInitializedInputVariables(getId(),
                                                                                                       variableScope, dataObjects);
         if (!inputs.isEmpty()) {
             final InputOutputSpecification ioSpec = getIoSpecification();
             for (InitializedInputVariable input : inputs) {
+                input.getItemDefinition().setStructureRef(StringUtils.postFilterForGenerics(input.getType()));
+
                 if (isReservedIdentifier(input.getIdentifier())) {
                     continue;
                 }
@@ -92,6 +96,7 @@ public class ActivityPropertyWriter extends PropertyWriter {
         if (!outputs.isEmpty()) {
             final InputOutputSpecification ioSpec = getIoSpecification();
             for (InitializedOutputVariable output : outputs) {
+                output.getItemDefinition().setStructureRef(StringUtils.postFilterForGenerics(output.getType()));
                 DataOutput dataOutput = output.getDataOutput();
                 getOutputSet(ioSpec).getDataOutputRefs().add(dataOutput);
                 ioSpec.getDataOutputs().add(dataOutput);

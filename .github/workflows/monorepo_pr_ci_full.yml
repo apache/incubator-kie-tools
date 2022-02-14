@@ -5,8 +5,6 @@ on:
     branches: [main]
   pull_request:
     branches: "**"
-    paths-ignore:
-      - "packages/**"
 
 concurrency:
   group: ${{ github.event.pull_request && format('monorepo-pr-ci-full-{0}', github.event.pull_request.number) || 'monorepo-pr-ci-full-push-main' }}
@@ -35,14 +33,40 @@ jobs:
         uses: ./.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
+        id: merge_changes
         uses: ./.github/actions/merge-pr-changes
 
+      - name: "Check if should run or not"
+        id: check_diff_paths
+        shell: bash
+        run: |
+          # If there are no changed files outside `packages` or `examples`,
+          # we don't need to run the full CI.
+
+          read -r -a DIFF_PATHS <<< $(git diff --name-only ${{ steps.merge_changes.outputs.base_sha }} ${{ steps.merge_changes.outputs.head_sha }} -- ':!packages' ':!examples')
+          echo $DIFF_PATHS
+
+          if [ ! ${{ github.event.pull_request }} ]; then
+            echo 'Push to the main branch happened, should run'
+            echo "::set-output name=should_run::true"
+          elif [ ${#DIFF_PATHS[@]} -eq 0 ]; then
+            echo '`CI` is already running, no need to run this one.'
+            echo "::set-output name=should_run::false"
+          else
+            echo '`CI :: Full` will run.'
+            echo "::set-output name=should_run::true"
+          fi
+
+          echo "Done"
+
       - name: "Setup environment"
+        if: steps.check_diff_paths.outputs.should_run == 'true'
         uses: ./.github/actions/setup-env
         with:
           os: ${{ matrix.os }}
 
       - name: "Build"
+        if: steps.check_diff_paths.outputs.should_run == 'true'
         env:
           WEBPACK__minimize: "false"
           WEBPACK__tsLoaderTranspileOnly: "false"
@@ -57,6 +81,7 @@ jobs:
           lerna run build:prod --stream --concurrency 1
 
       - name: "Check generated resources (you should commit those!)"
+        if: steps.check_diff_paths.outputs.should_run == 'true'
         shell: bash
         run: |
           git diff
@@ -64,7 +89,7 @@ jobs:
 
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2
-        if: always() && !cancelled()
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
         with:
           name: artifacts-${{ matrix.os }}
           if-no-files-found: warn
@@ -75,7 +100,7 @@ jobs:
 
       - name: "Upload IT Tests artifacts"
         uses: actions/upload-artifact@v2
-        if: always() && !cancelled()
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
         with:
           name: it-tests-artifacts-${{ matrix.os }}
           if-no-files-found: warn

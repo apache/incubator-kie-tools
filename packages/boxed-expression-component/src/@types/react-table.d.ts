@@ -16,7 +16,6 @@
 
 import * as React from "react";
 import { DataType } from "../api";
-import { TableResizerProps } from "react-table";
 
 // Extending react-table definitions with missing and custom properties
 declare module "react-table" {
@@ -68,7 +67,5 @@ declare module "react-table" {
     disableHandlerOnHeader?: boolean;
   }
 
-  export interface DataRecord {
-    [columnName: string]: unknown;
-  }
+  export type DataRecord = Record<string, unknonw>;
 }

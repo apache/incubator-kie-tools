@@ -80,11 +80,8 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelContainer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
@@ -111,6 +108,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorViewImpl.ENABLED_BETA_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.LITERAL_EXPRESSION;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.UNDEFINED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -332,6 +330,7 @@ public class ExpressionEditorViewImplTest {
         when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
         when(undefinedExpressionEditorDefinition.getModelClass()).thenReturn(Optional.empty());
         when(undefinedExpressionEditorDefinition.getName()).thenReturn(UNDEFINED_EXPRESSION_DEFINITION_NAME);
+        when(undefinedExpressionEditorDefinition.getType()).thenReturn(UNDEFINED);
         when(undefinedExpressionEditor.getModel()).thenReturn(new BaseGridData());
         when(undefinedExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
                                                            any(Optional.class),
@@ -342,6 +341,7 @@ public class ExpressionEditorViewImplTest {
 
         when(literalExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(new LiteralExpression()));
         when(literalExpressionEditorDefinition.getName()).thenReturn(LITERAL_EXPRESSION.getText());
+        when(literalExpressionEditorDefinition.getType()).thenReturn(LITERAL_EXPRESSION);
         when(literalExpressionEditor.getModel()).thenReturn(new BaseGridData());
         when(literalExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
                                                          any(Optional.class),
@@ -701,15 +701,13 @@ public class ExpressionEditorViewImplTest {
 
         final CompositeCommand.Builder commandBuilder = mock(CompositeCommand.Builder.class);
         doReturn(commandBuilder).when(view).createCommandBuilder();
-
         doNothing().when(view).addExpressionCommand(any(), eq(commandBuilder));
-        doNothing().when(view).addUpdatePropertyNameCommand(commandBuilder);
         doNothing().when(view).execute(commandBuilder);
+        doReturn(Optional.empty()).when(view).getHasName();
 
         view.notifyUserAction();
 
         verify(view).addExpressionCommand(captor.capture(), eq(commandBuilder));
-        verify(view).addUpdatePropertyNameCommand(commandBuilder);
         verify(view).execute(commandBuilder);
 
         final SaveCurrentStateCommand command = captor.getValue();
@@ -725,35 +723,6 @@ public class ExpressionEditorViewImplTest {
         view.openManageDataType();
 
         verify(dataTypePageActiveEvent).fire(any(DataTypePageTabActiveEvent.class));
-    }
-
-    @Test
-    public void testAddUpdatePropertyNameCommand() {
-
-        final CompositeCommand.Builder commandBuilder = mock(CompositeCommand.Builder.class);
-        final Index graphIndex = mock(Index.class);
-        final org.kie.workbench.common.stunner.core.graph.Element element = mock(org.kie.workbench.common.stunner.core.graph.Element.class);
-        final Definition definition = mock(Definition.class);
-        final Object theDefinition = mock(Object.class);
-        final HasName hasName = mock(HasName.class);
-        final Optional<HasName> optionalHasName = Optional.of(hasName);
-        final Name name = mock(Name.class);
-        final String nameId = "nameId";
-        final CanvasCommand<AbstractCanvasHandler> updateCommand = mock(CanvasCommand.class);
-
-        doReturn(optionalHasName).when(view).getHasName();
-
-        when(hasName.getValue()).thenReturn(name);
-        when(definition.getDefinition()).thenReturn(theDefinition);
-        when(canvasCommandFactory.updatePropertyValue(element, nameId, name)).thenReturn(updateCommand);
-        when(definitionUtils.getNameIdentifier(theDefinition)).thenReturn(nameId);
-        when(element.getContent()).thenReturn(definition);
-        when(graphIndex.get(NODE_UUID)).thenReturn(element);
-        when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
-
-        view.addUpdatePropertyNameCommand(commandBuilder);
-
-        verify(commandBuilder).addCommand(updateCommand);
     }
 
     @Test
@@ -849,5 +818,15 @@ public class ExpressionEditorViewImplTest {
                 .isNotEmpty()
                 .hasSize(1)
                 .anyMatch(typeProps -> typeProps.isCustom && typeProps.name.equals(customDataType) && typeProps.typeRef.equals(customDataType));
+    }
+
+    @Test
+    public void testOnLogicTypeSelect() {
+        doNothing().when(view).loadNewBoxedExpressionEditor();
+
+        view.onLogicTypeSelect(LITERAL_EXPRESSION.getText());
+
+        verify(literalExpressionEditorDefinition).enrich(any(), any(), any());
+        verify(view).loadNewBoxedExpressionEditor();
     }
 }
