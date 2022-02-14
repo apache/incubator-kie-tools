@@ -97,10 +97,6 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
     return `editable-cell ${selectedClass} ${mode}`;
   }, [isSelected, mode]);
 
-  /* FIXME: If this function is no more used by production code, I'm ok for removing it  */
-  /**
-   * @deprecated KOGITO-3655
-   */
   const onFocus = useCallback(() => {
     if (mode === EDIT_MODE) {
       return;
