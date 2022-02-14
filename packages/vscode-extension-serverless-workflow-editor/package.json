@@ -1,0 +1,112 @@
+{
+  "name": "vscode-extension-serverless-workflow-editor",
+  "publisher": "redhat",
+  "displayName": "Serverless Workflow Editor",
+  "description": "Edit Serverless Workflow definitions",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "scripts": {
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "build:prod": "rimraf dist && webpack && yarn pack:prod",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "pack:prod": "vsce package --githubBranch main --yarn -o ./dist/vscode_extension_serverless_workflow_editor_$npm_package_version.vsix",
+    "compile": "webpack",
+    "watch": "webpack",
+    "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
+  },
+  "dependencies": {
+    "@kie-tools-core/editor": "0.0.0",
+    "@kie-tools-core/i18n": "0.0.0",
+    "@kie-tools-core/patternfly-base": "0.0.0",
+    "@kie-tools-core/vscode-extension": "0.0.0",
+    "@kie-tools-core/workspace": "0.0.0",
+    "@kie-tools/serverless-workflow-editor": "0.0.0"
+  },
+  "devDependencies": {
+    "@kie-tools/build-env": "0.0.0"
+  },
+  "icon": "icon.png",
+  "main": "./dist/extension/extension.js",
+  "browser": "./dist/extension/extension.js",
+  "engines": {
+    "vscode": "^1.46.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCustomEditor:kieKogitoWebviewEditorsServerlessWorkflow"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "kieKogitoWebviewEditorsServerlessWorkflow",
+        "displayName": "Serverless Workflow Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.{sw.json,sw.yaml,sw.yml}"
+          }
+        ]
+      }
+    ],
+    "languages": [
+      {
+        "id": "serverless-workflow",
+        "extensions": [
+          ".sw.json",
+          ".sw.yaml",
+          ".sw.yml"
+        ],
+        "aliases": [
+          "sw.json",
+          "sw.yaml",
+          "sw.yml",
+          "Serverless workflow description"
+        ]
+      }
+    ],
+    "configuration": {
+      "title": "Serverless Workflow Editor",
+      "properties": {
+        "kogito.sw.runOnSave": {
+          "type": "string",
+          "default": "extension.kogito.silentlyGenerateSvgSw",
+          "markdownDescription": "Execute a command on each save operation of the Serverless Workflow file."
+        },
+        "kogito.sw.svgFilenameTemplate": {
+          "type": "string",
+          "default": "${fileBasenameNoExtension}.svg",
+          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}.svg`)."
+        },
+        "kogito.sw.svgFilePath": {
+          "type": "string",
+          "default": "${fileDirname}",
+          "markdownDescription": "Where to save generated SVG files (defaults to same path as the file: `${fileDirname}`)."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "extension.kogito.getPreviewSvgSw",
+        "title": "Get Serverless Workflow Editor Preview SVG",
+        "icon": {
+          "light": "./static/svg-icon-light.png",
+          "dark": "./static/svg-icon-dark.png"
+        }
+      },
+      {
+        "command": "extension.kogito.silentlyGenerateSvgSw",
+        "title": "Generate SVG without any notification"
+      }
+    ]
+  }
+}

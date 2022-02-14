@@ -109,4 +109,20 @@ export class BpmnEditorEnvelopeApiImpl
     }
     return editor.getDimensions(uuid);
   }
+
+  public async canvas_applyState(uuid: string, state: string) {
+    const editor = this.view().getEditor();
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.applyState(uuid, state);
+  }
+
+  public async canvas_centerNode(uuid: string) {
+    const editor = this.view().getEditor();
+    if (!editor) {
+      throw new Error("Editor not found.");
+    }
+    return editor.centerNode(uuid);
+  }
 }

@@ -107,7 +107,7 @@ export function WorkspacesContextProvider({ children, Context = WorkspacesContex
       }
 
       const suggestedFirstFile = files
-        .filter((file) => [...editorEnvelopeLocator.mapping.keys()].includes(file.extension))
+        .filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath))
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0];
 
       return { workspace, suggestedFirstFile };

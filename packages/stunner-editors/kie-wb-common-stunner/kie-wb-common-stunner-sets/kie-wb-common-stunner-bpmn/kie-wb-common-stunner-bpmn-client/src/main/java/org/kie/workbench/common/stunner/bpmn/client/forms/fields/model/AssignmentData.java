@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 
 import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.isEmpty;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.nonEmpty;
@@ -160,13 +161,14 @@ public class AssignmentData {
         return getStringForList(inputVariables);
     }
 
-    public void setInputVariables(final String sInputVariables) {
+    public void setInputVariables(String sInputVariables) {
+        sInputVariables = StringUtils.preFilterVariablesTwoSemicolonForGenerics(sInputVariables);
         inputVariables.clear();
         if (sInputVariables != null && !sInputVariables.isEmpty()) {
             String[] inputs = sInputVariables.split(",");
             for (String input : inputs) {
                 if (!input.isEmpty()) {
-                    Variable var = Variable.deserialize(input,
+                    Variable var = Variable.deserialize(StringUtils.postFilterForGenerics(input),
                                                         Variable.VariableType.INPUT,
                                                         dataTypes);
                     if (var != null && var.getName() != null && !var.getName().isEmpty()) {
@@ -185,13 +187,14 @@ public class AssignmentData {
         return getStringForList(outputVariables);
     }
 
-    public void setOutputVariables(final String sOutputVariables) {
+    public void setOutputVariables(String sOutputVariables) {
+        sOutputVariables = StringUtils.preFilterVariablesTwoSemicolonForGenerics(sOutputVariables);
         outputVariables.clear();
         if (sOutputVariables != null && !sOutputVariables.isEmpty()) {
             String[] outputs = sOutputVariables.split(",");
             for (String output : outputs) {
                 if (!output.isEmpty()) {
-                    Variable var = Variable.deserialize(output,
+                    Variable var = Variable.deserialize(StringUtils.postFilterForGenerics(output),
                                                         Variable.VariableType.OUTPUT,
                                                         dataTypes);
                     if (var != null && var.getName() != null && !var.getName().isEmpty()) {
@@ -259,7 +262,8 @@ public class AssignmentData {
         return dataTypes;
     }
 
-    protected void setDataTypes(final String dataTypes) {
+    protected void setDataTypes(String dataTypes) {
+        dataTypes = StringUtils.preFilterVariablesTwoSemicolonForGenerics(dataTypes);
         this.dataTypes.clear();
         this.dataTypeDisplayNames.clear();
         mapDisplayNameToDataType.clear();
@@ -287,6 +291,11 @@ public class AssignmentData {
                     } else {
                         dtSimpleType = dtDisplayName;
                     }
+
+                    dtName = StringUtils.postFilterForGenerics(dtName);
+                    dtDisplayName = StringUtils.postFilterForGenerics(dtDisplayName);
+                    dtSimpleType = StringUtils.postFilterForGenerics(dtSimpleType);
+
                     if (!dtName.isEmpty()) {
                         this.dataTypeDisplayNames.add(dtDisplayName);
                         this.dataTypes.add(dtName);

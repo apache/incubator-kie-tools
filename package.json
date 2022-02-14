@@ -3,10 +3,19 @@
   "version": "0.0.0",
   "license": "Apache-2.0",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "examples/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "examples/*"
+    ],
+    "nohoist": [
+      "@kogito-tooling/serverless-workflow-editor",
+      "@kogito-tooling/serverless-workflow-editor/mermaid",
+      "@kogito-tooling/serverless-workflow-editor/mermaid/**",
+      "@kogito-tooling/serverless-workflow-editor/@types/mermaid",
+      "@kogito-tooling/serverless-workflow-editor/@types/mermaid/**"
+    ]
+  },
   "scripts": {
     "bootstrap": "yarn",
     "env:print": "build-env --print-env",
@@ -23,6 +32,8 @@
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
+    "@kie/npm-treatment-tool": "^1.1.1",
+    "@severlessworkflow/sdk-typescript": "^1.0.0",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^11.2.6",
@@ -45,14 +56,15 @@
     "@types/semver": "^7.3.6",
     "@types/simpl-schema": "^1.12.0",
     "@types/sinon": "^10.0.2",
+    "@types/svg-pan-zoom": "^3.4.0",
     "@types/underscore": "^1.11.2",
     "@types/vscode": "^1.56.0",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
-    "@vscode/test-web": "^0.0.15",
+    "@vscode/test-web": "^0.0.22",
     "babel-loader": "^8.2.2",
     "chai": "^4.3.4",
-    "chromedriver": "^96.0.0",
+    "chromedriver": "^98.0.0",
     "circular-dependency-plugin": "^5.2.2",
     "compressing": "^1.5.1",
     "copy-webpack-plugin": "^8.1.1",
@@ -60,8 +72,8 @@
     "cpr": "^3.0.1",
     "cross-var": "^1.1.0",
     "css-loader": "^5.2.6",
-    "cypress": "^7.7.0",
-    "cypress-file-upload": "^5.0.7",
+    "cypress": "^9.4.1",
+    "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
     "decompress": "^4.2.1",
@@ -113,6 +125,7 @@
     "start-server-and-test": "^1.12.1",
     "stream": "^0.0.2",
     "style-loader": "^2.0.0",
+    "svg-pan-zoom": "^3.6.1",
     "symlink-dir": "^5.0.1",
     "ts-jest": "^26.5.6",
     "ts-loader": "^9.1.2",

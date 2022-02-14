@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 import com.google.gwt.regexp.shared.RegExp;
 import org.kie.workbench.common.stunner.core.util.Patterns;
@@ -30,9 +32,15 @@ import org.kie.workbench.common.stunner.core.util.Patterns;
 public class StringUtils {
 
     public static final String ALPHA_NUM_REGEXP = "^[a-zA-Z0-9\\-\\_]*$";
-    public static final String ALPHA_NUM_UNDERSCORE_DOT_REGEXP = "^[a-zA-Z0-9\\_\\.]*$";
+    public static final String ALPHA_NUM_UNDERSCORE_DOT_GT_LT_REGEXP = "^[a-zA-Z0-9<>,\\_\\.]*$";
     public static final String ALPHA_NUM_SPACE_REGEXP = "^[a-zA-Z0-9\\-\\_\\ ]*$";
     public static final RegExp EXPRESSION = RegExp.compile(Patterns.EXPRESSION);
+    public static final String REPEATING_DOTS_MSG = "Repeating .";
+    public static final String REPEATING_DOTS = "..";
+    public static final String EMPTY_GENERICS_MSG = "Empty Generics <>";
+    public static final String EMPTY_GENERICS = "<>";
+    public static final String MALFORMED_GENERICS_MSG = "Malformed Generics ><";
+    public static final String MALFORMED_GENERICS = "><";
 
     private static URL url = new URL();
 
@@ -155,6 +163,12 @@ public class StringUtils {
      */
     public static String createDataTypeDisplayName(String dataType) {
         int i = dataType.lastIndexOf('.');
+        int genericsIndexLT = dataType.lastIndexOf('<');
+        int genericsIndexGT = dataType.lastIndexOf('>');
+
+        if (genericsIndexLT != -1 || genericsIndexGT != -1) {
+            return dataType;
+        }
         StringBuilder formattedDataType = new StringBuilder();
         formattedDataType.append(dataType.substring(i + 1));
         if (i != -1) {
@@ -169,6 +183,7 @@ public class StringUtils {
      * @return
      */
     public static Set<String> getSetDataTypes(String value) {
+        value = preFilterVariablesForGenerics(value);
         Set<String> types = new HashSet<>();
         if (value == null) {
             return types;
@@ -176,7 +191,7 @@ public class StringUtils {
         final String[] split = value.split(",");
         for (String string : split) {
             String type = string.substring(string.indexOf(':') + 1, string.lastIndexOf(':'));
-            types.add(type);
+            types.add(postFilterForGenerics(type));
         }
 
         return types;
@@ -189,5 +204,160 @@ public class StringUtils {
      */
     public static void setURL(URL u) {
         url = u;
+    }
+
+    /**
+     * returns if a string is balanced for generics if it contains generics characters.
+     * ie
+     * List<String>             -> true
+     * Map<String,String>       -> true
+     * List<>                   -> false empty
+     * List<String><String>     -> false
+     * @param string
+     * @return
+     */
+    public static boolean isOkWithGenericsFormat(String string) {
+        Stack<Integer> stack = new Stack<>();
+        List<List<Integer>> ranges = new ArrayList<>();
+        int maximumLength = 0;
+        int maximumIndex = 0;
+        for (int i = 0; i < string.length(); i++) {
+            char c = string.charAt(i);
+            if (c == '<') {
+                stack.push(i);
+            } else if (c == '>') {
+                if (stack.size() != 0) {
+                    final Integer peek = stack.peek();
+                    List<Integer> range = new ArrayList<>();
+                    range.add(peek);
+                    range.add(i);
+                    ranges.add(range);
+                    stack.pop();
+                    int length = (i + 1) - peek;
+                    if (length == 2) { // Empty <>
+                        return false;
+                    }
+                    if (length > maximumLength) {
+                        maximumLength = length;
+                        maximumIndex = ranges.size() - 1;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        if (ranges.size() != 0) {
+
+            List<Integer> maximumString = ranges.get(maximumIndex);
+            int maximumBegin = maximumString.get(0);
+            int maximumEnd = maximumString.get(1);
+
+            for (int i = 0; i < ranges.size(); i++) {
+                if (i == maximumIndex) {
+                    continue;
+                }
+                List<Integer> range = ranges.get(i);
+                int begin = range.get(0);
+                int end = range.get(1) + 1;
+
+                if ((begin < maximumBegin || end < maximumBegin)        // Left
+                        || (begin > maximumEnd || end > maximumEnd)) {  // Right
+                    return false;
+                }
+            }
+        }
+        return stack.size() == 0;
+    }
+
+    /**
+     * prefilters a string to be formated for generics .*
+     * @param string
+     * @return
+     */
+    public static String preFilterVariablesForGenerics(String string) {
+
+        if (string != null && !string.isEmpty()) {
+            int index = 0;
+            boolean done = false;
+            do {
+                int nameIndex = string.indexOf(":", index);
+                String name = string.substring(index, nameIndex);
+
+                int typeIndex = string.indexOf(":", nameIndex + 1);
+
+                if (typeIndex == -1) {
+                    typeIndex = string.length();
+                    done = true;
+                }
+                String type = string.substring(nameIndex + 1, typeIndex).replace(",", "*");
+                string = string.substring(0, nameIndex + 1) + type + string.substring(typeIndex);
+
+                int tagsIndex = string.indexOf(":", typeIndex + 1);
+                if (tagsIndex != -1) {
+                    tagsIndex = string.indexOf(",", typeIndex + 1);
+                    String tags = string.substring(typeIndex + 1, tagsIndex);
+                }
+                index = tagsIndex + 1;
+                if (tagsIndex == -1) {
+                    done = true;
+                }
+            } while (!done);
+        }
+        return string;
+    }
+
+    /**
+     * prefilters a string to be formated for generics .*
+     * @param string
+     * @return
+     */
+    public static String preFilterVariablesTwoSemicolonForGenerics(String string) {
+
+        if (string != null) {
+            Stack<Integer> stack = new Stack<>();
+            List<List<Integer>> ranges = new ArrayList<>();
+            for (int i = 0; i < string.length(); i++) {
+                char c = string.charAt(i);
+                if (c == '<') {
+                    stack.push(i);
+                } else if (c == '>') {
+                    if (stack.size() != 0) {
+                        final Integer peek = stack.peek();
+                        List<Integer> range = new ArrayList<>();
+                        range.add(peek);
+                        range.add(i);
+                        ranges.add(range);
+                        stack.pop();
+                    }
+                }
+            }
+
+            if (ranges.size() == 0) { // No Generics
+                return string;
+            }
+
+            for (int i = 0; i < ranges.size(); i++) {
+                List<Integer> range = ranges.get(i);
+                int begin = range.get(0);
+                int end = range.get(1) + 1;
+                String theString = string.substring(begin, end).replace(",", "*");
+                string = string.substring(0, begin) + theString + string.substring(end);
+            }
+        }
+        return string;
+    }
+
+    /**
+     * prefilters a string to be formated for generics .*
+     * @param string
+     * @return
+     */
+    public static String postFilterForGenerics(String string) {
+        if (string != null && string.contains("*")) {
+            string = string.replace("*", ",");
+        }
+
+        return string;
     }
 }

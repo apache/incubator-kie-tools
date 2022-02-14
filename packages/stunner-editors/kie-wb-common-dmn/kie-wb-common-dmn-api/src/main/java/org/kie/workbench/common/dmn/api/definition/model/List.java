@@ -26,8 +26,10 @@ import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static java.util.Objects.isNull;
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getFlatHasTypeRefsFromExpressions;
 
 @Portable
@@ -62,6 +64,16 @@ public class List extends Expression {
         clonedList.componentWidths = new ArrayList<>(componentWidths);
         clonedList.expression = expression.stream().map(expressionWrapperMappingFn(clonedList)).collect(Collectors.toList());
         return clonedList;
+    }
+
+    @Override
+    public Optional<DomainObject> findDomainObject(final String uuid) {
+        return getExpression().stream()
+                .filter(hasExpression -> !isNull(hasExpression.getExpression()))
+                .map(hasExpression -> hasExpression.getExpression().findDomainObject(uuid))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
     }
 
     private Function<HasExpression, HasExpression> expressionWrapperMappingFn(final List clonedList) {

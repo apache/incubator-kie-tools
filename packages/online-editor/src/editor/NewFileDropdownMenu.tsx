@@ -188,9 +188,7 @@ export function NewFileDropdownMenu(props: {
         })
       );
 
-      const fileToGoTo = uploadedFiles
-        .filter((file) => [...editorEnvelopeLocator.mapping.keys()].includes(file.extension))
-        .pop();
+      const fileToGoTo = uploadedFiles.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)).pop();
 
       await props.onAddFile(fileToGoTo);
       successfullyUploadedAlert.show({ qtt: uploadedFiles.length });

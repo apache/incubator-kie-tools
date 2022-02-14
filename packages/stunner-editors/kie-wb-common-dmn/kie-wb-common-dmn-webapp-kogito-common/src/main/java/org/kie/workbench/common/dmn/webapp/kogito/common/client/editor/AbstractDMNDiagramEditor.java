@@ -39,6 +39,7 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEv
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
@@ -52,6 +53,7 @@ import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWid
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.ConfirmationDialog;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
@@ -110,30 +112,33 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     protected final GuidedTourBridgeInitializer guidedTourBridgeInitializer;
     protected final DRDNameChanger drdNameChanger;
 
+    private final ConfirmationDialog confirmationDialog;
+
     protected AbstractDMNDiagramEditor(final View view,
-                                    final MultiPageEditorContainerView containerView,
-                                    final StunnerEditor stunnerEditor,
-                                    final DMNEditorSearchIndex editorSearchIndex,
-                                    final SearchBarComponent<DMNSearchableElement> searchBarComponent,
-                                    final SessionManager sessionManager,
-                                    final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                    final DocumentationView documentationView,
-                                    final ClientTranslationService translationService,
-                                    final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
-                                    final DecisionNavigatorDock decisionNavigatorDock,
-                                    final DiagramEditorPropertiesDock diagramPropertiesDock,
-                                    final PreviewDiagramDock diagramPreviewAndExplorerDock,
-                                    final LayoutHelper layoutHelper,
-                                    final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
-                                    final DataTypesPage dataTypesPage,
-                                    final KogitoClientDiagramService diagramServices,
-                                    final MonacoFEELInitializer feelInitializer,
-                                    final CanvasFileExport canvasFileExport,
-                                    final Promises promises,
-                                    final IncludedModelsPage includedModelsPage,
-                                    final KogitoChannelHelper kogitoChannelHelper,
-                                    final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
-                                    final DRDNameChanger drdNameChanger) {
+                                       final MultiPageEditorContainerView containerView,
+                                       final StunnerEditor stunnerEditor,
+                                       final DMNEditorSearchIndex editorSearchIndex,
+                                       final SearchBarComponent<DMNSearchableElement> searchBarComponent,
+                                       final SessionManager sessionManager,
+                                       final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                       final DocumentationView documentationView,
+                                       final ClientTranslationService translationService,
+                                       final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
+                                       final DecisionNavigatorDock decisionNavigatorDock,
+                                       final DiagramEditorPropertiesDock diagramPropertiesDock,
+                                       final PreviewDiagramDock diagramPreviewAndExplorerDock,
+                                       final LayoutHelper layoutHelper,
+                                       final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
+                                       final DataTypesPage dataTypesPage,
+                                       final KogitoClientDiagramService diagramServices,
+                                       final MonacoFEELInitializer feelInitializer,
+                                       final CanvasFileExport canvasFileExport,
+                                       final Promises promises,
+                                       final IncludedModelsPage includedModelsPage,
+                                       final KogitoChannelHelper kogitoChannelHelper,
+                                       final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
+                                       final DRDNameChanger drdNameChanger,
+                                       final ConfirmationDialog confirmationDialog) {
         super(view, containerView);
         this.stunnerEditor = stunnerEditor;
         this.sessionManager = sessionManager;
@@ -157,6 +162,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         this.kogitoChannelHelper = kogitoChannelHelper;
         this.guidedTourBridgeInitializer = guidedTourBridgeInitializer;
         this.drdNameChanger = drdNameChanger;
+        this.confirmationDialog = confirmationDialog;
     }
 
     public void onStartup(final PlaceRequest place) {
@@ -183,7 +189,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
                 });
     }
 
-    private void setupSessionHeaderContainer() {
+    void setupSessionHeaderContainer() {
         SessionDiagramPresenter presenter = stunnerEditor.getPresenter();
         drdNameChanger.setSessionPresenterView(presenter.getView());
         presenter.getView().setSessionHeaderContainer(getWidget(drdNameChanger.getElement()));
@@ -220,10 +226,38 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     @SuppressWarnings("all")
     public void open(final Diagram diagram,
                      final SessionPresenter.SessionPresenterCallback callback) {
-        final AbstractSession currentSession = !stunnerEditor.isClosed() ? (AbstractSession) stunnerEditor.getSession() : null;
-        this.layoutHelper.applyLayout(diagram, openDiagramLayoutExecutor);
         feelInitializer.initializeFEELEditor();
-        stunnerEditor.open(diagram, new SessionPresenter.SessionPresenterCallback() {
+        if (layoutHelper.hasLayoutInformation(diagram)) {
+            executeOpen(diagram, callback);
+        } else {
+            showAutomaticLayoutDialog(diagram, callback);
+        }
+    }
+
+    void showAutomaticLayoutDialog(final Diagram diagram,
+                                   final SessionPresenter.SessionPresenterCallback callback) {
+        confirmationDialog.show(translationService.getValue(DMNEditorConstants.AutomaticLayout_Label),
+                                null,
+                                translationService.getValue(DMNEditorConstants.AutomaticLayout_DiagramDoesNotHaveLayout),
+                                () -> {
+                                    layoutHelper.applyLayout(diagram, openDiagramLayoutExecutor);
+                                    executeOpen(diagram, callback);
+                                },
+                                () -> executeOpen(diagram, callback));
+    }
+
+    void executeOpen(final Diagram diagram,
+                     final SessionPresenter.SessionPresenterCallback callback) {
+        final AbstractSession currentSession = stunnerEditor.isClosed()
+                ? null
+                : (AbstractSession) stunnerEditor.getSession();
+        stunnerEditor.open(diagram, getSessionPresenterCallback(diagram, callback, currentSession));
+    }
+
+    SessionPresenter.SessionPresenterCallback getSessionPresenterCallback(final Diagram diagram,
+                                                                          final SessionPresenter.SessionPresenterCallback callback,
+                                                                          final AbstractSession currentSession) {
+        return new SessionPresenter.SessionPresenterCallback() {
             @Override
             public void afterCanvasInitialized() {
                 callback.afterCanvasInitialized();
@@ -250,10 +284,10 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
             }
 
             @Override
-            public void onError(ClientRuntimeError error) {
+            public void onError(final ClientRuntimeError error) {
                 callback.onError(error);
             }
-        });
+        };
     }
 
     public void initialiseKieEditorForSession(final Diagram diagram) {
@@ -333,7 +367,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
 
     @Override
     public Promise<Void> setContent(final String path,
-                              final String value) {
+                                    final String value) {
         // Close current editor, if any.
         stunnerEditor.close();
         Promise promise =

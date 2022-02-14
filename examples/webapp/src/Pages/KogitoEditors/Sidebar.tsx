@@ -108,11 +108,7 @@ export function Sidebar(props: Props) {
     }
 
     const currentFile = inputRef.current!.files![0];
-    const fileExtension = extractFileExtension(currentFile.name);
-    if (
-      !fileExtension ||
-      ![...props.editorEnvelopeLocator.mapping.keys()].find((element) => element === fileExtension)
-    ) {
+    if (!props.editorEnvelopeLocator.hasMappingFor(currentFile.name)) {
       return;
     }
 

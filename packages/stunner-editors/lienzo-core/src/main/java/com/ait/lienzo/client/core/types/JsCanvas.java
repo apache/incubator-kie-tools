@@ -28,8 +28,8 @@ import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.types.JsWiresShape;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
-import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLCanvasElement;
 import jsinterop.annotations.JsType;
 
@@ -38,13 +38,15 @@ public class JsCanvas implements JsCanvasNodeLister {
 
     LienzoPanel panel;
     Layer layer;
+    protected JSShapeStateApplier stateApplier;
     public static JsCanvasEvents events;
     public static JsCanvasAnimations animations;
     public static JsCanvasLogger logger;
 
-    public JsCanvas(LienzoPanel panel, Layer layer) {
+    public JsCanvas(LienzoPanel panel, Layer layer, JSShapeStateApplier stateApplier) {
         this.panel = panel;
         this.layer = layer;
+        this.stateApplier = stateApplier;
         this.events = null;
     }
 
@@ -258,6 +260,46 @@ public class JsCanvas implements JsCanvasNodeLister {
             ids.add(shape.getID());
         }
         return ids;
+    }
+
+    public void applyState(String UUID, String state) {
+        if (UUID != null && state != null) {
+            stateApplier.applyState(UUID, state);
+        }
+    }
+
+    public void center(String UUID) {
+        if (UUID != null) {
+            centerNode(UUID);
+        }
+    }
+
+    public void centerNode(String UUID) {
+        NFastArrayList<Double> absoluteLocation = getAbsoluteLocation(UUID);
+
+        if (absoluteLocation != null) {
+
+            double width = layer.getViewport().getWidth();
+            double height = layer.getViewport().getHeight();
+
+            NFastArrayList<Double> dimensions = getDimensions(UUID);
+            double nodeWidth = 0;
+            double nodeHeight = 0;
+
+            if (dimensions != null) {
+                nodeWidth = dimensions.get(0);
+                nodeHeight = dimensions.get(1);
+            }
+
+            double translatedX = -absoluteLocation.get(0) + (width / 2) - (nodeWidth / 2);
+            double translatedY = -absoluteLocation.get(1) + (height / 2) - (nodeHeight / 2);
+
+            if (translatedX <= 0 && translatedY <= 0) { // prevent moving (0,0) Dotten Line right/below
+                layer.getViewport().getTransform().translate(-layer.getViewport().getTransform().getTranslateX(), -layer.getViewport().getTransform().getTranslateY());
+                layer.getViewport().getTransform().translate(translatedX, translatedY);
+                ((ScrollablePanel) panel).refresh();
+            }
+        }
     }
 
     @Override

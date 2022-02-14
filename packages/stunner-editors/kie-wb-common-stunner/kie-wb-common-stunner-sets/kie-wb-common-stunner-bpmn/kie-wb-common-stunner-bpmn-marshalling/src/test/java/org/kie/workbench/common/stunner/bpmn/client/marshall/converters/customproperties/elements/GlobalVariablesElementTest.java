@@ -31,7 +31,7 @@ import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.f
 
 public class GlobalVariablesElementTest {
 
-    private final String GLOBAL_VARIABLES = "GV1:Boolean,GV2:Boolean,GV3:Integer";
+    private final String GLOBAL_VARIABLES = "GV1:Boolean,GV2:Boolean,GV3:Integer,GV4:Map<String,String>";
     private final String NAME = "DefaultImports";
     private final String GLOBAL_VARIABLE = "GV1:Boolean";
 

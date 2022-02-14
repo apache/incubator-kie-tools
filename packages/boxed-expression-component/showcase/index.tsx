@@ -63,6 +63,7 @@ export const App: React.FunctionComponent = () => {
     broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) => setExpressionDefinition(definition),
     notifyUserAction(): void {},
     openManageDataType(): void {},
+    onLogicTypeSelect(): void {},
   };
 
   const onTypedExpressionChange = useCallback((e) => {

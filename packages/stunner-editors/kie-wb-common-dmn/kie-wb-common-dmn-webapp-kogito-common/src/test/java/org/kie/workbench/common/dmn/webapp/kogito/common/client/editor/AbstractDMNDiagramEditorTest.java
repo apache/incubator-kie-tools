@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,402 +13,442 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.editor;
 
+import java.util.List;
+
+import javax.enterprise.event.Event;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import elemental2.dom.HTMLElement;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
-import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
-import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocusUtils;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
-import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
-import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
-import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
-import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
-import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.PromiseMock;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
-import org.kie.workbench.common.stunner.client.widgets.editor.EditorSessionCommands;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
-import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.ConfirmationDialog;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropertiesDock;
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
-import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.EventSourceMock;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.Command;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor.DATA_TYPES_PAGE_INDEX;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doAnswer;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public abstract class AbstractDMNDiagramEditorTest {
-
-    protected static final String CONTENT = "content";
+public class AbstractDMNDiagramEditorTest {
 
     @Mock
-    protected AbstractCanvasHandler canvasHandler;
+    private AbstractDMNDiagramEditor.View view;
 
     @Mock
-    protected MultiPageEditorContainerView multiPageEditorContainerView;
+    private MultiPageEditorContainerView containerView;
 
     @Mock
-    protected MultiPageEditor multiPageEditor;
+    private StunnerEditor stunnerEditor;
 
     @Mock
-    protected ClientTranslationService clientTranslationService;
+    private SessionManager sessionManager;
 
     @Mock
-    protected DocumentationView<Diagram> documentationView;
+    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    protected DMNEditorSearchIndex editorSearchIndex;
+    private DocumentationView documentationView;
 
     @Mock
-    protected SearchBarComponent<DMNSearchableElement> searchBarComponent;
+    private ClientTranslationService translationService;
 
     @Mock
-    protected SessionManager sessionManager;
+    private EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
 
     @Mock
-    protected SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    private DecisionNavigatorDock decisionNavigatorDock;
 
     @Mock
-    protected EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEventSourceMock;
+    private DiagramEditorPropertiesDock diagramPropertiesDock;
 
     @Mock
-    protected DecisionNavigatorDock decisionNavigatorDock;
+    private PreviewDiagramDock diagramPreviewAndExplorerDock;
 
     @Mock
-    protected DiagramEditorPropertiesDock diagramPropertiesDock;
+    private LayoutHelper layoutHelper;
 
     @Mock
-    protected PreviewDiagramDock diagramPreviewDock;
+    private OpenDiagramLayoutExecutor openDiagramLayoutExecutor;
 
     @Mock
-    protected EditorSessionCommands sessionCommands;
+    private DataTypesPage dataTypesPage;
 
     @Mock
-    protected LayoutHelper layoutHelper;
+    private DMNEditorSearchIndex editorSearchIndex;
 
     @Mock
-    protected OpenDiagramLayoutExecutor layoutExecutor;
+    private SearchBarComponent<DMNSearchableElement> searchBarComponent;
 
     @Mock
-    protected DataTypesPage dataTypesPage;
+    private KogitoClientDiagramService diagramServices;
 
     @Mock
-    protected KogitoClientDiagramService clientDiagramService;
+    private MonacoFEELInitializer feelInitializer;
 
     @Mock
-    protected StunnerEditor stunnerEditor;
+    private CanvasFileExport canvasFileExport;
 
     @Mock
-    protected AbstractDMNDiagramEditor.View view;
+    private Promises promises;
 
     @Mock
-    protected SessionDiagramPresenter presenter;
+    private IncludedModelsPage includedModelsPage;
 
     @Mock
-    protected SessionPresenter.View presenterView;
+    private KogitoChannelHelper kogitoChannelHelper;
 
     @Mock
-    protected ExpressionEditorView.Presenter expressionEditor;
+    private GuidedTourBridgeInitializer guidedTourBridgeInitializer;
 
     @Mock
-    protected DMNEditorSession session;
+    private DRDNameChanger drdNameChanger;
 
     @Mock
-    protected SearchBarComponent.View searchBarComponentView;
+    private ConfirmationDialog confirmationDialog;
 
-    @Mock
-    protected HTMLElement searchBarComponentViewElement;
-
-    @Mock
-    protected ElementWrapperWidget searchBarComponentWidget;
-
-    @Mock
-    protected DataTypePageTabActiveEvent dataTypePageTabActiveEvent;
-
-    @Mock
-    protected DataTypeEditModeToggleEvent dataTypeEditModeToggleEvent;
-
-    @Mock
-    protected EditExpressionEvent editExpressionEvent;
-
-    @Mock
-    protected MultiPageEditorSelectedPageEvent multiPageEditorSelectedPageEvent;
-
-    @Mock
-    protected RefreshFormPropertiesEvent refreshFormPropertiesEvent;
-
-    @Mock
-    protected Path root;
-
-    @Mock
-    protected ClientRuntimeError clientRuntimeError;
-
-    @Mock
-    protected MonacoFEELInitializer feelInitializer;
-
-    @Mock
-    protected GuidedTourBridgeInitializer guidedTourBridgeInitializer;
-
-    @Mock
-    protected CanvasFileExport canvasFileExport;
-
-    @Mock
-    protected IncludedModelsPage includedModelsPage;
-
-    @Mock
-    protected KogitoChannelHelper kogitoChannelHelper;
-
-    @Mock
-    protected ReadOnlyProvider readonlyProvider;
-
-    @Mock
-    protected DRDNameChanger drdNameChanger;
-
-    @Mock
-    protected LazyCanvasFocusUtils lazyCanvasFocusUtils;
-
-    @Mock
-    private HTMLElement drdNameChangerElement;
-
-    @Mock
-    private ElementWrapperWidget drdNameWidget;
-
-    @Captor
-    protected ArgumentCaptor<ServiceCallback<Diagram>> serviceCallbackArgumentCaptor;
-
-    protected Diagram diagram;
-
-    protected Metadata metadata;
-
-    protected AbstractDMNDiagramEditor editor;
-
-    protected PlaceRequest place = new DefaultPlaceRequest();
+    private AbstractDMNDiagramEditor editor;
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setup() {
-        metadata = new MetadataImpl.MetadataImplBuilder(DMNDefinitionSet.class.getName()).setTitle("dmn").build();
-        diagram = new DiagramImpl("dmn", metadata);
-
-        when(searchBarComponent.getView()).thenReturn(searchBarComponentView);
-        when(searchBarComponentView.getElement()).thenReturn(searchBarComponentViewElement);
-        when(multiPageEditorContainerView.getMultiPage()).thenReturn(multiPageEditor);
-
-        when(sessionManager.getCurrentSession()).thenReturn(session);
-        when(session.getExpressionEditor()).thenReturn(expressionEditor);
-
-        when(presenter.getView()).thenReturn(presenterView);
-        when(session.getCanvasHandler()).thenReturn(canvasHandler);
-        when(stunnerEditor.getSession()).thenReturn(session);
-        when(stunnerEditor.getPresenter()).thenReturn(presenter);
-        when(stunnerEditor.getView()).thenReturn(view);
-        when(stunnerEditor.getCanvasHandler()).thenReturn(canvasHandler);
-        when(stunnerEditor.getDiagram()).thenReturn(diagram);
-        when(canvasHandler.getDiagram()).thenReturn(diagram);
-
-        when(drdNameChanger.getElement()).thenReturn(drdNameChangerElement);
-
-        doAnswer((invocation) -> {
-            final Diagram diagram = (Diagram) invocation.getArguments()[0];
-            final SessionPresenter.SessionPresenterCallback callback = (SessionPresenter.SessionPresenterCallback) invocation.getArguments()[1];
-            callback.onOpen(diagram);
-            callback.afterCanvasInitialized();
-            callback.afterSessionOpened();
-            callback.onSuccess();
-            return null;
-        }).when(stunnerEditor).open(any(Diagram.class),
-                                    any(SessionPresenter.SessionPresenterCallback.class));
-
-        editor = spy(getEditor());
-
-        doReturn(drdNameWidget).when(editor).getWidget(drdNameChangerElement);
-    }
-
-    protected abstract AbstractDMNDiagramEditor getEditor();
-
-    @Test
-    public void testOnStartup() {
-        editor.onStartup(place);
-        verify(stunnerEditor).setReadOnly(eq(false));
-        verify(decisionNavigatorDock).init();
-        verify(diagramPreviewDock).init();
-        verify(diagramPropertiesDock).init();
-        verify(multiPageEditorContainerView).init(eq(editor));
-        verify(guidedTourBridgeInitializer).init();
+        editor = spy(new AbstractDMNDiagramEditorMock(view,
+                                                      containerView,
+                                                      stunnerEditor,
+                                                      editorSearchIndex,
+                                                      searchBarComponent,
+                                                      sessionManager,
+                                                      sessionCommandManager,
+                                                      documentationView,
+                                                      translationService,
+                                                      refreshFormPropertiesEvent,
+                                                      decisionNavigatorDock,
+                                                      diagramPropertiesDock,
+                                                      diagramPreviewAndExplorerDock,
+                                                      layoutHelper,
+                                                      openDiagramLayoutExecutor,
+                                                      dataTypesPage,
+                                                      diagramServices,
+                                                      feelInitializer,
+                                                      canvasFileExport,
+                                                      promises,
+                                                      includedModelsPage,
+                                                      kogitoChannelHelper,
+                                                      guidedTourBridgeInitializer,
+                                                      drdNameChanger,
+                                                      confirmationDialog));
     }
 
     @Test
-    public void testOnDataTypePageNavTabActiveEvent() {
-        editor.onDataTypePageNavTabActiveEvent(dataTypePageTabActiveEvent);
-        verify(multiPageEditor).selectPage(DATA_TYPES_PAGE_INDEX);
-    }
+    public void testOpen_WhenItHaveLayoutInformation() {
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testOnEditExpressionEventWhenSameSession() {
-        when(editExpressionEvent.getSession()).thenReturn(session);
-        openDiagram();
-        when(stunnerEditor.getSession()).thenReturn(session);
-        editor.onEditExpressionEvent(editExpressionEvent);
-        verify(searchBarComponent).disableSearch();
-        verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              any(NavigateToExpressionEditorCommand.class));
-    }
+        final Diagram diagram = mock(Diagram.class);
+        final SessionPresenter.SessionPresenterCallback callback = mock(SessionPresenter.SessionPresenterCallback.class);
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testOnEditExpressionEventWhenDifferentSession() {
-        editor.onEditExpressionEvent(editExpressionEvent);
-        verify(searchBarComponent).disableSearch();
-        verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
-                                                       any(Command.class));
-    }
+        when(layoutHelper.hasLayoutInformation(diagram)).thenReturn(true);
+        doNothing().when(editor).executeOpen(diagram, callback);
 
-    @Test
-    public void testOnMultiPageEditorSelectedPageEvent() {
-        editor.onMultiPageEditorSelectedPageEvent(multiPageEditorSelectedPageEvent);
-        verify(searchBarComponent).disableSearch();
-    }
+        editor.open(diagram, callback);
 
-    @Test
-    public void testOnRefreshFormPropertiesEvent() {
-        editor.onRefreshFormPropertiesEvent(refreshFormPropertiesEvent);
-        verify(searchBarComponent).disableSearch();
-    }
-
-    @Test
-    public void testOnClose() {
-        openDiagram();
-        editor.onClose();
-        verify(stunnerEditor, atLeastOnce()).close();
-        verify(decisionNavigatorDock).destroy();
-        verify(decisionNavigatorDock).resetContent();
-        verify(diagramPropertiesDock).destroy();
-        verify(diagramPreviewDock).destroy();
-        verify(dataTypesPage).disableShortcuts();
-    }
-
-    @Test
-    public void testGetContent() {
-        openDiagram();
-        editor.getContent();
-        verify(clientDiagramService).transform(eq(diagram));
-    }
-
-    @Test
-    public void testSetContentSuccess() {
-        final String path = "path";
-        editor.setContent(path, CONTENT);
-
-        verify(clientDiagramService).transform(eq(path), eq(CONTENT), serviceCallbackArgumentCaptor.capture());
-
-        final ServiceCallback<Diagram> serviceCallback = serviceCallbackArgumentCaptor.getValue();
-        assertThat(serviceCallback).isNotNull();
-        serviceCallback.onSuccess(diagram);
-
-        assertOnDiagramLoad();
-    }
-
-    @Test
-    @SuppressWarnings("all")
-    public void testCloseExistingSessionIfAny() {
-        final PromiseMock promise = new PromiseMock();
-        doReturn(promise.asPromise()).when(editor).getContent();
-        promise.then(() -> CONTENT);
-        when(stunnerEditor.getSession()).thenReturn(session);
-        openDiagram();
-        verify(session, times(1)).close();
-    }
-
-    @Test
-    public void testSetContentFailure() {
-        final String path = "path";
-        editor.setContent(path, CONTENT);
-        verify(clientDiagramService).transform(eq(path), eq(CONTENT), serviceCallbackArgumentCaptor.capture());
-        final ServiceCallback<Diagram> serviceCallback = serviceCallbackArgumentCaptor.getValue();
-        assertThat(serviceCallback).isNotNull();
-        serviceCallback.onError(clientRuntimeError);
-        verify(feelInitializer, never()).initializeFEELEditor();
-        verify(multiPageEditorContainerView, times(1)).clear();
-        verify(multiPageEditorContainerView, times(1)).setEditorWidget(eq(view));
-    }
-
-    protected void openDiagram() {
-        editor.onStartup(place);
-
-        when(session.getCanvasHandler()).thenReturn(canvasHandler);
-        when(stunnerEditor.getSession()).thenReturn(session);
-        when(canvasHandler.getDiagram()).thenReturn(diagram);
-
-        editor.open(diagram, mock(SessionPresenter.SessionPresenterCallback.class));
-
-        assertOnDiagramLoad();
-    }
-
-    protected void assertOnDiagramLoad() {
-        verify(decisionNavigatorDock).reload();
-        verify(layoutHelper).applyLayout(eq(diagram), eq(layoutExecutor));
         verify(feelInitializer).initializeFEELEditor();
-        verify(dataTypesPage).reload();
-        verify(lazyCanvasFocusUtils, atLeastOnce()).releaseFocus();
+        verify(editor, never()).showAutomaticLayoutDialog(diagram, callback);
+        verify(editor).executeOpen(diagram, callback);
     }
 
     @Test
-    public void testReleaseOnSetContent() {
-        editor.setContent("", "");
-        verify(stunnerEditor, times(1)).close();
+    public void testOpen_WhenItDoesNotHaveLayoutInformation() {
+
+        final Diagram diagram = mock(Diagram.class);
+        final SessionPresenter.SessionPresenterCallback callback = mock(SessionPresenter.SessionPresenterCallback.class);
+
+        when(layoutHelper.hasLayoutInformation(diagram)).thenReturn(false);
+        doNothing().when(editor).executeOpen(diagram, callback);
+
+        editor.open(diagram, callback);
+
+        verify(feelInitializer).initializeFEELEditor();
+        verify(editor).showAutomaticLayoutDialog(diagram, callback);
+        verify(editor, never()).executeOpen(diagram, callback);
+    }
+
+    @Test
+    public void testExecuteOpen_WhenEditorIsNotClosed() {
+
+        final Diagram diagram = mock(Diagram.class);
+        final SessionPresenter.SessionPresenterCallback callback = mock(SessionPresenter.SessionPresenterCallback.class);
+        final AbstractSession currentSession = mock(AbstractSession.class);
+        final SessionPresenter.SessionPresenterCallback expectedSessionPresenterCallback = mock(SessionPresenter.SessionPresenterCallback.class);
+
+        doReturn(expectedSessionPresenterCallback).when(editor).getSessionPresenterCallback(diagram,
+                                                                                            callback,
+                                                                                            currentSession);
+        when(stunnerEditor.isClosed()).thenReturn(false);
+        when(stunnerEditor.getSession()).thenReturn(currentSession);
+
+        editor.executeOpen(diagram, callback);
+
+        verify(stunnerEditor).open(diagram,
+                                   expectedSessionPresenterCallback);
+    }
+
+    @Test
+    public void testExecuteOpen_WhenEditorIsClosed() {
+
+        final Diagram diagram = mock(Diagram.class);
+        final SessionPresenter.SessionPresenterCallback callback = mock(SessionPresenter.SessionPresenterCallback.class);
+        final SessionPresenter.SessionPresenterCallback expectedSessionPresenterCallback = mock(SessionPresenter.SessionPresenterCallback.class);
+
+        doReturn(expectedSessionPresenterCallback).when(editor).getSessionPresenterCallback(diagram,
+                                                                                            callback,
+                                                                                            null);
+        when(stunnerEditor.isClosed()).thenReturn(true);
+
+        editor.executeOpen(diagram, callback);
+
+        verify(stunnerEditor).open(diagram,
+                                   expectedSessionPresenterCallback);
+    }
+
+    @Test
+    public void testShowAutomaticLayoutDialog() {
+
+        final Diagram diagram = mock(Diagram.class);
+        final SessionPresenter.SessionPresenterCallback callback = mock(SessionPresenter.SessionPresenterCallback.class);
+        final ArgumentCaptor<Command> captor = ArgumentCaptor.forClass(Command.class);
+        final String automaticLayoutLabel = "LABEL";
+        final String text = "TEXT";
+
+        when(translationService.getValue(DMNEditorConstants.AutomaticLayout_Label)).thenReturn(automaticLayoutLabel);
+        when(translationService.getValue(DMNEditorConstants.AutomaticLayout_DiagramDoesNotHaveLayout)).thenReturn(text);
+
+        editor.showAutomaticLayoutDialog(diagram, callback);
+
+        verify(confirmationDialog).show(eq(automaticLayoutLabel),
+                                        isNull(),
+                                        eq(text),
+                                        captor.capture(),
+                                        captor.capture());
+
+        final List<Command> commands = captor.getAllValues();
+
+        assertEquals(2, commands.size());
+
+        final Command yesCommand = commands.get(0);
+        final Command noCommand = commands.get(1);
+
+        yesCommand.execute();
+
+        verify(layoutHelper).applyLayout(diagram, openDiagramLayoutExecutor);
+        verify(editor).executeOpen(diagram, callback);
+
+        reset(layoutHelper, editor);
+
+        noCommand.execute();
+
+        verify(layoutHelper, never()).applyLayout(diagram, openDiagramLayoutExecutor);
+        verify(editor).executeOpen(diagram, callback);
+    }
+
+    @Test
+    public void testGetSessionPresenterCallback() {
+
+        final Diagram diagram = mock(Diagram.class);
+        final SessionPresenter.SessionPresenterCallback callback = mock(SessionPresenter.SessionPresenterCallback.class);
+        final AbstractSession currentSession = mock(AbstractSession.class);
+        final ClientRuntimeError clientRuntimeError = mock(ClientRuntimeError.class);
+
+        final SessionPresenter.SessionPresenterCallback actualCallback = editor.getSessionPresenterCallback(diagram,
+                                                                                                            callback,
+                                                                                                            currentSession);
+
+        actualCallback.afterCanvasInitialized();
+        verifyAfterCanvasInitialized(callback, diagram, currentSession);
+        reset(editor, callback, currentSession);
+
+        actualCallback.onOpen(diagram);
+        verifyOnOpen(callback, diagram, currentSession);
+        reset(editor, callback, currentSession);
+
+        actualCallback.afterSessionOpened();
+        verifyAfterSessionOpened(callback, diagram, currentSession);
+        reset(editor, callback, currentSession);
+
+        doNothing().when(editor).initialiseKieEditorForSession(diagram);
+        doNothing().when(editor).setupSessionHeaderContainer();
+        actualCallback.onSuccess();
+        verifyOnSuccess(callback, diagram, currentSession);
+        reset(editor, callback, currentSession);
+
+        actualCallback.onError(clientRuntimeError);
+        verifyOnError(callback, diagram, currentSession, clientRuntimeError);
+    }
+
+    private void verifyAfterCanvasInitialized(final SessionPresenter.SessionPresenterCallback callback,
+                                              final Diagram diagram,
+                                              final AbstractSession currentSession) {
+
+        verify(editor, never()).initialiseKieEditorForSession(diagram);
+        verify(editor, never()).setupSessionHeaderContainer();
+        verify(callback, never()).onSuccess();
+        verify(currentSession, never()).close();
+        verify(callback).afterCanvasInitialized();
+        verify(callback, never()).onOpen(diagram);
+        verify(callback, never()).afterSessionOpened();
+        verify(callback, never()).onError(any());
+    }
+
+    private void verifyOnOpen(final SessionPresenter.SessionPresenterCallback callback,
+                              final Diagram diagram,
+                              final AbstractSession currentSession) {
+
+        verify(editor, never()).initialiseKieEditorForSession(diagram);
+        verify(editor, never()).setupSessionHeaderContainer();
+        verify(callback, never()).onSuccess();
+        verify(currentSession, never()).close();
+        verify(callback, never()).afterCanvasInitialized();
+        verify(callback).onOpen(diagram);
+        verify(callback, never()).afterSessionOpened();
+        verify(callback, never()).onError(any());
+    }
+
+    private void verifyAfterSessionOpened(final SessionPresenter.SessionPresenterCallback callback,
+                                          final Diagram diagram,
+                                          final AbstractSession currentSession) {
+
+        verify(editor, never()).initialiseKieEditorForSession(diagram);
+        verify(editor, never()).setupSessionHeaderContainer();
+        verify(callback, never()).onSuccess();
+        verify(currentSession, never()).close();
+        verify(callback, never()).afterCanvasInitialized();
+        verify(callback, never()).onOpen(diagram);
+        verify(callback).afterSessionOpened();
+        verify(callback, never()).onError(any());
+    }
+
+    private void verifyOnError(final SessionPresenter.SessionPresenterCallback callback,
+                               final Diagram diagram,
+                               final AbstractSession currentSession,
+                               final ClientRuntimeError error) {
+
+        verify(editor, never()).initialiseKieEditorForSession(diagram);
+        verify(editor, never()).setupSessionHeaderContainer();
+        verify(callback, never()).onSuccess();
+        verify(currentSession, never()).close();
+        verify(callback, never()).afterCanvasInitialized();
+        verify(callback, never()).onOpen(diagram);
+        verify(callback, never()).afterSessionOpened();
+        verify(callback).onError(error);
+    }
+
+    private void verifyOnSuccess(final SessionPresenter.SessionPresenterCallback callback,
+                                 final Diagram diagram,
+                                 final AbstractSession currentSession) {
+
+        verify(editor).initialiseKieEditorForSession(diagram);
+        verify(editor).setupSessionHeaderContainer();
+        verify(callback).onSuccess();
+        verify(currentSession).close();
+        verify(callback, never()).afterCanvasInitialized();
+        verify(callback, never()).onOpen(diagram);
+        verify(callback, never()).afterSessionOpened();
+        verify(callback, never()).onError(any());
+    }
+
+    private class AbstractDMNDiagramEditorMock extends AbstractDMNDiagramEditor {
+
+        protected AbstractDMNDiagramEditorMock(final View view,
+                                               final MultiPageEditorContainerView containerView,
+                                               final StunnerEditor stunnerEditor,
+                                               final DMNEditorSearchIndex editorSearchIndex,
+                                               final SearchBarComponent<DMNSearchableElement> searchBarComponent,
+                                               final SessionManager sessionManager,
+                                               final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                               final DocumentationView documentationView,
+                                               final ClientTranslationService translationService,
+                                               final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
+                                               final DecisionNavigatorDock decisionNavigatorDock,
+                                               final DiagramEditorPropertiesDock diagramPropertiesDock,
+                                               final PreviewDiagramDock diagramPreviewAndExplorerDock,
+                                               final LayoutHelper layoutHelper,
+                                               final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
+                                               final DataTypesPage dataTypesPage,
+                                               final KogitoClientDiagramService diagramServices,
+                                               final MonacoFEELInitializer feelInitializer,
+                                               final CanvasFileExport canvasFileExport,
+                                               final Promises promises,
+                                               final IncludedModelsPage includedModelsPage,
+                                               final KogitoChannelHelper kogitoChannelHelper,
+                                               final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
+                                               final DRDNameChanger drdNameChanger,
+                                               final ConfirmationDialog confirmationDialog) {
+            super(view,
+                  containerView,
+                  stunnerEditor,
+                  editorSearchIndex,
+                  searchBarComponent,
+                  sessionManager,
+                  sessionCommandManager,
+                  documentationView,
+                  translationService,
+                  refreshFormPropertiesEvent,
+                  decisionNavigatorDock,
+                  diagramPropertiesDock,
+                  diagramPreviewAndExplorerDock,
+                  layoutHelper,
+                  openDiagramLayoutExecutor,
+                  dataTypesPage,
+                  diagramServices,
+                  feelInitializer,
+                  canvasFileExport,
+                  promises,
+                  includedModelsPage,
+                  kogitoChannelHelper,
+                  guidedTourBridgeInitializer,
+                  drdNameChanger,
+                  confirmationDialog);
+        }
     }
 }

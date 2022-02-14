@@ -794,8 +794,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     const nextFile = workspacePromise.data.files
       .filter((f) => {
         return (
-          f.relativePath !== props.workspaceFile.relativePath &&
-          Array.from(editorEnvelopeLocator.mapping.keys()).includes(f.extension)
+          f.relativePath !== props.workspaceFile.relativePath && editorEnvelopeLocator.hasMappingFor(f.relativePath)
         );
       })
       .pop();

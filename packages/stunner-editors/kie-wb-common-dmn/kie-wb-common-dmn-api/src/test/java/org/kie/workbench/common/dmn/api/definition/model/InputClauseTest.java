@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,15 +27,18 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -45,6 +49,8 @@ public class InputClauseTest {
     private static final String TEXT = "TEXT";
     private static final String DESCRIPTION = "DESCRIPTION";
     private static final String CLAUSE_ID = "CLAUSE-ID";
+    private static final String UUID = "uuid";
+    private static final String ANOTHER_UUID = "another uuid";
     private InputClause inputClause;
 
     @Before
@@ -91,6 +97,40 @@ public class InputClauseTest {
         assertNotEquals(UNARY_ID, target.getInputValues().getId().getValue());
         assertEquals(TEXT, target.getInputValues().getText().getValue());
         assertEquals(ConstraintType.ENUMERATION, target.getInputValues().getConstraintType());
+    }
+
+    @Test
+    public void testFindDomainObject_WhenInputClauseMatches() {
+
+        final InputClause inputClause = new InputClause(new Id(UUID),
+                                                        null,
+                                                        null,
+                                                        null);
+
+        final Optional<DomainObject> actual = inputClause.findDomainObject(UUID);
+
+        assertTrue(actual.isPresent());
+        assertEquals(inputClause, actual.get());
+    }
+
+    @Test
+    public void testFindDomainObject_WhenInputClauseDoesNotMatches() {
+
+        final InputClauseLiteralExpression expression = mock(InputClauseLiteralExpression.class);
+        final InputClause inputClause = new InputClause(new Id(ANOTHER_UUID),
+                                                        null,
+                                                        expression,
+                                                        null);
+
+        final DomainObject expectedDomainObject = mock(DomainObject.class);
+
+        when(expression.findDomainObject(UUID)).thenReturn(Optional.of(expectedDomainObject));
+
+        final Optional<DomainObject> actual = inputClause.findDomainObject(UUID);
+
+        assertTrue(actual.isPresent());
+        assertEquals(expectedDomainObject, actual.get());
+        verify(expression).findDomainObject(UUID);
     }
 
     private InputClauseUnaryTests buildInputClauseUnaryTests() {

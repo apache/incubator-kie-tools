@@ -32,14 +32,24 @@ public abstract class AbstractLayoutService implements LayoutService {
     /**
      * Checks if the specified graph has layout information.
      * A graph with at 25% of its nodes or less at position (0,0) is considered a graph with no layout information.
+     *
      * @param graph The graph.
      * @return True if the graph has layout information, false otherwise.
      */
     @Override
     public boolean hasLayoutInformation(final Graph<?, ?> graph) {
-        final double threshold = getLayoutInformationThreshold(graph);
+
+        final List<Node> nodes = new ArrayList<>();
+        graph.nodes().iterator().forEachRemaining(nodes::add);
+
+        if (nodes.size() <= 1) {
+            return true;
+        }
+
+        final double threshold = getLayoutInformationThreshold(nodes);
         int nodesWithLayout = 0;
-        for (final Node n : graph.nodes()) {
+
+        for (final Node n : nodes) {
 
             final Object content = n.getContent();
             if (content instanceof HasBounds) {
@@ -56,10 +66,8 @@ public abstract class AbstractLayoutService implements LayoutService {
         return false;
     }
 
-    protected double getLayoutInformationThreshold(final Graph<?, ?> graph) {
-        final List<Node> list = new ArrayList<>();
-        graph.nodes().iterator().forEachRemaining(list::add);
-        return list.size() / 4.0D;
+    protected double getLayoutInformationThreshold(final List<Node> nodes) {
+        return nodes.size() / 4.0D;
     }
 
     private static boolean isNullOrCloseToZero(final Bounds bounds) {
