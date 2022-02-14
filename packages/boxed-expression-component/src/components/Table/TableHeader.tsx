@@ -96,7 +96,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       const columnKey = getColumnKey(column);
       const classNames = `${columnKey} fixed-column no-clickable-cell`;
       return (
-        <Th {...column.getHeaderProps()} className={classNames} key={columnKey} tabIndex={0}>
+        <Th {...column.getHeaderProps()} className={classNames} key={columnKey}>
           <div className="header-cell" data-ouia-component-type="expression-column-header">
             {column.label}
           </div>
@@ -183,7 +183,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       };
 
       return (
-        <Th {...headerProps} {...thProps(column)} className={getCssClass()} key={columnKey} tabIndex={0}>
+        <Th {...headerProps} {...thProps(column)} className={getCssClass()} key={columnKey}>
           <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
             <div className="header-cell" data-ouia-component-type="expression-column-header">
               {column.dataType && editableHeader ? (
