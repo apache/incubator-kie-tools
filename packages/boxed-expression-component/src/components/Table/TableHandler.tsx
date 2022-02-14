@@ -15,13 +15,13 @@
  */
 
 import * as React from "react";
-import { useContext, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { DataType, generateUuid, TableHandlerConfiguration, TableOperation } from "../../api";
 import * as _ from "lodash";
 import { Column, ColumnInstance, DataRecord } from "react-table";
 import { Popover } from "@patternfly/react-core";
 import { TableHandlerMenu } from "./TableHandlerMenu";
-import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
+import { useBoxedExpression } from "../../context";
 import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./Table";
 import { DEFAULT_MIN_WIDTH } from "../Resizer";
 
