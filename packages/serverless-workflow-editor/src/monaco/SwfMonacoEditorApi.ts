@@ -15,26 +15,37 @@
  */
 
 import { editor } from "monaco-editor";
-import { MonacoAugmentation } from "./MonacoAugmentation";
+import { initJsonSchema } from "./augmentation/language/json";
+import { initYamlSchema } from "./augmentation/language/yaml";
 
-export interface MonacoEditorApi {
-  show: (container: HTMLDivElement) => void;
+initJsonSchema();
+initYamlSchema();
+
+export interface SwfMonacoEditorApi {
+  show: (container: HTMLDivElement) => editor.IStandaloneCodeEditor;
   dispose: () => void;
 
   undo: () => void;
   redo: () => void;
 }
 
-export class DefaultMonacoEditor implements MonacoEditorApi {
+export type SwfMonacoEditorCommandTypes = "FunctionsWidget" | "StatesWidget" | "FunctionsCompletion";
+
+export type SwfMonacoEditorCommands = Record<SwfMonacoEditorCommandTypes, string>;
+
+export interface SwfMonacoEditorInstance {
+  commands: SwfMonacoEditorCommands;
+  instance: editor.IStandaloneCodeEditor;
+}
+
+export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
   private readonly model: editor.ITextModel;
 
-  private editor: editor.IStandaloneCodeEditor;
-  private readonly augmentation: MonacoAugmentation;
+  public editor: editor.IStandaloneCodeEditor;
 
-  constructor(content: string, onContentChange: (content: string) => void, augmentation: MonacoAugmentation) {
-    this.model = editor.createModel(augmentation.language.getDefaultContent(content), augmentation.language.languageId);
+  constructor(content: string, onContentChange: (content: string) => void, private readonly language: string) {
+    this.model = editor.createModel(content, this.language);
     this.model.onDidChangeContent((event) => onContentChange(this.model.getValue()));
-    this.augmentation = augmentation;
   }
 
   redo(): void {
@@ -45,19 +56,21 @@ export class DefaultMonacoEditor implements MonacoEditorApi {
     this.editor?.trigger("whatever...", "undo", null);
   }
 
-  show(container: HTMLDivElement): void {
+  show(container: HTMLDivElement): editor.IStandaloneCodeEditor {
     if (!container) {
       throw new Error("We need a container to show the editor!");
     }
 
-    this.editor = editor.create(container, {
+    const editorInstance = editor.create(container, {
       model: this.model,
-      language: this.augmentation.language.languageId,
+      language: this.language,
       scrollBeyondLastLine: false,
       automaticLayout: true,
     });
 
-    // this.editor.onMouseDown((event) => showWidget(event, this.editor));
+    this.editor = editorInstance;
+
+    return editorInstance;
   }
 
   dispose(): void {

@@ -28,7 +28,8 @@ import { Specification } from "@severlessworkflow/sdk-typescript";
 import { MermaidDiagram } from "../diagram";
 import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
-import { MonacoEditor, MonacoEditorRef } from "../monaco/MonacoEditor";
+import { SwfMonacoEditorApi } from "../monaco/SwfMonacoEditorApi";
+import { SwfMonacoEditor } from "../monaco/SwfMonacoEditor";
 
 interface Props {
   /**
@@ -67,7 +68,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   const [content, setContent] = useState<string>("");
   const [diagramOutOfSync, setDiagramOutOfSync] = useState<boolean>(false);
   const svgContainer = useRef<HTMLDivElement>(null);
-  const monacoEditorRef = useRef<MonacoEditorRef>(null);
+  const swfMonacoEditorRef = useRef<SwfMonacoEditorApi>(null);
 
   useImperativeHandle(
     forwardedRef,
@@ -93,10 +94,10 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           return Promise.resolve(svgContent);
         },
         undo: (): Promise<void> => {
-          return monacoEditorRef.current?.undo() || Promise.resolve();
+          return swfMonacoEditorRef.current?.undo() || Promise.resolve();
         },
         redo: (): Promise<void> => {
-          return monacoEditorRef.current?.redo() || Promise.resolve();
+          return swfMonacoEditorRef.current?.redo() || Promise.resolve();
         },
         validate: (): Notification[] => {
           return [];
@@ -144,11 +145,11 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
       <DrawerContent panelContent={panelContent}>
         <DrawerContentBody style={{ overflowY: "hidden" }}>
           {path !== "" && (
-            <MonacoEditor
+            <SwfMonacoEditor
               content={originalContent}
               fileName={path}
               onContentChange={setContent}
-              ref={monacoEditorRef}
+              ref={swfMonacoEditorRef}
             />
           )}
         </DrawerContentBody>

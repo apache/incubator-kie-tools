@@ -15,11 +15,10 @@
  */
 
 import * as monaco from "monaco-editor";
-import { TextDocument } from "vscode-languageserver-types";
 import { CancellationToken, editor, languages, Position } from "monaco-editor";
-import { MonacoCompletionHelper } from "./helpers";
-import { MonacoAugmentation } from "../MonacoAugmentation";
-import { MonacoLanguage } from "../language";
+import * as jsonc from "jsonc-parser";
+import { SwfMonacoEditorCommands, SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
+import CompletionItemKind = languages.CompletionItemKind;
 
 export type CompletionArgs = {
   model: editor.ITextModel;
@@ -28,60 +27,49 @@ export type CompletionArgs = {
   token: CancellationToken;
 };
 
-export function initCompletion(augmentation: MonacoAugmentation): void {
-  monaco.languages.registerCompletionItemProvider(augmentation.language.languageId, {
-    provideCompletionItems(
+const completions = new Map<
+  jsonc.JSONPath,
+  (args: { position: Position; commands: SwfMonacoEditorInstance["commands"] }) => languages.CompletionItem
+>([
+  [
+    ["functions"],
+    ({ position, commands }) => ({
+      kind: CompletionItemKind.Snippet,
+      insertText: "",
+      range: {
+        startColumn: position.column,
+        endColumn: position.column,
+        startLineNumber: position.lineNumber,
+        endLineNumber: position.lineNumber,
+      },
+      label: "My completion item",
+      command: {
+        id: commands["FunctionsCompletion"],
+        title: "My-Completion-Command",
+      },
+    }),
+  ],
+]);
+
+export function initJsonCompletion(commands: SwfMonacoEditorCommands): void {
+  monaco.languages.registerCompletionItemProvider("json", {
+    provideCompletionItems: function (
       model: editor.ITextModel,
       position: Position,
       context: languages.CompletionContext,
       token: CancellationToken
     ): languages.ProviderResult<languages.CompletionList> {
-      if (!augmentation) {
-        return null;
+      const rootNode = jsonc.parseTree(model.getValue());
+      if (!rootNode) {
+        return { suggestions: [] };
       }
 
-      const language: MonacoLanguage = augmentation.language;
-
-      if (!language.parser) {
-        return null;
-      }
-
-      const document = TextDocument.create("", language.languageId, model.getVersionId(), model.getValue());
-
-      const astDocument = language.parser.parseContent(document);
-
-      const offset = document.offsetAt({
-        line: position.lineNumber - 1,
-        character: position.column,
-      });
-
-      const node = astDocument.getNodeFromOffset(offset);
-
-      const suggestions: languages.CompletionItem[] = [];
-
-      const consumer = (helperSuggestions: languages.CompletionItem[]): void => {
-        if (helperSuggestions) {
-          suggestions.push(...helperSuggestions);
-        }
-      };
-
-      if (node) {
-        MonacoCompletionHelper.fillSuggestions(consumer, {
-          astDocument,
-          node,
-          document,
-          language: augmentation.language,
-          monacoContext: {
-            model,
-            context,
-            token,
-            position,
-          },
-        });
-      }
+      const location = jsonc.getLocation(model.getValue(), model.getOffsetAt(position));
 
       return {
-        suggestions,
+        suggestions: Array.from(completions.entries())
+          .filter(([k, v]) => location.matches(k))
+          .map(([k, v]) => v({ position, commands })),
       };
     },
   });
