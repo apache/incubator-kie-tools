@@ -44,6 +44,8 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
 
   const onDataTypeSelect = useCallback(
     (event, selection) => {
+      /* TODO: keep context menu open after type selection changes  */
+      /* TODO: save selection only after context closed  */
       setDataTypeSelectOpen(false);
       onDataTypeChange(selection);
     },

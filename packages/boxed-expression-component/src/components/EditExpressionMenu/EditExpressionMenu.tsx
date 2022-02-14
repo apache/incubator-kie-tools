@@ -141,7 +141,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
             >
               {i18n.manage}
             </Button>
-            <DataTypeSelector menuAppendTo={} selectedDataType={dataType} onDataTypeChange={onDataTypeChange} />
+            <DataTypeSelector menuAppendTo={"parent"} selectedDataType={dataType} onDataTypeChange={onDataTypeChange} />
           </div>
         </div>
       }
