@@ -593,7 +593,7 @@ jobs:
 
       - name: "Build"
         run: |
-          lerna run build:prod --scope=vscode-extension-pack-kogito-kie-editors --scope=vscode-extension-backend --include-dependencies --stream
+          lerna run build:prod --scope=vscode-extension-pack-kogito-kie-editors --scope=vscode-extension-backend --scope=vscode-extension-serverless-workflow-editor --include-dependencies --stream
 
       - name: "Upload VS Code Extension (dev) (Ubuntu only)"
         if: ${{ !inputs.dry_run }}
@@ -615,6 +615,17 @@ jobs:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/vscode-extension-backend/dist/vscode-extension-backend_${{ inputs.tag }}.vsix
           asset_name: vscode_extension_backend_dev_${{ inputs.tag }}.vsix
+          asset_content_type: application/zip
+
+      - name: "Upload Serverless Workflow VS Code Extension (dev) (Ubuntu only)"
+        if: ${{ !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-serverless-workflow-editor/dist/vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
+          asset_name: vscode_extension_dev_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
   vscode_extensions_prod:
@@ -646,7 +657,8 @@ jobs:
             --scope=vscode-extension-dmn-editor \
             --scope=vscode-extension-pmml-editor \
             --scope=vscode-extension-kogito-bundle \
-            --scope=vscode-extension-red-hat-business-automation-bundle
+            --scope=vscode-extension-red-hat-business-automation-bundle\
+            --scope=vscode-extension-serverless-workflow-editor
 
       - name: "Upload VS Code Extension - BPMN Editor (prod)"
         if: ${{ !inputs.dry_run }}
@@ -701,6 +713,17 @@ jobs:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/vscode-extension-red-hat-business-automation-bundle/dist/vscode_extension_red_hat_business_automation_bundle_${{ inputs.tag }}.vsix
           asset_name: vscode_extension_red_hat_business_automation_bundle_${{ inputs.tag }}.vsix
+          asset_content_type: application/zip
+
+      - name: "Upload VS Code Extension - Serverless Workflow Editor (prod)"
+        if: ${{ !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-serverless-workflow-editor/dist/vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
+          asset_name: vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
   desktop:

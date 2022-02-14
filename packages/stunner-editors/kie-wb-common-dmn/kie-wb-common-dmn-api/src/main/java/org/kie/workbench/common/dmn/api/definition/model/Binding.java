@@ -24,14 +24,18 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRefs;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static java.util.Objects.isNull;
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.matches;
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getNotNullHasTypeRefs;
 
 @Portable
 public class Binding extends DMNModelInstrumentedBase implements HasExpression,
                                                                  HasTypeRefs,
-                                                                 HasVariable<InformationItem> {
+                                                                 HasVariable<InformationItem>,
+                                                                 HasDomainObject {
 
     private InformationItem parameter;
     private Expression expression;
@@ -110,5 +114,19 @@ public class Binding extends DMNModelInstrumentedBase implements HasExpression,
         hasTypeRefs.addAll(getNotNullHasTypeRefs(getParameter()));
 
         return hasTypeRefs;
+    }
+
+    @Override
+    public Optional<DomainObject> findDomainObject(final String uuid) {
+
+        if (matches(getParameter(), uuid)) {
+            return Optional.of(getParameter());
+        }
+
+        if (!isNull(getExpression())) {
+            return getExpression().findDomainObject(uuid);
+        }
+
+        return Optional.empty();
     }
 }

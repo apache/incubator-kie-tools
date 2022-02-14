@@ -16,7 +16,7 @@
 
 import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
-import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { useMemo, useState } from "react";
 import { Page } from "@patternfly/react-core";
 import { EmbeddedEditor } from "@kie-tools-core/editor/dist/embedded";
@@ -42,20 +42,13 @@ export function Base64PngPage() {
   /**
    * The editor envelope locator informs the EmbeddedEditor what file extension the Editor can open, and it maps to the respective envelope path and the Editor resources (like CSS, icons, etc).
    */
-  const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(() => {
-    return {
-      targetOrigin: window.location.origin,
-      mapping: new Map([
-        [
-          "base64png",
-          {
-            resourcesPathPrefix: `envelope/`,
-            envelopePath: `envelope/base64-editor.html`,
-          },
-        ],
+  const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
+    () =>
+      new EditorEnvelopeLocator(window.location.origin, [
+        new EnvelopeMapping("base64png", "**/*.base64png", `envelope/`, `envelope/base64-editor.html`),
       ]),
-    };
-  }, [file]);
+    [file]
+  );
 
   return (
     <Page>

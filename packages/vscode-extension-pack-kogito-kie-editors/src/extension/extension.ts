@@ -16,6 +16,7 @@
 
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
 import { registerTestScenarioRunnerCommand, VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import { VsCodeWorkspaceApi } from "@kie-tools-core/workspace/dist/vscode";
@@ -43,47 +44,28 @@ export async function activate(context: vscode.ExtensionContext) {
     notificationsApi: notificationsApi,
   });
 
-  const bpmnEnvelope = {
-    envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
-    resourcesPathPrefix: "dist/webview/editors/bpmn",
-  };
-
-  const dmnEnvelope = {
-    resourcesPathPrefix: "dist/webview/editors/dmn",
-    envelopePath: "dist/webview/DmnEditorEnvelopeApp.js",
-  };
-
-  const scesimEnvelope = {
-    resourcesPathPrefix: "dist/webview/editors/scesim",
-    envelopePath: "dist/webview/SceSimEditorEnvelopeApp.js",
-  };
-
-  const pmmlEnvelope = {
-    resourcesPathPrefix: "dist/webview/editors/pmml",
-    envelopePath: "dist/webview/PMMLEditorEnvelopeApp.js",
-  };
-
   KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-pack-kogito-kie-editors",
     context: context,
     viewType: "kieKogitoWebviewEditors",
     generateSvgCommandId: "extension.kogito.getPreviewSvg",
     silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvg",
-    editorEnvelopeLocator: {
-      targetOrigin: envelopeTargetOrigin,
-      mapping: new Map([
-        ["bpmn", bpmnEnvelope],
-        ["bpmn2", bpmnEnvelope],
-        ["BPMN", bpmnEnvelope],
-        ["BPMN2", bpmnEnvelope],
-        ["dmn", dmnEnvelope],
-        ["DMN", dmnEnvelope],
-        ["scesim", scesimEnvelope],
-        ["SCESIM", scesimEnvelope],
-        ["pmml", pmmlEnvelope],
-        ["PMML", pmmlEnvelope],
-      ]),
-    },
+    editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
+      new EnvelopeMapping(
+        "bpmn",
+        "**/*.bpmn?(2)",
+        "dist/webview/editors/bpmn",
+        "dist/webview/BpmnEditorEnvelopeApp.js"
+      ),
+      new EnvelopeMapping("dmn", "**/*.dmn", "dist/webview/editors/dmn", "dist/webview/DmnEditorEnvelopeApp.js"),
+      new EnvelopeMapping(
+        "scesim",
+        "**/*.scesim",
+        "dist/webview/editors/scesim",
+        "dist/webview/SceSimEditorEnvelopeApp.js"
+      ),
+      new EnvelopeMapping("pmml", "**/*.pmml", "dist/webview/editors/pmml", "dist/webview/PMMLEditorEnvelopeApp.js"),
+    ]),
     backendProxy: backendProxy,
   });
 

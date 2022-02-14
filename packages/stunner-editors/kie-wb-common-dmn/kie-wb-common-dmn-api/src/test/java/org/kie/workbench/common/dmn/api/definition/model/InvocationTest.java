@@ -17,7 +17,9 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,6 +29,7 @@ import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
@@ -38,14 +41,15 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-
 public class InvocationTest {
 
     private static final String INVOCATION_ID = "INVOCATION-ID";
     private static final String DESCRIPTION = "DESCRIPTION";
+    private static final String UUID = "uuid";
     private Invocation invocation;
 
     @Before
@@ -102,5 +106,48 @@ public class InvocationTest {
         assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
         assertNull(target.getExpression());
         assertTrue(target.getBinding().isEmpty());
+    }
+
+    @Test
+    public void testFindDomainObject_FromExpression() {
+
+        final DomainObject expectedDomainObject = mock(DomainObject.class);
+        final Expression expression = mock(Expression.class);
+        final Invocation invocation = new Invocation();
+        invocation.setExpression(expression);
+
+        when(expression.findDomainObject(UUID)).thenReturn(Optional.of(expectedDomainObject));
+
+        final Optional<DomainObject> actual = invocation.findDomainObject(UUID);
+
+        verify(expression).findDomainObject(UUID);
+        assertTrue(actual.isPresent());
+        assertEquals(expectedDomainObject, actual.get());
+    }
+
+    @Test
+    public void testFindDomainObject_FromBinding() {
+
+        final DomainObject expectedDomainObject = mock(DomainObject.class);
+        final Expression expression = mock(Expression.class);
+        final Invocation invocation = new Invocation();
+        final Binding binding1 = mock(Binding.class);
+        final Binding binding2 = mock(Binding.class);
+        final Binding binding3 = mock(Binding.class);
+
+        invocation.getBinding().addAll(Arrays.asList(binding1, binding2, binding3));
+        invocation.setExpression(expression);
+
+        when(binding3.findDomainObject(UUID)).thenReturn(Optional.of(expectedDomainObject));
+
+        final Optional<DomainObject> actual = invocation.findDomainObject(UUID);
+
+        verify(expression).findDomainObject(UUID);
+        verify(binding1).findDomainObject(UUID);
+        verify(binding2).findDomainObject(UUID);
+        verify(binding3).findDomainObject(UUID);
+
+        assertTrue(actual.isPresent());
+        assertEquals(expectedDomainObject, actual.get());
     }
 }

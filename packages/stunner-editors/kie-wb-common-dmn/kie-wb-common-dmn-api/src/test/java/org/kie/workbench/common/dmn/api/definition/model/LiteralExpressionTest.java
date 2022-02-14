@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.api.definition.model;
 
+import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,13 +28,16 @@ import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LiteralExpressionTest {
@@ -41,6 +46,7 @@ public class LiteralExpressionTest {
     private static final String DESCRIPTION = "DESCRIPTION";
     private static final String TEXT = "TEXT";
     private static final String EXPRESSION_LANGUAGE = "EXPRESSION-LANGUAGE";
+    private static final String UUID = "uuid";
     private LiteralExpression literalExpression;
 
     @Before
@@ -83,5 +89,31 @@ public class LiteralExpressionTest {
         assertEquals(TEXT, target.getText().getValue());
         assertNull(target.getImportedValues());
         assertEquals(EXPRESSION_LANGUAGE, target.getExpressionLanguage().getValue());
+    }
+
+    @Test
+    public void testFindDomainObject() {
+
+        final LiteralExpression literalExpression = new LiteralExpression(new Id(UUID),
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          null);
+
+        final Optional<DomainObject> foundDomainObject = literalExpression.findDomainObject(UUID);
+
+        assertTrue(foundDomainObject.isPresent());
+        assertEquals(literalExpression, foundDomainObject.get());
+    }
+
+    @Test
+    public void testFindDomainObject_WhenNothingHasBeenFound() {
+
+        final LiteralExpression literalExpression = new LiteralExpression();
+
+        final Optional<DomainObject> foundDomainObject = literalExpression.findDomainObject(UUID);
+
+        assertFalse(foundDomainObject.isPresent());
     }
 }

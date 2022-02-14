@@ -16,7 +16,7 @@
 
 import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
-import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { useMemo, useState } from "react";
 import { Page } from "@patternfly/react-core";
 import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
@@ -48,25 +48,20 @@ export function BpmnPage() {
    * On this example, we're using the envelope located on the bpmn.new page.
    */
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(() => {
-    return {
-      targetOrigin: window.location.origin,
-      mapping: new Map([
-        [
-          "bpmn",
-          {
-            resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/latest/bpmn",
-            envelopePath: "https://kiegroup.github.io/kogito-online/bpmn-envelope.html",
-          },
-        ],
-        [
-          "bpmn2",
-          {
-            resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/latest/bpmn",
-            envelopePath: "https://kiegroup.github.io/kogito-online/bpmn-envelope.html",
-          },
-        ],
-      ]),
-    };
+    return new EditorEnvelopeLocator(window.location.origin, [
+      new EnvelopeMapping(
+        "bpmn",
+        "**/*.bpmn",
+        "https://kiegroup.github.io/kogito-online/editors/latest/bpmn",
+        "https://kiegroup.github.io/kogito-online/bpmn-envelope.html"
+      ),
+      new EnvelopeMapping(
+        "bpmn",
+        "**/*.bpmn2",
+        "https://kiegroup.github.io/kogito-online/editors/latest/bpmn",
+        "https://kiegroup.github.io/kogito-online/bpmn-envelope.html"
+      ),
+    ]);
   }, []);
 
   return (

@@ -14,12 +14,31 @@
  * limitations under the License.
  */
 
-export interface EnvelopeMapping {
-  resourcesPathPrefix: string;
-  envelopePath: string;
+import { IMinimatch, Minimatch } from "minimatch";
+
+export class EnvelopeMapping {
+  public matcher: IMinimatch;
+
+  constructor(
+    public readonly type: string,
+    public readonly filePathGlob: string,
+    public readonly resourcesPathPrefix: string,
+    public readonly envelopePath: string
+  ) {
+    this.matcher = new Minimatch(filePathGlob, { nocase: true });
+  }
 }
 
-export interface EditorEnvelopeLocator {
-  targetOrigin: string;
-  mapping: Map<string, EnvelopeMapping>;
+export class EditorEnvelopeLocator {
+  constructor(public readonly targetOrigin: string, public readonly envelopeMappings: EnvelopeMapping[]) {}
+
+  public getEnvelopeMapping(path: string) {
+    return this.envelopeMappings.find((mapping) => {
+      return mapping.matcher.match(path);
+    });
+  }
+
+  public hasMappingFor(path: string) {
+    return this.getEnvelopeMapping(path) !== undefined;
+  }
 }
