@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,11 +26,14 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class InputClauseLiteralExpressionTest {
 
@@ -68,5 +72,49 @@ public class InputClauseLiteralExpressionTest {
         assertEquals(TEXT, target.getText().getValue());
         assertEquals(DESCRIPTION, target.getDescription().getValue());
         assertEquals(BuiltInType.BOOLEAN.asQName(), target.getTypeRef());
+    }
+
+    @Test
+    public void testFindDomainObject_WhenInputClauseLiteralExpressionMatches() {
+
+        final String uuid = "uuid";
+        final InputClauseLiteralExpression inputClause = new InputClauseLiteralExpression(new Id(uuid),
+                                                                                          null,
+                                                                                          null,
+                                                                                          null,
+                                                                                          null);
+
+        final Optional<DomainObject> actual = inputClause.findDomainObject(uuid);
+
+        assertTrue(actual.isPresent());
+        assertEquals(inputClause, actual.get());
+    }
+
+    @Test
+    public void testFindDomainObject_WhenImportedValueMatches() {
+
+        final ImportedValues importedValues = new ImportedValues();
+        // The UUID for ImporterValues is read-only, so we can't set it for test
+        final String uuid = importedValues.getDomainObjectUUID();
+        final InputClauseLiteralExpression inputClause = new InputClauseLiteralExpression(new Id(uuid),
+                                                                                          null,
+                                                                                          null,
+                                                                                          null,
+                                                                                          importedValues);
+
+        final Optional<DomainObject> actual = inputClause.findDomainObject(uuid);
+
+        assertTrue(actual.isPresent());
+        assertEquals(inputClause, actual.get());
+    }
+
+    @Test
+    public void testFindDomainObject_WhenNothingMatches() {
+
+        final InputClauseLiteralExpression inputClause = new InputClauseLiteralExpression();
+
+        final Optional<DomainObject> actual = inputClause.findDomainObject("some id");
+
+        assertFalse(actual.isPresent());
     }
 }

@@ -25,8 +25,10 @@ import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.find;
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getFlatHasTypeRefs;
 
 @Portable
@@ -96,6 +98,22 @@ public class DecisionTable extends Expression {
         clonedDecisionTable.preferredOrientation = preferredOrientation;
         clonedDecisionTable.outputLabel = outputLabel;
         return clonedDecisionTable;
+    }
+
+    @Override
+    public Optional<DomainObject> findDomainObject(final String uuid) {
+
+        Optional<DomainObject> domainObject = find(getInput(), uuid);
+        if (domainObject.isPresent()) {
+            return domainObject;
+        }
+
+        domainObject = find(getOutput(), uuid);
+        if (domainObject.isPresent()) {
+            return domainObject;
+        }
+
+        return find(getRule(), uuid);
     }
 
     public List<RuleAnnotationClause> getAnnotations() {

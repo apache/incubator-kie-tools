@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.showcase.client.large.model;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.showcase.client.common.DMNDesignerBaseIT;
 import org.kie.workbench.common.dmn.showcase.client.selenium.locator.DecisionNavigatorXPathLocator;
-import org.kie.workbench.common.dmn.showcase.client.selenium.locator.EditorXPathLocator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,15 +40,8 @@ public class DMNDesignerLargeAssetIT extends DMNDesignerBaseIT {
         final String expected = loadResource("large-model-nodes-50-unique-no-layout.xml");
         setContent(expected);
 
-        waitUtils.waitUntilElementIsVisible(
-                EditorXPathLocator.missingLayoutPopUpCloseButton(),
-                "Editor should inform about missing layout information")
-                .click();
-
         final String actual = getContent();
         assertThat(actual).isNotBlank();
-
-
 
         for (int i = 1; i <= 50; i++) {
             decisionNavigator.assertItemIsPresent(DecisionNavigatorXPathLocator.node("Decision " + i));

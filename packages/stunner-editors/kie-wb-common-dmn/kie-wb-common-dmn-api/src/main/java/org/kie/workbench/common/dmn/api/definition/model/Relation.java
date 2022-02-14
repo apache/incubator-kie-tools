@@ -24,8 +24,11 @@ import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.find;
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.getDomainObject;
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getFlatHasTypeRefs;
 
 @Portable
@@ -65,6 +68,15 @@ public class Relation extends Expression {
         clonedRelation.column = column.stream().map(InformationItem::copy).collect(Collectors.toList());
         clonedRelation.row = row.stream().map(List::copy).collect(Collectors.toList());
         return clonedRelation;
+    }
+
+    @Override
+    public Optional<DomainObject> findDomainObject(final String uuid) {
+        final Optional<DomainObject> domainObject = getDomainObject(getColumn(), uuid);
+        if (domainObject.isPresent()) {
+            return domainObject;
+        }
+        return find(getRow(), uuid);
     }
 
     public java.util.List<InformationItem> getColumn() {

@@ -41,6 +41,7 @@ import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static java.util.Collections.singletonList;
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.matches;
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getNotNullHasTypeRefs;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
@@ -53,7 +54,8 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.model.OutputClause"),
         startElement = "id")
 public class OutputClause extends DMNElement implements HasTypeRef,
-                                                        DomainObject {
+                                                        DomainObject,
+                                                        HasDomainObject {
 
     @Category
     private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
@@ -222,5 +224,19 @@ public class OutputClause extends DMNElement implements HasTypeRef,
                                          defaultOutputEntry != null ? defaultOutputEntry.hashCode() : 0,
                                          name != null ? name.hashCode() : 0,
                                          typeRef != null ? typeRef.hashCode() : 0);
+    }
+
+    @Override
+    public Optional<DomainObject> findDomainObject(final String uuid) {
+
+        if (matches(this, uuid)) {
+            return Optional.of(this);
+        }
+
+        if (matches(getDefaultOutputEntry(), uuid)) {
+            return Optional.of(getDefaultOutputEntry());
+        }
+
+        return Optional.empty();
     }
 }
