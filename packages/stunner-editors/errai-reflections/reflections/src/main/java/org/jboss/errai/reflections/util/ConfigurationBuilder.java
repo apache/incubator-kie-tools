@@ -25,6 +25,9 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Sets;
 import org.jboss.errai.reflections.Configuration;
 import org.jboss.errai.reflections.adapters.JavassistAdapter;
 import org.jboss.errai.reflections.adapters.MetadataAdapter;
@@ -33,10 +36,6 @@ import org.jboss.errai.reflections.scanners.SubTypesScanner;
 import org.jboss.errai.reflections.scanners.TypeAnnotationsScanner;
 import org.jboss.errai.reflections.serializers.Serializer;
 import org.jboss.errai.reflections.serializers.XmlSerializer;
-
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Sets;
 
 /**
  * a fluent builder for {@link org.jboss.errai.reflections.Configuration}, to be used for constructing a {@link org.jboss.errai.reflections.Reflections} instance

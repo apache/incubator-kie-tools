@@ -17,7 +17,6 @@ package org.dashbuilder.dataset.engine.function;
 
 import java.util.List;
 
-import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.group.AggregateFunctionType;
 
 /**

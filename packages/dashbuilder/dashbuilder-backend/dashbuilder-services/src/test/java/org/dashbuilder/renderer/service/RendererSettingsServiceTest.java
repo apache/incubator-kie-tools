@@ -1,10 +1,10 @@
 package org.dashbuilder.renderer.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.dashbuilder.renderer.RendererSettings;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class RendererSettingsServiceTest {
     

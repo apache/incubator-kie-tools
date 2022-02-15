@@ -15,8 +15,6 @@
  */
 package org.dashbuilder.client.services;
 
-import static elemental2.dom.DomGlobal.fetch;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +25,12 @@ import javax.inject.Inject;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Headers;
+import elemental2.dom.RequestInit;
+import elemental2.dom.Response;
+import elemental2.dom.XMLHttpRequest;
+import elemental2.promise.IThenable;
 import org.dashbuilder.client.error.DefaultRuntimeErrorCallback;
 import org.dashbuilder.client.error.DefaultRuntimeErrorCallback.DefaultErrorType;
 import org.dashbuilder.client.error.ErrorResponseVerifier;
@@ -49,12 +53,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.resteasy.util.HttpResponseCodes;
 import org.uberfire.backend.vfs.Path;
 
-import elemental2.dom.DomGlobal;
-import elemental2.dom.Headers;
-import elemental2.dom.RequestInit;
-import elemental2.dom.Response;
-import elemental2.dom.XMLHttpRequest;
-import elemental2.promise.IThenable;
+import static elemental2.dom.DomGlobal.fetch;
 
 @Alternative
 @ApplicationScoped

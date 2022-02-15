@@ -16,16 +16,15 @@
 
 package org.jboss.errai.common.metadata;
 
-import com.google.common.collect.Multimap;
-import org.jboss.errai.reflections.scanners.AbstractScanner;
-import org.jboss.errai.reflections.vfs.Vfs;
-
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Predicate;
+
+import com.google.common.collect.Multimap;
+import org.jboss.errai.reflections.scanners.AbstractScanner;
+import org.jboss.errai.reflections.vfs.Vfs;
 
 public class ErraiPropertyScanner extends AbstractScanner {
 

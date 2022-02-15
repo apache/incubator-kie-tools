@@ -28,8 +28,8 @@ import org.dashbuilder.renderer.c3.client.C3Displayer;
 import org.dashbuilder.renderer.c3.client.C3XYDisplayer;
 import org.dashbuilder.renderer.c3.client.charts.CommonC3DisplayerConstants;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartConf;
-import org.dashbuilder.renderer.c3.client.jsbinding.C3JsTypesFactory;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartConf.RenderedCallback;
+import org.dashbuilder.renderer.c3.client.jsbinding.C3JsTypesFactory;
 
 
 @Dependent

@@ -18,7 +18,8 @@ package org.uberfire.ext.layout.editor.client.infra;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 public class UniqueIDGeneratorTest {
 

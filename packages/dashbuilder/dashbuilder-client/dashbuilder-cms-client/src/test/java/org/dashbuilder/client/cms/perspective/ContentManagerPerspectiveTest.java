@@ -32,7 +32,9 @@ import org.uberfire.ext.plugin.client.perspective.editor.PerspectiveEditorPresen
 import org.uberfire.ext.plugin.client.perspective.editor.events.PerspectiveEditorFocusEvent;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ContentManagerPerspectiveTest {

@@ -18,16 +18,15 @@ package org.dashbuilder.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.animation.client.Animation;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.RootPanel;
 import org.dashbuilder.client.cms.screen.explorer.NavigationExplorerScreen;
 import org.dashbuilder.client.navbar.AppHeader;
 import org.dashbuilder.client.navigation.NavTreeDefinitions;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-
-import com.google.gwt.animation.client.Animation;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Entry-point for the Dashbuilder showcase

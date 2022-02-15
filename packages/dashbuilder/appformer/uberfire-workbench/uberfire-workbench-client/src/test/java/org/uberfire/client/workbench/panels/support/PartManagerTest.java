@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.uberfire.workbench.model.PartDefinition;
 
 import static org.jgroups.util.Util.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PartManagerTest {

@@ -31,7 +31,9 @@ import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
-import static org.jboss.errai.common.client.dom.DOMUtil.*;
+import static org.jboss.errai.common.client.dom.DOMUtil.addCSSClass;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllElementChildren;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeCSSClass;
 
 @Templated(stylesheet = "InlineNotification.css")
 @Dependent

@@ -6,15 +6,12 @@ import java.util.Map;
 
 import org.eclipse.emf.common.util.DiagnosticChain;
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.util.EObjectValidator;
-
 import org.eclipse.emf.ecore.xml.type.util.XMLTypeUtil;
 import org.eclipse.emf.ecore.xml.type.util.XMLTypeValidator;
-
-import org.omg.spec.bpmn.non.normative.color.*;
+import org.omg.spec.bpmn.non.normative.color.ColorPackage;
+import org.omg.spec.bpmn.non.normative.color.DocumentRoot;
 
 /**
  * <!-- begin-user-doc -->

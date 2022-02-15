@@ -16,13 +16,11 @@
 
 package org.uberfire.ext.editor.commons.service.htmleditor;
 
-
 import org.uberfire.ext.editor.commons.file.DefaultMetadata;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRead;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
-
 
 public interface HtmlEditorService extends SupportsCopy,
                                            SupportsDelete,

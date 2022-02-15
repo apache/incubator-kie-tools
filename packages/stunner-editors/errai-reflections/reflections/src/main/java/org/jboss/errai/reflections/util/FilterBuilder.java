@@ -16,14 +16,14 @@
 
 package org.jboss.errai.reflections.util;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-import org.jboss.errai.reflections.ReflectionsException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
+import org.jboss.errai.reflections.ReflectionsException;
 
 /**
  * an include exclude filter builder

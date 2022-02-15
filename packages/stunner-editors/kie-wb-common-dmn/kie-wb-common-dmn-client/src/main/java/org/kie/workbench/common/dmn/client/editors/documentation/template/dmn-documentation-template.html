@@ -370,16 +370,18 @@
         <p>{{drdAllowedAnswers}}</p>
         {{/drdAllowedAnswers}}
         <ul class="data-types">
-          {{#hasExternalLinks}}
+          {{#drdExternalLinks}}
           <p class="node-detail-title">{{i18n.externalLinks}}</p>
-          {{/hasExternalLinks}} {{#drdExternalLinks}}
           <li style="padding-left: calc(30px * {{level}})">
             <span class="normal">{{description}}</span>
             <a href="{{url}}">({{url}})</a>
           </li>
           {{/drdExternalLinks}} {{^drdExternalLinks}}
+          <!-- recheck drdType presence -->
+          <!-- if not present, it is TextAnnotation -->
+          {{#drdType}}
           <li class="no-results">{{i18n.noExternalLinks}}</li>
-          {{/drdExternalLinks}}
+          {{/drdType}} {{/drdExternalLinks}}
         </ul>
         {{#drdBoxedExpressionImage}}
         <img src="{{drdBoxedExpressionImage}}" alt="{{drdName}}" class="diagram-image" />

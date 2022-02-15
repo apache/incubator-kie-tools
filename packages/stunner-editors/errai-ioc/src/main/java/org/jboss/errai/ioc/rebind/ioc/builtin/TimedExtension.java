@@ -19,6 +19,7 @@ package org.jboss.errai.ioc.rebind.ioc.builtin;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.Timer;
 import org.jboss.errai.codegen.Statement;
 import org.jboss.errai.codegen.util.Stmt;
 import org.jboss.errai.ioc.client.api.CodeDecorator;
@@ -26,8 +27,6 @@ import org.jboss.errai.ioc.client.api.Timed;
 import org.jboss.errai.ioc.rebind.ioc.extension.IOCDecoratorExtension;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.Decorable;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.FactoryController;
-
-import com.google.gwt.user.client.Timer;
 
 /**
  * @author Mike Brock

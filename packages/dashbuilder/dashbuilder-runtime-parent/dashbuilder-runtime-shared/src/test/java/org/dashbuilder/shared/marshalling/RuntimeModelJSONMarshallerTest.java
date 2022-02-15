@@ -15,9 +15,6 @@
  */
 package org.dashbuilder.shared.marshalling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
@@ -27,6 +24,9 @@ import org.dashbuilder.shared.model.RuntimeModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class RuntimeModelJSONMarshallerTest {
 

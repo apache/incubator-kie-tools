@@ -18,16 +18,14 @@ package org.dashbuilder.client.screens.view;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.client.screens.HomeScreen;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-
-import elemental2.dom.HTMLDivElement;
-import elemental2.dom.HTMLElement;
 
 @Dependent
 @Templated

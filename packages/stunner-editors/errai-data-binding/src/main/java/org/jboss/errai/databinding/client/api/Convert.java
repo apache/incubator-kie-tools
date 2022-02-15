@@ -23,14 +23,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.errai.common.client.api.Assert;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
-import org.jboss.errai.databinding.client.AbstractOneWayConverter;
-import org.jboss.errai.databinding.client.BindableProxy;
-import org.jboss.errai.databinding.client.ConverterRegistrationKey;
-import org.jboss.errai.databinding.client.OneWayConverter;
-import org.jboss.errai.databinding.client.TwoWayConverter;
-
 import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DoubleBox;
@@ -43,6 +35,13 @@ import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
+import org.jboss.errai.common.client.api.Assert;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.databinding.client.AbstractOneWayConverter;
+import org.jboss.errai.databinding.client.BindableProxy;
+import org.jboss.errai.databinding.client.ConverterRegistrationKey;
+import org.jboss.errai.databinding.client.OneWayConverter;
+import org.jboss.errai.databinding.client.TwoWayConverter;
 
 /**
  * Type conversion utility used by the generated {@link Bindable} proxies.

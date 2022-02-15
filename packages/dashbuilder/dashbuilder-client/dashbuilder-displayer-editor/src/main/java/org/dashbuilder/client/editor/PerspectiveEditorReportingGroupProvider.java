@@ -15,6 +15,9 @@
  */
 package org.dashbuilder.client.editor;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.dashbuilder.client.editor.resources.i18n.Constants;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.client.RendererManager;
@@ -33,9 +36,6 @@ import static org.dashbuilder.displayer.DisplayerType.METRIC;
 import static org.dashbuilder.displayer.DisplayerType.PIECHART;
 import static org.dashbuilder.displayer.DisplayerType.SELECTOR;
 import static org.dashbuilder.displayer.DisplayerType.TABLE;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 /**
  * {@link PerspectiveEditorComponentGroupProvider} holding all the chart displayer components

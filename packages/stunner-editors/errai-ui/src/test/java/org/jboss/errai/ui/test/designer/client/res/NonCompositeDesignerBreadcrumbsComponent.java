@@ -19,12 +19,11 @@ package org.jboss.errai.ui.test.designer.client.res;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated("DesignerTemplate.html#breadcrumbs")
 public class NonCompositeDesignerBreadcrumbsComponent implements DesignerComponent {

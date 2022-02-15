@@ -16,9 +16,9 @@
 
 package org.jboss.errai.codegen.builder;
 
-import org.jboss.errai.codegen.Statement;
-
 import java.lang.annotation.Annotation;
+
+import org.jboss.errai.codegen.Statement;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

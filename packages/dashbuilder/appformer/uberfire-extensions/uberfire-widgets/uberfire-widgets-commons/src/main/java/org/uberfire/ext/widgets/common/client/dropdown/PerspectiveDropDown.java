@@ -17,6 +17,7 @@
 package org.uberfire.ext.widgets.common.client.dropdown;
 
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;

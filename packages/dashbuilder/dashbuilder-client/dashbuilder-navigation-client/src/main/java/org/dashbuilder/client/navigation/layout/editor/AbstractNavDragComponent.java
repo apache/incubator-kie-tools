@@ -23,7 +23,6 @@ import javax.enterprise.event.Observes;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.dashbuilder.client.navigation.NavigationManager;
-import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.client.navigation.widget.HasDefaultNavItem;
 import org.dashbuilder.client.navigation.widget.HasTargetDiv;
@@ -33,13 +32,16 @@ import org.dashbuilder.client.navigation.widget.NavWidget;
 import org.dashbuilder.client.navigation.widget.TargetDivNavWidget;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavTree;
+import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TargetDivList;
 
-import static org.dashbuilder.navigation.layout.NavDragComponentSettings.*;
+import static org.dashbuilder.navigation.layout.NavDragComponentSettings.NAV_DEFAULT_ID;
+import static org.dashbuilder.navigation.layout.NavDragComponentSettings.NAV_GROUP_ID;
+import static org.dashbuilder.navigation.layout.NavDragComponentSettings.TARGET_DIV_ID;
 
 public abstract class AbstractNavDragComponent implements NavDragComponent {
 

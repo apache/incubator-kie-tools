@@ -16,12 +16,6 @@
 
 package org.uberfire.client.mvp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +24,7 @@ import java.util.List;
 
 import javax.enterprise.event.Event;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
@@ -44,7 +39,11 @@ import org.uberfire.client.workbench.type.DotResourceType;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.category.Others;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests that {@link ActivityBeansCache} respects the active flag controlled by the {@code @ActivatedBy} annotation.

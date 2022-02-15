@@ -18,6 +18,7 @@ package org.uberfire.client.workbench;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+
 import javax.inject.Qualifier;
 
 import static java.lang.annotation.ElementType.FIELD;

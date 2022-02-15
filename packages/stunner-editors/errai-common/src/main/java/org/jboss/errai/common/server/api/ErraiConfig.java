@@ -16,7 +16,6 @@
 
 package org.jboss.errai.common.server.api;
 
-
 import org.jboss.errai.common.client.api.ResourceProvider;
 
 public interface ErraiConfig {

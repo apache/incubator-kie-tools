@@ -27,7 +27,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.mvp.ActivityBeansCache;
-import org.uberfire.client.mvp.PerspectiveActivity;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;

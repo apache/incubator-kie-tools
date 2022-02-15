@@ -18,6 +18,7 @@ package org.dashbuilder.client.widgets.dataset.editor.remote;
 
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.safehtml.shared.SafeUri;
 import org.dashbuilder.client.widgets.common.DataSetEditorPlugin;
 import org.dashbuilder.client.widgets.dataset.editor.workflow.create.RemoteDataSetBasicAttributesWorkflow;
 import org.dashbuilder.client.widgets.dataset.editor.workflow.edit.RemoteDataSetEditWorkflow;
@@ -25,8 +26,6 @@ import org.dashbuilder.client.widgets.resources.i18n.DataSetEditorConstants;
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.client.resources.bundles.DataSetClientResources;
 import org.dashbuilder.kieserver.RuntimeKieServerDataSetProviderType;
-
-import com.google.gwt.safehtml.shared.SafeUri;
 
 @Dependent
 public class RemoteDataSetEditorPlugin implements DataSetEditorPlugin {

@@ -16,12 +16,12 @@
 
 package org.jboss.errai.codegen.control;
 
-import static org.jboss.errai.codegen.builder.callstack.LoadClassReference.getClassReference;
-
 import org.jboss.errai.codegen.AbstractStatement;
 import org.jboss.errai.codegen.Context;
 import org.jboss.errai.codegen.Statement;
 import org.jboss.errai.codegen.Variable;
+
+import static org.jboss.errai.codegen.builder.callstack.LoadClassReference.getClassReference;
 
 /**
  * Foreach statement (enhanced for loop).

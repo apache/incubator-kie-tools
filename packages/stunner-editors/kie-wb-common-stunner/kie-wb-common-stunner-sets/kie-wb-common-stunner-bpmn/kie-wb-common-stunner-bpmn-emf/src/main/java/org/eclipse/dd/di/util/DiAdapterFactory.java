@@ -14,13 +14,21 @@
  */
 package org.eclipse.dd.di.util;
 
-import org.eclipse.dd.di.*;
-
+import org.eclipse.dd.di.DiPackage;
+import org.eclipse.dd.di.Diagram;
+import org.eclipse.dd.di.DiagramElement;
+import org.eclipse.dd.di.DocumentRoot;
+import org.eclipse.dd.di.Edge;
+import org.eclipse.dd.di.Label;
+import org.eclipse.dd.di.LabeledEdge;
+import org.eclipse.dd.di.LabeledShape;
+import org.eclipse.dd.di.Node;
+import org.eclipse.dd.di.Plane;
+import org.eclipse.dd.di.Shape;
+import org.eclipse.dd.di.Style;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**

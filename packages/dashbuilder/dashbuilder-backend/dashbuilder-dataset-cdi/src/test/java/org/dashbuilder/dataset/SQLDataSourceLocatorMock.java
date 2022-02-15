@@ -17,6 +17,7 @@ package org.dashbuilder.dataset;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.inject.Specializes;
 import javax.sql.DataSource;
 

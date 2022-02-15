@@ -26,10 +26,9 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
-import org.dashbuilder.kieserver.KieServerConnectionInfo;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.dashbuilder.kieserver.KieServerConnectionInfo;
 
 /**
  * Run queries on Kie Server using its REST API

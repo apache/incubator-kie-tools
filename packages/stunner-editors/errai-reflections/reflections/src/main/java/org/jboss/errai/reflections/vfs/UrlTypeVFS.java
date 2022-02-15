@@ -22,11 +22,10 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Predicate;
 import org.jboss.errai.reflections.ReflectionsException;
 import org.jboss.errai.reflections.vfs.Vfs.Dir;
 import org.jboss.errai.reflections.vfs.Vfs.UrlType;
-
-import com.google.common.base.Predicate;
 
 /**
  * UrlType to be used by Reflections library.

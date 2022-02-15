@@ -27,7 +27,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.workbench.pmgr.nswe.part.WorkbenchPartPresenterDefault;
 import org.uberfire.client.workbench.pmgr.unanchored.part.UnanchoredWorkbenchPartPresenter;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultBeanFactoryTest {

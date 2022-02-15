@@ -18,19 +18,18 @@ package org.jboss.errai.ui.test.quickhandler.client.res;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.SinkNative;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.jboss.errai.ui.test.common.client.dom.ButtonElement;
-import org.jboss.errai.ui.test.common.client.dom.Document;
-
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.SinkNative;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.jboss.errai.ui.test.common.client.dom.ButtonElement;
+import org.jboss.errai.ui.test.common.client.dom.Document;
 
 @Templated("QuickHandlerComponent.html")
 public class CompositeQuickHandlerComponent extends Composite implements QuickHandlerComponent {

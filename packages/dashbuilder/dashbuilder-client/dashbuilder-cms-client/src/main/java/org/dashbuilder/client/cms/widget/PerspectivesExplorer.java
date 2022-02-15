@@ -29,7 +29,6 @@ import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.layout.editor.client.LayoutEditorPresenter;
 import org.uberfire.ext.plugin.client.perspective.editor.PerspectiveEditorPresenter;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.mvp.Command;

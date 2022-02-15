@@ -1,5 +1,13 @@
 package org.dashbuilder.displayer.client;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
@@ -13,25 +21,27 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.stubbing.Answer;
+import org.uberfire.mocks.CallerMock;
 
-import static org.dashbuilder.displayer.DisplayerSubType.*;
-import static org.dashbuilder.displayer.DisplayerType.*;
+import static org.dashbuilder.displayer.DisplayerSubType.AREA;
+import static org.dashbuilder.displayer.DisplayerSubType.BAR;
+import static org.dashbuilder.displayer.DisplayerSubType.BAR_STACKED;
+import static org.dashbuilder.displayer.DisplayerSubType.LINE;
+import static org.dashbuilder.displayer.DisplayerSubType.MAP_MARKERS;
+import static org.dashbuilder.displayer.DisplayerSubType.MAP_REGIONS;
+import static org.dashbuilder.displayer.DisplayerSubType.SMOOTH;
+import static org.dashbuilder.displayer.DisplayerType.AREACHART;
+import static org.dashbuilder.displayer.DisplayerType.BARCHART;
+import static org.dashbuilder.displayer.DisplayerType.LINECHART;
+import static org.dashbuilder.displayer.DisplayerType.MAP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.mockito.stubbing.Answer;
-import org.uberfire.mocks.CallerMock;
-
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.mockito.Mockito.RETURNS_DEFAULTS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class RendererManagerTest {

@@ -16,9 +16,6 @@
 
 package org.jboss.errai.ui.shared.api.annotations;
 
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -26,6 +23,9 @@ import java.lang.annotation.Target;
 import org.jboss.errai.common.client.api.annotations.BrowserEvent;
 import org.jboss.errai.common.client.dom.Event;
 import org.jboss.errai.common.client.dom.MouseEvent;
+
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * <p>

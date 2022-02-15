@@ -16,8 +16,6 @@
 
 package org.dashbuilder.backend;
 
-import static org.dashbuilder.backend.RuntimeOptions.DASHBOARD_EXTENSION;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -26,13 +24,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import io.quarkus.runtime.StartupEvent;
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
 import org.dashbuilder.shared.service.ExternalImportService;
 import org.dashbuilder.shared.service.RuntimeModelRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.quarkus.runtime.StartupEvent;
+import static org.dashbuilder.backend.RuntimeOptions.DASHBOARD_EXTENSION;
 
 /**
  * Responsible for runtime model files loading.

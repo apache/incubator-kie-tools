@@ -27,7 +27,31 @@ import org.jboss.errai.common.client.dom.Event;
 import org.jboss.errai.common.client.dom.TextInput;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 
-import static org.uberfire.client.views.pfly.resources.i18n.Constants.*;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.ApplyLabel;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.April;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.August;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.CancelLabel;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.CustomRangeLabel;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.December;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.February;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.FridayShort;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.FromLabel;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.January;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.July;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.June;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.March;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.May;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.MondayShort;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.November;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.October;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.SaturdayShort;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.September;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.SundayShort;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.ThursdayShort;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.ToLabel;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.TuesdayShort;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.WednesdayShort;
+import static org.uberfire.client.views.pfly.resources.i18n.Constants.WeekLabel;
 
 /**
  * Wrapper component for <a href="http://www.daterangepicker.com">Date Range Picker</a>

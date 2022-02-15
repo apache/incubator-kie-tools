@@ -30,9 +30,9 @@ import org.dashbuilder.dataset.group.AggregateFunctionType;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.dashbuilder.dataset.Assertions.assertDataSetValues;
 import static org.dashbuilder.dataset.filter.FilterFactory.lowerThan;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class CSVDataSetBasicTest {
 

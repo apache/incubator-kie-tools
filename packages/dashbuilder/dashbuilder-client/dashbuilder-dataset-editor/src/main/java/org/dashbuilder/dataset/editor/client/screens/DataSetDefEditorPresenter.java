@@ -15,14 +15,6 @@
  */
 package org.dashbuilder.dataset.editor.client.screens;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.COPY;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DELETE;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.VALIDATE;
-import static org.uberfire.workbench.events.NotificationEvent.NotificationType.ERROR;
-import static org.uberfire.workbench.events.NotificationEvent.NotificationType.SUCCESS;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -31,6 +23,8 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.client.widgets.dataset.editor.DataSetEditor;
 import org.dashbuilder.client.widgets.dataset.editor.workflow.DataSetEditorWorkflow;
 import org.dashbuilder.client.widgets.dataset.editor.workflow.DataSetEditorWorkflowFactory;
@@ -77,8 +71,13 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.COPY;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DELETE;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.VALIDATE;
+import static org.uberfire.workbench.events.NotificationEvent.NotificationType.ERROR;
+import static org.uberfire.workbench.events.NotificationEvent.NotificationType.SUCCESS;
 
 @Dependent
 @WorkbenchEditor(identifier = DataSetDefEditorPresenter.ID, supportedTypes = {DataSetDefType.class}, priority = Integer.MAX_VALUE)

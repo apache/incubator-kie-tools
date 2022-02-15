@@ -15,6 +15,11 @@
  */
 package org.dashbuilder.renderer.c3.client;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Panel;
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayerView;
 import org.dashbuilder.renderer.c3.client.resources.i18n.C3DisplayerConstants;
@@ -22,12 +27,6 @@ import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.html.Text;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Panel;
 
 public abstract class C3AbstractDisplayerView<P extends C3AbstractDisplayer>
                                              extends AbstractGwtDisplayerView<P>

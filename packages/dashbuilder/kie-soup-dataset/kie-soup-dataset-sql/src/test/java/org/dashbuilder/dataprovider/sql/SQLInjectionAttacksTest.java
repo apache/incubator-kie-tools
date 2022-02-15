@@ -26,9 +26,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 
-import static org.dashbuilder.dataset.ExpenseReportsData.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_EMPLOYEE;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doAnswer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SQLInjectionAttacksTest extends SQLDataSetTestBase {

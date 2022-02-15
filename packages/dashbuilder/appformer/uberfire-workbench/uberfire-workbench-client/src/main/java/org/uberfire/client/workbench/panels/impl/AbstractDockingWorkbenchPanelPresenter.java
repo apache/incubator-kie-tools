@@ -19,6 +19,7 @@ package org.uberfire.client.workbench.panels.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.PerspectiveManager;

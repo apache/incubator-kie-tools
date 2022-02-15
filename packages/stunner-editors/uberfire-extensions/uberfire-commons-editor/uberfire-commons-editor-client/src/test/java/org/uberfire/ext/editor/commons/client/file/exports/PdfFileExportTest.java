@@ -24,7 +24,9 @@ import org.mockito.Mock;
 import org.uberfire.ext.editor.commons.client.file.exports.jso.JsPdf;
 import org.uberfire.ext.editor.commons.file.exports.PdfExportPreferences;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PdfFileExportTest {

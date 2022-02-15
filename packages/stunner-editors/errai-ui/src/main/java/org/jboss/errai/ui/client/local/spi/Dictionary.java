@@ -16,7 +16,11 @@
 
 package org.jboss.errai.ui.client.local.spi;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Dictionary that holds translation key/value pairs for all supported locales.

@@ -16,8 +16,6 @@
 
 package org.jboss.errai.codegen;
 
-import static org.jboss.errai.codegen.util.PrettyPrinter.prettyPrintJava;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,6 +37,8 @@ import org.jboss.errai.codegen.meta.MetaMethod;
 import org.jboss.errai.codegen.util.Stmt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.jboss.errai.codegen.util.PrettyPrinter.prettyPrintJava;
 
 //import com.google.gwt.dev.util.collect.IdentityHashSet;
 

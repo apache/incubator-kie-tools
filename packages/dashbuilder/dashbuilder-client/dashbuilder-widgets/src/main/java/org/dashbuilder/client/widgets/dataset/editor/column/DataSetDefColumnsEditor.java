@@ -15,18 +15,17 @@
  */
 package org.dashbuilder.client.widgets.dataset.editor.column;
 
-import com.google.gwt.editor.client.EditorDelegate;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import org.dashbuilder.dataprovider.DataSetProviderType;
-import org.dashbuilder.dataset.def.DataColumnDef;
-import org.dashbuilder.dataset.def.DataSetDef;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+
+import com.google.gwt.editor.client.EditorDelegate;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+import org.dashbuilder.dataset.def.DataColumnDef;
+import org.dashbuilder.dataset.def.DataSetDef;
 
 /**
  * <p>Data Set columns editor.</p>

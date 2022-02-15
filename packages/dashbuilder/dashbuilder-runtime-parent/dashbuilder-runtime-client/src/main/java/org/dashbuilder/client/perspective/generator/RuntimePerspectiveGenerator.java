@@ -16,8 +16,6 @@
 
 package org.dashbuilder.client.perspective.generator;
 
-import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_QUALIFIERS;
-
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -26,7 +24,6 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
@@ -37,6 +34,8 @@ import org.uberfire.ext.layout.editor.client.generator.LayoutGenerator;
 import org.uberfire.ext.plugin.client.cdi.SingletonBeanDefinition;
 import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorActivity;
 import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorScreenActivity;
+
+import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_QUALIFIERS;
 
 @ApplicationScoped
 public class RuntimePerspectiveGenerator {

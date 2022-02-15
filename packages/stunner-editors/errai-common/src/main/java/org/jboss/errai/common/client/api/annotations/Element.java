@@ -16,10 +16,10 @@
 
 package org.jboss.errai.common.client.api.annotations;
 
-import jsinterop.annotations.JsType;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import jsinterop.annotations.JsType;
 
 /**
  * Marks a native {@link JsType} as a wrapper for a DOM element. {@link Element#value()} are the tag names of the

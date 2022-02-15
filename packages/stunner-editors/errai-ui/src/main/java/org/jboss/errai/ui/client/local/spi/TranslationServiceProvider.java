@@ -19,9 +19,8 @@ package org.jboss.errai.ui.client.local.spi;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
-import org.jboss.errai.ioc.client.api.IOCProvider;
-
 import com.google.gwt.core.shared.GWT;
+import org.jboss.errai.ioc.client.api.IOCProvider;
 
 /**
  * Provides a way to inject the {@link TranslationService}.

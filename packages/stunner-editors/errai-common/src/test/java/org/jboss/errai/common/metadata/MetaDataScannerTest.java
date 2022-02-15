@@ -16,14 +16,6 @@
 
 package org.jboss.errai.common.metadata;
 
-import org.jboss.errai.reflections.util.ClasspathHelper;
-import org.jboss.errai.reflections.vfs.Vfs;
-import org.jboss.errai.reflections.vfs.ZipDir;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Test;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -32,6 +24,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+
+import org.jboss.errai.reflections.util.ClasspathHelper;
+import org.jboss.errai.reflections.vfs.Vfs;
+import org.jboss.errai.reflections.vfs.ZipDir;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

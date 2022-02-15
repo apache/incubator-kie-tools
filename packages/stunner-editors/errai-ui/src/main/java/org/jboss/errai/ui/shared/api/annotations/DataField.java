@@ -16,8 +16,6 @@
 
 package org.jboss.errai.ui.shared.api.annotations;
 
-import static org.jboss.errai.ui.shared.api.annotations.DataField.ConflictStrategy.USE_TEMPLATE;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -29,8 +27,9 @@ import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
-
 import jsinterop.annotations.JsType;
+
+import static org.jboss.errai.ui.shared.api.annotations.DataField.ConflictStrategy.USE_TEMPLATE;
 
 /**
  * <p>

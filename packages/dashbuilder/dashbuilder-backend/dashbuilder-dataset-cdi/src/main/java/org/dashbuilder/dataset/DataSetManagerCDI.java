@@ -18,7 +18,6 @@ package org.dashbuilder.dataset;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.dashbuilder.DataSetCore;
 import org.dashbuilder.config.Config;
 import org.dashbuilder.dataprovider.DataSetProviderRegistryCDI;
 import org.dashbuilder.dataprovider.StaticDataSetProviderCDI;

@@ -19,9 +19,10 @@ import org.dashbuilder.DataSetCore;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.dashbuilder.dataset.ColumnType.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.dashbuilder.dataset.Assertions.*;
+import static org.dashbuilder.dataset.Assertions.assertDataSetValues;
+import static org.dashbuilder.dataset.ColumnType.LABEL;
+import static org.dashbuilder.dataset.ColumnType.NUMBER;
 
 public class DataSetLookupConstraintsTest {
 

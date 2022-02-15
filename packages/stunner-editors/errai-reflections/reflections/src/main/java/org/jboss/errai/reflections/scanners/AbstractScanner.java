@@ -22,18 +22,16 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Multimap;
 import javassist.bytecode.ClassFile;
-
 import org.jboss.errai.reflections.Configuration;
 import org.jboss.errai.reflections.ReflectionsException;
 import org.jboss.errai.reflections.adapters.MetadataAdapter;
 import org.jboss.errai.reflections.scanners.reg.ScannerRegistry;
 import org.jboss.errai.reflections.util.Utils;
 import org.jboss.errai.reflections.vfs.Vfs;
-
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Multimap;
 
 public abstract class AbstractScanner implements Scanner {
     private static final Set<String> classesNotInJar = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());

@@ -16,11 +16,10 @@
 
 package org.jboss.errai.databinding.client;
 
+import com.google.gwt.dom.client.Document;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Input;
-
-import com.google.gwt.dom.client.Document;
 
 /**
  * For testing binding with IsElement that does not implement TakesValue or HasText.

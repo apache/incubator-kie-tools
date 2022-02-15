@@ -17,8 +17,12 @@ package org.dashbuilder.dataset.filter;
 
 import org.junit.Test;
 
-import static org.dashbuilder.dataset.filter.CoreFunctionType.*;
-import static org.junit.Assert.*;
+import static org.dashbuilder.dataset.filter.CoreFunctionType.BETWEEN;
+import static org.dashbuilder.dataset.filter.CoreFunctionType.EQUALS_TO;
+import static org.dashbuilder.dataset.filter.CoreFunctionType.IS_NULL;
+import static org.dashbuilder.dataset.filter.CoreFunctionType.NOT_EQUALS_TO;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class CoreFunctionFilterTest {
 
