@@ -9,16 +9,21 @@ function toLens(
   model: monaco.editor.ITextModel,
   rootNode: jsonc.Node,
   jsonPath: JSONPath,
-  id: string,
-  commandDelegate: (args: { position: Position }) => CodeLens["command"]
+  commandDelegate: (args: { position: Position; node: jsonc.Node }) => CodeLens["command"],
+  positionLensAt: "begin" | "end" = "begin"
 ) {
   const nodes = findNodesAtLocation(rootNode, jsonPath);
   return nodes.map((node) => {
-    const position = model.getPositionAt(node.parent!.offset);
+    let position;
+    if (positionLensAt === "begin") {
+      position = model.getPositionAt(node.offset);
+    } else {
+      const pos = model.getPositionAt(node.offset + node.length);
+      position = new Position(pos.lineNumber, pos.column);
+    }
 
     return {
-      id,
-      command: commandDelegate({ position }),
+      command: commandDelegate({ position, node }),
       range: {
         startLineNumber: position.lineNumber,
         endLineNumber: position.lineNumber,
@@ -29,7 +34,7 @@ function toLens(
   });
 }
 
-export function initJsonWidgets(commands: SwfMonacoEditorCommands): void {
+export function initJsonCodeLenses(commands: SwfMonacoEditorCommands): void {
   monaco.languages.registerCodeLensProvider("json", {
     provideCodeLenses: (model, cancellationToken) => {
       const rootNode = jsonc.parseTree(model.getValue());
@@ -39,19 +44,68 @@ export function initJsonWidgets(commands: SwfMonacoEditorCommands): void {
 
       return {
         lenses: [
-          ...toLens(model, rootNode, ["functions"], "Edit functions", ({ position }) => ({
+          ...toLens(model, rootNode, ["functions"], ({ position }) => ({
             id: commands["FunctionsWidget"],
-            title: "Edit Functions",
+            title: `◎ Discover`,
             arguments: [{ position }],
           })),
-          ...toLens(model, rootNode, ["states"], "Edit states", ({ position }) => ({
+          ...toLens(model, rootNode, ["functions"], ({ position }) => ({
+            id: commands["FunctionsWidget"],
+            title: `⤵ Import`,
+            arguments: [{ position }],
+          })),
+          ...toLens(model, rootNode, ["functions"], ({ position }) => ({
+            id: commands["FunctionsWidget"],
+            title: `✎ Edit "functions"...`,
+            arguments: [{ position }],
+          })),
+          ...toLens(
+            model,
+            rootNode,
+            ["functions"],
+            ({ position }) => ({
+              id: commands["StatesWidget"],
+              title: `+ Add function...`,
+              arguments: [{ position }],
+            }),
+            "end"
+          ),
+          ...toLens(model, rootNode, ["states"], ({ position }) => ({
             id: commands["StatesWidget"],
-            title: "Edit States",
+            title: `✎ Edit "states"...`,
             arguments: [{ position }],
           })),
-          ...toLens(model, rootNode, ["functions", "*", "name"], "Rename", ({ position }) => ({
+          ...toLens(
+            model,
+            rootNode,
+            ["states"],
+            ({ position }) => ({
+              id: commands["StatesWidget"],
+              title: `+ Add state...`,
+              arguments: [{ position }],
+            }),
+            "end"
+          ),
+          ...toLens(model, rootNode, ["functions", "*", "name"], ({ position, node }) => ({
             id: commands["FunctionsWidget"],
-            title: "Rename",
+            title: `↺ Rename '${node.value}'`,
+            arguments: [{ position }],
+          })),
+          ...toLens(model, rootNode, ["states", "*", "name"], ({ position, node }) => ({
+            id: commands["StatesWidget"],
+            title: `↺ Rename '${node.value}'`,
+            arguments: [{ position }],
+          })),
+          ...toLens(
+            model,
+            rootNode,
+            ["states", "*", "actions"],
+            ({ position }) => ({ id: commands["StatesWidget"], title: "+ Add action...", arguments: [{ position }] }),
+            "end"
+          ),
+          ...toLens(model, rootNode, ["states", "*", "actions", "*", "name"], ({ position, node }) => ({
+            id: commands["StatesWidget"],
+            title: `Ⓧ Remove '${node.value}'`,
             arguments: [{ position }],
           })),
         ],

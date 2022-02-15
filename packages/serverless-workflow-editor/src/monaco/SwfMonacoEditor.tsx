@@ -18,8 +18,8 @@ import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { DefaultSwfMonacoEditorController, SwfMonacoEditorApi } from "./SwfMonacoEditorApi";
 import { initJsonCompletion } from "./augmentation/completion";
-import { initJsonWidgets } from "./augmentation/widgets";
-import { initCommands } from "./augmentation/commands";
+import { initJsonCodeLenses } from "./augmentation/widgets";
+import { initAugmentationCommands } from "./augmentation/commands";
 
 interface Props {
   content: string;
@@ -50,10 +50,10 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
     }
 
     const instance = controller.show(container.current);
-    const commands = initCommands(instance);
+    const commands = initAugmentationCommands(instance);
 
     initJsonCompletion(commands);
-    initJsonWidgets(commands);
+    initJsonCodeLenses(commands);
 
     // TODO: Add support to YAML
     // initYamlCompletion(commands);
