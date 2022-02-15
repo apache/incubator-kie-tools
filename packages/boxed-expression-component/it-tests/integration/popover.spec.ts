@@ -29,7 +29,7 @@ describe("Context Expression Tests", () => {
 
   it("should user can cancel edit of select in context menu of header cell by pressing escape", () => {
     // open the context menu
-    cy.get("table tr:eq(0) th:eq(1)").as("target").click();
+    cy.contains("th", "Expression Name").as("ExpressionNameCell").click();
 
     // open the dataType select
     cy.ouiaId("edit-expression-data-type").as("dataTypeInput").find("> button").click({ force: true });
@@ -40,7 +40,10 @@ describe("Context Expression Tests", () => {
     // context menu should be open
     cy.ouiaId("expression-popover-menu").should("be.visible");
 
+    // Cancel the editing
+    cy.ouiaId("expression-popover-menu").type("{esc}").wait(500);
+
     // Assert some content
-    cy.get("@target").find(".data-type").should("contain.text", "Undefined");
+    cy.get("@ExpressionNameCell").find(".data-type").should("contain.text", "Undefined");
   });
 });

@@ -45,9 +45,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
   const onDataTypeSelect = useCallback(
     (event, selection) => {
       /* this setTimeout keeps the context menu open after type selection changes. Without this Popover component thinks there has been a click outside the context menu, after DataTypeSelector has changed. This because the Select component has been removed from the html*/
-      setTimeout(() => {
-        setDataTypeSelectOpen(false);
-      }, 0);
+      setTimeout(() => setDataTypeSelectOpen(false), 0);
       /* TODO: save selection only after context closed  */
       onDataTypeChange(selection);
     },
