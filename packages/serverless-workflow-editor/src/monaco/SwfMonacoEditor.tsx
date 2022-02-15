@@ -18,7 +18,7 @@ import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { DefaultSwfMonacoEditorController, SwfMonacoEditorApi } from "./SwfMonacoEditorApi";
 import { initJsonCompletion } from "./augmentation/completion";
-import { initJsonCodeLenses } from "./augmentation/widgets";
+import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 
 interface Props {

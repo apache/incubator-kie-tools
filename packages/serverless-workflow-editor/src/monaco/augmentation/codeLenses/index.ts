@@ -24,7 +24,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           jsonPath: ["functions"],
           positionLensAt: "begin",
           commandDelegate: ({ position }) => ({
-            id: commandIds["FunctionsWidget"],
+            id: commandIds["OpenFunctionsWidget"],
             title: `◎ Discover`,
             arguments: [{ position }],
           }),
@@ -35,7 +35,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           jsonPath: ["functions"],
           positionLensAt: "begin",
           commandDelegate: ({ position }) => ({
-            id: commandIds["FunctionsWidget"],
+            id: commandIds["OpenFunctionsWidget"],
             title: `⤵ Import`,
             arguments: [{ position }],
           }),
@@ -46,7 +46,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           jsonPath: ["functions"],
           positionLensAt: "begin",
           commandDelegate: ({ position }) => ({
-            id: commandIds["FunctionsWidget"],
+            id: commandIds["OpenFunctionsWidget"],
             title: `✎ Edit "functions"...`,
             arguments: [{ position }],
           }),
@@ -57,7 +57,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           jsonPath: ["functions"],
           positionLensAt: "end",
           commandDelegate: ({ position }) => ({
-            id: commandIds["StatesWidget"],
+            id: commandIds["OpenStatesWidget"],
             title: `+ Add function...`,
             arguments: [{ position }],
           }),
@@ -68,7 +68,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           jsonPath: ["states"],
           positionLensAt: "begin",
           commandDelegate: ({ position }) => ({
-            id: commandIds["StatesWidget"],
+            id: commandIds["OpenStatesWidget"],
             title: `✎ Edit "states"...`,
             arguments: [{ position }],
           }),
@@ -79,7 +79,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           jsonPath: ["states"],
           positionLensAt: "end",
           commandDelegate: ({ position }) => ({
-            id: commandIds["StatesWidget"],
+            id: commandIds["OpenStatesWidget"],
             title: `+ Add state...`,
             arguments: [{ position }],
           }),
@@ -90,7 +90,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           jsonPath: ["functions", "*", "name"],
           positionLensAt: "begin",
           commandDelegate: ({ position, node }) => ({
-            id: commandIds["FunctionsWidget"],
+            id: commandIds["OpenFunctionsWidget"],
             title: `↺ Rename '${node.value}'`,
             arguments: [{ position }],
           }),
@@ -101,7 +101,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           jsonPath: ["states", "*", "name"],
           positionLensAt: "begin",
           commandDelegate: ({ position, node }) => ({
-            id: commandIds["StatesWidget"],
+            id: commandIds["OpenStatesWidget"],
             title: `↺ Rename '${node.value}'`,
             arguments: [{ position }],
           }),
@@ -112,7 +112,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           jsonPath: ["states", "*", "actions"],
           positionLensAt: "end",
           commandDelegate: ({ position }) => ({
-            id: commandIds["StatesWidget"],
+            id: commandIds["OpenStatesWidget"],
             title: "+ Add action...",
             arguments: [{ position }],
           }),
@@ -123,7 +123,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           jsonPath: ["states", "*", "actions", "*", "name"],
           positionLensAt: "begin",
           commandDelegate: ({ position, node }) => ({
-            id: commandIds["StatesWidget"],
+            id: commandIds["OpenStatesWidget"],
             title: `Ⓧ Remove '${node.value}'`,
             arguments: [{ position }],
           }),

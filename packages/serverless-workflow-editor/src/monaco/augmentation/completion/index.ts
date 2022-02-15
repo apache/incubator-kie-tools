@@ -44,7 +44,7 @@ const completions = new Map<
       },
       label: "My completion item",
       command: {
-        id: commandIds["FunctionsCompletion"],
+        id: commandIds["RunFunctionsCompletion"],
         title: "My-Completion-Command",
         arguments: [{ position }],
       },

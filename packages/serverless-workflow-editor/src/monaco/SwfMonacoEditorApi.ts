@@ -29,7 +29,7 @@ export interface SwfMonacoEditorApi {
   redo: () => void;
 }
 
-export type SwfMonacoEditorCommandTypes = "FunctionsWidget" | "StatesWidget" | "FunctionsCompletion";
+export type SwfMonacoEditorCommandTypes = "OpenFunctionsWidget" | "OpenStatesWidget" | "RunFunctionsCompletion";
 
 export type SwfMonacoEditorCommandIds = Record<SwfMonacoEditorCommandTypes, string>;
 
