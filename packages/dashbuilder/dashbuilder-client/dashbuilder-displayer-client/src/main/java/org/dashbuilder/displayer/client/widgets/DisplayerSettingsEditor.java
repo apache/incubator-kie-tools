@@ -15,6 +15,39 @@
  */
 package org.dashbuilder.displayer.client.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.DomGlobal;
+import org.dashbuilder.common.client.error.ClientRuntimeError;
+import org.dashbuilder.dataset.DataColumn;
+import org.dashbuilder.dataset.DataSet;
+import org.dashbuilder.dataset.client.DataSetReadyCallback;
+import org.dashbuilder.dataset.sort.SortOrder;
+import org.dashbuilder.displayer.ColumnSettings;
+import org.dashbuilder.displayer.DisplayerAttributeDef;
+import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
+import org.dashbuilder.displayer.DisplayerConstraints;
+import org.dashbuilder.displayer.DisplayerSettings;
+import org.dashbuilder.displayer.MapColorScheme;
+import org.dashbuilder.displayer.Position;
+import org.dashbuilder.displayer.client.Displayer;
+import org.dashbuilder.displayer.client.DisplayerLocator;
+import org.dashbuilder.displayer.client.RendererLibrary;
+import org.dashbuilder.displayer.client.RendererManager;
+import org.dashbuilder.displayer.client.events.DisplayerSettingsChangedEvent;
+import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
+
 import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_3D;
 import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_BGCOLOR;
 import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_HEIGHT;
@@ -73,41 +106,6 @@ import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.SELECTOR_GROU
 import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.TABLE_GROUP;
 import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.XAXIS_GROUP;
 import static org.dashbuilder.displayer.DisplayerAttributeGroupDef.YAXIS_GROUP;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
-import org.dashbuilder.common.client.error.ClientRuntimeError;
-import org.dashbuilder.dataset.DataColumn;
-import org.dashbuilder.dataset.DataSet;
-import org.dashbuilder.dataset.client.DataSetReadyCallback;
-import org.dashbuilder.dataset.sort.SortOrder;
-import org.dashbuilder.displayer.ColumnSettings;
-import org.dashbuilder.displayer.DisplayerAttributeDef;
-import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
-import org.dashbuilder.displayer.DisplayerConstraints;
-import org.dashbuilder.displayer.DisplayerSettings;
-import org.dashbuilder.displayer.MapColorScheme;
-import org.dashbuilder.displayer.Position;
-import org.dashbuilder.displayer.client.Displayer;
-import org.dashbuilder.displayer.client.DisplayerLocator;
-import org.dashbuilder.displayer.client.RendererLibrary;
-import org.dashbuilder.displayer.client.RendererManager;
-import org.dashbuilder.displayer.client.events.DisplayerSettingsChangedEvent;
-import org.uberfire.client.mvp.UberView;
-import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-
-import elemental2.dom.DomGlobal;
 
 @Dependent
 public class DisplayerSettingsEditor implements IsWidget {

@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.ext.editor.commons.client.file.exports.jso.svg.C2SContext2D;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 @RunWith(GwtMockitoTestRunner.class)

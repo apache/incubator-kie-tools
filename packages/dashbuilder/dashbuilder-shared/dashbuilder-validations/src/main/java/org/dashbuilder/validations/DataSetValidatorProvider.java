@@ -18,12 +18,12 @@ package org.dashbuilder.validations;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 
-import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.jboss.errai.common.client.api.Assert;
 import org.jboss.errai.ioc.client.api.ManagedInstance;

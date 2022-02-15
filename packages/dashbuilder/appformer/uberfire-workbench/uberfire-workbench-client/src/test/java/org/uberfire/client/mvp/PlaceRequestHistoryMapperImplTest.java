@@ -22,6 +22,7 @@ import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -40,7 +41,9 @@ import org.uberfire.client.util.MockIOCBeanDef;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PlaceRequestHistoryMapperImplTest {

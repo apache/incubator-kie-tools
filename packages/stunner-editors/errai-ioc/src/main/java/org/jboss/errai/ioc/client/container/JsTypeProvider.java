@@ -18,9 +18,8 @@ package org.jboss.errai.ioc.client.container;
 
 import javax.inject.Named;
 
-import org.jboss.errai.ioc.client.JsArray;
-
 import jsinterop.annotations.JsType;
+import org.jboss.errai.ioc.client.JsArray;
 
 /**
  * Contract for providing managed beans across different scripts.

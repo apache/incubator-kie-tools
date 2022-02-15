@@ -16,7 +16,6 @@
 package org.dashbuilder.exception;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.jboss.errai.config.rebind.EnvUtil;
 import org.slf4j.Logger;

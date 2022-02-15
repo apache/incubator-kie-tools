@@ -16,14 +16,14 @@
 
 package org.jboss.errai.databinding.client.test;
 
-import static org.jboss.errai.databinding.client.api.Convert.getConverter;
-import static org.junit.Assert.assertEquals;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.jboss.errai.databinding.client.api.Convert;
 import org.junit.Test;
+
+import static org.jboss.errai.databinding.client.api.Convert.getConverter;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit tests for the built-in default conversions in {@link Convert}.

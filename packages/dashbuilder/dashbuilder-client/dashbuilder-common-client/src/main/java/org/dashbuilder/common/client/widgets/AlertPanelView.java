@@ -17,6 +17,7 @@ package org.dashbuilder.common.client.widgets;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.GWT;

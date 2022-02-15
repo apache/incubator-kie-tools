@@ -16,11 +16,11 @@
 package org.dashbuilder.displayer.client;
 
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.dashbuilder.common.client.StringUtils;
-import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.client.ClientDataSetManager;
 import org.dashbuilder.dataset.client.DataSetClientServices;

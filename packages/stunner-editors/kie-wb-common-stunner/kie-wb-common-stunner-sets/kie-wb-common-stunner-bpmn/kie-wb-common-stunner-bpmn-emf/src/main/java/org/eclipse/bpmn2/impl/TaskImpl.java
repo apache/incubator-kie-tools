@@ -18,9 +18,7 @@ import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ConversationLink;
 import org.eclipse.bpmn2.InteractionNode;
 import org.eclipse.bpmn2.Task;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 
 /**

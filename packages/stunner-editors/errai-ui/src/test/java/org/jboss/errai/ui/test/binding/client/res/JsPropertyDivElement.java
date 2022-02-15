@@ -16,12 +16,11 @@
 
 package org.jboss.errai.ui.test.binding.client.res;
 
-import org.jboss.errai.common.client.api.annotations.Element;
-import org.jboss.errai.common.client.ui.HasValue;
-
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import org.jboss.errai.common.client.api.annotations.Element;
+import org.jboss.errai.common.client.ui.HasValue;
 
 /**
  * This native div element wrapper allows binding to the value property. This tests that the

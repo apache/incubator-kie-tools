@@ -18,10 +18,11 @@ package org.jboss.errai.databinding.client;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+
+import com.google.gwt.user.client.ui.TextBox;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.databinding.client.api.StateSync;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * @author Divya Dadlani <ddadlani@redhat.com>

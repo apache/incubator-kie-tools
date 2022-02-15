@@ -16,14 +16,10 @@
 
 package org.uberfire.ext.editor.commons.client;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-
 import java.util.Set;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.promise.Promise;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,9 +37,10 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.promise.SyncPromises;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
-
-import elemental2.promise.Promise;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class KieEditorTest {

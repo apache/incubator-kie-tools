@@ -16,12 +16,12 @@
 
 package org.jboss.errai.ui.test.basic.client.res;
 
-import static org.jboss.errai.common.client.dom.Window.getDocument;
-import static org.jboss.errai.ui.shared.api.annotations.DataField.ConflictStrategy.USE_BEAN;
-
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+
+import static org.jboss.errai.common.client.dom.Window.getDocument;
+import static org.jboss.errai.ui.shared.api.annotations.DataField.ConflictStrategy.USE_BEAN;
 
 /**
  *

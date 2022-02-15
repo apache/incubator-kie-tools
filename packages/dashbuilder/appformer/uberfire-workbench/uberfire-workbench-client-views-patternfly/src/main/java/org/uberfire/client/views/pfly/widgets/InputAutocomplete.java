@@ -18,6 +18,7 @@ package org.uberfire.client.views.pfly.widgets;
 
 import java.util.List;
 import java.util.function.Supplier;
+
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;

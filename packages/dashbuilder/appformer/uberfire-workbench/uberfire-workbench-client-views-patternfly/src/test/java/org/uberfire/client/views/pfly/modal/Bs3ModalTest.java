@@ -24,7 +24,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub(Text.class)

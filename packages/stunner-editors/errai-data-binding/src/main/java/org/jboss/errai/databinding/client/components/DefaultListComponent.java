@@ -26,11 +26,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.jboss.errai.common.client.api.Assert;
-import org.jboss.errai.common.client.dom.HTMLElement;
-
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.TakesValue;
+import org.jboss.errai.common.client.api.Assert;
+import org.jboss.errai.common.client.dom.HTMLElement;
 
 /**
  * The default implementation of a {@link ListComponent}. Accepts as argument functions for creating and destorying UI

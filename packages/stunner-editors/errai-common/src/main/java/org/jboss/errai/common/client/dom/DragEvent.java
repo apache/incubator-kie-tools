@@ -17,10 +17,9 @@
 package org.jboss.errai.common.client.dom;
 
 import elemental2.dom.DataTransfer;
-import org.jboss.errai.common.client.api.annotations.BrowserEvent;
-
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import org.jboss.errai.common.client.api.annotations.BrowserEvent;
 
 /**
  * @deprecated Use Elemental 2 for new development

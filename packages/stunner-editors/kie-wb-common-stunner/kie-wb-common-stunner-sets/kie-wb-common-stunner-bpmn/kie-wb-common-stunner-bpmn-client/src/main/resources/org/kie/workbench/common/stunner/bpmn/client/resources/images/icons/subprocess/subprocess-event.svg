@@ -21,8 +21,8 @@
      in order to make those inner icons visible enough when reducing the overall
      size to small values.
      -->
-<svg id="subProcess" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-		 x="0" y="0" width="56px" height="56px" viewBox="0 0 61 61">
+<svg id="subProcess" version="1.1" xmlns="http://www.w3.org/2000/svg"
+     x="0" y="0" width="56px" height="56px" viewBox="0 0 61 61">
 	<defs>
 		<filter id="svg_subprocess_blackShadow" x="0" y="0" width="200%" height="200%">
 			<feOffset result="offOut" in="SourceAlpha" dx="10" dy="10" />

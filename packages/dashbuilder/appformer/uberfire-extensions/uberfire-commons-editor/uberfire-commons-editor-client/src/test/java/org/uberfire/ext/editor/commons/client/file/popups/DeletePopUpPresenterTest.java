@@ -16,10 +16,6 @@
 
 package org.uberfire.ext.editor.commons.client.file.popups;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +25,10 @@ import org.uberfire.ext.editor.commons.client.validation.ValidationErrorReason;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.mvp.ParameterizedCommand;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeletePopUpPresenterTest {

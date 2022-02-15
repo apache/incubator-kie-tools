@@ -14,14 +14,16 @@
  */
 package org.eclipse.dd.dc.impl;
 
-import org.eclipse.dd.dc.*;
-
+import org.eclipse.dd.dc.Bounds;
+import org.eclipse.dd.dc.DcFactory;
+import org.eclipse.dd.dc.DcPackage;
+import org.eclipse.dd.dc.DocumentRoot;
+import org.eclipse.dd.dc.Font;
+import org.eclipse.dd.dc.Point;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**

@@ -41,9 +41,9 @@ import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.client.util.Layouts.setToFillParent;
 import static org.uberfire.client.util.Layouts.widthOrHeight;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.plugin.PluginUtil.toInteger;
 
 /**

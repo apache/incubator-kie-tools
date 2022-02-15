@@ -1,5 +1,8 @@
 package org.dashbuilder.client.widgets.dataset.editor.column;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.editor.client.CompositeEditor;
 import com.google.gwt.editor.client.EditorDelegate;
 import com.google.gwt.editor.client.adapters.ListEditor;
@@ -20,15 +23,18 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.mocks.EventSourceMock;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ColumnListEditorTest {

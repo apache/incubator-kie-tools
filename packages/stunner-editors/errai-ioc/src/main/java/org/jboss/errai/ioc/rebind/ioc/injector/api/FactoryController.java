@@ -16,13 +16,6 @@
 
 package org.jboss.errai.ioc.rebind.ioc.injector.api;
 
-import static org.jboss.errai.codegen.util.PrivateAccessUtil.getPrivateMethodName;
-import static org.jboss.errai.codegen.util.Stmt.castTo;
-import static org.jboss.errai.codegen.util.Stmt.invokeStatic;
-import static org.jboss.errai.codegen.util.Stmt.loadVariable;
-import static org.jboss.errai.ioc.rebind.ioc.bootstrapper.InjectUtil.constructGetReference;
-import static org.jboss.errai.ioc.rebind.ioc.bootstrapper.InjectUtil.constructSetReference;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,6 +26,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import org.jboss.errai.codegen.Context;
 import org.jboss.errai.codegen.Statement;
 import org.jboss.errai.codegen.builder.ContextualStatementBuilder;
@@ -52,8 +47,12 @@ import org.jboss.errai.ioc.client.container.Factory;
 import org.jboss.errai.ioc.client.container.Proxy;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.Decorable.DecorableType;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
+import static org.jboss.errai.codegen.util.PrivateAccessUtil.getPrivateMethodName;
+import static org.jboss.errai.codegen.util.Stmt.castTo;
+import static org.jboss.errai.codegen.util.Stmt.invokeStatic;
+import static org.jboss.errai.codegen.util.Stmt.loadVariable;
+import static org.jboss.errai.ioc.rebind.ioc.bootstrapper.InjectUtil.constructGetReference;
+import static org.jboss.errai.ioc.rebind.ioc.bootstrapper.InjectUtil.constructSetReference;
 
 /**
  * The single point of contact for {@link CodeDecorator code decorators} to add

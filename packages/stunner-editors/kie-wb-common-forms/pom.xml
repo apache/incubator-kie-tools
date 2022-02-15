@@ -22,11 +22,6 @@
     <module>kie-wb-common-dynamic-forms</module>
   </modules>
 
-  <properties>
-    <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
-    <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
-  </properties>
-
   <build>
     <plugins>
       <plugin>

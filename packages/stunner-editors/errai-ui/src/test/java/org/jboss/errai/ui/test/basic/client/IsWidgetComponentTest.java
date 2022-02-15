@@ -18,11 +18,9 @@ package org.jboss.errai.ui.test.basic.client;
 
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ui.shared.TemplateWidgetMapper;
-import org.jboss.errai.ui.test.basic.client.res.IsWidgetComponent;
 import org.jboss.errai.ui.test.basic.client.res.IsWidgetComponentView;
 import org.jboss.errai.ui.test.basic.client.res.IsWidgetParentComponent;
 import org.junit.Test;

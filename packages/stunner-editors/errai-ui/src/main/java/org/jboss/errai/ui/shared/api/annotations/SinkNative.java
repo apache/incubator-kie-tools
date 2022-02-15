@@ -25,7 +25,6 @@ import java.lang.annotation.Target;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Event;
-
 import jsinterop.annotations.JsType;
 
 /**

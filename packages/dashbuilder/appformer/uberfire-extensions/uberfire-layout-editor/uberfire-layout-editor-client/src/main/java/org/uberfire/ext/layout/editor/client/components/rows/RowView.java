@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.layout.editor.client.components.rows;
 
+import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -28,9 +30,10 @@ import org.uberfire.ext.layout.editor.api.css.CssValue;
 import org.uberfire.ext.layout.editor.client.components.columns.ComponentColumn;
 import org.uberfire.ext.layout.editor.client.resources.i18n.CommonConstants;
 
-import java.util.List;
-
-import static org.jboss.errai.common.client.dom.DOMUtil.*;
+import static org.jboss.errai.common.client.dom.DOMUtil.addCSSClass;
+import static org.jboss.errai.common.client.dom.DOMUtil.hasCSSClass;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeCSSClass;
 import static org.uberfire.ext.layout.editor.client.infra.HTML5DnDHelper.extractDndData;
 
 @Dependent

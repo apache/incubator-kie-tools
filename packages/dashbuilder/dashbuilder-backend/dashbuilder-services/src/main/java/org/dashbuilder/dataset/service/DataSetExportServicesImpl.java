@@ -33,6 +33,7 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.ss.usermodel.Cell;
@@ -61,8 +62,6 @@ import org.dashbuilder.project.storage.ProjectStorageServices;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import au.com.bytecode.opencsv.CSVWriter;
 
 @ApplicationScoped
 @Service

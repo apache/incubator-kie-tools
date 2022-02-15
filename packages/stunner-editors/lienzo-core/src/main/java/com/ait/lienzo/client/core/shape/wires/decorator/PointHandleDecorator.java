@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.shape.wires.decorator;
 
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
-import com.ait.lienzo.shared.core.types.ColorName;
 
 /**
  * Changes the style of connector point handles {@link WiresConnector#getPointHandles()} shapes, according to a given {@link ShapeState}.

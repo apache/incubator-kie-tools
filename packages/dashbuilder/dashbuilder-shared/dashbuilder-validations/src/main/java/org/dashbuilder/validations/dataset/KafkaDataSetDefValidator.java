@@ -24,7 +24,6 @@ import javax.validation.Validator;
 
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.def.KafkaDataSetDef;
-import org.dashbuilder.dataset.def.PrometheusDataSetDef;
 import org.dashbuilder.dataset.validation.groups.KafkaDataSetDefValidation;
 
 @Dependent

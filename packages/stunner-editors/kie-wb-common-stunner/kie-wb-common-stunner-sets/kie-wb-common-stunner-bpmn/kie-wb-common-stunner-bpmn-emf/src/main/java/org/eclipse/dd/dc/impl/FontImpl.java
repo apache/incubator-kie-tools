@@ -14,28 +14,20 @@
  */
 package org.eclipse.dd.dc.impl;
 
-import com.google.gwt.user.client.rpc.GwtTransient;
-
 import java.util.Map;
 
+import com.google.gwt.user.client.rpc.GwtTransient;
 import org.eclipse.dd.dc.DcPackage;
 import org.eclipse.dd.dc.Font;
-
 import org.eclipse.dd.dc.util.DcValidator;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.DiagnosticChain;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
-
 import org.eclipse.emf.ecore.util.EObjectValidator;
 
 /**

@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.kie.soup.project.datamodel.oracle.DropDownData;
 
-import static org.kie.workbench.common.widgets.client.datamodel.DataModelHelper.*;
+import static org.kie.workbench.common.widgets.client.datamodel.DataModelHelper.getQueryString;
 
 class EnumDropDownDataFactory {
 

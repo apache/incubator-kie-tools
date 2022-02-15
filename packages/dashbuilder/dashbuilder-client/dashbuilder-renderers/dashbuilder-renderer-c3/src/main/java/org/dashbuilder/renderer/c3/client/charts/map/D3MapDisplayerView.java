@@ -17,10 +17,9 @@ package org.dashbuilder.renderer.c3.client.charts.map;
 
 import javax.inject.Inject;
 
+import jsinterop.base.Js;
 import org.dashbuilder.renderer.c3.client.C3AbstractDisplayerView;
 import org.dashbuilder.renderer.c3.client.charts.map.widgets.D3Map;
-
-import jsinterop.base.Js;
 
 public class D3MapDisplayerView extends C3AbstractDisplayerView<D3MapDisplayer> 
                                                       implements D3MapDisplayer.View {

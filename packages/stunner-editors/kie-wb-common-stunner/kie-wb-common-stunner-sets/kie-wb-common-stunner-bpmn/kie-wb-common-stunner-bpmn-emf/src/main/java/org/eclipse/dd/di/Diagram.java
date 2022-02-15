@@ -15,7 +15,6 @@
 package org.eclipse.dd.di;
 
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**

@@ -20,13 +20,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.metadata.RebindUtils;
-
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dev.javac.testing.GeneratorContextBuilder;
 import com.google.gwt.dev.javac.testing.JavaSource;
 import com.google.gwt.dev.javac.testing.Source;
+import org.jboss.errai.common.metadata.RebindUtils;
 
 /**
  * A factory that helps create a mock TypeOracle that knows about a certain

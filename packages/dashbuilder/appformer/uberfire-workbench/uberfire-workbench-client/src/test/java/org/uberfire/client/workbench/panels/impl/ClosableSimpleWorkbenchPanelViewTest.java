@@ -23,8 +23,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ClosableSimpleWorkbenchPanelViewTest extends AbstractSimpleWorkbenchPanelViewTest {

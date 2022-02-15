@@ -15,12 +15,12 @@
   ~ limitations under the License.
   -->
 <!-- add  filter="url(#selectShadow)"  to make the selection shadow -->
-<svg version="1.1" id="gateway" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-	 xmlns:stunner="http://kiegroup.org/2017/stunner"
+<svg version="1.1" id="gateway" xmlns="http://www.w3.org/2000/svg"
+     xmlns:stunner="http://kiegroup.org/2017/stunner"
      x="0px" y="0px"
-	 width="56px" height="56px"
-	 viewBox="0 0 448 448"
-	 style="enable-background:new 0 0 448 448; width: 56px; height: 56px;" xml:space="preserve">
+     width="56px" height="56px"
+     viewBox="0 0 448 448"
+     style="enable-background:new 0 0 448 448; width: 56px; height: 56px;" xml:space="preserve">
 <style type="text/css">
 	<!--.st0{display:none;}-->
 </style>

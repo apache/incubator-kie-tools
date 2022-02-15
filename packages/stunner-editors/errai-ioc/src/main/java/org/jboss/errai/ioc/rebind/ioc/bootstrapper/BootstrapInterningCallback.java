@@ -16,6 +16,16 @@
 
 package org.jboss.errai.ioc.rebind.ioc.bootstrapper;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
+
 import org.jboss.errai.codegen.AnnotationEncoder;
 import org.jboss.errai.codegen.Context;
 import org.jboss.errai.codegen.InterningCallback;
@@ -31,15 +41,6 @@ import org.jboss.errai.codegen.util.PrivateAccessUtil;
 import org.jboss.errai.codegen.util.Refs;
 import org.jboss.errai.codegen.util.Stmt;
 import org.jboss.errai.ioc.client.QualifierUtil;
-
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * The interning callback for handling the interning of qualifier annotations and arrays of qualifier annotations.

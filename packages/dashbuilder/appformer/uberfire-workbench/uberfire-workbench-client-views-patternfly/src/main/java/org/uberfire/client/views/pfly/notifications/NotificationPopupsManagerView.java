@@ -22,6 +22,9 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.mvp.Activity;
@@ -31,10 +34,6 @@ import org.uberfire.client.workbench.widgets.animations.LinearFadeOutAnimation;
 import org.uberfire.client.workbench.widgets.notifications.NotificationManager;
 import org.uberfire.client.workbench.widgets.notifications.NotificationManager.NotificationPopupHandle;
 import org.uberfire.workbench.events.NotificationEvent;
-
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 @Dependent
 public class NotificationPopupsManagerView implements NotificationManager.View {

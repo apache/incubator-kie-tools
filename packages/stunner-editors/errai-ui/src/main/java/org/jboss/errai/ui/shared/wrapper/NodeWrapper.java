@@ -16,7 +16,12 @@
 
 package org.jboss.errai.ui.shared.wrapper;
 
-import org.w3c.dom.*;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.UserDataHandler;
 
 /**
  * Read only wrapper to transform a gwt dom node to w3c one.

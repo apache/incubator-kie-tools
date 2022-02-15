@@ -19,6 +19,7 @@ package org.jboss.errai.ioc.async.test.scopes.dependent.client;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.gwt.user.client.Timer;
 import org.jboss.errai.common.client.util.CreationalCallback;
 import org.jboss.errai.ioc.async.test.scopes.dependent.client.res.ApplicationScopedBean;
 import org.jboss.errai.ioc.async.test.scopes.dependent.client.res.ApplicationScopedBeanB;
@@ -37,8 +38,6 @@ import org.jboss.errai.ioc.async.test.scopes.dependent.client.res.UnreferencedDe
 import org.jboss.errai.ioc.client.Container;
 import org.jboss.errai.ioc.client.IOCClientTestCase;
 import org.jboss.errai.ioc.client.container.IOC;
-
-import com.google.gwt.user.client.Timer;
 
 /**
  * @author Mike Brock

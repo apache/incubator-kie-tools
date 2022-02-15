@@ -16,6 +16,7 @@
 
 package org.jboss.errai.ioc.client.container;
 
+import com.google.gwt.core.client.GWT;
 import org.jboss.errai.common.client.util.CreationalCallback;
 import org.jboss.errai.ioc.client.container.async.AsyncBeanManager;
 import org.jboss.errai.ioc.client.container.async.AsyncBeanManagerImpl;
@@ -23,8 +24,6 @@ import org.jboss.errai.ioc.client.lifecycle.api.LifecycleEvent;
 import org.jboss.errai.ioc.client.lifecycle.api.LifecycleListener;
 import org.jboss.errai.ioc.client.lifecycle.api.LifecycleListenerGenerator;
 import org.jboss.errai.ioc.client.lifecycle.api.LifecycleListenerRegistrar;
-
-import com.google.gwt.core.client.GWT;
 
 /**
  * A simple utility class which provides a static reference in the client to the

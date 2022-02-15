@@ -15,11 +15,14 @@
  */
 package org.dashbuilder.dataset.filter;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.dashbuilder.dataset.filter.CoreFunctionType.*;
-
 import org.dashbuilder.dataset.ColumnType;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.dashbuilder.dataset.filter.CoreFunctionType.IN;
+import static org.dashbuilder.dataset.filter.CoreFunctionType.LIKE_TO;
+import static org.dashbuilder.dataset.filter.CoreFunctionType.NOT_IN;
+import static org.dashbuilder.dataset.filter.CoreFunctionType.TIME_FRAME;
 
 public class CoreFunctionTypeTest {
 

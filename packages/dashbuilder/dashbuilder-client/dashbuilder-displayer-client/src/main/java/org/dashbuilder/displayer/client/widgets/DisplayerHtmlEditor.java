@@ -18,6 +18,7 @@ package org.dashbuilder.displayer.client.widgets;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -31,7 +32,8 @@ import org.dashbuilder.displayer.client.widgets.sourcecode.SourceCodeEditor;
 import org.dashbuilder.displayer.client.widgets.sourcecode.SourceCodeType;
 import org.uberfire.client.mvp.UberView;
 
-import static org.dashbuilder.displayer.client.widgets.sourcecode.SourceCodeType.*;
+import static org.dashbuilder.displayer.client.widgets.sourcecode.SourceCodeType.HTML;
+import static org.dashbuilder.displayer.client.widgets.sourcecode.SourceCodeType.JAVASCRIPT;
 
 /**
  * UI component for the edition of a displayer component supporting HTML templates

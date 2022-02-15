@@ -17,6 +17,7 @@
 package org.uberfire.client.mvp;
 
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.ioc.client.api.EnabledByProperty;

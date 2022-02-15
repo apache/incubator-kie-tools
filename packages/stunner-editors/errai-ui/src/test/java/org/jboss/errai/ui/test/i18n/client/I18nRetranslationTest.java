@@ -16,6 +16,8 @@
 
 package org.jboss.errai.ui.test.i18n.client;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -27,9 +29,6 @@ import org.jboss.errai.ui.test.i18n.client.res.I18nDepInDepScopeTestApp;
 import org.jboss.errai.ui.test.i18n.client.res.I18nDepScopeTestApp;
 import org.jboss.errai.ui.test.i18n.client.res.TemplatedParent;
 import org.junit.Test;
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Test that templated beans of different scopes are re-translated when the locale is manually

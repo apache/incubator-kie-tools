@@ -15,6 +15,10 @@
  */
 package org.uberfire.ext.layout.editor.client.generator;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.dom.Div;
@@ -28,10 +32,6 @@ import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.ext.layout.editor.client.infra.ColumnSizeBuilder;
 import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Default;
-import javax.inject.Inject;
 
 /**
  * The layout generator driver used in the {@link BootstrapLayoutGenerator}

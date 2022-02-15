@@ -16,12 +16,12 @@
 
 package org.jboss.errai.ioc.client.api;
 
-import org.jboss.errai.common.client.util.TimeUnit;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.jboss.errai.common.client.util.TimeUnit;
 
 /**
  * Specifies a timed method invocation of a method on a managed bean. Timed methods are tied to the lifecycle of

@@ -34,7 +34,6 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.types.Point2D;
-import elemental2.dom.DomGlobal;
 
 import static com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlUtils.excludeFromIndex;
 

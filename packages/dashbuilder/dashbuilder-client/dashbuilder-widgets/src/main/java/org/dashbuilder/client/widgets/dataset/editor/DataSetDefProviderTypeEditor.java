@@ -15,13 +15,6 @@
  */
 package org.dashbuilder.client.widgets.dataset.editor;
 
-import static org.dashbuilder.dataprovider.DataSetProviderType.BEAN;
-import static org.dashbuilder.dataprovider.DataSetProviderType.CSV;
-import static org.dashbuilder.dataprovider.DataSetProviderType.EXTERNAL;
-import static org.dashbuilder.dataprovider.DataSetProviderType.KAFKA;
-import static org.dashbuilder.dataprovider.DataSetProviderType.PROMETHEUS;
-import static org.dashbuilder.dataprovider.DataSetProviderType.SQL;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +25,11 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.editor.client.EditorError;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.client.widgets.common.DataSetEditorPlugin;
 import org.dashbuilder.client.widgets.dataset.event.DataSetDefCreationRequestEvent;
 import org.dashbuilder.client.widgets.resources.i18n.DataSetEditorConstants;
@@ -44,11 +42,12 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.mvp.UberView;
 
-import com.google.gwt.editor.client.EditorError;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeUri;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import static org.dashbuilder.dataprovider.DataSetProviderType.BEAN;
+import static org.dashbuilder.dataprovider.DataSetProviderType.CSV;
+import static org.dashbuilder.dataprovider.DataSetProviderType.EXTERNAL;
+import static org.dashbuilder.dataprovider.DataSetProviderType.KAFKA;
+import static org.dashbuilder.dataprovider.DataSetProviderType.PROMETHEUS;
+import static org.dashbuilder.dataprovider.DataSetProviderType.SQL;
 
 /**
  * <p>Data Set provider type editor presenter.</p>

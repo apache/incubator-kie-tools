@@ -16,11 +16,12 @@
 
 package org.jboss.errai.ui.rebind.ioc.element;
 
-import org.jboss.errai.codegen.meta.HasAnnotations;
-import org.jboss.errai.codegen.util.CDIAnnotationUtils;
+import java.lang.annotation.Annotation;
 
 import javax.inject.Named;
-import java.lang.annotation.Annotation;
+
+import org.jboss.errai.codegen.meta.HasAnnotations;
+import org.jboss.errai.codegen.util.CDIAnnotationUtils;
 
 /**
  * @author Tiago Bento <tfernand@redhat.com>

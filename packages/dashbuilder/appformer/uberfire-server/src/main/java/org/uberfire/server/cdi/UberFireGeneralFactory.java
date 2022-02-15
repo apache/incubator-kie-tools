@@ -16,15 +16,15 @@
 
 package org.uberfire.server.cdi;
 
-import static org.jboss.errai.bus.server.api.RpcContext.getMessage;
-import static org.jboss.errai.bus.server.api.RpcContext.getQueueSession;
-
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
+
+import static org.jboss.errai.bus.server.api.RpcContext.getMessage;
+import static org.jboss.errai.bus.server.api.RpcContext.getQueueSession;
 
 public class UberFireGeneralFactory {
 

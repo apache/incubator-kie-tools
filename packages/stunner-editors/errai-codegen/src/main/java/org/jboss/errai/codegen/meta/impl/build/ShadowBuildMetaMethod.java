@@ -16,6 +16,8 @@
 
 package org.jboss.errai.codegen.meta.impl.build;
 
+import java.lang.reflect.Method;
+
 import org.jboss.errai.codegen.BlockStatement;
 import org.jboss.errai.codegen.DefModifiers;
 import org.jboss.errai.codegen.DefParameters;
@@ -23,8 +25,6 @@ import org.jboss.errai.codegen.ThrowsDeclaration;
 import org.jboss.errai.codegen.builder.impl.Scope;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaMethod;
-
-import java.lang.reflect.Method;
 
 /**
  * @author Mike Brock

@@ -15,19 +15,12 @@
 package org.eclipse.dd.di.impl;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import org.eclipse.bpmn2.Bpmn2Package;
-
 import org.eclipse.bpmn2.di.BpmnDiPackage;
-
 import org.eclipse.bpmn2.di.impl.BpmnDiPackageImpl;
-
 import org.eclipse.bpmn2.impl.Bpmn2PackageImpl;
-
 import org.eclipse.dd.dc.DcPackage;
-
 import org.eclipse.dd.dc.impl.DcPackageImpl;
-
 import org.eclipse.dd.di.DiFactory;
 import org.eclipse.dd.di.DiPackage;
 import org.eclipse.dd.di.Diagram;
@@ -41,11 +34,8 @@ import org.eclipse.dd.di.Node;
 import org.eclipse.dd.di.Plane;
 import org.eclipse.dd.di.Shape;
 import org.eclipse.dd.di.Style;
-
 import org.eclipse.dd.di.util.DiValidator;
-
 import org.eclipse.emf.common.util.Reflect;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EGenericType;
@@ -53,9 +43,7 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EValidator;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
 /**

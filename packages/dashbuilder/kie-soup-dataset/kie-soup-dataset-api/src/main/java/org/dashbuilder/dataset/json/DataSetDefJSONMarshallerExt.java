@@ -15,9 +15,6 @@
  */
 package org.dashbuilder.dataset.json;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.json.JsonObject;

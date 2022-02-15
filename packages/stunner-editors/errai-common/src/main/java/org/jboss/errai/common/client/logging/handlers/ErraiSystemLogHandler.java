@@ -19,9 +19,8 @@ package org.jboss.errai.common.client.logging.handlers;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 
-import org.jboss.errai.common.client.logging.formatters.ErraiSimpleFormatter;
-
 import com.google.gwt.logging.client.SystemLogHandler;
+import org.jboss.errai.common.client.logging.formatters.ErraiSimpleFormatter;
 
 /**
  * An extension of {@link SystemLogHandler} that uses a given {@link Formatter}.

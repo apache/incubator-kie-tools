@@ -16,23 +16,6 @@
 
 package org.dashbuilder.transfer;
 
-import static org.dashbuilder.project.storage.ProjectStorageServices.NAV_TREE_FILE_NAME;
-import static org.dashbuilder.project.storage.ProjectStorageServices.PERSPECTIVE_LAYOUT;
-import static org.dashbuilder.project.storage.ProjectStorageServices.PERSPECTIVE_LAYOUT_PLUGIN;
-import static org.dashbuilder.project.storage.ProjectStorageServices.README;
-import static org.dashbuilder.project.storage.ProjectStorageServices.getDatasetsExportPath;
-import static org.dashbuilder.project.storage.ProjectStorageServices.getNavigationExportPath;
-import static org.dashbuilder.project.storage.ProjectStorageServices.getPerspectivesExportPath;
-import static org.dashbuilder.transfer.DataTransferServices.COMPONENTS_EXPORT_PATH;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -67,6 +50,23 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.plugin.event.PluginAdded;
 import org.uberfire.rpc.SessionInfo;
+
+import static org.dashbuilder.project.storage.ProjectStorageServices.NAV_TREE_FILE_NAME;
+import static org.dashbuilder.project.storage.ProjectStorageServices.PERSPECTIVE_LAYOUT;
+import static org.dashbuilder.project.storage.ProjectStorageServices.PERSPECTIVE_LAYOUT_PLUGIN;
+import static org.dashbuilder.project.storage.ProjectStorageServices.README;
+import static org.dashbuilder.project.storage.ProjectStorageServices.getDatasetsExportPath;
+import static org.dashbuilder.project.storage.ProjectStorageServices.getNavigationExportPath;
+import static org.dashbuilder.project.storage.ProjectStorageServices.getPerspectivesExportPath;
+import static org.dashbuilder.transfer.DataTransferServices.COMPONENTS_EXPORT_PATH;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class DataTransferServicesTest {

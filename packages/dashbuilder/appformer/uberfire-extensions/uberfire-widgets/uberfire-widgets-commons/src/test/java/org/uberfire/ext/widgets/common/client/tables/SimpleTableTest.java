@@ -38,7 +38,9 @@ import org.uberfire.mocks.CallerMock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub({Image.class, Label.class, Text.class})

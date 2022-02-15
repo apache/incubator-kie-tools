@@ -16,9 +16,8 @@
 
 package org.jboss.errai.ioc.client;
 
-import org.jboss.errai.ioc.client.container.JsTypeProvider;
-
 import jsinterop.annotations.JsType;
+import org.jboss.errai.ioc.client.container.JsTypeProvider;
 
 /**
  * Client-side global context for sharing bean definitions across different scripts.

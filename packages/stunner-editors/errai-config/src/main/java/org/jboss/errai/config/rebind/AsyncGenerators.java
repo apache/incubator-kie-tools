@@ -16,13 +16,6 @@
 
 package org.jboss.errai.config.rebind;
 
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.typeinfo.TypeOracleException;
-import org.jboss.errai.common.metadata.ScannerSingleton;
-import org.jboss.errai.common.rebind.CacheUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +24,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.typeinfo.TypeOracleException;
+import org.jboss.errai.common.metadata.ScannerSingleton;
+import org.jboss.errai.common.rebind.CacheUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Mike Brock

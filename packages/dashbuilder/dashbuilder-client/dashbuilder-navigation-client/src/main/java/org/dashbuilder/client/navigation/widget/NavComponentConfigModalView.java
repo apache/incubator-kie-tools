@@ -27,7 +27,6 @@ import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.common.client.dom.Node;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.common.client.dom.UnorderedList;

@@ -16,9 +16,9 @@
 
 package org.jboss.errai.common.client.types.handlers.numbers;
 
-import org.jboss.errai.common.client.types.TypeHandler;
-
 import java.util.Date;
+
+import org.jboss.errai.common.client.types.TypeHandler;
 
 public class NumberToDate implements TypeHandler<Number, Date> {
   public Date getConverted(Number in) {

@@ -18,6 +18,7 @@ package org.dashbuilder.common.client.editor.list;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;

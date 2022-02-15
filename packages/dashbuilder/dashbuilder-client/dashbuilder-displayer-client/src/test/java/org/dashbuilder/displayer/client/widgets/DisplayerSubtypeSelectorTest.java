@@ -28,11 +28,18 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.dashbuilder.displayer.DisplayerSubType.*;
-import static org.dashbuilder.displayer.DisplayerType.*;
+import static org.dashbuilder.displayer.DisplayerSubType.BAR;
+import static org.dashbuilder.displayer.DisplayerSubType.BAR_STACKED;
+import static org.dashbuilder.displayer.DisplayerSubType.LINE;
+import static org.dashbuilder.displayer.DisplayerSubType.SMOOTH;
+import static org.dashbuilder.displayer.DisplayerType.BARCHART;
+import static org.dashbuilder.displayer.DisplayerType.BUBBLECHART;
+import static org.dashbuilder.displayer.DisplayerType.LINECHART;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DisplayerSubtypeSelectorTest {

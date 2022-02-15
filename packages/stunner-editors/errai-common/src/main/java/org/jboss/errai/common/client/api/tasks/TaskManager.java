@@ -16,7 +16,6 @@
 
 package org.jboss.errai.common.client.api.tasks;
 
-
 import org.jboss.errai.common.client.util.TimeUnit;
 
 /**

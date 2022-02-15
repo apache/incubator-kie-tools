@@ -16,10 +16,6 @@
 
 package org.jboss.errai.codegen.test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.List;
 
 import javax.enterprise.util.TypeLiteral;
@@ -35,6 +31,10 @@ import org.jboss.errai.codegen.meta.MetaClassFactory;
 import org.jboss.errai.codegen.util.Stmt;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests the {@link org.jboss.errai.codegen.builder.impl.ContextBuilder} API.

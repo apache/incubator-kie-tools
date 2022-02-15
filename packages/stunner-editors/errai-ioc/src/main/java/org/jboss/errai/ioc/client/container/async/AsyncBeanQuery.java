@@ -16,15 +16,15 @@
 
 package org.jboss.errai.ioc.client.container.async;
 
-import org.jboss.errai.common.client.api.Assert;
-import org.jboss.errai.common.client.util.CreationalCallback;
-import org.jboss.errai.ioc.client.container.IOC;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.jboss.errai.common.client.api.Assert;
+import org.jboss.errai.common.client.util.CreationalCallback;
+import org.jboss.errai.ioc.client.container.IOC;
 
 /**
  * An <tt>AsyncBeanQuery</tt> is used for querying more than one bean at a time, and then orchestrating

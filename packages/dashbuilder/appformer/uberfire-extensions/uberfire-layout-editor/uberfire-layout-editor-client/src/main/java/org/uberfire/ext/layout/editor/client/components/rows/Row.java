@@ -16,8 +16,13 @@
 
 package org.uberfire.ext.layout.editor.client.components.rows;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -33,13 +38,26 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.layout.editor.client.api.*;
+import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
+import org.uberfire.ext.layout.editor.client.api.ComponentDropType;
+import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorElement;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorElementType;
 import org.uberfire.ext.layout.editor.client.components.columns.Column;
 import org.uberfire.ext.layout.editor.client.components.columns.ColumnWithComponents;
 import org.uberfire.ext.layout.editor.client.components.columns.ComponentColumn;
 import org.uberfire.ext.layout.editor.client.event.LayoutEditorElementSelectEvent;
 import org.uberfire.ext.layout.editor.client.event.LayoutEditorElementUnselectEvent;
-import org.uberfire.ext.layout.editor.client.infra.*;
+import org.uberfire.ext.layout.editor.client.infra.BeanHelper;
+import org.uberfire.ext.layout.editor.client.infra.ColumnDrop;
+import org.uberfire.ext.layout.editor.client.infra.ColumnDropContext;
+import org.uberfire.ext.layout.editor.client.infra.ColumnResizeEvent;
+import org.uberfire.ext.layout.editor.client.infra.DnDManager;
+import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
+import org.uberfire.ext.layout.editor.client.infra.LayoutEditorCssHelper;
+import org.uberfire.ext.layout.editor.client.infra.LayoutEditorFocusController;
+import org.uberfire.ext.layout.editor.client.infra.RowResizeEvent;
+import org.uberfire.ext.layout.editor.client.infra.UniqueIDGenerator;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.mvp.ParameterizedCommand;
 

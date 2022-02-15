@@ -15,7 +15,6 @@
  */
 package org.dashbuilder.client.widgets.dataset.editor.kafka;
 
-import java.util.Iterator;
 import java.util.function.Consumer;
 
 import javax.enterprise.context.Dependent;
@@ -27,7 +26,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.common.client.editor.ValueBoxEditor;
 import org.dashbuilder.common.client.editor.ValueBoxEditor.View;

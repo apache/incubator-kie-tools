@@ -16,16 +16,6 @@
 
 package org.jboss.errai.ioc.rebind.ioc.bootstrapper;
 
-import static java.util.Arrays.stream;
-import static java.util.Collections.emptyList;
-import static org.jboss.errai.codegen.Parameter.of;
-import static org.jboss.errai.codegen.util.Stmt.invokeStatic;
-import static org.jboss.errai.codegen.util.Stmt.loadLiteral;
-import static org.jboss.errai.codegen.util.Stmt.nestedCall;
-import static org.jboss.errai.codegen.util.Stmt.newObject;
-import static org.jboss.errai.ioc.rebind.ioc.extension.builtin.JsTypeAntiInliningExtension.numberOfRequiredAntiInliningDummies;
-import static org.jboss.errai.ioc.rebind.ioc.extension.builtin.JsTypeAntiInliningExtension.requiresAntiInliningDummy;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +35,16 @@ import org.jboss.errai.ioc.client.container.FactoryHandleImpl;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraph;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.Injectable;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.InjectionContext;
+
+import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
+import static org.jboss.errai.codegen.Parameter.of;
+import static org.jboss.errai.codegen.util.Stmt.invokeStatic;
+import static org.jboss.errai.codegen.util.Stmt.loadLiteral;
+import static org.jboss.errai.codegen.util.Stmt.nestedCall;
+import static org.jboss.errai.codegen.util.Stmt.newObject;
+import static org.jboss.errai.ioc.rebind.ioc.extension.builtin.JsTypeAntiInliningExtension.numberOfRequiredAntiInliningDummies;
+import static org.jboss.errai.ioc.rebind.ioc.extension.builtin.JsTypeAntiInliningExtension.requiresAntiInliningDummy;
 
 /**
  * Generates factories that lookup types from the {@link WindowInjectionContextImpl}

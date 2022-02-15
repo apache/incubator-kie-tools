@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.gwt.core.shared.GWT;
 import org.jboss.errai.ioc.client.IOCClientTestCase;
 import org.jboss.errai.ioc.client.IOCUtil;
 import org.jboss.errai.ioc.client.QualifierUtil;
@@ -43,8 +44,8 @@ import org.jboss.errai.ioc.tests.wiring.client.res.ApplicationScopedBeanInheriti
 import org.jboss.errai.ioc.tests.wiring.client.res.BeanManagerDependentBean;
 import org.jboss.errai.ioc.tests.wiring.client.res.BeforeTask;
 import org.jboss.errai.ioc.tests.wiring.client.res.ChildWithSetterOverride;
-import org.jboss.errai.ioc.tests.wiring.client.res.DependentOnInnerType;
 import org.jboss.errai.ioc.tests.wiring.client.res.DependentBeanWithConstructorCycle;
+import org.jboss.errai.ioc.tests.wiring.client.res.DependentOnInnerType;
 import org.jboss.errai.ioc.tests.wiring.client.res.DependentWithPackageConstr;
 import org.jboss.errai.ioc.tests.wiring.client.res.DependentWithPrivateConstr;
 import org.jboss.errai.ioc.tests.wiring.client.res.DependentWithProtectedConstr;
@@ -77,8 +78,6 @@ import org.jboss.errai.ioc.tests.wiring.client.res.TypedSuperInterface;
 import org.jboss.errai.ioc.tests.wiring.client.res.TypedTargetInterface;
 import org.jboss.errai.ioc.tests.wiring.client.res.TypedType;
 import org.junit.runner.RunWith;
-
-import com.google.gwt.core.shared.GWT;
 
 @RunWith(IOCSimulatedTestRunner.class)
 public class BasicIOCTest extends IOCClientTestCase {

@@ -16,10 +16,6 @@
 
 package org.jboss.errai.ioc.unit.test;
 
-import static org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraphBuilder.InjectableType.Producer;
-import static org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraphBuilder.InjectableType.Type;
-import static org.junit.Assert.assertEquals;
-
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,6 +32,10 @@ import org.jboss.errai.ioc.unit.res.CustomQualifier;
 import org.jboss.errai.ioc.unit.res.SomeClass.SomeInnerClass;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraphBuilder.InjectableType.Producer;
+import static org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraphBuilder.InjectableType.Type;
+import static org.junit.Assert.assertEquals;
 
 /**
  *

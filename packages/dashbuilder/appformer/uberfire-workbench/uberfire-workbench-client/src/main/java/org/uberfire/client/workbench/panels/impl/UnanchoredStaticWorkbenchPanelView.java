@@ -18,6 +18,7 @@ package org.uberfire.client.workbench.panels.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;

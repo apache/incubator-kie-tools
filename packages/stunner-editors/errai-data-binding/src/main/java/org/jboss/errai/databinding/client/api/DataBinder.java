@@ -22,6 +22,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Assert;
 import org.jboss.errai.databinding.client.BindableProxy;
 import org.jboss.errai.databinding.client.BindableProxyAgent;
@@ -38,11 +42,6 @@ import org.jboss.errai.databinding.client.PropertyChangeUnsubscribeHandle;
 import org.jboss.errai.databinding.client.PropertyType;
 import org.jboss.errai.databinding.client.api.handler.property.PropertyChangeEvent;
 import org.jboss.errai.databinding.client.api.handler.property.PropertyChangeHandler;
-
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides an API to programmatically bind properties of a data model instance
