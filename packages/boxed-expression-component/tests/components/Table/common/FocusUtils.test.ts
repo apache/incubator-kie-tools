@@ -362,6 +362,22 @@ describe("FocusUtils tests", () => {
       expect(mockElementWithPopoverMenuClick).toHaveBeenCalled();
     });
 
+    it("should open the Select menu component", () => {
+      const parentCell = document.createElement("td");
+      const selectWrapper = document.createElement("div");
+      const selectMenuBtn = document.createElement("button");
+      const mockParentCellFocus = jest.spyOn(parentCell, "focus");
+      const mockSelectMenuBtnClick = jest.spyOn(selectMenuBtn, "click");
+
+      selectWrapper.classList.add("logic-type-selector");
+      selectWrapper.appendChild(selectMenuBtn);
+      parentCell.appendChild(selectWrapper);
+
+      focusInsideCell(parentCell);
+      expect(mockParentCellFocus).not.toHaveBeenCalled();
+      expect(mockSelectMenuBtnClick).toHaveBeenCalled();
+    });
+
     it("should not change the focus", () => {
       const emptyCell = document.createElement("td");
       const mockEmptyCellFocus = jest.spyOn(emptyCell, "focus");

@@ -211,11 +211,14 @@ export const focusInsideCell = (currentEl: HTMLElement | null, eraseContent = fa
 
   const nestedTbody = <HTMLTableSectionElement>currentEl.querySelector("table > tbody");
   const cellWithPopoverMenu = <HTMLElement>currentEl.querySelector(".with-popover-menu, .logic-type-not-present");
+  const cellWithSelect = <HTMLElement>currentEl.querySelector(".logic-type-selector button");
 
   if (nestedTbody) {
     cellFocus(nestedTbody.rows[0].cells[1]);
   } else if (cellWithPopoverMenu) {
     cellWithPopoverMenu.click();
+  } else if (cellWithSelect) {
+    cellWithSelect.click();
   } else {
     focusTextArea(currentEl.querySelector("textarea"), eraseContent);
   }
