@@ -58,7 +58,8 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (
   const FIRST_ENTRY_ID = "0";
   const SECOND_ENTRY_ID = "1";
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { editorRef, setSupervisorHash, pmmlParams, boxedExpressionEditorGWTService } = useBoxedExpression();
+  const { editorRef, setSupervisorHash, pmmlParams, boxedExpressionEditorGWTService, decisionNodeId } =
+    useBoxedExpression();
   const pmmlDocument = useMemo(
     () => (functionExpression as PmmlFunctionProps).document,
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -389,7 +390,7 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (
     return [
       {
         label: functionExpression.name ?? DEFAULT_FIRST_PARAM_NAME,
-        accessor: functionExpression.name ?? DEFAULT_FIRST_PARAM_NAME,
+        accessor: decisionNodeId,
         dataType: functionExpression.dataType ?? DataType.Undefined,
         disableHandlerOnHeader: true,
         columns: [
@@ -403,7 +404,13 @@ export const FunctionExpression: React.FunctionComponent<FunctionProps> = (
         ],
       },
     ] as ColumnInstance[];
-  }, [functionExpression.name, functionExpression.dataType, headerCellElement, functionExpression.parametersWidth]);
+  }, [
+    decisionNodeId,
+    functionExpression.name,
+    functionExpression.dataType,
+    headerCellElement,
+    functionExpression.parametersWidth,
+  ]);
 
   const getHeaderVisibility = useMemo(() => {
     return functionExpression.isHeadless ? TableHeaderVisibility.LastLevel : TableHeaderVisibility.Full;
