@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
+import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
 import org.kie.workbench.common.dmn.api.property.dmn.DMNExternalLink;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.common.BoxedExpressionHelper;
@@ -122,6 +123,9 @@ public class DMNDocumentationDRDsFactory {
                 final DRGElement drgElement = (DRGElement) definition;
                 dmnDocumentationDRDS.add(createDMNDocumentationDRD(diagram, node, drgElement));
             }
+            if (definition instanceof TextAnnotation) {
+                dmnDocumentationDRDS.add(createTextAnnotationDocumentation((TextAnnotation) definition));
+            }
         });
 
         return dmnDocumentationDRDS;
@@ -140,7 +144,15 @@ public class DMNDocumentationDRDsFactory {
         dmnDocumentationDRD.setDrdBoxedExpressionImage(getNodeImage(diagram, node));
         final List<DMNDocumentationExternalLink> externalLinks = getExternalLinks(drgElement);
         dmnDocumentationDRD.setDrdExternalLinks(externalLinks);
-        dmnDocumentationDRD.setHasExternalLinks(!externalLinks.isEmpty());
+
+        return dmnDocumentationDRD;
+    }
+
+    private DMNDocumentationDRD createTextAnnotationDocumentation(final TextAnnotation textAnnotation) {
+
+        DMNDocumentationDRD dmnDocumentationDRD = DMNDocumentationDRD.create();
+        dmnDocumentationDRD.setDrdName(textAnnotation.getText().getValue());
+        dmnDocumentationDRD.setDrdDescription(textAnnotation.getDescription().getValue());
 
         return dmnDocumentationDRD;
     }
