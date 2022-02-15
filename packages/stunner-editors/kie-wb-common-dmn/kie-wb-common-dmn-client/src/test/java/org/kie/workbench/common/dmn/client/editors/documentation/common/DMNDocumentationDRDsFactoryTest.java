@@ -30,11 +30,13 @@ import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.model.InputData;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
 import org.kie.workbench.common.dmn.api.property.dmn.DMNExternalLink;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinksHolder;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.common.BoxedExpressionHelper;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContainerGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
@@ -53,11 +55,10 @@ import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
-import static freemarker.template.utility.Collections12.singletonList;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BOOLEAN;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.UNDEFINED;
 import static org.kie.workbench.common.dmn.client.editors.documentation.common.DMNDocumentationDRDsFactory.NONE;
@@ -180,10 +181,36 @@ public class DMNDocumentationDRDsFactoryTest {
         assertEquals(name2, documentationDRD2.getDrdName());
         assertEquals(NONE, documentationDRD2.getDrdBoxedExpressionImage());
 
-        assertFalse(documentationDRD1.getHasExternalLinks());
-        assertTrue(documentationDRD2.getHasExternalLinks());
-
         verify(factory).setExpressionContainerGrid(diagram, nodeUUID2);
+    }
+
+    @Test
+    public void testCreateTextAnnotation() {
+
+        final String nodeUUID1 = "1111-1111-1111-1111";
+        final Node<View, Edge> node1 = new NodeImpl<>(nodeUUID1);
+        final View view1 = mock(View.class);
+        final List<Node<View, Edge>> nodes = asList(node1);
+        final TextAnnotation drgElement1 = new TextAnnotation();
+        final String name1 = "Text Annotation";
+        final String description1 = "Description...";
+
+        node1.setContent(view1);
+        when(view1.getDefinition()).thenReturn(drgElement1);
+        when(graph.nodes()).thenReturn(nodes);
+
+        drgElement1.setDescription(new Description(description1));
+        drgElement1.setText(new Text(name1));
+
+        final List<DMNDocumentationDRD> drds = factory.create(diagram);
+
+        assertThat(drds)
+                .hasSize(1)
+                .first()
+                .satisfies(ta -> {
+                    assertThat(ta).extracting("drdName").isEqualTo(name1);
+                    assertThat(ta).extracting("drdDescription").isEqualTo(description1);
+                });
     }
 
     @Test
