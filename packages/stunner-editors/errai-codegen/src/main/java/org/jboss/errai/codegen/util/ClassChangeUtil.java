@@ -16,15 +16,6 @@
 
 package org.jboss.errai.codegen.util;
 
-import org.eclipse.jdt.core.compiler.CompilationProgress;
-import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
-import org.eclipse.jdt.internal.compiler.apt.dispatch.BatchAnnotationProcessorManager;
-import org.jboss.errai.common.metadata.ErraiAppPropertiesFiles;
-import org.jboss.errai.common.metadata.RebindUtils;
-import org.slf4j.Logger;
-
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,6 +33,16 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
+
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
+
+import org.eclipse.jdt.core.compiler.CompilationProgress;
+import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
+import org.eclipse.jdt.internal.compiler.apt.dispatch.BatchAnnotationProcessorManager;
+import org.jboss.errai.common.metadata.ErraiAppPropertiesFiles;
+import org.jboss.errai.common.metadata.RebindUtils;
+import org.slf4j.Logger;
 
 import static org.slf4j.LoggerFactory.getLogger;
 

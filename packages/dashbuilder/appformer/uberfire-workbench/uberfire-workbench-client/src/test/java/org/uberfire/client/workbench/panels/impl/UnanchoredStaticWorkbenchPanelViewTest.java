@@ -20,8 +20,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.workbench.model.PartDefinition;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.mock;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class UnanchoredStaticWorkbenchPanelViewTest {

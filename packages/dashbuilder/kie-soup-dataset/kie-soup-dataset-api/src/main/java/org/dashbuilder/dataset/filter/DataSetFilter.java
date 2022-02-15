@@ -15,8 +15,8 @@
  */
 package org.dashbuilder.dataset.filter;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.dashbuilder.dataset.DataSetOpType;
 import org.dashbuilder.dataset.impl.AbstractDataSetOp;

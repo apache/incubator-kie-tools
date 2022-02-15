@@ -16,14 +16,14 @@
 
 package org.jboss.errai.ioc.tests.decorator.client;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jboss.errai.ioc.client.container.Factory;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.test.AbstractErraiIOCTest;
 import org.jboss.errai.ioc.tests.decorator.client.res.MyDecoratedBean;
 import org.jboss.errai.ioc.tests.decorator.client.res.TestDataCollector;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Mike Brock

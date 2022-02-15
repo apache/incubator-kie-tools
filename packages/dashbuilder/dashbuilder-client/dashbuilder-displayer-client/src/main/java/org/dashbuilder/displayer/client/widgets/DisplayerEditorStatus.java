@@ -17,6 +17,7 @@ package org.dashbuilder.displayer.client.widgets;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped

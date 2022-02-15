@@ -27,8 +27,6 @@ import org.dashbuilder.common.client.StringTemplateBuilder;
 import org.dashbuilder.common.client.StringUtils;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataSetLookupConstraints;
-import org.dashbuilder.dataset.filter.ColumnFilter;
-import org.dashbuilder.dataset.filter.CoreFunctionFilter;
 import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;

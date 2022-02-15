@@ -15,14 +15,14 @@
  */
 package org.uberfire.ext.layout.editor.client.api;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.infra.DndDataJSONConverter;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * This interface defines the main contract between the Layout Editor's module and components implementations.

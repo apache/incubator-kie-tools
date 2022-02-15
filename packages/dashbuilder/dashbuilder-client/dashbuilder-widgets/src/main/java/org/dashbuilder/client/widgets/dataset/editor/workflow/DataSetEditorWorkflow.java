@@ -15,6 +15,14 @@
  */
 package org.dashbuilder.client.widgets.dataset.editor.workflow;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.validation.ConstraintViolation;
+
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -35,13 +43,6 @@ import org.dashbuilder.validations.DataSetValidatorProvider;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
-
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.validation.ConstraintViolation;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 
 
 /**

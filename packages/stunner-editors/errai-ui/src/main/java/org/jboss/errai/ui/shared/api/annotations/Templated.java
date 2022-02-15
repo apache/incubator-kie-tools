@@ -25,10 +25,9 @@ import java.lang.annotation.Target;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.Composite;
 import org.jboss.errai.ui.client.local.spi.TemplateProvider;
 import org.jboss.errai.ui.shared.ServerTemplateProvider;
-
-import com.google.gwt.user.client.ui.Composite;
 
 /**
  * Since Errai 4.0.0 this annotation may be used on classes that do not extends {@link Composite}.

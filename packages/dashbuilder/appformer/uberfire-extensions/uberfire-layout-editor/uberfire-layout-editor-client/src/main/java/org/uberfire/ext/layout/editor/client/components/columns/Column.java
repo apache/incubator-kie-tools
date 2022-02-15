@@ -19,7 +19,6 @@ package org.uberfire.ext.layout.editor.client.components.columns;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorElement;
-import org.uberfire.ext.layout.editor.client.api.LayoutEditorElementType;
 
 public interface Column<T> extends LayoutEditorElement {
 

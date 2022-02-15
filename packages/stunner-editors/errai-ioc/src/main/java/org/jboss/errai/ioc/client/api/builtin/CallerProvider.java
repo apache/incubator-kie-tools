@@ -16,7 +16,6 @@
 
 package org.jboss.errai.ioc.client.api.builtin;
 
-
 import java.lang.annotation.Annotation;
 
 import javax.inject.Singleton;

@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextBox;
 import org.jboss.errai.databinding.client.IdentityConverter;
 import org.jboss.errai.databinding.client.TestModel;
 import org.jboss.errai.databinding.client.api.Convert;
@@ -29,9 +31,6 @@ import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.databinding.client.api.StateSync;
 import org.jboss.errai.ioc.client.test.AbstractErraiIOCTest;
 import org.junit.Test;
-
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * Tests functionality related to the use of {@link Converter}s for data binding.

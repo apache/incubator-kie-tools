@@ -1,19 +1,12 @@
 package org.dashbuilder.client.widgets.dataset.editor;
 
-import static org.jgroups.util.Util.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.client.widgets.dataset.editor.attributes.DataSetDefBackendCacheAttributesEditor;
 import org.dashbuilder.client.widgets.dataset.editor.attributes.DataSetDefBasicAttributesEditor;
 import org.dashbuilder.client.widgets.dataset.editor.attributes.DataSetDefCacheAttributesEditorView;
@@ -48,9 +41,15 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.jgroups.util.Util.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DataSetEditorTest {

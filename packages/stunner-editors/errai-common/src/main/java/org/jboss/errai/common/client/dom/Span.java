@@ -16,9 +16,8 @@
 
 package org.jboss.errai.common.client.dom;
 
-import org.jboss.errai.common.client.api.annotations.Element;
-
 import jsinterop.annotations.JsType;
+import org.jboss.errai.common.client.api.annotations.Element;
 
 /**
  *

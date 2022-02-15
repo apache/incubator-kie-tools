@@ -16,6 +16,8 @@
 
 package org.jboss.errai.ui.test.elemental2.client.res;
 
+import javax.inject.Inject;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Composite;
 import elemental2.dom.Element;
@@ -25,8 +27,6 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.jboss.errai.ui.test.common.client.dom.Document;
-
-import javax.inject.Inject;
 
 import static elemental2.dom.DomGlobal.document;
 

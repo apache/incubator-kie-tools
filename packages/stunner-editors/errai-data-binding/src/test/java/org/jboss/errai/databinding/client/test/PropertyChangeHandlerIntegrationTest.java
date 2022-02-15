@@ -16,14 +16,13 @@
 
 package org.jboss.errai.databinding.client.test;
 
-import static java.util.Arrays.asList;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.TextBox;
 import org.jboss.errai.databinding.client.BindableProxy;
 import org.jboss.errai.databinding.client.InvalidPropertyExpressionException;
 import org.jboss.errai.databinding.client.MockHandler;
@@ -39,12 +38,11 @@ import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.databinding.client.api.StateSync;
 import org.jboss.errai.databinding.client.api.handler.property.PropertyChangeEvent;
 import org.jboss.errai.databinding.client.api.handler.property.PropertyChangeHandler;
-import org.jboss.errai.ioc.client.container.Proxy;
 import org.jboss.errai.ioc.client.container.RefHolder;
 import org.jboss.errai.ioc.client.test.AbstractErraiIOCTest;
 import org.junit.Test;
 
-import com.google.gwt.user.client.ui.TextBox;
+import static java.util.Arrays.asList;
 
 /**
  * Tests the functionality provided by the {@link DataBinder} API for property change events.

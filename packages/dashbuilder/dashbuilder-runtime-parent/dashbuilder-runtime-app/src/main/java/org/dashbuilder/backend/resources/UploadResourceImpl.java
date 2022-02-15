@@ -16,11 +16,8 @@
 
 package org.dashbuilder.backend.resources;
 
-import static org.dashbuilder.backend.RuntimeOptions.DASHBOARD_EXTENSION;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -41,6 +38,8 @@ import org.dashbuilder.shared.service.RuntimeModelRegistry;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.dashbuilder.backend.RuntimeOptions.DASHBOARD_EXTENSION;
 
 /**
  * Resource to receive new imports.

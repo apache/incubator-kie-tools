@@ -5,18 +5,13 @@ package bpsim.impl;
 import bpsim.BpsimPackage;
 import bpsim.ParameterValue;
 import bpsim.UserDistributionDataPointType;
-
 import com.google.gwt.user.client.rpc.GwtTransient;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
-
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;

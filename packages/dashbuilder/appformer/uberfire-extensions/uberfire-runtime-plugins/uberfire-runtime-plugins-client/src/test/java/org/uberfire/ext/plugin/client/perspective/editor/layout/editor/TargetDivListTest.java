@@ -25,7 +25,8 @@ import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TargetDivListTest {
 

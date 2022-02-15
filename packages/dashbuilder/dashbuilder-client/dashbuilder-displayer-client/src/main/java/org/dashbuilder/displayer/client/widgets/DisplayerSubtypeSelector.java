@@ -17,7 +17,6 @@ package org.dashbuilder.displayer.client.widgets;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;

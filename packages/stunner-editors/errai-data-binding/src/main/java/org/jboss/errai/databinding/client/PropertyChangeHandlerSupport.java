@@ -20,12 +20,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import org.jboss.errai.common.client.api.Assert;
 import org.jboss.errai.databinding.client.api.handler.property.PropertyChangeEvent;
 import org.jboss.errai.databinding.client.api.handler.property.PropertyChangeHandler;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 
 /**
  * This is a utility class that can be used by implementations of

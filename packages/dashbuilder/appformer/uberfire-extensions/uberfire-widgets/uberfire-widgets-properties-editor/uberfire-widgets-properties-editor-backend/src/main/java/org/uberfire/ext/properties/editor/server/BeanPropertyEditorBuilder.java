@@ -19,6 +19,7 @@ package org.uberfire.ext.properties.editor.server;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 
 import org.jboss.errai.bus.server.annotations.Service;

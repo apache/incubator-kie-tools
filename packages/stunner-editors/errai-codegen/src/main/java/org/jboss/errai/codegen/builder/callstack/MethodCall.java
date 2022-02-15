@@ -16,8 +16,6 @@
 
 package org.jboss.errai.codegen.builder.callstack;
 
-import static org.jboss.errai.codegen.CallParameters.fromStatements;
-
 import java.util.Arrays;
 
 import org.jboss.errai.codegen.CallParameters;
@@ -33,6 +31,8 @@ import org.jboss.errai.codegen.meta.MetaParameterizedType;
 import org.jboss.errai.codegen.meta.MetaType;
 import org.jboss.errai.codegen.meta.MetaTypeVariable;
 import org.jboss.errai.codegen.util.GenUtil;
+
+import static org.jboss.errai.codegen.CallParameters.fromStatements;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

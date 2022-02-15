@@ -16,14 +16,6 @@
 
 package org.uberfire.ext.editor.commons.client.file.popups;
 
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +25,14 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
+
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RenamePopUpPresenterTest {

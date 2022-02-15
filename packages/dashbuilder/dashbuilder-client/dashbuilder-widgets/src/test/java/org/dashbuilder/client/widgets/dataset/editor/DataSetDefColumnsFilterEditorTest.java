@@ -1,5 +1,8 @@
 package org.dashbuilder.client.widgets.dataset.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.client.widgets.dataset.editor.column.DataSetDefColumnsEditor;
@@ -13,12 +16,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.jgroups.util.Util.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DataSetDefColumnsFilterEditorTest {

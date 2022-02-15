@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.widgets.client.widget;
 
+import java.util.List;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
@@ -23,8 +25,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.RootPanel;
-
-import java.util.List;
 
 /**
  * A utility class to calculate the width of a Cell

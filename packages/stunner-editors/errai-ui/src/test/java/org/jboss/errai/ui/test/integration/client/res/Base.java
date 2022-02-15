@@ -16,11 +16,11 @@
 
 package org.jboss.errai.ui.test.integration.client.res;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import java.lang.annotation.Retention;
 
 import javax.inject.Qualifier;
+
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Max Barkley <mbarkley@redhat.com>

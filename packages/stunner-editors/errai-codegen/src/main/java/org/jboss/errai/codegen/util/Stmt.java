@@ -16,6 +16,8 @@
 
 package org.jboss.errai.codegen.util;
 
+import javax.enterprise.util.TypeLiteral;
+
 import org.jboss.errai.codegen.BooleanExpression;
 import org.jboss.errai.codegen.Context;
 import org.jboss.errai.codegen.Statement;
@@ -34,8 +36,6 @@ import org.jboss.errai.codegen.builder.WhileBuilder;
 import org.jboss.errai.codegen.builder.impl.ObjectBuilder;
 import org.jboss.errai.codegen.builder.impl.StatementBuilder;
 import org.jboss.errai.codegen.meta.MetaClass;
-
-import javax.enterprise.util.TypeLiteral;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

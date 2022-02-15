@@ -16,6 +16,8 @@
 
 package org.jboss.errai.ui.rebind.ioc.element;
 
+import javax.enterprise.context.Dependent;
+
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.ioc.rebind.ioc.bootstrapper.AbstractBodyGenerator;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.CustomFactoryInjectable;
@@ -25,8 +27,6 @@ import org.jboss.errai.ioc.rebind.ioc.graph.impl.DefaultCustomFactoryInjectable;
 import org.jboss.errai.ioc.rebind.ioc.graph.impl.FactoryNameGenerator;
 import org.jboss.errai.ioc.rebind.ioc.graph.impl.InjectableHandle;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.InjectableProvider;
-
-import javax.enterprise.context.Dependent;
 
 import static java.util.Collections.singletonList;
 import static org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraphBuilder.InjectableType.ExtensionProvided;

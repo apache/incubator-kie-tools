@@ -21,7 +21,6 @@ import javax.enterprise.inject.Alternative;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Alternative
 public class SessionInfoImpl implements SessionInfo {

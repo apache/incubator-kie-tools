@@ -16,16 +16,6 @@
 
 package org.jboss.errai.validation.rebind;
 
-import static org.jboss.errai.codegen.Parameter.finalOf;
-import static org.jboss.errai.codegen.meta.MetaClassFactory.parameterizedAs;
-import static org.jboss.errai.codegen.meta.MetaClassFactory.typeParametersOf;
-import static org.jboss.errai.codegen.util.Stmt.castTo;
-import static org.jboss.errai.codegen.util.Stmt.if_;
-import static org.jboss.errai.codegen.util.Stmt.invokeStatic;
-import static org.jboss.errai.codegen.util.Stmt.loadLiteral;
-import static org.jboss.errai.codegen.util.Stmt.loadVariable;
-import static org.jboss.errai.codegen.util.Stmt.newObject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,6 +29,10 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import javax.validation.ConstraintViolation;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.validation.client.ProviderValidationMessageResolver;
+import com.google.gwt.validation.client.ValidationMessageResolver;
+import com.google.gwt.validation.client.impl.ConstraintViolationImpl;
 import org.jboss.errai.codegen.InnerClass;
 import org.jboss.errai.codegen.Statement;
 import org.jboss.errai.codegen.TernaryStatement;
@@ -62,10 +56,15 @@ import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.jboss.errai.validation.client.dynamic.DynamicValidatorUtil;
 import org.jboss.errai.validation.client.dynamic.GeneratedDynamicValidator;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.validation.client.ProviderValidationMessageResolver;
-import com.google.gwt.validation.client.ValidationMessageResolver;
-import com.google.gwt.validation.client.impl.ConstraintViolationImpl;
+import static org.jboss.errai.codegen.Parameter.finalOf;
+import static org.jboss.errai.codegen.meta.MetaClassFactory.parameterizedAs;
+import static org.jboss.errai.codegen.meta.MetaClassFactory.typeParametersOf;
+import static org.jboss.errai.codegen.util.Stmt.castTo;
+import static org.jboss.errai.codegen.util.Stmt.if_;
+import static org.jboss.errai.codegen.util.Stmt.invokeStatic;
+import static org.jboss.errai.codegen.util.Stmt.loadLiteral;
+import static org.jboss.errai.codegen.util.Stmt.loadVariable;
+import static org.jboss.errai.codegen.util.Stmt.newObject;
 
 /**
  * Geneate the {@link Factory} body for the factory producing the {@link DynamicValidator}. This generates a

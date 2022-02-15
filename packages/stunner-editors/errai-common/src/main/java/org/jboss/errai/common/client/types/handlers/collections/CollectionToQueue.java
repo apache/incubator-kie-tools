@@ -16,9 +16,11 @@
 
 package org.jboss.errai.common.client.types.handlers.collections;
 
-import org.jboss.errai.common.client.types.TypeHandler;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Queue;
 
-import java.util.*;
+import org.jboss.errai.common.client.types.TypeHandler;
 
 public class CollectionToQueue implements TypeHandler<Collection, Queue> {
   public Queue getConverted(Collection in) {

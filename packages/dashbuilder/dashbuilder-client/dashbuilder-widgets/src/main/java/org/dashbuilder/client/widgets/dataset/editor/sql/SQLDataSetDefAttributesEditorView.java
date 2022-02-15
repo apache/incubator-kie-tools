@@ -1,5 +1,7 @@
 package org.dashbuilder.client.widgets.dataset.editor.sql;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -12,8 +14,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.common.client.editor.ValueBoxEditor;
 import org.dashbuilder.common.client.editor.list.DropDownEditor;
 import org.gwtbootstrap3.client.ui.RadioButton;
-
-import javax.enterprise.context.Dependent;
 
 /**
  * <p>The SQL Data Set attributes editor view.</p>

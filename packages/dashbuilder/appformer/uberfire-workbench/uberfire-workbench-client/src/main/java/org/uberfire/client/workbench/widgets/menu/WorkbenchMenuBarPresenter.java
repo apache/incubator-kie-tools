@@ -17,6 +17,8 @@ package org.uberfire.client.workbench.widgets.menu;
 
 import java.util.function.BiConsumer;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
@@ -40,9 +42,6 @@ import org.uberfire.workbench.model.menu.MenuItemPlain;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuVisitor;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Presenter for WorkbenchMenuBar that mediates changes to the Workbench MenuBar

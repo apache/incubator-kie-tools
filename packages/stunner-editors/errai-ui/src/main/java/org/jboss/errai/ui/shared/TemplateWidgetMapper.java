@@ -19,9 +19,8 @@ package org.jboss.errai.ui.shared;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.jboss.errai.ioc.client.container.Factory;
-
 import com.google.gwt.user.client.ui.Composite;
+import org.jboss.errai.ioc.client.container.Factory;
 
 /**
  * Maps templates that do not extend {@link Composite} to their root widgets.

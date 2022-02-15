@@ -18,7 +18,6 @@ package org.dashbuilder.displayer.client.widgets.filter;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;

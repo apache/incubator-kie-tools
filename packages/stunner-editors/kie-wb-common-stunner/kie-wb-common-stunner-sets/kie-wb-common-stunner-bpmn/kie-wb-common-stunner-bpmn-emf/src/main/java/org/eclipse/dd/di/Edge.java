@@ -15,7 +15,6 @@
 package org.eclipse.dd.di;
 
 import org.eclipse.dd.dc.Point;
-
 import org.eclipse.emf.common.util.EList;
 
 /**

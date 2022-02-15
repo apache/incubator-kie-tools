@@ -15,9 +15,9 @@
  */
 package org.dashbuilder.dataset.engine.index;
 
+import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.engine.index.stats.DataSetIndexStats;
 import org.dashbuilder.dataset.engine.index.stats.DataSetIndexStatsImpl;
-import org.dashbuilder.dataset.DataSet;
 
 /**
  * An index for static data sets.

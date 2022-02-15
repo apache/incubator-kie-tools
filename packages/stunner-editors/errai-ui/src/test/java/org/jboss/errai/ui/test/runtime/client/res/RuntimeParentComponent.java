@@ -19,13 +19,12 @@ package org.jboss.errai.ui.test.runtime.client.res;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
 import org.jboss.errai.ui.shared.ServerTemplateProvider;
 import org.jboss.errai.ui.shared.TemplateInitializedEvent;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
 
 @Templated(value = "/RuntimeParentComponent.html", provider = ServerTemplateProvider.class)
 public class RuntimeParentComponent extends Composite {

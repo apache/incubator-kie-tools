@@ -1,9 +1,9 @@
 package org.dashbuilder.client.widgets.dataset.event;
 
+import java.util.List;
+
 import org.dashbuilder.common.client.event.ContextualEvent;
 import org.dashbuilder.dataset.def.DataColumnDef;
-
-import java.util.List;
 
 /**
  * <p>CDI event when data set definition instance columns have changed.</p>

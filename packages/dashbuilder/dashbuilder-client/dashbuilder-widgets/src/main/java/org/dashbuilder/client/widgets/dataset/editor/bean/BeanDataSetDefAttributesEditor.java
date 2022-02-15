@@ -15,6 +15,10 @@
  */
 package org.dashbuilder.client.widgets.dataset.editor.bean;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.client.widgets.resources.i18n.DataSetEditorConstants;
@@ -22,10 +26,6 @@ import org.dashbuilder.common.client.editor.ValueBoxEditor;
 import org.dashbuilder.common.client.editor.map.MapEditor;
 import org.gwtbootstrap3.client.ui.constants.Placement;
 import org.uberfire.client.mvp.UberView;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 /**
  * <p>Bean Data Set specific attributes editor presenter.</p>

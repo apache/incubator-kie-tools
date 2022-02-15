@@ -15,7 +15,6 @@
 package org.eclipse.bpmn2.impl;
 
 import com.google.gwt.user.client.rpc.GwtTransient;
-
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.Artifact;
@@ -149,20 +148,15 @@ import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.UserTask;
-
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EMap;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.impl.EStringToStringMapEntryImpl;
-
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.EcoreEMap;
 import org.eclipse.emf.ecore.util.FeatureMap;

@@ -15,6 +15,36 @@
  */
 package org.dashbuilder.displayer.client.widgets;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Widget;
+import org.dashbuilder.displayer.DisplayerAttributeDef;
+import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
+import org.dashbuilder.displayer.MapColorScheme;
+import org.dashbuilder.displayer.Position;
+import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
+import org.dashbuilder.displayer.client.resources.i18n.MapColorSchemeConstants;
+import org.dashbuilder.displayer.client.resources.i18n.PositionConstants;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.constants.LabelType;
+import org.uberfire.ext.properties.editor.client.PropertyEditorWidget;
+import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
+import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
+import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
+import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
+import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
+
 import static org.dashbuilder.displayer.DisplayerAttributeDef.ALLOW_EXPORT_CSV;
 import static org.dashbuilder.displayer.DisplayerAttributeDef.ALLOW_EXPORT_EXCEL;
 import static org.dashbuilder.displayer.DisplayerAttributeDef.CHART_3D;
@@ -78,37 +108,6 @@ import static org.uberfire.ext.properties.editor.model.PropertyEditorType.BOOLEA
 import static org.uberfire.ext.properties.editor.model.PropertyEditorType.COLOR;
 import static org.uberfire.ext.properties.editor.model.PropertyEditorType.COMBO;
 import static org.uberfire.ext.properties.editor.model.PropertyEditorType.TEXT;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
-
-import org.dashbuilder.displayer.DisplayerAttributeDef;
-import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
-import org.dashbuilder.displayer.MapColorScheme;
-import org.dashbuilder.displayer.Position;
-import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
-import org.dashbuilder.displayer.client.resources.i18n.MapColorSchemeConstants;
-import org.dashbuilder.displayer.client.resources.i18n.PositionConstants;
-import org.gwtbootstrap3.client.ui.Label;
-import org.gwtbootstrap3.client.ui.constants.LabelType;
-import org.uberfire.ext.properties.editor.client.PropertyEditorWidget;
-import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
-import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
-import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
-import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
-import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.Widget;
 
 @Dependent
 public class DisplayerSettingsEditorView extends Composite implements DisplayerSettingsEditor.View {

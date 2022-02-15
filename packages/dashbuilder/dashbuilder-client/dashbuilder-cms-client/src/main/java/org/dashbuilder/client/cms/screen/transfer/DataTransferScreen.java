@@ -22,6 +22,10 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import elemental2.dom.DomGlobal;
+import elemental2.dom.FormData;
+import elemental2.dom.HTMLFormElement;
+import elemental2.dom.RequestInit;
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerConstants;
 import org.dashbuilder.client.cms.screen.transfer.export.wizard.ExportWizard;
 import org.dashbuilder.transfer.DataTransferExportModel;
@@ -36,11 +40,6 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mvp.ParameterizedCommand;
-
-import elemental2.dom.DomGlobal;
-import elemental2.dom.FormData;
-import elemental2.dom.HTMLFormElement;
-import elemental2.dom.RequestInit;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = DataTransferScreen.ID)

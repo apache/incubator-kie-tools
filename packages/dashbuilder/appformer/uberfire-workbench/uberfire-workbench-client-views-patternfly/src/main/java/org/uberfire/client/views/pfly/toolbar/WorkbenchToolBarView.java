@@ -17,6 +17,7 @@ package org.uberfire.client.views.pfly.toolbar;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.animation.client.Animation;

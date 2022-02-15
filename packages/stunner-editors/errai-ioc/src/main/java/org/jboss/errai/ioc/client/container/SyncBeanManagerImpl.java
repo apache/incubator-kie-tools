@@ -27,6 +27,8 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import org.jboss.errai.common.client.api.Assert;
 import org.jboss.errai.ioc.client.JsArray;
 import org.jboss.errai.ioc.client.QualifierUtil;
@@ -34,9 +36,6 @@ import org.jboss.errai.ioc.client.WindowInjectionContext;
 import org.jboss.errai.ioc.client.WindowInjectionContextStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 
 /**
  * A simple bean manager provided by the Errai IOC framework. The manager provides access to all of the wired beans

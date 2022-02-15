@@ -16,9 +16,6 @@
 
 package org.jboss.errai.codegen.test;
 
-import static org.jboss.errai.codegen.test.ClassBuilderTestResult.*;
-import static org.junit.Assert.fail;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -35,6 +32,34 @@ import org.jboss.errai.codegen.test.model.Baz;
 import org.jboss.errai.codegen.test.model.tree.Parent;
 import org.jboss.errai.codegen.util.Stmt;
 import org.junit.Test;
+
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.ABSTRACT_CLASS;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.ABSTRACT_CLASS_WITH_ABSTRACT_METHODS;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.ABSTRACT_CLASS_WITH_ABSTRACT_METHODS_2;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_DECLARING_INNER_CLASS;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_DEFINITION_BY_IMPLEMENTING_INTERFACE;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_IMPLEMENTING_INTERFACE;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_IMPLEMENTING_MULTIPLE_INTERFACES;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_ACCESSOR_METHODS;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_CLASS_COMMENT;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_COLLIDING_IMPORTS_WITH_INNER_CLASS;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_COLLIDING_IMPORTS_WITH_INNER_CLASS_FIRST;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_COLLIDING_IMPORTS_WITH_JAVA_LANG;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_COLLIDING_IMPORTS_WITH_JAVA_LANG_FIRST;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_CONSTRUCTORS_OF_ALL_SCOPES;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_CONSTRUCTOR_CALLING_SUPER;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_CONSTRUCTOR_CALLING_THIS;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_FIELDS_OF_ALL_SCOPES;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_FIELD_INHERITANCE;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_JSNI_METHOD;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_METHODS_OF_ALL_SCOPES;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_METHOD_CALLING_METHOD_ON_SUPER;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_METHOD_CALLING_METHOD_ON_THIS;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_METHOD_HAVING_THROWS_DECLARATION;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_METHOD_USING_INNER_CLASS;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_PARENT;
+import static org.jboss.errai.codegen.test.ClassBuilderTestResult.CLASS_WITH_STATIC_METHOD;
+import static org.junit.Assert.fail;
 
 /**
  * Tests the {@link ClassBuilder} API.

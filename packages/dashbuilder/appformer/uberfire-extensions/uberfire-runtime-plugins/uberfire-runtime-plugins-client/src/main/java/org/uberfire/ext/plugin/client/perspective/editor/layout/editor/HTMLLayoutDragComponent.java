@@ -19,6 +19,7 @@ package org.uberfire.ext.plugin.client.perspective.editor.layout.editor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

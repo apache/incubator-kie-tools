@@ -16,9 +16,6 @@
 
 package org.jboss.errai.ioc.rebind.ioc.bootstrapper;
 
-
-import static org.jboss.errai.codegen.util.Stmt.loadVariable;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -36,6 +33,9 @@ import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.google.common.collect.Multimap;
+import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.TreeLogger;
 import org.jboss.errai.codegen.Context;
 import org.jboss.errai.codegen.builder.BlockBuilder;
 import org.jboss.errai.codegen.builder.ClassStructureBuilder;
@@ -55,8 +55,8 @@ import org.jboss.errai.ioc.client.api.CodeDecorator;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.api.IOCBootstrapTask;
 import org.jboss.errai.ioc.client.api.IOCProvider;
-import org.jboss.errai.ioc.client.api.TaskOrder;
 import org.jboss.errai.ioc.client.api.SharedSingleton;
+import org.jboss.errai.ioc.client.api.TaskOrder;
 import org.jboss.errai.ioc.client.container.ContextManager;
 import org.jboss.errai.ioc.rebind.ioc.extension.IOCDecoratorExtension;
 import org.jboss.errai.ioc.rebind.ioc.extension.IOCExtensionConfigurator;
@@ -66,9 +66,7 @@ import org.jboss.errai.ioc.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Multimap;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
+import static org.jboss.errai.codegen.util.Stmt.loadVariable;
 
 /**
  * Generator for the Bootstrapper class generated to wire an application at runtime.

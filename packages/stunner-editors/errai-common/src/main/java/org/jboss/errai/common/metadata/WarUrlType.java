@@ -16,12 +16,12 @@
 
 package org.jboss.errai.common.metadata;
 
+import java.io.File;
+import java.net.URL;
+
 import org.jboss.errai.reflections.vfs.SystemDir;
 import org.jboss.errai.reflections.vfs.Vfs;
 import org.jboss.errai.reflections.vfs.ZipDir;
-
-import java.io.File;
-import java.net.URL;
 
 /**
  * An {@link Vfs.UrlType} for scanning web application archives.

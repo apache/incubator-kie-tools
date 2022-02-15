@@ -16,10 +16,13 @@
 
 package org.jboss.errai.ui.test.binding.client.res;
 
-import static org.jboss.errai.ui.test.common.client.dom.Document.getDocument;
-
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextBox;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.ui.shared.api.annotations.AutoBound;
 import org.jboss.errai.ui.shared.api.annotations.Bound;
@@ -29,11 +32,7 @@ import org.jboss.errai.ui.test.common.client.TestModel;
 import org.jboss.errai.ui.test.common.client.dom.Element;
 import org.jboss.errai.ui.test.common.client.dom.TextInputElement;
 
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
+import static org.jboss.errai.ui.test.common.client.dom.Document.getDocument;
 
 @Templated("BindingTemplate.html")
 public class CompositeBindingTemplate extends Composite implements BindingTemplate<BindingItemWidget> {

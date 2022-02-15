@@ -19,12 +19,11 @@ package org.jboss.errai.ui.test.path.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.test.path.client.res.PathAbsoluteComponent;
 import org.jboss.errai.ui.test.path.client.res.PathRelativeComponent;
 import org.jboss.errai.ui.test.path.client.res.PathRelativeParentComponent;
-
-import com.google.gwt.user.client.ui.RootPanel;
 
 @EntryPoint
 public class PathTemplateTestApp {

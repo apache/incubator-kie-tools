@@ -16,6 +16,11 @@
 
 package org.uberfire.ext.layout.editor.client;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,16 +36,12 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.ext.properties.editor.model.PropertyEditorType;
 import org.uberfire.mocks.EventSourceMock;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LayoutElementPropertiesPresenterTest {

@@ -14,14 +14,6 @@
  */
 package org.dashbuilder.displayer.client.widgets;
 
-import static org.dashbuilder.displayer.DisplayerSubType.SMOOTH;
-import static org.dashbuilder.displayer.DisplayerType.BARCHART;
-import static org.dashbuilder.displayer.DisplayerType.LINECHART;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.client.RendererManager;
 import org.dashbuilder.displayer.client.events.DisplayerTypeSelectedEvent;
@@ -32,6 +24,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
+
+import static org.dashbuilder.displayer.DisplayerSubType.SMOOTH;
+import static org.dashbuilder.displayer.DisplayerType.BARCHART;
+import static org.dashbuilder.displayer.DisplayerType.LINECHART;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DisplayerTypeSelectorTest {

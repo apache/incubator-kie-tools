@@ -16,8 +16,6 @@
 
 package org.uberfire.ext.editor.commons.client.file.popups;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -27,6 +25,8 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.SaveInProgressEvent;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.mvp.ParameterizedCommand;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class SavePopUpPresenter {

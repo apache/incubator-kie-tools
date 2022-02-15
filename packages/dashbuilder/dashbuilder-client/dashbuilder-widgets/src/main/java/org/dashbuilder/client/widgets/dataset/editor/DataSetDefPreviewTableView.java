@@ -1,5 +1,7 @@
 package org.dashbuilder.client.widgets.dataset.editor;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -9,8 +11,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-
-import javax.enterprise.context.Dependent;
 
 /**
  * <p>Data Set table preview view.</p>

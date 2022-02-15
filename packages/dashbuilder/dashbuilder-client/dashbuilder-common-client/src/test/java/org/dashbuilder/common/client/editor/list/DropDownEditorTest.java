@@ -17,6 +17,7 @@ package org.dashbuilder.common.client.editor.list;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import javax.enterprise.event.Event;
 
 import org.dashbuilder.common.client.event.ValueChangeEvent;
@@ -30,8 +31,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
 import org.uberfire.ext.widgets.common.client.dropdown.SingleLiveSearchSelectionHandler;
 
-import static junit.framework.Assert.*;
-import static org.mockito.Mockito.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DropDownEditorTest {

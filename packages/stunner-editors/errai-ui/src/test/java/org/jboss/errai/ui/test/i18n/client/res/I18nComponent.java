@@ -16,12 +16,11 @@
 
 package org.jboss.errai.ui.test.i18n.client.res;
 
-import org.jboss.errai.ui.client.widget.LocaleListBox;
-
 import com.google.gwt.dom.client.ParagraphElement;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
+import org.jboss.errai.ui.client.widget.LocaleListBox;
 
 /**
  * 

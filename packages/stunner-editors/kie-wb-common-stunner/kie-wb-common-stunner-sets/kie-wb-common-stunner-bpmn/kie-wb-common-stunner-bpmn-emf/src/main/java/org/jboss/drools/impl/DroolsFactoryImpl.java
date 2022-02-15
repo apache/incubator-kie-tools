@@ -8,15 +8,18 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
-
 import org.eclipse.emf.ecore.xml.type.XMLTypeFactory;
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
-
-import org.jboss.drools.*;
+import org.jboss.drools.DocumentRoot;
+import org.jboss.drools.DroolsFactory;
+import org.jboss.drools.DroolsPackage;
+import org.jboss.drools.GlobalType;
+import org.jboss.drools.ImportType;
+import org.jboss.drools.MetaDataType;
+import org.jboss.drools.OnEntryScriptType;
+import org.jboss.drools.OnExitScriptType;
 
 /**
  * <!-- begin-user-doc -->

@@ -15,27 +15,24 @@
  */
 package org.uberfire.ext.layout.editor.client.widgets;
 
+import java.util.List;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.IsWidget;
-
 import elemental2.dom.HTMLOptionElement;
 import elemental2.dom.HTMLSelectElement;
-
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.ext.layout.editor.client.resources.i18n.PropertiesConstants;
-
-import java.util.List;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Templated
 @Dependent
