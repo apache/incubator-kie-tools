@@ -42,8 +42,6 @@ public class DMNDocumentationDRD {
 
     private JsArray<DMNDocumentationExternalLink> drdExternalLinks;
 
-    private boolean hasExternalLinks;
-
     private DMNDocumentationDRD() {
 
     }
@@ -90,11 +88,6 @@ public class DMNDocumentationDRD {
     }
 
     @JsOverlay
-    public final boolean getHasExternalLinks() {
-        return hasExternalLinks;
-    }
-
-    @JsOverlay
     public final void setDrdName(String drdName) {
         this.drdName = drdName;
     }
@@ -127,10 +120,5 @@ public class DMNDocumentationDRD {
     @JsOverlay
     public final void setDrdExternalLinks(List<DMNDocumentationExternalLink> drdExternalLinks) {
         this.drdExternalLinks = asJsArray(drdExternalLinks);
-    }
-
-    @JsOverlay
-    public final void setHasExternalLinks(boolean hasExternalLinks) {
-        this.hasExternalLinks = hasExternalLinks;
     }
 }
