@@ -20,7 +20,6 @@ import java.util.Map;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.model.FieldDefinition;

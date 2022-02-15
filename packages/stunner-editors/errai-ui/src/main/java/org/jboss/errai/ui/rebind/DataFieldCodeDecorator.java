@@ -16,6 +16,9 @@
 
 package org.jboss.errai.ui.rebind;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.google.common.base.Strings;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -37,9 +40,6 @@ import org.jboss.errai.ui.shared.TemplateUtil;
 import org.jboss.errai.ui.shared.TemplateWidgetMapper;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import static org.jboss.errai.codegen.util.Stmt.loadLiteral;
 

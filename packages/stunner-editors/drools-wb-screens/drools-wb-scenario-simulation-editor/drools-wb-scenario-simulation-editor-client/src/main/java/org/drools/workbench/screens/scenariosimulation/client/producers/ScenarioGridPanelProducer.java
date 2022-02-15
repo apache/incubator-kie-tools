@@ -17,7 +17,6 @@ package org.drools.workbench.screens.scenariosimulation.client.producers;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;

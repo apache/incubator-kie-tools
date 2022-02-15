@@ -16,6 +16,7 @@
 package org.uberfire.ext.plugin.client.perspective.editor.api;
 
 import java.util.Collection;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

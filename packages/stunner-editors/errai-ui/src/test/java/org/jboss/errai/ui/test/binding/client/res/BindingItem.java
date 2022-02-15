@@ -16,10 +16,9 @@
 
 package org.jboss.errai.ui.test.binding.client.res;
 
+import com.google.gwt.user.client.ui.TextBox;
 import org.jboss.errai.ui.client.widget.HasModel;
 import org.jboss.errai.ui.test.common.client.TestModel;
-
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  *

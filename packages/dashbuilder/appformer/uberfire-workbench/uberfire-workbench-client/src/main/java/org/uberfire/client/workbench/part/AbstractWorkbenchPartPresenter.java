@@ -17,6 +17,7 @@
 package org.uberfire.client.workbench.part;
 
 import java.util.function.Consumer;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 

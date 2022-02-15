@@ -16,14 +16,13 @@
 
 package org.jboss.errai.ioc.async.test.beanmanager.client.res;
 
-import com.google.gwt.user.client.Random;
-
-import org.jboss.errai.ioc.client.api.LoadAsync;
-
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import com.google.gwt.user.client.Random;
+import org.jboss.errai.ioc.client.api.LoadAsync;
 
 /**
  * @author Mike Brock

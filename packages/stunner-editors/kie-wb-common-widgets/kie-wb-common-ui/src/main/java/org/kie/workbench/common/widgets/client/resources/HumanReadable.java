@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.widgets.client.resources;
 
-import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 
 /**
  * This contains some simple mappings between operators, conditional elements and the human readable

@@ -19,6 +19,14 @@ package org.dashbuilder.client.cms.screen.transfer;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLFormElement;
+import elemental2.dom.HTMLInputElement;
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerConstants;
 import org.dashbuilder.common.client.backend.PathUrlFactory;
 import org.jboss.errai.common.client.api.elemental2.IsElement;
@@ -28,16 +36,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.workbench.events.NotificationEvent;
-
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
-
-import elemental2.dom.DomGlobal;
-import elemental2.dom.HTMLButtonElement;
-import elemental2.dom.HTMLDivElement;
-import elemental2.dom.HTMLElement;
-import elemental2.dom.HTMLFormElement;
-import elemental2.dom.HTMLInputElement;
 
 @Templated
 public class DataTransferView implements DataTransferScreen.View, IsElement {

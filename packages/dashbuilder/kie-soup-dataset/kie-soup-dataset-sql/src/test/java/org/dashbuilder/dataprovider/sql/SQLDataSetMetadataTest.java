@@ -19,11 +19,9 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dashbuilder.dataprovider.sql.SQLDataSetProvider;
 import org.dashbuilder.dataprovider.sql.model.Column;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataSetMetadata;
-import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.def.DataSetDefFactory;
 import org.dashbuilder.dataset.def.SQLDataSetDef;
 import org.junit.Before;
@@ -34,8 +32,9 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doAnswer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SQLDataSetMetadataTest {

@@ -20,7 +20,6 @@ import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.Resource;
-import org.uberfire.workbench.model.Position;
 
 @JsType
 public interface Activity extends Resource {

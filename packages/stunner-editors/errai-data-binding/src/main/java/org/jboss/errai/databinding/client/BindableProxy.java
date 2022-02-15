@@ -16,10 +16,9 @@
 
 package org.jboss.errai.databinding.client;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.jboss.errai.databinding.client.api.Converter;
-
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This interface is implemented by the generated proxies for {@link Bindable} types.

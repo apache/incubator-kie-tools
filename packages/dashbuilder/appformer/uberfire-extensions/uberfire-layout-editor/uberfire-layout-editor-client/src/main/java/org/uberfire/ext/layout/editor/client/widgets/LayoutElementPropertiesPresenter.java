@@ -15,6 +15,13 @@
  */
 package org.uberfire.ext.layout.editor.client.widgets;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.layout.editor.api.css.CssAllowedValue;
 import org.uberfire.ext.layout.editor.client.api.LayoutElementWithProperties;
@@ -22,12 +29,6 @@ import org.uberfire.ext.layout.editor.client.event.LayoutElementClearAllProperti
 import org.uberfire.ext.layout.editor.client.event.LayoutElementPropertyChangedEvent;
 import org.uberfire.ext.layout.editor.client.infra.LayoutEditorCssHelper;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
 
 @Dependent
 public class LayoutElementPropertiesPresenter {

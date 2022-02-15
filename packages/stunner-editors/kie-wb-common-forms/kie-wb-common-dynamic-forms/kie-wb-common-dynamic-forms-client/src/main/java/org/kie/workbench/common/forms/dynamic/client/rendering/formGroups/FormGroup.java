@@ -21,7 +21,6 @@ import java.util.Map;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-
 import org.kie.workbench.common.forms.processing.engine.handling.FieldContainer;
 
 public interface FormGroup extends FieldContainer {

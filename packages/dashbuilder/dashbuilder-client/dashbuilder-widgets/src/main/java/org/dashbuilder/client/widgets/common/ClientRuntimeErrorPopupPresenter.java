@@ -1,12 +1,12 @@
 package org.dashbuilder.client.widgets.common;
 
-import org.dashbuilder.client.widgets.resources.i18n.DataSetExplorerConstants;
-import org.dashbuilder.common.client.error.ClientRuntimeError;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Specializes;
 import javax.inject.Inject;
+
+import org.dashbuilder.client.widgets.resources.i18n.DataSetExplorerConstants;
+import org.dashbuilder.common.client.error.ClientRuntimeError;
+import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 
 /**
  * <p>Error Popup presenter for client runtime errors.</p>

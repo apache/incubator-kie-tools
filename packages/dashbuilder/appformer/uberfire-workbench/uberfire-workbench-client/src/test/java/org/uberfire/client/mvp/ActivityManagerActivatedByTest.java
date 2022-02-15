@@ -16,20 +16,12 @@
 
 package org.uberfire.client.mvp;
 
-import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.After;
@@ -40,7 +32,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Mock-based tests for how ActivityManager handles beans affected by Errai IOC's {@code @ActivatedBy} feature.

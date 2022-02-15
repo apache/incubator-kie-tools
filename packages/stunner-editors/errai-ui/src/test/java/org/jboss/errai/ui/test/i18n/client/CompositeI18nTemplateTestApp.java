@@ -21,11 +21,10 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 import org.jboss.errai.ui.test.i18n.client.res.CompositeI18nComponent;
 import org.jboss.errai.ui.test.i18n.client.res.I18nComponent;
-
-import com.google.gwt.user.client.ui.RootPanel;
 
 @Dependent
 @Bundle("I18nTemplateTest.json")

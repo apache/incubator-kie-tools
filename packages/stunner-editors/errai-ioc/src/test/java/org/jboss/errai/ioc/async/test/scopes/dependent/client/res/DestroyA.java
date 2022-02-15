@@ -16,12 +16,12 @@
 
 package org.jboss.errai.ioc.async.test.scopes.dependent.client.res;
 
-import org.jboss.errai.ioc.client.api.LoadAsync;
-
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+
+import org.jboss.errai.ioc.client.api.LoadAsync;
 
 /**
  * @author Mike Brock

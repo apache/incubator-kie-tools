@@ -1,17 +1,5 @@
 package org.jboss.errai.ioc.unit.test;
 
-import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.AlternativeBean;
-import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.DependentBean;
-import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.InjectionPoint;
-import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.NormalScopedBean;
-import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.ProducerElement;
-import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.Provider;
-import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.PseudoScopedBean;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-
-import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +15,7 @@ import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.google.common.collect.HashMultimap;
 import org.jboss.errai.codegen.builder.BlockBuilder;
 import org.jboss.errai.codegen.builder.ClassStructureBuilder;
 import org.jboss.errai.codegen.builder.impl.ClassBuilder;
@@ -44,7 +33,6 @@ import org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraph;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.QualifierFactory;
 import org.jboss.errai.ioc.rebind.ioc.graph.impl.DefaultQualifierFactory;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.InjectionContext;
-import org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType;
 import org.jboss.errai.ioc.tests.wiring.client.res.TypedBaseType;
 import org.jboss.errai.ioc.tests.wiring.client.res.TypedProducer;
 import org.jboss.errai.ioc.tests.wiring.client.res.TypedSuperInterface;
@@ -78,7 +66,20 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.google.common.collect.HashMultimap;
+import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.AlternativeBean;
+import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.DependentBean;
+import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.InjectionPoint;
+import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.NormalScopedBean;
+import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.ProducerElement;
+import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.Provider;
+import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.PseudoScopedBean;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests failing dependency graphs for proper error messages.

@@ -16,9 +16,6 @@
 
 package org.dashbuilder.client.widgets.dataset.editor.workflow;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.validations.DataSetValidatorProvider;
 import org.dashbuilder.validations.dataset.BeanDataSetDefValidator;
@@ -26,6 +23,9 @@ import org.dashbuilder.validations.dataset.CSVDataSetDefValidator;
 import org.dashbuilder.validations.dataset.SQLDataSetDefValidator;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.mockito.Mock;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public abstract class AbstractDataSetWorkflowTest {
 

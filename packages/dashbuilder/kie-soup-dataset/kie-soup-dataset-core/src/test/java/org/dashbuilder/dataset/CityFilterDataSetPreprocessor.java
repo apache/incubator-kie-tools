@@ -16,8 +16,9 @@
 package org.dashbuilder.dataset;
 
 import org.dashbuilder.dataset.def.DataSetPreprocessor;
+
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_CITY;
 import static org.dashbuilder.dataset.filter.FilterFactory.notEqualsTo;
-import static org.dashbuilder.dataset.ExpenseReportsData.*;
 
 public class CityFilterDataSetPreprocessor implements DataSetPreprocessor {
     

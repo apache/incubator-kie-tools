@@ -17,7 +17,6 @@
 package org.uberfire.client.views.pfly.widgets;
 
 import com.google.gwt.dom.client.Element;
-
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;

@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.workbench.events;
 
-import org.uberfire.mvp.PlaceRequest;
-
 /**
  * An event to programmatically add a css class to Workbench root div
  * This is used to differentiate business central profiles

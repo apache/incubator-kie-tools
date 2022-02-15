@@ -16,11 +16,11 @@
 
 package org.jboss.errai.ioc.tests.beanmanager.client.res;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import java.lang.annotation.Retention;
 
 import javax.inject.Qualifier;
+
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  *

@@ -16,9 +16,6 @@
 
 package org.jboss.errai.ui.test.i18n.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.util.Map;
 
@@ -30,6 +27,9 @@ import org.jboss.errai.ui.test.i18n.client.res.CompositeI18nComponent;
 import org.jboss.errai.ui.test.i18n.client.res.I18nNestedComponent;
 import org.jboss.errai.ui.test.i18n.client.res.I18nNotRootTemplatedWidget;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for the generated i18n json bundles.

@@ -16,10 +16,10 @@
 
 package org.jboss.errai.reflections.serializers;
 
-import org.jboss.errai.reflections.Reflections;
-
 import java.io.File;
 import java.io.InputStream;
+
+import org.jboss.errai.reflections.Reflections;
 
 /** Serilizer of a {@link org.jboss.errai.reflections.Reflections} instance */
 public interface Serializer {

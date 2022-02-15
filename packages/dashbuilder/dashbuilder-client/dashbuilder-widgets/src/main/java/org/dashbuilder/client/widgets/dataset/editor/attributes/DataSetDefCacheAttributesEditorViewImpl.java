@@ -1,5 +1,7 @@
 package org.dashbuilder.client.widgets.dataset.editor.attributes;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -13,8 +15,6 @@ import org.gwtbootstrap3.client.ui.IntegerBox;
 import org.gwtbootstrap3.extras.slider.client.ui.Slider;
 import org.gwtbootstrap3.extras.slider.client.ui.base.event.SlideStopEvent;
 import org.gwtbootstrap3.extras.slider.client.ui.base.event.SlideStopHandler;
-
-import javax.enterprise.context.Dependent;
 
 /**
  * <p>The Data Set cache attributes editor view.</p>

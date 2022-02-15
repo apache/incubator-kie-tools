@@ -31,11 +31,22 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
-import static org.dashbuilder.navigation.layout.LayoutNavigationRefType.*;
-import static org.dashbuilder.navigation.layout.NavDragComponentSettings.*;
-import static org.dashbuilder.navigation.layout.NavDragComponentType.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.dashbuilder.navigation.layout.LayoutNavigationRefType.DEFAULT_ITEM_DEFINED;
+import static org.dashbuilder.navigation.layout.LayoutNavigationRefType.DEFAULT_ITEM_FOUND;
+import static org.dashbuilder.navigation.layout.LayoutNavigationRefType.NAV_COMPONENT;
+import static org.dashbuilder.navigation.layout.LayoutNavigationRefType.NAV_GROUP_CONTEXT;
+import static org.dashbuilder.navigation.layout.LayoutNavigationRefType.NAV_GROUP_DEFINED;
+import static org.dashbuilder.navigation.layout.LayoutNavigationRefType.PERSPECTIVE;
+import static org.dashbuilder.navigation.layout.NavDragComponentSettings.NAV_DEFAULT_ID;
+import static org.dashbuilder.navigation.layout.NavDragComponentSettings.NAV_GROUP_ID;
+import static org.dashbuilder.navigation.layout.NavDragComponentSettings.PERSPECTIVE_ID;
+import static org.dashbuilder.navigation.layout.NavDragComponentType.CAROUSEL;
+import static org.dashbuilder.navigation.layout.NavDragComponentType.TABLIST;
+import static org.dashbuilder.navigation.layout.NavDragComponentType.TREE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LayoutTemplateAnalyzerTest {

@@ -18,7 +18,7 @@ package org.uberfire.client.views.pfly.sys;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class MomentUtilsTest {
 

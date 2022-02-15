@@ -18,11 +18,10 @@ package org.jboss.errai.ui.test.nested.client.res;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextBox;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 /**
  * Part of the reconstruction of the failure case documented in ERRAI-464.

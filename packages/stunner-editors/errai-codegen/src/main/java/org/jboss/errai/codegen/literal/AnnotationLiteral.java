@@ -16,10 +16,6 @@
 
 package org.jboss.errai.codegen.literal;
 
-import org.jboss.errai.codegen.Context;
-import org.jboss.errai.codegen.builder.callstack.LoadClassReference;
-import org.jboss.errai.codegen.meta.MetaClassFactory;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -33,6 +29,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.jboss.errai.codegen.Context;
+import org.jboss.errai.codegen.builder.callstack.LoadClassReference;
+import org.jboss.errai.codegen.meta.MetaClassFactory;
 
 /**
  * @author Mike Brock

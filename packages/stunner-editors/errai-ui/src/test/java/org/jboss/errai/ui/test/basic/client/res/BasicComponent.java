@@ -16,14 +16,8 @@
 
 package org.jboss.errai.ui.test.basic.client.res;
 
-import static org.jboss.errai.ui.test.common.client.dom.Document.getDocument;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-
-import org.jboss.errai.ui.shared.TemplateUtil;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.test.common.client.dom.Element;
 
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
@@ -31,6 +25,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
+import org.jboss.errai.ui.shared.TemplateUtil;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.test.common.client.dom.Element;
+
+import static org.jboss.errai.ui.test.common.client.dom.Document.getDocument;
 
 public class BasicComponent extends Composite {
 

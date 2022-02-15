@@ -4,7 +4,6 @@ package bpsim.impl;
 
 import bpsim.BpsimPackage;
 import bpsim.ScenarioParametersType;
-
 import org.eclipse.emf.ecore.EClass;
 
 /**

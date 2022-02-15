@@ -15,6 +15,8 @@
  */
 package org.dashbuilder.client.widgets.dataset.explorer;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -22,8 +24,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.PanelGroup;
-
-import javax.enterprise.context.Dependent;
 
 /**
  * <p>Default view for DataSetPanel presenter.</p>

@@ -15,13 +15,17 @@
  */
 package org.dashbuilder.dataset.engine;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.dashbuilder.dataset.ColumnType;
+import org.dashbuilder.dataset.DataColumn;
+import org.dashbuilder.dataset.DataSet;
+import org.dashbuilder.dataset.DataSetFactory;
+import org.dashbuilder.dataset.DataSetOp;
 import org.dashbuilder.dataset.DataSetOpEngine;
-import org.dashbuilder.dataset.engine.index.DataSetStaticIndex;
-import org.dashbuilder.dataset.group.AggregateFunction;
-import org.dashbuilder.dataset.group.AggregateFunctionManager;
+import org.dashbuilder.dataset.DataSetOpType;
+import org.dashbuilder.dataset.engine.filter.DataSetFilterAlgorithm;
 import org.dashbuilder.dataset.engine.group.IntervalBuilder;
 import org.dashbuilder.dataset.engine.group.IntervalBuilderLocator;
 import org.dashbuilder.dataset.engine.group.IntervalList;
@@ -32,26 +36,22 @@ import org.dashbuilder.dataset.engine.index.DataSetIndexNode;
 import org.dashbuilder.dataset.engine.index.DataSetIntervalIndex;
 import org.dashbuilder.dataset.engine.index.DataSetIntervalSetIndex;
 import org.dashbuilder.dataset.engine.index.DataSetSortIndex;
+import org.dashbuilder.dataset.engine.index.DataSetStaticIndex;
 import org.dashbuilder.dataset.engine.index.spi.DataSetIndexRegistry;
-import org.dashbuilder.dataset.ColumnType;
-import org.dashbuilder.dataset.DataColumn;
-import org.dashbuilder.dataset.DataSet;
-import org.dashbuilder.dataset.DataSetFactory;
-import org.dashbuilder.dataset.DataSetOp;
-import org.dashbuilder.dataset.DataSetOpType;
-import org.dashbuilder.dataset.filter.DataSetFilter;
-import org.dashbuilder.dataset.engine.filter.DataSetFilterAlgorithm;
+import org.dashbuilder.dataset.engine.sort.DataSetSortAlgorithm;
 import org.dashbuilder.dataset.filter.ColumnFilter;
+import org.dashbuilder.dataset.filter.DataSetFilter;
+import org.dashbuilder.dataset.group.AggregateFunction;
+import org.dashbuilder.dataset.group.AggregateFunctionManager;
 import org.dashbuilder.dataset.group.AggregateFunctionType;
-import org.dashbuilder.dataset.group.DataSetGroup;
 import org.dashbuilder.dataset.group.ColumnGroup;
+import org.dashbuilder.dataset.group.DataSetGroup;
 import org.dashbuilder.dataset.group.GroupFunction;
 import org.dashbuilder.dataset.group.GroupStrategy;
 import org.dashbuilder.dataset.group.Interval;
 import org.dashbuilder.dataset.impl.DataColumnImpl;
 import org.dashbuilder.dataset.sort.ColumnSort;
 import org.dashbuilder.dataset.sort.DataSetSort;
-import org.dashbuilder.dataset.engine.sort.DataSetSortAlgorithm;
 import org.dashbuilder.dataset.sort.SortedList;
 
 /**

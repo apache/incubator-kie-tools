@@ -16,10 +16,10 @@
 
 package org.jboss.errai.common.client.api.interceptor;
 
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.common.client.api.Assert;
-
 import java.lang.annotation.Annotation;
+
+import org.jboss.errai.common.client.api.Assert;
+import org.jboss.errai.common.client.api.RemoteCallback;
 
 /**
  * Represents the context of an intercepted method call.

@@ -16,11 +16,12 @@
 
 package org.jboss.errai.ioc.client.api;
 
-import javax.inject.Scope;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import javax.inject.Scope;
 
 /**
  * Specifies that the annotated bean is an application entry point. Beans

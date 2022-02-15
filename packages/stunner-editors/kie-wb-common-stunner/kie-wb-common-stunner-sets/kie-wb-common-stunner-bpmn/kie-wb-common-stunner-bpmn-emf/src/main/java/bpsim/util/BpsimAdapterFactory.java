@@ -2,13 +2,52 @@
  */
 package bpsim.util;
 
-import bpsim.*;
-
+import bpsim.BPSimDataType;
+import bpsim.BetaDistributionType;
+import bpsim.BinomialDistributionType;
+import bpsim.BooleanParameterType;
+import bpsim.BpsimPackage;
+import bpsim.Calendar;
+import bpsim.ConstantParameter;
+import bpsim.ControlParameters;
+import bpsim.CostParameters;
+import bpsim.DateTimeParameterType;
+import bpsim.DistributionParameter;
+import bpsim.DocumentRoot;
+import bpsim.DurationParameterType;
+import bpsim.ElementParameters;
+import bpsim.ElementParametersType;
+import bpsim.EnumParameterType;
+import bpsim.ErlangDistributionType;
+import bpsim.ExpressionParameterType;
+import bpsim.FloatingParameterType;
+import bpsim.GammaDistributionType;
+import bpsim.LogNormalDistributionType;
+import bpsim.NegativeExponentialDistributionType;
+import bpsim.NormalDistributionType;
+import bpsim.NumericParameterType;
+import bpsim.Parameter;
+import bpsim.ParameterValue;
+import bpsim.PoissonDistributionType;
+import bpsim.PriorityParameters;
+import bpsim.PropertyParameters;
+import bpsim.PropertyType;
+import bpsim.ResourceParameters;
+import bpsim.Scenario;
+import bpsim.ScenarioParameters;
+import bpsim.ScenarioParametersType;
+import bpsim.StringParameterType;
+import bpsim.TimeParameters;
+import bpsim.TriangularDistributionType;
+import bpsim.TruncatedNormalDistributionType;
+import bpsim.UniformDistributionType;
+import bpsim.UserDistributionDataPointType;
+import bpsim.UserDistributionType;
+import bpsim.VendorExtension;
+import bpsim.WeibullDistributionType;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**

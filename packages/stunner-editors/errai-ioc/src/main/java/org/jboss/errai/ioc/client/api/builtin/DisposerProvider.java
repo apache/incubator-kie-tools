@@ -16,15 +16,16 @@
 
 package org.jboss.errai.ioc.client.api.builtin;
 
+import java.lang.annotation.Annotation;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.jboss.errai.ioc.client.api.ContextualTypeProvider;
 import org.jboss.errai.ioc.client.api.Disposer;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.IOCProvider;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.lang.annotation.Annotation;
 
 /**
  * @author Mike Brock

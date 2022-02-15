@@ -16,6 +16,7 @@
 
 package org.jboss.errai.ui.test.stylebinding.client;
 
+import com.google.gwt.dom.client.Element;
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -27,8 +28,6 @@ import org.jboss.errai.ui.test.stylebinding.client.res.NonCompositeStyleBoundTem
 import org.jboss.errai.ui.test.stylebinding.client.res.StyleBoundTemplate;
 import org.jboss.errai.ui.test.stylebinding.client.res.StyleControl;
 import org.jboss.errai.ui.test.stylebinding.client.res.TestModel;
-
-import com.google.gwt.dom.client.Element;
 
 /**
  * @author Mike Brock

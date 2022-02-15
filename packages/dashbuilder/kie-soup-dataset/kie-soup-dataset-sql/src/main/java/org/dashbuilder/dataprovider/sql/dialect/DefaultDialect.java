@@ -50,7 +50,8 @@ import org.dashbuilder.dataset.group.AggregateFunctionType;
 import org.dashbuilder.dataset.group.DateIntervalType;
 import org.dashbuilder.dataset.sort.SortOrder;
 
-import static org.dashbuilder.dataprovider.sql.SQLFactory.*;
+import static org.dashbuilder.dataprovider.sql.SQLFactory.column;
+import static org.dashbuilder.dataprovider.sql.SQLFactory.concat;
 
 public class DefaultDialect implements Dialect {
 

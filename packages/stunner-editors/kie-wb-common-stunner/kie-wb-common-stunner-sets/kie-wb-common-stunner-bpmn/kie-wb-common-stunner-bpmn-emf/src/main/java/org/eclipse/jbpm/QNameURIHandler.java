@@ -17,7 +17,6 @@ package org.eclipse.jbpm;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.xmi.resource.xml.URIHandler;
-import org.eclipse.jbpm.BpmnXmlHelper;
 
 /**
  * This simple XMLResource URI Handler converts between the QName-based reference model in BPMN 2.0 and the URI based model in EMF.

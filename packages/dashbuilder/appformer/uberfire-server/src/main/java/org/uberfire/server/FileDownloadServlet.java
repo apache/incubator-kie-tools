@@ -16,8 +16,6 @@
 
 package org.uberfire.server;
 
-import static java.lang.String.format;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -31,6 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.dashbuilder.project.storage.ProjectStorageServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.lang.String.format;
 
 public class FileDownloadServlet extends HttpServlet{
 

@@ -23,7 +23,7 @@ import org.dashbuilder.json.JsonArray;
 import org.dashbuilder.json.JsonException;
 import org.dashbuilder.json.JsonObject;
 
-import static org.dashbuilder.dataset.json.DataSetDefJSONMarshaller.*;
+import static org.dashbuilder.dataset.json.DataSetDefJSONMarshaller.isBlank;
 
 public class BeanDefJSONMarshaller implements DataSetDefJSONMarshallerExt<BeanDataSetDef> {
 

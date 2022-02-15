@@ -16,8 +16,6 @@
 
 package org.jboss.errai.ioc.rebind.ioc.graph.impl;
 
-import static org.jboss.errai.ioc.util.GeneratedNamesUtil.qualifiedClassNameToIdentifier;
-
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +31,8 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Stereotype;
 import javax.inject.Named;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import org.jboss.errai.codegen.meta.HasAnnotations;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaClassFactory;
@@ -42,8 +42,7 @@ import org.jboss.errai.codegen.util.CDIAnnotationUtils;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.Qualifier;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.QualifierFactory;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import static org.jboss.errai.ioc.util.GeneratedNamesUtil.qualifiedClassNameToIdentifier;
 
 /**
  * Default implementation of {@link QualifierFactory}. Adheres to the CDI spec

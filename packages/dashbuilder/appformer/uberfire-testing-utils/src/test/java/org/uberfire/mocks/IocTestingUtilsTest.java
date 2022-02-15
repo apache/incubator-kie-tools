@@ -19,8 +19,8 @@ package org.uberfire.mocks;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 public class IocTestingUtilsTest {
 

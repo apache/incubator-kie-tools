@@ -18,6 +18,7 @@ package org.uberfire.ext.editor.commons.backend.validation;
 
 import java.io.File;
 import java.io.IOException;
+
 import javax.lang.model.SourceVersion;
 
 import org.apache.commons.lang3.StringUtils;

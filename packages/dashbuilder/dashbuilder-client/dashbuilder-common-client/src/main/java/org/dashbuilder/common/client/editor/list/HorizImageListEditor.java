@@ -1,10 +1,10 @@
 package org.dashbuilder.common.client.editor.list;
 
-import org.dashbuilder.common.client.event.ValueChangeEvent;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+
+import org.dashbuilder.common.client.event.ValueChangeEvent;
 
 /**
  * <p>Images are shown in an single row container.</p>

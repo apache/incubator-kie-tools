@@ -16,9 +16,9 @@
 
 package org.jboss.errai.codegen.builder.impl;
 
+import org.jboss.errai.codegen.Statement;
 import org.jboss.errai.codegen.StringExpression;
 import org.jboss.errai.codegen.StringOperator;
-import org.jboss.errai.codegen.Statement;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaClassFactory;
 

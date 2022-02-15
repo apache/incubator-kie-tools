@@ -21,15 +21,14 @@ import java.io.IOException;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.ui.shared.TemplateUtil;
-import org.jboss.errai.ui.shared.api.Locale;
-
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.view.client.ProvidesKey;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.ui.shared.TemplateUtil;
+import org.jboss.errai.ui.shared.api.Locale;
 
 /**
  * ListBox that contains the available language options. A user of your application can select one of these options by
