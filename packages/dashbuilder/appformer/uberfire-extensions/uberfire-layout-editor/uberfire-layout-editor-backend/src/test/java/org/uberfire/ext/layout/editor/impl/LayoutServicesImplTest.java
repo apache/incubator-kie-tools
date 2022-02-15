@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class LayoutServicesImplTest {
 

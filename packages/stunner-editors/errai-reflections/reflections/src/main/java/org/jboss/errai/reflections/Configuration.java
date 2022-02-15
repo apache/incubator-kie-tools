@@ -16,13 +16,13 @@
 
 package org.jboss.errai.reflections;
 
-import org.jboss.errai.reflections.adapters.MetadataAdapter;
-import org.jboss.errai.reflections.scanners.Scanner;
-import org.jboss.errai.reflections.serializers.Serializer;
-
 import java.net.URL;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
+
+import org.jboss.errai.reflections.adapters.MetadataAdapter;
+import org.jboss.errai.reflections.scanners.Scanner;
+import org.jboss.errai.reflections.serializers.Serializer;
 
 /**
  * Configuration is used to create a configured instance of {@link Reflections}

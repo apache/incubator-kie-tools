@@ -16,6 +16,15 @@
 
 package org.jboss.errai.databinding.rebind;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.inject.Inject;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.Widget;
@@ -43,14 +52,6 @@ import org.jboss.errai.ioc.rebind.ioc.injector.api.Decorable;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.Decorable.DecorableType;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.FactoryController;
 import org.jboss.errai.ui.shared.api.annotations.Bound;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.jboss.errai.codegen.util.Stmt.declareVariable;
 import static org.jboss.errai.codegen.util.Stmt.invokeStatic;

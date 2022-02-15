@@ -5,13 +5,9 @@ package bpsim.impl;
 import bpsim.BpsimPackage;
 import bpsim.FloatingParameterType;
 import bpsim.TimeUnit;
-
 import com.google.gwt.user.client.rpc.GwtTransient;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**

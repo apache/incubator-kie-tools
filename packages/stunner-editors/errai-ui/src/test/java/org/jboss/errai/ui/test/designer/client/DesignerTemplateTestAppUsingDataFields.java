@@ -21,10 +21,9 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.ui.test.designer.client.res.DesignerBreadcrumbsComponentUsingDataFields;
 import org.jboss.errai.ui.test.designer.client.res.DesignerComponent;
-
-import com.google.gwt.user.client.ui.RootPanel;
 
 @Dependent
 public class DesignerTemplateTestAppUsingDataFields implements DesignerTemplateTestApp {

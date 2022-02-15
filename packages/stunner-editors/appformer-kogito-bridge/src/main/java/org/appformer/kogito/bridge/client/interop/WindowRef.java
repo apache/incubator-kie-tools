@@ -20,7 +20,6 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
-import org.appformer.kogito.bridge.client.stateControl.interop.StateControl;
 
 @JsType(isNative = true, name = "window", namespace = JsPackage.GLOBAL)
 public class WindowRef {

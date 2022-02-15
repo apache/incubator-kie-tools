@@ -16,6 +16,9 @@
 
 package org.jboss.errai.ui.rebind.ioc.element;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import elemental2.dom.Element;
@@ -84,9 +87,6 @@ import elemental2.dom.HTMLTitleElement;
 import elemental2.dom.HTMLTrackElement;
 import elemental2.dom.HTMLUListElement;
 import elemental2.dom.HTMLVideoElement;
-
-import java.util.Collection;
-import java.util.Collections;
 
 /**
  * @author Tiago Bento <tfernand@redhat.com>

@@ -16,7 +16,6 @@ package org.eclipse.bpmn2.impl;
 
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.EndPoint;
-
 import org.eclipse.emf.ecore.EClass;
 
 /**

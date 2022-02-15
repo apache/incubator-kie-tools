@@ -16,11 +16,9 @@
 
 package org.jboss.errai.ui.test.stylebinding.client.res;
 
-import org.jboss.errai.ui.test.common.client.dom.TextInputElement;
-
 import com.google.gwt.user.client.ui.Label;
-
 import elemental.html.SpanElement;
+import org.jboss.errai.ui.test.common.client.dom.TextInputElement;
 
 /**
  * 

@@ -26,6 +26,10 @@ import java.util.Set;
 import javax.enterprise.inject.Any;
 import javax.inject.Named;
 
+import com.google.gwt.core.client.Callback;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.ScriptInjector;
+import com.google.gwt.user.client.Timer;
 import org.jboss.errai.ioc.client.JsArray;
 import org.jboss.errai.ioc.client.WindowInjectionContext;
 import org.jboss.errai.ioc.client.WindowInjectionContextStorage;
@@ -65,11 +69,6 @@ import org.jboss.errai.ioc.tests.wiring.client.res.NativeTypeTestModule;
 import org.jboss.errai.ioc.tests.wiring.client.res.ProducedJsType;
 import org.jboss.errai.ioc.tests.wiring.client.res.QualWithMultiMembers;
 import org.jboss.errai.ioc.tests.wiring.client.res.UnimplementedType;
-
-import com.google.gwt.core.client.Callback;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.ScriptInjector;
-import com.google.gwt.user.client.Timer;
 
 public class JsTypeInjectionTest extends AbstractErraiIOCTest {
 

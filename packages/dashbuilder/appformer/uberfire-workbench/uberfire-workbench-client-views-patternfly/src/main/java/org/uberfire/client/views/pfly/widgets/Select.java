@@ -17,6 +17,7 @@
 package org.uberfire.client.views.pfly.widgets;
 
 import java.util.function.Consumer;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

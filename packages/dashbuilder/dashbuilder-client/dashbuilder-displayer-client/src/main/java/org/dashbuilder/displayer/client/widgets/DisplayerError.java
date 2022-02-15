@@ -24,7 +24,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.Row;
 
 @Dependent
 public class DisplayerError extends Composite {

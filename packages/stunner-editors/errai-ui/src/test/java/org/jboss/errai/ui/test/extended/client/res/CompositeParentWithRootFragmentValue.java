@@ -16,9 +16,8 @@
 
 package org.jboss.errai.ui.test.extended.client.res;
 
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-
 import com.google.gwt.user.client.ui.Composite;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 /**
  *

@@ -18,6 +18,7 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.validation.Constraint;
 import javax.validation.ConstraintViolation;
 

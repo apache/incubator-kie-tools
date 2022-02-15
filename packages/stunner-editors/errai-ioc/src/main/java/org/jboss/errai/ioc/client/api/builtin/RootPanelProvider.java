@@ -16,11 +16,11 @@
 
 package org.jboss.errai.ioc.client.api.builtin;
 
-import com.google.gwt.user.client.ui.RootPanel;
-import org.jboss.errai.ioc.client.api.IOCProvider;
-
 import javax.inject.Provider;
 import javax.inject.Singleton;
+
+import com.google.gwt.user.client.ui.RootPanel;
+import org.jboss.errai.ioc.client.api.IOCProvider;
 
 /**
  * @author Mike Brock

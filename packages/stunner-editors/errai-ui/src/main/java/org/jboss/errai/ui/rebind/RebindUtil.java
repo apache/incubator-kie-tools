@@ -20,11 +20,9 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.jboss.errai.codegen.meta.MetaClass;
-
 import com.google.gwt.core.client.JavaScriptObject;
-
 import jsinterop.annotations.JsType;
+import org.jboss.errai.codegen.meta.MetaClass;
 
 /**
  * @author Max Barkley <mbarkley@redhat.com>

@@ -1,12 +1,6 @@
 package org.dashbuilder.client.editor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.client.RendererLibrary;
 import org.dashbuilder.displayer.client.RendererManager;
@@ -17,10 +11,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PerspectiveEditorReportingGroupProviderTest {

@@ -15,6 +15,11 @@
  */
 package org.dashbuilder.client.widgets.dataset.explorer;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -25,15 +30,9 @@ import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.DataSetMetadata;
 import org.dashbuilder.dataset.client.DataSetClientServices;
 import org.dashbuilder.dataset.client.DataSetMetadataCallback;
-import org.dashbuilder.dataset.client.resources.bundles.DataSetClientResources;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.client.mvp.UberView;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 /**
  * <p>Data Set Summary widget</p>

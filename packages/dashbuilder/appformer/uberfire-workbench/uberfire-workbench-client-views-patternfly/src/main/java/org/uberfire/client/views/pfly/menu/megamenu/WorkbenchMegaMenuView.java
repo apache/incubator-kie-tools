@@ -18,6 +18,7 @@ package org.uberfire.client.views.pfly.menu.megamenu;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;

@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-
-import org.omg.spec.bpmn.non.normative.color.*;
+import org.omg.spec.bpmn.non.normative.color.ColorPackage;
+import org.omg.spec.bpmn.non.normative.color.DocumentRoot;
 
 /**
  * <!-- begin-user-doc -->

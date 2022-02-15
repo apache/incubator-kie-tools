@@ -14,15 +14,22 @@
  */
 package org.eclipse.bpmn2.di.impl;
 
-import org.eclipse.bpmn2.di.*;
-
+import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.di.BPMNEdge;
+import org.eclipse.bpmn2.di.BPMNLabel;
+import org.eclipse.bpmn2.di.BPMNLabelStyle;
+import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.di.BpmnDiFactory;
+import org.eclipse.bpmn2.di.BpmnDiPackage;
+import org.eclipse.bpmn2.di.DocumentRoot;
+import org.eclipse.bpmn2.di.MessageVisibleKind;
+import org.eclipse.bpmn2.di.ParticipantBandKind;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**

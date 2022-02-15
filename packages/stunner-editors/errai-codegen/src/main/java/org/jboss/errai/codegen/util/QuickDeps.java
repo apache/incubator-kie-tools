@@ -16,8 +16,6 @@
 
 package org.jboss.errai.codegen.util;
 
-import org.mvel2.util.ParseTools;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -27,6 +25,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.mvel2.util.ParseTools;
 
 /**
  * @author Mike Brock

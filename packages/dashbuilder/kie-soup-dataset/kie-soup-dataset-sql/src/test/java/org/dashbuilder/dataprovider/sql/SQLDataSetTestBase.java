@@ -19,6 +19,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+
 import javax.sql.DataSource;
 
 import org.apache.commons.io.IOUtils;
@@ -31,14 +32,24 @@ import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetFormatter;
 import org.dashbuilder.dataset.DataSetManager;
 import org.dashbuilder.dataset.ExpenseReportsData;
-import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 import org.dashbuilder.dataset.def.DataSetDefRegistry;
 import org.dashbuilder.dataset.def.SQLDataSetDef;
+import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 import org.junit.After;
 import org.junit.Before;
 
-import static org.dashbuilder.dataset.ExpenseReportsData.*;
-import static org.dashbuilder.dataprovider.sql.SQLFactory.*;
+import static org.dashbuilder.dataprovider.sql.SQLFactory.column;
+import static org.dashbuilder.dataprovider.sql.SQLFactory.createTable;
+import static org.dashbuilder.dataprovider.sql.SQLFactory.dropTable;
+import static org.dashbuilder.dataprovider.sql.SQLFactory.insert;
+import static org.dashbuilder.dataprovider.sql.SQLFactory.select;
+import static org.dashbuilder.dataprovider.sql.SQLFactory.table;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_AMOUNT;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_CITY;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DATE;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DEPARTMENT;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_EMPLOYEE;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_ID;
 
 public class SQLDataSetTestBase {
 

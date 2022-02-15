@@ -16,10 +16,6 @@
 
 package org.jboss.errai.codegen.meta.impl;
 
-import static java.util.stream.Collectors.collectingAndThen;
-import static org.jboss.errai.codegen.util.GenUtil.classToMeta;
-import static org.jboss.errai.codegen.util.GenUtil.getArrayDimensions;
-
 import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -48,6 +44,10 @@ import org.jboss.errai.codegen.meta.MetaWildcardType;
 import org.jboss.errai.codegen.util.GenUtil;
 import org.mvel2.util.NullType;
 import org.mvel2.util.ReflectionUtil;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static org.jboss.errai.codegen.util.GenUtil.classToMeta;
+import static org.jboss.errai.codegen.util.GenUtil.getArrayDimensions;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

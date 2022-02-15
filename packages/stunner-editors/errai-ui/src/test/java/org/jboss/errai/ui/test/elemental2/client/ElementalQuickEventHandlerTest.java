@@ -16,18 +16,17 @@
 
 package org.jboss.errai.ui.test.elemental2.client;
 
-import static java.util.Collections.singletonList;
-import static org.jboss.errai.common.client.util.EventTestingUtil.invokeEventListeners;
-import static org.jboss.errai.common.client.util.EventTestingUtil.setupAddEventListenerInterceptor;
-
 import java.util.Collections;
 
+import elemental2.dom.Element;
+import elemental2.dom.MouseEvent;
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
 import org.jboss.errai.ioc.client.IOCUtil;
 import org.jboss.errai.ui.test.elemental2.client.res.ElementalComponent;
 
-import elemental2.dom.Element;
-import elemental2.dom.MouseEvent;
+import static java.util.Collections.singletonList;
+import static org.jboss.errai.common.client.util.EventTestingUtil.invokeEventListeners;
+import static org.jboss.errai.common.client.util.EventTestingUtil.setupAddEventListenerInterceptor;
 
 /**
  * @author Max Barkley <mbarkley@redhat.com>

@@ -21,12 +21,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.gwt.core.client.GWT;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCEnvironment;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-
-import com.google.gwt.core.client.GWT;
 
 /**
  *

@@ -24,6 +24,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Scope;
 
+import jsinterop.annotations.JsType;
 import org.jboss.errai.codegen.meta.HasAnnotations;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaClassMember;
@@ -37,8 +38,6 @@ import org.jboss.errai.ioc.rebind.ioc.graph.impl.InjectableHandle;
 import org.jboss.errai.ioc.rebind.ioc.graph.impl.ResolutionPriority;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.InjectableProvider;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType;
-
-import jsinterop.annotations.JsType;
 
 /**
  * Builds and resolves a dependency graph.

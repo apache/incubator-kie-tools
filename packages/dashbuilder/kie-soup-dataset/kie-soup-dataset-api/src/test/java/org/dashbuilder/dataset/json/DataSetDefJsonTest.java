@@ -14,11 +14,6 @@
 */
 package org.dashbuilder.dataset.json;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -48,6 +43,11 @@ import org.dashbuilder.dataset.filter.CoreFunctionType;
 import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 public class DataSetDefJsonTest {
 

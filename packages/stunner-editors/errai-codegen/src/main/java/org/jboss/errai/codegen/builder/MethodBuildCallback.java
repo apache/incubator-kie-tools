@@ -16,13 +16,13 @@
 
 package org.jboss.errai.codegen.builder;
 
+import java.lang.annotation.Annotation;
+import java.util.List;
+
 import org.jboss.errai.codegen.BlockStatement;
 import org.jboss.errai.codegen.DefModifiers;
 import org.jboss.errai.codegen.DefParameters;
 import org.jboss.errai.codegen.ThrowsDeclaration;
-
-import java.lang.annotation.Annotation;
-import java.util.List;
 
 /**
  * @author Christian Sadilek <csadilek@redhat.com>

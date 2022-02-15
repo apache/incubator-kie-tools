@@ -16,11 +16,10 @@
 
 package org.jboss.errai.ui.test.quickhandler.client.res;
 
-import org.jboss.errai.ui.test.common.client.dom.ButtonElement;
-
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.event.shared.HasHandlers;
 import com.google.gwt.user.client.ui.Button;
+import org.jboss.errai.ui.test.common.client.dom.ButtonElement;
 
 /**
  *

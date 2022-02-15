@@ -18,16 +18,15 @@ package org.jboss.errai.codegen.meta.impl.gwt;
 
 import java.util.Arrays;
 
-import org.jboss.errai.codegen.meta.MetaClass;
-import org.jboss.errai.codegen.meta.MetaClassFactory;
-import org.jboss.errai.codegen.meta.MetaType;
-import org.jboss.errai.codegen.meta.MetaTypeVariable;
-
 import com.google.gwt.core.ext.typeinfo.JArrayType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.JTypeParameter;
 import com.google.gwt.core.ext.typeinfo.JWildcardType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import org.jboss.errai.codegen.meta.MetaClass;
+import org.jboss.errai.codegen.meta.MetaClassFactory;
+import org.jboss.errai.codegen.meta.MetaType;
+import org.jboss.errai.codegen.meta.MetaTypeVariable;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

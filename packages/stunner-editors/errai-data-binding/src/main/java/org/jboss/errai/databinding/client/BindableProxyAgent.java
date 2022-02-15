@@ -16,6 +16,17 @@
 
 package org.jboss.errai.databinding.client;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gwt.core.client.JavaScriptException;
@@ -48,17 +59,6 @@ import org.jboss.errai.databinding.client.api.handler.property.PropertyChangeEve
 import org.jboss.errai.databinding.client.api.handler.property.PropertyChangeHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Manages bindings and acts in behalf of a {@link BindableProxy} to keep the target model and bound widgets in sync.

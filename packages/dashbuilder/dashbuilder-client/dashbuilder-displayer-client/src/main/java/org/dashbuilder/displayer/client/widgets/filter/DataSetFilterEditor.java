@@ -15,8 +15,6 @@
  */
 package org.dashbuilder.displayer.client.widgets.filter;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;

@@ -20,7 +20,10 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.*;
+import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
+import org.jboss.errai.common.client.dom.Document;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.Label;
 
 import static org.jboss.errai.common.client.dom.DOMUtil.addCSSClass;
 

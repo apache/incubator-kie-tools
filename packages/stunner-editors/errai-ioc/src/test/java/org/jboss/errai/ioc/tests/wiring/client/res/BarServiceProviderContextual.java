@@ -16,10 +16,10 @@
 
 package org.jboss.errai.ioc.tests.wiring.client.res;
 
+import java.lang.annotation.Annotation;
+
 import org.jboss.errai.ioc.client.api.ContextualTypeProvider;
 import org.jboss.errai.ioc.client.api.IOCProvider;
-
-import java.lang.annotation.Annotation;
 
 /**
  * @author Mike Brock .

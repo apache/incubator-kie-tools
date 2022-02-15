@@ -16,9 +16,6 @@
 
 package org.jboss.errai.ioc.tests.beanmanager.client;
 
-import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_ANNOTATION;
-import static org.jboss.errai.ioc.client.container.IOC.getBeanManager;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,6 +32,9 @@ import org.jboss.errai.ioc.tests.beanmanager.client.res.C;
 import org.jboss.errai.ioc.tests.beanmanager.client.res.DefaultDependentBean;
 import org.jboss.errai.ioc.tests.beanmanager.client.res.DestructableClass;
 import org.jboss.errai.ioc.tests.beanmanager.client.res.OtherDestructableClass;
+
+import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_ANNOTATION;
+import static org.jboss.errai.ioc.client.container.IOC.getBeanManager;
 
 /**
  *

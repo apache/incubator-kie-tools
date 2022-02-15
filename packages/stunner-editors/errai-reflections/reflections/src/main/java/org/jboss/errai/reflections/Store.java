@@ -16,9 +16,6 @@
 
 package org.jboss.errai.reflections;
 
-import static com.google.common.collect.Multimaps.newSetMultimap;
-import static com.google.common.collect.Multimaps.synchronizedSetMultimap;
-
 import java.lang.annotation.Inherited;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,15 +25,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
-
-import org.jboss.errai.reflections.scanners.ConvertersScanner;
-import org.jboss.errai.reflections.scanners.FieldAnnotationsScanner;
-import org.jboss.errai.reflections.scanners.MethodAnnotationsScanner;
-import org.jboss.errai.reflections.scanners.ResourcesScanner;
-import org.jboss.errai.reflections.scanners.Scanner;
-import org.jboss.errai.reflections.scanners.SubTypesScanner;
-import org.jboss.errai.reflections.scanners.TypeAnnotationsScanner;
-import org.jboss.errai.reflections.scanners.reg.ScannerRegistry;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -49,6 +37,17 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
+import org.jboss.errai.reflections.scanners.ConvertersScanner;
+import org.jboss.errai.reflections.scanners.FieldAnnotationsScanner;
+import org.jboss.errai.reflections.scanners.MethodAnnotationsScanner;
+import org.jboss.errai.reflections.scanners.ResourcesScanner;
+import org.jboss.errai.reflections.scanners.Scanner;
+import org.jboss.errai.reflections.scanners.SubTypesScanner;
+import org.jboss.errai.reflections.scanners.TypeAnnotationsScanner;
+import org.jboss.errai.reflections.scanners.reg.ScannerRegistry;
+
+import static com.google.common.collect.Multimaps.newSetMultimap;
+import static com.google.common.collect.Multimaps.synchronizedSetMultimap;
 
 /**
  * stores metadata information in multimaps

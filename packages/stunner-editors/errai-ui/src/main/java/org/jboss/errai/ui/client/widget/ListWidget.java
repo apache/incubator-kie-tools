@@ -24,6 +24,16 @@ import java.util.List;
 
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.ComplexPanel;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.InsertPanel;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Assert;
 import org.jboss.errai.common.client.ui.ValueChangeManager;
 import org.jboss.errai.common.client.util.CreationalCallback;
@@ -38,17 +48,6 @@ import org.jboss.errai.ui.client.local.spi.InvalidBeanScopeException;
 import org.jboss.errai.ui.shared.TemplateWidget;
 import org.jboss.errai.ui.shared.TemplateWidgetMapper;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.ComplexPanel;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.InsertPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A type of widget that displays and manages a child component for each item in a

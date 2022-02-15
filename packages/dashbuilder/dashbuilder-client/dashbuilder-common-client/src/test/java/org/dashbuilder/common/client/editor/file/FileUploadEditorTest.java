@@ -1,5 +1,8 @@
 package org.dashbuilder.common.client.editor.file;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -11,18 +14,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class FileUploadEditorTest extends AbstractEditorTest {

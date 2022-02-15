@@ -16,9 +16,6 @@
 
 package org.jboss.errai.codegen.test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -32,6 +29,9 @@ import org.jboss.errai.codegen.test.model.Person;
 import org.jboss.errai.codegen.test.model.PersonImpl;
 import org.jboss.errai.codegen.util.Stmt;
 import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

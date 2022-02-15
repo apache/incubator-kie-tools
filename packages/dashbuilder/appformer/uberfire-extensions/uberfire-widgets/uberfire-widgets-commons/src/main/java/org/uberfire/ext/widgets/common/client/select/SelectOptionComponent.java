@@ -18,6 +18,7 @@
 package org.uberfire.ext.widgets.common.client.select;
 
 import java.util.function.Consumer;
+
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.UberElemental;

@@ -19,10 +19,10 @@ package org.appformer.kogito.bridge.client.workspace.producer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
+import org.appformer.kogito.bridge.client.interop.WindowRef;
 import org.appformer.kogito.bridge.client.workspace.WorkspaceService;
 import org.appformer.kogito.bridge.client.workspace.impl.DefaultWorkspaceServiceImpl;
 import org.appformer.kogito.bridge.client.workspace.impl.WorkspaceServiceImpl;
-import org.appformer.kogito.bridge.client.interop.WindowRef;
 
 /**
  * Produces {@link WorkspaceService} beans according to whether the envelope API is available or not.

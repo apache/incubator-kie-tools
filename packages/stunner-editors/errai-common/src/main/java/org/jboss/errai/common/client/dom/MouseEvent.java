@@ -16,11 +16,10 @@
 
 package org.jboss.errai.common.client.dom;
 
-import org.jboss.errai.common.client.api.annotations.BrowserEvent;
-
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import org.jboss.errai.common.client.api.annotations.BrowserEvent;
 
 /**
  *

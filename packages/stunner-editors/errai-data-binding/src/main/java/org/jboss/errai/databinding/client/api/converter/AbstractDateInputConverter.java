@@ -18,9 +18,8 @@ package org.jboss.errai.databinding.client.api.converter;
 
 import java.util.Date;
 
-import org.jboss.errai.databinding.client.api.Converter;
-
 import com.google.gwt.core.client.JsDate;
+import org.jboss.errai.databinding.client.api.Converter;
 
 /**
  *

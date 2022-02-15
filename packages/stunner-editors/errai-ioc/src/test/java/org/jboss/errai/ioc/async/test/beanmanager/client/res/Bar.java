@@ -16,10 +16,10 @@
 
 package org.jboss.errai.ioc.async.test.beanmanager.client.res;
 
-import org.jboss.errai.ioc.client.api.LoadAsync;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+
+import org.jboss.errai.ioc.client.api.LoadAsync;
 
 /**
  * @author Mike Brock

@@ -16,9 +16,6 @@
 
 package org.jboss.errai.codegen.test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,6 +50,9 @@ import org.jboss.errai.codegen.util.Refs;
 import org.jboss.errai.codegen.util.Stmt;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests the {@link StatementBuilder} API.

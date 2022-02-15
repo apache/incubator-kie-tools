@@ -16,9 +16,6 @@
 
 package org.jboss.errai.databinding.rebind;
 
-import static java.util.stream.Collectors.toCollection;
-import static org.jboss.errai.codegen.util.Stmt.invokeStatic;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
@@ -36,6 +33,7 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import com.google.gwt.core.ext.GeneratorContext;
 import org.jboss.errai.codegen.Statement;
 import org.jboss.errai.codegen.Variable;
 import org.jboss.errai.codegen.exception.GenerationException;
@@ -65,7 +63,8 @@ import org.jboss.errai.ui.shared.api.annotations.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gwt.core.ext.GeneratorContext;
+import static java.util.stream.Collectors.toCollection;
+import static org.jboss.errai.codegen.util.Stmt.invokeStatic;
 
 /**
  * Utility to retrieve a data binder reference. The reference is either to an

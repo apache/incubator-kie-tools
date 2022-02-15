@@ -6,15 +6,13 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
-
 import org.eclipse.emf.ecore.xml.type.XMLTypeFactory;
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
-
-import org.omg.spec.bpmn.non.normative.color.*;
+import org.omg.spec.bpmn.non.normative.color.ColorFactory;
+import org.omg.spec.bpmn.non.normative.color.ColorPackage;
+import org.omg.spec.bpmn.non.normative.color.DocumentRoot;
 
 /**
  * <!-- begin-user-doc -->

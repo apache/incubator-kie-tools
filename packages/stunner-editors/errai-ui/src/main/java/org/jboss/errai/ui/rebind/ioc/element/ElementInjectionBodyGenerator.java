@@ -16,6 +16,14 @@
 
 package org.jboss.errai.ui.rebind.ioc.element;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import jsinterop.base.Js;
@@ -33,14 +41,6 @@ import org.jboss.errai.ioc.rebind.ioc.bootstrapper.AbstractBodyGenerator;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraph;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.Injectable;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.InjectionContext;
-
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
 import static org.jboss.errai.codegen.Parameter.finalOf;

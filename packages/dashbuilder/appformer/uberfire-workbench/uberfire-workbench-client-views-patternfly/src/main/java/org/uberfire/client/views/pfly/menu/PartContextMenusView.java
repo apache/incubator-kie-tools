@@ -18,10 +18,9 @@ package org.uberfire.client.views.pfly.menu;
 
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.user.client.ui.Composite;
 import org.uberfire.client.workbench.widgets.menu.PartContextMenusPresenter;
 import org.uberfire.workbench.model.menu.Menus;
-
-import com.google.gwt.user.client.ui.Composite;
 
 @Dependent
 public class PartContextMenusView

@@ -16,11 +16,14 @@
 
 package org.jboss.errai.ui.test.binding.client;
 
-import static org.jboss.errai.common.client.util.EventTestingUtil.invokeEventListeners;
-import static org.jboss.errai.common.client.util.EventTestingUtil.setupAddEventListenerInterceptor;
-
 import java.util.Date;
 
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextBox;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
 import org.jboss.errai.ioc.client.container.IOC;
@@ -41,12 +44,8 @@ import org.jboss.errai.ui.test.common.client.dom.Element;
 import org.jboss.errai.ui.test.common.client.dom.TextInputElement;
 import org.junit.Test;
 
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
+import static org.jboss.errai.common.client.util.EventTestingUtil.invokeEventListeners;
+import static org.jboss.errai.common.client.util.EventTestingUtil.setupAddEventListenerInterceptor;
 
 /**
  * Tests for the Errai UI/DataBinding integration.

@@ -16,9 +16,8 @@
 
 package org.jboss.errai.ui.test.designer.client;
 
-import org.jboss.errai.ui.test.designer.client.res.DesignerComponent;
-
 import com.google.gwt.user.client.ui.RootPanel;
+import org.jboss.errai.ui.test.designer.client.res.DesignerComponent;
 
 /**
  *

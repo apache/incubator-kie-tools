@@ -16,14 +16,14 @@
 
 package org.uberfire.ext.layout.editor.client.widgets;
 
-import org.jboss.errai.common.client.dom.*;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.UberElement;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Templated
 @Dependent

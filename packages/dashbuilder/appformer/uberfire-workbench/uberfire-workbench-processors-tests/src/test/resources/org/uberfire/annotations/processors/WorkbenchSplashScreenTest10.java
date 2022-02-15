@@ -22,9 +22,9 @@ import org.uberfire.client.annotations.SplashFilter;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchSplashScreen;
-import org.uberfire.workbench.model.SplashScreenFilter;
 import org.uberfire.client.mvp.QualifierAnnotation;
 import org.uberfire.client.mvp.RegularAnnotation;
+import org.uberfire.workbench.model.SplashScreenFilter;
 
 @QualifierAnnotation( classField = String.class, stringField = "someText", booleanField = true, intField = 13 )
 @RegularAnnotation( classField = String.class, stringField = "someText", booleanField = true, intField = 13 )

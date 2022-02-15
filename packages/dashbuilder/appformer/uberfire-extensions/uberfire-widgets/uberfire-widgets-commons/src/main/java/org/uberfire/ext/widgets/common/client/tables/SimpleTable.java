@@ -17,6 +17,7 @@
 package org.uberfire.ext.widgets.common.client.tables;
 
 import java.util.List;
+
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;

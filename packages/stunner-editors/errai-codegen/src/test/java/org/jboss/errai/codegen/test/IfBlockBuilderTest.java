@@ -16,9 +16,6 @@
 
 package org.jboss.errai.codegen.test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.jboss.errai.codegen.ArithmeticOperator;
 import org.jboss.errai.codegen.BooleanOperator;
 import org.jboss.errai.codegen.Context;
@@ -33,6 +30,9 @@ import org.jboss.errai.codegen.util.Bool;
 import org.jboss.errai.codegen.util.Refs;
 import org.jboss.errai.codegen.util.Stmt;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests the generation of if blocks using the {@link StatementBuilder} API.

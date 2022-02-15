@@ -16,10 +16,35 @@
 
 package org.jboss.errai.common.client.types;
 
-import org.jboss.errai.common.client.types.handlers.collections.*;
-import org.jboss.errai.common.client.types.handlers.numbers.*;
+import java.util.AbstractList;
+import java.util.AbstractSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.Stack;
 
-import java.util.*;
+import org.jboss.errai.common.client.types.handlers.collections.CollectionToBooleanArray;
+import org.jboss.errai.common.client.types.handlers.collections.CollectionToDoubleArray;
+import org.jboss.errai.common.client.types.handlers.collections.CollectionToIntArray;
+import org.jboss.errai.common.client.types.handlers.collections.CollectionToList;
+import org.jboss.errai.common.client.types.handlers.collections.CollectionToLongArray;
+import org.jboss.errai.common.client.types.handlers.collections.CollectionToObjArray;
+import org.jboss.errai.common.client.types.handlers.collections.CollectionToQueue;
+import org.jboss.errai.common.client.types.handlers.collections.CollectionToSet;
+import org.jboss.errai.common.client.types.handlers.collections.CollectionToStringArray;
+import org.jboss.errai.common.client.types.handlers.numbers.NumberToByte;
+import org.jboss.errai.common.client.types.handlers.numbers.NumberToDate;
+import org.jboss.errai.common.client.types.handlers.numbers.NumberToFloat;
+import org.jboss.errai.common.client.types.handlers.numbers.NumberToInt;
+import org.jboss.errai.common.client.types.handlers.numbers.NumberToLong;
+import org.jboss.errai.common.client.types.handlers.numbers.NumberToSQLDate;
+import org.jboss.errai.common.client.types.handlers.numbers.NumberToShort;
 
 public class TypeHandlerFactory {
   private static Map<Class, Map<Class, TypeHandler>> handlers =

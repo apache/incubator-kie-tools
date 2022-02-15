@@ -23,7 +23,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.ext.layout.editor.client.widgets.KebabWidget;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ComponentColumnViewTest {

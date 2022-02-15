@@ -18,9 +18,8 @@ package org.jboss.errai.ui.test.binding.client.res;
 
 import java.util.Date;
 
-import org.jboss.errai.databinding.client.api.Converter;
-
 import com.google.gwt.i18n.client.DateTimeFormat;
+import org.jboss.errai.databinding.client.api.Converter;
 
 /**
  * Converter for testing purposes.

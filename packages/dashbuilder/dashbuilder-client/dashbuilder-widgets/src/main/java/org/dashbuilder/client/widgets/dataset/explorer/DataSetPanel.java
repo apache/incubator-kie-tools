@@ -15,12 +15,16 @@
  */
 package org.dashbuilder.client.widgets.dataset.explorer;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-
 import org.dashbuilder.client.widgets.common.DataSetEditorPlugin;
 import org.dashbuilder.client.widgets.dataset.event.EditDataSetEvent;
 import org.dashbuilder.client.widgets.resources.i18n.DataSetExplorerConstants;
@@ -29,12 +33,12 @@ import org.dashbuilder.dataset.def.DataSetDef;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.UberView;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
-import static org.dashbuilder.dataprovider.DataSetProviderType.*;
+import static org.dashbuilder.dataprovider.DataSetProviderType.BEAN;
+import static org.dashbuilder.dataprovider.DataSetProviderType.CSV;
+import static org.dashbuilder.dataprovider.DataSetProviderType.EXTERNAL;
+import static org.dashbuilder.dataprovider.DataSetProviderType.KAFKA;
+import static org.dashbuilder.dataprovider.DataSetProviderType.PROMETHEUS;
+import static org.dashbuilder.dataprovider.DataSetProviderType.SQL;
 
 /**
  * <p>Data Set Panel widget with a collapsed by default summary.</p>

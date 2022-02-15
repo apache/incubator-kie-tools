@@ -21,7 +21,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
 import org.dashbuilder.common.client.widgets.AlertBox;
-import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Window;

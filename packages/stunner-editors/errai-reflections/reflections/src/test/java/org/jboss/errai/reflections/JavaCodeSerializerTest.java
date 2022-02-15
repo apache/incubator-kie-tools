@@ -16,24 +16,23 @@
 
 package org.jboss.errai.reflections;
 
-import com.google.common.base.Predicate;
-import org.junit.Assert;
-import org.junit.Test;
-import org.jboss.errai.reflections.serializers.JavaCodeSerializer;
-import org.jboss.errai.reflections.scanners.TypeElementsScanner;
-import org.jboss.errai.reflections.scanners.TypesScanner;
-import org.jboss.errai.reflections.util.ConfigurationBuilder;
-import org.jboss.errai.reflections.util.ClasspathHelper;
-import org.jboss.errai.reflections.util.FilterBuilder;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Set;
+
+import com.google.common.base.Predicate;
+import org.jboss.errai.reflections.scanners.TypeElementsScanner;
+import org.jboss.errai.reflections.scanners.TypesScanner;
+import org.jboss.errai.reflections.serializers.JavaCodeSerializer;
+import org.jboss.errai.reflections.util.ClasspathHelper;
+import org.jboss.errai.reflections.util.ConfigurationBuilder;
+import org.jboss.errai.reflections.util.FilterBuilder;
+import org.junit.Assert;
+import org.junit.Test;
 
 import static java.util.Arrays.asList;
-
-import java.util.Set;
 
 /** */
 public class JavaCodeSerializerTest {

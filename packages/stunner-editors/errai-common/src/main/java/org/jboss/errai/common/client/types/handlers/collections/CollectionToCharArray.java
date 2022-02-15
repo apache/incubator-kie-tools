@@ -16,9 +16,9 @@
 
 package org.jboss.errai.common.client.types.handlers.collections;
 
-import org.jboss.errai.common.client.types.TypeHandler;
-
 import java.util.Collection;
+
+import org.jboss.errai.common.client.types.TypeHandler;
 
 public class CollectionToCharArray implements TypeHandler<Collection, Character[]> {
   public Character[] getConverted(Collection in) {

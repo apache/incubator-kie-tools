@@ -487,19 +487,6 @@
     </plugins>
   </build>
 
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <configLocation>org/uberfire/build/uberfire_checks.xml</configLocation>
-          <headerLocation>org/uberfire/build/uberfire_license_header.txt</headerLocation>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
-
   <profiles>
     <profile>
       <id>graph</id>

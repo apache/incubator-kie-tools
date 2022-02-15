@@ -16,9 +16,6 @@
 
 package org.jboss.errai.ui.test.quickhandler.client;
 
-import static org.jboss.errai.common.client.util.EventTestingUtil.invokeEventListeners;
-import static org.jboss.errai.common.client.util.EventTestingUtil.setupAddEventListenerInterceptor;
-
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -27,6 +24,9 @@ import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
 import org.jboss.errai.ioc.client.IOCUtil;
 import org.jboss.errai.ui.test.quickhandler.client.res.InteropEventQuickHandlerTemplate;
 import org.jboss.errai.ui.test.quickhandler.client.res.InteropEventQuickHandlerTemplate.ObservedEvent;
+
+import static org.jboss.errai.common.client.util.EventTestingUtil.invokeEventListeners;
+import static org.jboss.errai.common.client.util.EventTestingUtil.setupAddEventListenerInterceptor;
 
 public class InteropEventQuickHandlerTemplateTest extends AbstractErraiCDITest {
 

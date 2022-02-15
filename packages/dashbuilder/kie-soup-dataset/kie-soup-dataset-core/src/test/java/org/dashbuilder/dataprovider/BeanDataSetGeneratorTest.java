@@ -23,13 +23,13 @@ import org.dashbuilder.DataSetCore;
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetFormatter;
 import org.dashbuilder.dataset.DataSetManager;
-import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.def.DataSetDefRegistry;
+import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.dashbuilder.dataset.Assertions.*;
+import static org.dashbuilder.dataset.Assertions.assertDataSetValues;
 
 public class BeanDataSetGeneratorTest {
 

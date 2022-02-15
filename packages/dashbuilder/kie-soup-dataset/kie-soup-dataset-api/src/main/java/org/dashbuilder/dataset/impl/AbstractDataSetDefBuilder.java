@@ -15,9 +15,9 @@
  */
 package org.dashbuilder.dataset.impl;
 
+import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.def.DataSetDefBuilder;
-import org.dashbuilder.dataset.ColumnType;
 
 /**
  * Base class for DataSetDefBuilder implementations.

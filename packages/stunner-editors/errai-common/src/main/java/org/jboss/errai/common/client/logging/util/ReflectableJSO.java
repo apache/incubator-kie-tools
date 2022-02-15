@@ -1,7 +1,6 @@
 package org.jboss.errai.common.client.logging.util;
 
 import com.google.gwt.core.client.ScriptInjector;
-
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsType;
 

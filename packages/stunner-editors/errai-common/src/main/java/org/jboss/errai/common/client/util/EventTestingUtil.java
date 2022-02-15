@@ -16,14 +16,13 @@
 
 package org.jboss.errai.common.client.util;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
-
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.user.client.ui.HasValue;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 
 /**
  * Contains utility methods for intercepting calls to add and remove web browser event listeners necessary for tests

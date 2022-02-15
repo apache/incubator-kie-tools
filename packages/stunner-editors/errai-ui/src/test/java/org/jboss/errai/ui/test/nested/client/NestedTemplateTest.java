@@ -16,6 +16,9 @@
 
 package org.jboss.errai.ui.test.nested.client;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.regexp.shared.RegExp;
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ui.shared.TemplateWidget;
@@ -25,10 +28,6 @@ import org.jboss.errai.ui.test.nested.client.res.NestedClassComponent;
 import org.jboss.errai.ui.test.nested.client.res.ParentCompositeComponent;
 import org.jboss.errai.ui.test.nested.client.res.ParentNonCompositeComponent;
 import org.junit.Test;
-
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.regexp.shared.RegExp;
 
 public class NestedTemplateTest extends AbstractErraiCDITest {
 

@@ -17,7 +17,6 @@ package org.dashbuilder.client.navigation.plugin;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -26,6 +25,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
@@ -49,8 +49,6 @@ import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.ActivityResourceType;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 @EntryPoint
 @ApplicationScoped

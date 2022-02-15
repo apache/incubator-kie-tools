@@ -27,12 +27,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.uberfire.ext.layout.editor.client.LayoutEditorPresenter;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
-import org.uberfire.ext.layout.editor.client.components.container.Container;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;

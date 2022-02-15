@@ -16,10 +16,11 @@
 
 package org.kie.workbench.common.widgets.client.popups.list;
 
-import org.uberfire.commons.Pair;
+import java.util.List;
 
 import javax.inject.Inject;
-import java.util.List;
+
+import org.uberfire.commons.Pair;
 
 public class FormListPopup
         implements FormListPopupView.Presenter {

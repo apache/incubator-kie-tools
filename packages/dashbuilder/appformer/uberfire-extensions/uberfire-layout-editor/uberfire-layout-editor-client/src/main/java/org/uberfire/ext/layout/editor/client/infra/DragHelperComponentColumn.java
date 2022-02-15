@@ -18,8 +18,8 @@ package org.uberfire.ext.layout.editor.client.infra;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

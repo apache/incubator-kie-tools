@@ -16,10 +16,9 @@
 
 package org.jboss.errai.ioc.client.container.async;
 
+import com.google.gwt.core.client.RunAsyncCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.gwt.core.client.RunAsyncCallback;
 
 /**
  *

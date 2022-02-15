@@ -30,7 +30,9 @@ import org.uberfire.workbench.model.PartDefinition;
 
 import static org.jgroups.util.Util.assertEquals;
 import static org.jgroups.util.Util.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SinglePartPanelHelperTest {

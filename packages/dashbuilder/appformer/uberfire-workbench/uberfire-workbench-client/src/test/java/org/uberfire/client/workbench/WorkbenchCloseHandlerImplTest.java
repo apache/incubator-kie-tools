@@ -24,7 +24,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkbenchCloseHandlerImplTest {

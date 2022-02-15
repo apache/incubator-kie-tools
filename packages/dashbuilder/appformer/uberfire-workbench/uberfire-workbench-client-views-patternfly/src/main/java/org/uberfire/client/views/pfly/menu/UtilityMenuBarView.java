@@ -19,13 +19,12 @@ package org.uberfire.client.views.pfly.menu;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.html.UnorderedList;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBarPresenter;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
-
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Goes inside the collapsible navbar container.

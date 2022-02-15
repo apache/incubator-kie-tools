@@ -18,7 +18,8 @@ package org.dashbuilder.dataset.json;
 import org.dashbuilder.dataset.def.SQLDataSetDef;
 import org.dashbuilder.json.JsonObject;
 
-import static org.dashbuilder.dataset.json.DataSetDefJSONMarshaller.*;
+import static org.dashbuilder.dataset.json.DataSetDefJSONMarshaller.ALL_COLUMNS;
+import static org.dashbuilder.dataset.json.DataSetDefJSONMarshaller.isBlank;
 
 public class SQLDefJSONMarshaller implements DataSetDefJSONMarshallerExt<SQLDataSetDef> {
 

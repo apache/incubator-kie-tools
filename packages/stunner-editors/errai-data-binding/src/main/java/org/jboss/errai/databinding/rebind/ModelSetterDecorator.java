@@ -16,10 +16,6 @@
 
 package org.jboss.errai.databinding.rebind;
 
-import static org.jboss.errai.codegen.util.Stmt.loadStatic;
-import static org.jboss.errai.codegen.util.Stmt.loadVariable;
-import static org.jboss.errai.codegen.util.Stmt.nestedCall;
-
 import org.jboss.errai.codegen.Cast;
 import org.jboss.errai.codegen.Statement;
 import org.jboss.errai.codegen.exception.GenerationException;
@@ -32,6 +28,10 @@ import org.jboss.errai.ioc.rebind.ioc.extension.IOCDecoratorExtension;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.Decorable;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.FactoryController;
 import org.jboss.errai.ui.shared.api.annotations.ModelSetter;
+
+import static org.jboss.errai.codegen.util.Stmt.loadStatic;
+import static org.jboss.errai.codegen.util.Stmt.loadVariable;
+import static org.jboss.errai.codegen.util.Stmt.nestedCall;
 
 /**
  * Causes the generation of a proxy that overrides a method annotated with {@link ModelSetter}. The
