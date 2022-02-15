@@ -58,7 +58,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           positionLensAt: "end",
           commandDelegate: ({ position }) => ({
             id: commandIds["OpenStatesWidget"],
-            title: `+ Add function...`,
+            title: `\u2800\u2800+ Add function...`,
             arguments: [{ position }],
           }),
         }),
@@ -80,7 +80,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           positionLensAt: "end",
           commandDelegate: ({ position }) => ({
             id: commandIds["OpenStatesWidget"],
-            title: `+ Add state...`,
+            title: `\u2800\u2800+ Add state...`,
             arguments: [{ position }],
           }),
         }),
@@ -113,7 +113,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           positionLensAt: "end",
           commandDelegate: ({ position }) => ({
             id: commandIds["OpenStatesWidget"],
-            title: "+ Add action...",
+            title: "\u2800\u2800+ Add action...",
             arguments: [{ position }],
           }),
         }),
