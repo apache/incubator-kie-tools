@@ -2,28 +2,162 @@ import * as monaco from "monaco-editor";
 import { languages, Position } from "monaco-editor";
 import * as jsonc from "jsonc-parser";
 import { JSONPath } from "vscode-json-languageservice";
-import { SwfMonacoEditorCommands } from "../../SwfMonacoEditorApi";
+import { SwfMonacoEditorCommandIds } from "../../SwfMonacoEditorApi";
 import CodeLens = languages.CodeLens;
 
-function toLens(
-  model: monaco.editor.ITextModel,
-  rootNode: jsonc.Node,
-  jsonPath: JSONPath,
-  commandDelegate: (args: { position: Position; node: jsonc.Node }) => CodeLens["command"],
-  positionLensAt: "begin" | "end" = "begin"
-) {
-  const nodes = findNodesAtLocation(rootNode, jsonPath);
+export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void {
+  monaco.languages.registerCodeLensProvider("json", {
+    provideCodeLenses: (model, cancellationToken) => {
+      if (cancellationToken.isCancellationRequested) {
+        return;
+      }
+
+      const rootNode = jsonc.parseTree(model.getValue());
+      if (!rootNode) {
+        return;
+      }
+
+      const codeLenses = [
+        createCodeLenses({
+          model,
+          rootNode,
+          jsonPath: ["functions"],
+          positionLensAt: "begin",
+          commandDelegate: ({ position }) => ({
+            id: commandIds["FunctionsWidget"],
+            title: `◎ Discover`,
+            arguments: [{ position }],
+          }),
+        }),
+        createCodeLenses({
+          model,
+          rootNode,
+          jsonPath: ["functions"],
+          positionLensAt: "begin",
+          commandDelegate: ({ position }) => ({
+            id: commandIds["FunctionsWidget"],
+            title: `⤵ Import`,
+            arguments: [{ position }],
+          }),
+        }),
+        createCodeLenses({
+          model,
+          rootNode,
+          jsonPath: ["functions"],
+          positionLensAt: "begin",
+          commandDelegate: ({ position }) => ({
+            id: commandIds["FunctionsWidget"],
+            title: `✎ Edit "functions"...`,
+            arguments: [{ position }],
+          }),
+        }),
+        createCodeLenses({
+          model,
+          rootNode,
+          jsonPath: ["functions"],
+          positionLensAt: "end",
+          commandDelegate: ({ position }) => ({
+            id: commandIds["StatesWidget"],
+            title: `+ Add function...`,
+            arguments: [{ position }],
+          }),
+        }),
+        createCodeLenses({
+          model,
+          rootNode,
+          jsonPath: ["states"],
+          positionLensAt: "begin",
+          commandDelegate: ({ position }) => ({
+            id: commandIds["StatesWidget"],
+            title: `✎ Edit "states"...`,
+            arguments: [{ position }],
+          }),
+        }),
+        createCodeLenses({
+          model,
+          rootNode,
+          jsonPath: ["states"],
+          positionLensAt: "end",
+          commandDelegate: ({ position }) => ({
+            id: commandIds["StatesWidget"],
+            title: `+ Add state...`,
+            arguments: [{ position }],
+          }),
+        }),
+        createCodeLenses({
+          model,
+          rootNode,
+          jsonPath: ["functions", "*", "name"],
+          positionLensAt: "begin",
+          commandDelegate: ({ position, node }) => ({
+            id: commandIds["FunctionsWidget"],
+            title: `↺ Rename '${node.value}'`,
+            arguments: [{ position }],
+          }),
+        }),
+        createCodeLenses({
+          model,
+          rootNode,
+          jsonPath: ["states", "*", "name"],
+          positionLensAt: "begin",
+          commandDelegate: ({ position, node }) => ({
+            id: commandIds["StatesWidget"],
+            title: `↺ Rename '${node.value}'`,
+            arguments: [{ position }],
+          }),
+        }),
+        createCodeLenses({
+          model,
+          rootNode,
+          jsonPath: ["states", "*", "actions"],
+          positionLensAt: "end",
+          commandDelegate: ({ position }) => ({
+            id: commandIds["StatesWidget"],
+            title: "+ Add action...",
+            arguments: [{ position }],
+          }),
+        }),
+        createCodeLenses({
+          model,
+          rootNode,
+          jsonPath: ["states", "*", "actions", "*", "name"],
+          positionLensAt: "begin",
+          commandDelegate: ({ position, node }) => ({
+            id: commandIds["StatesWidget"],
+            title: `Ⓧ Remove '${node.value}'`,
+            arguments: [{ position }],
+          }),
+        }),
+      ];
+
+      return {
+        lenses: codeLenses.flatMap((s) => s),
+        dispose: () => {},
+      };
+    },
+  });
+
+  return;
+}
+
+function createCodeLenses(args: {
+  model: monaco.editor.ITextModel;
+  rootNode: jsonc.Node;
+  jsonPath: JSONPath;
+  commandDelegate: (args: { position: Position; node: jsonc.Node }) => CodeLens["command"];
+  positionLensAt: "begin" | "end";
+}) {
+  const nodes = findNodesAtLocation(args.rootNode, args.jsonPath);
   return nodes.map((node) => {
     let position;
-    if (positionLensAt === "begin") {
-      position = model.getPositionAt(node.offset);
+    if (args.positionLensAt === "begin") {
+      position = args.model.getPositionAt(node.offset);
     } else {
-      const pos = model.getPositionAt(node.offset + node.length);
-      position = new Position(pos.lineNumber, pos.column);
+      position = args.model.getPositionAt(node.offset + node.length);
     }
 
     return {
-      command: commandDelegate({ position, node }),
+      command: args.commandDelegate({ position, node }),
       range: {
         startLineNumber: position.lineNumber,
         endLineNumber: position.lineNumber,
@@ -34,97 +168,8 @@ function toLens(
   });
 }
 
-export function initJsonCodeLenses(commands: SwfMonacoEditorCommands): void {
-  monaco.languages.registerCodeLensProvider("json", {
-    provideCodeLenses: (model, cancellationToken) => {
-      const rootNode = jsonc.parseTree(model.getValue());
-      if (!rootNode) {
-        return { lenses: [], dispose: () => {} };
-      }
-
-      return {
-        lenses: [
-          ...toLens(model, rootNode, ["functions"], ({ position }) => ({
-            id: commands["FunctionsWidget"],
-            title: `◎ Discover`,
-            arguments: [{ position }],
-          })),
-          ...toLens(model, rootNode, ["functions"], ({ position }) => ({
-            id: commands["FunctionsWidget"],
-            title: `⤵ Import`,
-            arguments: [{ position }],
-          })),
-          ...toLens(model, rootNode, ["functions"], ({ position }) => ({
-            id: commands["FunctionsWidget"],
-            title: `✎ Edit "functions"...`,
-            arguments: [{ position }],
-          })),
-          ...toLens(
-            model,
-            rootNode,
-            ["functions"],
-            ({ position }) => ({
-              id: commands["StatesWidget"],
-              title: `+ Add function...`,
-              arguments: [{ position }],
-            }),
-            "end"
-          ),
-          ...toLens(model, rootNode, ["states"], ({ position }) => ({
-            id: commands["StatesWidget"],
-            title: `✎ Edit "states"...`,
-            arguments: [{ position }],
-          })),
-          ...toLens(
-            model,
-            rootNode,
-            ["states"],
-            ({ position }) => ({
-              id: commands["StatesWidget"],
-              title: `+ Add state...`,
-              arguments: [{ position }],
-            }),
-            "end"
-          ),
-          ...toLens(model, rootNode, ["functions", "*", "name"], ({ position, node }) => ({
-            id: commands["FunctionsWidget"],
-            title: `↺ Rename '${node.value}'`,
-            arguments: [{ position }],
-          })),
-          ...toLens(model, rootNode, ["states", "*", "name"], ({ position, node }) => ({
-            id: commands["StatesWidget"],
-            title: `↺ Rename '${node.value}'`,
-            arguments: [{ position }],
-          })),
-          ...toLens(
-            model,
-            rootNode,
-            ["states", "*", "actions"],
-            ({ position }) => ({ id: commands["StatesWidget"], title: "+ Add action...", arguments: [{ position }] }),
-            "end"
-          ),
-          ...toLens(model, rootNode, ["states", "*", "actions", "*", "name"], ({ position, node }) => ({
-            id: commands["StatesWidget"],
-            title: `Ⓧ Remove '${node.value}'`,
-            arguments: [{ position }],
-          })),
-        ],
-
-        dispose: () => {},
-      };
-    },
-    resolveCodeLens(
-      model: monaco.editor.ITextModel,
-      codeLens: monaco.languages.CodeLens,
-      cancellationToken: monaco.CancellationToken
-    ): monaco.languages.ProviderResult<monaco.languages.CodeLens> {
-      return codeLens;
-    },
-  });
-
-  return;
-}
-
+// This is very similar to `jsonc.findNodeAtLocation`, but it allows the use of '*' as a wildcard selector.
+// This means that unlike `jsonc.findNodeAtLocation`, this method always returns a list of nodes, which can be empty if no matches are found.
 export function findNodesAtLocation(root: jsonc.Node | undefined, path: JSONPath): jsonc.Node[] {
   if (!root) {
     return [];

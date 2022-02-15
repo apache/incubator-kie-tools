@@ -120,8 +120,9 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
         svgContainer.current!.innerHTML = mermaidSourceCode;
         svgContainer.current!.removeAttribute("data-processed");
         mermaid.init(svgContainer.current!);
-        svgContainer.current!.getElementsByTagName("svg")[0].setAttribute("style", "height: 100%;");
         svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0]);
+        svgContainer.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
+        svgContainer.current!.getElementsByTagName("svg")[0].style.height = "100%";
         setDiagramOutOfSync(false);
       } else {
         setDiagramOutOfSync(true);

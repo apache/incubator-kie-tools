@@ -17,7 +17,7 @@
 import * as monaco from "monaco-editor";
 import { CancellationToken, editor, languages, Position } from "monaco-editor";
 import * as jsonc from "jsonc-parser";
-import { SwfMonacoEditorCommands, SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
+import { SwfMonacoEditorCommandIds, SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
 import CompletionItemKind = languages.CompletionItemKind;
 
 export type CompletionArgs = {
@@ -29,11 +29,11 @@ export type CompletionArgs = {
 
 const completions = new Map<
   jsonc.JSONPath,
-  (args: { position: Position; commands: SwfMonacoEditorInstance["commands"] }) => languages.CompletionItem
+  (args: { position: Position; commandIds: SwfMonacoEditorInstance["commands"] }) => languages.CompletionItem
 >([
   [
     ["functions"],
-    ({ position, commands }) => ({
+    ({ position, commandIds }) => ({
       kind: CompletionItemKind.Snippet,
       insertText: "",
       range: {
@@ -44,7 +44,7 @@ const completions = new Map<
       },
       label: "My completion item",
       command: {
-        id: commands["FunctionsCompletion"],
+        id: commandIds["FunctionsCompletion"],
         title: "My-Completion-Command",
         arguments: [{ position }],
       },
@@ -52,25 +52,29 @@ const completions = new Map<
   ],
 ]);
 
-export function initJsonCompletion(commands: SwfMonacoEditorCommands): void {
+export function initJsonCompletion(commandIds: SwfMonacoEditorCommandIds): void {
   monaco.languages.registerCompletionItemProvider("json", {
-    provideCompletionItems: function (
+    provideCompletionItems: (
       model: editor.ITextModel,
       position: Position,
       context: languages.CompletionContext,
       token: CancellationToken
-    ): languages.ProviderResult<languages.CompletionList> {
+    ): languages.ProviderResult<languages.CompletionList> => {
+      if (token.isCancellationRequested) {
+        return;
+      }
+
       const rootNode = jsonc.parseTree(model.getValue());
       if (!rootNode) {
-        return { suggestions: [] };
+        return;
       }
 
       const location = jsonc.getLocation(model.getValue(), model.getOffsetAt(position));
 
       return {
         suggestions: Array.from(completions.entries())
-          .filter(([k, v]) => location.matches(k))
-          .map(([k, v]) => v({ position, commands })),
+          .filter(([jsonPath, _]) => location.matches(jsonPath))
+          .map(([_, completionItemDelegate]) => completionItemDelegate({ position, commandIds })),
       };
     },
   });

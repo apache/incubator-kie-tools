@@ -31,10 +31,10 @@ export interface SwfMonacoEditorApi {
 
 export type SwfMonacoEditorCommandTypes = "FunctionsWidget" | "StatesWidget" | "FunctionsCompletion";
 
-export type SwfMonacoEditorCommands = Record<SwfMonacoEditorCommandTypes, string>;
+export type SwfMonacoEditorCommandIds = Record<SwfMonacoEditorCommandTypes, string>;
 
 export interface SwfMonacoEditorInstance {
-  commands: SwfMonacoEditorCommands;
+  commands: SwfMonacoEditorCommandIds;
   instance: editor.IStandaloneCodeEditor;
 }
 
