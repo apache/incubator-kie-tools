@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 
 interface DmnRunnerLoading {
@@ -42,6 +42,13 @@ export function DmnRunnerLoading(props: DmnRunnerLoading) {
     }
     return "";
   }, [dmnRunnerState.inputRowsUpdated, dmnRunnerState.outputRowsUpdated]);
+
+  // Reset outputRowsUpdate when inputRowsUpdate is false
+  useEffect(() => {
+    if (!dmnRunnerState.inputRowsUpdated && dmnRunnerState.outputRowsUpdated) {
+      dmnRunnerDispatch.setOutputRowsUpdated(false);
+    }
+  }, [dmnRunnerDispatch, dmnRunnerState.inputRowsUpdated, dmnRunnerState.outputRowsUpdated]);
 
   return (
     <>

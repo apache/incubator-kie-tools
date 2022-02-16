@@ -126,6 +126,17 @@ export function useWorkspaceDmnRunnerInputs(
       if (timeout.current) {
         window.clearTimeout(timeout.current);
       }
+
+      // After a re-render the callback is called by the first time, this avoid a filesystem unnecessary re-update
+      if (typeof newInputRows === "function") {
+        if (lastInputRows.current === JSON.stringify(newInputRows(inputRows))) {
+          return;
+        }
+      }
+      if (lastInputRows.current === JSON.stringify(newInputRows)) {
+        return;
+      }
+
       timeout.current = window.setTimeout(() => {
         updatePersistedInputRows(workspaceFile, newInputRows);
         if (typeof newInputRows === "function") {
