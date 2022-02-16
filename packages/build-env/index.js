@@ -258,6 +258,26 @@ const ENV_VARS = {
     default: "dist",
     description: "Directory path used to output build artifacts of stunner-editors-dmn-loader",
   },
+  SERVERLESS_WORKFLOW__baseImageRegistry: {
+    name: "SERVERLESS_WORKFLOW__baseImageRegistry",
+    default: "quay.io",
+    description: "",
+  },
+  SERVERLESS_WORKFLOW__baseImageAccount: {
+    name: "SERVERLESS_WORKFLOW__baseImageAccount",
+    default: "caponetto",
+    description: "",
+  },
+  SERVERLESS_WORKFLOW__baseImageName: {
+    name: "SERVERLESS_WORKFLOW__baseImageName",
+    default: "serverless-workflow-base-image",
+    description: "",
+  },
+  SERVERLESS_WORKFLOW__baseImageBuildTags: {
+    name: "SERVERLESS_WORKFLOW__baseImageBuildTags",
+    default: "latest",
+    description: "",
+  },
 };
 
 module.exports = {
@@ -318,6 +338,15 @@ module.exports = {
     routerRelativePath: getOrDefault(ENV_VARS.CHROME_EXTENSION__routerRelativePath),
     onlineEditorUrl: getOrDefault(ENV_VARS.CHROME_EXTENSION__onlineEditorUrl),
     manifestFile: getOrDefault(ENV_VARS.CHROME_EXTENSION__manifestFile),
+  },
+
+  chromeExtensionServerlessWorkflow: {
+    dev: {
+      port: 9200,
+    },
+    routerTargetOrigin: "https://caponetto.dev", // use "https://localhost:9200" for local development
+    routerRelativePath: "poc/chrome-extension-swf", // use "" for local development
+    manifestFile: "manifest.dev.json",
   },
 
   onlineEditor: {
@@ -384,6 +413,15 @@ module.exports = {
       account: getOrDefault(ENV_VARS.CORS_PROXY__imageAccount),
       name: getOrDefault(ENV_VARS.CORS_PROXY__imageName),
       buildTags: getOrDefault(ENV_VARS.CORS_PROXY__imageBuildTags),
+    },
+  },
+
+  serverlessWorkflow: {
+    baseImage: {
+      registry: getOrDefault(ENV_VARS.SERVERLESS_WORKFLOW__baseImageRegistry),
+      account: getOrDefault(ENV_VARS.SERVERLESS_WORKFLOW__baseImageAccount),
+      name: getOrDefault(ENV_VARS.SERVERLESS_WORKFLOW__baseImageName),
+      buildTags: getOrDefault(ENV_VARS.SERVERLESS_WORKFLOW__baseImageBuildTags),
     },
   },
 
