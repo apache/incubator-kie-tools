@@ -30,6 +30,7 @@ import {
   focusParentCell,
   focusPrevDataCell,
   focusNextDataCell,
+  focusCurrentCell,
 } from "./common";
 import { useBoxedExpression } from "../../context";
 
@@ -73,13 +74,17 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
         const key = e.key;
         const isModKey = e.altKey || e.ctrlKey || e.shiftKey || key === "AltGraph";
 
-        if (isContextMenuOpen) {
-          e.preventDefault();
+        //prevent the parent cell catch this event if there is a nested table
+        if (e.currentTarget !== getParentCell(e.target as HTMLElement)) {
           return;
         }
 
-        //prevent the parent cell catch this event if there is a nested table
-        if (e.currentTarget !== getParentCell(e.target as HTMLElement)) {
+        if (isContextMenuOpen) {
+          e.preventDefault();
+          if (key === "Escape") {
+            //close Select child components if any
+            focusCurrentCell(e.currentTarget);
+          }
           return;
         }
 
