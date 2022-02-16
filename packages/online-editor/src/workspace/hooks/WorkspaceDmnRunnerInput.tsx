@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { decoder, useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../";
 import { InputRow } from "../../editor/DmnRunner/DmnRunnerContext";
 import { useCancelableEffect } from "../../reactExt/Hooks";
@@ -37,7 +37,7 @@ export function useWorkspaceDmnRunnerInputs(
   const [inputRows, setInputRows] = useState<Array<InputRow>>([{}]);
   const [inputRowsUpdated, setInputRowsUpdated] = useState<boolean>(false);
   const [outputRowsUpdated, setOutputRowsUpdated] = useState<boolean>(false);
-  const lastInputRows = useRef<string>();
+  const lastInputRows = useRef<string>("[{}]");
 
   useCancelableEffect(
     useCallback(
@@ -62,21 +62,16 @@ export function useWorkspaceDmnRunnerInputs(
             );
             dmnRunnerService?.renameDmnRunnerInputs(workspaceFile, newRelativePathWithoutExtension);
           }
-          if (data.type === "DELETE") {
+          if (data.type === "UPDATE" || data.type === "ADD" || data.type === "DELETE") {
             if (canceled.get()) {
               return;
             }
-            lastInputRows.current = data.dmnRunnerInputs;
-            setInputRows(JSON.parse(data.dmnRunnerInputs));
-            setInputRowsUpdated(true);
-          }
-          if (data.type === "UPDATE" || data.type === "ADD") {
-            if (canceled.get()) {
-              return;
-            }
+            // Triggered by the tab
             if (data.dmnRunnerInputs === lastInputRows.current) {
+              setInputRows(JSON.parse(data.dmnRunnerInputs));
               return;
             }
+            // Triggered by the other tab
             lastInputRows.current = data.dmnRunnerInputs;
             setInputRows(JSON.parse(data.dmnRunnerInputs));
             setInputRowsUpdated(true);
@@ -104,7 +99,9 @@ export function useWorkspaceDmnRunnerInputs(
           if (canceled.get()) {
             return;
           }
+          // If inputs don't exist, create then.
           if (!inputs) {
+            dmnRunnerService.createOrOverwriteDmnRunnerInputs(workspaceFile, JSON.stringify([{}]));
             return;
           }
 
@@ -122,37 +119,23 @@ export function useWorkspaceDmnRunnerInputs(
     )
   );
 
-  useEffect(() => {
-    if (lastInputRows.current !== JSON.stringify(inputRows)) {
-      lastInputRows.current = JSON.stringify(inputRows);
-
-      const timeout = setTimeout(() => {
-        updatePersistedInputRows(workspaceFile, inputRows);
-      }, 200);
-      return () => {
-        clearTimeout(timeout);
-      };
-    }
-  }, [inputRows, updatePersistedInputRows, workspaceFile]);
-
+  // Debounce to avoid multiple updates on the filesystem
+  const timeout = useRef<number | undefined>(undefined);
   const setInputRowsAndUpdatePersistence = useCallback(
     (newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)) => {
-      if (typeof newInputRows === "function") {
-        setInputRows((previous) => {
-          const inputRows = newInputRows(previous);
-          if (JSON.stringify(inputRows) === lastInputRows.current) {
-            return previous;
-          }
-          return inputRows;
-        });
-        return;
+      if (timeout.current) {
+        window.clearTimeout(timeout.current);
       }
-      if (JSON.stringify(newInputRows) === lastInputRows.current) {
-        return;
-      }
-      setInputRows(newInputRows);
+      timeout.current = window.setTimeout(() => {
+        updatePersistedInputRows(workspaceFile, newInputRows);
+        if (typeof newInputRows === "function") {
+          lastInputRows.current = JSON.stringify(newInputRows(inputRows));
+          return;
+        }
+        lastInputRows.current = JSON.stringify(newInputRows);
+      }, 200);
     },
-    []
+    [inputRows, updatePersistedInputRows, workspaceFile]
   );
 
   return {

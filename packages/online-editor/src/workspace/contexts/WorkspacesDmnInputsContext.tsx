@@ -22,7 +22,6 @@ import { WorkspaceFile } from "./WorkspacesContext";
 interface WorkspacesDmnInputsType {
   dmnRunnerService: WorkspaceDmnRunnerInputsService;
   getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }): string;
-  createInputRows: (workspaceFile: WorkspaceFile) => () => Promise<void>;
   deletePersistedInputRows: (workspaceFile: WorkspaceFile) => void;
   updatePersistedInputRows: (
     workspaceFile: WorkspaceFile,

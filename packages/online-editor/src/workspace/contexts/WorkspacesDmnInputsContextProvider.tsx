@@ -28,19 +28,6 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
     return new WorkspaceDmnRunnerInputsService(workspaces.storageService);
   }, [workspaces.storageService]);
 
-  const createInputRows = useCallback(
-    (workspaceFile: WorkspaceFile) => async () => {
-      if (!workspaceFile || !dmnRunnerService) {
-        return;
-      }
-      const inputs = await dmnRunnerService.getDmnRunnerInputs(workspaceFile);
-      if (!inputs) {
-        await dmnRunnerService.createOrOverwriteDmnRunnerInputs(workspaceFile, JSON.stringify([{}]));
-      }
-    },
-    [dmnRunnerService]
-  );
-
   const updatePersistedInputRows = useCallback(
     async (
       workspaceFile: WorkspaceFile,
@@ -100,7 +87,6 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
         dmnRunnerService,
         updatePersistedInputRows,
         getUniqueFileIdentifier,
-        createInputRows,
         deletePersistedInputRows,
         getInputRowsForDownload,
         uploadInputRows,

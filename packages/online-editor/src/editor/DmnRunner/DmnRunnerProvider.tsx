@@ -17,7 +17,7 @@
 import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
-import { decoder, useWorkspaces, useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../../workspace";
+import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext, InputRow } from "./DmnRunnerContext";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
@@ -50,7 +50,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const workspaces = useWorkspaces();
   const settings = useSettings();
-  const dmnRunnerWorkspace = useWorkspacesDmnRunnerInputs();
   const { inputRows, setInputRows, inputRowsUpdated, setInputRowsUpdated, outputRowsUpdated, setOutputRowsUpdated } =
     useWorkspaceDmnRunnerInputs(props.workspaceId, props.fileRelativePath, props.workspaceFile);
 
@@ -112,7 +111,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       return;
     }
 
-    dmnRunnerWorkspace.createInputRows(props.workspaceFile)();
     updateFormSchema();
   }, [updateFormSchema, props.workspaceFile.extension, props.workspaceFile]);
 
