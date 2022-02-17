@@ -100,7 +100,8 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     [boxedExpression.boxedExpressionEditorGWTService]
   );
 
-  const onHidden = useCallback(() => {
+  const onHide = useCallback(() => {
+    console.log("EditExpressionMenu onHide called");
     boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
     onExpressionUpdate({
       name: expressionName,
@@ -108,12 +109,17 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     });
   }, [boxedExpression.boxedExpressionEditorGWTService, expressionName, onExpressionUpdate, dataType]);
 
+  const onCancel = useCallback((event: MouseEvent | KeyboardEvent) => {
+    console.log("on_cancel");
+  }, []);
+
   return (
     <PopoverMenu
       title={title}
       arrowPlacement={arrowPlacement}
       appendTo={appendTo}
-      onHidden={onHidden}
+      onHide={onHide}
+      onCancel={onCancel}
       body={
         <div className="edit-expression-menu">
           <div className="expression-name">

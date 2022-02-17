@@ -15,6 +15,7 @@
  */
 
 import * as React from "react";
+import { useCallback, useState } from "react";
 import { Popover } from "@patternfly/react-core";
 import "./PopoverMenu.css";
 
@@ -38,7 +39,11 @@ export interface PopoverMenuProps {
   /**
    * Lifecycle function invoked when the popover has fully transitioned out.
    */
-  onHidden?: () => void;
+  onHide?: () => void;
+  /**
+   * Lifecycle function invoked when the popover has fully transitioned out.
+   */
+  onCancel?: (event?: MouseEvent | KeyboardEvent) => void;
 }
 
 export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
@@ -50,8 +55,38 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
   className,
   hasAutoWidth,
   minWidth,
-  onHidden,
+  onHide = () => {},
+  onCancel = () => {},
 }: PopoverMenuProps) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const shouldOpen = useCallback(
+    (_showFunction?: () => void, event?: MouseEvent | KeyboardEvent) => {
+      console.log("shouldOpen", { event });
+      setIsVisible(true);
+    },
+    [setIsVisible]
+  );
+
+  const shouldClose = useCallback(
+    (_tip, _hideFunction?: () => void, event?: MouseEvent | KeyboardEvent) => {
+      console.log("shouldClose", { event });
+      // if the esc key has been pressed with a Select component open
+      if ((event?.target as Element).closest(".pf-c-select__menu")) {
+        return;
+      }
+
+      setIsVisible(false);
+
+      if (event instanceof KeyboardEvent && /^esc.*/i.test(event?.key)) {
+        onCancel(event);
+      } else {
+        onHide();
+      }
+    },
+    [setIsVisible, onCancel, onHide]
+  );
+
   return (
     <Popover
       data-ouia-component-id="expression-popover-menu"
@@ -69,7 +104,9 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
         </div>
       }
       bodyContent={body}
-      onHidden={onHidden}
+      isVisible={isVisible}
+      shouldClose={shouldClose}
+      shouldOpen={shouldOpen}
     >
       {children}
     </Popover>
