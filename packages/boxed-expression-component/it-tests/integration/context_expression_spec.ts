@@ -16,6 +16,7 @@
 
 import * as buildEnv from "@kie-tools/build-env";
 
+/* TODO: context_expression_spec: update e2e tests with the new popover behavior */
 describe("Context Expression Tests", () => {
   beforeEach(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);

@@ -109,9 +109,13 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     });
   }, [boxedExpression.boxedExpressionEditorGWTService, expressionName, onExpressionUpdate, dataType]);
 
-  const onCancel = useCallback((event: MouseEvent | KeyboardEvent) => {
-    console.log("on_cancel");
-  }, []);
+  const onCancel = useCallback(
+    (_event: MouseEvent | KeyboardEvent) => {
+      console.log("on_cancel");
+      setDataType(selectedDataType);
+    },
+    [selectedDataType]
+  );
 
   return (
     <PopoverMenu

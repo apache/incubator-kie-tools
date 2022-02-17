@@ -20,11 +20,12 @@ describe("Context Expression Tests", () => {
   before(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
 
-    // Entry point for each new expression
-    cy.ouiaId("expression-container").click();
-
-    // Define new expression as Context
-    cy.ouiaId("expression-popover-menu").contains("Context").click({ force: true });
+    /* TODO: popover.spec: uncomment me */
+    // // Entry point for each new expression
+    // cy.ouiaId("expression-container").click();
+    //
+    // // Define new expression as Context
+    // cy.ouiaId("expression-popover-menu").contains("Context").click({ force: true });
   });
 
   it("should user can cancel edit of select in context menu of header cell by pressing escape", () => {
@@ -45,5 +46,15 @@ describe("Context Expression Tests", () => {
 
     // Assert some content
     cy.get("@ExpressionNameCell").find(".data-type").should("contain.text", "Undefined");
+  });
+
+  it("the header cell's context menu should have original values", () => {
+    // open the context menu
+    cy.contains("th", "Expression Name").as("ExpressionNameCell").click();
+
+    // open the dataType select
+    cy.ouiaId("edit-expression-data-type").should("contain.text", "Undefined");
+
+    cy.get("body").click();
   });
 });
