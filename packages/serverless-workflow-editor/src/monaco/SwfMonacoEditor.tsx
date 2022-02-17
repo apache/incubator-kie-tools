@@ -42,7 +42,7 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
     }
 
     throw new Error(`Unsupported extension '${fileName}'`);
-  }, [content, fileName]);
+  }, [content, fileName, onContentChange]);
 
   useEffect(() => {
     if (!container.current) {
@@ -60,7 +60,7 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
     // initYamlWidgets(commands);
 
     return () => controller.dispose();
-  }, [content, fileName]);
+  }, [content, fileName, controller]);
 
   useImperativeHandle(forwardedRef, () => controller, [controller]);
 

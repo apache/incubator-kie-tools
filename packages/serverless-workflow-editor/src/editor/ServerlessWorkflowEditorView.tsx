@@ -24,8 +24,8 @@ import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
 import { ServerlessWorkflowEditor } from "./ServerlessWorkflowEditor";
 
-export class ServerlessWorkflowEditorInterface implements Editor {
-  private editorRef: React.RefObject<EditorApi>;
+export class ServerlessWorkflowEditorView implements Editor {
+  private readonly editorRef: React.RefObject<EditorApi>;
   public af_isReact = true;
   public af_componentId: "serverless-workflow-editor";
   public af_componentTitle: "Serverless Workflow Editor";
