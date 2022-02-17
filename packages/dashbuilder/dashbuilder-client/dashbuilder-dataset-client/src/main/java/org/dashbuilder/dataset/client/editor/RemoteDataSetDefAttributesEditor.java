@@ -16,11 +16,10 @@
 
 package org.dashbuilder.dataset.client.editor;
 
+import com.google.gwt.editor.client.ValueAwareEditor;
 import org.dashbuilder.common.client.editor.LeafAttributeEditor;
 import org.dashbuilder.common.client.editor.ValueBoxEditor;
 import org.dashbuilder.kieserver.RemoteDataSetDef;
-
-import com.google.gwt.editor.client.ValueAwareEditor;
 
 /**
  * <p>The GWT editor contract for the specific attributes of type <code>org.jbpm.workbench.ks.integration.RemoteDataSetDef</code>.</p>

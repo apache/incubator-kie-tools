@@ -16,8 +16,6 @@
 
 package org.jboss.errai.ioc.rebind.ioc.extension.builtin;
 
-import static org.jboss.errai.codegen.util.Stmt.invokeStatic;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +48,8 @@ import org.jboss.errai.ioc.rebind.ioc.injector.api.InjectionContext;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.jboss.errai.codegen.util.Stmt.invokeStatic;
 
 @IOCExtension
 public class LoggerFactoryIOCExtension implements IOCExtensionConfigurator {

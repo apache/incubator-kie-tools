@@ -19,10 +19,9 @@ package org.jboss.errai.ui.test.designer.client.res;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
 
 public abstract class DesignerBreadcrumbsComponent extends Composite implements DesignerComponent {
 

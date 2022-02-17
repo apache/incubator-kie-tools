@@ -15,8 +15,8 @@
  */
 package org.dashbuilder.dataset.impl;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataColumn;

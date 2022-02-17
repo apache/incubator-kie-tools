@@ -80,6 +80,21 @@ export interface CanvasApi {
    * @param uuid ID attribute of a target node
    */
   getDimensions(uuid: string): number[];
+
+  /**
+   * Applies state to a node with provided UUID.
+   *
+   * @param uuid ID attribute of a target node
+   * @param state attribute of a target node valid states ('none', 'selected', 'highlight', 'invalid')
+   */
+  applyState(uuid: string, state: string): void;
+
+  /**
+   * Centers node in viewable canvas area with provided UUID.
+   *
+   * @param uuid ID attribute of a target node
+   */
+  centerNode(uuid: string): void;
 }
 
 /**
@@ -102,4 +117,8 @@ export interface CanvasEnvelopeApi {
   canvas_getAbsoluteLocation(uuid: string): Promise<number[]>;
 
   canvas_getDimensions(uuid: string): Promise<number[]>;
+
+  canvas_applyState(uuid: string, state: string): Promise<void>;
+
+  canvas_centerNode(uuid: string): Promise<void>;
 }

@@ -16,8 +16,6 @@
  */
 package org.jboss.errai.codegen.util;
 
-import static java.lang.reflect.Modifier.isPublic;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,6 +43,8 @@ import org.jboss.errai.common.client.util.AnnotationPropertyAccessor;
 import org.jboss.errai.common.client.util.AnnotationPropertyAccessorBuilder;
 import org.jboss.errai.common.metadata.MetaDataScanner;
 import org.jboss.errai.common.metadata.ScannerSingleton;
+
+import static java.lang.reflect.Modifier.isPublic;
 
 /**
  * <p>

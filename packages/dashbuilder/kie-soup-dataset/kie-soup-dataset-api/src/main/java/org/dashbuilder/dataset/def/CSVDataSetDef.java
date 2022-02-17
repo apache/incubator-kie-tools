@@ -15,15 +15,16 @@
  */
 package org.dashbuilder.dataset.def;
 
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.validation.groups.CSVDataSetDefFilePathValidation;
 import org.dashbuilder.dataset.validation.groups.CSVDataSetDefFileURLValidation;
 import org.dashbuilder.dataset.validation.groups.CSVDataSetDefValidation;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.Objects;
 
 public class CSVDataSetDef extends DataSetDef {
 

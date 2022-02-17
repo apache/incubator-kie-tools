@@ -18,12 +18,11 @@ package org.jboss.errai.codegen.gwt.test;
 
 import java.io.File;
 
+import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.impl.gwt.GWTClass;
 import org.jboss.errai.codegen.test.meta.AbstractMetaClassTest;
 import org.jboss.errai.codegen.test.model.PrimitiveFieldContainer;
-
-import com.google.gwt.core.ext.typeinfo.TypeOracle;
 
 /**
  * The GWT implementation of the overall MetaClass test. Inherits all the tests

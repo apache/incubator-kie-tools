@@ -16,10 +16,10 @@
 
 package org.jboss.errai.common.metadata;
 
-import org.jboss.errai.reflections.ReflectionsException;
-
 import java.io.File;
 import java.util.concurrent.FutureTask;
+
+import org.jboss.errai.reflections.ReflectionsException;
 
 /**
  * Shared scanner instance used with {@link com.google.gwt.core.ext.Generator}'s

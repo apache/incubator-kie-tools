@@ -16,10 +16,9 @@
 
 package org.jboss.errai.databinding.client;
 
+import com.google.gwt.user.client.ui.TextBox;
 import org.jboss.errai.databinding.client.DeclarativeBindingModuleUsingBinder.BindingDateConverter;
 import org.jboss.errai.ui.shared.api.annotations.Bound;
-
-import com.google.gwt.user.client.ui.TextBox;
 
 public abstract class DeclarativeBindingSuperType {
 

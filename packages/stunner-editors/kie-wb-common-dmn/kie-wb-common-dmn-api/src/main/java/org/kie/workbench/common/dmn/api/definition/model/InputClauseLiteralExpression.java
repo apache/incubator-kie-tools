@@ -48,6 +48,7 @@ import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static java.util.Collections.singletonList;
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.matches;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
 
@@ -67,7 +68,8 @@ public class InputClauseLiteralExpression extends DMNModelInstrumentedBase imple
                                                                                       HasText,
                                                                                       HasTypeRef,
                                                                                       DMNPropertySet,
-                                                                                      DomainObject {
+                                                                                      DomainObject,
+                                                                                      HasDomainObject {
 
     @Category
     private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
@@ -115,10 +117,10 @@ public class InputClauseLiteralExpression extends DMNModelInstrumentedBase imple
 
     public InputClauseLiteralExpression copy() {
         final InputClauseLiteralExpression clonedInputClauseLiteralExpression = new InputClauseLiteralExpression();
-        clonedInputClauseLiteralExpression.description =  Optional.ofNullable(description).map(Description::copy).orElse(null);
-        clonedInputClauseLiteralExpression.typeRef =  Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
-        clonedInputClauseLiteralExpression.typeRefHolder =  Optional.ofNullable(typeRefHolder).map(QNameHolder::copy).orElse(null);
-        clonedInputClauseLiteralExpression.text =  Optional.ofNullable(text).map(Text::copy).orElse(null);
+        clonedInputClauseLiteralExpression.description = Optional.ofNullable(description).map(Description::copy).orElse(null);
+        clonedInputClauseLiteralExpression.typeRef = Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
+        clonedInputClauseLiteralExpression.typeRefHolder = Optional.ofNullable(typeRefHolder).map(QNameHolder::copy).orElse(null);
+        clonedInputClauseLiteralExpression.text = Optional.ofNullable(text).map(Text::copy).orElse(null);
         clonedInputClauseLiteralExpression.importedValues = Optional.ofNullable(importedValues).map(ImportedValues::copy).orElse(null);
         return clonedInputClauseLiteralExpression;
     }
@@ -250,5 +252,19 @@ public class InputClauseLiteralExpression extends DMNModelInstrumentedBase imple
                                          typeRef != null ? typeRef.hashCode() : 0,
                                          text != null ? text.hashCode() : 0,
                                          importedValues != null ? importedValues.hashCode() : 0);
+    }
+
+    @Override
+    public Optional<DomainObject> findDomainObject(final String uuid) {
+
+        if (matches(this, uuid)) {
+            return Optional.of(this);
+        }
+
+        if (matches(getImportedValues(), uuid)) {
+            return Optional.of(getImportedValues());
+        }
+
+        return Optional.empty();
     }
 }

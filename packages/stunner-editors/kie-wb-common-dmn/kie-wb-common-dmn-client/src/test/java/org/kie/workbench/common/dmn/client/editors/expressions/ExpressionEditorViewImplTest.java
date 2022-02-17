@@ -108,6 +108,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorViewImpl.ENABLED_BETA_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.LITERAL_EXPRESSION;
+import static org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType.UNDEFINED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -329,6 +330,7 @@ public class ExpressionEditorViewImplTest {
         when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
         when(undefinedExpressionEditorDefinition.getModelClass()).thenReturn(Optional.empty());
         when(undefinedExpressionEditorDefinition.getName()).thenReturn(UNDEFINED_EXPRESSION_DEFINITION_NAME);
+        when(undefinedExpressionEditorDefinition.getType()).thenReturn(UNDEFINED);
         when(undefinedExpressionEditor.getModel()).thenReturn(new BaseGridData());
         when(undefinedExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
                                                            any(Optional.class),
@@ -339,6 +341,7 @@ public class ExpressionEditorViewImplTest {
 
         when(literalExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(new LiteralExpression()));
         when(literalExpressionEditorDefinition.getName()).thenReturn(LITERAL_EXPRESSION.getText());
+        when(literalExpressionEditorDefinition.getType()).thenReturn(LITERAL_EXPRESSION);
         when(literalExpressionEditor.getModel()).thenReturn(new BaseGridData());
         when(literalExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
                                                          any(Optional.class),
@@ -815,5 +818,15 @@ public class ExpressionEditorViewImplTest {
                 .isNotEmpty()
                 .hasSize(1)
                 .anyMatch(typeProps -> typeProps.isCustom && typeProps.name.equals(customDataType) && typeProps.typeRef.equals(customDataType));
+    }
+
+    @Test
+    public void testOnLogicTypeSelect() {
+        doNothing().when(view).loadNewBoxedExpressionEditor();
+
+        view.onLogicTypeSelect(LITERAL_EXPRESSION.getText());
+
+        verify(literalExpressionEditorDefinition).enrich(any(), any(), any());
+        verify(view).loadNewBoxedExpressionEditor();
     }
 }

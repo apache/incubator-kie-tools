@@ -226,8 +226,8 @@
 
     <!-- Properties from DROOLS-WB parent POM -->
     <!-- TODO: Enable these flags after fixing all checkstyle issues -->
-    <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
-    <checkstyle.logViolationsToConsole>false</checkstyle.logViolationsToConsole>
+    <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
+    <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
 
     <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
     <code.coverage.disabled>false</code.coverage.disabled>
@@ -503,6 +503,14 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
+        </configuration>
       </plugin>
     </plugins>
 

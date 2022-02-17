@@ -26,26 +26,22 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.core.shared.GWT;
+import elemental2.core.JsObject;
+import jsinterop.base.Any;
+import jsinterop.base.Js;
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.dataset.DataSetLookupConstraints;
-import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
 import org.dashbuilder.renderer.c3.client.C3Displayer;
 import org.dashbuilder.renderer.c3.client.C3XYDisplayer;
 import org.dashbuilder.renderer.c3.client.charts.CommonC3DisplayerConstants;
-import org.dashbuilder.renderer.c3.client.charts.area.C3AreaChartDisplayer;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3DataInfo;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3JsTypesFactory;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3Point;
-
-import com.google.gwt.core.shared.GWT;
-
-import elemental2.core.JsObject;
-import jsinterop.base.Any;
-import jsinterop.base.Js;
 
 @Dependent
 public class C3BubbleChartDisplayer extends C3XYDisplayer<C3BubbleChartDisplayer.View> {

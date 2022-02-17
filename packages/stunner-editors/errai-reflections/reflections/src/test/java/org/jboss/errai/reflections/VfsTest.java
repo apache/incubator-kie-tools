@@ -16,21 +16,17 @@
 
 package org.jboss.errai.reflections;
 
-import com.google.common.base.Predicates;
-import org.junit.Assert;
-import org.junit.Test;
-import org.jboss.errai.reflections.util.ClasspathHelper;
-import org.jboss.errai.reflections.vfs.Vfs;
-import org.jboss.errai.reflections.vfs.ZipDir;
-
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
+
+import com.google.common.base.Predicates;
+import org.jboss.errai.reflections.util.ClasspathHelper;
+import org.jboss.errai.reflections.vfs.Vfs;
+import org.junit.Assert;
+import org.junit.Test;
 
 /** */
 public class VfsTest {

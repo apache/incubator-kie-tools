@@ -15,12 +15,25 @@
  */
 package org.uberfire.ext.layout.editor.client.widgets;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
+import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.layout.editor.client.api.*;
+import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
+import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditor;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorElement;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorElementPart;
+import org.uberfire.ext.layout.editor.client.api.LayoutElementWithProperties;
 import org.uberfire.ext.layout.editor.client.components.rows.RowDnDEvent;
 import org.uberfire.ext.layout.editor.client.event.LayoutEditorElementSelectEvent;
 import org.uberfire.ext.layout.editor.client.event.LayoutElementClearAllPropertiesEvent;
@@ -31,17 +44,9 @@ import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchService;
 import org.uberfire.ext.widgets.common.client.dropdown.SingleLiveSearchSelectionHandler;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.uberfire.ext.layout.editor.client.api.LayoutEditorElementType.*;
+import static org.uberfire.ext.layout.editor.client.api.LayoutEditorElementType.COLUMN;
+import static org.uberfire.ext.layout.editor.client.api.LayoutEditorElementType.COLUMN_WITH_COMPONENTS;
+import static org.uberfire.ext.layout.editor.client.api.LayoutEditorElementType.ROW;
 
 @ApplicationScoped
 public class LayoutEditorPropertiesPresenter {

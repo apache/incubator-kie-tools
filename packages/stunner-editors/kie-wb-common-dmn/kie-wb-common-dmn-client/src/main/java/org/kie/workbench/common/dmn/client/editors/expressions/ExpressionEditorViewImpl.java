@@ -38,6 +38,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
+import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
@@ -72,7 +73,9 @@ import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.P
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props.RelationProps;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.BoxedExpressionService;
 import org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.util.ExpressionPropsFiller;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.PMMLDocumentMetadataProvider;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
@@ -97,6 +100,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Domai
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
@@ -111,6 +115,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.Restri
 
 import static java.util.stream.Stream.concat;
 import static org.kie.workbench.common.dmn.api.definition.model.ItemDefinition.ITEM_DEFINITION_COMPARATOR;
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.matches;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BUILT_IN_TYPE_COMPARATOR;
 
 @Templated
@@ -375,7 +380,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         if (hasExpression instanceof Decision) {
             decisionNodeId = ((Decision) hasExpression).getId().getValue();
         } else if (hasExpression.getExpression() instanceof FunctionDefinition) {
-            decisionNodeId = ((BusinessKnowledgeModel) hasExpression.getExpression().asDMNModelInstrumentedBase().getParent()).getId().getValue();
+            decisionNodeId = getBusinessKnowledgeModel().getId().getValue();
         }
         DMNLoader.renderBoxedExpressionEditor(
                 ".kie-dmn-new-expression-editor",
@@ -401,6 +406,48 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     @Override
     public void clear() {
         getExpressionContainerGrid().clearExpressionType();
+    }
+
+    @Override
+    public void selectDomainObject(final String uuid) {
+        fireDomainObjectSelectionEvent(findDomainObject(uuid));
+    }
+
+    DomainObject findDomainObject(final String uuid) {
+
+        if (innerExpressionMatches(uuid)) {
+            return (DomainObject) hasExpression;
+        } else if (businessKnowledgeModelMatches(uuid)) {
+            return getBusinessKnowledgeModel();
+        } else {
+            final Optional<DomainObject> domainObject = hasExpression.getExpression().findDomainObject(uuid);
+            if (domainObject.isPresent()) {
+                return domainObject.get();
+            }
+            return new NOPDomainObject();
+        }
+    }
+
+    BusinessKnowledgeModel getBusinessKnowledgeModel() {
+        return ((BusinessKnowledgeModel) hasExpression.getExpression().asDMNModelInstrumentedBase().getParent());
+    }
+
+    boolean innerExpressionMatches(final String uuid) {
+        return hasExpression instanceof DomainObject
+                && matches(((DomainObject) hasExpression), uuid);
+    }
+
+    boolean businessKnowledgeModelMatches(final String uuid) {
+
+        return hasExpression.getExpression() instanceof FunctionDefinition
+                && matches(getBusinessKnowledgeModel(), uuid);
+    }
+
+    void fireDomainObjectSelectionEvent(final DomainObject domainObject) {
+
+        final DomainObjectSelectionEvent event = new DomainObjectSelectionEvent(sessionManager.getCurrentSession().getCanvasHandler(),
+                                                                                domainObject);
+        this.domainObjectSelectionEvent.fire(event);
     }
 
     public void resetExpressionDefinition(final ExpressionProps expressionProps) {
@@ -487,6 +534,13 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         dataTypePageActiveEvent.fire(new DataTypePageTabActiveEvent());
     }
 
+    public void onLogicTypeSelect(final String selectedLogicType) {
+        expressionEditorDefinitionsSupplier
+                .get()
+                .getExpressionEditorDefinition(ExpressionType.getTypeByText(selectedLogicType))
+                .ifPresent(this::enrichModelExpression);
+    }
+
     void executeExpressionCommand(final FillExpressionCommand expressionCommand) {
         expressionCommand.execute();
         updateCanvasNodeNameCommand.execute(getNodeUUID(), getHasName().orElse(null));
@@ -571,6 +625,17 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                     .toArray(EntryInfo[]::new);
             return new ModelsFromDocument(modelName, parametersFromModel);
         };
+    }
+
+    private void enrichModelExpression(final ExpressionEditorDefinition<Expression> expressionExpressionEditorDefinition) {
+        final Optional<Expression> modelExpression = expressionExpressionEditorDefinition.getModelClass();
+        expressionExpressionEditorDefinition.enrich(Optional.of(getNodeUUID()), hasExpression, modelExpression);
+        modelExpression.ifPresent(this::reloadNewBoxedExpressionEditorWithUpdatedModel);
+    }
+
+    private void reloadNewBoxedExpressionEditorWithUpdatedModel(final Expression expression) {
+        getHasExpression().setExpression(expression);
+        loadNewBoxedExpressionEditor();
     }
 
     @EventHandler("returnToLink")

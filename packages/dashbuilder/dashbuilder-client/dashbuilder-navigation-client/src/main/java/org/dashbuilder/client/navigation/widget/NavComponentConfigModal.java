@@ -16,6 +16,7 @@
 package org.dashbuilder.client.navigation.widget;
 
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -25,8 +26,6 @@ import org.dashbuilder.navigation.NavDivider;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TargetDivList;
 import org.uberfire.mvp.Command;
 
 @Dependent

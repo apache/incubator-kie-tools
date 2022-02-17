@@ -15,10 +15,6 @@
  */
 package org.dashbuilder.renderer.c3.client;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
-
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.client.AbstractDisplayerTest;
@@ -37,6 +33,10 @@ import org.dashbuilder.renderer.c3.client.jsbinding.C3Tick;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class C3BaseTest extends AbstractDisplayerTest {

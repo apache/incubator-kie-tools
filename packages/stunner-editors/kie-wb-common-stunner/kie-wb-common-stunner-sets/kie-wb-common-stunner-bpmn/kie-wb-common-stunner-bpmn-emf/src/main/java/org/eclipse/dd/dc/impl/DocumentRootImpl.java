@@ -15,25 +15,19 @@
 package org.eclipse.dd.dc.impl;
 
 import com.google.gwt.user.client.rpc.GwtTransient;
-
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.DcPackage;
 import org.eclipse.dd.dc.DocumentRoot;
 import org.eclipse.dd.dc.Font;
 import org.eclipse.dd.dc.Point;
-
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EMap;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.impl.EStringToStringMapEntryImpl;
-
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.EcoreEMap;
 import org.eclipse.emf.ecore.util.FeatureMap;

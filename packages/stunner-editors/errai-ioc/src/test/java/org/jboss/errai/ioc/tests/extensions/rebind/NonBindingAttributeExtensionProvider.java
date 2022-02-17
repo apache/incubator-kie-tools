@@ -16,9 +16,6 @@
 
 package org.jboss.errai.ioc.tests.extensions.rebind;
 
-import static org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraphBuilder.InjectableType.ExtensionProvided;
-import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.DependentBean;
-
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +39,9 @@ import org.jboss.errai.ioc.rebind.ioc.graph.impl.DefaultCustomFactoryInjectable;
 import org.jboss.errai.ioc.rebind.ioc.graph.impl.InjectableHandle;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.InjectionContext;
 import org.jboss.errai.ioc.tests.extensions.client.res.AnnoWithNonBindingAttribute;
+
+import static org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraphBuilder.InjectableType.ExtensionProvided;
+import static org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType.DependentBean;
 
 /**
  *

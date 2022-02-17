@@ -16,10 +16,10 @@
 
 package org.jboss.errai.enterprise.client.cdi.api;
 
+import java.util.Map;
+
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.ResourceProvider;
-
-import java.util.Map;
 
 public interface Message {
 

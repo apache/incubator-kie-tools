@@ -19,6 +19,8 @@ package org.jboss.errai.ioc.tests.extensions.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import org.jboss.errai.ioc.client.IOCUtil;
 import org.jboss.errai.ioc.client.container.ErraiUncaughtExceptionHandler;
 import org.jboss.errai.ioc.client.test.AbstractErraiIOCTest;
@@ -27,9 +29,6 @@ import org.jboss.errai.ioc.tests.extensions.client.res.ExceptionForAppScopedHand
 import org.jboss.errai.ioc.tests.extensions.client.res.ExceptionForDependentHandler;
 import org.jboss.errai.ioc.tests.extensions.client.res.ExceptionForPrivateHandler;
 import org.jboss.errai.ioc.tests.extensions.client.res.UncaughtExceptionTestLogger;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 
 /**
  * Tests support for handling uncaught exceptions.

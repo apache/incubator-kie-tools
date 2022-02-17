@@ -1,5 +1,8 @@
 package org.dashbuilder.dataprovider.csv;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataSet;
@@ -7,10 +10,6 @@ import org.dashbuilder.dataset.def.CSVDataSetDef;
 import org.dashbuilder.dataset.def.DataSetDefFactory;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.assertEquals;
 

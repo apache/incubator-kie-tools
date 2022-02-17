@@ -18,6 +18,7 @@ package org.uberfire.annotations.processors;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;

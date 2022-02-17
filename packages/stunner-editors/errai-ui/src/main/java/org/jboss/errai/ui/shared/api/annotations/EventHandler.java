@@ -23,16 +23,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.jboss.errai.common.client.api.annotations.BrowserEvent;
-import org.jboss.errai.common.client.dom.FocusEvent;
-
-import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-
 import jsinterop.annotations.JsType;
+import org.jboss.errai.common.client.api.annotations.BrowserEvent;
+import org.jboss.errai.common.client.dom.FocusEvent;
 
 /**
  * This annotation may only be used in classes that has been annotated with {@link Templated}, or in a super-class of

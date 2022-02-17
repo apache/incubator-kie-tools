@@ -16,13 +16,12 @@
 
 package org.jboss.errai.ui.test.nestedcyclic.client;
 
-import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.junit.Test;
-
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.regexp.shared.RegExp;
+import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.junit.Test;
 
 public class NestedCyclicTemplateTest extends AbstractErraiCDITest {
 

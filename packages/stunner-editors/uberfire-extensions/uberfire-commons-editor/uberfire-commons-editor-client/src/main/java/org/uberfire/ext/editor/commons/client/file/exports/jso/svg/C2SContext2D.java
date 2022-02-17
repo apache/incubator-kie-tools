@@ -17,7 +17,6 @@
 package org.uberfire.ext.editor.commons.client.file.exports.jso.svg;
 
 import java.util.Map;
-import java.util.Optional;
 
 import elemental2.dom.CanvasGradient;
 import elemental2.dom.Element;

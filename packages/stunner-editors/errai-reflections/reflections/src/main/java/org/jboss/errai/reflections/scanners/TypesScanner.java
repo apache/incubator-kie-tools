@@ -16,15 +16,15 @@
 
 package org.jboss.errai.reflections.scanners;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
 import com.google.common.collect.Lists;
 import org.jboss.errai.reflections.ReflectionsException;
 import org.jboss.errai.reflections.serializers.JavaCodeSerializer;
 import org.jboss.errai.reflections.util.Utils;
 import org.jboss.errai.reflections.vfs.Vfs;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 
 /** scans classes and stores fqn as key and full path as value */
 public class TypesScanner extends AbstractScanner {

@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
@@ -31,8 +33,6 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.infra.LayoutEditorCssHelper;
 import org.uberfire.ext.layout.editor.client.infra.RowSizeBuilder;
-
-import javax.inject.Inject;
 
 public abstract class AbstractLayoutGenerator implements LayoutGenerator {
 

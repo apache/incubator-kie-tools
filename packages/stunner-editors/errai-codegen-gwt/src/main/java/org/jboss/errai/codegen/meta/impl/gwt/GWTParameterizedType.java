@@ -19,14 +19,13 @@ package org.jboss.errai.codegen.meta.impl.gwt;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.codegen.meta.MetaType;
-import org.jboss.errai.codegen.meta.impl.AbstractMetaParameterizedType;
-
 import com.google.gwt.core.ext.typeinfo.JArrayType;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JParameterizedType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import org.jboss.errai.codegen.meta.MetaType;
+import org.jboss.errai.codegen.meta.impl.AbstractMetaParameterizedType;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

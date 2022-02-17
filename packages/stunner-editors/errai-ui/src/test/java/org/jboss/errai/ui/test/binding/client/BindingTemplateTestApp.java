@@ -19,6 +19,7 @@ package org.jboss.errai.ui.test.binding.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.client.widget.ListWidget;
 import org.jboss.errai.ui.client.widget.Table;
@@ -30,8 +31,6 @@ import org.jboss.errai.ui.test.binding.client.res.CompositeBindingTemplate;
 import org.jboss.errai.ui.test.binding.client.res.NonCompositeBindingItem;
 import org.jboss.errai.ui.test.binding.client.res.NonCompositeBindingTemplate;
 import org.jboss.errai.ui.test.common.client.TestModel;
-
-import com.google.gwt.user.client.ui.RootPanel;
 
 @EntryPoint
 public class BindingTemplateTestApp {

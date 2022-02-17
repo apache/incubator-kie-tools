@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
@@ -24,11 +25,13 @@ import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 
 import static java.util.Collections.singletonList;
 
 public abstract class Expression extends DMNElement implements HasTypeRef,
-                                                               HasComponentWidths {
+                                                               HasComponentWidths,
+                                                               HasDomainObject {
 
     protected QName typeRef;
 
@@ -50,6 +53,13 @@ public abstract class Expression extends DMNElement implements HasTypeRef,
      * Its purpose is to exploit polymorphism when we deeply copy the Expression boxed inside the {@link Decision}
      */
     public abstract Expression copy();
+
+    /**
+     * Find a {@link DomainObject} in the expression with the given the UUID.
+     * @param uuid The UUID of the {@link DomainObject}.
+     * @return The found domain object or empty if the object was not found.
+     */
+    public abstract Optional<DomainObject> findDomainObject(final String uuid);
 
     // -----------------------
     // DMN properties

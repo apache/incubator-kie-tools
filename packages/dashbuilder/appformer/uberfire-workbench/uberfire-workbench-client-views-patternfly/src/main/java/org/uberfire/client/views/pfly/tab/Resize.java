@@ -17,6 +17,7 @@
 package org.uberfire.client.views.pfly.tab;
 
 import java.lang.annotation.Retention;
+
 import javax.inject.Qualifier;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

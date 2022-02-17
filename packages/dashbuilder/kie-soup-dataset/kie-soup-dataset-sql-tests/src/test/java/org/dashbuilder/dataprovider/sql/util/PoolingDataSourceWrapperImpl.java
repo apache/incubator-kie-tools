@@ -30,10 +30,9 @@ import javax.sql.XADataSource;
 import javax.transaction.TransactionManager;
 import javax.transaction.TransactionSynchronizationRegistry;
 
+import com.arjuna.ats.jta.common.jtaPropertyManager;
 import org.apache.tomcat.dbcp.dbcp2.managed.BasicManagedDataSource;
 import org.dashbuilder.dataprovider.sql.DatabaseTestSettings;
-
-import com.arjuna.ats.jta.common.jtaPropertyManager;
 
 /**
  * Wrapper for actual Pooling Data Source provided by tomcat DBCP library. This class offers data source with

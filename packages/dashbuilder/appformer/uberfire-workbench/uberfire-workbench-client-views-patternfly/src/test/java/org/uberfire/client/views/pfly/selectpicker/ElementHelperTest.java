@@ -19,7 +19,8 @@ package org.uberfire.client.views.pfly.selectpicker;
 import elemental2.dom.Node;
 import org.junit.Test;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class ElementHelperTest {
 

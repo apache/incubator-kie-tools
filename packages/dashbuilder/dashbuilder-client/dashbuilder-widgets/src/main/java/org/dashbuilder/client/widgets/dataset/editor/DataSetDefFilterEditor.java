@@ -15,6 +15,11 @@
  */
 package org.dashbuilder.client.widgets.dataset.editor;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.editor.client.EditorDelegate;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -24,12 +29,6 @@ import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.dashbuilder.displayer.client.events.DataSetFilterChangedEvent;
 import org.dashbuilder.displayer.client.widgets.filter.DataSetFilterEditor;
 import org.uberfire.client.mvp.UberView;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
 /**
  * <p>Data Set filter editor presenter.</p>

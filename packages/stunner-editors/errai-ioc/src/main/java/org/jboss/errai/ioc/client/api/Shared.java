@@ -16,10 +16,6 @@
 
 package org.jboss.errai.ioc.client.api;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -27,6 +23,10 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 import jsinterop.annotations.JsType;
+
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * A qualifier indicating that the injected type should be satisfied by a

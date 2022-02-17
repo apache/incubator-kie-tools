@@ -16,12 +16,12 @@
 
 package org.jboss.errai.databinding.client;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.ui.shared.api.annotations.AutoBound;
 import org.jboss.errai.ui.shared.api.annotations.Bound;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 /**
  * @author Tiago Bento <tfernand@redhat.com>

@@ -20,8 +20,6 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import elemental2.dom.Blob;
-import elemental2.dom.BlobPropertyBag;
-import jsinterop.base.Js;
 import org.uberfire.ext.editor.commons.client.file.exports.AbstractFileExport;
 
 import static elemental2.dom.Blob.ConstructorBlobPartsArrayUnionType;

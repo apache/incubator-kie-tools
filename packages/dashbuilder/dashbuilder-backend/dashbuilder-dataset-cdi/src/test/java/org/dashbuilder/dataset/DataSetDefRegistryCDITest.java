@@ -15,10 +15,6 @@
  */
 package org.dashbuilder.dataset;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-
 import javax.enterprise.event.Event;
 
 import org.dashbuilder.dataprovider.DataSetProviderRegistryCDI;
@@ -39,6 +35,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(Arquillian.class)
 @Ignore("see https://issues.jboss.org/browse/RHPAM-832")

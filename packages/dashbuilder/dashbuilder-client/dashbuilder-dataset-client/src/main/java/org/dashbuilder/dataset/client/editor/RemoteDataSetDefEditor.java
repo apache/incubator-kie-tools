@@ -18,7 +18,6 @@ package org.dashbuilder.dataset.client.editor;
 
 import org.dashbuilder.common.client.editor.LeafAttributeEditor;
 import org.dashbuilder.common.client.editor.ValueBoxEditor;
-import org.dashbuilder.dataset.client.editor.DataSetDefEditor;
 import org.dashbuilder.kieserver.RemoteDataSetDef;
 
 public interface RemoteDataSetDefEditor extends DataSetDefEditor<RemoteDataSetDef> {

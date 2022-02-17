@@ -25,9 +25,9 @@ import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataprovider.csv.CSVDataSetProvider;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataSetManager;
-import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 import org.dashbuilder.dataset.def.CSVDataSetDef;
 import org.dashbuilder.dataset.def.DataSetDef;
+import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 import org.junit.Before;
 import org.junit.Test;
 

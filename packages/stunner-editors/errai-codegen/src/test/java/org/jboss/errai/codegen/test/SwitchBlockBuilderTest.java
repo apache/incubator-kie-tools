@@ -16,6 +16,12 @@
 
 package org.jboss.errai.codegen.test;
 
+import org.jboss.errai.codegen.Context;
+import org.jboss.errai.codegen.builder.impl.StatementBuilder;
+import org.jboss.errai.codegen.exception.InvalidTypeException;
+import org.jboss.errai.codegen.util.Stmt;
+import org.junit.Test;
+
 import static org.jboss.errai.codegen.test.SwitchBlockBuilderTestResult.SWITCH_BLOCK_CHAINED_INVOCATION;
 import static org.jboss.errai.codegen.test.SwitchBlockBuilderTestResult.SWITCH_BLOCK_CHAR_CHAINED;
 import static org.jboss.errai.codegen.test.SwitchBlockBuilderTestResult.SWITCH_BLOCK_EMPTY;
@@ -24,12 +30,6 @@ import static org.jboss.errai.codegen.test.SwitchBlockBuilderTestResult.SWITCH_B
 import static org.jboss.errai.codegen.test.SwitchBlockBuilderTestResult.SWITCH_BLOCK_INTEGER_NO_DEFAULT;
 import static org.jboss.errai.codegen.test.SwitchBlockBuilderTestResult.SWITCH_BLOCK_INT_FALLTHROUGH;
 import static org.junit.Assert.fail;
-
-import org.jboss.errai.codegen.Context;
-import org.jboss.errai.codegen.builder.impl.StatementBuilder;
-import org.jboss.errai.codegen.exception.InvalidTypeException;
-import org.jboss.errai.codegen.util.Stmt;
-import org.junit.Test;
 
 /**
  * Tests the generation of switch blocks using the {@link StatementBuilder} API.

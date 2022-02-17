@@ -21,7 +21,18 @@ import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetFactory;
 import org.dashbuilder.dataset.DataSetGenerator;
 
-import static org.dashbuilder.dataset.date.Month.*;
+import static org.dashbuilder.dataset.date.Month.APRIL;
+import static org.dashbuilder.dataset.date.Month.AUGUST;
+import static org.dashbuilder.dataset.date.Month.DECEMBER;
+import static org.dashbuilder.dataset.date.Month.FEBRUARY;
+import static org.dashbuilder.dataset.date.Month.JANUARY;
+import static org.dashbuilder.dataset.date.Month.JULY;
+import static org.dashbuilder.dataset.date.Month.JUNE;
+import static org.dashbuilder.dataset.date.Month.MARCH;
+import static org.dashbuilder.dataset.date.Month.MAY;
+import static org.dashbuilder.dataset.date.Month.NOVEMBER;
+import static org.dashbuilder.dataset.date.Month.OCTOBER;
+import static org.dashbuilder.dataset.date.Month.SEPTEMBER;
 
 public class SalesPerYearDataSetGenerator implements DataSetGenerator {
 

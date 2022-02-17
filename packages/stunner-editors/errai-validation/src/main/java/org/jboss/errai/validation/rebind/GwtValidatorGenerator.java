@@ -16,6 +16,20 @@
 
 package org.jboss.errai.validation.rebind;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import javax.validation.Constraint;
+import javax.validation.Valid;
+import javax.validation.Validator;
+import javax.validation.groups.Default;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import com.google.gwt.core.ext.GeneratorContext;
@@ -29,19 +43,6 @@ import org.jboss.errai.codegen.meta.MetaMethod;
 import org.jboss.errai.config.util.ClassScanner;
 import org.jboss.errai.ioc.util.PropertiesUtil;
 import org.jboss.errai.reflections.util.SimplePackageFilter;
-
-import javax.validation.Constraint;
-import javax.validation.Valid;
-import javax.validation.Validator;
-import javax.validation.groups.Default;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
 

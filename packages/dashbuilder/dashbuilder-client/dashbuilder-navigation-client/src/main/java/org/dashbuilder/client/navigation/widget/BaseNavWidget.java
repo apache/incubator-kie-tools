@@ -21,6 +21,7 @@ import java.util.List;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.navigation.NavDivider;
 import org.dashbuilder.navigation.NavGroup;
@@ -28,8 +29,6 @@ import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.uberfire.mvp.Command;
-
-import com.google.gwt.user.client.ui.Widget;
 
 public abstract class BaseNavWidget implements NavWidget {
 

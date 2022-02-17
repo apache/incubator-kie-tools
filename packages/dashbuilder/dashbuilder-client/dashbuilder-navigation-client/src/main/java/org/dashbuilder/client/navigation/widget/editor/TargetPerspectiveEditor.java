@@ -21,6 +21,7 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
@@ -30,8 +31,6 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.widgets.common.client.dropdown.PerspectiveDropDown;
 import org.uberfire.ext.widgets.common.client.dropdown.PerspectiveNameProvider;
 import org.uberfire.mvp.Command;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 @Dependent
 public class TargetPerspectiveEditor implements IsElement, PerspectiveNameProvider {

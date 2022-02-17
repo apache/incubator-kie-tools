@@ -20,7 +20,6 @@ import elemental2.dom.HTMLAnchorElement;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import org.jboss.errai.common.client.api.annotations.Element;
 import org.jboss.errai.common.client.ui.HasValue;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "HTMLAnchorElement")

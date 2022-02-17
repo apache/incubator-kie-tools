@@ -45,16 +45,19 @@ import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourB
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
+import org.kie.workbench.common.stunner.client.lienzo.util.StunnerStateApplier;
 import org.kie.workbench.common.stunner.client.widgets.editor.EditorSessionCommands;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.ConfirmationDialog;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.util.WindowJSType;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
@@ -99,7 +102,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final DRDNameChanger drdNameChanger,
                             final ReadOnlyProvider readOnlyProvider,
                             final LazyCanvasFocusUtils lazyCanvasFocusUtils,
-                            final EditorSessionCommands commands) {
+                            final EditorSessionCommands commands,
+                            final ConfirmationDialog confirmationDialog) {
         super(view,
               containerView,
               stunnerEditor,
@@ -123,7 +127,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               includedModelsPage,
               kogitoChannelHelper,
               guidedTourBridgeInitializer,
-              drdNameChanger);
+              drdNameChanger,
+              confirmationDialog);
         this.readOnlyProvider = readOnlyProvider;
         this.lazyCanvasFocusUtils = lazyCanvasFocusUtils;
         this.commands = commands;
@@ -153,7 +158,12 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
         if (canvas != null) {
             LienzoPanel panel = (LienzoPanel) canvas.getView().getPanel();
             LienzoBoundsPanel lienzoPanel = panel.getView();
-            JsCanvas jsCanvas = new JsCanvas(lienzoPanel, lienzoPanel.getLayer());
+            JsCanvas jsCanvas = new JsCanvas(lienzoPanel, lienzoPanel.getLayer(), new StunnerStateApplier() {
+                @Override
+                public Shape getShape(String uuid) {
+                    return stunnerEditor.getCanvasHandler().getCanvas().getShape(uuid);
+                }
+            });
             setupJsCanvasTypeNative(jsCanvas);
         }
     }
@@ -207,6 +217,12 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
     public Promise<Void> redo() {
         return promises.create((resolve, reject) -> {
             commands.getRedoSessionCommand().execute();
+        });
+    }
+
+    public Promise<Void> searchDomainObject(final String uuid) {
+        return promises.create((resolve, reject) -> {
+            throw new UnsupportedOperationException("This diagram does not support search for domain objects");
         });
     }
 

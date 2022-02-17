@@ -15,8 +15,6 @@
  */
 package org.dashbuilder.common.client;
 
-import java.lang.String;
-
 import com.google.gwt.user.client.ui.HTML;
 
 public class SpacerWidget extends HTML {

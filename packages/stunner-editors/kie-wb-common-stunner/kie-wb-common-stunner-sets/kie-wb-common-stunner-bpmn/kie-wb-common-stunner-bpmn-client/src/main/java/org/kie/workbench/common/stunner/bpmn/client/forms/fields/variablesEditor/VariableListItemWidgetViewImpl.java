@@ -284,9 +284,10 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
                               true,
                               CUSTOM_PROMPT,
                               ENTER_TYPE_PROMPT);
-        customDataType.setRegExp(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_REGEXP,
+        customDataType.setRegExp(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_GT_LT_REGEXP,
                                  StunnerFormsClientFieldsConstants.CONSTANTS.Removed_invalid_characters_from_name(),
-                                 StunnerFormsClientFieldsConstants.CONSTANTS.Invalid_character_in_name());
+                                 StunnerFormsClientFieldsConstants.CONSTANTS.Invalid_character_in_name(),
+                                 StunnerFormsClientFieldsConstants.CONSTANTS.Unbalanced_GT_LT_from_name());
         customDataType.addKeyDownHandler(this::preventSpaces);
 
         PopOver.jQuery(variableTagsSettings).popovers();

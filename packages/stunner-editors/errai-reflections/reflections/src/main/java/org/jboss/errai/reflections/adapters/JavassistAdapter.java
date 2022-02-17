@@ -16,13 +16,6 @@
 
 package org.jboss.errai.reflections.adapters;
 
-import com.google.common.base.Joiner;
-import static javassist.bytecode.AccessFlag.*;
-
-import com.google.common.collect.Lists;
-import javassist.bytecode.*;
-import javassist.bytecode.annotation.Annotation;
-
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -30,6 +23,20 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.Descriptor;
+import javassist.bytecode.FieldInfo;
+import javassist.bytecode.MethodInfo;
+import javassist.bytecode.ParameterAnnotationsAttribute;
+import javassist.bytecode.annotation.Annotation;
+
+import static javassist.bytecode.AccessFlag.isPrivate;
+import static javassist.bytecode.AccessFlag.isProtected;
+import static javassist.bytecode.AccessFlag.isPublic;
 
 /**
  *

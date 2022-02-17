@@ -3,22 +3,17 @@
 package org.omg.spec.bpmn.non.normative.color.impl;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import org.eclipse.emf.common.util.Reflect;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EValidator;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
 import org.omg.spec.bpmn.non.normative.color.ColorFactory;
 import org.omg.spec.bpmn.non.normative.color.ColorPackage;
 import org.omg.spec.bpmn.non.normative.color.DocumentRoot;
-
 import org.omg.spec.bpmn.non.normative.color.util.ColorValidator;
 
 /**

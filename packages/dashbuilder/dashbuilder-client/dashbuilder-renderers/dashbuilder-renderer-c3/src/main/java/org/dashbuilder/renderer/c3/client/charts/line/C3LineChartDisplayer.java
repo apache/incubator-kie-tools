@@ -27,7 +27,6 @@ import org.dashbuilder.displayer.DisplayerConstraints;
 import org.dashbuilder.renderer.c3.client.C3Displayer;
 import org.dashbuilder.renderer.c3.client.C3XYDisplayer;
 import org.dashbuilder.renderer.c3.client.charts.CommonC3DisplayerConstants;
-import org.dashbuilder.renderer.c3.client.charts.area.C3AreaChartDisplayer;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3JsTypesFactory;
 
 @Dependent

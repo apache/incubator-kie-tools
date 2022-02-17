@@ -1,12 +1,12 @@
 package org.dashbuilder.dataset.client.editor;
 
+import java.util.List;
+
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.ValueAwareEditor;
 import org.dashbuilder.common.client.editor.HasConstrainedValue;
 import org.dashbuilder.dataset.def.DataColumnDef;
 import org.dashbuilder.dataset.def.DataSetDef;
-
-import java.util.List;
 
 /**
  * <p>The GWT editor contract for beans of type <code>org.dashbuilder.dataset.def.DataSetDef</code>.</p>

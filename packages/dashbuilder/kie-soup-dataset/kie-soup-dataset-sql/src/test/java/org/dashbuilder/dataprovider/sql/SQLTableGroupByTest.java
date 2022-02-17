@@ -24,8 +24,12 @@ import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.def.DataSetDefFactory;
 import org.junit.Test;
 
-import static org.dashbuilder.dataprovider.sql.SQLFactory.*;
-import static org.junit.Assert.*;
+import static org.dashbuilder.dataprovider.sql.SQLFactory.column;
+import static org.dashbuilder.dataprovider.sql.SQLFactory.createTable;
+import static org.dashbuilder.dataprovider.sql.SQLFactory.dropTable;
+import static org.dashbuilder.dataprovider.sql.SQLFactory.insert;
+import static org.dashbuilder.dataprovider.sql.SQLFactory.table;
+import static org.junit.Assert.assertEquals;
 
 public class SQLTableGroupByTest extends SQLDataSetTestBase {
 

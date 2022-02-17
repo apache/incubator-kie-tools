@@ -20,10 +20,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.ui.shared.TemplateInitializedEvent;
 import org.jboss.errai.ui.test.runtime.client.res.RuntimeParentComponent;
-
-import com.google.gwt.user.client.ui.RootPanel;
 
 @Dependent
 public class RuntimeTemplateTestApp {

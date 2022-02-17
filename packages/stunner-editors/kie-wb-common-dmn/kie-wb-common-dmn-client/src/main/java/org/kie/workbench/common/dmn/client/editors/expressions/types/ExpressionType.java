@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 public enum ExpressionType {
 
     UNDEFINED("<Undefined>"),
@@ -33,6 +36,15 @@ public enum ExpressionType {
 
     ExpressionType(final String text) {
         this.text = text;
+    }
+
+    public static ExpressionType getTypeByText(final String text) {
+        final String trimmedText = Optional.ofNullable(text).orElse("").trim();
+        return Arrays
+                .stream(values())
+                .filter(expressionType -> expressionType.getText().equalsIgnoreCase(trimmedText))
+                .findAny()
+                .orElse(UNDEFINED);
     }
 
     public String getText() {

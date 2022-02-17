@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,8 +27,10 @@ import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static org.kie.workbench.common.dmn.api.definition.model.common.DomainObjectSearcherHelper.find;
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getFlatHasTypeRefs;
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getNotNullHasTypeRefs;
 
@@ -68,6 +71,21 @@ public class Invocation extends Expression implements HasExpression {
         clonedInvocation.expression = Optional.ofNullable(expression).map(Expression::copy).orElse(null);
         clonedInvocation.binding = binding.stream().map(Binding::copy).collect(Collectors.toList());
         return clonedInvocation;
+    }
+
+    @Override
+    public Optional<DomainObject> findDomainObject(final String uuid) {
+
+        Optional<DomainObject> domainObject = Optional.empty();
+        if (!Objects.isNull(getExpression())) {
+            domainObject = getExpression().findDomainObject(uuid);
+        }
+
+        if (domainObject.isPresent()) {
+            return domainObject;
+        }
+
+        return find(getBinding(), uuid);
     }
 
     @Override

@@ -1,8 +1,17 @@
 package org.dashbuilder.common.client.editor.map;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.editor.client.EditorError;
-import com.google.gwt.editor.client.HasEditorErrors;
-import com.google.gwt.editor.client.LeafValueEditor;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -11,12 +20,6 @@ import org.dashbuilder.common.client.editor.LeafAttributeEditor;
 import org.dashbuilder.common.client.event.ValueChangeEvent;
 import org.dashbuilder.common.client.resources.i18n.DashbuilderCommonConstants;
 import org.uberfire.client.mvp.UberView;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.*;
 
 /**
  * <p>Provides an editor for a Map instance of String values.</p>

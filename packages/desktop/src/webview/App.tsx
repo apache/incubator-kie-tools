@@ -22,11 +22,11 @@ import "@patternfly/patternfly/base/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.scss";
 import "@patternfly/patternfly/patternfly.scss";
 import "../../static/resources/style.css";
-import { ElectronFile } from "../common/ElectronFile";
+import { ElectronFile, UNSAVED_FILE_NAME } from "../common/ElectronFile";
 import { GlobalContext } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { HomePage } from "./home/HomePage";
-import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n";
@@ -66,17 +66,11 @@ export function App() {
   );
 
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
-    () => ({
-      targetOrigin: window.location.origin,
-      mapping: new Map([
-        ["bpmn", bpmnEnvelope],
-        ["bpmn2", bpmnEnvelope],
-        ["BPMN", bpmnEnvelope],
-        ["BPMN2", bpmnEnvelope],
-        ["dmn", dmnEnvelope],
-        ["DMN", dmnEnvelope],
+    () =>
+      new EditorEnvelopeLocator(window.location.origin, [
+        new EnvelopeMapping("bpmn", "**/*.bpmn?(2)", "../gwt-editors/bpmn", "envelope/bpmn-envelope.html"),
+        new EnvelopeMapping("dmn", "**/*.dmn", "../gwt-editors/dmn", "envelope/dmn-envelope.html"),
       ]),
-    }),
     []
   );
 
@@ -132,7 +126,7 @@ export function App() {
 
   useEffect(() => {
     electron.ipcRenderer.on("openFile", (event: IpcRendererEvent, data: { file: ElectronFile }) => {
-      if (editorEnvelopeLocator.mapping.has(data.file.fileType)) {
+      if (data.file.filePath === UNSAVED_FILE_NAME || editorEnvelopeLocator.hasMappingFor(data.file.filePath)) {
         if (page === Pages.EDITOR) {
           setPage(Pages.HOME);
         }

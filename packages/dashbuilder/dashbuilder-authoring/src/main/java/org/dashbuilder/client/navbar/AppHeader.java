@@ -19,6 +19,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLDivElement;
+import jsinterop.base.Js;
 import org.dashbuilder.client.navigation.NavBarHelper;
 import org.dashbuilder.navigation.NavTree;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -26,9 +28,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.workbench.Header;
 import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
 import org.uberfire.workbench.model.menu.Menus;
-
-import elemental2.dom.HTMLDivElement;
-import jsinterop.base.Js;
 
 @Templated
 @ApplicationScoped

@@ -16,7 +16,7 @@
 package org.uberfire.ext.layout.editor.client.widgets;
 
 import java.util.Map;
-import java.util.Random;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

@@ -15,7 +15,6 @@
 package org.eclipse.bpmn2.impl;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.AdHocOrdering;
 import org.eclipse.bpmn2.AdHocSubProcess;
@@ -164,29 +163,19 @@ import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.Transaction;
 import org.eclipse.bpmn2.UserTask;
-
 import org.eclipse.bpmn2.di.BpmnDiPackage;
-
 import org.eclipse.bpmn2.di.impl.BpmnDiPackageImpl;
-
 import org.eclipse.dd.dc.DcPackage;
-
 import org.eclipse.dd.dc.impl.DcPackageImpl;
-
 import org.eclipse.dd.di.DiPackage;
-
 import org.eclipse.dd.di.impl.DiPackageImpl;
-
 import org.eclipse.emf.common.util.Reflect;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
 /**

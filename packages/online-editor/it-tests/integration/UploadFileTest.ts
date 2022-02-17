@@ -116,6 +116,10 @@ describe("Upload file test", () => {
       cy.get("[title='Test input data'] > div").click();
       cy.get("iframe").type("d", { force: true });
 
+      // wait until new node is added
+      cy.get("[title='Decision-1'] > div").should("be.visible");
+      cy.get("[title='Decision-1'] > div").click();
+
       // close decision navigatior, open properties and rename decision node
       cy.get("[data-title='Decision Navigator']").click();
       cy.get("[data-title='Properties']").click();
@@ -166,6 +170,13 @@ describe("Upload file test", () => {
     cy.get("[data-ouia-component-id='dmn-guided-tour']").should("not.be.visible");
 
     cy.get("[data-ouia-component-id='set-content-error-alert']").should("be.visible");
+  });
+
+  it("DMN Automatic Layout dialogue should appear when opening file without DMNDI", () => {
+    // upload dmn file from fixtures directory by drag and drop
+    cy.get("#upload-field").attachFile("testModelWithoutLayout.dmn", { subjectType: "drag-n-drop" });
+
+    cy.confirmAutomaticLayoutDialogue();
   });
 
   it("should upload PMML file", () => {

@@ -16,10 +16,13 @@
 
 package org.jboss.errai.reflections;
 
-import static java.util.Arrays.asList;
-import static org.jboss.errai.reflections.TestModel.*;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import java.io.File;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
@@ -39,13 +42,25 @@ import org.jboss.errai.reflections.vfs.Vfs;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Set;
-import java.util.regex.Pattern;
+import static java.util.Arrays.asList;
+import static org.jboss.errai.reflections.TestModel.AC1;
+import static org.jboss.errai.reflections.TestModel.AC2;
+import static org.jboss.errai.reflections.TestModel.AF1;
+import static org.jboss.errai.reflections.TestModel.AI1;
+import static org.jboss.errai.reflections.TestModel.AI2;
+import static org.jboss.errai.reflections.TestModel.AM1;
+import static org.jboss.errai.reflections.TestModel.C1;
+import static org.jboss.errai.reflections.TestModel.C2;
+import static org.jboss.errai.reflections.TestModel.C3;
+import static org.jboss.errai.reflections.TestModel.C4;
+import static org.jboss.errai.reflections.TestModel.C5;
+import static org.jboss.errai.reflections.TestModel.C6;
+import static org.jboss.errai.reflections.TestModel.I1;
+import static org.jboss.errai.reflections.TestModel.I2;
+import static org.jboss.errai.reflections.TestModel.I3;
+import static org.jboss.errai.reflections.TestModel.MAI1;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 /**
  *

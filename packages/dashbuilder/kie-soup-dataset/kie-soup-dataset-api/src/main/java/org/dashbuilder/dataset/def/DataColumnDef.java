@@ -1,7 +1,8 @@
 package org.dashbuilder.dataset.def;
 
-import org.dashbuilder.dataset.ColumnType;
 import javax.validation.constraints.NotNull;
+
+import org.dashbuilder.dataset.ColumnType;
 
 /**
  * <p>This class is used to define the structure and runtime behaviour of a data set definition's column instance.</p>

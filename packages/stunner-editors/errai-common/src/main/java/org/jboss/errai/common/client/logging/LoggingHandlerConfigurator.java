@@ -23,14 +23,13 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.logging.client.HasWidgetsLogHandler;
 import org.jboss.errai.common.client.logging.formatters.ErraiSimpleFormatter;
 import org.jboss.errai.common.client.logging.handlers.ErraiConsoleLogHandler;
 import org.jboss.errai.common.client.logging.handlers.ErraiDevelopmentModeLogHandler;
 import org.jboss.errai.common.client.logging.handlers.ErraiLogHandler;
 import org.jboss.errai.common.client.logging.handlers.ErraiSystemLogHandler;
-
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.logging.client.HasWidgetsLogHandler;
 
 /**
  * Initializes Errai log handlers, which are:
