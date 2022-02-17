@@ -69,7 +69,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
    */
   const tdBaseProps = useCallback(
     (_columnIndex: number, rowIndex: number) => ({
-      tabIndex: 0,
+      tabIndex: -1,
       onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => {
         const key = e.key;
         const isModKey = e.altKey || e.ctrlKey || e.shiftKey || key === "AltGraph";
