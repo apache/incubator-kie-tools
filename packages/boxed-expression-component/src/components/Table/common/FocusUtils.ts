@@ -61,7 +61,7 @@ export const getParentCell = (currentEl: HTMLElement | null): HTMLTableCellEleme
     return null;
   }
 
-  return <HTMLTableCellElement>(currentEl.matches(cellSelector) ? currentEl : currentEl.closest(cellSelector));
+  return (currentEl.matches(cellSelector) ? currentEl : currentEl.closest(cellSelector)) as HTMLTableCellElement;
 };
 
 /**
@@ -96,7 +96,7 @@ export const focusCurrentCell = (currentEl: HTMLElement | null): void => {
  * @returns
  */
 export const focusNextCell = (currentEl: HTMLElement | null): void => {
-  cellFocus(<HTMLTableCellElement>getParentCell(currentEl)?.nextElementSibling);
+  cellFocus(getParentCell(currentEl)?.nextElementSibling as HTMLTableCellElement);
 };
 
 /**
@@ -113,7 +113,7 @@ export const focusNextDataCell = (currentEl: HTMLElement | null, rowIndex: numbe
     return;
   }
 
-  const nextCell = <HTMLTableCellElement>currentCell.nextElementSibling;
+  const nextCell = currentCell.nextElementSibling as HTMLTableCellElement;
 
   if (!nextCell) {
     focusLowerCell(currentCell, rowIndex, 1);
@@ -129,7 +129,7 @@ export const focusNextDataCell = (currentEl: HTMLElement | null, rowIndex: numbe
  * @returns
  */
 export const focusPrevCell = (currentEl: HTMLElement | null): void => {
-  cellFocus(<HTMLTableCellElement>getParentCell(currentEl)?.previousElementSibling);
+  cellFocus(getParentCell(currentEl)?.previousElementSibling as HTMLTableCellElement);
 };
 
 /**
@@ -146,7 +146,7 @@ export const focusPrevDataCell = (currentEl: HTMLElement | null, rowIndex: numbe
     return;
   }
 
-  const lastCellIndex = (<HTMLTableRowElement>currentCell.parentElement).cells.length - 1;
+  const lastCellIndex = (currentCell.parentElement as HTMLTableRowElement).cells.length - 1;
   const cellIndex = currentCell.cellIndex;
 
   if (cellIndex <= 1) {
@@ -164,7 +164,7 @@ export const focusPrevDataCell = (currentEl: HTMLElement | null, rowIndex: numbe
  * @returns
  */
 export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number, cellIndex?: number): void => {
-  const currentCell = <HTMLTableCellElement>getParentCell(currentEl);
+  const currentCell = getParentCell(currentEl) as HTMLTableCellElement;
 
   if (!currentCell) {
     return;
@@ -174,7 +174,7 @@ export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number, 
   const gotoRow = currentBody?.rows[rowIndex - 1];
   const gotoCellIndex = cellIndex === undefined ? currentCell.cellIndex : cellIndex;
 
-  cellFocus(<HTMLTableCellElement>gotoRow?.cells[gotoCellIndex] || currentCell);
+  cellFocus((gotoRow?.cells[gotoCellIndex] as HTMLTableCellElement) || currentCell);
 };
 
 /**
@@ -186,7 +186,7 @@ export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number, 
  * @returns
  */
 export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number, cellIndex?: number): void => {
-  const currentCell = <HTMLTableCellElement>getParentCell(currentEl);
+  const currentCell = getParentCell(currentEl) as HTMLTableCellElement;
 
   if (!currentCell) {
     return;
@@ -195,7 +195,7 @@ export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number, 
   const gotoRow = currentBody?.rows[rowIndex + 1];
   const gotoCellIndex = cellIndex === undefined ? currentCell.cellIndex : cellIndex;
 
-  cellFocus(<HTMLTableCellElement>gotoRow?.cells[gotoCellIndex] || currentCell);
+  cellFocus((gotoRow?.cells[gotoCellIndex] as HTMLTableCellElement) || currentCell);
 };
 
 /**
@@ -210,21 +210,21 @@ export const focusInsideCell = (currentEl: HTMLElement | null, eraseContent = fa
     return;
   }
 
-  const nestedTbody = <HTMLTableSectionElement>currentEl.querySelector("table > tbody");
+  const nestedTbody = currentEl.querySelector("table > tbody") as HTMLTableSectionElement;
 
   if (nestedTbody) {
     cellFocus(nestedTbody.rows[0].cells[1]);
     return;
   }
 
-  const cellWithPopoverMenu = <HTMLElement>currentEl.querySelector(".with-popover-menu, .logic-type-not-present");
+  const cellWithPopoverMenu = currentEl.querySelector(".with-popover-menu, .logic-type-not-present") as HTMLElement;
 
   if (cellWithPopoverMenu) {
     cellWithPopoverMenu.click();
     return;
   }
 
-  const cellWithSelect = <HTMLElement>currentEl.querySelector(".logic-type-selector button");
+  const cellWithSelect = currentEl.querySelector(".logic-type-selector button") as HTMLElement;
 
   if (cellWithSelect) {
     cellWithSelect.click();
