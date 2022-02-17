@@ -28,8 +28,6 @@ let backendProxy: VsCodeBackendProxy;
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
-  const envelopeTargetOrigin = "vscode";
-
   const workspaceApi = new VsCodeWorkspaceApi();
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   const notificationsApi = new VsCodeNotificationsApi(workspaceApi);
@@ -50,7 +48,7 @@ export async function activate(context: vscode.ExtensionContext) {
     viewType: "kieKogitoWebviewEditors",
     generateSvgCommandId: "extension.kogito.getPreviewSvg",
     silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvg",
-    editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
+    editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping(
         "bpmn",
         "**/*.bpmn?(2)",
