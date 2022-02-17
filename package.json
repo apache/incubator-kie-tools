@@ -33,7 +33,7 @@
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
     "@kie/npm-treatment-tool": "^1.1.1",
-    "@severlessworkflow/sdk-typescript": "^1.0.0",
+    "@severlessworkflow/sdk-typescript": "^3.0.2",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^11.2.6",
