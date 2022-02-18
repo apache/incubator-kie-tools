@@ -15,22 +15,22 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Tbody, Td, Tr } from "@patternfly/react-table";
 import { Column as IColumn, TableHeaderVisibility } from "../../api";
 import { Cell, Column, Row, TableInstance } from "react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import {
-  focusPrevCell,
-  focusNextCell,
-  focusUpperCell,
-  focusLowerCell,
-  focusInsideCell,
-  getParentCell,
-  focusParentCell,
-  focusPrevDataCell,
-  focusNextDataCell,
   focusCurrentCell,
+  focusInsideCell,
+  focusLowerCell,
+  focusNextCell,
+  focusNextDataCell,
+  focusParentCell,
+  focusPrevCell,
+  focusPrevDataCell,
+  focusUpperCell,
+  getParentCell,
 } from "./common";
 import { useBoxedExpression } from "../../context";
 
@@ -67,102 +67,54 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   /**
    * base props for td elements
    */
-  const tdBaseProps = useCallback(
-    (_columnIndex: number, rowIndex: number) => ({
-      tabIndex: -1,
-      onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => {
-        const key = e.key;
-        const isModKey = e.altKey || e.ctrlKey || e.shiftKey || key === "AltGraph";
 
-        //prevent the parent cell catch this event if there is a nested table
-        if (e.currentTarget !== getParentCell(e.target as HTMLElement)) {
-          return;
-        }
+  const onKeyDown = useCallback(
+    (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => {
+      const key = e.key;
+      const isModKey = e.altKey || e.ctrlKey || e.shiftKey || key === "AltGraph";
 
-        if (isContextMenuOpen) {
-          e.preventDefault();
-          if (key === "Escape") {
-            //close Select child components if any
-            focusCurrentCell(e.currentTarget);
-          }
-          return;
-        }
-
-        const isFiredFromThis = e.currentTarget === e.target;
-
-        if (key === "Tab") {
-          e.preventDefault();
-          if (e.shiftKey) {
-            focusPrevDataCell(e.currentTarget, rowIndex);
-          } else {
-            focusNextDataCell(e.currentTarget, rowIndex);
-          }
-        } else if (key === "ArrowLeft") {
-          focusPrevCell(e.currentTarget);
-        } else if (key === "ArrowRight") {
-          focusNextCell(e.currentTarget);
-        } else if (key === "ArrowUp") {
-          focusUpperCell(e.currentTarget, rowIndex);
-        } else if (key === "ArrowDown") {
-          focusLowerCell(e.currentTarget, rowIndex);
-        } else if (key === "Escape") {
-          focusParentCell(e.currentTarget);
-        } else if (!isContextMenuOpen && isFiredFromThis && !isModKey) {
-          if (key === "Enter") {
-            focusInsideCell(e.currentTarget);
-          } else {
-            focusInsideCell(e.currentTarget, true);
-          }
-        }
-      },
-    }),
-    [isContextMenuOpen]
-  );
-
-  const renderCell = useCallback(
-    (cellIndex: number, cell: Cell, rowIndex: number, inAForm: boolean) => {
-      let cellType = cellIndex === 0 ? "counter-cell" : "data-cell";
-      const column = tableInstance.allColumns[cellIndex] as unknown as IColumn;
-      const width = typeof column?.width === "number" ? column?.width : DEFAULT_MIN_WIDTH;
-
-      const onResize = (width: number) => {
-        if (column.setWidth) {
-          column.setWidth(width);
-          tableInstance.allColumns[cellIndex].width = width;
-          onColumnsUpdate?.(tableInstance.columns);
-        }
-      };
-      const cellTemplate =
-        cellIndex === 0 ? (
-          <>{rowIndex + 1}</>
-        ) : (
-          <Resizer width={width} onHorizontalResizeStop={onResize}>
-            <>
-              {inAForm && typeof (cell.column as any)?.cellDelegate === "function"
-                ? (cell.column as any)?.cellDelegate(`dmn-auto-form-${rowIndex}`)
-                : cell.render("Cell")}
-            </>
-          </Resizer>
-        );
-
-      if (typeof (cell.column as any)?.cellDelegate === "function") {
-        cellType += " input";
+      //prevent the parent cell catch this event if there is a nested table
+      if (e.currentTarget !== getParentCell(e.target as HTMLElement)) {
+        return;
       }
 
-      const tdProp = { ...tdBaseProps(cellIndex, rowIndex), ...tdProps(cellIndex, rowIndex) };
+      if (isContextMenuOpen) {
+        e.preventDefault();
+        if (key === "Escape") {
+          //close Select child components if any
+          focusCurrentCell(e.currentTarget);
+        }
+        return;
+      }
 
-      return (
-        <Td
-          {...tdProp}
-          key={`${rowIndex}-${getColumnKey(cell.column)}-${cellIndex}`}
-          data-ouia-component-id={"expression-column-" + cellIndex}
-          className={`${cellType}`}
-        >
-          {cellTemplate}
-        </Td>
-      );
+      const isFiredFromThis = e.currentTarget === e.target;
+
+      if (key === "Tab") {
+        e.preventDefault();
+        if (e.shiftKey) {
+          focusPrevDataCell(e.currentTarget, rowIndex);
+        } else {
+          focusNextDataCell(e.currentTarget, rowIndex);
+        }
+      } else if (key === "ArrowLeft") {
+        focusPrevCell(e.currentTarget);
+      } else if (key === "ArrowRight") {
+        focusNextCell(e.currentTarget);
+      } else if (key === "ArrowUp") {
+        focusUpperCell(e.currentTarget, rowIndex);
+      } else if (key === "ArrowDown") {
+        focusLowerCell(e.currentTarget, rowIndex);
+      } else if (key === "Escape") {
+        focusParentCell(e.currentTarget);
+      } else if (!isContextMenuOpen && isFiredFromThis && !isModKey) {
+        if (key === "Enter") {
+          focusInsideCell(e.currentTarget);
+        } else {
+          focusInsideCell(e.currentTarget, true);
+        }
+      }
     },
-    [getColumnKey, onColumnsUpdate, tableInstance, tdProps, tdBaseProps]
+    [isContextMenuOpen]
   );
 
   const renderBodyRow = useCallback(
@@ -177,36 +129,68 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           {RowDelegate ? (
             <RowDelegate>
               <Tr className={rowClassNames} {...rowProps} ouiaId={"expression-row-" + rowIndex} key={rowKey}>
-                {row.cells.map((cell: Cell, cellIndex: number) => renderCell(cellIndex, cell, rowIndex, true))}
+                {row.cells.map((cell: Cell, cellIndex: number) => (
+                  <TdCell
+                    key={cellIndex}
+                    cellIndex={cellIndex}
+                    cell={cell}
+                    rowIndex={rowIndex}
+                    inAForm={true}
+                    onKeyDown={onKeyDown}
+                    tableInstance={tableInstance}
+                    getColumnKey={getColumnKey}
+                    onColumnsUpdate={onColumnsUpdate!}
+                    tdProps={tdProps}
+                  />
+                ))}
               </Tr>
             </RowDelegate>
           ) : (
             <Tr className={rowClassNames} {...rowProps} ouiaId={"expression-row-" + rowIndex} key={rowKey}>
-              {row.cells.map((cell: Cell, cellIndex: number) => renderCell(cellIndex, cell, rowIndex, false))}
+              {row.cells.map((cell: Cell, cellIndex: number) => (
+                <TdCell
+                  key={cellIndex}
+                  cellIndex={cellIndex}
+                  cell={cell}
+                  rowIndex={rowIndex}
+                  inAForm={false}
+                  onKeyDown={onKeyDown}
+                  tableInstance={tableInstance}
+                  getColumnKey={getColumnKey}
+                  onColumnsUpdate={onColumnsUpdate!}
+                  tdProps={tdProps}
+                />
+              ))}
             </Tr>
           )}
         </React.Fragment>
       );
     },
-    [getRowKey, renderCell, tableInstance]
+    [getColumnKey, getRowKey, onColumnsUpdate, onKeyDown, tableInstance, tdProps]
   );
 
   const renderAdditiveRow = useCallback(
     (rowIndex: number) => (
       <Tr className="table-row additive-row">
-        <Td role="cell" className="empty-cell" {...tdBaseProps(0, rowIndex)}>
+        <Td role="cell" className="empty-cell" tabIndex={-1} onKeyDown={(e) => onKeyDown(rowIndex)(e)}>
           <br />
         </Td>
         {children?.map((child, childIndex) => {
           return (
-            <Td role="cell" key={childIndex} className="row-remainder-content" {...tdBaseProps(childIndex, rowIndex)}>
+            <Td
+              role="cell"
+              key={childIndex}
+              className="row-remainder-content"
+              tabIndex={-1}
+              onKeyDown={(e) => onKeyDown(rowIndex)(e)}
+            >
               {child}
             </Td>
           );
         })}
       </Tr>
     ),
-    [children, tdBaseProps]
+    [children, onKeyDown]
   );
 
   return (
@@ -219,3 +203,79 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
     </Tbody>
   );
 };
+
+interface TdCellProps {
+  cellIndex: number;
+  cell: Cell;
+  rowIndex: number;
+  inAForm: boolean;
+  onKeyDown: (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
+  tableInstance: TableInstance;
+  getColumnKey: (column: Column) => string;
+  onColumnsUpdate: (columns: Column[]) => void;
+  tdProps: (cellIndex: number, rowIndex: number) => any;
+}
+
+function TdCell({
+  cellIndex,
+  cell,
+  rowIndex,
+  inAForm,
+  onKeyDown,
+  tableInstance,
+  getColumnKey,
+  onColumnsUpdate,
+  tdProps,
+}: TdCellProps) {
+  let cellType = cellIndex === 0 ? "counter-cell" : "data-cell";
+  const column = tableInstance.allColumns[cellIndex] as unknown as IColumn;
+  const width = typeof column?.width === "number" ? column?.width : DEFAULT_MIN_WIDTH;
+  const tdRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    // Typescript don't accept the conversion between DOM event and React event
+    const onKeyDownForIndex: any = onKeyDown(rowIndex);
+    const cell = tdRef.current;
+    cell?.addEventListener("keydown", onKeyDownForIndex);
+    return () => {
+      cell?.removeEventListener("keydown", onKeyDownForIndex);
+    };
+  }, [onKeyDown, rowIndex]);
+
+  const onResize = (width: number) => {
+    if (column.setWidth) {
+      column.setWidth(width);
+      tableInstance.allColumns[cellIndex].width = width;
+      onColumnsUpdate?.(tableInstance.columns);
+    }
+  };
+  const cellTemplate =
+    cellIndex === 0 ? (
+      <>{rowIndex + 1}</>
+    ) : (
+      <Resizer width={width} onHorizontalResizeStop={onResize}>
+        <>
+          {inAForm && typeof (cell.column as any)?.cellDelegate === "function"
+            ? (cell.column as any)?.cellDelegate(`dmn-auto-form-${rowIndex}`)
+            : cell.render("Cell")}
+        </>
+      </Resizer>
+    );
+
+  if (typeof (cell.column as any)?.cellDelegate === "function") {
+    cellType += " input";
+  }
+
+  return (
+    <Td
+      {...tdProps(cellIndex, rowIndex)}
+      ref={tdRef}
+      tabIndex={-1}
+      key={`${rowIndex}-${getColumnKey(cell.column)}-${cellIndex}`}
+      data-ouia-component-id={"expression-column-" + cellIndex}
+      className={`${cellType}`}
+    >
+      {cellTemplate}
+    </Td>
+  );
+}
