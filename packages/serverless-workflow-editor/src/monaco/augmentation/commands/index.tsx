@@ -22,7 +22,13 @@ export type SwfMonacoEditorCommandIds = Record<SwfMonacoEditorCommandTypes, stri
 export function initAugmentationCommands(editorInstance: editor.IStandaloneCodeEditor): SwfMonacoEditorCommandIds {
   return {
     RunFunctionsCompletion: editorInstance.addCommand(0, async (ctx, args) => {
-      window.alert("functions autocomplete: " + JSON.stringify(args));
+      window.alert(
+        "functions autocomplete: " +
+          JSON.stringify({
+            position: args.position,
+            node: { value: args.actualNode.value, type: args.actualNode.type },
+          })
+      );
     })!,
     OpenFunctionsWidget: editorInstance.addCommand(0, async (ctx, args) => {
       openWidget(editorInstance, {
