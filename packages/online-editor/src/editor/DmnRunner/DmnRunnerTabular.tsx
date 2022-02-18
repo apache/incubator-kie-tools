@@ -22,7 +22,7 @@ import { DmnAutoTable } from "@kie-tools/unitables";
 import { DecisionResult } from "@kie-tools/form/dist/dmn";
 import { PanelId } from "../EditorPageDockDrawer";
 import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
-import { WorkspaceFile } from "../../workspace";
+import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 

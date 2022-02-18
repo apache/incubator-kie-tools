@@ -33,8 +33,9 @@ import { NewWorkspaceFromUrlPage } from "./workspace/components/NewWorkspaceFrom
 import { DmnDevSandboxContextProvider } from "./editor/DmnDevSandbox/DmnDevSandboxContextProvider";
 import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
 import { useRoutes } from "./navigation/Hooks";
-import { WorkspacesContextProvider, WorkspacesDmnInputsContextProvider } from "./workspace";
+import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
 import { EnvContextProvider } from "./env/EnvContextProvider";
+import { WorkspacesDmnInputsContextProvider } from "./dmnRunner/WorkspacesDmnInputsContextProvider";
 
 export function App() {
   return (

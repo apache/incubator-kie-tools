@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { FsCache } from "./FsCache";
-import { encoder, WorkspaceFile } from "../contexts";
-import { StorageFile, StorageService } from "./StorageService";
 import { join } from "path";
-import { WorkspaceDmnRunnerEvents } from "../hooks/WorkspaceDmnRunnerInput";
+import { StorageFile, StorageService } from "../workspace/services/StorageService";
+import { FsCache } from "../workspace/services/FsCache";
+import { encoder, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { WorkspaceDmnRunnerEvents } from "./WorkspaceDmnRunnerInput";
 
 export class WorkspaceDmnRunnerInputsService {
   constructor(private readonly storageService: StorageService, private readonly fsCache = new FsCache()) {}

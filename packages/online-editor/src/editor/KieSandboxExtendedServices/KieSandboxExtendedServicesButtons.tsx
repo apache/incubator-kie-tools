@@ -41,10 +41,11 @@ import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../../workspace";
+import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
 import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
 import { DeleteDropdownWithConfirmation } from "../DeleteDropdownWithConfirmation";
+import { useWorkspacesDmnRunnerInputs } from "../../dmnRunner/WorkspacesDmnInputsContext";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;

@@ -15,9 +15,10 @@
  */
 
 import React, { useCallback, useRef, useState } from "react";
-import { decoder, useWorkspacesDmnRunnerInputs, WorkspaceFile } from "../";
-import { InputRow } from "../../editor/DmnRunner/DmnRunnerContext";
-import { useCancelableEffect } from "../../reactExt/Hooks";
+import { useCancelableEffect } from "../reactExt/Hooks";
+import { decoder, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { InputRow } from "../editor/DmnRunner/DmnRunnerContext";
+import { useWorkspacesDmnRunnerInputs } from "./WorkspacesDmnInputsContext";
 
 interface WorkspaceDmnRunnerInput {
   inputRows: Array<InputRow>;

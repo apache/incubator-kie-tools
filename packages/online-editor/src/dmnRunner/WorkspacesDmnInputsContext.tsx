@@ -15,9 +15,9 @@
  */
 
 import { createContext, useContext } from "react";
-import { WorkspaceDmnRunnerInputsService } from "../services/WorkspaceDmnRunnerInputsService";
-import { InputRow } from "../../editor/DmnRunner/DmnRunnerContext";
-import { WorkspaceFile } from "./WorkspacesContext";
+import { InputRow } from "../editor/DmnRunner/DmnRunnerContext";
+import { WorkspaceDmnRunnerInputsService } from "./WorkspaceDmnRunnerInputsService";
+import { WorkspaceFile } from "../workspace/WorkspacesContext";
 
 interface WorkspacesDmnInputsType {
   dmnRunnerService: WorkspaceDmnRunnerInputsService;

@@ -17,9 +17,9 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { WorkspacesDmnInputsContext } from "./WorkspacesDmnInputsContext";
-import { WorkspaceDmnRunnerInputsService } from "../services/WorkspaceDmnRunnerInputsService";
-import { decoder, useWorkspaces, WorkspaceFile } from "./WorkspacesContext";
-import { InputRow } from "../../editor/DmnRunner/DmnRunnerContext";
+import { decoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { WorkspaceDmnRunnerInputsService } from "./WorkspaceDmnRunnerInputsService";
+import { InputRow } from "../editor/DmnRunner/DmnRunnerContext";
 
 export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildren<{}>) {
   const workspaces = useWorkspaces();

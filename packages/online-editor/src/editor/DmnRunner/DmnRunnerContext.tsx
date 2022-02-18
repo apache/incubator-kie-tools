@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DecisionResult, DmnSchema } from "@kie-tools/form/dist/dmn";
+import { DmnSchema } from "@kie-tools/form/dist/dmn";
 import * as React from "react";
 import { useContext } from "react";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
