@@ -45,7 +45,7 @@ import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
 import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
 import { DeleteDropdownWithConfirmation } from "../DeleteDropdownWithConfirmation";
-import { useWorkspacesDmnRunnerInputs } from "../../dmnRunner/WorkspacesDmnInputsContext";
+import { useDmnRunnerInputsDispatch } from "../../dmnRunnerInputs/DmnRunnerInputsContext";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
@@ -61,7 +61,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
   const dmnRunnerDispatch = useDmnRunnerDispatch();
   const settings = useSettings();
   const dmnDevSandboxDropdownItems = useDmnDevSandboxDropdownItems(props.workspace);
-  const workspacesDmnRunner = useWorkspacesDmnRunnerInputs();
+  const workspacesDmnRunner = useDmnRunnerInputsDispatch();
   const downloadDmnRunnerInputsRef = useRef<HTMLAnchorElement>(null);
   const uploadDmnRunnerInputsRef = useRef<HTMLInputElement>(null);
 
@@ -175,7 +175,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
                 }
               }}
             >
-              as Form
+              As Form
             </DropdownItem>,
             <DropdownItem
               key={"table-view"}
@@ -189,7 +189,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
                 }
               }}
             >
-              as Table
+              As Table
             </DropdownItem>,
             <>
               <Divider />
@@ -199,7 +199,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
                 icon={<DownloadIcon />}
                 onClick={() => handleDmnRunnerInputsDownload()}
               >
-                download inputs
+                Download inputs
               </DropdownItem>
             </>,
             <DropdownItem
@@ -208,7 +208,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
               icon={<UploadIcon />}
               onClick={() => uploadDmnRunnerInputsRef.current?.click()}
             >
-              load inputs
+              Load inputs
             </DropdownItem>,
             <>
               <Divider />
@@ -216,7 +216,7 @@ export function KieSandboxExtendedServicesButtons(props: Props) {
                 <DeleteDropdownWithConfirmation
                   onDelete={() => workspacesDmnRunner.deletePersistedInputRows(props.workspaceFile)}
                   item={`Delete DMN Runner inputs`}
-                  label={" delete inputs"}
+                  label={" Delete inputs"}
                   isHoverable={false}
                 />
               </DropdownItem>

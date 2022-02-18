@@ -18,40 +18,39 @@ import React, { useCallback, useRef, useState } from "react";
 import { useCancelableEffect } from "../reactExt/Hooks";
 import { decoder, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { InputRow } from "../editor/DmnRunner/DmnRunnerContext";
-import { useWorkspacesDmnRunnerInputs } from "./WorkspacesDmnInputsContext";
+import { useDmnRunnerInputsDispatch } from "./DmnRunnerInputsContext";
 
-interface WorkspaceDmnRunnerInput {
+interface DmnRunnerInputs {
   inputRows: Array<InputRow>;
   setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>;
-  inputRowsUpdated: boolean;
-  setInputRowsUpdated: React.Dispatch<React.SetStateAction<boolean>>;
-  outputRowsUpdated: boolean;
-  setOutputRowsUpdated: React.Dispatch<React.SetStateAction<boolean>>;
+  didUpdateInputRows: boolean;
+  setDidUpdateInputRows: React.Dispatch<React.SetStateAction<boolean>>;
+  didUpdateOutputRows: boolean;
+  setDidUpdateOutputRows: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function useWorkspaceDmnRunnerInputs(
-  workspaceId: string | undefined,
-  relativePath: string | undefined,
-  workspaceFile: WorkspaceFile
-): WorkspaceDmnRunnerInput {
-  const { dmnRunnerService, updatePersistedInputRows, getUniqueFileIdentifier } = useWorkspacesDmnRunnerInputs();
+export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInputs {
+  const { dmnRunnerService, updatePersistedInputRows, getUniqueFileIdentifier } = useDmnRunnerInputsDispatch();
   const [inputRows, setInputRows] = useState<Array<InputRow>>([{}]);
-  const [inputRowsUpdated, setInputRowsUpdated] = useState<boolean>(false);
-  const [outputRowsUpdated, setOutputRowsUpdated] = useState<boolean>(false);
+  const [didUpdateInputRows, setDidUpdateInputRows] = useState<boolean>(false);
+  const [didUpdateOutputRows, setDidUpdateOutputRows] = useState<boolean>(false);
   const lastInputRows = useRef<string>("[{}]");
 
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (!relativePath || !workspaceId) {
+        if (!workspaceFile.relativePath || !workspaceFile.workspaceId) {
           return;
         }
 
-        const uniqueFileIdentifier = getUniqueFileIdentifier({ workspaceId, relativePath });
+        const uniqueFileIdentifier = getUniqueFileIdentifier({
+          workspaceId: workspaceFile.workspaceId,
+          relativePath: workspaceFile.relativePath,
+        });
 
         console.debug("Subscribing to " + uniqueFileIdentifier);
         const broadcastChannel = new BroadcastChannel(uniqueFileIdentifier);
-        broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspaceDmnRunnerEvents>) => {
+        broadcastChannel.onmessage = ({ data }: MessageEvent<DmnRunnerInputsEvents>) => {
           console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(data)}`);
           if (data.type === "MOVE" || data.type == "RENAME") {
             if (canceled.get()) {
@@ -75,7 +74,7 @@ export function useWorkspaceDmnRunnerInputs(
             // Triggered by the other tab
             lastInputRows.current = data.dmnRunnerInputs;
             setInputRows(JSON.parse(data.dmnRunnerInputs));
-            setInputRowsUpdated(true);
+            setDidUpdateInputRows(true);
           }
         };
 
@@ -84,7 +83,7 @@ export function useWorkspaceDmnRunnerInputs(
           broadcastChannel.close();
         };
       },
-      [relativePath, workspaceId, getUniqueFileIdentifier, dmnRunnerService, workspaceFile]
+      [getUniqueFileIdentifier, dmnRunnerService, workspaceFile]
     )
   );
 
@@ -153,14 +152,14 @@ export function useWorkspaceDmnRunnerInputs(
   return {
     inputRows,
     setInputRows: setInputRowsAndUpdatePersistence,
-    inputRowsUpdated,
-    setInputRowsUpdated,
-    outputRowsUpdated,
-    setOutputRowsUpdated,
+    didUpdateInputRows,
+    setDidUpdateInputRows,
+    didUpdateOutputRows,
+    setDidUpdateOutputRows,
   };
 }
 
-export type WorkspaceDmnRunnerEvents =
+export type DmnRunnerInputsEvents =
   | { type: "MOVE"; newRelativePath: string; oldRelativePath: string }
   | { type: "RENAME"; newRelativePath: string; oldRelativePath: string }
   | { type: "UPDATE"; dmnRunnerInputs: string }

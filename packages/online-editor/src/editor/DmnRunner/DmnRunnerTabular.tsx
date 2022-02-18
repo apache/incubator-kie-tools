@@ -41,7 +41,7 @@ export function DmnRunnerTabular(props: Props) {
   const updateDmnRunnerResults = useCallback(
     async (inputRows: Array<InputRow>, canceled: Holder<boolean>) => {
       if (!props.isReady) {
-        dmnRunnerDispatch.setOutputRowsUpdated(true);
+        dmnRunnerDispatch.setDidUpdateOutputRows(true);
         return;
       }
 
@@ -73,9 +73,9 @@ export function DmnRunnerTabular(props: Props) {
           }
         }
         props.setDmnRunnerResults(runnerResults);
-        dmnRunnerDispatch.setOutputRowsUpdated(true);
+        dmnRunnerDispatch.setDidUpdateOutputRows(true);
       } catch (err) {
-        dmnRunnerDispatch.setOutputRowsUpdated(true);
+        dmnRunnerDispatch.setDidUpdateOutputRows(true);
         return undefined;
       }
     },
@@ -93,7 +93,7 @@ export function DmnRunnerTabular(props: Props) {
           clearTimeout(timeout);
         };
       },
-      [dmnRunnerState.inputRows]
+      [dmnRunnerState.inputRows, updateDmnRunnerResults]
     )
   );
 

@@ -38,7 +38,6 @@ import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { useWorkspacesDmnRunnerInputs } from "../dmnRunner/WorkspacesDmnInputsContext";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHooks";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
@@ -88,6 +87,7 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
+import { useDmnRunnerInputsDispatch } from "../dmnRunnerInputs/DmnRunnerInputsContext";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -267,7 +267,7 @@ export function WorkspaceLoadingCard() {
 
 export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
   const workspaces = useWorkspaces();
-  const { dmnRunnerService } = useWorkspacesDmnRunnerInputs();
+  const { dmnRunnerService } = useDmnRunnerInputsDispatch();
   return (
     <Card isSelected={false} isSelectable={true} isHoverable={true} isCompact={true}>
       <CardHeader>
@@ -311,7 +311,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
   const workspaces = useWorkspaces();
   const [isHovered, setHovered] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceId);
-  const { dmnRunnerService } = useWorkspacesDmnRunnerInputs();
+  const { dmnRunnerService } = useDmnRunnerInputsDispatch();
 
   const editableFiles = useMemo(() => {
     return workspacePromise.data?.files.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)) ?? [];

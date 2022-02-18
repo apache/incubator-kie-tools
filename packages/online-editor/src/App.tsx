@@ -35,7 +35,7 @@ import { NavigationContextProvider } from "./navigation/NavigationContextProvide
 import { useRoutes } from "./navigation/Hooks";
 import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
 import { EnvContextProvider } from "./env/EnvContextProvider";
-import { WorkspacesDmnInputsContextProvider } from "./dmnRunner/WorkspacesDmnInputsContextProvider";
+import { DmnRunnerInputsContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsContextProvider";
 
 export function App() {
   return (
@@ -47,7 +47,7 @@ export function App() {
         [KieSandboxExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
         [WorkspacesContextProvider, {}],
-        [WorkspacesDmnInputsContextProvider, {}],
+        [DmnRunnerInputsContextProvider, {}],
         [DmnDevSandboxContextProvider, {}],
         [NavigationContextProvider, {}],
         [RoutesSwitch, {}]

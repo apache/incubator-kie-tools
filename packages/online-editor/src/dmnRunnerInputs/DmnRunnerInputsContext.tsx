@@ -16,11 +16,11 @@
 
 import { createContext, useContext } from "react";
 import { InputRow } from "../editor/DmnRunner/DmnRunnerContext";
-import { WorkspaceDmnRunnerInputsService } from "./WorkspaceDmnRunnerInputsService";
+import { DmnRunnerInputsService } from "./DmnRunnerInputsService";
 import { WorkspaceFile } from "../workspace/WorkspacesContext";
 
-interface WorkspacesDmnInputsType {
-  dmnRunnerService: WorkspaceDmnRunnerInputsService;
+interface DmnInputsDispatchContextType {
+  dmnRunnerService: DmnRunnerInputsService;
   getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }): string;
   deletePersistedInputRows: (workspaceFile: WorkspaceFile) => void;
   updatePersistedInputRows: (
@@ -31,8 +31,8 @@ interface WorkspacesDmnInputsType {
   uploadInputRows: (workspaceFile: WorkspaceFile, file: File) => void;
 }
 
-export const WorkspacesDmnInputsContext = createContext<WorkspacesDmnInputsType>({} as any);
+export const DmnRunnerInputsDispatchContext = createContext<DmnInputsDispatchContextType>({} as any);
 
-export function useWorkspacesDmnRunnerInputs(): WorkspacesDmnInputsType {
-  return useContext(WorkspacesDmnInputsContext);
+export function useDmnRunnerInputsDispatch(): DmnInputsDispatchContextType {
+  return useContext(DmnRunnerInputsDispatchContext);
 }

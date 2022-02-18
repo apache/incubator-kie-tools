@@ -33,13 +33,11 @@ import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnSchema } from "@kie-tools/form/dist/dmn";
 import { useSettings } from "../../settings/SettingsContext";
-import { useWorkspaceDmnRunnerInputs } from "../../dmnRunner/WorkspaceDmnRunnerInput";
+import { useDmnRunnerInputs } from "../../dmnRunnerInputs/DmnRunnerInputsHook";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
   workspaceFile: WorkspaceFile;
-  workspaceId: string;
-  fileRelativePath: string;
 }
 
 export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
@@ -50,8 +48,14 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const workspaces = useWorkspaces();
   const settings = useSettings();
-  const { inputRows, setInputRows, inputRowsUpdated, setInputRowsUpdated, outputRowsUpdated, setOutputRowsUpdated } =
-    useWorkspaceDmnRunnerInputs(props.workspaceId, props.fileRelativePath, props.workspaceFile);
+  const {
+    inputRows,
+    setInputRows,
+    didUpdateInputRows,
+    setDidUpdateInputRows,
+    didUpdateOutputRows,
+    setDidUpdateOutputRows,
+  } = useDmnRunnerInputs(props.workspaceFile);
 
   const [error, setError] = useState(false);
   const [jsonSchema, setJsonSchema] = useState<DmnSchema | undefined>(undefined);
@@ -195,11 +199,11 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       setExpanded,
       setError,
       setInputRows,
-      setInputRowsUpdated,
-      setOutputRowsUpdated,
+      setDidUpdateInputRows,
+      setDidUpdateOutputRows,
       setMode,
     }),
-    [preparePayload, setInputRows, setInputRowsUpdated, setOutputRowsUpdated]
+    [preparePayload, setDidUpdateInputRows, setDidUpdateOutputRows, setInputRows]
   );
 
   const dmnRunnerState = useMemo(
@@ -207,23 +211,23 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
       currentInputRowIndex,
       error,
       inputRows,
-      inputRowsUpdated,
+      didUpdateInputRows,
       isExpanded,
       jsonSchema,
       mode,
-      outputRowsUpdated,
+      didUpdateOutputRows,
       service,
       status,
     }),
     [
       currentInputRowIndex,
+      didUpdateInputRows,
+      didUpdateOutputRows,
       error,
       inputRows,
-      inputRowsUpdated,
       isExpanded,
       jsonSchema,
       mode,
-      outputRowsUpdated,
       service,
       status,
     ]

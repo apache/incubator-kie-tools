@@ -30,29 +30,29 @@ export function DmnRunnerLoading(props: DmnRunnerLoading) {
     (e: React.AnimationEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      dmnRunnerDispatch.setInputRowsUpdated(false);
-      dmnRunnerDispatch.setOutputRowsUpdated(false);
+      dmnRunnerDispatch.setDidUpdateInputRows(false);
+      dmnRunnerDispatch.setDidUpdateOutputRows(false);
     },
     [dmnRunnerDispatch]
   );
 
   const loadingScreenClassName = useMemo(() => {
-    if (dmnRunnerState.inputRowsUpdated && dmnRunnerState.outputRowsUpdated) {
+    if (dmnRunnerState.didUpdateInputRows && dmnRunnerState.didUpdateOutputRows) {
       return "kie-tools--dmn-runner-loading";
     }
     return "";
-  }, [dmnRunnerState.inputRowsUpdated, dmnRunnerState.outputRowsUpdated]);
+  }, [dmnRunnerState.didUpdateInputRows, dmnRunnerState.didUpdateOutputRows]);
 
   // Reset outputRowsUpdate when inputRowsUpdate is false
   useEffect(() => {
-    if (!dmnRunnerState.inputRowsUpdated && dmnRunnerState.outputRowsUpdated) {
-      dmnRunnerDispatch.setOutputRowsUpdated(false);
+    if (!dmnRunnerState.didUpdateInputRows && dmnRunnerState.didUpdateOutputRows) {
+      dmnRunnerDispatch.setDidUpdateOutputRows(false);
     }
-  }, [dmnRunnerDispatch, dmnRunnerState.inputRowsUpdated, dmnRunnerState.outputRowsUpdated]);
+  }, [dmnRunnerDispatch, dmnRunnerState.didUpdateInputRows, dmnRunnerState.didUpdateOutputRows]);
 
   return (
     <>
-      {dmnRunnerState.inputRowsUpdated && dmnRunnerState.outputRowsUpdated && (
+      {dmnRunnerState.didUpdateInputRows && dmnRunnerState.didUpdateOutputRows && (
         <div id="kie-tools--dmn-runner-loading-screen" className="kie-tools--dmn-runner-loading-screen">
           <div
             className={`kie-tools--dmn-runner-loading-screen ${loadingScreenClassName}`}

@@ -18,18 +18,18 @@ import { join } from "path";
 import { StorageFile, StorageService } from "../workspace/services/StorageService";
 import { FsCache } from "../workspace/services/FsCache";
 import { encoder, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { WorkspaceDmnRunnerEvents } from "./WorkspaceDmnRunnerInput";
+import { DmnRunnerInputsEvents } from "./DmnRunnerInputsHook";
 
-export class WorkspaceDmnRunnerInputsService {
+export class DmnRunnerInputsService {
   constructor(private readonly storageService: StorageService, private readonly fsCache = new FsCache()) {}
 
-  public getWorkspaceDmnRunnerInputsFs(workspaceId: string) {
+  public getDmnRunnerInputsFs(workspaceId: string) {
     return this.fsCache.getOrCreateFs(this.getDmnRunnerInputsStoreName(workspaceId));
   }
 
   public async getDmnRunnerInputs(workspaceFile: WorkspaceFile) {
     return this.storageService.getFile(
-      await this.getWorkspaceDmnRunnerInputsFs(workspaceFile.workspaceId),
+      await this.getDmnRunnerInputsFs(workspaceFile.workspaceId),
       `/${workspaceFile.relativePath}`
     );
   }
@@ -46,7 +46,7 @@ export class WorkspaceDmnRunnerInputsService {
     const emptyDmnRunnerInputs = JSON.stringify([{}]);
 
     await this.storageService.createOrOverwriteFile(
-      await this.getWorkspaceDmnRunnerInputsFs(workspaceFile.workspaceId),
+      await this.getDmnRunnerInputsFs(workspaceFile.workspaceId),
       new StorageFile({
         getFileContents: () => Promise.resolve(encoder.encode(emptyDmnRunnerInputs)),
         path: `/${workspaceFile.relativePath}`,
@@ -62,12 +62,12 @@ export class WorkspaceDmnRunnerInputsService {
     broadcastChannel.postMessage({
       type: "DELETE",
       dmnRunnerInputs: emptyDmnRunnerInputs,
-    } as WorkspaceDmnRunnerEvents);
+    } as DmnRunnerInputsEvents);
   }
 
   public async createOrOverwriteDmnRunnerInputs(workspaceFile: WorkspaceFile, dmnRunnerInputs: string) {
     await this.storageService.createOrOverwriteFile(
-      this.getWorkspaceDmnRunnerInputsFs(workspaceFile.workspaceId),
+      this.getDmnRunnerInputsFs(workspaceFile.workspaceId),
       new StorageFile({
         getFileContents: () => Promise.resolve(encoder.encode(dmnRunnerInputs)),
         path: `/${workspaceFile.relativePath}`,
@@ -83,12 +83,12 @@ export class WorkspaceDmnRunnerInputsService {
       type: "ADD",
       dmnRunnerInputs,
       relativePath: workspaceFile.relativePath,
-    } as WorkspaceDmnRunnerEvents);
+    } as DmnRunnerInputsEvents);
   }
 
   public async updateDmnRunnerInputs(workspaceFile: WorkspaceFile, dmnRunnerInputs: string): Promise<void> {
     await this.storageService.updateFile(
-      await this.getWorkspaceDmnRunnerInputsFs(workspaceFile.workspaceId),
+      await this.getDmnRunnerInputsFs(workspaceFile.workspaceId),
       new StorageFile({
         getFileContents: () => Promise.resolve(encoder.encode(dmnRunnerInputs)),
         path: `/${workspaceFile.relativePath}`,
@@ -104,7 +104,7 @@ export class WorkspaceDmnRunnerInputsService {
     broadcastChannel.postMessage({
       type: "UPDATE",
       dmnRunnerInputs,
-    } as WorkspaceDmnRunnerEvents);
+    } as DmnRunnerInputsEvents);
   }
 
   public async renameDmnRunnerInputs(workspaceFile: WorkspaceFile, newFileNameWithoutExtension: string) {
@@ -117,7 +117,7 @@ export class WorkspaceDmnRunnerInputsService {
     }
 
     return this.storageService.renameFile(
-      await this.getWorkspaceDmnRunnerInputsFs(workspaceFile.workspaceId),
+      await this.getDmnRunnerInputsFs(workspaceFile.workspaceId),
       dmnRunnerInputsFile,
       `${newFileNameWithoutExtension}`
     );

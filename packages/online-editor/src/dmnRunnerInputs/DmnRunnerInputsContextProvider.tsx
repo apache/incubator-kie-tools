@@ -16,16 +16,16 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { WorkspacesDmnInputsContext } from "./WorkspacesDmnInputsContext";
 import { decoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { WorkspaceDmnRunnerInputsService } from "./WorkspaceDmnRunnerInputsService";
+import { DmnRunnerInputsService } from "./DmnRunnerInputsService";
 import { InputRow } from "../editor/DmnRunner/DmnRunnerContext";
+import { DmnRunnerInputsDispatchContext } from "./DmnRunnerInputsContext";
 
-export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildren<{}>) {
+export function DmnRunnerInputsContextProvider(props: React.PropsWithChildren<{}>) {
   const workspaces = useWorkspaces();
 
-  const dmnRunnerService = useMemo(() => {
-    return new WorkspaceDmnRunnerInputsService(workspaces.storageService);
+  const dmnRunnerInputsService = useMemo(() => {
+    return new DmnRunnerInputsService(workspaces.storageService);
   }, [workspaces.storageService]);
 
   const updatePersistedInputRows = useCallback(
@@ -34,39 +34,39 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
       newInputRows: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>)
     ) => {
       if (typeof newInputRows === "function") {
-        const inputs = await dmnRunnerService.getDmnRunnerInputs(workspaceFile);
+        const inputs = await dmnRunnerInputsService.getDmnRunnerInputs(workspaceFile);
         const previousInputRows = await inputs
           ?.getFileContents()
           .then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
-        await dmnRunnerService.updateDmnRunnerInputs(
+        await dmnRunnerInputsService.updateDmnRunnerInputs(
           workspaceFile,
           JSON.stringify(newInputRows(previousInputRows ?? [{}]))
         );
       } else {
-        await dmnRunnerService.updateDmnRunnerInputs(workspaceFile, JSON.stringify(newInputRows));
+        await dmnRunnerInputsService.updateDmnRunnerInputs(workspaceFile, JSON.stringify(newInputRows));
       }
     },
-    [dmnRunnerService]
+    [dmnRunnerInputsService]
   );
 
   const deletePersistedInputRows = useCallback(
     async (workspaceFile: WorkspaceFile) => {
-      await dmnRunnerService.deleteDmnRunnerInputs(workspaceFile);
+      await dmnRunnerInputsService.deleteDmnRunnerInputs(workspaceFile);
     },
-    [dmnRunnerService]
+    [dmnRunnerInputsService]
   );
 
   const getUniqueFileIdentifier = useCallback(
-    (args: { workspaceId: string; relativePath: string }) => dmnRunnerService.getUniqueFileIdentifier(args),
-    [dmnRunnerService]
+    (args: { workspaceId: string; relativePath: string }) => dmnRunnerInputsService.getUniqueFileIdentifier(args),
+    [dmnRunnerInputsService]
   );
 
   const getInputRowsForDownload = useCallback(
     async (workspaceFile: WorkspaceFile) => {
-      const inputs = await dmnRunnerService.getDmnRunnerInputs(workspaceFile);
+      const inputs = await dmnRunnerInputsService.getDmnRunnerInputs(workspaceFile);
       return await inputs?.getFileContents().then((content) => new Blob([content], { type: "application/json" }));
     },
-    [dmnRunnerService]
+    [dmnRunnerInputsService]
   );
 
   const uploadInputRows = useCallback(
@@ -76,15 +76,15 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
         reader.onload = (event: ProgressEvent<FileReader>) => res(decoder.decode(event.target?.result as ArrayBuffer));
         reader.readAsArrayBuffer(file);
       });
-      await dmnRunnerService.createOrOverwriteDmnRunnerInputs(workspaceFile, content);
+      await dmnRunnerInputsService.createOrOverwriteDmnRunnerInputs(workspaceFile, content);
     },
-    [dmnRunnerService]
+    [dmnRunnerInputsService]
   );
 
   return (
-    <WorkspacesDmnInputsContext.Provider
+    <DmnRunnerInputsDispatchContext.Provider
       value={{
-        dmnRunnerService,
+        dmnRunnerService: dmnRunnerInputsService,
         updatePersistedInputRows,
         getUniqueFileIdentifier,
         deletePersistedInputRows,
@@ -93,6 +93,6 @@ export function WorkspacesDmnInputsContextProvider(props: React.PropsWithChildre
       }}
     >
       {props.children}
-    </WorkspacesDmnInputsContext.Provider>
+    </DmnRunnerInputsDispatchContext.Provider>
   );
 }

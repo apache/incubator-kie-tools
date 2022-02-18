@@ -145,7 +145,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   const updateDmnRunnerResults = useCallback(
     async (formData: object, canceled: Holder<boolean>) => {
       if (dmnRunnerState.status !== DmnRunnerStatus.AVAILABLE) {
-        dmnRunnerDispatch.setOutputRowsUpdated(true);
+        dmnRunnerDispatch.setDidUpdateOutputRows(true);
         return;
       }
 
@@ -173,9 +173,9 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           return result.decisionResults;
         });
 
-        dmnRunnerDispatch.setOutputRowsUpdated(true);
+        dmnRunnerDispatch.setDidUpdateOutputRows(true);
       } catch (e) {
-        dmnRunnerDispatch.setOutputRowsUpdated(true);
+        dmnRunnerDispatch.setDidUpdateOutputRows(true);
         setDmnRunnerResults(undefined);
       }
     },

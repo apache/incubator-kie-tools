@@ -20,17 +20,17 @@ import { useContext } from "react";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 
-export type InputRow = { [x: string]: string };
+export type InputRow = Record<string, string>;
 
 export interface DmnRunnerContextType {
   currentInputRowIndex: number;
   error: boolean;
   inputRows: Array<InputRow>;
-  inputRowsUpdated: boolean;
+  didUpdateInputRows: boolean;
   isExpanded: boolean;
   jsonSchema?: DmnSchema;
   mode: DmnRunnerMode;
-  outputRowsUpdated: boolean;
+  didUpdateOutputRows: boolean;
   service: DmnRunnerService;
   status: DmnRunnerStatus;
 }
@@ -41,8 +41,8 @@ export interface DmnRunnerCallbacksContextType {
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentInputRowIndex: React.Dispatch<React.SetStateAction<number>>;
   setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>;
-  setInputRowsUpdated: React.Dispatch<React.SetStateAction<boolean>>;
-  setOutputRowsUpdated: React.Dispatch<React.SetStateAction<boolean>>;
+  setDidUpdateInputRows: React.Dispatch<React.SetStateAction<boolean>>;
+  setDidUpdateOutputRows: React.Dispatch<React.SetStateAction<boolean>>;
   setMode: React.Dispatch<React.SetStateAction<DmnRunnerMode>>;
 }
 
