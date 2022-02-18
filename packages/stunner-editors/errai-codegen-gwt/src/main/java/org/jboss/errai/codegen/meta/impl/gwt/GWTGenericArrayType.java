@@ -16,11 +16,10 @@
 
 package org.jboss.errai.codegen.meta.impl.gwt;
 
-import org.jboss.errai.codegen.meta.MetaGenericArrayType;
-import org.jboss.errai.codegen.meta.MetaType;
-
 import com.google.gwt.core.ext.typeinfo.JArrayType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import org.jboss.errai.codegen.meta.MetaGenericArrayType;
+import org.jboss.errai.codegen.meta.MetaType;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

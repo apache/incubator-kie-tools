@@ -16,10 +16,9 @@
 
 package org.jboss.errai.databinding.client;
 
+import com.google.gwt.core.client.GWT;
 import org.jboss.errai.ioc.client.api.IOCBootstrapTask;
 import org.jboss.errai.ioc.client.api.TaskOrder;
-
-import com.google.gwt.core.client.GWT;
 
 /**
  * Bootstrapper for Errai's data binding module that generates the proxies for bindable types.

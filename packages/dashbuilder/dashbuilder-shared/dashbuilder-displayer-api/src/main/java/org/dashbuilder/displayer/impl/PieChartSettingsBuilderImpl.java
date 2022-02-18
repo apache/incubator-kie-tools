@@ -15,9 +15,9 @@
  */
 package org.dashbuilder.displayer.impl;
 
+import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
-import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.PieChartSettingsBuilder;
 
 public class PieChartSettingsBuilderImpl extends AbstractXAxisChartSettingsBuilder<PieChartSettingsBuilderImpl> implements PieChartSettingsBuilder<PieChartSettingsBuilderImpl> {

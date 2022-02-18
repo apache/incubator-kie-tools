@@ -28,7 +28,8 @@ import org.uberfire.ext.properties.editor.server.beans.SampleEnum;
 import org.uberfire.ext.properties.editor.server.beans.SamplePlanBean;
 import org.uberfire.ext.properties.editor.server.beans.UnknownTypesBean;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BeanPropertyEditorBuilderTest {
 

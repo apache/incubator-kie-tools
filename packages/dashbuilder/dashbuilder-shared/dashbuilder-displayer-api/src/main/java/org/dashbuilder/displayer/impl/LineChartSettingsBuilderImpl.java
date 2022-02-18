@@ -15,10 +15,10 @@
  */
 package org.dashbuilder.displayer.impl;
 
+import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.LineChartSettingsBuilder;
-import org.dashbuilder.displayer.DisplayerSettings;
 
 public class LineChartSettingsBuilderImpl extends AbstractXAxisChartSettingsBuilder<LineChartSettingsBuilderImpl> implements LineChartSettingsBuilder<LineChartSettingsBuilderImpl> {
 

@@ -19,11 +19,10 @@ package org.jboss.errai.ui.test.extended.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.test.extended.client.res.Extension;
 import org.jboss.errai.ui.test.extended.client.res.NonCompositeSecondLevelExtensionComponent;
-
-import com.google.gwt.user.client.ui.RootPanel;
 
 @EntryPoint
 public class NonCompositeExtendedTemplateTestApp implements ElementTemplateTestApp {

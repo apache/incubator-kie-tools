@@ -14,10 +14,9 @@
  */
 package org.eclipse.bpmn2.impl;
 
-import com.google.gwt.user.client.rpc.GwtTransient;
-
 import java.util.Collection;
 
+import com.google.gwt.user.client.rpc.GwtTransient;
 import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Choreography;
@@ -30,17 +29,12 @@ import org.eclipse.bpmn2.MessageFlow;
 import org.eclipse.bpmn2.MessageFlowAssociation;
 import org.eclipse.bpmn2.Participant;
 import org.eclipse.bpmn2.ParticipantAssociation;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;

@@ -16,8 +16,6 @@
 
 package org.jboss.errai.codegen.test;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 
 import org.jboss.errai.codegen.Context;
@@ -28,7 +26,6 @@ import org.jboss.errai.codegen.builder.ClassStructureBuilder;
 import org.jboss.errai.codegen.builder.impl.ClassBuilder;
 import org.jboss.errai.codegen.exception.CyclicalObjectGraphException;
 import org.jboss.errai.codegen.meta.MetaMethod;
-import org.jboss.errai.codegen.test.AbstractCodegenTest;
 import org.jboss.errai.codegen.test.model.Person;
 import org.jboss.errai.codegen.test.model.PersonImpl;
 import org.jboss.errai.codegen.test.model.SnapshotInterfaceWithCollections;
@@ -36,6 +33,8 @@ import org.jboss.errai.codegen.test.model.SnapshotInterfaceWithCollectionsImpl;
 import org.jboss.errai.codegen.util.Stmt;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 // Note: extends from AbstractCodeGenTest to inherit overridden assertEquals(String, String) methods which are whitespace
 //       insensitive.

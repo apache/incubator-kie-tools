@@ -3477,10 +3477,10 @@
     "@angular-devkit/schematics" "13.1.2"
     jsonc-parser "3.0.0"
 
-"@severlessworkflow/sdk-typescript@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@severlessworkflow/sdk-typescript/-/sdk-typescript-1.0.0.tgz#f7b04b3b7f0cf339bf1c517ffa865baf1df1f744"
-  integrity sha512-LbLJ070IFJz3Ak3TVmhF0iKdQAfJyCIpccJWAQJleWiUPuJ6kmFBCHGjvaMYZ4SYtsqnRAj06T7aswBiu2jwKA==
+"@severlessworkflow/sdk-typescript@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@severlessworkflow/sdk-typescript/-/sdk-typescript-3.0.2.tgz#3484b7fe0e0a9de41daa6ff54003a52c1e713248"
+  integrity sha512-+tZwDYmY/HLLDTs5WRzRy6hUvJj7CS20NZ3UPTl3kMSTALtJlojK6IOJC1qeMnELybfxyOCacIbmFdo/JNKD4A==
   dependencies:
     ajv "^8.1.0"
     js-yaml "^4.1.0"
@@ -20127,11 +20127,6 @@ vscode-test@^1.6.1:
     https-proxy-agent "^5.0.0"
     rimraf "^3.0.2"
     unzipper "^0.10.11"
-
-vscode-uri@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/vscode-uri/-/vscode-uri-3.0.3.tgz#a95c1ce2e6f41b7549f86279d19f47951e4f4d84"
-  integrity sha512-EcswR2S8bpR7fD0YPeS7r2xXExrScVMxg4MedACaWHEtx9ftCF/qHG1xGkolzTPcEmjTavCQgbVzHUIdTMzFGA==
 
 vscode-uri@^3.0.3:
   version "3.0.3"

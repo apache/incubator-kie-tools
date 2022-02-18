@@ -2,26 +2,20 @@
  */
 package bpsim.impl;
 
+import java.util.Collection;
+
 import bpsim.BpsimPackage;
 import bpsim.Parameter;
 import bpsim.ParameterValue;
 import bpsim.ResultType;
-
 import com.google.gwt.user.client.rpc.GwtTransient;
-
-import java.util.Collection;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
-
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.EDataTypeEList;
 import org.eclipse.emf.ecore.util.FeatureMap;

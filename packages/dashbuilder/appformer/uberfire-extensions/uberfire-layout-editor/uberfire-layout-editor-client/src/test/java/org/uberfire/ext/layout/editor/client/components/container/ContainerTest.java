@@ -36,9 +36,14 @@ import org.uberfire.ext.layout.editor.client.infra.RowResizeEvent;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.jgroups.util.Util.assertEquals;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class ContainerTest extends AbstractLayoutEditorTest {

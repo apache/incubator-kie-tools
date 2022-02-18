@@ -18,6 +18,7 @@ package org.uberfire.ext.layout.editor.client.components.columns;
 
 import java.util.List;
 import java.util.function.Supplier;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;

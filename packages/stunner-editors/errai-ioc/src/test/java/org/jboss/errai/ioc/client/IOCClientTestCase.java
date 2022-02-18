@@ -31,12 +31,9 @@ package org.jboss.errai.ioc.client;
  * limitations under the License.
  */
 
-
-
+import com.google.gwt.junit.client.GWTTestCase;
 import org.jboss.errai.common.client.api.extension.InitVotes;
 import org.jboss.errai.ioc.client.container.IOC;
-
-import com.google.gwt.junit.client.GWTTestCase;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

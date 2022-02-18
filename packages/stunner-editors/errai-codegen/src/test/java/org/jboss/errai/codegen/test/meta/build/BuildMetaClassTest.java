@@ -16,6 +16,10 @@
 
 package org.jboss.errai.codegen.test.meta.build;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.google.common.collect.Lists;
 import org.jboss.errai.codegen.builder.ClassStructureBuilder;
 import org.jboss.errai.codegen.builder.impl.ClassBuilder;
@@ -24,10 +28,6 @@ import org.jboss.errai.codegen.meta.MetaField;
 import org.jboss.errai.codegen.test.AbstractCodegenTest;
 import org.jboss.errai.codegen.test.model.tree.Parent;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Tests for {@link org.jboss.errai.codegen.meta.impl.build.BuildMetaClass}.

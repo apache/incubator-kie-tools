@@ -15,7 +15,6 @@
 package org.eclipse.bpmn2.di;
 
 import org.eclipse.dd.di.Diagram;
-
 import org.eclipse.emf.common.util.EList;
 
 /**

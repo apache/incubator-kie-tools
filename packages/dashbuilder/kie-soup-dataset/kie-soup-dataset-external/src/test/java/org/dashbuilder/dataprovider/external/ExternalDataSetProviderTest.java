@@ -15,10 +15,6 @@
  */
 package org.dashbuilder.dataprovider.external;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import org.dashbuilder.DataSetCore;
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetLookupFactory;
@@ -33,6 +29,10 @@ import org.dashbuilder.scheduler.SchedulerTask;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class ExternalDataSetProviderTest {
 

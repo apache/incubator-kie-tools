@@ -16,8 +16,6 @@
 
 package org.jboss.errai.databinding.client.test;
 
-import static org.jboss.errai.databinding.client.components.ListComponent.forIsWidgetComponent;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,6 +36,8 @@ import org.jboss.errai.databinding.client.api.StateSync;
 import org.jboss.errai.databinding.client.components.ListComponent;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.test.AbstractErraiIOCTest;
+
+import static org.jboss.errai.databinding.client.components.ListComponent.forIsWidgetComponent;
 
 /**
  * Tests binding to lists with the {@link DataBinder}.

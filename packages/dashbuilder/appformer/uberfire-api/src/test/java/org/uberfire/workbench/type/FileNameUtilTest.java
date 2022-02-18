@@ -19,11 +19,11 @@ package org.uberfire.workbench.type;
 import org.junit.Test;
 import org.uberfire.backend.vfs.Path;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.uberfire.workbench.type.FileNameUtil.removeExtension;
-import static org.junit.Assert.assertEquals;
 
 public class FileNameUtilTest {
 

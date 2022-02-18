@@ -17,7 +17,6 @@
 package org.uberfire.ext.layout.editor.api.css;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 /**
  * A list of CSS rules

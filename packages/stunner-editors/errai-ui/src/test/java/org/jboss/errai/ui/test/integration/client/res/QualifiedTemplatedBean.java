@@ -18,10 +18,9 @@ package org.jboss.errai.ui.test.integration.client.res;
 
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.FlowPanel;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-
-import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * @author Max Barkley <mbarkley@redhat.com>

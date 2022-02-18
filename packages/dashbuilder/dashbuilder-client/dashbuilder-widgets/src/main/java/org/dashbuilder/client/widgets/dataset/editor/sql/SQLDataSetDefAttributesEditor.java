@@ -18,6 +18,10 @@ package org.dashbuilder.client.widgets.dataset.editor.sql;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.editor.client.EditorDelegate;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -30,10 +34,6 @@ import org.dashbuilder.dataset.service.SQLProviderServices;
 import org.gwtbootstrap3.client.ui.constants.Placement;
 import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.client.mvp.UberView;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 /**
  * <p>SQL Data Set specific attributes editor presenter.</p>

@@ -18,6 +18,7 @@ package org.kie.workbench.common.widgets.client.widget;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.JsArrayString;

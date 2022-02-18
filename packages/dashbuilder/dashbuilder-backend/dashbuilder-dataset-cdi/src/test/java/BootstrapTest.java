@@ -23,7 +23,6 @@ import org.dashbuilder.dataprovider.DataSetProviderRegistryCDI;
 import org.dashbuilder.dataset.DataSetDefDeployer;
 import org.dashbuilder.dataset.DataSetDefDeployerCDI;
 import org.dashbuilder.dataset.DataSetDefRegistryCDI;
-import org.dashbuilder.dataset.def.DataSetDefRegistry;
 import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 import org.dashbuilder.test.BaseCDITest;
 import org.jboss.arquillian.junit.Arquillian;
@@ -34,8 +33,8 @@ import org.junit.runner.RunWith;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
 @Ignore("see https://issues.jboss.org/browse/RHPAM-832")

@@ -18,6 +18,7 @@ package org.uberfire.client.workbench.widgets.menu.megamenu;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.Activity;
@@ -50,8 +51,6 @@ import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuItemPerspective;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
 

@@ -18,6 +18,7 @@ package org.kie.workbench.common.widgets.client.widget;
 
 import java.util.List;
 import java.util.function.Consumer;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -25,7 +26,6 @@ import javax.inject.Inject;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLSelectElement;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.UberElemental;
 
 @Dependent

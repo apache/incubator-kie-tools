@@ -1,7 +1,11 @@
 //generated using Reflections JavaCodeSerializer [Thu Apr 22 08:18:02 BRT 2021]
 package org.jboss.errai.reflections;
 
-import static org.jboss.errai.reflections.serializers.JavaCodeSerializer.*;
+import static org.jboss.errai.reflections.serializers.JavaCodeSerializer.IClass;
+import static org.jboss.errai.reflections.serializers.JavaCodeSerializer.IElement;
+import static org.jboss.errai.reflections.serializers.JavaCodeSerializer.IField;
+import static org.jboss.errai.reflections.serializers.JavaCodeSerializer.IMethod;
+import static org.jboss.errai.reflections.serializers.JavaCodeSerializer.IPackage;
 
 public interface MyTestModelStore extends IElement {
 

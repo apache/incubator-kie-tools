@@ -16,15 +16,14 @@
 
 package org.jboss.errai.ioc.rebind.ioc.graph.impl;
 
-import static org.jboss.errai.ioc.util.GeneratedNamesUtil.qualifiedClassNameToIdentifier;
-import static org.jboss.errai.ioc.util.GeneratedNamesUtil.shortenGeneratedIdentifier;
-
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraphBuilder.InjectableType;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.Qualifier;
 
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multiset;
+import static org.jboss.errai.ioc.util.GeneratedNamesUtil.qualifiedClassNameToIdentifier;
+import static org.jboss.errai.ioc.util.GeneratedNamesUtil.shortenGeneratedIdentifier;
 
 public class FactoryNameGenerator {
 

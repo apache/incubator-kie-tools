@@ -1,9 +1,9 @@
 package org.dashbuilder.dataset.backend;
 
+import java.util.List;
+
 import org.dashbuilder.dataset.def.DataColumnDef;
 import org.dashbuilder.dataset.def.DataSetDef;
-
-import java.util.List;
 
 /**
  * <p>Response model for a DataSetDef edition.</p>

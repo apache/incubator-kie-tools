@@ -3,6 +3,7 @@ package org.dashbuilder.client.widgets.dataset.editor.workflow;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.validation.ConstraintViolation;
 
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
@@ -29,11 +30,17 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DataSetEditorWorkflowTest extends AbstractDataSetWorkflowTest {

@@ -18,8 +18,8 @@ package org.jboss.errai.ioc.rebind.ioc.graph.impl;
 
 import java.util.Collection;
 
-import org.jboss.errai.ioc.rebind.ioc.graph.api.Injectable;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraphBuilder.Dependency;
+import org.jboss.errai.ioc.rebind.ioc.graph.api.Injectable;
 
 final class AsyncValidator implements Validator {
   @Override

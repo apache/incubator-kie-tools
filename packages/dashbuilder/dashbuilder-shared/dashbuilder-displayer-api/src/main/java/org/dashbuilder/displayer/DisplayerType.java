@@ -18,7 +18,26 @@ package org.dashbuilder.displayer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.dashbuilder.displayer.DisplayerSubType.*;
+import static org.dashbuilder.displayer.DisplayerSubType.AREA;
+import static org.dashbuilder.displayer.DisplayerSubType.AREA_STACKED;
+import static org.dashbuilder.displayer.DisplayerSubType.BAR;
+import static org.dashbuilder.displayer.DisplayerSubType.BAR_STACKED;
+import static org.dashbuilder.displayer.DisplayerSubType.COLUMN;
+import static org.dashbuilder.displayer.DisplayerSubType.COLUMN_STACKED;
+import static org.dashbuilder.displayer.DisplayerSubType.DONUT;
+import static org.dashbuilder.displayer.DisplayerSubType.LINE;
+import static org.dashbuilder.displayer.DisplayerSubType.MAP_MARKERS;
+import static org.dashbuilder.displayer.DisplayerSubType.MAP_REGIONS;
+import static org.dashbuilder.displayer.DisplayerSubType.METRIC_CARD;
+import static org.dashbuilder.displayer.DisplayerSubType.METRIC_CARD2;
+import static org.dashbuilder.displayer.DisplayerSubType.METRIC_PLAIN_TEXT;
+import static org.dashbuilder.displayer.DisplayerSubType.METRIC_QUOTA;
+import static org.dashbuilder.displayer.DisplayerSubType.PIE;
+import static org.dashbuilder.displayer.DisplayerSubType.PIE_3D;
+import static org.dashbuilder.displayer.DisplayerSubType.SELECTOR_DROPDOWN;
+import static org.dashbuilder.displayer.DisplayerSubType.SELECTOR_LABELS;
+import static org.dashbuilder.displayer.DisplayerSubType.SELECTOR_SLIDER;
+import static org.dashbuilder.displayer.DisplayerSubType.SMOOTH;
 
 /**
  * An enumeration for the different types of displayers.

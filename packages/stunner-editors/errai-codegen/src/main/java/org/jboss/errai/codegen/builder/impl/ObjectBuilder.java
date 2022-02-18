@@ -16,8 +16,6 @@
 
 package org.jboss.errai.codegen.builder.impl;
 
-import static org.jboss.errai.codegen.CallParameters.fromStatements;
-
 import java.util.Arrays;
 
 import javax.enterprise.util.TypeLiteral;
@@ -36,6 +34,8 @@ import org.jboss.errai.codegen.exception.UndefinedConstructorException;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaClassFactory;
 import org.jboss.errai.codegen.util.GenUtil;
+
+import static org.jboss.errai.codegen.CallParameters.fromStatements;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

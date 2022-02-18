@@ -16,9 +16,8 @@
 
 package org.jboss.errai.ui.test.i18n.client.res;
 
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-
 import com.google.gwt.user.client.ui.Composite;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated("I18nNotRootTemplatedWidget.html#fragment")
 public class I18nNotRootTemplatedWidget extends Composite {

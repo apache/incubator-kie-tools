@@ -20,12 +20,12 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -46,10 +46,16 @@ import org.uberfire.ext.layout.editor.client.components.rows.EmptyDropRow;
 import org.uberfire.ext.layout.editor.client.components.rows.Row;
 import org.uberfire.ext.layout.editor.client.event.LayoutEditorElementSelectEvent;
 import org.uberfire.ext.layout.editor.client.event.LayoutEditorElementUnselectEvent;
-import org.uberfire.ext.layout.editor.client.infra.*;
+import org.uberfire.ext.layout.editor.client.infra.DnDManager;
+import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
+import org.uberfire.ext.layout.editor.client.infra.LayoutEditorCssHelper;
+import org.uberfire.ext.layout.editor.client.infra.LayoutEditorFocusController;
+import org.uberfire.ext.layout.editor.client.infra.UniqueIDGenerator;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractLayoutEditorTest {

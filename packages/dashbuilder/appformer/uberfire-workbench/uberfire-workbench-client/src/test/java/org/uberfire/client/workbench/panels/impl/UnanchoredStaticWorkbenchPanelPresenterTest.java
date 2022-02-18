@@ -27,9 +27,11 @@ import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class UnanchoredStaticWorkbenchPanelPresenterTest {

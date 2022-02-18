@@ -18,10 +18,9 @@ package org.jboss.errai.ui.test.nested.client.res;
 
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.TextBox;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * @author Max Barkley <mbarkley@redhat.com>

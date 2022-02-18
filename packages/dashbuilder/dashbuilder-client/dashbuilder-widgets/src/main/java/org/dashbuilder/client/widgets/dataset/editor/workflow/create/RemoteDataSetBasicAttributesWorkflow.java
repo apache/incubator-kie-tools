@@ -20,6 +20,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 
+import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import org.dashbuilder.client.widgets.dataset.editor.attributes.DataSetDefBasicAttributesEditor;
 import org.dashbuilder.client.widgets.dataset.editor.driver.RemoteDataSetDefAttributesDriver;
 import org.dashbuilder.client.widgets.dataset.event.CancelRequestEvent;
@@ -40,8 +41,6 @@ import org.dashbuilder.kieserver.ConsoleDataSetLookup;
 import org.dashbuilder.kieserver.RemoteDataSetDef;
 import org.dashbuilder.validations.DataSetValidatorProvider;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-
-import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 
 /**
  * <p>SQL Data Set Editor workflow presenter for setting data set definition basic attributes.</p>

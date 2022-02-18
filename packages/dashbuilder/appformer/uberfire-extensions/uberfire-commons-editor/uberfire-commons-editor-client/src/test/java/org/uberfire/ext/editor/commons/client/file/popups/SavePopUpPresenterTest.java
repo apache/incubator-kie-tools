@@ -17,6 +17,7 @@
 package org.uberfire.ext.editor.commons.client.file.popups;
 
 import java.util.HashMap;
+
 import javax.enterprise.event.Event;
 
 import org.junit.Before;
@@ -29,8 +30,11 @@ import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.SaveInProgressEvent;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SavePopUpPresenterTest {

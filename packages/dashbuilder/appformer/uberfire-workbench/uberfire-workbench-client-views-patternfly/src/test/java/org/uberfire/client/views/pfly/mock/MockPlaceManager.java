@@ -18,6 +18,7 @@ package org.uberfire.client.views.pfly.mock;
 
 import java.util.Collection;
 import java.util.List;
+
 import javax.enterprise.inject.Alternative;
 
 import com.google.gwt.user.client.ui.HasWidgets;

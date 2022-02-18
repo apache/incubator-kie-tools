@@ -57,7 +57,6 @@ monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       schema: SW_SPEC_SCHEMA,
     },
   ],
-  enableSchemaRequest: true,
 });
 
 const jsonLangService = jsonService.getLanguageService({});

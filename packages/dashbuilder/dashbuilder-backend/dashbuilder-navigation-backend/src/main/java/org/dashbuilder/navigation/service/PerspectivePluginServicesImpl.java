@@ -16,6 +16,7 @@
 package org.dashbuilder.navigation.service;
 
 import java.util.Collection;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

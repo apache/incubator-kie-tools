@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.dashbuilder.dataset.group.Interval;
 import org.dashbuilder.dataset.engine.group.IntervalList;
 import org.dashbuilder.dataset.engine.index.visitor.DataSetIndexVisitor;
 import org.dashbuilder.dataset.group.ColumnGroup;
+import org.dashbuilder.dataset.group.Interval;
 
 /**
  * A DataSet group operation index

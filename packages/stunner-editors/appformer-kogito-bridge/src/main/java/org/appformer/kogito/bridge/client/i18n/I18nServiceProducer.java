@@ -16,11 +16,11 @@
 
 package org.appformer.kogito.bridge.client.i18n;
 
-import elemental2.dom.DomGlobal;
-import org.appformer.kogito.bridge.client.interop.WindowRef;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+
+import elemental2.dom.DomGlobal;
+import org.appformer.kogito.bridge.client.interop.WindowRef;
 
 /**
  * Produces {@link I18nService} beans according to whether the envelope API is available or not

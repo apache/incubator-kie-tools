@@ -16,11 +16,10 @@
 
 package org.jboss.errai.codegen.meta.impl.gwt;
 
-import org.jboss.errai.codegen.meta.MetaType;
-import org.jboss.errai.codegen.meta.impl.AbstractMetaWildcardType;
-
 import com.google.gwt.core.ext.typeinfo.JWildcardType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import org.jboss.errai.codegen.meta.MetaType;
+import org.jboss.errai.codegen.meta.impl.AbstractMetaWildcardType;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

@@ -22,6 +22,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
@@ -33,8 +34,6 @@ import org.uberfire.ext.layout.editor.client.api.LayoutEditorElement;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
 import org.uberfire.ext.layout.editor.client.api.LayoutElementVisitor;
 import org.uberfire.mvp.Command;
-
-import com.google.gwt.user.client.ui.Widget;
 
 @Dependent
 public class LayoutEditorPluginImpl implements LayoutEditorPlugin {

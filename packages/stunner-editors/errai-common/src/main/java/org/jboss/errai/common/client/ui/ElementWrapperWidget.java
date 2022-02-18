@@ -19,9 +19,6 @@ package org.jboss.errai.common.client.ui;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.ui.NativeHasValueAccessors.Accessor;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.TextAreaElement;
@@ -35,6 +32,8 @@ import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.ui.NativeHasValueAccessors.Accessor;
 
 /**
  * A widget that wraps an {@link Element} to support the registration of event listeners and data

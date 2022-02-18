@@ -16,12 +16,12 @@
 
 package org.jboss.errai.enterprise.client.cdi.api;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Identifies an annotated event type is a conversational type. Meaning, that the annotated event must not result

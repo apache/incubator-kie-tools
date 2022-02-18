@@ -16,10 +16,6 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import org.gwtbootstrap3.client.ui.Input;
-import org.gwtbootstrap3.client.ui.InputGroupAddon;
-import org.uberfire.mvp.Command;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -28,6 +24,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.InputGroupAddon;
+import org.uberfire.mvp.Command;
 
 public class FileUpload extends Composite {
 

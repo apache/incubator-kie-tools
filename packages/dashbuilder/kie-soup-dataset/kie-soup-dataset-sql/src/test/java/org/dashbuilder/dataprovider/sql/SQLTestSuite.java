@@ -15,8 +15,8 @@
  */
 package org.dashbuilder.dataprovider.sql;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 

@@ -1,5 +1,7 @@
 package org.dashbuilder.client.widgets.dataset.editor.attributes;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -11,8 +13,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
 import org.uberfire.mvp.Command;
-
-import javax.enterprise.context.Dependent;
 
 /**
  * <p>The Data Set refresh attributes editor view.</p>

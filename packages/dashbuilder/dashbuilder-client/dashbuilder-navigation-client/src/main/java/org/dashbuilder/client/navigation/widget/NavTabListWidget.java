@@ -16,6 +16,7 @@
 package org.dashbuilder.client.navigation.widget;
 
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

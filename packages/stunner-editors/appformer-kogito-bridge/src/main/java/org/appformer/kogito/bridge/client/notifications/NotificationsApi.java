@@ -21,10 +21,10 @@ package org.appformer.kogito.bridge.client.notifications;
 
 import java.util.List;
 
+import jsinterop.annotations.JsType;
 import org.uberfire.workbench.model.bridge.Notification;
 import org.uberfire.workbench.model.bridge.NotificationSeverity;
 import org.uberfire.workbench.model.bridge.NotificationType;
-import jsinterop.annotations.JsType;
 
 /**
  * This is the API that will let communicate with Notifications channel implementation. There are two types of Notifications:

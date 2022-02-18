@@ -18,6 +18,7 @@ package org.uberfire.ext.layout.editor.client.widgets;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

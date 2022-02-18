@@ -18,14 +18,10 @@ package org.uberfire.ext.layout.editor.client.infra;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.uberfire.ext.layout.editor.client.components.container.Container;
-
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Overflow;
-
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
+import org.uberfire.ext.layout.editor.client.components.container.Container;
 
 @ApplicationScoped
 public class LayoutEditorFocusController {

@@ -25,6 +25,8 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.user.client.ui.Composite;
 import org.jboss.errai.common.client.util.CreationalCallback;
 import org.jboss.errai.common.client.util.Properties;
 import org.jboss.errai.ioc.client.container.IOC;
@@ -34,9 +36,6 @@ import org.jboss.errai.ui.shared.JSONMap;
 import org.jboss.errai.ui.shared.TranslationDomRevisitor;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.jboss.errai.ui.shared.wrapper.ElementWrapper;
-
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.user.client.ui.Composite;
 
 /**
  * A base class for a generated translation service that includes all of the translation visible at

@@ -29,9 +29,6 @@ import org.dashbuilder.renderer.c3.client.C3XYDisplayer;
 import org.dashbuilder.renderer.c3.client.charts.CommonC3DisplayerConstants;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3AxisInfo;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3JsTypesFactory;
-import org.dashbuilder.renderer.c3.client.jsbinding.C3Tick;
-
-import com.google.gwt.i18n.client.NumberFormat;
 
 @Dependent
 public class C3BarChartDisplayer extends C3XYDisplayer<C3BarChartDisplayer.View> {

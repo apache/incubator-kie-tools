@@ -16,8 +16,6 @@
 
 package org.uberfire.mvp.impl;
 
-import static org.uberfire.util.URIUtil.encode;
-
 import java.util.Map;
 
 import javax.annotation.PreDestroy;
@@ -27,6 +25,8 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.PlaceRequest;
+
+import static org.uberfire.util.URIUtil.encode;
 
 @Portable
 public class PathPlaceRequest extends DefaultPlaceRequest {

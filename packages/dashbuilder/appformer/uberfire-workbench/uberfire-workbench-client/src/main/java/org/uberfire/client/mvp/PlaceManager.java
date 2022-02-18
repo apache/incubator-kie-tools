@@ -16,8 +16,6 @@
 
 package org.uberfire.client.mvp;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -26,7 +24,6 @@ import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.kie.soup.commons.validation.Preconditions;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -40,6 +37,8 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A Workbench-centric abstraction over the browser's history mechanism. Allows the application to initiate navigation

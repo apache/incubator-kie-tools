@@ -16,12 +16,12 @@
 
 package org.jboss.errai.common.client.framework;
 
-import static org.jboss.errai.common.client.framework.Constants.ERRAI_CSRF_TOKEN_VAR;
-
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+
+import static org.jboss.errai.common.client.framework.Constants.ERRAI_CSRF_TOKEN_VAR;
 
 /**
  *

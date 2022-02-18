@@ -22,7 +22,8 @@ import org.junit.runner.RunWith;
 import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorTextBox;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldOption;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PropertyEditorFieldOptionUtilsTest {

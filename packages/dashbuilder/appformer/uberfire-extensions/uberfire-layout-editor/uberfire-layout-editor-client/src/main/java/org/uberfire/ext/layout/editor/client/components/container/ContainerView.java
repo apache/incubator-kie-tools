@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.layout.editor.client.components.container;
 
+import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -31,8 +33,6 @@ import org.uberfire.ext.layout.editor.client.components.rows.EmptyDropRow;
 import org.uberfire.ext.layout.editor.client.components.rows.Row;
 import org.uberfire.ext.layout.editor.client.infra.ContainerResizeEvent;
 import org.uberfire.ext.layout.editor.client.resources.i18n.CommonConstants;
-
-import java.util.List;
 
 import static org.jboss.errai.common.client.dom.DOMUtil.addCSSClass;
 import static org.jboss.errai.common.client.dom.DOMUtil.hasCSSClass;

@@ -1,5 +1,13 @@
 package org.dashbuilder.dataprovider.sql;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Statement;
+import java.util.Arrays;
+
+import javax.sql.DataSource;
+
 import org.dashbuilder.dataprovider.sql.dialect.Dialect;
 import org.dashbuilder.dataprovider.sql.model.Column;
 import org.dashbuilder.dataprovider.sql.model.Select;
@@ -13,13 +21,6 @@ import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Statement;
-import java.util.Arrays;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
