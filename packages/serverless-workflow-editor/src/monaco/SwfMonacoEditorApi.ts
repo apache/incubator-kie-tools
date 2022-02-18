@@ -15,6 +15,7 @@
  */
 
 import { editor } from "monaco-editor";
+import { SwfMonacoEditorCommandIds } from "./augmentation/commands";
 import { initJsonSchema } from "./augmentation/language/json";
 import { initYamlSchema } from "./augmentation/language/yaml";
 
@@ -28,10 +29,6 @@ export interface SwfMonacoEditorApi {
   undo: () => void;
   redo: () => void;
 }
-
-export type SwfMonacoEditorCommandTypes = "OpenFunctionsWidget" | "OpenStatesWidget" | "RunFunctionsCompletion";
-
-export type SwfMonacoEditorCommandIds = Record<SwfMonacoEditorCommandTypes, string>;
 
 export interface SwfMonacoEditorInstance {
   commands: SwfMonacoEditorCommandIds;

@@ -17,7 +17,7 @@
 import * as monaco from "monaco-editor";
 import { CancellationToken, editor, languages, Position } from "monaco-editor";
 import * as jsonc from "jsonc-parser";
-import { SwfMonacoEditorCommandIds, SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
+import { SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
 import CompletionItemKind = languages.CompletionItemKind;
 
 export type CompletionArgs = {
@@ -52,7 +52,7 @@ const completions = new Map<
   ],
 ]);
 
-export function initJsonCompletion(commandIds: SwfMonacoEditorCommandIds): void {
+export function initJsonCompletion(commandIds: SwfMonacoEditorInstance["commands"]): void {
   monaco.languages.registerCompletionItemProvider("json", {
     provideCompletionItems: (
       model: editor.ITextModel,

@@ -2,7 +2,7 @@ import * as monaco from "monaco-editor";
 import { languages, Position } from "monaco-editor";
 import * as jsonc from "jsonc-parser";
 import { JSONPath } from "vscode-json-languageservice";
-import { SwfMonacoEditorCommandIds } from "../../SwfMonacoEditorApi";
+import { SwfMonacoEditorCommandIds } from "../commands";
 import CodeLens = languages.CodeLens;
 
 export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void {

@@ -4,7 +4,6 @@ import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { pingPongEnvelopViewRenderDiv as renderPingPongReact } from "@kie-tools-examples/ping-pong-view-react";
 import { pingPongEnvelopViewRenderDiv as renderPingPongAngular } from "@kie-tools-examples/ping-pong-view-angular/dist/wc/lib";
-import { SwfMonacoEditorCommandIds } from "../../SwfMonacoEditorApi";
 import { openWidget } from "../widgets";
 
 const pingPongChannelApiImpl = {
@@ -15,6 +14,10 @@ const pingPongChannelApiImpl = {
     console.info(`Received PONG from '${source}' in reply to '${replyingTo}'`);
   },
 };
+
+export type SwfMonacoEditorCommandTypes = "OpenFunctionsWidget" | "OpenStatesWidget" | "RunFunctionsCompletion";
+
+export type SwfMonacoEditorCommandIds = Record<SwfMonacoEditorCommandTypes, string>;
 
 export function initAugmentationCommands(editorInstance: editor.IStandaloneCodeEditor): SwfMonacoEditorCommandIds {
   return {
