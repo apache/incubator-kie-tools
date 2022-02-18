@@ -2,29 +2,23 @@
  */
 package org.jboss.drools.impl;
 
-import com.google.gwt.user.client.rpc.GwtTransient;
-
 import java.math.BigInteger;
 
+import com.google.gwt.user.client.rpc.GwtTransient;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EMap;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.impl.EStringToStringMapEntryImpl;
-
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.EcoreEMap;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
-
 import org.jboss.drools.DocumentRoot;
 import org.jboss.drools.DroolsPackage;
 import org.jboss.drools.GlobalType;

@@ -1,10 +1,11 @@
 package org.dashbuilder.client.widgets.dataset.explorer;
 
+import java.util.Arrays;
+
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-
 import org.dashbuilder.client.widgets.common.CustomDataSetProviderType;
 import org.dashbuilder.client.widgets.common.DataSetEditorPlugin;
 import org.dashbuilder.client.widgets.dataset.event.EditDataSetEvent;
@@ -21,9 +22,12 @@ import org.uberfire.mocks.EventSourceMock;
 import static org.jgroups.util.Util.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
-
-import java.util.Arrays;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DataSetPanelTest {

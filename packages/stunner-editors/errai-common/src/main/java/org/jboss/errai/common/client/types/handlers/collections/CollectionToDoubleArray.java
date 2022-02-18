@@ -16,9 +16,9 @@
 
 package org.jboss.errai.common.client.types.handlers.collections;
 
-import org.jboss.errai.common.client.types.TypeHandler;
-
 import java.util.Collection;
+
+import org.jboss.errai.common.client.types.TypeHandler;
 
 public class CollectionToDoubleArray implements TypeHandler<Collection, Double[]> {
   public Double[] getConverted(Collection in) {

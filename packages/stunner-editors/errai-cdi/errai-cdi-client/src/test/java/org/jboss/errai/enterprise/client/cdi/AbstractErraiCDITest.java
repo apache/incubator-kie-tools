@@ -22,15 +22,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.user.client.Timer;
 import org.jboss.errai.common.client.api.extension.InitVotes;
 import org.jboss.errai.enterprise.client.cdi.api.CDI;
 import org.jboss.errai.ioc.client.Container;
 import org.jboss.errai.ioc.client.QualifierUtil;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-
-import com.google.gwt.junit.client.GWTTestCase;
-import com.google.gwt.user.client.Timer;
 
 /**
  * Abstract base class of all Errai CDI integration tests,

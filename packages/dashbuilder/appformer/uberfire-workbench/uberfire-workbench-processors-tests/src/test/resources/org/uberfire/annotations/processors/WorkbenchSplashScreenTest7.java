@@ -2,7 +2,6 @@ package org.uberfire.annotations.processors;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
-
 import org.jboss.errai.ioc.client.api.ActivatedBy;
 import org.uberfire.client.annotations.SplashFilter;
 import org.uberfire.client.annotations.WorkbenchPartTitle;

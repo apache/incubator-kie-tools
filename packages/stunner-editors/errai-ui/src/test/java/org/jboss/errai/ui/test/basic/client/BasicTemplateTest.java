@@ -16,8 +16,13 @@
 
 package org.jboss.errai.ui.test.basic.client;
 
-import static org.jboss.errai.ui.shared.TemplateUtil.asElement;
-
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.StyleInjector;
+import com.google.gwt.regexp.shared.RegExp;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
 import org.jboss.errai.ioc.client.IOCUtil;
 import org.jboss.errai.ioc.client.container.IOC;
@@ -37,13 +42,7 @@ import org.jboss.errai.ui.test.basic.client.res.StyledComponentWithRelativeSheet
 import org.jboss.errai.ui.test.basic.client.res.StyledTemplatedBean;
 import org.junit.Test;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.StyleInjector;
-import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.RootPanel;
+import static org.jboss.errai.ui.shared.TemplateUtil.asElement;
 
 public class BasicTemplateTest extends AbstractErraiCDITest {
 

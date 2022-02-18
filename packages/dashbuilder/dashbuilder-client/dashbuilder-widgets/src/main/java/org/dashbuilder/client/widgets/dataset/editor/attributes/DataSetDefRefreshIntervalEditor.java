@@ -1,5 +1,13 @@
 package org.dashbuilder.client.widgets.dataset.editor.attributes;
 
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.dataset.client.resources.i18n.DateIntervalTypeConstants;
@@ -7,13 +15,6 @@ import org.dashbuilder.dataset.date.TimeAmount;
 import org.dashbuilder.dataset.group.DateIntervalType;
 import org.gwtbootstrap3.client.ui.constants.Placement;
 import org.uberfire.client.mvp.UberView;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * <p>Provides an editor for a the refreshInterval data set definition attribute..</p>

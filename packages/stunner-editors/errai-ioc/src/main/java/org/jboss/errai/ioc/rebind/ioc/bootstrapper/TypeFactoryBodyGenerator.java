@@ -16,6 +16,22 @@
 
 package org.jboss.errai.ioc.rebind.ioc.bootstrapper;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import com.google.common.collect.Multimap;
 import org.jboss.errai.codegen.Statement;
 import org.jboss.errai.codegen.builder.ClassStructureBuilder;
@@ -40,26 +56,10 @@ import org.jboss.errai.ioc.rebind.ioc.injector.api.Decorable;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.InjectionContext;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.WiringElementType;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
-
 import static org.jboss.errai.codegen.util.PrivateAccessUtil.getPrivateFieldAccessorName;
 import static org.jboss.errai.codegen.util.PrivateAccessUtil.getPrivateMethodName;
 import static org.jboss.errai.codegen.util.Stmt.castTo;
 import static org.jboss.errai.codegen.util.Stmt.declareFinalVariable;
-import static org.jboss.errai.codegen.util.Stmt.invokeStatic;
 import static org.jboss.errai.codegen.util.Stmt.loadLiteral;
 import static org.jboss.errai.codegen.util.Stmt.loadVariable;
 import static org.jboss.errai.codegen.util.Stmt.newObject;

@@ -21,6 +21,7 @@ import org.dashbuilder.dataset.group.DateIntervalType;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.dashbuilder.dataset.Assertions.assertDataSetValue;
 import static org.dashbuilder.dataset.Assertions.assertDataSetValues;
 import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_AMOUNT;
@@ -34,7 +35,6 @@ import static org.dashbuilder.dataset.group.AggregateFunctionType.MAX;
 import static org.dashbuilder.dataset.group.AggregateFunctionType.MIN;
 import static org.dashbuilder.dataset.group.AggregateFunctionType.SUM;
 import static org.dashbuilder.dataset.group.DateIntervalType.QUARTER;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class DataSetNestedGroupTest {
 

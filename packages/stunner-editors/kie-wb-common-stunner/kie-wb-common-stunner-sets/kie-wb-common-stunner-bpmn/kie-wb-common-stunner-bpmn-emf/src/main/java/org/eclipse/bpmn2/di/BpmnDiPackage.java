@@ -15,7 +15,6 @@
 package org.eclipse.bpmn2.di;
 
 import org.eclipse.dd.di.DiPackage;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;

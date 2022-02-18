@@ -20,6 +20,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 
+import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import org.dashbuilder.client.widgets.dataset.editor.driver.ExternalDataSetDefDriver;
 import org.dashbuilder.client.widgets.dataset.event.CancelRequestEvent;
 import org.dashbuilder.client.widgets.dataset.event.SaveRequestEvent;
@@ -29,8 +30,6 @@ import org.dashbuilder.dataset.client.editor.ExternalDataSetDefEditor;
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.dashbuilder.validations.DataSetValidatorProvider;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-
-import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 
 /**
  * <p>External Data Set Editor workflow presenter for editing a data set definition instance.</p>

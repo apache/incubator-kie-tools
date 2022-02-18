@@ -16,8 +16,6 @@
 
 package org.jboss.errai.codegen.literal;
 
-import static org.jboss.errai.codegen.builder.callstack.LoadClassReference.getClassReference;
-
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +28,8 @@ import org.jboss.errai.codegen.SnapshotMaker;
 import org.jboss.errai.codegen.exception.NotLiteralizableException;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaClassFactory;
+
+import static org.jboss.errai.codegen.builder.callstack.LoadClassReference.getClassReference;
 
 /**
  * The literal factory provides a LiteralValue for the specified object (if possible).

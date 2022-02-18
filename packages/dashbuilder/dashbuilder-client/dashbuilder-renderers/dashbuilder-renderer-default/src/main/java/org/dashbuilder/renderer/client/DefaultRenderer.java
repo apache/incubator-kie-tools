@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -38,8 +39,17 @@ import org.dashbuilder.renderer.client.selector.SelectorSliderDisplayer;
 import org.dashbuilder.renderer.client.table.TableDisplayer;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
-import static org.dashbuilder.displayer.DisplayerType.*;
-import static org.dashbuilder.displayer.DisplayerSubType.*;
+import static org.dashbuilder.displayer.DisplayerSubType.METRIC_CARD;
+import static org.dashbuilder.displayer.DisplayerSubType.METRIC_CARD2;
+import static org.dashbuilder.displayer.DisplayerSubType.METRIC_PLAIN_TEXT;
+import static org.dashbuilder.displayer.DisplayerSubType.METRIC_QUOTA;
+import static org.dashbuilder.displayer.DisplayerSubType.SELECTOR_DROPDOWN;
+import static org.dashbuilder.displayer.DisplayerSubType.SELECTOR_LABELS;
+import static org.dashbuilder.displayer.DisplayerSubType.SELECTOR_SLIDER;
+import static org.dashbuilder.displayer.DisplayerType.EXTERNAL_COMPONENT;
+import static org.dashbuilder.displayer.DisplayerType.METRIC;
+import static org.dashbuilder.displayer.DisplayerType.SELECTOR;
+import static org.dashbuilder.displayer.DisplayerType.TABLE;
 
 /**
  * Default renderer

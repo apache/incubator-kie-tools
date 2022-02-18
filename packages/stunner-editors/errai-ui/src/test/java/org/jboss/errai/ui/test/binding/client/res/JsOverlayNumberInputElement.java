@@ -16,14 +16,13 @@
 
 package org.jboss.errai.ui.test.binding.client.res;
 
-import org.jboss.errai.common.client.api.annotations.Element;
-import org.jboss.errai.common.client.api.annotations.Property;
-import org.jboss.errai.common.client.ui.HasValue;
-
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import org.jboss.errai.common.client.api.annotations.Element;
+import org.jboss.errai.common.client.api.annotations.Property;
+import org.jboss.errai.common.client.ui.HasValue;
 
 /**
  * This native input element wrapper treats a text input element as if it has a number value. This tests that the

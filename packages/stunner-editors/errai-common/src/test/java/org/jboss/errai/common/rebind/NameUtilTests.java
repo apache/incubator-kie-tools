@@ -16,12 +16,12 @@
 
 package org.jboss.errai.common.rebind;
 
-import static org.junit.Assert.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  *

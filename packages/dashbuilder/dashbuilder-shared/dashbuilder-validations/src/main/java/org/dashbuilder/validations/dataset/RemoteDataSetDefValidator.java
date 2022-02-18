@@ -29,7 +29,6 @@ import org.dashbuilder.dataset.validation.groups.SQLDataSetDefValidation;
 import org.dashbuilder.kieserver.RemoteDataSetDef;
 import org.dashbuilder.kieserver.RemoteDataSetDefValidation;
 import org.dashbuilder.kieserver.RuntimeKieServerDataSetProviderType;
-import org.dashbuilder.validations.dataset.AbstractDataSetDefValidator;
 
 /**
  * <p>The singleton application Remote data set definition validator.</p>

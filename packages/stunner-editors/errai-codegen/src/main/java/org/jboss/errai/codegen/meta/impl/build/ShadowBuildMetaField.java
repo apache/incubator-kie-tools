@@ -16,12 +16,12 @@
 
 package org.jboss.errai.codegen.meta.impl.build;
 
+import java.lang.reflect.Field;
+
 import org.jboss.errai.codegen.Statement;
 import org.jboss.errai.codegen.builder.impl.Scope;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaField;
-
-import java.lang.reflect.Field;
 
 /**
  * @author Mike Brock

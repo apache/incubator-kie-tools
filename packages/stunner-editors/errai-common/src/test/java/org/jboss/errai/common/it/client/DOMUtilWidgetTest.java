@@ -19,15 +19,14 @@ package org.jboss.errai.common.it.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.dom.Body;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.Window;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.dom.Body;
+import org.jboss.errai.common.client.dom.DOMUtil;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.Window;
 
 /**
  * Tests utility methods in {@link DOMUtil} that deal with {@link Widget Widgets}.

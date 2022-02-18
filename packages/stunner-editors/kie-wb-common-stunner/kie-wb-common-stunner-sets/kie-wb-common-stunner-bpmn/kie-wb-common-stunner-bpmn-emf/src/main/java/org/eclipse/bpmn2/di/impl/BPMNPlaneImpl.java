@@ -15,19 +15,13 @@
 package org.eclipse.bpmn2.di.impl;
 
 import com.google.gwt.user.client.rpc.GwtTransient;
-
 import org.eclipse.bpmn2.BaseElement;
-
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
-
 import org.eclipse.dd.di.impl.PlaneImpl;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**

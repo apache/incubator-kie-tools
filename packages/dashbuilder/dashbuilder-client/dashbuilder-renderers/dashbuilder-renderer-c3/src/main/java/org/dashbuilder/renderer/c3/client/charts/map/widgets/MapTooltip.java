@@ -23,14 +23,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.jboss.errai.common.client.api.elemental2.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.views.pfly.widgets.D3;
-
-import elemental2.dom.HTMLDivElement;
-import elemental2.dom.HTMLElement;
-import jsinterop.base.Js;
 
 @Templated
 @ApplicationScoped

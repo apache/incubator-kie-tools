@@ -43,10 +43,13 @@ import static org.dashbuilder.dataset.filter.FilterFactory.greaterOrEqualsTo;
 import static org.dashbuilder.dataset.filter.FilterFactory.greaterThan;
 import static org.dashbuilder.dataset.filter.FilterFactory.isNull;
 import static org.dashbuilder.dataset.filter.FilterFactory.notEqualsTo;
+import static org.dashbuilder.dataset.json.DataSetLookupJSONMarshaller.COLUMN;
+import static org.dashbuilder.dataset.json.DataSetLookupJSONMarshaller.FUNCTION;
+import static org.dashbuilder.dataset.json.DataSetLookupJSONMarshaller.FUNCTION_ARGS;
+import static org.dashbuilder.dataset.json.DataSetLookupJSONMarshaller.FUNCTION_LABEL_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.dashbuilder.dataset.json.DataSetLookupJSONMarshaller.*;
 
 public class DataSetLookupJsonTest {
 

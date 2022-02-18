@@ -15,12 +15,12 @@
  */
 package org.dashbuilder.dataset.editor.client.screens;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
-
-import javax.enterprise.context.Dependent;
 
 @Dependent
 public class DataSetDefScreenViewImpl extends BaseEditorViewImpl implements DataSetDefScreenView {

@@ -1,6 +1,5 @@
 package org.dashbuilder.client.widgets.dataset.editor.bean;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.common.client.editor.ValueBoxEditor;
 import org.dashbuilder.common.client.editor.map.MapEditor;

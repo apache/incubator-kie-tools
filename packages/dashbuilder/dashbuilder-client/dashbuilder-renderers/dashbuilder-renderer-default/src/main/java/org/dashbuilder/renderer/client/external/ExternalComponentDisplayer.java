@@ -22,6 +22,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import elemental2.dom.DomGlobal;
 import org.dashbuilder.common.client.StringUtils;
 import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.dataset.DataSet;
@@ -38,8 +39,6 @@ import org.dashbuilder.displayer.external.ExternalComponentMessage;
 import org.dashbuilder.displayer.external.ExternalComponentMessageHelper;
 import org.dashbuilder.displayer.external.ExternalDataSet;
 import org.dashbuilder.displayer.external.ExternalFilterRequest;
-
-import elemental2.dom.DomGlobal;
 
 @Dependent
 public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalComponentDisplayer.View> {

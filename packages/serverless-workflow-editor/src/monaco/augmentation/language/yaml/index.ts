@@ -27,7 +27,6 @@ import { JSONSchema7 } from "json-schema";
 
 export function initYamlSchema() {
   setDiagnosticsOptions({
-    enableSchemaRequest: true,
     hover: true,
     completion: true,
     validate: true,

@@ -15,8 +15,8 @@
  */
 package org.dashbuilder.dataset.client;
 
-import org.dashbuilder.dataset.DataSetManager;
 import org.dashbuilder.dataset.AbstractDataSetCore;
+import org.dashbuilder.dataset.DataSetManager;
 import org.dashbuilder.dataset.client.engine.ClientChronometer;
 import org.dashbuilder.dataset.client.engine.ClientDateFormatter;
 import org.dashbuilder.dataset.client.engine.ClientDateFormatterImpl;

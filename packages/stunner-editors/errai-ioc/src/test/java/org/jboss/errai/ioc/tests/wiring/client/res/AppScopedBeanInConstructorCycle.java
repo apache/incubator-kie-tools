@@ -18,7 +18,6 @@ package org.jboss.errai.ioc.tests.wiring.client.res;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  *

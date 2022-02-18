@@ -15,11 +15,10 @@
  */
 package org.dashbuilder.renderer.c3.client.charts.area;
 
-import org.dashbuilder.renderer.c3.client.C3DisplayerView;
-import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartConf;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import org.dashbuilder.renderer.c3.client.C3DisplayerView;
+import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartConf;
 
 public class C3AreaChartView 
        extends C3DisplayerView<C3AreaChartDisplayer> 

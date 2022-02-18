@@ -16,13 +16,14 @@
 
 package org.jboss.errai.ui.client.local.producer;
 
+import java.lang.annotation.Annotation;
+
+import javax.inject.Named;
+
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Window;
 import org.jboss.errai.ioc.client.api.ContextualTypeProvider;
 import org.jboss.errai.ioc.client.api.IOCProvider;
-
-import javax.inject.Named;
-import java.lang.annotation.Annotation;
 
 /**
  *

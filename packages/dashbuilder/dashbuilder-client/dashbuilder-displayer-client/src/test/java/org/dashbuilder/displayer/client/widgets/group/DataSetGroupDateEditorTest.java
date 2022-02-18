@@ -25,11 +25,24 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.dashbuilder.dataset.group.DateIntervalType.*;
-import static org.dashbuilder.dataset.group.GroupStrategy.*;
-import static org.junit.Assert.*;
+import static org.dashbuilder.dataset.group.DateIntervalType.CENTURY;
+import static org.dashbuilder.dataset.group.DateIntervalType.DAY_OF_WEEK;
+import static org.dashbuilder.dataset.group.DateIntervalType.FIXED_INTERVALS_SUPPORTED;
+import static org.dashbuilder.dataset.group.DateIntervalType.HOUR;
+import static org.dashbuilder.dataset.group.DateIntervalType.MINUTE;
+import static org.dashbuilder.dataset.group.DateIntervalType.MONTH;
+import static org.dashbuilder.dataset.group.DateIntervalType.QUARTER;
+import static org.dashbuilder.dataset.group.DateIntervalType.SECOND;
+import static org.dashbuilder.dataset.group.GroupStrategy.DYNAMIC;
+import static org.dashbuilder.dataset.group.GroupStrategy.FIXED;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataSetGroupDateEditorTest {

@@ -1,9 +1,17 @@
 package org.dashbuilder.client.widgets.dataset.explorer;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.enterprise.inject.Instance;
+import javax.enterprise.util.TypeLiteral;
+
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-
 import org.dashbuilder.client.widgets.common.CustomDataSetProviderType;
 import org.dashbuilder.client.widgets.common.DataSetEditorPlugin;
 import org.dashbuilder.dataprovider.DataSetProviderType;
@@ -22,18 +30,13 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import javax.enterprise.inject.Instance;
-import javax.enterprise.util.TypeLiteral;
-
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
 import static org.jgroups.util.Util.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DataSetExplorerTest {

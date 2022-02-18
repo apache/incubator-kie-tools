@@ -16,11 +16,15 @@
 
 package org.uberfire.ext.layout.editor.client;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,15 +40,14 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
 import org.uberfire.ext.widgets.common.client.dropdown.SingleLiveSearchSelectionHandler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.mockito.ArgumentMatchers.any;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LayoutEditorPropertiesPresenterTest {

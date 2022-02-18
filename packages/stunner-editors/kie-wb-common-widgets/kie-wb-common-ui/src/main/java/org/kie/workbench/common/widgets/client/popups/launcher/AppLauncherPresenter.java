@@ -18,6 +18,7 @@ package org.kie.workbench.common.widgets.client.popups.launcher;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;

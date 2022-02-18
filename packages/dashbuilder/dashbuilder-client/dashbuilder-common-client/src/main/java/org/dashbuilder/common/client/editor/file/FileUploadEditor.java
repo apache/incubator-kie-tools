@@ -1,8 +1,13 @@
 package org.dashbuilder.common.client.editor.file;
 
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.editor.client.EditorError;
-import com.google.gwt.editor.client.HasEditorErrors;
-import com.google.gwt.editor.client.LeafValueEditor;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -12,12 +17,6 @@ import org.dashbuilder.common.client.resources.i18n.DashbuilderCommonConstants;
 import org.gwtbootstrap3.client.ui.constants.Placement;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.workbench.events.NotificationEvent;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.List;
 
 import static org.uberfire.workbench.events.NotificationEvent.NotificationType.ERROR;
 import static org.uberfire.workbench.events.NotificationEvent.NotificationType.SUCCESS;

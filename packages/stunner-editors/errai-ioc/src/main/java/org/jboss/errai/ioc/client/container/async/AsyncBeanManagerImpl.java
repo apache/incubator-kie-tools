@@ -33,6 +33,8 @@ import java.util.Set;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Provider;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import org.jboss.errai.common.client.util.CreationalCallback;
 import org.jboss.errai.ioc.client.QualifierUtil;
 import org.jboss.errai.ioc.client.container.BeanManagerSetup;
@@ -45,9 +47,6 @@ import org.jboss.errai.ioc.client.container.RefHolder;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 
 /**
  * @author Max Barkley <mbarkley@redhat.com>

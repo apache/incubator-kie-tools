@@ -22,7 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.uberfire.workbench.model.PartDefinition;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;

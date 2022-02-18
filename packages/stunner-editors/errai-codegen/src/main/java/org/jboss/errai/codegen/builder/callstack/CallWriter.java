@@ -16,10 +16,10 @@
 
 package org.jboss.errai.codegen.builder.callstack;
 
-import org.jboss.errai.codegen.meta.MetaClass;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jboss.errai.codegen.meta.MetaClass;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

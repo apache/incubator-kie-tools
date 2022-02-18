@@ -15,13 +15,6 @@
  */
 package org.dashbuilder.renderer.c3.client.charts.meter;
 
-import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_AMOUNT;
-import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DATE;
-import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_ID;
-import static org.dashbuilder.dataset.group.AggregateFunctionType.SUM;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-
 import java.text.ParseException;
 
 import org.dashbuilder.dataset.DataColumn;
@@ -34,6 +27,13 @@ import org.dashbuilder.renderer.c3.client.C3BaseTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_AMOUNT;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DATE;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_ID;
+import static org.dashbuilder.dataset.group.AggregateFunctionType.SUM;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class C3MeterDisplayerTest extends C3BaseTest {

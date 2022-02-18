@@ -16,7 +16,12 @@
 package org.dashbuilder.dataset;
 
 import org.dashbuilder.DataSetCore;
-import org.dashbuilder.dataset.def.*;
+import org.dashbuilder.dataset.def.DataSetDef;
+import org.dashbuilder.dataset.def.DataSetDefFactory;
+import org.dashbuilder.dataset.def.DataSetDefRegistry;
+import org.dashbuilder.dataset.def.DataSetDefRegistryListener;
+import org.dashbuilder.dataset.def.DataSetPostProcessor;
+import org.dashbuilder.dataset.def.DataSetPreprocessor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

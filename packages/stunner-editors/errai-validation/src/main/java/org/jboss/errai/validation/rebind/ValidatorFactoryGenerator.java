@@ -20,6 +20,13 @@ import java.io.PrintWriter;
 
 import javax.validation.ValidatorFactory;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.ext.Generator;
+import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.UnableToCompleteException;
+import com.google.gwt.validation.client.AbstractGwtValidatorFactory;
+import com.google.gwt.validation.client.impl.AbstractGwtValidator;
 import org.jboss.errai.codegen.Cast;
 import org.jboss.errai.codegen.InnerClass;
 import org.jboss.errai.codegen.builder.BlockBuilder;
@@ -30,14 +37,6 @@ import org.jboss.errai.common.metadata.RebindUtils;
 import org.jboss.errai.validation.client.BeanValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.Generator;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.UnableToCompleteException;
-import com.google.gwt.validation.client.AbstractGwtValidatorFactory;
-import com.google.gwt.validation.client.impl.AbstractGwtValidator;
 
 /**
  * Generates an implementation of {@link ValidatorFactory} which provides a generated implementation

@@ -3,14 +3,10 @@
 package org.jboss.drools.impl;
 
 import com.google.gwt.user.client.rpc.GwtTransient;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
-
 import org.jboss.drools.DroolsPackage;
 import org.jboss.drools.OnEntryScriptType;
 

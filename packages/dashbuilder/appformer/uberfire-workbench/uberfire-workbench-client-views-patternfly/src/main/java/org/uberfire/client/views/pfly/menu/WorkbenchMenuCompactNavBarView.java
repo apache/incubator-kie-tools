@@ -17,6 +17,7 @@
 package org.uberfire.client.views.pfly.menu;
 
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 

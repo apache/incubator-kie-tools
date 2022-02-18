@@ -1,11 +1,11 @@
 package org.dashbuilder.common.client.editor.list;
 
-import org.dashbuilder.common.client.editor.HasEditMode;
-import org.dashbuilder.common.client.event.ValueChangeEvent;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+
+import org.dashbuilder.common.client.editor.HasEditMode;
+import org.dashbuilder.common.client.event.ValueChangeEvent;
 
 /**
  * <p>Images are shown using a drop down selector.</p>

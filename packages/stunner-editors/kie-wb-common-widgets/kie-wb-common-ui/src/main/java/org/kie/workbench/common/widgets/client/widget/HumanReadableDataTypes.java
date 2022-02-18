@@ -15,10 +15,10 @@
  */
 package org.kie.workbench.common.widgets.client.widget;
 
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 public class HumanReadableDataTypes {
 

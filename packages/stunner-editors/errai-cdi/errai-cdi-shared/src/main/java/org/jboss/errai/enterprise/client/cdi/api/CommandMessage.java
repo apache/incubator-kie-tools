@@ -16,14 +16,14 @@
 
 package org.jboss.errai.enterprise.client.cdi.api;
 
-import org.jboss.errai.common.client.api.ErrorCallback;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jboss.errai.common.client.api.Assert;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.ResourceProvider;
 import org.jboss.errai.common.client.protocols.MessageParts;
 import org.jboss.errai.common.client.types.TypeHandlerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class CommandMessage implements Message {
 

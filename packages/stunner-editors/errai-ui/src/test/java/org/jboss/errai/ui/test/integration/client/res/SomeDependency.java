@@ -16,10 +16,10 @@
 
 package org.jboss.errai.ui.test.integration.client.res;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-
-import javax.enterprise.context.ApplicationScoped;
 
 /**
  * @author Mike Brock

@@ -17,7 +17,6 @@ package org.uberfire.ext.editor.commons.service;
 
 import java.util.Collection;
 
-
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 

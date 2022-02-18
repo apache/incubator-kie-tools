@@ -15,6 +15,10 @@
  */
 package org.dashbuilder.client.widgets.dataset.editor.attributes;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.editor.client.EditorDelegate;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -24,10 +28,6 @@ import org.dashbuilder.dataset.def.DataSetDef;
 import org.gwtbootstrap3.client.ui.constants.Placement;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 /**
  * <p>Data Set refresh attributes editor presenter.</p>

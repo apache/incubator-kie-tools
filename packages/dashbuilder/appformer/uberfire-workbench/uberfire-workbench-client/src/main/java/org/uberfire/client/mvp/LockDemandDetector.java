@@ -18,6 +18,7 @@ package org.uberfire.client.mvp;
 
 import java.util.Arrays;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.dom.client.Element;

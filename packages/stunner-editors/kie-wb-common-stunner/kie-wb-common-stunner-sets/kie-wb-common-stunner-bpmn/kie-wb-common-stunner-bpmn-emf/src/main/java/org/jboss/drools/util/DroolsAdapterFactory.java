@@ -4,12 +4,15 @@ package org.jboss.drools.util;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
-
-import org.jboss.drools.*;
+import org.jboss.drools.DocumentRoot;
+import org.jboss.drools.DroolsPackage;
+import org.jboss.drools.GlobalType;
+import org.jboss.drools.ImportType;
+import org.jboss.drools.MetaDataType;
+import org.jboss.drools.OnEntryScriptType;
+import org.jboss.drools.OnExitScriptType;
 
 /**
  * <!-- begin-user-doc -->

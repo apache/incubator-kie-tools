@@ -20,9 +20,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.dashbuilder.dataset.ExpenseReportsData.*;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_AMOUNT;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DATE;
 import static org.dashbuilder.dataset.group.AggregateFunctionType.SUM;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ClientDataSetManagerTest extends AbstractDataSetTest {

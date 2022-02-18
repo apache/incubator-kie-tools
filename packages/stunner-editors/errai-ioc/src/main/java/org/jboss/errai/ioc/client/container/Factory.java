@@ -26,11 +26,10 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 
-import org.jboss.errai.ioc.client.api.ContextualTypeProvider;
-
 import com.google.common.base.Supplier;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
+import org.jboss.errai.ioc.client.api.ContextualTypeProvider;
 
 /**
  * Creates proxies and wires dependencies for a bean. The abstract methods in

@@ -20,6 +20,7 @@ package org.uberfire.client.mvp;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
+
 import javax.enterprise.event.Event;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -35,9 +36,10 @@ import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.workbench.category.Category;
 import org.uberfire.workbench.category.Undefined;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CategoriesManagerCacheTest {

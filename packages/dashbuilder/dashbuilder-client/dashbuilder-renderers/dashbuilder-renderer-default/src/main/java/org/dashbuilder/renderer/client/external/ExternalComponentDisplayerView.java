@@ -18,17 +18,16 @@ package org.dashbuilder.renderer.client.external;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.dashbuilder.displayer.client.AbstractErraiDisplayerView;
-import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-
 import elemental2.dom.CSSProperties.HeightUnionType;
 import elemental2.dom.CSSProperties.MarginUnionType;
 import elemental2.dom.CSSProperties.WidthUnionType;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
+import org.dashbuilder.displayer.client.AbstractErraiDisplayerView;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
 @Templated

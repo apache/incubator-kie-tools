@@ -16,6 +16,8 @@
 
 package org.jboss.errai.ioc.rebind.ioc.bootstrapper;
 
+import java.io.PrintWriter;
+
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -30,8 +32,6 @@ import org.jboss.errai.ioc.client.container.ClientBeanManager;
 import org.jboss.errai.ioc.client.container.IOCEnvironment;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.jboss.errai.ioc.client.container.async.AsyncBeanManagerImpl;
-
-import java.io.PrintWriter;
 
 /**
  * @author Mike Brock

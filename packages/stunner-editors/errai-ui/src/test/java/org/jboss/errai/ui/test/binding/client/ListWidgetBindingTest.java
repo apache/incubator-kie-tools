@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.databinding.client.BindableListWrapper;
 import org.jboss.errai.databinding.client.BindableProxy;
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
@@ -31,15 +33,12 @@ import org.jboss.errai.ui.client.local.spi.InvalidBeanScopeException;
 import org.jboss.errai.ui.client.widget.ListWidget;
 import org.jboss.errai.ui.test.binding.client.res.AppScopedBindingListWidget;
 import org.jboss.errai.ui.test.binding.client.res.BindingItem;
+import org.jboss.errai.ui.test.binding.client.res.BindingItemWidget;
 import org.jboss.errai.ui.test.binding.client.res.BindingListWidget;
 import org.jboss.errai.ui.test.binding.client.res.BindingTemplate;
-import org.jboss.errai.ui.test.binding.client.res.BindingItemWidget;
 import org.jboss.errai.ui.test.binding.client.res.SingletonBindingListWidget;
 import org.jboss.errai.ui.test.common.client.TestModel;
 import org.junit.Test;
-
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Tests data binding with {@link ListWidget}.

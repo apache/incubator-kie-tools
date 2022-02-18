@@ -17,11 +17,13 @@ package org.dashbuilder.displayer.client;
 import org.dashbuilder.displayer.DisplayerSettingsFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class DisplayerRefreshTest extends AbstractDisplayerTest {

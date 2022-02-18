@@ -26,8 +26,11 @@ import org.dashbuilder.dataset.group.GroupStrategy;
 import org.dashbuilder.dataset.impl.DataSetMetadataImpl;
 import org.junit.Test;
 
-import static org.dashbuilder.dataset.ColumnType.*;
-import static org.junit.Assert.*;
+import static org.dashbuilder.dataset.ColumnType.LABEL;
+import static org.dashbuilder.dataset.ColumnType.NUMBER;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class DataSetApiLookupConstraintsTest {
 

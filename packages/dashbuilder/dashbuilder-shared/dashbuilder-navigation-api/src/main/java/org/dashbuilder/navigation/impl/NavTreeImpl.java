@@ -23,8 +23,8 @@ import org.dashbuilder.navigation.NavFactory;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.NavItemContext;
-import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.navigation.NavItemVisitor;
+import org.dashbuilder.navigation.NavTree;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable

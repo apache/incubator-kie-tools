@@ -16,10 +16,6 @@
 
 package org.jboss.errai.codegen.test;
 
-import static org.jboss.errai.codegen.test.LoopBuilderTestResult.*;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +36,37 @@ import org.jboss.errai.codegen.exception.TypeNotIterableException;
 import org.jboss.errai.codegen.util.Bool;
 import org.jboss.errai.codegen.util.Stmt;
 import org.junit.Test;
+
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.DOWHILE_NESTED_EXPRESSION;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.DOWHILE_SIMPLE_EXPRESSION;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.DOWHILE_SIMPLE_EXPRESSION_NO_OP;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.FOREACH_KEYSET_LOOP;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.FOREACH_LITERAL_STRING_ARRAY;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.FOREACH_NESTED_STRING_IN_LIST;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.FOREACH_OBJECT_IN_LIST;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.FOREACH_OBJECT_IN_LIST_NOT_NULL;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.FOREACH_OBJECT_IN_LIST_TWO_STATEMENTS;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.FOREACH_STRING_IN_ARRAY_ONE_STATEMENT;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.FOREACH_STRING_IN_LIST;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.FOREACH_STRING_IN_LIST_NOT_NULL;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.FOR_CHAINED_INITIALIZER_COUNTING_EXP_EMPTY;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.FOR_CHAINED_INITIALIZER_NO_COUNTING_EXP_EMPTY;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.FOR_DECLARE_INITIALIZER_COUNTING_EXP;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.FOR_INITIALIZER_COUNTING_EXP_EMPTY;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.FOR_INITIALIZER_NO_COUNTING_EXP_EMPTY;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.FOR_NO_INITIALIZER_NO_COUNTING_EXP_EMPTY;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.LOOP_WITH_BREAK;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.LOOP_WITH_BREAK_AND_LABEL;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.LOOP_WITH_CONTINUE;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.LOOP_WITH_CONTINUE_AND_LABEL;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.WHILE_EMPTY;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.WHILE_NESTED_EMPTY;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.WHILE_NESTED_LOOPS;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.WHILE_RHS_EMPTY;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.WHILE_RHS_NULL_EMPTY;
+import static org.jboss.errai.codegen.test.LoopBuilderTestResult.WHILE_WITH_BODY;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests the generation of loops using the {@link StatementBuilder} API.

@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.widgets.client.popups.list;
 
-import org.uberfire.commons.Pair;
-
 import java.util.List;
+
+import org.uberfire.commons.Pair;
 
 public interface FormListPopupView {
 

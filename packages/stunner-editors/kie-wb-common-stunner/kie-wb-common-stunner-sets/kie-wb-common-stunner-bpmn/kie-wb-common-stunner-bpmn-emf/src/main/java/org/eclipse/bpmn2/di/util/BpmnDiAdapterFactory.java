@@ -14,8 +14,14 @@
  */
 package org.eclipse.bpmn2.di.util;
 
-import org.eclipse.bpmn2.di.*;
-
+import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.di.BPMNEdge;
+import org.eclipse.bpmn2.di.BPMNLabel;
+import org.eclipse.bpmn2.di.BPMNLabelStyle;
+import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNShape;
+import org.eclipse.bpmn2.di.BpmnDiPackage;
+import org.eclipse.bpmn2.di.DocumentRoot;
 import org.eclipse.dd.di.Diagram;
 import org.eclipse.dd.di.DiagramElement;
 import org.eclipse.dd.di.Edge;
@@ -26,12 +32,9 @@ import org.eclipse.dd.di.Node;
 import org.eclipse.dd.di.Plane;
 import org.eclipse.dd.di.Shape;
 import org.eclipse.dd.di.Style;
-
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**

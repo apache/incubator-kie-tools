@@ -21,24 +21,21 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.elemental2.IsElement;
-import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.ext.editor.commons.client.file.popups.CommonModalBuilder;
-import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
-
-import com.google.gwt.user.client.DOM;
-
-import org.dashbuilder.client.cms.resources.i18n.ContentManagerConstants;
-
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.DOM;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLParagraphElement;
 import elemental2.dom.HTMLUListElement;
 import elemental2.dom.Node;
 import jsinterop.base.Js;
+import org.dashbuilder.client.cms.resources.i18n.ContentManagerConstants;
+import org.jboss.errai.common.client.api.elemental2.IsElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.ext.editor.commons.client.file.popups.CommonModalBuilder;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
 @Templated
 @Dependent

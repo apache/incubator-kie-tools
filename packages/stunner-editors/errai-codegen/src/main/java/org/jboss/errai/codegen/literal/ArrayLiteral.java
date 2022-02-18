@@ -16,15 +16,15 @@
 
 package org.jboss.errai.codegen.literal;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
+
 import org.jboss.errai.codegen.Context;
 import org.jboss.errai.codegen.builder.callstack.LoadClassReference;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaClassFactory;
 import org.jboss.errai.codegen.meta.MetaType;
 import org.jboss.errai.codegen.util.GenUtil;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 
 /**
  * Renders an array back to it's canonical Java-based literal representation, assuming the contents

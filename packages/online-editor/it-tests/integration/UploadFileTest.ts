@@ -116,6 +116,10 @@ describe("Upload file test", () => {
       cy.get("[title='Test input data'] > div").click();
       cy.get("iframe").type("d", { force: true });
 
+      // wait until new node is added
+      cy.get("[title='Decision-1'] > div").should("be.visible");
+      cy.get("[title='Decision-1'] > div").click();
+
       // close decision navigatior, open properties and rename decision node
       cy.get("[data-title='Decision Navigator']").click();
       cy.get("[data-title='Properties']").click();

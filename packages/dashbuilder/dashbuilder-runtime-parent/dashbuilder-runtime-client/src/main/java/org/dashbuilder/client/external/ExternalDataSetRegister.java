@@ -1,7 +1,6 @@
 package org.dashbuilder.client.external;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -9,6 +8,11 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Response;
+import elemental2.promise.IThenable;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.client.ClientDataSetManager;
@@ -16,13 +20,6 @@ import org.dashbuilder.dataset.client.DataSetReadyCallback;
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.dashbuilder.dataset.json.ExternalDataSetJSONParser;
 import org.jboss.resteasy.util.HttpResponseCodes;
-
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
-
-import elemental2.dom.DomGlobal;
-import elemental2.dom.Response;
-import elemental2.promise.IThenable;
 
 @ApplicationScoped
 public class ExternalDataSetRegister {

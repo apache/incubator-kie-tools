@@ -58,6 +58,5 @@ export function initJsonSchema() {
         schema: SW_SPEC_SCHEMA,
       },
     ],
-    enableSchemaRequest: true,
   });
 }

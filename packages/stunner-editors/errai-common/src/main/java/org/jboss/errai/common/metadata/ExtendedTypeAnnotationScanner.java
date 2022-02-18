@@ -16,18 +16,17 @@
 
 package org.jboss.errai.common.metadata;
 
-import javassist.bytecode.ClassFile;
-
-import org.jboss.errai.common.metadata.MetaDataScanner.CacheHolder;
-import org.jboss.errai.common.rebind.CacheUtil;
-import org.jboss.errai.reflections.adapters.MetadataAdapter;
-import org.jboss.errai.reflections.scanners.TypeAnnotationsScanner;
-
 import java.lang.annotation.Inherited;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import javassist.bytecode.ClassFile;
+import org.jboss.errai.common.metadata.MetaDataScanner.CacheHolder;
+import org.jboss.errai.common.rebind.CacheUtil;
+import org.jboss.errai.reflections.adapters.MetadataAdapter;
+import org.jboss.errai.reflections.scanners.TypeAnnotationsScanner;
 
 /**
  * @author Mike Brock

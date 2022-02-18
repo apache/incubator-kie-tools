@@ -16,9 +16,6 @@
 
 package org.jboss.errai.ioc.client.api.builtin;
 
-import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_ANNOTATION;
-import static org.jboss.errai.ioc.client.container.IOC.getBeanManager;
-
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,6 +28,8 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import org.jboss.errai.ioc.client.IOCUtil;
 import org.jboss.errai.ioc.client.api.ContextualTypeProvider;
 import org.jboss.errai.ioc.client.api.Disposer;
@@ -38,8 +37,8 @@ import org.jboss.errai.ioc.client.api.IOCProvider;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
+import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_ANNOTATION;
+import static org.jboss.errai.ioc.client.container.IOC.getBeanManager;
 
 @IOCProvider
 public class ManagedInstanceProvider implements ContextualTypeProvider<ManagedInstance<?>>, Disposer<ManagedInstance<?>> {

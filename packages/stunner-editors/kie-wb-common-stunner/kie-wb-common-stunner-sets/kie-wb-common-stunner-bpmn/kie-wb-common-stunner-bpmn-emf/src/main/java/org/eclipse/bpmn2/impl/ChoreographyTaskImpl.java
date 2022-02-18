@@ -14,18 +14,14 @@
  */
 package org.eclipse.bpmn2.impl;
 
-import com.google.gwt.user.client.rpc.GwtTransient;
-
 import java.util.Collection;
 
+import com.google.gwt.user.client.rpc.GwtTransient;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.ChoreographyTask;
 import org.eclipse.bpmn2.MessageFlow;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**

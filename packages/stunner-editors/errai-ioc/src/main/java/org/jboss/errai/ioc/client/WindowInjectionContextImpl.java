@@ -18,13 +18,12 @@ package org.jboss.errai.ioc.client;
 
 import java.util.List;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.jboss.errai.ioc.client.container.JsTypeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
 
 /**
  * @author Christian Sadilek <csadilek@redhat.com>

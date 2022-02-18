@@ -16,13 +16,12 @@
 
 package org.jboss.errai.ui.test.extended.client;
 
+import com.google.gwt.dom.client.Document;
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
 import org.jboss.errai.ioc.client.IOCUtil;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ui.test.extended.client.res.ChildWithoutTemplatedFragmentValue;
 import org.jboss.errai.ui.test.extended.client.res.CompositeChildWithoutTemplatedFragmentValue;
-
-import com.google.gwt.dom.client.Document;
 
 public class ExtendedTemplateTest extends AbstractErraiCDITest {
 

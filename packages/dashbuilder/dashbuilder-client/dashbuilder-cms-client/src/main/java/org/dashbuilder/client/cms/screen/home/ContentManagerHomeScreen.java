@@ -19,14 +19,13 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerI18n;
 import org.dashbuilder.client.cms.screen.explorer.PerspectivesExplorerScreen;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberView;
-
-import com.google.gwt.user.client.ui.Widget;
 
 @Dependent
 @WorkbenchScreen(identifier = ContentManagerHomeScreen.SCREEN_ID)

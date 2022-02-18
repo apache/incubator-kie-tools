@@ -16,13 +16,13 @@
 
 package org.jboss.errai.codegen;
 
+import java.lang.annotation.Annotation;
+
 import org.jboss.errai.codegen.builder.callstack.LoadClassReference;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaClassFactory;
 import org.jboss.errai.codegen.meta.MetaClassMember;
 import org.jboss.errai.codegen.meta.MetaParameter;
-
-import java.lang.annotation.Annotation;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

@@ -16,13 +16,6 @@
 
 package org.uberfire.ext.editor.commons.client;
 
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.COPY;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DELETE;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DOWNLOAD;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.RENAME;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.VALIDATE;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -34,6 +27,9 @@ import java.util.function.Supplier;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.promise.Promise;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -63,10 +59,12 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.ui.IsWidget;
-
-import elemental2.promise.Promise;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.COPY;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DELETE;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DOWNLOAD;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.RENAME;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.VALIDATE;
 
 public abstract class BaseEditor<T, M> {
 
