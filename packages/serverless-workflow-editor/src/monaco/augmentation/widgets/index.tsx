@@ -4,19 +4,26 @@ export interface Holder<T> {
   value?: T;
 }
 
+export type StoredWidget = {
+  close: () => void;
+};
+
+const WIDGET_CONTAINER_DIV_ID = "widget-container";
+const widgetsStore = new WeakMap<editor.IStandaloneCodeEditor, Map<number, StoredWidget>>();
+
 export function openWidget(
   editorInstance: editor.IStandaloneCodeEditor,
   args: {
     backgroundColor: string;
     widgetId: string;
     position: Position;
-    domNodeHolder: Holder<HTMLDivElement | null>;
+    domNodeHolder: Holder<HTMLDivElement | undefined>;
     onReady: (args: { container: HTMLDivElement }) => any;
     onClose: (args: { container: HTMLDivElement }) => any;
   }
 ) {
   const widgetPosition = {
-    position: { lineNumber: args.position.lineNumber, column: args.position.column },
+    position: args.position,
     preference: [editor.ContentWidgetPositionPreference.BELOW, editor.ContentWidgetPositionPreference.ABOVE],
   };
 
@@ -41,7 +48,7 @@ export function openWidget(
         button.innerText = "Close";
         button.style.float = "right";
         button.onclick = async () => {
-          args.onClose({ container: args.domNodeHolder.value!.querySelector("#widget-container")! });
+          args.onClose({ container: getWidgetContainer(args.domNodeHolder) });
           editorInstance.removeContentWidget({
             getId: () => widgetId,
             getPosition: () => widgetPosition,
@@ -51,14 +58,28 @@ export function openWidget(
       }
 
       const reactContainer = document.createElement("div");
-      reactContainer.setAttribute("id", "widget-container");
+      reactContainer.setAttribute("id", WIDGET_CONTAINER_DIV_ID);
       args.domNodeHolder.value.appendChild(reactContainer);
 
       return args.domNodeHolder.value;
     },
   };
 
+  widgetsStore.set(editorInstance, widgetsStore.get(editorInstance) ?? new Map<number, StoredWidget>());
+  widgetsStore.get(editorInstance)?.get(args.position.lineNumber)?.close();
+
   editorInstance.addContentWidget(widget);
 
-  args.onReady({ container: args.domNodeHolder.value!.querySelector("#widget-container")! });
+  widgetsStore.get(editorInstance)?.set(args.position.lineNumber, {
+    close: () => {
+      args.onClose({ container: getWidgetContainer(args.domNodeHolder) });
+      editorInstance.removeContentWidget(widget);
+    },
+  });
+
+  args.onReady({ container: getWidgetContainer(args.domNodeHolder) });
+}
+
+function getWidgetContainer(domNodeHolder: Holder<HTMLDivElement | undefined>) {
+  return domNodeHolder.value!.querySelector<HTMLDivElement>("#" + WIDGET_CONTAINER_DIV_ID)!;
 }
