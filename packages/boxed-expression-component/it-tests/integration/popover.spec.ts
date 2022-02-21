@@ -37,21 +37,41 @@ describe("Context Expression Tests", () => {
     // select "context" type
     cy.get("@dataTypeInput").contains("context").click({ force: true });
 
-    // context menu should be open
+    // context menu should be open. This check is to check that the context menu is not closed after data type selection
     cy.ouiaId("expression-popover-menu").should("be.visible");
 
     // Cancel the editing
     cy.ouiaId("expression-popover-menu").type("{esc}").wait(500);
 
-    // Assert some content
+    // Assert data type not to be changed
     cy.get("@ExpressionNameCell").find(".data-type").should("contain.text", "Undefined");
+  });
+
+  it("should user can cancel edit of expression name in context menu of header cell by pressing escape", () => {
+    // open the context menu
+    cy.contains("th", "Expression Name").as("ExpressionNameCell").click();
+
+    // change the expression name
+    cy.get("#expression-name").type("{selectall}Newname", { force: true });
+
+    // Cancel the editing
+    cy.ouiaId("expression-popover-menu").contains("Edit Expression").click();
+
+    // context menu should be open. This check is to check that the context menu is not closed after data type selection
+    cy.ouiaId("expression-popover-menu").should("be.visible").type("{esc}").wait(500);
+
+    // Assert expression name not to be changed
+    cy.get("@ExpressionNameCell").find(".label").should("contain.text", "Expression Name");
   });
 
   it("the header cell's context menu should have original values", () => {
     // open the context menu
     cy.contains("th", "Expression Name").as("ExpressionNameCell").click();
 
-    // open the dataType select
+    // expression name input should have original value
+    cy.get("#expression-name").should("have.value", "Expression Name");
+
+    // dataType select should have original value
     cy.ouiaId("edit-expression-data-type").should("contain.text", "Undefined");
 
     cy.get("body").click();
