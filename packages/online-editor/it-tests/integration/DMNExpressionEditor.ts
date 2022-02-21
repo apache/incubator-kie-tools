@@ -269,3 +269,57 @@ function selectInDataTypesSearchableDropdown(entryName: string): void {
   cy.get("ul").find("li.active").find("a").contains(entryName).click();
   cy.get("ul").find("li.active").find("a").contains(entryName).should("not.exist");
 }
+
+describe("DMN Expression Editor Test :: keyboard shortcuts", () => {
+  beforeEach(() => {
+    cy.visit("/");
+  });
+
+  // https://issues.redhat.com/browse/KOGITO-6402
+  it.skip("Test New Expresssion editor - undo", () => {
+    // click Create new decision model button (new DMN)
+    cy.ouia({ ouiaId: "try-dmn-sample-button" }).click();
+
+    // wait until loading dialog disappears
+    cy.loadEditor();
+
+    // close DMN guided tour dialog
+    cy.ouia({ ouiaId: "dmn-guided-tour" }).children("button[aria-label='Close']").click();
+
+    cy.getEditor().within(() => {
+      // open decision navigator and check new expression editor for expressions
+      cy.ouia({ ouiaId: "docks-item-org.kie.dmn.decision.navigator" }).children("button").click();
+
+      cy.get("li[data-i18n-prefix='DecisionNavigatorTreeView.']").within(($navigator) => {
+        cy.get("[title='Back End Ratio'] div span").contains("Context").click();
+      });
+      // check using beta version
+      cy.get("[data-field='beta-boxed-expression-toggle'] [data-field='try-it']").click();
+      cy.ouia({ ouiaId: "expression-container" }).contains("Back End Ratio").should("be.visible");
+      cy.get(".expression-title").contains("Back End Ratio").should("be.visible");
+      cy.get(".expression-type").contains("Context").should("be.visible");
+
+      // select a cell
+      cy.get(".editable-cell").contains("Applicant Data.Monthly.Repayments + Applicant Data.Monthly.Expenses").click();
+      // start edit mdoe
+      cy.realPress("Enter");
+
+      // do some change - shuldn't affect even result number
+      cy.realType(" + 0");
+
+      // finish edit - commit changes
+      cy.realPress("Tab");
+
+      // check changes are present
+      cy.get(".editable-cell")
+        .contains("Applicant Data.Monthly.Repayments + Applicant Data.Monthly.Expenses + 0")
+        .should("be.visible");
+
+      // undo changes and check if they were really undo
+      cy.realPress(["ControlLeft", "Z"]);
+      cy.get(".editable-cell")
+        .contains("Applicant Data.Monthly.Repayments + Applicant Data.Monthly.Expenses + 0")
+        .should("not.be.visible");
+    });
+  });
+});

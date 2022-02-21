@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import "cypress-file-upload";
-import "cypress-iframe";
-import "./commands";
-import "cypress-real-events/support";
+package com.ait.lienzo.client.widget.panel.impl;
 
-// temporarry workaround, will be removed with https://issues.redhat.com/browse/KOGITO-6355
-Cypress.on("uncaught:exception", (err, runnable) => {
-  // returning false here prevents Cypress from
-  // failing the test
-  return false;
-});
+public class LienzoPanelScrollEvent {
+
+}
