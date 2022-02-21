@@ -39,35 +39,37 @@ const completions = new Map<
       */
 
       return [
-        {
-          kind: CompletionItemKind.Snippet,
-          label: "Completion item that triggers a command",
-          sortText: "a", // Keep it at the top
-          insertText: "",
-          range: {
-            startColumn: cursorPosition.column,
-            endColumn: cursorPosition.column,
-            startLineNumber: cursorPosition.lineNumber,
-            endLineNumber: cursorPosition.lineNumber,
-          },
-          command: {
-            id: commandIds["RunFunctionsCompletion"],
-            title: "",
-            arguments: [{ cursorPosition, actualNode }], // The actualNode is passed to the command, so it can make decisions based on it too.
-          },
-        },
-        {
-          kind: CompletionItemKind.Snippet,
-          label: "Completion item that inserts text",
-          sortText: "a", // Keep it at the top
-          insertText: "Awesome text made from a completion item",
-          range: {
-            startColumn: cursorPosition.column,
-            endColumn: cursorPosition.column,
-            startLineNumber: cursorPosition.lineNumber,
-            endLineNumber: cursorPosition.lineNumber,
-          },
-        },
+        // Part of an example
+        //
+        // {
+        //   kind: CompletionItemKind.Snippet,
+        //   label: "Completion item that triggers a command",
+        //   sortText: "a", // Keep it at the top
+        //   insertText: "",
+        //   range: {
+        //     startColumn: cursorPosition.column,
+        //     endColumn: cursorPosition.column,
+        //     startLineNumber: cursorPosition.lineNumber,
+        //     endLineNumber: cursorPosition.lineNumber,
+        //   },
+        //   command: {
+        //     id: commandIds["RunFunctionsCompletion"],
+        //     title: "",
+        //     arguments: [{ cursorPosition, actualNode }], // The actualNode is passed to the command, so it can make decisions based on it too.
+        //   },
+        // },
+        // {
+        //   kind: CompletionItemKind.Snippet,
+        //   label: "Completion item that inserts text",
+        //   sortText: "a", // Keep it at the top
+        //   insertText: "Awesome text made from a completion item",
+        //   range: {
+        //     startColumn: cursorPosition.column,
+        //     endColumn: cursorPosition.column,
+        //     startLineNumber: cursorPosition.lineNumber,
+        //     endLineNumber: cursorPosition.lineNumber,
+        //   },
+        // },
       ];
     },
   ],
@@ -76,12 +78,12 @@ const completions = new Map<
     ({ cursorPosition, actualNode, workflow, nodePositions }) => {
       // `refName` is going to be a property node with two string nodes as children. The first one is `refName`, and the second one is the actual value.
       if (actualNode.parent?.children?.[1] !== actualNode) {
-        console.info("oops, wrong node.");
+        console.debug("Nothing to complete. Not on functionRef value.");
         return [];
       }
 
       if (typeof workflow?.functions === "string") {
-        console.info("string. ignoring.");
+        console.debug("Nothing to complete. Functions property is a string.");
         return [];
       }
 
@@ -91,9 +93,6 @@ const completions = new Map<
         nodePositions.end.lineNumber,
         nodePositions.end.column
       );
-
-      console.info(range);
-      console.info(cursorPosition);
 
       return Array.from(workflow?.functions ?? []).map((f) => ({
         kind: CompletionItemKind.Snippet,
@@ -142,7 +141,6 @@ export function initJsonCompletion(commandIds: SwfMonacoEditorInstance["commands
       const location = jsonc.getLocation(model.getValue(), cursorOffset);
 
       return {
-        incomplete: true,
         suggestions: Array.from(completions.entries())
           .filter(([jsonPath, _]) => location.matches(jsonPath))
           .flatMap(([_, completionItemsDelegate]) =>

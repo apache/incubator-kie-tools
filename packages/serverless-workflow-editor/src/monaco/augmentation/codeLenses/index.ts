@@ -17,117 +17,21 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
         return;
       }
 
-      const codeLenses = [
-        createCodeLenses({
-          model,
-          rootNode,
-          jsonPath: ["functions"],
-          positionLensAt: "begin",
-          commandDelegate: ({ position }) => ({
-            id: commandIds["OpenFunctionsWidget"],
-            title: `◎ Discover`,
-            arguments: [{ position }],
-          }),
-        }),
-        createCodeLenses({
-          model,
-          rootNode,
-          jsonPath: ["functions"],
-          positionLensAt: "begin",
-          commandDelegate: ({ position }) => ({
-            id: commandIds["OpenFunctionsWidget"],
-            title: `⤵ Import`,
-            arguments: [{ position }],
-          }),
-        }),
-        createCodeLenses({
-          model,
-          rootNode,
-          jsonPath: ["functions"],
-          positionLensAt: "begin",
-          commandDelegate: ({ position }) => ({
-            id: commandIds["OpenFunctionsWidget"],
-            title: `✎ Edit "functions"...`,
-            arguments: [{ position }],
-          }),
-        }),
-        createCodeLenses({
-          model,
-          rootNode,
-          jsonPath: ["functions"],
-          positionLensAt: "end",
-          commandDelegate: ({ position }) => ({
-            id: commandIds["OpenStatesWidget"],
-            title: `\u2800\u2800+ Add function...`,
-            arguments: [{ position }],
-          }),
-        }),
-        createCodeLenses({
-          model,
-          rootNode,
-          jsonPath: ["states"],
-          positionLensAt: "begin",
-          commandDelegate: ({ position }) => ({
-            id: commandIds["OpenStatesWidget"],
-            title: `✎ Edit "states"...`,
-            arguments: [{ position }],
-          }),
-        }),
-        createCodeLenses({
-          model,
-          rootNode,
-          jsonPath: ["states"],
-          positionLensAt: "end",
-          commandDelegate: ({ position }) => ({
-            id: commandIds["OpenStatesWidget"],
-            title: `\u2800\u2800+ Add state...`,
-            arguments: [{ position }],
-          }),
-        }),
-        createCodeLenses({
-          model,
-          rootNode,
-          jsonPath: ["functions", "*", "name"],
-          positionLensAt: "begin",
-          commandDelegate: ({ position, node }) => ({
-            id: commandIds["OpenFunctionsWidget"],
-            title: `↺ Rename '${node.value}'`,
-            arguments: [{ position }],
-          }),
-        }),
-        createCodeLenses({
-          model,
-          rootNode,
-          jsonPath: ["states", "*", "name"],
-          positionLensAt: "begin",
-          commandDelegate: ({ position, node }) => ({
-            id: commandIds["OpenStatesWidget"],
-            title: `↺ Rename '${node.value}'`,
-            arguments: [{ position }],
-          }),
-        }),
-        createCodeLenses({
-          model,
-          rootNode,
-          jsonPath: ["states", "*", "actions"],
-          positionLensAt: "end",
-          commandDelegate: ({ position }) => ({
-            id: commandIds["OpenStatesWidget"],
-            title: "\u2800\u2800+ Add action...",
-            arguments: [{ position }],
-          }),
-        }),
-        createCodeLenses({
-          model,
-          rootNode,
-          jsonPath: ["states", "*", "actions", "*", "name"],
-          positionLensAt: "begin",
-          commandDelegate: ({ position, node }) => ({
-            id: commandIds["OpenStatesWidget"],
-            title: `Ⓧ Remove '${node.value}'`,
-            arguments: [{ position }],
-          }),
-        }),
+      const codeLenses: CodeLens[] = [
+        // TODO: Implement code lenses
+        // Follow this example
+        //
+        // createCodeLenses({
+        //   model,
+        //   rootNode,
+        //   jsonPath: ["functions"],
+        //   positionLensAt: "begin",
+        //   commandDelegate: ({ position }) => ({
+        //     id: commandIds["OpenFunctionsWidget"],
+        //     title: `◎ Discover`,
+        //     arguments: [{ position }],
+        //   }),
+        // }),
       ];
 
       return {

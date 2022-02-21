@@ -59,8 +59,6 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
     // initYamlCompletion(commands);
     // initYamlWidgets(commands);
 
-    (window as any).monacoInstance = instance;
-
     return () => controller.dispose();
   }, [content, fileName, controller]);
 

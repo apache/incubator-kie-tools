@@ -2,18 +2,18 @@ import { editor } from "monaco-editor";
 import { EmbeddedDivPingPong } from "@kie-tools-examples/ping-pong-view/dist/embedded";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
-import { pingPongEnvelopViewRenderDiv as renderPingPongReact } from "@kie-tools-examples/ping-pong-view-react";
-import { pingPongEnvelopViewRenderDiv as renderPingPongAngular } from "@kie-tools-examples/ping-pong-view-angular/dist/wc/lib";
 import { openWidget } from "../widgets";
 
-const pingPongChannelApiImpl = {
-  pingPongView__ping(source: string) {
-    console.info(`Received PING from '${source}'`);
-  },
-  pingPongView__pong(source: string, replyingTo: string) {
-    console.info(`Received PONG from '${source}' in reply to '${replyingTo}'`);
-  },
-};
+// Part of an example
+//
+// const pingPongChannelApiImpl = {
+//   pingPongView__ping(source: string) {
+//     console.info(`Received PING from '${source}'`);
+//   },
+//   pingPongView__pong(source: string, replyingTo: string) {
+//     console.info(`Received PONG from '${source}' in reply to '${replyingTo}'`);
+//   },
+// };
 
 export type SwfMonacoEditorCommandTypes = "OpenFunctionsWidget" | "OpenStatesWidget" | "RunFunctionsCompletion";
 
@@ -22,13 +22,7 @@ export type SwfMonacoEditorCommandIds = Record<SwfMonacoEditorCommandTypes, stri
 export function initAugmentationCommands(editorInstance: editor.IStandaloneCodeEditor): SwfMonacoEditorCommandIds {
   return {
     RunFunctionsCompletion: editorInstance.addCommand(0, async (ctx, args) => {
-      window.alert(
-        "functions autocomplete: " +
-          JSON.stringify({
-            position: args.position,
-            node: { value: args.actualNode.value, type: args.actualNode.type },
-          })
-      );
+      console.info("Running functions completion command...");
     })!,
     OpenFunctionsWidget: editorInstance.addCommand(0, async (ctx, args) => {
       openWidget(editorInstance, {
@@ -37,17 +31,24 @@ export function initAugmentationCommands(editorInstance: editor.IStandaloneCodeE
         backgroundColor: "lightgreen",
         domNodeHolder: {},
         onReady: ({ container }) => {
-          ReactDOM.render(
-            <EmbeddedDivPingPong
-              apiImpl={pingPongChannelApiImpl}
-              name={"React " + Math.random()}
-              targetOrigin={window.location.origin}
-              renderView={renderPingPongReact}
-            />,
-            container
-          );
+          console.info("Opening functions widget..");
+          // Part of an example
+          //
+          // ReactDOM.render(
+          //   <EmbeddedDivPingPong
+          //     apiImpl={pingPongChannelApiImpl}
+          //     name={"React " + Math.random()}
+          //     targetOrigin={window.location.origin}
+          //     renderView={renderPingPongReact}
+          //   />,
+          //   container
+          // );
         },
-        onClose: ({ container }) => ReactDOM.unmountComponentAtNode(container),
+        onClose: ({ container }) => {
+          // Part of an example
+          //
+          // return ReactDOM.unmountComponentAtNode(container);
+        },
       });
     })!,
     OpenStatesWidget: editorInstance.addCommand(0, async (ctx, args) => {
@@ -57,17 +58,24 @@ export function initAugmentationCommands(editorInstance: editor.IStandaloneCodeE
         backgroundColor: "lightblue",
         domNodeHolder: {},
         onReady: ({ container }) => {
-          ReactDOM.render(
-            <EmbeddedDivPingPong
-              apiImpl={pingPongChannelApiImpl}
-              name={"React " + Math.random()}
-              targetOrigin={window.location.origin}
-              renderView={renderPingPongAngular}
-            />,
-            container
-          );
+          console.info("Opening states widget..");
+          // Part of an example
+          //
+          // ReactDOM.render(
+          //   <EmbeddedDivPingPong
+          //     apiImpl={pingPongChannelApiImpl}
+          //     name={"React " + Math.random()}
+          //     targetOrigin={window.location.origin}
+          //     renderView={renderPingPongReact}
+          //   />,
+          //   container
+          // );
         },
-        onClose: ({ container }) => ReactDOM.unmountComponentAtNode(container),
+        onClose: ({ container }) => {
+          // Part of an example
+          //
+          // return ReactDOM.unmountComponentAtNode(container);
+        },
       });
     })!,
   };

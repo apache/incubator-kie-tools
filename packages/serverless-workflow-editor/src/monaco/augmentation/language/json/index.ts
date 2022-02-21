@@ -24,6 +24,8 @@ import {
 } from "../schemas";
 
 export function initJsonSchema() {
+  // Commenting this will disable syntax highlighting for JSON as well and stop using the JSON Schema for SWF.
+  //
   // monaco.languages.json.jsonDefaults.setModeConfiguration({
   //   completionItems: false,
   // });
