@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-describe("DMN Expression Editor Test", () => {
+describe("DMN Expression Editor Test :: Expressions", () => {
   beforeEach(() => {
     cy.visit("/");
   });
@@ -93,6 +93,12 @@ describe("DMN Expression Editor Test", () => {
       cy.get(".expression-type").contains("Decision Table").should("be.visible");
     });
   });
+});
+
+describe("DMN Expression Editor Test :: Data types", () => {
+  beforeEach(() => {
+    cy.visit("/");
+  });
 
   it("Change Decition Table from Any to Custom Data Type", () => {
     cy.get("#upload-field").attachFile("testModelWithCustomDataType.dmn", { subjectType: "drag-n-drop" });
@@ -129,8 +135,7 @@ describe("DMN Expression Editor Test", () => {
           cy.get("button[data-toggle='dropdown']").click();
         });
       });
-      cy.get(".bs-searchbox input").last().type("Structure");
-      cy.get("ul").find("li.active").find("a").contains("Structure").click();
+      selectInDataTypesSearchableDropdown("Structure");
       cy.ouia({ ouiaId: "Insert a name" }).within(($row) => {
         cy.get("[data-type-field='save-button']").click();
       });
@@ -143,8 +148,7 @@ describe("DMN Expression Editor Test", () => {
           cy.get("button[data-toggle='dropdown']").click();
         });
       });
-      cy.get(".bs-searchbox input").last().type("number");
-      cy.get("ul").find("li.active").find("a").contains("number").click();
+      selectInDataTypesSearchableDropdown("number");
       cy.ouia({ ouiaId: "Insert a name" }).within(($row) => {
         cy.get("[data-type-field='save-button']").click();
       });
@@ -161,8 +165,7 @@ describe("DMN Expression Editor Test", () => {
           cy.get("button[data-toggle='dropdown']").click();
         });
       });
-      cy.get(".bs-searchbox input").last().type("string");
-      cy.get("ul").find("li.active").find("a").contains("string").click();
+      selectInDataTypesSearchableDropdown("string");
       cy.ouia({ ouiaId: "Insert a name" }).within(($row) => {
         cy.get("[data-type-field='save-button']").click();
       });
@@ -250,3 +253,19 @@ describe("DMN Expression Editor Test", () => {
     });
   });
 });
+
+/**
+ * Use this method to change data type of entry specified on 'Data Types' DMN editor page.
+ *
+ * Precondition to use this method is to click:
+ * - Pencil icon to start edit mode of an entry
+ * - Type selectbox to display searchable dropdown
+ *
+ * @param entryName
+ */
+function selectInDataTypesSearchableDropdown(entryName: string): void {
+  cy.get(".bs-searchbox input").last().type(entryName);
+  cy.get("ul").find("li.active").find("a").contains(entryName).should("be.visible");
+  cy.get("ul").find("li.active").find("a").contains(entryName).click();
+  cy.get("ul").find("li.active").find("a").contains(entryName).should("not.exist");
+}
