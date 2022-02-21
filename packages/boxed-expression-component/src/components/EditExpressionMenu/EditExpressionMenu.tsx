@@ -77,20 +77,16 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     setDataType(selectedDataType);
   }, [selectedDataType]);
 
-  /* TODO: EditExpressionMenu: do not close the contextMenu onExpressionNameChange */
-  const onExpressionNameChange = useCallback(
-    (event) => {
-      setExpressionName(event.target.value);
-      if (event.type === "blur") {
-        boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
-        onExpressionUpdate({
-          name: event.target.value,
-          dataType,
-        });
-      }
-    },
-    [boxedExpression.boxedExpressionEditorGWTService, dataType, onExpressionUpdate]
-  );
+  const onExpressionNameChange = useCallback((event) => {
+    setExpressionName(event.target.value);
+    // if (event.type === "blur") {
+    //   boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
+    //   onExpressionUpdate({
+    //     name: event.target.value,
+    //     dataType,
+    //   });
+    // }
+  }, []);
 
   const onDataTypeChange = useCallback((dataType: DataType) => {
     setDataType(dataType);
