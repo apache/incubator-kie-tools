@@ -1,6 +1,4 @@
 import { editor } from "monaco-editor";
-import { EmbeddedDivPingPong } from "@kie-tools-examples/ping-pong-view/dist/embedded";
-import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { openWidget } from "../widgets";
 
