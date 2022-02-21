@@ -20,12 +20,11 @@ describe("Context Expression Tests", () => {
   before(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
 
-    /* TODO: popover.spec: uncomment me */
-    // // Entry point for each new expression
-    // cy.ouiaId("expression-container").click();
-    //
-    // // Define new expression as Context
-    // cy.ouiaId("expression-popover-menu").contains("Context").click({ force: true });
+    // Entry point for each new expression
+    cy.ouiaId("expression-container").click();
+
+    // Define new expression as Context
+    cy.ouiaId("expression-popover-menu").contains("Context").click({ force: true });
   });
 
   it("should user can cancel edit of select in context menu of header cell by pressing escape", () => {

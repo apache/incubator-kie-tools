@@ -60,31 +60,31 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
 }: PopoverMenuProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  const shouldOpen = useCallback(
-    (_showFunction?: () => void, event?: MouseEvent | KeyboardEvent) => {
-      console.log("shouldOpen", { event });
-      setIsVisible(true);
-    },
-    [setIsVisible]
-  );
+  const shouldOpen = useCallback((showFunction?: () => void, event?: MouseEvent | KeyboardEvent) => {
+    console.log("shouldOpen", { event });
+    // setIsVisible(true);
+    showFunction && showFunction();
+  }, []);
 
   const shouldClose = useCallback(
-    (_tip, _hideFunction?: () => void, event?: MouseEvent | KeyboardEvent) => {
+    (_tip, hideFunction?: () => void, event?: MouseEvent | KeyboardEvent) => {
       console.log("shouldClose", { event });
       // if the esc key has been pressed with a Select component open
       if ((event?.target as Element).closest(".pf-c-select__menu")) {
         return;
       }
 
-      setIsVisible(false);
+      // setIsVisible(false);
 
       if (event instanceof KeyboardEvent && /^esc.*/i.test(event?.key)) {
         onCancel(event);
       } else {
         onHide();
       }
+
+      hideFunction && hideFunction();
     },
-    [setIsVisible, onCancel, onHide]
+    [onCancel, onHide]
   );
 
   return (
