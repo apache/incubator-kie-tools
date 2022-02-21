@@ -52,17 +52,17 @@ export async function activate(context: vscode.ExtensionContext) {
       new EnvelopeMapping(
         "bpmn",
         "**/*.bpmn?(2)",
-        "dist/webview/editors/bpmn",
-        "dist/webview/BpmnEditorEnvelopeApp.js"
+        "dist/webview/BpmnEditorEnvelopeApp.js",
+        "dist/webview/editors/bpmn"
       ),
-      new EnvelopeMapping("dmn", "**/*.dmn", "dist/webview/editors/dmn", "dist/webview/DmnEditorEnvelopeApp.js"),
+      new EnvelopeMapping("dmn", "**/*.dmn", "dist/webview/DmnEditorEnvelopeApp.js", "dist/webview/editors/dmn"),
       new EnvelopeMapping(
         "scesim",
         "**/*.scesim",
-        "dist/webview/editors/scesim",
-        "dist/webview/SceSimEditorEnvelopeApp.js"
+        "dist/webview/SceSimEditorEnvelopeApp.js",
+        "dist/webview/editors/scesim"
       ),
-      new EnvelopeMapping("pmml", "**/*.pmml", "dist/webview/editors/pmml", "dist/webview/PMMLEditorEnvelopeApp.js"),
+      new EnvelopeMapping("pmml", "**/*.pmml", "dist/webview/PMMLEditorEnvelopeApp.js", "dist/webview/editors/pmml"),
     ]),
     backendProxy: backendProxy,
   });
