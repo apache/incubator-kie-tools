@@ -115,6 +115,7 @@ public class SessionEditorImpl<S extends EditorSession>
     protected void onAfterCanvasInitialized() {
         super.onAfterCanvasInitialized();
         canvasPanel.getView().onResize();
+        canvasPanel.beginScrollEventTrack();
     }
 
     @Override
