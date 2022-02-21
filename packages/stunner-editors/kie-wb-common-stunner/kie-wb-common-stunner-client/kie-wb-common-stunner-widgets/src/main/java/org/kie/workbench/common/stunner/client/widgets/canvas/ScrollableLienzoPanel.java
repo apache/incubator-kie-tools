@@ -18,9 +18,11 @@ package org.kie.workbench.common.stunner.client.widgets.canvas;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.widget.panel.impl.LienzoPanelScrollEvent;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 
 @Dependent
@@ -29,15 +31,21 @@ public class ScrollableLienzoPanel
         extends DelegateLienzoPanel<StunnerLienzoBoundsPanel> {
 
     private final StunnerLienzoBoundsPanel panel;
+    private final Event<LienzoPanelScrollEvent> scrollEvent;
 
     @Inject
-    public ScrollableLienzoPanel(final StunnerLienzoBoundsPanel panel) {
+    public ScrollableLienzoPanel(final StunnerLienzoBoundsPanel panel, final Event<LienzoPanelScrollEvent> scrollEvent) {
         this.panel = panel;
+        this.scrollEvent = scrollEvent;
     }
 
     @PostConstruct
     public void init() {
         panel.setPanelBuilder(ScrollableLienzoPanelView::new);
+    }
+
+    public void beginScrollEventTrack() {
+        getView().addScrollEventListener(event -> scrollEvent.fire(new LienzoPanelScrollEvent()));
     }
 
     public ScrollableLienzoPanel refresh() {
