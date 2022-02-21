@@ -61,14 +61,12 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
   const [isVisible, setIsVisible] = useState(false);
 
   const shouldOpen = useCallback((showFunction?: () => void, event?: MouseEvent | KeyboardEvent) => {
-    console.log("shouldOpen", { event });
     // setIsVisible(true);
     showFunction && showFunction();
   }, []);
 
   const shouldClose = useCallback(
     (_tip, hideFunction?: () => void, event?: MouseEvent | KeyboardEvent) => {
-      console.log("shouldClose", { event });
       // if the esc key has been pressed with a Select component open
       if ((event?.target as Element).closest(".pf-c-select__menu")) {
         return;
@@ -87,7 +85,6 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
     [onCancel, onHide]
   );
 
-  /* TODO: input boxes in header cells popups, if user change column name of a decision table input column, then he press escape, then column is correctly not renamed, however if the menu is reopened, the new value is stored there  */
   return (
     <Popover
       data-ouia-component-id="expression-popover-menu"

@@ -79,13 +79,6 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
 
   const onExpressionNameChange = useCallback((event) => {
     setExpressionName(event.target.value);
-    // if (event.type === "blur") {
-    //   boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
-    //   onExpressionUpdate({
-    //     name: event.target.value,
-    //     dataType,
-    //   });
-    // }
   }, []);
 
   const onDataTypeChange = useCallback((dataType: DataType) => {
@@ -97,9 +90,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     [boxedExpression.boxedExpressionEditorGWTService]
   );
 
-  /* TODO: EditExpressionMenu: save the expressionName only on onHide event */
   const onHide = useCallback(() => {
-    console.log("EditExpressionMenu onHide called");
     boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
     onExpressionUpdate({
       name: expressionName,
@@ -107,13 +98,12 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     });
   }, [boxedExpression.boxedExpressionEditorGWTService, expressionName, onExpressionUpdate, dataType]);
 
-  /* TODO: EditExpressionMenu: restore original expressionName on onCancel event */
   const onCancel = useCallback(
     (_event: MouseEvent | KeyboardEvent) => {
-      console.log("on_cancel");
+      setExpressionName(selectedExpressionName);
       setDataType(selectedDataType);
     },
-    [selectedDataType]
+    [selectedExpressionName, selectedDataType]
   );
 
   return (

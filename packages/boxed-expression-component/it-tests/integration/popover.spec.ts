@@ -74,6 +74,7 @@ describe("Context Expression Tests", () => {
     // dataType select should have original value
     cy.ouiaId("edit-expression-data-type").should("contain.text", "Undefined");
 
+    // close the context menu
     cy.get("body").click();
   });
 });
