@@ -213,6 +213,11 @@ export async function updateElementViaPopover(
     await flushPromises();
     jest.runAllTimers();
   });
+  await act(async () => {
+    fireEvent.click(baseElement);
+    await flushPromises();
+    jest.runAllTimers();
+  });
 }
 
 export const contextEntry = (container: Element, index: number): Element | null =>

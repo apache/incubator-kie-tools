@@ -222,6 +222,7 @@ describe("EditExpressionMenu tests", () => {
 
     const input = container.querySelector("#expression-name") as HTMLInputElement;
     fireEvent.blur(input, { target: { value: "changed" } });
+    fireEvent.click(container);
 
     expect(mockedOnExpressionUpdate).toHaveBeenCalled();
     expect(mockedOnExpressionUpdate).toHaveBeenCalledWith({
