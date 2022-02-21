@@ -9,6 +9,7 @@ export type StoredWidget = {
 };
 
 const WIDGET_CONTAINER_DIV_ID = "widget-container";
+
 const widgetsStore = new WeakMap<editor.IStandaloneCodeEditor, Map<number, StoredWidget>>();
 
 export function openWidget(
@@ -27,6 +28,7 @@ export function openWidget(
     preference: [editor.ContentWidgetPositionPreference.BELOW, editor.ContentWidgetPositionPreference.ABOVE],
   };
 
+  // Improve this?
   const widgetId = args.widgetId + Math.random();
 
   const widget: editor.IContentWidget = {
@@ -43,6 +45,7 @@ export function openWidget(
         args.domNodeHolder.value.style.zIndex = "99999"; // This makes the cursor not blink on top of the widget.
         args.domNodeHolder.value.style.marginTop = "-1.2em"; // Go up one line (approx.);
 
+        // TODO: Improve this "Close" button.
         const button = document.createElement("button");
         args.domNodeHolder.value.appendChild(button);
         button.innerText = "Close";
