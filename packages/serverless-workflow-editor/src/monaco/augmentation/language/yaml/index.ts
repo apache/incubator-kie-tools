@@ -28,7 +28,6 @@ import {
 import { JSONSchema7 } from "json-schema";
 
 setDiagnosticsOptions({
-  enableSchemaRequest: true,
   hover: true,
   completion: true,
   validate: true,
