@@ -16,7 +16,6 @@
 
 import * as buildEnv from "@kie-tools/build-env";
 
-/* TODO: context_expression_spec: update e2e tests with the new popover behavior */
 describe("Context Expression Tests", () => {
   beforeEach(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
@@ -57,6 +56,9 @@ describe("Context Expression Tests", () => {
     });
 
     cy.get("button:contains('boolean')").click({ force: true });
+
+    // close the context menu
+    cy.get("body").click();
 
     // check boolean is now also in decision table header
     cy.ouiaType("expression-column-header-cell-info").contains("boolean").should("be.visible");
