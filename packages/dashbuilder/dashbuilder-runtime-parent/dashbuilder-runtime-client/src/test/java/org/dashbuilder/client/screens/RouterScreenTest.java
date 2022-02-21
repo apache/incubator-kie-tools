@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-
 import org.dashbuilder.client.RuntimeClientLoader;
 import org.dashbuilder.client.navbar.AppNavBar;
 import org.dashbuilder.client.perspective.DashboardsListPerspective;

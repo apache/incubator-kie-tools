@@ -22,9 +22,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
-
 import elemental2.dom.DomGlobal;
-
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.jboss.errai.bus.client.api.InvalidBusContentException;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -32,7 +30,6 @@ import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 
 import static org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup.newYesNoCancelPopup;
-import static org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup.showMessage;
 
 @Dependent
 public class DefaultRuntimeErrorCallback {

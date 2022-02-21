@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import org.dashbuilder.client.navbar.AppNavBar;
 import org.dashbuilder.client.navbar.NavBarHelper;
 import org.dashbuilder.client.resources.i18n.AppConstants;
-import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
