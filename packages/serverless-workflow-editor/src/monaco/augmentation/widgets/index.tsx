@@ -60,9 +60,9 @@ export function openWidget(
         };
       }
 
-      const reactContainer = document.createElement("div");
-      reactContainer.setAttribute("id", WIDGET_CONTAINER_DIV_ID);
-      args.domNodeHolder.value.appendChild(reactContainer);
+      const widgetContainer = document.createElement("div");
+      widgetContainer.setAttribute("id", WIDGET_CONTAINER_DIV_ID);
+      args.domNodeHolder.value.appendChild(widgetContainer);
 
       return args.domNodeHolder.value;
     },
