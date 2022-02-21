@@ -87,6 +87,7 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
     [onCancel, onHide]
   );
 
+  /* TODO: input boxes in header cells popups, if user change column name of a decision table input column, then he press escape, then column is correctly not renamed, however if the menu is reopened, the new value is stored there  */
   return (
     <Popover
       data-ouia-component-id="expression-popover-menu"

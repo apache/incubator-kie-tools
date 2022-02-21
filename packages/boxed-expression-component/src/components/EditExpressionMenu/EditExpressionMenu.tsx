@@ -77,6 +77,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     setDataType(selectedDataType);
   }, [selectedDataType]);
 
+  /* TODO: EditExpressionMenu: do not close the contextMenu onExpressionNameChange */
   const onExpressionNameChange = useCallback(
     (event) => {
       setExpressionName(event.target.value);
@@ -100,6 +101,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     [boxedExpression.boxedExpressionEditorGWTService]
   );
 
+  /* TODO: EditExpressionMenu: save the expressionName only on onHide event */
   const onHide = useCallback(() => {
     console.log("EditExpressionMenu onHide called");
     boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
@@ -109,6 +111,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     });
   }, [boxedExpression.boxedExpressionEditorGWTService, expressionName, onExpressionUpdate, dataType]);
 
+  /* TODO: EditExpressionMenu: restore original expressionName on onCancel event */
   const onCancel = useCallback(
     (_event: MouseEvent | KeyboardEvent) => {
       console.log("on_cancel");
