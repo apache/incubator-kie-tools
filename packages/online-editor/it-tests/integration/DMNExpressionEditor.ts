@@ -180,6 +180,8 @@ describe("DMN Expression Editor Test", () => {
         cy.ouia({ ouiaId: "tSalary" }).click({ force: true });
       });
 
+      cy.get(".expression-container").click({ force: true });
+
       cy.get("[data-ouia-component-type='expression-column-header-cell-info']:contains('tSalary')").should(
         "be.visible"
       );
