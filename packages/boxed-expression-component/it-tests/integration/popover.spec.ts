@@ -27,12 +27,15 @@ describe("Context Expression Tests", () => {
     cy.ouiaId("expression-popover-menu").contains("Context").click({ force: true });
   });
 
-  it("should user can cancel edit of select in context menu of header cell by pressing escape", () => {
+  it("should user can cancel edit of data type in context menu of header cell by pressing escape", () => {
     // open the context menu
     cy.contains("th", "Expression Name").as("ExpressionNameCell").click();
 
     // open the dataType select
-    cy.ouiaId("edit-expression-data-type").as("dataTypeInput").find("> button").click({ force: true });
+    cy.ouiaId("edit-expression-data-type")
+      .as("dataTypeInput")
+      .find("span.pf-c-select__toggle-text")
+      .click({ force: true });
 
     // select "context" type
     cy.get("@dataTypeInput").contains("context").click({ force: true });
