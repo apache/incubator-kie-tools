@@ -16,9 +16,9 @@
 
 package org.jboss.errai.reflections.scanners;
 
-import org.jboss.errai.reflections.util.FilterBuilder;
-
 import java.util.List;
+
+import org.jboss.errai.reflections.util.FilterBuilder;
 
 /** scans for superclass and interfaces of a class, allowing a reverse lookup for subtypes */
 public class SubTypesScanner extends AbstractScanner {

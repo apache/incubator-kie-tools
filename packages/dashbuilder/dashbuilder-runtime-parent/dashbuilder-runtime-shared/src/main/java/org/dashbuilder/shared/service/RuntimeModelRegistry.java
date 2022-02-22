@@ -16,13 +16,13 @@
 
 package org.dashbuilder.shared.service;
 
-import static org.dashbuilder.shared.model.DashbuilderRuntimeMode.MULTIPLE_IMPORT;
-
 import java.util.Collection;
 import java.util.Optional;
 
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
 import org.dashbuilder.shared.model.RuntimeModel;
+
+import static org.dashbuilder.shared.model.DashbuilderRuntimeMode.MULTIPLE_IMPORT;
 
 /**
  * Provides access to a saved ImportModelService.

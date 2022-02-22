@@ -15,6 +15,11 @@
  */
 package org.dashbuilder.dataprovider.external;
 
+import org.dashbuilder.dataprovider.external.ExternalDataSetSecurityStore.SecurityType;
+import org.dashbuilder.dataset.def.DataSetDef;
+import org.junit.Before;
+import org.junit.Test;
+
 import static org.dashbuilder.dataprovider.external.ExternalDataSetSecurityStore.PASSWORD_PROP;
 import static org.dashbuilder.dataprovider.external.ExternalDataSetSecurityStore.TOKEN_PROP;
 import static org.dashbuilder.dataprovider.external.ExternalDataSetSecurityStore.USER_PROP;
@@ -23,11 +28,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import org.dashbuilder.dataprovider.external.ExternalDataSetSecurityStore.SecurityType;
-import org.dashbuilder.dataset.def.DataSetDef;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ExternalDataSetSecurityStoreTest {
 

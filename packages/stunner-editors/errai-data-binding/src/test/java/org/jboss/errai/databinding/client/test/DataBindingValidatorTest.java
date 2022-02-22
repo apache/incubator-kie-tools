@@ -16,14 +16,14 @@
 
 package org.jboss.errai.databinding.client.test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaClassFactory;
 import org.jboss.errai.databinding.client.TestModel;
 import org.jboss.errai.databinding.rebind.DataBindingValidator;
 import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for the {@link DataBindingValidator} rebind utility.

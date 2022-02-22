@@ -16,13 +16,12 @@
 
 package org.jboss.errai.ui.test.handler.client;
 
-import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.junit.Test;
-
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.junit.Test;
 
 public class HandlerTemplateTest extends AbstractErraiCDITest {
 

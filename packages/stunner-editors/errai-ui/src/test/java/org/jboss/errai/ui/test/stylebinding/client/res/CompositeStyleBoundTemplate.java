@@ -16,10 +16,14 @@
 
 package org.jboss.errai.ui.test.stylebinding.client.res;
 
-import static org.jboss.errai.ui.test.common.client.dom.Document.getDocument;
-
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
+import elemental.client.Browser;
+import elemental.html.SpanElement;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.ui.shared.api.annotations.AutoBound;
 import org.jboss.errai.ui.shared.api.annotations.Bound;
@@ -27,13 +31,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.jboss.errai.ui.test.common.client.dom.TextInputElement;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
-
-import elemental.client.Browser;
-import elemental.html.SpanElement;
+import static org.jboss.errai.ui.test.common.client.dom.Document.getDocument;
 
 /**
  * @author Mike Brock

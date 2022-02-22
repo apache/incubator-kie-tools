@@ -16,15 +16,14 @@
 
 package org.jboss.errai.ui.test.runtime.client;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.regexp.shared.RegExp;
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ui.shared.TemplateInitializedEvent;
 import org.jboss.errai.ui.test.runtime.client.res.RuntimeCustomProviderComponent;
 import org.junit.Test;
-
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.regexp.shared.RegExp;
 
 public class RuntimeTemplateTest extends AbstractErraiCDITest {
 

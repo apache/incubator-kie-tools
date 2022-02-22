@@ -16,9 +16,9 @@
 
 package org.jboss.errai.ui.test.stylebinding.client.res;
 
-import com.google.gwt.dom.client.Style;
-
 import javax.inject.Singleton;
+
+import com.google.gwt.dom.client.Style;
 
 /**
  * @author Mike Brock

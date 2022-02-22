@@ -25,7 +25,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
-import elemental2.dom.DomGlobal;
 import org.dashbuilder.displayer.client.component.ExternalComponentDispatcher;
 import org.dashbuilder.displayer.client.component.ExternalComponentListener;
 import org.dashbuilder.displayer.external.ExternalComponentMessage;

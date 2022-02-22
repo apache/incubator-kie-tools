@@ -33,7 +33,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPane
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;

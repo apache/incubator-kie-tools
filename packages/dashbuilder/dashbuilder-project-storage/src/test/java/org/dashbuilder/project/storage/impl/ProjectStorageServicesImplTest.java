@@ -1,13 +1,5 @@
 package org.dashbuilder.project.storage.impl;
 
-import static org.dashbuilder.project.storage.ProjectStorageServices.DATASETS_PARENT_PATH;
-import static org.dashbuilder.project.storage.ProjectStorageServices.DATASETS_PATH;
-import static org.dashbuilder.project.storage.ProjectStorageServices.DATASET_EXT;
-import static org.dashbuilder.project.storage.ProjectStorageServices.README;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,6 +8,14 @@ import org.dashbuilder.project.storage.ProjectStorageServices;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.dashbuilder.project.storage.ProjectStorageServices.DATASETS_PARENT_PATH;
+import static org.dashbuilder.project.storage.ProjectStorageServices.DATASETS_PATH;
+import static org.dashbuilder.project.storage.ProjectStorageServices.DATASET_EXT;
+import static org.dashbuilder.project.storage.ProjectStorageServices.README;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ProjectStorageServicesImplTest {
 
@@ -111,9 +111,9 @@ public class ProjectStorageServicesImplTest {
         var content = "the content";
         projectServicesImpl.saveNavigation(content);
         var navigationPath = Paths.get(parent,
-                ProjectStorageServicesImpl.NAVIGATION_PARENT_PATH,
-                ProjectStorageServicesImpl.NAVIGATION_PATH,
-                ProjectStorageServicesImpl.NAV_TREE_FILE_NAME);
+                                       ProjectStorageServicesImpl.NAVIGATION_PARENT_PATH,
+                                       ProjectStorageServicesImpl.NAVIGATION_PATH,
+                                       ProjectStorageServicesImpl.NAV_TREE_FILE_NAME);
 
         assertEquals(content, Files.readString(navigationPath));
     }
@@ -126,8 +126,7 @@ public class ProjectStorageServicesImplTest {
         var savedContent = projectServicesImpl.getNavigation();
         assertEquals(content, savedContent.get());
     }
-    
-    
+
     @Test
     public void testCreateTempContent() throws IOException {
         var name = "abc";
@@ -136,7 +135,7 @@ public class ProjectStorageServicesImplTest {
         var path = Paths.get(parent, ProjectStorageServicesImpl.TEMP_PATH, name);
         assertEquals(content, Files.readString(path));
     }
-    
+
     @Test
     public void testCreateTempPath() throws IOException {
         var name = "abc";
@@ -144,7 +143,7 @@ public class ProjectStorageServicesImplTest {
         var expectedPath = Paths.get(parent, ProjectStorageServicesImpl.TEMP_PATH, name);
         assertEquals(path, expectedPath);
     }
-    
+
     @Test
     public void testGetTempContent() throws IOException {
         var name = "abc";
@@ -152,7 +151,7 @@ public class ProjectStorageServicesImplTest {
         projectServicesImpl.createTempContent(name, content);
         assertEquals(content, Files.readString(projectServicesImpl.getTempPath(name)));
     }
-    
+
     @Test
     public void testRemoveTempContent() throws IOException {
         var name = "abc";
@@ -160,68 +159,65 @@ public class ProjectStorageServicesImplTest {
 
         projectServicesImpl.createTempContent(name, content);
         assertTrue(projectServicesImpl.getTempPath(name).toFile().exists());
-        
+
         projectServicesImpl.removeTempContent(name);
         assertFalse(projectServicesImpl.getTempPath(name).toFile().exists());
     }
-    
+
     @Test
     public void testSavePerspective() throws IOException {
         var name = "my page";
-        var content  = " the content";
+        var content = " the content";
         var expectedPath = Paths.get(parent, ProjectStorageServices.PERSPECTIVES_PATH, name);
         projectServicesImpl.savePerspective(name, content);
-        
+
         assertTrue(expectedPath.toFile().isDirectory());
         assertEquals(name, expectedPath.getFileName().toString());
         assertEquals(content, Files.readString(expectedPath.resolve(ProjectStorageServices.PERSPECTIVE_LAYOUT)));
         assertTrue(expectedPath.resolve(ProjectStorageServices.PERSPECTIVE_LAYOUT_PLUGIN).toFile().exists());
     }
-    
+
     @Test
     public void testGetPerspective() {
         var name = "my page";
-        var content  = " the content";
+        var content = " the content";
         projectServicesImpl.savePerspective(name, content);
         assertEquals(content, projectServicesImpl.getPerspective(name).get());
     }
-    
+
     @Test
     public void testListPerspectives() {
         var n1 = "my page1";
-        var c1  = "the content1";
+        var c1 = "the content1";
         var n2 = "my page2";
-        var c2  = "the content2";
+        var c2 = "the content2";
         projectServicesImpl.savePerspective(n1, c1);
         projectServicesImpl.savePerspective(n2, c2);
-        
+
         var perspectives = projectServicesImpl.listPerspectives();
         var p1 = Paths.get(parent, ProjectStorageServices.PERSPECTIVES_PATH, n1, ProjectStorageServices.PERSPECTIVE_LAYOUT);
         var p2 = Paths.get(parent, ProjectStorageServices.PERSPECTIVES_PATH, n2, ProjectStorageServices.PERSPECTIVE_LAYOUT);
-        
+
         assertEquals(c1, perspectives.get(p1));
         assertEquals(c2, perspectives.get(p2));
-        
+
         projectServicesImpl.removePerspective(n1);
         projectServicesImpl.removePerspective(n2);
-        
+
         perspectives = projectServicesImpl.listPerspectives();
-        
+
         assertTrue(perspectives.isEmpty());
-        
     }
-    
+
     @Test
     public void testRemovePerspective() {
         var n1 = "my page1";
-        var c1  = "the content1";
+        var c1 = "the content1";
         projectServicesImpl.savePerspective(n1, c1);
-        
+
         var p1 = Paths.get(parent, ProjectStorageServices.PERSPECTIVES_PATH, n1, ProjectStorageServices.PERSPECTIVE_LAYOUT);
         projectServicesImpl.removePerspective(n1);
-        
+
         assertFalse(p1.toFile().exists());
-        
     }
-    
 }

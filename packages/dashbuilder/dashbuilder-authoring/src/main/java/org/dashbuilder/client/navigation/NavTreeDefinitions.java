@@ -18,8 +18,10 @@ package org.dashbuilder.client.navigation;
 import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.navigation.impl.NavTreeBuilder;
 
-import static org.dashbuilder.navigation.workbench.NavWorkbenchCtx.*;
-import static org.dashbuilder.perspectives.PerspectiveIds.*;
+import static org.dashbuilder.navigation.workbench.NavWorkbenchCtx.perspective;
+import static org.dashbuilder.perspectives.PerspectiveIds.CONTENT_MANAGER;
+import static org.dashbuilder.perspectives.PerspectiveIds.DATA_SETS;
+import static org.dashbuilder.perspectives.PerspectiveIds.DATA_TRANSFER;
 
 /**
  * Navigation tree definitions such as the top menu bar

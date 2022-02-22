@@ -21,15 +21,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import elemental2.dom.Event;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.MouseEvent;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-
-import elemental2.dom.Event;
-import elemental2.dom.HTMLDivElement;
-import elemental2.dom.MouseEvent;
 
 /**
  *

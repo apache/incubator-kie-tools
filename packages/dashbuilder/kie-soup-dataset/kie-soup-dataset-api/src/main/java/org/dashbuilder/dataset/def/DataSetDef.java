@@ -15,17 +15,28 @@
  */
 package org.dashbuilder.dataset.def;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.date.TimeAmount;
 import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.dashbuilder.dataset.validation.IsTimeInterval;
-import org.dashbuilder.dataset.validation.groups.*;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.*;
+import org.dashbuilder.dataset.validation.groups.DataSetDefBasicAttributesGroup;
+import org.dashbuilder.dataset.validation.groups.DataSetDefCacheRowsValidation;
+import org.dashbuilder.dataset.validation.groups.DataSetDefProviderTypeGroup;
+import org.dashbuilder.dataset.validation.groups.DataSetDefPushSizeValidation;
+import org.dashbuilder.dataset.validation.groups.DataSetDefRefreshIntervalValidation;
 
 /**
  * This class is used to define the origin, structure and runtime behaviour of a data set instance.

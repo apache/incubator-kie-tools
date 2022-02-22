@@ -1,7 +1,9 @@
 package org.dashbuilder.client.widgets.dataset.editor.column;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dashbuilder.dataprovider.DataSetProviderType;
-import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.def.DataColumnDef;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.junit.Before;
@@ -10,14 +12,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.jgroups.util.Util.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataSetDefColumnsEditorTest {

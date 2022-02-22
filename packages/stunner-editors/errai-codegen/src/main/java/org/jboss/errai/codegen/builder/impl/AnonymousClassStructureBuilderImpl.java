@@ -16,8 +16,6 @@
 
 package org.jboss.errai.codegen.builder.impl;
 
-import static org.jboss.errai.codegen.builder.callstack.LoadClassReference.getClassReference;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +34,8 @@ import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaMethod;
 import org.jboss.errai.codegen.meta.impl.build.BuildMetaClass;
 import org.jboss.errai.codegen.util.GenUtil;
+
+import static org.jboss.errai.codegen.builder.callstack.LoadClassReference.getClassReference;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

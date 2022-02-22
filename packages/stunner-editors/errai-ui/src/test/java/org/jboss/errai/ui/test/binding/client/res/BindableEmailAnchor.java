@@ -1,11 +1,10 @@
 package org.jboss.errai.ui.test.binding.client.res;
 
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsType;
 import org.jboss.errai.common.client.api.annotations.Element;
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.ui.HasValue;
-
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsType;
 
 @Element("a")
 @JsType(isNative = true)

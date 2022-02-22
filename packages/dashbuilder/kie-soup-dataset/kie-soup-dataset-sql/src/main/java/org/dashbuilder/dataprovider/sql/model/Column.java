@@ -15,8 +15,8 @@
  */
 package org.dashbuilder.dataprovider.sql.model;
 
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.filter.CoreFunctionType;

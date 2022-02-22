@@ -17,6 +17,7 @@
 package org.uberfire.client.views.pfly.menu;
 
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.event.dom.client.ClickEvent;

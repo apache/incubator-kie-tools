@@ -16,12 +16,12 @@
 
 package org.jboss.errai.common.client.api.annotations;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Marks a native {@link JsType} as a wrapper for a DOM event. {@link BrowserEvent#value()} are the event type names

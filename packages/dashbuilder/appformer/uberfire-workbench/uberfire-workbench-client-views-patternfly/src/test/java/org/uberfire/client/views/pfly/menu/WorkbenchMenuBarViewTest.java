@@ -31,7 +31,9 @@ import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuPosition;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class WorkbenchMenuBarViewTest {

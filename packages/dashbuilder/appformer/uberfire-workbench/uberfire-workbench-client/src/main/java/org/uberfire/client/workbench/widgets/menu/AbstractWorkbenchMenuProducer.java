@@ -18,6 +18,7 @@ package org.uberfire.client.workbench.widgets.menu;
 
 import javax.enterprise.event.Observes;
 
+import com.google.gwt.user.client.Window;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
@@ -25,8 +26,6 @@ import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.widgets.menu.base.WorkbenchBaseMenuPresenter;
 import org.uberfire.client.workbench.widgets.menu.base.WorkbenchBaseMenuView;
 import org.uberfire.client.workbench.widgets.menu.events.PerspectiveVisibiltiyChangeEvent;
-
-import com.google.gwt.user.client.Window;
 
 public abstract class AbstractWorkbenchMenuProducer<PRESENTER extends WorkbenchBaseMenuPresenter, VIEW extends WorkbenchBaseMenuView> {
 

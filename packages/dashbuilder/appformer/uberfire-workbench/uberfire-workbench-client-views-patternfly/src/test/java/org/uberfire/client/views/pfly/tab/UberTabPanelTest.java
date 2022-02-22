@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import org.uberfire.client.views.pfly.mock.MockPlaceManager;
 import org.uberfire.mvp.Command;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class UberTabPanelTest {

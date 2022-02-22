@@ -18,7 +18,11 @@ package org.jboss.errai.ui.shared.wrapper;
 
 import javax.annotation.Nullable;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.TypeInfo;
 
 /**
  * Read only wrapper to transform a gwt dom element to w3c one.

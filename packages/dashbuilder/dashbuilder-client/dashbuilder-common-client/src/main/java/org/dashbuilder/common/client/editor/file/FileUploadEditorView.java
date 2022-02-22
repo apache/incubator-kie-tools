@@ -2,10 +2,6 @@ package org.dashbuilder.common.client.editor.file;
 
 import javax.enterprise.context.Dependent;
 
-import org.gwtbootstrap3.client.ui.Tooltip;
-import org.gwtbootstrap3.client.ui.constants.Placement;
-import org.uberfire.ext.widgets.common.client.common.FileUpload;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -16,6 +12,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Tooltip;
+import org.gwtbootstrap3.client.ui.constants.Placement;
+import org.uberfire.ext.widgets.common.client.common.FileUpload;
 
 /**
  * <p>The FileUploadEditor view.</p>

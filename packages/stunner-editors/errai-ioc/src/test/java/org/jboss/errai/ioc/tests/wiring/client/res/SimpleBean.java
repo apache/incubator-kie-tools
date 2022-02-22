@@ -16,11 +16,11 @@
 
 package org.jboss.errai.ioc.tests.wiring.client.res;
 
-import org.jboss.errai.ioc.client.api.EntryPoint;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
+
+import org.jboss.errai.ioc.client.api.EntryPoint;
 
 
 @EntryPoint

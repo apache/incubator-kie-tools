@@ -16,13 +16,6 @@
 
 package org.dashbuilder.backend.services.impl;
 
-import static org.dashbuilder.external.model.ExternalComponent.COMPONENT_ID_KEY;
-import static org.dashbuilder.external.model.ExternalComponent.COMPONENT_PARTITION_KEY;
-import static org.dashbuilder.shared.model.ImportDefinitions.DATASET_DEF_PREFIX;
-import static org.dashbuilder.shared.model.ImportDefinitions.NAVIGATION_FILE;
-import static org.dashbuilder.shared.model.ImportDefinitions.PERSPECTIVE_SUFFIX;
-import static org.dashbuilder.transfer.DataTransferServices.COMPONENTS_EXPORT_PATH;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -59,6 +52,13 @@ import org.dashbuilder.shared.service.RuntimeModelRegistry;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+
+import static org.dashbuilder.external.model.ExternalComponent.COMPONENT_ID_KEY;
+import static org.dashbuilder.external.model.ExternalComponent.COMPONENT_PARTITION_KEY;
+import static org.dashbuilder.shared.model.ImportDefinitions.DATASET_DEF_PREFIX;
+import static org.dashbuilder.shared.model.ImportDefinitions.NAVIGATION_FILE;
+import static org.dashbuilder.shared.model.ImportDefinitions.PERSPECTIVE_SUFFIX;
+import static org.dashbuilder.transfer.DataTransferServices.COMPONENTS_EXPORT_PATH;
 
 /**
  * Parses an exported zip file from Transfer Services into RuntimeModel.

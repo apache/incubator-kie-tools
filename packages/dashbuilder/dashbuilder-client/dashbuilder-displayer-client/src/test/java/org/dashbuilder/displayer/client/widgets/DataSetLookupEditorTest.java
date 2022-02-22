@@ -16,6 +16,7 @@ package org.dashbuilder.displayer.client.widgets;
 
 import java.util.Arrays;
 import java.util.List;
+
 import javax.enterprise.event.Event;
 
 import org.dashbuilder.dataset.ColumnType;
@@ -48,10 +49,20 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
-import static org.dashbuilder.dataset.filter.FilterFactory.*;
-import static org.dashbuilder.dataset.ColumnType.*;
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.dashbuilder.dataset.ColumnType.DATE;
+import static org.dashbuilder.dataset.ColumnType.LABEL;
+import static org.dashbuilder.dataset.ColumnType.NUMBER;
+import static org.dashbuilder.dataset.filter.FilterFactory.greaterThan;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataSetLookupEditorTest {

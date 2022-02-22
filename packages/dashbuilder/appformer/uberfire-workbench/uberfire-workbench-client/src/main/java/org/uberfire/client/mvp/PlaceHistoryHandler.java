@@ -16,6 +16,7 @@
 package org.uberfire.client.mvp;
 
 import java.util.logging.Logger;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;

@@ -19,9 +19,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.uberfire.workbench.events.NotificationEvent;
-
 import elemental2.dom.DomGlobal;
+import org.uberfire.workbench.events.NotificationEvent;
 
 /**
  * Utility methods to perform user communication

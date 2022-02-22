@@ -15,15 +15,15 @@
  */
 package org.uberfire.ext.plugin.backend;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import org.dashbuilder.project.storage.impl.ProjectStorageServicesImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.backend.vfs.PathFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class PluginServicesImplTest {
     

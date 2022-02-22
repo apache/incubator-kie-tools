@@ -31,7 +31,8 @@ import org.uberfire.ext.layout.editor.client.infra.ColumnResizeEvent;
 import org.uberfire.ext.layout.editor.client.infra.RowResizeEvent;
 import org.uberfire.ext.plugin.type.TagsConverterUtil;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class FullLayoutTest extends AbstractLayoutEditorTest {

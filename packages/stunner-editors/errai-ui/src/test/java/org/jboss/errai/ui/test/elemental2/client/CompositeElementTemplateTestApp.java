@@ -16,13 +16,13 @@
 
 package org.jboss.errai.ui.test.elemental2.client;
 
-import com.google.gwt.user.client.ui.RootPanel;
-import org.jboss.errai.ui.test.elemental2.client.res.CompositeElementFormComponent;
-import org.jboss.errai.ui.test.elemental2.client.res.ElementFormComponent;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import com.google.gwt.user.client.ui.RootPanel;
+import org.jboss.errai.ui.test.elemental2.client.res.CompositeElementFormComponent;
+import org.jboss.errai.ui.test.elemental2.client.res.ElementFormComponent;
 
 /**
  * @author Tiago Bento <tfernand@redhat.com>

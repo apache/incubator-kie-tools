@@ -14,14 +14,14 @@
  */
 package org.eclipse.dd.di.impl;
 
-import org.eclipse.dd.di.*;
-
+import org.eclipse.dd.di.DiFactory;
+import org.eclipse.dd.di.DiPackage;
+import org.eclipse.dd.di.DiagramElement;
+import org.eclipse.dd.di.DocumentRoot;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**

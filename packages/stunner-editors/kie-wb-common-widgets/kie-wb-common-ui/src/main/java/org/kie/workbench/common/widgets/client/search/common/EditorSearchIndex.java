@@ -18,7 +18,6 @@ package org.kie.workbench.common.widgets.client.search.common;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.uberfire.mvp.Command;
 

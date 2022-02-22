@@ -16,6 +16,7 @@
 import "cypress-file-upload";
 import "cypress-iframe";
 import "./commands";
+import "cypress-real-events/support";
 
 // temporarry workaround, will be removed with https://issues.redhat.com/browse/KOGITO-6355
 Cypress.on("uncaught:exception", (err, runnable) => {

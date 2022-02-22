@@ -22,18 +22,37 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.dashbuilder.DataSetCore;
+import org.dashbuilder.dataset.def.DataSetPreprocessor;
 import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.dashbuilder.dataset.group.DateIntervalType;
 import org.dashbuilder.dataset.sort.SortOrder;
-import org.dashbuilder.dataset.def.DataSetPreprocessor;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.dashbuilder.dataset.ExpenseReportsData.*;
-import static org.dashbuilder.dataset.Assertions.*;
-import static org.dashbuilder.dataset.filter.FilterFactory.*;
-import static org.dashbuilder.dataset.group.AggregateFunctionType.SUM;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.dashbuilder.dataset.Assertions.assertDataSetValue;
+import static org.dashbuilder.dataset.Assertions.assertDataSetValues;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_AMOUNT;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_CITY;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DATE;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DEPARTMENT;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_EMPLOYEE;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_ID;
+import static org.dashbuilder.dataset.filter.FilterFactory.AND;
+import static org.dashbuilder.dataset.filter.FilterFactory.NOT;
+import static org.dashbuilder.dataset.filter.FilterFactory.OR;
+import static org.dashbuilder.dataset.filter.FilterFactory.between;
+import static org.dashbuilder.dataset.filter.FilterFactory.equalsTo;
+import static org.dashbuilder.dataset.filter.FilterFactory.greaterOrEqualsTo;
+import static org.dashbuilder.dataset.filter.FilterFactory.greaterThan;
+import static org.dashbuilder.dataset.filter.FilterFactory.in;
+import static org.dashbuilder.dataset.filter.FilterFactory.likeTo;
+import static org.dashbuilder.dataset.filter.FilterFactory.lowerOrEqualsTo;
+import static org.dashbuilder.dataset.filter.FilterFactory.lowerThan;
+import static org.dashbuilder.dataset.filter.FilterFactory.notEqualsTo;
+import static org.dashbuilder.dataset.filter.FilterFactory.notIn;
+import static org.dashbuilder.dataset.filter.FilterFactory.timeFrame;
+import static org.dashbuilder.dataset.group.AggregateFunctionType.SUM;
 
 public class DataSetFilterTest {
 

@@ -16,9 +16,10 @@
 
 package org.jboss.errai.ioc.tests.qualifiers.client.res;
 
-import javax.inject.Qualifier;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import javax.inject.Qualifier;
 
 /**
  * @author Mike Brock

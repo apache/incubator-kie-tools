@@ -1,9 +1,9 @@
 package org.dashbuilder.dataset.client.editor;
 
+import java.util.Map;
+
 import org.dashbuilder.common.client.editor.LeafAttributeEditor;
 import org.dashbuilder.dataset.def.BeanDataSetDef;
-
-import java.util.Map;
 
 /**
  * <p>The GWT editor contract for beans of type <code>org.dashbuilder.dataset.def.BeanDataSetDef</code>.</p>

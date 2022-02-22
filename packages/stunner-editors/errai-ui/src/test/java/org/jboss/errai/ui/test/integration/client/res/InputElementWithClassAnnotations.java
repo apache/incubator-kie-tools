@@ -16,12 +16,11 @@
 
 package org.jboss.errai.ui.test.integration.client.res;
 
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 import org.jboss.errai.common.client.api.annotations.ClassNames;
 import org.jboss.errai.common.client.api.annotations.Element;
-
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 
 /**
  * @author Dmitrii Tikhomirov <chani@me.com>

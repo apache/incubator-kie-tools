@@ -1,5 +1,8 @@
 package org.dashbuilder.common.client.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import org.dashbuilder.common.client.event.ValueChangeEvent;
@@ -11,9 +14,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;

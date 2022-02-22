@@ -21,15 +21,14 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.jboss.errai.databinding.client.api.Converter;
-import org.jboss.errai.databinding.client.api.DataBinder;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
-
 import jsinterop.annotations.JsType;
+import org.jboss.errai.databinding.client.api.Converter;
+import org.jboss.errai.databinding.client.api.DataBinder;
 
 /**
  * Indicates that an annotated component (a {@link Widget}, {@link Element}, or native {@link JsType} wrapping a DOM

@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.widgets.client.datamodel.copied;
 
-
 import org.kie.soup.project.datamodel.imports.Imports;
 import org.uberfire.backend.vfs.Path;
 

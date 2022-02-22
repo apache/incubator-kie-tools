@@ -16,8 +16,8 @@
 package org.dashbuilder.navigation.impl;
 
 import org.dashbuilder.navigation.NavDivider;
-import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavFactory;
+import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.NavTree;
 

@@ -16,6 +16,7 @@
 package org.uberfire.client.workbench.panels.impl;
 
 import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 

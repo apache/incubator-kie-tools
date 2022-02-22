@@ -16,17 +16,10 @@
 
 package org.jboss.errai.ui.rebind;
 
-import static java.util.Collections.singletonList;
-import static java.util.Optional.ofNullable;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 
+import elemental2.dom.Event;
 import org.jboss.errai.codegen.exception.GenerationException;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaMethod;
@@ -44,7 +37,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import elemental2.dom.Event;
+import static java.util.Collections.singletonList;
+import static java.util.Optional.ofNullable;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  *

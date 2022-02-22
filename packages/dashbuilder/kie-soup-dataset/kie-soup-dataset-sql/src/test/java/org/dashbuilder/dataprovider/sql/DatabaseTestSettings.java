@@ -18,10 +18,10 @@ package org.dashbuilder.dataprovider.sql;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.dashbuilder.dataprovider.sql.SQLDataSourceLocator;
 import org.dashbuilder.dataset.def.SQLDataSetDef;
 import org.h2.jdbcx.JdbcDataSource;
 

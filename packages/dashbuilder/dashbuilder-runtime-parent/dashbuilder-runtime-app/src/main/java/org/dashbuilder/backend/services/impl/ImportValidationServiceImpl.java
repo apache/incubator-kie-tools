@@ -16,10 +16,6 @@
 
 package org.dashbuilder.backend.services.impl;
 
-import static org.dashbuilder.shared.model.ImportDefinitions.DATASET_PREFIX;
-import static org.dashbuilder.shared.model.ImportDefinitions.NAVIGATION_PREFIX;
-import static org.dashbuilder.shared.model.ImportDefinitions.PERSPECTIVE_PREFIX;
-
 import java.io.FileInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -27,6 +23,10 @@ import java.util.zip.ZipInputStream;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.dashbuilder.shared.service.ImportValidationService;
+
+import static org.dashbuilder.shared.model.ImportDefinitions.DATASET_PREFIX;
+import static org.dashbuilder.shared.model.ImportDefinitions.NAVIGATION_PREFIX;
+import static org.dashbuilder.shared.model.ImportDefinitions.PERSPECTIVE_PREFIX;
 
 /**
  * Simple Validation Service Implementation that checks if the ZIPs contains the necessary structure.

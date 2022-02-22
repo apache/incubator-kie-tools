@@ -18,6 +18,8 @@ package org.jboss.errai.ui.test.binding.client.res;
 
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.InputElement;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.databinding.client.api.converter.DateInputConverter;
 import org.jboss.errai.databinding.client.api.converter.DateTimeInputConverter;
@@ -26,9 +28,6 @@ import org.jboss.errai.ui.shared.api.annotations.AutoBound;
 import org.jboss.errai.ui.shared.api.annotations.Bound;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.InputElement;
 
 /**
  * @author Max Barkley <mbarkley@redhat.com>

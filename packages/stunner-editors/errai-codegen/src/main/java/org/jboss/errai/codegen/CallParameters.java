@@ -16,14 +16,14 @@
 
 package org.jboss.errai.codegen;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.jboss.errai.codegen.literal.NullLiteral;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaClassFactory;
 import org.mvel2.util.NullType;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

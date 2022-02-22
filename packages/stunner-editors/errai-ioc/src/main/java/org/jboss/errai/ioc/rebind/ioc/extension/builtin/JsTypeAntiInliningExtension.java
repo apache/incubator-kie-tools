@@ -16,14 +16,16 @@
 
 package org.jboss.errai.ioc.rebind.ioc.extension.builtin;
 
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toCollection;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multiset;
+import jsinterop.annotations.JsType;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.ioc.client.api.IOCExtension;
 import org.jboss.errai.ioc.rebind.ioc.bootstrapper.IOCProcessingContext;
@@ -32,12 +34,8 @@ import org.jboss.errai.ioc.rebind.ioc.extension.IOCExtensionConfigurator;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.ExtensionTypeCallback;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.InjectionContext;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multiset;
-
-import jsinterop.annotations.JsType;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toCollection;
 
 /**
  * This extension tracks non-native {@link JsType} interfaces that are implemented by 0 or 1 classes. Why? Because in

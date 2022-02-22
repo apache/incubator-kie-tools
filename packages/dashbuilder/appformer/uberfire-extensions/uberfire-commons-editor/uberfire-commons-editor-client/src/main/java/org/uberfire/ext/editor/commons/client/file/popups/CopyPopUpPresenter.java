@@ -16,8 +16,6 @@
 
 package org.uberfire.ext.editor.commons.client.file.popups;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -31,6 +29,8 @@ import org.uberfire.ext.editor.commons.client.validation.ValidationErrorReason;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class CopyPopUpPresenter {

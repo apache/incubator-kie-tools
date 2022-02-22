@@ -15,15 +15,11 @@
 package org.eclipse.dd.di.impl;
 
 import com.google.gwt.user.client.rpc.GwtTransient;
-
 import org.eclipse.dd.di.DiPackage;
 import org.eclipse.dd.di.Label;
 import org.eclipse.dd.di.LabeledShape;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**

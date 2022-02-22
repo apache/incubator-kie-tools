@@ -18,7 +18,6 @@ package org.dashbuilder.client.editor;
 import javax.annotation.PostConstruct;
 
 import org.dashbuilder.displayer.DisplayerAttributeDef;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 
 @EntryPoint

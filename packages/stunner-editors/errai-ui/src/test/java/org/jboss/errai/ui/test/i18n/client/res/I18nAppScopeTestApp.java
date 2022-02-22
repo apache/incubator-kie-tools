@@ -20,9 +20,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ui.shared.api.annotations.Bundle;
-
 import com.google.gwt.user.client.ui.RootPanel;
+import org.jboss.errai.ui.shared.api.annotations.Bundle;
 
 @Bundle("I18nAppScopeTest.json")
 @ApplicationScoped

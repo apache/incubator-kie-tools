@@ -19,11 +19,10 @@ package org.jboss.errai.databinding.client;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.errai.databinding.client.api.Converter;
-
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import org.jboss.errai.databinding.client.api.Converter;
 
 /**
  * Represents the binding of a bean property to a widget and holds all relevant binding-specific

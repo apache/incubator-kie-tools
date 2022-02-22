@@ -16,9 +16,9 @@
 
 package org.jboss.errai.ui.shared.api.style;
 
-import com.google.gwt.user.client.Element;
-
 import java.lang.annotation.Annotation;
+
+import com.google.gwt.user.client.Element;
 
 /**
  * @author edewit@redhat.com

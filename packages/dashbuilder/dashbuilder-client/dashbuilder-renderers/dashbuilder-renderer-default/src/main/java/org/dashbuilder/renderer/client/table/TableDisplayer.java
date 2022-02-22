@@ -18,6 +18,7 @@ package org.dashbuilder.renderer.client.table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

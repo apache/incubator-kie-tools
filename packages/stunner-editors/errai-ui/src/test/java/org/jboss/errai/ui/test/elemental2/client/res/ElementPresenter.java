@@ -16,11 +16,11 @@
 
 package org.jboss.errai.ui.test.elemental2.client.res;
 
-import elemental2.dom.HTMLDivElement;
-import org.jboss.errai.common.client.api.elemental2.IsElement;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import elemental2.dom.HTMLDivElement;
+import org.jboss.errai.common.client.api.elemental2.IsElement;
 
 /**
  * @author Tiago Bento <tfernand@redhat.com>

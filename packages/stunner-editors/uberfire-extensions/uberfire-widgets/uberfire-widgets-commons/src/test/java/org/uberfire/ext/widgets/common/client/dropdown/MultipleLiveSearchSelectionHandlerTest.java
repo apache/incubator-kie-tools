@@ -1,6 +1,5 @@
 package org.uberfire.ext.widgets.common.client.dropdown;
 
-import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;

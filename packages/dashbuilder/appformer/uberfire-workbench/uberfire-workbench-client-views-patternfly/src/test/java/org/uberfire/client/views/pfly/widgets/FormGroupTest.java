@@ -16,10 +16,6 @@
 
 package org.uberfire.client.views.pfly.widgets;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import org.jboss.errai.common.client.dom.DOMTokenList;
 import org.jboss.errai.common.client.dom.Div;
 import org.junit.Before;
@@ -28,6 +24,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FormGroupTest {

@@ -19,6 +19,7 @@ package org.uberfire.ext.properties.editor.client;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import com.google.gwt.core.client.GWT;
