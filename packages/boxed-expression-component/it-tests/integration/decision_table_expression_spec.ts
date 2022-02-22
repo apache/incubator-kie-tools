@@ -248,7 +248,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.contains("td", /cell 12/).should("be.focused");
   });
 
-  it("Edit cells appending text selecting Td", function () {
+  it("Edit cells appending text selecting Td", () => {
     // from the cell 1, enter edit mode and write TestInput
     cy.contains("td", /cell 1/)
       .as("cell-1")
@@ -261,7 +261,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.get("@cell-1").find(".editable-cell-textarea").should("have.text", "cell 1TestAppend");
   });
 
-  it("Edit cells appending text selecting TextArea", function () {
+  it("Edit cells appending text selecting TextArea", () => {
     // from the cell 5, enter edit mode and write TestInput
     cy.contains(".editable-cell ", /cell 5/)
       .as("textarea-5")
@@ -275,7 +275,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.get("@textarea-5").find(".editable-cell-textarea").should("have.text", "-cell 5TestAppend");
   });
 
-  it("Edit cells overwriting text selecting Td", function () {
+  it("Edit cells overwriting text selecting Td", () => {
     // from the cell 2, enter edit mode and write TestInput
     cy.contains("td", /cell 2/)
       .as("cell-2")
@@ -288,7 +288,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.get("@cell-2").find(".editable-cell-textarea").should("have.text", "TestOverwrite");
   });
 
-  it("Edit cells overwriting text selecting TextArea", function () {
+  it("Edit cells overwriting text selecting TextArea", () => {
     // from the cell 6, enter edit mode and write TestInput
     cy.contains(".editable-cell ", /cell 6/)
       .as("textarea-6")
@@ -301,7 +301,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.get("@textarea-6").find(".editable-cell-textarea").should("have.text", "TestOverwrite");
   });
 
-  it("Interaction with contextMenu", function () {
+  it("Interaction with contextMenu", () => {
     // rightclick on cell 3
     cy.contains("td", /cell 3/)
       .as("cell-3")
