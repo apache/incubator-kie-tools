@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useRef, useState } from "react";
-import { useCancelableEffect } from "../reactExt/Hooks";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCancelableEffect, usePrevious, usePreviousRef } from "../reactExt/Hooks";
 import { decoder, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { InputRow } from "../editor/DmnRunner/DmnRunnerContext";
 import { useDmnRunnerInputsDispatch } from "./DmnRunnerInputsContext";
@@ -119,6 +119,7 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
     )
   );
 
+  const previousInputRows = usePreviousRef(inputRows);
   // Debounce to avoid multiple updates on the filesystem
   const timeout = useRef<number | undefined>(undefined);
   const setInputRowsAndUpdatePersistence = useCallback(
@@ -129,7 +130,7 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
 
       // After a re-render the callback is called by the first time, this avoid a filesystem unnecessary re-update
       if (typeof newInputRows === "function") {
-        if (lastInputRows.current === JSON.stringify(newInputRows(inputRows))) {
+        if (lastInputRows.current === JSON.stringify(newInputRows(previousInputRows.current))) {
           return;
         }
       }
@@ -140,13 +141,13 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
       timeout.current = window.setTimeout(() => {
         updatePersistedInputRows(workspaceFile, newInputRows);
         if (typeof newInputRows === "function") {
-          lastInputRows.current = JSON.stringify(newInputRows(inputRows));
+          lastInputRows.current = JSON.stringify(newInputRows(previousInputRows.current));
           return;
         }
         lastInputRows.current = JSON.stringify(newInputRows);
       }, 200);
     },
-    [inputRows, updatePersistedInputRows, workspaceFile]
+    [previousInputRows, updatePersistedInputRows, workspaceFile]
   );
 
   return {
