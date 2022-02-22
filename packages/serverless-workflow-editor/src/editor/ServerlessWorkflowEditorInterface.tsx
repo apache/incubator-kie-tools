@@ -55,6 +55,9 @@ export class ServerlessWorkflowEditorInterface implements Editor {
       <ServerlessWorkflowEditor
         ref={this.editorRef}
         ready={() => this.envelopeContext.channelApi.notifications.kogitoEditor_ready.send()}
+        stateControlCommandUpdate={(command) =>
+          this.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate.send(command)
+        }
         newEdit={(edit) => this.envelopeContext.channelApi.notifications.kogitoWorkspace_newEdit.send(edit)}
         setNotifications={(path, notifications) =>
           this.envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send(path, notifications)

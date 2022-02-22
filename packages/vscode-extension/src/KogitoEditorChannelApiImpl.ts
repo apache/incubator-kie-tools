@@ -111,7 +111,17 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
   }
 
   public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {
-    /* VS Code has his own state control API. */
+    switch (command) {
+      case StateControlCommand.REDO:
+        vscode.commands.executeCommand("redo");
+        break;
+      case StateControlCommand.UNDO:
+        vscode.commands.executeCommand("undo");
+        break;
+      default:
+        console.info(`Unknown message type received: ${command}`);
+        break;
+    }
   }
 
   public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial) {

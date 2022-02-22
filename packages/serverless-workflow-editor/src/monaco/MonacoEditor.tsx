@@ -26,8 +26,10 @@ interface Props {
 }
 
 export interface MonacoEditorRef {
-  undo(): Promise<void>;
-  redo(): Promise<void>;
+  undo(): void;
+  redo(): void;
+  getContent(): string;
+  pushUndoStop(): void;
 }
 
 const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorRef | undefined, Props> = (
@@ -57,11 +59,15 @@ const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorRef 
       return {
         redo: () => {
           monacoInstance.redo();
-          return Promise.resolve();
         },
         undo: () => {
           monacoInstance.undo();
-          return Promise.resolve();
+        },
+        getContent: () => {
+          return monacoInstance.getContent();
+        },
+        pushUndoStop: () => {
+          monacoInstance.pushUndoStop();
         },
       };
     },
