@@ -404,21 +404,15 @@ public class DataTypeListView implements DataTypeList.View {
     @Override
     public void renderImportJavaClasses() {
         if (!importJavaClassesContainer.hasChildNodes()) {
-            renderImportJavaClasses(".kie-import-java-classes",
-                                    false,
-                                    null);
+            renderImportJavaClasses(".kie-import-java-classes");
         }
     }
 
     /**
      * Indirection for Test purposes only
      */
-    protected void renderImportJavaClasses(final String selector,
-                                           final boolean buttonDisabledStatus,
-                                           final String buttonTooltipMessage) {
-        DMNLoader.renderImportJavaClasses(selector,
-                                          buttonDisabledStatus,
-                                          buttonTooltipMessage);
+    protected void renderImportJavaClasses(final String selector) {
+        DMNLoader.renderImportJavaClasses(selector);
     }
 
     /**
