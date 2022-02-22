@@ -17,11 +17,11 @@
 import * as React from "react";
 import "./ImportJavaClassesWizardFieldListTable.css";
 import { ExpandableRowContent, TableComposable, Tbody, Td, Tr } from "@patternfly/react-table";
-import { JavaClass } from "./Model/JavaClass";
+import { JavaClass } from "./model/JavaClass";
 import { Button } from "@patternfly/react-core";
-import { JavaField } from "./Model/JavaField";
-import { DMNSimpleType } from "./Model/DMNSimpleType";
-import { getJavaClassSimpleName } from "./Model/JavaClassUtils";
+import { JavaField } from "./model/JavaField";
+import { DMNSimpleType } from "./model/DMNSimpleType";
+import { getJavaClassSimpleName } from "./model/JavaClassUtils";
 import { useCallback, useState } from "react";
 import { useImportJavaClassesWizardI18n } from "../../i18n";
 

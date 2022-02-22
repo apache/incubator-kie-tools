@@ -22,22 +22,16 @@ import {
 } from "../../i18n";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { ImportJavaClassesWizard } from "./ImportJavaClassesWizard";
-import { ImportJavaClassGWTService } from "./Model";
+import { GWTLayerService, JavaCodeCompletionService } from "./services";
 
 export interface ImportJavaClassesProps {
-  /** Button disabled status */
-  buttonDisabledStatus: boolean;
-  /** Button tooltip message */
-  buttonTooltipMessage?: string;
   /** Service class which contains all API method to dialog with GWT layer */
-  importJavaClassesGWTService: ImportJavaClassGWTService;
+  gwtLayerService: GWTLayerService;
+  /** Service class which contains all API methods to dialog with Java Code Completion Extension*/
+  javaCodeCompletionService: JavaCodeCompletionService;
 }
 
-export const ImportJavaClasses = ({
-  buttonDisabledStatus,
-  buttonTooltipMessage,
-  importJavaClassesGWTService,
-}: ImportJavaClassesProps) => {
+export const ImportJavaClasses = ({ gwtLayerService, javaCodeCompletionService }: ImportJavaClassesProps) => {
   return (
     <I18nDictionariesProvider
       defaults={importJavaClassesWizardI18nDefaults}
@@ -46,9 +40,8 @@ export const ImportJavaClasses = ({
       ctx={ImportJavaClassesWizardI18nContext}
     >
       <ImportJavaClassesWizard
-        buttonDisabledStatus={buttonDisabledStatus}
-        buttonTooltipMessage={buttonTooltipMessage}
-        importJavaClassesGWTService={importJavaClassesGWTService}
+        gwtLayerService={gwtLayerService}
+        javaCodeCompletionService={javaCodeCompletionService}
       />
     </I18nDictionariesProvider>
   );
