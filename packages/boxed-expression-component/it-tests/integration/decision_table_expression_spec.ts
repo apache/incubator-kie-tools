@@ -176,16 +176,50 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.get("body").click();
   });
 
-  it("Navigate around", () => {
+  it("Navigate around data cells", () => {
     // from the cell 1, go to cell 10
-    cy.contains("td", /cell 1/).type(
-      "{rightarrow}{rightarrow}{rightarrow}{leftarrow}{downarrow}{downarrow}{leftarrow}"
-    );
+    cy.contains("td", /cell 1/)
+      .type("{rightarrow}{rightarrow}{rightarrow}{leftarrow}{downarrow}{downarrow}{leftarrow}")
+      // check the cell 10 is focused
+      .focused()
+      .should("contain.text", "cell 10");
 
-    // check the cell 10 is focused
-    cy.contains("td", /cell 10/).should("be.focused");
     // check the cell 9 is focused
     cy.contains("td", /cell 9/).should("not.be.focused");
+  });
+
+  it("Navigate around header and data cells", () => {
+    // from the cell 1, go up
+    cy.contains("td", /cell 1/)
+      .type("{uparrow}")
+      // check the cell "input-1" is focused
+      .focused()
+      .should("contain.text", "input-1")
+      // go right 2x
+      .type("{rightarrow}{rightarrow}")
+      // check the cell "input-1" is focused
+      .focused()
+      .should("contain.text", "expression-1")
+      // go down
+      .type("{downarrow}")
+      // check the cell "output-1" is focused
+      .focused()
+      .should("contain.text", "output-1")
+      // go right
+      .type("{rightarrow}")
+      // check the cell "annotation-1" is focused
+      .focused()
+      .should("contain.text", "annotation-1")
+      // go down
+      .type("{downarrow}")
+      // check the cell "cell-4" is focused
+      .focused()
+      .should("contain.text", "cell-4")
+      // go left and up
+      .type("{leftarrow}{uparrow}")
+      // check the cell "output-1" is focused
+      .focused()
+      .should("contain.text", "output-1");
   });
 
   it("Navigate around using tab", () => {

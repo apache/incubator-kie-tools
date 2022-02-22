@@ -32,28 +32,86 @@ import {
 /**
  * Create Mock HTML Table.
  *
+ * @param hrows number of header rows to create
  * @param rows number of rows to create
  * @param cells number of cells to create
  * @returns the new table
  */
-function createMockTable(rows = 0, cells = 0): HTMLTableElement {
-  const mockTable = document.createElement("table");
-  const mockTbody = document.createElement("tbody");
-  for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
-    const mockTr = document.createElement("tr");
+function createMockTable(hrows = 1, rows = 1, cells = 1): HTMLTableElement {
+  const table = document.createElement("table");
+  const thead = table.createTHead();
+  const tbody = table.createTBody();
+
+  // create thead
+  for (let rowIndex = 0; rowIndex < hrows; rowIndex++) {
+    const tr = thead.insertRow(rowIndex);
     for (let cellIndex = 0; cellIndex < cells; cellIndex++) {
-      const mockTd = document.createElement("td");
-      mockTd.appendChild(document.createElement("div"));
-      mockTr.appendChild(mockTd);
+      tr.insertCell(cellIndex).appendChild(document.createElement("div"));
     }
-    mockTbody.appendChild(mockTr);
   }
-  mockTable.appendChild(mockTbody);
-  return mockTable;
+
+  // create tbody
+  for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+    const tr = tbody.insertRow(rowIndex);
+    for (let cellIndex = 0; cellIndex < cells; cellIndex++) {
+      tr.insertCell(cellIndex).appendChild(document.createElement("div"));
+    }
+  }
+
+  return table;
 }
 
-const mockTable = createMockTable(3, 6);
+/**
+ * Tests a Movement.
+ *
+ * @param element the element where to start
+ * @param elementToBeFocused the element that should be focused
+ * @param move the movement function
+ */
+function testFocus(element: HTMLElement, elementToBeFocused: HTMLElement, move: (element: HTMLElement) => void): void {
+  const mockElementFocus = jest.spyOn(element, "focus");
+  const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
+
+  move(element);
+  expect(mockElementFocus).not.toHaveBeenCalled();
+  expect(mockElementToBeFocused).toHaveBeenCalled();
+}
+
+/**
+ * Check a movement not to change the focus
+ *
+ * @param element the element where to start
+ * @param move the movement function
+ */
+function shouldNotChangeFocus(element: HTMLElement, move: (element: HTMLElement) => void): void {
+  const mockElementFocus = jest.spyOn(element, "focus");
+
+  move(element);
+  expect(mockElementFocus).not.toHaveBeenCalled();
+}
+
+/**
+ * Check a movement keep a focus to the element
+ *
+ * @param element the element where to start
+ * @param move the movement function
+ */
+function shouldKeepFocus(element: HTMLElement, move: (element: HTMLElement) => void): void {
+  const mockElementFocus = jest.spyOn(element, "focus");
+
+  move(element);
+  expect(mockElementFocus).toHaveBeenCalled();
+}
+
+const mockTable = createMockTable(2, 3, 6);
+const mockThead = mockTable.tHead || document.createElement("thead");
 const mockTbody = mockTable.tBodies[0];
+
+const mockTableWithRowspan = createMockTable(2, 3, 6);
+const mockTableWithRowspanThead = mockTableWithRowspan.tHead || document.createElement("thead");
+mockTableWithRowspanThead.rows[0].cells[1].classList.add("no-clickable-cell", "colspan-header");
+
+/* TODO: FocusUtils.test: test colspan header cells */
 
 describe("FocusUtils tests", () => {
   beforeEach(() => {
@@ -71,8 +129,9 @@ describe("FocusUtils tests", () => {
       expect(getParentCell(mockTbody.rows[0].cells[1])).toBe(mockTbody.rows[0].cells[1]);
     });
 
-    it("should return the parent", () => {
-      expect(getParentCell(<HTMLElement>mockTbody.rows[0].cells[1].children[0])).toBe(mockTbody.rows[0].cells[1]);
+    it("should return the parent data cell", () => {
+      expect(getParentCell(mockTbody.rows[0].cells[1].children[0] as HTMLElement)).toBe(mockTbody.rows[0].cells[1]);
+      expect(getParentCell(mockThead.rows[0].cells[1].children[0] as HTMLElement)).toBe(mockThead.rows[0].cells[1]);
     });
 
     it("should return null", () => {
@@ -89,9 +148,8 @@ describe("FocusUtils tests", () => {
 
     it("should focus the element", () => {
       const element = mockTbody.rows[0].cells[1];
-      const mockElementFocus = jest.spyOn(element, "focus");
-      cellFocus(element);
-      expect(mockElementFocus).toHaveBeenCalled();
+
+      shouldKeepFocus(element, (element) => cellFocus(element as HTMLTableCellElement));
     });
   });
 
@@ -104,20 +162,33 @@ describe("FocusUtils tests", () => {
 
     it("should focus the element", () => {
       const element = mockTbody.rows[0].cells[1];
-      const mockElementFocus = jest.spyOn(element, "focus");
-      focusCurrentCell(element);
-      expect(mockElementFocus).toHaveBeenCalled();
+      shouldKeepFocus(element, focusCurrentCell);
     });
 
     it("should focus the cell called from an element inside the cell", () => {
-      const element = <HTMLElement>mockTbody.rows[0].cells[1].children[0];
-      const parentElement = mockTbody.rows[0].cells[1];
-      const mockElementFocus = jest.spyOn(element, "focus");
-      const mockParentFocus = jest.spyOn(parentElement, "focus");
+      testFocus(mockTbody.rows[0].cells[1].children[0] as HTMLElement, mockTbody.rows[0].cells[1], focusCurrentCell);
+    });
+  });
 
-      focusCurrentCell(element);
-      expect(mockElementFocus).not.toHaveBeenCalled();
-      expect(mockParentFocus).toHaveBeenCalled();
+  describe("focusParentCell tests", () => {
+    it("should fail", () => {
+      // @ts-ignore
+      expect(() => focusParentCell(undefined)).not.toThrowError();
+      expect(() => focusParentCell(null)).not.toThrowError();
+    });
+
+    it("should focus the parent cell from the inner table", () => {
+      const parentCell = document.createElement("td");
+      const innerTable = createMockTable(1, 2, 3);
+
+      parentCell.appendChild(innerTable);
+
+      testFocus(innerTable.tBodies[0].rows[0].cells[1], parentCell, focusParentCell);
+    });
+
+    it("should not change the focus", () => {
+      const emptyCell = document.createElement("td");
+      shouldNotChangeFocus(emptyCell, focusParentCell);
     });
   });
 
@@ -128,24 +199,20 @@ describe("FocusUtils tests", () => {
       expect(() => focusNextCell(null)).not.toThrowError();
     });
 
-    it("should focus the next cell", () => {
-      const element = mockTbody.rows[0].cells[1];
-      const elementToBeFocused = mockTbody.rows[0].cells[2];
-      const mockElementFocus = jest.spyOn(element, "focus");
-      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
+    it("should focus the next data cell", () => {
+      testFocus(mockTbody.rows[0].cells[1], mockTbody.rows[0].cells[2], focusNextCell);
+    });
 
-      focusNextCell(element);
-      expect(mockElementFocus).not.toHaveBeenCalled();
-      expect(mockElementToBeFocused).toHaveBeenCalled();
+    it("should focus the next header cell", () => {
+      testFocus(mockThead.rows[0].cells[1], mockThead.rows[0].cells[2], focusNextCell);
+    });
+
+    it("should focus the next rowspan header cell", () => {
+      testFocus(mockTableWithRowspanThead.rows[0].cells[0], mockTableWithRowspanThead.rows[1].cells[1], focusNextCell);
     });
 
     it("should not change the focus", () => {
-      const element = mockTbody.rows[2].cells[5];
-      const mockElementFocus = jest.spyOn(element, "focus");
-
-      focusNextCell(element);
-      focusNextCell(element);
-      expect(mockElementFocus).not.toHaveBeenCalled();
+      shouldNotChangeFocus(mockTbody.rows[2].cells[5], focusNextCell);
     });
   });
 
@@ -156,34 +223,30 @@ describe("FocusUtils tests", () => {
       expect(() => focusNextDataCell(null, 0)).not.toThrowError();
     });
 
-    it("should focus the next cell", () => {
-      const element = mockTbody.rows[0].cells[1];
-      const elementToBeFocused = mockTbody.rows[0].cells[2];
-      const mockElementFocus = jest.spyOn(element, "focus");
-      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
+    it("should focus the next data cell", () => {
+      testFocus(mockTbody.rows[0].cells[1], mockTbody.rows[0].cells[2], (element) => focusNextDataCell(element, 0));
+    });
 
-      focusNextDataCell(element, 0);
-      expect(mockElementFocus).not.toHaveBeenCalled();
-      expect(mockElementToBeFocused).toHaveBeenCalled();
+    it("should focus the next header cell", () => {
+      testFocus(mockThead.rows[0].cells[1], mockThead.rows[0].cells[2], (element) => focusNextDataCell(element, 0));
     });
 
     it("should focus the first cell of the next line", () => {
-      const element = mockTbody.rows[0].cells[5];
-      const elementToBeFocused = mockTbody.rows[1].cells[1];
-      const mockElementFocus = jest.spyOn(element, "focus");
-      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
+      testFocus(mockTbody.rows[0].cells[5], mockTbody.rows[1].cells[1], (element) => focusNextDataCell(element, 0));
+    });
 
-      focusNextDataCell(element, 0);
-      expect(mockElementFocus).not.toHaveBeenCalled();
-      expect(mockElementToBeFocused).toHaveBeenCalled();
+    it("should focus the first data cell from the last header cell", () => {
+      testFocus(mockThead.rows[1].cells[5], mockTbody.rows[0].cells[1], (element) => focusNextDataCell(element, 0));
+    });
+
+    it("should focus the next rowspan header cell", () => {
+      testFocus(mockTableWithRowspanThead.rows[0].cells[0], mockTableWithRowspanThead.rows[1].cells[1], (element) =>
+        focusNextDataCell(element, 0)
+      );
     });
 
     it("should keep the focus to the current cell", () => {
-      const element = mockTbody.rows[2].cells[5];
-      const mockElementFocus = jest.spyOn(element, "focus");
-
-      focusNextDataCell(element, 2);
-      expect(mockElementFocus).toHaveBeenCalled();
+      shouldKeepFocus(mockTbody.rows[2].cells[5], (element) => focusNextDataCell(element, 2));
     });
   });
 
@@ -194,23 +257,20 @@ describe("FocusUtils tests", () => {
       expect(() => focusPrevCell(null)).not.toThrowError();
     });
 
-    it("should focus the previous cell", () => {
-      const element = mockTbody.rows[0].cells[1];
-      const elementToBeFocused = mockTbody.rows[0].cells[0];
-      const mockElementFocus = jest.spyOn(element, "focus");
-      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
+    it("should focus the previous data cell", () => {
+      testFocus(mockTbody.rows[0].cells[1], mockTbody.rows[0].cells[0], focusPrevCell);
+    });
 
-      focusPrevCell(element);
-      expect(mockElementFocus).not.toHaveBeenCalled();
-      expect(mockElementToBeFocused).toHaveBeenCalled();
+    it("should focus the previous header cell", () => {
+      testFocus(mockThead.rows[0].cells[1], mockThead.rows[0].cells[0], focusPrevCell);
+    });
+
+    it("should focus the previous rowspan header cell", () => {
+      testFocus(mockTableWithRowspanThead.rows[0].cells[2], mockTableWithRowspanThead.rows[1].cells[1], focusPrevCell);
     });
 
     it("should not change the focus", () => {
-      const element = mockTbody.rows[0].cells[0];
-      const mockElementFocus = jest.spyOn(element, "focus");
-
-      focusPrevCell(element);
-      expect(mockElementFocus).not.toHaveBeenCalled();
+      shouldNotChangeFocus(mockTbody.rows[0].cells[0], focusPrevCell);
     });
   });
 
@@ -222,41 +282,29 @@ describe("FocusUtils tests", () => {
     });
 
     it("should focus the previous cell", () => {
-      const element = mockTbody.rows[0].cells[2];
-      const elementToBeFocused = mockTbody.rows[0].cells[1];
-      const mockElementFocus = jest.spyOn(element, "focus");
-      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
-
-      focusPrevDataCell(element, 0);
-      expect(mockElementFocus).not.toHaveBeenCalled();
-      expect(mockElementToBeFocused).toHaveBeenCalled();
+      testFocus(mockTbody.rows[0].cells[2], mockTbody.rows[0].cells[1], (element) => focusPrevDataCell(element, 0));
     });
 
     it("should focus the last cell of the previous line", () => {
-      const element = mockTbody.rows[1].cells[1];
-      const elementToBeFocused = mockTbody.rows[0].cells[5];
-      const mockElementFocus = jest.spyOn(element, "focus");
-      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
+      testFocus(mockTbody.rows[1].cells[1], mockTbody.rows[0].cells[5], (element) => focusPrevDataCell(element, 1));
+    });
 
-      focusPrevDataCell(element, 1);
-      expect(mockElementFocus).not.toHaveBeenCalled();
-      expect(mockElementToBeFocused).toHaveBeenCalled();
+    it("should focus the last cell of the header", () => {
+      testFocus(mockTbody.rows[0].cells[1], mockThead.rows[1].cells[5], (element) => focusPrevDataCell(element, 0));
     });
 
     it("should keep the focus to the current cell", () => {
-      const element = mockTbody.rows[0].cells[1];
-      const mockElementFocus = jest.spyOn(element, "focus");
+      shouldKeepFocus(mockTbody.rows[0].cells[1], (element) => focusPrevDataCell(element, 0));
+    });
 
-      focusPrevDataCell(element, 0);
-      expect(mockElementFocus).toHaveBeenCalled();
+    it("should focus the previous rowspan header cell", () => {
+      testFocus(mockTableWithRowspanThead.rows[0].cells[2], mockTableWithRowspanThead.rows[1].cells[1], (element) =>
+        focusNextDataCell(element, 0)
+      );
     });
 
     it("should keep the focus to the current counter cell", () => {
-      const element = mockTbody.rows[0].cells[0];
-      const mockElementFocus = jest.spyOn(element, "focus");
-
-      focusPrevDataCell(element, 0);
-      expect(mockElementFocus).toHaveBeenCalled();
+      shouldKeepFocus(mockTbody.rows[0].cells[0], (element) => focusPrevDataCell(element, 0));
     });
   });
 
@@ -267,23 +315,22 @@ describe("FocusUtils tests", () => {
       expect(() => focusUpperCell(null, 1)).not.toThrowError();
     });
 
-    it("should focus the upper cell", () => {
-      const element = mockTbody.rows[2].cells[2];
-      const elementToBeFocused = mockTbody.rows[1].cells[2];
-      const mockElementFocus = jest.spyOn(element, "focus");
-      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
+    it("should focus the upper data cell", () => {
+      testFocus(mockTbody.rows[2].cells[2], mockTbody.rows[1].cells[2], (element) => focusUpperCell(element, 2));
+    });
 
-      focusUpperCell(element, 2);
-      expect(mockElementFocus).not.toHaveBeenCalled();
-      expect(mockElementToBeFocused).toHaveBeenCalled();
+    it("should focus the upper header cell", () => {
+      testFocus(mockTbody.rows[0].cells[2], mockThead.rows[1].cells[2], (element) => focusUpperCell(element, 0));
     });
 
     it("should keep the focus to the current cell", () => {
-      const element = mockTbody.rows[0].cells[5];
-      const mockElementFocus = jest.spyOn(element, "focus");
+      shouldKeepFocus(mockTbody.rows[0].cells[5], (element) => focusUpperCell(element, 0));
+    });
 
-      focusUpperCell(element, 0);
-      expect(mockElementFocus).toHaveBeenCalled();
+    it("should keep focus to the current rowspan header cell", () => {
+      testFocus(mockTableWithRowspanThead.rows[1].cells[1], mockTableWithRowspanThead.rows[1].cells[1], (element) =>
+        focusNextDataCell(element, 0)
+      );
     });
   });
 
@@ -294,23 +341,16 @@ describe("FocusUtils tests", () => {
       expect(() => focusLowerCell(null, 1)).not.toThrowError();
     });
 
-    it("should focus the lower cell", () => {
-      const element = mockTbody.rows[0].cells[2];
-      const elementToBeFocused = mockTbody.rows[1].cells[2];
-      const mockElementFocus = jest.spyOn(element, "focus");
-      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
+    it("should focus the lower data cell", () => {
+      testFocus(mockTbody.rows[0].cells[2], mockTbody.rows[1].cells[2], (element) => focusLowerCell(element, 0));
+    });
 
-      focusLowerCell(element, 0);
-      expect(mockElementFocus).not.toHaveBeenCalled();
-      expect(mockElementToBeFocused).toHaveBeenCalled();
+    it("should focus the lower data cell from header cell", () => {
+      testFocus(mockThead.rows[1].cells[2], mockTbody.rows[0].cells[2], (element) => focusLowerCell(element, 0));
     });
 
     it("should keep the focus to the current cell", () => {
-      const element = mockTbody.rows[2].cells[5];
-      const mockElementFocus = jest.spyOn(element, "focus");
-
-      focusLowerCell(element, 2);
-      expect(mockElementFocus).toHaveBeenCalled();
+      shouldKeepFocus(mockTbody.rows[2].cells[5], (element) => focusLowerCell(element, 2));
     });
   });
 
@@ -324,28 +364,26 @@ describe("FocusUtils tests", () => {
     it("should focus the textarea", () => {
       const parentCell = document.createElement("td");
       const elementToBeFocused = document.createElement("textarea");
-      const mockParentCellFocus = jest.spyOn(parentCell, "focus");
-      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
 
       parentCell.appendChild(elementToBeFocused);
+      testFocus(parentCell, elementToBeFocused, focusInsideCell);
+    });
 
-      focusInsideCell(parentCell);
-      expect(mockParentCellFocus).not.toHaveBeenCalled();
-      expect(mockElementToBeFocused).toHaveBeenCalled();
+    it("should focus the input text", () => {
+      const parentCell = document.createElement("td");
+      const elementToBeFocused = document.createElement("input");
+
+      elementToBeFocused.setAttribute("type", "text");
+      parentCell.appendChild(elementToBeFocused);
+      testFocus(parentCell, elementToBeFocused, focusInsideCell);
     });
 
     it("should focus the second cell of the inner table", () => {
       const parentCell = document.createElement("td");
-      const innerTable = createMockTable(2, 3);
-      const elementToBeFocused = innerTable.tBodies[0].rows[0].cells[1];
-      const mockParentCellFocus = jest.spyOn(parentCell, "focus");
-      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
+      const innerTable = createMockTable(1, 2, 3);
 
       parentCell.appendChild(innerTable);
-
-      focusInsideCell(parentCell);
-      expect(mockParentCellFocus).not.toHaveBeenCalled();
-      expect(mockElementToBeFocused).toHaveBeenCalled();
+      testFocus(parentCell, innerTable.tBodies[0].rows[0].cells[1], focusInsideCell);
     });
 
     it("should open the PopoverMenu", () => {
@@ -379,11 +417,7 @@ describe("FocusUtils tests", () => {
     });
 
     it("should not change the focus", () => {
-      const emptyCell = document.createElement("td");
-      const mockEmptyCellFocus = jest.spyOn(emptyCell, "focus");
-
-      focusInsideCell(emptyCell);
-      expect(mockEmptyCellFocus).not.toHaveBeenCalled();
+      shouldNotChangeFocus(document.createElement("td"), focusInsideCell);
     });
   });
 
@@ -396,52 +430,18 @@ describe("FocusUtils tests", () => {
 
     it("should focus the textarea without erasing content", () => {
       const elementToBeFocused = document.createElement("textarea");
-      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
 
       elementToBeFocused.innerHTML = "TextArea Value";
-      focusTextArea(elementToBeFocused);
-      expect(mockElementToBeFocused).toHaveBeenCalled();
+      shouldKeepFocus(elementToBeFocused, (element) => focusTextArea(element as HTMLTextAreaElement));
       expect(elementToBeFocused.value).toBe("TextArea Value");
     });
 
     it("should focus the textarea without content", () => {
       const elementToBeFocused = document.createElement("textarea");
-      const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
 
       elementToBeFocused.value = "TextArea Value";
-      focusTextArea(elementToBeFocused, true);
-      expect(mockElementToBeFocused).toHaveBeenCalled();
+      shouldKeepFocus(elementToBeFocused, (element) => focusTextArea(element as HTMLTextAreaElement, true));
       expect(elementToBeFocused.value).toBe("");
-    });
-  });
-
-  describe("focusParentCell tests", () => {
-    it("should fail", () => {
-      // @ts-ignore
-      expect(() => focusParentCell(undefined)).not.toThrowError();
-      expect(() => focusParentCell(null)).not.toThrowError();
-    });
-
-    it("should focus the parent cell from the inner table", () => {
-      const parentCell = document.createElement("td");
-      const innerTable = createMockTable(2, 3);
-      const elementNotToBeFocused = innerTable.tBodies[0].rows[0].cells[1];
-      const mockParentCellFocus = jest.spyOn(parentCell, "focus");
-      const mockElementNotToBeFocused = jest.spyOn(elementNotToBeFocused, "focus");
-
-      parentCell.appendChild(innerTable);
-
-      focusParentCell(elementNotToBeFocused);
-      expect(mockParentCellFocus).toHaveBeenCalled();
-      expect(mockElementNotToBeFocused).not.toHaveBeenCalled();
-    });
-
-    it("should not change the focus", () => {
-      const emptyCell = document.createElement("td");
-      const mockEmptyCellFocus = jest.spyOn(emptyCell, "focus");
-
-      focusParentCell(emptyCell);
-      expect(mockEmptyCellFocus).not.toHaveBeenCalled();
     });
   });
 });
