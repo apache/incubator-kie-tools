@@ -14,6 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./ImportJavaClasses";
-export * from "./model";
-export * from "./services";
+export * from "./GWTLayerService";
+export * from "./JavaCodeCompletionService";
