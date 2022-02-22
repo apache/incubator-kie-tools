@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useCancelableEffect, usePrevious, usePreviousRef } from "../reactExt/Hooks";
+import React, { useCallback, useRef, useState } from "react";
+import { useCancelableEffect, usePreviousRef } from "../reactExt/Hooks";
 import { decoder, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { InputRow } from "../editor/DmnRunner/DmnRunnerContext";
 import { useDmnRunnerInputsDispatch } from "./DmnRunnerInputsContext";
@@ -35,6 +35,7 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
   const [didUpdateInputRows, setDidUpdateInputRows] = useState<boolean>(false);
   const [didUpdateOutputRows, setDidUpdateOutputRows] = useState<boolean>(false);
   const lastInputRows = useRef<string>("[{}]");
+  const previousInputRows = usePreviousRef(inputRows);
 
   useCancelableEffect(
     useCallback(
@@ -119,7 +120,6 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
     )
   );
 
-  const previousInputRows = usePreviousRef(inputRows);
   // Debounce to avoid multiple updates on the filesystem
   const timeout = useRef<number | undefined>(undefined);
   const setInputRowsAndUpdatePersistence = useCallback(

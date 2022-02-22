@@ -20,6 +20,9 @@ import { decoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesCo
 import { DmnRunnerInputsService } from "./DmnRunnerInputsService";
 import { InputRow } from "../editor/DmnRunner/DmnRunnerContext";
 import { DmnRunnerInputsDispatchContext } from "./DmnRunnerInputsContext";
+import { useCancelableEffect } from "../reactExt/Hooks";
+import { WORKSPACES_BROADCAST_CHANNEL } from "../workspace/services/WorkspaceService";
+import { WorkspacesEvents } from "../workspace/hooks/WorkspacesHooks";
 
 export function DmnRunnerInputsContextProvider(props: React.PropsWithChildren<{}>) {
   const workspaces = useWorkspaces();
@@ -27,6 +30,30 @@ export function DmnRunnerInputsContextProvider(props: React.PropsWithChildren<{}
   const dmnRunnerInputsService = useMemo(() => {
     return new DmnRunnerInputsService(workspaces.storageService);
   }, [workspaces.storageService]);
+
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        console.debug("Subscribing to " + WORKSPACES_BROADCAST_CHANNEL);
+        const broadcastChannel = new BroadcastChannel(WORKSPACES_BROADCAST_CHANNEL);
+        broadcastChannel.onmessage = ({ data }: MessageEvent<WorkspacesEvents>) => {
+          console.debug(`EVENT::WORKSPACE_FILE: ${JSON.stringify(data)}`);
+          if (data.type === "DELETE_WORKSPACE") {
+            if (canceled.get()) {
+              return;
+            }
+            dmnRunnerInputsService.delete(data.workspaceId);
+          }
+        };
+
+        return () => {
+          console.debug("Unsubscribing to " + WORKSPACES_BROADCAST_CHANNEL);
+          broadcastChannel.close();
+        };
+      },
+      [dmnRunnerInputsService]
+    )
+  );
 
   const updatePersistedInputRows = useCallback(
     async (

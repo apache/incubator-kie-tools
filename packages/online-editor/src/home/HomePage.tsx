@@ -87,7 +87,6 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
-import { useDmnRunnerInputsDispatch } from "../dmnRunnerInputs/DmnRunnerInputsContext";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -267,7 +266,6 @@ export function WorkspaceLoadingCard() {
 
 export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
   const workspaces = useWorkspaces();
-  const { dmnRunnerService } = useDmnRunnerInputsDispatch();
   return (
     <Card isSelected={false} isSelectable={true} isHoverable={true} isCompact={true}>
       <CardHeader>
@@ -290,7 +288,6 @@ export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
           <DeleteDropdownWithConfirmation
             onDelete={() => {
               workspaces.deleteWorkspace({ workspaceId: props.workspace.workspaceId });
-              dmnRunnerService.delete(props.workspace.workspaceId);
             }}
             item={
               <>
@@ -311,7 +308,6 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
   const workspaces = useWorkspaces();
   const [isHovered, setHovered] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceId);
-  const { dmnRunnerService } = useDmnRunnerInputsDispatch();
 
   const editableFiles = useMemo(() => {
     return workspacePromise.data?.files.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)) ?? [];
@@ -381,7 +377,6 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                     <DeleteDropdownWithConfirmation
                       onDelete={() => {
                         workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
-                        dmnRunnerService.delete(props.workspaceId);
                       }}
                       item={
                         <Flex flexWrap={{ default: "nowrap" }}>
@@ -450,7 +445,6 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                     <DeleteDropdownWithConfirmation
                       onDelete={() => {
                         workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
-                        dmnRunnerService.delete(props.workspaceId);
                       }}
                       item={
                         <>
