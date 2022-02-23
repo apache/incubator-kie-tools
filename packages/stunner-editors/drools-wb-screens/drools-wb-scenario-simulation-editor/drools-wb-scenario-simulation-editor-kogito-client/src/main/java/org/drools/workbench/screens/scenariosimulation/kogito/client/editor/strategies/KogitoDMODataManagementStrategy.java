@@ -25,10 +25,8 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmo.KogitoAsyncPackageDataModelOracle;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.kie.soup.project.datamodel.oracle.ModelField;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.callbacks.Callback;
 
 public class KogitoDMODataManagementStrategy extends AbstractDMODataManagementStrategy {
@@ -37,12 +35,6 @@ public class KogitoDMODataManagementStrategy extends AbstractDMODataManagementSt
 
     public KogitoDMODataManagementStrategy(KogitoAsyncPackageDataModelOracle kogitoOracle) {
         this.kogitoOracle = kogitoOracle;
-    }
-
-    @Override
-    public void manageScenarioSimulationModelContent(ObservablePath currentPath, ScenarioSimulationModelContent toManage) {
-        model = toManage.getModel();
-        kogitoOracle.init(currentPath);
     }
 
     @Override

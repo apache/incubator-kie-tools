@@ -254,11 +254,6 @@
 
     <!-- Transient dependencies -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-datamodel-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>com.google.jsinterop</groupId>
       <artifactId>base</artifactId>
       <scope>provided</scope>
