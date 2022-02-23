@@ -64,6 +64,7 @@ export const App: React.FunctionComponent = () => {
     notifyUserAction(): void {},
     openManageDataType(): void {},
     onLogicTypeSelect(): void {},
+    selectObject(): void {},
   };
 
   const onTypedExpressionChange = useCallback((e) => {

@@ -34,7 +34,7 @@ const HEADER_WIDTH = 250;
 export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> = (
   literalExpression: LiteralExpressionProps
 ) => {
-  const { boxedExpressionEditorGWTService } = useBoxedExpression();
+  const { boxedExpressionEditorGWTService, decisionNodeId } = useBoxedExpression();
 
   const spreadLiteralExpressionDefinition = useCallback(
     (literalExpressionUpdate?: Partial<LiteralExpressionProps>) => {
@@ -97,14 +97,27 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
 
   // TODO: https://issues.redhat.com/browse/KOGITO-6341
   useEffect(() => {
-    spreadLiteralExpressionDefinition();
+    if (!literalExpression.isHeadless) {
+      boxedExpressionEditorGWTService?.broadcastLiteralExpressionDefinition?.({
+        ...literalExpression,
+        logicType: LogicType.LiteralExpression,
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const onHeaderClick = useCallback(() => {
+    boxedExpressionEditorGWTService?.selectObject(decisionNodeId);
+  }, [boxedExpressionEditorGWTService, decisionNodeId]);
+
+  const onBodyClick = useCallback(() => {
+    boxedExpressionEditorGWTService?.selectObject(literalExpression.id);
+  }, [boxedExpressionEditorGWTService, literalExpression.id]);
 
   return (
     <div className="literal-expression">
       {!literalExpression.isHeadless && (
-        <div className="literal-expression-header">
+        <div className="literal-expression-header" onClick={onHeaderClick}>
           <Resizer
             width={literalExpression.width ?? HEADER_WIDTH}
             minWidth={HEADER_WIDTH}
@@ -125,7 +138,7 @@ export const LiteralExpression: React.FunctionComponent<LiteralExpressionProps> 
           </Resizer>
         </div>
       )}
-      <div className={`${literalExpression.id} literal-expression-body`}>
+      <div className={`${literalExpression.id} literal-expression-body`} onClick={onBodyClick}>
         <EditableCell
           value={literalExpression.content ?? ""}
           rowIndex={0}
