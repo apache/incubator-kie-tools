@@ -142,7 +142,7 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
           newInputRows,
           previousInputRows.current
         );
-      }, 200);
+      }, 400);
     },
     [previousInputRows, updatePersistedInputRows, workspaceFile, dmnRunnerInputsService]
   );
