@@ -25,6 +25,10 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLDocument;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLLIElement;
 import org.jboss.errai.common.client.api.elemental2.IsElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.views.pfly.widgets.Button;
@@ -34,11 +38,6 @@ import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
-
-import elemental2.dom.HTMLDivElement;
-import elemental2.dom.HTMLDocument;
-import elemental2.dom.HTMLElement;
-import elemental2.dom.HTMLLIElement;
 
 @Dependent
 public class MultiScreenMenuBuilder implements Function<MenuItem, Optional<HTMLElement>> {

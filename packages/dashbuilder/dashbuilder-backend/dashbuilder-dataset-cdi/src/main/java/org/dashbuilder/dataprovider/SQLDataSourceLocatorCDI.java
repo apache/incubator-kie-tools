@@ -16,6 +16,7 @@
 package org.dashbuilder.dataprovider;
 
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;

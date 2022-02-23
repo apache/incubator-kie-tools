@@ -21,7 +21,6 @@ import java.util.Map;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Widget;
-
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.forms.model.FieldDefinition;

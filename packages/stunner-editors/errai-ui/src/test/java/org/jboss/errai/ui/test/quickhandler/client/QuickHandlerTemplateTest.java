@@ -16,17 +16,16 @@
 
 package org.jboss.errai.ui.test.quickhandler.client;
 
-import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ui.shared.TemplateUtil;
-import org.junit.Test;
-
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.DomEvent;
+import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.ui.shared.TemplateUtil;
+import org.junit.Test;
 
 public class QuickHandlerTemplateTest extends AbstractErraiCDITest {
 

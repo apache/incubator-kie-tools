@@ -18,7 +18,6 @@ package org.dashbuilder.displayer.client.widgets.filter;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.dataset.date.Month;
 import org.dashbuilder.dataset.date.TimeFrame;

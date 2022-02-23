@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.client.lienzo.components.toolbox.action
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import javax.enterprise.event.Observes;
+
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.shape.Group;
@@ -30,6 +32,7 @@ import com.ait.lienzo.client.core.shape.toolbox.items.impl.ToolboxFactory;
 import com.ait.lienzo.client.core.shape.toolbox.items.impl.WiresShapeToolbox;
 import com.ait.lienzo.client.core.shape.toolbox.items.tooltip.ToolboxTextTooltip;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.widget.panel.impl.LienzoPanelScrollEvent;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderers;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -91,9 +94,24 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
     public void destroy() {
         Optional.ofNullable(toolboxView).ifPresent(WiresShapeToolbox::destroy);
         Optional.ofNullable(tooltip).ifPresent(ToolboxTextTooltip::destroy);
+
+
+        drawTopLayer();
+
         toolboxView = null;
         tooltip = null;
         canvas = null;
+    }
+
+    public void onScrollEvent(@Observes LienzoPanelScrollEvent scrollEvent) {
+        drawTopLayer();
+    }
+
+    protected void drawTopLayer() {
+        if (canvas != null) {
+            canvas.getView().getLayer().getTopLayer().setVisible(true);
+            canvas.getView().getLayer().getTopLayer().draw();
+        }
     }
 
     @Override

@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.DropDownMenu;
@@ -31,8 +32,6 @@ import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
-
-import com.google.gwt.user.client.ui.Widget;
 
 @ApplicationScoped
 public class MenuBuilder {

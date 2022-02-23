@@ -16,8 +16,6 @@
 
 package org.jboss.errai.codegen.test;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +25,8 @@ import org.jboss.errai.codegen.ProxyMaker;
 import org.jboss.errai.codegen.test.model.ToProxyBean;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for the {@link ProxyMaker}.

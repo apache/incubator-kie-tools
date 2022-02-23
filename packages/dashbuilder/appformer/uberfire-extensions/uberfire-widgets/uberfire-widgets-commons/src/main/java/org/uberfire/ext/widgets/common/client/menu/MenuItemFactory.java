@@ -18,6 +18,7 @@ package org.uberfire.ext.widgets.common.client.menu;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;

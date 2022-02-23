@@ -16,6 +16,20 @@
 
 package org.jboss.errai.reflections.serializers;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
@@ -30,15 +44,8 @@ import org.jboss.errai.reflections.scanners.TypesScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
-
-import static org.jboss.errai.reflections.util.Utils.*;
+import static org.jboss.errai.reflections.util.Utils.prepareFile;
+import static org.jboss.errai.reflections.util.Utils.repeat;
 
 /** serialization of Reflections to java code
  * <p> serializes types and types elements into interfaces respectively to fully qualified name,

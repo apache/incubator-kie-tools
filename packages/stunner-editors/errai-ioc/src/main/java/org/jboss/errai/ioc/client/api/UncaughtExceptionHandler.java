@@ -25,9 +25,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.inject.Singleton;
 
-import org.jboss.errai.ioc.client.container.ErraiUncaughtExceptionHandler;
-
 import com.google.gwt.core.client.GWT;
+import org.jboss.errai.ioc.client.container.ErraiUncaughtExceptionHandler;
 
 /**
  * <p>

@@ -18,9 +18,10 @@ package org.jboss.errai.ui.test.extended.client.res;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+
+import com.google.gwt.user.client.ui.Label;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import com.google.gwt.user.client.ui.Label;
 
 @Templated("BaseComponent.html")
 public class CompositeExtensionComponent extends CompositeBaseComponent implements Extension {

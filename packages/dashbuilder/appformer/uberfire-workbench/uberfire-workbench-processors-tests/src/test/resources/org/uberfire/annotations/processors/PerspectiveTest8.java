@@ -17,6 +17,7 @@
 package org.uberfire.annotations.processors;
 
 import java.util.function.Consumer;
+
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;

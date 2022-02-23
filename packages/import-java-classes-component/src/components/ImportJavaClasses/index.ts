@@ -15,4 +15,5 @@
  */
 
 export * from "./ImportJavaClasses";
-export * from "./Model";
+export * from "./model";
+export * from "./services";

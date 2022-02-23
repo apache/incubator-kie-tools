@@ -18,11 +18,10 @@ package org.jboss.errai.ui.test.designer.client.res;
 
 import javax.annotation.PostConstruct;
 
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated("DesignerTemplate.html#subTemplate")
 public class DesignerSubComponent extends Composite {

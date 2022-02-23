@@ -17,6 +17,7 @@ package org.uberfire.annotations.processors;
 
 import java.io.IOException;
 import java.util.Set;
+
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;

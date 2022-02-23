@@ -29,7 +29,7 @@ import org.uberfire.ext.layout.editor.client.generator.LayoutGenerator;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutDragComponentGroupPresenter;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LayoutEditorPresenterTest {

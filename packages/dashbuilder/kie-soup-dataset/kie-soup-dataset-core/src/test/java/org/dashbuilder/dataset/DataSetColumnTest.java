@@ -21,8 +21,15 @@ import org.dashbuilder.DataSetCore;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.dashbuilder.dataset.ExpenseReportsData.*;
-import static org.junit.Assert.*;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_AMOUNT;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_CITY;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DATE;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DEPARTMENT;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_EMPLOYEE;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_ID;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class DataSetColumnTest {
 

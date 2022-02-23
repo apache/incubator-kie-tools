@@ -19,10 +19,9 @@ package org.jboss.errai.ui.test.nestedcyclic.client;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.test.nestedcyclic.client.res.ParentComponent;
-
-import com.google.gwt.user.client.ui.RootPanel;
 
 @EntryPoint
 public class NestedTemplateTestApp {

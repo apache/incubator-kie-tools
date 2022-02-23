@@ -15,21 +15,33 @@
  */
 package org.dashbuilder.displayer.client;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.dashbuilder.common.client.error.ClientRuntimeError;
-import org.dashbuilder.dataset.*;
+import org.dashbuilder.dataset.DataColumn;
+import org.dashbuilder.dataset.DataSet;
+import org.dashbuilder.dataset.DataSetLookup;
+import org.dashbuilder.dataset.DataSetOp;
+import org.dashbuilder.dataset.DataSetOpType;
 import org.dashbuilder.dataset.client.DataSetClientServices;
 import org.dashbuilder.dataset.client.DataSetExportReadyCallback;
 import org.dashbuilder.dataset.client.DataSetReadyCallback;
 import org.dashbuilder.dataset.filter.DataSetFilter;
-import org.dashbuilder.dataset.group.*;
+import org.dashbuilder.dataset.group.ColumnGroup;
+import org.dashbuilder.dataset.group.DataSetGroup;
+import org.dashbuilder.dataset.group.GroupFunction;
+import org.dashbuilder.dataset.group.GroupStrategy;
+import org.dashbuilder.dataset.group.Interval;
 import org.dashbuilder.dataset.sort.ColumnSort;
 import org.dashbuilder.dataset.sort.DataSetSort;
 import org.dashbuilder.dataset.sort.SortOrder;
 import org.dashbuilder.displayer.client.export.ExportCallback;
 import org.dashbuilder.displayer.client.export.ExportFormat;
 import org.uberfire.backend.vfs.Path;
-
-import java.util.*;
 
 public class DataSetHandlerImpl implements DataSetHandler {
 

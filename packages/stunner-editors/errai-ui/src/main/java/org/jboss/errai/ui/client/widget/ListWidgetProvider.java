@@ -20,11 +20,10 @@ import java.lang.annotation.Annotation;
 
 import javax.inject.Singleton;
 
-import org.jboss.errai.ioc.client.api.ContextualTypeProvider;
-import org.jboss.errai.ioc.client.api.IOCProvider;
-
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ioc.client.api.ContextualTypeProvider;
+import org.jboss.errai.ioc.client.api.IOCProvider;
 
 /**
  * Provides instances of ListWidget for cases where the app does not have any

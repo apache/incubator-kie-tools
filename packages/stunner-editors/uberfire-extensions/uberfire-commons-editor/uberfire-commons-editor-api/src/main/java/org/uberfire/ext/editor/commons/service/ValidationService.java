@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.editor.commons.service;
 
-
 import org.uberfire.backend.vfs.Path;
 
 /**

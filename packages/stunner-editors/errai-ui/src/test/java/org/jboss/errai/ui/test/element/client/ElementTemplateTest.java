@@ -16,19 +16,17 @@
 
 package org.jboss.errai.ui.test.element.client;
 
-import static elemental.client.Browser.getDocument;
-
+import com.google.gwt.dom.client.Element;
+import elemental.dom.Document;
+import elemental.events.EventTarget;
+import elemental.events.MouseEvent;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ui.shared.TemplateUtil;
 import org.junit.Test;
 
-import com.google.gwt.dom.client.Element;
-
-import elemental.dom.Document;
-import elemental.events.EventTarget;
-import elemental.events.MouseEvent;
+import static elemental.client.Browser.getDocument;
 
 public class ElementTemplateTest extends AbstractErraiCDITest {
 

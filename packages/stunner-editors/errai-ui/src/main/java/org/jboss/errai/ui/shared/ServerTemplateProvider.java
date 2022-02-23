@@ -18,14 +18,13 @@ package org.jboss.errai.ui.shared;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.errai.ui.client.local.spi.TemplateProvider;
-import org.jboss.errai.ui.client.local.spi.TemplateRenderingCallback;
-
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import org.jboss.errai.ui.client.local.spi.TemplateProvider;
+import org.jboss.errai.ui.client.local.spi.TemplateRenderingCallback;
 
 /**
  * Retrieves templates from the server using the provided template location as URL.

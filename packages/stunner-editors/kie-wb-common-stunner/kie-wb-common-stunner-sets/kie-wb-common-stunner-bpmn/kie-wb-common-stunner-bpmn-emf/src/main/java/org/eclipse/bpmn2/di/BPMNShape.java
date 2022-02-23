@@ -15,7 +15,6 @@
 package org.eclipse.bpmn2.di;
 
 import org.eclipse.bpmn2.BaseElement;
-
 import org.eclipse.dd.di.LabeledShape;
 
 /**

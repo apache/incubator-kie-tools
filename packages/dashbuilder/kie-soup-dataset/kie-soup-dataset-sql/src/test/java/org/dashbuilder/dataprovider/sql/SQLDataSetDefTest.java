@@ -28,6 +28,7 @@ import org.dashbuilder.dataset.group.AggregateFunctionType;
 import org.dashbuilder.dataset.sort.SortOrder;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.dashbuilder.dataset.Assertions.assertDataSetValues;
 import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_AMOUNT;
 import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DEPARTMENT;
@@ -35,7 +36,6 @@ import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_EMPLOYEE;
 import static org.dashbuilder.dataset.filter.FilterFactory.OR;
 import static org.dashbuilder.dataset.filter.FilterFactory.greaterThan;
 import static org.dashbuilder.dataset.filter.FilterFactory.lowerThan;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 public class SQLDataSetDefTest extends SQLDataSetTestBase {

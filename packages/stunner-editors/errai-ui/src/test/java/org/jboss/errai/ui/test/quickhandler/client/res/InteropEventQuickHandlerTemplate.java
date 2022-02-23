@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.ButtonElement;
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.Div;
@@ -33,8 +34,6 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-
-import com.google.gwt.dom.client.ButtonElement;
 
 /**
  *

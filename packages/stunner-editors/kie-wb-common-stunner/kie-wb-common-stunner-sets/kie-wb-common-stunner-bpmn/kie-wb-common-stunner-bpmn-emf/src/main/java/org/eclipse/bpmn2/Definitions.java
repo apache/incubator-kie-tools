@@ -15,7 +15,6 @@
 package org.eclipse.bpmn2;
 
 import org.eclipse.bpmn2.di.BPMNDiagram;
-
 import org.eclipse.emf.common.util.EList;
 
 /**

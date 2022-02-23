@@ -48,20 +48,15 @@ import bpsim.UserDistributionDataPointType;
 import bpsim.UserDistributionType;
 import bpsim.VendorExtension;
 import bpsim.WeibullDistributionType;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
-
 import org.eclipse.emf.common.util.Reflect;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
 /**

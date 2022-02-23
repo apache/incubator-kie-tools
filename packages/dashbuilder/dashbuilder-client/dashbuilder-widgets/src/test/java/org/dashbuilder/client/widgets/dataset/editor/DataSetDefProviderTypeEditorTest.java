@@ -1,9 +1,10 @@
 package org.dashbuilder.client.widgets.dataset.editor;
 
-import com.google.gwt.safehtml.shared.SafeUri;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import java.util.Arrays;
+import java.util.Collection;
 
+import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.client.widgets.common.CustomDataSetProviderType;
 import org.dashbuilder.client.widgets.common.DataSetEditorPlugin;
 import org.dashbuilder.client.widgets.dataset.event.DataSetDefCreationRequestEvent;
@@ -19,14 +20,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.uberfire.mocks.EventSourceMock;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import javax.enterprise.event.Event;
-
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DataSetDefProviderTypeEditorTest {

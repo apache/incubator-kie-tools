@@ -15,10 +15,10 @@
  */
 package org.uberfire.ext.layout.editor.client.validator;
 
-import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
-
 import java.util.Arrays;
 import java.util.List;
+
+import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
 
 public class LayoutEditorPropertyLengthValidator implements PropertyFieldValidator {
 

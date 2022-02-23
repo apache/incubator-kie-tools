@@ -16,12 +16,6 @@
 
 package org.jboss.errai.reflections.vfs;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import org.jboss.errai.reflections.ReflectionsException;
-import org.jboss.errai.reflections.util.Utils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -29,6 +23,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import org.jboss.errai.reflections.ReflectionsException;
+import org.jboss.errai.reflections.util.Utils;
 
 /**
  * a simple virtual file system bridge

@@ -1,8 +1,6 @@
 package org.dashbuilder.client.widgets.dataset.editor.csv;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.client.widgets.dataset.editor.DataSetDefColumnsFilterEditor;
 import org.dashbuilder.client.widgets.dataset.editor.DataSetDefPreviewTable;
 import org.dashbuilder.client.widgets.dataset.editor.DataSetEditor;
@@ -22,7 +20,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class CSVDataSetEditorTest {

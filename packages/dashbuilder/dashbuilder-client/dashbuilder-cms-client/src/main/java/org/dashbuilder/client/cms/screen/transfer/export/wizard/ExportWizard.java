@@ -26,8 +26,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerConstants;
-import org.dashbuilder.transfer.ExportInfo;
 import org.dashbuilder.transfer.DataTransferExportModel;
+import org.dashbuilder.transfer.ExportInfo;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.wizards.AbstractWizard;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;

@@ -16,14 +16,14 @@
 
 package org.jboss.errai.ui.test.elemental2.client;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.RootPanel;
 import jsinterop.base.Js;
 import org.jboss.errai.ui.test.elemental2.client.res.ElementFormComponent;
 import org.jboss.errai.ui.test.elemental2.client.res.NonCompositeElementFormComponent;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 /**
  * @author Tiago Bento <tfernand@redhat.com>

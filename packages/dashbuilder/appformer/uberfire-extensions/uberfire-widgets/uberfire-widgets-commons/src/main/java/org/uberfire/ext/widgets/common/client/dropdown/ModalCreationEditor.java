@@ -16,9 +16,6 @@
 
 package org.uberfire.ext.widgets.common.client.dropdown;
 
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
-
 public interface ModalCreationEditor<TYPE> extends EntryCreationEditor<TYPE> {
 
     void show();

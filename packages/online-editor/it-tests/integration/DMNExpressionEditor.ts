@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-describe("DMN Expression Editor Test", () => {
+describe("DMN Expression Editor Test :: Expressions", () => {
   beforeEach(() => {
     cy.visit("/");
   });
@@ -93,6 +93,12 @@ describe("DMN Expression Editor Test", () => {
       cy.get(".expression-type").contains("Decision Table").should("be.visible");
     });
   });
+});
+
+describe("DMN Expression Editor Test :: Data types", () => {
+  beforeEach(() => {
+    cy.visit("/");
+  });
 
   it("Change Decition Table from Any to Custom Data Type", () => {
     cy.get("#upload-field").attachFile("testModelWithCustomDataType.dmn", { subjectType: "drag-n-drop" });
@@ -129,8 +135,7 @@ describe("DMN Expression Editor Test", () => {
           cy.get("button[data-toggle='dropdown']").click();
         });
       });
-      cy.get(".bs-searchbox input").last().type("Structure");
-      cy.get("ul").find("li.active").find("a").contains("Structure").click();
+      selectInDataTypesSearchableDropdown("Structure");
       cy.ouia({ ouiaId: "Insert a name" }).within(($row) => {
         cy.get("[data-type-field='save-button']").click();
       });
@@ -143,8 +148,7 @@ describe("DMN Expression Editor Test", () => {
           cy.get("button[data-toggle='dropdown']").click();
         });
       });
-      cy.get(".bs-searchbox input").last().type("number");
-      cy.get("ul").find("li.active").find("a").contains("number").click();
+      selectInDataTypesSearchableDropdown("number");
       cy.ouia({ ouiaId: "Insert a name" }).within(($row) => {
         cy.get("[data-type-field='save-button']").click();
       });
@@ -161,8 +165,7 @@ describe("DMN Expression Editor Test", () => {
           cy.get("button[data-toggle='dropdown']").click();
         });
       });
-      cy.get(".bs-searchbox input").last().type("string");
-      cy.get("ul").find("li.active").find("a").contains("string").click();
+      selectInDataTypesSearchableDropdown("string");
       cy.ouia({ ouiaId: "Insert a name" }).within(($row) => {
         cy.get("[data-type-field='save-button']").click();
       });
@@ -247,6 +250,76 @@ describe("DMN Expression Editor Test", () => {
       });
 
       cy.get("[data-ouia-component-type='expression-column-header-cell-info']:contains('number')").should("be.visible");
+    });
+  });
+});
+
+/**
+ * Use this method to change data type of entry specified on 'Data Types' DMN editor page.
+ *
+ * Precondition to use this method is to click:
+ * - Pencil icon to start edit mode of an entry
+ * - Type selectbox to display searchable dropdown
+ *
+ * @param entryName
+ */
+function selectInDataTypesSearchableDropdown(entryName: string): void {
+  cy.get(".bs-searchbox input").last().type(entryName);
+  cy.get("ul").find("li.active").find("a").contains(entryName).should("be.visible");
+  cy.get("ul").find("li.active").find("a").contains(entryName).click();
+  cy.get("ul").find("li.active").find("a").contains(entryName).should("not.exist");
+}
+
+describe("DMN Expression Editor Test :: keyboard shortcuts", () => {
+  beforeEach(() => {
+    cy.visit("/");
+  });
+
+  // https://issues.redhat.com/browse/KOGITO-6402
+  it.skip("Test New Expresssion editor - undo", () => {
+    // click Create new decision model button (new DMN)
+    cy.ouia({ ouiaId: "try-dmn-sample-button" }).click();
+
+    // wait until loading dialog disappears
+    cy.loadEditor();
+
+    // close DMN guided tour dialog
+    cy.ouia({ ouiaId: "dmn-guided-tour" }).children("button[aria-label='Close']").click();
+
+    cy.getEditor().within(() => {
+      // open decision navigator and check new expression editor for expressions
+      cy.ouia({ ouiaId: "docks-item-org.kie.dmn.decision.navigator" }).children("button").click();
+
+      cy.get("li[data-i18n-prefix='DecisionNavigatorTreeView.']").within(($navigator) => {
+        cy.get("[title='Back End Ratio'] div span").contains("Context").click();
+      });
+      // check using beta version
+      cy.get("[data-field='beta-boxed-expression-toggle'] [data-field='try-it']").click();
+      cy.ouia({ ouiaId: "expression-container" }).contains("Back End Ratio").should("be.visible");
+      cy.get(".expression-title").contains("Back End Ratio").should("be.visible");
+      cy.get(".expression-type").contains("Context").should("be.visible");
+
+      // select a cell
+      cy.get(".editable-cell").contains("Applicant Data.Monthly.Repayments + Applicant Data.Monthly.Expenses").click();
+      // start edit mdoe
+      cy.realPress("Enter");
+
+      // do some change - shuldn't affect even result number
+      cy.realType(" + 0");
+
+      // finish edit - commit changes
+      cy.realPress("Tab");
+
+      // check changes are present
+      cy.get(".editable-cell")
+        .contains("Applicant Data.Monthly.Repayments + Applicant Data.Monthly.Expenses + 0")
+        .should("be.visible");
+
+      // undo changes and check if they were really undo
+      cy.realPress(["ControlLeft", "Z"]);
+      cy.get(".editable-cell")
+        .contains("Applicant Data.Monthly.Repayments + Applicant Data.Monthly.Expenses + 0")
+        .should("not.be.visible");
     });
   });
 });

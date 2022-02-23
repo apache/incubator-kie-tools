@@ -2,23 +2,18 @@
  */
 package org.jboss.drools.impl;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.math.BigInteger;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import org.eclipse.emf.common.util.Reflect;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EValidator;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
-
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
-
 import org.jboss.drools.DocumentRoot;
 import org.jboss.drools.DroolsFactory;
 import org.jboss.drools.DroolsPackage;
@@ -27,7 +22,6 @@ import org.jboss.drools.ImportType;
 import org.jboss.drools.MetaDataType;
 import org.jboss.drools.OnEntryScriptType;
 import org.jboss.drools.OnExitScriptType;
-
 import org.jboss.drools.util.DroolsValidator;
 
 /**

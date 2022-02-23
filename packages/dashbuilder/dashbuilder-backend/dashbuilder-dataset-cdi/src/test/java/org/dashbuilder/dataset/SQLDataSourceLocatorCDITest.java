@@ -16,6 +16,7 @@
 package org.dashbuilder.dataset;
 
 import java.util.List;
+
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
@@ -28,7 +29,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
 @Ignore("see https://issues.jboss.org/browse/RHPAM-832")

@@ -16,6 +16,14 @@
 
 package org.jboss.errai.ui.rebind.ioc.element;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import com.google.gwt.dom.client.TagName;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.codegen.meta.MetaClass;
@@ -30,14 +38,6 @@ import org.jboss.errai.ioc.rebind.ioc.extension.IOCExtensionConfigurator;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.Qualifier;
 import org.jboss.errai.ioc.rebind.ioc.graph.impl.InjectableHandle;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.InjectionContext;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import static java.util.Collections.emptyList;
 

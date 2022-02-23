@@ -653,7 +653,7 @@ public class DataTypeListViewTest {
     public void renderImportJavaClasses() {
         view.renderImportJavaClasses();
 
-        verify(view, times(1)).renderImportJavaClasses(".kie-import-java-classes", false, null);
+        verify(view, times(1)).renderImportJavaClasses(".kie-import-java-classes");
     }
 
     @Test
@@ -662,7 +662,7 @@ public class DataTypeListViewTest {
 
         view.renderImportJavaClasses();
 
-        verify(view, never()).renderImportJavaClasses(".kie-import-java-classes", false, null);
+        verify(view, never()).renderImportJavaClasses(".kie-import-java-classes");
     }
 
     private HTMLElement makeHTMLElement() {

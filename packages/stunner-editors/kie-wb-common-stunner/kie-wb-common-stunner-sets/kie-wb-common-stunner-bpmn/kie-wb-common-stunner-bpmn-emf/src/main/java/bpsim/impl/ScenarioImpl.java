@@ -2,30 +2,24 @@
  */
 package bpsim.impl;
 
+import java.util.Collection;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import bpsim.BpsimPackage;
 import bpsim.Calendar;
 import bpsim.ElementParameters;
 import bpsim.Scenario;
 import bpsim.ScenarioParameters;
 import bpsim.VendorExtension;
-
 import com.google.gwt.user.client.rpc.GwtTransient;
-
-import java.util.Collection;
-
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 

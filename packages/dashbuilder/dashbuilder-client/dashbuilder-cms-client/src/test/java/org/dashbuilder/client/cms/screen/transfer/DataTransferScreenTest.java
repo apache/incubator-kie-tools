@@ -16,11 +16,9 @@
 
 package org.dashbuilder.client.cms.screen.transfer;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.client.cms.screen.transfer.export.wizard.ExportWizard;
 import org.dashbuilder.transfer.DataTransferExportModel;
 import org.dashbuilder.transfer.DataTransferServices;
@@ -31,7 +29,8 @@ import org.mockito.Mock;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DataTransferScreenTest {

@@ -7,8 +7,6 @@ import org.uberfire.client.annotations.SplashFilter;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchSplashScreen;
-import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.SplashScreenFilter;
 
 @WorkbenchSplashScreen(identifier = "test9", isEnabled = false)

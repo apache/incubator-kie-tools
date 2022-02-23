@@ -18,11 +18,11 @@ package org.jboss.errai.ioc.rebind.ioc.graph.impl;
 
 import java.lang.annotation.Annotation;
 
-import org.jboss.errai.ioc.rebind.ioc.graph.api.Injectable;
 import org.jboss.errai.codegen.meta.HasAnnotations;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraphBuilder;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraphBuilder.Dependency;
 import org.jboss.errai.ioc.rebind.ioc.graph.api.DependencyGraphBuilder.DependencyType;
+import org.jboss.errai.ioc.rebind.ioc.graph.api.Injectable;
 
 /**
  * Base implementation for all {@link Dependency dependencies}.

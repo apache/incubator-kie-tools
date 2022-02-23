@@ -18,6 +18,7 @@ package javax.inject;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
+
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**

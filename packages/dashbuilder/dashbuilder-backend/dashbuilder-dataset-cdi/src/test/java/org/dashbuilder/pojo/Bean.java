@@ -17,6 +17,7 @@ package org.dashbuilder.pojo;
 
 import java.util.Map;
 import java.util.Properties;
+
 import javax.inject.Inject;
 
 import org.dashbuilder.config.Config;

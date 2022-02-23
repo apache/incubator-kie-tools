@@ -16,17 +16,20 @@
 
 package org.jboss.errai.reflections;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.jboss.errai.reflections.util.ClasspathHelper;
-
-import java.lang.String;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.*;
 
 //todo add some ReflectionUtils stuff here
 /** convenient reflection methods */

@@ -16,16 +16,16 @@
 
 package org.jboss.errai.codegen.test;
 
+import org.jboss.errai.codegen.Variable;
+import org.jboss.errai.codegen.builder.impl.StatementBuilder;
+import org.jboss.errai.codegen.util.Stmt;
+import org.junit.Test;
+
 import static org.jboss.errai.codegen.test.TryBlockBuilderTestResult.EMPTY_TRY_CATCH_BLOCK;
 import static org.jboss.errai.codegen.test.TryBlockBuilderTestResult.EMPTY_TRY_CATCH_FINALLY_BLOCK;
 import static org.jboss.errai.codegen.test.TryBlockBuilderTestResult.EMPTY_TRY_FINALLY_BLOCK;
 import static org.jboss.errai.codegen.test.TryBlockBuilderTestResult.EMPTY_TRY_MULTIPLE_CATCH_FINALLY_BLOCK;
 import static org.jboss.errai.codegen.test.TryBlockBuilderTestResult.TRY_CATCH_FINALLY_BLOCK;
-
-import org.jboss.errai.codegen.Variable;
-import org.jboss.errai.codegen.builder.impl.StatementBuilder;
-import org.jboss.errai.codegen.util.Stmt;
-import org.junit.Test;
 
 /**
  * Tests the generation of try/catch/finally blocks using the {@link StatementBuilder} API.

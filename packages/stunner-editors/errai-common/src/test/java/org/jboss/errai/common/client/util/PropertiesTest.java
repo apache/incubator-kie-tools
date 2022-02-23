@@ -16,11 +16,11 @@
 
 package org.jboss.errai.common.client.util;
 
-import static org.junit.Assert.*;
-
 import java.util.Map;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *

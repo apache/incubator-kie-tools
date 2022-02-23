@@ -18,11 +18,10 @@ package org.jboss.errai.ui.test.i18n.client.res;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineLabel;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated("I18nComponent.html#nested")
 public class I18nNestedComponent extends Composite {

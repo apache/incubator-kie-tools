@@ -16,11 +16,6 @@
 
 package org.jboss.errai.codegen.test.model;
 
-import com.google.common.collect.Multimap;
-
-import java.lang.annotation.Annotation;
-import java.util.Map;
-
 /**
  * @author Mike Brock
  */

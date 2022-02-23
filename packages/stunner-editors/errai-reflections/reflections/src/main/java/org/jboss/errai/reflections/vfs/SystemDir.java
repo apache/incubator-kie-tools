@@ -16,14 +16,14 @@
 
 package org.jboss.errai.reflections.vfs;
 
-import com.google.common.collect.AbstractIterator;
-import com.google.common.collect.Lists;
-
+import java.io.File;
 import java.net.URL;
 import java.util.Iterator;
-import java.util.Stack;
 import java.util.List;
-import java.io.File;
+import java.util.Stack;
+
+import com.google.common.collect.AbstractIterator;
+import com.google.common.collect.Lists;
 
 /** an implementation of {@link org.jboss.errai.reflections.vfs.Vfs.Dir} for directory {@link java.io.File} */
 public class SystemDir implements Vfs.Dir {

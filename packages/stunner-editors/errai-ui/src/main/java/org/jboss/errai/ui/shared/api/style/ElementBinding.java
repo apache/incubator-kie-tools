@@ -16,12 +16,11 @@
 
 package org.jboss.errai.ui.shared.api.style;
 
-import org.slf4j.LoggerFactory;
-
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Mike Brock

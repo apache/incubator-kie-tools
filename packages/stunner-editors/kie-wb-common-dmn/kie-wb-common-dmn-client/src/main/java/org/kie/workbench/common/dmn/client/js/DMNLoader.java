@@ -39,9 +39,7 @@ public class DMNLoader {
     /**
      * Method used to render the import-java-classes component (TS/React world) in the DMN Editor (Java/GWT world)
      * @param selector DOM selector, where the component will be placed
-     * @param buttonDisabledStatus Button status (disabled or enabled)
-     * @param buttonTooltipMessage Tooltip message to assign to the button
      */
     @JsMethod(namespace = "__KIE__DMN_LOADER__")
-    public static native void renderImportJavaClasses(final String selector, final boolean buttonDisabledStatus, final String buttonTooltipMessage);
+    public static native void renderImportJavaClasses(final String selector);
 }

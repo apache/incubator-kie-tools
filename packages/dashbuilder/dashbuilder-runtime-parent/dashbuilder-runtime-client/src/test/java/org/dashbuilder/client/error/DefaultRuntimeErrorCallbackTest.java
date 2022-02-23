@@ -19,9 +19,9 @@ package org.dashbuilder.client.error;
 import org.junit.Test;
 
 import static org.dashbuilder.client.error.DefaultRuntimeErrorCallback.PARSING_JSON_MSG;
+import static org.dashbuilder.client.error.DefaultRuntimeErrorCallback.PARSING_JSON_SYNTAX_MSG;
 import static org.dashbuilder.client.error.DefaultRuntimeErrorCallback.SCRIPT_ERROR_MSG;
 import static org.dashbuilder.client.error.DefaultRuntimeErrorCallback.extractMessageRecursively;
-import static org.dashbuilder.client.error.DefaultRuntimeErrorCallback.PARSING_JSON_SYNTAX_MSG;
 import static org.dashbuilder.client.error.DefaultRuntimeErrorCallback.isServerOfflineException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

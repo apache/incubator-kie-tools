@@ -146,7 +146,7 @@ public class DataTypesPageTest {
 
         verify(page, never()).reload();
         verify(page).refreshPageView();
-        //verify(dataTypeList, times(1)).activate();
+        //verify(dataTypeList, times(1)).activateReactComponents();
     }
 
     @Test
@@ -158,7 +158,7 @@ public class DataTypesPageTest {
 
         verify(page).reload();
         verify(page).refreshPageView();
-        //verify(dataTypeList, times(1)).activate();
+        //verify(dataTypeList, times(1)).activateReactComponents();
     }
 
     @Test

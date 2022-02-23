@@ -16,13 +16,14 @@
 
 package org.jboss.errai.enterprise.client.cdi;
 
-import org.jboss.errai.enterprise.client.cdi.api.CDI;
-import org.jboss.errai.ioc.client.api.ContextualTypeProvider;
-import org.jboss.errai.ioc.client.api.IOCProvider;
+import java.lang.annotation.Annotation;
 
 import javax.enterprise.event.Event;
 import javax.inject.Singleton;
-import java.lang.annotation.Annotation;
+
+import org.jboss.errai.enterprise.client.cdi.api.CDI;
+import org.jboss.errai.ioc.client.api.ContextualTypeProvider;
+import org.jboss.errai.ioc.client.api.IOCProvider;
 
 @IOCProvider
 @Singleton

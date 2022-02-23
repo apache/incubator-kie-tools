@@ -16,13 +16,12 @@
 
 package org.jboss.errai.ui.test.binding.client.res;
 
-import org.jboss.errai.ui.test.common.client.TestModel;
-import org.jboss.errai.ui.test.common.client.dom.Element;
-import org.jboss.errai.ui.test.common.client.dom.TextInputElement;
-
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
+import org.jboss.errai.ui.test.common.client.TestModel;
+import org.jboss.errai.ui.test.common.client.dom.Element;
+import org.jboss.errai.ui.test.common.client.dom.TextInputElement;
 
 /**
  *

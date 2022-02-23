@@ -14,13 +14,14 @@
  */
 package org.eclipse.dd.dc.util;
 
-import org.eclipse.dd.dc.*;
-
+import org.eclipse.dd.dc.Bounds;
+import org.eclipse.dd.dc.DcPackage;
+import org.eclipse.dd.dc.DocumentRoot;
+import org.eclipse.dd.dc.Font;
+import org.eclipse.dd.dc.Point;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**

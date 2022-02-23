@@ -21,8 +21,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorColorPicker;
 import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;

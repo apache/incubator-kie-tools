@@ -6,10 +6,9 @@ import org.uberfire.client.annotations.SplashFilter;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchSplashScreen;
-import org.uberfire.workbench.model.SplashScreenFilter;
-import org.uberfire.client.mvp.UberView;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.SplashScreenFilter;
 
 @WorkbenchSplashScreen(identifier = "test8")
 public class WorkbenchSplashScreenTest8 {

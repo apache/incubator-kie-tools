@@ -26,6 +26,8 @@ import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.databinding.client.components.DefaultListComponent;
@@ -35,9 +37,6 @@ import org.jboss.errai.ioc.client.api.ContextualTypeProvider;
 import org.jboss.errai.ioc.client.api.IOCProvider;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Provides {@link ListComponent} instances that lookup displayed components through Errai IoC. Any qualifiers on the

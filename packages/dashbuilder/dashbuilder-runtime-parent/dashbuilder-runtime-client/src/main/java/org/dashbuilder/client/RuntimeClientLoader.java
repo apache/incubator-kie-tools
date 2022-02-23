@@ -24,6 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import org.dashbuilder.client.external.ExternalDataSetRegister;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.parser.RuntimeModelClientParserFactory;
@@ -35,10 +36,6 @@ import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.model.RuntimeServiceResponse;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mvp.Command;
-
-import com.google.gwt.user.client.Window;
-
-import elemental2.dom.Blob;
 
 @ApplicationScoped
 public class RuntimeClientLoader {

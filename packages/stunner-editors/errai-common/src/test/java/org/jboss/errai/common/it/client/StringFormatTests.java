@@ -18,9 +18,8 @@ package org.jboss.errai.common.it.client;
 
 import java.util.Date;
 
-import org.jboss.errai.common.client.logging.util.StringFormat;
-
 import com.google.gwt.junit.client.GWTTestCase;
+import org.jboss.errai.common.client.logging.util.StringFormat;
 
 /**
  * Tests for the {@link StringFormat} class.

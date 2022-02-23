@@ -15,24 +15,17 @@
 package org.eclipse.bpmn2.di.impl;
 
 import com.google.gwt.user.client.rpc.GwtTransient;
-
 import org.eclipse.bpmn2.BaseElement;
-
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNLabel;
 import org.eclipse.bpmn2.di.BpmnDiPackage;
 import org.eclipse.bpmn2.di.MessageVisibleKind;
-
 import org.eclipse.dd.di.DiagramElement;
-
 import org.eclipse.dd.di.impl.LabeledEdgeImpl;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**

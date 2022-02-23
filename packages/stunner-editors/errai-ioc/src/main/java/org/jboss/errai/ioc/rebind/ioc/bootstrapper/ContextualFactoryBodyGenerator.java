@@ -16,10 +16,10 @@
 
 package org.jboss.errai.ioc.rebind.ioc.bootstrapper;
 
-import static org.jboss.errai.codegen.util.Stmt.loadVariable;
-
 import org.jboss.errai.codegen.builder.ContextualStatementBuilder;
 import org.jboss.errai.ioc.client.api.ContextualTypeProvider;
+
+import static org.jboss.errai.codegen.util.Stmt.loadVariable;
 
 /**
  * Generate factories for contextual bean instances provided by a {@link ContextualTypeProvider}.
