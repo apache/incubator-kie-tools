@@ -63,6 +63,8 @@ import static org.dashbuilder.displayer.DisplayerType.PIECHART;
 @ApplicationScoped
 public class C3Renderer extends AbstractRendererLibrary {
 
+    private static final DisplayerType DEFAULT_CHART = BARCHART;
+
     public static final String UUID = "c3";
     
     @PostConstruct
@@ -93,6 +95,7 @@ public class C3Renderer extends AbstractRendererLibrary {
 
     @Override
     public List<DisplayerSubType> getSupportedSubtypes(DisplayerType displayerType) {
+        displayerType = displayerType == null ? DEFAULT_CHART : displayerType;
         switch (displayerType) {
             case LINECHART:
                 return Arrays.asList(LINE, SMOOTH);
@@ -110,15 +113,16 @@ public class C3Renderer extends AbstractRendererLibrary {
     }
 
     public Displayer lookupDisplayer(DisplayerSettings displayerSettings) {
-        DisplayerType displayerType = displayerSettings.getType();
-        DisplayerSubType subtype = displayerSettings.getSubtype();
+        var displayerType = displayerSettings.getType();
+        var subtype = displayerSettings.getSubtype();
         C3AbstractDisplayer displayer;
+        displayerType = displayerType == null ? DEFAULT_CHART : displayerType;
         switch (displayerType) {
             case LINECHART:
                 displayer = getLineChartForSubType(subtype);
                 break;
             case BARCHART:
-                displayer = createBarChartForSubType(subtype);
+                displayer = createBarChartForSubType(subtype == null ? DisplayerSubType.COLUMN : subtype);
                 break;
             case PIECHART:
                 displayer = getPieChartForSubType(subtype);

@@ -30,6 +30,10 @@ public class ExternalDataSetDef extends DataSetDef {
     private String url;
 
     private boolean dynamic;
+    
+    private String expression;
+    
+    private String content;
 
     public ExternalDataSetDef() {
         super.setProvider(DataSetProviderType.EXTERNAL);
@@ -49,6 +53,22 @@ public class ExternalDataSetDef extends DataSetDef {
 
     public void setDynamic(boolean dynamic) {
         this.dynamic = dynamic;
+    }
+
+    public String getExpression() {
+        return expression;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
+    
+    public String getContent() {
+        return content;
+    }
+    
+    public void setContent(String content) {
+        this.content = content;
     }
 
     @Override
@@ -76,6 +96,8 @@ public class ExternalDataSetDef extends DataSetDef {
         out.append("Push max size=").append(pushMaxSize).append(" Kb\n");
         out.append("URL=").append(url).append("\n");
         out.append("Dynamic=").append(dynamic).append("\n");
+        out.append("Expression=").append(expression).append("\n");
+        out.append("Content=").append(content);
         return out.toString();
     }
     
