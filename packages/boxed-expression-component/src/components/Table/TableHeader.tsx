@@ -23,6 +23,7 @@ import { DataType, TableHeaderVisibility } from "../../api";
 import { EditExpressionMenu, EditTextInline } from "../EditExpressionMenu";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./Table";
+import { useBoxedExpression } from "../../context";
 
 export interface TableHeaderProps {
   /** Table instance */
@@ -56,6 +57,8 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   thProps,
   editableHeader,
 }) => {
+  const { boxedExpressionEditorGWTService } = useBoxedExpression();
+
   const getColumnLabel: (groupType: string) => string | undefined = useCallback(
     (groupType) => {
       if (_.isObject(editColumnLabel) && _.has(editColumnLabel, groupType)) {
@@ -154,6 +157,13 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
     [onColumnsUpdate, tableColumns]
   );
 
+  const onHeaderClick = useCallback(
+    (columnKey: string) => () => {
+      boxedExpressionEditorGWTService?.selectObject(columnKey);
+    },
+    [boxedExpressionEditorGWTService]
+  );
+
   const renderResizableHeaderCell = useCallback(
     (column, columnIndex) => {
       const headerProps = {
@@ -183,7 +193,13 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       };
 
       return (
-        <Th {...headerProps} {...thProps(column)} className={getCssClass()} key={columnKey}>
+        <Th
+          {...headerProps}
+          {...thProps(column)}
+          className={getCssClass()}
+          key={columnKey}
+          onClick={onHeaderClick(columnKey)}
+        >
           <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
             <div className="header-cell" data-ouia-component-type="expression-column-header">
               {column.dataType && editableHeader ? (
@@ -206,12 +222,13 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
     },
     [
       getColumnKey,
+      thProps,
+      onHeaderClick,
       editableHeader,
       getColumnLabel,
-      onColumnNameOrDataTypeUpdate,
-      onHorizontalResizeStop,
       renderHeaderCellInfo,
-      thProps,
+      onHorizontalResizeStop,
+      onColumnNameOrDataTypeUpdate,
     ]
   );
 

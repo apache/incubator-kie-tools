@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-.pmml-literal-expression.showing-placeholder .pf-c-select__toggle-text {
+.pmml-literal-expression {
+  width: 100%;
+}
+
+.pmml-literal-expression .pmml-selector.showing-placeholder .pf-c-select__toggle-text {
   color: gray;
   font-style: italic;
   font-weight: var(--pf-global--FontWeight--normal);
