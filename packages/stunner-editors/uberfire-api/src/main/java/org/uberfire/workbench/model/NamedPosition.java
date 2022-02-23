@@ -16,10 +16,10 @@
 
 package org.uberfire.workbench.model;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Represents the position of a child panel by name. For example, within a templated perspective, panels are positioned
@@ -46,8 +46,7 @@ public class NamedPosition implements Position {
      * @param fieldName the name of the data field. Must be non-null.
      */
     public NamedPosition(@MapsTo("fieldName") String fieldName) {
-        this.fieldName = checkNotNull("fieldName",
-                                      fieldName);
+        this.fieldName = Objects.requireNonNull(fieldName, "Parameter named 'fieldName' should be not null!");
     }
 
     /**

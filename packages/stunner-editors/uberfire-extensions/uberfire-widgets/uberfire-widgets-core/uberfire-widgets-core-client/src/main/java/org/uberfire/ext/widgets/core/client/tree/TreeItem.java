@@ -17,6 +17,7 @@
 package org.uberfire.ext.widgets.core.client.tree;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -35,8 +36,6 @@ import org.uberfire.client.workbench.ouia.OuiaComponent;
 import org.uberfire.client.workbench.ouia.OuiaComponentIdAttribute;
 import org.uberfire.client.workbench.ouia.OuiaComponentTypeAttribute;
 import org.uberfire.ext.widgets.core.client.resources.TreeNavigatorResources;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class TreeItem<I extends TreeItem> extends Composite implements OuiaComponent {
 
@@ -74,8 +73,7 @@ public class TreeItem<I extends TreeItem> extends Composite implements OuiaCompo
     ) {
         this.label = label;
         this.uuid = value;
-        this.type = checkNotNull("type",
-                                 type);
+        this.type = Objects.requireNonNull(type, "Parameter named 'type' should be not null!");
 
         if (type.equals(Type.CONTAINER) || type.equals(Type.ROOT)) {
             final FlowPanel folder = contentProvider.get();

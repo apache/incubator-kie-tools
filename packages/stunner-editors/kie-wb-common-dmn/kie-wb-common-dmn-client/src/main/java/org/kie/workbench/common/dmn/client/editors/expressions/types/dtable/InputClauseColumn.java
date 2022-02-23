@@ -18,9 +18,9 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeDOMElementColumnRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
@@ -52,8 +52,7 @@ public class InputClauseColumn extends DMNSimpleGridColumn<DecisionTableGrid, St
               new NameAndDataTypeDOMElementColumnRenderer<>(factory),
               width,
               gridWidget);
-        this.factory = PortablePreconditions.checkNotNull("factory",
-                                                          factory);
+        this.factory = Objects.requireNonNull(factory, "Parameter named 'factory' should be not null!");
         setMovable(true);
         setResizable(true);
     }

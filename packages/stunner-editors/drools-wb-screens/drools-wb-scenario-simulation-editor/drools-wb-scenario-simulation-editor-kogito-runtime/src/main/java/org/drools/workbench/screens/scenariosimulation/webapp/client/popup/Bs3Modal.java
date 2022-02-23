@@ -16,16 +16,14 @@
 
 package org.drools.workbench.screens.scenariosimulation.webapp.client.popup;
 
+import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
-import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
-import org.gwtbootstrap3.client.shared.event.ModalShownEvent;
-import org.gwtbootstrap3.client.shared.event.ModalShownHandler;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
@@ -35,8 +33,6 @@ import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.uberfire.mvp.Command;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A modal dialog that floats above the workbench. Each instance can only be shown once.
@@ -64,7 +60,6 @@ public class Bs3Modal extends Modal {
                                        "dialog");
         this.getElement().setAttribute(Attributes.TABINDEX,
                                        "-1");
-        //this.addStyleName(WorkbenchResources.INSTANCE.CSS().modal());
         this.setId(DOM.createUniqueId());
     }
 
@@ -90,24 +85,16 @@ public class Bs3Modal extends Modal {
     public void show(final Command afterShown,
                      final Command afterClosed) {
 
-        checkNotNull("afterShown",
-                     afterShown);
-        checkNotNull("afterClosed",
-                     afterClosed);
-        this.addShownHandler(new ModalShownHandler() {
-            @Override
-            public void onShown(final ModalShownEvent showEvent) {
-                if (afterShown != null) {
-                    afterShown.execute();
-                }
+        checkNotNull("afterShown", afterShown);
+        checkNotNull("afterClosed", afterClosed);
+        this.addShownHandler(showEvent -> {
+            if (afterShown != null) {
+                afterShown.execute();
             }
         });
-        this.addHiddenHandler(new ModalHiddenHandler() {
-            @Override
-            public void onHidden(final ModalHiddenEvent hiddenEvent) {
-                if (afterClosed != null) {
-                    afterClosed.execute();
-                }
+        this.addHiddenHandler(hiddenEvent -> {
+            if (afterClosed != null) {
+                afterClosed.execute();
             }
         });
         this.show();
@@ -160,5 +147,9 @@ public class Bs3Modal extends Modal {
      */
     public void setBodyHeight(int height) {
         body.setHeight(height + "px");
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 }

@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.lookup;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Portable
 public class VFSLookupRequest extends AbstractLookupRequest {
@@ -55,7 +55,7 @@ public class VFSLookupRequest extends AbstractLookupRequest {
         }
 
         public VFSLookupRequest build() {
-            checkNotNull("path", path);
+            Objects.requireNonNull(path, "Parameter named 'path' should be not null!");
             return new VFSLookupRequest(path,
                                         getCriteria(),
                                         page,

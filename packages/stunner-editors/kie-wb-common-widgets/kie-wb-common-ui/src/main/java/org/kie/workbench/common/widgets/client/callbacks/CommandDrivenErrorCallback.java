@@ -17,8 +17,8 @@ package org.kie.workbench.common.widgets.client.callbacks;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.mvp.Command;
@@ -33,8 +33,7 @@ public class CommandDrivenErrorCallback extends HasBusyIndicatorDefaultErrorCall
     public CommandDrivenErrorCallback(final HasBusyIndicator view,
                                       final Map<Class<? extends Throwable>, Command> commands) {
         super(view);
-        this.commands.putAll(PortablePreconditions.checkNotNull("commands",
-                                                                commands));
+        this.commands.putAll(Objects.requireNonNull(commands, "Parameter named 'commands' should be not null!"));
     }
 
     @Override

@@ -48,8 +48,6 @@ import org.uberfire.client.mvp.AbstractActivity;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 @Dependent
 @Named(PreviewDiagramScreen.SCREEN_ID)
 public class PreviewDiagramScreen extends AbstractActivity {
@@ -192,6 +190,10 @@ public class PreviewDiagramScreen extends AbstractActivity {
                                    }
                                });
         }
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public interface View extends IsWidget {
