@@ -28,6 +28,8 @@ import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
+import org.drools.scenariosimulation.api.model.imports.Import;
+import org.drools.scenariosimulation.api.model.imports.Imports;
 import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.JSIBackgroundDatasType;
 import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.JSIBackgroundType;
 import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.JSIExpressionElementsType;
@@ -43,8 +45,6 @@ import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.JSISce
 import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.JSISettingsType;
 import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.JSISimulationType;
 import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.JSIWrappedImportsType;
-import org.kie.soup.project.datamodel.imports.Import;
-import org.kie.soup.project.datamodel.imports.Imports;
 
 /**
  * Class used to convert from <b>JSInterop</b> bean to <b>api</b> one
