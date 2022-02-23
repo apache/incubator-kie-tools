@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 import javax.enterprise.event.Event;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.dashbuilder.client.external.ExternalDataSetRegister;
+import org.dashbuilder.client.external.ExternalDataSetClientProvider;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.parser.RuntimeModelClientParserFactory;
 import org.dashbuilder.client.perspective.generator.RuntimePerspectiveGenerator;
@@ -68,7 +68,7 @@ public class RuntimeClientLoaderTest {
     RuntimeModelResourceClient runtimeModelResourceClient;
 
     @Mock
-    ExternalDataSetRegister externalDataSetRegister;
+    ExternalDataSetClientProvider externalDataSetRegister;
 
     @Mock
     RuntimeModelClientParserFactory parserFactory;
