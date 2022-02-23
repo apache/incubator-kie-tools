@@ -111,6 +111,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptType
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Skippable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Subject;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskName;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskPriority;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.WaitForCompletion;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
@@ -1634,7 +1635,7 @@ public class HashCodeAndEqualityTest {
                                                       new ReassignmentsInfo(),
                                                       new IsAsync(),
                                                       new Skippable(),
-                                                      new Priority(),
+                                                      new TaskPriority(),
                                                       new Subject(),
                                                       new Description(),
                                                       new CreatedBy(),
@@ -1659,7 +1660,7 @@ public class HashCodeAndEqualityTest {
                                                       new ReassignmentsInfo(),
                                                       new IsAsync(),
                                                       new Skippable(),
-                                                      new Priority(),
+                                                      new TaskPriority(),
                                                       new Subject(),
                                                       new Description(),
                                                       new CreatedBy(),

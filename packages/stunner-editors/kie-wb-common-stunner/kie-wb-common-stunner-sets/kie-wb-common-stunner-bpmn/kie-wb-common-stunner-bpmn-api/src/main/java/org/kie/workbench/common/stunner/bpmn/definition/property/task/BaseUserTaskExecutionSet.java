@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Actors;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Groupid;
-import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Priority;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationsInfo;
@@ -39,7 +38,7 @@ public interface BaseUserTaskExecutionSet extends BPMNPropertySet {
 
     Skippable getSkippable();
 
-    Priority getPriority();
+    TaskPriority getPriority();
 
     Subject getSubject();
 
