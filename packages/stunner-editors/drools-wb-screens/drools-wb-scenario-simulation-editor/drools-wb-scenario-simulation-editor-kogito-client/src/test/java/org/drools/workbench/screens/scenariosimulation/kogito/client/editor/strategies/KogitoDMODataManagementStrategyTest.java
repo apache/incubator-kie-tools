@@ -29,19 +29,16 @@ import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmo.KogitoAsyncPackageDataModelOracle;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.mockito.Mock;
-import org.uberfire.backend.vfs.ObservablePath;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,10 +51,6 @@ public class KogitoDMODataManagementStrategyTest {
 
     @Mock
     private KogitoAsyncPackageDataModelOracle oracleMock;
-    @Mock
-    private ObservablePath observablePathMock;
-    @Mock
-    private ScenarioSimulationModelContent scenarioSimulationModelContentMock;
     @Mock
     private ScenarioSimulationContext scenarioSimulationContextMock;
     @Mock
@@ -84,14 +77,6 @@ public class KogitoDMODataManagementStrategyTest {
     }
 
     @Test
-    public void manageScenarioSimulationModelContent() {
-        kogitoDMODataManagementStrategySpy.manageScenarioSimulationModelContent(observablePathMock,
-                                                                                scenarioSimulationModelContentMock);
-        verify(scenarioSimulationModelContentMock, times(1)).getModel();
-        verify(oracleMock, times(1)).init(eq(observablePathMock));
-    }
-
-    @Test
     public void isADataTypeEmpty() {
         when(oracleMock.getFactTypes()).thenReturn(new String[0]);
         assertFalse(kogitoDMODataManagementStrategySpy.isADataType("Test"));
@@ -115,15 +100,15 @@ public class KogitoDMODataManagementStrategyTest {
     public void retrieveFactModelTuple() {
         String factType = "factType";
         ModelField[] modelFields = new ModelField[1];
-        when(oracleMock.getFieldCompletions(eq(factType))).thenReturn(modelFields);
+        when(oracleMock.getFieldCompletions(factType)).thenReturn(modelFields);
         List<String> dataObjectsType = Arrays.asList(factType);
         SortedMap<String, FactModelTree> dataObjectsFieldMap = new TreeMap<>();
         Map<String, String> superTypesMap = Collections.emptyMap();
         List<String> javaSimpleType = new ArrayList<>();
         kogitoDMODataManagementStrategySpy.manageDataObjects(dataObjectsType, superTypesMap, testToolsPresenterMock, 1, dataObjectsFieldMap, scenarioSimulationContextMock, javaSimpleType, gridWidgetMock);
-        verify(oracleMock, times(1)).getFieldCompletions(eq(factType));
-        verify(kogitoDMODataManagementStrategySpy, times(1)).getFactModelTree(eq(factType), eq(superTypesMap), eq(modelFields));
-        verify(kogitoDMODataManagementStrategySpy, times(1)).aggregatorCallbackMethod(eq(testToolsPresenterMock), eq(1), eq(dataObjectsFieldMap), eq(scenarioSimulationContextMock), eq(factModelTreeMock), eq(javaSimpleType), eq(gridWidgetMock));
+        verify(oracleMock, times(1)).getFieldCompletions(factType);
+        verify(kogitoDMODataManagementStrategySpy, times(1)).getFactModelTree(factType, superTypesMap, modelFields);
+        verify(kogitoDMODataManagementStrategySpy, times(1)).aggregatorCallbackMethod(testToolsPresenterMock, 1, dataObjectsFieldMap, scenarioSimulationContextMock, factModelTreeMock, javaSimpleType, gridWidgetMock);
     }
 
     @Test
@@ -138,7 +123,7 @@ public class KogitoDMODataManagementStrategyTest {
         String[] array = {"Test"};
         when(oracleMock.getFactTypes()).thenReturn(array);
         List<String> facts = kogitoDMODataManagementStrategySpy.getFactTypes();
-        assertTrue(facts.size() == 1);
+        assertEquals(1, facts.size());
         assertEquals("Test", facts.get(0));
     }
 
@@ -158,13 +143,13 @@ public class KogitoDMODataManagementStrategyTest {
     @Test
     public void getFQCNByFactName() {
         kogitoDMODataManagementStrategySpy.getFQCNByFactName(FACT_NAME);
-        verify(oracleMock, times(1)).getFQCNByFactName(eq(FACT_NAME));
+        verify(oracleMock, times(1)).getFQCNByFactName(FACT_NAME);
     }
 
     @Test
     public void getParametricFieldType() {
         kogitoDMODataManagementStrategySpy.getParametricFieldType(FACT_NAME, "propertyName");
-        verify(oracleMock, times(1)).getParametricFieldType(eq(FACT_NAME), eq("propertyName"));
+        verify(oracleMock, times(1)).getParametricFieldType(FACT_NAME, "propertyName");
     }
 
     @Test(expected = UnsupportedOperationException.class)

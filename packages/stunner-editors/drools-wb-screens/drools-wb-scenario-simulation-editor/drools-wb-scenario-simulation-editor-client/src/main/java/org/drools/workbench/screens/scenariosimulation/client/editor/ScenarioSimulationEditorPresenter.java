@@ -152,9 +152,6 @@ public class ScenarioSimulationEditorPresenter {
         scenarioBackgroundGridWidget.unregister();
     }
 
-    /**
-     * @param status <code>PlaceStatus</code> of <b>TestToolsPresenter</b>
-     */
     public void showDocks() {
         abstractScenarioSimulationDocksHandler.addDocks();
         abstractScenarioSimulationDocksHandler.setScesimEditorId(String.valueOf(scenarioPresenterId));

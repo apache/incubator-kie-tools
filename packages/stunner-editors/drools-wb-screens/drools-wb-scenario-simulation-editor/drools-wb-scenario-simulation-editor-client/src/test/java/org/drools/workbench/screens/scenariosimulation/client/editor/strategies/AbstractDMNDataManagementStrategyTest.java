@@ -28,21 +28,18 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 import org.drools.workbench.screens.scenariosimulation.client.editor.AbstractScenarioSimulationEditorTest;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.uberfire.backend.vfs.Path;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -90,9 +87,9 @@ public class AbstractDMNDataManagementStrategyTest extends AbstractScenarioSimul
     public void populateTestToolsWithoutFactModelTuple() {
         factModelTreeHolderlocal.setFactModelTuple(null);
         abstractDMNDataManagementStrategySpy.populateTestTools(testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
-        verify(abstractDMNDataManagementStrategySpy, times(1)).retrieveFactModelTuple(eq(testToolsPresenterMock), eq(scenarioSimulationContextLocal), eq(GridWidget.SIMULATION));
+        verify(abstractDMNDataManagementStrategySpy, times(1)).retrieveFactModelTuple(testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
         verify(abstractDMNDataManagementStrategySpy, never()).getSuccessCallback(testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
-        verify(abstractDMNDataManagementStrategySpy, never()).getSuccessCallbackMethod(eq(factModelTupleLocal), eq(testToolsPresenterMock), eq(scenarioSimulationContextLocal), eq(GridWidget.SIMULATION));
+        verify(abstractDMNDataManagementStrategySpy, never()).getSuccessCallbackMethod(factModelTupleLocal, testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
     }
 
     @Test
@@ -100,9 +97,9 @@ public class AbstractDMNDataManagementStrategyTest extends AbstractScenarioSimul
         factModelTreeHolderlocal.setFactModelTuple(null);
         modelLocal.getSettings().setDmnName("/src/test.dmn");
         abstractDMNDataManagementStrategySpy.populateTestTools(testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
-        verify(abstractDMNDataManagementStrategySpy, times(1)).retrieveFactModelTuple(eq(testToolsPresenterMock), eq(scenarioSimulationContextLocal), eq(GridWidget.SIMULATION));
+        verify(abstractDMNDataManagementStrategySpy, times(1)).retrieveFactModelTuple(testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
         verify(abstractDMNDataManagementStrategySpy, never()).getSuccessCallback(testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
-        verify(abstractDMNDataManagementStrategySpy, never()).getSuccessCallbackMethod(eq(factModelTupleLocal), eq(testToolsPresenterMock), eq(scenarioSimulationContextLocal), eq(GridWidget.SIMULATION));
+        verify(abstractDMNDataManagementStrategySpy, never()).getSuccessCallbackMethod(factModelTupleLocal, testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
     }
 
     @Test
@@ -111,7 +108,7 @@ public class AbstractDMNDataManagementStrategyTest extends AbstractScenarioSimul
         abstractDMNDataManagementStrategySpy.populateTestTools(testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
         verify(abstractDMNDataManagementStrategySpy, never()).retrieveFactModelTuple(any(), any(), any());
         verify(abstractDMNDataManagementStrategySpy, times(1)).getSuccessCallback(testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
-        verify(abstractDMNDataManagementStrategySpy, times(1)).getSuccessCallbackMethod(eq(factModelTupleLocal), eq(testToolsPresenterMock), eq(scenarioSimulationContextLocal), eq(GridWidget.SIMULATION));
+        verify(abstractDMNDataManagementStrategySpy, times(1)).getSuccessCallbackMethod(factModelTupleLocal, testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
     }
 
     @Test
@@ -119,15 +116,7 @@ public class AbstractDMNDataManagementStrategyTest extends AbstractScenarioSimul
         abstractDMNDataManagementStrategySpy.populateTestTools(testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
         verify(abstractDMNDataManagementStrategySpy, never()).retrieveFactModelTuple(any(), any(), any());
         verify(abstractDMNDataManagementStrategySpy, times(1)).getSuccessCallback(testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
-        verify(abstractDMNDataManagementStrategySpy, times(1)).getSuccessCallbackMethod(eq(factModelTupleLocal), eq(testToolsPresenterMock), eq(scenarioSimulationContextLocal), eq(GridWidget.SIMULATION));
-    }
-
-    @Test
-    public void manageScenarioSimulationModelContent() {
-        final ScenarioSimulationModelContent contentMock = Mockito.spy(content);
-        abstractDMNDataManagementStrategySpy.manageScenarioSimulationModelContent(observablePathMock, contentMock);
-        verify(observablePathMock, times(1)).getOriginal();
-        verify(contentMock, times(1)).getModel();
+        verify(abstractDMNDataManagementStrategySpy, times(1)).getSuccessCallbackMethod(factModelTupleLocal, testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
     }
 
     @Test
@@ -159,9 +148,9 @@ public class AbstractDMNDataManagementStrategyTest extends AbstractScenarioSimul
         factModelTreeHolderlocal.setFactModelTuple(null);
         doReturn(alreadyAssignedProperties).when(abstractDMNDataManagementStrategySpy).getPropertiesToHide(scenarioGridModelMock);
         abstractDMNDataManagementStrategySpy.getSuccessCallbackMethod(factModelTupleLocal, testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
-        verify(abstractDMNDataManagementStrategySpy, times(1)).getPropertiesToHide(eq(scenarioGridModelMock));
-        verify(abstractDMNDataManagementStrategySpy, times(1)).storeData(eq(factModelTupleLocal), eq(testToolsPresenterMock), eq(scenarioSimulationContextLocal), eq(GridWidget.SIMULATION));
-        verify(abstractDMNDataManagementStrategySpy, times(1)).showErrorsAndCleanupState(eq(factModelTupleLocal));
+        verify(abstractDMNDataManagementStrategySpy, times(1)).getPropertiesToHide(scenarioGridModelMock);
+        verify(abstractDMNDataManagementStrategySpy, times(1)).storeData(factModelTupleLocal, testToolsPresenterMock, scenarioSimulationContextLocal, GridWidget.SIMULATION);
+        verify(abstractDMNDataManagementStrategySpy, times(1)).showErrorsAndCleanupState(factModelTupleLocal);
         assertEquals(factModelTupleLocal, factModelTreeHolderlocal.getFactModelTuple());
     }
 }
