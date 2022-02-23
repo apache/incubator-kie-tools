@@ -21,6 +21,7 @@ import { act } from "react-dom/test-utils";
 import { ColumnInstance, DataRecord } from "react-table";
 import { PASTE_OPERATION } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
 import {
+  BoxedExpressionEditorGWTService,
   ColumnsUpdateArgs,
   DataType,
   RowsUpdateArgs,
@@ -269,6 +270,26 @@ describe("Table tests", () => {
         columnIndex: 0,
       });
     });
+
+    test("should trigger boxedExpressionEditorGWTService.selectObject, when clicking on header cell", async () => {
+      const { boxedExpressionEditorGWTService, mockedSelectObject } = mockBoxedExpressionEditorGWTService();
+
+      const { container } = render(
+        usingTestingBoxedExpressionI18nContext(
+          usingTestingBoxedExpressionProviderContext(
+            <Table
+              columns={[{ label: columnName, accessor: columnName, dataType: DataType.Undefined } as ColumnInstance]}
+              rows={[]}
+            />,
+            { boxedExpressionEditorGWTService }
+          ).wrapper
+        ).wrapper
+      );
+
+      fireEvent.click(container.querySelectorAll(EXPRESSION_COLUMN_HEADER_CELL_INFO)[0] as HTMLTableHeaderCellElement);
+
+      expect(mockedSelectObject).toHaveBeenLastCalledWith(columnName);
+    });
   });
 
   describe("when interacting with body", () => {
@@ -311,6 +332,27 @@ describe("Table tests", () => {
         rows: [expect.objectContaining(newRow)],
         columns,
       });
+    });
+
+    test("should trigger boxedExpressionEditorGWTService.selectObject, when clicking on body cell", async () => {
+      const { boxedExpressionEditorGWTService, mockedSelectObject } = mockBoxedExpressionEditorGWTService();
+      const id = "row-id";
+
+      const { container } = render(
+        usingTestingBoxedExpressionI18nContext(
+          usingTestingBoxedExpressionProviderContext(
+            <Table
+              columns={[{ label: columnName, accessor: columnName, dataType: DataType.Undefined } as ColumnInstance]}
+              rows={[{ id, columnName: "" }]}
+            />,
+            { boxedExpressionEditorGWTService }
+          ).wrapper
+        ).wrapper
+      );
+
+      fireEvent.click(container.querySelector("table tbody tr td") as HTMLTableCellElement);
+
+      expect(mockedSelectObject).toHaveBeenLastCalledWith(id);
     });
   });
 
@@ -670,4 +712,14 @@ function customEvent(container: HTMLElement) {
       type: PASTE_OPERATION,
     },
   });
+}
+
+function mockBoxedExpressionEditorGWTService() {
+  const mockedSelectObject: (uuid?: string | undefined) => void = jest.fn();
+  const boxedExpressionEditorGWTService = {
+    broadcastFunctionExpressionDefinition: () => {},
+    notifyUserAction: () => {},
+    selectObject: mockedSelectObject,
+  } as unknown as BoxedExpressionEditorGWTService;
+  return { mockedSelectObject, boxedExpressionEditorGWTService };
 }

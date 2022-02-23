@@ -100,7 +100,7 @@ describe("DMN Expression Editor Test :: Data types", () => {
     cy.visit("/");
   });
 
-  it("Change Decition Table from Any to Custom Data Type", () => {
+  it("Change Decision Table from Any to Custom Data Type", () => {
     cy.get("#upload-field").attachFile("testModelWithCustomDataType.dmn", { subjectType: "drag-n-drop" });
 
     // wait until loading dialog disappears
@@ -128,47 +128,17 @@ describe("DMN Expression Editor Test :: Data types", () => {
       cy.ouia({ ouiaType: "add-data-type-button", ouiaId: "first" }).click();
 
       // root
-      cy.ouia({ ouiaId: "Insert a name" }).within(($row) => {
-        cy.get("input[data-type-field='name-input']").type("tSalary");
-        cy.get("[data-i18n-prefix='DataTypeSelectView.']").should("be.visible");
-        cy.get("[data-i18n-prefix='DataTypeSelectView.']").within(($navigator) => {
-          cy.get("button[data-toggle='dropdown']").click();
-        });
-      });
-      selectInDataTypesSearchableDropdown("Structure");
-      cy.ouia({ ouiaId: "Insert a name" }).within(($row) => {
-        cy.get("[data-type-field='save-button']").click();
-      });
+      changeNewDataTypeEntry("tSalary", "Structure");
 
       // Amount
-      cy.ouia({ ouiaId: "Insert a name" }).within(($row) => {
-        cy.get("input[data-type-field='name-input']").type("Amount");
-        cy.get("[data-i18n-prefix='DataTypeSelectView.']").should("be.visible");
-        cy.get("[data-i18n-prefix='DataTypeSelectView.']").within(($navigator) => {
-          cy.get("button[data-toggle='dropdown']").click();
-        });
-      });
-      selectInDataTypesSearchableDropdown("number");
-      cy.ouia({ ouiaId: "Insert a name" }).within(($row) => {
-        cy.get("[data-type-field='save-button']").click();
-      });
+      changeNewDataTypeEntry("Amount", "number");
 
       cy.ouia({ ouiaId: "Amount" }).within(($row) => {
         cy.get("[data-type-field='add-data-type-row-button']").click();
       });
 
       // Currency
-      cy.ouia({ ouiaId: "Insert a name" }).within(($row) => {
-        cy.get("input[data-type-field='name-input']").type("Currency");
-        cy.get("[data-i18n-prefix='DataTypeSelectView.']").should("be.visible");
-        cy.get("[data-i18n-prefix='DataTypeSelectView.']").within(($navigator) => {
-          cy.get("button[data-toggle='dropdown']").click();
-        });
-      });
-      selectInDataTypesSearchableDropdown("string");
-      cy.ouia({ ouiaId: "Insert a name" }).within(($row) => {
-        cy.get("[data-type-field='save-button']").click();
-      });
+      changeNewDataTypeEntry("Currency", "string");
 
       // go back to expression editor
       cy.get("[data-ouia-component-id='Editor'] a").click();
@@ -189,7 +159,7 @@ describe("DMN Expression Editor Test :: Data types", () => {
     });
   });
 
-  it.skip("Change BKM Decition Table from Any to Custom Data Type", () => {
+  it.skip("Change BKM Decision Table from Any to Custom Data Type", () => {
     cy.get("#upload-field").attachFile("testModelWithCustomDataType.dmn", { subjectType: "drag-n-drop" });
 
     // wait until loading dialog disappears
@@ -221,7 +191,7 @@ describe("DMN Expression Editor Test :: Data types", () => {
     });
   });
 
-  it.skip("Change BKM Decition Table from Any to Custom Data Type", () => {
+  it.skip("Change BKM Decision Table from Any to Custom Data Type", () => {
     cy.get("#upload-field").attachFile("testModelWithCustomDataType.dmn", { subjectType: "drag-n-drop" });
 
     // wait until loading dialog disappears
@@ -253,6 +223,24 @@ describe("DMN Expression Editor Test :: Data types", () => {
     });
   });
 });
+
+/**
+ * Use this method to change "Insert a name" new data type entry specified on 'Data Types'
+ */
+function changeNewDataTypeEntry(newEntryName: string, newDataType: string): void {
+  cy.ouia({ ouiaId: "Insert a name" }).within(($row) => {
+    cy.get("input[data-type-field='name-input']").type(newEntryName);
+    cy.get("[data-i18n-prefix='DataTypeSelectView.']").should("exist");
+    cy.get("[data-i18n-prefix='DataTypeSelectView.']").should("be.visible");
+    cy.get("[data-i18n-prefix='DataTypeSelectView.']").within(($navigator) => {
+      cy.get("button[data-toggle='dropdown']").click();
+    });
+  });
+  selectInDataTypesSearchableDropdown(newDataType);
+  cy.ouia({ ouiaId: "Insert a name" }).within(($row) => {
+    cy.get("[data-type-field='save-button']").click();
+  });
+}
 
 /**
  * Use this method to change data type of entry specified on 'Data Types' DMN editor page.

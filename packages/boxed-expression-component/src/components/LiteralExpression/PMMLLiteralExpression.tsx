@@ -59,21 +59,27 @@ export const PMMLLiteralExpression: React.FunctionComponent<PMMLLiteralExpressio
 
   const showingPlaceholder = useCallback(() => _.isEmpty(getSelection()), [getSelection]);
 
+  const onSelectorClick = useCallback(() => {
+    boxedExpression.boxedExpressionEditorGWTService?.selectObject(props.id);
+  }, [boxedExpression.boxedExpressionEditorGWTService, props.id]);
+
   return (
-    <Select
-      className={`${props.id} pmml-literal-expression ${showingPlaceholder() ? "showing-placeholder" : ""}`}
-      menuAppendTo={boxedExpression.editorRef?.current ?? "inline"}
-      ouiaId="pmml-literal-expression-selector"
-      placeholderText={props.noOptionsLabel}
-      aria-placeholder={props.noOptionsLabel}
-      variant={SelectVariant.single}
-      onToggle={onSelectToggle}
-      onSelect={onSelect}
-      isOpen={selectOpen}
-      selections={getSelection()}
-      data-testid={props.testId}
-    >
-      {getOptions()}
-    </Select>
+    <div onClick={onSelectorClick} className={`${props.id} pmml-literal-expression`}>
+      <Select
+        className={`pmml-selector ${showingPlaceholder() ? "showing-placeholder" : ""}`}
+        menuAppendTo={boxedExpression.editorRef?.current ?? "inline"}
+        ouiaId="pmml-literal-expression-selector"
+        placeholderText={props.noOptionsLabel}
+        aria-placeholder={props.noOptionsLabel}
+        variant={SelectVariant.single}
+        onToggle={onSelectToggle}
+        onSelect={onSelect}
+        isOpen={selectOpen}
+        selections={getSelection()}
+        data-testid={props.testId}
+      >
+        {getOptions()}
+      </Select>
+    </div>
   );
 };
