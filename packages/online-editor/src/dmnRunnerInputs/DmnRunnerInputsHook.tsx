@@ -30,7 +30,7 @@ interface DmnRunnerInputs {
 }
 
 export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInputs {
-  const { dmnRunnerService, updatePersistedInputRows, getUniqueFileIdentifier } = useDmnRunnerInputsDispatch();
+  const { dmnRunnerInputsService, updatePersistedInputRows, getUniqueFileIdentifier } = useDmnRunnerInputsDispatch();
   const [inputRows, setInputRows] = useState<Array<InputRow>>([{}]);
   const [didUpdateInputRows, setDidUpdateInputRows] = useState<boolean>(false);
   const [didUpdateOutputRows, setDidUpdateOutputRows] = useState<boolean>(false);
@@ -61,7 +61,7 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
               0,
               data.newRelativePath.lastIndexOf(".")
             );
-            dmnRunnerService?.renameDmnRunnerInputs(workspaceFile, newRelativePathWithoutExtension);
+            dmnRunnerInputsService?.renameDmnRunnerInputs(workspaceFile, newRelativePathWithoutExtension);
           }
           if (data.type === "UPDATE" || data.type === "ADD" || data.type === "DELETE") {
             if (canceled.get()) {
@@ -69,12 +69,12 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
             }
             // Triggered by the tab
             if (data.dmnRunnerInputs === lastInputRows.current) {
-              setInputRows(JSON.parse(data.dmnRunnerInputs));
+              setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(data.dmnRunnerInputs));
               return;
             }
             // Triggered by the other tab
             lastInputRows.current = data.dmnRunnerInputs;
-            setInputRows(JSON.parse(data.dmnRunnerInputs));
+            setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(data.dmnRunnerInputs));
             setDidUpdateInputRows(true);
           }
         };
@@ -84,7 +84,7 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
           broadcastChannel.close();
         };
       },
-      [getUniqueFileIdentifier, dmnRunnerService, workspaceFile]
+      [getUniqueFileIdentifier, dmnRunnerInputsService, workspaceFile]
     )
   );
 
@@ -92,17 +92,17 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (!workspaceFile || !dmnRunnerService) {
+        if (!workspaceFile || !dmnRunnerInputsService) {
           return;
         }
 
-        dmnRunnerService.getDmnRunnerInputs(workspaceFile).then((inputs) => {
+        dmnRunnerInputsService.getDmnRunnerInputs(workspaceFile).then((inputs) => {
           if (canceled.get()) {
             return;
           }
           // If inputs don't exist, create then.
           if (!inputs) {
-            dmnRunnerService.createOrOverwriteDmnRunnerInputs(workspaceFile, JSON.stringify([{}]));
+            dmnRunnerInputsService.createOrOverwriteDmnRunnerInputs(workspaceFile, JSON.stringify([{}]));
             return;
           }
 
@@ -112,11 +112,11 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
             }
             const inputRows = decoder.decode(content);
             lastInputRows.current = inputRows;
-            setInputRows(JSON.parse(inputRows) as Array<InputRow>);
+            setInputRows(dmnRunnerInputsService.parseDmnRunnerInputs(inputRows));
           });
         });
       },
-      [dmnRunnerService, workspaceFile]
+      [dmnRunnerInputsService, workspaceFile]
     )
   );
 
@@ -129,25 +129,22 @@ export function useDmnRunnerInputs(workspaceFile: WorkspaceFile): DmnRunnerInput
       }
 
       // After a re-render the callback is called by the first time, this avoid a filesystem unnecessary re-update
-      if (typeof newInputRows === "function") {
-        if (lastInputRows.current === JSON.stringify(newInputRows(previousInputRows.current))) {
-          return;
-        }
-      }
-      if (lastInputRows.current === JSON.stringify(newInputRows)) {
+      if (
+        lastInputRows.current ===
+        dmnRunnerInputsService.stringifyDmnRunnerInputs(newInputRows, previousInputRows.current)
+      ) {
         return;
       }
 
       timeout.current = window.setTimeout(() => {
         updatePersistedInputRows(workspaceFile, newInputRows);
-        if (typeof newInputRows === "function") {
-          lastInputRows.current = JSON.stringify(newInputRows(previousInputRows.current));
-          return;
-        }
-        lastInputRows.current = JSON.stringify(newInputRows);
+        lastInputRows.current = dmnRunnerInputsService.stringifyDmnRunnerInputs(
+          newInputRows,
+          previousInputRows.current
+        );
       }, 200);
     },
-    [previousInputRows, updatePersistedInputRows, workspaceFile]
+    [previousInputRows, updatePersistedInputRows, workspaceFile, dmnRunnerInputsService]
   );
 
   return {

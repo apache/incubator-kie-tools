@@ -20,7 +20,7 @@ import { DmnRunnerInputsService } from "./DmnRunnerInputsService";
 import { WorkspaceFile } from "../workspace/WorkspacesContext";
 
 interface DmnInputsDispatchContextType {
-  dmnRunnerService: DmnRunnerInputsService;
+  dmnRunnerInputsService: DmnRunnerInputsService;
   getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }): string;
   deletePersistedInputRows: (workspaceFile: WorkspaceFile) => void;
   updatePersistedInputRows: (

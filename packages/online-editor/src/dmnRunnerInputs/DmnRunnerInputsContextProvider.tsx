@@ -64,13 +64,16 @@ export function DmnRunnerInputsContextProvider(props: React.PropsWithChildren<{}
         const inputs = await dmnRunnerInputsService.getDmnRunnerInputs(workspaceFile);
         const previousInputRows = await inputs
           ?.getFileContents()
-          .then((content) => JSON.parse(decoder.decode(content)) as Array<InputRow>);
+          .then((content) => dmnRunnerInputsService.parseDmnRunnerInputs(decoder.decode(content)));
         await dmnRunnerInputsService.updateDmnRunnerInputs(
           workspaceFile,
-          JSON.stringify(newInputRows(previousInputRows ?? [{}]))
+          dmnRunnerInputsService.stringifyDmnRunnerInputs(newInputRows, previousInputRows)
         );
       } else {
-        await dmnRunnerInputsService.updateDmnRunnerInputs(workspaceFile, JSON.stringify(newInputRows));
+        await dmnRunnerInputsService.updateDmnRunnerInputs(
+          workspaceFile,
+          dmnRunnerInputsService.stringifyDmnRunnerInputs(newInputRows)
+        );
       }
     },
     [dmnRunnerInputsService]
@@ -111,7 +114,7 @@ export function DmnRunnerInputsContextProvider(props: React.PropsWithChildren<{}
   return (
     <DmnRunnerInputsDispatchContext.Provider
       value={{
-        dmnRunnerService: dmnRunnerInputsService,
+        dmnRunnerInputsService,
         updatePersistedInputRows,
         getUniqueFileIdentifier,
         deletePersistedInputRows,

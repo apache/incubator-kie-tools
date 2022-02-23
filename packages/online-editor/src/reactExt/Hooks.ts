@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import React, { EffectCallback, useCallback, useEffect, useRef, useState } from "react";
+import * as React from "react";
+import { EffectCallback, useCallback, useEffect, useRef, useState } from "react";
 
 export function usePrevious<T>(value: T): T | undefined {
   const ref = useRef<T>();

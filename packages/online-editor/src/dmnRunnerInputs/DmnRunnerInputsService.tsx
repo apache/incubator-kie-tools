@@ -19,6 +19,7 @@ import { StorageFile, StorageService } from "../workspace/services/StorageServic
 import { FsCache } from "../workspace/services/FsCache";
 import { encoder, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { DmnRunnerInputsEvents } from "./DmnRunnerInputsHook";
+import { InputRow } from "../editor/DmnRunner/DmnRunnerContext";
 
 export class DmnRunnerInputsService {
   constructor(private readonly storageService: StorageService, private readonly fsCache = new FsCache()) {}
@@ -141,5 +142,19 @@ export class DmnRunnerInputsService {
 
   public getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }) {
     return args.workspaceId + this.getDmnRunnerInputsLabel() + this.getAbsolutePath(args);
+  }
+
+  public stringifyDmnRunnerInputs(
+    inputs: Array<InputRow> | ((previous: Array<InputRow>) => Array<InputRow>),
+    previous?: Array<InputRow>
+  ) {
+    if (typeof inputs === "function") {
+      return JSON.stringify(inputs(previous ?? [{}]));
+    }
+    return JSON.stringify(inputs);
+  }
+
+  public parseDmnRunnerInputs(inputs: string): Array<InputRow> {
+    return JSON.parse(inputs) as Array<InputRow>;
   }
 }
