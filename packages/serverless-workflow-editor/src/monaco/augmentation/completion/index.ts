@@ -24,7 +24,7 @@ import CompletionItemKind = languages.CompletionItemKind;
 const completions = new Map<
   jsonc.JSONPath,
   (args: {
-    workflow: Specification.Workflow;
+    workflow?: Specification.Workflow;
     cursorPosition: Position;
     nodePositions: { start: Position; end: Position };
     commandIds: SwfMonacoEditorInstance["commands"];
@@ -136,7 +136,13 @@ export function initJsonCompletion(commandIds: SwfMonacoEditorInstance["commands
         end: model.getPositionAt(actualNode.offset + actualNode.length),
       };
 
-      const workflow = Specification.Workflow.fromSource(model.getValue());
+      let workflow: Specification.Workflow | undefined;
+      try {
+        workflow = Specification.Workflow.fromSource(model.getValue());
+      } catch (e) {
+        console.error("Could not create Workflow from model", e);
+        workflow = undefined;
+      }
 
       const location = jsonc.getLocation(model.getValue(), cursorOffset);
 
