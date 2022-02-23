@@ -85,6 +85,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
   getColumnKey,
   resetRowCustomFunction,
   readOnlyCells = false,
+  enableKeyboarNavigation = true,
 }: TableProps) => {
   const tableRef = useRef<HTMLTableElement>(null);
   const tableEventUUID = useMemo(() => `table-event-${uuid()}`, []);
@@ -400,6 +401,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
           onColumnsUpdate={onColumnsUpdateCallback}
           headerVisibility={headerVisibility}
           tdProps={tdProps}
+          enableKeyboarNavigation={enableKeyboarNavigation}
         >
           {children}
         </TableBody>

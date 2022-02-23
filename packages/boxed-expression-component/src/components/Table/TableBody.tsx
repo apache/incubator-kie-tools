@@ -49,6 +49,8 @@ export interface TableBodyProps {
   onColumnsUpdate?: (columns: Column[]) => void;
   /** Td props */
   tdProps: (cellIndex: number, rowIndex: number) => any;
+  /** Enable the  Keyboar Navigation */
+  enableKeyboarNavigation?: boolean;
 }
 
 export const TableBody: React.FunctionComponent<TableBodyProps> = ({
@@ -59,6 +61,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   getColumnKey,
   onColumnsUpdate,
   tdProps,
+  enableKeyboarNavigation = true,
 }) => {
   const headerVisibilityMemo = useMemo(() => headerVisibility ?? TableHeaderVisibility.Full, [headerVisibility]);
 
@@ -72,6 +75,10 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
     (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => {
       const key = e.key;
       const isModKey = e.altKey || e.ctrlKey || e.shiftKey || key === "AltGraph";
+
+      if (!enableKeyboarNavigation) {
+        return;
+      }
 
       //prevent the parent cell catch this event if there is a nested table
       if (e.currentTarget !== getParentCell(e.target as HTMLElement)) {
