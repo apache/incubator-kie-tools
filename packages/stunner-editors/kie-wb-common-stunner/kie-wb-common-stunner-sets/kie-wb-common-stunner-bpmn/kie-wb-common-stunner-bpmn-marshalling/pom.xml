@@ -113,11 +113,6 @@
       <artifactId>uberfire-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-    </dependency>
-
     <!-- Kogito -->
 
     <dependency>
@@ -177,13 +172,6 @@
     <dependency>
       <groupId>org.jboss.spec.javax.xml.bind</groupId>
       <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-      <classifier>sources</classifier>
       <scope>test</scope>
     </dependency>
 

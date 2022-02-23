@@ -21,8 +21,6 @@
 
   <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorAPI"/>
 
-  <inherits name="org.kie.soup.project.datamodel.ProjectDataModelAPI"/>
-
   <inherits name="org.drools.scenariosimulation.ScenarioSimulationAPI" />
 
   <source path="model"/>

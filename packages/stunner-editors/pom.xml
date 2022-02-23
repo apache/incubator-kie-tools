@@ -158,7 +158,7 @@
     <!-- Overriding version that comes from kie-parent to enable the 'npx' goal. -->
     <version.frontend-maven-plugin>1.12.0</version.frontend-maven-plugin>
 
-    <!-- For kie-parent and modules in kie-bom, kie-soup-bom, drools-bom, jbpm-bom and kie-dmn-bom -->
+    <!-- For kie-parent and modules in narayana-integration-bom and kie-dmn-bom -->
     <version.org.kie7>7.65.0.Final</version.org.kie7>
     <version.org.kie>8.17.0.Beta</version.org.kie>
 
@@ -238,14 +238,6 @@
   <dependencyManagement>
     <dependencies>
       <!-- Common BOMs -->
-      <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-bom</artifactId>
-        <version>${version.org.kie7}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>narayana-integration-bom</artifactId>

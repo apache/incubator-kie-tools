@@ -366,13 +366,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Core utility classes -->
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Generic ui components -->
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -568,9 +561,6 @@
           <generateJsInteropExports>true</generateJsInteropExports>
 
           <compileSourcesArtifacts>
-
-            <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
-
             <!-- UberFire -->
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-client-api</compileSourcesArtifact>
