@@ -16,6 +16,7 @@
 
 import { editor, KeyCode, KeyMod } from "monaco-editor";
 import { MonacoAugmentation } from "./MonacoAugmentation";
+import { OperatingSystem } from "@kie-tools-core/operating-system";
 
 export interface MonacoEditorApi {
   show: (container: HTMLDivElement) => void;
@@ -25,7 +26,6 @@ export interface MonacoEditorApi {
   redo: () => void;
 
   getContent: () => string;
-  pushUndoStop: () => void;
 }
 
 export enum MonacoEditorOperation {
@@ -40,34 +40,34 @@ export class DefaultMonacoEditor implements MonacoEditorApi {
   private editor: editor.IStandaloneCodeEditor;
   private readonly augmentation: MonacoAugmentation;
   private readonly onContentChange: (content: string, operation: MonacoEditorOperation) => void;
+  private readonly operatingSystem?: OperatingSystem;
 
   constructor(
     content: string,
     onContentChange: (content: string, operation: MonacoEditorOperation) => void,
-    augmentation: MonacoAugmentation
+    augmentation: MonacoAugmentation,
+    operatingSystem?: OperatingSystem
   ) {
     this.model = editor.createModel(augmentation.language.getDefaultContent(content), augmentation.language.languageId);
     this.model.onDidChangeContent((event) => {
       if (!event.isUndoing && !event.isRedoing) {
+        this.editor?.pushUndoStop();
         onContentChange(this.model.getValue(), MonacoEditorOperation.EDIT);
       }
     });
     this.onContentChange = onContentChange;
     this.augmentation = augmentation;
+    this.operatingSystem = operatingSystem;
   }
 
   redo(): void {
     this.editor?.focus();
-    this.editor?.trigger("whatever...", "redo", null);
+    this.editor?.trigger("editor", "redo", null);
   }
 
   undo(): void {
     this.editor?.focus();
-    this.editor?.trigger("whatever...", "undo", null);
-  }
-
-  pushUndoStop(): void {
-    this.editor?.pushUndoStop();
+    this.editor?.trigger("editor", "undo", null);
   }
 
   show(container: HTMLDivElement): void {
@@ -86,13 +86,15 @@ export class DefaultMonacoEditor implements MonacoEditorApi {
       this.onContentChange(this.model.getValue(), MonacoEditorOperation.UNDO);
     });
 
-    this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_Y, () => {
-      this.onContentChange(this.model.getValue(), MonacoEditorOperation.REDO);
-    });
-
     this.editor.addCommand(KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_Z, () => {
       this.onContentChange(this.model.getValue(), MonacoEditorOperation.REDO);
     });
+
+    if (this.operatingSystem !== OperatingSystem.MACOS) {
+      this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_Y, () => {
+        this.onContentChange(this.model.getValue(), MonacoEditorOperation.REDO);
+      });
+    }
   }
 
   getContent(): string {

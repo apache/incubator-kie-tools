@@ -37,21 +37,21 @@ interface Props {
    * Delegation for KogitoEditorChannelApi.kogitoEditor_ready() to signal to the Channel
    * that the editor is ready. Increases the decoupling of the ServerlessWorkflowEditor from the Channel.
    */
-  ready: () => void;
+  onReady: () => void;
 
   /**
    * Delegation for KogitoEditorChannelApi.kogitoEditor_stateControlCommandUpdate(command) to signal to the Channel
    * that the editor is performing an undo/redo operation. Increases the decoupling of the ServerlessWorkflowEditor
    * from the Channel.
    */
-  stateControlCommandUpdate: (command: StateControlCommand) => void;
+  onStateControlCommandUpdate: (command: StateControlCommand) => void;
 
   /**
    * Delegation for KogitoToolingWorkspaceApi.kogitoWorkspace_newEdit(edit) to signal to the Channel
    * that a change has taken place. Increases the decoupling of the ServerlessWorkflowEditor from the Channel.
    * @param edit An object representing the unique change.
    */
-  newEdit: (edit: KogitoEdit) => void;
+  onNewEdit: (edit: KogitoEdit) => void;
 
   /**
    * Delegation for NotificationsApi.setNotifications(path, notifications) to report all validation
@@ -114,18 +114,17 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
         },
       };
     },
-    [monacoEditorRef]
+    []
   );
 
-  const contentChanged = useCallback(
+  const onContentChanged = useCallback(
     (newContent: string, operation?: MonacoEditorOperation) => {
       if (operation === MonacoEditorOperation.EDIT) {
-        props.newEdit(new KogitoEdit(newContent));
-        monacoEditorRef.current?.pushUndoStop();
+        props.onNewEdit(new KogitoEdit(newContent));
       } else if (operation === MonacoEditorOperation.UNDO) {
-        props.stateControlCommandUpdate(StateControlCommand.UNDO);
+        props.onStateControlCommandUpdate(StateControlCommand.UNDO);
       } else if (operation === MonacoEditorOperation.REDO) {
-        props.stateControlCommandUpdate(StateControlCommand.REDO);
+        props.onStateControlCommandUpdate(StateControlCommand.REDO);
       }
 
       try {
@@ -151,8 +150,8 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   );
 
   useEffect(() => {
-    props.ready();
-    contentChanged(initialContent.originalContent);
+    props.onReady();
+    onContentChanged(initialContent.originalContent);
   }, [initialContent, props]);
 
   const panelContent = (
@@ -171,7 +170,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
             <MonacoEditor
               content={initialContent.originalContent}
               fileName={initialContent.path}
-              onContentChange={contentChanged}
+              onContentChange={onContentChanged}
               ref={monacoEditorRef}
             />
           )}
