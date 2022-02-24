@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { buildEditor, MonacoEditorApi } from "./augmentation";
-import * as path from "path";
+import { useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
 
 interface Props {
   content: string;
@@ -26,17 +26,19 @@ interface Props {
 }
 
 export interface MonacoEditorRef {
-  undo(): Promise<void>;
-  redo(): Promise<void>;
+  undo(): void;
+  redo(): void;
+  getContent(): string;
 }
 
 const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorRef | undefined, Props> = (
   { content, fileName, onContentChange },
   forwardedRef
 ) => {
+  const envelopeContext = useKogitoEditorEnvelopeContext();
   const editorContainer = useRef<HTMLDivElement>(null);
   const monacoInstance: MonacoEditorApi = useMemo<MonacoEditorApi>(() => {
-    return buildEditor(content, fileName, onContentChange);
+    return buildEditor(content, fileName, onContentChange, envelopeContext.operatingSystem);
   }, [content, fileName]);
 
   useEffect(() => {
@@ -57,11 +59,12 @@ const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorRef 
       return {
         redo: () => {
           monacoInstance.redo();
-          return Promise.resolve();
         },
         undo: () => {
           monacoInstance.undo();
-          return Promise.resolve();
+        },
+        getContent: () => {
+          return monacoInstance.getContent();
         },
       };
     },
