@@ -18,14 +18,10 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.7.0//EN"
     "http://www.gwtproject.org/doctype/2.7.0/gwt-module.dtd">
 <module>
-
-  <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorAPI"/>
-
   <inherits name="org.drools.scenariosimulation.ScenarioSimulationAPI" />
 
   <source path="model"/>
   <source path="type"/>
   <source path="service"/>
   <source path="utils"/>
-
 </module>
