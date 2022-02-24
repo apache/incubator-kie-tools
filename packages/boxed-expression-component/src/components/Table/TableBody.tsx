@@ -71,7 +71,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   const { isContextMenuOpen } = useBoxedExpression();
 
   const onKeyDown = useCallback(
-    (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => {
+    (e: React.KeyboardEvent<HTMLElement>, rowIndex: number) => {
       const key = e.key;
       const isModKey = e.altKey || e.ctrlKey || e.shiftKey || key === "AltGraph";
       debugger;
@@ -156,6 +156,8 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
 
       const tdProp = tdProps(cellIndex, rowIndex);
 
+      console.log("rendering cell", { tdProp, onKeyDown, rowIndex, cellIndex });
+
       return (
         <Td
           {...tdProp}
@@ -163,7 +165,9 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           data-ouia-component-id={"expression-column-" + cellIndex}
           className={`${cellType}`}
           tabIndex={-1}
-          onKeyDown={(e) => onKeyDown(rowIndex)(e)}
+          onKeyDown={(e) => {
+            console.log("onKeyDown call", { e }), onKeyDown(e, rowIndex);
+          }}
         >
           {cellTemplate}
         </Td>
@@ -228,7 +232,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   const renderAdditiveRow = useCallback(
     (rowIndex: number) => (
       <Tr className="table-row additive-row">
-        <Td role="cell" className="empty-cell" tabIndex={-1} onKeyDown={(e) => onKeyDown(rowIndex)(e)}>
+        <Td role="cell" className="empty-cell" tabIndex={-1} onKeyDown={(e) => onKeyDown(e, rowIndex)}>
           <br />
         </Td>
         {children?.map((child, childIndex) => {
@@ -238,7 +242,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
               key={childIndex}
               className="row-remainder-content"
               tabIndex={-1}
-              onKeyDown={(e) => onKeyDown(rowIndex)(e)}
+              onKeyDown={(e) => onKeyDown(e, rowIndex)}
             >
               {child}
             </Td>
