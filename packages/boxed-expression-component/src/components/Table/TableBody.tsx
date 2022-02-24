@@ -15,11 +15,13 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { BaseSyntheticEvent, useCallback, useMemo } from "react";
 import { Tbody, Td, Tr } from "@patternfly/react-table";
 import { Column as IColumn, TableHeaderVisibility } from "../../api";
 import { Cell, Column, Row, TableInstance } from "react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
+import { useBoxedExpression } from "../../context";
+import { LOGIC_TYPE_SELECTOR_CLASS } from "../LogicTypeSelector";
 
 export interface TableBodyProps {
   /** Table instance */
@@ -47,6 +49,8 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   onColumnsUpdate,
   tdProps,
 }) => {
+  const { boxedExpressionEditorGWTService } = useBoxedExpression();
+
   const headerVisibilityMemo = useMemo(() => headerVisibility ?? TableHeaderVisibility.Full, [headerVisibility]);
 
   const renderCell = useCallback(
@@ -95,6 +99,30 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
     [getColumnKey, onColumnsUpdate, tableInstance, tdProps]
   );
 
+  const eventPathHasNestedExpression = useCallback((event: React.BaseSyntheticEvent, path: EventTarget[]) => {
+    let currentPathTarget: EventTarget = event.target;
+    let currentIndex = 0;
+    while (currentPathTarget !== event.currentTarget && currentIndex < path.length) {
+      currentIndex++;
+      currentPathTarget = path[currentIndex];
+      if ((currentPathTarget as HTMLElement)?.classList?.contains(LOGIC_TYPE_SELECTOR_CLASS)) {
+        return true;
+      }
+    }
+    return false;
+  }, []);
+
+  const onRowClick = useCallback(
+    (rowKey: string) => (event: BaseSyntheticEvent) => {
+      const nativeEvent = event.nativeEvent as Event;
+      const path: EventTarget[] = nativeEvent?.composedPath?.() || [];
+      if (!eventPathHasNestedExpression(event, path)) {
+        boxedExpressionEditorGWTService?.selectObject(rowKey);
+      }
+    },
+    [boxedExpressionEditorGWTService, eventPathHasNestedExpression]
+  );
+
   const renderBodyRow = useCallback(
     (row: Row, rowIndex: number) => {
       tableInstance.prepareRow(row);
@@ -102,23 +130,26 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
       const RowDelegate = (row.original as any).rowDelegate;
       const rowKey = getRowKey(row);
       const rowClassNames = `${rowKey} table-row`;
+
+      const buildTableRow = (inAForm: boolean) => (
+        <Tr
+          className={rowClassNames}
+          {...rowProps}
+          ouiaId={"expression-row-" + rowIndex}
+          key={rowKey}
+          onClick={onRowClick(rowKey)}
+        >
+          {row.cells.map((cell: Cell, cellIndex: number) => renderCell(cellIndex, cell, rowIndex, inAForm))}
+        </Tr>
+      );
+
       return (
         <React.Fragment key={rowKey}>
-          {RowDelegate ? (
-            <RowDelegate>
-              <Tr className={rowClassNames} {...rowProps} ouiaId={"expression-row-" + rowIndex} key={rowKey}>
-                {row.cells.map((cell: Cell, cellIndex: number) => renderCell(cellIndex, cell, rowIndex, true))}
-              </Tr>
-            </RowDelegate>
-          ) : (
-            <Tr className={rowClassNames} {...rowProps} ouiaId={"expression-row-" + rowIndex} key={rowKey}>
-              {row.cells.map((cell: Cell, cellIndex: number) => renderCell(cellIndex, cell, rowIndex, false))}
-            </Tr>
-          )}
+          {RowDelegate ? <RowDelegate>{buildTableRow(true)}</RowDelegate> : buildTableRow(false)}
         </React.Fragment>
       );
     },
-    [getRowKey, renderCell, tableInstance]
+    [getRowKey, onRowClick, renderCell, tableInstance]
   );
 
   const renderAdditiveRow = useMemo(

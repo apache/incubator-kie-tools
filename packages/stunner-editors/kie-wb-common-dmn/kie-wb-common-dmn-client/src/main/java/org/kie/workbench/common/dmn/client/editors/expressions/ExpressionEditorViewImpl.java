@@ -102,6 +102,7 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.FormFieldChanged;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
@@ -365,6 +366,10 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     public void onEditorSelectedPageEvent(@Observes MultiPageEditorSelectedPageEvent editorSelectedPageEvent) {
         toggleBetaBoxedExpressionEditor(false);
         toggleLegacyExpressionEditor(true);
+    }
+
+    public void onPropertiesPanelFormFieldChanged(@Observes FormFieldChanged event) {
+        reloadIfIsNewEditor();
     }
 
     @EventHandler("try-it")

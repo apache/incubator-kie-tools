@@ -35,6 +35,8 @@ import com.ait.lienzo.client.core.shape.toolbox.items.tooltip.ToolboxTextTooltip
 import com.ait.lienzo.client.core.shape.toolbox.items.tooltip.TooltipFactory;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.widget.panel.impl.LienzoPanelScrollEvent;
+import org.junit.Test;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresLayer;
@@ -42,10 +44,12 @@ import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGly
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolbox;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -166,4 +170,26 @@ public abstract class AbstractActionsToolboxViewTest {
         verify(canvasView,
                times(1)).setCursor(eq(AbstractCanvas.Cursors.DEFAULT));
     }
+
+
+    @Mock
+    AbstractActionsToolboxView toolboxView2;
+
+    @Test
+    public void testDestroyTopLayerRepaint() {
+        doCallRealMethod().when(toolboxView2).destroy();
+
+        toolboxView2.destroy();
+        verify(toolboxView2,
+               times(1)).drawTopLayer();
+    }
+
+    @Test
+    public void testOnScroll() {
+        doCallRealMethod().when(toolboxView2).onScrollEvent(any());
+        toolboxView2.onScrollEvent(new LienzoPanelScrollEvent());
+        verify(toolboxView2,
+               times(1)).drawTopLayer();
+    }
+
 }

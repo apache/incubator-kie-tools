@@ -37,7 +37,7 @@
     "@types/react-table": "^7.0.25",
     "react-json-view": "^1.21.3",
     "gh-pages": "^3.2.3",
-    "cypress-real-events": "^1.6.0"
+    "cypress-real-events": "^1.7.0"
   },
   "babel": {
     "presets": [

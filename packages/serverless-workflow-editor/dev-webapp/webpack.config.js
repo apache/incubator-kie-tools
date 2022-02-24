@@ -65,10 +65,6 @@ module.exports = (env) =>
           enforce: "pre",
           use: ["source-map-loader"],
         },
-        {
-          test: /\.ttf$/,
-          use: ["file-loader"],
-        },
         /*{
           test: /node_modules[\\|/]@severlessworkflow[\\|/]sdk-typescript[\\|/]umd[\\|/]index\.umd\.js$/,
           use: ["umd-compat-loader"]

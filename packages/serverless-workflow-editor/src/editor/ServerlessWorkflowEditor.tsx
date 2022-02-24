@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useImperativeHandle, useRef, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import {
   Drawer,
   DrawerContent,
@@ -30,20 +30,29 @@ import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
 import { SwfMonacoEditorApi } from "../monaco/SwfMonacoEditorApi";
 import { SwfMonacoEditor } from "../monaco/SwfMonacoEditor";
+import { MonacoEditorOperation } from "../monaco/SwfMonacoEditorApi";
+import { StateControlCommand } from "@kie-tools-core/editor/dist/api";
 
 interface Props {
   /**
    * Delegation for KogitoEditorChannelApi.kogitoEditor_ready() to signal to the Channel
    * that the editor is ready. Increases the decoupling of the ServerlessWorkflowEditor from the Channel.
    */
-  ready: () => void;
+  onReady: () => void;
+
+  /**
+   * Delegation for KogitoEditorChannelApi.kogitoEditor_stateControlCommandUpdate(command) to signal to the Channel
+   * that the editor is performing an undo/redo operation. Increases the decoupling of the ServerlessWorkflowEditor
+   * from the Channel.
+   */
+  onStateControlCommandUpdate: (command: StateControlCommand) => void;
 
   /**
    * Delegation for KogitoToolingWorkspaceApi.kogitoWorkspace_newEdit(edit) to signal to the Channel
    * that a change has taken place. Increases the decoupling of the ServerlessWorkflowEditor from the Channel.
    * @param edit An object representing the unique change.
    */
-  newEdit: (edit: KogitoEdit) => void;
+  onNewEdit: (edit: KogitoEdit) => void;
 
   /**
    * Delegation for NotificationsApi.setNotifications(path, notifications) to report all validation
@@ -63,9 +72,10 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   ServerlessWorkflowEditorRef | undefined,
   Props
 > = (props, forwardedRef) => {
-  const [originalContent, setOriginalContent] = useState<string>("");
-  const [path, setPath] = useState<string>("");
-  const [content, setContent] = useState<string>("");
+  const [initialContent, setInitialContent] = useState({
+    originalContent: "",
+    path: "",
+  });
   const [diagramOutOfSync, setDiagramOutOfSync] = useState<boolean>(false);
   const svgContainer = useRef<HTMLDivElement>(null);
   const swfMonacoEditorRef = useRef<SwfMonacoEditorApi>(null);
@@ -76,9 +86,10 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
       return {
         setContent: (path: string, newContent: string): Promise<void> => {
           try {
-            setOriginalContent(newContent);
-            setContent(newContent);
-            setPath(path);
+            setInitialContent({
+              originalContent: newContent,
+              path: path,
+            });
             return Promise.resolve();
           } catch (e) {
             console.error(e);
@@ -86,7 +97,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           }
         },
         getContent: (): Promise<string> => {
-          return Promise.resolve(content);
+          return Promise.resolve(swfMonacoEditorRef.current?.getContent() || "");
         },
         getPreview: (): Promise<string> => {
           // Line breaks replaced due to https://github.com/mermaid-js/mermaid/issues/1766
@@ -104,34 +115,46 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
         },
       };
     },
-    [content]
+    []
+  );
+
+  const onContentChanged = useCallback(
+    (newContent: string, operation?: MonacoEditorOperation) => {
+      if (operation === MonacoEditorOperation.EDIT) {
+        props.onNewEdit(new KogitoEdit(newContent));
+      } else if (operation === MonacoEditorOperation.UNDO) {
+        props.onStateControlCommandUpdate(StateControlCommand.UNDO);
+      } else if (operation === MonacoEditorOperation.REDO) {
+        props.onStateControlCommandUpdate(StateControlCommand.REDO);
+      }
+
+      try {
+        const workflow: Specification.Workflow = Specification.Workflow.fromSource(newContent);
+        const mermaidSourceCode = workflow.states ? new MermaidDiagram(workflow).sourceCode() : "";
+
+        if (mermaidSourceCode?.length > 0) {
+          svgContainer.current!.innerHTML = mermaidSourceCode;
+          svgContainer.current!.removeAttribute("data-processed");
+          mermaid.init(svgContainer.current!);
+          svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0]);
+          svgContainer.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
+          svgContainer.current!.getElementsByTagName("svg")[0].style.height = "100%";
+          setDiagramOutOfSync(false);
+        } else {
+          setDiagramOutOfSync(true);
+        }
+      } catch (e) {
+        console.error(e);
+        setDiagramOutOfSync(true);
+      }
+    },
+    [props]
   );
 
   useEffect(() => {
-    props.ready();
-  }, [originalContent, props]);
-
-  useEffect(() => {
-    try {
-      const workflow: Specification.Workflow = Specification.Workflow.fromSource(content);
-      const mermaidSourceCode = workflow.states ? new MermaidDiagram(workflow).sourceCode() : "";
-
-      if (mermaidSourceCode?.length > 0) {
-        svgContainer.current!.innerHTML = mermaidSourceCode;
-        svgContainer.current!.removeAttribute("data-processed");
-        mermaid.init(svgContainer.current!);
-        svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0]);
-        svgContainer.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
-        svgContainer.current!.getElementsByTagName("svg")[0].style.height = "100%";
-        setDiagramOutOfSync(false);
-      } else {
-        setDiagramOutOfSync(true);
-      }
-    } catch (e) {
-      console.error(e);
-      setDiagramOutOfSync(true);
-    }
-  }, [content]);
+    props.onReady.call(null);
+    onContentChanged(initialContent.originalContent);
+  }, [initialContent, onContentChanged, props.onReady]);
 
   const panelContent = (
     <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
@@ -145,11 +168,11 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     <Drawer isExpanded={true} isInline={true}>
       <DrawerContent panelContent={panelContent}>
         <DrawerContentBody style={{ overflowY: "hidden" }}>
-          {path !== "" && (
+          {initialContent.path !== "" && (
             <SwfMonacoEditor
-              content={originalContent}
-              fileName={path}
-              onContentChange={setContent}
+              content={initialContent.originalContent}
+              fileName={initialContent.path}
+              onContentChange={onContentChanged}
               ref={swfMonacoEditorRef}
             />
           )}

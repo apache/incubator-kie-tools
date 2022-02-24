@@ -42,6 +42,7 @@ import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.CustomTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.util.ConverterUtils.cast;
@@ -144,7 +145,7 @@ public class TaskConverter {
         return p;
     }
 
-    private PropertyWriter userTask(Node<View<BaseUserTask>, ?> n) {
+    public PropertyWriter userTask(Node<View<BaseUserTask>, ?> n) {
         org.eclipse.bpmn2.UserTask task = bpmn2.createUserTask();
         task.setId(n.getUUID());
         BaseUserTask definition = n.getContent().getDefinition();
@@ -167,7 +168,7 @@ public class TaskConverter {
         p.setGroupId(executionSet.getGroupid().getValue());
         p.setSubject(executionSet.getSubject().getValue());
         p.setDescription(executionSet.getDescription().getValue());
-        p.setPriority(executionSet.getPriority().getValue());
+        p.setPriority(StringUtils.replaceIllegalCharsAttribute(executionSet.getPriority().getValue()));
         p.setAsync(executionSet.getIsAsync().getValue());
         p.setCreatedBy(executionSet.getCreatedBy().getValue());
         p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());

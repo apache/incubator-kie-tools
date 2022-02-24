@@ -21,6 +21,7 @@ import java.util.Optional;
 import javax.enterprise.event.Event;
 
 import com.ait.lienzo.client.core.config.LienzoCore;
+import com.ait.lienzo.client.core.shape.Layer;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoLayerUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -68,7 +69,10 @@ public abstract class LienzoCanvas<V extends LienzoCanvasView>
                                  final ViewEventHandlerManager viewEventHandlerManager) {
         LienzoCore.get().setHidpiEnabled(settings.isHiDPIEnabled());
         this.eventHandlerManager = viewEventHandlerManager;
-        return super.initialize(panel, settings);
+        super.initialize(panel, settings);
+        Layer toplayer = new Layer().setListening(true);
+        getView().getLayer().getLienzoLayer().getScene().add(toplayer);
+        return this;
     }
 
     @Override

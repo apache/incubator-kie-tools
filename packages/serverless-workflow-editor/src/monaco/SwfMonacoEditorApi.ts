@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import { editor } from "monaco-editor";
+import { editor, KeyCode, KeyMod } from "monaco-editor";
 import { SwfMonacoEditorCommandIds } from "./augmentation/commands";
 import { initJsonSchema } from "./augmentation/language/json";
 import { initYamlSchema } from "./augmentation/language/yaml";
+import { OperatingSystem } from "@kie-tools-core/operating-system";
 
 initJsonSchema();
 initYamlSchema();
@@ -28,6 +29,14 @@ export interface SwfMonacoEditorApi {
 
   undo: () => void;
   redo: () => void;
+
+  getContent: () => string;
+}
+
+export enum MonacoEditorOperation {
+  UNDO,
+  REDO,
+  EDIT,
 }
 
 export interface SwfMonacoEditorInstance {
@@ -40,17 +49,29 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
 
   public editor: editor.IStandaloneCodeEditor;
 
-  constructor(content: string, onContentChange: (content: string) => void, private readonly language: string) {
+  constructor(
+    content: string,
+    private readonly onContentChange: (content: string, operation: MonacoEditorOperation) => void,
+    private readonly language: string,
+    private readonly operatingSystem: OperatingSystem | undefined
+  ) {
     this.model = editor.createModel(content, this.language);
-    this.model.onDidChangeContent((event) => onContentChange(this.model.getValue()));
+    this.model.onDidChangeContent((event) => {
+      if (!event.isUndoing && !event.isRedoing) {
+        this.editor?.pushUndoStop();
+        onContentChange(this.model.getValue(), MonacoEditorOperation.EDIT);
+      }
+    });
   }
 
   redo(): void {
-    this.editor?.trigger("whatever...", "redo", null);
+    this.editor?.focus();
+    this.editor?.trigger("editor", "redo", null);
   }
 
   undo(): void {
-    this.editor?.trigger("whatever...", "undo", null);
+    this.editor?.focus();
+    this.editor?.trigger("editor", "undo", null);
   }
 
   show(container: HTMLDivElement): editor.IStandaloneCodeEditor {
@@ -68,7 +89,25 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
 
     this.editor = editorInstance;
 
+    this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_Z, () => {
+      this.onContentChange(this.model.getValue(), MonacoEditorOperation.UNDO);
+    });
+
+    this.editor.addCommand(KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_Z, () => {
+      this.onContentChange(this.model.getValue(), MonacoEditorOperation.REDO);
+    });
+
+    if (this.operatingSystem !== OperatingSystem.MACOS) {
+      this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_Y, () => {
+        this.onContentChange(this.model.getValue(), MonacoEditorOperation.REDO);
+      });
+    }
+
     return editorInstance;
+  }
+
+  getContent(): string {
+    return this.editor.getModel()?.getValue() || "";
   }
 
   dispose(): void {

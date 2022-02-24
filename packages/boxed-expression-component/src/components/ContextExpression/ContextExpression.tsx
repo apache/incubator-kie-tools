@@ -51,7 +51,7 @@ const DEFAULT_CONTEXT_ENTRY_DATA_TYPE = DataType.Undefined;
 
 export const ContextExpression: React.FunctionComponent<ContextProps> = (contextExpression: ContextProps) => {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { setSupervisorHash, boxedExpressionEditorGWTService } = useBoxedExpression();
+  const { setSupervisorHash, boxedExpressionEditorGWTService, decisionNodeId } = useBoxedExpression();
 
   const rows = useMemo(
     () =>
@@ -125,7 +125,7 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
     () => [
       {
         label: contextExpression.name ?? DEFAULT_CONTEXT_ENTRY_NAME,
-        accessor: contextExpression.name ?? DEFAULT_CONTEXT_ENTRY_NAME,
+        accessor: decisionNodeId,
         dataType: contextExpression.dataType ?? DEFAULT_CONTEXT_ENTRY_DATA_TYPE,
         disableHandlerOnHeader: true,
         columns: [
@@ -147,10 +147,11 @@ export const ContextExpression: React.FunctionComponent<ContextProps> = (context
       },
     ],
     [
-      contextExpression.entryInfoWidth,
-      contextExpression.entryExpressionWidth,
       contextExpression.name,
       contextExpression.dataType,
+      contextExpression.entryInfoWidth,
+      contextExpression.entryExpressionWidth,
+      decisionNodeId,
       setInfoWidth,
       setExpressionWidth,
     ]

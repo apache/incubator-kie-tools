@@ -181,22 +181,22 @@ public class DataTypeListTest {
     }
 
     @Test
-    public void activate() {
+    public void activateReactComponents() {
         // Included channel
-        when(kogitoChannelHelperMock.isCurrentChannelEnabled(anyList())).thenReturn(true);
+        when(kogitoChannelHelperMock.isCurrentChannelEnabled(Channel.VSCODE)).thenReturn(true);
 
-        dataTypeList.activate();
+        dataTypeList.activateReactComponents();
 
-        verify(kogitoChannelHelperMock, times(1)).isCurrentChannelEnabled(Arrays.asList(Channel.VSCODE, Channel.DEFAULT));
+        verify(kogitoChannelHelperMock, times(1)).isCurrentChannelEnabled(Channel.VSCODE);
         verify(view, times(1)).renderImportJavaClasses();
 
         // Excluded channel
         reset(kogitoChannelHelperMock, view);
-        when(kogitoChannelHelperMock.isCurrentChannelEnabled(anyList())).thenReturn(false);
+        when(kogitoChannelHelperMock.isCurrentChannelEnabled(Channel.VSCODE)).thenReturn(false);
 
-        dataTypeList.activate();
+        dataTypeList.activateReactComponents();
 
-        verify(kogitoChannelHelperMock, times(1)).isCurrentChannelEnabled(Arrays.asList(Channel.VSCODE, Channel.DEFAULT));
+        verify(kogitoChannelHelperMock, times(1)).isCurrentChannelEnabled(Channel.VSCODE);
         verify(view, never()).renderImportJavaClasses();
     }
 

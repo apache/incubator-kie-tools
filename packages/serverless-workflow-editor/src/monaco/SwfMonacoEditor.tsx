@@ -20,6 +20,7 @@ import { DefaultSwfMonacoEditorController, SwfMonacoEditorApi } from "./SwfMonac
 import { initJsonCompletion } from "./augmentation/completion";
 import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
+import { useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
 
 interface Props {
   content: string;
@@ -32,13 +33,14 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
   forwardedRef
 ) => {
   const container = useRef<HTMLDivElement>(null);
+  const envelopeContext = useKogitoEditorEnvelopeContext();
 
   const controller: SwfMonacoEditorApi = useMemo<SwfMonacoEditorApi>(() => {
     if (fileName.endsWith(".sw.json")) {
-      return new DefaultSwfMonacoEditorController(content, onContentChange, "json");
+      return new DefaultSwfMonacoEditorController(content, onContentChange, "json", envelopeContext.operatingSystem);
     }
     if (fileName.endsWith(".sw.yaml") || fileName.endsWith(".sw.yml")) {
-      return new DefaultSwfMonacoEditorController(content, onContentChange, "yaml");
+      return new DefaultSwfMonacoEditorController(content, onContentChange, "yaml", envelopeContext.operatingSystem);
     }
 
     throw new Error(`Unsupported extension '${fileName}'`);

@@ -22,10 +22,8 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.events.UnsupportedDMNEvent;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 
 public abstract class AbstractDMNDataManagementStrategy extends AbstractDataManagementStrategy {
@@ -34,7 +32,7 @@ public abstract class AbstractDMNDataManagementStrategy extends AbstractDataMana
     protected Path currentPath;
     protected String dmnFilePath;
 
-    public AbstractDMNDataManagementStrategy(EventBus eventBus) {
+    protected AbstractDMNDataManagementStrategy(EventBus eventBus) {
         this.eventBus = eventBus;
     }
 
@@ -52,12 +50,6 @@ public abstract class AbstractDMNDataManagementStrategy extends AbstractDataMana
             dmnFilePath = model.getSettings().getDmnFilePath();
             retrieveFactModelTuple(testToolsPresenter, context, gridWidget);
         }
-    }
-
-    @Override
-    public void manageScenarioSimulationModelContent(ObservablePath currentPath, ScenarioSimulationModelContent toManage) {
-        this.currentPath = currentPath.getOriginal();
-        model = toManage.getModel();
     }
 
     @Override
