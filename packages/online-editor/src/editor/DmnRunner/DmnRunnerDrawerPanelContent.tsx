@@ -473,7 +473,10 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                       <DrawerCloseButton onClick={(e: any) => dmnRunnerDispatch.setExpanded(false)} />
                     )}
                   </PageSection>
-                  <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
+                  <div
+                    className={"kogito--editor__dmn-runner-drawer-content-body"}
+                    data-ouia-component-id={"dmn-runner-results"}
+                  >
                     <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
                       <DmnFormResult
                         results={dmnRunnerResults}
