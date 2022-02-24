@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -27,7 +28,6 @@ import java.util.stream.Stream;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -95,11 +95,13 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
     public SafeDeleteNodeCommand(final @MapsTo("candidateUUID") String candidateUUID,
                                  final @MapsTo("options") Options options) {
-        this.candidateUUID = PortablePreconditions.checkNotNull("candidateUUID",
-                                                                candidateUUID);
-        this.options = PortablePreconditions.checkNotNull("options",
-                                                          options);
+        this.candidateUUID = checkNotNull("candidateUUID", candidateUUID);
+        this.options = checkNotNull("options", options);
         this.safeDeleteCallback = Optional.empty();
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public SafeDeleteNodeCommand(final Node<?, Edge> node) {

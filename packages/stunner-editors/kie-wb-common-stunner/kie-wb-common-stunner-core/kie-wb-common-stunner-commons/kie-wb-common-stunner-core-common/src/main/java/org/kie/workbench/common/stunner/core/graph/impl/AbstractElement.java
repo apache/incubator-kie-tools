@@ -17,9 +17,9 @@
 package org.kie.workbench.common.stunner.core.graph.impl;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 public abstract class AbstractElement<C>
@@ -29,9 +29,8 @@ public abstract class AbstractElement<C>
     private final Set<String> labels = new LinkedHashSet<>();
     private C content;
 
-    public AbstractElement(final String uuid) {
-        this.uuid = PortablePreconditions.checkNotNull("uuid",
-                                                       uuid);
+    protected AbstractElement(final String uuid) {
+        this.uuid = Objects.requireNonNull(uuid, "Parameter named 'uuid' should be not null!");
     }
 
     @Override

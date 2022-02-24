@@ -17,10 +17,10 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -46,8 +46,7 @@ public class RegisterNodeCommand extends AbstractGraphCommand {
     private final Node candidate;
 
     public RegisterNodeCommand(final @MapsTo("candidate") Node candidate) {
-        this.candidate = PortablePreconditions.checkNotNull("candidate",
-                                                            candidate);
+        this.candidate = Objects.requireNonNull(candidate, "Parameter named 'candidate' should be not null!");
     }
 
     @Override

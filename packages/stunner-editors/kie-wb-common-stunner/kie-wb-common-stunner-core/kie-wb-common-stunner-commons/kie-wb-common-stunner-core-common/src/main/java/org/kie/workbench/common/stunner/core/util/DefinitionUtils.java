@@ -18,12 +18,12 @@ package org.kie.workbench.common.stunner.core.util;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.HasInheritance;
@@ -44,8 +44,6 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
 public class DefinitionUtils {
@@ -188,8 +186,7 @@ public class DefinitionUtils {
     }
 
     public Annotation getQualifier(final String defSetId) {
-        checkNotNull("defSetId",
-                     defSetId);
+        Objects.requireNonNull(defSetId, "Parameter named 'defSetId' should be not null!");
         final Object ds = definitionManager.definitionSets().getDefinitionSetById(defSetId);
         return getQualifier(ds);
     }
@@ -220,16 +217,11 @@ public class DefinitionUtils {
         return definitionManager;
     }
 
-    private static final Map<Class<?>, Class<? extends PropertyType>> DEFAULT_PROPERTY_TYPES = new Maps.Builder<Class<?>, Class<? extends PropertyType>>()
-            .put(String.class,
-                 StringType.class)
-            .put(Double.class,
-                 DoubleType.class)
-            .put(Integer.class,
-                 IntegerType.class)
-            .put(Boolean.class,
-                 BooleanType.class)
-            .build();
+    private static final Map<Class<?>, Class<? extends PropertyType>> DEFAULT_PROPERTY_TYPES = Map.of(
+            String.class, StringType.class,
+            Double.class, DoubleType.class,
+            Integer.class, IntegerType.class,
+            Boolean.class, BooleanType.class);
 
     public static Class<? extends PropertyType> getDefaultPropertyType(final Class<?> clazz) {
         return DEFAULT_PROPERTY_TYPES.get(clazz);

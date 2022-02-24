@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -40,18 +39,11 @@ import org.kie.workbench.common.stunner.core.rule.context.NodeDockingContext;
 public class StatefulGraphEvaluationContexts {
 
     private static final Map<Class<? extends GraphEvaluationContext>, ContextConsumer<? extends GraphEvaluationContext>> CONSUMERS_BY_TYPE =
-            new Maps.Builder<Class<? extends GraphEvaluationContext>, ContextConsumer<? extends GraphEvaluationContext>>()
-                    .put(ElementCardinalityContext.class,
-                         new ElementCardinalityContextConsumer())
-                    .put(ConnectorCardinalityContext.class,
-                         new ConnectorCardinalityContextConsumer())
-                    .put(GraphConnectionContext.class,
-                         new ConnectionStateContextConsumer())
-                    .put(NodeContainmentContext.class,
-                         new ContainmentStateContextConsumer())
-                    .put(NodeDockingContext.class,
-                         new DockingStateContextConsumer())
-                    .build();
+            Map.of(ElementCardinalityContext.class, new ElementCardinalityContextConsumer(),
+                   ConnectorCardinalityContext.class, new ConnectorCardinalityContextConsumer(),
+                   GraphConnectionContext.class, new ConnectionStateContextConsumer(),
+                   NodeContainmentContext.class, new ContainmentStateContextConsumer(),
+                   NodeDockingContext.class, new DockingStateContextConsumer());
 
     @SuppressWarnings("unchecked")
     public static <T> T evaluate(final GraphEvaluationContext context,

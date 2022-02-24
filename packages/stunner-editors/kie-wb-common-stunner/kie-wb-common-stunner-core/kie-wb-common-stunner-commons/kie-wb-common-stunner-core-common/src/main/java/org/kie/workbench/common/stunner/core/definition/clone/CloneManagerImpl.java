@@ -22,8 +22,6 @@ import java.util.Objects;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.soup.commons.util.Maps;
-
 @ApplicationScoped
 public class CloneManagerImpl implements CloneManager {
 
@@ -35,11 +33,9 @@ public class CloneManagerImpl implements CloneManager {
 
     @Inject
     public CloneManagerImpl(IDeepCloneProcess deepCloneProcess, DefaultCloneProcess defaultCloneProcess, NoneCloneProcess noneCloneProcess) {
-        this.cloneProcessMap = new Maps.Builder<ClonePolicy, CloneProcess>()
-                .put(ClonePolicy.ALL, deepCloneProcess)
-                .put(ClonePolicy.DEFAULT, defaultCloneProcess)
-                .put(ClonePolicy.NONE, noneCloneProcess)
-                .build();
+        this.cloneProcessMap = Map.of(ClonePolicy.ALL, deepCloneProcess,
+                                      ClonePolicy.DEFAULT, defaultCloneProcess,
+                                      ClonePolicy.NONE, noneCloneProcess);
     }
 
     private CloneProcess cloneProcess(ClonePolicy clonePolicy) {

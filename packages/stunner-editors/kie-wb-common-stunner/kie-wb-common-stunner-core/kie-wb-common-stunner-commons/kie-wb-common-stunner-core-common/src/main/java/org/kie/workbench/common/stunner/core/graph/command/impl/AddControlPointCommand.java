@@ -19,7 +19,6 @@ import java.util.Objects;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
@@ -42,7 +41,7 @@ public class AddControlPointCommand extends AbstractControlPointCommand {
                                   final @MapsTo("controlPoint") ControlPoint controlPoint,
                                   final @MapsTo("index") int index) {
         super(edgeUUID);
-        this.controlPoint = PortablePreconditions.checkNotNull("controlPoint", controlPoint);
+        this.controlPoint = Objects.requireNonNull(controlPoint, "Parameter named 'controlPoint' should be not null!");
         this.index = index;
     }
 
