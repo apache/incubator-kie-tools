@@ -31,25 +31,38 @@ describe("DMN Runner Test", () => {
 
     // fill in DMN Runner inputs panel
     cy.get("[data-testid='dmn-form']").within(($form) => {
+      cy.wait(500);
       cy.get("input[name='Credit Score.FICO']").type("650");
+      cy.wait(100);
       cy.get("input[name='Applicant Data.Age']").type("30");
 
+      cy.wait(100);
       cy.get("[x-dmn-type*='Marital_Status'] button").click();
       cy.get("ul[name='Applicant Data.Marital Status'] button").contains("M").click();
 
+      cy.wait(100);
       cy.get("input[name='Applicant Data.Existing Customer']").check();
 
+      cy.wait(100);
       cy.get("input[name='Applicant Data.Monthly.Income']").type("3000");
+      cy.wait(100);
       cy.get("input[name='Applicant Data.Monthly.Repayments']").type("120");
+      cy.wait(100);
       cy.get("input[name='Applicant Data.Monthly.Expenses']").type("0");
+      cy.wait(100);
       cy.get("input[name='Applicant Data.Monthly.Tax']").type("0");
+      cy.wait(100);
       cy.get("input[name='Applicant Data.Monthly.Insurance']").type("0");
 
+      cy.wait(100);
       cy.get("[x-dmn-type*='Product_Type'] button").click();
       cy.get("ul[name='Requested Product.Type'] button").contains("Standard Loan").click();
 
+      cy.wait(100);
       cy.get("input[name='Requested Product.Rate']").type("1.5");
+      cy.wait(100);
       cy.get("input[name='Requested Product.Term']").type("4");
+      cy.wait(100);
       cy.get("input[name='Requested Product.Amount']").type("10000");
     });
 
