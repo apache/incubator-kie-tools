@@ -23,7 +23,6 @@ interface Props {
   content: string;
   fileName: string;
   onContentChange: (content: string) => void;
-  theme?: EditorTheme;
 }
 
 export interface MonacoEditorRef {
@@ -34,7 +33,7 @@ export interface MonacoEditorRef {
 }
 
 const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorRef | undefined, Props> = (
-  { content, fileName, onContentChange, theme },
+  { content, fileName, onContentChange },
   forwardedRef
 ) => {
   const envelopeContext = useKogitoEditorEnvelopeContext();
@@ -45,7 +44,7 @@ const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorRef 
 
   useEffect(() => {
     if (editorContainer.current) {
-      monacoInstance.show(editorContainer.current, theme);
+      monacoInstance.show(editorContainer.current);
     }
 
     return () => {
