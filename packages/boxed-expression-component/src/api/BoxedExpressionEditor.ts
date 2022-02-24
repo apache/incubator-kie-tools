@@ -43,6 +43,7 @@ declare global {
     notifyUserAction: () => void;
     openManageDataType: () => void;
     onLogicTypeSelect: (selectedLogicType: string) => void;
+    selectObject: (uuid?: string) => void;
   }
 
   //API that BoxedExpressionEditor (bee) and its wrapper are expecting to be defined in the Window namespace

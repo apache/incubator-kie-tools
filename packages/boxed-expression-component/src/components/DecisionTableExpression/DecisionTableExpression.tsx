@@ -166,7 +166,7 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     };
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
-      accessor: decisionNodeId,
+      accessor: decisionTable.isHeadless ? decisionTable.id : decisionNodeId,
       label: decisionTable.name ?? DECISION_NODE_DEFAULT_NAME,
       dataType: decisionTable.dataType ?? DataType.Undefined,
       cssClasses: "decision-table--output",
@@ -187,7 +187,9 @@ export function DecisionTableExpression(decisionTable: PropsWithChildren<Decisio
     decisionNodeId,
     decisionTable.annotations,
     decisionTable.dataType,
+    decisionTable.id,
     decisionTable.input,
+    decisionTable.isHeadless,
     decisionTable.name,
     decisionTable.output,
   ]);

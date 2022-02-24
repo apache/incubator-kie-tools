@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { BaseSyntheticEvent, useCallback, useMemo } from "react";
 import { Tbody, Td, Tr } from "@patternfly/react-table";
 import { Column as IColumn, TableHeaderVisibility } from "../../api";
 import { Cell, Column, Row, TableInstance } from "react-table";
@@ -33,6 +33,7 @@ import {
   getParentCell,
 } from "./common";
 import { useBoxedExpression } from "../../context";
+import { LOGIC_TYPE_SELECTOR_CLASS } from "../LogicTypeSelector";
 
 export interface TableBodyProps {
   /** Table instance */
@@ -63,18 +64,17 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   tdProps,
   enableKeyboarNavigation = true,
 }) => {
+  const { boxedExpressionEditorGWTService } = useBoxedExpression();
+
   const headerVisibilityMemo = useMemo(() => headerVisibility ?? TableHeaderVisibility.Full, [headerVisibility]);
 
   const { isContextMenuOpen } = useBoxedExpression();
-
-  /**
-   * base props for td elements
-   */
 
   const onKeyDown = useCallback(
     (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => {
       const key = e.key;
       const isModKey = e.altKey || e.ctrlKey || e.shiftKey || key === "AltGraph";
+      debugger;
 
       if (!enableKeyboarNavigation) {
         return;
@@ -121,7 +121,79 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
         }
       }
     },
-    [isContextMenuOpen]
+    [isContextMenuOpen, enableKeyboarNavigation]
+  );
+
+  const renderCell = useCallback(
+    (cellIndex: number, cell: Cell, rowIndex: number, inAForm: boolean) => {
+      let cellType = cellIndex === 0 ? "counter-cell" : "data-cell";
+      const column = tableInstance.allColumns[cellIndex] as unknown as IColumn;
+      const width = typeof column?.width === "number" ? column?.width : DEFAULT_MIN_WIDTH;
+
+      const onResize = (width: number) => {
+        if (column.setWidth) {
+          column.setWidth(width);
+          tableInstance.allColumns[cellIndex].width = width;
+          onColumnsUpdate?.(tableInstance.columns);
+        }
+      };
+      const cellTemplate =
+        cellIndex === 0 ? (
+          <>{rowIndex + 1}</>
+        ) : (
+          <Resizer width={width} onHorizontalResizeStop={onResize}>
+            <>
+              {inAForm && typeof (cell.column as any)?.cellDelegate === "function"
+                ? (cell.column as any)?.cellDelegate(`dmn-auto-form-${rowIndex}`)
+                : cell.render("Cell")}
+            </>
+          </Resizer>
+        );
+
+      if (typeof (cell.column as any)?.cellDelegate === "function") {
+        cellType += " input";
+      }
+
+      const tdProp = tdProps(cellIndex, rowIndex);
+
+      return (
+        <Td
+          {...tdProp}
+          key={`${rowIndex}-${getColumnKey(cell.column)}-${cellIndex}`}
+          data-ouia-component-id={"expression-column-" + cellIndex}
+          className={`${cellType}`}
+          tabIndex={-1}
+          onKeyDown={(e) => onKeyDown(rowIndex)(e)}
+        >
+          {cellTemplate}
+        </Td>
+      );
+    },
+    [getColumnKey, onColumnsUpdate, tableInstance, tdProps, onKeyDown]
+  );
+
+  const eventPathHasNestedExpression = useCallback((event: React.BaseSyntheticEvent, path: EventTarget[]) => {
+    let currentPathTarget: EventTarget = event.target;
+    let currentIndex = 0;
+    while (currentPathTarget !== event.currentTarget && currentIndex < path.length) {
+      currentIndex++;
+      currentPathTarget = path[currentIndex];
+      if ((currentPathTarget as HTMLElement)?.classList?.contains(LOGIC_TYPE_SELECTOR_CLASS)) {
+        return true;
+      }
+    }
+    return false;
+  }, []);
+
+  const onRowClick = useCallback(
+    (rowKey: string) => (event: BaseSyntheticEvent) => {
+      const nativeEvent = event.nativeEvent as Event;
+      const path: EventTarget[] = nativeEvent?.composedPath?.() || [];
+      if (!eventPathHasNestedExpression(event, path)) {
+        boxedExpressionEditorGWTService?.selectObject(rowKey);
+      }
+    },
+    [boxedExpressionEditorGWTService, eventPathHasNestedExpression]
   );
 
   const renderBodyRow = useCallback(
@@ -131,49 +203,26 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
       const RowDelegate = (row.original as any).rowDelegate;
       const rowKey = getRowKey(row);
       const rowClassNames = `${rowKey} table-row`;
+
+      const buildTableRow = (inAForm: boolean) => (
+        <Tr
+          className={rowClassNames}
+          {...rowProps}
+          ouiaId={"expression-row-" + rowIndex}
+          key={rowKey}
+          onClick={onRowClick(rowKey)}
+        >
+          {row.cells.map((cell: Cell, cellIndex: number) => renderCell(cellIndex, cell, rowIndex, inAForm))}
+        </Tr>
+      );
+
       return (
         <React.Fragment key={rowKey}>
-          {RowDelegate ? (
-            <RowDelegate>
-              <Tr className={rowClassNames} {...rowProps} ouiaId={"expression-row-" + rowIndex} key={rowKey}>
-                {row.cells.map((cell: Cell, cellIndex: number) => (
-                  <TdCell
-                    key={cellIndex}
-                    cellIndex={cellIndex}
-                    cell={cell}
-                    rowIndex={rowIndex}
-                    inAForm={true}
-                    onKeyDown={onKeyDown}
-                    tableInstance={tableInstance}
-                    getColumnKey={getColumnKey}
-                    onColumnsUpdate={onColumnsUpdate!}
-                    tdProps={tdProps}
-                  />
-                ))}
-              </Tr>
-            </RowDelegate>
-          ) : (
-            <Tr className={rowClassNames} {...rowProps} ouiaId={"expression-row-" + rowIndex} key={rowKey}>
-              {row.cells.map((cell: Cell, cellIndex: number) => (
-                <TdCell
-                  key={cellIndex}
-                  cellIndex={cellIndex}
-                  cell={cell}
-                  rowIndex={rowIndex}
-                  inAForm={false}
-                  onKeyDown={onKeyDown}
-                  tableInstance={tableInstance}
-                  getColumnKey={getColumnKey}
-                  onColumnsUpdate={onColumnsUpdate!}
-                  tdProps={tdProps}
-                />
-              ))}
-            </Tr>
-          )}
+          {RowDelegate ? <RowDelegate>{buildTableRow(true)}</RowDelegate> : buildTableRow(false)}
         </React.Fragment>
       );
     },
-    [getColumnKey, getRowKey, onColumnsUpdate, onKeyDown, tableInstance, tdProps]
+    [getRowKey, onRowClick, renderCell, tableInstance]
   );
 
   const renderAdditiveRow = useCallback(
@@ -210,79 +259,3 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
     </Tbody>
   );
 };
-
-interface TdCellProps {
-  cellIndex: number;
-  cell: Cell;
-  rowIndex: number;
-  inAForm: boolean;
-  onKeyDown: (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
-  tableInstance: TableInstance;
-  getColumnKey: (column: Column) => string;
-  onColumnsUpdate: (columns: Column[]) => void;
-  tdProps: (cellIndex: number, rowIndex: number) => any;
-}
-
-function TdCell({
-  cellIndex,
-  cell,
-  rowIndex,
-  inAForm,
-  onKeyDown,
-  tableInstance,
-  getColumnKey,
-  onColumnsUpdate,
-  tdProps,
-}: TdCellProps) {
-  let cellType = cellIndex === 0 ? "counter-cell" : "data-cell";
-  const column = tableInstance.allColumns[cellIndex] as unknown as IColumn;
-  const width = typeof column?.width === "number" ? column?.width : DEFAULT_MIN_WIDTH;
-  const tdRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    // Typescript don't accept the conversion between DOM event and React event
-    const onKeyDownForIndex: any = onKeyDown(rowIndex);
-    const cell = tdRef.current;
-    cell?.addEventListener("keydown", onKeyDownForIndex);
-    return () => {
-      cell?.removeEventListener("keydown", onKeyDownForIndex);
-    };
-  }, [onKeyDown, rowIndex]);
-
-  const onResize = (width: number) => {
-    if (column.setWidth) {
-      column.setWidth(width);
-      tableInstance.allColumns[cellIndex].width = width;
-      onColumnsUpdate?.(tableInstance.columns);
-    }
-  };
-  const cellTemplate =
-    cellIndex === 0 ? (
-      <>{rowIndex + 1}</>
-    ) : (
-      <Resizer width={width} onHorizontalResizeStop={onResize}>
-        <>
-          {inAForm && typeof (cell.column as any)?.cellDelegate === "function"
-            ? (cell.column as any)?.cellDelegate(`dmn-auto-form-${rowIndex}`)
-            : cell.render("Cell")}
-        </>
-      </Resizer>
-    );
-
-  if (typeof (cell.column as any)?.cellDelegate === "function") {
-    cellType += " input";
-  }
-
-  return (
-    <Td
-      {...tdProps(cellIndex, rowIndex)}
-      ref={tdRef}
-      tabIndex={-1}
-      key={`${rowIndex}-${getColumnKey(cell.column)}-${cellIndex}`}
-      data-ouia-component-id={"expression-column-" + cellIndex}
-      className={`${cellType}`}
-    >
-      {cellTemplate}
-    </Td>
-  );
-}
