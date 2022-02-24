@@ -24,7 +24,6 @@ import java.util.function.Supplier;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Composite;
@@ -101,21 +100,18 @@ public class TreeItem<I extends TreeItem> extends Composite implements OuiaCompo
                             folderName.add(name);
                         }
                     }
-                    header.addDomHandler(new ClickHandler() {
-                                             @Override
-                                             public void onClick(ClickEvent event) {
-                                                 if (!isSelected) {
-                                                     updateSelected();
-                                                 }
-                                                 if (state.equals(State.CLOSE)) {
-                                                     setState(State.OPEN,
-                                                              true);
-                                                 } else {
-                                                     setState(State.CLOSE,
-                                                              true);
-                                                 }
-                                             }
-                                         },
+                    header.addDomHandler(event -> {
+                        if (!isSelected) {
+                            updateSelected();
+                        }
+                        if (state.equals(State.CLOSE)) {
+                            setState(State.OPEN,
+                                     true);
+                        } else {
+                            setState(State.CLOSE,
+                                     true);
+                        }
+                    },
                                          ClickEvent.getType());
                 }
                 {
@@ -146,13 +142,8 @@ public class TreeItem<I extends TreeItem> extends Composite implements OuiaCompo
                         itemName.add(name);
                     }
                 }
-                item.addDomHandler(new ClickHandler() {
-                                       @Override
-                                       public void onClick(ClickEvent event) {
-                                           tree.onSelection((I) TreeItem.this,
-                                                            true);
-                                       }
-                                   },
+                item.addDomHandler(event -> tree.onSelection((I) TreeItem.this,
+                                  true),
                                    ClickEvent.getType());
             }
             initWidget(item);

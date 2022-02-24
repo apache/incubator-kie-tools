@@ -86,10 +86,7 @@ public class ErrorPopupPresenter {
     }
 
     public static class Commands {
-        public static final Command DO_NOTHING = new Command() {
-            public void execute() {
-            }
-        };
+        public static final Command DO_NOTHING = () -> {};
 
         public Commands() {
         }

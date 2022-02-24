@@ -31,7 +31,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
-import org.kie.workbench.common.stunner.client.widgets.canvas.StunnerBoundsProviderFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -52,11 +51,7 @@ import org.uberfire.workbench.model.ActivityResourceType;
 @Named(PreviewDiagramScreen.SCREEN_ID)
 public class PreviewDiagramScreen extends AbstractActivity {
 
-    private static Logger LOGGER = Logger.getLogger(PreviewDiagramScreen.class.getName());
-
-    private static final int PREVIEW_WIDTH = 420;
-
-    private static final int PREVIEW_HEIGHT = StunnerBoundsProviderFactory.computeHeight(PREVIEW_WIDTH);
+    private static final Logger LOGGER = Logger.getLogger(PreviewDiagramScreen.class.getName());
 
     public static final String SCREEN_ID = "DMNProjectDiagramExplorerScreen";
 

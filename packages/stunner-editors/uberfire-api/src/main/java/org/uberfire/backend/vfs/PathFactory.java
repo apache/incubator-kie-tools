@@ -25,7 +25,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public final class PathFactory {
 
     public static final String LOCK_FILE_EXTENSION = ".ulock";
-    public static String VERSION_PROPERTY = "hasVersionSupport";
+    public static final String VERSION_PROPERTY = "hasVersionSupport";
 
     private PathFactory() {
     }

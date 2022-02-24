@@ -28,7 +28,7 @@ import org.uberfire.mvp.Command;
  */
 public class CommandDrivenErrorCallback extends HasBusyIndicatorDefaultErrorCallback {
 
-    private final Map<Class<? extends Throwable>, Command> commands = new HashMap<Class<? extends Throwable>, Command>();
+    private final Map<Class<? extends Throwable>, Command> commands = new HashMap<>();
 
     public CommandDrivenErrorCallback(final HasBusyIndicator view,
                                       final Map<Class<? extends Throwable>, Command> commands) {

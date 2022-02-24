@@ -26,7 +26,6 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Maps;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
@@ -107,7 +106,7 @@ public class KogitoKieAssetsDropdownViewTest {
     public void testAddValue() {
 
         final HTMLOptionElement optionElement = mock(HTMLOptionElement.class);
-        final KieAssetsDropdownItem entry = new KieAssetsDropdownItem("text", "subtext", "value", getMetaData());
+        final KieAssetsDropdownItem entry = new KieAssetsDropdownItem("text", "subtext", "value", Map.of("foo", "bar"));
 
         doReturn(optionElement).when(view).makeHTMLOptionElement();
 
@@ -176,9 +175,5 @@ public class KogitoKieAssetsDropdownViewTest {
 
         verify(nativeSelect.classList).remove(HIDDEN_CSS_CLASS);
         verify(dropdown).selectpicker("show");
-    }
-
-    private Map<String, String> getMetaData() {
-        return new Maps.Builder<String, String>().put("foo", "bar").build();
     }
 }

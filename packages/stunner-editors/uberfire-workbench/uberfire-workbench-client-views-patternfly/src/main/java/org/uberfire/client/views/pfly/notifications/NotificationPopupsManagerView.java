@@ -32,7 +32,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 @Dependent
 public class NotificationPopupsManagerView implements NotificationManager.View {
 
-    private final int SPACING = 48;
+    private static final int SPACING = 48;
     private final List<PopupHandle> activeNotifications = new ArrayList<>();
     private final List<PopupHandle> pendingRemovals = new ArrayList<>();
     //When true we are in the process of removing a notification message
@@ -134,7 +134,7 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
                 view.hide();
                 activeNotifications.remove(handle);
                 removing = false;
-                if (pendingRemovals.size() > 0) {
+                if (!pendingRemovals.isEmpty()) {
                     PopupHandle popupHandle = pendingRemovals.remove(0);
                     hide(popupHandle);
                 }

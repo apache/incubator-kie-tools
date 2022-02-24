@@ -62,8 +62,8 @@ public class InputClauseColumn extends DMNSimpleGridColumn<DecisionTableGrid, St
                      final GridBodyCellRenderContext context,
                      final Consumer<GridCellValue<String>> callback) {
         factory.attachDomElement(context,
-                                 (e) -> e.setValue(assertCellValue(assertCell(cell).getValue()).getValue()),
-                                 (e) -> e.setFocus(true));
+                                 e-> e.setValue(assertCellValue(assertCell(cell).getValue()).getValue()),
+                                 e -> e.setFocus(true));
     }
 
     @Override
