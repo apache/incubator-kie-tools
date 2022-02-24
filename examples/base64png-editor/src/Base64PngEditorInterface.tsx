@@ -120,7 +120,7 @@ export class Base64PngEditorInterface implements Editor {
   /**
    * Not supported.
    */
-  public setTheme(theme?: EditorTheme): Promise<void> {
+  public setTheme(theme: EditorTheme): Promise<void> {
     return Promise.resolve();
   }
 

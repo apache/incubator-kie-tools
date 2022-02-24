@@ -79,7 +79,7 @@ export class ServerlessWorkflowEditorInterface implements Editor {
     return Promise.resolve(this.editorRef.current!.validate());
   }
 
-  public async setTheme(theme: EditorTheme): Promise<void> {
-    return Promise.resolve(this.editorRef.current!.setTheme(theme));
+  public async setTheme(theme: EditorTheme) {
+    return this.editorRef.current!.setTheme(theme);
   }
 }

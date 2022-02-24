@@ -19,7 +19,6 @@ import { KeyboardShortcutsEnvelopeApi } from "@kie-tools-core/keyboard-shortcuts
 import { GuidedTourEnvelopeApi } from "@kie-tools-core/guided-tour/dist/api";
 import { I18nEnvelopeApi } from "@kie-tools-core/i18n/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { EditorTheme } from "./EditorTheme";
 
 export interface Association {
   origin: string;
@@ -42,7 +41,6 @@ export interface EditorInitArgs {
   initialLocale: string;
   isReadOnly: boolean;
   channel: ChannelType;
-  theme?: EditorTheme;
 }
 
 export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, GuidedTourEnvelopeApi, I18nEnvelopeApi {
@@ -53,5 +51,4 @@ export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, G
   kogitoEditor_contentRequest(): Promise<EditorContent>;
   kogitoEditor_previewRequest(): Promise<string>;
   kogitoEditor_validate(): Promise<Notification[]>;
-  kogitoEditor_themeChanged(theme?: EditorTheme): Promise<void>;
 }

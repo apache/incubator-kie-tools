@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { getGuidedTourElementPosition, GwtEditor } from "./GwtAppFormerApi";
-import { Editor, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
+import { Editor, EditorTheme, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { editors } from "./GwtEditorMapping";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
@@ -99,7 +99,7 @@ export class GwtEditorWrapper implements Editor {
     return this.gwtEditor.validate();
   }
 
-  public setTheme(): Promise<void> {
+  public setTheme(theme: EditorTheme): Promise<void> {
     // Only default theme is supported
     return Promise.resolve();
   }

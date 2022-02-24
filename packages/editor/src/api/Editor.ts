@@ -42,5 +42,5 @@ export interface EditorApi {
   undo(): Promise<void>;
   redo(): Promise<void>;
   validate(): Promise<Notification[]>;
-  setTheme(theme?: EditorTheme): Promise<void>;
+  setTheme(theme: EditorTheme): Promise<void>;
 }

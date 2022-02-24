@@ -64,7 +64,7 @@ export const createEditor = (
     unsubscribeToContentChanges: (callback) => stateControl.unsubscribe(callback),
     markAsSaved: () => stateControl.setSavedCommand(),
     validate: () => envelopeApi.requests.kogitoEditor_validate(),
-    setTheme: (theme) => envelopeApi.requests.kogitoEditor_themeChanged(theme),
+    setTheme: (theme) => Promise.resolve(),
     envelopeApi,
   };
 };

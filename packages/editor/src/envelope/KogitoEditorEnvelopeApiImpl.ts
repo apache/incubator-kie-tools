@@ -33,7 +33,6 @@ import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { EditorEnvelopeI18n, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
 import { ApiDefinition } from "@kie-tools-core/envelope-bus/dist/api";
-import { EditorTheme } from "../api/EditorTheme";
 
 export class KogitoEditorEnvelopeApiImpl<
   E extends Editor,
@@ -97,7 +96,6 @@ export class KogitoEditorEnvelopeApiImpl<
       .finally(() => this.view().setLoadingFinished());
 
     this.registerDefaultShortcuts(initArgs);
-    this.kogitoEditor_themeChanged(initArgs.theme);
 
     this.args.envelopeContext.channelApi.notifications.kogitoEditor_ready.send();
   };
@@ -143,10 +141,6 @@ export class KogitoEditorEnvelopeApiImpl<
 
   public kogitoEditor_validate() {
     return this.editor.validate();
-  }
-
-  public kogitoEditor_themeChanged(theme?: EditorTheme) {
-    return this.editor.setTheme(theme);
   }
 
   private setupI18n(initArgs: EditorInitArgs) {

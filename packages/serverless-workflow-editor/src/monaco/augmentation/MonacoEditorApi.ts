@@ -74,9 +74,14 @@ export class DefaultMonacoEditor implements MonacoEditorApi {
     editor.setTheme(this.getMonacoThemeByEditorTheme(theme));
   }
 
-  show(container: HTMLDivElement): void {
+  show(container: HTMLDivElement, theme: EditorTheme): void {
     if (!container) {
       throw new Error("We need a container to show the editor!");
+    }
+
+    if (this.editor !== undefined) {
+      this.setTheme(theme);
+      return;
     }
 
     this.editor = editor.create(container, {
@@ -84,6 +89,7 @@ export class DefaultMonacoEditor implements MonacoEditorApi {
       language: this.augmentation.language.languageId,
       scrollBeyondLastLine: false,
       automaticLayout: true,
+      theme: this.getMonacoThemeByEditorTheme(theme),
     });
 
     this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_Z, () => {

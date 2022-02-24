@@ -57,7 +57,7 @@ export class DummyEditor implements Editor {
     return Promise.resolve([]);
   }
 
-  public setTheme(theme?: EditorTheme): Promise<void> {
+  public setTheme(theme: EditorTheme): Promise<void> {
     return Promise.resolve();
   }
 }

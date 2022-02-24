@@ -18,6 +18,7 @@ import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { buildEditor, MonacoEditorApi } from "./augmentation";
 import { EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
 interface Props {
   content: string;
@@ -41,18 +42,17 @@ const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorRef 
   const monacoInstance: MonacoEditorApi = useMemo<MonacoEditorApi>(() => {
     return buildEditor(content, fileName, onContentChange, envelopeContext.operatingSystem);
   }, [content, fileName]);
+  const [theme] = useSharedValue(envelopeContext.channelApi.shared.kogitoEditor_theme);
 
   useEffect(() => {
-    if (editorContainer.current) {
-      monacoInstance.show(editorContainer.current);
+    if (theme === undefined) {
+      return;
     }
 
-    return () => {
-      if (monacoInstance) {
-        monacoInstance.dispose();
-      }
-    };
-  }, [content, fileName]);
+    if (editorContainer.current) {
+      monacoInstance.show(editorContainer.current, theme);
+    }
+  }, [monacoInstance, content, fileName, theme]);
 
   useImperativeHandle(
     forwardedRef,
