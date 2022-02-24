@@ -67,6 +67,7 @@ describe("DMN Runner Test", () => {
     });
 
     // check DMN Runner outputs panel
+    cy.wait(100);
     cy.get("[data-testid='dmn-form-result']").within(($form) => {
       cy.get("article div:contains('Front End Ratio')").next().contains("Sufficient").should("be.visible");
       cy.get("article div:contains('Back End Ratio')").next().contains("Sufficient").should("be.visible");
