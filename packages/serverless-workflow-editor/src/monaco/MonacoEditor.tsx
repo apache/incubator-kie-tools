@@ -17,22 +17,24 @@
 import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { buildEditor, MonacoEditorApi } from "./augmentation";
-import { useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
+import { EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
 
 interface Props {
   content: string;
   fileName: string;
   onContentChange: (content: string) => void;
+  theme?: EditorTheme;
 }
 
 export interface MonacoEditorRef {
   undo(): void;
   redo(): void;
   getContent(): string;
+  setTheme(theme: EditorTheme): void;
 }
 
 const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorRef | undefined, Props> = (
-  { content, fileName, onContentChange },
+  { content, fileName, onContentChange, theme },
   forwardedRef
 ) => {
   const envelopeContext = useKogitoEditorEnvelopeContext();
@@ -43,7 +45,7 @@ const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorRef 
 
   useEffect(() => {
     if (editorContainer.current) {
-      monacoInstance.show(editorContainer.current);
+      monacoInstance.show(editorContainer.current, theme);
     }
 
     return () => {
@@ -65,6 +67,9 @@ const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorRef 
         },
         getContent: () => {
           return monacoInstance.getContent();
+        },
+        setTheme: (theme) => {
+          monacoInstance.setTheme(theme);
         },
       };
     },

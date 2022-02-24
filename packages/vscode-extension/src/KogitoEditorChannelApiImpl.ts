@@ -107,7 +107,9 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
   }
 
   public kogitoEditor_ready() {
-    /* empty */
+    vscode.window.onDidChangeActiveColorTheme((colorTheme) => {
+      this.editor.setTheme(this.editor.getEditorThemeByVscodeTheme(colorTheme.kind));
+    });
   }
 
   public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {

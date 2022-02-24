@@ -15,10 +15,12 @@
  */
 
 import * as vscode from "vscode";
+import { ColorThemeKind } from "vscode";
 import {
   ChannelType,
   EditorApi,
   EditorEnvelopeLocator,
+  EditorTheme,
   EnvelopeMapping,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
@@ -60,10 +62,22 @@ export class KogitoEditor implements EditorApi {
             initialLocale: vscode.env.language,
             isReadOnly: false,
             channel: ChannelType.VSCODE,
+            theme: this.getEditorThemeByVscodeTheme(vscode.window.activeColorTheme.kind),
           }
         )
     )
   ) {}
+
+  public getEditorThemeByVscodeTheme(vscodeTheme: ColorThemeKind) {
+    switch (vscodeTheme) {
+      case ColorThemeKind.Dark:
+        return EditorTheme.DARK;
+      case ColorThemeKind.HighContrast:
+        return EditorTheme.HIGH_CONTRAST;
+      default:
+        return EditorTheme.LIGHT;
+    }
+  }
 
   public getElementPosition(selector: string) {
     return this.envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(selector);
@@ -91,6 +105,10 @@ export class KogitoEditor implements EditorApi {
 
   public validate() {
     return this.envelopeServer.envelopeApi.requests.kogitoEditor_validate();
+  }
+
+  public setTheme(theme: EditorTheme) {
+    return this.envelopeServer.envelopeApi.requests.kogitoEditor_themeChanged(theme);
   }
 
   public startInitPolling(apiImpl: KogitoEditorChannelApi) {

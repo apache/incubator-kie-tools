@@ -99,6 +99,11 @@ export class GwtEditorWrapper implements Editor {
     return this.gwtEditor.validate();
   }
 
+  public setTheme(): Promise<void> {
+    // Only default theme is supported
+    return Promise.resolve();
+  }
+
   private removeBusinessCentralHeaderPanel() {
     const headerPanel = document.getElementById("workbenchHeaderPanel");
     if (headerPanel) {

@@ -161,6 +161,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
         setContent: (path, content) =>
           envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ path, content }),
         validate: () => envelopeServer.envelopeApi.requests.kogitoEditor_validate(),
+        setTheme: (theme) => envelopeServer.envelopeApi.requests.kogitoEditor_themeChanged(theme),
       };
     },
     [envelopeServer, stateControl, isReady]

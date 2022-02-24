@@ -17,15 +17,15 @@
 import { editor, KeyCode, KeyMod } from "monaco-editor";
 import { MonacoAugmentation } from "./MonacoAugmentation";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
+import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 
 export interface MonacoEditorApi {
-  show: (container: HTMLDivElement) => void;
+  show: (container: HTMLDivElement, theme?: EditorTheme) => void;
   dispose: () => void;
-
   undo: () => void;
   redo: () => void;
-
   getContent: () => string;
+  setTheme: (theme: EditorTheme) => void;
 }
 
 export enum MonacoEditorOperation {
@@ -70,7 +70,11 @@ export class DefaultMonacoEditor implements MonacoEditorApi {
     this.editor?.trigger("editor", "undo", null);
   }
 
-  show(container: HTMLDivElement): void {
+  setTheme(theme: EditorTheme): void {
+    editor.setTheme(this.getMonacoThemeByEditorTheme(theme));
+  }
+
+  show(container: HTMLDivElement, theme?: EditorTheme): void {
     if (!container) {
       throw new Error("We need a container to show the editor!");
     }
@@ -80,6 +84,7 @@ export class DefaultMonacoEditor implements MonacoEditorApi {
       language: this.augmentation.language.languageId,
       scrollBeyondLastLine: false,
       automaticLayout: true,
+      theme: this.getMonacoThemeByEditorTheme(theme),
     });
 
     this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_Z, () => {
@@ -104,5 +109,16 @@ export class DefaultMonacoEditor implements MonacoEditorApi {
   dispose(): void {
     this.model?.dispose();
     this.editor?.dispose();
+  }
+
+  private getMonacoThemeByEditorTheme(theme?: EditorTheme): string {
+    switch (theme) {
+      case EditorTheme.DARK:
+        return "vs-dark";
+      case EditorTheme.HIGH_CONTRAST:
+        return "hc-black";
+      default:
+        return "vs";
+    }
   }
 }
