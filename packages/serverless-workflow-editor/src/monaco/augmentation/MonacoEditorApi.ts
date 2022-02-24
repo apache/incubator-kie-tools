@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { editor } from "monaco-editor";
+import { editor, KeyCode, KeyMod } from "monaco-editor";
 import { MonacoAugmentation } from "./MonacoAugmentation";
+import { OperatingSystem } from "@kie-tools-core/operating-system";
 
 export interface MonacoEditorApi {
   show: (container: HTMLDivElement) => void;
@@ -23,6 +24,14 @@ export interface MonacoEditorApi {
 
   undo: () => void;
   redo: () => void;
+
+  getContent: () => string;
+}
+
+export enum MonacoEditorOperation {
+  UNDO,
+  REDO,
+  EDIT,
 }
 
 export class DefaultMonacoEditor implements MonacoEditorApi {
@@ -30,19 +39,35 @@ export class DefaultMonacoEditor implements MonacoEditorApi {
 
   private editor: editor.IStandaloneCodeEditor;
   private readonly augmentation: MonacoAugmentation;
+  private readonly onContentChange: (content: string, operation: MonacoEditorOperation) => void;
+  private readonly operatingSystem?: OperatingSystem;
 
-  constructor(content: string, onContentChange: (content: string) => void, augmentation: MonacoAugmentation) {
+  constructor(
+    content: string,
+    onContentChange: (content: string, operation: MonacoEditorOperation) => void,
+    augmentation: MonacoAugmentation,
+    operatingSystem?: OperatingSystem
+  ) {
     this.model = editor.createModel(augmentation.language.getDefaultContent(content), augmentation.language.languageId);
-    this.model.onDidChangeContent((event) => onContentChange(this.model.getValue()));
+    this.model.onDidChangeContent((event) => {
+      if (!event.isUndoing && !event.isRedoing) {
+        this.editor?.pushUndoStop();
+        onContentChange(this.model.getValue(), MonacoEditorOperation.EDIT);
+      }
+    });
+    this.onContentChange = onContentChange;
     this.augmentation = augmentation;
+    this.operatingSystem = operatingSystem;
   }
 
   redo(): void {
-    this.editor?.trigger("whatever...", "redo", null);
+    this.editor?.focus();
+    this.editor?.trigger("editor", "redo", null);
   }
 
   undo(): void {
-    this.editor?.trigger("whatever...", "undo", null);
+    this.editor?.focus();
+    this.editor?.trigger("editor", "undo", null);
   }
 
   show(container: HTMLDivElement): void {
@@ -57,7 +82,23 @@ export class DefaultMonacoEditor implements MonacoEditorApi {
       automaticLayout: true,
     });
 
-    // this.editor.onMouseDown((event) => showWidget(event, this.editor));
+    this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_Z, () => {
+      this.onContentChange(this.model.getValue(), MonacoEditorOperation.UNDO);
+    });
+
+    this.editor.addCommand(KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_Z, () => {
+      this.onContentChange(this.model.getValue(), MonacoEditorOperation.REDO);
+    });
+
+    if (this.operatingSystem !== OperatingSystem.MACOS) {
+      this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_Y, () => {
+        this.onContentChange(this.model.getValue(), MonacoEditorOperation.REDO);
+      });
+    }
+  }
+
+  getContent(): string {
+    return this.editor.getModel()?.getValue() || "";
   }
 
   dispose(): void {
