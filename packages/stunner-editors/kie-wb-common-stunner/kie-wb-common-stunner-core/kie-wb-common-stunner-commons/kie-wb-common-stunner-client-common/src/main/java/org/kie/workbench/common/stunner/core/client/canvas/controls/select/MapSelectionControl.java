@@ -45,8 +45,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 public final class MapSelectionControl<H extends AbstractCanvasHandler>
         extends AbstractCanvasHandlerControl<H>
         implements SelectionControl<H, Element>,
@@ -247,8 +245,7 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     }
 
     public void onShapeRemoved(final CanvasShapeRemovedEvent shapeRemovedEvent) {
-        checkNotNull("shapeRemovedEvent",
-                     shapeRemovedEvent);
+        checkNotNull("shapeRemovedEvent", shapeRemovedEvent);
         if (null == canvasHandler) {
             return;
         }
@@ -258,8 +255,7 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     }
 
     void onCanvasElementSelected(final CanvasSelectionEvent event) {
-        checkNotNull("event",
-                     event);
+        checkNotNull("event", event);
         if (null == canvasHandler) {
             return;
         }
@@ -279,13 +275,16 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     }
 
     public void onCanvasClearSelection(final CanvasClearSelectionEvent event) {
-        checkNotNull("event",
-                     event);
+        checkNotNull("event", event);
         if (null != canvasHandler
                 && canvasHandler.equals(event.getCanvasHandler())
                 && !getSelectedItems().isEmpty()) {
             this.clearSelection(false);
         }
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public AbstractCanvasHandler getCanvasHandler() {

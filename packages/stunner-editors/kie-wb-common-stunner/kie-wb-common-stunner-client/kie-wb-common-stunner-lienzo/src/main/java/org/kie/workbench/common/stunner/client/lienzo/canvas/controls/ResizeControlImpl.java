@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,13 +49,11 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 @Dependent
 @Default
 public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler> implements ResizeControl<AbstractCanvasHandler, Element> {
 
-    private static Logger LOGGER = Logger.getLogger(ResizeControlImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ResizeControlImpl.class.getName());
 
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
@@ -118,8 +117,7 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
 
     @SuppressWarnings("unchecked")
     protected void onCanvasSelectionEvent(@Observes CanvasSelectionEvent event) {
-        checkNotNull("event",
-                     event);
+        checkNotNull("event", event);
         if (event.getIdentifiers().size() == 1) {
             final String uuid = event.getIdentifiers().iterator().next();
             if (isSameCanvas(event) && isRegistered(uuid)) {
@@ -135,11 +133,14 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
     }
 
     private void CanvasClearSelectionEvent(@Observes CanvasClearSelectionEvent clearSelectionEvent) {
-        checkNotNull("clearSelectionEvent",
-                     clearSelectionEvent);
+        checkNotNull("clearSelectionEvent", clearSelectionEvent);
         if (isSameCanvas(clearSelectionEvent)) {
             hideALLCPs();
         }
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     private void showCPs(final HasControlPoints<?> hasControlPoints) {

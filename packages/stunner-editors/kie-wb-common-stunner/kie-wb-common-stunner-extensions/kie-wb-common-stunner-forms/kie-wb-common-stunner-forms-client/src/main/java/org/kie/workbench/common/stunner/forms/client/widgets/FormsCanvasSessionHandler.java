@@ -53,8 +53,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.mvp.Command;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 @Dependent
 public class FormsCanvasSessionHandler {
 
@@ -213,12 +211,15 @@ public class FormsCanvasSessionHandler {
     }
 
     void onDomainObjectSelectionEvent(@Observes DomainObjectSelectionEvent event) {
-        checkNotNull("event",
-                     event);
+        checkNotNull("event", event);
         if (checkCanvasHandler(event.getCanvasHandler())) {
             final DomainObject domainObject = event.getDomainObject();
             render(domainObject);
         }
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public ClientSession getSession() {

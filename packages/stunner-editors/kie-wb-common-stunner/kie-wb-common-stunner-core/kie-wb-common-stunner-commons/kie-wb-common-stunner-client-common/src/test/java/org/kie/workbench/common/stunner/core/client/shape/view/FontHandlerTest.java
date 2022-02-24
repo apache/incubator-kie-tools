@@ -16,10 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.view;
 
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeViewExtStub;
 import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
@@ -28,7 +29,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -71,29 +71,27 @@ public class FontHandlerTest {
                 .orientation(o -> HasTitle.Orientation.VERTICAL)
                 .margin(HasTitle.HorizontalAlignment.LEFT, 10d)
                 .margin(HasTitle.VerticalAlignment.TOP, 10d)
-                .margins(o -> new Maps.Builder<Enum, Double>().put(HasTitle.HorizontalAlignment.RIGHT, 50d).build())
+                .margins(o -> Map.of(HasTitle.HorizontalAlignment.RIGHT, 50d))
                 .textSizeConstraints(o -> SIZE_CONSTRAINTS)
                 .build();
         final Object bean = mock(Object.class);
         tested.handle(bean, view);
-        verify(view).setTitleStrokeColor(eq("strokeColor"));
-        verify(view).setTitleStrokeWidth(eq(5d));
-        verify(view).setTitleStrokeAlpha(eq(0.77d));
-        verify(view).setTitleFontColor(eq("fontColor"));
-        verify(view).setTitleFontFamily(eq("fontFamily"));
-        verify(view).setTitleFontSize(eq(10.5d));
-        verify(view).setTitleAlpha(eq(0.7d));
-        verify(view).setTitleRotation(eq(270d));
-        verify(view).setTitleXOffsetPosition(eq(X_OFFSET));
-        verify(view).setTitleYOffsetPosition(eq(Y_OFFSET));
+        verify(view).setTitleStrokeColor("strokeColor");
+        verify(view).setTitleStrokeWidth(5d);
+        verify(view).setTitleStrokeAlpha(0.77d);
+        verify(view).setTitleFontColor("fontColor");
+        verify(view).setTitleFontFamily("fontFamily");
+        verify(view).setTitleFontSize(10.5d);
+        verify(view).setTitleAlpha(0.7d);
+        verify(view).setTitleRotation(270d);
+        verify(view).setTitleXOffsetPosition(X_OFFSET);
+        verify(view).setTitleYOffsetPosition(Y_OFFSET);
         verify(view).setTextWrapper(TextWrapperStrategy.NO_WRAP);
         verify(view).setTitlePosition(HasTitle.VerticalAlignment.TOP, HasTitle.HorizontalAlignment.LEFT,
                                       HasTitle.ReferencePosition.OUTSIDE, HasTitle.Orientation.VERTICAL);
-        verify(view).setMargins(new Maps.Builder()
-                                        .put(HasTitle.VerticalAlignment.TOP, 10d)
-                                        .put(HasTitle.HorizontalAlignment.LEFT, 10d)
-                                        .put(HasTitle.HorizontalAlignment.RIGHT, 50d)
-                                        .build());
+        verify(view).setMargins(Map.of(HasTitle.VerticalAlignment.TOP, 10d,
+                                        HasTitle.HorizontalAlignment.LEFT, 10d,
+                                        HasTitle.HorizontalAlignment.RIGHT, 50d));
         verify(view).setTextSizeConstraints(SIZE_CONSTRAINTS);
     }
 
