@@ -1509,6 +1509,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       {props.workspaceFile.extension === "dmn" && (
                         <KieSandboxExtendedServicesButtons
                           workspace={workspace}
+                          workspaceFile={props.workspaceFile}
                           editorPageDock={props.editorPageDock}
                         />
                       )}

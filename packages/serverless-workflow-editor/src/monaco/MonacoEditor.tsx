@@ -17,7 +17,8 @@
 import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { buildEditor, MonacoEditorApi } from "./augmentation";
-import * as path from "path";
+import { EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
 interface Props {
   content: string;
@@ -26,30 +27,32 @@ interface Props {
 }
 
 export interface MonacoEditorRef {
-  undo(): Promise<void>;
-  redo(): Promise<void>;
+  undo(): void;
+  redo(): void;
+  getContent(): string;
+  setTheme(theme: EditorTheme): void;
 }
 
 const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorRef | undefined, Props> = (
   { content, fileName, onContentChange },
   forwardedRef
 ) => {
+  const envelopeContext = useKogitoEditorEnvelopeContext();
   const editorContainer = useRef<HTMLDivElement>(null);
   const monacoInstance: MonacoEditorApi = useMemo<MonacoEditorApi>(() => {
-    return buildEditor(content, fileName, onContentChange);
+    return buildEditor(content, fileName, onContentChange, envelopeContext.operatingSystem);
   }, [content, fileName]);
+  const [theme] = useSharedValue(envelopeContext.channelApi.shared.kogitoEditor_theme);
 
   useEffect(() => {
-    if (editorContainer.current) {
-      monacoInstance.show(editorContainer.current);
+    if (theme === undefined) {
+      return;
     }
 
-    return () => {
-      if (monacoInstance) {
-        monacoInstance.dispose();
-      }
-    };
-  }, [content, fileName]);
+    if (editorContainer.current) {
+      monacoInstance.show(editorContainer.current, theme);
+    }
+  }, [monacoInstance, content, fileName, theme]);
 
   useImperativeHandle(
     forwardedRef,
@@ -57,11 +60,15 @@ const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorRef 
       return {
         redo: () => {
           monacoInstance.redo();
-          return Promise.resolve();
         },
         undo: () => {
           monacoInstance.undo();
-          return Promise.resolve();
+        },
+        getContent: () => {
+          return monacoInstance.getContent();
+        },
+        setTheme: (theme) => {
+          monacoInstance.setTheme(theme);
         },
       };
     },

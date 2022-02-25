@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.RuntimeClientLoader;
 import org.dashbuilder.client.RuntimeCommunication;
 import org.dashbuilder.client.navbar.AppNavBar;
@@ -99,10 +100,11 @@ public class RouterScreen {
 
     public void doRoute() {
         clientLoader.load(this::route,
-                          (a, t) -> {
-                              runtimeCommunication.showWarning(i18n.errorLoadingBackend(), t);
-                              placeManager.goTo(EmptyPerspective.ID);
-                          });
+                (a, t) -> {
+                    runtimeCommunication.showSuccess(i18n.clientMode(), t);
+                    appNavBar.setClientOnly(true);
+                    placeManager.goTo(EmptyPerspective.ID);
+                });
     }
 
     protected void route(RuntimeServiceResponse response) {
@@ -115,14 +117,20 @@ public class RouterScreen {
         }
 
         if (runtimeModelOp.isPresent()) {
-            RuntimeModel runtimeModel = runtimeModelOp.get();
+            var runtimeModel = runtimeModelOp.get();
+            var layoutTemplates = runtimeModel.getLayoutTemplates();
             appNavBar.setDisplayMainMenu(true);
             placeManager.goTo(RuntimePerspective.ID);
             runtimeScreen.loadDashboards(runtimeModel);
-            runtimeScreen.goToIndex(runtimeModel.getLayoutTemplates());
+            runtimeScreen.goToIndex(layoutTemplates);
+
+            if (clientLoader.isOffline()) {
+                var navBarEl = (HTMLElement) appNavBar.getElement();
+                navBarEl.style.display = layoutTemplates.size() == 1 ? "none" : "block";
+            }
             return;
         }
-        
+
         appNavBar.setDisplayMainMenu(false);
 
         if (response.getAvailableModels().isEmpty()) {
@@ -133,7 +141,7 @@ public class RouterScreen {
         if (!response.isAllowUpload()) {
             dashboardsListScreen.disableUpload();
         }
-        
+
         runtimeScreen.clearCurrentSelection();
         dashboardsListScreen.loadList(response.getAvailableModels());
         placeManager.goTo(DashboardsListPerspective.ID);
@@ -149,18 +157,18 @@ public class RouterScreen {
 
     public void loadDashboard(String importId) {
         String newUrl = GWT.getHostPageBaseURL() + "?" +
-                        RuntimeClientLoader.IMPORT_ID_PARAM + "=" +
-                        importId;
+                RuntimeClientLoader.IMPORT_ID_PARAM + "=" +
+                importId;
         DomGlobal.window.history.replaceState(null,
-                                              "Dashbuilder Runtime |" + importId,
-                                              newUrl);
+                "Dashbuilder Runtime |" + importId,
+                newUrl);
         doRoute();
     }
 
     public void listDashboards() {
         DomGlobal.window.history.replaceState(null,
-                                              "Dashbuilder Runtime",
-                                              GWT.getHostPageBaseURL());
+                "Dashbuilder Runtime",
+                GWT.getHostPageBaseURL());
         doRoute();
     }
 

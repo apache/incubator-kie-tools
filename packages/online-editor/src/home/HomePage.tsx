@@ -286,7 +286,9 @@ export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
         </CardHeaderMain>
         <CardActions>
           <DeleteDropdownWithConfirmation
-            onDelete={() => workspaces.deleteWorkspace({ workspaceId: props.workspace.workspaceId })}
+            onDelete={() => {
+              workspaces.deleteWorkspace({ workspaceId: props.workspace.workspaceId });
+            }}
             item={
               <>
                 Delete <b>{`"${props.workspace.name}"`}</b>
@@ -373,7 +375,9 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                 <CardActions>
                   {isHovered && (
                     <DeleteDropdownWithConfirmation
-                      onDelete={() => workspaces.deleteWorkspace({ workspaceId: props.workspaceId })}
+                      onDelete={() => {
+                        workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
+                      }}
                       item={
                         <Flex flexWrap={{ default: "nowrap" }}>
                           <FlexItem>
@@ -439,7 +443,9 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                 <CardActions>
                   {isHovered && (
                     <DeleteDropdownWithConfirmation
-                      onDelete={() => workspaces.deleteWorkspace({ workspaceId: props.workspaceId })}
+                      onDelete={() => {
+                        workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
+                      }}
                       item={
                         <>
                           Delete <b>{`"${workspacePromise.data?.descriptor.name}"`}</b>

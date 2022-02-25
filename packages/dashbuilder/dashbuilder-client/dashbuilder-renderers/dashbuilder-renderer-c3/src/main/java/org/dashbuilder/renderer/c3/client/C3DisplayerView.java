@@ -27,8 +27,8 @@ import org.dashbuilder.renderer.c3.client.resources.i18n.C3DisplayerConstants;
 import org.dashbuilder.renderer.c3.mutationobserver.MutationObserverFactory;
 
 public abstract class C3DisplayerView<P extends C3Displayer>
-        extends C3AbstractDisplayerView<P>
-        implements C3Displayer.View<P> {
+                                     extends C3AbstractDisplayerView<P>
+                                     implements C3Displayer.View<P> {
 
     protected C3Chart chart;
 
@@ -41,7 +41,11 @@ public abstract class C3DisplayerView<P extends C3Displayer>
     public void updateChart(C3ChartConf conf) {
         displayerPanel.clear();
         conf.setBindto(displayerPanel.getElement());
-        chart = C3.generate(conf);
+        try {
+            chart = C3.generate(conf);
+        } catch (Exception e) {
+            logC3Error(e);
+        }
     }
 
     @Override
@@ -73,7 +77,11 @@ public abstract class C3DisplayerView<P extends C3Displayer>
             Node elementalNode = Js.cast(displayerPanel.getElement());
             if (DomGlobal.document.body.contains((elementalNode))) {
                 if (chart != null) {
-                    chart.flush();
+                    try {
+                        chart.flush();
+                    } catch (Exception e) {
+                        logC3Error(e);
+                    }
                 }
                 obs.disconnect();
             }
@@ -82,5 +90,10 @@ public abstract class C3DisplayerView<P extends C3Displayer>
         MutationObserverInit options = new MutationObserverFactory().mutationObserverInit();
         options.setChildList(true);
         observer.observe(DomGlobal.document.body, options);
+    }
+
+    private void logC3Error(Exception e) {
+        DomGlobal.console.log("Error rendering chart: " + e.getMessage());
+        DomGlobal.console.debug(e);
     }
 }
