@@ -16,6 +16,7 @@
 
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Rect } from "@kie-tools-core/guided-tour/dist/api";
+import { EditorTheme } from "./EditorTheme";
 
 /**
  * Editor component API. Implement this class to create an Editor.
@@ -41,4 +42,5 @@ export interface EditorApi {
   undo(): Promise<void>;
   redo(): Promise<void>;
   validate(): Promise<Notification[]>;
+  setTheme(theme: EditorTheme): Promise<void>;
 }
