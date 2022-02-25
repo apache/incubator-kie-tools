@@ -17,12 +17,6 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-    <groupId>org.kie</groupId>
-    <artifactId>kie-parent</artifactId>
-    <version>7.58.0.Final</version>
-  </parent>
-
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito.stunner.editors</groupId>
   <artifactId>stunner-editors-parent</artifactId>
@@ -143,28 +137,25 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
   <properties>
-    <!-- Overriding version that comes from kie-parent to enable the 'npx' goal. -->
-    <version.frontend-maven-plugin>1.12.0</version.frontend-maven-plugin>
-
-    <!-- For kie-parent and modules in kie-bom, kie-soup-bom, drools-bom, jbpm-bom and kie-dmn-bom -->
-    <version.org.kie7>7.65.0.Final</version.org.kie7>
-    <version.org.kie>8.17.0.Beta</version.org.kie>
-
-    <!-- 3.18+ breaks GWT compilation -->
-    <version.org.eclipse.jdt>3.17.0</version.org.eclipse.jdt>
-
     <!-- Properties from ERRAI parent POM -->
     <!-- The version from kie-parent is not compatible with errai-validation -->
     <version.javax.validation>1.0.0.GA</version.javax.validation>
@@ -191,20 +182,15 @@
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
     <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
-    <!-- Newer version in kie-parent causes ServiceLoader error -->
-    <version.ch.qos.logback>1.1.3</version.ch.qos.logback>
-    <!-- Synchronized with GWT 2.9.0 -->
-    <version.org.eclipse.jetty>9.2.14.v20151106</version.org.eclipse.jetty>
+
     <version.org.uberfire.latestFinal.release>1.4.0.Final</version.org.uberfire.latestFinal.release>
     <revapi.oldUberFireVersion>${version.org.uberfire.latestFinal.release}</revapi.oldUberFireVersion>
     <revapi.newUberFireVersion>${project.version}</revapi.newUberFireVersion>
-    <version.com.googlecode.jsonsimple>1.1.1</version.com.googlecode.jsonsimple>
-    <version.com.googlecode.jtype>0.1.1</version.com.googlecode.jtype>
 
     <version.org.kie.kogito.lienzo>${project.version}</version.org.kie.kogito.lienzo>
 
     <!-- Properties from KIE-WB-COMMON parent POM -->
-    <version.powermock.api.mockito2>2.0.9</version.powermock.api.mockito2>
+
     <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
     <checkstyle.header.template><![CDATA[
 ^\/\*$\n^
@@ -229,10 +215,72 @@
     <!-- TODO: Enable these flags after fixing all checkstyle issues -->
     <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
     <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
-
     <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
     <code.coverage.disabled>false</code.coverage.disabled>
+
+    <!-- REFACTORING STARTS HERE -->
+
+    <!-- General -->
+    <version.checkstyle>8.19</version.checkstyle> <!-- Last 9.3 Current Mar, 2019 VULNERABILITY fixed in 8.29-->
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.testTarget>${maven.compiler.target}</maven.compiler.testTarget>
+    <maven.compiler.testSource>${maven.compiler.source}</maven.compiler.testSource>
+
+    <!-- Maven Plugin -->
+    <version.buildhelper.plugin>3.0.0</version.buildhelper.plugin> <!-- Last 3.3.0 Current Jan, 2017 -->
+    <version.checkstyle.plugin>3.0.0</version.checkstyle.plugin> <!-- Last 3.1.2 Current Jan, 2018 -->
+    <version.clean.plugin>3.1.0</version.clean.plugin>
+    <version.compiler.plugin>3.8.0-jboss-2</version.compiler.plugin> <!-- Last 3.10.0 Current Jul, 2018 -->
+    <version.enforcer.plugin>3.0.0-M1</version.enforcer.plugin>  <!-- Last 3.22 Current Aug, 2014 -->
+    <version.failsafe.plugin>${version.surefire.plugin}</version.failsafe.plugin>
+    <version.jacoco.plugin>0.8.5</version.jacoco.plugin>
+    <version.jar.plugin>3.1.0</version.jar.plugin> <!-- Last 3.2.2 Current Apr, 2018 -->
+    <version.javadoc.plugin>3.0.1</version.javadoc.plugin> <!-- Last 3.2.2 Current May, 2018 -->
+    <version.javax.enterprise>2.0.SP1</version.javax.enterprise>
+    <version.org.eclipse.m2e.lifecycle-mapping>1.0.0</version.org.eclipse.m2e.lifecycle-mapping>
+    <version.org.jvnet.jaxb2.maven2.maven-jaxb2-plugin>0.14.0</version.org.jvnet.jaxb2.maven2.maven-jaxb2-plugin>
+    <version.org.kie.gwthelper.maven>1.3</version.org.kie.gwthelper.maven>
     <version.org.kogito.gwt-jsonix-schema-compiler>1.3.0</version.org.kogito.gwt-jsonix-schema-compiler>
+    <version.resources.plugin>3.1.0</version.resources.plugin> <!-- Last 3.2.0 Current Apr, 2018 -->
+    <version.source.plugin>3.0.1</version.source.plugin> <!-- Last 3.2.1 Current Jun, 2016 -->
+    <version.surefire.plugin>2.22.0</version.surefire.plugin> <!-- Last 3.2.2 Current Mar, 2018 -->
+    <version.war.plugin>3.2.2</version.war.plugin> <!-- Last 3.3.2 Current Jun, 2018 -->
+
+    <!-- KIE Libraries -->
+    <version.org.kie7>7.66.0.Final</version.org.kie7>
+    <version.org.kie>8.17.0.Beta</version.org.kie>
+
+    <!-- Third party Libraries -->
+    <version.ch.qos.logback>1.1.3</version.ch.qos.logback> <!-- Newer version in kie-parent causes ServiceLoader error -->
+    <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
+    <version.com.google.guava>30.1-jre</version.com.google.guava> <!-- Last 31.0.1-jre Current Dec, 2020 -->
+    <version.com.google.gwt>2.9.0</version.com.google.gwt>
+    <version.com.google.jsinterop.base>1.0.0</version.com.google.jsinterop.base>
+    <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
+    <version.javax.annotation-api>1.3.2</version.javax.annotation-api>
+    <version.net.sourceforge.cssparser>0.9.21</version.net.sourceforge.cssparser> <!-- Last 0.9.29 Current Jan, 2017 -->
+    <version.org.antlrgwt>4.8.2</version.org.antlrgwt>
+    <version.org.antlr4c3gwt>1.1.12</version.org.antlr4c3gwt>
+    <version.org.eclipse.emf.gwt>2.9.0</version.org.eclipse.emf.gwt>
+    <version.org.freemarker>2.3.31</version.org.freemarker>
+    <version.com.google.inject.guice>4.0</version.com.google.inject.guice> <!-- Last 5.1.0 Current Apr, 2015 -->
+    <version.org.gwtbootstrap3>1.0.1</version.org.gwtbootstrap3>
+    <version.org.gwtbootstrap3-extras>1.0.2</version.org.gwtbootstrap3-extras>
+    <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
+    <version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec>1.0.0.Final</version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec>
+    <version.org.jsoup>1.8.3</version.org.jsoup> <!-- Last 1.14.3 Current Aug, 2015 VULNERABILITY fixed in 1.14.1 -->
+    <version.org.w3c.css.sac>1.3</version.org.w3c.css.sac>
+
+    <!-- Test Library -->
+    <version.io.github.bonigarcia>3.8.1</version.io.github.bonigarcia>  <!-- Last 5.10 Current Jan, 2020 -->
+    <version.junit>4.13.1</version.junit> <!-- TODO CHECK missing deps loading -->
+    <version.org.assertj>3.14.0</version.org.assertj>  <!-- Last 3.22 Current Apr, 2019 -->
+    <version.com.google.gwt.gwtmockito>1.1.9</version.com.google.gwt.gwtmockito>
+    <version.org.mockito>3.6.0</version.org.mockito> <!-- Last 3.4.1 Current Oct, 2020 -->
+    <version.org.xmlunit>2.8.2</version.org.xmlunit> <!-- Last 2.9.0 Current Dec, 2020 -->
+
+    <!-- REFACTORING ENDS HERE -->
   </properties>
 
   <dependencyManagement>
@@ -248,24 +296,18 @@
 
       <dependency>
         <groupId>org.kie</groupId>
-        <artifactId>narayana-integration-bom</artifactId>
-        <version>${version.org.kie7}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie</groupId>
         <artifactId>kie-dmn-bom</artifactId>
         <version>${version.org.kie}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
 
+      <!-- There is no official Selenium BOM, so we are using one maintained by Arquillian.
+     (contains only pure Selenium deps, no ARQ deps are leaking from this BOM) -->
       <dependency>
-        <groupId>com.google.elemental2</groupId>
-        <artifactId>elemental2-dom</artifactId>
-        <version>${version.com.google.elemental2}</version>
+        <groupId>org.jboss.arquillian.selenium</groupId>
+        <artifactId>selenium-bom</artifactId>
+        <version>${version.org.jboss.arquillian.selenium}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -335,7 +377,235 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-to-slf4j</artifactId>
         <version>${version.org.apache.logging.log4j}</version>
+      </dependency> -->
+
+      <!-- REFACTORING STARTS HERE -->
+
+      <!-- KIE Libraries -->
+
+
+
+
+      <!-- Third Party Libraries -->
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${version.ch.qos.logback}</version>
       </dependency>
+
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${version.ch.qos.logback}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.elemental2</groupId>
+        <artifactId>elemental2-core</artifactId>
+        <version>${version.com.google.elemental2}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.elemental2</groupId>
+        <artifactId>elemental2-dom</artifactId>
+        <version>${version.com.google.elemental2}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.elemental2</groupId>
+        <artifactId>elemental2-promise</artifactId>
+        <version>${version.com.google.elemental2}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${version.com.google.guava}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava-gwt</artifactId>
+        <version>${version.com.google.guava}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-dev</artifactId>
+        <version>${version.com.google.gwt}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>${version.com.google.inject.guice}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>${version.com.google.inject.guice}</version>
+        <classifier>no_aop</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.jsinterop</groupId>
+        <artifactId>base</artifactId>
+        <version>${version.com.google.jsinterop.base}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.enterprise</groupId>
+        <artifactId>cdi-api</artifactId>
+        <version>${version.javax.enterprise}</version>
+        <!-- Avoid collisions with equivalent JBoss Spec APIs -->
+        <exclusions>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.interceptor</groupId>
+            <artifactId>javax.interceptor-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4gwt-runtime</artifactId>
+        <version>${version.org.antlrgwt}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.rikkola.gwt</groupId>
+        <artifactId>antlr4-c3-gwt</artifactId>
+        <version>${version.org.antlr4c3gwt}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>${version.com.thoughtworks.xstream}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.annotation</groupId>
+        <artifactId>javax.annotation-api</artifactId>
+        <version>${version.javax.annotation-api}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sourceforge.cssparser</groupId>
+        <artifactId>cssparser</artifactId>
+        <version>${version.net.sourceforge.cssparser}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipselabs</groupId>
+        <artifactId>org.eclipse.emf.gwt.ecore</artifactId>
+        <version>${version.org.eclipse.emf.gwt}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipselabs</groupId>
+        <artifactId>org.eclipse.emf.gwt.common</artifactId>
+        <version>${version.org.eclipse.emf.gwt}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.freemarker</groupId>
+        <artifactId>freemarker</artifactId>
+        <version>${version.org.freemarker}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.gwtbootstrap3</groupId>
+        <artifactId>gwtbootstrap3</artifactId>
+        <version>${version.org.gwtbootstrap3}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.gwtbootstrap3</groupId>
+        <artifactId>gwtbootstrap3-extras</artifactId>
+        <version>${version.org.gwtbootstrap3-extras}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.spec.javax.annotation</groupId>
+        <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+        <version>${version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jsoup</groupId>
+        <artifactId>jsoup</artifactId>
+        <version>${version.org.jsoup}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.w3c.css</groupId>
+        <artifactId>sac</artifactId>
+        <version>${version.org.w3c.css.sac}</version>
+      </dependency>
+
+      <!-- TEST -->
+      <dependency>
+        <groupId>io.github.bonigarcia</groupId>
+        <artifactId>webdrivermanager</artifactId>
+        <version>${version.io.github.bonigarcia}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${version.org.assertj}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.gwt.gwtmockito</groupId>
+        <artifactId>gwtmockito</artifactId>
+        <version>${version.com.google.gwt.gwtmockito}</version>
+        <exclusions>
+          <exclusion>
+            <!--  Collides with 'org.jboss.spec.javax.el:jboss-el-api_3.0_spec'  -->
+            <groupId>org.mortbay.jasper</groupId>
+            <artifactId>apache-el</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${version.org.mockito}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-core</artifactId>
+        <version>${version.org.xmlunit}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-assertj</artifactId>
+        <version>${version.org.xmlunit}</version>
+      </dependency>
+
+      <!-- REFACTORING ENDS HERE -->
     </dependencies>
   </dependencyManagement>
 
@@ -381,17 +651,6 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
 
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
@@ -501,214 +760,73 @@
 
     <pluginManagement>
       <plugins>
-        <plugin>
-          <artifactId>maven-shade-plugin</artifactId>
-          <version>3.2.1</version>
-        </plugin>
 
-        <plugin>
-          <groupId>org.codehaus.gmaven</groupId>
-          <artifactId>gmaven-plugin</artifactId>
-          <version>1.5</version>
-        </plugin>
+        <!-- REFACTORING STARTS HERE -->
 
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
-          <artifactId>gwt-maven-plugin</artifactId>
-          <version>${version.com.google.gwt}</version>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${version.buildhelper.plugin}</version>
           <executions>
             <execution>
               <goals>
-                <goal>resources</goal>
-                <goal>compile</goal>
+                <goal>parse-version</goal>
               </goals>
             </execution>
             <execution>
-              <id>clean</id>
-              <phase>clean</phase>
+              <id>add-source</id>
+              <phase>generate-sources</phase>
               <goals>
-                <goal>clean</goal>
+                <goal>add-source</goal>
               </goals>
+              <configuration>
+                <sources>
+                  <source>target/generated-sources/annotations</source>
+                </sources>
+              </configuration>
             </execution>
           </executions>
         </plugin>
 
         <plugin>
-          <groupId>org.jboss.maven.plugins</groupId>
-          <artifactId>maven-jdocbook-plugin</artifactId>
-          <version>2.3.5</version>
-          <extensions>true</extensions>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${version.checkstyle.plugin}</version>
           <dependencies>
             <dependency>
-              <groupId>org.jboss.pressgang</groupId>
-              <artifactId>pressgang-jdocbook-style</artifactId>
-              <type>jdocbook-style</type>
-              <version>2.0.0</version>
-            </dependency>
-            <dependency>
-              <groupId>org.jboss.pressgang</groupId>
-              <!--Non-namespaced version for DocBook 4.5 compatibility. For XSD namespaced version, use pressgang-xslt-ns -->
-              <artifactId>pressgang-xslt</artifactId>
-              <version>2.0.0</version>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>${version.checkstyle}</version>
+              <exclusions>
+                <exclusion>
+                  <groupId>com.sun</groupId>
+                  <artifactId>tools</artifactId>
+                </exclusion>
+              </exclusions>
             </dependency>
           </dependencies>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <configuration>
-            <includes>
-              <!-- Include integration tests from appformer and uberfire -->
-              <include>org/appformer/**/*IntegrationTest.java</include>
-              <include>org/uberfire/**/*IntegrationTest.java</include>
-              <!-- Include integration tests from kie-wb-common -->
-              <include>org/kie/workbench/**/*IntegrationTest.java</include>
-              <include>org/kie/workbench/**/*IT.java</include>
-              <!-- Include integration tests from drools-wb -->
-              <include>org/drools/workbench/**/*IntegrationTest.java</include>
-              <include>org/drools/workbench/**/*IT.java</include>
-            </includes>
-            <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
-          </configuration>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>${version.clean.plugin}</version>
         </plugin>
 
         <plugin>
-          <groupId>org.sonatype.plugins</groupId>
-          <artifactId>jarjar-maven-plugin</artifactId>
-          <version>1.5</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${version.compiler.plugin}</version>
           <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <versionRange>[1.3,)</versionRange>
-                    <goals>
-                      <goal>run</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <versionRange>[1.0,)</versionRange>
-                    <goals>
-                      <goal>copy-dependencies</goal>
-                      <goal>unpack</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>exec-maven-plugin</artifactId>
-                    <versionRange>[1.2.1,)</versionRange>
-                    <goals>
-                      <goal>java</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>gwt-maven-plugin</artifactId>
-                    <versionRange>[2.6.0,)</versionRange>
-                    <goals>
-                      <goal>resources</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <execute/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>xml-maven-plugin</artifactId>
-                    <versionRange>[1.0,)</versionRange>
-                    <goals>
-                      <goal>transform</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.jboss.maven.plugins</groupId>
-                    <artifactId>maven-jdocbook-plugin</artifactId>
-                    <versionRange>[2.3.5,)</versionRange>
-                    <goals>
-                      <goal>generate</goal>
-                      <goal>resources</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-enforcer-plugin</artifactId>
-                    <versionRange>[0.0.0,)</versionRange>
-                    <goals>
-                      <goal>enforce</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.gmaven</groupId>
-                    <artifactId>gmaven-plugin</artifactId>
-                    <versionRange>[1.5,)</versionRange>
-                    <goals>
-                      <goal>testCompile</goal>
-                      <goal>generateStubs</goal>
-                      <goal>compile</goal>
-                      <goal>generateTestStubs</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>build-helper-maven-plugin</artifactId>
-                    <versionRange>[1.7,)</versionRange>
-                    <goals>
-                      <goal>parse-version</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
+            <showDeprecation>true</showDeprecation>
+            <showWarnings>true</showWarnings>
+            <source>${maven.compiler.source}</source>
+            <target>${maven.compiler.target}</target>
+            <testSource>${maven.compiler.testSource}</testSource>
+            <testTarget>${maven.compiler.testTarget}</testTarget>
+            <compilerArgs>
+              <arg>-Xlint:unchecked</arg>
+            </compilerArgs>
           </configuration>
         </plugin>
 
@@ -855,88 +973,101 @@
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <configuration>
-            <encoding>UTF-8</encoding>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <executions>
-            <execution>
-              <goals>
-                <goal>parse-version</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>add-source</id>
-              <phase>generate-sources</phase>
-              <goals>
-                <goal>add-source</goal>
-              </goals>
-              <configuration>
-                <sources>
-                  <source>target/generated-sources/annotations</source>
-                </sources>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <extensions>true</extensions>
-          <configuration>
-            <!-- Split packages in combination with <Export-Package> causes bloated jars otherwise -->
-            <excludeDependencies>true</excludeDependencies>
-            <instructions>
-              <_removeheaders>Ignore-Package</_removeheaders>
-              <_nouses>true</_nouses>
-              <_snapshot>${osgi.snapshot.qualifier}</_snapshot>
-              <Bundle-Version>
-                ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
-              </Bundle-Version>
-            </instructions>
-            <obrRepository>NONE</obrRepository>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${version.failsafe.plugin}</version>
           <configuration>
             <includes>
-              <!-- Include all from appformer and uberfire -->
-              <include>org/appformer/**/*Test.java</include>
-              <include>org/uberfire/**/*Test.java</include>
-              <!-- Include all from kie-wb-common -->
-              <include>org/kie/workbench/**/*Test.java</include>
-              <!-- Include all from drools-wb -->
-              <include>org/drools/workbench/**/*Test.java</include>
+              <!-- Include integration tests from appformer and uberfire -->
+              <include>org/appformer/**/*IntegrationTest.java</include>
+              <include>org/uberfire/**/*IntegrationTest.java</include>
+              <!-- Include integration tests from kie-wb-common -->
+              <include>org/kie/workbench/**/*IntegrationTest.java</include>
+              <include>org/kie/workbench/**/*IT.java</include>
+              <!-- Include integration tests from drools-wb -->
+              <include>org/drools/workbench/**/*IntegrationTest.java</include>
+              <include>org/drools/workbench/**/*IT.java</include>
             </includes>
-            <excludes>
-              <!-- Exclude all from errai as each module has its own configuration -->
-              <exclude>org/jboss/errai/**/*.java</exclude>
-              <!-- Exclude integration tests from appformer and uberfire -->
-              <exclude>org/appformer/**/*IntegrationTest.java</exclude>
-              <exclude>org/uberfire/**/*IntegrationTest.java</exclude>
-              <!-- Exclude integration tests from kie-wb-common -->
-              <exclude>org/kie/workbench/**/*IntegrationTest.java</exclude>
-              <exclude>org/kie/workbench/**/*IT.java</exclude>
-              <!-- Exclude integration tests from drools-wb -->
-              <exclude>org/drools/workbench/**/*IntegrationTest.java</exclude>
-              <exclude>org/drools/workbench/**/*IT.java</exclude>
-            </excludes>
             <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
           </configuration>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${version.jar.plugin}</version>
+          <configuration>
+            <archive>
+              <index>true</index>
+              <manifest>
+                <addDefaultSpecificationEntries>
+                  true
+                </addDefaultSpecificationEntries>
+                <addDefaultImplementationEntries>
+                  true
+                </addDefaultImplementationEntries>
+              </manifest>
+              <manifestEntries>
+                <Implementation-URL>${project.url}</Implementation-URL>
+                <Java-Version>${java.version}</Java-Version>
+                <Java-Vendor>${java.vendor}</Java-Vendor>
+                <Os-Name>${os.name}</Os-Name>
+                <Os-Arch>${os.arch}</Os-Arch>
+                <Os-Version>${os.version}</Os-Version>
+                <Scm-Url>${project.scm.url}</Scm-Url>
+                <Scm-Connection>${project.scm.connection}</Scm-Connection>
+                <Scm-Revision>${buildNumber}</Scm-Revision>
+              </manifestEntries>
+            </archive>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${version.javadoc.plugin}</version>
+          <configuration>
+            <links>
+              <link>http://docs.oracle.com/javase/8/docs/api</link>
+            </links>
+            <minmemory>128m</minmemory>
+            <maxmemory>512m</maxmemory>
+            <author>false</author>
+            <breakiterator>true</breakiterator>
+            <quiet>true</quiet>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${version.jacoco.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.jvnet.jaxb2.maven2</groupId>
+          <artifactId>maven-jaxb2-plugin</artifactId>
+          <version>${version.org.jvnet.jaxb2.maven2.maven-jaxb2-plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-gwthelper-maven-plugin</artifactId>
+          <version>${version.org.kie.gwthelper.maven}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${version.resources.plugin}</version>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
+          <version>${version.source.plugin}</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -986,6 +1117,259 @@
         </plugin>
 
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${version.surefire.plugin}</version>
+          <configuration>
+            <includes>
+              <!-- Include all from appformer and uberfire -->
+              <include>org/appformer/**/*Test.java</include>
+              <include>org/uberfire/**/*Test.java</include>
+              <!-- Include all from kie-wb-common -->
+              <include>org/kie/workbench/**/*Test.java</include>
+              <!-- Include all from drools-wb -->
+              <include>org/drools/workbench/**/*Test.java</include>
+            </includes>
+            <excludes>
+              <!-- Exclude all from errai as each module has its own configuration -->
+              <exclude>org/jboss/errai/**/*.java</exclude>
+              <!-- Exclude integration tests from appformer and uberfire -->
+              <exclude>org/appformer/**/*IntegrationTest.java</exclude>
+              <exclude>org/uberfire/**/*IntegrationTest.java</exclude>
+              <!-- Exclude integration tests from kie-wb-common -->
+              <exclude>org/kie/workbench/**/*IntegrationTest.java</exclude>
+              <exclude>org/kie/workbench/**/*IT.java</exclude>
+              <!-- Exclude integration tests from drools-wb -->
+              <exclude>org/drools/workbench/**/*IntegrationTest.java</exclude>
+              <exclude>org/drools/workbench/**/*IT.java</exclude>
+            </excludes>
+            <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>gwt-maven-plugin</artifactId>
+          <version>${version.com.google.gwt}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>resources</goal>
+                <goal>compile</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>clean</id>
+              <phase>clean</phase>
+              <goals>
+                <goal>clean</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>${version.war.plugin}</version>
+        </plugin>
+
+        <!-- REFACTORING ENDS HERE -->
+
+
+
+        <plugin>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.2.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.gmaven</groupId>
+          <artifactId>gmaven-plugin</artifactId>
+          <version>1.5</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.jboss.maven.plugins</groupId>
+          <artifactId>maven-jdocbook-plugin</artifactId>
+          <version>2.3.5</version>
+          <extensions>true</extensions>
+          <dependencies>
+            <dependency>
+              <groupId>org.jboss.pressgang</groupId>
+              <artifactId>pressgang-jdocbook-style</artifactId>
+              <type>jdocbook-style</type>
+              <version>2.0.0</version>
+            </dependency>
+            <dependency>
+              <groupId>org.jboss.pressgang</groupId>
+              <!--Non-namespaced version for DocBook 4.5 compatibility. For XSD namespaced version, use pressgang-xslt-ns -->
+              <artifactId>pressgang-xslt</artifactId>
+              <version>2.0.0</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>jarjar-maven-plugin</artifactId>
+          <version>1.5</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>{org.eclipse.m2e.lifecycle-mapping}</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <versionRange>[1.3,)</versionRange>
+                    <goals>
+                      <goal>run</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <versionRange>[1.0,)</versionRange>
+                    <goals>
+                      <goal>copy-dependencies</goal>
+                      <goal>unpack</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <versionRange>[1.2.1,)</versionRange>
+                    <goals>
+                      <goal>java</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>gwt-maven-plugin</artifactId>
+                    <versionRange>[2.6.0,)</versionRange>
+                    <goals>
+                      <goal>resources</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <execute/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>xml-maven-plugin</artifactId>
+                    <versionRange>[1.0,)</versionRange>
+                    <goals>
+                      <goal>transform</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.jboss.maven.plugins</groupId>
+                    <artifactId>maven-jdocbook-plugin</artifactId>
+                    <versionRange>[2.3.5,)</versionRange>
+                    <goals>
+                      <goal>generate</goal>
+                      <goal>resources</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <versionRange>[0.0.0,)</versionRange>
+                    <goals>
+                      <goal>enforce</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.gmaven</groupId>
+                    <artifactId>gmaven-plugin</artifactId>
+                    <versionRange>[1.5,)</versionRange>
+                    <goals>
+                      <goal>testCompile</goal>
+                      <goal>generateStubs</goal>
+                      <goal>compile</goal>
+                      <goal>generateTestStubs</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <versionRange>[1.7,)</versionRange>
+                    <goals>
+                      <goal>parse-version</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <extensions>true</extensions>
+          <configuration>
+            <!-- Split packages in combination with <Export-Package> causes bloated jars otherwise -->
+            <excludeDependencies>true</excludeDependencies>
+            <instructions>
+              <_removeheaders>Ignore-Package</_removeheaders>
+              <_nouses>true</_nouses>
+              <_snapshot>${osgi.snapshot.qualifier}</_snapshot>
+              <Bundle-Version>
+                ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
+              </Bundle-Version>
+            </instructions>
+            <obrRepository>NONE</obrRepository>
+          </configuration>
+        </plugin>
+
+        <plugin>
           <groupId>org.commonjava.maven.plugins</groupId>
           <artifactId>project-sources-maven-plugin</artifactId>
           <version>1.0</version>
@@ -1004,21 +1388,6 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>versions-maven-plugin</artifactId>
           <version>2.2</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-            <links>
-              <link>http://docs.oracle.com/javase/8/docs/api</link>
-            </links>
-            <minmemory>128m</minmemory>
-            <maxmemory>512m</maxmemory>
-            <author>false</author>
-            <breakiterator>true</breakiterator>
-            <quiet>true</quiet>
-          </configuration>
         </plugin>
 
         <plugin>
@@ -1316,7 +1685,6 @@
             <plugin>
               <groupId>org.jacoco</groupId>
               <artifactId>jacoco-maven-plugin</artifactId>
-              <version>${version.jacoco.plugin}</version>
               <configuration>
                 <append>true</append>
                 <dataFile>${jacoco.exec.file}</dataFile>
