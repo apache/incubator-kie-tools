@@ -30,7 +30,7 @@ import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
 import { MonacoEditor, MonacoEditorRef } from "../monaco/MonacoEditor";
 import { MonacoEditorOperation } from "../monaco/augmentation/MonacoEditorApi";
-import { StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import { EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 
 interface Props {
   /**
@@ -112,6 +112,9 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
         validate: (): Notification[] => {
           return [];
         },
+        setTheme: (theme: EditorTheme): Promise<void> => {
+          return monacoEditorRef.current?.setTheme(theme) || Promise.resolve();
+        },
       };
     },
     []
@@ -139,6 +142,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0]);
           setDiagramOutOfSync(false);
         } else {
+          svgContainer.current!.innerHTML = "Create a workflow to see its preview here.";
           setDiagramOutOfSync(true);
         }
       } catch (e) {
@@ -157,7 +161,11 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   const panelContent = (
     <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
       <DrawerPanelBody>
-        <div style={{ height: "100%", opacity: diagramOutOfSync ? 0.5 : 1 }} ref={svgContainer} className={"mermaid"} />
+        <div
+          style={{ height: "100%", textAlign: "center", opacity: diagramOutOfSync ? 0.5 : 1 }}
+          ref={svgContainer}
+          className={"mermaid"}
+        />
       </DrawerPanelBody>
     </DrawerPanelContent>
   );

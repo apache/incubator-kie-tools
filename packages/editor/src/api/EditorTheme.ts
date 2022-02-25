@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-export * from "./Editor";
-export * from "./EditorFactory";
-export * from "./KogitoEditorEnvelopeContext";
-export * from "./KogitoEditorChannelApi";
-export * from "./KogitoEditorEnvelopeApi";
-export * from "./StateControlCommand";
-export * from "./EditorContent";
-export * from "./EditorEnvelopeLocator";
-export * from "./EditorTheme";
+export enum EditorTheme {
+  DARK,
+  LIGHT,
+  HIGH_CONTRAST,
+}
