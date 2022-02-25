@@ -1,3 +1,16 @@
+# 0.17.0 (alpha)
+
+- [KOGITO-4936](https://issues.redhat.com/browse/KOGITO-4936) - [DMN Designer] React/GWT - Import Java classes as data objects on Kogito - UI component
+- [KOGITO-6276](https://issues.redhat.com/browse/KOGITO-6276) - [DMN Designer] Integrate Import Java Classes component to JavaCodeCompletion service
+- [KOGITO-4686](https://issues.redhat.com/browse/KOGITO-4686) - Cannot open DMN/BPMN files from command line with VS Code
+- [KOGITO-6693](https://issues.redhat.com/browse/KOGITO-6693) - Java code completion configuration
+- [KOGITO-6704](https://issues.redhat.com/browse/KOGITO-6704) - [DMN Designer] Data Type Constraint overflow on Documentation page
+- [KOGITO-6421](https://issues.redhat.com/browse/KOGITO-6421) - [DMN Designer] new editor toggle sanity checks are disabled for decision tables
+- [KOGITO-6496](https://issues.redhat.com/browse/KOGITO-6496) - Remove unused/unnecessary dependencies with KIE V7 from `stunner-editors`
+- [KOGITO-6671](https://issues.redhat.com/browse/KOGITO-6771) - [DMN Designer] Question, Allowed Answers on Documentation page
+- [KOGITO-6703](https://issues.redhat.com/browse/KOGITO-6703) - [DMN Designer] Text Annotation on Documentation page
+- [KOGITO-6181](https://issues.redhat.com/browse/KOGITO-6181) - Stunner-based editors are losing focus when asked for the SVG
+
 # 0.16.0 (alpha)
 
 - [KOGITO-6144](https://issues.redhat.com/browse/KOGITO-6144) - DMN Editor missing xml-prolog for UTF-8 encoding
