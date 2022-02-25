@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/form",
-  "version": "0.0.0",
+  "version": "0.17.0",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -19,21 +19,21 @@
     "build:prod": "yarn lint && yarn test && rimraf dist && webpack"
   },
   "dependencies": {
-    "@kie-tools-core/i18n": "0.0.0",
-    "@kie-tools-core/notifications": "0.0.0",
-    "@kie-tools/i18n-common-dictionary": "0.0.0",
+    "@kie-tools-core/i18n": "0.17.0",
+    "@kie-tools-core/notifications": "0.17.0",
+    "@kie-tools/i18n-common-dictionary": "0.17.0",
     "ajv": "^6.12.6",
     "ajv-errors": "^1.0.1",
     "deep-object-diff": "^1.1.0",
     "lodash": "^4.17.21",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "uniforms": "^3.5.5",
     "uniforms-bridge-json-schema": "^3.5.5",
-    "uniforms-patternfly": "^4.7.4",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "uniforms-patternfly": "^4.7.4"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/webpack-base": "0.0.0"
+    "@kie-tools-core/webpack-base": "0.17.0",
+    "@kie-tools/build-env": "0.17.0"
   }
 }

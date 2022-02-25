@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.kie.kogito.stunner.editors</groupId>
     <artifactId>stunner-editors-parent</artifactId>
-    <version>0.0.0</version>
+    <version>0.17.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 

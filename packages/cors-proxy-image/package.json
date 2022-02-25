@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/cors-proxy-image",
-  "version": "0.0.0",
+  "version": "0.17.0",
   "private": true,
   "description": "",
   "license": "Apache-2.0",
@@ -20,7 +20,7 @@
     "build:prod": "yarn cleanup && yarn copy:cors-proxy-package && run-script-os"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@isomorphic-git/cors-proxy": "^2.7.1"
+    "@isomorphic-git/cors-proxy": "^2.7.1",
+    "@kie-tools/build-env": "0.17.0"
   }
 }

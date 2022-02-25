@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/pmml-editor-marshaller",
-  "version": "0.0.0",
+  "version": "0.17.0",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -17,7 +17,7 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0"
+    "@kie-tools/build-env": "0.17.0"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
