@@ -15,10 +15,12 @@
  */
 
 import * as vscode from "vscode";
+import { ColorThemeKind } from "vscode";
 import {
   ChannelType,
   EditorApi,
   EditorEnvelopeLocator,
+  EditorTheme,
   EnvelopeMapping,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
@@ -65,6 +67,21 @@ export class KogitoEditor implements EditorApi {
     )
   ) {}
 
+  private getEditorThemeByVscodeTheme(vscodeTheme: ColorThemeKind) {
+    switch (vscodeTheme) {
+      case ColorThemeKind.Dark:
+        return EditorTheme.DARK;
+      case ColorThemeKind.HighContrast:
+        return EditorTheme.HIGH_CONTRAST;
+      default:
+        return EditorTheme.LIGHT;
+    }
+  }
+
+  public getCurrentTheme() {
+    return this.getEditorThemeByVscodeTheme(vscode.window.activeColorTheme.kind);
+  }
+
   public getElementPosition(selector: string) {
     return this.envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(selector);
   }
@@ -91,6 +108,10 @@ export class KogitoEditor implements EditorApi {
 
   public validate() {
     return this.envelopeServer.envelopeApi.requests.kogitoEditor_validate();
+  }
+
+  public async setTheme(theme: EditorTheme) {
+    return this.envelopeServer.shared.kogitoEditor_theme.set(theme);
   }
 
   public startInitPolling(apiImpl: KogitoEditorChannelApi) {
@@ -183,5 +204,11 @@ export class KogitoEditor implements EditorApi {
         </body>
         </html>
     `;
+  }
+
+  public startListeningToThemeChanges() {
+    vscode.window.onDidChangeActiveColorTheme((colorTheme) => {
+      return this.setTheme(this.getEditorThemeByVscodeTheme(colorTheme.kind));
+    });
   }
 }
