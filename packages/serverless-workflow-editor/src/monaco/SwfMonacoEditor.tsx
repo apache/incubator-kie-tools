@@ -21,6 +21,7 @@ import { initJsonCompletion } from "./augmentation/completion";
 import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 import { useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/src/hooks";
 
 interface Props {
   content: string;
@@ -34,6 +35,7 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
 ) => {
   const container = useRef<HTMLDivElement>(null);
   const envelopeContext = useKogitoEditorEnvelopeContext();
+  const [theme] = useSharedValue(envelopeContext.channelApi.shared.kogitoEditor_theme);
 
   const controller: SwfMonacoEditorApi = useMemo<SwfMonacoEditorApi>(() => {
     if (fileName.endsWith(".sw.json")) {
@@ -44,14 +46,18 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
     }
 
     throw new Error(`Unsupported extension '${fileName}'`);
-  }, [content, fileName, onContentChange]);
+  }, [content, envelopeContext.operatingSystem, fileName, onContentChange]);
 
   useEffect(() => {
     if (!container.current) {
       return;
     }
 
-    const instance = controller.show(container.current);
+    if (theme === undefined) {
+      return;
+    }
+
+    const instance = controller.show(container.current, theme);
     const commands = initAugmentationCommands(instance);
 
     initJsonCompletion(commands);
@@ -60,9 +66,7 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
     // TODO: Add support to YAML
     // initYamlCompletion(commands);
     // initYamlWidgets(commands);
-
-    return () => controller.dispose();
-  }, [content, fileName, controller]);
+  }, [content, fileName, controller, theme]);
 
   useImperativeHandle(forwardedRef, () => controller, [controller]);
 

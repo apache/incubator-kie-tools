@@ -437,6 +437,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const value = useMemo(
     () => ({
+      storageService,
       service,
       gitService,
       fsService,
@@ -467,6 +468,7 @@ export function WorkspacesContextProvider(props: Props) {
       getFile,
     }),
     [
+      storageService,
       addEmptyFile,
       addFile,
       existsFile,

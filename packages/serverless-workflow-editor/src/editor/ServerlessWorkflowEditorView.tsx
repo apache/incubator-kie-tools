@@ -16,6 +16,7 @@
 import {
   Editor,
   EditorApi,
+  EditorTheme,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
@@ -75,6 +76,10 @@ export class ServerlessWorkflowEditorView implements Editor {
   }
 
   public async validate(): Promise<Notification[]> {
-    return Promise.resolve(this.editorRef.current!.validate());
+    return this.editorRef.current!.validate();
+  }
+
+  public async setTheme(theme: EditorTheme) {
+    return this.editorRef.current!.setTheme(theme);
   }
 }

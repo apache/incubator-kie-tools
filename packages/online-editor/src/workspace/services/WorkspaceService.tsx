@@ -28,6 +28,8 @@ import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./WorkspaceFsService";
 import { WorkspaceOrigin } from "../model/WorkspaceOrigin";
 
+export const WORKSPACES_BROADCAST_CHANNEL = "workspaces";
+
 export class WorkspaceService {
   public constructor(
     public readonly storageService: StorageService,
@@ -53,7 +55,7 @@ export class WorkspaceService {
         : args.storeFiles(await this.fsService.getWorkspaceFs(workspace.workspaceId), workspace));
 
       if (args.broadcastArgs.broadcast) {
-        const broadcastChannel1 = new BroadcastChannel("workspaces");
+        const broadcastChannel1 = new BroadcastChannel(WORKSPACES_BROADCAST_CHANNEL);
         const broadcastChannel2 = new BroadcastChannel(workspace.workspaceId);
         broadcastChannel1.postMessage({
           type: "ADD_WORKSPACE",
@@ -102,7 +104,7 @@ export class WorkspaceService {
     indexedDB.deleteDatabase(workspaceId);
 
     if (broadcastArgs.broadcast) {
-      const broadcastChannel1 = new BroadcastChannel("workspaces");
+      const broadcastChannel1 = new BroadcastChannel(WORKSPACES_BROADCAST_CHANNEL);
       const broadcastChannel2 = new BroadcastChannel(workspaceId);
       broadcastChannel1.postMessage({ type: "DELETE_WORKSPACE", workspaceId } as WorkspacesEvents);
       broadcastChannel2.postMessage({ type: "DELETE", workspaceId } as WorkspaceEvents);
@@ -115,7 +117,7 @@ export class WorkspaceService {
     if (broadcastArgs.broadcast) {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(workspaceId);
 
-      const broadcastChannel1 = new BroadcastChannel("workspaces");
+      const broadcastChannel1 = new BroadcastChannel(WORKSPACES_BROADCAST_CHANNEL);
       const broadcastChannel2 = new BroadcastChannel(workspaceId);
       broadcastChannel1.postMessage({ type: "RENAME_WORKSPACE", workspaceId } as WorkspacesEvents);
       broadcastChannel2.postMessage({ type: "RENAME", workspaceId } as WorkspaceEvents);

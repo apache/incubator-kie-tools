@@ -19,18 +19,17 @@ import { SwfMonacoEditorCommandIds } from "./augmentation/commands";
 import { initJsonSchema } from "./augmentation/language/json";
 import { initYamlSchema } from "./augmentation/language/yaml";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
+import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 
 initJsonSchema();
 initYamlSchema();
 
 export interface SwfMonacoEditorApi {
-  show: (container: HTMLDivElement) => editor.IStandaloneCodeEditor;
-  dispose: () => void;
-
+  show: (container: HTMLDivElement, theme?: EditorTheme) => editor.IStandaloneCodeEditor;
   undo: () => void;
   redo: () => void;
-
   getContent: () => string;
+  setTheme: (theme: EditorTheme) => void;
 }
 
 export enum MonacoEditorOperation {
@@ -64,30 +63,38 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
     });
   }
 
-  redo(): void {
+  public redo(): void {
     this.editor?.focus();
     this.editor?.trigger("editor", "redo", null);
   }
 
-  undo(): void {
+  public undo(): void {
     this.editor?.focus();
     this.editor?.trigger("editor", "undo", null);
   }
 
-  show(container: HTMLDivElement): editor.IStandaloneCodeEditor {
+  public setTheme(theme: EditorTheme): void {
+    editor.setTheme(this.getMonacoThemeByEditorTheme(theme));
+  }
+
+  public show(container: HTMLDivElement, theme: EditorTheme): editor.IStandaloneCodeEditor {
     if (!container) {
       throw new Error("We need a container to show the editor!");
     }
 
-    const editorInstance = editor.create(container, {
+    if (this.editor !== undefined) {
+      this.setTheme(theme);
+      return this.editor;
+    }
+
+    this.editor = editor.create(container, {
       model: this.model,
       language: this.language,
       scrollBeyondLastLine: false,
       automaticLayout: true,
       fontSize: 14,
+      theme: this.getMonacoThemeByEditorTheme(theme),
     });
-
-    this.editor = editorInstance;
 
     this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_Z, () => {
       this.onContentChange(this.model.getValue(), MonacoEditorOperation.UNDO);
@@ -103,15 +110,21 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
       });
     }
 
-    return editorInstance;
+    return this.editor;
   }
 
-  getContent(): string {
+  public getContent(): string {
     return this.editor.getModel()?.getValue() || "";
   }
 
-  dispose(): void {
-    this.model?.dispose();
-    this.editor?.dispose();
+  private getMonacoThemeByEditorTheme(theme?: EditorTheme): string {
+    switch (theme) {
+      case EditorTheme.DARK:
+        return "vs-dark";
+      case EditorTheme.HIGH_CONTRAST:
+        return "hc-black";
+      default:
+        return "vs";
+    }
   }
 }
