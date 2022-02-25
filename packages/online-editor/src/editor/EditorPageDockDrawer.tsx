@@ -168,6 +168,7 @@ export const EditorPageDockDrawer = React.forwardRef<
                     )}
                     {panel === PanelId.DMN_RUNNER_TABULAR && isDmnTableMode && (
                       <DmnRunnerTabular
+                        workspaceFile={props.workspaceFile}
                         setPanelOpen={setPanel}
                         isReady={props.isEditorReady}
                         dmnRunnerResults={dmnRunnerResults}
