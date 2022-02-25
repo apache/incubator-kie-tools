@@ -29,4 +29,5 @@ SCRIPT_URL="https://raw.githubusercontent.com/redhat-openshift-ecosystem/operato
 
 cd "${tempfolder}"
 
+export OP_TEST_ANSIBLE_PULL_REPO=https://github.com/redhat-openshift-ecosystem/operator-test-playbooks
 bash <(curl -sL "${SCRIPT_URL}") all  community-operators/kogito-operator/"${version}"
