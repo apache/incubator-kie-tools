@@ -23,7 +23,6 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
@@ -54,10 +53,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 public class DataObject extends BaseArtifacts {
 
     @Labels
-    private static final Set<String> labels = new Sets.Builder<String>()
-            .add("all")
-            .add("lane_child")
-            .build();
+    private static final Set<String> LABELS = Set.of("all", "lane_child");
 
     protected BPMNGeneralSet general;
 
@@ -96,7 +92,7 @@ public class DataObject extends BaseArtifacts {
     }
 
     public Set<String> getLabels() {
-        return labels;
+        return LABELS;
     }
 
     public BPMNGeneralSet getGeneral() {

@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.DefinitionPaletteCategoryWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
@@ -260,8 +259,7 @@ public class BS3PaletteWidgetImpl
 
     private void handleMouseDownEvent(final DefaultPaletteItem item,
                                       final PaletteItemMouseEvent event) {
-        PortablePreconditions.checkNotNull("event",
-                                           event);
+        Objects.requireNonNull(event, "Parameter named 'event' should be not null!");
         if (event.getId().equals(item.getId())) {
             final String catDefId = item.getDefinitionId();
             BS3PaletteWidgetImpl.this.onPaletteItemMouseDown(catDefId,

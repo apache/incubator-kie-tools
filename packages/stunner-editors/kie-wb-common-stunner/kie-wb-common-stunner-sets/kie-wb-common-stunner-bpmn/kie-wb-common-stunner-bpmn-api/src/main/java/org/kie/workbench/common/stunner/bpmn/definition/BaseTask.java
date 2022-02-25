@@ -23,8 +23,6 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.kie.soup.commons.util.Maps;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
@@ -45,19 +43,17 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @MorphBase(defaultType = NoneTask.class, targets = {BaseNonContainerSubprocess.class})
 public abstract class BaseTask implements BPMNViewDefinition {
 
-    public static final Set<String> TASK_LABELS = new Sets.Builder<String>()
-            .add("all")
-            .add("lane_child")
-            .add("sequence_start")
-            .add("sequence_end")
-            .add("from_task_event")
-            .add("to_task_event")
-            .add("messageflow_start")
-            .add("messageflow_end")
-            .add("fromtoall")
-            .add("ActivitiesMorph")
-            .add("cm_activity")
-            .build();
+    public static final Set<String> TASK_LABELS = Set.of("all",
+                                                         "lane_child",
+                                                         "sequence_start",
+                                                         "sequence_end",
+                                                         "from_task_event",
+                                                         "to_task_event",
+                                                         "messageflow_start",
+                                                         "messageflow_end",
+                                                         "fromtoall",
+                                                         "ActivitiesMorph",
+                                                         "cm_activity");
 
     @Category
     public static final transient String category = BPMNCategories.ACTIVITIES;
@@ -93,19 +89,11 @@ public abstract class BaseTask implements BPMNViewDefinition {
 
     public static class TaskTypeMorphPropertyBinding implements MorphPropertyValueBinding<TaskType, TaskTypes> {
 
-        private static final Map<TaskTypes, Class<?>> MORPH_TARGETS =
-                new Maps.Builder<TaskTypes, Class<?>>()
-                        .put(TaskTypes.NONE,
-                             NoneTask.class)
-                        .put(TaskTypes.USER,
-                             UserTask.class)
-                        .put(TaskTypes.SCRIPT,
-                             ScriptTask.class)
-                        .put(TaskTypes.BUSINESS_RULE,
-                             BusinessRuleTask.class)
-                        .put(TaskTypes.SERVICE_TASK,
-                             GenericServiceTask.class)
-                        .build();
+        private static final Map<TaskTypes, Class<?>> MORPH_TARGETS = Map.of(TaskTypes.NONE, NoneTask.class,
+                                                                             TaskTypes.USER, UserTask.class,
+                                                                             TaskTypes.SCRIPT, ScriptTask.class,
+                                                                             TaskTypes.BUSINESS_RULE, BusinessRuleTask.class,
+                                                                             TaskTypes.SERVICE_TASK, GenericServiceTask.class);
 
         @Override
         public TaskTypes getValue(final TaskType property) {
@@ -121,13 +109,13 @@ public abstract class BaseTask implements BPMNViewDefinition {
     @Labels
     protected final Set<String> labels = new HashSet<>(TASK_LABELS);
 
-    public BaseTask(final @MapsTo("general") TaskGeneralSet general,
-                    final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                    final @MapsTo("fontSet") FontSet fontSet,
-                    final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
-                    final @MapsTo("simulationSet") SimulationSet simulationSet,
-                    final @MapsTo("taskType") TaskType taskType,
-                    final@MapsTo("advancedData") AdvancedData advancedData) {
+    protected BaseTask(final @MapsTo("general") TaskGeneralSet general,
+                       final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                       final @MapsTo("fontSet") FontSet fontSet,
+                       final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                       final @MapsTo("simulationSet") SimulationSet simulationSet,
+                       final @MapsTo("taskType") TaskType taskType,
+                       final@MapsTo("advancedData") AdvancedData advancedData) {
         this.general = general;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;

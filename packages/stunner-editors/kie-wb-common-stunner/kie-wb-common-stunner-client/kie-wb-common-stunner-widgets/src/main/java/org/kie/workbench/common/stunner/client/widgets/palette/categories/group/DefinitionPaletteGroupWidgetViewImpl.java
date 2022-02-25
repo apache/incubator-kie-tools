@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.categories.group;
 
+import java.util.Objects;
+
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -27,7 +29,6 @@ import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
 
 @Templated
@@ -57,9 +58,7 @@ public class DefinitionPaletteGroupWidgetViewImpl implements DefinitionPaletteGr
 
     @Override
     public void addItem(DefinitionPaletteItemWidget categoryItem) {
-
-        PortablePreconditions.checkNotNull("categoryItem",
-                                           categoryItem);
+        Objects.requireNonNull(categoryItem, "Parameter named 'categoryItem' should be not null!");
         this.getElement().appendChild(categoryItem.getElement());
     }
 
