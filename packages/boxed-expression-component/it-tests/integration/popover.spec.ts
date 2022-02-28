@@ -58,7 +58,7 @@ describe("Context Expression Tests", () => {
     cy.ouiaId("expression-popover-menu").contains("Edit Expression").click();
 
     // context menu should be open. This check is to check that the context menu is not closed after data type selection
-    cy.ouiaId("expression-popover-menu").should("be.visible").type("{esc}").wait(500);
+    cy.ouiaId("expression-popover-menu").should("be.visible").type("{esc}").should("not.exist");
 
     // Assert expression name not to be changed
     cy.get("@ExpressionNameCell").find(".label").should("contain.text", "Expression Name");
