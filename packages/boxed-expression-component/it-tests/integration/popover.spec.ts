@@ -27,7 +27,7 @@ describe("Context Expression Tests", () => {
     cy.ouiaId("expression-popover-menu").contains("Context").click({ force: true });
   });
 
-  it("should user can cancel edit of data type in context menu of header cell by pressing escape", () => {
+  it("Cancel edit of expression data type in context menu of header cell by pressing escape", () => {
     // open the context menu
     cy.contains("th", "Expression Name").as("ExpressionNameCell").click();
 
@@ -50,7 +50,7 @@ describe("Context Expression Tests", () => {
     cy.get("@ExpressionNameCell").find(".data-type").should("contain.text", "Undefined");
   });
 
-  it("should user can cancel edit of expression name in context menu of header cell by pressing escape", () => {
+  it("Cancel edit of expression name in context menu of header cell by pressing escape", () => {
     // open the context menu
     cy.contains("th", "Expression Name").as("ExpressionNameCell").click();
 
@@ -67,7 +67,7 @@ describe("Context Expression Tests", () => {
     cy.get("@ExpressionNameCell").find(".label").should("contain.text", "Expression Name");
   });
 
-  it("the header cell's context menu should have original values", () => {
+  it("The header cell's context menu should have original values", () => {
     // open the context menu
     cy.contains("th", "Expression Name").as("ExpressionNameCell").click();
 
