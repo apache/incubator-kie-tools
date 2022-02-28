@@ -71,8 +71,6 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
         return;
       }
 
-      // setIsVisible(false);
-
       if (event instanceof KeyboardEvent && /^esc.*/i.test(event?.key)) {
         onCancel(event);
       } else {
