@@ -69,7 +69,7 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
   const [isVisible] = useState(false);
 
   const shouldOpen = useCallback((showFunction?: () => void) => {
-    showFunction && showFunction();
+    showFunction?.();
   }, []);
 
   const shouldClose = useCallback(
@@ -85,7 +85,7 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
         onHide();
       }
 
-      hideFunction && hideFunction();
+      hideFunction?.();
     },
     [onCancel, onHide]
   );
