@@ -24,12 +24,5 @@ declare namespace Cypress {
     ouiaId(id: string, opts?: Record<string, any>): Chainable<Element>;
 
     ouiaType(type: string, opts?: Record<string, any>): Chainable<Element>;
-
-    /**
-     * Type tab. This should be supported in future Cypress version and this function can be removed after that.
-     * Requires the selected element to have the focus.
-     * https://github.com/cypress-io/cypress/issues/299
-     */
-    typeTab: (shiftKey?: boolean) => Chainable<Element>;
   }
 }
