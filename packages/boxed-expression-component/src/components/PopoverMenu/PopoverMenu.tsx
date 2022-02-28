@@ -61,7 +61,6 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
   const [isVisible, setIsVisible] = useState(false);
 
   const shouldOpen = useCallback((showFunction?: () => void, event?: MouseEvent | KeyboardEvent) => {
-    // setIsVisible(true);
     showFunction && showFunction();
   }, []);
 
