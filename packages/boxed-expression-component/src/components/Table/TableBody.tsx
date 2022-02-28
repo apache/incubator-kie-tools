@@ -199,20 +199,18 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   const renderAdditiveRow = useCallback(
     (rowIndex: number) => (
       <Tr className="table-row additive-row">
-        <Td role="cell" className="empty-cell" tabIndex={-1} onKeyDown={(e) => onKeyDown(rowIndex)(e)}>
-          <br />
-        </Td>
+        <TdAdditiveCell isEmptyCell={true} rowIndex={rowIndex} onKeyDown={onKeyDown} />
         {children?.map((child, childIndex) => {
           return (
-            <Td
-              role="cell"
+            <TdAdditiveCell
               key={childIndex}
-              className="row-remainder-content"
-              tabIndex={-1}
-              onKeyDown={(e) => onKeyDown(rowIndex)(e)}
+              cellIndex={childIndex}
+              isEmptyCell={false}
+              rowIndex={rowIndex}
+              onKeyDown={onKeyDown}
             >
               {child}
-            </Td>
+            </TdAdditiveCell>
           );
         })}
       </Tr>
@@ -303,6 +301,37 @@ function TdCell({
       className={`${cellType}`}
     >
       {cellTemplate}
+    </Td>
+  );
+}
+interface TdAdditiveCellProps {
+  children?: React.ReactElement;
+  cellIndex?: number;
+  isEmptyCell?: boolean;
+  onKeyDown: (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
+  rowIndex: number;
+}
+
+function TdAdditiveCell({ children, cellIndex, isEmptyCell = false, onKeyDown, rowIndex }: TdAdditiveCellProps) {
+  const tdRef = useRef<HTMLTableCellElement>(null);
+
+  useEffect(() => {
+    // Typescript don't accept the conversion between DOM event and React event
+    const onKeyDownForIndex: any = onKeyDown(rowIndex);
+    const cell = tdRef.current;
+    cell?.addEventListener("keydown", onKeyDownForIndex);
+    return () => {
+      cell?.removeEventListener("keydown", onKeyDownForIndex);
+    };
+  }, [onKeyDown, rowIndex]);
+
+  return isEmptyCell ? (
+    <Td ref={tdRef} role="cell" className="empty-cell" tabIndex={-1}>
+      <br />
+    </Td>
+  ) : (
+    <Td ref={tdRef} role="cell" key={cellIndex} className="row-remainder-content" tabIndex={-1}>
+      {children}
     </Td>
   );
 }
