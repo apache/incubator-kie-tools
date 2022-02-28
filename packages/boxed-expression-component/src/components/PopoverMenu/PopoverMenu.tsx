@@ -37,11 +37,11 @@ export interface PopoverMenuProps {
   /** Popover min width */
   minWidth?: string;
   /**
-   * Lifecycle function invoked when the popover has fully transitioned out.
+   * Lifecycle function invoked when the popover has fully transitioned out, called when the user click outside the popover.
    */
   onHide?: () => void;
   /**
-   * Lifecycle function invoked when the popover has fully transitioned out.
+   * Lifecycle function invoked when the popover has fully transitioned out, called when the user press "Esc" key.
    */
   onCancel?: (event?: MouseEvent | KeyboardEvent) => void;
 }
