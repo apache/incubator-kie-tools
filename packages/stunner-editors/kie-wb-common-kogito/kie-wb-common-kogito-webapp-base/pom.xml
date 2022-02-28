@@ -10,6 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
+  <description>Kie Workbench - Common - WebApp - Base</description>
   <packaging>jar</packaging>
 
   <properties>
