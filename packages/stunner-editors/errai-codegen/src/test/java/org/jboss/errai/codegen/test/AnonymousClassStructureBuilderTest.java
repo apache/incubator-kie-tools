@@ -16,9 +16,6 @@
 
 package org.jboss.errai.codegen.test;
 
-import static org.jboss.errai.codegen.meta.MetaClassFactory.parameterizedAs;
-import static org.jboss.errai.codegen.meta.MetaClassFactory.typeParametersOf;
-
 import java.lang.annotation.Retention;
 
 import org.jboss.errai.codegen.Context;
@@ -33,6 +30,9 @@ import org.jboss.errai.codegen.test.model.Bar;
 import org.jboss.errai.codegen.test.model.Mrshlr;
 import org.jboss.errai.codegen.util.Stmt;
 import org.junit.Test;
+
+import static org.jboss.errai.codegen.meta.MetaClassFactory.parameterizedAs;
+import static org.jboss.errai.codegen.meta.MetaClassFactory.typeParametersOf;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

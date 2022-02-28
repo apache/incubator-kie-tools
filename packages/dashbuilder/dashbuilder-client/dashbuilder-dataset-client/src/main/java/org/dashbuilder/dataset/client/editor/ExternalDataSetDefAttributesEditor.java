@@ -16,10 +16,9 @@
 
 package org.dashbuilder.dataset.client.editor;
 
+import com.google.gwt.editor.client.ValueAwareEditor;
 import org.dashbuilder.common.client.editor.LeafAttributeEditor;
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
-
-import com.google.gwt.editor.client.ValueAwareEditor;
 
 /**
  * <p>The GWT editor contract for the specific attributes of type <code>org.dashbuilder.dataset.def.ExternalDataSetDef</code>.</p>

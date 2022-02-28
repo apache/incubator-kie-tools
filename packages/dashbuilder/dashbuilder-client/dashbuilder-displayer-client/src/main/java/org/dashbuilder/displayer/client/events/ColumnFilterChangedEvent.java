@@ -15,7 +15,6 @@
  */
 package org.dashbuilder.displayer.client.events;
 
-import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.dashbuilder.displayer.client.widgets.filter.ColumnFilterEditor;
 
 public class ColumnFilterChangedEvent {

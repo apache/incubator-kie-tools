@@ -16,15 +16,15 @@
 
 package org.jboss.errai.ui.test.producer.client;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import com.google.gwt.dom.client.DivElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * @author Tiago Bento <tfernand@redhat.com>

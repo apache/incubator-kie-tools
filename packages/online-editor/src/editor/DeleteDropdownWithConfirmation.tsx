@@ -25,19 +25,31 @@ import {
 } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 
-export function DeleteDropdownWithConfirmation(props: { onDelete: () => void; item: React.ReactNode }) {
+export function DeleteDropdownWithConfirmation(
+  props: {
+    onDelete: () => void;
+    item: React.ReactNode;
+    label?: string;
+    isHoverable?: boolean;
+  } = { onDelete: () => {}, item: <></>, isHoverable: true }
+) {
   const [isDeleteDropdownOpen, setDeleteDropdownOpen] = useState(false);
   return (
     <Dropdown
       onClick={(e) => e.stopPropagation()}
-      className={"kie-tools--masthead-hoverable"}
+      className={props.isHoverable ? "kie-tools--masthead-hoverable" : ""}
       onSelect={() => setDeleteDropdownOpen(false)}
       isOpen={isDeleteDropdownOpen}
       isPlain={true}
       position={DropdownPosition.right}
       toggle={
-        <DropdownToggle toggleIndicator={null} onToggle={setDeleteDropdownOpen} onClick={(e) => e.stopPropagation()}>
-          <TrashIcon />
+        <DropdownToggle
+          icon={<TrashIcon />}
+          toggleIndicator={null}
+          onToggle={setDeleteDropdownOpen}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {props.label}
         </DropdownToggle>
       }
       dropdownItems={[

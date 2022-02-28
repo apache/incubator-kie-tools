@@ -16,8 +16,8 @@
 package org.dashbuilder.dataset.engine.index;
 
 import java.util.AbstractList;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A read-only list implementation that aggregates a set of sub lists.

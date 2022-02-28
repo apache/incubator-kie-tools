@@ -15,18 +15,13 @@
 package org.eclipse.dd.di.impl;
 
 import com.google.gwt.user.client.rpc.GwtTransient;
-
 import org.eclipse.dd.dc.Bounds;
-
 import org.eclipse.dd.di.DiPackage;
 import org.eclipse.dd.di.Shape;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**

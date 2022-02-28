@@ -16,14 +16,14 @@
 
 package org.jboss.errai.ioc.tests.qualifiers.client;
 
+import java.lang.annotation.Annotation;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
 import org.jboss.errai.ioc.client.QualifierEqualityFactory;
 import org.jboss.errai.ioc.client.QualifierEqualityFactoryProvider;
 import org.jboss.errai.ioc.client.QualifierUtil;
 import org.jboss.errai.ioc.tests.qualifiers.client.res.LesAnno;
-
-import java.lang.annotation.Annotation;
 
 /**
  * @author Mike Brock

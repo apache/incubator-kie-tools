@@ -20,13 +20,12 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.junit.client.GWTTestCase;
 import org.jboss.errai.common.client.logging.LoggingHandlerConfigurator;
 import org.jboss.errai.common.client.logging.handlers.ErraiSystemLogHandler;
 import org.jboss.errai.ioc.client.Container;
 import org.jboss.errai.ioc.client.container.IOC;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.junit.client.GWTTestCase;
 
 /**
  * @author Mike Brock

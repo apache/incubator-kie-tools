@@ -16,11 +16,11 @@
 
 package org.jboss.errai.ui.rebind.ioc.element;
 
+import java.util.Collection;
+
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.impl.java.JavaReflectionClass;
 import org.junit.Test;
-
-import java.util.Collection;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;

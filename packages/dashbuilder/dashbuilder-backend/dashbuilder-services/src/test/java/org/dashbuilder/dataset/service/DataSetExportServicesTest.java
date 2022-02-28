@@ -1,13 +1,9 @@
 package org.dashbuilder.dataset.service;
 
-import org.apache.poi.xssf.streaming.SXSSFRow;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetDefRegistryCDI;
 import org.dashbuilder.dataset.DataSetFactory;
 import org.dashbuilder.dataset.DataSetManagerCDI;
 import org.dashbuilder.exception.ExceptionManager;
-import org.dashbuilder.project.storage.ProjectStorageServices;
 import org.dashbuilder.project.storage.impl.ProjectStorageServicesImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -16,7 +12,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataSetExportServicesTest {

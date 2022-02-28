@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dashbuilder.dataset.date.TimeFrame;
 import org.dashbuilder.dataset.filter.CoreFunctionFilter;
 import org.dashbuilder.dataset.filter.CoreFunctionType;
-import org.dashbuilder.dataset.date.TimeFrame;
 
 public class CoreFunction extends DataSetFunction {
 

@@ -15,7 +15,18 @@
  */
 package org.uberfire.ext.layout.editor.client.infra;
 
-import org.uberfire.ext.layout.editor.api.css.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.enterprise.context.ApplicationScoped;
+
+import org.uberfire.ext.layout.editor.api.css.CssAllowedValue;
+import org.uberfire.ext.layout.editor.api.css.CssProperty;
+import org.uberfire.ext.layout.editor.api.css.CssValue;
+import org.uberfire.ext.layout.editor.api.css.CssValueType;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutElementWithProperties;
 import org.uberfire.ext.layout.editor.client.components.container.Container;
@@ -28,10 +39,6 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.ext.properties.editor.model.PropertyEditorType;
 import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
-
-import javax.enterprise.context.ApplicationScoped;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class LayoutEditorCssHelper {

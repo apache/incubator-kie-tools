@@ -15,9 +15,10 @@
  */
 package org.dashbuilder.renderer.c3.client;
 
-import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.i18n.client.NumberFormat;
+import elemental2.core.JsObject;
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataColumn;
@@ -41,10 +42,6 @@ import org.dashbuilder.renderer.c3.client.jsbinding.C3Padding;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3Point;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3Selection;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3Tick;
-
-import com.google.gwt.i18n.client.NumberFormat;
-
-import elemental2.core.JsObject;
 
 public abstract class C3Displayer<V extends C3Displayer.View> extends C3AbstractDisplayer<V> {
     

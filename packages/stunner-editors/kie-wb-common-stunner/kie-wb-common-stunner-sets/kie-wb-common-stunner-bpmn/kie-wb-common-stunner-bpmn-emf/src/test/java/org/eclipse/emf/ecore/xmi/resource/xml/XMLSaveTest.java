@@ -20,8 +20,6 @@ import com.google.gwt.xml.client.Attr;
 import com.google.gwt.xml.client.Node;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.impl.BaseElementImpl;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.xmi.util.GwtDOMHandler;
 import org.junit.Before;
@@ -32,7 +30,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;

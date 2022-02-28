@@ -25,11 +25,10 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.validation.metadata.BeanDescriptor;
 
-import org.jboss.errai.databinding.client.BindableProxy;
-import org.jboss.errai.databinding.client.api.Bindable;
-
 import com.google.gwt.validation.client.impl.AbstractGwtValidator;
 import com.google.gwt.validation.client.impl.GwtValidationContext;
+import org.jboss.errai.databinding.client.BindableProxy;
+import org.jboss.errai.databinding.client.api.Bindable;
 
 /**
  * Wrapper for the generated {@link Validator} to support validation of {@link Bindable} types.

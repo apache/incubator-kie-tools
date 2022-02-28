@@ -19,7 +19,7 @@ import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "re
 import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
-import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
+import { DmnRunnerDispatchContext, DmnRunnerStateContext, InputRow } from "./DmnRunnerContext";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { QueryParams } from "../../navigation/Routes";
@@ -33,6 +33,7 @@ import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnSchema } from "@kie-tools/form/dist/dmn";
 import { useSettings } from "../../settings/SettingsContext";
+import { useDmnRunnerInputs } from "../../dmnRunnerInputs/DmnRunnerInputsHook";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
@@ -47,12 +48,19 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const workspaces = useWorkspaces();
   const settings = useSettings();
+  const {
+    inputRows,
+    setInputRows,
+    didUpdateInputRows,
+    setDidUpdateInputRows,
+    didUpdateOutputRows,
+    setDidUpdateOutputRows,
+  } = useDmnRunnerInputs(props.workspaceFile);
 
   const [error, setError] = useState(false);
   const [jsonSchema, setJsonSchema] = useState<DmnSchema | undefined>(undefined);
   const [isExpanded, setExpanded] = useState(false);
   const [mode, setMode] = useState(DmnRunnerMode.FORM);
-  const [inputRows, setInputRows] = useState([{}]);
   const [currentInputRowIndex, setCurrentInputRowIndex] = useState<number>(0);
 
   const status = useMemo(() => {
@@ -108,7 +116,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
 
     updateFormSchema();
-  }, [updateFormSchema, props.workspaceFile.extension]);
+  }, [updateFormSchema, props.workspaceFile.extension, props.workspaceFile]);
 
   const validate = useCallback(async () => {
     if (props.workspaceFile.extension !== "dmn") {
@@ -149,7 +157,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     }
 
     try {
-      setInputRows([jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!)]);
+      setInputRows([jsonParseWithDate(queryParams.get(QueryParams.DMN_RUNNER_FORM_INPUTS)!) as InputRow]);
       setExpanded(true);
     } catch (e) {
       console.error(`Cannot parse "${QueryParams.DMN_RUNNER_FORM_INPUTS}"`, e);
@@ -159,7 +167,7 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
         search: routes.editor.queryArgs(queryParams).without(QueryParams.DMN_RUNNER_FORM_INPUTS).toString(),
       });
     }
-  }, [jsonSchema, history, routes, queryParams]);
+  }, [jsonSchema, history, routes, queryParams, setInputRows, props.workspaceFile]);
 
   const prevKieSandboxExtendedServicesStatus = usePrevious(kieSandboxExtendedServices.status);
   useEffect(() => {
@@ -187,27 +195,42 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
   const dmnRunnerDispatch = useMemo(
     () => ({
       preparePayload,
-      setInputRows,
       setCurrentInputRowIndex,
       setExpanded,
       setError,
+      setInputRows,
+      setDidUpdateInputRows,
+      setDidUpdateOutputRows,
       setMode,
     }),
-    [preparePayload]
+    [preparePayload, setDidUpdateInputRows, setDidUpdateOutputRows, setInputRows]
   );
 
   const dmnRunnerState = useMemo(
     () => ({
-      inputRows,
       currentInputRowIndex,
       error,
+      inputRows,
+      didUpdateInputRows,
       isExpanded,
-      mode,
       jsonSchema,
+      mode,
+      didUpdateOutputRows,
       service,
       status,
     }),
-    [inputRows, error, jsonSchema, isExpanded, mode, service, status, currentInputRowIndex]
+    [
+      currentInputRowIndex,
+      didUpdateInputRows,
+      didUpdateOutputRows,
+      error,
+      inputRows,
+      isExpanded,
+      jsonSchema,
+      mode,
+      service,
+      status,
+    ]
   );
 
   return (

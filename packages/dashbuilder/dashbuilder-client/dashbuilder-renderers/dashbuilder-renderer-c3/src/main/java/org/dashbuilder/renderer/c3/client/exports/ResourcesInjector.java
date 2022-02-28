@@ -15,9 +15,8 @@
  */
 package org.dashbuilder.renderer.c3.client.exports;
 
-import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
-
 import com.google.gwt.core.client.ScriptInjector;
+import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 
 public class ResourcesInjector {
 

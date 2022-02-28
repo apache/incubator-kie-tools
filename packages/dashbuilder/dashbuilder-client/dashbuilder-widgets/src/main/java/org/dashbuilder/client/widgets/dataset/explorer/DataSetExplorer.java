@@ -15,14 +15,6 @@
  */
 package org.dashbuilder.client.widgets.dataset.explorer;
 
-import static org.dashbuilder.dataprovider.DataSetProviderType.BEAN;
-import static org.dashbuilder.dataprovider.DataSetProviderType.CSV;
-import static org.dashbuilder.dataprovider.DataSetProviderType.EXTERNAL;
-import static org.dashbuilder.dataprovider.DataSetProviderType.KAFKA;
-import static org.dashbuilder.dataprovider.DataSetProviderType.PROMETHEUS;
-import static org.dashbuilder.dataprovider.DataSetProviderType.SQL;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -34,6 +26,8 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.client.widgets.common.DataSetEditorPlugin;
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.client.DataSetClientServices;
@@ -44,8 +38,13 @@ import org.dashbuilder.dataset.events.DataSetDefRemovedEvent;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.UberView;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import static org.dashbuilder.dataprovider.DataSetProviderType.BEAN;
+import static org.dashbuilder.dataprovider.DataSetProviderType.CSV;
+import static org.dashbuilder.dataprovider.DataSetProviderType.EXTERNAL;
+import static org.dashbuilder.dataprovider.DataSetProviderType.KAFKA;
+import static org.dashbuilder.dataprovider.DataSetProviderType.PROMETHEUS;
+import static org.dashbuilder.dataprovider.DataSetProviderType.SQL;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * <p>Data Set Explorer widget.</p>

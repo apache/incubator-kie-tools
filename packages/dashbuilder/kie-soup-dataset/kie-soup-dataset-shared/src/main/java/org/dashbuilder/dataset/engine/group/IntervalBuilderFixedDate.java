@@ -22,9 +22,13 @@ import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.dataset.engine.DataSetHandler;
 import org.dashbuilder.dataset.group.ColumnGroup;
 import org.dashbuilder.dataset.group.DateIntervalType;
-import org.dashbuilder.dataset.group.Interval;
 
-import static org.dashbuilder.dataset.group.DateIntervalType.*;
+import static org.dashbuilder.dataset.group.DateIntervalType.DAY_OF_WEEK;
+import static org.dashbuilder.dataset.group.DateIntervalType.HOUR;
+import static org.dashbuilder.dataset.group.DateIntervalType.MINUTE;
+import static org.dashbuilder.dataset.group.DateIntervalType.MONTH;
+import static org.dashbuilder.dataset.group.DateIntervalType.QUARTER;
+import static org.dashbuilder.dataset.group.DateIntervalType.SECOND;
 
 /**
  * Interval builder for date columns which generates a fixed number of intervals for a given interval size.

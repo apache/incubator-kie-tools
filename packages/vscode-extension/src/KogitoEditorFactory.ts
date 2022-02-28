@@ -82,6 +82,7 @@ export class KogitoEditorFactory {
     editor.setupPanelActiveStatusChange();
     editor.setupPanelOnDidDispose();
     editor.setupWebviewContent();
+    editor.startListeningToThemeChanges();
   }
 
   private getChannelApi(editor: KogitoEditor, resourceContentService: ResourceContentService): KogitoEditorChannelApi {

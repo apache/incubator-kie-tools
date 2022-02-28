@@ -17,13 +17,16 @@ package org.uberfire.annotations.processors;
 
 import java.io.FileNotFoundException;
 import java.util.List;
+
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Tests for Splash Screen related class generation

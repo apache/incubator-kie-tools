@@ -15,18 +15,18 @@
  */
 package org.dashbuilder.renderer.c3.client;
 
-import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_AMOUNT;
-import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DATE;
-import static org.dashbuilder.dataset.group.AggregateFunctionType.SUM;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSettingsFactory;
 import org.dashbuilder.renderer.c3.client.charts.line.C3LineChartDisplayer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_AMOUNT;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DATE;
+import static org.dashbuilder.dataset.group.AggregateFunctionType.SUM;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class C3ResizableChartTest extends C3BaseTest {

@@ -16,9 +16,8 @@
 
 package org.dashbuilder.client.widgets.common;
 
-import org.dashbuilder.dataprovider.DataSetProviderType;
-
 import com.google.gwt.safehtml.shared.SafeUri;
+import org.dashbuilder.dataprovider.DataSetProviderType;
 
 public interface DataSetEditorPlugin {
 

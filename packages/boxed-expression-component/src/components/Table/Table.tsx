@@ -353,8 +353,9 @@ export const Table: React.FunctionComponent<TableProps> = ({
   );
 
   const onGetColumnKey = useCallback(
-    (column: Column) => {
-      return getColumnKey ? getColumnKey(column) : column.id!;
+    (column: ColumnInstance) => {
+      const columnId = column.originalId || column.id;
+      return getColumnKey ? getColumnKey(column) : columnId;
     },
     [getColumnKey]
   );

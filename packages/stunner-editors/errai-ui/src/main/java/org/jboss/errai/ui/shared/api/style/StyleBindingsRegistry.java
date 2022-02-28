@@ -24,9 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.errai.common.client.api.extension.InitVotes;
-
 import com.google.gwt.user.client.Element;
+import org.jboss.errai.common.client.api.extension.InitVotes;
 
 /**
  * @author Mike Brock

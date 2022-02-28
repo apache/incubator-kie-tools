@@ -15,8 +15,8 @@
  */
 package org.dashbuilder.dataset;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A set of constraints over the structure of a DataSet instance.

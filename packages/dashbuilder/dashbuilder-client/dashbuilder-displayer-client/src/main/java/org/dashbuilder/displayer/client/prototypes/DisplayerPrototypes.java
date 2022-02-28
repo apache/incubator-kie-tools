@@ -17,6 +17,7 @@ package org.dashbuilder.displayer.client.prototypes;
 
 import java.util.EnumMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -28,7 +29,10 @@ import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.MapColorScheme;
 
-import static org.dashbuilder.displayer.client.prototypes.DataSetPrototypes.*;
+import static org.dashbuilder.displayer.client.prototypes.DataSetPrototypes.COUNTRY;
+import static org.dashbuilder.displayer.client.prototypes.DataSetPrototypes.GDP_2013;
+import static org.dashbuilder.displayer.client.prototypes.DataSetPrototypes.GDP_2014;
+import static org.dashbuilder.displayer.client.prototypes.DataSetPrototypes.POPULATION;
 
 @ApplicationScoped
 public class DisplayerPrototypes {

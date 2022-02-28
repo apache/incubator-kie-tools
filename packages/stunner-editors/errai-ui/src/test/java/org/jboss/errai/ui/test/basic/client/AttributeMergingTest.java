@@ -16,13 +16,13 @@
 
 package org.jboss.errai.ui.test.basic.client;
 
-import static org.jboss.errai.ioc.client.IOCUtil.getInstance;
-
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
 import org.jboss.errai.ui.test.basic.client.res.BeanStrategy;
 import org.jboss.errai.ui.test.basic.client.res.MixedStrategy;
 import org.jboss.errai.ui.test.basic.client.res.TemplateStrategy;
+
+import static org.jboss.errai.ioc.client.IOCUtil.getInstance;
 
 public class AttributeMergingTest extends AbstractErraiCDITest {
 

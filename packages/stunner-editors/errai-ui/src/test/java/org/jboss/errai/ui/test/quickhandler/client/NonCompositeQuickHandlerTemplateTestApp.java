@@ -21,10 +21,9 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.ui.test.quickhandler.client.res.NonCompositeQuickHandlerComponent;
 import org.jboss.errai.ui.test.quickhandler.client.res.QuickHandlerComponent;
-
-import com.google.gwt.user.client.ui.RootPanel;
 
 @Dependent
 public class NonCompositeQuickHandlerTemplateTestApp implements QuickHandlerTemplateTestApp {

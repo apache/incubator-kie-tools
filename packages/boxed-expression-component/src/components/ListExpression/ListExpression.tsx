@@ -44,7 +44,7 @@ export const ListExpression: React.FunctionComponent<ListProps> = (listExpressio
   const { i18n } = useBoxedExpressionEditorI18n();
   const { boxedExpressionEditorGWTService, setSupervisorHash } = useBoxedExpression();
 
-  const generateLiteralExpression = useMemo(
+  const generateLiteralExpression = useCallback(
     () =>
       ({
         id: generateUuid(),
@@ -79,7 +79,7 @@ export const ListExpression: React.FunctionComponent<ListProps> = (listExpressio
 
   const items = useMemo(() => {
     if (listExpression.items === undefined || listExpression.items?.length === 0) {
-      return [{ entryExpression: generateLiteralExpression }];
+      return [{ entryExpression: generateLiteralExpression() }];
     } else {
       return listExpression.items.map((item) => ({ entryExpression: item }));
     }
@@ -135,7 +135,7 @@ export const ListExpression: React.FunctionComponent<ListProps> = (listExpressio
 
   const onRowAdding = useCallback(
     () => ({
-      entryExpression: generateLiteralExpression,
+      entryExpression: generateLiteralExpression(),
     }),
     [generateLiteralExpression]
   );

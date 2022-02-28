@@ -60,8 +60,7 @@ import static org.kie.workbench.common.dmn.client.editors.expressions.types.Expr
 
 public class ExpressionPropsFiller {
 
-    public static ExpressionProps buildAndFillJsInteropProp(final Expression wrappedExpression, final String expressionName, final String dataType) {
-        final String expressionId = Optional.ofNullable(wrappedExpression).map(DMNElement::getId).orElse(new Id()).getValue();
+    public static ExpressionProps buildAndFillJsInteropProp(final Expression wrappedExpression, final String expressionName, final String dataType, final String expressionId) {
         if (wrappedExpression instanceof IsLiteralExpression) {
             final LiteralExpression literalExpression = (LiteralExpression) wrappedExpression;
             final Double width = literalExpression.getComponentWidths().get(0);
@@ -100,6 +99,11 @@ public class ExpressionPropsFiller {
                                           rulesConvertForDecisionTableProps(decisionTableExpression));
         }
         return new ExpressionProps(expressionId, expressionName, dataType, null);
+    }
+
+    public static ExpressionProps buildAndFillJsInteropProp(final Expression wrappedExpression, final String expressionName, final String dataType) {
+        final String expressionId = Optional.ofNullable(wrappedExpression).map(DMNElement::getId).orElse(new Id()).getValue();
+        return buildAndFillJsInteropProp(wrappedExpression, expressionName, dataType, expressionId);
     }
 
     private static ExpressionProps contextResultConvertForContextProps(final Context contextExpression) {
@@ -163,7 +167,7 @@ public class ExpressionPropsFiller {
         final String entryName = contextEntryVariable.getName().getValue();
         final String entryDataType = contextEntryVariable.getTypeRef().getLocalPart();
         final EntryInfo entryInfo = new EntryInfo(entryId, entryName, entryDataType);
-        final ExpressionProps entryExpression = buildAndFillJsInteropProp(expression, entryName, entryDataType);
+        final ExpressionProps entryExpression = buildAndFillJsInteropProp(expression, entryName, entryDataType, entryId);
         return new ContextEntryProps(entryInfo, entryExpression);
     }
 

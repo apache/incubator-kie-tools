@@ -16,17 +16,16 @@
 
 package org.jboss.errai.common.client.logging.handlers;
 
-import static org.jboss.errai.common.client.logging.util.StackTraceFormatter.getStackTraces;
-
 import java.util.List;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import com.google.gwt.logging.client.ConsoleLogHandler;
 import org.jboss.errai.common.client.logging.formatters.ErraiSimpleFormatter;
 import org.jboss.errai.common.client.logging.util.Console;
 
-import com.google.gwt.logging.client.ConsoleLogHandler;
+import static org.jboss.errai.common.client.logging.util.StackTraceFormatter.getStackTraces;
 
 /**
  * An extension of {@link ConsoleLogHandler} that uses a given {@link Formatter} and prints stack traces that Google

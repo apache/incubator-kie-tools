@@ -15,11 +15,6 @@
  */
 package org.uberfire.client.mvp;
 
-import static java.util.Collections.unmodifiableCollection;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.plugin.PluginUtil.ensureIterable;
-import static org.uberfire.plugin.PluginUtil.toInteger;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,6 +33,12 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.SimpleEventBus;
+import jsinterop.annotations.JsMethod;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
@@ -74,13 +75,10 @@ import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
-
-import jsinterop.annotations.JsMethod;
+import static java.util.Collections.unmodifiableCollection;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.plugin.PluginUtil.ensureIterable;
+import static org.uberfire.plugin.PluginUtil.toInteger;
 
 @SharedSingleton
 @EnabledByProperty(value = "uberfire.plugin.mode.active", negated = true)

@@ -18,6 +18,7 @@ package org.uberfire.client.workbench;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

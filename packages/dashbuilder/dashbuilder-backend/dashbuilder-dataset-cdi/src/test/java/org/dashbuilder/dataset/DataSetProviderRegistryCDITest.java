@@ -15,11 +15,14 @@
  */
 package org.dashbuilder.dataset;
 
-import java.util.List;
 import java.util.Set;
+
 import javax.inject.Inject;
 
-import org.dashbuilder.dataprovider.*;
+import org.dashbuilder.dataprovider.CustomDataSetProvider;
+import org.dashbuilder.dataprovider.DataSetProvider;
+import org.dashbuilder.dataprovider.DataSetProviderRegistryCDI;
+import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.test.BaseCDITest;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
@@ -27,7 +30,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
 @Ignore("see https://issues.jboss.org/browse/RHPAM-832")

@@ -1,11 +1,10 @@
 package org.uberfire.annotations.processors;
 
+import com.google.gwt.user.client.ui.Widget;
 import elemental2.promise.Promise;
 import org.uberfire.client.annotations.WorkbenchClientEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.lifecycle.SetContent;
-
-import com.google.gwt.user.client.ui.Widget;
 
 @WorkbenchClientEditor(identifier = "editor")
 public class WorkbenchClientEditorTest5 extends Widget {

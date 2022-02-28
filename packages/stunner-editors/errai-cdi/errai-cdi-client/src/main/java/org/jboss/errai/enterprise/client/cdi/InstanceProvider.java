@@ -16,10 +16,6 @@
 
 package org.jboss.errai.enterprise.client.cdi;
 
-import static org.jboss.errai.ioc.client.IOCUtil.joinQualifiers;
-import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_ANNOTATION;
-import static org.jboss.errai.ioc.client.container.IOC.getBeanManager;
-
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,6 +29,10 @@ import org.jboss.errai.ioc.client.api.ContextualTypeProvider;
 import org.jboss.errai.ioc.client.api.IOCProvider;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
+
+import static org.jboss.errai.ioc.client.IOCUtil.joinQualifiers;
+import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_ANNOTATION;
+import static org.jboss.errai.ioc.client.container.IOC.getBeanManager;
 
 @SuppressWarnings("rawtypes")
 @IOCProvider

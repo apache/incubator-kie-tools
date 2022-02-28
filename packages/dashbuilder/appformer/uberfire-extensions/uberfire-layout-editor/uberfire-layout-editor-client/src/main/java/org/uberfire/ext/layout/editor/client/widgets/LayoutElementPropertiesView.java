@@ -15,6 +15,12 @@
  */
 package org.uberfire.ext.layout.editor.client.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.properties.editor.client.PropertyEditorWidget;
@@ -22,11 +28,6 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
-import java.util.ArrayList;
-import java.util.List;
 
 @Dependent
 public class LayoutElementPropertiesView implements LayoutElementPropertiesPresenter.View {

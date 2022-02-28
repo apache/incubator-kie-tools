@@ -15,27 +15,6 @@
  */
 package org.dashbuilder.renderer.c3.client;
 
-import static org.dashbuilder.displayer.DisplayerSubType.AREA;
-import static org.dashbuilder.displayer.DisplayerSubType.AREA_STACKED;
-import static org.dashbuilder.displayer.DisplayerSubType.BAR;
-import static org.dashbuilder.displayer.DisplayerSubType.BAR_STACKED;
-import static org.dashbuilder.displayer.DisplayerSubType.COLUMN;
-import static org.dashbuilder.displayer.DisplayerSubType.COLUMN_STACKED;
-import static org.dashbuilder.displayer.DisplayerSubType.DONUT;
-import static org.dashbuilder.displayer.DisplayerSubType.LINE;
-import static org.dashbuilder.displayer.DisplayerSubType.MAP_MARKERS;
-import static org.dashbuilder.displayer.DisplayerSubType.MAP_REGIONS;
-import static org.dashbuilder.displayer.DisplayerSubType.PIE;
-import static org.dashbuilder.displayer.DisplayerSubType.PIE_3D;
-import static org.dashbuilder.displayer.DisplayerSubType.SMOOTH;
-import static org.dashbuilder.displayer.DisplayerType.AREACHART;
-import static org.dashbuilder.displayer.DisplayerType.BARCHART;
-import static org.dashbuilder.displayer.DisplayerType.BUBBLECHART;
-import static org.dashbuilder.displayer.DisplayerType.LINECHART;
-import static org.dashbuilder.displayer.DisplayerType.MAP;
-import static org.dashbuilder.displayer.DisplayerType.METERCHART;
-import static org.dashbuilder.displayer.DisplayerType.PIECHART;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -59,9 +38,32 @@ import org.dashbuilder.renderer.c3.client.charts.pie.C3PieChartDisplayer;
 import org.dashbuilder.renderer.c3.client.exports.ResourcesInjector;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
+import static org.dashbuilder.displayer.DisplayerSubType.AREA;
+import static org.dashbuilder.displayer.DisplayerSubType.AREA_STACKED;
+import static org.dashbuilder.displayer.DisplayerSubType.BAR;
+import static org.dashbuilder.displayer.DisplayerSubType.BAR_STACKED;
+import static org.dashbuilder.displayer.DisplayerSubType.COLUMN;
+import static org.dashbuilder.displayer.DisplayerSubType.COLUMN_STACKED;
+import static org.dashbuilder.displayer.DisplayerSubType.DONUT;
+import static org.dashbuilder.displayer.DisplayerSubType.LINE;
+import static org.dashbuilder.displayer.DisplayerSubType.MAP_MARKERS;
+import static org.dashbuilder.displayer.DisplayerSubType.MAP_REGIONS;
+import static org.dashbuilder.displayer.DisplayerSubType.PIE;
+import static org.dashbuilder.displayer.DisplayerSubType.PIE_3D;
+import static org.dashbuilder.displayer.DisplayerSubType.SMOOTH;
+import static org.dashbuilder.displayer.DisplayerType.AREACHART;
+import static org.dashbuilder.displayer.DisplayerType.BARCHART;
+import static org.dashbuilder.displayer.DisplayerType.BUBBLECHART;
+import static org.dashbuilder.displayer.DisplayerType.LINECHART;
+import static org.dashbuilder.displayer.DisplayerType.MAP;
+import static org.dashbuilder.displayer.DisplayerType.METERCHART;
+import static org.dashbuilder.displayer.DisplayerType.PIECHART;
+
 
 @ApplicationScoped
 public class C3Renderer extends AbstractRendererLibrary {
+
+    private static final DisplayerType DEFAULT_CHART = BARCHART;
 
     public static final String UUID = "c3";
     
@@ -93,6 +95,7 @@ public class C3Renderer extends AbstractRendererLibrary {
 
     @Override
     public List<DisplayerSubType> getSupportedSubtypes(DisplayerType displayerType) {
+        displayerType = displayerType == null ? DEFAULT_CHART : displayerType;
         switch (displayerType) {
             case LINECHART:
                 return Arrays.asList(LINE, SMOOTH);
@@ -110,15 +113,16 @@ public class C3Renderer extends AbstractRendererLibrary {
     }
 
     public Displayer lookupDisplayer(DisplayerSettings displayerSettings) {
-        DisplayerType displayerType = displayerSettings.getType();
-        DisplayerSubType subtype = displayerSettings.getSubtype();
+        var displayerType = displayerSettings.getType();
+        var subtype = displayerSettings.getSubtype();
         C3AbstractDisplayer displayer;
+        displayerType = displayerType == null ? DEFAULT_CHART : displayerType;
         switch (displayerType) {
             case LINECHART:
                 displayer = getLineChartForSubType(subtype);
                 break;
             case BARCHART:
-                displayer = createBarChartForSubType(subtype);
+                displayer = createBarChartForSubType(subtype == null ? DisplayerSubType.COLUMN : subtype);
                 break;
             case PIECHART:
                 displayer = getPieChartForSubType(subtype);

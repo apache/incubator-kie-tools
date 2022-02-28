@@ -20,9 +20,6 @@ import javax.enterprise.context.ApplicationScoped;
 import org.dashbuilder.shared.marshalling.RuntimeModelJSONMarshaller;
 import org.dashbuilder.shared.model.RuntimeModel;
 
-import elemental2.dom.Blob;
-import elemental2.dom.FileReader;
-
 @ApplicationScoped
 public class JSONRuntimeModelClientParser implements RuntimeModelClientParser {
 

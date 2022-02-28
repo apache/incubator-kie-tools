@@ -24,6 +24,10 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.displayer.MapColorScheme;
 import org.dashbuilder.renderer.c3.client.charts.map.D3MapConf;
 import org.dashbuilder.renderer.c3.client.charts.map.geojson.CountriesGeoJsonService;
@@ -34,11 +38,6 @@ import org.jboss.errai.common.client.api.elemental2.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.views.pfly.widgets.D3;
 import org.uberfire.client.views.pfly.widgets.D3.Selection;
-
-import elemental2.dom.DomGlobal;
-import elemental2.dom.Element;
-import elemental2.dom.HTMLDivElement;
-import elemental2.dom.HTMLElement;
 
 @Templated
 @Dependent

@@ -19,6 +19,7 @@ import {
   Editor,
   EditorApi,
   EditorInitArgs,
+  EditorTheme,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
@@ -114,6 +115,13 @@ export class Base64PngEditorInterface implements Editor {
    */
   public validate(): Promise<Notification[]> {
     return this.editorRef.current!.validate()!;
+  }
+
+  /**
+   * Not supported.
+   */
+  public setTheme(theme: EditorTheme): Promise<void> {
+    return Promise.resolve();
   }
 
   /**

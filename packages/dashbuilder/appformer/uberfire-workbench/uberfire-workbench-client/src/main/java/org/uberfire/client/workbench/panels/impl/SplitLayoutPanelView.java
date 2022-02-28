@@ -16,6 +16,7 @@
 package org.uberfire.client.workbench.panels.impl;
 
 import java.util.Collection;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;

@@ -16,15 +16,14 @@
 
 package org.jboss.errai.ui.test.form.client;
 
-import static org.jboss.errai.ioc.client.container.IOC.*;
-
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
 import org.jboss.errai.ui.client.widget.AbstractForm;
 import org.jboss.errai.ui.test.form.client.res.TestFormWidget;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
+import static org.jboss.errai.ioc.client.container.IOC.getBeanManager;
 
 public class AbstractFormTest extends AbstractErraiCDITest {
 

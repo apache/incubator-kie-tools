@@ -16,13 +16,6 @@
 
 package org.dashbuilder.client;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +25,8 @@ import java.util.function.Consumer;
 
 import javax.enterprise.event.Event;
 
-import org.dashbuilder.client.external.ExternalDataSetRegister;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.dashbuilder.client.external.ExternalDataSetClientProvider;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.parser.RuntimeModelClientParserFactory;
 import org.dashbuilder.client.perspective.generator.RuntimePerspectiveGenerator;
@@ -48,7 +42,12 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mvp.Command;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class RuntimeClientLoaderTest {
@@ -69,7 +68,7 @@ public class RuntimeClientLoaderTest {
     RuntimeModelResourceClient runtimeModelResourceClient;
 
     @Mock
-    ExternalDataSetRegister externalDataSetRegister;
+    ExternalDataSetClientProvider externalDataSetRegister;
 
     @Mock
     RuntimeModelClientParserFactory parserFactory;

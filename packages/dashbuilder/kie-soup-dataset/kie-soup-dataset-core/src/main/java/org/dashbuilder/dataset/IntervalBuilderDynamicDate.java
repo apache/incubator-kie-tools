@@ -36,7 +36,22 @@ import org.dashbuilder.dataset.sort.DataSetSort;
 import org.dashbuilder.dataset.sort.SortOrder;
 import org.dashbuilder.dataset.sort.SortedList;
 
-import static org.dashbuilder.dataset.group.DateIntervalType.*;
+import static org.dashbuilder.dataset.group.DateIntervalType.CENTURY;
+import static org.dashbuilder.dataset.group.DateIntervalType.DAY;
+import static org.dashbuilder.dataset.group.DateIntervalType.DAY_OF_WEEK;
+import static org.dashbuilder.dataset.group.DateIntervalType.DECADE;
+import static org.dashbuilder.dataset.group.DateIntervalType.HOUR;
+import static org.dashbuilder.dataset.group.DateIntervalType.MILLENIUM;
+import static org.dashbuilder.dataset.group.DateIntervalType.MINUTE;
+import static org.dashbuilder.dataset.group.DateIntervalType.MONTH;
+import static org.dashbuilder.dataset.group.DateIntervalType.QUARTER;
+import static org.dashbuilder.dataset.group.DateIntervalType.SECOND;
+import static org.dashbuilder.dataset.group.DateIntervalType.WEEK;
+import static org.dashbuilder.dataset.group.DateIntervalType.YEAR;
+import static org.dashbuilder.dataset.group.DateIntervalType.compare;
+import static org.dashbuilder.dataset.group.DateIntervalType.getByName;
+import static org.dashbuilder.dataset.group.DateIntervalType.getDurationInMillis;
+import static org.dashbuilder.dataset.group.DateIntervalType.values;
 
 /**
  * Interval builder for date columns which generates intervals depending on the underlying data available.

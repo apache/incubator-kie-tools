@@ -15,7 +15,9 @@
  */
 
 import * as React from "react";
+import "./ImportJavaClassesWizardFirstStep.css";
 import {
+  Bullseye,
   DataList,
   DataListCell,
   DataListCheck,
@@ -25,40 +27,77 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   SearchInput,
+  Spinner,
+  Tooltip,
   Title,
 } from "@patternfly/react-core";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { useCallback, useState } from "react";
-import { JavaClass } from "./Model/JavaClass";
+import { JavaClass } from "./model/JavaClass";
+import { JavaCodeCompletionService } from "./services";
 
 export interface ImportJavaClassesWizardFirstStepProps {
-  /** List of the selected classes by user */
-  selectedJavaClasses: JavaClass[];
+  /** Service class which contains all API methods to dialog with Java Code Completion Extension*/
+  javaCodeCompletionService: JavaCodeCompletionService;
   /** Function to be called when adding a Java Class */
   onAddJavaClass: (fullClassName: string) => void;
   /** Function to be called when removing a Java Class */
   onRemoveJavaClass: (fullClassName: string) => void;
+  /** List of the selected classes by user */
+  selectedJavaClasses: JavaClass[];
 }
 
 export const ImportJavaClassesWizardFirstStep = ({
-  selectedJavaClasses,
+  javaCodeCompletionService,
   onAddJavaClass,
   onRemoveJavaClass,
+  selectedJavaClasses,
 }: ImportJavaClassesWizardFirstStepProps) => {
   const { i18n } = useImportJavaClassesWizardI18n();
   const [searchValue, setSearchValue] = useState("");
   const [retrievedJavaClassesNames, setRetrievedJavaClassesNames] = useState<string[]>([]);
+  const [isRequestLoading, setRequestLoading] = useState(false);
+  const [requestTimer, setRequestTimer] = useState<NodeJS.Timeout | undefined>(undefined);
 
-  const retrieveJavaClasses = useCallback((value: string) => {
-    setSearchValue(value);
-    const retrieved = window.envelopeMock.lspGetClassServiceMocked(value);
-    if (retrieved) {
-      setRetrievedJavaClassesNames(retrieved);
-    }
-  }, []);
+  const retrieveJavaClasses = useCallback(
+    (value: string) => {
+      setRequestLoading(true);
+      javaCodeCompletionService
+        .getClasses(value)
+        .then((javaCodeCompletionClasses) => {
+          const retrievedClasses = javaCodeCompletionClasses.map((item) => item.query);
+          setRetrievedJavaClassesNames(retrievedClasses);
+          setRequestLoading(false);
+        })
+        .catch((reason) => {
+          setRetrievedJavaClassesNames([]);
+          setRequestLoading(false);
+          console.error(reason);
+        });
+    },
+    [javaCodeCompletionService]
+  );
 
-  const handleSearchValueChange = useCallback((value) => retrieveJavaClasses(value), [retrieveJavaClasses]);
+  const handleSearchValueChange = useCallback(
+    (value: string) => {
+      setSearchValue(value);
+      /* Managing debounce effect */
+      if (requestTimer) {
+        clearTimeout(requestTimer);
+      }
+      if (value.length > 2) {
+        setRequestTimer(
+          global.setTimeout(() => {
+            retrieveJavaClasses(value);
+          }, 1000)
+        );
+      } else {
+        setRetrievedJavaClassesNames([]);
+      }
+    },
+    [retrieveJavaClasses, requestTimer]
+  );
 
   const handleClearSearch = useCallback(() => {
     setSearchValue("");
@@ -93,14 +132,32 @@ export const ImportJavaClassesWizardFirstStep = ({
 
   return (
     <>
-      <SearchInput
-        placeholder={i18n.modalWizard.firstStep.input.placeholder}
-        value={searchValue}
-        onChange={handleSearchValueChange}
-        onClear={handleClearSearch}
-        autoFocus
-      />
-      {retrievedJavaClassesNames.length > 0 || selectedJavaClasses.length > 0 ? (
+      <div className="fs-search-input">
+        {searchValue.length < 3 ? (
+          <Tooltip content={i18n.modalWizard.firstStep.input.tooltip}>
+            <SearchInput
+              autoFocus
+              onChange={handleSearchValueChange}
+              onClear={handleClearSearch}
+              placeholder={i18n.modalWizard.firstStep.input.placeholder}
+              value={searchValue}
+            />
+          </Tooltip>
+        ) : (
+          <SearchInput
+            autoFocus
+            onChange={handleSearchValueChange}
+            onClear={handleClearSearch}
+            placeholder={i18n.modalWizard.firstStep.input.placeholder}
+            value={searchValue}
+          />
+        )}
+      </div>
+      {isRequestLoading ? (
+        <Bullseye>
+          <Spinner isSVG={true} />
+        </Bullseye>
+      ) : retrievedJavaClassesNames.length > 0 || selectedJavaClasses.length > 0 ? (
         <DataList aria-label={"class-data-list"}>
           {dataListClassesSet.map((value) => (
             <DataListItem key={value} name={value}>

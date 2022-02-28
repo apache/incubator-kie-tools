@@ -50,6 +50,8 @@ public class AppNavBar implements Header {
 
     private boolean isGoToDashboardMenuEnabled = false;
 
+    private boolean clientOnly;
+
     @AfterInitialization
     public void setup() {
         setupMenus();
@@ -77,11 +79,15 @@ public class AppNavBar implements Header {
     public void setExternalMenuEnabled(boolean isExternalMenuEnabled) {
         this.isGoToDashboardMenuEnabled = isExternalMenuEnabled;
     }
+    
+    public void setClientOnly(boolean clientOnly) {
+        this.clientOnly = clientOnly;
+    }    
 
     public void setupMenus() {
         menuBarPresenter.clear();
         menuBarPresenter.clearContextMenu();
-        if (isGoToDashboardMenuEnabled) {
+        if (isGoToDashboardMenuEnabled && !clientOnly) {
             menuBarPresenter.addMenus(MenuFactory.newTopLevelCustomMenu(goToDashboardMenu).endMenu().build());
         }
         if (isDashboardListEnabled) {

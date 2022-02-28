@@ -16,11 +16,10 @@
 
 package org.jboss.errai.ui.shared;
 
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-
 import com.google.gwt.event.logical.shared.HasAttachHandlers;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 /**
  * Fired when Errai UI has successfully initialized a {@link Templated} composite and

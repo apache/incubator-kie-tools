@@ -16,10 +16,6 @@
 
 package org.jboss.errai.codegen.test.meta.java;
 
-import static org.jboss.errai.codegen.util.Stmt.nestedCall;
-import static org.jboss.errai.codegen.util.Stmt.newObject;
-import static org.junit.Assert.assertEquals;
-
 import org.jboss.errai.codegen.builder.ContextualStatementBuilder;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaMethod;
@@ -27,6 +23,10 @@ import org.jboss.errai.codegen.meta.impl.java.JavaReflectionClass;
 import org.jboss.errai.codegen.test.meta.AbstractMetaClassTest;
 import org.jboss.errai.codegen.test.model.PortableIntegerParameterDefinition;
 import org.junit.Test;
+
+import static org.jboss.errai.codegen.util.Stmt.nestedCall;
+import static org.jboss.errai.codegen.util.Stmt.newObject;
+import static org.junit.Assert.assertEquals;
 
 public class JavaReflectionMetaClassTest extends AbstractMetaClassTest {
 

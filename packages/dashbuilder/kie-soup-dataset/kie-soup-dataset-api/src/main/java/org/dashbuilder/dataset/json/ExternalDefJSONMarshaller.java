@@ -15,10 +15,10 @@
  */
 package org.dashbuilder.dataset.json;
 
-import static org.dashbuilder.dataset.json.DataSetDefJSONMarshaller.isBlank;
-
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.dashbuilder.json.JsonObject;
+
+import static org.dashbuilder.dataset.json.DataSetDefJSONMarshaller.isBlank;
 
 public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<ExternalDataSetDef> {
 
@@ -26,14 +26,26 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
 
     public static final String URL = "url";
     public static final String DYNAMIC = "dynamic";
+    public static final String EXPRESSION = "expression";
+    public static final String CONTENT = "content";
 
     @Override
-    public void fromJson(ExternalDataSetDef def, JsonObject json) {
+    public void fromJson(ExternalDataSetDef def, JsonObject json) {        
         var url = json.getString(URL);
         var dynamic = json.getBoolean(DYNAMIC);
+        var content = json.getString(CONTENT);
+        var expression = json.getString(EXPRESSION);
 
         if (!isBlank(url)) {
             def.setUrl(url);
+        }
+
+        if (!isBlank(content)) {
+            def.setContent(content);
+        }
+
+        if (!isBlank(expression)) {
+            def.setExpression(expression);
         }
 
         def.setDynamic(dynamic);
@@ -43,6 +55,8 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
     public void toJson(ExternalDataSetDef def, JsonObject json) {
         json.put(DYNAMIC, def.isDynamic());
         json.put(URL, def.getUrl());
+        json.put(EXPRESSION, def.getExpression());
+        json.put(CONTENT, def.getContent());
     }
 
 }

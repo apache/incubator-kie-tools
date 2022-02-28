@@ -110,6 +110,10 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
     /* empty */
   }
 
+  public kogitoEditor_theme() {
+    return { defaultValue: this.editor.getCurrentTheme() };
+  }
+
   public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {
     /* VS Code has his own state control API. */
   }

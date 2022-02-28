@@ -17,6 +17,7 @@ package org.uberfire.client.workbench.widgets.dnd;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

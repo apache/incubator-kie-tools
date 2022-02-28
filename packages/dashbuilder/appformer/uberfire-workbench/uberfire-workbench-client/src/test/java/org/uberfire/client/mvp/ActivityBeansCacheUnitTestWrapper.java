@@ -16,9 +16,6 @@
 
 package org.uberfire.client.mvp;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +29,9 @@ import javax.enterprise.context.ApplicationScoped;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.workbench.category.Undefined;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {

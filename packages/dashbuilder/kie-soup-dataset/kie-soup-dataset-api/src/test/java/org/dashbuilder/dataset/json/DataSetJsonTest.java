@@ -20,8 +20,20 @@ import org.dashbuilder.dataset.DataSetFactory;
 import org.dashbuilder.json.JsonObject;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.dashbuilder.dataset.date.Month.*;
+import static org.dashbuilder.dataset.date.Month.APRIL;
+import static org.dashbuilder.dataset.date.Month.AUGUST;
+import static org.dashbuilder.dataset.date.Month.DECEMBER;
+import static org.dashbuilder.dataset.date.Month.FEBRUARY;
+import static org.dashbuilder.dataset.date.Month.JANUARY;
+import static org.dashbuilder.dataset.date.Month.JULY;
+import static org.dashbuilder.dataset.date.Month.JUNE;
+import static org.dashbuilder.dataset.date.Month.MARCH;
+import static org.dashbuilder.dataset.date.Month.MAY;
+import static org.dashbuilder.dataset.date.Month.NOVEMBER;
+import static org.dashbuilder.dataset.date.Month.OCTOBER;
+import static org.dashbuilder.dataset.date.Month.SEPTEMBER;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class DataSetJsonTest {
 

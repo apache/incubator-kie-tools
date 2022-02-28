@@ -15,13 +15,6 @@
  */
 package org.dashbuilder.renderer.c3.client.charts.map;
 
-import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_AMOUNT;
-import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DATE;
-import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_ID;
-import static org.dashbuilder.dataset.group.AggregateFunctionType.SUM;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.text.ParseException;
 import java.util.Map;
 
@@ -35,6 +28,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_AMOUNT;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DATE;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_ID;
+import static org.dashbuilder.dataset.group.AggregateFunctionType.SUM;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class D3MapDisplayerTest extends C3BaseTest {

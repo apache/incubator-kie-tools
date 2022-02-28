@@ -16,8 +16,6 @@
 
 package org.uberfire.ext.editor.commons.client.menu.common;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
@@ -38,6 +36,8 @@ import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.events.NotificationEvent;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class SaveAndRenameCommandBuilder<T, M> {

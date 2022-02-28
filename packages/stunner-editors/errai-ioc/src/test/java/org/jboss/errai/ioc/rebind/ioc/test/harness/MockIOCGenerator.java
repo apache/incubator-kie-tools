@@ -16,6 +16,9 @@
 
 package org.jboss.errai.ioc.rebind.ioc.test.harness;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Set;
 
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.dev.javac.testing.GeneratorContextBuilder;
@@ -25,10 +28,6 @@ import org.jboss.errai.common.metadata.RebindUtils;
 import org.jboss.errai.config.util.ClassScanner;
 import org.jboss.errai.ioc.client.Bootstrapper;
 import org.jboss.errai.ioc.rebind.ioc.bootstrapper.IOCBootstrapGenerator;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.Set;
 
 /**
  * @author Mike Brock <cbrock@redhat.com>

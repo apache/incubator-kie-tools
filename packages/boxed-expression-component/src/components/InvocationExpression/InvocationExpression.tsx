@@ -69,7 +69,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = (i
     );
   }, [invocationProps.bindingEntries]);
 
-  const { boxedExpressionEditorGWTService, setSupervisorHash } = useBoxedExpression();
+  const { boxedExpressionEditorGWTService, setSupervisorHash, decisionNodeId } = useBoxedExpression();
 
   const spreadInvocationExpressionDefinition = useCallback(
     (invocationExpressionUpdated?: Partial<InvocationProps>) => {
@@ -153,7 +153,7 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = (i
     () => [
       {
         label: invocationProps.name ?? DEFAULT_PARAMETER_NAME,
-        accessor: invocationProps.name ?? DEFAULT_PARAMETER_NAME,
+        accessor: decisionNodeId,
         dataType: invocationProps.dataType ?? DEFAULT_PARAMETER_DATA_TYPE,
         disableHandlerOnHeader: true,
         columns: [
@@ -181,7 +181,16 @@ export const InvocationExpression: React.FunctionComponent<InvocationProps> = (i
         ],
       },
     ],
-    [invocationProps, headerCellElement, setInfoWidth, setExpressionWidth]
+    [
+      invocationProps.name,
+      invocationProps.dataType,
+      invocationProps.entryInfoWidth,
+      invocationProps.entryExpressionWidth,
+      decisionNodeId,
+      headerCellElement,
+      setInfoWidth,
+      setExpressionWidth,
+    ]
   );
 
   const onColumnsUpdate = useCallback(

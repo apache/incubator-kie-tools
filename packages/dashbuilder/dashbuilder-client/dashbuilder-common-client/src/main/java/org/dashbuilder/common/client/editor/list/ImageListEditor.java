@@ -1,5 +1,12 @@
 package org.dashbuilder.common.client.editor.list;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
+
 import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -8,12 +15,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.common.client.editor.LeafAttributeEditor;
 import org.gwtbootstrap3.client.ui.constants.Placement;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * <p>Presenter for a gwt editor component that accepts multiple values and display each one using a given image.</p>

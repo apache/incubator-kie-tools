@@ -19,14 +19,13 @@ package org.jboss.errai.databinding.client;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 
-import org.jboss.errai.common.client.api.annotations.IOCProducer;
-
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.common.client.api.annotations.IOCProducer;
 
 /**
  * Used to test bindings to widgets of custom HasValue types.

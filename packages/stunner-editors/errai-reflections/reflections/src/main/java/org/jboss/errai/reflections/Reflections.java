@@ -16,8 +16,6 @@
 
 package org.jboss.errai.reflections;
 
-import static java.lang.String.format;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -35,6 +33,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.jboss.errai.reflections.scanners.MethodParameterScanner;
 import org.jboss.errai.reflections.scanners.Scanner;
 import org.jboss.errai.reflections.scanners.SubTypesScanner;
@@ -48,11 +51,7 @@ import org.jboss.errai.reflections.vfs.Vfs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import static java.lang.String.format;
 
 /**
  * Reflections one-stop-shop object
