@@ -19,6 +19,14 @@ import { useCallback, useState } from "react";
 import { Popover } from "@patternfly/react-core";
 import "./PopoverMenu.css";
 
+/**
+ * Check if the key pressed is Esc Key.
+ *
+ * @param key the key from the event
+ * @return true if yes, false otherwise
+ */
+const isEscKey = (key = ""): boolean => /^esc.*/i.test(key);
+
 export interface PopoverMenuProps {
   /** Optional children element to be considered for triggering the popover */
   children?: React.ReactElement;
@@ -58,9 +66,9 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
   onHide = () => {},
   onCancel = () => {},
 }: PopoverMenuProps) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible] = useState(false);
 
-  const shouldOpen = useCallback((showFunction?: () => void, event?: MouseEvent | KeyboardEvent) => {
+  const shouldOpen = useCallback((showFunction?: () => void) => {
     showFunction && showFunction();
   }, []);
 
@@ -71,7 +79,7 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
         return;
       }
 
-      if (event instanceof KeyboardEvent && /^esc.*/i.test(event?.key)) {
+      if (event instanceof KeyboardEvent && isEscKey(event?.key)) {
         onCancel(event);
       } else {
         onHide();
