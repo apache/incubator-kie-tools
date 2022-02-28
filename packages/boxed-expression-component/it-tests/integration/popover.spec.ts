@@ -16,7 +16,7 @@
 
 import * as buildEnv from "@kie-tools/build-env";
 
-describe("Context Expression Tests", () => {
+describe("PopoverMenu Tests", () => {
   before(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
 
@@ -27,7 +27,7 @@ describe("Context Expression Tests", () => {
     cy.ouiaId("expression-popover-menu").contains("Context").click({ force: true });
   });
 
-  it("Cancel edit of expression data type in context menu of header cell by pressing escape", () => {
+  it("Cancel edit of expression data type by pressing escape", () => {
     // open the context menu
     cy.contains("th", "Expression Name").as("ExpressionNameCell").click();
 
@@ -47,7 +47,7 @@ describe("Context Expression Tests", () => {
     cy.get("@ExpressionNameCell").find(".data-type").should("contain.text", "Undefined");
   });
 
-  it("Cancel edit of expression name in context menu of header cell by pressing escape", () => {
+  it("Cancel edit of expression name by pressing escape", () => {
     // open the context menu
     cy.contains("th", "Expression Name").as("ExpressionNameCell").click();
 
@@ -64,7 +64,7 @@ describe("Context Expression Tests", () => {
     cy.get("@ExpressionNameCell").find(".label").should("contain.text", "Expression Name");
   });
 
-  it("The header cell's context menu should have original values", () => {
+  it("The header cell's in the popover should have original values", () => {
     // open the context menu
     cy.contains("th", "Expression Name").as("ExpressionNameCell").click();
 
