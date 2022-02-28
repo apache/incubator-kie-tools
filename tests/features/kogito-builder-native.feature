@@ -12,7 +12,7 @@ Feature: kogito-builder image native build tests
     And run sh -c 'echo $MAVEN_VERSION' in container and immediately check its output for 3.8.1
     And run sh -c 'echo $JAVA_HOME' in container and immediately check its output for /usr/lib/jvm/java-11
     And run sh -c 'echo $GRAALVM_HOME' in container and immediately check its output for /usr/share/graalvm
-    And run sh -c 'echo $GRAALVM_VERSION' in container and immediately check its output for 21.3.0
+    And run sh -c 'echo $GRAALVM_VERSION' in container and immediately check its output for 21.3.1
 
   Scenario: Verify if the s2i build is finished as expected using native build and runtime image
     Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-native:latest
