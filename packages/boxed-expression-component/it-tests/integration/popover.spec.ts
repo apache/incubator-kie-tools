@@ -41,7 +41,7 @@ describe("Context Expression Tests", () => {
     cy.ouiaId("expression-popover-menu").should("be.visible");
 
     // Cancel the editing
-    cy.ouiaId("expression-popover-menu").type("{esc}").wait(500);
+    cy.ouiaId("expression-popover-menu").type("{esc}").should("not.exist");
 
     // Assert data type not to be changed
     cy.get("@ExpressionNameCell").find(".data-type").should("contain.text", "Undefined");
