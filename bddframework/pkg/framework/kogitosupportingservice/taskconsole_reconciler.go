@@ -55,7 +55,7 @@ func (t *taskConsoleSupportingServiceResource) Reconcile() (err error) {
 
 func (t *taskConsoleSupportingServiceResource) taskConsoleOnDeploymentCreate(deployment *appsv1.Deployment) error {
 	urlHandler := connector.NewURLHandler(t.Context, t.runtimeHandler, t.supportingServiceHandler)
-	if err := urlHandler.InjectDataIndexURLIntoDeployment(t.instance.GetNamespace(), deployment); err != nil {
+	if err := urlHandler.InjectDataIndexEndpointOnDeployment(deployment); err != nil {
 		return err
 	}
 	return nil

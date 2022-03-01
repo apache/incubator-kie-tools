@@ -43,16 +43,26 @@ func initTrustyAISupportingServiceResource(context supportingServiceContext) Rec
 // Reconcile reconcile TrustyAI Service
 func (t *trustyAISupportingServiceResource) Reconcile() (err error) {
 	t.Log.Info("Reconciling for KogitoTrusty")
-	urlHandler := connector.NewURLHandler(t.Context, t.runtimeHandler, t.supportingServiceHandler)
-	if err = urlHandler.InjectTrustyURLIntoKogitoRuntimeServices(t.instance.GetNamespace()); err != nil {
-		return
-	}
+
 	definition := kogitoservice.ServiceDefinition{
 		DefaultImageName: DefaultTrustyImageName,
 		Request:          controller.Request{NamespacedName: types.NamespacedName{Name: t.instance.GetName(), Namespace: t.instance.GetNamespace()}},
 		KafkaTopics:      trustyAiKafkaTopics,
 	}
-	return kogitoservice.NewServiceDeployer(t.Context, definition, t.instance, t.infraHandler).Deploy()
+	if err = kogitoservice.NewServiceDeployer(t.Context, definition, t.instance, t.infraHandler).Deploy(); err != nil {
+		return
+	}
+
+	endpointConfigMapReconciler := newEndPointConfigMapReconciler(t.Context, t.instance, connector.TrustyHTTPRouteEnv, connector.TrustyWSRouteEnv)
+	if err = endpointConfigMapReconciler.Reconcile(); err != nil {
+		return
+	}
+
+	urlHandler := connector.NewURLHandler(t.Context, t.runtimeHandler, t.supportingServiceHandler)
+	if err = urlHandler.InjectTrustyEndpointOnKogitoRuntimeServices(types.NamespacedName{Name: t.instance.GetName(), Namespace: t.instance.GetNamespace()}); err != nil {
+		return
+	}
+	return
 }
 
 // Collection of kafka topics that should be handled by the Trusty service

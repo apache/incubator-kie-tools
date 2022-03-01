@@ -52,13 +52,6 @@ func initDataIndexSupportingServiceResource(context supportingServiceContext) Re
 func (d *dataIndexSupportingServiceResource) Reconcile() (err error) {
 	d.Log.Info("Reconciling for KogitoDataIndex")
 
-	urlHandler := connector.NewURLHandler(d.Context, d.runtimeHandler, d.supportingServiceHandler)
-	if err = urlHandler.InjectDataIndexURLIntoKogitoRuntimeServices(d.instance.GetNamespace()); err != nil {
-		return
-	}
-	if err = urlHandler.InjectDataIndexURLIntoSupportingService(d.instance.GetNamespace(), api.MgmtConsole); err != nil {
-		return
-	}
 	protoBufHandler := shared.NewProtoBufHandler(d.Context, d.supportingServiceHandler)
 	definition := kogitoservice.ServiceDefinition{
 		DefaultImageName:   DefaultDataIndexImageName,
@@ -66,7 +59,21 @@ func (d *dataIndexSupportingServiceResource) Reconcile() (err error) {
 		Request:            controller1.Request{NamespacedName: types.NamespacedName{Name: d.instance.GetName(), Namespace: d.instance.GetNamespace()}},
 		OnDeploymentCreate: protoBufHandler.MountAllProtoBufConfigMapOnDataIndexDeployment,
 	}
-	return kogitoservice.NewServiceDeployer(d.Context, definition, d.instance, d.infraHandler).Deploy()
+	if err = kogitoservice.NewServiceDeployer(d.Context, definition, d.instance, d.infraHandler).Deploy(); err != nil {
+		return
+	}
+	endpointConfigMapReconciler := newEndPointConfigMapReconciler(d.Context, d.instance, connector.DataIndexHTTPRouteEnv, connector.DataIndexWSRouteEnv)
+	if err = endpointConfigMapReconciler.Reconcile(); err != nil {
+		return
+	}
+	urlHandler := connector.NewURLHandler(d.Context, d.runtimeHandler, d.supportingServiceHandler)
+	if err = urlHandler.InjectDataIndexEndPointOnKogitoRuntimeServices(types.NamespacedName{Name: d.instance.GetName(), Namespace: d.instance.GetNamespace()}); err != nil {
+		return
+	}
+	if err = urlHandler.InjectDataIndexURLIntoSupportingService(types.NamespacedName{Name: d.instance.GetName(), Namespace: d.instance.GetNamespace()}, api.MgmtConsole); err != nil {
+		return
+	}
+	return
 }
 
 // Collection of kafka topics that should be handled by the Data-Index service

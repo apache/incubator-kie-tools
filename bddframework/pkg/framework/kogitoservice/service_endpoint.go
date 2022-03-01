@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package connector
+package kogitoservice
 
 // ServiceEndpoints represents the endpoints for a deployed Kogito Data Index service
 type ServiceEndpoints struct {

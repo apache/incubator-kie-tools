@@ -98,7 +98,7 @@ func (d *grafanaDashboardManager) fetchGrafanaDashboards(instance api.KogitoServ
 	}
 
 	kogitoServiceHandler := NewKogitoServiceHandler(d.Context)
-	svcURL := kogitoServiceHandler.GetKogitoServiceEndpoint(instance)
+	svcURL := kogitoServiceHandler.GetKogitoServiceURL(instance)
 	dashboardNames, err := d.fetchGrafanaDashboardNamesForURL(svcURL)
 	if err != nil {
 		return nil, err

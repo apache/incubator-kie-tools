@@ -131,7 +131,7 @@ func (p *protobufConfigMapHandler) getProtobufData(runtimeInstance api.KogitoRun
 		return nil, infrastructure.ErrorForDeploymentNotReachable(runtimeInstance.GetName())
 	}
 
-	protobufEndpoint := p.kogitoServiceHandler.GetKogitoServiceEndpoint(runtimeInstance) + protobufSubdir
+	protobufEndpoint := p.kogitoServiceHandler.GetKogitoServiceURL(runtimeInstance) + protobufSubdir
 	protobufListURL := protobufEndpoint + protobufListFileName
 	protobufListBytes, err := getHTTPFileBytes(protobufListURL)
 	if err != nil {

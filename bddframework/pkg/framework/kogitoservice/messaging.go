@@ -90,7 +90,7 @@ func NewKafkaMessagingDeployer(context operator.Context, definition ServiceDefin
 
 func (m *messagingDeployer) fetchTopicsAndSetCloudEventsStatus(instance api.KogitoService) ([]messagingTopic, error) {
 	kogitoServiceHandler := NewKogitoServiceHandler(m.Context)
-	topics, err := m.fetchRequiredTopicsForURL(instance, kogitoServiceHandler.GetKogitoServiceEndpoint(instance))
+	topics, err := m.fetchRequiredTopicsForURL(instance, kogitoServiceHandler.GetKogitoServiceURL(instance))
 	if err != nil {
 		return nil, err
 	}

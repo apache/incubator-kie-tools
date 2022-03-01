@@ -32,6 +32,6 @@ func Test_GetKogitoServiceEndpoint(t *testing.T) {
 		Scheme: meta.GetRegisteredSchema(),
 	}
 	kogitoServiceHandler := NewKogitoServiceHandler(context)
-	actualURL := kogitoServiceHandler.GetKogitoServiceEndpoint(service)
+	actualURL := kogitoServiceHandler.GetKogitoServiceURL(service)
 	assert.Equal(t, "http://"+service.GetName()+"."+t.Name(), actualURL)
 }

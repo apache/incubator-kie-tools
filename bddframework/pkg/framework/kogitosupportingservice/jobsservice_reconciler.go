@@ -50,18 +50,27 @@ func initJobsServiceSupportingServiceResource(context supportingServiceContext) 
 func (j *jobsServiceSupportingServiceResource) Reconcile() (err error) {
 	j.Log.Info("Reconciling for KogitoJobsService")
 
-	// clean up variables if needed
-	urlHandler := connector.NewURLHandler(j.Context, j.runtimeHandler, j.supportingServiceHandler)
-	if err = urlHandler.InjectJobsServicesURLIntoKogitoRuntimeServices(j.instance.GetNamespace()); err != nil {
-		return
-	}
 	definition := kogitoservice.ServiceDefinition{
 		DefaultImageName: DefaultJobsServiceImageName,
 		Request:          controller.Request{NamespacedName: types.NamespacedName{Name: j.instance.GetName(), Namespace: j.instance.GetNamespace()}},
 		SingleReplica:    true,
 		KafkaTopics:      jobsServicekafkaTopics,
 	}
-	return kogitoservice.NewServiceDeployer(j.Context, definition, j.instance, j.infraHandler).Deploy()
+	if err = kogitoservice.NewServiceDeployer(j.Context, definition, j.instance, j.infraHandler).Deploy(); err != nil {
+		return
+	}
+
+	endpointConfigMapReconciler := newEndPointConfigMapReconciler(j.Context, j.instance, connector.JobsServicesHTTPRouteEnv, "")
+	if err = endpointConfigMapReconciler.Reconcile(); err != nil {
+		return
+	}
+
+	urlHandler := connector.NewURLHandler(j.Context, j.runtimeHandler, j.supportingServiceHandler)
+	if err = urlHandler.InjectJobsServicesEndPointOnKogitoRuntimeServices(types.NamespacedName{Name: j.instance.GetName(), Namespace: j.instance.GetNamespace()}); err != nil {
+		return
+	}
+
+	return
 }
 
 // Collection of kafka topics that should be handled by the Jobs service

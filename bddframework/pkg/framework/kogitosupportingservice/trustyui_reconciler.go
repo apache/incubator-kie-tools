@@ -55,7 +55,7 @@ func (t *trustyUISupportingServiceResource) Reconcile() (err error) {
 
 func (t *trustyUISupportingServiceResource) trustyUIOnDeploymentCreate(deployment *appsv1.Deployment) error {
 	urlHandler := connector.NewURLHandler(t.Context, t.runtimeHandler, t.supportingServiceHandler)
-	if err := urlHandler.InjectTrustyURLIntoDeployment(t.instance.GetNamespace(), deployment); err != nil {
+	if err := urlHandler.InjectTrustyEndpointOnDeployment(deployment); err != nil {
 		return err
 	}
 	return nil

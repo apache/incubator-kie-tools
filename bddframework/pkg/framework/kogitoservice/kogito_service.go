@@ -18,16 +18,21 @@ import (
 	"fmt"
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/operator"
+	"net/url"
 	"os"
 )
 
 const (
 	envVarKogitoServiceURL = "LOCAL_KOGITO_SERVICE_URL"
+	webSocketScheme        = "ws"
+	webSocketSecureScheme  = "wss"
+	httpScheme             = "http"
 )
 
 // ServiceHandler ...
 type ServiceHandler interface {
-	GetKogitoServiceEndpoint(kogitoService api.KogitoService) string
+	GetKogitoServiceURL(kogitoService api.KogitoService) string
+	GetKogitoServiceEndpoints(instance api.KogitoService, serviceHTTPRouteEnv string, serviceWSRouteEnv string) (endpoints *ServiceEndpoints, err error)
 }
 
 type kogitoServiceHandler struct {
@@ -41,11 +46,11 @@ func NewKogitoServiceHandler(context operator.Context) ServiceHandler {
 	}
 }
 
-// GetKogitoServiceEndpoint gets the endpoint depending on
+// GetKogitoServiceURl gets the endpoint depending on
 // if the envVarKogitoServiceURL is set (for when running
 // operator locally). Else, the internal endpoint is
 // returned.
-func (k *kogitoServiceHandler) GetKogitoServiceEndpoint(kogitoService api.KogitoService) string {
+func (k *kogitoServiceHandler) GetKogitoServiceURL(kogitoService api.KogitoService) string {
 	externalURL := os.Getenv(envVarKogitoServiceURL)
 	if len(externalURL) > 0 {
 		return externalURL
@@ -60,4 +65,26 @@ func (k *kogitoServiceHandler) getKogitoServiceURL(service api.KogitoService) st
 	serviceURL := fmt.Sprintf("http://%s.%s", service.GetName(), service.GetNamespace())
 	k.Log.Debug("", "kogito service instance URL", serviceURL)
 	return serviceURL
+}
+
+// GetKogitoServiceEndpoints ...
+func (k *kogitoServiceHandler) GetKogitoServiceEndpoints(instance api.KogitoService, serviceHTTPRouteEnv string, serviceWSRouteEnv string) (endpoints *ServiceEndpoints, err error) {
+	srvEndpoint := k.GetKogitoServiceURL(instance)
+	endpoints = &ServiceEndpoints{
+		HTTPRouteEnv: serviceHTTPRouteEnv,
+		WSRouteEnv:   serviceWSRouteEnv,
+	}
+	var srvURL *url.URL
+	srvURL, err = url.Parse(srvEndpoint)
+	if err != nil {
+		k.Log.Error(err, "Failed to parse srv url, set to empty", "srvURL", srvURL)
+		return
+	}
+	endpoints.HTTPRouteURI = srvURL.String()
+	if httpScheme == srvURL.Scheme {
+		endpoints.WSRouteURI = fmt.Sprintf("%s://%s", webSocketScheme, srvURL.Host)
+	} else {
+		endpoints.WSRouteURI = fmt.Sprintf("%s://%s", webSocketSecureScheme, srvURL.Host)
+	}
+	return
 }
