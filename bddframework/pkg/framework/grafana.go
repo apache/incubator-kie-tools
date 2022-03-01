@@ -32,7 +32,7 @@ const (
 )
 
 var grafanaImages = map[string]string{
-	"docker.io/grafana/grafana:7.5.11": "docker.io/grafana/grafana@sha256:387788f6518fece123a2b9add0ac72e75852cd6e1666c033a8064e7023ad5cb8",
+	"docker.io/grafana/grafana:7.5.15": "docker.io/grafana/grafana@sha256:0a4a31f1922e01645702401ac550fd89346244e2868cb9620f32f87fac0b7a5a",
 }
 
 // DeployGrafanaInstance deploys an instance of Grafana watching for label with specific name and value
