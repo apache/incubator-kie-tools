@@ -30,6 +30,24 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
 
 /**
+ * Create a Mock TableSection.
+ *
+ * @param tSection the section to modify
+ * @param rows number of rows to create
+ * @param cells number of cells to create
+ * @returns the new section
+ */
+const createMockTableSection = (tSection: HTMLTableSectionElement, rows = 1, cells = 1): void => {
+  for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+    const tr = tSection.insertRow(rowIndex);
+    for (let cellIndex = 0; cellIndex < cells; cellIndex++) {
+      tr.insertCell(cellIndex).appendChild(document.createElement("div"));
+      tr.lastElementChild?.setAttribute("tabindex", "-1");
+    }
+  }
+};
+
+/**
  * Create Mock HTML Table.
  *
  * @param hrows number of header rows to create
@@ -43,20 +61,10 @@ function createMockTable(hrows = 1, rows = 1, cells = 1): HTMLTableElement {
   const tbody = table.createTBody();
 
   // create thead
-  for (let rowIndex = 0; rowIndex < hrows; rowIndex++) {
-    const tr = thead.insertRow(rowIndex);
-    for (let cellIndex = 0; cellIndex < cells; cellIndex++) {
-      tr.insertCell(cellIndex).appendChild(document.createElement("div"));
-    }
-  }
+  createMockTableSection(thead, hrows, cells);
 
   // create tbody
-  for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
-    const tr = tbody.insertRow(rowIndex);
-    for (let cellIndex = 0; cellIndex < cells; cellIndex++) {
-      tr.insertCell(cellIndex).appendChild(document.createElement("div"));
-    }
-  }
+  createMockTableSection(tbody, rows, cells);
 
   return table;
 }
@@ -103,17 +111,22 @@ function shouldKeepFocus(element: HTMLElement, move: (element: HTMLElement) => v
   expect(mockElementFocus).toHaveBeenCalled();
 }
 
-const mockTable = createMockTable(2, 3, 6);
-const mockThead = mockTable.tHead || document.createElement("thead");
-const mockTbody = mockTable.tBodies[0];
-
-const mockTableWithRowspan = createMockTable(2, 3, 6);
-const mockTableWithRowspanThead = mockTableWithRowspan.tHead || document.createElement("thead");
-mockTableWithRowspanThead.rows[0].cells[1].classList.add("no-clickable-cell", "colspan-header");
-
 /* TODO: FocusUtils.test: test colspan header cells */
 
 describe("FocusUtils tests", () => {
+  const mockTable = createMockTable(2, 3, 6);
+  const mockThead = mockTable.tHead || document.createElement("thead");
+  const mockTbody = mockTable.tBodies[0];
+
+  const mockTableColRowspan = createMockTable(2, 3, 6);
+  const mockTableColRowspanThead = mockTableColRowspan.tHead || document.createElement("thead");
+  mockTableColRowspanThead.rows[0].cells[1].setAttribute("colspan", "2");
+  mockTableColRowspanThead.rows[0].cells[1].removeAttribute("tabindex");
+  mockTableColRowspanThead.rows[0].deleteCell(2);
+  mockTableColRowspanThead.rows[0].cells[2].setAttribute("colspan", "2");
+  mockTableColRowspanThead.rows[0].deleteCell(3);
+  mockTableColRowspanThead.rows[0].cells[3].removeAttribute("tabindex");
+
   beforeEach(() => {
     jest.resetAllMocks();
   });
@@ -207,8 +220,10 @@ describe("FocusUtils tests", () => {
       testFocus(mockThead.rows[0].cells[1], mockThead.rows[0].cells[2], focusNextCell);
     });
 
-    it("should focus the next rowspan header cell", () => {
-      testFocus(mockTableWithRowspanThead.rows[0].cells[0], mockTableWithRowspanThead.rows[1].cells[1], focusNextCell);
+    it("test full headers with rowspan and colspan navigation", () => {
+      testFocus(mockTableColRowspanThead.rows[0].cells[0], mockTableColRowspanThead.rows[1].cells[1], focusNextCell);
+      testFocus(mockTableColRowspanThead.rows[1].cells[1], mockTableColRowspanThead.rows[0].cells[2], focusNextCell);
+      testFocus(mockTableColRowspanThead.rows[0].cells[2], mockTableColRowspanThead.rows[0].cells[3], focusNextCell);
     });
 
     it("should not change the focus", () => {
@@ -240,7 +255,7 @@ describe("FocusUtils tests", () => {
     });
 
     it("should focus the next rowspan header cell", () => {
-      testFocus(mockTableWithRowspanThead.rows[0].cells[0], mockTableWithRowspanThead.rows[1].cells[1], (element) =>
+      testFocus(mockTableColRowspanThead.rows[0].cells[0], mockTableColRowspanThead.rows[1].cells[1], (element) =>
         focusNextDataCell(element, 0)
       );
     });
@@ -266,7 +281,7 @@ describe("FocusUtils tests", () => {
     });
 
     it("should focus the previous rowspan header cell", () => {
-      testFocus(mockTableWithRowspanThead.rows[0].cells[2], mockTableWithRowspanThead.rows[1].cells[1], focusPrevCell);
+      testFocus(mockTableColRowspanThead.rows[0].cells[2], mockTableColRowspanThead.rows[1].cells[1], focusPrevCell);
     });
 
     it("should not change the focus", () => {
@@ -298,7 +313,7 @@ describe("FocusUtils tests", () => {
     });
 
     it("should focus the previous rowspan header cell", () => {
-      testFocus(mockTableWithRowspanThead.rows[0].cells[2], mockTableWithRowspanThead.rows[1].cells[1], (element) =>
+      testFocus(mockTableColRowspanThead.rows[0].cells[2], mockTableColRowspanThead.rows[1].cells[1], (element) =>
         focusNextDataCell(element, 0)
       );
     });
@@ -328,7 +343,7 @@ describe("FocusUtils tests", () => {
     });
 
     it("should keep focus to the current rowspan header cell", () => {
-      testFocus(mockTableWithRowspanThead.rows[1].cells[1], mockTableWithRowspanThead.rows[1].cells[1], (element) =>
+      testFocus(mockTableColRowspanThead.rows[1].cells[1], mockTableColRowspanThead.rows[1].cells[1], (element) =>
         focusNextDataCell(element, 0)
       );
     });

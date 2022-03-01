@@ -198,6 +198,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
           {...thProps(column)}
           className={getCssClass()}
           key={columnKey}
+          tabIndex={column.dataType ? "-1" : undefined}
           onClick={onHeaderClick(columnKey)}
         >
           <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
