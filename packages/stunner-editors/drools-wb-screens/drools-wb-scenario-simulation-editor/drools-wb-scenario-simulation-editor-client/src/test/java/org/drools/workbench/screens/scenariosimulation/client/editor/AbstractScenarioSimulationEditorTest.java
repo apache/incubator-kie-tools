@@ -25,19 +25,13 @@ import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
-import org.drools.workbench.screens.scenariosimulation.client.TestProperties;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.BaseMenuView;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.GridContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.HeaderGivenContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
-import org.drools.workbench.screens.scenariosimulation.service.ImportExportService;
-import org.drools.workbench.screens.scenariosimulation.service.RunnerReportService;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
-import org.kie.workbench.common.widgets.client.datamodel.copied.PackageDataModelOracleBaselinePayload;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 
@@ -49,10 +43,6 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
 
     @Mock
     protected DMNTypeService dmnTypeServiceMock;
-    @Mock
-    protected ImportExportService importExportServiceMock;
-    @Mock
-    protected RunnerReportService runnerReportServiceMock;
     @Mock
     protected ObservablePath observablePathMock;
     @Mock
@@ -69,12 +59,7 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
     protected CheatSheetPresenter cheatSheetPresenterMock;
     @Mock
     protected SettingsPresenter settingsPresenterMock;
-    @Mock
-    protected AsyncPackageDataModelOracleFactory oracleFactoryMock;
-    @Mock
-    protected PackageDataModelOracleBaselinePayload packageDataModelOracleBaselinePayload;
 
-    protected ScenarioSimulationModelContent content;
     protected ScenarioSimulationModel modelLocal;
 
     public void setup() {
@@ -87,9 +72,6 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
         settingsLocal.setType(ScenarioSimulationModel.Type.RULE);
         settingsLocal.setDmoSession(null);
         modelLocal.setBackground(backgroundLocal);
-        this.content = new ScenarioSimulationModelContent(modelLocal,
-                                                          packageDataModelOracleBaselinePayload);
-        when(packageDataModelOracleBaselinePayload.getPackageName()).thenReturn(TestProperties.FACT_PACKAGE);
     }
 
     protected Simulation getSimulation() {

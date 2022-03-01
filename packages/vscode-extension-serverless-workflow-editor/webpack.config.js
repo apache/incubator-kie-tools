@@ -68,13 +68,7 @@ module.exports = async (env) => [
       },
     },
     module: {
-      rules: [
-        {
-          test: /\.ttf$/,
-          use: ["file-loader"],
-        },
-        ...patternflyBase.webpackModuleRules,
-      ],
+      rules: [...patternflyBase.webpackModuleRules],
     },
   }),
 ];

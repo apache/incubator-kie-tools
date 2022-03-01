@@ -33,21 +33,19 @@ import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenterData;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.uberfire.backend.vfs.ObservablePath;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -70,11 +68,6 @@ public class AbstractDataManagementStrategyTest extends AbstractScenarioSimulati
 
             @Override
             public void populateTestTools(TestToolsView.Presenter testToolsPresenter, ScenarioSimulationContext context, GridWidget gridWidget) {
-
-            }
-
-            @Override
-            public void manageScenarioSimulationModelContent(ObservablePath currentPath, ScenarioSimulationModelContent toManage) {
 
             }
 
@@ -213,14 +206,14 @@ public class AbstractDataManagementStrategyTest extends AbstractScenarioSimulati
         } else if (isInstanceAssigned) {
             doReturn(gridColumnMock).when(scenarioGridModelMock).getSelectedColumn();
             doReturn(true).when(gridColumnMock).isInstanceAssigned();
-            doReturn(new ArrayList<>()).when(abstractDataManagementStrategySpy).getPropertiesToHide(eq(gridColumnMock), eq(scenarioGridModelMock));
+            doReturn(new ArrayList<>()).when(abstractDataManagementStrategySpy).getPropertiesToHide(gridColumnMock, scenarioGridModelMock);
         }
         final Map<String, List<List<String>>> retrieved = abstractDataManagementStrategySpy.getPropertiesToHide(scenarioGridModelMock);
         if (selectedColumnNull) {
             assertTrue(retrieved.isEmpty());
             verify(abstractDataManagementStrategySpy, never()).getPropertiesToHide(isA(ScenarioGridColumn.class), eq(scenarioGridModelMock));
         } else if (isInstanceAssigned) {
-            verify(abstractDataManagementStrategySpy, times(1)).getPropertiesToHide(eq(gridColumnMock), eq(scenarioGridModelMock));
+            verify(abstractDataManagementStrategySpy, times(1)).getPropertiesToHide(gridColumnMock, scenarioGridModelMock);
         } else {
             verify(abstractDataManagementStrategySpy, never()).getPropertiesToHide(isA(ScenarioGridColumn.class), eq(scenarioGridModelMock));
         }
@@ -235,7 +228,7 @@ public class AbstractDataManagementStrategyTest extends AbstractScenarioSimulati
             verify(scenarioGridModelMock, never()).getAbstractScesimModel();
         } else {
             verify(scenarioGridModelMock, times(1)).getAbstractScesimModel();
-            verify(scenarioGridModelMock, times(1)).getInstanceScenarioGridColumns(eq(gridColumnMock));
+            verify(scenarioGridModelMock, times(1)).getInstanceScenarioGridColumns(gridColumnMock);
         }
         reset(scenarioGridModelMock);
     }

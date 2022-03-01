@@ -16,6 +16,7 @@
 import {
   Editor,
   EditorApi,
+  EditorTheme,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
@@ -54,8 +55,11 @@ export class ServerlessWorkflowEditorInterface implements Editor {
     return (
       <ServerlessWorkflowEditor
         ref={this.editorRef}
-        ready={() => this.envelopeContext.channelApi.notifications.kogitoEditor_ready.send()}
-        newEdit={(edit) => this.envelopeContext.channelApi.notifications.kogitoWorkspace_newEdit.send(edit)}
+        onReady={() => this.envelopeContext.channelApi.notifications.kogitoEditor_ready.send()}
+        onStateControlCommandUpdate={(command) =>
+          this.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate.send(command)
+        }
+        onNewEdit={(edit) => this.envelopeContext.channelApi.notifications.kogitoWorkspace_newEdit.send(edit)}
         setNotifications={(path, notifications) =>
           this.envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send(path, notifications)
         }
@@ -73,5 +77,9 @@ export class ServerlessWorkflowEditorInterface implements Editor {
 
   public async validate(): Promise<Notification[]> {
     return Promise.resolve(this.editorRef.current!.validate());
+  }
+
+  public async setTheme(theme: EditorTheme) {
+    return this.editorRef.current!.setTheme(theme);
   }
 }

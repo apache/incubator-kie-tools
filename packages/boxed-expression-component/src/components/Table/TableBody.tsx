@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { BaseSyntheticEvent, useCallback, useEffect, useMemo, useRef } from "react";
 import { Tbody, Td, Tr } from "@patternfly/react-table";
 import { Column as IColumn, TableHeaderVisibility } from "../../api";
 import { Cell, Column, Row, TableInstance } from "react-table";
@@ -33,6 +33,7 @@ import {
   getParentCell,
 } from "./common";
 import { useBoxedExpression } from "../../context";
+import { LOGIC_TYPE_SELECTOR_CLASS } from "../LogicTypeSelector";
 
 export interface TableBodyProps {
   /** Table instance */
@@ -49,6 +50,8 @@ export interface TableBodyProps {
   onColumnsUpdate?: (columns: Column[]) => void;
   /** Td props */
   tdProps: (cellIndex: number, rowIndex: number) => any;
+  /** Enable the  Keyboar Navigation */
+  enableKeyboarNavigation?: boolean;
 }
 
 export const TableBody: React.FunctionComponent<TableBodyProps> = ({
@@ -59,19 +62,22 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   getColumnKey,
   onColumnsUpdate,
   tdProps,
+  enableKeyboarNavigation = true,
 }) => {
+  const { boxedExpressionEditorGWTService } = useBoxedExpression();
+
   const headerVisibilityMemo = useMemo(() => headerVisibility ?? TableHeaderVisibility.Full, [headerVisibility]);
 
   const { isContextMenuOpen } = useBoxedExpression();
-
-  /**
-   * base props for td elements
-   */
 
   const onKeyDown = useCallback(
     (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => {
       const key = e.key;
       const isModKey = e.altKey || e.ctrlKey || e.shiftKey || key === "AltGraph";
+
+      if (!enableKeyboarNavigation) {
+        return;
+      }
 
       //prevent the parent cell catch this event if there is a nested table
       if (e.currentTarget !== getParentCell(e.target as HTMLElement)) {
@@ -114,7 +120,51 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
         }
       }
     },
-    [isContextMenuOpen]
+    [isContextMenuOpen, enableKeyboarNavigation]
+  );
+
+  const renderCell = useCallback(
+    (cellIndex: number, cell: Cell, rowIndex: number, inAForm: boolean) => {
+      return (
+        <TdCell
+          key={cellIndex}
+          cellIndex={cellIndex}
+          cell={cell}
+          rowIndex={rowIndex}
+          inAForm={inAForm}
+          onKeyDown={onKeyDown}
+          tableInstance={tableInstance}
+          getColumnKey={getColumnKey}
+          onColumnsUpdate={onColumnsUpdate!}
+          tdProps={tdProps}
+        />
+      );
+    },
+    [getColumnKey, onColumnsUpdate, tableInstance, tdProps, onKeyDown]
+  );
+
+  const eventPathHasNestedExpression = useCallback((event: React.BaseSyntheticEvent, path: EventTarget[]) => {
+    let currentPathTarget: EventTarget = event.target;
+    let currentIndex = 0;
+    while (currentPathTarget !== event.currentTarget && currentIndex < path.length) {
+      currentIndex++;
+      currentPathTarget = path[currentIndex];
+      if ((currentPathTarget as HTMLElement)?.classList?.contains(LOGIC_TYPE_SELECTOR_CLASS)) {
+        return true;
+      }
+    }
+    return false;
+  }, []);
+
+  const onRowClick = useCallback(
+    (rowKey: string) => (event: BaseSyntheticEvent) => {
+      const nativeEvent = event.nativeEvent as Event;
+      const path: EventTarget[] = nativeEvent?.composedPath?.() || [];
+      if (!eventPathHasNestedExpression(event, path)) {
+        boxedExpressionEditorGWTService?.selectObject(rowKey);
+      }
+    },
+    [boxedExpressionEditorGWTService, eventPathHasNestedExpression]
   );
 
   const renderBodyRow = useCallback(
@@ -124,68 +174,43 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
       const RowDelegate = (row.original as any).rowDelegate;
       const rowKey = getRowKey(row);
       const rowClassNames = `${rowKey} table-row`;
+
+      const buildTableRow = (inAForm: boolean) => (
+        <Tr
+          className={rowClassNames}
+          {...rowProps}
+          ouiaId={"expression-row-" + rowIndex}
+          key={rowKey}
+          onClick={onRowClick(rowKey)}
+        >
+          {row.cells.map((cell: Cell, cellIndex: number) => renderCell(cellIndex, cell, rowIndex, inAForm))}
+        </Tr>
+      );
+
       return (
         <React.Fragment key={rowKey}>
-          {RowDelegate ? (
-            <RowDelegate>
-              <Tr className={rowClassNames} {...rowProps} ouiaId={"expression-row-" + rowIndex} key={rowKey}>
-                {row.cells.map((cell: Cell, cellIndex: number) => (
-                  <TdCell
-                    key={cellIndex}
-                    cellIndex={cellIndex}
-                    cell={cell}
-                    rowIndex={rowIndex}
-                    inAForm={true}
-                    onKeyDown={onKeyDown}
-                    tableInstance={tableInstance}
-                    getColumnKey={getColumnKey}
-                    onColumnsUpdate={onColumnsUpdate!}
-                    tdProps={tdProps}
-                  />
-                ))}
-              </Tr>
-            </RowDelegate>
-          ) : (
-            <Tr className={rowClassNames} {...rowProps} ouiaId={"expression-row-" + rowIndex} key={rowKey}>
-              {row.cells.map((cell: Cell, cellIndex: number) => (
-                <TdCell
-                  key={cellIndex}
-                  cellIndex={cellIndex}
-                  cell={cell}
-                  rowIndex={rowIndex}
-                  inAForm={false}
-                  onKeyDown={onKeyDown}
-                  tableInstance={tableInstance}
-                  getColumnKey={getColumnKey}
-                  onColumnsUpdate={onColumnsUpdate!}
-                  tdProps={tdProps}
-                />
-              ))}
-            </Tr>
-          )}
+          {RowDelegate ? <RowDelegate>{buildTableRow(true)}</RowDelegate> : buildTableRow(false)}
         </React.Fragment>
       );
     },
-    [getColumnKey, getRowKey, onColumnsUpdate, onKeyDown, tableInstance, tdProps]
+    [getRowKey, onRowClick, renderCell, tableInstance]
   );
 
   const renderAdditiveRow = useCallback(
     (rowIndex: number) => (
       <Tr className="table-row additive-row">
-        <Td role="cell" className="empty-cell" tabIndex={-1} onKeyDown={(e) => onKeyDown(rowIndex)(e)}>
-          <br />
-        </Td>
+        <TdAdditiveCell isEmptyCell={true} rowIndex={rowIndex} onKeyDown={onKeyDown} />
         {children?.map((child, childIndex) => {
           return (
-            <Td
-              role="cell"
+            <TdAdditiveCell
               key={childIndex}
-              className="row-remainder-content"
-              tabIndex={-1}
-              onKeyDown={(e) => onKeyDown(rowIndex)(e)}
+              cellIndex={childIndex}
+              isEmptyCell={false}
+              rowIndex={rowIndex}
+              onKeyDown={onKeyDown}
             >
               {child}
-            </Td>
+            </TdAdditiveCell>
           );
         })}
       </Tr>
@@ -276,6 +301,37 @@ function TdCell({
       className={`${cellType}`}
     >
       {cellTemplate}
+    </Td>
+  );
+}
+interface TdAdditiveCellProps {
+  children?: React.ReactElement;
+  cellIndex?: number;
+  isEmptyCell?: boolean;
+  onKeyDown: (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
+  rowIndex: number;
+}
+
+function TdAdditiveCell({ children, cellIndex, isEmptyCell = false, onKeyDown, rowIndex }: TdAdditiveCellProps) {
+  const tdRef = useRef<HTMLTableCellElement>(null);
+
+  useEffect(() => {
+    // Typescript don't accept the conversion between DOM event and React event
+    const onKeyDownForIndex: any = onKeyDown(rowIndex);
+    const cell = tdRef.current;
+    cell?.addEventListener("keydown", onKeyDownForIndex);
+    return () => {
+      cell?.removeEventListener("keydown", onKeyDownForIndex);
+    };
+  }, [onKeyDown, rowIndex]);
+
+  return isEmptyCell ? (
+    <Td ref={tdRef} role="cell" className="empty-cell" tabIndex={-1}>
+      <br />
+    </Td>
+  ) : (
+    <Td ref={tdRef} role="cell" key={cellIndex} className="row-remainder-content" tabIndex={-1}>
+      {children}
     </Td>
   );
 }

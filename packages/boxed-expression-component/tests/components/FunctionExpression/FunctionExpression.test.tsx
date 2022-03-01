@@ -40,8 +40,6 @@ import { act } from "react-dom/test-utils";
 
 describe("FunctionExpression tests", () => {
   const parameterId = "p1";
-  const documentName = "document";
-  const modelName = "model";
 
   test("should show a table with two levels visible header, with one row and one column", () => {
     const { container } = render(
@@ -415,6 +413,7 @@ describe("FunctionExpression tests", () => {
     const boxedExpressionEditorGWTService = {
       broadcastFunctionExpressionDefinition: mockedBroadcastDefinition,
       notifyUserAction: () => {},
+      selectObject: () => {},
     } as BoxedExpressionEditorGWTService;
     return { mockedBroadcastDefinition, boxedExpressionEditorGWTService };
   }

@@ -15,19 +15,23 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo } from "react";
-import { useDmnRunnerState, useDmnRunnerDispatch } from "./DmnRunnerContext";
+import { useCallback, useMemo } from "react";
+import { InputRow, useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DmnAutoTable } from "@kie-tools/unitables";
 import { DecisionResult } from "@kie-tools/form/dist/dmn";
 import { PanelId } from "../EditorPageDockDrawer";
 import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
+import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { DmnRunnerLoading } from "./DmnRunnerLoading";
+import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 
 interface Props {
   isReady?: boolean;
   setPanelOpen: React.Dispatch<React.SetStateAction<PanelId>>;
   dmnRunnerResults: Array<DecisionResult[] | undefined>;
   setDmnRunnerResults: React.Dispatch<React.SetStateAction<Array<DecisionResult[] | undefined>>>;
+  workspaceFile: WorkspaceFile;
 }
 
 export function DmnRunnerTabular(props: Props) {
@@ -35,14 +39,17 @@ export function DmnRunnerTabular(props: Props) {
   const dmnRunnerDispatch = useDmnRunnerDispatch();
 
   const updateDmnRunnerResults = useCallback(
-    async (tableData: any[]) => {
+    async (inputRows: Array<InputRow>, canceled: Holder<boolean>) => {
       if (!props.isReady) {
+        dmnRunnerDispatch.setDidUpdateOutputRows(true);
         return;
       }
 
-      const payloads = await Promise.all(tableData.map((data) => dmnRunnerDispatch.preparePayload(data)));
-
       try {
+        if (canceled.get()) {
+          return;
+        }
+        const payloads = await Promise.all(inputRows.map((data) => dmnRunnerDispatch.preparePayload(data)));
         const results = await Promise.all(
           payloads.map((payload) => {
             if (payload === undefined) {
@@ -51,6 +58,9 @@ export function DmnRunnerTabular(props: Props) {
             return dmnRunnerState.service.result(payload);
           })
         );
+        if (canceled.get()) {
+          return;
+        }
 
         const runnerResults: Array<DecisionResult[] | undefined> = [];
         for (const result of results) {
@@ -63,16 +73,29 @@ export function DmnRunnerTabular(props: Props) {
           }
         }
         props.setDmnRunnerResults(runnerResults);
+        dmnRunnerDispatch.setDidUpdateOutputRows(true);
       } catch (err) {
+        dmnRunnerDispatch.setDidUpdateOutputRows(true);
         return undefined;
       }
     },
     [props.isReady, dmnRunnerDispatch, dmnRunnerState.service]
   );
 
-  useEffect(() => {
-    updateDmnRunnerResults(dmnRunnerState.inputRows);
-  }, [dmnRunnerState.inputRows]);
+  // Debounce to avoid multiple updates caused by uniforms library
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        const timeout = setTimeout(() => {
+          updateDmnRunnerResults(dmnRunnerState.inputRows, canceled);
+        }, 100);
+        return () => {
+          clearTimeout(timeout);
+        };
+      },
+      [dmnRunnerState.inputRows, updateDmnRunnerResults]
+    )
+  );
 
   const openRow = useCallback(
     (rowIndex: number) => {
@@ -80,7 +103,7 @@ export function DmnRunnerTabular(props: Props) {
       dmnRunnerDispatch.setCurrentInputRowIndex(rowIndex);
       props.setPanelOpen(PanelId.NONE);
     },
-    [dmnRunnerDispatch]
+    [dmnRunnerDispatch, props.setPanelOpen]
   );
 
   useElementsThatStopKeyboardEventsPropagation(
@@ -90,17 +113,19 @@ export function DmnRunnerTabular(props: Props) {
 
   return (
     <div style={{ height: "100%" }}>
-      {dmnRunnerState.jsonSchema && (
-        <DmnAutoTable
-          jsonSchema={dmnRunnerState.jsonSchema}
-          inputRows={dmnRunnerState.inputRows}
-          setInputRows={dmnRunnerDispatch.setInputRows}
-          results={props.dmnRunnerResults}
-          error={dmnRunnerState.error}
-          setError={dmnRunnerDispatch.setError}
-          openRow={openRow}
-        />
-      )}
+      <DmnRunnerLoading>
+        {dmnRunnerState.jsonSchema && (
+          <DmnAutoTable
+            jsonSchema={dmnRunnerState.jsonSchema}
+            inputRows={dmnRunnerState.inputRows}
+            setInputRows={dmnRunnerDispatch.setInputRows}
+            results={props.dmnRunnerResults}
+            error={dmnRunnerState.error}
+            setError={dmnRunnerDispatch.setError}
+            openRow={openRow}
+          />
+        )}
+      </DmnRunnerLoading>
     </div>
   );
 }

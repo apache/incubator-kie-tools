@@ -224,22 +224,21 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
   it("Navigate around using tab", () => {
     // from the cell 2, go to cell 5
-    cy.contains("td", /cell 2/)
-      .focus()
-      .typeTab()
-      .typeTab()
-      .typeTab()
-      .typeTab()
-      .should("contains.text", "cell 5");
+    cy.contains("td", /cell 2/).focus();
+    cy.realPress("Tab");
+    cy.realPress("Tab");
+    cy.realPress("Tab");
+    cy.realPress("Tab");
+    cy.focused().should("contains.text", "cell 6");
 
     // from the cell 11, go to cell 12
-    cy.contains("td", /cell 11/)
-      .focus()
-      .typeTab()
-      .typeTab()
-      .typeTab()
-      .typeTab()
-      .should("contains.text", "cell 12");
+    cy.contains("td", /cell 11/).focus();
+    cy.realPress("Tab");
+    cy.realPress("Tab");
+    cy.realPress("Tab");
+    cy.realPress("Tab");
+
+    cy.focused().should("contains.text", "cell 12");
   });
 
   it("The first cell should keep the focus after tab press", () => {
@@ -247,8 +246,9 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.contains("td", /cell 1/)
       .as("cell-1")
       .type("{enter}")
-      .focused()
-      .typeTab(true);
+      .focused();
+
+    cy.realPress(["Shift", "Tab"]);
 
     cy.get("@cell-1").should("be.focused");
   });
@@ -258,8 +258,9 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.contains("td", /cell 12/)
       .as("cell-12")
       .type("{enter}")
-      .focused()
-      .typeTab();
+      .focused();
+
+    cy.realPress("Tab");
 
     cy.get("@cell-12").should("be.focused");
   });

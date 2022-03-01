@@ -30,7 +30,6 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.l
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Actors;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Groupid;
-import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Priority;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationsInfo;
@@ -113,7 +112,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
     @Property
     @FormField(afterElement = "skippable")
     @Valid
-    private Priority priority;
+    private TaskPriority priority;
 
     @Property
     @FormField(
@@ -236,7 +235,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
              new ReassignmentsInfo(),
              new IsAsync(),
              new Skippable(),
-             new Priority(""),
+             new TaskPriority(""),
              new Subject(""),
              new Description(""),
              new CreatedBy(),
@@ -264,7 +263,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
                                 final @MapsTo("reassignmentsInfo") ReassignmentsInfo reassignmentsInfo,
                                 final @MapsTo("isAsync") IsAsync isAsync,
                                 final @MapsTo("skippable") Skippable skippable,
-                                final @MapsTo("priority") Priority priority,
+                                final @MapsTo("priority") TaskPriority priority,
                                 final @MapsTo("subject") Subject subject,
                                 final @MapsTo("description") Description description,
                                 final @MapsTo("createdBy") CreatedBy createdBy,
@@ -379,11 +378,11 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
     }
 
     @Override
-    public Priority getPriority() {
+    public TaskPriority getPriority() {
         return priority;
     }
 
-    public void setPriority(Priority priority) {
+    public void setPriority(TaskPriority priority) {
         this.priority = priority;
     }
 

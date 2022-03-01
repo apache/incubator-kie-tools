@@ -18,6 +18,7 @@ import { DefaultMonacoEditor, MonacoEditorApi } from "./MonacoEditorApi";
 import { lookupLanguage } from "./language";
 import { initCompletion } from "./completion";
 import { MonacoAugmentation } from "./MonacoAugmentation";
+import { OperatingSystem } from "@kie-tools-core/operating-system";
 
 export { MonacoEditorApi } from "./MonacoEditorApi";
 export { MonacoAugmentation } from "./MonacoAugmentation";
@@ -25,7 +26,8 @@ export { MonacoAugmentation } from "./MonacoAugmentation";
 export function buildEditor(
   content: string,
   fileName: string,
-  onContentChange: (content: string) => void
+  onContentChange: (content: string) => void,
+  operatingSystem?: OperatingSystem
 ): MonacoEditorApi {
   const augmentation: MonacoAugmentation = {
     language: lookupLanguage(fileName),
@@ -33,5 +35,5 @@ export function buildEditor(
 
   initCompletion(augmentation);
 
-  return new DefaultMonacoEditor(content, onContentChange, augmentation);
+  return new DefaultMonacoEditor(content, onContentChange, augmentation, operatingSystem);
 }

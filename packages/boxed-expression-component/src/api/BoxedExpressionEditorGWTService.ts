@@ -40,4 +40,5 @@ export interface BoxedExpressionEditorGWTService {
   notifyUserAction: () => void;
   openManageDataType: () => void;
   onLogicTypeSelect: (selectedLogicType: string) => void;
+  selectObject: (uuid?: string) => void;
 }

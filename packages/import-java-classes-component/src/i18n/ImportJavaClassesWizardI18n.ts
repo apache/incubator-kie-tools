@@ -20,6 +20,8 @@ import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 interface ImportJavaClassesWizardDictionary extends ReferenceDictionary {
   modalButton: {
     text: string;
+    disabledMessage: string;
+    errorMessage: string;
   };
   modalWizard: {
     title: string;
@@ -27,8 +29,9 @@ interface ImportJavaClassesWizardDictionary extends ReferenceDictionary {
     firstStep: {
       stepName: string;
       input: {
-        title: string;
         placeholder: string;
+        title: string;
+        tooltip: string;
       };
       emptyState: {
         title: string;

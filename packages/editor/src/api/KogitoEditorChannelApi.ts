@@ -21,6 +21,8 @@ import { I18nChannelApi } from "@kie-tools-core/i18n/dist/api";
 import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
 import { EditorContent } from "./EditorContent";
 import { StateControlCommand } from "./StateControlCommand";
+import { EditorTheme } from "./EditorTheme";
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 
 export interface KogitoEditorChannelApi
   extends GuidedTourChannelApi,
@@ -32,4 +34,5 @@ export interface KogitoEditorChannelApi
   kogitoEditor_setContentError(content: EditorContent): void;
   kogitoEditor_stateControlCommandUpdate(command: StateControlCommand): void;
   kogitoEditor_contentRequest(): Promise<EditorContent>;
+  kogitoEditor_theme(): SharedValueProvider<EditorTheme>;
 }

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { EffectCallback, useCallback, useEffect, useRef, useState } from "react";
 
-export function usePrevious<T>(value: T) {
+export function usePrevious<T>(value: T): T | undefined {
   const ref = useRef<T>();
 
   useEffect(() => {
@@ -26,6 +27,18 @@ export function usePrevious<T>(value: T) {
   }, [value]);
 
   return ref.current;
+}
+
+export function usePreviousRef<T>(value: T): React.MutableRefObject<T> {
+  const ref = useRef<T>(value);
+
+  useEffect(() => {
+    if (ref.current !== value) {
+      ref.current = value;
+    }
+  }, [value]);
+
+  return ref;
 }
 
 export function useController<T>(): [T | undefined, (controller: T) => void] {
