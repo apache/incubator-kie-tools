@@ -99,7 +99,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       const columnKey = getColumnKey(column);
       const classNames = `${columnKey} fixed-column no-clickable-cell`;
       return (
-        <Th {...column.getHeaderProps()} className={classNames} key={columnKey}>
+        <Th {...column.getHeaderProps()} className={classNames} key={columnKey} tabIndex={-1}>
           <div className="header-cell" data-ouia-component-type="expression-column-header">
             {column.label}
           </div>
@@ -173,6 +173,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       const width = column.width || DEFAULT_MIN_WIDTH;
       const isColspan = (column.columns?.length ?? 0) > 0 || false;
       const columnKey = getColumnKey(column);
+      const isFocusable = /^_\w{8}-(\w{4}-){3}\w{12}$/.test(columnKey);
 
       const getCssClass = () => {
         const cssClasses = [columnKey];
@@ -198,7 +199,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
           {...thProps(column)}
           className={getCssClass()}
           key={columnKey}
-          tabIndex={column.dataType ? "-1" : undefined}
+          tabIndex={isFocusable ? "-1" : undefined}
           onClick={onHeaderClick(columnKey)}
         >
           <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
