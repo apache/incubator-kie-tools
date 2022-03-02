@@ -30,6 +30,7 @@ import {
   focusPrevCell,
   focusPrevDataCell,
   focusUpperCell,
+  getHeaderRowsLenght,
   getParentCell,
 } from "./common";
 import { useBoxedExpression } from "../../context";
@@ -40,6 +41,8 @@ export interface TableBodyProps {
   tableInstance: TableInstance;
   /** The way in which the header will be rendered */
   headerVisibility?: TableHeaderVisibility;
+  /** True, for skipping the creation in the DOM of the last defined header group */
+  skipLastHeaderGroup: boolean;
   /** Optional children element to be appended below the table content */
   children?: React.ReactElement[];
   /** Custom function for getting row key prop, and avoid using the row index */
@@ -58,6 +61,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   tableInstance,
   children,
   headerVisibility,
+  skipLastHeaderGroup,
   getRowKey,
   getColumnKey,
   onColumnsUpdate,
@@ -69,6 +73,8 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   const headerVisibilityMemo = useMemo(() => headerVisibility ?? TableHeaderVisibility.Full, [headerVisibility]);
 
   const { isContextMenuOpen } = useBoxedExpression();
+
+  const headerRowsLength = getHeaderRowsLenght(tableInstance, skipLastHeaderGroup);
 
   const onKeyDown = useCallback(
     (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => {

@@ -17,6 +17,8 @@
 import { render } from "@testing-library/react";
 import * as React from "react";
 import { getCellCoordinates, getCellTableId } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
+import { TableInstance } from "react-table";
+import { getHeaderRowsLenght } from "../../../../src/components/Table/common";
 
 describe("TableUtils", () => {
   describe("getCellCoordinates", () => {
@@ -110,6 +112,21 @@ describe("TableUtils", () => {
 
     test("dispatches paste event", () => {
       expect(getCellTableId(cells[0])).toEqual("table-event-0");
+    });
+  });
+
+  describe("getHeaderRowsLenght", () => {
+    it("get the number of header rows", () => {
+      const tableInstance = { headerGroups: [{}, {}] } as TableInstance;
+
+      expect(getHeaderRowsLenght(tableInstance, false)).toEqual(2);
+      expect(getHeaderRowsLenght(tableInstance, true)).toEqual(1);
+    });
+
+    it("test with no headerGroups", () => {
+      const tableInstance = {} as TableInstance;
+
+      expect(getHeaderRowsLenght(tableInstance, false)).toEqual(0);
     });
   });
 });

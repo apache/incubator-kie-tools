@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import _ from "lodash";
+import * as _ from "lodash";
+import { TableInstance } from "react-table";
 
 const DEFAULT = { x: 0, y: 0 };
 
@@ -49,4 +50,18 @@ export const getCellCoordinates: (cell: Element | undefined | null) => { x: numb
 export const getCellTableId: (cell: Element | undefined | null) => string = (cell) => {
   const cssClasses = cell?.closest(".table-component")?.classList || [];
   return _.first([].slice.call(cssClasses).filter((c: string) => c.match(/table-event-/g))) || "";
+};
+
+/**
+ * Get the table header's hows henght.
+ *
+ * @param tableInstance the tableInstance
+ * @param skipLastHeaderGroup true to skip last header group
+ * @return the number of rows, 0 otherwise
+ */
+export const getHeaderRowsLenght = (tableInstance: TableInstance, skipLastHeaderGroup: boolean): number => {
+  if (!tableInstance || typeof skipLastHeaderGroup === "undefined" || !tableInstance.headerGroups) {
+    return 0;
+  }
+  return skipLastHeaderGroup ? tableInstance.headerGroups.length - 1 : tableInstance.headerGroups.length;
 };

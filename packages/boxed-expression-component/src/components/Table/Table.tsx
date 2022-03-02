@@ -401,6 +401,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
           getColumnKey={onGetColumnKey}
           onColumnsUpdate={onColumnsUpdateCallback}
           headerVisibility={headerVisibility}
+          skipLastHeaderGroup={skipLastHeaderGroup}
           tdProps={tdProps}
           enableKeyboarNavigation={enableKeyboarNavigation}
         >

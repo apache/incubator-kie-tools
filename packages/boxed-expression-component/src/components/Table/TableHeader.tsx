@@ -24,6 +24,7 @@ import { EditExpressionMenu, EditTextInline } from "../EditExpressionMenu";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./Table";
 import { useBoxedExpression } from "../../context";
+import { getHeaderRowsLenght } from "./common";
 
 export interface TableHeaderProps {
   /** Table instance */
@@ -58,6 +59,8 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   editableHeader,
 }) => {
   const { boxedExpressionEditorGWTService } = useBoxedExpression();
+
+  const headerRowsLength = getHeaderRowsLenght(tableInstance, skipLastHeaderGroup);
 
   const getColumnLabel: (groupType: string) => string | undefined = useCallback(
     (groupType) => {
