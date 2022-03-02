@@ -19,7 +19,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
-import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
+import { InputRow, useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
@@ -32,7 +32,7 @@ import {
   DmnResult,
   extractDifferences,
 } from "@kie-tools/form/dist/dmn";
-import { usePrevious } from "../../reactExt/Hooks";
+import { Holder, useCancelableEffect, usePrevious } from "../../reactExt/Hooks";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
@@ -46,6 +46,7 @@ import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
+import { DmnRunnerLoading } from "./DmnRunnerLoading";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -142,14 +143,18 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   );
 
   const updateDmnRunnerResults = useCallback(
-    async (formData: object) => {
+    async (formData: object, canceled: Holder<boolean>) => {
       if (dmnRunnerState.status !== DmnRunnerStatus.AVAILABLE) {
+        dmnRunnerDispatch.setDidUpdateOutputRows(true);
         return;
       }
 
       try {
         const payload = await dmnRunnerDispatch.preparePayload(formData);
         const result = await dmnRunnerState.service.result(payload);
+        if (canceled.get()) {
+          return;
+        }
 
         if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
           dmnRunnerDispatch.setError(true);
@@ -157,7 +162,6 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
         }
 
         setExecutionNotifications(result);
-
         setDmnRunnerResults((previousDmnRunnerResult: DecisionResult[]) => {
           if (!result || !result.decisionResults) {
             return;
@@ -168,7 +172,10 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
           }
           return result.decisionResults;
         });
+
+        dmnRunnerDispatch.setDidUpdateOutputRows(true);
       } catch (e) {
+        dmnRunnerDispatch.setDidUpdateOutputRows(true);
         setDmnRunnerResults(undefined);
       }
     },
@@ -176,41 +183,51 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   );
 
   // Update outputs column on form change
-  useEffect(() => {
-    if (dmnRunnerState.isExpanded && dmnRunnerState.mode === DmnRunnerMode.FORM) {
-      updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]);
-    }
-  }, [
-    dmnRunnerState.inputRows,
-    dmnRunnerState.currentInputRowIndex,
-    updateDmnRunnerResults,
-    dmnRunnerState.isExpanded,
-    dmnRunnerState.mode,
-  ]);
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (dmnRunnerState.isExpanded && dmnRunnerState.mode === DmnRunnerMode.FORM) {
+          updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex], canceled);
+        }
+      },
+      [
+        dmnRunnerState.inputRows,
+        dmnRunnerState.currentInputRowIndex,
+        updateDmnRunnerResults,
+        dmnRunnerState.isExpanded,
+        dmnRunnerState.mode,
+      ]
+    )
+  );
 
   const previousFormError = usePrevious(dmnRunnerState.error);
-  useEffect(() => {
-    if (dmnRunnerState.error) {
-      // if there is an error generating the form, the last form data is submitted
-      updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]);
-    } else if (previousFormError) {
-      setTimeout(() => {
-        formRef.current?.submit();
-        Object.keys(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex] ?? {}).forEach((propertyName) => {
-          formRef.current?.change(
-            propertyName,
-            (dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex] as any)?.[propertyName]
-          );
-        });
-      }, 0);
-    }
-  }, [
-    dmnRunnerState.error,
-    dmnRunnerState.inputRows,
-    dmnRunnerState.currentInputRowIndex,
-    updateDmnRunnerResults,
-    previousFormError,
-  ]);
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (dmnRunnerState.error) {
+          // if there is an error generating the form, the last form data is submitted
+          updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex], canceled);
+        } else if (previousFormError) {
+          setTimeout(() => {
+            formRef.current?.submit();
+            Object.keys(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex] ?? {}).forEach((propertyName) => {
+              formRef.current?.change(
+                propertyName,
+                dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex]?.[propertyName]
+              );
+            });
+          }, 0);
+        }
+      },
+      [
+        dmnRunnerState.error,
+        dmnRunnerState.inputRows,
+        dmnRunnerState.currentInputRowIndex,
+        updateDmnRunnerResults,
+        previousFormError,
+      ]
+    )
+  );
 
   const openValidationTab = useCallback(() => {
     props.editorPageDock?.toggle(PanelId.NOTIFICATIONS_PANEL);
@@ -260,16 +277,16 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
 
   const setFormData = useCallback(
     (newFormData) => {
-      dmnRunnerDispatch.setInputRows((previousData: any) => {
+      dmnRunnerDispatch.setInputRows((previousData: Array<InputRow>) => {
         const newData = [...previousData];
         newData[dmnRunnerState.currentInputRowIndex] = newFormData;
         return newData;
       });
     },
-    [dmnRunnerState.currentInputRowIndex, dmnRunnerDispatch]
+    [dmnRunnerState.currentInputRowIndex, dmnRunnerDispatch.setInputRows]
   );
 
-  const [selectedRow, selectRow] = useState<any>(null);
+  const [selectedRow, selectRow] = useState<string>("");
   const [rowSelectionIsOpen, openRowSelection] = useState<boolean>(false);
 
   const onSelectRow = useCallback((event) => {
@@ -298,13 +315,13 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   }, [dmnRunnerState.inputRows, dmnRunnerState.currentInputRowIndex]);
 
   const onAddNewRow = useCallback(() => {
-    dmnRunnerDispatch.setInputRows((previousData: Array<object>) => {
+    dmnRunnerDispatch.setInputRows((previousData: Array<InputRow>) => {
       const newData = [...previousData, {}];
       dmnRunnerDispatch.setCurrentInputRowIndex(newData.length - 1);
       selectRow(`Row ${newData.length}`);
       return newData;
     });
-  }, [dmnRunnerDispatch]);
+  }, [dmnRunnerDispatch.setInputRows, dmnRunnerDispatch]);
 
   const onChangeToTableView = useCallback(() => {
     dmnRunnerDispatch.setMode(DmnRunnerMode.TABLE);
@@ -324,151 +341,156 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
         drawerErrorMessage
       ) : (
         <ErrorBoundary error={drawerErrorMessage} setHasError={setDrawerError} ref={errorBoundaryRef}>
-          <div
-            className={"kogito--editor__dmn-runner"}
-            style={{ flexDirection: dmnRunnerStylesConfig.contentFlexDirection }}
-          >
+          <DmnRunnerLoading>
             <div
-              className={"kogito--editor__dmn-runner-content"}
-              style={{
-                width: dmnRunnerStylesConfig.contentWidth,
-                height: dmnRunnerStylesConfig.contentHeight,
-              }}
+              className={"kogito--editor__dmn-runner"}
+              style={{ flexDirection: dmnRunnerStylesConfig.contentFlexDirection }}
             >
-              <Page className={"kogito--editor__dmn-runner-content-page"}>
-                <PageSection className={"kogito--editor__dmn-runner-content-header"}>
-                  <Flex
-                    flexWrap={{ default: "nowrap" }}
-                    style={{ width: "100%" }}
-                    justifyContent={{ default: "justifyContentSpaceBetween" }}
-                    alignItems={{ default: "alignItemsCenter" }}
+              <div
+                className={"kogito--editor__dmn-runner-content"}
+                style={{
+                  width: dmnRunnerStylesConfig.contentWidth,
+                  height: dmnRunnerStylesConfig.contentHeight,
+                }}
+              >
+                <Page className={"kogito--editor__dmn-runner-content-page"}>
+                  <PageSection className={"kogito--editor__dmn-runner-content-header"}>
+                    <Flex
+                      flexWrap={{ default: "nowrap" }}
+                      style={{ width: "100%" }}
+                      justifyContent={{ default: "justifyContentSpaceBetween" }}
+                      alignItems={{ default: "alignItemsCenter" }}
+                    >
+                      <FlexItem>
+                        {dmnRunnerState.inputRows.length <= 1 ? (
+                          <Button
+                            variant={ButtonVariant.plain}
+                            className={"kie-tools--masthead-hoverable"}
+                            style={{ cursor: "default" }}
+                          >
+                            <TextContent>
+                              <Text component={"h3"}>{i18n.terms.inputs}</Text>
+                            </TextContent>
+                          </Button>
+                        ) : (
+                          <div>
+                            <Dropdown
+                              className={"kie-tools--masthead-hoverable"}
+                              isPlain={true}
+                              aria-label="Select Row Input"
+                              toggle={
+                                <DropdownToggle
+                                  toggleIndicator={null}
+                                  onToggle={() => openRowSelection((prevState) => !prevState)}
+                                >
+                                  <TextContent>
+                                    <Text component={"h3"}>
+                                      {i18n.terms.inputs} (Row {dmnRunnerState.currentInputRowIndex + 1}){" "}
+                                      <CaretDownIcon />
+                                    </Text>
+                                  </TextContent>
+                                </DropdownToggle>
+                              }
+                              onSelect={onSelectRow}
+                              dropdownItems={rowOptions}
+                              isOpen={rowSelectionIsOpen}
+                            />
+                          </div>
+                        )}
+                      </FlexItem>
+                      <FlexItem>
+                        <ToolbarItem>
+                          <Tooltip content={"Add new input row"}>
+                            <Button
+                              className={"kie-tools--masthead-hoverable"}
+                              variant={ButtonVariant.plain}
+                              onClick={onAddNewRow}
+                            >
+                              <PlusIcon />
+                            </Button>
+                          </Tooltip>
+                        </ToolbarItem>
+                        <ToolbarItem>
+                          <Tooltip content={"Switch to table view"}>
+                            <Button
+                              ouiaId="switch-dmn-runner-to-table-view"
+                              className={"kie-tools--masthead-hoverable"}
+                              variant={ButtonVariant.plain}
+                              onClick={onChangeToTableView}
+                            >
+                              <TableIcon />
+                            </Button>
+                          </Tooltip>
+                        </ToolbarItem>
+                      </FlexItem>
+                    </Flex>
+                    {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
+                      <DrawerCloseButton
+                        onClick={(e: any) => {
+                          dmnRunnerDispatch.setExpanded(false);
+                        }}
+                      />
+                    )}
+                  </PageSection>
+                  <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
+                    <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
+                      <DmnForm
+                        name={selectedRow}
+                        formData={formData}
+                        setFormData={setFormData}
+                        formError={dmnRunnerState.error}
+                        setFormError={dmnRunnerDispatch.setError}
+                        formSchema={dmnRunnerState.jsonSchema}
+                        id={"form"}
+                        formRef={formRef}
+                        showInlineError={true}
+                        autosave={true}
+                        autosaveDelay={AUTO_SAVE_DELAY}
+                        placeholder={true}
+                        errorsField={() => <></>}
+                        submitField={() => <></>}
+                        locale={locale}
+                        notificationsPanel={true}
+                        openValidationTab={openValidationTab}
+                      />
+                    </PageSection>
+                  </div>
+                </Page>
+              </div>
+              <div
+                className={"kogito--editor__dmn-runner-content"}
+                style={{
+                  width: dmnRunnerStylesConfig.contentWidth,
+                  height: dmnRunnerStylesConfig.contentHeight,
+                }}
+              >
+                <Page className={"kogito--editor__dmn-runner-content-page"}>
+                  <PageSection className={"kogito--editor__dmn-runner-content-header"}>
+                    <TextContent>
+                      <Text component={"h3"}>{i18n.terms.outputs}</Text>
+                    </TextContent>
+                    {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
+                      <DrawerCloseButton onClick={(e: any) => dmnRunnerDispatch.setExpanded(false)} />
+                    )}
+                  </PageSection>
+                  <div
+                    className={"kogito--editor__dmn-runner-drawer-content-body"}
+                    data-ouia-component-id={"dmn-runner-results"}
                   >
-                    <FlexItem>
-                      {dmnRunnerState.inputRows.length <= 1 ? (
-                        <Button
-                          variant={ButtonVariant.plain}
-                          className={"kie-tools--masthead-hoverable"}
-                          style={{ cursor: "default" }}
-                        >
-                          <TextContent>
-                            <Text component={"h3"}>{i18n.terms.inputs}</Text>
-                          </TextContent>
-                        </Button>
-                      ) : (
-                        <div>
-                          <Dropdown
-                            className={"kie-tools--masthead-hoverable"}
-                            isPlain={true}
-                            aria-label="Select Row Input"
-                            toggle={
-                              <DropdownToggle
-                                toggleIndicator={null}
-                                onToggle={() => openRowSelection((prevState) => !prevState)}
-                              >
-                                <TextContent>
-                                  <Text component={"h3"}>
-                                    {i18n.terms.inputs} (Row {dmnRunnerState.currentInputRowIndex + 1}){" "}
-                                    <CaretDownIcon />
-                                  </Text>
-                                </TextContent>
-                              </DropdownToggle>
-                            }
-                            onSelect={onSelectRow}
-                            dropdownItems={rowOptions}
-                            isOpen={rowSelectionIsOpen}
-                          />
-                        </div>
-                      )}
-                    </FlexItem>
-                    <FlexItem>
-                      <ToolbarItem>
-                        <Tooltip content={"Add new input row"}>
-                          <Button
-                            className={"kie-tools--masthead-hoverable"}
-                            variant={ButtonVariant.plain}
-                            onClick={onAddNewRow}
-                          >
-                            <PlusIcon />
-                          </Button>
-                        </Tooltip>
-                      </ToolbarItem>
-                      <ToolbarItem>
-                        <Tooltip content={"Switch to table view"}>
-                          <Button
-                            ouiaId="switch-dmn-runner-to-table-view"
-                            className={"kie-tools--masthead-hoverable"}
-                            variant={ButtonVariant.plain}
-                            onClick={onChangeToTableView}
-                          >
-                            <TableIcon />
-                          </Button>
-                        </Tooltip>
-                      </ToolbarItem>
-                    </FlexItem>
-                  </Flex>
-                  {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.INPUT && (
-                    <DrawerCloseButton
-                      onClick={(e: any) => {
-                        dmnRunnerDispatch.setExpanded(false);
-                      }}
-                    />
-                  )}
-                </PageSection>
-                <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
-                  <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
-                    <DmnForm
-                      name={selectedRow}
-                      formData={formData}
-                      setFormData={setFormData}
-                      formError={dmnRunnerState.error}
-                      setFormError={dmnRunnerDispatch.setError}
-                      formSchema={dmnRunnerState.jsonSchema}
-                      id={"form"}
-                      formRef={formRef}
-                      showInlineError={true}
-                      autosave={true}
-                      autosaveDelay={AUTO_SAVE_DELAY}
-                      placeholder={true}
-                      errorsField={() => <></>}
-                      submitField={() => <></>}
-                      locale={locale}
-                      notificationsPanel={true}
-                      openValidationTab={openValidationTab}
-                    />
-                  </PageSection>
-                </div>
-              </Page>
+                    <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
+                      <DmnFormResult
+                        results={dmnRunnerResults}
+                        differences={dmnRunnerResponseDiffs}
+                        locale={locale}
+                        notificationsPanel={true}
+                        openExecutionTab={openExecutionTab}
+                      />
+                    </PageSection>
+                  </div>
+                </Page>
+              </div>
             </div>
-            <div
-              className={"kogito--editor__dmn-runner-content"}
-              style={{
-                width: dmnRunnerStylesConfig.contentWidth,
-                height: dmnRunnerStylesConfig.contentHeight,
-              }}
-            >
-              <Page className={"kogito--editor__dmn-runner-content-page"}>
-                <PageSection className={"kogito--editor__dmn-runner-content-header"}>
-                  <TextContent>
-                    <Text component={"h3"}>{i18n.terms.outputs}</Text>
-                  </TextContent>
-                  {dmnRunnerStylesConfig.buttonPosition === ButtonPosition.OUTPUT && (
-                    <DrawerCloseButton onClick={(e: any) => dmnRunnerDispatch.setExpanded(false)} />
-                  )}
-                </PageSection>
-                <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
-                  <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
-                    <DmnFormResult
-                      results={dmnRunnerResults}
-                      differences={dmnRunnerResponseDiffs}
-                      locale={locale}
-                      notificationsPanel={true}
-                      openExecutionTab={openExecutionTab}
-                    />
-                  </PageSection>
-                </div>
-              </Page>
-            </div>
-          </div>
+          </DmnRunnerLoading>
         </ErrorBoundary>
       )}
     </DrawerPanelContent>
