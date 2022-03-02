@@ -15,73 +15,149 @@
  */
 
 import * as monaco from "monaco-editor";
-import { TextDocument } from "vscode-languageserver-types";
-import { CancellationToken, editor, languages, Position } from "monaco-editor";
-import { MonacoCompletionHelper } from "./helpers";
-import { MonacoAugmentation } from "../MonacoAugmentation";
-import { MonacoLanguage } from "../language";
+import { CancellationToken, editor, languages, Position, Range } from "monaco-editor";
+import * as jsonc from "jsonc-parser";
+import { SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
+import { Specification } from "@severlessworkflow/sdk-typescript";
+import CompletionItemKind = languages.CompletionItemKind;
 
-export type CompletionArgs = {
-  model: editor.ITextModel;
-  position: Position;
-  context: languages.CompletionContext;
-  token: CancellationToken;
-};
+const completions = new Map<
+  jsonc.JSONPath,
+  (args: {
+    workflow?: Specification.Workflow;
+    cursorPosition: Position;
+    nodePositions: { start: Position; end: Position };
+    commandIds: SwfMonacoEditorInstance["commands"];
+    actualNode: jsonc.Node;
+  }) => languages.CompletionItem[]
+>([
+  [
+    ["functions"], // This JSONPath is a pre-filtering of the completion item.
+    ({ cursorPosition, commandIds, actualNode }) => {
+      /*
+        Here we can use any logic that we want, based on the `actualNode` that at the cursor position.
+      */
 
-export function initCompletion(augmentation: MonacoAugmentation): void {
-  monaco.languages.registerCompletionItemProvider(augmentation.language.languageId, {
-    provideCompletionItems(
+      return [
+        // Part of an example
+        //
+        // {
+        //   kind: CompletionItemKind.Snippet,
+        //   label: "Completion item that triggers a command",
+        //   sortText: "a", // Keep it at the top
+        //   insertText: "",
+        //   range: {
+        //     startColumn: cursorPosition.column,
+        //     endColumn: cursorPosition.column,
+        //     startLineNumber: cursorPosition.lineNumber,
+        //     endLineNumber: cursorPosition.lineNumber,
+        //   },
+        //   command: {
+        //     id: commandIds["RunFunctionsCompletion"],
+        //     title: "",
+        //     arguments: [{ cursorPosition, actualNode }], // The actualNode is passed to the command, so it can make decisions based on it too.
+        //   },
+        // },
+        // {
+        //   kind: CompletionItemKind.Snippet,
+        //   label: "Completion item that inserts text",
+        //   sortText: "a", // Keep it at the top
+        //   insertText: "Awesome text made from a completion item",
+        //   range: {
+        //     startColumn: cursorPosition.column,
+        //     endColumn: cursorPosition.column,
+        //     startLineNumber: cursorPosition.lineNumber,
+        //     endLineNumber: cursorPosition.lineNumber,
+        //   },
+        // },
+      ];
+    },
+  ],
+  [
+    ["states", "*", "actions", "*", "functionRef", "refName"],
+    ({ cursorPosition, actualNode, workflow, nodePositions }) => {
+      // `refName` is going to be a property node with two string nodes as children. The first one is `refName`, and the second one is the actual value.
+      if (actualNode.parent?.children?.[1] !== actualNode) {
+        console.debug("Nothing to complete. Not on functionRef value.");
+        return [];
+      }
+
+      if (typeof workflow?.functions === "string") {
+        console.debug("Nothing to complete. Functions property is a string.");
+        return [];
+      }
+
+      const range = new Range(
+        nodePositions.start.lineNumber,
+        nodePositions.start.column,
+        nodePositions.end.lineNumber,
+        nodePositions.end.column
+      );
+
+      return Array.from(workflow?.functions ?? []).map((f) => ({
+        kind: CompletionItemKind.Snippet,
+        detail: "Function",
+        label: f.name,
+        sortText: f.name,
+        filterText: f.name,
+        insertText: `"${f.name}"`,
+        range,
+      }));
+    },
+  ],
+]);
+
+export function initJsonCompletion(commandIds: SwfMonacoEditorInstance["commands"]): void {
+  monaco.languages.registerCompletionItemProvider("json", {
+    provideCompletionItems: (
       model: editor.ITextModel,
       position: Position,
       context: languages.CompletionContext,
       token: CancellationToken
-    ): languages.ProviderResult<languages.CompletionList> {
-      if (!augmentation) {
-        return null;
+    ): languages.ProviderResult<languages.CompletionList> => {
+      if (token.isCancellationRequested) {
+        return;
       }
 
-      const language: MonacoLanguage = augmentation.language;
-
-      if (!language.parser) {
-        return null;
+      const rootNode = jsonc.parseTree(model.getValue());
+      if (!rootNode) {
+        return;
       }
 
-      const document = TextDocument.create("", language.languageId, model.getVersionId(), model.getValue());
+      const cursorOffset = model.getOffsetAt(position);
 
-      const astDocument = language.parser.parseContent(document);
+      const actualNode = jsonc.findNodeAtOffset(rootNode, cursorOffset);
+      if (!actualNode) {
+        return;
+      }
 
-      const offset = document.offsetAt({
-        line: position.lineNumber - 1,
-        character: position.column,
-      });
-
-      const node = astDocument.getNodeFromOffset(offset);
-
-      const suggestions: languages.CompletionItem[] = [];
-
-      const consumer = (helperSuggestions: languages.CompletionItem[]): void => {
-        if (helperSuggestions) {
-          suggestions.push(...helperSuggestions);
-        }
+      const nodePositions = {
+        start: model.getPositionAt(actualNode.offset),
+        end: model.getPositionAt(actualNode.offset + actualNode.length),
       };
 
-      if (node) {
-        MonacoCompletionHelper.fillSuggestions(consumer, {
-          astDocument,
-          node,
-          document,
-          language: augmentation.language,
-          monacoContext: {
-            model,
-            context,
-            token,
-            position,
-          },
-        });
+      let workflow: Specification.Workflow | undefined;
+      try {
+        workflow = Specification.Workflow.fromSource(model.getValue());
+      } catch (e) {
+        console.error("Could not create Workflow from model", e);
+        workflow = undefined;
       }
 
+      const location = jsonc.getLocation(model.getValue(), cursorOffset);
+
       return {
-        suggestions,
+        suggestions: Array.from(completions.entries())
+          .filter(([jsonPath, _]) => location.matches(jsonPath))
+          .flatMap(([_, completionItemsDelegate]) =>
+            completionItemsDelegate({
+              cursorPosition: position,
+              commandIds,
+              actualNode,
+              nodePositions,
+              workflow,
+            })
+          ),
       };
     },
   });

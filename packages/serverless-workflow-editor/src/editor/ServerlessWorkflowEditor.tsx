@@ -28,8 +28,9 @@ import { Specification } from "@severlessworkflow/sdk-typescript";
 import { MermaidDiagram } from "../diagram";
 import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
-import { MonacoEditor, MonacoEditorRef } from "../monaco/MonacoEditor";
-import { MonacoEditorOperation } from "../monaco/augmentation/MonacoEditorApi";
+import { SwfMonacoEditorApi } from "../monaco/SwfMonacoEditorApi";
+import { SwfMonacoEditor } from "../monaco/SwfMonacoEditor";
+import { MonacoEditorOperation } from "../monaco/SwfMonacoEditorApi";
 import { EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 
 interface Props {
@@ -77,7 +78,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   });
   const [diagramOutOfSync, setDiagramOutOfSync] = useState<boolean>(false);
   const svgContainer = useRef<HTMLDivElement>(null);
-  const monacoEditorRef = useRef<MonacoEditorRef>(null);
+  const swfMonacoEditorRef = useRef<SwfMonacoEditorApi>(null);
 
   useImperativeHandle(
     forwardedRef,
@@ -96,7 +97,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           }
         },
         getContent: (): Promise<string> => {
-          return Promise.resolve(monacoEditorRef.current?.getContent() || "");
+          return Promise.resolve(swfMonacoEditorRef.current?.getContent() || "");
         },
         getPreview: (): Promise<string> => {
           // Line breaks replaced due to https://github.com/mermaid-js/mermaid/issues/1766
@@ -104,16 +105,16 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           return Promise.resolve(svgContent);
         },
         undo: (): Promise<void> => {
-          return monacoEditorRef.current?.undo() || Promise.resolve();
+          return swfMonacoEditorRef.current?.undo() || Promise.resolve();
         },
         redo: (): Promise<void> => {
-          return monacoEditorRef.current?.redo() || Promise.resolve();
+          return swfMonacoEditorRef.current?.redo() || Promise.resolve();
         },
         validate: (): Notification[] => {
           return [];
         },
         setTheme: (theme: EditorTheme): Promise<void> => {
-          return monacoEditorRef.current?.setTheme(theme) || Promise.resolve();
+          return swfMonacoEditorRef.current?.setTheme(theme) || Promise.resolve();
         },
       };
     },
@@ -138,8 +139,9 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           svgContainer.current!.innerHTML = mermaidSourceCode;
           svgContainer.current!.removeAttribute("data-processed");
           mermaid.init(svgContainer.current!);
-          svgContainer.current!.getElementsByTagName("svg")[0].setAttribute("style", "height: 100%;");
           svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0]);
+          svgContainer.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
+          svgContainer.current!.getElementsByTagName("svg")[0].style.height = "100%";
           setDiagramOutOfSync(false);
         } else {
           svgContainer.current!.innerHTML = "Create a workflow to see its preview here.";
@@ -150,13 +152,13 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
         setDiagramOutOfSync(true);
       }
     },
-    [monacoEditorRef, props]
+    [props]
   );
 
   useEffect(() => {
-    props.onReady();
+    props.onReady.call(null);
     onContentChanged(initialContent.originalContent);
-  }, [initialContent, props]);
+  }, [initialContent, onContentChanged, props.onReady]);
 
   const panelContent = (
     <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
@@ -175,11 +177,11 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
       <DrawerContent panelContent={panelContent}>
         <DrawerContentBody style={{ overflowY: "hidden" }}>
           {initialContent.path !== "" && (
-            <MonacoEditor
+            <SwfMonacoEditor
               content={initialContent.originalContent}
               fileName={initialContent.path}
               onContentChange={onContentChanged}
-              ref={monacoEditorRef}
+              ref={swfMonacoEditorRef}
             />
           )}
         </DrawerContentBody>
