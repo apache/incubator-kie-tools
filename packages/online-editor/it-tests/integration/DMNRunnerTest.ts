@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-describe("DMN Runner Test", () => {
+describe.skip("DMN Runner Test", () => {
   beforeEach(() => {
     cy.visit("/");
   });
