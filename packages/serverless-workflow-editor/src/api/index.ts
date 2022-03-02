@@ -14,4 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./ServiceCatalogApi";
+export * from "./ServerlessWorkflowEditorServiceCatalogApi";
+export * from "./types";

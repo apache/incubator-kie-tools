@@ -14,28 +14,24 @@
  * limitations under the License.
  */
 
-import { FunctionArgumentType, FunctionDefinition, FunctionType, ServiceType } from "../../../api";
+import { FunctionArgumentType, Function, FunctionType, Service, ServiceType } from "../../api";
 import * as yaml from "js-yaml";
 import { OpenAPIV3 } from "openapi-types";
-import { ServiceParsingResult } from "./types";
 
 const APPLICATION_JSON = "application/json";
 
-export function parseOpenAPI(args: { fileName: string; storagePath: string; content: string }): ServiceParsingResult {
+export function parseOpenAPI(args: { fileName: string; storagePath: string; content: string }): Service {
   const servicePath = `${args.storagePath}/${args.fileName}`;
   const contentDoc = readOpenapiDoc(args.content);
 
   const functionDefinitions = extractFunctions(contentDoc, servicePath);
 
-  const serviceDefinition = {
+  return {
     name: contentDoc.info.title ?? servicePath,
     type: ServiceType.rest,
     id: servicePath,
-  };
-
-  return {
-    serviceDefinition,
-    functionDefinitions,
+    functions: functionDefinitions,
+    rawContent: args.content,
   };
 }
 
@@ -48,8 +44,8 @@ function readOpenapiDoc(content: string): OpenAPIV3.Document {
   return contentDoc;
 }
 
-function extractFunctions(contentDoc: OpenAPIV3.Document, servicePath: string): FunctionDefinition[] {
-  const functionDefinitions: FunctionDefinition[] = [];
+function extractFunctions(contentDoc: OpenAPIV3.Document, servicePath: string): Function[] {
+  const functionDefinitions: Function[] = [];
 
   Object.entries(contentDoc.paths).forEach(([endpoint, pathItem]: [string, OpenAPIV3.PathItemObject]) => {
     if (pathItem.post) {
@@ -66,7 +62,7 @@ function extractFunctions(contentDoc: OpenAPIV3.Document, servicePath: string): 
           contentDoc
         );
 
-        const functionDef: FunctionDefinition = {
+        const functionDef: Function = {
           name,
           operation,
           type: FunctionType.rest,

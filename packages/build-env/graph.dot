@@ -161,6 +161,8 @@ digraph G {
   "@kie-tools/pmml-editor-marshaller" -> "@kie-tools/build-env" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/run-script-if" -> "@kie-tools/build-env" [ style = "dashed", color = "purple" ];
   "@kie-tools/serverless-workflow-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-editor" -> "@kie-tools/service-catalog" [ style = "solid", color = "blue" ];
+  "@kie-tools/service-catalog" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "blue" ];
   "@kie-tools/stunner-editors" -> "@kie-tools/stunner-editors-dmn-loader" [ style = "solid", color = "black" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/import-java-classes-component" [ style = "solid", color = "blue" ];

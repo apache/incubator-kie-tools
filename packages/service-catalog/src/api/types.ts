@@ -19,10 +19,13 @@ export enum ServiceType {
   graphql = "graphql",
 }
 
-export interface ServiceDefinition {
+export interface Service {
   name: string;
   id: string;
   type: ServiceType;
+
+  functions: Function[];
+  rawContent: string;
 }
 
 export enum FunctionType {
@@ -40,7 +43,7 @@ export enum FunctionArgumentType {
   array = "array",
 }
 
-export interface FunctionDefinition {
+export interface Function {
   name: string;
   operation: string;
   arguments: Record<string, FunctionArgumentType>;

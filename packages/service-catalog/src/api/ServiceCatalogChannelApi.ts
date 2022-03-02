@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import { FunctionDefinition, ServiceDefinition } from "./types";
+import { Service } from "./types";
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 
 export interface ServiceCatalogChannelApi {
-  kogitoServiceCatalog_getServiceDefinitions(): Promise<ServiceDefinition[]>;
-  kogitoServiceCatalog_getFunctionDefinitions(serviceId?: string): Promise<FunctionDefinition[]>;
-  kogitoServiceCatalog_getFunctionDefinitionByOperation(operationId: string): Promise<FunctionDefinition | undefined>;
+  kogitoServiceCatalog_getServices(): SharedValueProvider<Service[]>;
+
+  dispose(): void;
 }

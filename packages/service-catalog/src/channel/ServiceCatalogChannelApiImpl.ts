@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-import { FunctionDefinition, ServiceCatalogChannelApi, ServiceDefinition } from "../api";
+import { ServiceCatalogChannelApi, Service } from "../api";
 import { ServiceCatalogRegistry } from "./ServiceCatalogRegistry";
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
+import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 
 export class ServiceCatalogChannelApiImpl implements ServiceCatalogChannelApi {
-  constructor(private readonly registry?: ServiceCatalogRegistry) {}
-
-  public kogitoServiceCatalog_getServiceDefinitions(): Promise<ServiceDefinition[]> {
-    if (this.registry) {
-      return this.registry.getServiceDefinitions();
-    }
-    return Promise.resolve([]);
+  constructor(
+    private readonly envelopeServer: EnvelopeServer<ServiceCatalogChannelApi, KogitoEditorEnvelopeApi>,
+    private readonly registry: ServiceCatalogRegistry
+  ) {
+    this.registry.init((services) => this.loadServices(services));
+    this.registry.load();
   }
 
-  public kogitoServiceCatalog_getFunctionDefinitions(serviceId?: string): Promise<FunctionDefinition[]> {
-    if (this.registry) {
-      return this.registry.getFunctionDefinitions(serviceId);
-    }
-    return Promise.resolve([]);
+  private loadServices(services: Service[] = []) {
+    this.envelopeServer.shared.kogitoServiceCatalog_getServices.set(services);
   }
 
-  public kogitoServiceCatalog_getFunctionDefinitionByOperation(
-    operationId: string
-  ): Promise<FunctionDefinition | undefined> {
-    if (this.registry && operationId) {
-      return this.registry.getFunctionDefinition(operationId);
-    }
-    return Promise.resolve(undefined);
+  kogitoServiceCatalog_getServices(): SharedValueProvider<Service[]> {
+    return {
+      defaultValue: [],
+    };
+  }
+
+  dispose(): void {
+    this.registry.dispose();
   }
 }

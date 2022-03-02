@@ -20,19 +20,13 @@ import { FileSystemServiceCatalogRegistry } from "./fs";
 
 const FILE_DIRNAME = "${fileDirname}";
 
-export function lookupCatalogRegistry(args: {
-  filePath: string;
-  specsStoragePath: string;
-}): ServiceCatalogRegistry | undefined {
+export function lookupCatalogRegistry(args: { filePath: string; specsStoragePath: string }): ServiceCatalogRegistry {
   const parentDir = __path.parse(args.filePath).dir;
 
   const storagePath = args.specsStoragePath.replace(FILE_DIRNAME, parentDir);
   const baseSpecsFolder = args.specsStoragePath.includes(FILE_DIRNAME)
     ? storagePath.substring(storagePath.lastIndexOf("/") + 1)
     : storagePath;
-  try {
-    return new FileSystemServiceCatalogRegistry(baseSpecsFolder, storagePath);
-  } catch (err) {
-    console.log(`Cannot open FileSystemServiceCatalogRegistry in path: "${storagePath}"`);
-  }
+
+  return new FileSystemServiceCatalogRegistry(baseSpecsFolder, storagePath);
 }

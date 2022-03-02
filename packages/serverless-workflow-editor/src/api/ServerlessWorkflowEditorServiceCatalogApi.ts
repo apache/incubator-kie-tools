@@ -14,5 +14,13 @@
  * limitations under the License.
  */
 
-export * from "./types";
-export { parseOpenAPI } from "./openapi";
+import { Function, Service } from "@kie-tools/service-catalog/src/api";
+
+/**
+ *
+ */
+export interface ServerlessWorkflowEditorServiceCatalogApi {
+  getServices(): Service[];
+  getFunctions(serviceId?: string): Function[];
+  getFunctionByOperation(operationId: string): Function | undefined;
+}

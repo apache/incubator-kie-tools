@@ -14,8 +14,4 @@
  * limitations under the License.
  */
 
-interface ServerlessWorkflowFunctionDefinition {
-  name: string;
-  operation: string;
-  type: string;
-}
+export { parseOpenAPI } from "./openapi";

@@ -20,6 +20,7 @@ import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/d
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
+import { DefaultKogitoEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiProducer";
 import { ServerlessWorkflowChannelApiProducer } from "./ServerlessWorkflowChannelApiProducer";
 
 let backendProxy: VsCodeBackendProxy;

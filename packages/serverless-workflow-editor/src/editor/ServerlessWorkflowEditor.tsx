@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
   Drawer,
   DrawerContent,
@@ -32,7 +32,7 @@ import { SwfMonacoEditorApi } from "../monaco/SwfMonacoEditorApi";
 import { SwfMonacoEditor } from "../monaco/SwfMonacoEditor";
 import { MonacoEditorOperation } from "../monaco/SwfMonacoEditorApi";
 import { EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
-import { ServiceCatalogApi } from "../api";
+import { ServerlessWorkflowEditorServiceCatalogApi } from "../api";
 
 interface Props {
   /**
@@ -67,7 +67,7 @@ interface Props {
   /**
    * Api to access the ServiceCatalog
    */
-  serviceCatalogApi: ServiceCatalogApi;
+  serviceCatalogApi: ServerlessWorkflowEditorServiceCatalogApi;
 }
 
 export type ServerlessWorkflowEditorRef = {

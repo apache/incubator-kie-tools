@@ -113,13 +113,13 @@ export const App = () => {
               }
             }}
             serviceCatalogApi={{
-              getServiceDefinitions(): Promise<ServiceDefinition[]> {
+              getServices(): Promise<ServiceDefinition[]> {
                 return Promise.resolve([]);
               },
-              getFunctionDefinitions(serviceId?: string): Promise<FunctionDefinition[]> {
+              getFunctions(serviceId?: string): Promise<FunctionDefinition[]> {
                 return Promise.resolve([]);
               },
-              getFunctionDefinitionByOperation(operationId: string): Promise<FunctionDefinition | undefined> {
+              getFunctionByOperation(operationId: string): Promise<FunctionDefinition | undefined> {
                 return Promise.resolve(undefined);
               },
             }}

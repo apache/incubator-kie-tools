@@ -2419,13 +2419,6 @@
     methods "^1.1.2"
     path-to-regexp "^6.1.0"
 
-"@kogito-tooling/microeditor-envelope-protocol@0.2.8":
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/microeditor-envelope-protocol/-/microeditor-envelope-protocol-0.2.8.tgz#7e16167080071f56c5590434c8850db2de675914"
-  integrity sha512-sl/v4KnaS5VdELEeCy9xxqFRB0hnFhRLMTfkye4hqm2qN91MhTlnl/ih4tUWZgVLYxnP+vjuYO1k02DLJKbESA==
-  dependencies:
-    "@kogito-tooling/core-api" "0.2.8"
-
 "@lerna/add@4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@lerna/add/-/add-4.0.0.tgz#c36f57d132502a57b9e7058d1548b7a565ef183f"
@@ -3370,11 +3363,6 @@
   version "8.3.8"
   resolved "https://registry.yarnpkg.com/@oozcitak/util/-/util-8.3.8.tgz#10f65fe1891fd8cde4957360835e78fd1936bfdd"
   integrity sha512-T8TbSnGsxo6TDBJx/Sgv/BlVJL3tshxZP7Aq5R1mSnM5OcHY2dQaxLMu2+E8u3gN0MLOzdjurqN4ZRVuzQycOQ==
-
-"@patternfly/patternfly@2.40.2":
-  version "2.40.2"
-  resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-2.40.2.tgz#c1e4fd8f80b191faea576e78a45d8edaf48b7926"
-  integrity sha512-KCPQ6EL39xJen/B67MGv56i3h6bU5l7FD6f5IYU30z+ed2gM8zAYI3mPKNV05TMJv6+EQfp6O7dqCM3PJ8Q1yw==
 
 "@patternfly/patternfly@^4.135.2":
   version "4.135.2"

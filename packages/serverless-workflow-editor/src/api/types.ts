@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-import { FunctionDefinition, ServiceDefinition } from "@kie-tools/service-catalog/src/api";
-
-/**
- * Proxy for ServiceCatalogChannelApi to be used in the editor.
- */
-export interface ServiceCatalogApi {
-  getServiceDefinitions(): Promise<ServiceDefinition[]>;
-  getFunctionDefinitions(serviceId?: string): Promise<FunctionDefinition[]>;
-  getFunctionDefinitionByOperation(operationId: string): Promise<FunctionDefinition | undefined>;
-}
+export type ServerlessWorkflowFunctionDefinition = {
+  name: string;
+  operation: string;
+  type: string;
+};

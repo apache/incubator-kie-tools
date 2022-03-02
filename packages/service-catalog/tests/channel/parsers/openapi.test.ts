@@ -16,10 +16,10 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { parseOpenAPI, ServiceParsingResult } from "@kie-tools/service-catalog/dist/channel";
-import { FunctionArgumentType, FunctionType, ServiceType } from "../../../../dist/api";
+import { parseOpenAPI } from "@kie-tools/service-catalog/dist/channel";
+import { FunctionArgumentType, FunctionType, Service, ServiceType } from "@kie-tools/service-catalog/dist/api";
 
-function doParse(fileName: string): ServiceParsingResult {
+function doParse(fileName: string): Service {
   const filePath = path.resolve(__dirname, `examples/${fileName}`);
   const content = fs.readFileSync(filePath).toString("utf-8");
 
@@ -32,18 +32,16 @@ function doParse(fileName: string): ServiceParsingResult {
 
 describe("openapi parser", () => {
   it("parse multiplication openapi", async () => {
-    const result: ServiceParsingResult = doParse("multiplication.yaml");
+    const result = doParse("multiplication.yaml");
 
     expect(result).not.toBeNull();
+    expect(result.type).toBe(ServiceType.rest);
+    expect(result.id).toBe("specs/multiplication.yaml");
+    expect(result.name).toBe("Generated API");
 
-    expect(result.serviceDefinition).not.toBeNull();
-    expect(result.serviceDefinition.type).toBe(ServiceType.rest);
-    expect(result.serviceDefinition.id).toBe("specs/multiplication.yaml");
-    expect(result.serviceDefinition.name).toBe("Generated API");
+    expect(result.functions).toHaveLength(1);
 
-    expect(result.functionDefinitions).toHaveLength(1);
-
-    const functionDef = result.functionDefinitions[0];
+    const functionDef = result.functions[0];
     expect(functionDef.type).toBe(FunctionType.rest);
     expect(functionDef.name).toBe("doOperation");
     expect(functionDef.operation).toBe("specs/multiplication.yaml#doOperation");
@@ -54,18 +52,16 @@ describe("openapi parser", () => {
   });
 
   it("parse hiring openapi", async () => {
-    const result: ServiceParsingResult = doParse("hiring.yaml");
+    const result = doParse("hiring.yaml");
 
     expect(result).not.toBeNull();
+    expect(result.type).toBe(ServiceType.rest);
+    expect(result.id).toBe("specs/hiring.yaml");
+    expect(result.name).toBe("process-usertasks-timer-quarkus-with-console API");
 
-    expect(result.serviceDefinition).not.toBeNull();
-    expect(result.serviceDefinition.type).toBe(ServiceType.rest);
-    expect(result.serviceDefinition.id).toBe("specs/hiring.yaml");
-    expect(result.serviceDefinition.name).toBe("process-usertasks-timer-quarkus-with-console API");
+    expect(result.functions).toHaveLength(1);
 
-    expect(result.functionDefinitions).toHaveLength(1);
-
-    const functionDef = result.functionDefinitions[0];
+    const functionDef = result.functions[0];
     expect(functionDef.type).toBe(FunctionType.rest);
     expect(functionDef.name).toBe("hiring");
     expect(functionDef.operation).toBe("specs/hiring.yaml#hiring");

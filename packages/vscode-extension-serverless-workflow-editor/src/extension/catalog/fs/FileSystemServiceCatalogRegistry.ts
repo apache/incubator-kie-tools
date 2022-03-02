@@ -15,82 +15,116 @@
  */
 
 import * as vscode from "vscode";
-import { FileType } from "vscode";
+import { Disposable, FileType } from "vscode";
 import { parseOpenAPI, ServiceCatalogRegistry } from "@kie-tools/service-catalog/dist/channel";
-import { FunctionDefinition, ServiceDefinition } from "@kie-tools/service-catalog/dist/api";
+import { Service } from "@kie-tools/service-catalog/dist/api";
 
 const OPENAPI_EXTENSIONS_REGEX = new RegExp("^.*\\.(yaml|yml|json)$");
 
 export class FileSystemServiceCatalogRegistry implements ServiceCatalogRegistry {
-  private registry: Map<ServiceDefinition, FunctionDefinition[]> = new Map<ServiceDefinition, FunctionDefinition[]>();
+  private registryConsumer: (services: Service[]) => void;
+  private readonly onDispose: () => void;
 
   constructor(private readonly specsFolder: string, private readonly fullSpecsStoragePath: string) {
-    this.load();
+    const fsWatcher = vscode.workspace.createFileSystemWatcher(
+      `${fullSpecsStoragePath}/*.{json,yaml,yml}`,
+      false,
+      false,
+      false
+    );
+    const onDidCreate: Disposable = fsWatcher.onDidCreate((e) => this.load());
+    const onDidChange: Disposable = fsWatcher.onDidChange((e) => this.load());
+    const onDidDelete: Disposable = fsWatcher.onDidDelete((e) => this.load());
+
+    this.onDispose = () => {
+      onDidCreate.dispose();
+      onDidChange.dispose();
+      onDidDelete.dispose();
+      fsWatcher.dispose();
+    };
   }
 
-  getFunctionDefinitions(serviceId?: string): Promise<FunctionDefinition[]> {
-    const result: FunctionDefinition[] = [];
+  public init(registryConsumer: (services: Service[]) => void): void {
+    this.registryConsumer = registryConsumer;
+  }
 
-    this.registry.forEach((functions, service) => {
-      if (!serviceId || (serviceId && service.id === serviceId)) {
-        result.push(...functions);
+  public load() {
+    this.readServices()
+      .then((services) => this.pushServices(services))
+      .catch((err) => {
+        console.error("Cannot load services", err);
+        this.pushServices([]);
+      });
+  }
+
+  public dispose(): void {
+    this.onDispose();
+  }
+
+  private pushServices(services: Service[]) {
+    if (this.registryConsumer) {
+      this.registryConsumer(services);
+    }
+  }
+
+  private readServices(): Promise<Service[]> {
+    return new Promise<Service[]>((resolve, reject) => {
+      try {
+        const fullSpecsStorageUri = vscode.Uri.parse(this.fullSpecsStoragePath);
+
+        vscode.workspace.fs.stat(fullSpecsStorageUri).then((stats) => {
+          if (!stats || stats.type !== FileType.Directory) {
+            reject(`Invalid path: ${this.fullSpecsStoragePath}`);
+          }
+
+          vscode.workspace.fs.readDirectory(fullSpecsStorageUri).then((files) => {
+            if (files && files.length > 0) {
+              const promises: Promise<Service | undefined>[] = [];
+              files.forEach(([fileName, type]) => {
+                if (type === FileType.File && OPENAPI_EXTENSIONS_REGEX.test(fileName.toLowerCase())) {
+                  const fileUrl = fullSpecsStorageUri.with({
+                    path: this.fullSpecsStoragePath + "/" + fileName,
+                  });
+                  promises.push(this.readServiceFile(fileUrl, fileName));
+                }
+              });
+              if (promises.length > 0) {
+                Promise.all(promises).then((services) => {
+                  const filteredServices: Service[] = [];
+                  services.forEach((service) => {
+                    if (service) {
+                      filteredServices.push(service);
+                    }
+                  });
+                  resolve(filteredServices);
+                });
+              } else {
+                resolve([]);
+              }
+            }
+          });
+        });
+      } catch (error) {
+        reject(`Error loading catalog: ${error}`);
       }
     });
-    return Promise.resolve(result);
   }
 
-  public getServiceDefinitions(): Promise<ServiceDefinition[]> {
-    return Promise.resolve(Array.from(this.registry.keys()));
-  }
-
-  public persistService(serviceId: string): void {}
-
-  getFunctionDefinition(operationId?: string): Promise<FunctionDefinition | undefined> {
-    if (this.registry && operationId) {
-      for (const functionDefs of this.registry.values()) {
-        for (const functionDef of functionDefs) {
-          if (functionDef.operation === operationId) {
-            return Promise.resolve(functionDef);
-          }
-        }
-      }
-    }
-    return Promise.resolve(undefined);
-  }
-
-  private async load() {
-    try {
-      const fullSpecsStorageUri = vscode.Uri.parse(this.fullSpecsStoragePath);
-
-      const stats = await vscode.workspace.fs.stat(fullSpecsStorageUri);
-
-      if (!stats || stats.type !== FileType.Directory) {
-        throw new Error(`Invalid path: ${this.fullSpecsStoragePath}`);
-      }
-
-      const files = await vscode.workspace.fs.readDirectory(fullSpecsStorageUri);
-
-      files.forEach(([fileName, type]) => {
-        if (type === FileType.File && OPENAPI_EXTENSIONS_REGEX.test(fileName.toLowerCase())) {
-          vscode.workspace.fs
-            .readFile(
-              fullSpecsStorageUri.with({
-                path: this.fullSpecsStoragePath + "/" + fileName,
-              })
-            )
-            .then(async (data) => {
-              const content = Buffer.from(data).toString("utf-8");
-              const result = parseOpenAPI({
-                fileName,
-                storagePath: this.specsFolder,
-                content,
-              });
-              this.registry.set(result.serviceDefinition, result.functionDefinitions);
-            });
+  private readServiceFile(fileUrl: vscode.Uri, fileName: string): Promise<Service | undefined> {
+    return new Promise<Service | undefined>((resolve) => {
+      vscode.workspace.fs.readFile(fileUrl).then((rawData) => {
+        const content = Buffer.from(rawData).toString("utf-8");
+        try {
+          const Service = parseOpenAPI({
+            fileName,
+            storagePath: this.specsFolder,
+            content,
+          });
+          resolve(Service);
+        } catch (err) {
+          resolve(undefined);
         }
       });
-    } catch (error) {
-      console.log(`Error loading catalog: `, error);
-    }
+    });
   }
 }

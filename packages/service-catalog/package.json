@@ -18,6 +18,7 @@
     "build:prod": "yarn lint && rimraf dist && tsc -p tsconfig.prod.json && yarn test"
   },
   "dependencies": {
+    "@kie-tools-core/envelope-bus": "0.0.0",
     "@types/js-yaml": "^4.0.5",
     "js-yaml": "^4.1.0",
     "openapi-types": "^7.0.1"

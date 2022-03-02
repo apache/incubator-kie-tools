@@ -19,20 +19,26 @@ import { Uri, Webview } from "vscode";
 import * as __path from "path";
 import { NotificationsApi } from "@kie-tools-core/notifications/dist/api";
 import { BackendProxy } from "@kie-tools-core/backend/dist/api";
-import { ResourceContentService } from "@kie-tools-core/workspace/dist/api";
-import { EditorEnvelopeLocator, EnvelopeMapping, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
-import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
+import { ResourceContentService, WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
+import {
+  EditorEnvelopeLocator,
+  EnvelopeMapping,
+  KogitoEditorChannelApi,
+  KogitoEditorEnvelopeApi,
+} from "@kie-tools-core/editor/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { KogitoEditor } from "./KogitoEditor";
-import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "./i18n";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
-import { KogitoEditorChannelApiProducer } from "./KogitoEditorChannelApiProducer";
+import {
+  DefaultKogitoEditorChannelApiProducer,
+  KogitoEditorChannelApiProducer,
+} from "./KogitoEditorChannelApiProducer";
 
 export class KogitoEditorFactory {
   constructor(
@@ -46,7 +52,7 @@ export class KogitoEditorFactory {
     private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     private readonly viewType: string,
     private readonly i18n: I18n<VsCodeI18n>,
-    private readonly channelApiProducer?: KogitoEditorChannelApiProducer
+    private readonly channelApiProducer: KogitoEditorChannelApiProducer = new DefaultKogitoEditorChannelApiProducer()
   ) {}
 
   public configureNew(webviewPanel: vscode.WebviewPanel, document: KogitoEditableDocument) {
@@ -85,21 +91,16 @@ export class KogitoEditorFactory {
     editor.startListeningToThemeChanges();
   }
 
-  private getChannelApi(editor: KogitoEditor, resourceContentService: ResourceContentService): KogitoEditorChannelApi {
-    if (this.channelApiProducer) {
-      return this.channelApiProducer.get(
-        editor,
-        resourceContentService,
-        this.workspaceApi,
-        this.backendProxy,
-        this.notificationsApi,
-        this.javaCodeCompletionApi,
-        this.viewType,
-        this.i18n
-      );
+  public createResourceContentService(path: string, workspacePath: string): ResourceContentService {
+    if (this.isAssetInWorkspace(path)) {
+      return new VsCodeResourceContentService(this.getParentFolder(workspacePath));
+    } else {
+      return new VsCodeNodeResourceContentService(this.getParentFolder(path));
     }
+  }
 
-    return new KogitoEditorChannelApiImpl(
+  private getChannelApi(editor: KogitoEditor, resourceContentService: ResourceContentService): KogitoEditorChannelApi {
+    return this.channelApiProducer.get(
       editor,
       resourceContentService,
       this.workspaceApi,
@@ -130,14 +131,6 @@ export class KogitoEditorFactory {
 
   private getWebviewPath(webview: Webview, relativePath: string) {
     return webview.asWebviewUri(Uri.joinPath(this.context.extensionUri, relativePath)).toString();
-  }
-
-  public createResourceContentService(path: string, workspacePath: string): ResourceContentService {
-    if (this.isAssetInWorkspace(path)) {
-      return new VsCodeResourceContentService(this.getParentFolder(workspacePath));
-    } else {
-      return new VsCodeNodeResourceContentService(this.getParentFolder(path));
-    }
   }
 
   private isAssetInWorkspace(path: string): boolean {

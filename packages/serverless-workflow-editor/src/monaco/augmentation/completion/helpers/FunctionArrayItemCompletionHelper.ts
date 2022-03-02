@@ -18,7 +18,8 @@ import * as monaco from "monaco-editor";
 import { languages } from "monaco-editor";
 import { ASTNode, PropertyASTNode } from "../../language/parser";
 import { CompletionContext, CompletionHelper } from "./CompletionHelper";
-import { FunctionDefinition } from "@kie-tools/service-catalog/dist/api";
+import { Function } from "@kie-tools/service-catalog/dist/api";
+import { ServerlessWorkflowFunctionDefinition } from "../../../../api";
 
 const FUNCTIONS_NODE = "functions";
 
@@ -46,36 +47,24 @@ export class FunctionArrayItemCompletionHelper implements CompletionHelper {
     return checkFunctionsPropertyNode(node);
   };
 
-  getSuggestions = (context: CompletionContext): Promise<languages.CompletionItem[]> => {
-    return new Promise<languages.CompletionItem[]>((resolve) => {
-      context.serviceCatalogApi.getFunctionDefinitions().then((functions: FunctionDefinition[]) => {
-        const suggestions: languages.CompletionItem[] = [];
-
-        functions.forEach((def: FunctionDefinition) => {
-          const swDefinition: ServerlessWorkflowFunctionDefinition = {
-            name: def.name,
-            operation: def.operation,
-            type: def.type,
-          };
-
-          const suggestion = {
-            label: swDefinition.operation,
-            kind: monaco.languages.CompletionItemKind.Value,
-            insertText: context.language.getStringValue(swDefinition),
-            range: {
-              startLineNumber: context.monacoContext.position.lineNumber,
-              endLineNumber: context.monacoContext.position.lineNumber,
-              startColumn: context.monacoContext.position.column,
-              endColumn: context.monacoContext.position.column,
-            },
-          };
-          suggestions.push(suggestion);
-        });
-
-        resolve(suggestions);
-      });
+  getSuggestions = (context: CompletionContext): languages.CompletionItem[] => {
+    return context.serviceCatalogApi.getFunctions().map((def: Function) => {
+      const functionDefinition: ServerlessWorkflowFunctionDefinition = {
+        name: def.name,
+        operation: def.operation,
+        type: def.type,
+      };
+      return {
+        label: functionDefinition.operation,
+        kind: monaco.languages.CompletionItemKind.Value,
+        insertText: context.language.getStringValue(functionDefinition),
+        range: {
+          startLineNumber: context.monacoContext.position.lineNumber,
+          endLineNumber: context.monacoContext.position.lineNumber,
+          startColumn: context.monacoContext.position.column,
+          endColumn: context.monacoContext.position.column,
+        },
+      };
     });
-
-    return Promise.resolve([]);
   };
 }

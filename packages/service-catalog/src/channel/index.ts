@@ -16,4 +16,4 @@
 
 export * from "./ServiceCatalogChannelApiImpl";
 export * from "./ServiceCatalogRegistry";
-export * from "./registry";
+export * from "./parsers";

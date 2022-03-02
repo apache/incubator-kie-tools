@@ -15,10 +15,28 @@
  */
 
 import { KogitoEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiImpl";
-import { StateControlCommand } from "@kie-tools-core/editor/dist/api";
-import * as vscode from "vscode";
+import { EditorContent, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import { KogitoEditor } from "@kie-tools-core/vscode-extension/dist/KogitoEditor";
+import {
+  KogitoEdit,
+  ResourceContent,
+  ResourceContentRequest,
+  ResourceContentService,
+  ResourceListRequest,
+  ResourcesList,
+  WorkspaceApi,
+} from "@kie-tools-core/workspace/dist/api";
+import { BackendProxy } from "@kie-tools-core/backend/dist/api";
+import { NotificationsApi, Notification } from "@kie-tools-core/notifications/dist/api";
+import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
+import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { ServiceCatalogChannelApi, Service } from "@kie-tools/service-catalog/dist/api";
+import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
+import { ServerlessWorkflowChannelApi } from "@kie-tools/serverless-workflow-editor";
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 
-export class ServerlessWorkflowChannelApiImpl extends KogitoEditorChannelApiImpl {
+export class ServerlessWorkflowChannelApiImpl implements ServerlessWorkflowChannelApi {
   private readonly apiDelegate: KogitoEditorChannelApiImpl;
 
   constructor(
@@ -44,6 +62,7 @@ export class ServerlessWorkflowChannelApiImpl extends KogitoEditorChannelApiImpl
       i18n,
       initialBackup
     );
+    this.editor.document.onDidDispose((event) => this.dispose());
   }
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
@@ -78,7 +97,7 @@ export class ServerlessWorkflowChannelApiImpl extends KogitoEditorChannelApiImpl
     this.apiDelegate.kogitoNotifications_createNotification(notification);
   }
 
-  kogitoNotifications_removeNotifications(path: string): void {
+  public kogitoNotifications_removeNotifications(path: string): void {
     this.apiDelegate.kogitoNotifications_removeNotifications(path);
   }
 
@@ -102,29 +121,15 @@ export class ServerlessWorkflowChannelApiImpl extends KogitoEditorChannelApiImpl
     return this.apiDelegate.kogitoWorkspace_resourceListRequest(request);
   }
 
-  public kogitoServiceCatalog_getServiceDefinitions(): Promise<ServiceDefinition[]> {
-    return this.serviceCatalogApiDelegate.kogitoServiceCatalog_getServiceDefinitions();
+  public kogitoEditor_theme(): SharedValueProvider<EditorTheme> {
+    return this.apiDelegate.kogitoEditor_theme();
   }
 
-  public kogitoServiceCatalog_getFunctionDefinitions(serviceId?: string): Promise<FunctionDefinition[]> {
-    return this.serviceCatalogApiDelegate.kogitoServiceCatalog_getFunctionDefinitions(serviceId);
+  public kogitoServiceCatalog_getServices(): SharedValueProvider<Service[]> {
+    return this.serviceCatalogApiDelegate.kogitoServiceCatalog_getServices();
   }
 
-  kogitoServiceCatalog_getFunctionDefinitionByOperation(operationId: string): Promise<FunctionDefinition | undefined> {
-    return this.serviceCatalogApiDelegate.kogitoServiceCatalog_getFunctionDefinitionByOperation(operationId);
-  }
-
-  public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {
-    switch (command) {
-      case StateControlCommand.REDO:
-        vscode.commands.executeCommand("redo");
-        break;
-      case StateControlCommand.UNDO:
-        vscode.commands.executeCommand("undo");
-        break;
-      default:
-        console.info(`Unknown message type received: ${command}`);
-        break;
-    }
+  dispose(): void {
+    this.serviceCatalogApiDelegate.dispose();
   }
 }
