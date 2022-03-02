@@ -217,18 +217,17 @@
     <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
     <code.coverage.disabled>false</code.coverage.disabled>
 
-    <!-- REFACTORING STARTS HERE -->
-
     <!-- General -->
-    <version.checkstyle>8.19</version.checkstyle> <!-- Last 9.3 Current Mar, 2019 VULNERABILITY fixed in 8.29-->
+    <version.checkstyle>8.19</version.checkstyle>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.testTarget>${maven.compiler.target}</maven.compiler.testTarget>
     <maven.compiler.testSource>${maven.compiler.source}</maven.compiler.testSource>
 
-    <!-- Maven Plugin -->
+    <!-- Maven Plugins -->
     <version.antrun.plugin>1.8</version.antrun.plugin>
     <version.buildhelper.plugin>3.0.0</version.buildhelper.plugin>
+    <version.bundle.plugin>3.3.0</version.bundle.plugin>
     <version.checkstyle.plugin>3.0.0</version.checkstyle.plugin>
     <version.clean.plugin>3.1.0</version.clean.plugin>
     <version.compiler.plugin>3.8.0-jboss-2</version.compiler.plugin>
@@ -256,13 +255,13 @@
     <!-- Third party Libraries -->
     <version.ch.qos.logback>1.1.3</version.ch.qos.logback> <!-- Newer version in kie-parent causes ServiceLoader error -->
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
-    <version.com.google.guava>30.1-jre</version.com.google.guava> <!-- Last 31.0.1-jre Current Dec, 2020 -->
+    <version.com.google.guava>30.1-jre</version.com.google.guava>
     <version.com.google.gwt>2.9.0</version.com.google.gwt>
     <version.com.google.jsinterop.base>1.0.0</version.com.google.jsinterop.base>
     <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
     <version.javax.annotation-api>1.3.2</version.javax.annotation-api>
     <version.javax.enterprise>2.0.SP1</version.javax.enterprise>
-    <version.net.bytebuddy>1.10.3</version.net.bytebuddy> <!-- Last 0.9.29 Current Jan, 2017 -->
+    <version.net.bytebuddy>1.10.3</version.net.bytebuddy>
     <version.net.sourceforge.cssparser>0.9.21</version.net.sourceforge.cssparser> <!-- Last 0.9.29 Current Jan, 2017 -->
     <version.org.antlrgwt>4.8.2</version.org.antlrgwt>
     <version.org.antlr4c3gwt>1.1.12</version.org.antlr4c3gwt>
@@ -279,16 +278,14 @@
     <version.org.jsoup>1.8.3</version.org.jsoup> <!-- Last 1.14.3 Current Aug, 2015 VULNERABILITY fixed in 1.14.1 -->
     <version.org.w3c.css.sac>1.3</version.org.w3c.css.sac>
 
-    <!-- Test Library -->
-    <version.io.github.bonigarcia>3.8.1</version.io.github.bonigarcia>  <!-- Last 5.10 Current Jan, 2020 -->
+    <!-- Test Libraries -->
+    <version.io.github.bonigarcia>3.8.1</version.io.github.bonigarcia>
     <version.junit>4.13.1</version.junit>
-    <version.org.assertj>3.14.0</version.org.assertj>  <!-- Last 3.22 Current Apr, 2019 -->
+    <version.org.assertj>3.14.0</version.org.assertj>
     <version.com.google.gwt.gwtmockito>1.1.9</version.com.google.gwt.gwtmockito>
-    <version.org.mockito>3.6.0</version.org.mockito> <!-- Last 3.4.1 Current Oct, 2020 -->
+    <version.org.mockito>3.6.0</version.org.mockito>
     <version.powermock.api.mockito2>2.0.9</version.powermock.api.mockito2>
-    <version.org.xmlunit>2.8.2</version.org.xmlunit> <!-- Last 2.9.0 Current Dec, 2020 -->
-
-    <!-- REFACTORING ENDS HERE -->
+    <version.org.xmlunit>2.8.2</version.org.xmlunit>
   </properties>
 
   <dependencyManagement>
@@ -1287,7 +1284,7 @@
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
-          <version>{org.eclipse.m2e.lifecycle-mapping}</version>
+          <version>${org.eclipse.m2e.lifecycle-mapping}</version>
           <configuration>
             <lifecycleMappingMetadata>
               <pluginExecutions>
@@ -1421,6 +1418,7 @@
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
+          <version>${version.bundle.plugin}</version>
           <extensions>true</extensions>
           <configuration>
             <!-- Split packages in combination with <Export-Package> causes bloated jars otherwise -->

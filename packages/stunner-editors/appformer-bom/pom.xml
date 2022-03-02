@@ -491,20 +491,6 @@
         <version>${version.org.codehaus.groovy}</version>
       </dependency>
 
-      <!-- JSON parsing. -->
-      <dependency>
-        <groupId>com.googlecode.json-simple</groupId>
-        <artifactId>json-simple</artifactId>
-        <version>${version.com.googlecode.jsonsimple}</version>
-        <type>jar</type>
-      </dependency>
-
-      <dependency>
-        <groupId>com.googlecode.jtype</groupId>
-        <artifactId>jtype</artifactId>
-        <version>${version.com.googlecode.jtype}</version>
-      </dependency>
-
       <!-- Test deps -->
       <dependency>
         <groupId>mysql</groupId>
