@@ -81,6 +81,7 @@ function testFocus(element: HTMLElement, elementToBeFocused: HTMLElement, move: 
   const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
 
   move(element);
+  console.log("document.activeElement", document.activeElement);
   expect(mockElementFocus).not.toHaveBeenCalled();
   expect(mockElementToBeFocused).toHaveBeenCalled();
 }
