@@ -21,7 +21,7 @@ import { ServerlessWorkflowEmptyState } from "./EmptyState";
 import type { Property } from "csstype";
 import { HistoryButtons, Theme } from "./HistoryButtons";
 import "./App.scss";
-import { EditorApi } from "@kie-tools-core/editor/dist/api";
+import { EditorApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
 type State = string | undefined;
@@ -93,14 +93,23 @@ export const App = () => {
         <div ref={container} className="editor-container">
           <ServerlessWorkflowEditor
             ref={editor}
-            ready={() => {
+            onReady={() => {
               /*NOP*/
             }}
-            newEdit={() => {
+            onNewEdit={() => {
               /*NOP*/
             }}
             setNotifications={() => {
               /*NOP*/
+            }}
+            onStateControlCommandUpdate={(command) => {
+              if (command === StateControlCommand.UNDO) {
+                editor.current?.undo();
+              } else if (command === StateControlCommand.REDO) {
+                editor.current?.redo();
+              } else {
+                console.log("Nothing to do.");
+              }
             }}
           />
         </div>

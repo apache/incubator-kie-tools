@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import { MonacoLanguage } from "../MonacoLanguage";
 import { setDiagnosticsOptions } from "monaco-yaml";
-import * as YAML from "yaml";
 
 import {
   SW_SPEC_COMMON_SCHEMA,
@@ -27,51 +25,38 @@ import {
 } from "../schemas";
 import { JSONSchema7 } from "json-schema";
 
-setDiagnosticsOptions({
-  hover: true,
-  completion: true,
-  validate: true,
-  format: true,
-  schemas: [
-    {
-      uri: "common.json",
-      fileMatch: ["*"],
-      schema: SW_SPEC_COMMON_SCHEMA,
-    },
-    {
-      uri: "events.json",
-      fileMatch: ["*"],
-      schema: SW_SPEC_EVENTS_SCHEMA as JSONSchema7,
-    },
-    {
-      uri: "functions.json",
-      fileMatch: ["*"],
-      schema: SW_SPEC_FUNCTIONS_SCHEMA as JSONSchema7,
-    },
-    {
-      uri: "retries.json",
-      fileMatch: ["*"],
-      schema: SW_SPEC_RETRIES_SCHEMA as JSONSchema7,
-    },
-    {
-      uri: "workflow.json",
-      fileMatch: ["*"],
-      schema: SW_SPEC_SCHEMA as JSONSchema7,
-    },
-  ],
-});
-
-export function initYAMLLanguage(): MonacoLanguage {
-  return {
-    languageId: "yaml",
-
-    getDefaultContent: (content) => {
-      if (!content) {
-        return "";
-      }
-      return content;
-    },
-
-    getStringValue: (object) => YAML.stringify(object),
-  };
+export function initYamlSchema() {
+  setDiagnosticsOptions({
+    hover: true,
+    completion: true,
+    validate: true,
+    format: true,
+    schemas: [
+      {
+        uri: "common.json",
+        fileMatch: ["*"],
+        schema: SW_SPEC_COMMON_SCHEMA,
+      },
+      {
+        uri: "events.json",
+        fileMatch: ["*"],
+        schema: SW_SPEC_EVENTS_SCHEMA as JSONSchema7,
+      },
+      {
+        uri: "functions.json",
+        fileMatch: ["*"],
+        schema: SW_SPEC_FUNCTIONS_SCHEMA as JSONSchema7,
+      },
+      {
+        uri: "retries.json",
+        fileMatch: ["*"],
+        schema: SW_SPEC_RETRIES_SCHEMA as JSONSchema7,
+      },
+      {
+        uri: "workflow.json",
+        fileMatch: ["*"],
+        schema: SW_SPEC_SCHEMA as JSONSchema7,
+      },
+    ],
+  });
 }
