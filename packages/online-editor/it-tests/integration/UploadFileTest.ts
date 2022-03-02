@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-describe("Upload file test", () => {
+describe.skip("Upload file test", () => {
   beforeEach(() => {
     cy.visit("/");
   });

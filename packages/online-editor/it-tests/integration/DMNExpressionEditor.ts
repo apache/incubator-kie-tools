@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-describe("DMN Expression Editor Test :: Expressions", () => {
+describe.skip("DMN Expression Editor Test :: Expressions", () => {
   beforeEach(() => {
     cy.visit("/");
   });
@@ -95,7 +95,7 @@ describe("DMN Expression Editor Test :: Expressions", () => {
   });
 });
 
-describe("DMN Expression Editor Test :: Data types", () => {
+describe.skip("DMN Expression Editor Test :: Data types", () => {
   beforeEach(() => {
     cy.visit("/");
   });
@@ -260,7 +260,7 @@ function selectInDataTypesSearchableDropdown(entryName: string): void {
   cy.get("ul").find("li.active").find("a").contains(entryName).should("not.exist");
 }
 
-describe("DMN Expression Editor Test :: keyboard shortcuts", () => {
+describe.skip("DMN Expression Editor Test :: keyboard shortcuts", () => {
   beforeEach(() => {
     cy.visit("/");
   });
@@ -314,7 +314,7 @@ describe("DMN Expression Editor Test :: keyboard shortcuts", () => {
   });
 });
 
-describe("DMN Expression Editor Test :: Properties Panel", () => {
+describe.skip("DMN Expression Editor Test :: Properties Panel", () => {
   beforeEach(() => {
     cy.visit("/");
   });
