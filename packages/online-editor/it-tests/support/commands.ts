@@ -37,7 +37,7 @@ declare namespace Cypress {
      * @param locator component type and component id according to OUIA specification
      * @param opts optional - config object
      */
-    ouia(locator: { ouiaType?: string; ouiaId: string }, opts?: Record<string, any>): Chainable<Element>;
+    ouia(locator: { ouiaType?: string; ouiaId?: string }, opts?: Record<string, any>): Chainable<Element>;
   }
 }
 
@@ -65,7 +65,12 @@ Cypress.Commands.add("confirmAutomaticLayoutDialogue", () => {
 });
 
 Cypress.Commands.add("ouia", { prevSubject: "optional" }, (subject, locator, options = {}) => {
-  let selector = `[data-ouia-component-id='${locator.ouiaId}']`;
+  let selector = "";
+
+  if (locator.ouiaId !== undefined && locator.ouiaId !== "") {
+    selector = `[data-ouia-component-id='${locator.ouiaId}']`;
+  }
+
   if (locator.ouiaType !== undefined && locator.ouiaType !== "") {
     selector = `[data-ouia-component-type='${locator.ouiaType}']` + selector;
   }
