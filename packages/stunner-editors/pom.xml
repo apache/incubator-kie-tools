@@ -227,10 +227,12 @@
     <maven.compiler.testSource>${maven.compiler.source}</maven.compiler.testSource>
 
     <!-- Maven Plugin -->
+    <version.antrun.plugin>1.8</version.antrun.plugin>
     <version.buildhelper.plugin>3.0.0</version.buildhelper.plugin>
     <version.checkstyle.plugin>3.0.0</version.checkstyle.plugin>
     <version.clean.plugin>3.1.0</version.clean.plugin>
     <version.compiler.plugin>3.8.0-jboss-2</version.compiler.plugin>
+    <version.dependency.plugin>3.1.1</version.dependency.plugin>
     <version.enforcer.plugin>3.0.0-M1</version.enforcer.plugin>
     <version.failsafe.plugin>${version.surefire.plugin}</version.failsafe.plugin>
     <version.install.plugin>2.5.2</version.install.plugin>
@@ -776,6 +778,7 @@
 
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
+        <version>${version.antrun.plugin}</version>
         <executions>
           <!-- Temporary workaround for https://issues.jboss.org/browse/ERRAI-1101. Needs to stay here until
           we find a general solution (e.g. moving all localized code to Errai TranslationService. -->
@@ -881,6 +884,12 @@
               <arg>-Xlint:unchecked</arg>
             </compilerArgs>
           </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${version.dependency.plugin}</version>
         </plugin>
 
         <plugin>
