@@ -318,6 +318,7 @@ export function DmnRunnerTable(props: DmnRunnerTableProps) {
               onRowsUpdate={onRowsUpdate}
               onRowAdding={onRowAdding}
               readOnlyCells={true}
+              enableKeyboarNavigation={false}
             />
           </div>
         </div>

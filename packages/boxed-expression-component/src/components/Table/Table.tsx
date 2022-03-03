@@ -16,7 +16,7 @@
 
 import * as _ from "lodash";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Column,
   ColumnInstance,
@@ -30,8 +30,8 @@ import {
 import { TableComposable } from "@patternfly/react-table";
 import { v4 as uuid } from "uuid";
 import { generateUuid, TableHeaderVisibility, TableOperation, TableProps } from "../../api";
-import { BoxedExpressionGlobalContext, useBoxedExpression } from "../../context";
-import { PASTE_OPERATION, pasteOnTable } from "./common";
+import { useBoxedExpression } from "../../context";
+import { PASTE_OPERATION, pasteOnTable, focusCurrentCell } from "./common";
 import { EditableCell } from "./EditableCell";
 import "./Table.css";
 import { TableBody } from "./TableBody";
@@ -85,6 +85,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
   getColumnKey,
   resetRowCustomFunction,
   readOnlyCells = false,
+  enableKeyboarNavigation = true,
 }: TableProps) => {
   const tableRef = useRef<HTMLTableElement>(null);
   const tableEventUUID = useMemo(() => `table-event-${uuid()}`, []);
@@ -97,8 +98,6 @@ export const Table: React.FunctionComponent<TableProps> = ({
     (groupType?: string) => (getColumnPrefix ? getColumnPrefix(groupType) : "column-"),
     [getColumnPrefix]
   );
-
-  const globalContext = useContext(BoxedExpressionGlobalContext);
 
   const generateNumberOfRowsSubColumnRecursively: (column: ColumnInstance, headerLevels: number) => void = useCallback(
     (column, headerLevels) => {
@@ -245,12 +244,13 @@ export const Table: React.FunctionComponent<TableProps> = ({
   const tableHandlerStateUpdate = useCallback(
     (target: HTMLElement, column: ColumnInstance) => {
       setTableHandlerTarget(target);
-      globalContext.currentlyOpenedHandlerCallback?.(false);
+      boxedExpression.currentlyOpenedHandlerCallback?.(false);
       setShowTableHandler(true);
-      globalContext.setCurrentlyOpenedHandlerCallback?.(() => setShowTableHandler);
+      boxedExpression.setIsContextMenuOpen(true);
+      boxedExpression.setCurrentlyOpenedHandlerCallback?.(() => setShowTableHandler);
       setLastSelectedColumn(column);
     },
-    [globalContext]
+    [boxedExpression]
   );
 
   const getColumnOperations = useCallback(
@@ -334,6 +334,8 @@ export const Table: React.FunctionComponent<TableProps> = ({
           ]);
           tableHandlerStateUpdate(target, getColumnsAtLastLevel(tableColumns, headerLevels)[columnIndex]);
           setLastSelectedRowIndex(rowIndex);
+
+          focusCurrentCell(target);
         }
       },
     }),
@@ -400,6 +402,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
           onColumnsUpdate={onColumnsUpdateCallback}
           headerVisibility={headerVisibility}
           tdProps={tdProps}
+          enableKeyboarNavigation={enableKeyboarNavigation}
         >
           {children}
         </TableBody>

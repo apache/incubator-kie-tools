@@ -74,6 +74,8 @@ export interface TableProps {
   resetRowCustomFunction?: (row: DataRecord) => DataRecord;
   /** Disable/Enable cell edits. Enabled by default */
   readOnlyCells?: boolean;
+  /** Enable the  Keyboar Navigation */
+  enableKeyboarNavigation?: boolean;
 }
 
 /** Possible status for the visibility of the Table's Header */

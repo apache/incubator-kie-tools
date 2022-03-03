@@ -15,8 +15,10 @@
  */
 
 import * as React from "react";
+import { useCallback } from "react";
 import { Popover } from "@patternfly/react-core";
 import "./PopoverMenu.css";
+import { useBoxedExpression } from "../../context";
 
 export interface PopoverMenuProps {
   /** Optional children element to be considered for triggering the popover */
@@ -47,6 +49,16 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
   hasAutoWidth,
   minWidth,
 }: PopoverMenuProps) => {
+  const { setIsContextMenuOpen } = useBoxedExpression();
+
+  const onHidden = useCallback(() => {
+    setIsContextMenuOpen(false);
+  }, [setIsContextMenuOpen]);
+
+  const onShown = useCallback(() => {
+    setIsContextMenuOpen(true);
+  }, [setIsContextMenuOpen]);
+
   return (
     <Popover
       data-ouia-component-id="expression-popover-menu"
@@ -58,6 +70,8 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
       id="menu-selector"
       reference={arrowPlacement}
       appendTo={appendTo}
+      onHidden={onHidden}
+      onShown={onShown}
       headerContent={
         <div className="selector-menu-title" data-ouia-component-id="expression-popover-menu-title">
           {title}
