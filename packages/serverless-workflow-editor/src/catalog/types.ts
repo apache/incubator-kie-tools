@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export type ServerlessWorkflowFunctionDefinition = {
+export type SwfFunctionDefinition = {
   name: string;
   operation: string;
   type: string;

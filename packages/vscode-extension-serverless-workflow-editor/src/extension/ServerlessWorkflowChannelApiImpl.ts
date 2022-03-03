@@ -35,6 +35,7 @@ import { ServiceCatalogChannelApi, Service } from "@kie-tools/service-catalog/di
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { ServerlessWorkflowChannelApi } from "@kie-tools/serverless-workflow-editor";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+import { ServiceCatalogChannelApiImpl } from "@kie-tools/service-catalog/src/channel";
 
 export class ServerlessWorkflowChannelApiImpl implements ServerlessWorkflowChannelApi {
   private readonly apiDelegate: KogitoEditorChannelApiImpl;
@@ -49,7 +50,7 @@ export class ServerlessWorkflowChannelApiImpl implements ServerlessWorkflowChann
     viewType: string,
     i18n: I18n<VsCodeI18n>,
     initialBackup = editor.document.initialBackup,
-    private readonly serviceCatalogApiDelegate: ServiceCatalogChannelApi
+    private readonly serviceCatalogApiDelegate: ServiceCatalogChannelApiImpl
   ) {
     this.apiDelegate = new KogitoEditorChannelApiImpl(
       editor,
@@ -125,8 +126,8 @@ export class ServerlessWorkflowChannelApiImpl implements ServerlessWorkflowChann
     return this.apiDelegate.kogitoEditor_theme();
   }
 
-  public kogitoServiceCatalog_getServices(): SharedValueProvider<Service[]> {
-    return this.serviceCatalogApiDelegate.kogitoServiceCatalog_getServices();
+  public kogitoServiceCatalog_services(): SharedValueProvider<Service[]> {
+    return this.serviceCatalogApiDelegate.kogitoServiceCatalog_services();
   }
 
   dispose(): void {

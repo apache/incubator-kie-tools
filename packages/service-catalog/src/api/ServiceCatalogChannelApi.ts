@@ -18,7 +18,5 @@ import { Service } from "./types";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 
 export interface ServiceCatalogChannelApi {
-  kogitoServiceCatalog_getServices(): SharedValueProvider<Service[]>;
-
-  dispose(): void;
+  kogitoServiceCatalog_services(): SharedValueProvider<Service[]>;
 }

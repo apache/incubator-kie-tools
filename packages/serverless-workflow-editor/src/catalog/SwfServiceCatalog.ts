@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-import { ServerlessWorkflowChannelApi } from "./ServerlessWorkflowChannelApi";
-import { Function, Service } from "@kie-tools/service-catalog/dist/api";
-import { KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
-import { ServerlessWorkflowEditorServiceCatalogApi } from "../api";
+import { Function, Service } from "@kie-tools/service-catalog/src/api";
 
-export class ServerlessWorkflowEditorServiceCatalogApiImpl implements ServerlessWorkflowEditorServiceCatalogApi {
-  private services: Service[] = [];
+interface SwfServiceCatalogApi {
+  getServices(): Service[];
+  getFunctions(serviceId?: string): Function[];
+  getFunctionByOperation(operationId: string): Function | undefined;
+}
 
-  constructor(private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowChannelApi>) {
-    this.envelopeContext.channelApi.shared.kogitoServiceCatalog_getServices.subscribe((services) =>
-      this.setServices(services)
-    );
-  }
-
-  private setServices(services: Service[]): void {
-    this.services = services;
-  }
+class SwfServiceCatalogApiImpl implements SwfServiceCatalogApi {
+  constructor(private readonly services: Service[] = []) {}
 
   public getFunctionByOperation(operationId: string): Function | undefined {
     if (operationId) {
@@ -58,5 +51,17 @@ export class ServerlessWorkflowEditorServiceCatalogApiImpl implements Serverless
 
   public getServices(): Service[] {
     return this.services;
+  }
+}
+
+export class SwfServiceCatalog {
+  private static instance: SwfServiceCatalogApi = new SwfServiceCatalogApiImpl();
+
+  public static get(): SwfServiceCatalogApi {
+    return SwfServiceCatalog.instance;
+  }
+
+  public static load(services: Service[] = []) {
+    SwfServiceCatalog.instance = new SwfServiceCatalogApiImpl(services);
   }
 }

@@ -32,7 +32,6 @@ import { SwfMonacoEditorApi } from "../monaco/SwfMonacoEditorApi";
 import { SwfMonacoEditor } from "../monaco/SwfMonacoEditor";
 import { MonacoEditorOperation } from "../monaco/SwfMonacoEditorApi";
 import { EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
-import { ServerlessWorkflowEditorServiceCatalogApi } from "../api";
 
 interface Props {
   /**
@@ -63,11 +62,6 @@ interface Props {
    * @param notifications List of Notifications
    */
   setNotifications: (path: string, notifications: Notification[]) => void;
-
-  /**
-   * Api to access the ServiceCatalog
-   */
-  serviceCatalogApi: ServerlessWorkflowEditorServiceCatalogApi;
 }
 
 export type ServerlessWorkflowEditorRef = {
@@ -188,7 +182,6 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
               fileName={initialContent.path}
               onContentChange={onContentChanged}
               ref={swfMonacoEditorRef}
-              serviceCatalogApi={props.serviceCatalogApi}
             />
           )}
         </DrawerContentBody>

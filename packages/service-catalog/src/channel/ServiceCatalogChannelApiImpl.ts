@@ -30,16 +30,16 @@ export class ServiceCatalogChannelApiImpl implements ServiceCatalogChannelApi {
   }
 
   private loadServices(services: Service[] = []) {
-    this.envelopeServer.shared.kogitoServiceCatalog_getServices.set(services);
+    this.envelopeServer.shared.kogitoServiceCatalog_services.set(services);
   }
 
-  kogitoServiceCatalog_getServices(): SharedValueProvider<Service[]> {
+  public kogitoServiceCatalog_services(): SharedValueProvider<Service[]> {
     return {
       defaultValue: [],
     };
   }
 
-  dispose(): void {
+  public dispose(): void {
     this.registry.dispose();
   }
 }

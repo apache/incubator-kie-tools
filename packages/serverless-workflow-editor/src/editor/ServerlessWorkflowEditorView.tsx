@@ -19,7 +19,6 @@ import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
 import { ServerlessWorkflowEditor } from "./ServerlessWorkflowEditor";
 import { ServerlessWorkflowChannelApi } from "./ServerlessWorkflowChannelApi";
-import { ServerlessWorkflowEditorServiceCatalogApiImpl } from "./ServerlessWorkflowEditorServiceCatalogApiImpl";
 
 export class ServerlessWorkflowEditorView implements Editor {
   private readonly editorRef: React.RefObject<EditorApi>;
@@ -59,7 +58,6 @@ export class ServerlessWorkflowEditorView implements Editor {
         setNotifications={(path, notifications) =>
           this.envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send(path, notifications)
         }
-        serviceCatalogApi={new ServerlessWorkflowEditorServiceCatalogApiImpl(this.envelopeContext)}
       />
     );
   }

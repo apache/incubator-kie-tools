@@ -20,7 +20,7 @@ export type SwfMonacoEditorCommandIds = Record<SwfMonacoEditorCommandTypes, stri
 export function initAugmentationCommands(editorInstance: editor.IStandaloneCodeEditor): SwfMonacoEditorCommandIds {
   return {
     RunFunctionsCompletion: editorInstance.addCommand(0, async (ctx, args) => {
-      console.info("Running functions completion command...");
+      console.info("Running functions completion command...", args.functionDefinition);
     })!,
     OpenFunctionsWidget: editorInstance.addCommand(0, async (ctx, args) => {
       openWidget(editorInstance, {

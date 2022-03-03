@@ -20,6 +20,8 @@ import * as jsonc from "jsonc-parser";
 import { SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import CompletionItemKind = languages.CompletionItemKind;
+import { Function } from "@kie-tools/service-catalog/dist/api";
+import { SwfFunctionDefinition, SwfServiceCatalog } from "../../../catalog";
 
 const completions = new Map<
   jsonc.JSONPath,
@@ -34,43 +36,36 @@ const completions = new Map<
   [
     ["functions"], // This JSONPath is a pre-filtering of the completion item.
     ({ cursorPosition, commandIds, actualNode }) => {
-      /*
-        Here we can use any logic that we want, based on the `actualNode` that at the cursor position.
-      */
+      if (actualNode.type != "array") {
+        console.debug("Functions should be an array.");
+        return [];
+      }
 
-      return [
-        // Part of an example
-        //
-        // {
-        //   kind: CompletionItemKind.Snippet,
-        //   label: "Completion item that triggers a command",
-        //   sortText: "a", // Keep it at the top
-        //   insertText: "",
-        //   range: {
-        //     startColumn: cursorPosition.column,
-        //     endColumn: cursorPosition.column,
-        //     startLineNumber: cursorPosition.lineNumber,
-        //     endLineNumber: cursorPosition.lineNumber,
-        //   },
-        //   command: {
-        //     id: commandIds["RunFunctionsCompletion"],
-        //     title: "",
-        //     arguments: [{ cursorPosition, actualNode }], // The actualNode is passed to the command, so it can make decisions based on it too.
-        //   },
-        // },
-        // {
-        //   kind: CompletionItemKind.Snippet,
-        //   label: "Completion item that inserts text",
-        //   sortText: "a", // Keep it at the top
-        //   insertText: "Awesome text made from a completion item",
-        //   range: {
-        //     startColumn: cursorPosition.column,
-        //     endColumn: cursorPosition.column,
-        //     startLineNumber: cursorPosition.lineNumber,
-        //     endLineNumber: cursorPosition.lineNumber,
-        //   },
-        // },
-      ];
+      return SwfServiceCatalog.get()
+        .getFunctions()
+        .map((def: Function) => {
+          const functionDefinition: SwfFunctionDefinition = {
+            name: def.name,
+            operation: def.operation,
+            type: def.type,
+          };
+          return {
+            label: functionDefinition.operation,
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            insertText: JSON.stringify(functionDefinition, null, 2),
+            range: {
+              startLineNumber: cursorPosition.lineNumber,
+              endLineNumber: cursorPosition.lineNumber,
+              startColumn: cursorPosition.column,
+              endColumn: cursorPosition.column,
+            },
+            command: {
+              id: commandIds["RunFunctionsCompletion"],
+              title: "Add function definition",
+              arguments: [{ cursorPosition, actualNode, functionDefinition }],
+            },
+          };
+        });
     },
   ],
   [

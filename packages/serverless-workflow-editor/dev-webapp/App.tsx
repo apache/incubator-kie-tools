@@ -23,7 +23,6 @@ import { HistoryButtons, Theme } from "./HistoryButtons";
 import "./App.scss";
 import { EditorApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { FunctionDefinition, ServiceDefinition } from "@kie-tools/service-catalog/dist/api";
 
 type State = string | undefined;
 
@@ -111,17 +110,6 @@ export const App = () => {
               } else {
                 console.log("Nothing to do.");
               }
-            }}
-            serviceCatalogApi={{
-              getServices(): Promise<ServiceDefinition[]> {
-                return Promise.resolve([]);
-              },
-              getFunctions(serviceId?: string): Promise<FunctionDefinition[]> {
-                return Promise.resolve([]);
-              },
-              getFunctionByOperation(operationId: string): Promise<FunctionDefinition | undefined> {
-                return Promise.resolve(undefined);
-              },
             }}
           />
         </div>
