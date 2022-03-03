@@ -34,28 +34,30 @@ export function useElementsThatStopKeyboardEventsPropagation(
   element: HTMLElement | Window = window,
   selectors: string[]
 ) {
-  const stopPropagation = (ev: KeyboardEvent) => {
-    ev.stopPropagation();
-  };
+  useEffect(() => {
+    const stopPropagation = (ev: KeyboardEvent) => {
+      ev.stopPropagation();
+    };
 
-  const target = element === window ? document : (element as HTMLElement);
-  const elementsStoppingPropagation = selectors.flatMap((selector) => {
-    const es = Array.from(target.querySelectorAll(selector));
-    for (const e of es) {
-      e.addEventListener("keydown", stopPropagation);
-      e.addEventListener("keyup", stopPropagation);
-      e.addEventListener("keypress", stopPropagation);
-    }
-    return es;
-  });
-
-  return () => {
-    elementsStoppingPropagation?.forEach((e) => {
-      e.removeEventListener("keydown", stopPropagation);
-      e.removeEventListener("keyup", stopPropagation);
-      e.removeEventListener("keypress", stopPropagation);
+    const target = element === window ? document : (element as HTMLElement);
+    const elementsStoppingPropagation = selectors.flatMap((selector) => {
+      const es = Array.from(target.querySelectorAll(selector));
+      for (const e of es) {
+        e.addEventListener("keydown", stopPropagation);
+        e.addEventListener("keyup", stopPropagation);
+        e.addEventListener("keypress", stopPropagation);
+      }
+      return es;
     });
-  };
+
+    return () => {
+      elementsStoppingPropagation?.forEach((e) => {
+        e.removeEventListener("keydown", stopPropagation);
+        e.removeEventListener("keyup", stopPropagation);
+        e.removeEventListener("keypress", stopPropagation);
+      });
+    };
+  }, [element, selectors]);
 }
 
 export function useSyncedKeyboardEvents(
