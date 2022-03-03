@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-import { DeploymentWorkflow } from "./OpenShiftContext";
+import { DeployArgs } from "./OpenShiftContext";
 import { OpenShiftSettingsConfig } from "./OpenShiftSettingsConfig";
 import { CreateBuild, DeleteBuild } from "./resources/Build";
 import { CreateBuildConfig, DeleteBuildConfig } from "./resources/BuildConfig";
-import { CreateDeployment, Deployment, Deployments, ListDeployments } from "./resources/Deployment";
 import { CreateImageStream, DeleteImageStream } from "./resources/ImageStream";
-import { KOGITO_CREATED_BY, KOGITO_WORKFLOW_FILE, Resource, ResourceFetch } from "./resources/Resource";
-import { CreateRoute, DeleteRoute, GetRoute, ListRoutes, Route, Routes } from "./resources/Route";
-import { CreateService, DeleteService } from "./resources/Service";
+import { CreateKafkaSource, DeleteKafkaSource } from "./resources/KafkaSource";
+import {
+  CreateKNativeService,
+  GetKNativeService,
+  KNativeService,
+  KNativeServices,
+  ListKNativeServices,
+} from "./resources/KNativeService";
+import { KOGITO_WORKFLOW_FILE, Resource, ResourceFetch } from "./resources/Resource";
+import { CreateSecret, DeleteSecret } from "./resources/Secret";
 
 export const DEFAULT_CREATED_BY = "kie-tools-chrome-extension";
 
@@ -38,19 +44,22 @@ export class OpenShiftService {
       createdBy: DEFAULT_CREATED_BY,
     };
 
-    const deployments = await this.fetchResource<Deployments>(args.config.proxy, new ListDeployments(commonArgs));
+    const kNativeServices = await this.fetchResource<KNativeServices>(
+      args.config.proxy,
+      new ListKNativeServices(commonArgs)
+    );
 
-    if (deployments.items.length === 0) {
+    if (kNativeServices.items.length === 0) {
       return;
     }
 
-    const deployment = deployments.items.find((item) => item.metadata.name === args.resourceName);
+    const kNativeService = kNativeServices.items.find((item) => item.metadata.name === args.resourceName);
 
-    if (!deployment) {
+    if (!kNativeService) {
       return;
     }
 
-    return deployment.metadata.annotations[KOGITO_WORKFLOW_FILE];
+    return kNativeService.metadata.annotations[KOGITO_WORKFLOW_FILE];
   }
 
   public async getDeploymentRoute(args: {
@@ -64,12 +73,12 @@ export class OpenShiftService {
       createdBy: DEFAULT_CREATED_BY,
     };
 
-    const route = await this.fetchResource<Route>(
+    const kNativeService = await this.fetchResource<KNativeService>(
       args.config.proxy,
-      new GetRoute({ ...commonArgs, resourceName: args.resourceName })
+      new GetKNativeService({ ...commonArgs, resourceName: args.resourceName })
     );
 
-    return this.composeBaseUrl(route);
+    return kNativeService.status.url;
   }
 
   public async getResourceRouteMap(config: OpenShiftSettingsConfig): Promise<Map<string, string>> {
@@ -80,62 +89,49 @@ export class OpenShiftService {
       createdBy: DEFAULT_CREATED_BY,
     };
 
-    const deployments = await this.fetchResource<Deployments>(config.proxy, new ListDeployments(commonArgs));
+    const kNativeServices = await this.fetchResource<KNativeServices>(
+      config.proxy,
+      new ListKNativeServices(commonArgs)
+    );
 
-    if (deployments.items.length === 0) {
+    if (kNativeServices.items.length === 0) {
       return new Map();
     }
 
-    const routes = (await this.fetchResource<Routes>(config.proxy, new ListRoutes(commonArgs))).items.filter(
-      (route: Route) => route.metadata.labels[KOGITO_CREATED_BY] === DEFAULT_CREATED_BY
-    );
-
     return new Map(
-      deployments.items
-        .filter(
-          (deployment: Deployment) =>
-            KOGITO_CREATED_BY in deployment.metadata.labels &&
-            deployment.metadata.labels[KOGITO_CREATED_BY] === DEFAULT_CREATED_BY &&
-            routes.some((route: Route) => route.metadata.name === deployment.metadata.name)
-        )
-        .map((deployment: Deployment) => {
-          const route = routes.find((route: Route) => route.metadata.name === deployment.metadata.name)!;
-          return [deployment.metadata.name, this.composeBaseUrl(route)];
-        })
+      kNativeServices.items.map((kNativeService: KNativeService) => {
+        return [kNativeService.metadata.name, kNativeService.status.url];
+      })
     );
   }
 
-  private composeBaseUrl(route: Route): string {
-    return `https://${route.spec.host}`;
-  }
-
-  public async deploy(args: { config: OpenShiftSettingsConfig; workflow: DeploymentWorkflow }): Promise<void> {
+  public async deploy(args: DeployArgs): Promise<void> {
     const resourceName = `swf-${this.generateRandomId()}`;
 
     const commonArgs = {
-      host: args.config.host,
-      namespace: args.config.namespace,
-      token: args.config.token,
+      host: args.openShiftConfig.host,
+      namespace: args.openShiftConfig.namespace,
+      token: args.openShiftConfig.token,
       resourceName: resourceName,
       createdBy: DEFAULT_CREATED_BY,
     };
 
     const rollbacks = [
+      new DeleteKafkaSource(commonArgs),
+      new DeleteSecret(commonArgs),
       new DeleteBuild(commonArgs),
       new DeleteBuildConfig(commonArgs),
-      new DeleteRoute(commonArgs),
-      new DeleteService(commonArgs),
       new DeleteImageStream(commonArgs),
     ];
 
-    await this.fetchResource(args.config.proxy, new CreateImageStream(commonArgs));
-    await this.fetchResource(args.config.proxy, new CreateService(commonArgs), rollbacks.slice(4));
-    await this.fetchResource(args.config.proxy, new CreateRoute(commonArgs), rollbacks.slice(3));
+    let rollbacksCount = rollbacks.length;
+
+    await this.fetchResource(args.openShiftConfig.proxy, new CreateImageStream(commonArgs));
 
     const buildConfig = await this.fetchResource(
-      args.config.proxy,
+      args.openShiftConfig.proxy,
       new CreateBuildConfig(commonArgs),
-      rollbacks.slice(2)
+      rollbacks.slice(--rollbacksCount)
     );
 
     const processedFileContent = args.workflow.content
@@ -144,7 +140,7 @@ export class OpenShiftService {
       .replace(/'/g, "\\x27"); // Escape single quotes
 
     await this.fetchResource(
-      args.config.proxy,
+      args.openShiftConfig.proxy,
       new CreateBuild({
         ...commonArgs,
         buildConfigUid: buildConfig.metadata.uid,
@@ -153,13 +149,46 @@ export class OpenShiftService {
           content: processedFileContent,
         },
       }),
-      rollbacks.slice(1)
+      rollbacks.slice(--rollbacksCount)
     );
 
     await this.fetchResource(
-      args.config.proxy,
-      new CreateDeployment({ ...commonArgs, fileName: args.workflow.name }),
-      rollbacks
+      args.openShiftConfig.proxy,
+      new CreateKNativeService({ ...commonArgs, fileName: args.workflow.name }),
+      rollbacks.slice(--rollbacksCount)
+    );
+
+    if (!args.kafkaConfig) {
+      return;
+    }
+
+    const kafkaClientIdKey = "kafka-client-id";
+    const kafkaClientSecretKey = "kafka-client-secret";
+
+    await this.fetchResource(
+      args.openShiftConfig.proxy,
+      new CreateSecret({
+        ...commonArgs,
+        id: { key: kafkaClientIdKey, value: args.kafkaConfig.clientId },
+        secret: { key: kafkaClientSecretKey, value: args.kafkaConfig.clientSecret },
+      }),
+      rollbacks.slice(--rollbacksCount)
+    );
+
+    await this.fetchResource(
+      args.openShiftConfig.proxy,
+      new CreateKafkaSource({
+        ...commonArgs,
+        sinkService: resourceName,
+        bootstrapServer: args.kafkaConfig.bootstrapServer,
+        topic: args.kafkaConfig.topic,
+        secret: {
+          name: resourceName,
+          keyId: kafkaClientIdKey,
+          keySecret: kafkaClientSecretKey,
+        },
+      }),
+      rollbacks.slice(--rollbacksCount)
     );
   }
 
@@ -184,7 +213,7 @@ export class OpenShiftService {
   }
 
   private generateRandomId(): string {
-    const randomPart = Math.random().toString(36).substr(2, 9);
+    const randomPart = Math.random().toString(36).substring(2, 11);
     const milliseconds = new Date().getMilliseconds();
     return `${randomPart}${milliseconds}`;
   }

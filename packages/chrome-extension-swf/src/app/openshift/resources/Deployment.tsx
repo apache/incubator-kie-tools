@@ -72,7 +72,7 @@ export class CreateDeployment extends ResourceFetch {
           app.kubernetes.io/component: ${this.args.resourceName}
           app.kubernetes.io/instance: ${this.args.resourceName}
           app.kubernetes.io/part-of: ${this.args.resourceName}
-          app.kubernetes.io/name: java
+          app.kubernetes.io/name: ${this.args.resourceName}
           app.openshift.io/runtime: quarkus
           app.openshift.io/runtime-version: ${JAVA_RUNTIME_VERSION}
           ${KOGITO_CREATED_BY}: ${this.args.createdBy}

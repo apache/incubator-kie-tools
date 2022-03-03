@@ -16,9 +16,16 @@
 
 import * as React from "react";
 import { useContext } from "react";
+import { KafkaSettingsConfig } from "../kafka/KafkaSettingsConfig";
 import { OpenShiftSettingsConfig } from "./OpenShiftSettingsConfig";
 
 export const SW_JSON_EXTENSION = "sw.json";
+
+export interface DeployArgs {
+  workflow: DeploymentWorkflow;
+  openShiftConfig: OpenShiftSettingsConfig;
+  kafkaConfig?: KafkaSettingsConfig;
+}
 
 export interface DeploymentWorkflow {
   name: string;
@@ -26,7 +33,9 @@ export interface DeploymentWorkflow {
 }
 
 export interface OpenShiftContextType {
-  deploy(config: OpenShiftSettingsConfig, workflow: DeploymentWorkflow): Promise<boolean>;
+  deploy(args: DeployArgs): Promise<boolean>;
+
+  fetchOpenApiFile(config: OpenShiftSettingsConfig, resourceName: string): Promise<string | undefined>;
   fetchWorkflowRoute(config: OpenShiftSettingsConfig, resourceName: string): Promise<string | undefined>;
   fetchWorkflowName(config: OpenShiftSettingsConfig, resourceName: string): Promise<string | undefined>;
   fetchWorkflow(config: OpenShiftSettingsConfig, resourceName: string): Promise<DeploymentWorkflow | undefined>;

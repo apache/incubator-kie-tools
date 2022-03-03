@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { DeploymentWorkflow, OpenShiftContext } from "./OpenShiftContext";
+import { DeployArgs, DeploymentWorkflow, OpenShiftContext } from "./OpenShiftContext";
 import { OpenShiftService } from "./OpenShiftService";
 import { OpenShiftSettingsConfig } from "./OpenShiftSettingsConfig";
 
@@ -28,9 +28,9 @@ export function OpenShiftProvider(props: Props) {
   const service = useMemo(() => new OpenShiftService(), []);
 
   const deploy = useCallback(
-    async (config: OpenShiftSettingsConfig, workflow: DeploymentWorkflow) => {
+    async (args: DeployArgs) => {
       try {
-        await service.deploy({ config, workflow });
+        await service.deploy(args);
         return true;
       } catch (error) {
         console.error(error);
@@ -50,6 +50,28 @@ export function OpenShiftProvider(props: Props) {
       }
     },
     [service]
+  );
+
+  const fetchOpenApiFile = useCallback(
+    async (config: OpenShiftSettingsConfig, resourceName: string) => {
+      try {
+        const routeUrl = await fetchWorkflowRoute(config, resourceName);
+        if (!routeUrl) {
+          return;
+        }
+
+        const response = await fetch(`${routeUrl}/q/openapi`);
+        if (!response.ok) {
+          return;
+        }
+
+        return await response.text();
+      } catch (error) {
+        console.error(error);
+        return;
+      }
+    },
+    [fetchWorkflowRoute]
   );
 
   const fetchWorkflowName = useCallback(
@@ -131,12 +153,13 @@ export function OpenShiftProvider(props: Props) {
   const value = useMemo(
     () => ({
       deploy,
+      fetchOpenApiFile,
       fetchWorkflow,
       fetchWorkflows,
       fetchWorkflowName,
       fetchWorkflowRoute,
     }),
-    [deploy, fetchWorkflow, fetchWorkflows, fetchWorkflowName, fetchWorkflowRoute]
+    [deploy, fetchOpenApiFile, fetchWorkflow, fetchWorkflows, fetchWorkflowName, fetchWorkflowRoute]
   );
 
   return <OpenShiftContext.Provider value={value}>{props.children}</OpenShiftContext.Provider>;

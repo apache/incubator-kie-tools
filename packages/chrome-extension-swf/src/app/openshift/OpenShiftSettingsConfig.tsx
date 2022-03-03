@@ -77,7 +77,7 @@ export function isTokenValid(token: string): boolean {
   return token !== undefined && token.trim().length > 0;
 }
 
-export function readConfigCookie(): OpenShiftSettingsConfig {
+export function readOpenShiftConfigCookie(): OpenShiftSettingsConfig {
   return {
     proxy:
       getCookie(OPENSHIFT_PROXY_COOKIE_NAME) ??
