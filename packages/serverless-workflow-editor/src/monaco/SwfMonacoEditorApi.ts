@@ -15,13 +15,17 @@
  */
 
 import { editor, KeyCode, KeyMod } from "monaco-editor";
-import { MonacoAugmentation } from "./MonacoAugmentation";
+import { SwfMonacoEditorCommandIds } from "./augmentation/commands";
+import { initJsonSchema } from "./augmentation/language/json";
+import { initYamlSchema } from "./augmentation/language/yaml";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 
-export interface MonacoEditorApi {
-  show: (container: HTMLDivElement, theme?: EditorTheme) => void;
-  dispose: () => void;
+initJsonSchema();
+initYamlSchema();
+
+export interface SwfMonacoEditorApi {
+  show: (container: HTMLDivElement, theme?: EditorTheme) => editor.IStandaloneCodeEditor;
   undo: () => void;
   redo: () => void;
   getContent: () => string;
@@ -34,61 +38,61 @@ export enum MonacoEditorOperation {
   EDIT,
 }
 
-export class DefaultMonacoEditor implements MonacoEditorApi {
+export interface SwfMonacoEditorInstance {
+  commands: SwfMonacoEditorCommandIds;
+  instance: editor.IStandaloneCodeEditor;
+}
+
+export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
   private readonly model: editor.ITextModel;
 
-  private editor: editor.IStandaloneCodeEditor;
-  private readonly augmentation: MonacoAugmentation;
-  private readonly onContentChange: (content: string, operation: MonacoEditorOperation) => void;
-  private readonly operatingSystem?: OperatingSystem;
+  public editor: editor.IStandaloneCodeEditor;
 
   constructor(
     content: string,
-    onContentChange: (content: string, operation: MonacoEditorOperation) => void,
-    augmentation: MonacoAugmentation,
-    operatingSystem?: OperatingSystem
+    private readonly onContentChange: (content: string, operation: MonacoEditorOperation) => void,
+    private readonly language: string,
+    private readonly operatingSystem: OperatingSystem | undefined
   ) {
-    this.model = editor.createModel(augmentation.language.getDefaultContent(content), augmentation.language.languageId);
+    this.model = editor.createModel(content, this.language);
     this.model.onDidChangeContent((event) => {
       if (!event.isUndoing && !event.isRedoing) {
         this.editor?.pushUndoStop();
         onContentChange(this.model.getValue(), MonacoEditorOperation.EDIT);
       }
     });
-    this.onContentChange = onContentChange;
-    this.augmentation = augmentation;
-    this.operatingSystem = operatingSystem;
   }
 
-  redo(): void {
+  public redo(): void {
     this.editor?.focus();
     this.editor?.trigger("editor", "redo", null);
   }
 
-  undo(): void {
+  public undo(): void {
     this.editor?.focus();
     this.editor?.trigger("editor", "undo", null);
   }
 
-  setTheme(theme: EditorTheme): void {
+  public setTheme(theme: EditorTheme): void {
     editor.setTheme(this.getMonacoThemeByEditorTheme(theme));
   }
 
-  show(container: HTMLDivElement, theme: EditorTheme): void {
+  public show(container: HTMLDivElement, theme: EditorTheme): editor.IStandaloneCodeEditor {
     if (!container) {
       throw new Error("We need a container to show the editor!");
     }
 
     if (this.editor !== undefined) {
       this.setTheme(theme);
-      return;
+      return this.editor;
     }
 
     this.editor = editor.create(container, {
       model: this.model,
-      language: this.augmentation.language.languageId,
+      language: this.language,
       scrollBeyondLastLine: false,
       automaticLayout: true,
+      fontSize: 14,
       theme: this.getMonacoThemeByEditorTheme(theme),
     });
 
@@ -105,15 +109,12 @@ export class DefaultMonacoEditor implements MonacoEditorApi {
         this.onContentChange(this.model.getValue(), MonacoEditorOperation.REDO);
       });
     }
+
+    return this.editor;
   }
 
-  getContent(): string {
+  public getContent(): string {
     return this.editor.getModel()?.getValue() || "";
-  }
-
-  dispose(): void {
-    this.model?.dispose();
-    this.editor?.dispose();
   }
 
   private getMonacoThemeByEditorTheme(theme?: EditorTheme): string {

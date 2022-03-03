@@ -18,6 +18,7 @@ import * as React from "react";
 import { useCallback, useState } from "react";
 import { Popover } from "@patternfly/react-core";
 import "./PopoverMenu.css";
+import { useBoxedExpression } from "../../context";
 
 /**
  * Check if the key pressed is Esc Key.
@@ -66,7 +67,16 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
   onHide = () => {},
   onCancel = () => {},
 }: PopoverMenuProps) => {
+  const { setIsContextMenuOpen } = useBoxedExpression();
   const [isVisible] = useState(false);
+
+  const onHidden = useCallback(() => {
+    setIsContextMenuOpen(false);
+  }, [setIsContextMenuOpen]);
+
+  const onShown = useCallback(() => {
+    setIsContextMenuOpen(true);
+  }, [setIsContextMenuOpen]);
 
   const shouldOpen = useCallback((showFunction?: () => void) => {
     showFunction?.();
@@ -101,6 +111,8 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
       id="menu-selector"
       reference={arrowPlacement}
       appendTo={appendTo}
+      onHidden={onHidden}
+      onShown={onShown}
       headerContent={
         <div className="selector-menu-title" data-ouia-component-id="expression-popover-menu-title">
           {title}

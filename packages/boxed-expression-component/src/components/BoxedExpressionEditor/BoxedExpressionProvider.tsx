@@ -33,6 +33,7 @@ export interface BoxedExpressionProviderProps extends BoxedExpressionEditorProps
 export function BoxedExpressionProvider(props: BoxedExpressionProviderProps) {
   const [currentlyOpenedHandlerCallback, setCurrentlyOpenedHandlerCallback] = useState(() => _.identity);
   const [supervisorHash, setSupervisorHash] = useState(hashfy(props.expressionDefinition));
+  const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,6 +49,8 @@ export function BoxedExpressionProvider(props: BoxedExpressionProviderProps) {
         pmmlParams: props.pmmlParams,
         supervisorHash,
         setSupervisorHash,
+        isContextMenuOpen,
+        setIsContextMenuOpen,
         editorRef,
         currentlyOpenedHandlerCallback,
         setCurrentlyOpenedHandlerCallback,
