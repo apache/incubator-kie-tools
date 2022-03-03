@@ -41,7 +41,9 @@ const createMockTableSection = (tSection: HTMLTableSectionElement, rows = 1, cel
   for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
     const tr = tSection.insertRow(rowIndex);
     for (let cellIndex = 0; cellIndex < cells; cellIndex++) {
-      tr.insertCell(cellIndex).appendChild(document.createElement("div"));
+      const innerDiv = document.createElement("div");
+      innerDiv.innerHTML = `Row ${rowIndex} Cell ${cellIndex}`;
+      tr.insertCell(cellIndex).appendChild(innerDiv);
       tr.lastElementChild?.setAttribute("tabindex", "-1");
     }
   }
@@ -66,6 +68,9 @@ function createMockTable(hrows = 1, rows = 1, cells = 1): HTMLTableElement {
   // create tbody
   createMockTableSection(tbody, rows, cells);
 
+  // append the table to the body to be able to retrieve the activeElement for debugging purposes
+  document.body.appendChild(table);
+  console.log("table.html", table.outerHTML);
   return table;
 }
 
@@ -81,7 +86,7 @@ function testFocus(element: HTMLElement, elementToBeFocused: HTMLElement, move: 
   const mockElementToBeFocused = jest.spyOn(elementToBeFocused, "focus");
 
   move(element);
-  console.log("document.activeElement", document.activeElement);
+  expect(elementToBeFocused.innerHTML).toBe(document.activeElement?.innerHTML);
   expect(mockElementFocus).not.toHaveBeenCalled();
   expect(mockElementToBeFocused).toHaveBeenCalled();
 }
