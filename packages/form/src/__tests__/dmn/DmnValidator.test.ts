@@ -15,7 +15,7 @@
  */
 
 import { DmnValidator } from "../../dmn/DmnValidator";
-import { dmnFormI18n } from "../../dmn/i18n";
+import { dmnFormI18n } from "../../i18n";
 import { DmnFormJsonSchemaBridge } from "../../dmn/uniforms";
 
 const schema = {

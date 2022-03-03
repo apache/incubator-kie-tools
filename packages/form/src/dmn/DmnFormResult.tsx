@@ -32,7 +32,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
-import { dmnFormI18n } from "./i18n";
+import { dmnFormI18n } from "../i18n";
 import { diff } from "deep-object-diff";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import "./styles.scss";

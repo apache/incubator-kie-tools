@@ -21,7 +21,7 @@ import { ErrorBoundary } from "../common/ErrorBoundary";
 import { dataPathToFormFieldPath } from "./uniforms/utils";
 import { DmnFormJsonSchemaBridge } from "./uniforms";
 import { DmnValidator } from "./DmnValidator";
-import { dmnFormI18n } from "./i18n";
+import { dmnFormI18n } from "../i18n";
 import { diff } from "deep-object-diff";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -30,6 +30,7 @@ import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import cloneDeep from "lodash/cloneDeep";
+import { AutoGenerationErrorFormStatus, EmptyFormStatus, ValidatorErrorFormStatus } from "../core/FormStatus";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -131,6 +132,7 @@ export function DmnForm(props: Props) {
   const [formStatus, setFormStatus] = useState<FormStatus>(FormStatus.EMPTY);
   const contextPath = useMemo(() => new Map<string, string[]>(), []);
 
+  // FIXME DMN
   const setCustomPlaceholders = useCallback(
     (value: DmnDeepProperty) => {
       if (value?.format === "days and time duration") {
@@ -146,6 +148,8 @@ export function DmnForm(props: Props) {
     [i18n.form.preProcessing.daysAndTimePlaceholder, i18n.form.preProcessing.yearsAndMonthsPlaceholder]
   );
 
+  // FIXME DMN (FEEL) AND CORE -> MOVE TO BRIDGE?
+  // Add missing type and placeholders, if it has a context type -> adds to
   const formDeepPreprocessing = useCallback(
     (form: DmnFormData, value: DmnDeepProperty, title = [""]) => {
       if (Object.hasOwnProperty.call(value, "$ref")) {
@@ -192,10 +196,11 @@ export function DmnForm(props: Props) {
         setCustomPlaceholders(value);
       }
     },
-    [setCustomPlaceholders]
+    [contextPath, i18n.form.preProcessing.selectPlaceholder, setCustomPlaceholders]
   );
 
   // Remove required property and make deep preprocessing
+  // FIXME DMN -> INPUTSET
   const formPreprocessing = useCallback(
     (form: DmnFormData) => {
       delete form.definitions?.InputSet?.required;
@@ -210,6 +215,7 @@ export function DmnForm(props: Props) {
     [formDeepPreprocessing]
   );
 
+  // FIXME CORE -> MOVE TO BRIDGE?
   const defaultFormValues = useCallback((jsonSchemaBridge: any) => {
     return Object.keys(jsonSchemaBridge?.schema?.properties ?? {}).reduce((acc, property) => {
       if (Object.hasOwnProperty.call(jsonSchemaBridge?.schema?.properties[property], "$ref")) {
@@ -243,6 +249,11 @@ export function DmnForm(props: Props) {
     }, {} as { [x: string]: any });
   }, []);
 
+  // FIXME DMN -> CONTEXT PATH
+  // contextPath -> map of FEEL:context
+  // formData -> object with form information
+  // formModel -> object used by uniforms
+  // FEEL:context is a written object in the form (formModel), and it's parsed to set the formData
   const handleContextPath: (obj: any, path: string[], operation?: "parse" | "stringify") => void = useCallback(
     (obj, path, operation) => {
       const key = path?.shift();
@@ -288,6 +299,7 @@ export function DmnForm(props: Props) {
     []
   );
 
+  // FIXME DMN INPUTSET
   const removeDeletedPropertiesAndAddDefaultValues = useCallback(
     (model: object, bridge: DmnFormJsonSchemaBridge, previousBridge?: DmnFormJsonSchemaBridge) => {
       const propertiesDifference = diff(
@@ -312,6 +324,7 @@ export function DmnForm(props: Props) {
     [defaultFormValues]
   );
 
+  // When the formModel changes, stringify all context inputs and set the formData and reset the formError
   useEffect(() => {
     props.setFormError((previousFormError: boolean) => {
       if (!previousFormError && formModel && Object.keys(formModel).length > 0) {
@@ -326,6 +339,17 @@ export function DmnForm(props: Props) {
     });
   }, [contextPath, formModel, handleContextPath]);
 
+  // on firstRender stringify all context inputs and set the formModel
+  useEffect(() => {
+    const newFormModel = cloneDeep(props.formData);
+    contextPath.forEach((path) => {
+      const pathCopy = [...path];
+      handleContextPath(newFormModel, pathCopy, "stringify");
+    });
+    setFormModel(newFormModel);
+  }, [props.name]);
+
+  // getBridge, remove deleted properties, add default values
   useEffect(() => {
     const form: DmnFormData = cloneDeep(props.formSchema ?? {});
     if (Object.keys(form).length > 0) {
@@ -347,28 +371,9 @@ export function DmnForm(props: Props) {
 
       setFormStatus(FormStatus.WITHOUT_ERROR);
     } catch (err) {
-      console.error(err);
       setFormStatus(FormStatus.VALIDATOR_ERROR);
     }
-  }, [
-    formModel,
-    props.formSchema,
-    formPreprocessing,
-    validator,
-    handleContextPath,
-    removeDeletedPropertiesAndAddDefaultValues,
-    contextPath,
-  ]);
-
-  // on first render, if model is undefined adds a value on it.
-  useEffect(() => {
-    const newFormModel = cloneDeep(props.formData);
-    contextPath.forEach((path) => {
-      const pathCopy = [...path];
-      handleContextPath(newFormModel, pathCopy, "stringify");
-    });
-    setFormModel(newFormModel);
-  }, [props.name]);
+  }, [formPreprocessing, props.formSchema, removeDeletedPropertiesAndAddDefaultValues, validator]);
 
   const onSubmit = useCallback(
     (model) => {
@@ -430,6 +435,7 @@ export function DmnForm(props: Props) {
     [props.onValidate]
   );
 
+  // FIXME CORE
   const formErrorMessage = useMemo(
     () => (
       <div>
@@ -455,6 +461,7 @@ export function DmnForm(props: Props) {
     [props.notificationsPanel, i18n]
   );
 
+  // Manage form status
   useEffect(() => {
     if (props.formError) {
       setFormStatus(FormStatus.AUTO_GENERATION_ERROR);
@@ -476,49 +483,17 @@ export function DmnForm(props: Props) {
 
   return (
     <>
-      {formStatus === FormStatus.VALIDATOR_ERROR && (
-        <div>
-          <EmptyState>
-            <EmptyStateIcon icon={ExclamationTriangleIcon} />
-            <TextContent>
-              <Text component={"h2"}>{i18n.form.status.validatorError.title}</Text>
-            </TextContent>
-            <EmptyStateBody>
-              <TextContent>
-                <Text>
-                  <I18nWrapped
-                    components={{
-                      jira: (
-                        <a href={KOGITO_JIRA_LINK} target={"_blank"}>
-                          {KOGITO_JIRA_LINK}
-                        </a>
-                      ),
-                    }}
-                  >
-                    {i18n.form.status.validatorError.message}
-                  </I18nWrapped>
-                </Text>
-              </TextContent>
-            </EmptyStateBody>
-          </EmptyState>
-        </div>
+      {formStatus === FormStatus.VALIDATOR_ERROR && <ValidatorErrorFormStatus i18n={i18n} />}
+      {formStatus === FormStatus.AUTO_GENERATION_ERROR && props.notificationsPanel ? (
+        <AutoGenerationErrorFormStatus
+          notificationsPanel={props.notificationsPanel}
+          i18n={i18n}
+          openValidationTab={props.openValidationTab}
+        />
+      ) : (
+        <AutoGenerationErrorFormStatus notificationsPanel={props.notificationsPanel} i18n={i18n} />
       )}
-      {formStatus === FormStatus.AUTO_GENERATION_ERROR && formErrorMessage}
-      {formStatus === FormStatus.EMPTY && (
-        <div>
-          <EmptyState>
-            <EmptyStateIcon icon={CubesIcon} />
-            <TextContent>
-              <Text component={"h2"}>{i18n.form.status.emptyForm.title}</Text>
-            </TextContent>
-            <EmptyStateBody>
-              <TextContent>
-                <Text component={TextVariants.p}>{i18n.form.status.emptyForm.explanation}</Text>
-              </TextContent>
-            </EmptyStateBody>
-          </EmptyState>
-        </div>
-      )}
+      {formStatus === FormStatus.EMPTY && <EmptyFormStatus i18n={i18n} />}
       {formStatus === FormStatus.WITHOUT_ERROR && (
         <div data-testid={"dmn-form"}>
           <ErrorBoundary ref={errorBoundaryRef} setHasError={props.setFormError} error={formErrorMessage}>

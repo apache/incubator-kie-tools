@@ -15,7 +15,7 @@
  */
 
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
-import { DmnFormI18n } from "./i18n";
+import { DmnFormI18n } from "../i18n";
 import { Validator } from "../core";
 import { DmnFormJsonSchemaBridge } from "./uniforms";
 

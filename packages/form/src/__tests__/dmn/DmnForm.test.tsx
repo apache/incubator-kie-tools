@@ -17,7 +17,7 @@
 import * as React from "react";
 import { act, render } from "@testing-library/react";
 import { DmnForm, Props } from "../../dmn";
-import { dmnFormI18n } from "../../dmn/i18n";
+import { dmnFormI18n } from "../../i18n";
 
 const schema: any = {
   $ref: "#/definitions/InputSet",
