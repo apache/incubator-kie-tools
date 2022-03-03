@@ -265,6 +265,7 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
           );
       }
       setShowTableHandler(false);
+      boxedExpression.setIsContextMenuOpen(false);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [updateTargetColumns, generateRow, onRowsUpdate, selectedRowIndex, setShowTableHandler, tableRows]
@@ -285,7 +286,10 @@ export const TableHandler: React.FunctionComponent<TableHandlerProps> = ({
       distance={5}
       position={"right"}
       isVisible={showTableHandler}
-      shouldClose={() => setShowTableHandler(false)}
+      shouldClose={() => {
+        setShowTableHandler(false);
+        boxedExpression.setIsContextMenuOpen(false);
+      }}
       shouldOpen={(showFunction) => showFunction?.()}
       reference={() => tableHandlerTarget}
       appendTo={boxedExpression.editorRef?.current ?? undefined}
