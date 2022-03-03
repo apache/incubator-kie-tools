@@ -51,7 +51,13 @@ packages:
 
 osbs:
   configuration:
-    container_file: container.yaml
+    container:
+      platforms:
+        only:
+          - x86_64
+          - ppc64le
+      compose:
+        pulp_repos: true
   extra_dir: osbs-extra/rhpam-kogito-runtime-jvm-rhel8
   repository:
     name: containers/rhpam-7-kogito-runtime-jvm

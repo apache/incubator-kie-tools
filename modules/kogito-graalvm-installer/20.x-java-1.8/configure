@@ -1,6 +1,12 @@
 #!/bin/sh
 set -e
 
+architecture=$(uname -i)
+
+if [ "$architecture" != x86_64 ]; then
+    exit 0;
+fi
+
 SOURCES_DIR=/tmp/artifacts
 SCRIPT_DIR=$(dirname "${0}")
 
@@ -11,4 +17,3 @@ mv /usr/share/graalvm-ce-java"${GRAALVM_JAVA_VERSION}"-"${GRAALVM_VERSION}" /usr
 mkdir -p "${KOGITO_HOME}"/ssl-libs
 cp -v "$GRAALVM_HOME"/jre/lib/amd64/libsunec.so "${KOGITO_HOME}"/ssl-libs
 cp -v "$GRAALVM_HOME"/jre/lib/security/cacerts "${KOGITO_HOME}"/
-

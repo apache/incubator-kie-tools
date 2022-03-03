@@ -1,6 +1,12 @@
 #!/bin/sh
 set -e
 
+architecture=$(uname -i)
+
+if [ "$architecture" != x86_64 ]; then
+    exit 0;
+fi
+
 SOURCES_DIR=/tmp/artifacts
 SCRIPT_DIR=$(dirname "${0}")
 
