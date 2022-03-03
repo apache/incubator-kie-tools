@@ -22,11 +22,11 @@ COPY dist-dev/mvnw mvnw
 COPY dist-dev/.mvn/ .mvn/
 
 RUN ./mvnw io.quarkus:quarkus-maven-plugin:create -B -ntp \
-  -DplatformVersion=2.6.2.Final \
+  -DplatformVersion=2.7.1.Final \
   -DprojectGroupId=org.kie.kogito \
   -DprojectArtifactId=serverless-workflow-base \
   -DprojectVersion=0.0.0 \
-  -Dextensions="kogito-quarkus-serverless-workflow,quarkus-resteasy-jackson,quarkus-jsonp,quarkus-smallrye-openapi" \
+  -Dextensions="kogito-quarkus-serverless-workflow,quarkus-resteasy-jackson,quarkus-jsonp,quarkus-smallrye-openapi,quarkus-resteasy,smallrye-health" \
   && cd serverless-workflow-base \
   && echo -e '\nquarkus.swagger-ui.always-include=true\nquarkus.http.host=0.0.0.0\nquarkus.http.cors=true' >> src/main/resources/application.properties \
   && rm -rf src/main/docker/ src/main/java/ src/test/  \

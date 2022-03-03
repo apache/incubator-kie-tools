@@ -28,6 +28,7 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useChromeExtensionI18n } from "../../i18n";
+import { KafkaSettingsConfig } from "../../kafka/KafkaSettingsConfig";
 import { SW_JSON_EXTENSION, useOpenShift } from "../../openshift/OpenShiftContext";
 import { isConfigValid, OpenShiftSettingsConfig } from "../../openshift/OpenShiftSettingsConfig";
 import { useGlobals } from "../common/GlobalContext";
@@ -36,7 +37,8 @@ import { LoadingSpinner } from "../common/LoadingSpinner";
 interface CreateServerlessWorkflowModalProps {
   isOpen: boolean;
   onClose: () => void;
-  config: OpenShiftSettingsConfig;
+  openShiftConfig: OpenShiftSettingsConfig;
+  kafkaConfig?: KafkaSettingsConfig;
 }
 
 enum FormValiationOptions {
@@ -87,14 +89,18 @@ export function CreateServerlessWorkflowModal(props: CreateServerlessWorkflowMod
     }
 
     setLoading(true);
-    const success = await openshift.deploy(props.config, {
-      name: fileName,
-      content: content,
+    const success = await openshift.deploy({
+      openShiftConfig: props.openShiftConfig,
+      workflow: {
+        name: fileName,
+        content: content,
+      },
+      kafkaConfig: props.kafkaConfig,
     });
     setLoading(false);
 
     setDeployStatus(success ? FormValiationOptions.SUCCESS : FormValiationOptions.ERROR);
-  }, [editor, openshift, props.config, fileName]);
+  }, [editor, openshift, props.openShiftConfig, props.kafkaConfig, fileName]);
 
   const onClearWorkflowName = useCallback(() => setWorkflowName(""), []);
 
@@ -112,7 +118,7 @@ export function CreateServerlessWorkflowModal(props: CreateServerlessWorkflowMod
       onClose={close}
       actions={[
         <Button
-          isDisabled={!isConfigValid(props.config) || workflowName.trim().length === 0}
+          isDisabled={!isConfigValid(props.openShiftConfig) || workflowName.trim().length === 0}
           key="deploy"
           variant="primary"
           onClick={onDeploy}

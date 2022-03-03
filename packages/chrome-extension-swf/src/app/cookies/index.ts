@@ -26,7 +26,7 @@ export function getCookie(name: string) {
 export function setCookie(name: string, value: string) {
   const date = new Date();
 
-  date.setTime(date.getTime() + 10 * 365 * 24 * 60 * 60); // expires in 10 years
+  date.setMonth(date.getMonth() + 5);
 
   document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
 }
