@@ -172,11 +172,11 @@ func initializeTestSuite(ctx *godog.TestSuiteContext) {
 
 	// Final cleanup once test suite finishes
 	ctx.AfterSuite(func() {
-		if config.IsOperatorProfiling() {
-			retrieveProfilingData()
-		}
-
 		if !config.IsKeepNamespace() {
+			if config.IsOperatorProfiling() {
+				retrieveProfilingData()
+			}
+
 			// Delete all operators created by test suite
 			if success := installers.UninstallServicesFromCluster(); !success {
 				framework.GetMainLogger().Warn("Some services weren't uninstalled propertly from cluster, see error logs above")
