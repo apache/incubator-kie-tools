@@ -206,14 +206,16 @@ pipeline {
                                 }
                             }
                             stage("Test ${image}") {
-                                dir(workspacePath) {
-                                    try {
-                                        testImage(image)
-                                    } catch (err) {
-                                        registerTestFailedImage(image)
-                                    } finally {
-                                        junit testResults: "target/test/results/*.xml", allowEmptyResults: true
-                                        archiveArtifacts artifacts: "target/test/results/*.xml", allowEmptyArchive: true
+                                if(!shouldSkipTests()) {
+                                    dir(workspacePath) {
+                                        try {
+                                            testImage(image)
+                                        } catch (err) {
+                                            registerTestFailedImage(image)
+                                        } finally {
+                                            junit testResults: "target/test/results/*.xml", allowEmptyResults: true
+                                            archiveArtifacts artifacts: "target/test/results/*.xml", allowEmptyArchive: true
+                                        }
                                     }
                                 }
                             }
