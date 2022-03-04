@@ -22,7 +22,7 @@ COPY dist-dev/mvnw mvnw
 COPY dist-dev/.mvn/ .mvn/
 
 RUN ./mvnw io.quarkus:quarkus-maven-plugin:create -B -ntp \
-  -DplatformVersion=2.7.1.Final \
+  -DplatformVersion=2.7.3.Final \
   -DprojectGroupId=org.kie.kogito \
   -DprojectArtifactId=serverless-workflow-base \
   -DprojectVersion=0.0.0 \
