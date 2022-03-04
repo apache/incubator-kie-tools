@@ -61,7 +61,11 @@ export const getParentCell = (currentEl: HTMLElement | null): HTMLTableCellEleme
     return null;
   }
 
-  return (currentEl.matches(cellSelector) ? currentEl : currentEl.closest(cellSelector)) as HTMLTableCellElement;
+  if (currentEl.matches(cellSelector)) {
+    return currentEl as HTMLTableCellElement;
+  } else {
+    return currentEl.closest(cellSelector) as HTMLTableCellElement;
+  }
 };
 
 /**
@@ -104,9 +108,10 @@ export const focusNextCell = (currentEl: HTMLElement | null): void => {
  *
  * @param currentEl the crrent element
  * @param rowIndex the current row index
+ * @param rowSpan the rowSpan of the current cell
  * @returns
  */
-export const focusNextDataCell = (currentEl: HTMLElement | null, rowIndex: number): void => {
+export const focusNextDataCell = (currentEl: HTMLElement | null, rowIndex: number, rowSpan = 0): void => {
   const currentCell = getParentCell(currentEl);
 
   if (!currentCell) {
@@ -114,11 +119,24 @@ export const focusNextDataCell = (currentEl: HTMLElement | null, rowIndex: numbe
   }
 
   const nextCell = currentCell.nextElementSibling as HTMLTableCellElement;
+  // const isCurrentCellTh = currentCell.tagName === "TH";
+  const cellIndex = currentCell.cellIndex;
+
+  // if (isCurrentCellTh) {
+  //   isCurrentCellRowspan = !currentCell.closest('table')?.rows[rowIndex-1]?.cells[currentCell.cellIndex].hasAttribute("tabindex");
+  // }
 
   if (!nextCell) {
     focusLowerCell(currentCell, rowIndex, 1);
-  } else {
+    return;
+  }
+
+  if (nextCell.hasAttribute("tabindex")) {
     cellFocus(nextCell);
+  } else if (rowSpan) {
+    focusUpperCell(currentCell, rowIndex, cellIndex + 1);
+  } else {
+    focusLowerCell(currentCell, rowIndex, 1);
   }
 };
 
@@ -191,8 +209,9 @@ export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number, 
   if (!currentCell) {
     return;
   }
-  const currentBody = currentCell.closest("tbody");
-  const gotoRow = currentBody?.rows[rowIndex + 1];
+
+  const currentTable = currentCell.closest("table");
+  const gotoRow = currentTable?.rows[rowIndex + 1];
   const gotoCellIndex = cellIndex === undefined ? currentCell.cellIndex : cellIndex;
 
   cellFocus((gotoRow?.cells[gotoCellIndex] as HTMLTableCellElement) || currentCell);
