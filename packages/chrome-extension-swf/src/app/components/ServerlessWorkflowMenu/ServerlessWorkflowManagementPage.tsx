@@ -36,7 +36,6 @@ import {
   saveBootstrapServerCookie,
   saveClientIdCookie,
   saveClientSecretCookie,
-  saveOAuthEndpointUriCookie,
   saveTopicCookie,
 } from "../../kafka/KafkaSettingsConfig";
 import { DeploymentWorkflow, useOpenShift } from "../../openshift/OpenShiftContext";
@@ -72,10 +71,6 @@ export function ServerlessWorkflowManagementPage() {
   );
   const onClearClientId = useCallback(() => setKafkaConfig({ ...kafkaConfig, clientId: "" }), [kafkaConfig]);
   const onClearClientSecret = useCallback(() => setKafkaConfig({ ...kafkaConfig, clientSecret: "" }), [kafkaConfig]);
-  const onClearOAuthEndpointUri = useCallback(
-    () => setKafkaConfig({ ...kafkaConfig, oauthEndpointUri: "" }),
-    [kafkaConfig]
-  );
   const onClearTopic = useCallback(() => setKafkaConfig({ ...kafkaConfig, topic: "" }), [kafkaConfig]);
 
   const onProxyChanged = useCallback(
@@ -130,14 +125,6 @@ export function ServerlessWorkflowManagementPage() {
     (newValue: string) => {
       setKafkaConfig({ ...kafkaConfig, clientSecret: newValue });
       saveClientSecretCookie(newValue);
-    },
-    [kafkaConfig]
-  );
-
-  const onOAuthEndpointUriChanged = useCallback(
-    (newValue: string) => {
-      setKafkaConfig({ ...kafkaConfig, oauthEndpointUri: newValue });
-      saveOAuthEndpointUriCookie(newValue);
     },
     [kafkaConfig]
   );
@@ -452,50 +439,6 @@ export function ServerlessWorkflowManagementPage() {
             </InputGroup>
           </FormGroup>
           <FormGroup
-            label={"OAuth Endpoint URI"}
-            labelIcon={
-              <Popover bodyContent={"OAuth Endpoint URI"}>
-                <button
-                  type="button"
-                  aria-label="More info for oauth endpoint uri field"
-                  onClick={(e) => e.preventDefault()}
-                  aria-describedby="oauth-endpoint-uri-field"
-                  className="pf-c-form__group-label-help"
-                >
-                  <HelpIcon noVerticalAlign />
-                </button>
-              </Popover>
-            }
-            isRequired
-            fieldId="oauth-endpoint-uri-field"
-          >
-            <InputGroup className="pf-u-mt-sm">
-              <TextInput
-                autoComplete={"off"}
-                isRequired
-                type="text"
-                id="oauth-endpoint-uri-field"
-                name="oauth-endpoint-uri-field"
-                aria-label="OAuth endpoint uri field"
-                aria-describedby="oauth-endpoint-uri-field-helper"
-                value={kafkaConfig.oauthEndpointUri}
-                onChange={onOAuthEndpointUriChanged}
-                tabIndex={8}
-                data-testid="oauth-endpoint-uri-text-field"
-              />
-              <InputGroupText>
-                <Button
-                  isSmall
-                  variant="plain"
-                  aria-label="Clear oauth endpoint uri button"
-                  onClick={onClearOAuthEndpointUri}
-                >
-                  <TimesIcon />
-                </Button>
-              </InputGroupText>
-            </InputGroup>
-          </FormGroup>
-          <FormGroup
             label={"Topic"}
             labelIcon={
               <Popover bodyContent={"Topic"}>
@@ -555,8 +498,6 @@ export function ServerlessWorkflowManagementPage() {
       onClearClientId,
       onClientSecretChanged,
       onClearClientSecret,
-      onOAuthEndpointUriChanged,
-      onClearOAuthEndpointUri,
       onTopicChanged,
       onClearTopic,
     ]
