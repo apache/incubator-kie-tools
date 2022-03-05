@@ -15,19 +15,32 @@
  */
 
 import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
-import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
+import {
+  I18nContextType,
+  I18nDictionariesProvider,
+  I18nDictionariesProviderProps,
+} from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
 import { useContext } from "react";
 import { ChromeExtensionI18n } from "./ChromeExtensionI18n";
 import { en } from "./locales";
 
-export const chromeExtensionI18nDefaults: I18nDefaults<ChromeExtensionI18n> = {
-  locale: navigator.language,
-  dictionary: en,
-};
-
+export const chromeExtensionI18nDefaults: I18nDefaults<ChromeExtensionI18n> = { locale: "en", dictionary: en };
 export const chromeExtensionI18nDictionaries: I18nDictionaries<ChromeExtensionI18n> = new Map([["en", en]]);
 export const ChromeExtensionI18nContext = React.createContext<I18nContextType<ChromeExtensionI18n>>({} as any);
+
+export function ChromeExtensionI18nContextProvider(props: { children: any }) {
+  return (
+    <I18nDictionariesProvider
+      defaults={chromeExtensionI18nDefaults}
+      dictionaries={chromeExtensionI18nDictionaries}
+      initialLocale={navigator.language}
+      ctx={ChromeExtensionI18nContext}
+    >
+      {props.children}
+    </I18nDictionariesProvider>
+  );
+}
 
 export function useChromeExtensionI18n() {
   return useContext(ChromeExtensionI18nContext);

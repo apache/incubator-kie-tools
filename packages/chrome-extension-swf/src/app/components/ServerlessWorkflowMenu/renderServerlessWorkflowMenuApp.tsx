@@ -16,6 +16,8 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { HashRouter } from "react-router-dom";
+import { ChromeExtensionI18nContextProvider } from "../../i18n";
 import { createAndGetMainContainer } from "../../utils";
 import { Globals, Main } from "../common/Main";
 import { ServerlessWorkflowMenuApp } from "./ServerlessWorkflowMenuApp";
@@ -30,6 +32,9 @@ export function renderServerlessWorkflowMenuApp(args: Globals) {
       resourceContentServiceFactory={args.resourceContentServiceFactory}
       imageUris={args.imageUris}
     >
+      <ChromeExtensionI18nContextProvider>
+        <HashRouter></HashRouter>
+      </ChromeExtensionI18nContextProvider>
       <ServerlessWorkflowMenuApp id={args.id} />
     </Main>,
     createAndGetMainContainer(args.id, args.dependencies.all.body()),

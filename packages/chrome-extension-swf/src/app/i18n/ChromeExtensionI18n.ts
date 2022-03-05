@@ -15,7 +15,71 @@
  */
 
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
+import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface ChromeExtensionDictionary extends ReferenceDictionary {}
+interface ChromeExtensionDictionary extends ReferenceDictionary {
+  openshift: {
+    common: {
+      deployYourModel: string;
+      deployInstanceInfo: string;
+      disclaimer: string;
+      learnMore: string;
+      requiredField: string;
+      deploying: string;
+      saving: string;
+      setupFirst: string;
+    };
+    configWizard: {
+      header: {
+        provider: string;
+      };
+      steps: {
+        first: {
+          name: string;
+          introduction: string;
+          goToGetStartedPage: string;
+          followSteps: string;
+          informNamespace: string;
+          inputReason: string;
+          namespacePlaceholder: string;
+        };
+        second: {
+          name: string;
+          introduction: string;
+          accessLoginCommand: string;
+          accessDisplayToken: string;
+          copyInformation: string;
+          inputReason: string;
+          hostPlaceholder: string;
+          tokenPlaceholder: string;
+        };
+        final: {
+          name: string;
+          connectionError: string;
+          connectionSuccess: string;
+          introduction: string;
+          configNote: string;
+          connectionErrorLong: string;
+          checkInfo: string;
+          possibleErrorReasons: {
+            introduction: string;
+            emptyField: string;
+            tokenExpired: string;
+            instanceExpired: string;
+          };
+        };
+      };
+    };
+    configModal: {
+      hostInfo: string;
+      namespaceInfo: string;
+      tokenInfo: string;
+      validationError: string;
+      connectionError: string;
+      configExpiredWarning: string;
+      useWizard: string;
+    };
+  };
+}
 
-export interface ChromeExtensionI18n extends ChromeExtensionDictionary {}
+export interface ChromeExtensionI18n extends ChromeExtensionDictionary, CommonI18n {}
