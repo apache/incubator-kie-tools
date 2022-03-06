@@ -121,9 +121,11 @@ public class StringUtils {
      * @return an escaped string
      */
     public static String replaceIllegalCharsForDataObjects(final String value) {
+        System.out.println(value);
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < value.length(); i++) {
             final char c = value.charAt(i);
+            System.out.println(c);
 
             switch (c) {
                 case '#':
