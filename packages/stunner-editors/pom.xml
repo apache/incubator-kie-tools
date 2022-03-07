@@ -1214,7 +1214,7 @@
               <exclude>org/drools/workbench/**/*IntegrationTest.java</exclude>
               <exclude>org/drools/workbench/**/*IT.java</exclude>
             </excludes>
-            <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
+            <argLine>-Dfile.encoding=UTF-8</argLine>
           </configuration>
         </plugin>
 
@@ -1764,6 +1764,7 @@
             </plugin>
             <plugin>
               <artifactId>maven-surefire-plugin</artifactId>
+              <version>${version.surefire.plugin}</version>
               <configuration>
                 <systemPropertyVariables>
                   <jacoco-agent.destfile>${jacoco.exec.file}</jacoco-agent.destfile>
