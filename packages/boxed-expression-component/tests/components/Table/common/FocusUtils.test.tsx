@@ -151,9 +151,9 @@ describe("FocusUtils tests", () => {
 
     mockTableColRowspanThead.rows[0].cells[1].setAttribute("colspan", "2");
     mockTableColRowspanThead.rows[0].cells[1].removeAttribute("tabindex");
-    mockTableColRowspanThead.rows[0].deleteCell(2);
     mockTableColRowspanThead.rows[0].cells[2].setAttribute("colspan", "2");
-    mockTableColRowspanThead.rows[0].deleteCell(3);
+    mockTableColRowspanThead.rows[0].deleteCell(5);
+    mockTableColRowspanThead.rows[0].deleteCell(4);
     mockTableColRowspanThead.rows[0].cells[3].removeAttribute("tabindex");
 
     jest.resetAllMocks();
@@ -383,8 +383,7 @@ describe("FocusUtils tests", () => {
     });
   });
 
-  describe.skip("focusUpperCell tests", () => {
-    /* TODO: FocusUtils.test: focusUpperCell: change indexes */
+  describe("focusUpperCell tests", () => {
     it("should fail", () => {
       // @ts-ignore
       expect(() => focusUpperCell(undefined, 1)).not.toThrowError();
@@ -392,24 +391,24 @@ describe("FocusUtils tests", () => {
     });
 
     it("should focus the upper data cell", () => {
-      testFocus(mockTbody.rows[2].cells[2], mockTbody.rows[1].cells[2], (element) => focusUpperCell(element, 2));
+      testFocus(mockTbody.rows[2].cells[2], mockTbody.rows[1].cells[2], (element) => focusUpperCell(element, 4));
     });
 
     it("test full headers with rowspan and colspan navigation", () => {
       testFocus(mockTableColRowspanTbody.rows[0].cells[1], mockTableColRowspanThead.rows[1].cells[1], (element) =>
-        focusUpperCell(element, 0)
+        focusUpperCell(element, 2)
       );
       testFocus(mockTableColRowspanTbody.rows[0].cells[3], mockTableColRowspanThead.rows[1].cells[3], (element) =>
-        focusUpperCell(element, 0)
+        focusUpperCell(element, 2)
       );
-      testFocus(mockTableColRowspanThead.rows[1].cells[3], mockTableColRowspanThead.rows[0].cells[3], (element) =>
-        focusUpperCell(element, 0)
+      testFocus(mockTableColRowspanThead.rows[1].cells[3], mockTableColRowspanThead.rows[0].cells[2], (element) =>
+        focusUpperCell(element, 1)
       );
     });
 
     it("should keep the focus to the current cell", () => {
       shouldKeepFocus(mockThead.rows[0].cells[5], (element) => focusUpperCell(element, 0));
-      shouldKeepFocus(mockTableColRowspanThead.rows[0].cells[5], (element) => focusUpperCell(element, 0));
+      shouldKeepFocus(mockTableColRowspanThead.rows[1].cells[5], (element) => focusUpperCell(element, 1));
     });
   });
 

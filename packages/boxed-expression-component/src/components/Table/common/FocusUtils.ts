@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { getCellByIndex } from ".";
+
 export const focusTextArea = (textarea?: HTMLTextAreaElement | null, eraseContent = false) => {
   if (!textarea) {
     return;
@@ -111,7 +113,7 @@ export const focusNextCell = (currentEl: HTMLElement | null): void => {
  * @param rowSpan the rowSpan of the current cell
  * @returns
  */
-export const focusNextDataCell = (currentEl: HTMLElement | null, rowIndex: number, rowSpan = 0): void => {
+export const focusNextDataCell = (currentEl: HTMLElement | null, rowIndex: number, rowSpan = 1): void => {
   const currentCell = getParentCell(currentEl);
 
   if (!currentCell) {
@@ -131,10 +133,10 @@ export const focusNextDataCell = (currentEl: HTMLElement | null, rowIndex: numbe
     return;
   }
 
-  if (nextCell.hasAttribute("tabindex")) {
-    cellFocus(nextCell);
-  } else if (rowSpan) {
+  if (rowSpan > 1) {
     focusUpperCell(currentCell, rowIndex, cellIndex + 1);
+  } else if (nextCell.hasAttribute("tabindex")) {
+    cellFocus(nextCell);
   } else {
     focusLowerCell(currentCell, rowIndex, 1);
   }
@@ -188,11 +190,19 @@ export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number, 
     return;
   }
 
-  const currentBody = currentCell.closest("tbody");
-  const gotoRow = currentBody?.rows[rowIndex - 1];
-  const gotoCellIndex = cellIndex === undefined ? currentCell.cellIndex : cellIndex;
+  const currentTable = currentCell.closest("table");
 
-  cellFocus((gotoRow?.cells[gotoCellIndex] as HTMLTableCellElement) || currentCell);
+  if (!currentTable) {
+    return;
+  }
+
+  const gotoCellIndex = cellIndex === undefined ? currentCell.cellIndex : cellIndex;
+  const gotoCell = getCellByIndex(currentTable, rowIndex - 1, gotoCellIndex);
+
+  if (!gotoCell || !gotoCell.hasAttribute("tabindex")) {
+    cellFocus(currentCell);
+  }
+  cellFocus(gotoCell);
 };
 
 /**
