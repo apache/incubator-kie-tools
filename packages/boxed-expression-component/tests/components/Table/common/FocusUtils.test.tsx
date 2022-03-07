@@ -114,8 +114,11 @@ const testFocus = (
  */
 const shouldNotChangeFocus = (element: HTMLElement, move: (element: HTMLElement) => void): void => {
   const mockElementFocus = jest.spyOn(element, "focus");
+  const activeElement = document.activeElement;
 
   move(element);
+
+  expect(document.activeElement).toBe(activeElement);
   expect(mockElementFocus).not.toHaveBeenCalled();
 };
 
@@ -129,6 +132,7 @@ const shouldKeepFocus = (element: HTMLElement, move: (element: HTMLElement) => v
   const mockElementFocus = jest.spyOn(element, "focus");
 
   move(element);
+  expect(document.activeElement?.innerHTML).toBe(element.innerHTML);
   expect(mockElementFocus).toHaveBeenCalled();
 };
 
@@ -299,7 +303,8 @@ describe("FocusUtils tests", () => {
       testFocus(mockTableColRowspanThead.rows[1].cells[2], mockTableColRowspanThead.rows[0].cells[2], (element) =>
         focusNextDataCell(element, 1, 2)
       );
-      testFocus(mockTableColRowspanThead.rows[0].cells[3], mockTableColRowspanThead.rows[1].cells[5], (element) =>
+      debugger;
+      testFocus(mockTableColRowspanThead.rows[0].cells[2], mockTableColRowspanThead.rows[1].cells[5], (element) =>
         focusNextDataCell(element, 0)
       );
       testFocus(mockTableColRowspanThead.rows[1].cells[5], mockTableColRowspanTbody.rows[0].cells[1], (element) =>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getCellByIndex } from ".";
+import { getCellByCoordinates, hasCellTabindex } from "./TableUtils";
 
 export const focusTextArea = (textarea?: HTMLTextAreaElement | null, eraseContent = false) => {
   if (!textarea) {
@@ -134,8 +134,8 @@ export const focusNextDataCell = (currentEl: HTMLElement | null, rowIndex: numbe
   }
 
   if (rowSpan > 1) {
-    focusUpperCell(currentCell, rowIndex, cellIndex + 1);
-  } else if (nextCell.hasAttribute("tabindex")) {
+    focusUpperCell(nextCell, rowIndex, cellIndex + 1);
+  } else if (hasCellTabindex(nextCell)) {
     cellFocus(nextCell);
   } else {
     focusLowerCell(currentCell, rowIndex, 1);
@@ -197,9 +197,9 @@ export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number, 
   }
 
   const gotoCellIndex = cellIndex === undefined ? currentCell.cellIndex : cellIndex;
-  const gotoCell = getCellByIndex(currentTable, rowIndex - 1, gotoCellIndex);
+  const gotoCell = getCellByCoordinates(currentTable, rowIndex - 1, gotoCellIndex);
 
-  if (!gotoCell || !gotoCell.hasAttribute("tabindex")) {
+  if (!gotoCell || !hasCellTabindex(gotoCell)) {
     cellFocus(currentCell);
   }
   cellFocus(gotoCell);
