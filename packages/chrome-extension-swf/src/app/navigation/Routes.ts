@@ -115,10 +115,4 @@ export const routes = {
   workspace: new Route<{
     pathParams: PathParams.WORKSPACE_ID;
   }>(({ workspaceId }) => `/${workspaceId}`),
-
-  settings: {
-    openshiftSandbox: new Route(() => "/settings/openshiftSandbox"),
-    apacheKafka: new Route(() => "/settings/apacheKafka"),
-    github: new Route(() => "/settings/github"),
-  },
 };

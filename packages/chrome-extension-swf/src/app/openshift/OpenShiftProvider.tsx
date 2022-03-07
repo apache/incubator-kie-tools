@@ -18,7 +18,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { DeployArgs, DeploymentWorkflow, OpenShiftContext } from "./OpenShiftContext";
 import { OpenShiftService } from "./OpenShiftService";
-import { OpenShiftSettingsConfig } from "./OpenShiftSettingsConfig";
+import { OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
 
 interface Props {
   children: React.ReactNode;

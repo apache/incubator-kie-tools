@@ -15,7 +15,7 @@
  */
 
 import { useMemo } from "react";
-import { AuthStatus, useSettings } from "../settings/SettingsContext";
+import { AuthStatus, useSettings } from "../SettingsContext";
 
 export function useGitHubAuthInfo() {
   const settings = useSettings();

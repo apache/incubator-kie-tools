@@ -25,9 +25,9 @@ import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { useSettings, useSettingsDispatch } from "./SettingsContext";
-import { useChromeExtensionI18n } from "../i18n";
-import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
+import { useSettings, useSettingsDispatch } from "../SettingsContext";
+import { useChromeExtensionI18n } from "../../i18n";
+import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import {
   EMPTY_CONFIG,
   isConfigValid,
@@ -35,7 +35,6 @@ import {
   saveConfigCookie,
 } from "../openshift/OpenShiftSettingsConfig";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { OpenShiftSettingsTabMode } from "./OpenShiftSettingsTab";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -44,9 +43,7 @@ enum FormValiationOptions {
   CONFIG_EXPIRED = "CONFIG_EXPIRED",
 }
 
-export function OpenShiftSettingsTabSimpleConfig(props: {
-  setMode: React.Dispatch<React.SetStateAction<OpenShiftSettingsTabMode>>;
-}) {
+export function OpenShiftSettingsTabSimpleConfig() {
   const { i18n } = useChromeExtensionI18n();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
@@ -106,12 +103,20 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
   }, [config, isConnecting, resetConfig, settingsDispatch.openshift]);
 
   const onClearHost = useCallback(() => setConfig({ ...config, host: "" }), [config]);
+  const onClearProxy = useCallback(() => setConfig({ ...config, proxy: "" }), [config]);
   const onClearNamespace = useCallback(() => setConfig({ ...config, namespace: "" }), [config]);
   const onClearToken = useCallback(() => setConfig({ ...config, token: "" }), [config]);
 
   const onHostChanged = useCallback(
     (newValue: string) => {
       setConfig({ ...config, host: newValue });
+    },
+    [config]
+  );
+
+  const onProxyChanged = useCallback(
+    (newValue: string) => {
+      setConfig({ ...config, proxy: newValue });
     },
     [config]
   );
@@ -176,21 +181,6 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
             <br />
           </>
         )}
-
-        <Button
-          id="dmn-dev-sandbox-config-use-wizard-button"
-          key="use-wizard"
-          className="pf-u-p-0"
-          variant="link"
-          onClick={() => props.setMode(OpenShiftSettingsTabMode.WIZARD)}
-          data-testid="use-wizard-button"
-        >
-          {i18n.openshift.configModal.useWizard}
-          <ArrowRightIcon className="pf-u-ml-sm" />
-        </Button>
-
-        <br />
-        <br />
 
         <Form>
           <FormGroup
@@ -269,6 +259,46 @@ export function OpenShiftSettingsTabSimpleConfig(props: {
               />
               <InputGroupText>
                 <Button isSmall variant="plain" aria-label="Clear host button" onClick={onClearHost}>
+                  <TimesIcon />
+                </Button>
+              </InputGroupText>
+            </InputGroup>
+          </FormGroup>
+          <FormGroup
+            label={"Proxy URL"}
+            labelIcon={
+              <Popover bodyContent={"Proxy URL"}>
+                <button
+                  type="button"
+                  aria-label="More info for proxy Url field"
+                  onClick={(e) => e.preventDefault()}
+                  aria-describedby="proxyurl-field"
+                  className="pf-c-form__group-label-help"
+                >
+                  <HelpIcon noVerticalAlign />
+                </button>
+              </Popover>
+            }
+            isRequired
+            fieldId="proxyurl-field"
+          >
+            <InputGroup className="pf-u-mt-sm">
+              <TextInput
+                autoComplete={"off"}
+                isRequired
+                type="text"
+                id="proxyurl-field"
+                name="proxyurl-field"
+                aria-label="ProxyURL field"
+                aria-describedby="proxyurl-field-helper"
+                value={config.proxy}
+                onChange={onProxyChanged}
+                isDisabled={isConnecting}
+                tabIndex={2}
+                data-testid="proxyurl-text-field"
+              />
+              <InputGroupText>
+                <Button isSmall variant="plain" aria-label="Clear Proxy URL button" onClick={onClearProxy}>
                   <TimesIcon />
                 </Button>
               </InputGroupText>

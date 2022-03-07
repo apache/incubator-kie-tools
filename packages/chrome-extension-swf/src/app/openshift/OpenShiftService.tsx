@@ -15,7 +15,7 @@
  */
 
 import { DeployArgs } from "./OpenShiftContext";
-import { isConfigValid, OpenShiftSettingsConfig } from "./OpenShiftSettingsConfig";
+import { isConfigValid, OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
 import { CreateBuild, DeleteBuild } from "./resources/Build";
 import { CreateBuildConfig, DeleteBuildConfig } from "./resources/BuildConfig";
 import { CreateImageStream, DeleteImageStream } from "./resources/ImageStream";

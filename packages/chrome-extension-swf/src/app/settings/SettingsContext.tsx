@@ -16,24 +16,18 @@
 
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { getCookie, setCookie } from "../cookies";
+import { getCookie, setCookie } from "./cookies";
 import { Octokit } from "@octokit/rest";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
-import { OpenShiftSettingsConfig, readOpenShiftConfigCookie } from "../openshift/OpenShiftSettingsConfig";
+import { OpenShiftSettingsConfig, readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
 import { OpenShiftService } from "../openshift/OpenShiftService";
 import { useHistory } from "react-router";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { QueryParams } from "../navigation/Routes";
-
-export const KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--host";
-export const KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--port";
-const GITHUB_AUTH_TOKEN_COOKIE_NAME = "kie-tools-COOKIE__github-oauth--token";
-const GUIDED_TOUR_ENABLED_COOKIE_NAME = "kie-tools-COOKIE__guided-tour--is-enabled";
-export const OPENSHIFT_NAMESPACE_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-namespace";
-export const OPENSHIFT_HOST_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-host";
-export const OPENSHIFT_TOKEN_COOKIE_NAME = "kie-tools-COOKIE__dmn-dev-sandbox--connection-token";
+import { GITHUB_AUTH_TOKEN_COOKIE_NAME } from "./github/GitHubSettingsTab";
+import { KafkaSettingsConfig, readKafkaConfigCookie } from "./kafka/KafkaSettingsConfig";
 
 export enum AuthStatus {
   SIGNED_OUT,
@@ -53,17 +47,6 @@ interface GithubUser {
   email: string;
 }
 
-export class ExtendedServicesConfig {
-  constructor(public readonly host: string, public readonly port: string) {}
-
-  public buildUrl(): string {
-    if (this.port.trim().length === 0) {
-      return this.host;
-    }
-    return `${this.host}:${this.port}`;
-  }
-}
-
 export interface SettingsContextType {
   isOpen: boolean;
   activeTab: SettingsTabs;
@@ -76,6 +59,9 @@ export interface SettingsContextType {
     user?: GithubUser;
     scopes?: string[];
     authStatus: AuthStatus;
+  };
+  apacheKafka: {
+    config: KafkaSettingsConfig;
   };
 }
 
@@ -91,10 +77,8 @@ export interface SettingsDispatchContextType {
     authService: { reset: () => void; authenticate: (token: string) => Promise<void> };
     octokit: Octokit;
   };
-  general: {
-    guidedTour: {
-      setEnabled: React.Dispatch<React.SetStateAction<boolean>>;
-    };
+  apacheKafka: {
+    setConfig: React.Dispatch<React.SetStateAction<KafkaSettingsConfig>>;
   };
 }
 
@@ -185,15 +169,6 @@ export function SettingsContextProvider(props: any) {
     });
   }, [githubAuthService]);
 
-  //guided tour
-  const [isGuidedTourEnabled, setGuidedTourEnabled] = useState(
-    getBooleanCookieInitialValue(GUIDED_TOUR_ENABLED_COOKIE_NAME, true)
-  );
-
-  useEffect(() => {
-    setCookie(GUIDED_TOUR_ENABLED_COOKIE_NAME, `${isGuidedTourEnabled}`);
-  }, [isGuidedTourEnabled]);
-
   //openshift
   const openshiftService = useMemo(() => new OpenShiftService(), []);
   const [openshiftConfig, setOpenShiftConfig] = useState(readOpenShiftConfigCookie());
@@ -204,6 +179,9 @@ export function SettingsContextProvider(props: any) {
       setOpenshiftStatus(status ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.DISCONNECTED);
     });
   });
+
+  // apache kafka
+  const [kafkaConfig, setKafkaConfig] = useState<KafkaSettingsConfig>(readKafkaConfigCookie());
 
   const dispatch = useMemo(() => {
     return {
@@ -218,10 +196,8 @@ export function SettingsContextProvider(props: any) {
         authService: githubAuthService,
         octokit: githubOctokit,
       },
-      general: {
-        guidedTour: {
-          setEnabled: setGuidedTourEnabled,
-        },
+      apacheKafka: {
+        setConfig: setKafkaConfig,
       },
     };
   }, [close, githubAuthService, githubOctokit, open, openshiftService]);
@@ -240,10 +216,8 @@ export function SettingsContextProvider(props: any) {
         user: githubUser,
         scopes: githubScopes,
       },
-      general: {
-        guidedTour: {
-          isEnabled: isGuidedTourEnabled,
-        },
+      apacheKafka: {
+        config: kafkaConfig,
       },
     };
   }, [
@@ -252,7 +226,7 @@ export function SettingsContextProvider(props: any) {
     githubScopes,
     githubToken,
     githubUser,
-    isGuidedTourEnabled,
+    kafkaConfig,
     isOpen,
     openshiftConfig,
     openshiftStatus,

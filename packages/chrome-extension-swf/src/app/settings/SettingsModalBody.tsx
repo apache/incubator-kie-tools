@@ -16,9 +16,10 @@
 
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import * as React from "react";
-import { GitHubSettingsTab } from "./GitHubSettingsTab";
+import { GitHubSettingsTab } from "./github/GitHubSettingsTab";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
-import { OpenShiftSettingsTab } from "./OpenShiftSettingsTab";
+import { OpenShiftSettingsTab } from "./openshift/OpenShiftSettingsTab";
+import { ApacheKafkaSettingsTab } from "./kafka/ApacheKafkaSettingsTab";
 export enum SettingsTabs {
   GITHUB = "github",
   OPENSHIFT = "openshift",
@@ -55,7 +56,7 @@ export function SettingsModalBody() {
         eventKey={SettingsTabs.KAFKA}
         title={<TabTitleText>Apache Kafka</TabTitleText>}
       >
-        <OpenShiftSettingsTab />
+        <ApacheKafkaSettingsTab />
       </Tab>
     </Tabs>
   );

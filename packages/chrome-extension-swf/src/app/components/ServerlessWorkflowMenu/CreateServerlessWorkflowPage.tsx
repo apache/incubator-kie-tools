@@ -14,32 +14,24 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
-import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
-import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useChromeExtensionI18n } from "../../i18n";
-import { KafkaSettingsConfig } from "../../kafka/KafkaSettingsConfig";
 import { SW_JSON_EXTENSION, useOpenShift } from "../../openshift/OpenShiftContext";
-import { isConfigValid, OpenShiftSettingsConfig } from "../../openshift/OpenShiftSettingsConfig";
+import { isConfigValid } from "../../settings/openshift/OpenShiftSettingsConfig";
 import { useGlobals } from "../common/GlobalContext";
 import { LoadingSpinner } from "../common/LoadingSpinner";
-
-interface CreateServerlessWorkflowModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  openShiftConfig: OpenShiftSettingsConfig;
-  kafkaConfig?: KafkaSettingsConfig;
-}
+import { useSettings } from "../../settings/SettingsContext";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -50,9 +42,10 @@ enum FormValiationOptions {
 const DEFAULT_NAME = "Untitled";
 const DEFAULT_FILENAME = `${DEFAULT_NAME}.${SW_JSON_EXTENSION}`;
 
-export function CreateServerlessWorkflowModal(props: CreateServerlessWorkflowModalProps) {
+export function CreateServerlessWorkflowPage() {
   const globals = useGlobals();
   const openshift = useOpenShift();
+  const settings = useSettings();
   const { locale } = useChromeExtensionI18n();
   const { editor, editorRef } = useEditorRef();
   const [workflowName, setWorkflowName] = useState(DEFAULT_NAME);
@@ -73,11 +66,6 @@ export function CreateServerlessWorkflowModal(props: CreateServerlessWorkflowMod
     };
   }, []);
 
-  const close = useCallback(() => {
-    setDeployStatus(FormValiationOptions.INITIAL);
-    props.onClose();
-  }, [props]);
-
   const onDeploy = useCallback(async () => {
     setDeployStatus(FormValiationOptions.INITIAL);
 
@@ -90,17 +78,17 @@ export function CreateServerlessWorkflowModal(props: CreateServerlessWorkflowMod
 
     setLoading(true);
     const success = await openshift.deploy({
-      openShiftConfig: props.openShiftConfig,
+      openShiftConfig: settings.openshift.config,
       workflow: {
         name: fileName,
         content: content,
       },
-      kafkaConfig: props.kafkaConfig,
+      kafkaConfig: settings.apacheKafka.config,
     });
     setLoading(false);
 
     setDeployStatus(success ? FormValiationOptions.SUCCESS : FormValiationOptions.ERROR);
-  }, [editor, openshift, props.openShiftConfig, props.kafkaConfig, fileName]);
+  }, [editor, openshift, settings.openshift.config, settings.apacheKafka.config, fileName]);
 
   const onClearWorkflowName = useCallback(() => setWorkflowName(""), []);
 
@@ -109,26 +97,8 @@ export function CreateServerlessWorkflowModal(props: CreateServerlessWorkflowMod
   }, []);
 
   return (
-    <Modal
-      width={"75%"}
-      showClose={true}
-      variant={ModalVariant.large}
-      title={"Serverless Workflow"}
-      isOpen={props.isOpen}
-      onClose={close}
-      actions={[
-        <Button
-          isDisabled={!isConfigValid(props.openShiftConfig) || workflowName.trim().length === 0}
-          key="deploy"
-          variant="primary"
-          onClick={onDeploy}
-          isLoading={isLoading}
-          spinnerAriaValueText={isLoading ? "Loading" : undefined}
-        >
-          {isLoading ? "Deploying" : "Deploy"}
-        </Button>,
-      ]}
-    >
+    <div>
+      <h1>Serverless Workflow</h1>
       {deployStatus === FormValiationOptions.ERROR && (
         <Alert
           className="pf-u-mb-md"
@@ -202,7 +172,17 @@ export function CreateServerlessWorkflowModal(props: CreateServerlessWorkflowMod
             />
           </div>
         </div>
+        <Button
+          isDisabled={!isConfigValid(settings.openshift.config) || workflowName.trim().length === 0}
+          key="deploy"
+          variant="primary"
+          onClick={onDeploy}
+          isLoading={isLoading}
+          spinnerAriaValueText={isLoading ? "Loading" : undefined}
+        >
+          {isLoading ? "Deploying" : "Deploy"}
+        </Button>
       </div>
-    </Modal>
+    </div>
   );
 }

@@ -19,10 +19,12 @@ import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-compon
 import * as React from "react";
 import { Logger } from "../../../Logger";
 import { Dependencies } from "../../Dependencies";
-import { ChromeExtensionI18nContext, chromeExtensionI18nDefaults, chromeExtensionI18nDictionaries } from "../../i18n";
 import { OpenShiftProvider } from "../../openshift/OpenShiftProvider";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
 import { GlobalContext, ImageUris } from "./GlobalContext";
+import { ChromeExtensionI18nContextProvider } from "../../i18n";
+import { SettingsContextProvider } from "../../settings/SettingsContext";
+import { MemoryRouter } from "react-router-dom";
 export interface Globals {
   id: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
@@ -34,24 +36,23 @@ export interface Globals {
 
 export const Main: React.FunctionComponent<Globals> = (props) => {
   return (
-    <I18nDictionariesProvider
-      defaults={chromeExtensionI18nDefaults}
-      dictionaries={chromeExtensionI18nDictionaries}
-      initialLocale={navigator.language}
-      ctx={ChromeExtensionI18nContext}
-    >
-      <GlobalContext.Provider
-        value={{
-          id: props.id,
-          logger: props.logger,
-          dependencies: props.dependencies,
-          envelopeLocator: props.editorEnvelopeLocator,
-          imageUris: props.imageUris,
-          resourceContentServiceFactory: props.resourceContentServiceFactory,
-        }}
-      >
-        <OpenShiftProvider>{props.children}</OpenShiftProvider>
-      </GlobalContext.Provider>
-    </I18nDictionariesProvider>
+    <ChromeExtensionI18nContextProvider>
+      <MemoryRouter>
+        <SettingsContextProvider>
+          <GlobalContext.Provider
+            value={{
+              id: props.id,
+              logger: props.logger,
+              dependencies: props.dependencies,
+              envelopeLocator: props.editorEnvelopeLocator,
+              imageUris: props.imageUris,
+              resourceContentServiceFactory: props.resourceContentServiceFactory,
+            }}
+          >
+            <OpenShiftProvider>{props.children}</OpenShiftProvider>
+          </GlobalContext.Provider>
+        </SettingsContextProvider>
+      </MemoryRouter>
+    </ChromeExtensionI18nContextProvider>
   );
 };

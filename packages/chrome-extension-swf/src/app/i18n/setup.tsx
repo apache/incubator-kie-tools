@@ -15,11 +15,7 @@
  */
 
 import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
-import {
-  I18nContextType,
-  I18nDictionariesProvider,
-  I18nDictionariesProviderProps,
-} from "@kie-tools-core/i18n/dist/react-components";
+import { I18nContextType, I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
 import { useContext } from "react";
 import { ChromeExtensionI18n } from "./ChromeExtensionI18n";

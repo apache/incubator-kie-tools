@@ -15,29 +15,21 @@
  */
 
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { useSettings, useSettingsDispatch } from "./SettingsContext";
-import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
+import { useSettings, useSettingsDispatch } from "../SettingsContext";
+import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { OpenShiftSettingsTabSimpleConfig } from "./OpenShiftSettingsTabSimpleConfig";
-import { obfuscate } from "./GitHubSettingsTab";
-import { OpenShiftSettingsConfig, saveConfigCookie } from "../openshift/OpenShiftSettingsConfig";
-import { OpenShiftSettingsTabWizardConfig } from "./OpenShiftSettingsTabWizardConfig";
-
-export enum OpenShiftSettingsTabMode {
-  SIMPLE,
-  WIZARD,
-}
+import { obfuscate } from "../github/GitHubSettingsTab";
+import { OpenShiftSettingsConfig, saveConfigCookie } from "./OpenShiftSettingsConfig";
 
 export function OpenShiftSettingsTab() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
-
-  const [mode, setMode] = useState(OpenShiftSettingsTabMode.SIMPLE);
 
   const onDisconnect = useCallback(() => {
     settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.DISCONNECTED);
@@ -85,12 +77,7 @@ export function OpenShiftSettingsTab() {
           </EmptyState>
         )}
         {(settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED ||
-          settings.openshift.status === OpenShiftInstanceStatus.EXPIRED) && (
-          <>
-            {mode === OpenShiftSettingsTabMode.SIMPLE && <OpenShiftSettingsTabSimpleConfig setMode={setMode} />}
-            {mode === OpenShiftSettingsTabMode.WIZARD && <OpenShiftSettingsTabWizardConfig setMode={setMode} />}
-          </>
-        )}
+          settings.openshift.status === OpenShiftInstanceStatus.EXPIRED) && <OpenShiftSettingsTabSimpleConfig />}
       </PageSection>
     </Page>
   );
