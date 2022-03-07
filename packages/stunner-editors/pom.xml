@@ -244,7 +244,7 @@
     <version.resources.plugin>3.1.0</version.resources.plugin>
     <version.shade.plugin>3.2.1</version.shade.plugin>
     <version.source.plugin>3.0.1</version.source.plugin>
-    <version.surefire.plugin>2.22.0</version.surefire.plugin>
+    <version.surefire.plugin>2.22.1</version.surefire.plugin>
     <version.war.plugin>3.2.2</version.war.plugin>
 
     <!-- KIE Libraries -->
@@ -1593,6 +1593,7 @@
                 <include>**/*Test.java</include>
                 <include>**/*Tests.java</include>
               </includes>
+              <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
             </configuration>
             <executions>
               <execution>
