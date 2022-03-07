@@ -18,7 +18,7 @@ import { render } from "@testing-library/react";
 import * as React from "react";
 import { getCellCoordinates, getCellTableId } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
 import { TableInstance } from "react-table";
-import { getHeaderRowsLenght } from "../../../../src/components/Table/common";
+import { getCellByIndex, getHeaderRowsLenght } from "../../../../src/components/Table/common";
 
 describe("TableUtils", () => {
   describe("getCellCoordinates", () => {
@@ -127,6 +127,61 @@ describe("TableUtils", () => {
       const tableInstance = {} as TableInstance;
 
       expect(getHeaderRowsLenght(tableInstance, false)).toEqual(0);
+    });
+  });
+
+  describe("getCellByIndex", () => {
+    let container: Element;
+    let table: HTMLTableElement;
+
+    beforeEach(() => {
+      container = render(
+        <>
+          <table>
+            <tbody>
+              <tr>
+                <td>A</td>
+                <td>B</td>
+                <td>C</td>
+              </tr>
+              <tr>
+                <td colSpan={2}>D</td>
+                <td>E</td>
+              </tr>
+            </tbody>
+          </table>
+        </>
+      ).container;
+
+      table = container.querySelector("table") || document.createElement("table");
+    });
+
+    test("get cell A", () => {
+      expect(getCellByIndex(table, 0, 0)?.innerHTML).toBe("A");
+    });
+
+    test("get cell C", () => {
+      expect(getCellByIndex(table, 0, 2)?.innerHTML).toBe("C");
+    });
+
+    test("get cell D", () => {
+      expect(getCellByIndex(table, 1, 1)?.innerHTML).toBe("D");
+    });
+
+    test("get cell E", () => {
+      expect(getCellByIndex(table, 1, 2)?.innerHTML).toBe("E");
+    });
+
+    test("empty table", () => {
+      expect(getCellByIndex(document.createElement("table"), 100, 2)).toBeNull();
+    });
+
+    test("row out of range", () => {
+      expect(getCellByIndex(table, 100, 2)).toBeNull();
+    });
+
+    test("cell out of range", () => {
+      expect(getCellByIndex(table, 1, 200)).toBeNull();
     });
   });
 });

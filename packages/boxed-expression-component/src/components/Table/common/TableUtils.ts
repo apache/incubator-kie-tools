@@ -65,3 +65,43 @@ export const getHeaderRowsLenght = (tableInstance: TableInstance, skipLastHeader
   }
   return skipLastHeaderGroup ? tableInstance.headerGroups.length - 1 : tableInstance.headerGroups.length;
 };
+
+/**
+ * Get a cell by coordinates counting the colspans too
+ *
+ * @param table the table
+ * @param rowIndex the row index. Header rows are counted.
+ * @param cellIndex the cell index, colspan included
+ * @returns the table cell, null otherwise
+ */
+export const getCellByIndex = (
+  table: HTMLTableElement,
+  rowIndex: number,
+  cellIndex: number
+): HTMLTableCellElement | null => {
+  if (!table || table.rows.length <= rowIndex) {
+    return null;
+  }
+
+  const row = table.rows[rowIndex];
+
+  if (!row) {
+    return null;
+  }
+
+  let ci = 0,
+    currentCell = null,
+    nextCell = row.cells[0];
+
+  for (let colspan = 1; nextCell && ci <= cellIndex; ci += colspan) {
+    currentCell = nextCell;
+    colspan = parseInt(currentCell.getAttribute("colspan") ?? "1");
+    nextCell = currentCell.nextElementSibling as HTMLTableCellElement;
+  }
+
+  if (ci < cellIndex) {
+    return null;
+  }
+
+  return currentCell;
+};
