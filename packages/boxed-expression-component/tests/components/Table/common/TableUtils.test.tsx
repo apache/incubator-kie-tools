@@ -16,9 +16,14 @@
 
 import { render } from "@testing-library/react";
 import * as React from "react";
-import { getCellCoordinates, getCellTableId } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
+import {
+  getCellCoordinates,
+  getCellTableId,
+  getCellByCoordinates,
+  getHeaderRowsLenght,
+  hasCellTabindex,
+} from "@kie-tools/boxed-expression-component/dist/components/Table/common";
 import { TableInstance } from "react-table";
-import { getCellByIndex, getHeaderRowsLenght, hasCellTabindex } from "../../../../src/components/Table/common";
 
 describe("TableUtils", () => {
   describe("getCellCoordinates", () => {
@@ -40,6 +45,12 @@ describe("TableUtils", () => {
                 <td className="data-cell">D</td>
                 <td className="data-cell">E</td>
                 <td className="data-cell">F</td>
+              </tr>
+              <tr>
+                <td className="data-cell" colSpan={2}>
+                  G
+                </td>
+                <td className="data-cell">H</td>
               </tr>
             </tbody>
           </table>
@@ -74,6 +85,14 @@ describe("TableUtils", () => {
       expect(getCellCoordinates(cells[5])).toEqual({
         x: 2,
         y: 1,
+      });
+      expect(getCellCoordinates(cells[6])).toEqual({
+        x: 0,
+        y: 2,
+      });
+      expect(getCellCoordinates(cells[7])).toEqual({
+        x: 2,
+        y: 2,
       });
       expect(getCellCoordinates(null)).toEqual({
         x: 0,
@@ -130,7 +149,7 @@ describe("TableUtils", () => {
     });
   });
 
-  describe("getCellByIndex", () => {
+  describe("getCellByCoordinates", () => {
     let container: Element;
     let table: HTMLTableElement;
 
@@ -157,31 +176,31 @@ describe("TableUtils", () => {
     });
 
     test("get cell A", () => {
-      expect(getCellByIndex(table, 0, 0)?.innerHTML).toBe("A");
+      expect(getCellByCoordinates(table, 0, 0)?.innerHTML).toBe("A");
     });
 
     test("get cell C", () => {
-      expect(getCellByIndex(table, 0, 2)?.innerHTML).toBe("C");
+      expect(getCellByCoordinates(table, 0, 2)?.innerHTML).toBe("C");
     });
 
     test("get cell D", () => {
-      expect(getCellByIndex(table, 1, 1)?.innerHTML).toBe("D");
+      expect(getCellByCoordinates(table, 1, 1)?.innerHTML).toBe("D");
     });
 
     test("get cell E", () => {
-      expect(getCellByIndex(table, 1, 2)?.innerHTML).toBe("E");
+      expect(getCellByCoordinates(table, 1, 2)?.innerHTML).toBe("E");
     });
 
     test("empty table", () => {
-      expect(getCellByIndex(document.createElement("table"), 100, 2)).toBeNull();
+      expect(getCellByCoordinates(document.createElement("table"), 100, 2)).toBeNull();
     });
 
     test("row out of range", () => {
-      expect(getCellByIndex(table, 100, 2)).toBeNull();
+      expect(getCellByCoordinates(table, 100, 2)).toBeNull();
     });
 
     test("cell out of range", () => {
-      expect(getCellByIndex(table, 1, 200)).toBeNull();
+      expect(getCellByCoordinates(table, 1, 200)).toBeNull();
     });
   });
 
@@ -213,15 +232,15 @@ describe("TableUtils", () => {
       expect(hasCellTabindex()).toBe(false);
     });
 
-    test("test cellA", () => {
+    test("test cell A", () => {
       expect(hasCellTabindex(document.querySelector("#cellA")!)).toBe(false);
     });
 
-    test("test cellB", () => {
+    test("test cell B", () => {
       expect(hasCellTabindex(document.querySelector("#cellB")!)).toBe(true);
     });
 
-    test("test cellC", () => {
+    test("test cell C", () => {
       expect(hasCellTabindex(document.querySelector("#cellC")!)).toBe(true);
     });
   });

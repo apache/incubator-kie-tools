@@ -33,11 +33,14 @@ export const getCellCoordinates: (cell: Element | undefined | null) => { x: numb
   for (let y = 0; y < rows.length; y++) {
     const row = rows[y];
     const cols = row.querySelectorAll(".data-cell");
+    let colspansSum = 0;
 
     for (let x = 0; x < cols.length; x++) {
       if (cell === cols[x]) {
-        return { x, y };
+        return { x: x + colspansSum, y };
       }
+
+      colspansSum += parseInt(cols[x].getAttribute("colspan") || "1") - 1;
     }
   }
 
@@ -74,16 +77,12 @@ export const getHeaderRowsLenght = (tableInstance: TableInstance, skipLastHeader
  * @param cellIndex the cell index, colspan included
  * @returns the table cell, null otherwise
  */
-export const getCellByIndex = (
-  table: HTMLTableElement,
-  rowIndex: number,
-  cellIndex: number
-): HTMLTableCellElement | null => {
-  if (!table || table.rows.length <= rowIndex) {
+export const getCellByCoordinates = (table: HTMLTableElement, y: number, x: number): HTMLTableCellElement | null => {
+  if (!table || table.rows.length <= y) {
     return null;
   }
 
-  const row = table.rows[rowIndex];
+  const row = table.rows[y];
 
   if (!row) {
     return null;
@@ -93,13 +92,13 @@ export const getCellByIndex = (
     currentCell = null,
     nextCell = row.cells[0];
 
-  for (let colspan = 1; nextCell && ci <= cellIndex; ci += colspan) {
+  for (let colspan = 1; nextCell && ci <= x; ci += colspan) {
     currentCell = nextCell;
     colspan = parseInt(currentCell.getAttribute("colspan") ?? "1");
     nextCell = currentCell.nextElementSibling as HTMLTableCellElement;
   }
 
-  if (ci < cellIndex) {
+  if (ci < x) {
     return null;
   }
 
