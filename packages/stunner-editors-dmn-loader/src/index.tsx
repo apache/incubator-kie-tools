@@ -37,8 +37,9 @@ import {
   JavaCodeCompletionService,
 } from "@kie-tools/import-java-classes-component";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import * as ReactDOM from "react-dom";
+import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
 
 export interface BoxedExpressionEditorWrapperProps {
   /** Identifier of the decision node, where the expression will be hold */
@@ -123,6 +124,11 @@ const BoxedExpressionWrapper: React.FunctionComponent<BoxedExpressionEditorWrapp
       window.beeApiWrapper?.broadcastDecisionTableExpressionDefinition?.(definition);
     },
   };
+
+  useElementsThatStopKeyboardEventsPropagation(
+    window,
+    useMemo(() => [".boxed-expression-provider"], [])
+  );
 
   return (
     <BoxedExpressionEditor

@@ -18,4 +18,4 @@ import "@patternfly/react-core/dist/styles/base.css";
 
 export * from "./ServerlessWorkflowEditor";
 export * from "./ServerlessWorkflowEditorFactory";
-export * from "./ServerlessWorkflowEditorInterface";
+export * from "./ServerlessWorkflowEditorView";

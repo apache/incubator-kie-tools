@@ -15,6 +15,7 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useBoxedExpression } from "../context";
 
 export function useContextMenuHandler(domEventTarget: HTMLDivElement | Document = document): {
   contextMenuRef: React.RefObject<HTMLDivElement>;
@@ -24,6 +25,7 @@ export function useContextMenuHandler(domEventTarget: HTMLDivElement | Document 
   setContextMenuVisibility: (value: ((prevState: boolean) => boolean) | boolean) => void;
   targetElement?: EventTarget;
 } {
+  const { setIsContextMenuOpen } = useBoxedExpression();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const [xPos, setXPos] = useState("0px");
@@ -32,8 +34,12 @@ export function useContextMenuHandler(domEventTarget: HTMLDivElement | Document 
   const eventTarget = useRef<EventTarget>();
 
   const hideContextMenu = useCallback(() => {
-    contextMenuVisible && setContextMenuVisible(false);
-  }, [contextMenuVisible]);
+    if (!contextMenuVisible) {
+      return;
+    }
+    setContextMenuVisible(false);
+    setIsContextMenuOpen(false);
+  }, [contextMenuVisible, setIsContextMenuOpen]);
 
   const showContextMenu = useCallback(
     (event: MouseEvent) => {
@@ -43,9 +49,10 @@ export function useContextMenuHandler(domEventTarget: HTMLDivElement | Document 
         setXPos(`${event.pageX}px`);
         setYPos(`${event.pageY}px`);
         setContextMenuVisible(true);
+        setIsContextMenuOpen(true);
       }
     },
-    [setXPos, setYPos]
+    [setXPos, setYPos, setIsContextMenuOpen]
   );
 
   useEffect(() => {

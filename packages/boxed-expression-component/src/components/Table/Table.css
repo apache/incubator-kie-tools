@@ -94,6 +94,17 @@
   border: 1px solid var(--pf-global--palette--black-300);
 }
 
+.expression-container .table-component table tbody td:focus {
+  border: 2px solid #438cb1;
+  outline: none !important;
+  margin: -1px -1px;
+  z-index: 1;
+}
+.expression-container .table-component table tbody td.empty-cell:focus,
+.expression-container .table-component table tbody td.counter-cell:focus {
+  margin: 0;
+}
+
 /** Table Body rules */
 
 .expression-container .table-component table tr {
