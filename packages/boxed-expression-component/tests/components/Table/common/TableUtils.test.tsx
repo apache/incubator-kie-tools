@@ -18,7 +18,7 @@ import { render } from "@testing-library/react";
 import * as React from "react";
 import { getCellCoordinates, getCellTableId } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
 import { TableInstance } from "react-table";
-import { getCellByIndex, getHeaderRowsLenght } from "../../../../src/components/Table/common";
+import { getCellByIndex, getHeaderRowsLenght, hasCellTabindex } from "../../../../src/components/Table/common";
 
 describe("TableUtils", () => {
   describe("getCellCoordinates", () => {
@@ -182,6 +182,47 @@ describe("TableUtils", () => {
 
     test("cell out of range", () => {
       expect(getCellByIndex(table, 1, 200)).toBeNull();
+    });
+  });
+
+  describe("hasCellTabindex", () => {
+    let container: Element;
+
+    beforeEach(() => {
+      container = render(
+        <>
+          <table>
+            <tbody>
+              <tr>
+                <td id="cellA">A</td>
+                <td id="cellB" tabIndex={-1}>
+                  B
+                </td>
+                <td id="cellC" tabIndex={0}>
+                  C
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </>
+      ).container;
+    });
+
+    test("wrong input", () => {
+      //@ts-ignore
+      expect(hasCellTabindex()).toBe(false);
+    });
+
+    test("test cellA", () => {
+      expect(hasCellTabindex(document.querySelector("#cellA")!)).toBe(false);
+    });
+
+    test("test cellB", () => {
+      expect(hasCellTabindex(document.querySelector("#cellB")!)).toBe(true);
+    });
+
+    test("test cellC", () => {
+      expect(hasCellTabindex(document.querySelector("#cellC")!)).toBe(true);
     });
   });
 });

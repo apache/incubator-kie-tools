@@ -105,3 +105,16 @@ export const getCellByIndex = (
 
   return currentCell;
 };
+
+/**
+ * Check if a cell has tabindex set.
+ *
+ * @param cell the cell to check
+ * @returns true if yes, false otherwise
+ */
+export const hasCellTabindex = (cell: HTMLTableCellElement): boolean => {
+  if (!cell) {
+    return false;
+  }
+  return cell.hasAttribute("tabindex");
+};
