@@ -21,15 +21,12 @@ export const KAFKA_BOOTSTRAP_SERVER_COOKIE_NAME =
 export const KAFKA_CLIENT_ID_COOKIE_NAME = "KIE-TOOLS-COOKIE__serverless-workflow-chrome-extension--kafka-client-id";
 export const KAFKA_CLIENT_SECRET_COOKIE_NAME =
   "KIE-TOOLS-COOKIE__serverless-workflow-chrome-extension--kafka-client-secret";
-export const KAFKA_OAUTH_ENDPOINT_URI_COOKIE_NAME =
-  "KIE-TOOLS-COOKIE__serverless-workflow-chrome-extension--kafka-oauth-endpoint-uri";
 export const KAFKA_TOPIC_COOKIE_NAME = "KIE-TOOLS-COOKIE__serverless-workflow-chrome-extension--kafka-topic";
 
 export interface KafkaSettingsConfig {
   bootstrapServer: string;
   clientId: string;
   clientSecret: string;
-  oauthEndpointUri: string;
   topic: string;
 }
 
@@ -37,7 +34,6 @@ export const EMPTY_CONFIG: KafkaSettingsConfig = {
   bootstrapServer: "",
   clientId: "",
   clientSecret: "",
-  oauthEndpointUri: "",
   topic: "",
 };
 
@@ -46,7 +42,6 @@ export function isKafkaConfigValid(config: KafkaSettingsConfig): boolean {
     isBootstrapServerValid(config.bootstrapServer) &&
     isClientIdValid(config.clientId) &&
     isClientSecretValid(config.clientSecret) &&
-    isOAuthEndpointUriValid(config.oauthEndpointUri) &&
     isTopicValid(config.topic)
   );
 }
@@ -76,7 +71,6 @@ export function readKafkaConfigCookie(): KafkaSettingsConfig {
     bootstrapServer: getCookie(KAFKA_BOOTSTRAP_SERVER_COOKIE_NAME) ?? "",
     clientId: getCookie(KAFKA_CLIENT_ID_COOKIE_NAME) ?? "",
     clientSecret: getCookie(KAFKA_CLIENT_SECRET_COOKIE_NAME) ?? "",
-    oauthEndpointUri: getCookie(KAFKA_OAUTH_ENDPOINT_URI_COOKIE_NAME) ?? "",
     topic: getCookie(KAFKA_TOPIC_COOKIE_NAME) ?? "",
   };
 }
@@ -97,10 +91,6 @@ export function saveClientSecretCookie(clientSecret: string): void {
   setCookie(KAFKA_CLIENT_SECRET_COOKIE_NAME, clientSecret);
 }
 
-export function saveOAuthEndpointUriCookie(oauthEndpointUri: string): void {
-  setCookie(KAFKA_OAUTH_ENDPOINT_URI_COOKIE_NAME, oauthEndpointUri);
-}
-
 export function saveTopicCookie(topic: string): void {
   setCookie(KAFKA_TOPIC_COOKIE_NAME, topic);
 }
@@ -109,6 +99,5 @@ export function saveConfigCookie(config: KafkaSettingsConfig): void {
   saveBootstrapServerCookie(config.bootstrapServer);
   saveClientIdCookie(config.clientId);
   saveClientSecretCookie(config.clientSecret);
-  saveOAuthEndpointUriCookie(config.oauthEndpointUri);
   saveTopicCookie(config.topic);
 }
