@@ -534,7 +534,13 @@ describe("FocusUtils tests", () => {
     });
   });
 
-  describe.skip("focusTextArea tests", () => {
+  describe("focusTextArea tests", () => {
+    let elementToBeFocused: HTMLTextAreaElement;
+
+    beforeEach(() => {
+      elementToBeFocused = render(<textarea>TextArea Value</textarea>).container.children[0] as HTMLTextAreaElement;
+    });
+
     it("should fail", () => {
       // @ts-ignore
       expect(() => focusTextArea()).not.toThrowError();
@@ -542,17 +548,11 @@ describe("FocusUtils tests", () => {
     });
 
     it("should focus the textarea without erasing content", () => {
-      const elementToBeFocused = document.createElement("textarea");
-
-      elementToBeFocused.innerHTML = "TextArea Value";
       shouldKeepFocus(elementToBeFocused, (element) => focusTextArea(element as HTMLTextAreaElement));
       expect(elementToBeFocused.value).toBe("TextArea Value");
     });
 
     it("should focus the textarea without content", () => {
-      const elementToBeFocused = document.createElement("textarea");
-
-      elementToBeFocused.value = "TextArea Value";
       shouldKeepFocus(elementToBeFocused, (element) => focusTextArea(element as HTMLTextAreaElement, true));
       expect(elementToBeFocused.value).toBe("");
     });
