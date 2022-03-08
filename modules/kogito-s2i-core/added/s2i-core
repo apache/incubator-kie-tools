@@ -277,7 +277,7 @@ function get_quarkus_version() {
             -Dexpression=version.io.quarkus \
             -DforceStdout)
 
-        if [[ ! "$ver" =~ [0-9]{0,2}\.[0-9]{0,3} ]]; then
+        if [[ ! "$ver" =~ ^[0-9]{0,2}\.[0-9]{0,3}\.[0-9]{0,2} ]]; then
             log_error "----> Impossible to get Quarkus version from the generated Maven project (output: '$ver'), failing build"
             exit 1
         fi

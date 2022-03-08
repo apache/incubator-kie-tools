@@ -9,4 +9,4 @@ Please make sure your PR meets the following requirements:
 - [ ] Pull Request does not include fixes for issues other than the main ticket
 - [ ] Your feature/bug fix has a testcase that verifies it
 - [ ] You've tested the new feature/bug fix in an actual OpenShift cluster
-  [ ] You've added a [RELEASE_NOTES.md](RELEASE_NOTES.md) entry regarding this change
+- [ ] You've added a [RELEASE_NOTES.md](RELEASE_NOTES.md) entry regarding this change
