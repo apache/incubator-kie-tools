@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-import { ServiceCatalogChannelApi, Service } from "../api";
-import { ServiceCatalogRegistry } from "./ServiceCatalogRegistry";
+import { SwfServiceCatalogChannelApi, SwfService } from "../api";
+import { SwfServiceCatalogRegistry } from "./SwfServiceCatalogRegistry";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 
-export class ServiceCatalogChannelApiImpl implements ServiceCatalogChannelApi {
+export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
   constructor(
-    private readonly envelopeServer: EnvelopeServer<ServiceCatalogChannelApi, KogitoEditorEnvelopeApi>,
-    private readonly registry: ServiceCatalogRegistry
+    private readonly envelopeServer: EnvelopeServer<SwfServiceCatalogChannelApi, KogitoEditorEnvelopeApi>,
+    private readonly registry: SwfServiceCatalogRegistry
   ) {
-    this.registry.init((services) => this.loadServices(services));
-    this.registry.load();
+    this.registry.init((services) => this.envelopeServer.shared.kogitoSwfServiceCatalog_services.set(services));
+    this.registry.loadServices();
   }
 
-  private loadServices(services: Service[] = []) {
-    this.envelopeServer.shared.kogitoServiceCatalog_services.set(services);
-  }
-
-  public kogitoServiceCatalog_services(): SharedValueProvider<Service[]> {
+  public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfService[]> {
     return {
       defaultValue: [],
     };

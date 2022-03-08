@@ -15,12 +15,12 @@
  */
 
 import * as __path from "path";
-import { ServiceCatalogRegistry } from "@kie-tools/service-catalog/dist/channel";
+import { SwfServiceCatalogRegistry } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import { FileSystemServiceCatalogRegistry } from "./fs";
 
 const FILE_DIRNAME = "${fileDirname}";
 
-export function lookupCatalogRegistry(args: { filePath: string; specsStoragePath: string }): ServiceCatalogRegistry {
+export function lookupCatalogRegistry(args: { filePath: string; specsStoragePath: string }): SwfServiceCatalogRegistry {
   const parentDir = __path.parse(args.filePath).dir;
 
   const storagePath = args.specsStoragePath.replace(FILE_DIRNAME, parentDir);

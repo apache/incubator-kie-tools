@@ -16,13 +16,13 @@
 
 import * as vscode from "vscode";
 import { Disposable, FileType } from "vscode";
-import { parseOpenAPI, ServiceCatalogRegistry } from "@kie-tools/service-catalog/dist/channel";
-import { Service } from "@kie-tools/service-catalog/dist/api";
+import { parseOpenAPI, SwfServiceCatalogRegistry } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
+import { SwfService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 const OPENAPI_EXTENSIONS_REGEX = new RegExp("^.*\\.(yaml|yml|json)$");
 
-export class FileSystemServiceCatalogRegistry implements ServiceCatalogRegistry {
-  private registryConsumer: (services: Service[]) => void;
+export class FileSystemServiceCatalogRegistry implements SwfServiceCatalogRegistry {
+  private onChangeCallback: (services: SwfService[]) => void;
   private readonly onDispose: () => void;
 
   constructor(private readonly specsFolder: string, private readonly fullSpecsStoragePath: string) {
@@ -32,9 +32,9 @@ export class FileSystemServiceCatalogRegistry implements ServiceCatalogRegistry 
       false,
       false
     );
-    const onDidCreate: Disposable = fsWatcher.onDidCreate((e) => this.load());
-    const onDidChange: Disposable = fsWatcher.onDidChange((e) => this.load());
-    const onDidDelete: Disposable = fsWatcher.onDidDelete((e) => this.load());
+    const onDidCreate: Disposable = fsWatcher.onDidCreate((e) => this.loadServices());
+    const onDidChange: Disposable = fsWatcher.onDidChange((e) => this.loadServices());
+    const onDidDelete: Disposable = fsWatcher.onDidDelete((e) => this.loadServices());
 
     this.onDispose = () => {
       onDidCreate.dispose();
@@ -44,12 +44,12 @@ export class FileSystemServiceCatalogRegistry implements ServiceCatalogRegistry 
     };
   }
 
-  public init(registryConsumer: (services: Service[]) => void): void {
-    this.registryConsumer = registryConsumer;
+  public init(registryConsumer: (services: SwfService[]) => void): void {
+    this.onChangeCallback = registryConsumer;
   }
 
-  public load() {
-    this.readServices()
+  public loadServices() {
+    this.readFileSystemServices()
       .then((services) => this.pushServices(services))
       .catch((err) => {
         console.error("Cannot load services", err);
@@ -61,14 +61,12 @@ export class FileSystemServiceCatalogRegistry implements ServiceCatalogRegistry 
     this.onDispose();
   }
 
-  private pushServices(services: Service[]) {
-    if (this.registryConsumer) {
-      this.registryConsumer(services);
-    }
+  private pushServices(services: SwfService[]) {
+    this.onChangeCallback?.(services);
   }
 
-  private readServices(): Promise<Service[]> {
-    return new Promise<Service[]>((resolve, reject) => {
+  private readFileSystemServices(): Promise<SwfService[]> {
+    return new Promise<SwfService[]>((resolve, reject) => {
       try {
         const fullSpecsStorageUri = vscode.Uri.parse(this.fullSpecsStoragePath);
 
@@ -79,7 +77,7 @@ export class FileSystemServiceCatalogRegistry implements ServiceCatalogRegistry 
 
           vscode.workspace.fs.readDirectory(fullSpecsStorageUri).then((files) => {
             if (files && files.length > 0) {
-              const promises: Promise<Service | undefined>[] = [];
+              const promises: Promise<SwfService | undefined>[] = [];
               files.forEach(([fileName, type]) => {
                 if (type === FileType.File && OPENAPI_EXTENSIONS_REGEX.test(fileName.toLowerCase())) {
                   const fileUrl = fullSpecsStorageUri.with({
@@ -90,7 +88,7 @@ export class FileSystemServiceCatalogRegistry implements ServiceCatalogRegistry 
               });
               if (promises.length > 0) {
                 Promise.all(promises).then((services) => {
-                  const filteredServices: Service[] = [];
+                  const filteredServices: SwfService[] = [];
                   services.forEach((service) => {
                     if (service) {
                       filteredServices.push(service);
@@ -110,8 +108,8 @@ export class FileSystemServiceCatalogRegistry implements ServiceCatalogRegistry 
     });
   }
 
-  private readServiceFile(fileUrl: vscode.Uri, fileName: string): Promise<Service | undefined> {
-    return new Promise<Service | undefined>((resolve) => {
+  private readServiceFile(fileUrl: vscode.Uri, fileName: string): Promise<SwfService | undefined> {
+    return new Promise<SwfService | undefined>((resolve) => {
       vscode.workspace.fs.readFile(fileUrl).then((rawData) => {
         const content = Buffer.from(rawData).toString("utf-8");
         try {

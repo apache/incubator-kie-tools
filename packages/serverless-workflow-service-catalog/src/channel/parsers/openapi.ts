@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { FunctionArgumentType, Function, FunctionType, Service, ServiceType } from "../../api";
+import { SwfFunctionArgumentType, SwfFunction, SwfFunctionType, SwfService, SwfServiceType } from "../../api";
 import * as yaml from "js-yaml";
 import { OpenAPIV3 } from "openapi-types";
 
 const APPLICATION_JSON = "application/json";
 
-export function parseOpenAPI(args: { fileName: string; storagePath: string; content: string }): Service {
+export function parseOpenAPI(args: { fileName: string; storagePath: string; content: string }): SwfService {
   const servicePath = `${args.storagePath}/${args.fileName}`;
   const contentDoc = readOpenapiDoc(args.content);
 
@@ -28,7 +28,7 @@ export function parseOpenAPI(args: { fileName: string; storagePath: string; cont
 
   return {
     name: contentDoc.info.title ?? servicePath,
-    type: ServiceType.rest,
+    type: SwfServiceType.rest,
     id: servicePath,
     functions: functionDefinitions,
     rawContent: args.content,
@@ -44,8 +44,8 @@ function readOpenapiDoc(content: string): OpenAPIV3.Document {
   return contentDoc;
 }
 
-function extractFunctions(contentDoc: OpenAPIV3.Document, servicePath: string): Function[] {
-  const functionDefinitions: Function[] = [];
+function extractFunctions(contentDoc: OpenAPIV3.Document, servicePath: string): SwfFunction[] {
+  const functionDefinitions: SwfFunction[] = [];
 
   Object.entries(contentDoc.paths).forEach(([endpoint, pathItem]: [string, OpenAPIV3.PathItemObject]) => {
     if (pathItem.post) {
@@ -57,15 +57,15 @@ function extractFunctions(contentDoc: OpenAPIV3.Document, servicePath: string): 
         const name: string = postOperation.operationId ? postOperation.operationId : endpoint.replace(/^\/+/, "");
         const operation = `${servicePath}#${name}`;
 
-        const functionArguments: Record<string, FunctionArgumentType> = extractFunctionArguments(
+        const functionArguments: Record<string, SwfFunctionArgumentType> = extractFunctionArguments(
           body.content[APPLICATION_JSON].schema ?? {},
           contentDoc
         );
 
-        const functionDef: Function = {
+        const functionDef: SwfFunction = {
           name,
           operation,
-          type: FunctionType.rest,
+          type: SwfFunctionType.rest,
           arguments: functionArguments,
         };
         functionDefinitions.push(functionDef);
@@ -79,16 +79,16 @@ function extractFunctions(contentDoc: OpenAPIV3.Document, servicePath: string): 
 function extractFunctionArguments(
   schema: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject,
   doc: OpenAPIV3.Document
-): Record<string, FunctionArgumentType> {
+): Record<string, SwfFunctionArgumentType> {
   const schemaObject: OpenAPIV3.SchemaObject = extractSchemaObject(schema, doc);
-  const functionArgs: Record<string, FunctionArgumentType> = {};
+  const functionArgs: Record<string, SwfFunctionArgumentType> = {};
 
   if (schemaObject.properties) {
     Object.entries(schemaObject.properties).forEach(
       ([propertyName, propertySchema]: [string, OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject]) => {
         const asReference = propertySchema as OpenAPIV3.ReferenceObject;
         if (asReference.$ref) {
-          functionArgs[propertyName] = FunctionArgumentType.object;
+          functionArgs[propertyName] = SwfFunctionArgumentType.object;
         } else {
           const asSchema = propertySchema as OpenAPIV3.SchemaObject;
           if (asSchema.type) {
@@ -115,20 +115,20 @@ function extractSchemaObject(
   return schema as OpenAPIV3.SchemaObject;
 }
 
-function resolveArgumentType(type: string): FunctionArgumentType {
+function resolveArgumentType(type: string): SwfFunctionArgumentType {
   switch (type) {
     case "boolean":
-      return FunctionArgumentType.boolean;
+      return SwfFunctionArgumentType.boolean;
     case "object":
-      return FunctionArgumentType.object;
+      return SwfFunctionArgumentType.object;
     case "number":
-      return FunctionArgumentType.number;
+      return SwfFunctionArgumentType.number;
     case "string":
-      return FunctionArgumentType.string;
+      return SwfFunctionArgumentType.string;
     case "integer":
-      return FunctionArgumentType.integer;
+      return SwfFunctionArgumentType.integer;
     case "array":
-      return FunctionArgumentType.array;
+      return SwfFunctionArgumentType.array;
   }
-  return FunctionArgumentType.object;
+  return SwfFunctionArgumentType.object;
 }

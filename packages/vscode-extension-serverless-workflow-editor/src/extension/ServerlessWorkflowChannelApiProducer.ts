@@ -27,9 +27,9 @@ import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { Uri } from "vscode";
 import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 import { lookupCatalogRegistry } from "./catalog";
-import { ServiceCatalogChannelApiImpl } from "@kie-tools/service-catalog/src/channel";
+import { SwfServiceCatalogChannelApiImpl } from "@kie-tools/serverless-workflow-service-catalog/src/channel";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { ServiceCatalogChannelApi } from "@kie-tools/service-catalog/dist/api";
+import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 export class ServerlessWorkflowChannelApiProducer implements KogitoEditorChannelApiProducer {
   get(
@@ -48,8 +48,8 @@ export class ServerlessWorkflowChannelApiProducer implements KogitoEditorChannel
       specsStoragePath: vscode.workspace.getConfiguration().get("kogito.sw.specsStoragePath", "${fileDirname}/specs"),
     });
 
-    const catalogEnvelopServer: EnvelopeServer<ServiceCatalogChannelApi, KogitoEditorEnvelopeApi> =
-      editor.envelopeServer as unknown as EnvelopeServer<ServiceCatalogChannelApi, KogitoEditorEnvelopeApi>;
+    const catalogEnvelopServer: EnvelopeServer<SwfServiceCatalogChannelApi, KogitoEditorEnvelopeApi> =
+      editor.envelopeServer as unknown as EnvelopeServer<SwfServiceCatalogChannelApi, KogitoEditorEnvelopeApi>;
 
     return new ServerlessWorkflowChannelApiImpl(
       editor,
@@ -61,7 +61,7 @@ export class ServerlessWorkflowChannelApiProducer implements KogitoEditorChannel
       viewType,
       i18n,
       initialBackup,
-      new ServiceCatalogChannelApiImpl(catalogEnvelopServer, registry)
+      new SwfServiceCatalogChannelApiImpl(catalogEnvelopServer, registry)
     );
   }
 }

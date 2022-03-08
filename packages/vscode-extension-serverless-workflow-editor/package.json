@@ -95,7 +95,7 @@
         "kogito.sw.specsStoragePath": {
           "type": "string",
           "default": "${fileDirname}/specs",
-          "markdownDescription": "Folder where Openapi spec files are stored (defaults to a 'specs' folder in the same path as the sw file)."
+          "markdownDescription": "Directory where OpenAPI spec files are stored (defaults to a 'specs' directory in the same path as the Serverless Workflow file)."
         }
       }
     },

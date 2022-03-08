@@ -14,32 +14,30 @@
  * limitations under the License.
  */
 
-import { Function, Service } from "@kie-tools/service-catalog/src/api";
+import { SwfFunction, SwfService } from "@kie-tools/serverless-workflow-service-catalog/src/api";
 
 interface SwfServiceCatalogApi {
-  getServices(): Service[];
-  getFunctions(serviceId?: string): Function[];
-  getFunctionByOperation(operationId: string): Function | undefined;
+  getServices(): SwfService[];
+  getFunctions(serviceId?: string): SwfFunction[];
+  getFunctionByOperation(operationId: string): SwfFunction | undefined;
 }
 
 class SwfServiceCatalogApiImpl implements SwfServiceCatalogApi {
-  constructor(private readonly services: Service[] = []) {}
+  constructor(private readonly services: SwfService[] = []) {}
 
-  public getFunctionByOperation(operationId: string): Function | undefined {
-    if (operationId) {
-      for (const service of this.services) {
-        for (const func of service.functions) {
-          if (func.operation === operationId) {
-            return func;
-          }
+  public getFunctionByOperation(operationId: string): SwfFunction | undefined {
+    for (const service of this.services) {
+      for (const func of service.functions) {
+        if (func.operation === operationId) {
+          return func;
         }
       }
     }
     return undefined;
   }
 
-  public getFunctions(serviceId?: string): Function[] {
-    const result: Function[] = [];
+  public getFunctions(serviceId?: string): SwfFunction[] {
+    const result: SwfFunction[] = [];
 
     this.services.forEach((service) => {
       if (!serviceId || (serviceId && service.id === serviceId)) {
@@ -49,19 +47,19 @@ class SwfServiceCatalogApiImpl implements SwfServiceCatalogApi {
     return result;
   }
 
-  public getServices(): Service[] {
+  public getServices(): SwfService[] {
     return this.services;
   }
 }
 
-export class SwfServiceCatalog {
+export class SwfServiceCatalogSingleton {
   private static instance: SwfServiceCatalogApi = new SwfServiceCatalogApiImpl();
 
   public static get(): SwfServiceCatalogApi {
-    return SwfServiceCatalog.instance;
+    return SwfServiceCatalogSingleton.instance;
   }
 
-  public static load(services: Service[] = []) {
-    SwfServiceCatalog.instance = new SwfServiceCatalogApiImpl(services);
+  public static init(services: SwfService[] = []) {
+    SwfServiceCatalogSingleton.instance = new SwfServiceCatalogApiImpl(services);
   }
 }

@@ -20,8 +20,8 @@ import * as jsonc from "jsonc-parser";
 import { SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import CompletionItemKind = languages.CompletionItemKind;
-import { Function } from "@kie-tools/service-catalog/dist/api";
-import { SwfFunctionDefinition, SwfServiceCatalog } from "../../../catalog";
+import { SwfFunction } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { SwfFunctionDefinition, SwfServiceCatalogSingleton } from "../../../catalog";
 
 const completions = new Map<
   jsonc.JSONPath,
@@ -41,9 +41,9 @@ const completions = new Map<
         return [];
       }
 
-      return SwfServiceCatalog.get()
+      return SwfServiceCatalogSingleton.get()
         .getFunctions()
-        .map((def: Function) => {
+        .map((def: SwfFunction) => {
           const functionDefinition: SwfFunctionDefinition = {
             name: def.name,
             operation: def.operation,

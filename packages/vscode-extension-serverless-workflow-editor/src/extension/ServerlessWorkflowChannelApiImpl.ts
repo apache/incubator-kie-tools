@@ -31,13 +31,12 @@ import { NotificationsApi, Notification } from "@kie-tools-core/notifications/di
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { ServiceCatalogChannelApi, Service } from "@kie-tools/service-catalog/dist/api";
+import { SwfServiceCatalogChannelApi, SwfService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
-import { ServerlessWorkflowChannelApi } from "@kie-tools/serverless-workflow-editor";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { ServiceCatalogChannelApiImpl } from "@kie-tools/service-catalog/src/channel";
+import { SwfServiceCatalogChannelApiImpl } from "@kie-tools/serverless-workflow-service-catalog/src/channel";
 
-export class ServerlessWorkflowChannelApiImpl implements ServerlessWorkflowChannelApi {
+export class ServerlessWorkflowChannelApiImpl implements SwfServiceCatalogChannelApi {
   private readonly apiDelegate: KogitoEditorChannelApiImpl;
 
   constructor(
@@ -50,7 +49,7 @@ export class ServerlessWorkflowChannelApiImpl implements ServerlessWorkflowChann
     viewType: string,
     i18n: I18n<VsCodeI18n>,
     initialBackup = editor.document.initialBackup,
-    private readonly serviceCatalogApiDelegate: ServiceCatalogChannelApiImpl
+    private readonly serviceCatalogApiDelegate: SwfServiceCatalogChannelApiImpl
   ) {
     this.apiDelegate = new KogitoEditorChannelApiImpl(
       editor,
@@ -126,8 +125,8 @@ export class ServerlessWorkflowChannelApiImpl implements ServerlessWorkflowChann
     return this.apiDelegate.kogitoEditor_theme();
   }
 
-  public kogitoServiceCatalog_services(): SharedValueProvider<Service[]> {
-    return this.serviceCatalogApiDelegate.kogitoServiceCatalog_services();
+  public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfService[]> {
+    return this.serviceCatalogApiDelegate.kogitoSwfServiceCatalog_services();
   }
 
   dispose(): void {

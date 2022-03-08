@@ -14,9 +14,38 @@
  * limitations under the License.
  */
 
-import { Service } from "./types";
-import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+export enum SwfServiceType {
+  rest = "rest",
+  graphql = "graphql",
+}
 
-export interface ServiceCatalogChannelApi {
-  kogitoServiceCatalog_services(): SharedValueProvider<Service[]>;
+export interface SwfService {
+  name: string;
+  id: string;
+  type: SwfServiceType;
+
+  functions: SwfFunction[];
+  rawContent: string;
+}
+
+export enum SwfFunctionType {
+  rest = "rest",
+  graphql = "graphql",
+  async = "async",
+}
+
+export enum SwfFunctionArgumentType {
+  boolean = "boolean",
+  object = "object",
+  number = "number",
+  string = "string",
+  integer = "integer",
+  array = "array",
+}
+
+export interface SwfFunction {
+  name: string;
+  operation: string;
+  arguments: Record<string, SwfFunctionArgumentType>;
+  type: SwfFunctionType;
 }
