@@ -17,12 +17,21 @@
 import * as _ from "lodash";
 import { TableInstance } from "react-table";
 
+/**
+ * TableCellCoordinates.
+ * Colspan are also counted.
+ */
+export type TableCellCoordinates = {
+  x: number;
+  y: number;
+};
+
 const DEFAULT = { x: 0, y: 0 };
 
 /**
  * Fetch cell coordinates.
  */
-export const getCellCoordinates: (cell: Element | undefined | null) => { x: number; y: number } = (cell) => {
+export const getCellCoordinates: (cell: Element | undefined | null) => TableCellCoordinates = (cell) => {
   const tbody = cell?.closest("tbody");
   if (!tbody) {
     return DEFAULT;
@@ -33,6 +42,33 @@ export const getCellCoordinates: (cell: Element | undefined | null) => { x: numb
   for (let y = 0; y < rows.length; y++) {
     const row = rows[y];
     const cols = row.querySelectorAll(".data-cell");
+
+    for (let x = 0; x < cols.length; x++) {
+      if (cell === cols[x]) {
+        return { x: x, y };
+      }
+    }
+  }
+
+  return DEFAULT;
+};
+
+/**
+ * Fetch cell coordinates, counting all cells from the table header.
+ * Note: supports the colspan.
+ *
+ */
+export const getFullCellCoordinates: (cell: Element | undefined | null) => TableCellCoordinates = (cell) => {
+  const table = cell?.closest("table");
+  if (!table) {
+    return DEFAULT;
+  }
+
+  const rows = table.rows;
+
+  for (let y = 0; y < rows.length; y++) {
+    const row = rows[y];
+    const cols = row.cells;
     let colspansSum = 0;
 
     for (let x = 0; x < cols.length; x++) {
@@ -73,11 +109,13 @@ export const getHeaderRowsLenght = (tableInstance: TableInstance, skipLastHeader
  * Get a cell by coordinates counting the colspans too
  *
  * @param table the table
- * @param rowIndex the row index. Header rows are counted.
- * @param cellIndex the cell index, colspan included
+ * @param cellCoordinates the cell coordinates
  * @returns the table cell, null otherwise
  */
-export const getCellByCoordinates = (table: HTMLTableElement, y: number, x: number): HTMLTableCellElement | null => {
+export const getCellByCoordinates = (
+  table: HTMLTableElement,
+  { x, y }: TableCellCoordinates
+): HTMLTableCellElement | null => {
   if (!table || table.rows.length <= y) {
     return null;
   }

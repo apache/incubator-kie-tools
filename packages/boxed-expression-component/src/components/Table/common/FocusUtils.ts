@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getCellByCoordinates, hasCellTabindex } from "./TableUtils";
+import { getCellByCoordinates, getFullCellCoordinates, hasCellTabindex, TableCellCoordinates } from "./TableUtils";
 
 export const focusTextArea = (textarea?: HTMLTextAreaElement | null, eraseContent = false) => {
   if (!textarea) {
@@ -81,6 +81,11 @@ export const cellFocus = (cell: HTMLTableCellElement | null): void => {
     return;
   }
 
+  if (!hasCellTabindex(cell)) {
+    const { y } = getFullCellCoordinates(cell);
+    return focusLowerCell(cell, y);
+  }
+
   cell.click();
   cell.focus();
 };
@@ -99,21 +104,10 @@ export const focusCurrentCell = (currentEl: HTMLElement | null): void => {
  * Focus Next Cell of a react-table. Works from any element inside a cell or a cell itself.
  *
  * @param currentEl the crrent element
- * @returns
- */
-export const focusNextCell = (currentEl: HTMLElement | null): void => {
-  cellFocus(getParentCell(currentEl)?.nextElementSibling as HTMLTableCellElement);
-};
-
-/**
- * Focus Next Data Cell of a react-table. Works from any element inside a cell or a cell itself.
- *
- * @param currentEl the crrent element
- * @param rowIndex the current row index
  * @param rowSpan the rowSpan of the current cell
  * @returns
  */
-export const focusNextDataCell = (currentEl: HTMLElement | null, rowIndex: number, rowSpan = 1): void => {
+export const focusNextCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAtEndOfRow = true): void => {
   const currentCell = getParentCell(currentEl);
 
   if (!currentCell) {
@@ -121,25 +115,21 @@ export const focusNextDataCell = (currentEl: HTMLElement | null, rowIndex: numbe
   }
 
   const nextCell = currentCell.nextElementSibling as HTMLTableCellElement;
-  // const isCurrentCellTh = currentCell.tagName === "TH";
-  const cellIndex = currentCell.cellIndex;
-
-  // if (isCurrentCellTh) {
-  //   isCurrentCellRowspan = !currentCell.closest('table')?.rows[rowIndex-1]?.cells[currentCell.cellIndex].hasAttribute("tabindex");
-  // }
+  const { x, y } = getFullCellCoordinates(currentCell);
 
   if (!nextCell) {
-    focusLowerCell(currentCell, rowIndex, 1);
+    if (!stopAtEndOfRow) {
+      return focusCellByCoordinates(currentCell, { y: y + 1, x: 1 });
+    }
+
     return;
   }
 
   if (rowSpan > 1) {
-    focusUpperCell(nextCell, rowIndex, cellIndex + 1);
-  } else if (hasCellTabindex(nextCell)) {
-    cellFocus(nextCell);
-  } else {
-    focusLowerCell(currentCell, rowIndex, 1);
+    return focusCellByCoordinates(nextCell, { y: y - 1, x: x + 1 });
   }
+
+  cellFocus(nextCell);
 };
 
 /**
@@ -170,7 +160,7 @@ export const focusPrevDataCell = (currentEl: HTMLElement | null, rowIndex: numbe
   const cellIndex = currentCell.cellIndex;
 
   if (cellIndex <= 1) {
-    focusUpperCell(currentCell, rowIndex, lastCellIndex);
+    focusCellByCoordinates(currentCell, { y: rowIndex, x: lastCellIndex });
   } else {
     focusPrevCell(currentCell);
   }
@@ -183,7 +173,7 @@ export const focusPrevDataCell = (currentEl: HTMLElement | null, rowIndex: numbe
  * @param rowIndex the current row index
  * @returns
  */
-export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number, cellIndex?: number): void => {
+export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number): void => {
   const currentCell = getParentCell(currentEl) as HTMLTableCellElement;
 
   if (!currentCell) {
@@ -196,11 +186,39 @@ export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number, 
     return;
   }
 
-  const gotoCellIndex = cellIndex === undefined ? currentCell.cellIndex : cellIndex;
-  const gotoCell = getCellByCoordinates(currentTable, rowIndex - 1, gotoCellIndex);
+  const { x, y } = getFullCellCoordinates(currentCell);
 
-  if (!gotoCell || !hasCellTabindex(gotoCell)) {
-    cellFocus(currentCell);
+  focusCellByCoordinates(currentEl, { x, y: y - 1 });
+};
+
+/**
+ * Focus a cell by coordinates.
+ *
+ * @param currentEl the crrent element
+ * @param cellCoordinates the cell coordinates
+ * @returns
+ */
+export const focusCellByCoordinates = (currentEl: HTMLElement | null, cellCoordinates: TableCellCoordinates): void => {
+  const currentCell = getParentCell(currentEl) as HTMLTableCellElement;
+  const { x, y } = cellCoordinates || {};
+
+  if (!currentCell || !cellCoordinates || x === undefined || y === undefined) {
+    return;
+  }
+
+  const currentTable = currentCell.closest("table");
+
+  if (!currentTable) {
+    return;
+  }
+
+  const gotoCell = getCellByCoordinates(currentTable, { x, y });
+
+  if (!gotoCell) {
+    return cellFocus(currentCell);
+  }
+  if (!hasCellTabindex(gotoCell)) {
+    return focusCellByCoordinates(currentEl, { x, y: y + 1 });
   }
   cellFocus(gotoCell);
 };
@@ -220,11 +238,9 @@ export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number, 
     return;
   }
 
-  const currentTable = currentCell.closest("table");
-  const gotoRow = currentTable?.rows[rowIndex + 1];
-  const gotoCellIndex = cellIndex === undefined ? currentCell.cellIndex : cellIndex;
+  const { x, y } = getFullCellCoordinates(currentCell);
 
-  cellFocus((gotoRow?.cells[gotoCellIndex] as HTMLTableCellElement) || currentCell);
+  focusCellByCoordinates(currentEl, { x, y: y + 1 });
 };
 
 /**

@@ -22,6 +22,7 @@ import {
   getCellByCoordinates,
   getHeaderRowsLenght,
   hasCellTabindex,
+  getFullCellCoordinates,
 } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
 import { TableInstance } from "react-table";
 
@@ -45,12 +46,6 @@ describe("TableUtils", () => {
                 <td className="data-cell">D</td>
                 <td className="data-cell">E</td>
                 <td className="data-cell">F</td>
-              </tr>
-              <tr>
-                <td className="data-cell" colSpan={2}>
-                  G
-                </td>
-                <td className="data-cell">H</td>
               </tr>
             </tbody>
           </table>
@@ -86,15 +81,82 @@ describe("TableUtils", () => {
         x: 2,
         y: 1,
       });
-      expect(getCellCoordinates(cells[6])).toEqual({
+      expect(getCellCoordinates(null)).toEqual({
+        x: 0,
+        y: 0,
+      });
+    });
+  });
+
+  describe("getFullCellCoordinates", () => {
+    let container: Element;
+    let cells: NodeListOf<Element>;
+    beforeEach(() => {
+      document.dispatchEvent = jest.fn();
+
+      container = render(
+        <>
+          <table>
+            <thead>
+              <tr>
+                <th colSpan={2}>H1</th>
+                <th>H2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>A</td>
+                <td>B</td>
+                <td>C</td>
+              </tr>
+              <tr>
+                <td>D</td>
+                <td>E</td>
+                <td>F</td>
+              </tr>
+            </tbody>
+          </table>
+        </>
+      ).container;
+
+      cells = container.querySelectorAll("th, td");
+    });
+
+    test("valid coordinates", () => {
+      expect(getFullCellCoordinates(cells[2])).toEqual({
+        x: 0,
+        y: 1,
+      });
+      expect(getFullCellCoordinates(cells[3])).toEqual({
+        x: 1,
+        y: 1,
+      });
+      expect(getFullCellCoordinates(cells[4])).toEqual({
+        x: 2,
+        y: 1,
+      });
+
+      expect(getFullCellCoordinates(cells[5])).toEqual({
         x: 0,
         y: 2,
       });
-      expect(getCellCoordinates(cells[7])).toEqual({
+      expect(getFullCellCoordinates(cells[6])).toEqual({
+        x: 1,
+        y: 2,
+      });
+      expect(getFullCellCoordinates(cells[7])).toEqual({
         x: 2,
         y: 2,
       });
-      expect(getCellCoordinates(null)).toEqual({
+      expect(getFullCellCoordinates(cells[0])).toEqual({
+        x: 0,
+        y: 0,
+      });
+      expect(getFullCellCoordinates(cells[1])).toEqual({
+        x: 2,
+        y: 0,
+      });
+      expect(getFullCellCoordinates(null)).toEqual({
         x: 0,
         y: 0,
       });
@@ -176,31 +238,32 @@ describe("TableUtils", () => {
     });
 
     test("get cell A", () => {
-      expect(getCellByCoordinates(table, 0, 0)?.innerHTML).toBe("A");
+      expect(getCellByCoordinates(table, { y: 0, x: 0 })?.innerHTML).toBe("A");
     });
 
     test("get cell C", () => {
-      expect(getCellByCoordinates(table, 0, 2)?.innerHTML).toBe("C");
+      expect(getCellByCoordinates(table, { y: 0, x: 2 })?.innerHTML).toBe("C");
     });
 
     test("get cell D", () => {
-      expect(getCellByCoordinates(table, 1, 1)?.innerHTML).toBe("D");
+      expect(getCellByCoordinates(table, { y: 1, x: 0 })?.innerHTML).toBe("D");
+      expect(getCellByCoordinates(table, { y: 1, x: 1 })?.innerHTML).toBe("D");
     });
 
     test("get cell E", () => {
-      expect(getCellByCoordinates(table, 1, 2)?.innerHTML).toBe("E");
+      expect(getCellByCoordinates(table, { y: 1, x: 2 })?.innerHTML).toBe("E");
     });
 
     test("empty table", () => {
-      expect(getCellByCoordinates(document.createElement("table"), 100, 2)).toBeNull();
+      expect(getCellByCoordinates(document.createElement("table"), { y: 1, x: 2 })).toBeNull();
     });
 
     test("row out of range", () => {
-      expect(getCellByCoordinates(table, 100, 2)).toBeNull();
+      expect(getCellByCoordinates(table, { y: 100, x: 2 })).toBeNull();
     });
 
     test("cell out of range", () => {
-      expect(getCellByCoordinates(table, 1, 200)).toBeNull();
+      expect(getCellByCoordinates(table, { y: 1, x: 200 })).toBeNull();
     });
   });
 

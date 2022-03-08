@@ -25,7 +25,6 @@ import {
   focusInsideCell,
   focusLowerCell,
   focusNextCell,
-  focusNextDataCell,
   focusParentCell,
   focusPrevCell,
   focusPrevDataCell,
@@ -106,7 +105,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
         if (e.shiftKey) {
           focusPrevDataCell(e.currentTarget, rowIndex);
         } else {
-          focusNextDataCell(e.currentTarget, rowIndex);
+          focusNextCell(e.currentTarget, 1, false);
         }
       } else if (key === "ArrowLeft") {
         focusPrevCell(e.currentTarget);
