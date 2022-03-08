@@ -18,7 +18,7 @@ function is_running_on_kubernetes() {
 # ${3} labels (list only), restrict resources by these labels. e.g. app=myapp. Defaults to empty
 # ${4} fields (list only), restrict resources by these fields. e.g. metadata.name=${resource_name}. see: https://kubernetes.io/docs/concepts/overview/working-with-objects/field-selectors/
 # see: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/
-# to parse this response, use jq: https://stedolan.github.io/jq/tutorial/ (installed in this module)
+# to parse this response, use jq: https://stedolan.github.io/jq/tutorial/
 function list_or_get_k8s_resource() {
     local api="${1}"
     local resource="${2}"

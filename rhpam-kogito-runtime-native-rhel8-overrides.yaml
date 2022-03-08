@@ -44,7 +44,6 @@ packages:
   content_sets_file: content_sets.yaml
   install:
     - glibc
-    - jq
 
 osbs:
   configuration:

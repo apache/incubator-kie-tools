@@ -46,8 +46,6 @@ modules:
 
 packages:
   content_sets_file: content_sets.yaml
-  install:
-    - jq
 
 osbs:
   configuration:

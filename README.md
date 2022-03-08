@@ -1139,8 +1139,7 @@ Below you can find all modules used to build the Kogito Images
 - [kogito-jobs-service-ephemeral](modules/kogito-jobs-service-ephemeral): Installs and Configure the in-memory jobs-service jar inside the image
 - [kogito-jobs-service-infinispan](modules/kogito-jobs-service-infinispan): Installs and Configure the infinispan jobs-service jar inside the image
 - [kogito-jobs-service-mongodb](modules/kogito-jobs-service-mongodb): Installs and Configure the mongodb jobs-service jar inside the image
-- [kogito-jobs-service-postgresql](modules/kogito-jobs-service-postgresql): Installs and Configure the postgresql jobs-service jar inside the image  
-- [kogito-jq](modules/kogito-jq): Provides jq binary.
+- [kogito-jobs-service-postgresql](modules/kogito-jobs-service-postgresql): Installs and Configure the postgresql jobs-service jar inside the image
 - [kogito-kubernetes-client](modules/kogito-kubernetes-client): Provides a simple wrapper to interact with Kubernetes API.
 - [kogito-launch-scripts](modules/kogito-launch-scripts): Main script for all images, it contains the startup script for Kogito Images
 - [kogito-logging](modules/kogito-logging): Provides common logging functions.
