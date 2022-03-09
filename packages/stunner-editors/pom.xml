@@ -282,7 +282,7 @@
     <version.org.antlr4c3gwt>1.1.12</version.org.antlr4c3gwt>
     <version.org.apache.regexp>1.8.2</version.org.apache.regexp>
     <version.org.codehaus.mojo.extra-enforcer-rules>1.0</version.org.codehaus.mojo.extra-enforcer-rules>
-    <version.org.codehaus.selenium.plugin>2.3</version.org.codehaus.selenium.plugin>>
+    <version.org.codehaus.selenium.plugin>2.3</version.org.codehaus.selenium.plugin>
     <version.org.commonjava.plugin>1.0</version.org.commonjava.plugin>
     <version.org.eclipse.emf.gwt>2.9.0</version.org.eclipse.emf.gwt>
     <version.org.freemarker>2.3.31</version.org.freemarker>
