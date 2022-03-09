@@ -113,12 +113,12 @@ export class FileSystemServiceCatalogRegistry implements SwfServiceCatalogRegist
       vscode.workspace.fs.readFile(fileUrl).then((rawData) => {
         const content = Buffer.from(rawData).toString("utf-8");
         try {
-          const Service = parseOpenAPI({
+          const swfService = parseOpenAPI({
             fileName,
             storagePath: this.specsFolder,
             content,
           });
-          resolve(Service);
+          resolve(swfService);
         } catch (err) {
           resolve(undefined);
         }

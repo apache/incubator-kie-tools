@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-import { SwfFunctionArgumentType, SwfFunction, SwfFunctionType, SwfService, SwfServiceType } from "../../api";
+import { SwfFunction, SwfFunctionArgumentType, SwfFunctionType, SwfService, SwfServiceType } from "../../api";
 import * as yaml from "js-yaml";
 import { OpenAPIV3 } from "openapi-types";
 
 const APPLICATION_JSON = "application/json";
+
+type OpenapiPathOperations = Pick<
+  OpenAPIV3.PathItemObject,
+  "get" | "put" | "post" | "delete" | "options" | "head" | "patch" | "trace"
+>;
 
 export function parseOpenAPI(args: { fileName: string; storagePath: string; content: string }): SwfService {
   const servicePath = `${args.storagePath}/${args.fileName}`;
@@ -45,35 +50,47 @@ function readOpenapiDoc(content: string): OpenAPIV3.Document {
 }
 
 function extractFunctions(contentDoc: OpenAPIV3.Document, servicePath: string): SwfFunction[] {
-  const functionDefinitions: SwfFunction[] = [];
+  const swfFunctions = Object.entries(contentDoc.paths).map(
+    ([endpoint, pathItem]: [string, OpenAPIV3.PathItemObject]) => {
+      return extractPathItemFunctions(pathItem, servicePath, endpoint, contentDoc);
+    }
+  );
+  return [].concat.apply([], swfFunctions);
+}
 
-  Object.entries(contentDoc.paths).forEach(([endpoint, pathItem]: [string, OpenAPIV3.PathItemObject]) => {
-    if (pathItem.post) {
-      const postOperation = pathItem.post;
-      const body: OpenAPIV3.RequestBodyObject = postOperation.requestBody as OpenAPIV3.RequestBodyObject;
+function extractPathItemFunctions(
+  pathItem: OpenapiPathOperations,
+  servicePath: string,
+  endpoint: string,
+  contentDoc: OpenAPIV3.Document
+): SwfFunction[] {
+  const swfFunctions: SwfFunction[] = [];
 
-      // Looking only at application/json mime types, we might consider others.
-      if (body && body.content && body.content[APPLICATION_JSON] && body.content[APPLICATION_JSON].schema) {
-        const name: string = postOperation.operationId ? postOperation.operationId : endpoint.replace(/^\/+/, "");
-        const operation = `${servicePath}#${name}`;
+  Object.values(pathItem).forEach((pathOperation: OpenAPIV3.OperationObject) => {
+    const body: OpenAPIV3.RequestBodyObject = pathOperation.requestBody as OpenAPIV3.RequestBodyObject;
 
-        const functionArguments: Record<string, SwfFunctionArgumentType> = extractFunctionArguments(
-          body.content[APPLICATION_JSON].schema ?? {},
-          contentDoc
-        );
+    console.log(pathOperation.operationId);
+    // Looking only at application/json mime types, we might consider others.
+    if (body && body.content && body.content[APPLICATION_JSON] && body.content[APPLICATION_JSON].schema) {
+      const name: string = pathOperation.operationId ?? endpoint.replace(/^\/+/, "");
+      const operation = `${servicePath}#${name}`;
 
-        const functionDef: SwfFunction = {
-          name,
-          operation,
-          type: SwfFunctionType.rest,
-          arguments: functionArguments,
-        };
-        functionDefinitions.push(functionDef);
-      }
+      const functionArguments: Record<string, SwfFunctionArgumentType> = extractFunctionArguments(
+        body.content[APPLICATION_JSON].schema ?? {},
+        contentDoc
+      );
+
+      const functionDef: SwfFunction = {
+        name,
+        operation,
+        type: SwfFunctionType.rest,
+        arguments: functionArguments,
+      };
+      swfFunctions.push(functionDef);
     }
   });
 
-  return functionDefinitions;
+  return swfFunctions;
 }
 
 function extractFunctionArguments(

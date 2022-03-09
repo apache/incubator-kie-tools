@@ -5,7 +5,21 @@ info:
   version: "1.0"
 paths:
   /:
+    get:
+      tags:
+        - Operation Resource
+      operationId: doGetOperation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MultiplicationOperation"
+      responses:
+        "200":
+          description: OK
     post:
+      tags:
+        - Operation Resource
       operationId: doOperation
       requestBody:
         content:
@@ -23,9 +37,9 @@ components:
         leftElement:
           format: float
           type: number
-        product:
+        rightElement:
           format: float
           type: number
-        rightElement:
+        product:
           format: float
           type: number

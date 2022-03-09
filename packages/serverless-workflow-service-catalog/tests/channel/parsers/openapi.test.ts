@@ -44,16 +44,25 @@ describe("openapi parser", () => {
     expect(result.id).toBe("specs/multiplication.yaml");
     expect(result.name).toBe("Generated API");
 
-    expect(result.functions).toHaveLength(1);
+    expect(result.functions).toHaveLength(2);
 
-    const functionDef = result.functions[0];
-    expect(functionDef.type).toBe(SwfFunctionType.rest);
-    expect(functionDef.name).toBe("doOperation");
-    expect(functionDef.operation).toBe("specs/multiplication.yaml#doOperation");
-    expect(functionDef.arguments).not.toBeNull();
-    expect(functionDef.arguments).toHaveProperty("leftElement", SwfFunctionArgumentType.number);
-    expect(functionDef.arguments).toHaveProperty("product", SwfFunctionArgumentType.number);
-    expect(functionDef.arguments).toHaveProperty("rightElement", SwfFunctionArgumentType.number);
+    const doGetOperation = result.functions[0];
+    expect(doGetOperation.type).toBe(SwfFunctionType.rest);
+    expect(doGetOperation.name).toBe("doGetOperation");
+    expect(doGetOperation.operation).toBe("specs/multiplication.yaml#doGetOperation");
+    expect(doGetOperation.arguments).not.toBeNull();
+    expect(doGetOperation.arguments).toHaveProperty("leftElement", SwfFunctionArgumentType.number);
+    expect(doGetOperation.arguments).toHaveProperty("product", SwfFunctionArgumentType.number);
+    expect(doGetOperation.arguments).toHaveProperty("rightElement", SwfFunctionArgumentType.number);
+
+    const doPostOperation = result.functions[1];
+    expect(doPostOperation.type).toBe(SwfFunctionType.rest);
+    expect(doPostOperation.name).toBe("doOperation");
+    expect(doPostOperation.operation).toBe("specs/multiplication.yaml#doOperation");
+    expect(doPostOperation.arguments).not.toBeNull();
+    expect(doPostOperation.arguments).toHaveProperty("leftElement", SwfFunctionArgumentType.number);
+    expect(doPostOperation.arguments).toHaveProperty("product", SwfFunctionArgumentType.number);
+    expect(doPostOperation.arguments).toHaveProperty("rightElement", SwfFunctionArgumentType.number);
   });
 
   it("parse hiring openapi", async () => {

@@ -17,5 +17,10 @@
 export type SwfFunctionDefinition = {
   name: string;
   operation: string;
-  type: string;
+  type?: string;
+};
+
+export type SwfFunctionRef = {
+  refName: string;
+  arguments: Record<string, string>;
 };
