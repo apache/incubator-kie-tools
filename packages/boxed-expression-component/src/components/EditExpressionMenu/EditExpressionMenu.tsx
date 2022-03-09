@@ -77,35 +77,33 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     setDataType(selectedDataType);
   }, [selectedDataType]);
 
-  const onExpressionNameChange = useCallback(
-    (event) => {
-      setExpressionName(event.target.value);
-      if (event.type === "blur") {
-        boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
-        onExpressionUpdate({
-          name: event.target.value,
-          dataType,
-        });
-      }
-    },
-    [boxedExpression.boxedExpressionEditorGWTService, dataType, onExpressionUpdate]
-  );
+  const onExpressionNameChange = useCallback((event) => {
+    setExpressionName(event.target.value);
+  }, []);
 
-  const onDataTypeChange = useCallback(
-    (dataType: DataType) => {
-      boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
-      setDataType(dataType);
-      onExpressionUpdate({
-        name: expressionName,
-        dataType: dataType,
-      });
-    },
-    [boxedExpression.boxedExpressionEditorGWTService, expressionName, onExpressionUpdate]
-  );
+  const onDataTypeChange = useCallback((dataType: DataType) => {
+    setDataType(dataType);
+  }, []);
 
   const openManageDataType = useCallback(
     () => boxedExpression.boxedExpressionEditorGWTService?.openManageDataType(),
     [boxedExpression.boxedExpressionEditorGWTService]
+  );
+
+  const onHide = useCallback(() => {
+    boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
+    onExpressionUpdate({
+      name: expressionName,
+      dataType: dataType,
+    });
+  }, [boxedExpression.boxedExpressionEditorGWTService, expressionName, onExpressionUpdate, dataType]);
+
+  const onCancel = useCallback(
+    (_event: MouseEvent | KeyboardEvent) => {
+      setExpressionName(selectedExpressionName);
+      setDataType(selectedDataType);
+    },
+    [selectedExpressionName, selectedDataType]
   );
 
   return (
@@ -113,6 +111,8 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
       title={title}
       arrowPlacement={arrowPlacement}
       appendTo={appendTo}
+      onHide={onHide}
+      onCancel={onCancel}
       body={
         <div className="edit-expression-menu">
           <div className="expression-name">
