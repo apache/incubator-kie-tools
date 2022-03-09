@@ -32,6 +32,8 @@ import { isConfigValid } from "../../settings/openshift/OpenShiftSettingsConfig"
 import { useGlobals } from "../common/GlobalContext";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { useSettings } from "../../settings/SettingsContext";
+import { Page, PageSection, PageSectionVariants } from "@patternfly/react-core/dist/js/components/Page";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -97,8 +99,12 @@ export function CreateServerlessWorkflowPage() {
   }, []);
 
   return (
-    <div>
-      <h1>Serverless Workflow</h1>
+    <Page>
+      <PageSection variant={PageSectionVariants.light}>
+        <TextContent>
+          <Text component={TextVariants.h1}>Serverless Workflow</Text>
+        </TextContent>
+      </PageSection>
       {deployStatus === FormValiationOptions.ERROR && (
         <Alert
           className="pf-u-mb-md"
@@ -119,7 +125,7 @@ export function CreateServerlessWorkflowPage() {
           data-testid="alert-deploy-success"
         />
       )}
-      <div style={{ marginTop: "24px" }}>
+      <PageSection variant={PageSectionVariants.default}>
         <Form>
           <FormGroup
             label={"Workflow Name"}
@@ -182,7 +188,7 @@ export function CreateServerlessWorkflowPage() {
         >
           {isLoading ? "Deploying" : "Deploy"}
         </Button>
-      </div>
-    </div>
+      </PageSection>
+    </Page>
   );
 }

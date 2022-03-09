@@ -23,12 +23,13 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { useMemo, useState } from "react";
 import { useHistory } from "react-router";
-import { routes } from "../../navigation/Routes";
 import { DeploymentWorkflow } from "../../openshift/OpenShiftContext";
 import { SettingsButton } from "../../settings/SettingsButton";
+import { useRoutes } from "../../navigation/Hooks";
 
 export function ServerlessWorkflowList() {
   const [workflows, setWorkflows] = useState<DeploymentWorkflow[]>([]);
+  const routes = useRoutes();
   const history = useHistory();
 
   const emptyState = useMemo(
@@ -41,16 +42,16 @@ export function ServerlessWorkflowList() {
         <EmptyStateBody>
           For help getting started, access the <a>quick start guide</a>.
         </EmptyStateBody>
-        <Button variant="primary" onClick={() => history.push(routes.newSwf.path({}))}>
+        <Button variant="primary" onClick={() => history.push({ pathname: routes.newSwf.path({}) })}>
           Create Serverless Workflow
         </Button>
       </EmptyState>
     ),
-    [history]
+    [routes, history]
   );
 
   return (
-    <Page>
+    <Page style={{ position: "relative" }}>
       <SettingsButton />
       <PageSection variant={PageSectionVariants.light}>
         <TextContent>

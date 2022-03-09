@@ -1,16 +1,20 @@
 import * as React from "react";
 import { Route, Switch } from "react-router-dom";
 import { CreateServerlessWorkflowPage } from "../components/ServerlessWorkflowMenu/CreateServerlessWorkflowPage";
+import { ServerlessWorkflowList } from "../components/ServerlessWorkflowMenu/ServerlessWorkflowList";
 import { useRoutes } from "./Hooks";
 
-// TODO: CREATE A CONTEXT WITH EVERYTHING FROM ServerlessWorkflowManagementPage
-
-function RoutesSwitch() {
+export function RoutesSwitch() {
   const routes = useRoutes();
 
   return (
     <Switch>
-      <Route path={routes.newSwf.path({})}>{() => <CreateServerlessWorkflowPage />}</Route>
+      <Route exact={true} path={routes.listSwf.path({})}>
+        <ServerlessWorkflowList />
+      </Route>
+      <Route exact={true} path={routes.newSwf.path({})}>
+        <CreateServerlessWorkflowPage />
+      </Route>
       {/* <Route path={routes.importModel.path({})}>
         <NewWorkspaceFromUrlPage />
       </Route>

@@ -25,6 +25,8 @@ import { GlobalContext, ImageUris } from "./GlobalContext";
 import { ChromeExtensionI18nContextProvider } from "../../i18n";
 import { SettingsContextProvider } from "../../settings/SettingsContext";
 import { MemoryRouter } from "react-router-dom";
+import { NavigationContextProvider } from "../../navigation/NavigationContextProvider";
+
 export interface Globals {
   id: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
@@ -38,20 +40,22 @@ export const Main: React.FunctionComponent<Globals> = (props) => {
   return (
     <ChromeExtensionI18nContextProvider>
       <MemoryRouter>
-        <SettingsContextProvider>
-          <GlobalContext.Provider
-            value={{
-              id: props.id,
-              logger: props.logger,
-              dependencies: props.dependencies,
-              envelopeLocator: props.editorEnvelopeLocator,
-              imageUris: props.imageUris,
-              resourceContentServiceFactory: props.resourceContentServiceFactory,
-            }}
-          >
-            <OpenShiftProvider>{props.children}</OpenShiftProvider>
-          </GlobalContext.Provider>
-        </SettingsContextProvider>
+        <NavigationContextProvider>
+          <SettingsContextProvider>
+            <GlobalContext.Provider
+              value={{
+                id: props.id,
+                logger: props.logger,
+                dependencies: props.dependencies,
+                envelopeLocator: props.editorEnvelopeLocator,
+                imageUris: props.imageUris,
+                resourceContentServiceFactory: props.resourceContentServiceFactory,
+              }}
+            >
+              <OpenShiftProvider>{props.children}</OpenShiftProvider>
+            </GlobalContext.Provider>
+          </SettingsContextProvider>
+        </NavigationContextProvider>
       </MemoryRouter>
     </ChromeExtensionI18nContextProvider>
   );
