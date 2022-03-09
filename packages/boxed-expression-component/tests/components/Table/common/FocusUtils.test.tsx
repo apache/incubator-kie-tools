@@ -466,7 +466,7 @@ describe("FocusUtils tests", () => {
     });
   });
 
-  describe.skip("focusInsideCell tests", () => {
+  describe("focusInsideCell tests", () => {
     it("should fail", () => {
       // @ts-ignore
       expect(() => focusInsideCell(undefined)).not.toThrowError();
@@ -474,19 +474,20 @@ describe("FocusUtils tests", () => {
     });
 
     it("should focus the textarea", () => {
-      const parentCell = document.createElement("td");
-      const elementToBeFocused = document.createElement("textarea");
+      const parentCell = mockTbody?.rows[0].cells[1];
 
-      parentCell.appendChild(elementToBeFocused);
+      const elementToBeFocused = render(<textarea>TextArea Value</textarea>, { baseElement: parentCell }).container
+        .children[0] as HTMLTextAreaElement;
+
       testFocus(parentCell, elementToBeFocused, focusInsideCell);
     });
 
-    it("should focus the input text", () => {
-      const parentCell = document.createElement("td");
-      const elementToBeFocused = document.createElement("input");
+    it.skip("should focus the input text", () => {
+      const parentCell = mockTbody?.rows[0].cells[1];
 
-      elementToBeFocused.setAttribute("type", "text");
-      parentCell.appendChild(elementToBeFocused);
+      const elementToBeFocused = render(<input type="text"></input>, { baseElement: parentCell }).container
+        .children[0] as HTMLInputElement;
+
       testFocus(parentCell, elementToBeFocused, focusInsideCell);
     });
 
