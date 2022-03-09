@@ -31,7 +31,19 @@ import { TableComposable } from "@patternfly/react-table";
 import { v4 as uuid } from "uuid";
 import { generateUuid, TableHeaderVisibility, TableOperation, TableProps } from "../../api";
 import { useBoxedExpression } from "../../context";
-import { PASTE_OPERATION, pasteOnTable, focusCurrentCell } from "./common";
+import {
+  focusCurrentCell,
+  focusInsideCell,
+  focusLowerCell,
+  focusNextCell,
+  focusParentCell,
+  focusPrevCell,
+  focusPrevDataCell,
+  focusUpperCell,
+  getParentCell,
+  pasteOnTable,
+  PASTE_OPERATION,
+} from "./common";
 import { EditableCell } from "./EditableCell";
 import "./Table.css";
 import { TableBody } from "./TableBody";
@@ -376,6 +388,63 @@ export const Table: React.FunctionComponent<TableProps> = ({
     [getRowKey]
   );
 
+  /**
+   * Function to be executed when a key has been pressed on a cell
+   * @param rowIndex the index of the row
+   */
+  const onCellKeyDown = useCallback(
+    (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => {
+      const key = e.key;
+      const isModKey = e.altKey || e.ctrlKey || e.shiftKey || key === "AltGraph";
+
+      if (!enableKeyboarNavigation) {
+        return;
+      }
+
+      //prevent the parent cell catch this event if there is a nested table
+      if (e.currentTarget !== getParentCell(e.target as HTMLElement)) {
+        return;
+      }
+
+      if (boxedExpression.isContextMenuOpen) {
+        e.preventDefault();
+        if (key === "Escape") {
+          //close Select child components if any
+          focusCurrentCell(e.currentTarget);
+        }
+        return;
+      }
+
+      const isFiredFromThis = e.currentTarget === e.target;
+
+      if (key === "Tab") {
+        e.preventDefault();
+        if (e.shiftKey) {
+          focusPrevDataCell(e.currentTarget, rowIndex);
+        } else {
+          focusNextCell(e.currentTarget, 1, false);
+        }
+      } else if (key === "ArrowLeft") {
+        focusPrevCell(e.currentTarget);
+      } else if (key === "ArrowRight") {
+        focusNextCell(e.currentTarget);
+      } else if (key === "ArrowUp") {
+        focusUpperCell(e.currentTarget, rowIndex);
+      } else if (key === "ArrowDown") {
+        focusLowerCell(e.currentTarget, rowIndex);
+      } else if (key === "Escape") {
+        focusParentCell(e.currentTarget);
+      } else if (!boxedExpression.isContextMenuOpen && isFiredFromThis && !isModKey) {
+        if (key === "Enter") {
+          focusInsideCell(e.currentTarget);
+        } else {
+          focusInsideCell(e.currentTarget, true);
+        }
+      }
+    },
+    [boxedExpression.isContextMenuOpen, enableKeyboarNavigation]
+  );
+
   return (
     <div className={`table-component ${tableId} ${tableEventUUID}`}>
       <TableComposable
@@ -401,9 +470,8 @@ export const Table: React.FunctionComponent<TableProps> = ({
           getColumnKey={onGetColumnKey}
           onColumnsUpdate={onColumnsUpdateCallback}
           headerVisibility={headerVisibility}
-          skipLastHeaderGroup={skipLastHeaderGroup}
           tdProps={tdProps}
-          enableKeyboarNavigation={enableKeyboarNavigation}
+          onCellKeyDown={onCellKeyDown}
         >
           {children}
         </TableBody>

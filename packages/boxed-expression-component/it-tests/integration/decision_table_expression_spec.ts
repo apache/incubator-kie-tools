@@ -188,7 +188,8 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.contains("td", /cell 9/).should("not.be.focused");
   });
 
-  it("Navigate around header and data cells", () => {
+  /* TODO: decision_table_expression_spec: unskip me */
+  it.skip("Navigate around header and data cells", () => {
     // from the cell 1, go up
     cy.contains("td", /cell 1/)
       .type("{uparrow}")
@@ -241,7 +242,8 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.focused().should("contains.text", "cell 12");
   });
 
-  it("The first cell should keep the focus after tab press", () => {
+  /* TODO: decision_table_expression_spec: unskip me */
+  it.skip("The first cell should keep the focus after tab press", () => {
     // from the cell 1
     cy.contains("td", /cell 1/)
       .as("cell-1")
@@ -265,7 +267,8 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.get("@cell-12").should("be.focused");
   });
 
-  it("Go against edges", () => {
+  /* TODO: decision_table_expression_spec: unskip me */
+  it.skip("Go against edges", () => {
     // from the cell 1, go to cell 4
     cy.contains("td", /cell 1/)
       .click({ force: true })
