@@ -57,6 +57,9 @@ describe("Context Expression Tests", () => {
 
     cy.get("button:contains('boolean')").click({ force: true });
 
+    // close the context menu
+    cy.get("body").click();
+
     // check boolean is now also in decision table header
     cy.ouiaType("expression-column-header-cell-info").contains("boolean").should("be.visible");
   });
