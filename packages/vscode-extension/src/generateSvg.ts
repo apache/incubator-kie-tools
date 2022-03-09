@@ -72,8 +72,8 @@ export async function generateSvg(args: {
   const fileType = args.editorEnvelopeLocator.getEnvelopeMapping(parsedPath.base)?.type;
 
   const tokens: Record<SettingsValueInterpolationToken, string> = {
-    "${workspaceFolder}": workspace?.uri.fsPath ?? parsedPath.dir,
-    "${fileDirname}": parsedPath.dir,
+    "${workspaceFolder}": workspace?.uri.fsPath ?? `/${parsedPath.dir}`,
+    "${fileDirname}": `/${parsedPath.dir}`,
     "${fileExtname}": fileExtensionWithDot,
     "${fileBasename}": parsedPath.base,
     "${fileBasenameNoExtension}": parsedPath.base.substring(0, parsedPath.base.indexOf(".")),
