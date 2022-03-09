@@ -360,6 +360,7 @@ function ThCell({
     };
   }, [onKeyDown, rowIndex, rowSpan]);
 
+  /* FIXME: TableHeader warning: Each child in a list should have a unique "key" prop. */
   return (
     <Th
       {...headerProps}

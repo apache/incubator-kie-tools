@@ -26,7 +26,7 @@ import {
   focusParentCell,
   focusPrevCell,
   focusPrevDataCell,
-  focusTextArea,
+  focusTextInput,
   focusUpperCell,
   getParentCell,
 } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
@@ -487,7 +487,7 @@ describe("FocusUtils tests", () => {
       testFocus(parentCell, elementToBeFocused, focusInsideCell);
     });
 
-    it.skip("should focus the input text", () => {
+    it("should focus the input text", () => {
       const parentCell = mockTbody?.rows[0].cells[1];
 
       const elementToBeFocused = render(<input type="text"></input>, { baseElement: parentCell }).container
@@ -540,7 +540,7 @@ describe("FocusUtils tests", () => {
     });
   });
 
-  describe("focusTextArea tests", () => {
+  describe("focusTextInput tests", () => {
     let elementToBeFocused: HTMLTextAreaElement;
 
     beforeEach(() => {
@@ -549,17 +549,17 @@ describe("FocusUtils tests", () => {
 
     it("should fail", () => {
       // @ts-ignore
-      expect(() => focusTextArea()).not.toThrowError();
-      expect(() => focusTextArea(null)).not.toThrowError();
+      expect(() => focusTextInput()).not.toThrowError();
+      expect(() => focusTextInput(null)).not.toThrowError();
     });
 
     it("should focus the textarea without erasing content", () => {
-      shouldKeepFocus(elementToBeFocused, (element) => focusTextArea(element as HTMLTextAreaElement));
+      shouldKeepFocus(elementToBeFocused, (element) => focusTextInput(element as HTMLTextAreaElement));
       expect(elementToBeFocused.value).toBe("TextArea Value");
     });
 
     it("should focus the textarea without content", () => {
-      shouldKeepFocus(elementToBeFocused, (element) => focusTextArea(element as HTMLTextAreaElement, true));
+      shouldKeepFocus(elementToBeFocused, (element) => focusTextInput(element as HTMLTextAreaElement, true));
       expect(elementToBeFocused.value).toBe("");
     });
   });

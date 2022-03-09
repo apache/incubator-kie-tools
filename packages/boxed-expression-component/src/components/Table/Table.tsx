@@ -436,6 +436,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
         } else if (key === "Escape") {
           focusParentCell(e.currentTarget);
         } else if (!boxedExpression.isContextMenuOpen && isFiredFromThis && !isModKey) {
+          /* TODO: Table: keyboard editing for theader */
           if (key === "Enter") {
             focusInsideCell(e.currentTarget);
           } else {

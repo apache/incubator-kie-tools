@@ -16,18 +16,21 @@
 
 import { getCellByCoordinates, getFullCellCoordinates, hasCellTabindex, TableCellCoordinates } from "./TableUtils";
 
-export const focusTextArea = (textarea?: HTMLTextAreaElement | null, eraseContent = false) => {
-  if (!textarea) {
+export const focusTextInput = (input?: HTMLTextAreaElement | HTMLInputElement | null, eraseContent = false) => {
+  if (!input) {
     return;
   }
 
   if (eraseContent) {
-    textarea.value = "";
+    input.value = "";
   }
 
-  const value = textarea.value || "";
-  textarea.focus();
-  textarea.setSelectionRange(value.length, value.length);
+  const value = input.value || "";
+  input.focus();
+
+  if (input.tagName === "TEXTAREA") {
+    input.setSelectionRange(value.length, value.length);
+  }
 };
 
 export const blurActiveElement = () => {
@@ -272,7 +275,7 @@ export const focusInsideCell = (currentEl: HTMLElement | null, eraseContent = fa
     return;
   }
 
-  focusTextArea(currentEl.querySelector("textarea"), eraseContent);
+  focusTextInput(currentEl.querySelector("textarea, input[type=text]") as HTMLInputElement, eraseContent);
 };
 
 /**

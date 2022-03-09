@@ -19,7 +19,7 @@ import * as Monaco from "@kie-tools-core/monaco-editor";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CellProps } from "../../api";
-import { blurActiveElement, focusCurrentCell, focusNextCell, focusPrevDataCell, focusTextArea, paste } from "./common";
+import { blurActiveElement, focusCurrentCell, focusNextCell, focusPrevDataCell, focusTextInput, paste } from "./common";
 import "./EditableCell.css";
 import { useBoxedExpression } from "../../context";
 
@@ -74,7 +74,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
         onCellUpdate(rowIndex, columnId, newValue ?? value);
       }
 
-      focusTextArea(textarea.current);
+      focusTextInput(textarea.current);
     },
     [boxedExpression.boxedExpressionEditorGWTService, mode, columnId, onCellUpdate, rowIndex, value]
   );
@@ -95,7 +95,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       return;
     }
     setIsSelected(true);
-    focusTextArea(textarea.current);
+    focusTextInput(textarea.current);
   }, [mode]);
 
   const onClick = useCallback(() => {
