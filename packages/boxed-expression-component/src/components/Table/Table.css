@@ -94,7 +94,10 @@
   border: 1px solid var(--pf-global--palette--black-300);
 }
 
-.expression-container .table-component table tbody td:focus {
+.expression-container .table-component table tbody td:focus,
+.expression-container .table-component table thead tr th:focus:first-child,
+.expression-container .table-component table thead tr th:focus > .react-resizable {
+  /* TODO: ugly border for thead cells */
   border: 2px solid #438cb1;
   outline: none !important;
   margin: -1px -1px;

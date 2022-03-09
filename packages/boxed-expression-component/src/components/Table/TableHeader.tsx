@@ -17,14 +17,13 @@
 import { Th, Thead, Tr } from "@patternfly/react-table";
 import * as _ from "lodash";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useEffect, useRef } from "react";
 import { Column, ColumnInstance, HeaderGroup, TableInstance } from "react-table";
 import { DataType, TableHeaderVisibility } from "../../api";
 import { EditExpressionMenu, EditTextInline } from "../EditExpressionMenu";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./Table";
 import { useBoxedExpression } from "../../context";
-import { getHeaderRowsLenght } from "./common";
 
 export interface TableHeaderProps {
   /** Table instance */
@@ -41,6 +40,8 @@ export interface TableHeaderProps {
   tableColumns: Column[];
   /** Function to be executed when columns are modified */
   onColumnsUpdate: (columns: Column[]) => void;
+  /** Function to be executed when a key has been pressed on a cell */
+  onCellKeyDown: (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
   /** Th props */
   thProps: (column: ColumnInstance) => any;
   /** Option to enable or disable header edits */
@@ -55,12 +56,11 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   getColumnKey,
   tableColumns,
   onColumnsUpdate,
+  onCellKeyDown,
   thProps,
   editableHeader,
 }) => {
   const { boxedExpressionEditorGWTService } = useBoxedExpression();
-
-  const headerRowsLength = getHeaderRowsLenght(tableInstance, skipLastHeaderGroup);
 
   const getColumnLabel: (groupType: string) => string | undefined = useCallback(
     (groupType) => {
@@ -102,14 +102,21 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       const columnKey = getColumnKey(column);
       const classNames = `${columnKey} fixed-column no-clickable-cell`;
       return (
-        <Th {...column.getHeaderProps()} className={classNames} key={columnKey} tabIndex={-1}>
+        <ThCell
+          {...column.getHeaderProps()}
+          {...thProps(column)}
+          className={classNames}
+          key={columnKey}
+          isFocusable={true}
+          onKeyDown={onCellKeyDown}
+        >
           <div className="header-cell" data-ouia-component-type="expression-column-header">
             {column.label}
           </div>
-        </Th>
+        </ThCell>
       );
     },
-    [getColumnKey]
+    [getColumnKey, onCellKeyDown, thProps]
   );
 
   const renderCellInfoLabel = useCallback(
@@ -168,7 +175,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   );
 
   const renderResizableHeaderCell = useCallback(
-    (column, columnIndex) => {
+    (column, rowIndex, columnIndex) => {
       const headerProps = {
         ...column.getHeaderProps(),
         style: {},
@@ -196,14 +203,36 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
         return cssClasses.join(" ");
       };
 
+      /**
+       * Get the rowspan value.
+       *
+       * @param cssClasses the classes of the cell
+       * @returns the value, default is 1
+       */
+      const getRowSpan = (cssClasses: string): number => {
+        if (
+          rowIndex === tableInstance.headerGroups.length - 1 &&
+          (cssClasses.includes("decision-table--input") || cssClasses.includes("decision-table--annotation"))
+        ) {
+          return 2;
+        }
+
+        return 1;
+      };
+
+      const cssClasses = getCssClass();
+
       return (
-        <Th
-          {...headerProps}
-          {...thProps(column)}
-          className={getCssClass()}
-          key={columnKey}
-          tabIndex={isFocusable ? "-1" : undefined}
+        <ThCell
+          className={cssClasses}
+          columnKey={columnKey}
+          headerProps={headerProps}
+          isFocusable={isFocusable}
           onClick={onHeaderClick(columnKey)}
+          onKeyDown={onCellKeyDown}
+          rowIndex={rowIndex}
+          rowSpan={getRowSpan(cssClasses)}
+          thProps={thProps(column)}
         >
           <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
             <div className="header-cell" data-ouia-component-type="expression-column-header">
@@ -222,24 +251,26 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
               )}
             </div>
           </Resizer>
-        </Th>
+        </ThCell>
       );
     },
     [
-      getColumnKey,
-      thProps,
-      onHeaderClick,
       editableHeader,
+      getColumnKey,
       getColumnLabel,
-      renderHeaderCellInfo,
-      onHorizontalResizeStop,
+      onCellKeyDown,
       onColumnNameOrDataTypeUpdate,
+      onHeaderClick,
+      onHorizontalResizeStop,
+      renderHeaderCellInfo,
+      thProps,
+      tableInstance,
     ]
   );
 
   const renderColumn = useCallback(
-    (column: ColumnInstance, columnIndex: number) =>
-      column.isCountColumn ? renderCountColumn(column) : renderResizableHeaderCell(column, columnIndex),
+    (column: ColumnInstance, rowIndex: number, columnIndex: number) =>
+      column.isCountColumn ? renderCountColumn(column) : renderResizableHeaderCell(column, rowIndex, columnIndex),
     [renderCountColumn, renderResizableHeaderCell]
   );
 
@@ -252,12 +283,12 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
 
   const renderHeaderGroups = useMemo(
     () =>
-      getHeaderGroups(tableInstance).map((headerGroup: HeaderGroup) => {
+      getHeaderGroups(tableInstance).map((headerGroup: HeaderGroup, rowIndex: number) => {
         const { key, ...props } = { ...headerGroup.getHeaderGroupProps(), style: {} };
         return (
           <Tr key={key} {...props}>
             {headerGroup.headers.map((column: ColumnInstance, columnIndex: number) =>
-              renderColumn(column, columnIndex)
+              renderColumn(column, rowIndex, columnIndex)
             )}
           </Tr>
         );
@@ -269,7 +300,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
     (level: number) => (
       <Tr>
         {_.nth(tableInstance.headerGroups as HeaderGroup[], level)!.headers.map(
-          (column: ColumnInstance, columnIndex: number) => renderColumn(column, columnIndex)
+          (column: ColumnInstance, columnIndex: number) => renderColumn(column, 0, columnIndex)
         )}
       </Tr>
     ),
@@ -291,3 +322,55 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
 
   return <>{header}</>;
 };
+
+interface ThCellProps {
+  children?: React.ReactElement;
+  className: string;
+  columnKey: string;
+  headerProps: any;
+  isFocusable: boolean;
+  onKeyDown: (rowIndex: number, rowSpan: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
+  onClick: () => void;
+  rowIndex: number;
+  thProps: any;
+  rowSpan: number;
+}
+
+function ThCell({
+  children,
+  className,
+  columnKey,
+  headerProps,
+  isFocusable = true,
+  onKeyDown,
+  onClick,
+  rowIndex,
+  thProps,
+  rowSpan = 1,
+}: ThCellProps) {
+  const thRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    // Typescript don't accept the conversion between DOM event and React event
+    const onKeyDownForIndex: any = onKeyDown(rowIndex, rowSpan);
+    const cell = thRef.current;
+    cell?.addEventListener("keydown", onKeyDownForIndex);
+    return () => {
+      cell?.removeEventListener("keydown", onKeyDownForIndex);
+    };
+  }, [onKeyDown, rowIndex, rowSpan]);
+
+  return (
+    <Th
+      {...headerProps}
+      {...thProps}
+      ref={thRef}
+      key={columnKey}
+      onClick={onClick}
+      className={className}
+      tabIndex={isFocusable ? "-1" : undefined}
+    >
+      {children}
+    </Th>
+  );
+}

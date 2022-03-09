@@ -82,8 +82,7 @@ export const cellFocus = (cell: HTMLTableCellElement | null): void => {
   }
 
   if (!hasCellTabindex(cell)) {
-    const { y } = getFullCellCoordinates(cell);
-    return focusLowerCell(cell, y);
+    return focusLowerCell(cell);
   }
 
   cell.click();
@@ -170,10 +169,9 @@ export const focusPrevDataCell = (currentEl: HTMLElement | null, rowIndex: numbe
  * Focus Upper Cell of a react-table. Works from any element inside a cell or a cell itself.
  *
  * @param currentEl the crrent element
- * @param rowIndex the current row index
  * @returns
  */
-export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number): void => {
+export const focusUpperCell = (currentEl: HTMLElement | null): void => {
   const currentCell = getParentCell(currentEl) as HTMLTableCellElement;
 
   if (!currentCell) {
@@ -227,11 +225,9 @@ export const focusCellByCoordinates = (currentEl: HTMLElement | null, cellCoordi
  * Focus Lower Cell of a react-table. Works from any element inside a cell or a cell itself.
  *
  * @param currentEl the crrent element
- * @param rowIndex the current row index
- * @param cellIndex the cell index to focus
  * @returns
  */
-export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number, cellIndex?: number): void => {
+export const focusLowerCell = (currentEl: HTMLElement | null): void => {
   const currentCell = getParentCell(currentEl) as HTMLTableCellElement;
 
   if (!currentCell) {
@@ -290,5 +286,5 @@ export const focusParentCell = (currentCell: HTMLElement | null): void => {
     return;
   }
 
-  cellFocus(currentCell.parentElement?.closest("td") || null);
+  cellFocus(currentCell.parentElement?.closest("td, th") || null);
 };

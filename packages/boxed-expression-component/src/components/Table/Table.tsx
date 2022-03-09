@@ -393,55 +393,56 @@ export const Table: React.FunctionComponent<TableProps> = ({
    * @param rowIndex the index of the row
    */
   const onCellKeyDown = useCallback(
-    (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => {
-      const key = e.key;
-      const isModKey = e.altKey || e.ctrlKey || e.shiftKey || key === "AltGraph";
+    (rowIndex: number, rowSpan = 1) =>
+      (e: React.KeyboardEvent<HTMLElement>) => {
+        const key = e.key;
+        const isModKey = e.altKey || e.ctrlKey || e.shiftKey || key === "AltGraph";
 
-      if (!enableKeyboarNavigation) {
-        return;
-      }
-
-      //prevent the parent cell catch this event if there is a nested table
-      if (e.currentTarget !== getParentCell(e.target as HTMLElement)) {
-        return;
-      }
-
-      if (boxedExpression.isContextMenuOpen) {
-        e.preventDefault();
-        if (key === "Escape") {
-          //close Select child components if any
-          focusCurrentCell(e.currentTarget);
+        if (!enableKeyboarNavigation) {
+          return;
         }
-        return;
-      }
 
-      const isFiredFromThis = e.currentTarget === e.target;
+        //prevent the parent cell catch this event if there is a nested table
+        if (e.currentTarget !== getParentCell(e.target as HTMLElement)) {
+          return;
+        }
 
-      if (key === "Tab") {
-        e.preventDefault();
-        if (e.shiftKey) {
-          focusPrevDataCell(e.currentTarget, rowIndex);
-        } else {
-          focusNextCell(e.currentTarget, 1, false);
+        if (boxedExpression.isContextMenuOpen) {
+          e.preventDefault();
+          if (key === "Escape") {
+            //close Select child components if any
+            focusCurrentCell(e.currentTarget);
+          }
+          return;
         }
-      } else if (key === "ArrowLeft") {
-        focusPrevCell(e.currentTarget);
-      } else if (key === "ArrowRight") {
-        focusNextCell(e.currentTarget);
-      } else if (key === "ArrowUp") {
-        focusUpperCell(e.currentTarget, rowIndex);
-      } else if (key === "ArrowDown") {
-        focusLowerCell(e.currentTarget, rowIndex);
-      } else if (key === "Escape") {
-        focusParentCell(e.currentTarget);
-      } else if (!boxedExpression.isContextMenuOpen && isFiredFromThis && !isModKey) {
-        if (key === "Enter") {
-          focusInsideCell(e.currentTarget);
-        } else {
-          focusInsideCell(e.currentTarget, true);
+
+        const isFiredFromThis = e.currentTarget === e.target;
+
+        if (key === "Tab") {
+          e.preventDefault();
+          if (e.shiftKey) {
+            focusPrevDataCell(e.currentTarget, rowIndex);
+          } else {
+            focusNextCell(e.currentTarget, rowSpan, false);
+          }
+        } else if (key === "ArrowLeft") {
+          focusPrevCell(e.currentTarget);
+        } else if (key === "ArrowRight") {
+          focusNextCell(e.currentTarget, rowSpan);
+        } else if (key === "ArrowUp") {
+          focusUpperCell(e.currentTarget);
+        } else if (key === "ArrowDown") {
+          focusLowerCell(e.currentTarget);
+        } else if (key === "Escape") {
+          focusParentCell(e.currentTarget);
+        } else if (!boxedExpression.isContextMenuOpen && isFiredFromThis && !isModKey) {
+          if (key === "Enter") {
+            focusInsideCell(e.currentTarget);
+          } else {
+            focusInsideCell(e.currentTarget, true);
+          }
         }
-      }
-    },
+      },
     [boxedExpression.isContextMenuOpen, enableKeyboarNavigation]
   );
 
@@ -454,24 +455,25 @@ export const Table: React.FunctionComponent<TableProps> = ({
         ouiaId="expression-grid-table"
       >
         <TableHeader
-          tableInstance={tableInstance}
           editColumnLabel={editColumnLabel}
+          editableHeader={editableHeader}
+          getColumnKey={onGetColumnKey}
           headerVisibility={headerVisibility}
+          onCellKeyDown={onCellKeyDown}
+          onColumnsUpdate={onColumnsUpdateCallback}
           skipLastHeaderGroup={skipLastHeaderGroup}
           tableColumns={tableColumns}
-          getColumnKey={onGetColumnKey}
-          onColumnsUpdate={onColumnsUpdateCallback}
+          tableInstance={tableInstance}
           thProps={thProps}
-          editableHeader={editableHeader}
         />
         <TableBody
-          tableInstance={tableInstance}
-          getRowKey={onGetRowKey}
           getColumnKey={onGetColumnKey}
-          onColumnsUpdate={onColumnsUpdateCallback}
+          getRowKey={onGetRowKey}
           headerVisibility={headerVisibility}
-          tdProps={tdProps}
           onCellKeyDown={onCellKeyDown}
+          onColumnsUpdate={onColumnsUpdateCallback}
+          tableInstance={tableInstance}
+          tdProps={tdProps}
         >
           {children}
         </TableBody>

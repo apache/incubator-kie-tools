@@ -205,8 +205,13 @@ describe("FocusUtils tests", () => {
       expect(() => focusCurrentCell(null)).not.toThrowError();
     });
 
-    it("should focus the element", () => {
+    it("should focus the body cell", () => {
       const element = mockTbody.rows[0].cells[1];
+      shouldKeepFocus(element, focusCurrentCell);
+    });
+
+    it("should focus the header cell", () => {
+      const element = mockThead.rows[0].cells[1];
       shouldKeepFocus(element, focusCurrentCell);
     });
 
@@ -412,57 +417,57 @@ describe("FocusUtils tests", () => {
   describe("focusUpperCell tests", () => {
     it("should fail", () => {
       // @ts-ignore
-      expect(() => focusUpperCell(undefined, 1)).not.toThrowError();
-      expect(() => focusUpperCell(null, 1)).not.toThrowError();
+      expect(() => focusUpperCell(undefined)).not.toThrowError();
+      expect(() => focusUpperCell(null)).not.toThrowError();
     });
 
     it("should focus the upper data cell", () => {
-      testFocus(mockTbody.rows[2].cells[2], mockTbody.rows[1].cells[2], (element) => focusUpperCell(element, 4));
+      testFocus(mockTbody.rows[2].cells[2], mockTbody.rows[1].cells[2], (element) => focusUpperCell(element));
     });
 
     it("test full headers with rowspan and colspan navigation", () => {
       testFocus(mockTableColRowspanTbody.rows[0].cells[1], mockTableColRowspanThead.rows[1].cells[1], (element) =>
-        focusUpperCell(element, 2)
+        focusUpperCell(element)
       );
       testFocus(mockTableColRowspanTbody.rows[0].cells[3], mockTableColRowspanThead.rows[1].cells[3], (element) =>
-        focusUpperCell(element, 2)
+        focusUpperCell(element)
       );
       testFocus(mockTableColRowspanThead.rows[1].cells[3], mockTableColRowspanThead.rows[0].cells[2], (element) =>
-        focusUpperCell(element, 1)
+        focusUpperCell(element)
       );
     });
 
     it("should keep the focus to the current cell", () => {
-      shouldKeepFocus(mockThead.rows[0].cells[5], (element) => focusUpperCell(element, 0));
-      shouldKeepFocus(mockTableColRowspanThead.rows[1].cells[5], (element) => focusUpperCell(element, 1));
+      shouldKeepFocus(mockThead.rows[0].cells[5], (element) => focusUpperCell(element));
+      shouldKeepFocus(mockTableColRowspanThead.rows[1].cells[5], (element) => focusUpperCell(element));
     });
   });
 
   describe("focusLowerCell tests", () => {
     it("should fail", () => {
       // @ts-ignore
-      expect(() => focusLowerCell(undefined, 1)).not.toThrowError();
-      expect(() => focusLowerCell(null, 1)).not.toThrowError();
+      expect(() => focusLowerCell(undefined)).not.toThrowError();
+      expect(() => focusLowerCell(null)).not.toThrowError();
     });
 
     it("should focus the lower data cell", () => {
-      testFocus(mockTbody.rows[0].cells[2], mockTbody.rows[1].cells[2], (element) => focusLowerCell(element, 2));
+      testFocus(mockTbody.rows[0].cells[2], mockTbody.rows[1].cells[2], (element) => focusLowerCell(element));
     });
 
     it("test full headers with rowspan and colspan navigation", () => {
       testFocus(mockTableColRowspanThead.rows[1].cells[2], mockTableColRowspanTbody.rows[0].cells[2], (element) =>
-        focusLowerCell(element, 1)
+        focusLowerCell(element)
       );
       testFocus(mockTableColRowspanThead.rows[0].cells[3], mockTableColRowspanThead.rows[1].cells[5], (element) =>
-        focusLowerCell(element, 0)
+        focusLowerCell(element)
       );
       testFocus(mockTableColRowspanThead.rows[1].cells[3], mockTableColRowspanTbody.rows[0].cells[3], (element) =>
-        focusLowerCell(element, 1)
+        focusLowerCell(element)
       );
     });
 
     it("should keep the focus to the current cell", () => {
-      shouldKeepFocus(mockTbody.rows[2].cells[5], (element) => focusLowerCell(element, 4));
+      shouldKeepFocus(mockTbody.rows[2].cells[5], (element) => focusLowerCell(element));
     });
   });
 

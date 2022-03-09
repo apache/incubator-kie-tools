@@ -167,7 +167,7 @@ interface TdCellProps {
   cell: Cell;
   rowIndex: number;
   inAForm: boolean;
-  onKeyDown: (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
+  onKeyDown: (rowIndex: number, rowSpan?: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
   tableInstance: TableInstance;
   getColumnKey: (column: Column) => string;
   onColumnsUpdate: (columns: Column[]) => void;
@@ -241,7 +241,7 @@ interface TdAdditiveCellProps {
   children?: React.ReactElement;
   cellIndex?: number;
   isEmptyCell?: boolean;
-  onKeyDown: (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
+  onKeyDown: (rowIndex: number, rowSpan?: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
   rowIndex: number;
 }
 
