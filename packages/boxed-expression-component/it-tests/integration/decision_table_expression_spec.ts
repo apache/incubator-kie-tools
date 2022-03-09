@@ -188,8 +188,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.contains("td", /cell 9/).should("not.be.focused");
   });
 
-  /* TODO: decision_table_expression_spec: unskip me */
-  it.skip("Navigate around header and data cells", () => {
+  it("Navigate around header and data cells", () => {
     // from the cell 1, go up
     cy.contains("td", /cell 1/)
       .type("{uparrow}")
@@ -200,7 +199,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
       .type("{rightarrow}{rightarrow}")
       // check the cell "input-1" is focused
       .focused()
-      .should("contain.text", "expression-1")
+      .should("contain.text", "Expression Name")
       // go down
       .type("{downarrow}")
       // check the cell "output-1" is focused
@@ -215,7 +214,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
       .type("{downarrow}")
       // check the cell "cell-4" is focused
       .focused()
-      .should("contain.text", "cell-4")
+      .should("contain.text", "cell 4")
       // go left and up
       .type("{leftarrow}{uparrow}")
       // check the cell "output-1" is focused
@@ -240,19 +239,6 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.realPress("Tab");
 
     cy.focused().should("contains.text", "cell 12");
-  });
-
-  /* TODO: decision_table_expression_spec: unskip me */
-  it.skip("The first cell should keep the focus after tab press", () => {
-    // from the cell 1
-    cy.contains("td", /cell 1/)
-      .as("cell-1")
-      .type("{enter}")
-      .focused();
-
-    cy.realPress(["Shift", "Tab"]);
-
-    cy.get("@cell-1").should("be.focused");
   });
 
   it("The last cell should keep the focus after tab press", () => {
