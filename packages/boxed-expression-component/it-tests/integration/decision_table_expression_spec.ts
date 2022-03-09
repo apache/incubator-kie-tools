@@ -267,18 +267,18 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.get("@cell-12").should("be.focused");
   });
 
-  /* TODO: decision_table_expression_spec: unskip me */
-  it.skip("Go against edges", () => {
+  it("Go against edges", () => {
     // from the cell 1, go to cell 4
-    cy.contains("td", /cell 1/)
+    cy.contains("th", /input-1/)
       .click({ force: true })
       .type("{uparrow}{uparrow}{uparrow}")
       .should("be.focused")
-      .type("{rightarrow}{rightarrow}{rightarrow}{rightarrow}");
+      .type("{rightarrow}{rightarrow}{rightarrow}{rightarrow}")
+      .focused()
+      .should("contains", /annotation-1/);
 
     // from the cell 4, go to cell 12
     cy.contains("td", /cell 4/)
-      .should("be.focused")
       .click({ force: true })
       .type("{downarrow}{downarrow}{downarrow}{downarrow}");
 
