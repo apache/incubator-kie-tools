@@ -101,6 +101,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
     (column: ColumnInstance) => {
       const columnKey = getColumnKey(column);
       const classNames = `${columnKey} fixed-column no-clickable-cell`;
+      /* TODO: TableHeader: inhibit context menu for counter cells */
       return (
         <ThCell
           {...column.getHeaderProps()}
@@ -228,6 +229,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
           columnKey={columnKey}
           headerProps={headerProps}
           isFocusable={isFocusable}
+          key={columnKey}
           onClick={onHeaderClick(columnKey)}
           onKeyDown={onCellKeyDown}
           rowIndex={rowIndex}
@@ -360,7 +362,6 @@ function ThCell({
     };
   }, [onKeyDown, rowIndex, rowSpan]);
 
-  /* FIXME: TableHeader warning: Each child in a list should have a unique "key" prop. */
   return (
     <Th
       {...headerProps}
