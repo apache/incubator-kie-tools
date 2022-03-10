@@ -25,7 +25,6 @@ import {
   focusNextCell,
   focusParentCell,
   focusPrevCell,
-  focusPrevDataCell,
   focusTextInput,
   focusUpperCell,
   getParentCell,
@@ -138,27 +137,19 @@ const shouldKeepFocus = (element: HTMLElement, move: (element: HTMLElement) => v
 
 describe("FocusUtils tests", () => {
   let mockTable: HTMLTableElement;
-  let mockThead: HTMLTableSectionElement;
-  let mockTbody: HTMLTableSectionElement;
   let mockTableColRowspan: HTMLTableElement;
-  let mockTableColRowspanThead: HTMLTableSectionElement;
-  let mockTableColRowspanTbody: HTMLTableSectionElement;
 
   beforeEach(() => {
     mockTable = render(createMockTable(2, 3, 6)).container.children[0] as HTMLTableElement;
-    mockThead = mockTable.tHead || document.createElement("thead");
-    mockTbody = mockTable.tBodies[0];
 
     mockTableColRowspan = render(createMockTable(2, 3, 6)).container.children[0] as HTMLTableElement;
-    mockTableColRowspanThead = mockTableColRowspan.tHead || document.createElement("thead");
-    mockTableColRowspanTbody = mockTableColRowspan.tBodies[0];
 
-    mockTableColRowspanThead.rows[0].cells[1].setAttribute("colspan", "2");
-    mockTableColRowspanThead.rows[0].cells[1].removeAttribute("tabindex");
-    mockTableColRowspanThead.rows[0].cells[2].setAttribute("colspan", "2");
-    mockTableColRowspanThead.rows[0].deleteCell(5);
-    mockTableColRowspanThead.rows[0].deleteCell(4);
-    mockTableColRowspanThead.rows[0].cells[3].removeAttribute("tabindex");
+    mockTableColRowspan.rows[0].cells[1].setAttribute("colspan", "2");
+    mockTableColRowspan.rows[0].cells[1].removeAttribute("tabindex");
+    mockTableColRowspan.rows[0].cells[2].setAttribute("colspan", "2");
+    mockTableColRowspan.rows[0].deleteCell(5);
+    mockTableColRowspan.rows[0].deleteCell(4);
+    mockTableColRowspan.rows[0].cells[3].removeAttribute("tabindex");
 
     jest.resetAllMocks();
   });
@@ -171,12 +162,12 @@ describe("FocusUtils tests", () => {
     });
 
     it("should return the input", () => {
-      expect(getParentCell(mockTbody.rows[0].cells[1])).toBe(mockTbody.rows[0].cells[1]);
+      expect(getParentCell(mockTable.rows[2].cells[1])).toBe(mockTable.rows[2].cells[1]);
     });
 
     it("should return the parent data cell", () => {
-      expect(getParentCell(mockTbody.rows[0].cells[1].children[0] as HTMLElement)).toBe(mockTbody.rows[0].cells[1]);
-      expect(getParentCell(mockThead.rows[0].cells[1].children[0] as HTMLElement)).toBe(mockThead.rows[0].cells[1]);
+      expect(getParentCell(mockTable.rows[2].cells[1].children[0] as HTMLElement)).toBe(mockTable.rows[2].cells[1]);
+      expect(getParentCell(mockTable.rows[0].cells[1].children[0] as HTMLElement)).toBe(mockTable.rows[0].cells[1]);
     });
 
     it("should return null", () => {
@@ -192,7 +183,7 @@ describe("FocusUtils tests", () => {
     });
 
     it("should focus the element", () => {
-      const element = mockTbody.rows[0].cells[1];
+      const element = mockTable.rows[2].cells[1];
 
       shouldKeepFocus(element, (element) => cellFocus(element as HTMLTableCellElement));
     });
@@ -206,17 +197,17 @@ describe("FocusUtils tests", () => {
     });
 
     it("should focus the body cell", () => {
-      const element = mockTbody.rows[0].cells[1];
+      const element = mockTable.rows[2].cells[1];
       shouldKeepFocus(element, focusCurrentCell);
     });
 
     it("should focus the header cell", () => {
-      const element = mockThead.rows[0].cells[1];
+      const element = mockTable.rows[0].cells[1];
       shouldKeepFocus(element, focusCurrentCell);
     });
 
     it("should focus the cell called from an element inside the cell", () => {
-      testFocus(mockTbody.rows[0].cells[1].children[0] as HTMLElement, mockTbody.rows[0].cells[1], focusCurrentCell);
+      testFocus(mockTable.rows[2].cells[1].children[0] as HTMLElement, mockTable.rows[2].cells[1], focusCurrentCell);
     });
   });
 
@@ -259,35 +250,35 @@ describe("FocusUtils tests", () => {
     });
 
     it("should focus the first data cell", () => {
-      testFocus(mockTbody.rows[0].cells[0], mockTbody.rows[0].cells[1], (element) =>
+      testFocus(mockTable.rows[2].cells[0], mockTable.rows[2].cells[1], (element) =>
         focusCellByCoordinates(element, { y: 2, x: 1 })
       );
     });
 
     it("should focus the second header cell", () => {
-      testFocus(mockThead.rows[0].cells[1], mockThead.rows[0].cells[2], (element) =>
+      testFocus(mockTable.rows[0].cells[1], mockTable.rows[0].cells[2], (element) =>
         focusCellByCoordinates(element, { y: 0, x: 2 })
       );
     });
 
     it("test headers cell with rowspan focus", () => {
-      testFocus(mockTableColRowspanThead.rows[0].cells[0], mockTableColRowspanThead.rows[1].cells[1], (element) =>
+      testFocus(mockTableColRowspan.rows[0].cells[0], mockTableColRowspan.rows[1].cells[1], (element) =>
         focusCellByCoordinates(element, { y: 0, x: 1 })
       );
     });
 
     it("test headers cell with colspan focus", () => {
-      testFocus(mockTableColRowspanThead.rows[0].cells[0], mockTableColRowspanThead.rows[0].cells[2], (element) =>
+      testFocus(mockTableColRowspan.rows[0].cells[0], mockTableColRowspan.rows[0].cells[2], (element) =>
         focusCellByCoordinates(element, { y: 0, x: 3 })
       );
-      testFocus(mockTableColRowspanThead.rows[0].cells[0], mockTableColRowspanThead.rows[0].cells[2], (element) =>
+      testFocus(mockTableColRowspan.rows[0].cells[0], mockTableColRowspan.rows[0].cells[2], (element) =>
         focusCellByCoordinates(element, { y: 0, x: 4 })
       );
     });
 
     it("should keep the focus to the current cell", () => {
-      shouldKeepFocus(mockTbody.rows[2].cells[5], (element) => focusCellByCoordinates(element, { y: 100, x: 1 }));
-      shouldKeepFocus(mockTbody.rows[2].cells[5], (element) => focusCellByCoordinates(element, { y: 1, x: 100 }));
+      shouldKeepFocus(mockTable.rows[4].cells[5], (element) => focusCellByCoordinates(element, { y: 100, x: 1 }));
+      shouldKeepFocus(mockTable.rows[4].cells[5], (element) => focusCellByCoordinates(element, { y: 1, x: 100 }));
     });
   });
 
@@ -299,118 +290,83 @@ describe("FocusUtils tests", () => {
     });
 
     it("should focus the next data cell", () => {
-      testFocus(mockTbody.rows[0].cells[1], mockTbody.rows[0].cells[2], focusNextCell);
+      testFocus(mockTable.rows[2].cells[1], mockTable.rows[2].cells[2], focusNextCell);
     });
 
     it("should focus the next header cell", () => {
-      testFocus(mockThead.rows[0].cells[1], mockThead.rows[0].cells[2], focusNextCell);
+      testFocus(mockTable.rows[0].cells[1], mockTable.rows[0].cells[2], focusNextCell);
     });
 
     it("should focus the first cell of the next line", () => {
-      testFocus(mockTbody.rows[0].cells[5], mockTbody.rows[1].cells[1], (element) => focusNextCell(element, 1, false));
+      testFocus(mockTable.rows[2].cells[5], mockTable.rows[3].cells[1], (element) => focusNextCell(element, 1, false));
     });
 
-    it("test full headers with rowspan and colspan arrow navigation", () => {
-      testFocus(mockTableColRowspanThead.rows[0].cells[0], mockTableColRowspanThead.rows[1].cells[1], focusNextCell);
-      testFocus(mockTableColRowspanThead.rows[1].cells[1], mockTableColRowspanThead.rows[1].cells[2], focusNextCell);
-      testFocus(mockTableColRowspanThead.rows[1].cells[2], mockTableColRowspanThead.rows[0].cells[2], (element) =>
-        focusNextCell(element, 2)
-      );
-      testFocus(mockTableColRowspanThead.rows[0].cells[2], mockTableColRowspanThead.rows[1].cells[5], focusNextCell);
-    });
-
-    it("test full headers with rowspan and colspan tab navigation", () => {
-      testFocus(mockTableColRowspanThead.rows[0].cells[0], mockTableColRowspanThead.rows[1].cells[1], (element) =>
-        focusNextCell(element, 1, false)
-      );
-      testFocus(mockTableColRowspanThead.rows[1].cells[1], mockTableColRowspanThead.rows[1].cells[2], (element) =>
-        focusNextCell(element, 2, false)
-      );
-      testFocus(mockTableColRowspanThead.rows[1].cells[2], mockTableColRowspanThead.rows[0].cells[2], (element) =>
-        focusNextCell(element, 2, false)
-      );
-      testFocus(mockTableColRowspanThead.rows[0].cells[2], mockTableColRowspanThead.rows[1].cells[5], (element) =>
-        focusNextCell(element, 1, false)
-      );
-      testFocus(mockTableColRowspanThead.rows[1].cells[5], mockTableColRowspanTbody.rows[0].cells[1], (element) =>
-        focusNextCell(element, 2, false)
+    it.each([
+      { from: { y: 0, x: 0 }, to: { y: 1, x: 1 }, rowspan: 1, stopAtEndOfRow: false },
+      { from: { y: 1, x: 1 }, to: { y: 1, x: 2 }, rowspan: 2, stopAtEndOfRow: false },
+      { from: { y: 1, x: 2 }, to: { y: 0, x: 2 }, rowspan: 2, stopAtEndOfRow: false },
+      { from: { y: 0, x: 2 }, to: { y: 1, x: 5 }, rowspan: 1, stopAtEndOfRow: false },
+      { from: { y: 1, x: 5 }, to: { y: 2, x: 1 }, rowspan: 2, stopAtEndOfRow: false },
+    ])("test headers with rowspan and colspan navigation at index %#", ({ from, to, rowspan, stopAtEndOfRow }) => {
+      testFocus(mockTableColRowspan.rows[from.y].cells[from.x], mockTableColRowspan.rows[to.y].cells[to.x], (element) =>
+        focusNextCell(element, rowspan, stopAtEndOfRow)
       );
     });
 
     it("should not change the focus", () => {
-      shouldNotChangeFocus(mockTbody.rows[2].cells[5], focusNextCell);
-      shouldNotChangeFocus(mockTableColRowspanThead.rows[1].cells[5], focusNextCell);
+      shouldNotChangeFocus(mockTable.rows[4].cells[5], focusNextCell);
+      shouldNotChangeFocus(mockTableColRowspan.rows[1].cells[5], focusNextCell);
     });
   });
 
-  describe.skip("focusPrevCell tests", () => {
+  describe("focusPrevCell tests", () => {
     it("should fail", () => {
       // @ts-ignore
       expect(() => focusPrevCell()).not.toThrowError();
       expect(() => focusPrevCell(null)).not.toThrowError();
     });
 
-    it("should focus the previous data cell", () => {
-      testFocus(mockTbody.rows[0].cells[1], mockTbody.rows[0].cells[0], focusPrevCell);
-    });
-
-    it("should focus the previous header cell", () => {
-      testFocus(mockThead.rows[0].cells[1], mockThead.rows[0].cells[0], focusPrevCell);
-    });
-
-    it("test full headers with rowspan and colspan navigation", () => {
-      testFocus(mockTableColRowspanThead.rows[1].cells[5], mockTableColRowspanThead.rows[0].cells[3], focusPrevCell);
-      testFocus(mockTableColRowspanThead.rows[0].cells[3], mockTableColRowspanThead.rows[1].cells[2], focusPrevCell);
-      testFocus(mockTableColRowspanThead.rows[1].cells[2], mockTableColRowspanThead.rows[1].cells[1], focusPrevCell);
-      testFocus(mockTableColRowspanThead.rows[1].cells[1], mockTableColRowspanThead.rows[0].cells[0], focusPrevCell);
-    });
-
-    it("should not change the focus", () => {
-      shouldNotChangeFocus(mockTbody.rows[0].cells[0], focusPrevCell);
-      shouldNotChangeFocus(mockTableColRowspanThead.rows[0].cells[0], focusPrevCell);
-    });
-  });
-
-  describe.skip("focusPrevDataCell tests", () => {
-    /* TODO: FocusUtils.test: focusPrevDataCell: change indexes */
-    it("should fail", () => {
-      // @ts-ignore
-      expect(() => focusPrevDataCell()).not.toThrowError();
-      expect(() => focusPrevDataCell(null, 0)).not.toThrowError();
-    });
-
     it("should focus the previous cell", () => {
-      testFocus(mockTbody.rows[0].cells[2], mockTbody.rows[0].cells[1], (element) => focusPrevDataCell(element, 0));
+      testFocus(mockTable.rows[2].cells[2], mockTable.rows[2].cells[1], (element) => focusPrevCell(element, 1, false));
     });
 
     it("should focus the last cell of the previous line", () => {
-      testFocus(mockTbody.rows[1].cells[1], mockTbody.rows[0].cells[5], (element) => focusPrevDataCell(element, 1));
+      testFocus(mockTable.rows[3].cells[1], mockTable.rows[2].cells[5], (element) => focusPrevCell(element, 1, false));
     });
 
     it("should focus the last cell of the header", () => {
-      testFocus(mockTbody.rows[0].cells[1], mockThead.rows[1].cells[5], (element) => focusPrevDataCell(element, 0));
+      testFocus(mockTable.rows[2].cells[1], mockTable.rows[1].cells[5], (element) => focusPrevCell(element, 1, false));
     });
 
-    it("test full headers with rowspan and colspan navigation", () => {
-      testFocus(mockTableColRowspanTbody.rows[0].cells[1], mockTableColRowspanThead.rows[1].cells[5], (element) =>
-        focusPrevDataCell(element, 0)
-      );
-      testFocus(mockTableColRowspanThead.rows[1].cells[5], mockTableColRowspanThead.rows[0].cells[3], (element) =>
-        focusPrevDataCell(element, 0)
-      );
-      testFocus(mockTableColRowspanThead.rows[0].cells[3], mockTableColRowspanThead.rows[1].cells[2], (element) =>
-        focusPrevDataCell(element, 0)
-      );
-      testFocus(mockTableColRowspanThead.rows[1].cells[2], mockTableColRowspanThead.rows[1].cells[1], (element) =>
-        focusPrevDataCell(element, 0)
-      );
-      testFocus(mockTableColRowspanThead.rows[1].cells[1], mockTableColRowspanThead.rows[0].cells[0], (element) =>
-        focusPrevDataCell(element, 0)
+    it("should focus the previous data cell", () => {
+      testFocus(mockTable.rows[2].cells[1], mockTable.rows[2].cells[0], focusPrevCell);
+    });
+
+    it("should focus the previous header cell", () => {
+      testFocus(mockTable.rows[0].cells[1], mockTable.rows[0].cells[0], focusPrevCell);
+    });
+
+    it.each([
+      { from: { y: 1, x: 5 }, to: { y: 0, x: 2 }, rowspan: 2, stopAtEndOfRow: true },
+      { from: { y: 0, x: 3 }, to: { y: 0, x: 2 }, rowspan: 1, stopAtEndOfRow: true },
+      { from: { y: 1, x: 2 }, to: { y: 1, x: 1 }, rowspan: 1, stopAtEndOfRow: true },
+      { from: { y: 1, x: 1 }, to: { y: 0, x: 0 }, rowspan: 2, stopAtEndOfRow: true },
+      { from: { y: 2, x: 1 }, to: { y: 1, x: 5 }, rowspan: 1, stopAtEndOfRow: false },
+      { from: { y: 1, x: 5 }, to: { y: 0, x: 2 }, rowspan: 2, stopAtEndOfRow: false },
+      { from: { y: 0, x: 3 }, to: { y: 0, x: 2 }, rowspan: 1, stopAtEndOfRow: false },
+      { from: { y: 1, x: 2 }, to: { y: 1, x: 1 }, rowspan: 2, stopAtEndOfRow: false },
+      { from: { y: 1, x: 1 }, to: { y: 0, x: 0 }, rowspan: 2, stopAtEndOfRow: true },
+    ])("test headers with rowspan and colspan navigation at index %#", ({ from, to, rowspan, stopAtEndOfRow }) => {
+      testFocus(mockTableColRowspan.rows[from.y].cells[from.x], mockTableColRowspan.rows[to.y].cells[to.x], (element) =>
+        focusPrevCell(element, rowspan, stopAtEndOfRow)
       );
     });
 
     it("should keep the focus to the current counter cell", () => {
-      shouldKeepFocus(mockTableColRowspanThead.rows[0].cells[1], (element) => focusPrevDataCell(element, 0));
+      shouldNotChangeFocus(mockTable.rows[2].cells[0], focusPrevCell);
+      shouldNotChangeFocus(mockTableColRowspan.rows[0].cells[0], focusPrevCell);
+      shouldKeepFocus(mockTable.rows[0].cells[1], (element) => focusPrevCell(element, 1, false));
+      shouldKeepFocus(mockTableColRowspan.rows[1].cells[1], (element) => focusPrevCell(element, 2, false));
     });
   });
 
@@ -422,24 +378,22 @@ describe("FocusUtils tests", () => {
     });
 
     it("should focus the upper data cell", () => {
-      testFocus(mockTbody.rows[2].cells[2], mockTbody.rows[1].cells[2], (element) => focusUpperCell(element));
+      testFocus(mockTable.rows[4].cells[2], mockTable.rows[3].cells[2], (element) => focusUpperCell(element));
     });
 
-    it("test full headers with rowspan and colspan navigation", () => {
-      testFocus(mockTableColRowspanTbody.rows[0].cells[1], mockTableColRowspanThead.rows[1].cells[1], (element) =>
-        focusUpperCell(element)
-      );
-      testFocus(mockTableColRowspanTbody.rows[0].cells[3], mockTableColRowspanThead.rows[1].cells[3], (element) =>
-        focusUpperCell(element)
-      );
-      testFocus(mockTableColRowspanThead.rows[1].cells[3], mockTableColRowspanThead.rows[0].cells[2], (element) =>
+    it.each([
+      { from: { y: 2, x: 1 }, to: { y: 1, x: 1 } },
+      { from: { y: 2, x: 3 }, to: { y: 1, x: 3 } },
+      { from: { y: 1, x: 3 }, to: { y: 0, x: 2 } },
+    ])("test headers with rowspan and colspan navigation at index %#", ({ from, to }) => {
+      testFocus(mockTableColRowspan.rows[from.y].cells[from.x], mockTableColRowspan.rows[to.y].cells[to.x], (element) =>
         focusUpperCell(element)
       );
     });
 
     it("should keep the focus to the current cell", () => {
-      shouldKeepFocus(mockThead.rows[0].cells[5], (element) => focusUpperCell(element));
-      shouldKeepFocus(mockTableColRowspanThead.rows[1].cells[5], (element) => focusUpperCell(element));
+      shouldKeepFocus(mockTable.rows[0].cells[5], (element) => focusUpperCell(element));
+      shouldKeepFocus(mockTableColRowspan.rows[1].cells[5], (element) => focusUpperCell(element));
     });
   });
 
@@ -451,27 +405,31 @@ describe("FocusUtils tests", () => {
     });
 
     it("should focus the lower data cell", () => {
-      testFocus(mockTbody.rows[0].cells[2], mockTbody.rows[1].cells[2], (element) => focusLowerCell(element));
+      testFocus(mockTable.rows[2].cells[2], mockTable.rows[3].cells[2], (element) => focusLowerCell(element));
     });
 
-    it("test full headers with rowspan and colspan navigation", () => {
-      testFocus(mockTableColRowspanThead.rows[1].cells[2], mockTableColRowspanTbody.rows[0].cells[2], (element) =>
-        focusLowerCell(element)
-      );
-      testFocus(mockTableColRowspanThead.rows[0].cells[3], mockTableColRowspanThead.rows[1].cells[5], (element) =>
-        focusLowerCell(element)
-      );
-      testFocus(mockTableColRowspanThead.rows[1].cells[3], mockTableColRowspanTbody.rows[0].cells[3], (element) =>
+    it.each([
+      { from: { y: 1, x: 2 }, to: { y: 2, x: 2 } },
+      { from: { y: 0, x: 3 }, to: { y: 1, x: 5 } },
+      { from: { y: 1, x: 3 }, to: { y: 2, x: 3 } },
+    ])("test headers with rowspan and colspan navigation at index %#", ({ from, to }) => {
+      testFocus(mockTableColRowspan.rows[from.y].cells[from.x], mockTableColRowspan.rows[to.y].cells[to.x], (element) =>
         focusLowerCell(element)
       );
     });
 
     it("should keep the focus to the current cell", () => {
-      shouldKeepFocus(mockTbody.rows[2].cells[5], (element) => focusLowerCell(element));
+      shouldKeepFocus(mockTable.rows[4].cells[5], (element) => focusLowerCell(element));
     });
   });
 
   describe("focusInsideCell tests", () => {
+    let parentCell: HTMLTableCellElement;
+
+    beforeEach(() => {
+      parentCell = mockTable?.rows[2].cells[1];
+    });
+
     it("should fail", () => {
       // @ts-ignore
       expect(() => focusInsideCell(undefined)).not.toThrowError();
@@ -479,17 +437,14 @@ describe("FocusUtils tests", () => {
     });
 
     it("should focus the textarea", () => {
-      const parentCell = mockTbody?.rows[0].cells[1];
-
-      const elementToBeFocused = render(<textarea>TextArea Value</textarea>, { baseElement: parentCell }).container
-        .children[0] as HTMLTextAreaElement;
+      const elementToBeFocused = render(<textarea defaultValue="TextArea Value"></textarea>, {
+        baseElement: parentCell,
+      }).container.children[0] as HTMLTextAreaElement;
 
       testFocus(parentCell, elementToBeFocused, focusInsideCell);
     });
 
     it("should focus the input text", () => {
-      const parentCell = mockTbody?.rows[0].cells[1];
-
       const elementToBeFocused = render(<input type="text"></input>, { baseElement: parentCell }).container
         .children[0] as HTMLInputElement;
 
@@ -497,22 +452,17 @@ describe("FocusUtils tests", () => {
     });
 
     it("should focus the second cell of the inner table", () => {
-      const parentCell = document.querySelector("td") as HTMLElement;
-      const innerTable = render(createMockTable(1, 2, 3), {
-        container: parentCell,
-      }).container.children[0] as HTMLTableElement;
+      const innerTable = render(createMockTable(1, 2, 3), { baseElement: parentCell }).container
+        .children[0] as HTMLTableElement;
 
       testFocus(parentCell, innerTable.tBodies[0].rows[0].cells[1], focusInsideCell);
     });
 
     it("should open the PopoverMenu", () => {
-      const parentCell = document.createElement("td");
-      const elementWithPopoverMenu = document.createElement("div");
+      const elementWithPopoverMenu = render(<div className="with-popover-menu"></div>, { baseElement: parentCell })
+        .container.children[0] as HTMLTableElement;
       const mockParentCellFocus = jest.spyOn(parentCell, "focus");
       const mockElementWithPopoverMenuClick = jest.spyOn(elementWithPopoverMenu, "click");
-
-      elementWithPopoverMenu.classList.add("with-popover-menu");
-      parentCell.appendChild(elementWithPopoverMenu);
 
       focusInsideCell(parentCell);
       expect(mockParentCellFocus).not.toHaveBeenCalled();
@@ -520,15 +470,15 @@ describe("FocusUtils tests", () => {
     });
 
     it("should open the Select menu component", () => {
-      const parentCell = document.createElement("td");
-      const selectWrapper = document.createElement("div");
-      const selectMenuBtn = document.createElement("button");
+      const selectWrapper = render(
+        <div className="logic-type-selector">
+          <button></button>
+        </div>,
+        { baseElement: parentCell }
+      ).container.children[0] as HTMLDivElement;
+      const selectMenuBtn = (selectWrapper.firstChild || document.createElement("button")) as HTMLButtonElement;
       const mockParentCellFocus = jest.spyOn(parentCell, "focus");
       const mockSelectMenuBtnClick = jest.spyOn(selectMenuBtn, "click");
-
-      selectWrapper.classList.add("logic-type-selector");
-      selectWrapper.appendChild(selectMenuBtn);
-      parentCell.appendChild(selectWrapper);
 
       focusInsideCell(parentCell);
       expect(mockParentCellFocus).not.toHaveBeenCalled();
@@ -544,7 +494,8 @@ describe("FocusUtils tests", () => {
     let elementToBeFocused: HTMLTextAreaElement;
 
     beforeEach(() => {
-      elementToBeFocused = render(<textarea>TextArea Value</textarea>).container.children[0] as HTMLTextAreaElement;
+      elementToBeFocused = render(<textarea defaultValue="TextArea Value"></textarea>).container
+        .children[0] as HTMLTextAreaElement;
     });
 
     it("should fail", () => {
