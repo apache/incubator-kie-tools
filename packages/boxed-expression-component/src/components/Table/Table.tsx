@@ -38,7 +38,6 @@ import {
   focusNextCell,
   focusParentCell,
   focusPrevCell,
-  focusPrevDataCell,
   focusUpperCell,
   getParentCell,
   pasteOnTable,
@@ -421,12 +420,12 @@ export const Table: React.FunctionComponent<TableProps> = ({
         if (key === "Tab") {
           e.preventDefault();
           if (e.shiftKey) {
-            focusPrevDataCell(e.currentTarget, rowIndex);
+            focusPrevCell(e.currentTarget, rowSpan, false);
           } else {
             focusNextCell(e.currentTarget, rowSpan, false);
           }
         } else if (key === "ArrowLeft") {
-          focusPrevCell(e.currentTarget);
+          focusPrevCell(e.currentTarget, rowSpan);
         } else if (key === "ArrowRight") {
           focusNextCell(e.currentTarget, rowSpan);
         } else if (key === "ArrowUp") {
