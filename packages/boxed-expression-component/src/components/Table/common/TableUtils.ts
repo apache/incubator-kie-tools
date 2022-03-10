@@ -109,21 +109,27 @@ export const getHeaderRowsLenght = (tableInstance: TableInstance, skipLastHeader
  * Get a cell by coordinates counting the colspans too
  *
  * @param table the table
- * @param cellCoordinates the cell coordinates
+ * @param cellCoordinates the cell coordinates. set x or y = -1 to get the last element.
  * @returns the table cell, null otherwise
  */
 export const getCellByCoordinates = (
   table: HTMLTableElement,
-  { x, y }: TableCellCoordinates
+  cellCoordinates: TableCellCoordinates
 ): HTMLTableCellElement | null => {
-  if (!table || table.rows.length <= y) {
+  const { x, y } = cellCoordinates || {};
+
+  if (!table || x === undefined || x < -1 || y === undefined || y < -1 || table.rows.length <= y) {
     return null;
   }
 
-  const row = table.rows[y];
+  const row = table.rows[y === -1 ? table.rows.length - 1 : y];
 
   if (!row) {
     return null;
+  }
+
+  if (x === -1) {
+    return row.lastChild as HTMLTableCellElement;
   }
 
   let ci = 0,

@@ -254,6 +254,18 @@ describe("TableUtils", () => {
       expect(getCellByCoordinates(table, { y: 1, x: 2 })?.innerHTML).toBe("E");
     });
 
+    test("get last cell, first row ", () => {
+      expect(getCellByCoordinates(table, { y: 0, x: -1 })?.innerHTML).toBe("C");
+    });
+
+    test("get first cell, last row ", () => {
+      expect(getCellByCoordinates(table, { y: -1, x: 0 })?.innerHTML).toBe("D");
+    });
+
+    test("get last cell, last row ", () => {
+      expect(getCellByCoordinates(table, { y: -1, x: -1 })?.innerHTML).toBe("E");
+    });
+
     test("empty table", () => {
       expect(getCellByCoordinates(document.createElement("table"), { y: 1, x: 2 })).toBeNull();
     });
