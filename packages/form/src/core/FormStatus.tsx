@@ -49,10 +49,18 @@ export function EmptyFormStatus({ i18n }: EmptyFormStatusProps) {
   );
 }
 
-interface AutoGenerationErrorFormStatusProps extends CommonFormStatusProps {
-  notificationsPanel: boolean;
-  openValidationTab?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+interface AutoGenerationErrorWithNotificationFormStatusProps extends CommonFormStatusProps {
+  notificationsPanel: true;
+  openValidationTab: () => void;
 }
+
+interface AutoGenerationErrorWithoutNotificationFormStatusProps extends CommonFormStatusProps {
+  notificationsPanel: false;
+}
+
+type AutoGenerationErrorFormStatusProps =
+  | AutoGenerationErrorWithNotificationFormStatusProps
+  | AutoGenerationErrorWithoutNotificationFormStatusProps;
 
 export function AutoGenerationErrorFormStatus(props: AutoGenerationErrorFormStatusProps) {
   return (

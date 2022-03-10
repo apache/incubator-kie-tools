@@ -16,23 +16,15 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AutoForm } from "uniforms-patternfly/dist/es6";
+import AutoForm from "uniforms-patternfly/dist/es6/AutoForm";
 import { ErrorBoundary } from "../common/ErrorBoundary";
 import { dataPathToFormFieldPath } from "./uniforms/utils";
 import { DmnFormJsonSchemaBridge } from "./uniforms";
 import { DmnValidator } from "./DmnValidator";
 import { dmnFormI18n } from "../i18n";
 import { diff } from "deep-object-diff";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
-import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
-import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import cloneDeep from "lodash/cloneDeep";
 import { AutoGenerationErrorFormStatus, EmptyFormStatus, ValidatorErrorFormStatus } from "../core/FormStatus";
-
-const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
 enum FormStatus {
   WITHOUT_ERROR,
@@ -435,32 +427,6 @@ export function DmnForm(props: Props) {
     [props.onValidate]
   );
 
-  // FIXME CORE
-  const formErrorMessage = useMemo(
-    () => (
-      <div>
-        <EmptyState>
-          <EmptyStateIcon icon={ExclamationIcon} />
-          <TextContent>
-            <Text component={"h2"}>{i18n.form.status.autoGenerationError.title}</Text>
-          </TextContent>
-          <EmptyStateBody>
-            <TextContent>{i18n.form.status.autoGenerationError.explanation}</TextContent>
-            <br />
-            <TextContent>
-              {props.notificationsPanel && (
-                <I18nWrapped components={{ link: <a onClick={props?.openValidationTab}>{i18n.terms.validation}</a> }}>
-                  {i18n.form.status.autoGenerationError.checkNotificationPanel}
-                </I18nWrapped>
-              )}
-            </TextContent>
-          </EmptyStateBody>
-        </EmptyState>
-      </div>
-    ),
-    [props.notificationsPanel, i18n]
-  );
-
   // Manage form status
   useEffect(() => {
     if (props.formError) {
@@ -484,19 +450,27 @@ export function DmnForm(props: Props) {
   return (
     <>
       {formStatus === FormStatus.VALIDATOR_ERROR && <ValidatorErrorFormStatus i18n={i18n} />}
-      {formStatus === FormStatus.AUTO_GENERATION_ERROR && props.notificationsPanel ? (
+      {formStatus === FormStatus.AUTO_GENERATION_ERROR && (
         <AutoGenerationErrorFormStatus
           notificationsPanel={props.notificationsPanel}
           i18n={i18n}
-          openValidationTab={props.openValidationTab}
+          openValidationTab={() => (props.notificationsPanel ? props.openValidationTab() : undefined)}
         />
-      ) : (
-        <AutoGenerationErrorFormStatus notificationsPanel={props.notificationsPanel} i18n={i18n} />
       )}
       {formStatus === FormStatus.EMPTY && <EmptyFormStatus i18n={i18n} />}
       {formStatus === FormStatus.WITHOUT_ERROR && (
         <div data-testid={"dmn-form"}>
-          <ErrorBoundary ref={errorBoundaryRef} setHasError={props.setFormError} error={formErrorMessage}>
+          <ErrorBoundary
+            ref={errorBoundaryRef}
+            setHasError={props.setFormError}
+            error={
+              <AutoGenerationErrorFormStatus
+                notificationsPanel={props.notificationsPanel}
+                i18n={i18n}
+                openValidationTab={() => (props.notificationsPanel ? props.openValidationTab() : undefined)}
+              />
+            }
+          >
             <AutoForm
               id={props.id}
               model={formModel}

@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import { act, render } from "@testing-library/react";
-import { DmnForm, Props } from "../../dmn";
-import { dmnFormI18n } from "../../i18n";
+import { DmnForm, Props } from "../../src/dmn";
+import { dmnFormI18n } from "../../src/i18n";
 
 const schema: any = {
   $ref: "#/definitions/InputSet",
@@ -123,7 +123,7 @@ describe("DmnForm tests", () => {
       formRef.current?.submit();
     });
 
-    expect(onValidate).toHaveBeenCalledTimes(2);
+    expect(onValidate).toHaveBeenCalledTimes(1);
   });
 
   it("should have placeholder", () => {

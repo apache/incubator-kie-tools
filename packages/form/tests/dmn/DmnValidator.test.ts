@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-import { Validator } from "../../core";
-import JSONSchemaBridge from "uniforms-bridge-json-schema";
+import { DmnValidator } from "../../src/dmn/DmnValidator";
+import { dmnFormI18n } from "../../src/i18n";
+import { DmnFormJsonSchemaBridge } from "../../src/dmn/uniforms";
 
 const schema = {
   type: "object",
   properties: {
     name: { type: "string" },
     lastName: { type: "string" },
-    birthDate: { format: "date-time", type: "string" },
-    contributors: { type: "number", minimum: 1 },
+    daysAndTimeDuration: { format: "days and time duration", type: "string" },
+    yearsAndMonthsDuration: { format: "years and months duration", type: "string" },
   },
   required: ["name", "lastName"],
 };
 
-describe("Validator Tests", () => {
+const i18n = dmnFormI18n.getCurrent();
+
+describe("DmnValidator Tests", () => {
   it("create instance", () => {
-    const validator = new Validator();
-    expect(validator).toBeInstanceOf(Validator);
+    const dmnValidator = new DmnValidator(i18n);
+    expect(dmnValidator).toBeInstanceOf(DmnValidator);
   });
 
   describe("create validator", () => {
@@ -39,11 +42,11 @@ describe("Validator Tests", () => {
       const model = {
         name: "Kogito",
         lastName: "Tooling",
-        birthDate: new Date(),
-        contributors: 10,
+        daysAndTimeDuration: "P1D",
+        yearsAndMonthsDuration: "P1Y",
       };
 
-      const validator = new Validator();
+      const validator = new DmnValidator(i18n);
       const validate = validator.createValidator(schema);
       const errors = validate(model);
       expect(errors).toBeNull();
@@ -53,36 +56,34 @@ describe("Validator Tests", () => {
       const model = {
         name: "Kogito",
         lastName: "Tooling",
-        birthDate: new Date(),
-        contributors: 0,
+        daysAndTimeDuration: "P1H",
       };
 
-      const validator = new Validator();
+      const validator = new DmnValidator(i18n);
       const validate = validator.createValidator(schema);
       const errors = validate(model);
-      expect(errors?.details[0].keyword).toEqual("minimum");
-      expect(errors?.details[0].message).toEqual("should be >= 1");
+      expect(errors?.details[0].keyword).toEqual("format");
+      expect(errors?.details[0].message).toEqual("should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)");
     });
 
     it("invalid model - format", () => {
       const model = {
         name: "Kogito",
         lastName: "Tooling",
-        birthDate: "2000-10-10",
-        contributors: 10,
+        yearsAndMonthsDuration: "1M",
       };
 
-      const validator = new Validator();
+      const validator = new DmnValidator(i18n);
       const validate = validator.createValidator(schema);
       const errors = validate(model);
       expect(errors?.details[0].keyword).toEqual("format");
-      expect(errors?.details[0].message).toEqual(`should match format "date-time"`);
+      expect(errors?.details[0].message).toEqual("should match format P1Y(ears)2M(onths)");
     });
   });
 
   it("get bridge", () => {
-    const validator = new Validator();
+    const validator = new DmnValidator(i18n);
     const bridge = validator.getBridge(schema);
-    expect(bridge).toBeInstanceOf(JSONSchemaBridge);
+    expect(bridge).toBeInstanceOf(DmnFormJsonSchemaBridge);
   });
 });
