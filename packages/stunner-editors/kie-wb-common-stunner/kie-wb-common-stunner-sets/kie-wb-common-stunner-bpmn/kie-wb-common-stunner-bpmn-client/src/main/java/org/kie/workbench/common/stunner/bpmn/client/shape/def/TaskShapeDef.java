@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.TaskViewHandler;
@@ -53,28 +55,25 @@ public class TaskShapeDef extends BaseDimensionedShapeDef
                     .put(BusinessRuleTask.class, BPMNSVGViewFactory::businessRuleTask);
 
     public static final Map<Class<? extends BaseTask>, Glyph> GLYPHS =
-            new Maps.Builder<Class<? extends BaseTask>, Glyph>()
-                    .put(NoneTask.class, BPMNGlyphFactory.TASK)
-                    .put(GenericServiceTask.class, BPMNGlyphFactory.TASK_GENERIC_SERVICE)
-                    .put(UserTask.class, BPMNGlyphFactory.TASK_USER)
-                    .put(ScriptTask.class, BPMNGlyphFactory.TASK_SCRIPT)
-                    .put(BusinessRuleTask.class, BPMNGlyphFactory.TASK_BUSINESS_RULE)
-                    .build();
+            Stream.of(new AbstractMap.SimpleEntry<>(NoneTask.class, BPMNGlyphFactory.TASK),
+                      new AbstractMap.SimpleEntry<>(GenericServiceTask.class, BPMNGlyphFactory.TASK_GENERIC_SERVICE),
+                      new AbstractMap.SimpleEntry<>(UserTask.class, BPMNGlyphFactory.TASK_USER),
+                      new AbstractMap.SimpleEntry<>(ScriptTask.class, BPMNGlyphFactory.TASK_SCRIPT),
+                      new AbstractMap.SimpleEntry<>(BusinessRuleTask.class, BPMNGlyphFactory.TASK_BUSINESS_RULE))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     private static final Map<Enum, Double> DEFAULT_TASK_MARGINS_WITH_ICON =
-            new Maps.Builder<Enum, Double>()
-                    .put(HorizontalAlignment.LEFT, ICON_WIDTH)
-                    .build();
+            Stream.of(new AbstractMap.SimpleEntry<>(HorizontalAlignment.LEFT, ICON_WIDTH))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-    private static Map<Class<? extends BaseTask>, Map<Enum, Double>> taskMarginSuppliers =
-            new Maps.Builder()
-                    .put(NoneTask.class, null)
-                    .put(UserTask.class, DEFAULT_TASK_MARGINS_WITH_ICON)
-                    .put(ScriptTask.class, DEFAULT_TASK_MARGINS_WITH_ICON)
-                    .put(BusinessRuleTask.class, DEFAULT_TASK_MARGINS_WITH_ICON)
-                    .put(CustomTask.class, DEFAULT_TASK_MARGINS_WITH_ICON)
-                    .put(GenericServiceTask.class, DEFAULT_TASK_MARGINS_WITH_ICON)
-                    .build();
+    private static final Map<Class<? extends BaseTask>, Map<Enum, Double>> TASK_MARGIN_SUPPLIERS =
+            Stream.of(new AbstractMap.SimpleEntry<Class<? extends BaseTask>, Map<Enum, Double>>(NoneTask.class, null),
+                      new AbstractMap.SimpleEntry<Class<? extends BaseTask>, Map<Enum, Double>>(UserTask.class, DEFAULT_TASK_MARGINS_WITH_ICON),
+                      new AbstractMap.SimpleEntry<Class<? extends BaseTask>, Map<Enum, Double>>(ScriptTask.class, DEFAULT_TASK_MARGINS_WITH_ICON),
+                      new AbstractMap.SimpleEntry<Class<? extends BaseTask>, Map<Enum, Double>>(BusinessRuleTask.class, DEFAULT_TASK_MARGINS_WITH_ICON),
+                      new AbstractMap.SimpleEntry<Class<? extends BaseTask>, Map<Enum, Double>>(CustomTask.class, DEFAULT_TASK_MARGINS_WITH_ICON),
+                      new AbstractMap.SimpleEntry<Class<? extends BaseTask>, Map<Enum, Double>>(GenericServiceTask.class, DEFAULT_TASK_MARGINS_WITH_ICON))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     @Override
     public SizeHandler<BaseTask, SVGShapeView> newSizeHandler() {
@@ -114,7 +113,7 @@ public class TaskShapeDef extends BaseDimensionedShapeDef
     @Override
     public FontHandler<BaseTask, SVGShapeView> newFontHandler() {
         return newFontHandlerBuilder()
-                .margins(bean -> taskMarginSuppliers.getOrDefault(bean.getClass(), null))
+                .margins(bean -> TASK_MARGIN_SUPPLIERS.getOrDefault(bean.getClass(), null))
                 .build();
     }
 }
