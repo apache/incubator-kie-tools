@@ -348,6 +348,7 @@ describe("FocusUtils tests", () => {
 
     it.each([
       { from: { y: 1, x: 5 }, to: { y: 0, x: 2 }, rowspan: 2, stopAtEndOfRow: true },
+      { from: { y: 0, x: 2 }, to: { y: 1, x: 2 }, rowspan: 1, stopAtEndOfRow: true },
       { from: { y: 0, x: 3 }, to: { y: 0, x: 2 }, rowspan: 1, stopAtEndOfRow: true },
       { from: { y: 1, x: 2 }, to: { y: 1, x: 1 }, rowspan: 1, stopAtEndOfRow: true },
       { from: { y: 1, x: 1 }, to: { y: 0, x: 0 }, rowspan: 2, stopAtEndOfRow: true },
