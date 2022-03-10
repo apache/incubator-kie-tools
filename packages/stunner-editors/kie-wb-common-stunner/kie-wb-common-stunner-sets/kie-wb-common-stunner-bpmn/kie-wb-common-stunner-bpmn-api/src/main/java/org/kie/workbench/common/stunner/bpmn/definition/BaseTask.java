@@ -15,10 +15,13 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
@@ -43,17 +46,18 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @MorphBase(defaultType = NoneTask.class, targets = {BaseNonContainerSubprocess.class})
 public abstract class BaseTask implements BPMNViewDefinition {
 
-    public static final Set<String> TASK_LABELS = Set.of("all",
-                                                         "lane_child",
-                                                         "sequence_start",
-                                                         "sequence_end",
-                                                         "from_task_event",
-                                                         "to_task_event",
-                                                         "messageflow_start",
-                                                         "messageflow_end",
-                                                         "fromtoall",
-                                                         "ActivitiesMorph",
-                                                         "cm_activity");
+    public static final Set<String> TASK_LABELS = Stream.of("all",
+                                                            "lane_child",
+                                                            "sequence_start",
+                                                            "sequence_end",
+                                                            "from_task_event",
+                                                            "to_task_event",
+                                                            "messageflow_start",
+                                                            "messageflow_end",
+                                                            "fromtoall",
+                                                            "ActivitiesMorph",
+                                                            "cm_activity")
+            .collect(Collectors.toSet());
 
     @Category
     public static final transient String category = BPMNCategories.ACTIVITIES;
@@ -89,11 +93,13 @@ public abstract class BaseTask implements BPMNViewDefinition {
 
     public static class TaskTypeMorphPropertyBinding implements MorphPropertyValueBinding<TaskType, TaskTypes> {
 
-        private static final Map<TaskTypes, Class<?>> MORPH_TARGETS = Map.of(TaskTypes.NONE, NoneTask.class,
-                                                                             TaskTypes.USER, UserTask.class,
-                                                                             TaskTypes.SCRIPT, ScriptTask.class,
-                                                                             TaskTypes.BUSINESS_RULE, BusinessRuleTask.class,
-                                                                             TaskTypes.SERVICE_TASK, GenericServiceTask.class);
+        private static final Map<TaskTypes, Class<?>> MORPH_TARGETS = Stream.of(
+                        new AbstractMap.SimpleEntry<>(TaskTypes.NONE, NoneTask.class),
+                        new AbstractMap.SimpleEntry<>(TaskTypes.USER, UserTask.class),
+                        new AbstractMap.SimpleEntry<>(TaskTypes.SCRIPT, ScriptTask.class),
+                        new AbstractMap.SimpleEntry<>(TaskTypes.BUSINESS_RULE, BusinessRuleTask.class),
+                        new AbstractMap.SimpleEntry<>(TaskTypes.SERVICE_TASK, GenericServiceTask.class))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         @Override
         public TaskTypes getValue(final TaskType property) {

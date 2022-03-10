@@ -17,6 +17,8 @@
 package org.kie.workbench.common.stunner.bpmn.definition;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
@@ -53,7 +55,9 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 public class DataObject extends BaseArtifacts {
 
     @Labels
-    private static final Set<String> LABELS = Set.of("all", "lane_child");
+    private static final Set<String> LABELS = Stream.of("all",
+                                                        "lane_child")
+            .collect(Collectors.toSet());
 
     protected BPMNGeneralSet general;
 

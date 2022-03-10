@@ -16,7 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.view;
 
+import java.util.AbstractMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -71,7 +74,8 @@ public class FontHandlerTest {
                 .orientation(o -> HasTitle.Orientation.VERTICAL)
                 .margin(HasTitle.HorizontalAlignment.LEFT, 10d)
                 .margin(HasTitle.VerticalAlignment.TOP, 10d)
-                .margins(o -> Map.of(HasTitle.HorizontalAlignment.RIGHT, 50d))
+                .margins(o -> Stream.of(new AbstractMap.SimpleEntry<>(HasTitle.HorizontalAlignment.RIGHT, 50d))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
                 .textSizeConstraints(o -> SIZE_CONSTRAINTS)
                 .build();
         final Object bean = mock(Object.class);
@@ -89,9 +93,10 @@ public class FontHandlerTest {
         verify(view).setTextWrapper(TextWrapperStrategy.NO_WRAP);
         verify(view).setTitlePosition(HasTitle.VerticalAlignment.TOP, HasTitle.HorizontalAlignment.LEFT,
                                       HasTitle.ReferencePosition.OUTSIDE, HasTitle.Orientation.VERTICAL);
-        verify(view).setMargins(Map.of(HasTitle.VerticalAlignment.TOP, 10d,
-                                        HasTitle.HorizontalAlignment.LEFT, 10d,
-                                        HasTitle.HorizontalAlignment.RIGHT, 50d));
+        verify(view).setMargins(Stream.of(new AbstractMap.SimpleEntry<>(HasTitle.VerticalAlignment.TOP, 10d),
+                                          new AbstractMap.SimpleEntry<>(HasTitle.HorizontalAlignment.LEFT, 10d),
+                                          new AbstractMap.SimpleEntry<>(HasTitle.HorizontalAlignment.RIGHT, 50d))
+                                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         verify(view).setTextSizeConstraints(SIZE_CONSTRAINTS);
     }
 

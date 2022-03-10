@@ -16,8 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.definition.clone;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -33,9 +36,10 @@ public class CloneManagerImpl implements CloneManager {
 
     @Inject
     public CloneManagerImpl(IDeepCloneProcess deepCloneProcess, DefaultCloneProcess defaultCloneProcess, NoneCloneProcess noneCloneProcess) {
-        this.cloneProcessMap = Map.of(ClonePolicy.ALL, deepCloneProcess,
-                                      ClonePolicy.DEFAULT, defaultCloneProcess,
-                                      ClonePolicy.NONE, noneCloneProcess);
+        this.cloneProcessMap = Stream.of(new AbstractMap.SimpleEntry<>(ClonePolicy.ALL, deepCloneProcess),
+                                         new AbstractMap.SimpleEntry<>(ClonePolicy.DEFAULT, defaultCloneProcess),
+                                         new AbstractMap.SimpleEntry<>(ClonePolicy.NONE, noneCloneProcess))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private CloneProcess cloneProcess(ClonePolicy clonePolicy) {

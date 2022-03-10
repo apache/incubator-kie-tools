@@ -16,7 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.util.js;
 
+import java.util.AbstractMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
@@ -26,8 +29,10 @@ public class JsConverterTest {
 
     @Test
     public void fromMap() {
-        final Map<String, String> map = Map.of("name", "Tiago",
-                                               "age", "34");
+        final Map<String, String> map = Stream.of(
+                        new AbstractMap.SimpleEntry<>("name", "Tiago"),
+                        new AbstractMap.SimpleEntry<>("age", "34"))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         final KeyValue[] keyValues = JsConverter.fromMap(map);
         assertEquals(keyValues.length, 2);

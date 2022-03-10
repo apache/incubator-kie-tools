@@ -16,6 +16,8 @@
 package org.kie.workbench.common.stunner.bpmn.definition;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
@@ -96,7 +98,9 @@ public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData, Roo
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels
-    private final Set<String> labels = Set.of("canContainArtifacts", "diagram");
+    private final Set<String> labels = Stream.of("canContainArtifacts",
+                                                 "diagram")
+            .collect(Collectors.toSet());
 
     public static final Double WIDTH = 950d;
     public static final Double HEIGHT = 950d;

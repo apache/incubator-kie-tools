@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.AbstractClie
 
 public abstract class AbstractSelectionAwareSessionCommand<S extends ClientSession> extends AbstractClientSessionCommand<S> {
 
-    protected AbstractSelectionAwareSessionCommand(final boolean enabled) {
+    public AbstractSelectionAwareSessionCommand(final boolean enabled) {
         super(enabled);
     }
 

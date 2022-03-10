@@ -105,7 +105,6 @@ public class DynamicFormRenderer implements IsWidget,
                                   final RenderMode renderMode,
                                   final Command callback) {
         Objects.requireNonNull(model, "Parameter named 'model' should be not null!");
-
         FormRenderingContext context = dynamicFormModelGenerator.getContextForModel(model);
         if (context != null) {
             doRenderDefaultForm(context,

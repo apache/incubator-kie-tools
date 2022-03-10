@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.core;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -231,20 +231,21 @@ public class TestingGraphInstances {
     public static RuleManager configureDomain(TestingGraphMockHandler graphTestHandler) {
         CanConnect connectionRule1 = new CanConnect("allowConnectionsForEdge1",
                                                     "edgeId",
-                                                    List.of(new CanConnect.PermittedConnection("all",
+                                                    Stream.of(new CanConnect.PermittedConnection("all",
                                                                                                "all"))
+                                                            .collect(Collectors.toList())
         );
         CanContain parentNodeContainment = new CanContain("parentCanContainAll",
                                                           getDefinitionId(ParentNodeBean.class),
-                                                          Set.of("all")
+                                                          Stream.of("all").collect(Collectors.toSet())
         );
         CanContain containerNodeContainment = new CanContain("containerNodeCanContainAll",
                                                              getDefinitionId(ContainerNodeBean.class),
-                                                             Set.of("all")
+                                                             Stream.of("all").collect(Collectors.toSet())
         );
         CanContain subProcessNodeContainment = new CanContain("subProcessNodeCanContainAll",
                                                               getDefinitionId(SubProcessNodeBean.class),
-                                                              Set.of("all")
+                                                              Stream.of("all").collect(Collectors.toSet())
         );
 
         graphTestHandler.ruleSet.getRules().add(connectionRule1);

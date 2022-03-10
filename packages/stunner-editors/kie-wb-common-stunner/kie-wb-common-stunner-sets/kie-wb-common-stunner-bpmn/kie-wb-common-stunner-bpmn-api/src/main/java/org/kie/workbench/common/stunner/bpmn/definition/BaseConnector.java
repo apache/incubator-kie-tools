@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.definition;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
@@ -53,7 +55,12 @@ public abstract class BaseConnector implements BPMNViewDefinition {
     public static final Double BORDER_SIZE = 1d;
 
     @Labels
-    protected final Set<String> labels = Set.of("all", "lane_child", "ConnectingObjectsMorph", "cm_nop", "connector");
+    protected final Set<String> labels = Stream.of("all",
+                                                   "lane_child",
+                                                   "ConnectingObjectsMorph",
+                                                   "cm_nop",
+                                                   "connector")
+            .collect(Collectors.toSet());
 
     protected BaseConnector() {
     }

@@ -16,8 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.rule;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -93,8 +94,9 @@ public class MultipleEvaluationContextStatesTest {
 
         CanConnect connectionRule = new CanConnect("allowConnectionsForEdge1",
                                                    "edgeBeanId",
-                                                   List.of(new CanConnect.PermittedConnection("all",
-                                                                                              "all"))
+                                                   Stream.of(new CanConnect.PermittedConnection("all",
+                                                                                                "all"))
+                                                           .collect(Collectors.toList())
         );
         graphTestHandler.ruleSet.getRules().add(connectionRule);
 

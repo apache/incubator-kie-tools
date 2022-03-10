@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.definition;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
@@ -80,11 +82,12 @@ public class Lane implements BPMNViewDefinition {
     protected AdvancedData advancedData;
 
     @Labels
-    private final Set<String> labels = Set.of("all",
-                                              "PoolChild",
-                                              "fromtoall",
-                                              "canContainArtifacts",
-                                              "cm_nop");
+    private final Set<String> labels = Stream.of("all",
+                                                 "PoolChild",
+                                                 "fromtoall",
+                                                 "canContainArtifacts",
+                                                 "cm_nop")
+            .collect(Collectors.toSet());
 
     public Lane() {
         this(new BPMNGeneralSet("Lane"),

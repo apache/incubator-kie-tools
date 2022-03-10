@@ -16,8 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -54,11 +55,13 @@ public class TaskType implements BPMNProperty {
     public static final PropertyType type = new TaskPropertyType();
 
     @AllowedValues
-    public static final Iterable<TaskTypes> allowedValues = List.of(TaskTypes.NONE,
-                                                                    TaskTypes.USER,
-                                                                    TaskTypes.SCRIPT,
-                                                                    TaskTypes.BUSINESS_RULE,
-                                                                    TaskTypes.SERVICE_TASK);
+    public static final Iterable<TaskTypes> allowedValues = Stream.of(TaskTypes.NONE,
+                                                                      TaskTypes.USER,
+                                                                      TaskTypes.SCRIPT,
+                                                                      TaskTypes.BUSINESS_RULE,
+                                                                      TaskTypes.SERVICE_TASK)
+            .collect(Collectors.toList());
+
     @Value
     @FieldValue
     private TaskTypes value;

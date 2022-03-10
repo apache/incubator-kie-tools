@@ -17,9 +17,12 @@
 package org.kie.workbench.common.stunner.core.util;
 
 import java.lang.annotation.Annotation;
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -217,11 +220,12 @@ public class DefinitionUtils {
         return definitionManager;
     }
 
-    private static final Map<Class<?>, Class<? extends PropertyType>> DEFAULT_PROPERTY_TYPES = Map.of(
-            String.class, StringType.class,
-            Double.class, DoubleType.class,
-            Integer.class, IntegerType.class,
-            Boolean.class, BooleanType.class);
+    private static final Map<Class<?>, Class<? extends PropertyType>> DEFAULT_PROPERTY_TYPES =
+            Stream.of(new AbstractMap.SimpleEntry<>(String.class, StringType.class),
+                      new AbstractMap.SimpleEntry<>(Double.class, DoubleType.class),
+                      new AbstractMap.SimpleEntry<>(Integer.class, IntegerType.class),
+                      new AbstractMap.SimpleEntry<>(Boolean.class, BooleanType.class))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     public static Class<? extends PropertyType> getDefaultPropertyType(final Class<?> clazz) {
         return DEFAULT_PROPERTY_TYPES.get(clazz);

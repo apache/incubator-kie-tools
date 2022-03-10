@@ -17,6 +17,8 @@
 package org.kie.workbench.common.stunner.bpmn.definition;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
@@ -56,7 +58,10 @@ public class TextAnnotation extends BaseArtifacts {
     protected BPMNGeneralSet general;
 
     @Labels
-    private static final Set<String> labels = Set.of("text_annotation", "lane_child", "all");
+    private static final Set<String> labels = Stream.of("text_annotation",
+                                                        "lane_child",
+                                                        "all")
+            .collect(Collectors.toSet());
 
     public TextAnnotation() {
         this(new BPMNGeneralSet("Text Annotation"),

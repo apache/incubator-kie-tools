@@ -18,7 +18,8 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.select;
 
 import java.util.Collections;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -341,7 +342,7 @@ public class MapSelectionControlTest {
         tested.init(canvasHandler);
         tested.register(element);
         tested.register(rootElement);
-        tested.select(Set.of(ROOT_UUID, ELEMENT_UUID));
+        tested.select(Stream.of(ROOT_UUID, ELEMENT_UUID).collect(Collectors.toSet()));
 
         when(index.get(ELEMENT_UUID)).thenReturn(element);
         when(index.get(ROOT_UUID)).thenReturn(rootElement);

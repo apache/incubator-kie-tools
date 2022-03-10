@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.rule.context.impl;
 
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -39,11 +42,12 @@ import org.kie.workbench.common.stunner.core.rule.context.NodeDockingContext;
 public class StatefulGraphEvaluationContexts {
 
     private static final Map<Class<? extends GraphEvaluationContext>, ContextConsumer<? extends GraphEvaluationContext>> CONSUMERS_BY_TYPE =
-            Map.of(ElementCardinalityContext.class, new ElementCardinalityContextConsumer(),
-                   ConnectorCardinalityContext.class, new ConnectorCardinalityContextConsumer(),
-                   GraphConnectionContext.class, new ConnectionStateContextConsumer(),
-                   NodeContainmentContext.class, new ContainmentStateContextConsumer(),
-                   NodeDockingContext.class, new DockingStateContextConsumer());
+            Stream.of(new AbstractMap.SimpleEntry<>(ElementCardinalityContext.class, new ElementCardinalityContextConsumer()),
+                      new AbstractMap.SimpleEntry<>(ConnectorCardinalityContext.class, new ConnectorCardinalityContextConsumer()),
+                      new AbstractMap.SimpleEntry<>(GraphConnectionContext.class, new ConnectionStateContextConsumer()),
+                      new AbstractMap.SimpleEntry<>(NodeContainmentContext.class, new ContainmentStateContextConsumer()),
+                      new AbstractMap.SimpleEntry<>(NodeDockingContext.class, new DockingStateContextConsumer()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     @SuppressWarnings("unchecked")
     public static <T> T evaluate(final GraphEvaluationContext context,
