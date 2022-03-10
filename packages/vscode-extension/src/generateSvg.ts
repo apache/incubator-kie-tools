@@ -60,10 +60,10 @@ export async function generateSvg(args: {
     return;
   }
 
-  const parsedPath = __path.parse(editor.document.uri.fsPath);
+  const parsedPath = __path.parse(editor.document.uri.path);
   const workspace = vscode.workspace.workspaceFolders?.length
     ? vscode.workspace.workspaceFolders.find((workspace) => {
-        const relative = __path.relative(workspace.uri.fsPath, editor.document.uri.fsPath);
+        const relative = __path.relative(workspace.uri.path, editor.document.uri.path);
         return relative && !relative.startsWith("..") && !__path.isAbsolute(relative);
       })
     : undefined;
@@ -72,8 +72,8 @@ export async function generateSvg(args: {
   const fileType = args.editorEnvelopeLocator.getEnvelopeMapping(parsedPath.base)?.type;
 
   const tokens: Record<SettingsValueInterpolationToken, string> = {
-    "${workspaceFolder}": workspace?.uri.fsPath ?? `/${parsedPath.dir}`,
-    "${fileDirname}": `/${parsedPath.dir}`,
+    "${workspaceFolder}": workspace?.uri.path ?? parsedPath.dir,
+    "${fileDirname}": parsedPath.dir,
     "${fileExtname}": fileExtensionWithDot,
     "${fileBasename}": parsedPath.base,
     "${fileBasenameNoExtension}": parsedPath.base.substring(0, parsedPath.base.indexOf(".")),
@@ -100,6 +100,7 @@ export async function generateSvg(args: {
     tokens,
     value: svgFilePathTemplate ? svgFilePathTemplate : "${fileDirname}",
   });
+
   const svgUri = editor.document.uri.with({ path: __path.resolve(svgFilePath, svgFileName) });
 
   await vscode.workspace.fs.writeFile(svgUri, encoder.encode(previewSvg));
@@ -110,7 +111,7 @@ export async function generateSvg(args: {
         return;
       }
 
-      args.workspaceApi.kogitoWorkspace_openFile(svgUri.fsPath);
+      args.workspaceApi.kogitoWorkspace_openFile(svgUri.path);
     });
   }
 }
