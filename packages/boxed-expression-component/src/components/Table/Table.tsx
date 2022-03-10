@@ -419,15 +419,12 @@ export const Table: React.FunctionComponent<TableProps> = ({
 
         if (key === "Tab") {
           e.preventDefault();
-          if (e.shiftKey) {
-            focusPrevCell(e.currentTarget, rowSpan, false);
-          } else {
-            focusNextCell(e.currentTarget, rowSpan, false);
-          }
-        } else if (key === "ArrowLeft") {
-          focusPrevCell(e.currentTarget, rowSpan);
-        } else if (key === "ArrowRight") {
-          focusNextCell(e.currentTarget, rowSpan);
+        }
+
+        if (key === "ArrowLeft" || (key === "Tab" && e.shiftKey)) {
+          focusPrevCell(e.currentTarget, rowSpan, key === "ArrowLeft");
+        } else if (key === "ArrowRight" || (key === "Tab" && !e.shiftKey)) {
+          focusNextCell(e.currentTarget, rowSpan, key === "ArrowRight");
         } else if (key === "ArrowUp") {
           focusUpperCell(e.currentTarget);
         } else if (key === "ArrowDown") {
@@ -436,11 +433,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
           focusParentCell(e.currentTarget);
         } else if (!boxedExpression.isContextMenuOpen && isFiredFromThis && !isModKey) {
           /* TODO: Table: keyboard editing for theader */
-          if (key === "Enter") {
-            focusInsideCell(e.currentTarget);
-          } else {
-            focusInsideCell(e.currentTarget, true);
-          }
+          focusInsideCell(e.currentTarget, key !== "Enter");
         }
       },
     [boxedExpression.isContextMenuOpen, enableKeyboarNavigation]
