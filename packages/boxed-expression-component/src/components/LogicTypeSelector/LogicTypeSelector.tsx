@@ -101,6 +101,8 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
     targetElement,
   } = useContextMenuHandler(boxedExpression.editorRef?.current ?? document);
 
+  const { setIsContextMenuOpen } = useBoxedExpression();
+
   const renderExpression = useMemo(() => {
     switch (expression.logicType) {
       case LogicType.LiteralExpression:
@@ -155,11 +157,12 @@ export const LogicTypeSelector: React.FunctionComponent<LogicTypeSelectorProps> 
       boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
       const selectedLogicType = itemId as LogicType;
       onLogicTypeUpdating(selectedLogicType);
+      setIsContextMenuOpen(false);
       if (!isHeadless) {
         boxedExpression.boxedExpressionEditorGWTService?.onLogicTypeSelect(selectedLogicType);
       }
     },
-    [boxedExpression.boxedExpressionEditorGWTService, isHeadless, onLogicTypeUpdating]
+    [boxedExpression.boxedExpressionEditorGWTService, isHeadless, onLogicTypeUpdating, setIsContextMenuOpen]
   );
 
   const buildLogicSelectorMenu = useMemo(

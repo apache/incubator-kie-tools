@@ -22,7 +22,12 @@ import {
   ResourceListRequest,
   ResourcesList,
 } from "@kie-tools-core/workspace/dist/api";
-import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import {
+  EditorContent,
+  EditorTheme,
+  KogitoEditorChannelApi,
+  StateControlCommand,
+} from "@kie-tools-core/editor/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
 import { Minimatch } from "minimatch";
@@ -108,6 +113,10 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
 
   public kogitoEditor_ready(): void {
     this.overrides.kogitoEditor_ready?.();
+  }
+
+  public kogitoEditor_theme() {
+    return this.overrides.kogitoEditor_theme?.() ?? { defaultValue: EditorTheme.LIGHT };
   }
 
   public kogitoEditor_setContentError(editorContent: EditorContent): void {

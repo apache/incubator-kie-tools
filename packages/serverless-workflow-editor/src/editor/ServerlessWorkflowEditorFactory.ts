@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ServerlessWorkflowEditorInterface } from "./ServerlessWorkflowEditorInterface";
+import { ServerlessWorkflowEditorView } from "./ServerlessWorkflowEditorView";
 import {
   Editor,
   EditorFactory,
   EditorInitArgs,
-  KogitoEditorEnvelopeContextType,
   KogitoEditorChannelApi,
+  KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
 
-export const FACTORY_TYPE = "serverless-workflow";
-
 export class ServerlessWorkflowEditorFactory implements EditorFactory<Editor, KogitoEditorChannelApi> {
-  public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>,
-    initArgs: EditorInitArgs
-  ): Promise<Editor> {
-    return Promise.resolve(new ServerlessWorkflowEditorInterface(envelopeContext));
+  public async createEditor(ctx: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>, initArgs: EditorInitArgs) {
+    return new ServerlessWorkflowEditorView(ctx);
   }
 }

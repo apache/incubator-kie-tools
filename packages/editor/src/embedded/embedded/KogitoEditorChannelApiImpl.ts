@@ -27,6 +27,7 @@ import {
 } from "@kie-tools-core/workspace/dist/api";
 import { EmbeddedEditorFile } from "../../channel";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
+import { EditorTheme } from "../../api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   constructor(
@@ -89,6 +90,10 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
 
   public kogitoEditor_setContentError(editorContent: EditorContent): void {
     this.overrides.kogitoEditor_setContentError?.(editorContent);
+  }
+
+  public kogitoEditor_theme() {
+    return this.overrides.kogitoEditor_theme?.() ?? { defaultValue: EditorTheme.LIGHT };
   }
 
   public kogitoI18n_getLocale(): Promise<string> {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-describe("DMN Expression Editor Test :: Expressions", () => {
+describe.skip("DMN Expression Editor Test :: Expressions", () => {
   beforeEach(() => {
     cy.visit("/");
   });
@@ -95,7 +95,7 @@ describe("DMN Expression Editor Test :: Expressions", () => {
   });
 });
 
-describe("DMN Expression Editor Test :: Data types", () => {
+describe.skip("DMN Expression Editor Test :: Data types", () => {
   beforeEach(() => {
     cy.visit("/");
   });
@@ -152,6 +152,8 @@ describe("DMN Expression Editor Test :: Data types", () => {
       cy.ouia({ ouiaId: "expression-popover-menu" }).within(($menu) => {
         cy.ouia({ ouiaId: "tSalary" }).click({ force: true });
       });
+
+      cy.get(".expression-container").click({ force: true });
 
       cy.get("[data-ouia-component-type='expression-column-header-cell-info']:contains('tSalary')").should(
         "be.visible"
@@ -258,7 +260,7 @@ function selectInDataTypesSearchableDropdown(entryName: string): void {
   cy.get("ul").find("li.active").find("a").contains(entryName).should("not.exist");
 }
 
-describe("DMN Expression Editor Test :: keyboard shortcuts", () => {
+describe.skip("DMN Expression Editor Test :: keyboard shortcuts", () => {
   beforeEach(() => {
     cy.visit("/");
   });
@@ -308,6 +310,52 @@ describe("DMN Expression Editor Test :: keyboard shortcuts", () => {
       cy.get(".editable-cell")
         .contains("Applicant Data.Monthly.Repayments + Applicant Data.Monthly.Expenses + 0")
         .should("not.be.visible");
+    });
+  });
+});
+
+describe.skip("DMN Expression Editor Test :: Properties Panel", () => {
+  beforeEach(() => {
+    cy.visit("/");
+  });
+
+  it("Change Decision Table Input column data type: Front_End_Ratio -> Any", () => {
+    // click Create new decision model button (new DMN)
+    cy.ouia({ ouiaId: "try-dmn-sample-button" }).click();
+
+    // wait until loading dialog disappears
+    cy.loadEditor();
+
+    // close DMN guided tour dialog
+    cy.ouia({ ouiaId: "dmn-guided-tour" }).children("button[aria-label='Close']").click();
+
+    cy.getEditor().within(() => {
+      // open decision navigator and check new expression editor for expressions
+      cy.ouia({ ouiaId: "docks-item-org.kie.dmn.decision.navigator" }).children("button").click();
+
+      cy.get("li[data-i18n-prefix='DecisionNavigatorTreeView.']").within(($navigator) => {
+        cy.get("[title='Loan Pre-Qualification'] div span").contains("Decision Table").click();
+      });
+      // check using beta version
+      cy.get("[data-field='beta-boxed-expression-toggle'] [data-field='try-it']").click();
+      cy.ouia({ ouiaId: "expression-container" }).contains("Loan Pre-Qualification").should("be.visible");
+      cy.get(".expression-title").contains("Loan Pre-Qualification").should("be.visible");
+      cy.get(".expression-type").contains("Decision Table").should("be.visible");
+      cy.ouia({ ouiaType: "expression-column-header" }).contains("Front_End_Ratio").should("exist");
+
+      // open properties panel
+      cy.ouia({ ouiaId: "docks-item-DiagramEditorPropertiesScreen" }).children("button").click();
+
+      // select a cell
+      cy.ouia({ ouiaType: "expression-column-header" }).contains("Front End Ratio").click();
+
+      cy.get("[data-i18n-prefix='CollapsibleFormGroupViewImpl.']").contains("Input expression").should("be.visible");
+      cy.get("[data-i18n-prefix='DataTypePickerWidget.']").get("button[data-id='typeSelector']").click();
+      cy.realType("Any");
+      cy.realPress("{enter}");
+
+      cy.ouia({ ouiaType: "expression-column-header" }).contains("Front_End_Ratio").should("not.exist");
+      cy.ouia({ ouiaType: "expression-column-header" }).contains("Any").should("exist");
     });
   });
 });

@@ -27,14 +27,15 @@ import { OnlineI18nContextProvider } from "./i18n";
 import { NoMatchPage } from "./NoMatchPage";
 import { KieSandboxExtendedServicesContextProvider } from "./kieSandboxExtendedServices/KieSandboxExtendedServicesContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
-import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
 import { HomePage } from "./home/HomePage";
 import { NewWorkspaceWithEmptyFilePage } from "./workspace/components/NewWorkspaceWithEmptyFilePage";
 import { NewWorkspaceFromUrlPage } from "./workspace/components/NewWorkspaceFromUrlPage";
 import { DmnDevSandboxContextProvider } from "./editor/DmnDevSandbox/DmnDevSandboxContextProvider";
 import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
 import { useRoutes } from "./navigation/Hooks";
+import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
 import { EnvContextProvider } from "./env/EnvContextProvider";
+import { DmnRunnerInputsContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsContextProvider";
 
 export function App() {
   return (
@@ -46,6 +47,7 @@ export function App() {
         [KieSandboxExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
         [WorkspacesContextProvider, {}],
+        [DmnRunnerInputsContextProvider, {}],
         [DmnDevSandboxContextProvider, {}],
         [NavigationContextProvider, {}],
         [RoutesSwitch, {}]

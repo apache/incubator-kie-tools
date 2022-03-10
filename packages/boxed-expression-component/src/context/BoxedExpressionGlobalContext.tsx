@@ -25,6 +25,8 @@ export interface BoxedExpressionGlobalContextProps {
   dataTypes: DataTypeProps[];
   supervisorHash: string;
   setSupervisorHash: (hash: string) => void;
+  isContextMenuOpen: boolean;
+  setIsContextMenuOpen: (isContextMenuOpen: boolean) => void;
   editorRef: React.RefObject<HTMLDivElement>;
   currentlyOpenedHandlerCallback: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrentlyOpenedHandlerCallback: React.Dispatch<

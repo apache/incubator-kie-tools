@@ -19,7 +19,14 @@ import * as Monaco from "@kie-tools-core/monaco-editor";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CellProps } from "../../api";
-import { blurActiveElement, focusNextTextArea, focusTextArea, paste } from "./common";
+import {
+  blurActiveElement,
+  focusCurrentCell,
+  focusNextDataCell,
+  focusPrevDataCell,
+  focusTextArea,
+  paste,
+} from "./common";
 import "./EditableCell.css";
 import { useBoxedExpression } from "../../context";
 
@@ -126,6 +133,22 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
     [triggerEditMode, value, triggerReadMode, onCellUpdate, rowIndex, columnId, boxedExpression.editorRef]
   );
 
+  const onTextAreaKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLElement>) => {
+      const key = e.key;
+      const isFiredFromThis = e.currentTarget === e.target;
+
+      if (!isFiredFromThis) {
+        return;
+      }
+
+      if (key !== "Enter") {
+        (e.target as HTMLTextAreaElement).value = "";
+      }
+    },
+    [value]
+  );
+
   // Feel Handlers ===========================================================
 
   const onFeelBlur = useCallback(
@@ -157,10 +180,17 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
         feelInputRef.current?.setMonacoValue(previousValue);
         triggerReadMode(previousValue);
         setMode(READ_MODE);
+        focusCurrentCell(textarea.current);
       }
 
       if (isTab) {
-        focusNextTextArea(textarea.current);
+        if (!event.shiftKey) {
+          //this setTimeout fixes the focus outside of the table when the suggestions opens
+          setTimeout(() => focusNextDataCell(textarea.current, rowIndex), 0);
+        } else {
+          //this setTimeout fixes the focus outside of the table when the suggestions opens
+          setTimeout(() => focusPrevDataCell(textarea.current, rowIndex), 0);
+        }
       }
     },
     [triggerReadMode, previousValue]
@@ -200,11 +230,12 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
           data-testid={"editable-cell-textarea"}
           className="editable-cell-textarea"
           ref={textarea}
+          tabIndex={-1}
           value={textValue}
           onChange={onTextAreaChange}
-          onFocus={onFocus}
           onBlur={onTextAreaBlur}
           readOnly={readOnly}
+          onKeyDown={onTextAreaKeyDown}
         />
         <FeelInput
           ref={feelInputRef}

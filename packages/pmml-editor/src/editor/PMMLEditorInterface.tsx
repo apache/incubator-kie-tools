@@ -67,4 +67,9 @@ export class PMMLEditorInterface implements Editor {
   public async validate(): Promise<Notification[]> {
     return Promise.resolve(this.self.validate());
   }
+
+  public async setTheme(): Promise<void> {
+    // Only default theme is supported
+    return Promise.resolve();
+  }
 }
