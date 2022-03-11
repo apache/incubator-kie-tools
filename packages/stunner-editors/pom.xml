@@ -254,6 +254,7 @@
     <version.resources.plugin>3.1.0</version.resources.plugin>
     <version.shade.plugin>3.2.1</version.shade.plugin>
     <version.site.plugin>3.7.1</version.site.plugin>
+    <version.spotbugs-maven-plugin>3.1.8</version.spotbugs-maven-plugin>
     <version.source.plugin>3.0.1</version.source.plugin>
     <version.surefire.plugin>2.22.2</version.surefire.plugin>
     <version.war.plugin>3.2.2</version.war.plugin>
@@ -1740,6 +1741,12 @@
           <artifactId>selenium-maven-plugin</artifactId>
           <version>${version.org.codehaus.selenium.plugin}</version>
         </plugin>
+
+        <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>${version.spotbugs-maven-plugin}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -2065,6 +2072,58 @@
             <configuration>
               <skip>${code.coverage.disabled}</skip>
             </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>ban-duplicated-classes</id>
+                <!-- The execution's configuration is part of the pluginManagement. This piece here only makes sure the
+                     execution is enabled (by specifying a phase) for full profile builds. -->
+                <phase>validate</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <source>${maven.compiler.source}</source>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
