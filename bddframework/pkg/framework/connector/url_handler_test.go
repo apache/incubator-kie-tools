@@ -15,7 +15,6 @@
 package connector
 
 import (
-	"github.com/google/uuid"
 	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
@@ -33,22 +32,13 @@ import (
 
 func TestInjectDataIndexEndPointOnKogitoRuntimeServices(t *testing.T) {
 	ns := t.Name()
-	name := "my-kogito-app"
-	kogitoRuntime := &v1beta1.KogitoRuntime{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: ns,
-			UID:       types.UID(uuid.New().String()),
-		},
-	}
+	kogitoRuntime := test.CreateFakeKogitoRuntime(ns)
 	dc := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      kogitoRuntime.Name,
 			Namespace: kogitoRuntime.Namespace,
-			OwnerReferences: []metav1.OwnerReference{
-				{
-					UID: kogitoRuntime.UID,
-				},
+			Annotations: map[string]string{
+				operator.KogitoRuntimeKey: "true",
 			},
 		},
 		Spec: appsv1.DeploymentSpec{

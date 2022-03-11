@@ -19,4 +19,8 @@ const (
 	Name = "kogito-operator"
 	// KogitoHomeDir path for Kogito home mounted within the pod of a Kogito Service
 	KogitoHomeDir = "/home/kogito"
+	// KogitoRuntimeKey ...
+	KogitoRuntimeKey = "kogito.kie.org/runtime"
+	// KogitoSupportingServiceKey ...
+	KogitoSupportingServiceKey = "kogito.kie.org/supporting.service"
 )

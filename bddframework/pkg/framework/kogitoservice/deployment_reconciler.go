@@ -91,6 +91,7 @@ func (d *deploymentReconciler) createRequiredResources(imageName string) (map[re
 		return resources, err
 	}
 
+	d.addDeploymentIdentifier(deployment)
 	d.mountEnvsOnDeployment(deployment)
 	if err := d.mountConfigMapReferencesOnDeployment(deployment); err != nil {
 		return resources, err
@@ -172,4 +173,11 @@ func (d *deploymentReconciler) mountEnvsOnDeployment(deployment *appsv1.Deployme
 
 func (d *deploymentReconciler) mountMeteringLabelsOnDeployment(deployment *appsv1.Deployment) {
 	util.AppendToStringMap(d.Labels, deployment.Spec.Template.Labels)
+}
+
+func (d *deploymentReconciler) addDeploymentIdentifier(deployment *appsv1.Deployment) {
+	if deployment.Annotations == nil {
+		deployment.Annotations = map[string]string{}
+	}
+	util.AddToMap(d.DeploymentIdentifier, "true", deployment.Annotations)
 }

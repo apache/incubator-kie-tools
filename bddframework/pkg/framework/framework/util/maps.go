@@ -58,3 +58,13 @@ func AppendToStringMap(source map[string]string, dest map[string]string) {
 		dest[k] = v
 	}
 }
+
+// AddToMap ...
+func AddToMap(key, value string, dest map[string]string) {
+	dest[key] = value
+}
+
+// MapContains ...
+func MapContains(source map[string]string, key string, value string) bool {
+	return source[key] == value
+}
