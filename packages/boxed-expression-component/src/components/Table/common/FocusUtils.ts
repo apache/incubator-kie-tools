@@ -151,27 +151,20 @@ export const focusPrevCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAt
   }
 
   const { x, y } = getFullCellCoordinates(currentCell);
+  const xEdge = stopAtFirstDataCell ? 0 : 1;
+  const yEdge = stopAtFirstDataCell ? y : 0;
 
-  if (y <= 0 && x <= 1 && !stopAtFirstDataCell) {
+  if (x <= xEdge && y <= yEdge) {
     return cellFocus(currentCell);
   }
 
-  if (x <= 1 && !stopAtFirstDataCell) {
+  if (x <= xEdge && !stopAtFirstDataCell) {
     const lastCellPrevRow = getCellByCoordinates(currentCell.closest("table")!, { y: y - 1, x: -1 });
-    if (lastCellPrevRow && hasCellTabindex(lastCellPrevRow)) {
-      return focusCellByCoordinates(currentCell, { y: y - 1, x: -1 });
-    } else {
-      return cellFocus(currentCell);
-    }
+
+    return cellFocus(hasCellTabindex(lastCellPrevRow!) ? lastCellPrevRow : currentCell);
   }
 
-  if (rowSpan > 1) {
-    return focusCellByCoordinates(currentCell, { y: y - 1, x: x - 1 });
-  }
-
-  if (x > 0) {
-    focusCellByCoordinates(currentCell, { y: y, x: x - 1 });
-  }
+  focusCellByCoordinates(currentCell, { y: rowSpan > 1 ? y - 1 : y, x: x - 1 });
 };
 
 /**

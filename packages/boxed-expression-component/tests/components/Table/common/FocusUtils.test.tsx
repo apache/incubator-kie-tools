@@ -117,7 +117,7 @@ const shouldNotChangeFocus = (element: HTMLElement, move: (element: HTMLElement)
 
   move(element);
 
-  expect(document.activeElement).toBe(activeElement);
+  expect(document.activeElement?.innerHTML).toBe(activeElement?.innerHTML);
   expect(mockElementFocus).not.toHaveBeenCalled();
 };
 
@@ -366,9 +366,9 @@ describe("FocusUtils tests", () => {
       );
     });
 
-    it("should keep the focus to the current counter cell", () => {
-      shouldNotChangeFocus(mockTable.rows[2].cells[0], focusPrevCell);
-      shouldNotChangeFocus(mockTableColRowspan.rows[0].cells[0], focusPrevCell);
+    it("should keep the focus to the current cell", () => {
+      shouldKeepFocus(mockTable.rows[2].cells[0], focusPrevCell);
+      shouldKeepFocus(mockTableColRowspan.rows[0].cells[0], focusPrevCell);
       shouldKeepFocus(mockTable.rows[0].cells[1], (element) => focusPrevCell(element, 1, false));
       shouldKeepFocus(mockTableColRowspan.rows[1].cells[1], (element) => focusPrevCell(element, 2, false));
     });
