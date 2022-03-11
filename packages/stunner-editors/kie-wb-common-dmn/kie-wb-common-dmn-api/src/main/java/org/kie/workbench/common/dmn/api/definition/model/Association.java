@@ -16,10 +16,11 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.rules.AcyclicDirectedGraphRule;
 import org.kie.workbench.common.dmn.api.rules.SingleConnectorPerTypeGraphRule;
@@ -57,9 +58,7 @@ public class Association extends Artifact {
     private static final String stunnerCategory = Categories.CONNECTORS;
 
     @Labels
-    private static final Set<String> stunnerLabels = new Sets.Builder<String>()
-            .add("association")
-            .build();
+    private static final Set<String> stunnerLabels = Stream.of("association").collect(Collectors.toSet());
 
     public Association() {
         this(new Id(),

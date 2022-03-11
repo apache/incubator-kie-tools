@@ -39,7 +39,6 @@ import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.
 import org.uberfire.commons.UUID;
 
 import static java.util.stream.Collectors.toList;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils.isBuiltInType;
 import static org.kie.workbench.common.dmn.client.editors.types.common.DataType.TOP_LEVEL_PARENT_UUID;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeManager_None;
@@ -196,6 +195,10 @@ public class DataTypeManager {
     private DataTypeManager withBuiltInType(final BuiltInType builtInType) {
         final String type = checkNotNull("builtInType", builtInType).getName();
         return withType(type);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public DataTypeManager withSubDataTypes(final List<DataType> dataTypes) {

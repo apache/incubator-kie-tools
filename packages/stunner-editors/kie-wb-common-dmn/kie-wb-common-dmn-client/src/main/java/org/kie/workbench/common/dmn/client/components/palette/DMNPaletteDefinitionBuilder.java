@@ -18,12 +18,13 @@ package org.kie.workbench.common.dmn.client.components.palette;
 
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.model.Categories;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -49,12 +50,11 @@ public class DMNPaletteDefinitionBuilder
         this.paletteDefinitionBuilder = paletteDefinitionBuilder;
     }
 
-    static final Set<String> EXCLUDED_CATEGORIES = new Sets.Builder<String>()
-            .add(Categories.DIAGRAM)
-            .add(Categories.CONNECTORS)
-            .add(Categories.MISCELLANEOUS)
-            .add(Categories.DOMAIN_OBJECTS)
-            .build();
+    static final Set<String> EXCLUDED_CATEGORIES = Stream.of(Categories.DIAGRAM,
+                                                             Categories.CONNECTORS,
+                                                             Categories.MISCELLANEOUS,
+                                                             Categories.DOMAIN_OBJECTS)
+            .collect(Collectors.toSet());
 
     @PostConstruct
     public void init() {

@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.dmn.client.shape.def;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.Association;
 import org.kie.workbench.common.dmn.api.definition.model.AuthorityRequirement;
@@ -34,16 +36,11 @@ import org.kie.workbench.common.stunner.shapes.client.view.AbstractConnectorView
 public class DMNConnectorShapeDefImpl implements DMNConnectorShapeDef<DMNDefinition, AbstractConnectorView> {
 
     public static final Map<Class<? extends DMNDefinition>, Glyph> GLYPHS =
-            new Maps.Builder<Class<? extends DMNDefinition>, Glyph>()
-                    .put(Association.class,
-                         DMNSVGGlyphFactory.ASSOCIATION_TOOLBOX)
-                    .put(AuthorityRequirement.class,
-                         DMNSVGGlyphFactory.AUTHORITY_REQUIREMENT_TOOLBOX)
-                    .put(InformationRequirement.class,
-                         DMNSVGGlyphFactory.INFORMATION_REQUIREMENT_TOOLBOX)
-                    .put(KnowledgeRequirement.class,
-                         DMNSVGGlyphFactory.KNOWLEDGE_REQUIREMENT_TOOLBOX)
-                    .build();
+            Stream.of(new AbstractMap.SimpleEntry<>(Association.class, DMNSVGGlyphFactory.ASSOCIATION_TOOLBOX),
+                      new AbstractMap.SimpleEntry<>(AuthorityRequirement.class, DMNSVGGlyphFactory.AUTHORITY_REQUIREMENT_TOOLBOX),
+                      new AbstractMap.SimpleEntry<>(InformationRequirement.class, DMNSVGGlyphFactory.INFORMATION_REQUIREMENT_TOOLBOX),
+                      new AbstractMap.SimpleEntry<>(KnowledgeRequirement.class, DMNSVGGlyphFactory.KNOWLEDGE_REQUIREMENT_TOOLBOX))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     @Override
     public BiConsumer<DMNDefinition, AbstractConnectorView> viewHandler() {
@@ -54,6 +51,6 @@ public class DMNConnectorShapeDefImpl implements DMNConnectorShapeDef<DMNDefinit
     @SuppressWarnings("unchecked")
     public Glyph getGlyph(final Class type,
                           final String defId) {
-        return GLYPHS.computeIfAbsent(type, (t) -> ShapeGlyph.create());
+        return GLYPHS.computeIfAbsent(type, t -> ShapeGlyph.create());
     }
 }

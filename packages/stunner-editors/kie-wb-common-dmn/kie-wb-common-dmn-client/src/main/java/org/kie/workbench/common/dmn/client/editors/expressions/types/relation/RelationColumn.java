@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeDOMElementColumnRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
@@ -40,8 +40,7 @@ public class RelationColumn extends DMNSimpleGridColumn<RelationGrid, String> im
               new NameAndDataTypeDOMElementColumnRenderer<>(factory),
               width,
               gridWidget);
-        this.factory = PortablePreconditions.checkNotNull("factory",
-                                                          factory);
+        this.factory = Objects.requireNonNull(factory, "Parameter named 'factory' should be not null!");
         setMovable(true);
         setResizable(false);
     }
@@ -51,8 +50,8 @@ public class RelationColumn extends DMNSimpleGridColumn<RelationGrid, String> im
                      final GridBodyCellRenderContext context,
                      final Consumer<GridCellValue<String>> callback) {
         factory.attachDomElement(context,
-                                 (e) -> e.setValue(assertCellValue(assertCell(cell).getValue()).getValue()),
-                                 (e) -> e.setFocus(true));
+                                 e -> e.setValue(assertCellValue(assertCell(cell).getValue()).getValue()),
+                                 e -> e.setFocus(true));
     }
 
     @Override

@@ -17,8 +17,9 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
@@ -34,22 +35,20 @@ public abstract class DMNGridColumn<G extends BaseGrid<? extends Expression>, T>
 
     protected final G gridWidget;
 
-    public DMNGridColumn(final HeaderMetaData headerMetaData,
-                         final GridColumnRenderer<T> columnRenderer,
-                         final double width,
-                         final G gridWidget) {
-        this(new Lists.Builder<HeaderMetaData>()
-                     .add(headerMetaData)
-                     .build(),
+    protected DMNGridColumn(final HeaderMetaData headerMetaData,
+                            final GridColumnRenderer<T> columnRenderer,
+                            final double width,
+                            final G gridWidget) {
+        this(Stream.of(headerMetaData).collect(Collectors.toList()),
              columnRenderer,
              width,
              gridWidget);
     }
 
-    public DMNGridColumn(final List<HeaderMetaData> headerMetaData,
-                         final GridColumnRenderer<T> columnRenderer,
-                         final double width,
-                         final G gridWidget) {
+    protected DMNGridColumn(final List<HeaderMetaData> headerMetaData,
+                            final GridColumnRenderer<T> columnRenderer,
+                            final double width,
+                            final G gridWidget) {
         super(headerMetaData,
               columnRenderer,
               width);
@@ -83,11 +82,9 @@ public abstract class DMNGridColumn<G extends BaseGrid<? extends Expression>, T>
             final BaseExpressionGrid beg = (BaseExpressionGrid) gridWidget;
             final int parentColumnIndex = beg.getParentInformation().getColumnIndex();
             final GridData parentGridData = beg.getParentInformation().getGridWidget().getModel();
-            if (parentGridData != null) {
-                if (parentColumnIndex < parentGridData.getColumnCount()) {
-                    final GridColumn<?> parentColumn = parentGridData.getColumns().get(parentColumnIndex);
-                    parentColumn.setWidth(beg.getWidth() + beg.getPadding() * 2);
-                }
+            if (parentGridData != null && parentColumnIndex < parentGridData.getColumnCount()) {
+                final GridColumn<?> parentColumn = parentGridData.getColumns().get(parentColumnIndex);
+                parentColumn.setWidth(beg.getWidth() + beg.getPadding() * 2);
             }
         }
     }
