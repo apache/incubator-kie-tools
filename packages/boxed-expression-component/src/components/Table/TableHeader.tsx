@@ -98,16 +98,18 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   );
 
   const renderCountColumn = useCallback(
-    (column: ColumnInstance) => {
+    (column: ColumnInstance, rowIndex: number) => {
       const columnKey = getColumnKey(column);
       const classNames = `${columnKey} fixed-column no-clickable-cell`;
-      /* TODO: TableHeader: inhibit context menu for counter cells */
+
       return (
         <ThCell
-          {...column.getHeaderProps()}
-          {...thProps(column)}
+          rowIndex={rowIndex}
+          rowSpan={1}
+          headerProps={column.getHeaderProps()}
           className={classNames}
           key={columnKey}
+          columnKey={columnKey}
           isFocusable={true}
           onKeyDown={onCellKeyDown}
         >
@@ -272,7 +274,9 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
 
   const renderColumn = useCallback(
     (column: ColumnInstance, rowIndex: number, columnIndex: number) =>
-      column.isCountColumn ? renderCountColumn(column) : renderResizableHeaderCell(column, rowIndex, columnIndex),
+      column.isCountColumn
+        ? renderCountColumn(column, rowIndex)
+        : renderResizableHeaderCell(column, rowIndex, columnIndex),
     [renderCountColumn, renderResizableHeaderCell]
   );
 
@@ -332,9 +336,9 @@ interface ThCellProps {
   headerProps: any;
   isFocusable: boolean;
   onKeyDown: (rowIndex: number, rowSpan: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
-  onClick: () => void;
+  onClick?: () => void;
   rowIndex: number;
-  thProps: any;
+  thProps?: any;
   rowSpan: number;
 }
 
@@ -367,7 +371,6 @@ function ThCell({
       {...headerProps}
       {...thProps}
       ref={thRef}
-      key={columnKey}
       onClick={onClick}
       className={className}
       tabIndex={isFocusable ? "-1" : undefined}

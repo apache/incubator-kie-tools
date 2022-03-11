@@ -122,8 +122,6 @@ describe("TableUtils", () => {
       cells = container.querySelectorAll("th, td");
     });
 
-    /* TODO: TableUtils.test: write test for header cell 0,2 */
-
     test("valid coordinates", () => {
       expect(getFullCellCoordinates(cells[2])).toEqual({
         x: 0,
