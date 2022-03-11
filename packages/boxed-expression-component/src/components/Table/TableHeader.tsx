@@ -109,7 +109,6 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
           headerProps={column.getHeaderProps()}
           className={classNames}
           key={columnKey}
-          columnKey={columnKey}
           isFocusable={true}
           onKeyDown={onCellKeyDown}
         >
@@ -224,19 +223,20 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       };
 
       const cssClasses = getCssClass();
+      const thPropsObj = thProps(column);
 
       return (
         <ThCell
           className={cssClasses}
-          columnKey={columnKey}
           headerProps={headerProps}
           isFocusable={isFocusable}
           key={columnKey}
           onClick={onHeaderClick(columnKey)}
+          onEnterPress={cssClasses.includes("decision-table--annotation") ? undefined : thPropsObj.onContextMenu}
           onKeyDown={onCellKeyDown}
           rowIndex={rowIndex}
           rowSpan={getRowSpan(cssClasses)}
-          thProps={thProps(column)}
+          thProps={thPropsObj}
         >
           <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
             <div className="header-cell" data-ouia-component-type="expression-column-header">
@@ -332,10 +332,14 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
 interface ThCellProps {
   children?: React.ReactElement;
   className: string;
-  columnKey: string;
   headerProps: any;
   isFocusable: boolean;
-  onKeyDown: (rowIndex: number, rowSpan: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
+  onKeyDown: (
+    rowIndex: number,
+    rowSpan: number,
+    onEnterPress: (e: React.KeyboardEvent<HTMLElement>) => void
+  ) => (e: React.KeyboardEvent<HTMLElement>) => void;
+  onEnterPress?: (e: React.KeyboardEvent<HTMLElement>) => void;
   onClick?: () => void;
   rowIndex: number;
   thProps?: any;
@@ -345,11 +349,11 @@ interface ThCellProps {
 function ThCell({
   children,
   className,
-  columnKey,
   headerProps,
   isFocusable = true,
   onKeyDown,
   onClick,
+  onEnterPress = () => {},
   rowIndex,
   thProps,
   rowSpan = 1,
@@ -358,7 +362,7 @@ function ThCell({
 
   useEffect(() => {
     // Typescript don't accept the conversion between DOM event and React event
-    const onKeyDownForIndex: any = onKeyDown(rowIndex, rowSpan);
+    const onKeyDownForIndex: any = onKeyDown(rowIndex, rowSpan, onEnterPress);
     const cell = thRef.current;
     cell?.addEventListener("keydown", onKeyDownForIndex);
     return () => {

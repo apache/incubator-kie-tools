@@ -392,7 +392,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
    * @param rowIndex the index of the row
    */
   const onCellKeyDown = useCallback(
-    (rowIndex: number, rowSpan = 1) =>
+    (rowIndex: number, rowSpan = 1, onEnterPress?: (e: React.KeyboardEvent<HTMLElement>) => {}) =>
       (e: React.KeyboardEvent<HTMLElement>) => {
         const key = e.key;
         const isModKey = e.altKey || e.ctrlKey || e.shiftKey || key === "AltGraph";
@@ -433,7 +433,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
           focusParentCell(e.currentTarget);
         } else if (!boxedExpression.isContextMenuOpen && isFiredFromThis && !isModKey) {
           /* TODO: Table: keyboard editing for theader */
-          focusInsideCell(e.currentTarget, key !== "Enter");
+          return onEnterPress ? onEnterPress(e) : focusInsideCell(e.currentTarget, key !== "Enter");
         }
       },
     [boxedExpression.isContextMenuOpen, enableKeyboarNavigation]
