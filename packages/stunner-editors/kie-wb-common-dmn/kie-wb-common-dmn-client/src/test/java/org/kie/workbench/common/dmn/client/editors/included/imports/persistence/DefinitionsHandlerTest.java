@@ -16,14 +16,16 @@
 
 package org.kie.workbench.common.dmn.client.editors.included.imports.persistence;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
@@ -64,7 +66,8 @@ public class DefinitionsHandlerTest {
         handler = new DefinitionsHandler(stateProvider, dmnGraphUtils);
         model = "model";
         namespace = "://namespace";
-        nsContext = new Maps.Builder<String, String>().put(model, namespace).build();
+        nsContext = Stream.of(new AbstractMap.SimpleEntry<>(model, namespace))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         when(stateProvider.getDiagram()).thenReturn(Optional.of(diagram));
         when(dmnGraphUtils.getDefinitions(diagram)).thenReturn(definitions);
