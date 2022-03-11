@@ -49,12 +49,16 @@ export function ServerlessWorkflowMenuApp(props: CreateServerlessWorkflowAppProp
       "https://console.redhat.com/application-services/swf"
     );
 
-    globals.dependencies.applicationServices.page()!.style.display = "none";
-    globals.dependencies.applicationServices.mainContainer()!.classList.remove("pf-u-h-100vh");
+    const page = globals.dependencies.applicationServices.page();
+    const mainContainer = globals.dependencies.applicationServices.mainContainer();
+
+    if (page && mainContainer) {
+      page.style.display = "none";
+      mainContainer.classList.remove("pf-u-h-100vh");
+    }
   }, [globals.dependencies.applicationServices]);
 
   useEffect(() => {
-    console.log(window.location.pathname);
     if (window.location.pathname.includes(SWF_URL_PATH)) {
       openPage();
     }
@@ -144,7 +148,9 @@ function createPageContainer(id: string, container: HTMLElement, currentPage: HT
   const element = () => document.querySelector(`.${SWF_PAGE_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
-    currentPage.style.display = "none";
+    if (currentPage) {
+      currentPage.style.display = "none";
+    }
     container.insertAdjacentHTML("afterbegin", `<div class="${SWF_PAGE_CONTAINER_CLASS} ${id}"></div>`);
   }
 
