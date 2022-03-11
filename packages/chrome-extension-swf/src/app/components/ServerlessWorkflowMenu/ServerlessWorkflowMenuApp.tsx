@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import * as ReactDOM from "react-dom";
 import { SWF_MENU_ITEM_CONTAINER_CLASS, SWF_PAGE_CONTAINER_CLASS } from "../../constants";
 import { RoutesSwitch } from "../../navigation/RoutesSwitch";
@@ -25,12 +25,51 @@ interface CreateServerlessWorkflowAppProps {
   id: string;
 }
 
+const SWF_URL_PATH = "/application-services/swf";
+
+let lastUrl = location.href;
+
 export function ServerlessWorkflowMenuApp(props: CreateServerlessWorkflowAppProps) {
   const globals = useGlobals();
 
   const [menuLoaded, setMenuLoaded] = useState(false);
   const [container, setContainer] = useState<HTMLElement | null>(null);
   const [showPage, setShowPage] = useState(false);
+
+  const openPage = useCallback(() => {
+    setShowPage(true);
+    document.querySelectorAll("pf-c-nav__item").forEach((element) => element.classList.remove("pf-m-current"));
+
+    history.replaceState(
+      {
+        id: "swf",
+        source: "web",
+      },
+      "Serverless Workflow",
+      "https://console.redhat.com/application-services/swf"
+    );
+
+    globals.dependencies.applicationServices.page()!.style.display = "none";
+    globals.dependencies.applicationServices.mainContainer()!.classList.remove("pf-u-h-100vh");
+  }, [globals.dependencies.applicationServices]);
+
+  useEffect(() => {
+    console.log(window.location.pathname);
+    if (window.location.pathname.includes(SWF_URL_PATH)) {
+      openPage();
+    }
+
+    new MutationObserver(() => {
+      const url = location.href;
+      if (url !== lastUrl) {
+        if (!url.includes(SWF_URL_PATH)) {
+          setShowPage(false);
+          globals.dependencies.applicationServices.page()!.style.display = "";
+        }
+        lastUrl = url;
+      }
+    }).observe(document, { subtree: true, childList: true });
+  }, [globals.dependencies.applicationServices, openPage]);
 
   useEffect(() => {
     if (menuLoaded) {
@@ -60,7 +99,7 @@ export function ServerlessWorkflowMenuApp(props: CreateServerlessWorkflowAppProp
     <>
       {container &&
         ReactDOM.createPortal(
-          <ServerlessWorkflowMenuItem openPage={() => setShowPage(true)} />,
+          <ServerlessWorkflowMenuItem openPage={openPage} selected={showPage} />,
           createMenuItemContainer(props.id, globals.dependencies.applicationServices.menu()!)
         )}
       {showPage &&
@@ -78,11 +117,12 @@ export function ServerlessWorkflowMenuApp(props: CreateServerlessWorkflowAppProp
 
 interface ServerlessWorkflowMenuItemProps {
   openPage: () => void;
+  selected: boolean;
 }
 
 function ServerlessWorkflowMenuItem(props: ServerlessWorkflowMenuItemProps) {
   return (
-    <li className="pf-c-nav__item">
+    <li className={`pf-c-nav__item ${props.selected ? "pf-m-current" : ""}`}>
       <a className="pf-c-nav__link" onClick={props.openPage}>
         Serverless Workflow
       </a>
@@ -105,7 +145,7 @@ function createPageContainer(id: string, container: HTMLElement, currentPage: HT
 
   if (!element()) {
     currentPage.style.display = "none";
-    container.insertAdjacentHTML("beforeend", `<div class="${SWF_PAGE_CONTAINER_CLASS} ${id}"></div>`);
+    container.insertAdjacentHTML("afterbegin", `<div class="${SWF_PAGE_CONTAINER_CLASS} ${id}"></div>`);
   }
 
   return element();
