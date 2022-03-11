@@ -41,6 +41,9 @@ public abstract class C3DisplayerView<P extends C3Displayer>
     public void updateChart(C3ChartConf conf) {
         displayerPanel.clear();
         conf.setBindto(displayerPanel.getElement());
+        if (chart != null) {
+            chart.destroy();
+        }
         try {
             chart = C3.generate(conf);
         } catch (Exception e) {

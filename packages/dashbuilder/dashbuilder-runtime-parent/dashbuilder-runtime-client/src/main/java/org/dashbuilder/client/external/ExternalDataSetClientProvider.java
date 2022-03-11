@@ -139,15 +139,16 @@ public class ExternalDataSetClientProvider {
 
     private void handleCache(String uuid) {
         var def = externalDataSets.get(uuid);
+        scheduledTimeouts.computeIfPresent(uuid, (k, v) -> {
+            DomGlobal.clearTimeout(v);
+            return null;
+        });
         if (def != null && def.isCacheEnabled()) {
-            scheduledTimeouts.computeIfPresent(uuid, (k, v) -> {
-                DomGlobal.clearTimeout(v);
-                return null;
-            });
+            var refreshTimeAmount = def.getRefreshTimeAmount();
             var id = DomGlobal.setTimeout(params -> {
                 clientDataSetManager.removeDataSet(uuid);
                 scheduledTimeouts.remove(uuid);
-            }, def.getRefreshTimeAmount().toMillis());
+            }, refreshTimeAmount.toMillis());
             scheduledTimeouts.put(uuid, id);
         } else {
             clientDataSetManager.removeDataSet(uuid);
