@@ -150,21 +150,18 @@ export const focusPrevCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAt
     return;
   }
 
-  const nextCell = currentCell.previousElementSibling as HTMLTableCellElement;
   const { x, y } = getFullCellCoordinates(currentCell);
 
   if (y <= 0 && x <= 1 && !stopAtFirstDataCell) {
     return cellFocus(currentCell);
   }
 
-  if (x <= 1) {
-    if (!stopAtFirstDataCell) {
-      const lastCellPrevRow = getCellByCoordinates(currentCell.closest("table")!, { y: y - 1, x: -1 });
-      if (lastCellPrevRow && hasCellTabindex(lastCellPrevRow)) {
-        return focusCellByCoordinates(currentCell, { y: y - 1, x: -1 });
-      } else {
-        return cellFocus(currentCell);
-      }
+  if (x <= 1 && !stopAtFirstDataCell) {
+    const lastCellPrevRow = getCellByCoordinates(currentCell.closest("table")!, { y: y - 1, x: -1 });
+    if (lastCellPrevRow && hasCellTabindex(lastCellPrevRow)) {
+      return focusCellByCoordinates(currentCell, { y: y - 1, x: -1 });
+    } else {
+      return cellFocus(currentCell);
     }
   }
 
@@ -172,7 +169,9 @@ export const focusPrevCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAt
     return focusCellByCoordinates(currentCell, { y: y - 1, x: x - 1 });
   }
 
-  cellFocus(nextCell);
+  if (x > 0) {
+    focusCellByCoordinates(currentCell, { y: y, x: x - 1 });
+  }
 };
 
 /**

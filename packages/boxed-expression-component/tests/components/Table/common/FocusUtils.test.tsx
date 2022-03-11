@@ -302,14 +302,16 @@ describe("FocusUtils tests", () => {
     });
 
     it.each([
-      { from: { y: 0, x: 0 }, to: { y: 1, x: 1 }, rowspan: 1, stopAtEndOfRow: false },
-      { from: { y: 1, x: 1 }, to: { y: 1, x: 2 }, rowspan: 2, stopAtEndOfRow: false },
-      { from: { y: 1, x: 2 }, to: { y: 0, x: 2 }, rowspan: 2, stopAtEndOfRow: false },
-      { from: { y: 0, x: 2 }, to: { y: 1, x: 5 }, rowspan: 1, stopAtEndOfRow: false },
-      { from: { y: 1, x: 5 }, to: { y: 2, x: 1 }, rowspan: 2, stopAtEndOfRow: false },
+      { from: { rowIndex: 0, cellIndex: 0 }, to: { rowIndex: 1, cellIndex: 1 }, rowspan: 1, stopAtEndOfRow: false },
+      { from: { rowIndex: 1, cellIndex: 1 }, to: { rowIndex: 1, cellIndex: 2 }, rowspan: 2, stopAtEndOfRow: false },
+      { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 2, stopAtEndOfRow: false },
+      { from: { rowIndex: 0, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 5 }, rowspan: 1, stopAtEndOfRow: false },
+      { from: { rowIndex: 1, cellIndex: 5 }, to: { rowIndex: 2, cellIndex: 1 }, rowspan: 2, stopAtEndOfRow: false },
     ])("test headers with rowspan and colspan navigation at index %#", ({ from, to, rowspan, stopAtEndOfRow }) => {
-      testFocus(mockTableColRowspan.rows[from.y].cells[from.x], mockTableColRowspan.rows[to.y].cells[to.x], (element) =>
-        focusNextCell(element, rowspan, stopAtEndOfRow)
+      testFocus(
+        mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
+        mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
+        (element) => focusNextCell(element, rowspan, stopAtEndOfRow)
       );
     });
 
@@ -347,19 +349,20 @@ describe("FocusUtils tests", () => {
     });
 
     it.each([
-      { from: { y: 1, x: 5 }, to: { y: 0, x: 2 }, rowspan: 2, stopAtEndOfRow: true },
-      { from: { y: 0, x: 2 }, to: { y: 1, x: 2 }, rowspan: 1, stopAtEndOfRow: true },
-      { from: { y: 0, x: 3 }, to: { y: 0, x: 2 }, rowspan: 1, stopAtEndOfRow: true },
-      { from: { y: 1, x: 2 }, to: { y: 1, x: 1 }, rowspan: 1, stopAtEndOfRow: true },
-      { from: { y: 1, x: 1 }, to: { y: 0, x: 0 }, rowspan: 2, stopAtEndOfRow: true },
-      { from: { y: 2, x: 1 }, to: { y: 1, x: 5 }, rowspan: 1, stopAtEndOfRow: false },
-      { from: { y: 1, x: 5 }, to: { y: 0, x: 2 }, rowspan: 2, stopAtEndOfRow: false },
-      { from: { y: 0, x: 3 }, to: { y: 0, x: 2 }, rowspan: 1, stopAtEndOfRow: false },
-      { from: { y: 1, x: 2 }, to: { y: 1, x: 1 }, rowspan: 2, stopAtEndOfRow: false },
-      { from: { y: 1, x: 1 }, to: { y: 0, x: 0 }, rowspan: 2, stopAtEndOfRow: true },
+      { from: { rowIndex: 1, cellIndex: 5 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 2, stopAtEndOfRow: true },
+      { from: { rowIndex: 0, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 2 }, rowspan: 1, stopAtEndOfRow: true },
+      { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 1 }, rowspan: 1, stopAtEndOfRow: true },
+      { from: { rowIndex: 1, cellIndex: 1 }, to: { rowIndex: 0, cellIndex: 0 }, rowspan: 2, stopAtEndOfRow: true },
+      { from: { rowIndex: 2, cellIndex: 1 }, to: { rowIndex: 1, cellIndex: 5 }, rowspan: 1, stopAtEndOfRow: false },
+      { from: { rowIndex: 1, cellIndex: 5 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 2, stopAtEndOfRow: false },
+      { from: { rowIndex: 0, cellIndex: 3 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 1, stopAtEndOfRow: false },
+      { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 1 }, rowspan: 2, stopAtEndOfRow: false },
+      { from: { rowIndex: 1, cellIndex: 1 }, to: { rowIndex: 0, cellIndex: 0 }, rowspan: 2, stopAtEndOfRow: true },
     ])("test headers with rowspan and colspan navigation at index %#", ({ from, to, rowspan, stopAtEndOfRow }) => {
-      testFocus(mockTableColRowspan.rows[from.y].cells[from.x], mockTableColRowspan.rows[to.y].cells[to.x], (element) =>
-        focusPrevCell(element, rowspan, stopAtEndOfRow)
+      testFocus(
+        mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
+        mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
+        (element) => focusPrevCell(element, rowspan, stopAtEndOfRow)
       );
     });
 
@@ -383,12 +386,14 @@ describe("FocusUtils tests", () => {
     });
 
     it.each([
-      { from: { y: 2, x: 1 }, to: { y: 1, x: 1 } },
-      { from: { y: 2, x: 3 }, to: { y: 1, x: 3 } },
-      { from: { y: 1, x: 3 }, to: { y: 0, x: 2 } },
+      { from: { rowIndex: 2, cellIndex: 1 }, to: { rowIndex: 1, cellIndex: 1 } },
+      { from: { rowIndex: 2, cellIndex: 3 }, to: { rowIndex: 1, cellIndex: 3 } },
+      { from: { rowIndex: 1, cellIndex: 3 }, to: { rowIndex: 0, cellIndex: 2 } },
     ])("test headers with rowspan and colspan navigation at index %#", ({ from, to }) => {
-      testFocus(mockTableColRowspan.rows[from.y].cells[from.x], mockTableColRowspan.rows[to.y].cells[to.x], (element) =>
-        focusUpperCell(element)
+      testFocus(
+        mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
+        mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
+        (element) => focusUpperCell(element)
       );
     });
 
@@ -410,12 +415,14 @@ describe("FocusUtils tests", () => {
     });
 
     it.each([
-      { from: { y: 1, x: 2 }, to: { y: 2, x: 2 } },
-      { from: { y: 0, x: 3 }, to: { y: 1, x: 5 } },
-      { from: { y: 1, x: 3 }, to: { y: 2, x: 3 } },
+      { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 2, cellIndex: 2 } },
+      { from: { rowIndex: 0, cellIndex: 3 }, to: { rowIndex: 1, cellIndex: 5 } },
+      { from: { rowIndex: 1, cellIndex: 3 }, to: { rowIndex: 2, cellIndex: 3 } },
     ])("test headers with rowspan and colspan navigation at index %#", ({ from, to }) => {
-      testFocus(mockTableColRowspan.rows[from.y].cells[from.x], mockTableColRowspan.rows[to.y].cells[to.x], (element) =>
-        focusLowerCell(element)
+      testFocus(
+        mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
+        mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
+        (element) => focusLowerCell(element)
       );
     });
 
