@@ -49,6 +49,8 @@ export function ServerlessWorkflowMenuApp(props: CreateServerlessWorkflowAppProp
       "https://console.redhat.com/application-services/swf"
     );
 
+    document.title = "Serverless Workflow";
+
     const page = globals.dependencies.applicationServices.page();
     const mainContainer = globals.dependencies.applicationServices.mainContainer();
 
