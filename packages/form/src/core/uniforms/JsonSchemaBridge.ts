@@ -13,3 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
+
+export class FormJsonSchemaBridge extends JSONSchemaBridge {
+  public getProps(name: string, props: Record<string, any>) {
+    const finalProps = super.getProps(name, props);
+    if (finalProps.label) {
+      finalProps.label = name.split(".").pop() ?? name;
+    }
+    return finalProps;
+  }
+
+  public getField(name: string): Record<string, any> {
+    const field = super.getField(name);
+    if (!field.type) {
+      field.type = "string";
+    }
+    // needs to be required
+    if (field.type === "object") {
+      field.default = {};
+    }
+    if (field.type === "array") {
+      field.default = [];
+    }
+    if (field.type === "boolean") {
+      field.default = false;
+    }
+
+    if (field.enum) {
+      field.placeholder = "Select...";
+    }
+    return field;
+  }
+}

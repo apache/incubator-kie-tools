@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
+import { FormJsonSchemaBridge } from "../../core/uniforms/JsonSchemaBridge";
 
 export enum Duration {
   DaysAndTimeDuration,
   YearsAndMonthsDuration,
 }
 
-export class DmnFormJsonSchemaBridge extends JSONSchemaBridge {
-  public getProps(name: string, props: Record<string, any>) {
-    const finalProps = super.getProps(name, props);
-    if (finalProps.label) {
-      finalProps.label = name.split(".").pop() ?? name;
-    }
-    return finalProps;
+export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
+  constructor(schema: any, validator: any, private i18n: any) {
+    super(schema, validator);
   }
 
   public getType(name: string) {
@@ -40,5 +36,20 @@ export class DmnFormJsonSchemaBridge extends JSONSchemaBridge {
       return String;
     }
     return super.getType(name);
+  }
+
+  public getField(name: string): Record<string, any> {
+    const field = super.getField(name);
+    if (field?.format === "days and time duration") {
+      field.placeholder = this.i18n.form.preProcessing.daysAndTimePlaceholder;
+    }
+    if (field?.format === "years and months duration") {
+      field.placeholder = this.i18n.form.preProcessing.yearsAndMonthsPlaceholder;
+    }
+    if (field?.format === "time") {
+      field.placeholder = "hh:mm:ss";
+    }
+
+    return field;
   }
 }

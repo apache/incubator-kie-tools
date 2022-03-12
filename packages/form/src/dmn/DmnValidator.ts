@@ -76,6 +76,6 @@ export class DmnValidator extends Validator {
   public getBridge(formSchema: any): DmnFormJsonSchemaBridge {
     const formDraft4 = { ...formSchema, $schema: this.SCHEMA_DRAFT4 };
     const validator = this.createValidator(formDraft4);
-    return new DmnFormJsonSchemaBridge(formDraft4, validator);
+    return new DmnFormJsonSchemaBridge(formDraft4, validator, this.i18n);
   }
 }

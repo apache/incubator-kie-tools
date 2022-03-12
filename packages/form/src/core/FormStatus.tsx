@@ -25,6 +25,13 @@ import { FormI18n } from "../i18n/FormI18n";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
+export enum FormStatus {
+  WITHOUT_ERROR,
+  VALIDATOR_ERROR,
+  AUTO_GENERATION_ERROR,
+  EMPTY,
+}
+
 interface CommonFormStatusProps {
   i18n: FormI18n;
 }

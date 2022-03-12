@@ -18,7 +18,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AutoForm from "uniforms-patternfly/dist/es6/AutoForm";
 import { ErrorBoundary } from "../common/ErrorBoundary";
-import { dataPathToFormFieldPath } from "./uniforms/utils";
+import { dataPathToFormFieldPath } from "../core/uniforms/utils";
 import { DmnFormJsonSchemaBridge } from "./uniforms";
 import { DmnValidator } from "./DmnValidator";
 import { dmnFormI18n } from "../i18n";
@@ -162,27 +162,17 @@ export function DmnForm(props: Props) {
           } else {
             formDeepPreprocessing(form, form.definitions[property]!.items as DmnDeepProperty, [...title]);
           }
-        } else if (!Object.hasOwnProperty.call(form.definitions[property], "type")) {
-          form.definitions[property]!.type = "string";
         } else if (form?.definitions?.[property]?.["x-dmn-type"] === "FEEL:context") {
           form.definitions[property]!.placeholder = `{ "x": <value> }`;
           contextPath.set(title.join(""), title);
-        } else if (Object.hasOwnProperty.call(form.definitions[property], "enum")) {
-          form.definitions[property]!.placeholder = i18n.form.preProcessing.selectPlaceholder;
         } else if (Object.hasOwnProperty.call(form.definitions[property], "format")) {
           setCustomPlaceholders(form.definitions[property]!);
         }
         return;
       }
-      if (!Object.hasOwnProperty.call(value, "type")) {
-        value.type = "string";
-      }
       if (value?.["x-dmn-type"] === "FEEL:context") {
         value!.placeholder = `{ "x": <value> }`;
         contextPath.set(title.join(""), title);
-      }
-      if (Object.hasOwnProperty.call(value, "enum")) {
-        value.placeholder = i18n.form.preProcessing.selectPlaceholder;
       }
       if (Object.hasOwnProperty.call(value, "format")) {
         setCustomPlaceholders(value);
@@ -206,40 +196,6 @@ export function DmnForm(props: Props) {
     },
     [formDeepPreprocessing]
   );
-
-  // FIXME CORE -> MOVE TO BRIDGE?
-  const defaultFormValues = useCallback((jsonSchemaBridge: any) => {
-    return Object.keys(jsonSchemaBridge?.schema?.properties ?? {}).reduce((acc, property) => {
-      if (Object.hasOwnProperty.call(jsonSchemaBridge?.schema?.properties[property], "$ref")) {
-        const refPath = jsonSchemaBridge?.schema?.properties[property].$ref!.split("/").pop() ?? "";
-        if (jsonSchemaBridge?.schema?.definitions?.[refPath].type === "object") {
-          acc[`${property}`] = {};
-          return acc;
-        }
-        if (jsonSchemaBridge?.schema?.definitions?.[refPath]?.type === "array") {
-          acc[`${property}`] = [];
-          return acc;
-        }
-        if (jsonSchemaBridge?.schema?.definitions?.[refPath]?.type === "boolean") {
-          acc[`${property}`] = false;
-          return acc;
-        }
-      }
-      if (jsonSchemaBridge?.schema?.properties?.[property]?.type === "object") {
-        acc[`${property}`] = {};
-        return acc;
-      }
-      if (jsonSchemaBridge?.schema?.properties?.[property]?.type === "array") {
-        acc[`${property}`] = [];
-        return acc;
-      }
-      if (jsonSchemaBridge?.schema?.properties?.[property]?.type === "boolean") {
-        acc[`${property}`] = false;
-        return acc;
-      }
-      return acc;
-    }, {} as { [x: string]: any });
-  }, []);
 
   // FIXME DMN -> CONTEXT PATH
   // contextPath -> map of FEEL:context
@@ -310,10 +266,10 @@ export function DmnForm(props: Props) {
           }
           return form;
         },
-        { ...defaultFormValues(bridge), ...model }
+        { ...model }
       );
     },
-    [defaultFormValues]
+    []
   );
 
   // When the formModel changes, stringify all context inputs and set the formData and reset the formError
