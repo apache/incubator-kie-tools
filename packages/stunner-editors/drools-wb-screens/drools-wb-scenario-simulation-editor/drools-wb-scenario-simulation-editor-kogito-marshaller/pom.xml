@@ -118,7 +118,6 @@
                 <artifactItem>
                   <groupId>org.hisrc.jsonix</groupId>
                   <artifactId>jsonix-scripts</artifactId>
-                  <version>${version.org.hisrc.jsonix.jsonix-scripts}</version>
                   <type>js</type>
                   <classifier>all</classifier>
                   <outputDirectory>${js.destination}</outputDirectory>

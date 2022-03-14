@@ -15,10 +15,18 @@
  */
 
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Popover } from "@patternfly/react-core";
 import "./PopoverMenu.css";
 import { useBoxedExpression } from "../../context";
+
+/**
+ * Check if the key pressed is Esc Key.
+ *
+ * @param key the key from the event
+ * @return true if yes, false otherwise
+ */
+const isEscKey = (key = ""): boolean => /^esc.*/i.test(key);
 
 export interface PopoverMenuProps {
   /** Optional children element to be considered for triggering the popover */
@@ -37,6 +45,14 @@ export interface PopoverMenuProps {
   hasAutoWidth?: boolean;
   /** Popover min width */
   minWidth?: string;
+  /**
+   * Lifecycle function invoked when the popover has fully transitioned out, called when the user click outside the popover.
+   */
+  onHide?: () => void;
+  /**
+   * Lifecycle function invoked when the popover has fully transitioned out, called when the user press "Esc" key.
+   */
+  onCancel?: (event?: MouseEvent | KeyboardEvent) => void;
 }
 
 export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
@@ -48,8 +64,11 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
   className,
   hasAutoWidth,
   minWidth,
+  onHide = () => {},
+  onCancel = () => {},
 }: PopoverMenuProps) => {
   const { setIsContextMenuOpen } = useBoxedExpression();
+  const [isVisible] = useState(false);
 
   const onHidden = useCallback(() => {
     setIsContextMenuOpen(false);
@@ -58,6 +77,28 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
   const onShown = useCallback(() => {
     setIsContextMenuOpen(true);
   }, [setIsContextMenuOpen]);
+
+  const shouldOpen = useCallback((showFunction?: () => void) => {
+    showFunction?.();
+  }, []);
+
+  const shouldClose = useCallback(
+    (_tip, hideFunction?: () => void, event?: MouseEvent | KeyboardEvent) => {
+      // if the esc key has been pressed with a Select component open
+      if ((event?.target as Element).closest(".pf-c-select__menu")) {
+        return;
+      }
+
+      if (event instanceof KeyboardEvent && isEscKey(event?.key)) {
+        onCancel(event);
+      } else {
+        onHide();
+      }
+
+      hideFunction?.();
+    },
+    [onCancel, onHide]
+  );
 
   return (
     <Popover
@@ -78,6 +119,9 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
         </div>
       }
       bodyContent={body}
+      isVisible={isVisible}
+      shouldClose={shouldClose}
+      shouldOpen={shouldOpen}
     >
       {children}
     </Popover>
