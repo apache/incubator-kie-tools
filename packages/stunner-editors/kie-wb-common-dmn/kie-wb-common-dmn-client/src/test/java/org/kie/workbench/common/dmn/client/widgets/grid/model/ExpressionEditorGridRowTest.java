@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
 import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -83,10 +84,9 @@ public class ExpressionEditorGridRowTest {
         when(view.getHeight()).thenReturn(DEFAULT_HEIGHT + 1);
 
         final GridRow row = spy(ExpressionEditorGridRow.class);
-        final Map<Integer, GridCell<?>> cells = Stream.of(
-                        new AbstractMap.SimpleEntry<Integer, GridCell<?>>(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view)))),
-                        new AbstractMap.SimpleEntry<Integer, GridCell<?>>(1, null))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        final Map<Integer, GridCell<?>> cells = new HashMap<>();
+        cells.put(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view))));
+        cells.put(1, null);
 
         when(row.getCells()).thenReturn(cells);
         assertThat(row.getHeight()).isGreaterThan(DEFAULT_HEIGHT);
