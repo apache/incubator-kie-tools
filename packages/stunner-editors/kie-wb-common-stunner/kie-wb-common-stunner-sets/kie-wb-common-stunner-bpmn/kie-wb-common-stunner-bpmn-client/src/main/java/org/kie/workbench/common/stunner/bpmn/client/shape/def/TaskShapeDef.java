@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
 import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -66,14 +67,19 @@ public class TaskShapeDef extends BaseDimensionedShapeDef
             Stream.of(new AbstractMap.SimpleEntry<>(HorizontalAlignment.LEFT, ICON_WIDTH))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-    private static final Map<Class<? extends BaseTask>, Map<Enum, Double>> TASK_MARGIN_SUPPLIERS =
-            Stream.of(new AbstractMap.SimpleEntry<Class<? extends BaseTask>, Map<Enum, Double>>(NoneTask.class, null),
-                      new AbstractMap.SimpleEntry<Class<? extends BaseTask>, Map<Enum, Double>>(UserTask.class, DEFAULT_TASK_MARGINS_WITH_ICON),
-                      new AbstractMap.SimpleEntry<Class<? extends BaseTask>, Map<Enum, Double>>(ScriptTask.class, DEFAULT_TASK_MARGINS_WITH_ICON),
-                      new AbstractMap.SimpleEntry<Class<? extends BaseTask>, Map<Enum, Double>>(BusinessRuleTask.class, DEFAULT_TASK_MARGINS_WITH_ICON),
-                      new AbstractMap.SimpleEntry<Class<? extends BaseTask>, Map<Enum, Double>>(CustomTask.class, DEFAULT_TASK_MARGINS_WITH_ICON),
-                      new AbstractMap.SimpleEntry<Class<? extends BaseTask>, Map<Enum, Double>>(GenericServiceTask.class, DEFAULT_TASK_MARGINS_WITH_ICON))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    private static final Map<Class<? extends BaseTask>, Map<Enum, Double>> TASK_MARGIN_SUPPLIERS = buildTaskMarginSuppliers();
+
+    private static Map<Class<? extends BaseTask>, Map<Enum, Double>> buildTaskMarginSuppliers() {
+        final Map<Class<? extends BaseTask>, Map<Enum, Double>> taskMarginSuppliers = new HashMap<>();
+        taskMarginSuppliers.put(NoneTask.class, null);
+        taskMarginSuppliers.put(UserTask.class, DEFAULT_TASK_MARGINS_WITH_ICON);
+        taskMarginSuppliers.put(ScriptTask.class, DEFAULT_TASK_MARGINS_WITH_ICON);
+        taskMarginSuppliers.put(BusinessRuleTask.class, DEFAULT_TASK_MARGINS_WITH_ICON);
+        taskMarginSuppliers.put(CustomTask.class, DEFAULT_TASK_MARGINS_WITH_ICON);
+        taskMarginSuppliers.put(GenericServiceTask.class, DEFAULT_TASK_MARGINS_WITH_ICON);
+
+        return taskMarginSuppliers;
+    }
 
     @Override
     public SizeHandler<BaseTask, SVGShapeView> newSizeHandler() {
