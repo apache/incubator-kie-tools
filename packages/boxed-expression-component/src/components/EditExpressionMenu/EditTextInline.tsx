@@ -23,10 +23,16 @@ export interface EditTextInlineProps {
   /** Text value */
   value: string;
   /** Callback executed when text changes */
-  onTextChange: (updatedValue: string) => void;
+  onTextChange: (updatedValue: string, event?: ChangeEvent<HTMLInputElement>) => void;
+  /** Callback executed when user cancel by pressing escape */
+  onCancel?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
-export const EditTextInline: React.FunctionComponent<EditTextInlineProps> = ({ onTextChange, value }) => {
+export const EditTextInline: React.FunctionComponent<EditTextInlineProps> = ({
+  value,
+  onTextChange,
+  onCancel = () => {},
+}) => {
   const { i18n } = useBoxedExpressionEditorI18n();
 
   const [toggle, setToggle] = useState(true);
@@ -34,7 +40,7 @@ export const EditTextInline: React.FunctionComponent<EditTextInlineProps> = ({ o
   const onValueBlur = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const changedText = event.target.value;
-      onTextChange(changedText);
+      onTextChange(changedText, event);
       setToggle(true);
     },
     [onTextChange]
@@ -49,9 +55,10 @@ export const EditTextInline: React.FunctionComponent<EditTextInlineProps> = ({ o
       }
       if (pressedEscape) {
         setToggle(true);
+        onCancel(event);
       }
     },
-    []
+    [onCancel]
   );
 
   const onClick = useMemo(

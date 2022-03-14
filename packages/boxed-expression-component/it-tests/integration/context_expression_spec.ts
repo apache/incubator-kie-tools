@@ -226,7 +226,7 @@ describe("Context Expression Tests :: Nested Relations", () => {
     cy.ouiaId("expression-column-1").not("table table").should("be.focused");
   });
 
-  it("Interaction with contextMenu", () => {
+  it("Keyboard interaction with contextMenu", () => {
     // open contextMenu and expression menu from the expression cell of the 2nd row and check you are not able to navigate. Then close the contextMenu.
     cy.ouiaId("OUIA-Generated-TableRow-2")
       .contains("td", "Select expression")
@@ -240,5 +240,18 @@ describe("Context Expression Tests :: Nested Relations", () => {
 
     // check the menu is closed
     cy.get(".pf-c-popover__content").should("not.exist");
+  });
+
+  it("Keyboard interaction with header's contextMenu in nested decision table", () => {
+    // from the 1st header cell inside the nested decision table, open the contextMenu pressing enter.
+    cy.contains("th", "column-3").as("targetCell").focus();
+
+    // check the menu is closed
+    cy.get(".pf-c-popover__content").should("not.exist");
+
+    cy.get("@targetCell").type("enter");
+
+    // check the menu is closed
+    cy.get(".pf-c-popover__content").should("be.visible");
   });
 });

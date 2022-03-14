@@ -17,13 +17,14 @@
 import { Th, Thead, Tr } from "@patternfly/react-table";
 import * as _ from "lodash";
 import * as React from "react";
-import { useCallback, useMemo, useEffect, useRef } from "react";
+import { useCallback, useMemo, useEffect, useRef, ChangeEvent } from "react";
 import { Column, ColumnInstance, HeaderGroup, TableInstance } from "react-table";
 import { DataType, TableHeaderVisibility } from "../../api";
 import { EditExpressionMenu, EditTextInline } from "../EditExpressionMenu";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./Table";
 import { useBoxedExpression } from "../../context";
+import { focusCurrentCell } from "./common";
 
 export interface TableHeaderProps {
   /** Table instance */
@@ -41,7 +42,7 @@ export interface TableHeaderProps {
   /** Function to be executed when columns are modified */
   onColumnsUpdate: (columns: Column[]) => void;
   /** Function to be executed when a key has been pressed on a cell */
-  onCellKeyDown: (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
+  onCellKeyDown: () => (e: React.KeyboardEvent<HTMLElement>) => void;
   /** Th props */
   thProps: (column: ColumnInstance) => any;
   /** Option to enable or disable header edits */
@@ -118,7 +119,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
         </ThCell>
       );
     },
-    [getColumnKey, onCellKeyDown, thProps]
+    [getColumnKey, onCellKeyDown]
   );
 
   const renderCellInfoLabel = useCallback(
@@ -127,7 +128,13 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
         return (
           <EditTextInline
             value={column.label as string}
-            onTextChange={(value) => onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value })}
+            onTextChange={(value, event: ChangeEvent<HTMLInputElement>) => {
+              onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value });
+              focusCurrentCell(event.target);
+            }}
+            onCancel={(event: React.KeyboardEvent<HTMLInputElement>) => {
+              focusCurrentCell(event.target as HTMLElement);
+            }}
           />
         );
       }
@@ -223,7 +230,6 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       };
 
       const cssClasses = getCssClass();
-      const thPropsObj = thProps(column);
 
       return (
         <ThCell
@@ -232,11 +238,10 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
           isFocusable={isFocusable}
           key={columnKey}
           onClick={onHeaderClick(columnKey)}
-          onEnterPress={cssClasses.includes("decision-table--annotation") ? undefined : thPropsObj.onContextMenu}
           onKeyDown={onCellKeyDown}
           rowIndex={rowIndex}
           rowSpan={getRowSpan(cssClasses)}
-          thProps={thPropsObj}
+          thProps={thProps(column)}
         >
           <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
             <div className="header-cell" data-ouia-component-type="expression-column-header">
@@ -334,12 +339,7 @@ interface ThCellProps {
   className: string;
   headerProps: any;
   isFocusable: boolean;
-  onKeyDown: (
-    rowIndex: number,
-    rowSpan: number,
-    onEnterPress: (e: React.KeyboardEvent<HTMLElement>) => void
-  ) => (e: React.KeyboardEvent<HTMLElement>) => void;
-  onEnterPress?: (e: React.KeyboardEvent<HTMLElement>) => void;
+  onKeyDown: (rowSpan: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
   onClick?: () => void;
   rowIndex: number;
   thProps?: any;
@@ -353,7 +353,6 @@ function ThCell({
   isFocusable = true,
   onKeyDown,
   onClick,
-  onEnterPress = () => {},
   rowIndex,
   thProps,
   rowSpan = 1,
@@ -362,7 +361,7 @@ function ThCell({
 
   useEffect(() => {
     // Typescript don't accept the conversion between DOM event and React event
-    const onKeyDownForIndex: any = onKeyDown(rowIndex, rowSpan, onEnterPress);
+    const onKeyDownForIndex: any = onKeyDown(rowSpan);
     const cell = thRef.current;
     cell?.addEventListener("keydown", onKeyDownForIndex);
     return () => {

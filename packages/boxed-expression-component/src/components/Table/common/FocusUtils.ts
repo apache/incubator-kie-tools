@@ -264,17 +264,15 @@ export const focusInsideCell = (currentEl: HTMLElement | null, eraseContent = fa
     return;
   }
 
-  const cellWithPopoverMenu = currentEl.querySelector(".with-popover-menu, .logic-type-not-present") as HTMLElement;
+  const cellWithClickActionElement = currentEl.querySelector(`
+    .header-cell-info *:first-child, 
+    .with-popover-menu, 
+    .logic-type-not-present,
+    .logic-type-selector button
+  `) as HTMLElement;
 
-  if (cellWithPopoverMenu) {
-    cellWithPopoverMenu.click();
-    return;
-  }
-
-  const cellWithSelect = currentEl.querySelector(".logic-type-selector button") as HTMLElement;
-
-  if (cellWithSelect) {
-    cellWithSelect.click();
+  if (cellWithClickActionElement) {
+    cellWithClickActionElement.click();
     return;
   }
 

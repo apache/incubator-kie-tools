@@ -325,7 +325,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.get("@textarea-6").find(".editable-cell-textarea").should("have.text", "TestOverwrite");
   });
 
-  it("Interaction with contextMenu", () => {
+  it("Keyboard interaction with contextMenu", () => {
     // rightclick on cell 3
     cy.contains("td", /cell 3/)
       .as("cell-3")
@@ -339,5 +339,39 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
     // close the menu
     cy.get("body").type("{esc}");
+  });
+
+  describe("Keyboard interaction with annotation cell", () => {
+    const isAnnotationCellViewModeAndFocused = () => {
+      cy.get("@annotationCell")
+        .should("contain.text", "annotation-1 edited")
+        .should("be.focused")
+        .get("input")
+        .should("not.exist");
+    };
+
+    beforeEach(() => {
+      cy.contains("th", "annotation-1")
+        .as("annotationCell")
+        .focus()
+        .type("{enter}")
+        .get("input:text")
+        .as("annotationInput")
+        .type("annotation-1 edited");
+    });
+
+    it("Start editing", () => {
+      // from the annotation cell press enter to start editing
+      cy.get("@annotationInput").type("{enter}");
+
+      isAnnotationCellViewModeAndFocused();
+    });
+
+    it("Cancel editing", () => {
+      // from the annotation cell press esc to cance editing
+      cy.get("@annotationInput").type("{esc}");
+
+      isAnnotationCellViewModeAndFocused();
+    });
   });
 });
