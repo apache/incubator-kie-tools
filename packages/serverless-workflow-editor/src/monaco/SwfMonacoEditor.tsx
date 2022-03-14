@@ -21,8 +21,8 @@ import { initJsonCompletion } from "./augmentation/completion";
 import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 import { useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
-import { useSharedValue } from "@kie-tools-core/envelope-bus/src/hooks";
-import { SwfServiceCatalogSingleton } from "../catalog";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { SwfServiceCatalogSingleton } from "../serviceCatalog";
 import { ServerlessWorkflowEditorChannelApi } from "../editor";
 
 interface Props {

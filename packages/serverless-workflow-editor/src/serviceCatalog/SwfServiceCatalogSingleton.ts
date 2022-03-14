@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { SwfFunction, SwfService } from "@kie-tools/serverless-workflow-service-catalog/src/api";
+import { SwfFunction, SwfService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 interface SwfServiceCatalogApi {
   getServices(): SwfService[];
@@ -26,13 +26,14 @@ class SwfServiceCatalogApiImpl implements SwfServiceCatalogApi {
   constructor(private readonly services: SwfService[] = []) {}
 
   public getFunctionByOperation(operationId: string): SwfFunction | undefined {
-    for (const service of this.services) {
-      for (const func of service.functions) {
-        if (func.operation === operationId) {
-          return func;
+    for (const swfService of this.services) {
+      for (const swfFunction of swfService.functions) {
+        if (swfFunction.operation === operationId) {
+          return swfFunction;
         }
       }
     }
+
     return undefined;
   }
 

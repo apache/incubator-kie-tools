@@ -19,9 +19,8 @@ import { CancellationToken, editor, languages, Position, Range } from "monaco-ed
 import * as jsonc from "jsonc-parser";
 import { SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
 import { Specification } from "@severlessworkflow/sdk-typescript";
-import { SwfFunction } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { SwfFunctionDefinition, SwfFunctionRef, SwfServiceCatalogSingleton } from "../../../catalog";
-import { getWorkflowSwfFunctionDefinitions } from "./utils";
+import { SwfServiceCatalogSingleton } from "../../../serviceCatalog";
+import { getSwfFunctions } from "./utils";
 
 const completions = new Map<
   jsonc.JSONPath,
@@ -43,12 +42,9 @@ const completions = new Map<
         return [];
       }
 
-      const existingOperations: string[] = getWorkflowSwfFunctionDefinitions(rootNode, workflow).map(
-        (swfFunctionDef) => swfFunctionDef.operation
-      );
+      const existingOperations = getSwfFunctions(workflow, rootNode).map((swfFunction) => swfFunction.operation);
 
       const wordPosition = model.getWordAtPosition(cursorPosition);
-
       const range = new Range(
         cursorPosition.lineNumber,
         wordPosition?.startColumn ?? cursorPosition.column,
@@ -58,9 +54,9 @@ const completions = new Map<
 
       return SwfServiceCatalogSingleton.get()
         .getFunctions()
-        .filter((swfFunction: SwfFunction) => !existingOperations.includes(swfFunction.operation))
-        .map((swfFunction: SwfFunction) => {
-          const swfFunctionDef: SwfFunctionDefinition = {
+        .filter((swfFunction) => !existingOperations.includes(swfFunction.operation))
+        .map((swfFunction) => {
+          const swfFunctionDef: Omit<Specification.Function, "normalize"> = {
             name: `$\{1:${swfFunction.name}}`,
             operation: swfFunction.operation,
             type: swfFunction.type,
@@ -84,10 +80,7 @@ const completions = new Map<
         return [];
       }
 
-      const swfFunctionDefinitions = getWorkflowSwfFunctionDefinitions(rootNode, workflow);
-
       const wordPosition = model.getWordAtPosition(cursorPosition);
-
       const range = new Range(
         cursorPosition.lineNumber,
         wordPosition?.startColumn ?? cursorPosition.column,
@@ -95,12 +88,11 @@ const completions = new Map<
         wordPosition?.endColumn ?? cursorPosition.column
       );
 
-      const completionItems: languages.CompletionItem[] = [];
-
-      swfFunctionDefinitions.forEach((swfFunctionDef) => {
+      const swfFunctions = getSwfFunctions(workflow, rootNode);
+      return swfFunctions.flatMap((swfFunctionDef) => {
         const swfFunction = SwfServiceCatalogSingleton.get().getFunctionByOperation(swfFunctionDef.operation);
         if (!swfFunction) {
-          return;
+          return [];
         }
 
         const refArgs: Record<string, string> = {};
@@ -108,24 +100,25 @@ const completions = new Map<
         Object.keys(swfFunction.arguments).forEach((argName) => {
           refArgs[argName] = `$\{${index++}:}`;
         });
-        const swfFunctionRef: SwfFunctionRef = {
+
+        const swfFunctionRef: Omit<Specification.Functionref, "normalize"> = {
           refName: swfFunctionDef.name,
           arguments: refArgs,
         };
-        const swFunctionRefContent = JSON.stringify(swfFunctionRef, null, 2);
-        completionItems.push({
-          label: `${swfFunctionRef.refName}`,
-          sortText: swfFunctionRef.refName,
-          filterText: swfFunctionRef.refName,
-          detail: `${swfFunction.operation}`,
-          kind: monaco.languages.CompletionItemKind.Snippet,
-          insertText: swFunctionRefContent,
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-          range,
-        });
-      });
 
-      return completionItems;
+        return [
+          {
+            label: `${swfFunctionRef.refName}`,
+            sortText: swfFunctionRef.refName,
+            filterText: swfFunctionRef.refName,
+            detail: `${swfFunction.operation}`,
+            kind: monaco.languages.CompletionItemKind.Snippet,
+            insertText: JSON.stringify(swfFunctionRef, null, 2),
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range,
+          },
+        ];
+      });
     },
   ],
 ]);

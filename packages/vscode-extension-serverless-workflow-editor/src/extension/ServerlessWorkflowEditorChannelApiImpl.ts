@@ -36,6 +36,7 @@ import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api"
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { SwfServiceCatalogChannelApiImpl } from "@kie-tools/serverless-workflow-service-catalog/src/channel";
 import { ServerlessWorkflowEditorChannelApi } from "@kie-tools/serverless-workflow-editor";
+import * as vscode from "vscode";
 
 export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflowEditorChannelApi {
   private readonly defaultApiImpl: KogitoEditorChannelApiImpl;
@@ -77,8 +78,18 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     this.defaultApiImpl.kogitoEditor_setContentError(content);
   }
 
-  public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand): void {
-    this.defaultApiImpl.kogitoEditor_stateControlCommandUpdate(command);
+  public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {
+    switch (command) {
+      case StateControlCommand.REDO:
+        vscode.commands.executeCommand("redo");
+        break;
+      case StateControlCommand.UNDO:
+        vscode.commands.executeCommand("undo");
+        break;
+      default:
+        console.info(`Unknown message type received: ${command}`);
+        break;
+    }
   }
 
   public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial): void {

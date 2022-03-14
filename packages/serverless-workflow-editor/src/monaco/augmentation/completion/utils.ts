@@ -16,39 +16,25 @@
 
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import * as jsonc from "jsonc-parser";
-import { SwfFunctionDefinition } from "../../../catalog";
 
-export function getWorkflowSwfFunctionDefinitions(
-  rootNode: jsonc.Node,
-  workflow?: Specification.Workflow
-): SwfFunctionDefinition[] {
+export function getSwfFunctions(workflow: Specification.Workflow | undefined, rootNode: jsonc.Node) {
   if (workflow) {
-    if (typeof workflow?.functions === "string") {
+    return typeof workflow?.functions === "string" ? [] : workflow.functions ?? [];
+  }
+
+  const functionsNode = jsonc.findNodeAtLocation(rootNode, ["functions"]);
+  if (functionsNode?.type !== "array") {
+    return [];
+  }
+
+  return Array.from(functionsNode.children ?? []).flatMap((functionNode) => {
+    const name = jsonc.findNodeAtLocation(functionNode, ["name"])?.value;
+    const operation = jsonc.findNodeAtLocation(functionNode, ["operation"])?.value;
+
+    if (!name || !operation) {
       return [];
     }
 
-    return Array.from(workflow.functions ?? []).map((f) => ({
-      name: f.name,
-      operation: f.operation,
-    }));
-  }
-
-  const functionNode = jsonc.findNodeAtLocation(rootNode, ["functions"]);
-
-  if (functionNode?.type === "array") {
-    const result: SwfFunctionDefinition[] = [];
-    Array.from(functionNode.children ?? []).forEach((fNode) => {
-      const name = jsonc.findNodeAtLocation(fNode, ["name"])?.value;
-      const operation = jsonc.findNodeAtLocation(fNode, ["operation"])?.value;
-
-      if (name && operation) {
-        result.push({
-          name,
-          operation,
-        });
-      }
-    });
-    return result;
-  }
-  return [];
+    return [{ name, operation } as Omit<Specification.Function, "normalize">];
+  });
 }

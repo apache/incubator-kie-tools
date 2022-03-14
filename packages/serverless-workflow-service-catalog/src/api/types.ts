@@ -31,7 +31,7 @@ export interface SwfService {
 export enum SwfFunctionType {
   rest = "rest",
   graphql = "graphql",
-  async = "async",
+  asyncapi = "asyncapi",
 }
 
 export enum SwfFunctionArgumentType {
