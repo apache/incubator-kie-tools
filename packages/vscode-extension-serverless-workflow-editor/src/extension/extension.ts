@@ -20,8 +20,8 @@ import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/d
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
-import { DefaultKogitoEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiProducer";
-import { ServerlessWorkflowChannelApiProducer } from "./ServerlessWorkflowChannelApiProducer";
+import { ServerlessWorkflowEditorChannelApiProducer } from "./ServerlessWorkflowEditorChannelApiProducer";
+import { SwfVsCodeExtensionSettings } from "./settings";
 
 let backendProxy: VsCodeBackendProxy;
 
@@ -30,6 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
+  const settings = new SwfVsCodeExtensionSettings();
 
   KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
@@ -45,8 +46,8 @@ export function activate(context: vscode.ExtensionContext) {
         "dist/webview/editors/serverless-workflow"
       ),
     ]),
-    backendProxy: backendProxy,
-    channelApiProducer: new ServerlessWorkflowChannelApiProducer(),
+    channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({ settings }),
+    backendProxy,
   });
 
   console.info("Extension is successfully setup.");

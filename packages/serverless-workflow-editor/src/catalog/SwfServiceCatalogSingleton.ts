@@ -53,7 +53,7 @@ class SwfServiceCatalogApiImpl implements SwfServiceCatalogApi {
 }
 
 export class SwfServiceCatalogSingleton {
-  private static instance: SwfServiceCatalogApi = new SwfServiceCatalogApiImpl();
+  private static instance = new SwfServiceCatalogApiImpl();
 
   public static get(): SwfServiceCatalogApi {
     return SwfServiceCatalogSingleton.instance;

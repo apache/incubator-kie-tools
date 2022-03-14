@@ -16,10 +16,8 @@
 
 import { SwfService } from "../api";
 
-export interface SwfServiceCatalogRegistry {
-  init(onChangeCallback: (services: SwfService[]) => void): void;
-
-  loadServices(): void;
+export interface SwfServiceCatalogStore {
+  init(onChangeCallback: (services: SwfService[]) => Promise<any>): Promise<void>;
 
   dispose(): void;
 }

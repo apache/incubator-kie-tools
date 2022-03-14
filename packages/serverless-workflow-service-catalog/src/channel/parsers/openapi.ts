@@ -25,7 +25,7 @@ type OpenapiPathOperations = Pick<
   "get" | "put" | "post" | "delete" | "options" | "head" | "patch" | "trace"
 >;
 
-export function parseOpenAPI(args: { fileName: string; storagePath: string; content: string }): SwfService {
+export function parseOpenApi(args: { fileName: string; storagePath: string; content: string }): SwfService {
   const servicePath = `${args.storagePath}/${args.fileName}`;
   const contentDoc = readOpenapiDoc(args.content);
 

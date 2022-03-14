@@ -14,28 +14,11 @@
  * limitations under the License.
  */
 
-import { SwfServiceCatalogChannelApi, SwfService } from "../api";
-import { SwfServiceCatalogRegistry } from "./SwfServiceCatalogRegistry";
+import { SwfService, SwfServiceCatalogChannelApi } from "../api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 
 export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
-  constructor(
-    private readonly envelopeServer: EnvelopeServer<SwfServiceCatalogChannelApi, KogitoEditorEnvelopeApi>,
-    private readonly registry: SwfServiceCatalogRegistry
-  ) {
-    this.registry.init((services) => this.envelopeServer.shared.kogitoSwfServiceCatalog_services.set(services));
-    this.registry.loadServices();
-  }
-
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfService[]> {
-    return {
-      defaultValue: [],
-    };
-  }
-
-  public dispose(): void {
-    this.registry.dispose();
+    return { defaultValue: [] };
   }
 }

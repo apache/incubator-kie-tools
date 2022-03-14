@@ -92,7 +92,7 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
       language: this.language,
       scrollBeyondLastLine: false,
       automaticLayout: true,
-      fontSize: 14,
+      fontSize: 12,
       theme: this.getMonacoThemeByEditorTheme(theme),
     });
 

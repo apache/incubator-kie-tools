@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export { parseOpenAPI } from "./openapi";
+export { parseOpenApi } from "./openapi";

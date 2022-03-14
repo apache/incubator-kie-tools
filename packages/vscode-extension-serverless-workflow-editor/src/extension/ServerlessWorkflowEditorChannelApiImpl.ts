@@ -27,17 +27,18 @@ import {
   WorkspaceApi,
 } from "@kie-tools-core/workspace/dist/api";
 import { BackendProxy } from "@kie-tools-core/backend/dist/api";
-import { NotificationsApi, Notification } from "@kie-tools-core/notifications/dist/api";
+import { Notification, NotificationsApi } from "@kie-tools-core/notifications/dist/api";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { SwfServiceCatalogChannelApi, SwfService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { SwfService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { SwfServiceCatalogChannelApiImpl } from "@kie-tools/serverless-workflow-service-catalog/src/channel";
+import { ServerlessWorkflowEditorChannelApi } from "@kie-tools/serverless-workflow-editor";
 
-export class ServerlessWorkflowChannelApiImpl implements SwfServiceCatalogChannelApi {
-  private readonly apiDelegate: KogitoEditorChannelApiImpl;
+export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflowEditorChannelApi {
+  private readonly defaultApiImpl: KogitoEditorChannelApiImpl;
 
   constructor(
     private readonly editor: KogitoEditor,
@@ -49,9 +50,9 @@ export class ServerlessWorkflowChannelApiImpl implements SwfServiceCatalogChanne
     viewType: string,
     i18n: I18n<VsCodeI18n>,
     initialBackup = editor.document.initialBackup,
-    private readonly serviceCatalogApiDelegate: SwfServiceCatalogChannelApiImpl
+    private readonly swfServiceCatalogApiImpl: SwfServiceCatalogChannelApiImpl
   ) {
-    this.apiDelegate = new KogitoEditorChannelApiImpl(
+    this.defaultApiImpl = new KogitoEditorChannelApiImpl(
       editor,
       resourceContentService,
       workspaceApi,
@@ -62,74 +63,69 @@ export class ServerlessWorkflowChannelApiImpl implements SwfServiceCatalogChanne
       i18n,
       initialBackup
     );
-    this.editor.document.onDidDispose((event) => this.dispose());
   }
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
-    return this.apiDelegate.kogitoEditor_contentRequest();
+    return this.defaultApiImpl.kogitoEditor_contentRequest();
   }
 
   public kogitoEditor_ready(): void {
-    this.apiDelegate.kogitoEditor_contentRequest();
+    this.defaultApiImpl.kogitoEditor_contentRequest();
   }
 
   public kogitoEditor_setContentError(content: EditorContent): void {
-    this.apiDelegate.kogitoEditor_setContentError(content);
+    this.defaultApiImpl.kogitoEditor_setContentError(content);
   }
 
   public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand): void {
-    this.apiDelegate.kogitoEditor_stateControlCommandUpdate(command);
+    this.defaultApiImpl.kogitoEditor_stateControlCommandUpdate(command);
   }
 
   public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial): void {
-    this.apiDelegate.kogitoGuidedTour_guidedTourRegisterTutorial(tutorial);
+    this.defaultApiImpl.kogitoGuidedTour_guidedTourRegisterTutorial(tutorial);
   }
 
   public kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction): void {
-    this.apiDelegate.kogitoGuidedTour_guidedTourUserInteraction(userInteraction);
+    this.defaultApiImpl.kogitoGuidedTour_guidedTourUserInteraction(userInteraction);
   }
 
   public kogitoI18n_getLocale(): Promise<string> {
-    return this.apiDelegate.kogitoI18n_getLocale();
+    return this.defaultApiImpl.kogitoI18n_getLocale();
   }
 
   public kogitoNotifications_createNotification(notification: Notification): void {
-    this.apiDelegate.kogitoNotifications_createNotification(notification);
+    this.defaultApiImpl.kogitoNotifications_createNotification(notification);
   }
 
   public kogitoNotifications_removeNotifications(path: string): void {
-    this.apiDelegate.kogitoNotifications_removeNotifications(path);
+    this.defaultApiImpl.kogitoNotifications_removeNotifications(path);
   }
 
   public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
-    this.apiDelegate.kogitoNotifications_setNotifications(path, notifications);
+    this.defaultApiImpl.kogitoNotifications_setNotifications(path, notifications);
   }
 
   public kogitoWorkspace_newEdit(edit: KogitoEdit): void {
-    this.apiDelegate.kogitoWorkspace_newEdit(edit);
+    this.defaultApiImpl.kogitoWorkspace_newEdit(edit);
   }
 
   public kogitoWorkspace_openFile(path: string): void {
-    this.apiDelegate.kogitoWorkspace_openFile(path);
+    this.defaultApiImpl.kogitoWorkspace_openFile(path);
   }
 
   public kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined> {
-    return this.apiDelegate.kogitoWorkspace_resourceContentRequest(request);
+    return this.defaultApiImpl.kogitoWorkspace_resourceContentRequest(request);
   }
 
   public kogitoWorkspace_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList> {
-    return this.apiDelegate.kogitoWorkspace_resourceListRequest(request);
+    return this.defaultApiImpl.kogitoWorkspace_resourceListRequest(request);
   }
 
   public kogitoEditor_theme(): SharedValueProvider<EditorTheme> {
-    return this.apiDelegate.kogitoEditor_theme();
+    return this.defaultApiImpl.kogitoEditor_theme();
   }
 
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfService[]> {
-    return this.serviceCatalogApiDelegate.kogitoSwfServiceCatalog_services();
-  }
-
-  dispose(): void {
-    this.serviceCatalogApiDelegate.dispose();
+    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_services();
   }
 }

@@ -16,7 +16,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { parseOpenAPI } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
+import { parseOpenApi } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import {
   SwfFunctionArgumentType,
   SwfFunctionType,
@@ -28,7 +28,7 @@ function doParse(fileName: string): SwfService {
   const filePath = path.resolve(__dirname, `examples/${fileName}`);
   const content = fs.readFileSync(filePath).toString("utf-8");
 
-  return parseOpenAPI({
+  return parseOpenApi({
     fileName,
     content,
     storagePath: "specs",

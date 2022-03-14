@@ -15,5 +15,5 @@
  */
 
 export * from "./SwfServiceCatalogChannelApiImpl";
-export * from "./SwfServiceCatalogRegistry";
+export * from "./SwfServiceCatalogStore";
 export * from "./parsers";

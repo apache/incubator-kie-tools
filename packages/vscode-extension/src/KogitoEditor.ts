@@ -36,7 +36,7 @@ export class KogitoEditor implements EditorApi {
 
   public constructor(
     public readonly document: KogitoEditableDocument,
-    private readonly panel: vscode.WebviewPanel,
+    public readonly panel: vscode.WebviewPanel,
     private readonly context: vscode.ExtensionContext,
     private readonly editorStore: KogitoEditorStore,
     private readonly envelopeMapping: EnvelopeMapping,
