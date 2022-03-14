@@ -31,7 +31,7 @@ export interface Globals {
   id: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   logger: Logger;
-  dependencies: Dependencies;
+  dependencies?: Dependencies;
   resourceContentServiceFactory: ResourceContentServiceFactory;
   imageUris: ImageUris;
 }

@@ -32,6 +32,8 @@ let lastUrl = location.href;
 export function ServerlessWorkflowMenuApp(props: CreateServerlessWorkflowAppProps) {
   const globals = useGlobals();
 
+  const dependencies = globals.dependencies!;
+
   const [menuLoaded, setMenuLoaded] = useState(false);
   const [container, setContainer] = useState<HTMLElement | null>(null);
   const [showPage, setShowPage] = useState(false);
@@ -51,14 +53,14 @@ export function ServerlessWorkflowMenuApp(props: CreateServerlessWorkflowAppProp
 
     document.title = "Serverless Workflow";
 
-    const page = globals.dependencies.applicationServices.page();
-    const mainContainer = globals.dependencies.applicationServices.mainContainer();
+    const page = dependencies.applicationServices.page();
+    const mainContainer = dependencies.applicationServices.mainContainer();
 
     if (page && mainContainer) {
       page.style.display = "none";
       mainContainer.classList.remove("pf-u-h-100vh");
     }
-  }, [globals.dependencies.applicationServices]);
+  }, [dependencies.applicationServices]);
 
   useEffect(() => {
     if (window.location.pathname.includes(SWF_URL_PATH)) {
@@ -70,12 +72,12 @@ export function ServerlessWorkflowMenuApp(props: CreateServerlessWorkflowAppProp
       if (url !== lastUrl) {
         if (!url.includes(SWF_URL_PATH)) {
           setShowPage(false);
-          globals.dependencies.applicationServices.page()!.style.display = "";
+          dependencies.applicationServices.page()!.style.display = "";
         }
         lastUrl = url;
       }
     }).observe(document, { subtree: true, childList: true });
-  }, [globals.dependencies.applicationServices, openPage]);
+  }, [dependencies.applicationServices, openPage]);
 
   useEffect(() => {
     if (menuLoaded) {
@@ -96,25 +98,25 @@ export function ServerlessWorkflowMenuApp(props: CreateServerlessWorkflowAppProp
     }
 
     const resolveContainerTask = window.setInterval(() => {
-      setContainer(globals.dependencies.applicationServices.menu());
+      setContainer(dependencies.applicationServices.menu());
     }, 500);
     return () => window.clearInterval(resolveContainerTask);
-  }, [container, globals.dependencies.applicationServices, menuLoaded]);
+  }, [container, dependencies.applicationServices, menuLoaded]);
 
   return (
     <>
       {container &&
         ReactDOM.createPortal(
           <ServerlessWorkflowMenuItem openPage={openPage} selected={showPage} />,
-          createMenuItemContainer(props.id, globals.dependencies.applicationServices.menu()!)
+          createMenuItemContainer(props.id, dependencies.applicationServices.menu()!)
         )}
       {showPage &&
         ReactDOM.createPortal(
           <RoutesSwitch />,
           createPageContainer(
             props.id,
-            globals.dependencies.applicationServices.main()!,
-            globals.dependencies.applicationServices.page()!
+            dependencies.applicationServices.main()!,
+            dependencies.applicationServices.page()!
           )
         )}
     </>

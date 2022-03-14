@@ -53,7 +53,7 @@ function init(globals: Globals) {
   globals.logger.log(`---`);
   globals.logger.log(`Starting Chrome Extension.`);
 
-  unmountPreviouslyRenderedFeatures(globals.id, globals.logger, globals.dependencies);
+  unmountPreviouslyRenderedFeatures(globals.id, globals.logger, globals.dependencies!);
 
   const pageType = discoverCurrentPageType();
 

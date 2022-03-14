@@ -29,7 +29,7 @@ export interface GlobalContextType {
   id: string;
   envelopeLocator: EditorEnvelopeLocator;
   logger: Logger;
-  dependencies: Dependencies;
+  dependencies?: Dependencies;
   resourceContentServiceFactory: ResourceContentServiceFactory;
   imageUris: ImageUris;
 }

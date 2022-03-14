@@ -43,6 +43,10 @@
         {
           "condition": "{{ $.[?(@.language  == 'Spanish')] }}",
           "transition": "GreetInSpanish"
+        },
+        {
+          "condition": "{{ $.[?(@.language  == 'Portuguese')] }}",
+          "transition": "GreetInPortuguese"
         }
       ],
       "defaultCondition": {
@@ -62,6 +66,14 @@
       "type": "inject",
       "data": {
         "greeting": "Saludos desde JSON Workflow, "
+      },
+      "transition": "GreetPerson"
+    },
+    {
+      "name": "GreetInPortuguese",
+      "type": "inject",
+      "data": {
+        "greeting": "Olá do JSON Workflow, "
       },
       "transition": "GreetPerson"
     },

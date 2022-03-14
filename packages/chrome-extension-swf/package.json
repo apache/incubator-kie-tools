@@ -27,6 +27,7 @@
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "start:standalone": "webpack serve --host 0.0.0.0 --env dev",
     "build:dev": "rimraf dist && tsc -p tsconfig.dev.json",
     "watch:dev": "tsc -p tsconfig.dev.json -w",
     "build:prod": "yarn lint && rimraf dist && tsc -p tsconfig.prod.json"

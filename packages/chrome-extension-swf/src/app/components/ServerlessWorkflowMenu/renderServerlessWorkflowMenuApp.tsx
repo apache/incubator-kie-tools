@@ -34,7 +34,7 @@ export function renderServerlessWorkflowMenuApp(args: Globals) {
     >
       <ServerlessWorkflowMenuApp id={args.id} />
     </Main>,
-    createAndGetMainContainer(args.id, args.dependencies.all.body()),
+    createAndGetMainContainer(args.id, args.dependencies!.all.body()),
     () => args.logger.log("Mounted.")
   );
 }
