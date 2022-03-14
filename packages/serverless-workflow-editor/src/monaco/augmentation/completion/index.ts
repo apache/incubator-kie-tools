@@ -26,6 +26,7 @@ import { getWorkflowSwfFunctionDefinitions } from "./utils";
 const completions = new Map<
   jsonc.JSONPath,
   (args: {
+    model: editor.ITextModel;
     workflow?: Specification.Workflow;
     cursorPosition: Position;
     nodePositions: { start: Position; end: Position };
@@ -36,7 +37,7 @@ const completions = new Map<
 >([
   [
     ["functions"], // This JSONPath is a pre-filtering of the completion item.
-    ({ cursorPosition, actualNode, workflow, rootNode }) => {
+    ({ model, cursorPosition, actualNode, workflow, rootNode }) => {
       if (actualNode.type != "array") {
         console.debug("Cannot autocomplete: Functions should be an array.");
         return [];
@@ -46,11 +47,13 @@ const completions = new Map<
         (swfFunctionDef) => swfFunctionDef.operation
       );
 
+      const wordPosition = model.getWordAtPosition(cursorPosition);
+
       const range = new Range(
         cursorPosition.lineNumber,
-        cursorPosition.column,
+        wordPosition?.startColumn ?? cursorPosition.column,
         cursorPosition.lineNumber,
-        cursorPosition.column
+        wordPosition?.endColumn ?? cursorPosition.column
       );
 
       return SwfServiceCatalogSingleton.get()
@@ -75,7 +78,7 @@ const completions = new Map<
   ],
   [
     ["states", "*", "actions", "*", "functionRef"],
-    ({ cursorPosition, actualNode, workflow, rootNode }) => {
+    ({ model, cursorPosition, actualNode, workflow, rootNode }) => {
       if (actualNode.type !== "property") {
         console.debug("Cannot autocomplete: functionRef should be a property.");
         return [];
@@ -83,42 +86,43 @@ const completions = new Map<
 
       const swfFunctionDefinitions = getWorkflowSwfFunctionDefinitions(rootNode, workflow);
 
+      const wordPosition = model.getWordAtPosition(cursorPosition);
+
       const range = new Range(
         cursorPosition.lineNumber,
-        cursorPosition.column,
+        wordPosition?.startColumn ?? cursorPosition.column,
         cursorPosition.lineNumber,
-        cursorPosition.column
+        wordPosition?.endColumn ?? cursorPosition.column
       );
 
       const completionItems: languages.CompletionItem[] = [];
 
       swfFunctionDefinitions.forEach((swfFunctionDef) => {
         const swfFunction = SwfServiceCatalogSingleton.get().getFunctionByOperation(swfFunctionDef.operation);
-
-        if (swfFunction) {
-          const refArgs: Record<string, string> = {};
-
-          let index = 1;
-          Object.keys(swfFunction.arguments).forEach((argName) => {
-            refArgs[argName] = `$\{${index++}: }`;
-          });
-
-          const swfFunctionRef: SwfFunctionRef = {
-            refName: swfFunctionDef.name,
-            arguments: refArgs,
-          };
-          const swFunctionRefContent = JSON.stringify(swfFunctionRef, null, 2);
-          completionItems.push({
-            label: `${swfFunctionRef.refName}`,
-            sortText: swfFunctionRef.refName,
-            filterText: swfFunctionRef.refName,
-            detail: `${swfFunction.operation}`,
-            kind: monaco.languages.CompletionItemKind.Snippet,
-            insertText: swFunctionRefContent,
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            range,
-          });
+        if (!swfFunction) {
+          return;
         }
+
+        const refArgs: Record<string, string> = {};
+        let index = 1;
+        Object.keys(swfFunction.arguments).forEach((argName) => {
+          refArgs[argName] = `$\{${index++}:}`;
+        });
+        const swfFunctionRef: SwfFunctionRef = {
+          refName: swfFunctionDef.name,
+          arguments: refArgs,
+        };
+        const swFunctionRefContent = JSON.stringify(swfFunctionRef, null, 2);
+        completionItems.push({
+          label: `${swfFunctionRef.refName}`,
+          sortText: swfFunctionRef.refName,
+          filterText: swfFunctionRef.refName,
+          detail: `${swfFunction.operation}`,
+          kind: monaco.languages.CompletionItemKind.Snippet,
+          insertText: swFunctionRefContent,
+          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          range,
+        });
       });
 
       return completionItems;
@@ -170,6 +174,7 @@ export function initJsonCompletion(commandIds: SwfMonacoEditorInstance["commands
           .filter(([jsonPath, _]) => location.matches(jsonPath))
           .flatMap(([_, completionItemsDelegate]) =>
             completionItemsDelegate({
+              model,
               cursorPosition: position,
               commandIds,
               actualNode,
