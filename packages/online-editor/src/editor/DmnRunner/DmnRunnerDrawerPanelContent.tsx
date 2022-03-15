@@ -27,7 +27,7 @@ import { useOnlineI18n } from "../../i18n";
 import {
   DecisionResult,
   DecisionResultMessage,
-  DmnForm,
+  DmnFormComponent,
   DmnFormResult,
   DmnResult,
   extractDifferences,
@@ -143,7 +143,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   );
 
   const updateDmnRunnerResults = useCallback(
-    async (formData: object, canceled: Holder<boolean>) => {
+    async (formData: InputRow, canceled: Holder<boolean>) => {
       if (dmnRunnerState.status !== DmnRunnerStatus.AVAILABLE) {
         dmnRunnerDispatch.setDidUpdateOutputRows(true);
         return;
@@ -434,7 +434,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                   </PageSection>
                   <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
                     <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
-                      <DmnForm
+                      <DmnFormComponent
                         name={selectedRow}
                         formData={formData}
                         setFormData={setFormData}
@@ -444,8 +444,8 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                         id={"form"}
                         formRef={formRef}
                         showInlineError={true}
-                        autosave={true}
-                        autosaveDelay={AUTO_SAVE_DELAY}
+                        autoSave={true}
+                        autoSaveDelay={AUTO_SAVE_DELAY}
                         placeholder={true}
                         errorsField={() => <></>}
                         submitField={() => <></>}

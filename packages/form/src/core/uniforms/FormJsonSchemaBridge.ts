@@ -30,7 +30,7 @@ export class FormJsonSchemaBridge extends JSONSchemaBridge {
     if (!field.type) {
       field.type = "string";
     }
-    // needs to be required
+
     if (field.type === "object") {
       field.default = {};
     }

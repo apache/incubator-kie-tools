@@ -26,7 +26,7 @@ export const YEARS_AND_MONTHS = /^(-|\+)?P(?:([-+]?[0-9]*)Y)?(?:([-+]?[0-9]*)M)?
 export class DmnValidator extends Validator {
   private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
 
-  constructor(private readonly i18n: DmnFormI18n) {
+  constructor(private readonly i18n: DmnFormI18n, private readonly contextPath: Map<string, string[]>) {
     super();
     this.setupValidator();
   }
@@ -76,6 +76,6 @@ export class DmnValidator extends Validator {
   public getBridge(formSchema: any): DmnFormJsonSchemaBridge {
     const formDraft4 = { ...formSchema, $schema: this.SCHEMA_DRAFT4 };
     const validator = this.createValidator(formDraft4);
-    return new DmnFormJsonSchemaBridge(formDraft4, validator, this.i18n);
+    return new DmnFormJsonSchemaBridge(formDraft4, validator, this.i18n, this.contextPath);
   }
 }

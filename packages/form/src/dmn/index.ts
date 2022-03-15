@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./DmnForm";
+export * from "./DmnFormComponent";
 export * from "./DmnFormResult";

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { FormJsonSchemaBridge } from "../../core/uniforms/JsonSchemaBridge";
+import { FormJsonSchemaBridge } from "../../core/uniforms/FormJsonSchemaBridge";
 
 export enum Duration {
   DaysAndTimeDuration,
@@ -22,7 +22,7 @@ export enum Duration {
 }
 
 export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
-  constructor(schema: any, validator: any, private i18n: any) {
+  constructor(schema: any, validator: any, private i18n: any, public contextPath: Map<string, string[]>) {
     super(schema, validator);
   }
 
@@ -48,6 +48,11 @@ export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
     }
     if (field?.format === "time") {
       field.placeholder = "hh:mm:ss";
+    }
+
+    if (field?.["x-dmn-type"] === "FEEL:context") {
+      field.default = false;
+      this.contextPath.set(field.title.join(""), field.title);
     }
 
     return field;
