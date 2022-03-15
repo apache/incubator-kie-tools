@@ -19,7 +19,7 @@ import { StorageFile, StorageService } from "../workspace/services/StorageServic
 import { FsCache } from "../workspace/services/FsCache";
 import { encoder, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { DmnRunnerInputsEvents } from "./DmnRunnerInputsHook";
-import { InputRow } from "../editor/DmnRunner/DmnRunnerContext";
+import { InputRow } from "@kie-tools/form/dist/dmn";
 
 export class DmnRunnerInputsService {
   constructor(private readonly storageService: StorageService, private readonly fsCache = new FsCache()) {}

@@ -20,28 +20,29 @@ import cloneDeep from "lodash/cloneDeep";
 import { FormBaseComponent } from "./FormBaseComponent";
 import { useForm } from "./Form";
 import { formI18n } from "../i18n";
+import { Validator } from "./Validator";
 
 export type Object = Record<string, object>;
 
 export interface FormComponentProps {
   name?: string;
-  formData: Record<string, Object>;
-  setFormData: React.Dispatch<Record<string, Object>>;
+  formInputs: object;
+  setFormInputs: React.Dispatch<object>;
   formError: boolean;
   setFormError: React.Dispatch<React.SetStateAction<boolean>>;
-  formSchema?: Record<string, Object>;
+  formSchema?: object;
   id?: string;
   formRef?: React.RefObject<HTMLFormElement>;
   showInlineError?: boolean;
   autoSave?: boolean;
   autoSaveDelay?: number;
   placeholder?: boolean;
-  onSubmit?: (model: Record<string, Object>) => void;
-  onValidate?: (model: Record<string, Object>, error: Record<string, Object>) => void;
+  onSubmit?: (model: object) => void;
+  onValidate?: (model: object, error: object) => void;
   errorsField?: () => React.ReactNode;
   submitField?: () => React.ReactNode;
   locale?: string;
-  checkDiffOnPath?: string;
+  propertiesPath?: string;
   notificationsPanel: boolean;
   openValidationTab: () => void;
 }
@@ -51,25 +52,29 @@ export function FormComponent(props: FormComponentProps) {
     formI18n.setLocale(props.locale ?? navigator.language);
     return formI18n.getCurrent();
   }, [props.locale]);
+  const validator = useMemo(() => new Validator(), []);
 
-  const { onValidate, onSubmit, formModel, formStatus, jsonSchemaBridge, errorBoundaryRef } = useForm({
-    name: props.name,
+  const { onValidate, onSubmit, formModel, setFormModel, formStatus, jsonSchemaBridge, errorBoundaryRef } = useForm({
     formError: props.formError,
-    setFormError: props.setFormError,
-    formInputs: props.formData,
-    setFormData: props.setFormData,
     formSchema: props.formSchema,
     onSubmit: props.onSubmit,
     onValidate: props.onValidate,
-    checkDiffOnPath: props.checkDiffOnPath ?? "schema.definitions",
+    propertiesPath: props.propertiesPath ?? "definitions.properties",
+    validator,
   });
+
+  // When form name changes, update the formModel
+  useEffect(() => {
+    const newFormModel = cloneDeep(props.formInputs);
+    setFormModel(newFormModel);
+  }, [props.name]);
 
   // When the formModel changes, update the formData and reset the formError
   useEffect(() => {
     props.setFormError((previousFormError) => {
       if (!previousFormError && formModel && Object.keys(formModel).length > 0) {
-        const newFormData = cloneDeep(formModel);
-        props.setFormData(newFormData);
+        const newFormInputs = cloneDeep(formModel);
+        props.setFormInputs(newFormInputs);
       }
       return false;
     });

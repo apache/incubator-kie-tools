@@ -23,6 +23,8 @@ import { FormBaseComponent } from "../core/FormBaseComponent";
 import { useForm } from "../core/Form";
 import { FormComponentProps } from "../core/FormComponent";
 
+export type InputRow = Record<string, string>;
+
 type DmnDecisionNodes = "InputSet" | string;
 
 export interface DmnSchema {
@@ -72,8 +74,8 @@ export function usePrevious(value: any) {
 }
 
 interface DmnFormComponentProps extends FormComponentProps {
-  formData: any;
-  formSchema: any;
+  formInputs: InputRow;
+  formSchema?: DmnSchema;
 }
 
 export function DmnFormComponent(props: DmnFormComponentProps) {
@@ -82,20 +84,64 @@ export function DmnFormComponent(props: DmnFormComponentProps) {
     return formI18n.getCurrent();
   }, [props.locale]);
   const contextPath = useMemo(() => new Map<string, string[]>(), []);
-  const validator = useMemo(() => new DmnValidator(i18n, contextPath), [contextPath, i18n]);
+  const dmnValidator = useMemo(() => new DmnValidator(i18n), [i18n]);
 
   const { onValidate, onSubmit, formModel, setFormModel, formStatus, jsonSchemaBridge, errorBoundaryRef } = useForm({
-    validator,
-    name: props.name,
+    validator: dmnValidator,
     formError: props.formError,
-    setFormError: props.setFormError,
-    formInputs: props.formData,
-    setFormData: props.setFormData,
     formSchema: props.formSchema,
     onSubmit: props.onSubmit,
     onValidate: props.onValidate,
-    checkDiffOnPath: props.checkDiffOnPath ?? "schema.definitions.InputSet.properties",
+    propertiesPath: "definitions.InputSet.properties",
   });
+
+  // const formDeepPreprocessing = useCallback(
+  //   (form: DmnFormData, value: DmnDeepProperty, title = [""]) => {
+  //     if (value.$ref) {
+  //       const property = value.$ref!.split("/").pop()! as keyof DmnFormDefinitions;
+  //       if (form.definitions[property] && form.definitions[property]?.properties) {
+  //         Object.entries(form.definitions[property]!.properties).forEach(
+  //           ([key, deepValue]: [string, DmnDeepProperty]) => {
+  //             formDeepPreprocessing(form, deepValue, [...title, key]);
+  //           }
+  //         );
+  //       } else if (form.definitions[property] && form.definitions[property]?.type === "array") {
+  //         if (form.definitions[property]?.items.properties) {
+  //           Object.entries(form.definitions[property]?.items.properties).forEach(
+  //             ([key, deepValue]: [string, DmnDeepProperty]) => {
+  //               formDeepPreprocessing(form, deepValue, [...title, key]);
+  //             }
+  //           );
+  //         } else {
+  //           formDeepPreprocessing(form, form.definitions[property]!.items as DmnDeepProperty, [...title]);
+  //         }
+  //       } else if (form?.definitions?.[property]?.["x-dmn-type"] === "FEEL:context") {
+  //         form.definitions[property]!.placeholder = `{ "x": <value> }`;
+  //         contextPath.set(title.join(""), title);
+  //       }
+  //     }
+  //     if (value?.["x-dmn-type"] === "FEEL:context") {
+  //       value!.placeholder = `{ "x": <value> }`;
+  //       contextPath.set(title.join(""), title);
+  //     }
+  //   },
+  //   [contextPath]
+  // );
+  //
+  // // Remove required property and make deep preprocessing
+  // const formPreprocessing = useCallback(
+  //   (form: DmnFormData) => {
+  //     delete form.definitions?.InputSet?.required;
+  //     if (Object.hasOwnProperty.call(form.definitions.InputSet, "properties")) {
+  //       Object.entries(form.definitions.InputSet?.properties ?? {}).forEach(
+  //         ([key, value]: [string, DmnDeepProperty]) => {
+  //           formDeepPreprocessing(form, value, [key]);
+  //         }
+  //       );
+  //     }
+  //   },
+  //   [formDeepPreprocessing]
+  // );
 
   // FIXME DMN -> CONTEXT PATH
   // contextPath -> map of FEEL:context
@@ -156,7 +202,7 @@ export function DmnFormComponent(props: DmnFormComponentProps) {
           const pathCopy = [...path];
           handleContextPath(newFormData, pathCopy, "parse");
         });
-        props.setFormData(newFormData);
+        props.setFormInputs(newFormData);
       }
       return false;
     });
@@ -164,7 +210,7 @@ export function DmnFormComponent(props: DmnFormComponentProps) {
 
   // on firstRender stringify all context inputs and set the formModel
   useEffect(() => {
-    const newFormModel = cloneDeep(props.formData);
+    const newFormModel = cloneDeep(props.formInputs);
     contextPath.forEach((path) => {
       const pathCopy = [...path];
       handleContextPath(newFormModel, pathCopy, "stringify");

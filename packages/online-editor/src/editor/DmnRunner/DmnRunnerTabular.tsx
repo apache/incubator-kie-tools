@@ -16,10 +16,10 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { InputRow, useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
+import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DmnAutoTable } from "@kie-tools/unitables";
-import { DecisionResult } from "@kie-tools/form/dist/dmn";
+import { DecisionResult, InputRow } from "@kie-tools/form/dist/dmn";
 import { PanelId } from "../EditorPageDockDrawer";
 import { useElementsThatStopKeyboardEventsPropagation } from "@kie-tools-core/keyboard-shortcuts/dist/channel";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";

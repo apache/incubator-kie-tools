@@ -29,14 +29,14 @@ interface CommonProps {
   autoSave?: boolean;
   autoSaveDelay?: number;
   placeholder?: boolean;
-  onSubmit?: (model: Record<string, Object>) => void;
-  onValidate?: (model: Record<string, Object>, error: Record<string, Object>) => void;
+  onSubmit?: (model: object) => void;
+  onValidate?: (model: object, error: object) => void;
   errorsField?: () => React.ReactNode;
   submitField?: () => React.ReactNode;
   locale?: string;
   formStatus: FormStatus;
   errorBoundaryRef: React.RefObject<ErrorBoundary>;
-  formModel: Record<string, Object>;
+  formModel?: object;
   jsonSchemaBridge?: FormJsonSchemaBridge;
   i18n: FormI18n;
 }

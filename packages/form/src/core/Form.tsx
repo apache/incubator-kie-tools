@@ -21,47 +21,33 @@ import { dataPathToFormFieldPath } from "./uniforms/utils";
 import { diff } from "deep-object-diff";
 import cloneDeep from "lodash/cloneDeep";
 import { FormStatus } from "./FormStatus";
-import { FormJsonSchemaBridge } from "./uniforms/JsonSchemaBridge";
+import { FormJsonSchemaBridge } from "./uniforms/FormJsonSchemaBridge";
 import { Validator } from "./Validator";
 import { Object } from "./FormComponent";
 
 interface FormHook {
-  name?: string;
   formError: boolean;
-  setFormError: React.Dispatch<React.SetStateAction<boolean>>;
-  formInputs: Record<string, Object>;
-  setFormData: React.Dispatch<React.SetStateAction<Record<string, Object>>>;
-  formSchema?: Record<string, Object>;
-  onSubmit?: (model: Record<string, Object>) => void;
-  onValidate?: (model: Record<string, Object>, error: Record<string, Object>) => void;
-  checkDiffOnPath: string;
-  validator?: Validator;
+  formSchema?: object;
+  onSubmit?: (model: object) => void;
+  onValidate?: (model: object, error: object) => void;
+  propertiesPath: string;
+  validator: Validator;
 }
 
 const getObjectByPath = (obj: Record<string, Object>, path: string) =>
   path.split(".").reduce((acc: Record<string, Object>, key: string) => acc[key], obj);
 
-export function useForm({
-  name,
-  formError,
-  formInputs,
-  formSchema,
-  onSubmit,
-  onValidate,
-  checkDiffOnPath,
-  validator,
-}: FormHook) {
+export function useForm({ formError, formSchema, onSubmit, onValidate, propertiesPath, validator }: FormHook) {
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<FormJsonSchemaBridge>();
-  const formValidator = useMemo(() => (validator ? validator : new Validator()), [validator]);
-  const [formModel, setFormModel] = useState<any>();
+  const [formModel, setFormModel] = useState<object>();
   const [formStatus, setFormStatus] = useState<FormStatus>(FormStatus.EMPTY);
 
   const removeDeletedPropertiesAndAddDefaultValues = useCallback(
     (model: object, bridge: FormJsonSchemaBridge, previousBridge?: FormJsonSchemaBridge) => {
       const propertiesDifference = diff(
-        getObjectByPath(previousBridge as any, checkDiffOnPath) ?? {},
-        getObjectByPath(bridge as any, checkDiffOnPath) ?? {}
+        getObjectByPath(previousBridge?.schema ?? {}, propertiesPath) ?? {},
+        getObjectByPath(bridge.schema ?? {}, propertiesPath) ?? {}
       );
 
       const defaultFormValues = Object.keys(bridge?.schema?.properties ?? {}).reduce((acc, property) => {
@@ -93,14 +79,8 @@ export function useForm({
         { ...defaultFormValues, ...model }
       );
     },
-    [checkDiffOnPath]
+    [propertiesPath]
   );
-
-  // When form name changes, update the formModel
-  useEffect(() => {
-    const newFormModel = cloneDeep(formInputs);
-    setFormModel(newFormModel);
-  }, [name]);
 
   // When the schema is updated it's necessary to update the bridge and the model (remove deleted properties and
   // add default values to it)
@@ -110,7 +90,7 @@ export function useForm({
       // formPreprocessing(form);
     }
     try {
-      const bridge = formValidator.getBridge(form);
+      const bridge = validator.getBridge(form);
       setJsonSchemaBridge((previousBridge) => {
         if (formModel) {
           const newFormModel = removeDeletedPropertiesAndAddDefaultValues(formModel, bridge, previousBridge);
@@ -127,19 +107,22 @@ export function useForm({
     } catch (err) {
       setFormStatus(FormStatus.VALIDATOR_ERROR);
     }
-  }, [formSchema]);
+  }, [formModel, formSchema, validator, removeDeletedPropertiesAndAddDefaultValues]);
 
   // Manage form status
   useEffect(() => {
     if (formError) {
       setFormStatus(FormStatus.AUTO_GENERATION_ERROR);
-    } else if (!formSchema || Object.keys(formSchema?.definitions?.properties ?? {}).length === 0) {
+    } else if (
+      !formSchema ||
+      Object.keys(getObjectByPath((formSchema as any) ?? {}, propertiesPath) ?? {}).length === 0
+    ) {
       setFormStatus(FormStatus.EMPTY);
     } else if (jsonSchemaBridge) {
       setFormStatus(FormStatus.WITHOUT_ERROR);
       errorBoundaryRef.current?.reset();
     }
-  }, [formError, formSchema, jsonSchemaBridge, formModel]);
+  }, [formError, formSchema, jsonSchemaBridge, formModel, propertiesPath]);
 
   // Resets the ErrorBoundary everytime the FormSchema is updated
   useEffect(() => {

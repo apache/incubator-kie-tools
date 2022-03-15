@@ -22,7 +22,7 @@ export enum Duration {
 }
 
 export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
-  constructor(schema: any, validator: any, private i18n: any, public contextPath: Map<string, string[]>) {
+  constructor(schema: any, validator: any, private i18n: any) {
     super(schema, validator);
   }
 
@@ -49,10 +49,8 @@ export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
     if (field?.format === "time") {
       field.placeholder = "hh:mm:ss";
     }
-
     if (field?.["x-dmn-type"] === "FEEL:context") {
-      field.default = false;
-      this.contextPath.set(field.title.join(""), field.title);
+      field.placeholder = `{ "x": <value> }`;
     }
 
     return field;

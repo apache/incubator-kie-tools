@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-import { DmnSchema } from "@kie-tools/form/dist/dmn";
+import { InputRow, DmnSchema } from "@kie-tools/form/dist/dmn";
 import * as React from "react";
 import { useContext } from "react";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
-
-export type InputRow = Record<string, string>;
 
 export interface DmnRunnerContextType {
   currentInputRowIndex: number;
