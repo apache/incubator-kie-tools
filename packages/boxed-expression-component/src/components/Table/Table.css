@@ -94,15 +94,6 @@
   border: 1px solid var(--pf-global--palette--black-300);
 }
 
-.expression-container .table-component table tbody td:focus,
-.expression-container .table-component table thead tr th:focus:first-child,
-.expression-container .table-component table thead tr th:focus > .react-resizable {
-  /* TODO: ugly border for thead cells */
-  border: 2px solid #438cb1;
-  outline: none !important;
-  margin: -1px -1px;
-  z-index: 1;
-}
 .expression-container .table-component table tbody td.empty-cell:focus,
 .expression-container .table-component table tbody td.counter-cell:focus {
   margin: 0;
@@ -195,4 +186,59 @@
 
 .boxed-expression-provider .table-handler .pf-c-popover__arrow {
   display: none;
+}
+
+/** Focused Cells border ------------------------------------- */
+/* TODO: ugly border for thead cells */
+/* TODO: annotations header cells have no border during editing */
+.expression-container .table-component table tbody td:focus {
+  border: 2px solid #438cb1;
+  outline: none !important;
+  margin: -1px;
+  z-index: 1;
+}
+
+.expression-container .table-component table thead tr th:focus {
+  outline: none !important;
+}
+
+.expression-container .table-component table thead tr th:focus:first-child {
+  border: 2px solid #438cb1;
+}
+
+.expression-container .table-component table thead tr th[tabindex].annotation > .react-resizable,
+.expression-container .table-component table thead tr th[tabindex].input > .react-resizable {
+  margin: -2px 0;
+  z-index: 3;
+  height: 117px !important;
+}
+.expression-container .table-component table thead tr th.annotation:focus > .react-resizable,
+.expression-container .table-component table thead tr th.input:focus > .react-resizable {
+  outline: 2px solid #438cb1;
+}
+
+/* .expression-container .table-component table thead tr th.output{ */
+/*   border: solid transparent; */
+/*   border-width: 2px 1px 2px 1px; */
+/*   outline: 1px solid var(--pf-global--palette--black-300) !important; */
+/*   margin: 1px 0px 0px 0px; */
+/*   z-index: auto; */
+/* } */
+/*  */
+/* .expression-container .table-component table thead tr th:focus.output{ */
+/*   border: 2px solid #438cb1 !important; */
+/*   outline: none !important; */
+/*   margin: 0px -1px; */
+/*   z-index: 2; */
+/*   padding: 0.8em 0 0.7em 0; */
+/* } */
+
+.expression-container .table-component table thead tr th.output:focus:before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  border: 2px solid #438cb1;
 }
