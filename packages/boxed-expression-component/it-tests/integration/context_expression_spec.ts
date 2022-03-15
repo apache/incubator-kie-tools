@@ -243,13 +243,16 @@ describe("Context Expression Tests :: Nested Relations", () => {
   });
 
   it("Keyboard interaction with header's contextMenu in nested decision table", () => {
+    //reset the state of the contextMenu. Necessary to pass test.
+    cy.get("body").click();
+
     // from the 1st header cell inside the nested decision table, open the contextMenu pressing enter.
     cy.contains("th", "column-3").as("targetCell").focus();
 
     // check the menu is closed
     cy.get(".pf-c-popover__content").should("not.exist");
 
-    cy.get("@targetCell").type("enter");
+    cy.wait(0).get("@targetCell").type("{enter}");
 
     // check the menu is closed
     cy.get(".pf-c-popover__content").should("be.visible");

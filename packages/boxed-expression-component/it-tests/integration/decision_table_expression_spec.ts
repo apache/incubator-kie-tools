@@ -368,7 +368,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     });
 
     it("Cancel editing", () => {
-      // from the annotation cell press esc to cance editing
+      // from the annotation cell press esc to cancel editing
       cy.get("@annotationInput").type("{esc}");
 
       isAnnotationCellViewModeAndFocused();
