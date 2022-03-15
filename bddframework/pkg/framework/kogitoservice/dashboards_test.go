@@ -28,7 +28,7 @@ import (
 func Test_fetchDashboardNames(t *testing.T) {
 	dashboardNames := `["dashboard1.json", "dashboard2.json"]`
 
-	server := mockKogitoSvcReplies(t, serverHandler{Path: dashboardsPath + "list.json", JSONResponse: dashboardNames})
+	server := test.MockKogitoSvcReplies(t, test.ServerHandler{Path: dashboardsPath + "list.json", JSONResponse: dashboardNames})
 	defer server.Close()
 
 	cli := test.NewFakeClientBuilder().Build()
@@ -50,7 +50,7 @@ func Test_fetchDashboards(t *testing.T) {
 	dashboard1 := `mydashboard1`
 	dashboard2 := `mydashboard2`
 
-	handlers := []serverHandler{
+	handlers := []test.ServerHandler{
 		{
 			Path:         dashboardsPath + "list.json",
 			JSONResponse: dashboardNames,
@@ -65,7 +65,7 @@ func Test_fetchDashboards(t *testing.T) {
 		},
 	}
 
-	server := mockKogitoSvcReplies(t, handlers...)
+	server := test.MockKogitoSvcReplies(t, handlers...)
 	defer server.Close()
 	cli := test.NewFakeClientBuilder().Build()
 	context := operator.Context{

@@ -72,10 +72,13 @@ func (p *protoBufConfigMapReconciler) createRequiredResources(runtimeInstance ap
 	if err != nil {
 		return nil, err
 	}
-	if err := framework.SetOwner(runtimeInstance, p.Scheme, protoBufConfigMap); err != nil {
-		return nil, err
+	if protoBufConfigMap != nil {
+
+		if err := framework.SetOwner(runtimeInstance, p.Scheme, protoBufConfigMap); err != nil {
+			return nil, err
+		}
+		resources[reflect.TypeOf(v1.ConfigMap{})] = []client.Object{protoBufConfigMap}
 	}
-	resources[reflect.TypeOf(v1.ConfigMap{})] = []client.Object{protoBufConfigMap}
 	return resources, nil
 }
 

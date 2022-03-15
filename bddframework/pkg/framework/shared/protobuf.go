@@ -64,6 +64,9 @@ func (p *protoBufHandler) MountProtoBufConfigMapOnDataIndex(runtimeInstance api.
 	if err != nil {
 		return err
 	}
+	if protoBufConfigMap == nil {
+		return nil
+	}
 
 	// mount protobuf configmap on data-index deployment
 	dataIndexDeployment, err := p.supportingServiceManager.FetchKogitoSupportingServiceDeployment(runtimeInstance.GetNamespace(), api.DataIndex)

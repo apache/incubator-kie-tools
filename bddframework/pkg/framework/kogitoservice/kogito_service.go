@@ -22,8 +22,9 @@ import (
 	"os"
 )
 
+//Constants ...
 const (
-	envVarKogitoServiceURL = "LOCAL_KOGITO_SERVICE_URL"
+	EnvVarKogitoServiceURL = "LOCAL_KOGITO_SERVICE_URL"
 	webSocketScheme        = "ws"
 	webSocketSecureScheme  = "wss"
 	httpScheme             = "http"
@@ -51,7 +52,8 @@ func NewKogitoServiceHandler(context operator.Context) ServiceHandler {
 // operator locally). Else, the internal endpoint is
 // returned.
 func (k *kogitoServiceHandler) GetKogitoServiceURL(kogitoService api.KogitoService) string {
-	externalURL := os.Getenv(envVarKogitoServiceURL)
+	externalURL := os.Getenv(EnvVarKogitoServiceURL)
+
 	if len(externalURL) > 0 {
 		return externalURL
 	}

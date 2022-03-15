@@ -107,3 +107,54 @@ func TestMountProtoBufConfigMapOnDataIndex(t *testing.T) {
 	assert.Len(t, deployment.Spec.Template.Spec.Volumes, 1)
 	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].VolumeMounts, 1)
 }
+
+func TestMountProtoBufConfigMapOnDataIndex_NoProtoBufConfigMap(t *testing.T) {
+	instance := test.CreateFakeDataIndex(t.Name())
+	instance.SetUID(types.UID(uuid.New().String()))
+	dc := &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      instance.Name,
+			Namespace: instance.Namespace,
+			OwnerReferences: []metav1.OwnerReference{
+				{
+					UID: instance.UID,
+				},
+			},
+		},
+		Spec: appsv1.DeploymentSpec{
+			Template: v1.PodTemplateSpec{
+				Spec: v1.PodSpec{
+					Containers: []v1.Container{
+						{
+							Name: "test",
+						},
+					},
+				},
+			},
+		},
+	}
+
+	runtimeService := &v1beta1.KogitoRuntime{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: t.Name(),
+			Name:      "my-domain-protobufs1",
+		},
+	}
+	cli := test.NewFakeClientBuilder().AddK8sObjects(instance, dc).OnOpenShift().Build()
+
+	context := operator.Context{
+		Client: cli,
+		Log:    test.TestLogger,
+		Scheme: meta.GetRegisteredSchema(),
+	}
+	supportingServiceHandler := app.NewKogitoSupportingServiceHandler(context)
+	protoBufHandler := NewProtoBufHandler(context, supportingServiceHandler)
+	err := protoBufHandler.MountProtoBufConfigMapOnDataIndex(runtimeService)
+	assert.NoError(t, err)
+	supportingServiceManager := manager.NewKogitoSupportingServiceManager(context, supportingServiceHandler)
+	deployment, err := supportingServiceManager.FetchKogitoSupportingServiceDeployment(t.Name(), api.DataIndex)
+	assert.NoError(t, err)
+
+	assert.Len(t, deployment.Spec.Template.Spec.Volumes, 0)
+	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].VolumeMounts, 0)
+}

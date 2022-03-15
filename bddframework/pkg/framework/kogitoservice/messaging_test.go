@@ -54,7 +54,7 @@ func Test_fetchRequiredTopics(t *testing.T) {
 ]`
 	instance := createServiceInstance(t)
 
-	server := mockKogitoSvcReplies(t, serverHandler{Path: topicInfoPath, JSONResponse: responseWithTopics})
+	server := test.MockKogitoSvcReplies(t, test.ServerHandler{Path: topicInfoPath, JSONResponse: responseWithTopics})
 	defer server.Close()
 	cli := test.NewFakeClientBuilder().AddK8sObjects(createAvailableDeployment(instance)).Build()
 	context := operator.Context{
@@ -74,7 +74,7 @@ func Test_fetchRequiredTopicsWithEmptyReply(t *testing.T) {
 	emptyResponse := "[]"
 	instance := createServiceInstance(t)
 
-	server := mockKogitoSvcReplies(t, serverHandler{Path: topicInfoPath, JSONResponse: emptyResponse})
+	server := test.MockKogitoSvcReplies(t, test.ServerHandler{Path: topicInfoPath, JSONResponse: emptyResponse})
 	defer server.Close()
 	cli := test.NewFakeClientBuilder().AddK8sObjects(createAvailableDeployment(instance)).Build()
 	context := operator.Context{

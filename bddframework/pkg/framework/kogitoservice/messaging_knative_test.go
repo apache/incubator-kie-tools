@@ -51,9 +51,9 @@ func Test_knativeMessagingDeployer_CreateRequiredResources(t *testing.T) {
       ]
    }
 ]`
-	server := mockKogitoSvcReplies(t, serverHandler{Path: topicInfoPath, JSONResponse: responseWithTopics})
+	server := test.MockKogitoSvcReplies(t, test.ServerHandler{Path: topicInfoPath, JSONResponse: responseWithTopics})
 	defer server.Close()
-	deferFn := test.SetSharedEnv(envVarKogitoServiceURL, server.URL)
+	deferFn := test.SetSharedEnv(EnvVarKogitoServiceURL, server.URL)
 	defer deferFn()
 
 	kogitoSvc := createServiceInstance(t)
