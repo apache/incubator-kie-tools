@@ -16,11 +16,10 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -70,7 +69,7 @@ public class OutputClauseLiteralExpression extends DMNModelInstrumentedBase impl
     private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
 
     @Labels
-    private static final Set<String> stunnerLabels = Stream.of(new String[]{}).collect(Collectors.toSet());
+    private static final Set<String> stunnerLabels = new HashSet<>();
 
     protected Id id;
 

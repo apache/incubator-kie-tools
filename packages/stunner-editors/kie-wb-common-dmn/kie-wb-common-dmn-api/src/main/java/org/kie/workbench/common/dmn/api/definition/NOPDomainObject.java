@@ -15,9 +15,8 @@
  */
 package org.kie.workbench.common.dmn.api.definition;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -51,7 +50,7 @@ public class NOPDomainObject implements DomainObject {
     public static final transient String stunnerCategory = Categories.DOMAIN_OBJECTS;
 
     @Labels
-    private final Set<String> stunnerLabels = Stream.of(new String[]{}).collect(Collectors.toSet());
+    private final Set<String> stunnerLabels = new HashSet<>();
 
     private static String UUID = uuid();
 

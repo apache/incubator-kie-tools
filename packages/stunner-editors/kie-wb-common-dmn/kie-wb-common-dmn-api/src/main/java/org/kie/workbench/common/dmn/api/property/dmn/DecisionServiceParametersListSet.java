@@ -16,10 +16,9 @@
 
 package org.kie.workbench.common.dmn.api.property.dmn;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
@@ -44,7 +43,7 @@ public class DecisionServiceParametersListSet implements DMNPropertySet {
     private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
 
     @Labels
-    private static final Set<String> stunnerLabels = Stream.of(new String[]{}).collect(Collectors.toSet());
+    private static final Set<String> stunnerLabels = new HashSet<>();
 
     @Property
     @FormField(type = DecisionParametersListFieldType.class)
