@@ -19,6 +19,44 @@ import { ChromeExtensionI18n } from "..";
 
 export const en: ChromeExtensionI18n = {
   ...en_common,
+  editorPage: {
+    textEditorModal: {
+      title: (fileName: string) => `Editing ${fileName}`,
+    },
+    alerts: {
+      setContentError: {
+        title: "Error opening file. You can edit it as text and reopen the diagram after you've fixed it.",
+        action: "Open as text",
+      },
+      copy: "Content copied to clipboard",
+      updateGist: "Gist successfully updated.",
+      createGist: "Gist successfully created.",
+      errorPushingGist: "Failed to push an update to your current Gist. Attempt to force push?",
+      forcePushWarning: "WARNING: This will overwrite your Gist with the local changes!",
+      invalidCurrentGist: `Your current gist ${en_common.names.url} is invalid. If you've updated its filename, it's necessary to update your ${en_common.names.url} as well.`,
+      invalidGistFilename: "Invalid filename. This gist already has a file with this name.",
+      error: `An error occurred trying to perform the last operation. Check if your ${en_common.names.github} token is still valid and try again later.`,
+      unsaved: {
+        titleLocal: "You have new changes since your last download.",
+        titleGit: "You have new changes since your last push.",
+        proceedAnyway: "Proceed anyway",
+        message: "Your files are temporarily persisted on your browser, but may be erased before you come back.",
+      },
+    },
+  },
+  editorToolbar: {
+    closeAndReturnHome: "Close and return Home",
+    saveAndDownload: "Save & Download",
+    sendChangesToGitHub: `Send changes to ${en_common.names.github}`,
+    copySource: "Copy Source",
+    downloadSVG: `${en_common.terms.download} ${en_common.names.svg}`,
+    setGitHubToken: `Setup`,
+    createGist: "Create Gist",
+    cantCreateGistTooltip: `You can't create a Gist because you're either not logged in, or your models are in nested directories.`,
+    cantUpdateGistTooltip: `You can't update your Gist because you're either not logged in, not the owner, or your models are in nested directories.`,
+    share: "Share",
+    embed: "Embed",
+  },
   openshift: {
     common: {
       deployYourModel: "Deploy",

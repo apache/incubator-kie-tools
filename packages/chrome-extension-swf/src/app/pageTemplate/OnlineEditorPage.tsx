@@ -30,7 +30,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   return (
     <Page
       header={
-        <Masthead aria-label={"Page header"} display={{ default: "stack" }}>
+        <Masthead aria-label={"Page header"} display={{ default: "stack" }} backgroundColor="light">
           <MastheadMain style={{ justifyContent: "space-between" }}>
             <PageHeaderToolsItem className={"pf-l-flex"}>
               <MastheadBrand

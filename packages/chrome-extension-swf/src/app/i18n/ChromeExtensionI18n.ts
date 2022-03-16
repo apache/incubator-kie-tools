@@ -18,6 +18,44 @@ import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
 interface ChromeExtensionDictionary extends ReferenceDictionary {
+  editorPage: {
+    textEditorModal: {
+      title: (fileName: string) => string;
+    };
+    alerts: {
+      setContentError: {
+        action: string;
+        title: string;
+      };
+      copy: string;
+      updateGist: string;
+      createGist: string;
+      errorPushingGist: string;
+      forcePushWarning: string;
+      invalidCurrentGist: string;
+      invalidGistFilename: string;
+      error: string;
+      unsaved: {
+        message: string;
+        titleLocal: string;
+        titleGit: string;
+        proceedAnyway: string;
+      };
+    };
+  };
+  editorToolbar: {
+    closeAndReturnHome: string;
+    saveAndDownload: string;
+    sendChangesToGitHub: string;
+    copySource: string;
+    downloadSVG: string;
+    setGitHubToken: string;
+    createGist: string;
+    cantCreateGistTooltip: string;
+    cantUpdateGistTooltip: string;
+    share: string;
+    embed: string;
+  };
   openshift: {
     common: {
       deployYourModel: string;

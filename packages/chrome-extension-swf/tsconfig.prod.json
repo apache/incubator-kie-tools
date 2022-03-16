@@ -1,7 +1,13 @@
 {
   "extends": "../../tsconfig.prod.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "declaration": false,
+    "declarationMap": false,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src"]
 }

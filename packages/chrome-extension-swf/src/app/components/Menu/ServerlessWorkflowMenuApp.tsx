@@ -155,7 +155,10 @@ function createPageContainer(id: string, container: HTMLElement, currentPage: HT
     if (currentPage) {
       currentPage.style.display = "none";
     }
-    container.insertAdjacentHTML("afterbegin", `<div class="${SWF_PAGE_CONTAINER_CLASS} ${id}"></div>`);
+    container.insertAdjacentHTML(
+      "afterbegin",
+      `<div class="${SWF_PAGE_CONTAINER_CLASS} ${id}" style="height: 100%"></div>`
+    );
   }
 
   return element();

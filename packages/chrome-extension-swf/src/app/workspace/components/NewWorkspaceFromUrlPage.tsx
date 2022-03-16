@@ -76,8 +76,7 @@ export function NewWorkspaceFromUrlPage() {
       history.replace({
         pathname: routes.workspaceWithFilePath.path({
           workspaceId: workspace.workspaceId,
-          fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-          extension: suggestedFirstFile.extension,
+          fileRelativePath: suggestedFirstFile.relativePath,
         }),
       });
       return res;
@@ -96,8 +95,7 @@ export function NewWorkspaceFromUrlPage() {
           history.replace({
             pathname: routes.workspaceWithFilePath.path({
               workspaceId: workspace.workspaceId,
-              fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-              extension: suggestedFirstFile.extension,
+              fileRelativePath: suggestedFirstFile.relativePath,
             }),
           });
         });
@@ -181,8 +179,7 @@ export function NewWorkspaceFromUrlPage() {
           history.replace({
             pathname: routes.workspaceWithFilePath.path({
               workspaceId: workspace.workspaceId,
-              fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-              extension: suggestedFirstFile.extension,
+              fileRelativePath: suggestedFirstFile.relativePath,
             }),
           });
         }

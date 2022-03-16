@@ -15,36 +15,43 @@
  */
 
 import * as React from "react";
+import { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import { ChannelType } from "@kie-tools-core/editor/dist/api";
-import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
-import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
+import { EmbeddedEditor, useEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
-import { useCallback, useMemo, useState } from "react";
 import { useChromeExtensionI18n } from "../../i18n";
-import { SW_JSON_EXTENSION, useOpenShift } from "../../openshift/OpenShiftContext";
-import { isConfigValid } from "../../settings/openshift/OpenShiftSettingsConfig";
+import { SW_JSON_EXTENSION } from "../../openshift/OpenShiftContext";
 import { useGlobals } from "../../common/GlobalContext";
 import { LoadingSpinner } from "../../common/LoadingSpinner";
-import { useSettings } from "../../settings/SettingsContext";
 import { Page, PageSection, PageSectionVariants } from "@patternfly/react-core/dist/js/components/Page";
 import { EditorToolbar } from "./EditorToolbar";
 import { useWorkspaceFilePromise } from "../../workspace/hooks/WorkspaceFileHooks";
 import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
+import { PromiseStateWrapper } from "../../workspace/hooks/PromiseState";
+import { EditorPageErrorPage } from "./EditorPageErrorPage";
+import { useCancelableEffect, useController, usePrevious } from "../../reactExt/Hooks";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { AlertsController, useAlert } from "../../alerts/Alerts";
+import { useWorkspaces } from "../../workspace/WorkspacesContext";
+import { ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
+import { useRoutes } from "../../navigation/Hooks";
+import { useHistory } from "react-router";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
   ERROR = "ERROR",
   SUCCESS = "SUCCESS",
 }
-
-const DEFAULT_NAME = "Untitled";
-const DEFAULT_FILENAME = `${DEFAULT_NAME}.${SW_JSON_EXTENSION}`;
 
 export interface ServerlessWorkflowEditorProps {
   workspaceId: string;
@@ -54,148 +61,221 @@ export interface ServerlessWorkflowEditorProps {
 
 export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
   const globals = useGlobals();
-  const openshift = useOpenShift();
-  const settings = useSettings();
-  const { locale } = useChromeExtensionI18n();
+  const routes = useRoutes();
+  const history = useHistory();
+  const { i18n, locale } = useChromeExtensionI18n();
   const { editor, editorRef } = useEditorRef();
-  const [workflowName, setWorkflowName] = useState(DEFAULT_NAME);
-  const [isLoading, setLoading] = useState(false);
-  const [deployStatus, setDeployStatus] = useState(FormValiationOptions.INITIAL);
+  const workspaces = useWorkspaces();
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
-
-  const fileName = useMemo(() => `${workflowName}.${SW_JSON_EXTENSION}`, [workflowName]);
+  const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
+  const [alerts, alertsRef] = useController<AlertsController>();
+  const lastContent = useRef<string>();
 
   const isEditorReady = useMemo(() => editor?.isReady, [editor]);
 
-  const file = useMemo(() => {
-    return {
-      fileName: DEFAULT_FILENAME,
-      fileExtension: SW_JSON_EXTENSION,
-      getFileContents: async () => "",
-      isReadOnly: false,
-      path: DEFAULT_FILENAME,
-    };
-  }, []);
+  // update EmbeddedEditorFile, but only if content is different than what was saved
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (!workspaceFilePromise.data) {
+          return;
+        }
 
-  const onDeploy = useCallback(async () => {
-    setDeployStatus(FormValiationOptions.INITIAL);
+        workspaceFilePromise.data.getFileContentsAsString().then((content) => {
+          if (canceled.get()) {
+            return;
+          }
 
-    const content = await editor?.getContent();
+          if (content === lastContent.current) {
+            return;
+          }
 
-    if (!content) {
-      setDeployStatus(FormValiationOptions.ERROR);
+          lastContent.current = content;
+
+          setEmbeddedEditorFile({
+            path: workspaceFilePromise.data.relativePath,
+            getFileContents: async () => content,
+            isReadOnly: false,
+            fileExtension: SW_JSON_EXTENSION,
+            fileName: workspaceFilePromise.data.relativePath,
+          });
+        });
+      },
+      [workspaceFilePromise]
+    )
+  );
+
+  const setContentErrorAlert = useAlert(
+    alerts,
+    useCallback(() => {
+      return (
+        <Alert ouiaId="set-content-error-alert" variant="danger" title={i18n.editorPage.alerts.setContentError.title} />
+      );
+    }, [i18n])
+  );
+
+  // auto-save
+  const uniqueFileId = workspaceFilePromise.data
+    ? workspaces.getUniqueFileIdentifier(workspaceFilePromise.data)
+    : undefined;
+
+  const prevUniqueFileId = usePrevious(uniqueFileId);
+  if (prevUniqueFileId !== uniqueFileId) {
+    lastContent.current = undefined;
+  }
+
+  const saveContent = useCallback(async () => {
+    if (!workspaceFilePromise.data || !editor) {
       return;
     }
 
-    setLoading(true);
-    const success = await openshift.deploy({
-      openShiftConfig: settings.openshift.config,
-      workflow: {
-        name: fileName,
-        content: content,
-      },
-      kafkaConfig: settings.apacheKafka.config,
+    const content = await editor.getContent();
+    // FIXME: Uncomment when KOGITO-6181 is fixed
+    // const svgString = await editor.getPreview();
+
+    lastContent.current = content;
+
+    // FIXME: Uncomment when KOGITO-6181 is fixed
+    // if (svgString) {
+    //   await workspaces.svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
+    // }
+
+    await workspaces.updateFile({
+      fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
+      file: workspaceFilePromise.data,
+      getNewContents: () => Promise.resolve(content),
     });
-    setLoading(false);
+    editor?.getStateControl().setSavedCommand();
+  }, [workspaces, editor, workspaceFilePromise]);
 
-    setDeployStatus(success ? FormValiationOptions.SUCCESS : FormValiationOptions.ERROR);
-  }, [editor, openshift, settings.openshift.config, settings.apacheKafka.config, fileName]);
+  useStateControlSubscription(
+    editor,
+    useCallback(
+      (isDirty) => {
+        if (!isDirty) {
+          return;
+        }
 
-  const onClearWorkflowName = useCallback(() => setWorkflowName(""), []);
+        saveContent();
+      },
+      [saveContent]
+    ),
+    { throttle: 200 }
+  );
 
-  const onWorkflowNameChanged = useCallback((newValue: string) => {
-    setWorkflowName(newValue);
-  }, []);
+  useEffect(() => {
+    alerts?.closeAll();
+  }, [alerts]);
+
+  useEffect(() => {
+    if (!editor?.isReady || !workspaceFilePromise.data) {
+      return;
+    }
+
+    workspaceFilePromise.data.getFileContentsAsString().then((content) => {
+      if (content !== "") {
+        return;
+      }
+      saveContent();
+    });
+  }, [editor, saveContent, workspaceFilePromise]);
+
+  const handleResourceContentRequest = useCallback(
+    async (request: ResourceContentRequest) => {
+      return workspaces.resourceContentGet({
+        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
+        workspaceId: props.workspaceId,
+        relativePath: request.path,
+        opts: request.opts,
+      });
+    },
+    [props.workspaceId, workspaces]
+  );
+
+  const handleResourceListRequest = useCallback(
+    async (request: ResourceListRequest) => {
+      return workspaces.resourceContentList({
+        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
+        workspaceId: props.workspaceId,
+        globPattern: request.pattern,
+        opts: request.opts,
+      });
+    },
+    [workspaces, props.workspaceId]
+  );
+
+  const handleOpenFile = useCallback(
+    async (relativePath: string) => {
+      if (!workspaceFilePromise.data) {
+        return;
+      }
+
+      const file = await workspaces.getFile({
+        fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
+        workspaceId: workspaceFilePromise.data.workspaceId,
+        relativePath,
+      });
+
+      if (!file) {
+        throw new Error(`Can't find ${relativePath} on Workspace '${workspaceFilePromise.data.workspaceId}'`);
+      }
+
+      history.replace({
+        pathname: routes.workspaceWithFilePath.path({
+          workspaceId: file.workspaceId,
+          fileRelativePath: file.relativePath,
+        }),
+      });
+    },
+    [workspaceFilePromise, workspaces, history, routes]
+  );
+
+  const handleSetContentError = useCallback(() => {
+    setContentErrorAlert.show();
+  }, [setContentErrorAlert]);
 
   return (
     <OnlineEditorPage>
-      <Page>
-        <EditorToolbar workspace={workspaceFilePromise} />
-        {deployStatus === FormValiationOptions.ERROR && (
-          <Alert
-            className="pf-u-mb-md"
-            variant="danger"
-            title={"Something went wrong while deploying. Check your OpenShift connection and try again."}
-            aria-live="polite"
-            isInline
-            data-testid="alert-deploy-error"
-          />
+      <PromiseStateWrapper
+        promise={workspaceFilePromise}
+        pending={
+          <Bullseye>
+            <TextContent>
+              <Bullseye>
+                <Spinner />
+              </Bullseye>
+              <br />
+              <Text component={TextVariants.p}>{`Loading...`}</Text>
+            </TextContent>
+          </Bullseye>
+        }
+        rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
+        resolved={() => (
+          <Page>
+            <EditorToolbar workspaceFilePromise={workspaceFilePromise} editor={editor} />
+            <PageSection variant={PageSectionVariants.default}>
+              <div style={{ height: "100%" }}>
+                {!isEditorReady && <LoadingSpinner />}
+                {embeddedEditorFile && (
+                  <div style={{ display: isEditorReady ? "inline" : "none" }}>
+                    <EmbeddedEditor
+                      ref={editorRef}
+                      file={embeddedEditorFile}
+                      channelType={ChannelType.EMBEDDED}
+                      editorEnvelopeLocator={globals.envelopeLocator}
+                      kogitoWorkspace_openFile={handleOpenFile}
+                      kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
+                      kogitoWorkspace_resourceListRequest={handleResourceListRequest}
+                      kogitoEditor_setContentError={handleSetContentError}
+                      locale={locale}
+                    />
+                  </div>
+                )}
+              </div>
+            </PageSection>
+          </Page>
         )}
-        {deployStatus === FormValiationOptions.SUCCESS && (
-          <Alert
-            className="pf-u-mb-md"
-            variant="info"
-            title={"The deployment has been started successfully"}
-            aria-live="polite"
-            isInline
-            data-testid="alert-deploy-success"
-          />
-        )}
-        <PageSection variant={PageSectionVariants.default}>
-          <Form>
-            <FormGroup
-              label={"Workflow Name"}
-              labelIcon={
-                <Popover bodyContent={"Workflow Name"}>
-                  <button
-                    type="button"
-                    aria-label="More info for workflow name field"
-                    onClick={(e) => e.preventDefault()}
-                    aria-describedby="workflow-name-field"
-                    className="pf-c-form__group-label-help"
-                  >
-                    <HelpIcon noVerticalAlign />
-                  </button>
-                </Popover>
-              }
-              isRequired
-              fieldId="workflow-name-field"
-            >
-              <InputGroup>
-                <TextInput
-                  autoComplete={"off"}
-                  type="text"
-                  id="workflow-name-field"
-                  name="workflow-name-field"
-                  aria-label="Workflow name field"
-                  aria-describedby="workflow-name-field-helper"
-                  value={workflowName}
-                  onChange={onWorkflowNameChanged}
-                  tabIndex={5}
-                  data-testid="workflow-name-text-field"
-                />
-                <InputGroupText>
-                  <Button isSmall variant="plain" aria-label="Clear workflow name button" onClick={onClearWorkflowName}>
-                    <TimesIcon />
-                  </Button>
-                </InputGroupText>
-              </InputGroup>
-            </FormGroup>
-          </Form>
-          <div style={{ height: "600px", marginTop: "24px" }}>
-            {!isEditorReady && <LoadingSpinner />}
-            <div style={{ display: isEditorReady ? "inline" : "none" }}>
-              <EmbeddedEditor
-                ref={editorRef}
-                file={file}
-                channelType={ChannelType.EMBEDDED}
-                editorEnvelopeLocator={globals.envelopeLocator}
-                locale={locale}
-              />
-            </div>
-          </div>
-          <Button
-            isDisabled={!isConfigValid(settings.openshift.config) || workflowName.trim().length === 0}
-            key="deploy"
-            variant="primary"
-            onClick={onDeploy}
-            isLoading={isLoading}
-            spinnerAriaValueText={isLoading ? "Loading" : undefined}
-          >
-            {isLoading ? "Deploying" : "Deploy"}
-          </Button>
-        </PageSection>
-      </Page>
+      />
     </OnlineEditorPage>
   );
 }

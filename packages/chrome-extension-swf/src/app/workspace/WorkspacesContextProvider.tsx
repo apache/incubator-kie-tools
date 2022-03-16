@@ -35,12 +35,13 @@ import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorServic
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
+import { SW_JSON_EXTENSION } from "../openshift/OpenShiftContext";
 
-export const EDITOR_SUPPORTED_FILE_EXTENSIONS = [".sw.json", ".sw.yaml", ".sw.yml"];
+export const EDITOR_SUPPORTED_FILE_EXTENSIONS = [SW_JSON_EXTENSION];
 export const DEFAULT_CORS_PROXY_URL = "https://cors.isomorphic-git.org";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
-const NEW_FILE_DEFAULT_NAME = "Untitled";
+const NEW_FILE_DEFAULT_NAME = "workflow";
 
 interface Props {
   children: React.ReactNode;
@@ -224,27 +225,28 @@ export function WorkspacesContextProvider(props: Props) {
 
           await storageService.deleteFiles(fs, ignoredPaths);
 
-          await gitService.init({
-            fs: fs,
-            dir: workspaceRootDirPath,
-          });
+          // TODO: This is bugged when using via chrome extension (something with a Buffer undefined)
+          // await gitService.init({
+          //   fs: fs,
+          //   dir: workspaceRootDirPath,
+          // });
 
-          await gitService.add({
-            fs: fs,
-            dir: workspaceRootDirPath,
-            relativePath: ".",
-          });
+          // await gitService.add({
+          //   fs: fs,
+          //   dir: workspaceRootDirPath,
+          //   relativePath: ".",
+          // });
 
-          await gitService.commit({
-            fs: fs,
-            dir: workspaceRootDirPath,
-            message: "Initial commit from KIE Sandbox",
-            targetBranch: GIT_DEFAULT_BRANCH,
-            author: {
-              name: args.gitConfig?.name ?? "Unknown",
-              email: args.gitConfig?.email ?? "unknown@email.com",
-            },
-          });
+          // await gitService.commit({
+          //   fs: fs,
+          //   dir: workspaceRootDirPath,
+          //   message: "Initial commit from KIE Sandbox",
+          //   targetBranch: GIT_DEFAULT_BRANCH,
+          //   author: {
+          //     name: args.gitConfig?.name ?? "Unknown",
+          //     email: args.gitConfig?.email ?? "unknown@email.com",
+          //   },
+          // });
 
           return service.getFilesWithLazyContent(fs, workspace.workspaceId);
         },

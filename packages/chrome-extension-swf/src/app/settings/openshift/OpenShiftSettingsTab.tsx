@@ -54,7 +54,7 @@ export function OpenShiftSettingsTab() {
             </TextContent>
             <EmptyStateBody>
               <TextContent>
-                Deploying DMN decisions is <b>enabled</b>.
+                Deploying Serverless Workflows is <b>enabled</b>.
               </TextContent>
               <br />
               <TextContent>

@@ -46,8 +46,7 @@ export function NewWorkspaceWithEmptyFilePage() {
         history.push({
           pathname: routes.workspaceWithFilePath.path({
             workspaceId: file.workspaceId,
-            fileRelativePath: file.relativePathWithoutExtension,
-            extension: file.extension,
+            fileRelativePath: file.relativePath,
           }),
         });
       });
