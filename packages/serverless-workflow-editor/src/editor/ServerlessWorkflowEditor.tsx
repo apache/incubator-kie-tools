@@ -66,6 +66,7 @@ interface Props {
    * ChannelType where the component is running.
    */
   channelType: ChannelType;
+  isReadOnly: boolean;
 }
 
 export type ServerlessWorkflowEditorRef = {
@@ -184,6 +185,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
               fileName={initialContent.path}
               onContentChange={onContentChanged}
               ref={swfMonacoEditorRef}
+              isReadOnly={props.isReadOnly}
             />
           )}
         </DrawerContentBody>
