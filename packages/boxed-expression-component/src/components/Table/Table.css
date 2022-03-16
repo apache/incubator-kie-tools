@@ -189,7 +189,6 @@
 }
 
 /** Focused Cells border ------------------------------------- */
-/* TODO: ugly border for thead cells */
 /* TODO: annotations header cells have no border during editing */
 .expression-container .table-component table tbody td:focus {
   border: 2px solid #438cb1;
@@ -206,32 +205,23 @@
   border: 2px solid #438cb1;
 }
 
-.expression-container .table-component table thead tr th[tabindex].annotation > .react-resizable,
-.expression-container .table-component table thead tr th[tabindex].input > .react-resizable {
-  margin: -2px 0;
-  z-index: 3;
-  height: 117px !important;
-}
-.expression-container .table-component table thead tr th.annotation:focus > .react-resizable,
-.expression-container .table-component table thead tr th.input:focus > .react-resizable {
+.expression-container
+  .decision-table-expression
+  table
+  thead
+  tr:last-child
+  th.decision-table--annotation:focus
+  > .react-resizable,
+.expression-container
+  .decision-table-expression
+  table
+  thead
+  tr:last-child
+  th.decision-table--input:focus
+  > .react-resizable {
   outline: 2px solid #438cb1;
+  z-index: 3;
 }
-
-/* .expression-container .table-component table thead tr th.output{ */
-/*   border: solid transparent; */
-/*   border-width: 2px 1px 2px 1px; */
-/*   outline: 1px solid var(--pf-global--palette--black-300) !important; */
-/*   margin: 1px 0px 0px 0px; */
-/*   z-index: auto; */
-/* } */
-/*  */
-/* .expression-container .table-component table thead tr th:focus.output{ */
-/*   border: 2px solid #438cb1 !important; */
-/*   outline: none !important; */
-/*   margin: 0px -1px; */
-/*   z-index: 2; */
-/*   padding: 0.8em 0 0.7em 0; */
-/* } */
 
 .expression-container .table-component table thead tr th.output:focus:before {
   content: "";
