@@ -125,6 +125,7 @@ const completions = new Map<
 
 export function initJsonCompletion(commandIds: SwfMonacoEditorInstance["commands"]): void {
   monaco.languages.registerCompletionItemProvider("json", {
+    triggerCharacters: [":"],
     provideCompletionItems: (
       model: editor.ITextModel,
       position: Position,
