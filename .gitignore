@@ -10,6 +10,7 @@
 **/it-tests-tmp/
 **/coverage/
 **/target/
+**/.dashbuilder/
 **/out/
 **/.idea/
 **/.DS_Store
