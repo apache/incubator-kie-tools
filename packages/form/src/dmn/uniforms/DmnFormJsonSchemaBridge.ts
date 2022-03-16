@@ -15,6 +15,11 @@
  */
 
 import { FormJsonSchemaBridge } from "../../core/uniforms/FormJsonSchemaBridge";
+import { DmnFormI18n } from "../../i18n";
+
+const DAYS_AND_TIME_DURATION_FORMAT = "days and time duration";
+const YEARS_AND_MONTHS_DURATION_FORMAT = "years and months duration";
+export const FEEL_CONTEXT = "FEEL:context";
 
 export enum Duration {
   DaysAndTimeDuration,
@@ -22,34 +27,39 @@ export enum Duration {
 }
 
 export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
-  constructor(schema: any, validator: any, private i18n: any) {
+  constructor(schema: any, validator: any, private i18n: DmnFormI18n) {
     super(schema, validator);
   }
 
   public getType(name: string) {
-    const { format: fieldFormat } = super.getField(name);
+    const { format: fieldFormat, type } = super.getField(name);
     // TODO: create custom components
-    if (fieldFormat === "days and time duration") {
+    if (fieldFormat === DAYS_AND_TIME_DURATION_FORMAT) {
       return String;
     }
-    if (fieldFormat === "years and months duration") {
+    if (fieldFormat === YEARS_AND_MONTHS_DURATION_FORMAT) {
       return String;
+    }
+    if (type === FEEL_CONTEXT) {
+      return FEEL_CONTEXT;
     }
     return super.getType(name);
   }
 
   public getField(name: string): Record<string, any> {
     const field = super.getField(name);
-    if (field?.format === "days and time duration") {
+    delete field.required;
+
+    if (field?.format === DAYS_AND_TIME_DURATION_FORMAT) {
       field.placeholder = this.i18n.form.preProcessing.daysAndTimePlaceholder;
     }
-    if (field?.format === "years and months duration") {
+    if (field?.format === YEARS_AND_MONTHS_DURATION_FORMAT) {
       field.placeholder = this.i18n.form.preProcessing.yearsAndMonthsPlaceholder;
     }
     if (field?.format === "time") {
       field.placeholder = "hh:mm:ss";
     }
-    if (field?.["x-dmn-type"] === "FEEL:context") {
+    if (field?.["x-dmn-type"] === FEEL_CONTEXT) {
       field.placeholder = `{ "x": <value> }`;
     }
 

@@ -52,7 +52,7 @@ interface PropsWithoutNotificationsPanel extends CommonProps {
 
 export type Props = PropsWithNotificationsPanel | PropsWithoutNotificationsPanel;
 
-export function FormBaseComponent(props: Props) {
+export function FormBaseComponent(props: React.PropsWithChildren<Props>) {
   return (
     <>
       {props.formStatus === FormStatus.VALIDATOR_ERROR && <ValidatorErrorFormStatus i18n={props.i18n} />}
@@ -91,7 +91,9 @@ export function FormBaseComponent(props: Props) {
               errorsField={props.errorsField}
               submitField={props.submitField}
               validate={"onChange"}
-            />
+            >
+              {props.children}
+            </AutoForm>
           </ErrorBoundary>
         </div>
       )}
