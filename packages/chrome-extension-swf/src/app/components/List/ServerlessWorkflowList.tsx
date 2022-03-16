@@ -17,15 +17,14 @@
 import * as React from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Page, PageSection, PageSectionVariants } from "@patternfly/react-core/dist/js/components/Page";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { DeploymentWorkflow } from "../../openshift/OpenShiftContext";
-import { SettingsButton } from "../../settings/SettingsButton";
 import { useRoutes } from "../../navigation/Hooks";
+import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 
 export function ServerlessWorkflowList() {
   const [workflows, setWorkflows] = useState<DeploymentWorkflow[]>([]);
@@ -42,7 +41,7 @@ export function ServerlessWorkflowList() {
         <EmptyStateBody>
           For help getting started, access the <a>quick start guide</a>.
         </EmptyStateBody>
-        <Button variant="primary" onClick={() => history.push({ pathname: routes.newSwf.path({}) })}>
+        <Button variant="primary" onClick={() => history.push({ pathname: routes.newWorskapce.path({}) })}>
           Create Serverless Workflow
         </Button>
       </EmptyState>
@@ -51,20 +50,16 @@ export function ServerlessWorkflowList() {
   );
 
   return (
-    <Page style={{ position: "relative" }}>
-      <SettingsButton />
-      <PageSection variant={PageSectionVariants.light}>
-        <TextContent>
-          <Text component={TextVariants.h1}>Serverless Workflow</Text>
-        </TextContent>
-      </PageSection>
-      <PageSection>
-        {workflows.length === 0 ? (
-          emptyState
-        ) : (
-          <div>{`# workflows ${workflows.length} - (TODO: workflow list + create workflow button go here)`}</div>
-        )}
-      </PageSection>
-    </Page>
+    <OnlineEditorPage>
+      <Page style={{ position: "relative" }}>
+        <PageSection>
+          {workflows.length === 0 ? (
+            emptyState
+          ) : (
+            <div>{`# workflows ${workflows.length} - (TODO: workflow list + create workflow button go here)`}</div>
+          )}
+        </PageSection>
+      </Page>
+    </OnlineEditorPage>
   );
 }

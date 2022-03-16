@@ -16,11 +16,10 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { HashRouter } from "react-router-dom";
 
-import { createAndGetMainContainer } from "../../utils";
-import { Globals, Main } from "../common/Main";
-import { ServerlessWorkflowMenuApp } from "./ServerlessWorkflowMenuApp";
+import { createAndGetMainContainer } from "./utils";
+import { Globals, Main } from "./common/Main";
+import { ServerlessWorkflowMenuApp } from "./components/Menu/ServerlessWorkflowMenuApp";
 
 export function renderServerlessWorkflowMenuApp(args: Globals) {
   ReactDOM.render(

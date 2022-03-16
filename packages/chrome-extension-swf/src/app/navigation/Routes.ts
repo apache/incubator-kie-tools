@@ -24,6 +24,8 @@ export enum QueryParams {
 
 export enum PathParams {
   WORKSPACE_ID = "workspaceId",
+  FILE_RELATIVE_PATH = "fileRelativePath",
+  EXTENSION = "extension",
 }
 
 export class Route<
@@ -104,15 +106,15 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
 }
 
 export const routes = {
-  listSwf: new Route(() => "/"),
+  home: new Route(() => "/"),
 
-  newSwf: new Route(() => "/new"),
+  newWorskapce: new Route(() => "/new"),
 
   importSwf: new Route<{
     queryParams: QueryParams.URL | QueryParams.BRANCH;
   }>(() => `/import`),
 
-  workspace: new Route<{
-    pathParams: PathParams.WORKSPACE_ID;
-  }>(({ workspaceId }) => `/${workspaceId}`),
+  workspaceWithFilePath: new Route<{
+    pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_RELATIVE_PATH | PathParams.EXTENSION;
+  }>(({ workspaceId, fileRelativePath, extension }) => `/${workspaceId}/file/${fileRelativePath}.${extension}`),
 };

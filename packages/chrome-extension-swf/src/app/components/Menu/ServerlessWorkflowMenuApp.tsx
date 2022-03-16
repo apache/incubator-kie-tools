@@ -19,7 +19,7 @@ import { useEffect, useState, useCallback } from "react";
 import * as ReactDOM from "react-dom";
 import { SWF_MENU_ITEM_CONTAINER_CLASS, SWF_PAGE_CONTAINER_CLASS } from "../../constants";
 import { RoutesSwitch } from "../../navigation/RoutesSwitch";
-import { useGlobals } from "../common/GlobalContext";
+import { useGlobals } from "../../common/GlobalContext";
 
 interface CreateServerlessWorkflowAppProps {
   id: string;

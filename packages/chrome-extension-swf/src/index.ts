@@ -16,11 +16,11 @@
 
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import * as ReactDOM from "react-dom";
-import "../resources/style.css";
-import { ResourceContentServiceFactory } from "./app/components/common/ChromeResourceContentService";
-import { ImageUris } from "./app/components/common/GlobalContext";
-import { Globals } from "./app/components/common/Main";
-import { renderServerlessWorkflowMenuApp } from "./app/components/ServerlessWorkflowMenu/renderServerlessWorkflowMenuApp";
+import "../static/resources/style.css";
+import { ResourceContentServiceFactory } from "./app/common/ChromeResourceContentService";
+import { ImageUris } from "./app/common/GlobalContext";
+import { Globals } from "./app/common/Main";
+import { renderServerlessWorkflowMenuApp } from "./app/renderServerlessWorkflowMenuApp";
 import { Dependencies } from "./app/Dependencies";
 import { RedHatConsolePageType } from "./app/openshift/RedHatConsolePageType";
 import { mainContainer, runAfterUriChange } from "./app/utils";

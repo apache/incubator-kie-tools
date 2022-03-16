@@ -1,7 +1,9 @@
 import * as React from "react";
 import { Route, Switch } from "react-router-dom";
-import { CreateServerlessWorkflowPage } from "../components/ServerlessWorkflowMenu/CreateServerlessWorkflowPage";
-import { ServerlessWorkflowList } from "../components/ServerlessWorkflowMenu/ServerlessWorkflowList";
+import { ServerlessWorkflowEditor } from "../components/Editor/Editor";
+import { ServerlessWorkflowList } from "../components/List/ServerlessWorkflowList";
+import { SW_JSON_EXTENSION } from "../openshift/OpenShiftContext";
+import { NewWorkspaceWithEmptyFilePage } from "../workspace/components/NewWorkspaceWithEmptyFilePage";
 import { useRoutes } from "./Hooks";
 
 export function RoutesSwitch() {
@@ -9,11 +11,25 @@ export function RoutesSwitch() {
 
   return (
     <Switch>
-      <Route exact={true} path={routes.listSwf.path({})}>
+      <Route exact={true} path={routes.home.path({})}>
         <ServerlessWorkflowList />
       </Route>
-      <Route exact={true} path={routes.newSwf.path({})}>
-        <CreateServerlessWorkflowPage />
+      <Route exact={true} path={routes.newWorskapce.path({})}>
+        <NewWorkspaceWithEmptyFilePage />
+      </Route>
+      <Route
+        path={routes.workspaceWithFilePath.path({
+          workspaceId: ":workspaceId",
+          fileRelativePath: `:fileRelativePath*`,
+          extension: SW_JSON_EXTENSION,
+        })}
+      >
+        {({ match }) => (
+          <ServerlessWorkflowEditor
+            workspaceId={match!.params.workspaceId!}
+            fileRelativePath={`${match!.params.fileRelativePath}.${match!.params.extension}`}
+          />
+        )}
       </Route>
       {/* <Route path={routes.importModel.path({})}>
         <NewWorkspaceFromUrlPage />

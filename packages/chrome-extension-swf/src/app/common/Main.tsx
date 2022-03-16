@@ -15,17 +15,17 @@
  */
 
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
-import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
-import { Logger } from "../../../Logger";
-import { Dependencies } from "../../Dependencies";
-import { OpenShiftProvider } from "../../openshift/OpenShiftProvider";
+import { Logger } from "../../Logger";
+import { Dependencies } from "../Dependencies";
+import { OpenShiftProvider } from "../openshift/OpenShiftProvider";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
 import { GlobalContext, ImageUris } from "./GlobalContext";
-import { ChromeExtensionI18nContextProvider } from "../../i18n";
-import { SettingsContextProvider } from "../../settings/SettingsContext";
+import { ChromeExtensionI18nContextProvider } from "../i18n";
+import { SettingsContextProvider } from "../settings/SettingsContext";
 import { MemoryRouter } from "react-router-dom";
-import { NavigationContextProvider } from "../../navigation/NavigationContextProvider";
+import { NavigationContextProvider } from "../navigation/NavigationContextProvider";
+import { WorkspacesContextProvider } from "../workspace/WorkspacesContextProvider";
 
 export interface Globals {
   id: string;
@@ -52,7 +52,9 @@ export const Main: React.FunctionComponent<Globals> = (props) => {
                 resourceContentServiceFactory: props.resourceContentServiceFactory,
               }}
             >
-              <OpenShiftProvider>{props.children}</OpenShiftProvider>
+              <OpenShiftProvider>
+                <WorkspacesContextProvider>{props.children}</WorkspacesContextProvider>
+              </OpenShiftProvider>
             </GlobalContext.Provider>
           </SettingsContextProvider>
         </NavigationContextProvider>

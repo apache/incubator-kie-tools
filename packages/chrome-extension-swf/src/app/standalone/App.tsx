@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Main } from "../components/common/Main";
+import { Main } from "../common/Main";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { Logger } from "../../Logger";
-import { ResourceContentServiceFactory } from "../components/common/ChromeResourceContentService";
+import { ResourceContentServiceFactory } from "../common/ChromeResourceContentService";
 import { RoutesSwitch } from "../navigation/RoutesSwitch";
 
 const imageUris = {
@@ -10,7 +10,7 @@ const imageUris = {
   serverlessWorkflow: "/resources/sw-logo-transparent.png",
 };
 
-const editorEnvelopeLocator = new EditorEnvelopeLocator(window.location.origin, [
+export const editorEnvelopeLocator = new EditorEnvelopeLocator(window.location.origin, [
   new EnvelopeMapping("sw", "**/*.sw.+(json|yml|yaml)", `envelope/`, `envelope/index.html`),
 ]);
 

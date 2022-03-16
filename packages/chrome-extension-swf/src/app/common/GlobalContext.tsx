@@ -16,8 +16,8 @@
 
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
-import { Logger } from "../../../Logger";
-import { Dependencies } from "../../Dependencies";
+import { Logger } from "../../Logger";
+import { Dependencies } from "../Dependencies";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
 
 export interface ImageUris {
@@ -38,4 +38,8 @@ export const GlobalContext = React.createContext<GlobalContextType>({} as any);
 
 export function useGlobals() {
   return React.useContext(GlobalContext);
+}
+
+export function useEditorEnvelopeLocator() {
+  return React.useContext(GlobalContext).envelopeLocator;
 }

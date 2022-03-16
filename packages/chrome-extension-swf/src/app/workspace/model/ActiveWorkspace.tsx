@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-.kie-tools--masthead-hoverable:hover {
-  background-color: rgba(0, 0, 0, 0.08) !important;
-  border-radius: 8px;
-}
+import { WorkspaceFile } from "../WorkspacesContext";
+import { WorkspaceDescriptor } from "./WorkspaceDescriptor";
 
-.kie-tools--masthead-hoverable-dark:hover {
-  background-color: rgba(255, 255, 255, 0.08) !important;
-  border-radius: 8px;
+export interface ActiveWorkspace {
+  descriptor: WorkspaceDescriptor;
+  files: WorkspaceFile[];
 }
