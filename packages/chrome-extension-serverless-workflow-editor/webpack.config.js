@@ -1,0 +1,85 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+const CopyPlugin = require("copy-webpack-plugin");
+const ZipPlugin = require("zip-webpack-plugin");
+const packageJson = require("./package.json");
+const patternflyBase = require("@kie-tools-core/patternfly-base");
+const { merge } = require("webpack-merge");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+// const serverlessEditors = require("@kie-tools/serverless-workflow-editor");
+const { EnvironmentPlugin } = require("webpack");
+const buildEnv = require("@kie-tools/build-env");
+const path = require("path");
+
+function getRouterArgs() {
+  const targetOrigin = buildEnv.chromeExtension.routerTargetOrigin;
+  const relativePath = buildEnv.chromeExtension.routerRelativePath;
+
+  console.info(`Chrome Extension :: Router target origin: ${targetOrigin}`);
+  console.info(`Chrome Extension :: Router relative path: ${relativePath}`);
+
+  return [targetOrigin, relativePath];
+}
+
+function getOnlineEditorArgs() {
+  const onlineEditorUrl = buildEnv.chromeExtension.onlineEditorUrl;
+  const manifestFile = buildEnv.chromeExtension.manifestFile;
+
+  console.info(`Chrome Extension :: Online Editor URL: ${onlineEditorUrl}`);
+  console.info(`Chrome Extension :: Manifest file: ${manifestFile}`);
+
+  return [onlineEditorUrl, manifestFile];
+}
+
+module.exports = async (env) => {
+  const [router_targetOrigin, router_relativePath] = getRouterArgs(env);
+  const [onlineEditor_url, manifestFile] = getOnlineEditorArgs(env);
+
+  return merge(common(env), {
+    entry: {
+      "content_scripts/github": "./src/github-content-script.ts",
+      background: "./src/background.ts",
+      "serverless-workflow-editor-envelope": "./src/envelope/ServerlessWorkflowEditorEnvelopeApp.ts",
+    },
+    devServer: {
+      static: [{ directory: path.join(__dirname, "./dist") }],
+      compress: true,
+      https: true,
+      port: buildEnv.chromeExtension.dev.port,
+    },
+    plugins: [
+      new EnvironmentPlugin({
+        WEBPACK_REPLACE__targetOrigin: router_targetOrigin,
+        WEBPACK_REPLACE__relativePath: router_relativePath,
+        WEBPACK_REPLACE__onlineEditor_url: onlineEditor_url,
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: "./static", to: "." },
+          { from: `./${manifestFile}`, to: "./manifest.json" },
+        ],
+      }),
+      new ZipPlugin({
+        filename: "chrome_extension_kogito_kie_editors_" + packageJson.version + ".zip",
+        include: ["manifest.json", "background.js", "content_scripts", "resources"],
+      }),
+    ],
+    module: {
+      rules: [...patternflyBase.webpackModuleRules],
+    },
+  });
+};
