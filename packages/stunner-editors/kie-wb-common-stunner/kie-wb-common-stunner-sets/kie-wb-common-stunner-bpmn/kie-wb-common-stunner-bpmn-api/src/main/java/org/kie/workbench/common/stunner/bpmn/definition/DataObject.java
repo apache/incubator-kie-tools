@@ -55,7 +55,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 public class DataObject extends BaseArtifacts {
 
     @Labels
-    private static final Set<String> LABELS = Stream.of("all",
+    private static final Set<String> labels = Stream.of("all",
                                                         "lane_child")
             .collect(Collectors.toSet());
 
@@ -96,7 +96,7 @@ public class DataObject extends BaseArtifacts {
     }
 
     public Set<String> getLabels() {
-        return LABELS;
+        return labels;
     }
 
     public BPMNGeneralSet getGeneral() {
