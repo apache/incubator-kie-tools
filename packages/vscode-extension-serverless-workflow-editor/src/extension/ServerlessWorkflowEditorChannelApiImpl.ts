@@ -31,7 +31,7 @@ import { Notification, NotificationsApi } from "@kie-tools-core/notifications/di
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { SwfService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { SwfServiceCatalogChannelApiImpl } from "@kie-tools/serverless-workflow-service-catalog/src/channel";
@@ -136,7 +136,7 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     return this.defaultApiImpl.kogitoEditor_theme();
   }
 
-  public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfService[]> {
+  public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
     return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_services();
   }
 }

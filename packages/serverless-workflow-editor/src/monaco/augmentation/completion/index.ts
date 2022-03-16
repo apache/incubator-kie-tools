@@ -20,119 +20,201 @@ import * as jsonc from "jsonc-parser";
 import { SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { SwfServiceCatalogSingleton } from "../../../serviceCatalog";
-import { getSwfFunctions } from "./utils";
+import * as swfModelQueries from "./modelQueries";
 
 const completions = new Map<
   jsonc.JSONPath,
   (args: {
     model: editor.ITextModel;
-    workflow?: Specification.Workflow;
     cursorPosition: Position;
-    nodePositions: { start: Position; end: Position };
+    context: languages.CompletionContext;
+    currentNode: jsonc.Node;
+    overwriteRange: Range;
+    currentNodePosition: { start: Position; end: Position };
     commandIds: SwfMonacoEditorInstance["commands"];
-    actualNode: jsonc.Node;
     rootNode: jsonc.Node;
   }) => languages.CompletionItem[]
 >([
   [
-    ["functions"], // This JSONPath is a pre-filtering of the completion item.
-    ({ model, cursorPosition, actualNode, workflow, rootNode }) => {
-      if (actualNode.type != "array") {
+    ["functions", "*"],
+    ({ currentNode, rootNode, overwriteRange }) => {
+      if (currentNode.type != "array") {
         console.debug("Cannot autocomplete: Functions should be an array.");
         return [];
       }
 
-      const existingOperations = getSwfFunctions(workflow, rootNode).map((swfFunction) => swfFunction.operation);
-
-      const wordPosition = model.getWordAtPosition(cursorPosition);
-      const range = new Range(
-        cursorPosition.lineNumber,
-        wordPosition?.startColumn ?? cursorPosition.column,
-        cursorPosition.lineNumber,
-        wordPosition?.endColumn ?? cursorPosition.column
-      );
+      const existingOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
 
       return SwfServiceCatalogSingleton.get()
         .getFunctions()
-        .filter((swfFunction) => !existingOperations.includes(swfFunction.operation))
-        .map((swfFunction) => {
-          const swfFunctionDef: Omit<Specification.Function, "normalize"> = {
-            name: `$\{1:${swfFunction.name}}`,
-            operation: swfFunction.operation,
-            type: swfFunction.type,
+        .filter((swfServiceCatalogFunc) => !existingOperations.includes(swfServiceCatalogFunc.operation))
+        .map((swfServiceCatalogFunc) => {
+          const swfFunction: Omit<Specification.Function, "normalize"> = {
+            name: `$\{1:${swfServiceCatalogFunc.name}}`,
+            operation: swfServiceCatalogFunc.operation,
+            type: swfServiceCatalogFunc.type,
           };
           return {
-            label: swfFunction.name,
-            detail: swfFunctionDef.operation,
-            kind: monaco.languages.CompletionItemKind.Snippet,
-            insertText: JSON.stringify(swfFunctionDef, null, 2),
+            kind: monaco.languages.CompletionItemKind.Module,
+            label: swfServiceCatalogFunc.name,
+            detail: swfFunction.operation,
+            insertText: JSON.stringify(swfFunction, null, 2),
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            range,
+            range: overwriteRange,
+          };
+        });
+    },
+  ],
+  [
+    ["functions", "*", "operation"],
+    ({ currentNode, rootNode, overwriteRange }) => {
+      if (!currentNode.parent?.parent) {
+        return [];
+      }
+
+      // As "rest" is the default, if the value is undefined, it's a rest function too.
+      const isRestFunction =
+        (jsonc.findNodeAtLocation(currentNode.parent.parent, ["type"])?.value ?? "rest") === "rest";
+      if (!isRestFunction) {
+        return [];
+      }
+
+      const existingOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
+      return SwfServiceCatalogSingleton.get()
+        .getFunctions()
+        .filter((swfServiceCatalogFunc) => !existingOperations.includes(swfServiceCatalogFunc.operation))
+        .map((swfServiceCatalogFunc) => {
+          return {
+            kind: monaco.languages.CompletionItemKind.Value,
+            label: swfServiceCatalogFunc.operation,
+            detail: swfServiceCatalogFunc.operation,
+            filterText: `"${swfServiceCatalogFunc.operation}"`,
+            insertText: `"${swfServiceCatalogFunc.operation}"`,
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: overwriteRange,
           };
         });
     },
   ],
   [
     ["states", "*", "actions", "*", "functionRef"],
-    ({ model, cursorPosition, actualNode, workflow, rootNode }) => {
-      if (actualNode.type !== "property") {
+    ({ overwriteRange, currentNode, rootNode }) => {
+      if (currentNode.type !== "property") {
         console.debug("Cannot autocomplete: functionRef should be a property.");
         return [];
       }
 
-      const wordPosition = model.getWordAtPosition(cursorPosition);
-      const range = new Range(
-        cursorPosition.lineNumber,
-        wordPosition?.startColumn ?? cursorPosition.column,
-        cursorPosition.lineNumber,
-        wordPosition?.endColumn ?? cursorPosition.column
-      );
-
-      const swfFunctions = getSwfFunctions(workflow, rootNode);
-      return swfFunctions.flatMap((swfFunctionDef) => {
-        const swfFunction = SwfServiceCatalogSingleton.get().getFunctionByOperation(swfFunctionDef.operation);
-        if (!swfFunction) {
+      return swfModelQueries.getFunctions(rootNode).flatMap((swfFunction) => {
+        const swfServiceCatalogFunc = SwfServiceCatalogSingleton.get().getFunctionByOperation(swfFunction.operation);
+        if (!swfServiceCatalogFunc) {
           return [];
         }
 
-        const refArgs: Record<string, string> = {};
-        let index = 1;
-        Object.keys(swfFunction.arguments).forEach((argName) => {
-          refArgs[argName] = `$\{${index++}:}`;
+        let argIndex = 1;
+        const swfFunctionRefArgs: Record<string, string> = {};
+        Object.keys(swfServiceCatalogFunc.arguments).forEach((argName) => {
+          swfFunctionRefArgs[argName] = `$\{${argIndex++}:}`;
         });
 
         const swfFunctionRef: Omit<Specification.Functionref, "normalize"> = {
-          refName: swfFunctionDef.name,
-          arguments: refArgs,
+          refName: swfFunction.name,
+          arguments: swfFunctionRefArgs,
         };
 
         return [
           {
+            kind: monaco.languages.CompletionItemKind.Module,
             label: `${swfFunctionRef.refName}`,
             sortText: swfFunctionRef.refName,
-            filterText: swfFunctionRef.refName,
-            detail: `${swfFunction.operation}`,
-            kind: monaco.languages.CompletionItemKind.Snippet,
+            detail: `${swfServiceCatalogFunc.operation}`,
             insertText: JSON.stringify(swfFunctionRef, null, 2),
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            range,
+            range: overwriteRange,
           },
         ];
       });
+    },
+  ],
+  [
+    ["states", "*", "actions", "*", "functionRef", "refName"],
+    ({ overwriteRange, rootNode }) => {
+      return swfModelQueries.getFunctions(rootNode).flatMap((swfFunction) => {
+        return [
+          {
+            kind: monaco.languages.CompletionItemKind.Value,
+            label: swfFunction.name,
+            sortText: swfFunction.name,
+            detail: swfFunction.name,
+            filterText: `"${swfFunction.name}"`,
+            insertText: `"${swfFunction.name}"`,
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: overwriteRange,
+          },
+        ];
+      });
+    },
+  ],
+  [
+    ["states", "*", "actions", "*", "functionRef", "arguments"],
+    ({ overwriteRange, currentNode, rootNode }) => {
+      if (currentNode.type !== "property") {
+        console.debug("Cannot autocomplete: functionRef should be a property.");
+        return [];
+      }
+
+      if (!currentNode.parent) {
+        return [];
+      }
+
+      const swfFunctionRefName: string = jsonc.findNodeAtLocation(currentNode.parent, ["refName"])?.value;
+      if (!swfFunctionRefName) {
+        return [];
+      }
+
+      const swfFunction = swfModelQueries
+        .getFunctions(rootNode)
+        ?.filter((f) => f.name === swfFunctionRefName)
+        .pop();
+      if (!swfFunction) {
+        return [];
+      }
+
+      const swfServiceCatalogFunc = SwfServiceCatalogSingleton.get().getFunctionByOperation(swfFunction.operation);
+      if (!swfServiceCatalogFunc) {
+        return [];
+      }
+
+      let argIndex = 1;
+      const swfFunctionRefArgs: Record<string, string> = {};
+      Object.keys(swfServiceCatalogFunc.arguments).forEach((argName) => {
+        swfFunctionRefArgs[argName] = `$\{${argIndex++}:}`;
+      });
+
+      return [
+        {
+          kind: monaco.languages.CompletionItemKind.Module,
+          label: `'${swfFunctionRefName}' arguments`,
+          sortText: `${swfFunctionRefName} arguments`,
+          detail: swfFunction.operation,
+          insertText: JSON.stringify(swfFunctionRefArgs, null, 2),
+          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          range: overwriteRange,
+        },
+      ];
     },
   ],
 ]);
 
 export function initJsonCompletion(commandIds: SwfMonacoEditorInstance["commands"]): void {
   monaco.languages.registerCompletionItemProvider("json", {
-    triggerCharacters: [":"],
+    triggerCharacters: [" ", ":"],
     provideCompletionItems: (
       model: editor.ITextModel,
-      position: Position,
+      cursorPosition: Position,
       context: languages.CompletionContext,
-      token: CancellationToken
+      cancellationToken: CancellationToken
     ): languages.ProviderResult<languages.CompletionList> => {
-      if (token.isCancellationRequested) {
+      if (cancellationToken.isCancellationRequested) {
         return;
       }
 
@@ -141,40 +223,44 @@ export function initJsonCompletion(commandIds: SwfMonacoEditorInstance["commands
         return;
       }
 
-      const cursorOffset = model.getOffsetAt(position);
+      const cursorOffset = model.getOffsetAt(cursorPosition);
 
-      const actualNode = jsonc.findNodeAtOffset(rootNode, cursorOffset);
-      if (!actualNode) {
+      const currentNode = jsonc.findNodeAtOffset(rootNode, cursorOffset);
+      if (!currentNode) {
         return;
       }
 
-      const nodePositions = {
-        start: model.getPositionAt(actualNode.offset),
-        end: model.getPositionAt(actualNode.offset + actualNode.length),
+      const currentNodePosition = {
+        start: model.getPositionAt(currentNode.offset),
+        end: model.getPositionAt(currentNode.offset + currentNode.length),
       };
 
-      let workflow: Specification.Workflow | undefined;
-      try {
-        workflow = Specification.Workflow.fromSource(model.getValue());
-      } catch (e) {
-        console.error("Could not create Workflow from model", e);
-        workflow = undefined;
-      }
+      const currentWordPosition = model.getWordAtPosition(cursorPosition);
 
-      const location = jsonc.getLocation(model.getValue(), cursorOffset);
+      const overwriteRange = ["string", "number", "boolean", "null"].includes(currentNode?.type)
+        ? Range.fromPositions(currentNodePosition.start, currentNodePosition.end)
+        : new Range(
+            cursorPosition.lineNumber,
+            currentWordPosition?.startColumn ?? cursorPosition.column,
+            cursorPosition.lineNumber,
+            currentWordPosition?.endColumn ?? cursorPosition.column
+          );
+
+      const cursorJsonLocation = jsonc.getLocation(model.getValue(), cursorOffset);
 
       return {
         suggestions: Array.from(completions.entries())
-          .filter(([jsonPath, _]) => location.matches(jsonPath))
+          .filter(([path, _]) => cursorJsonLocation.matches(path) && cursorJsonLocation.path.length === path.length)
           .flatMap(([_, completionItemsDelegate]) =>
             completionItemsDelegate({
               model,
-              cursorPosition: position,
+              cursorPosition,
+              context,
               commandIds,
-              actualNode,
-              nodePositions,
-              workflow,
+              currentNode,
+              currentNodePosition,
               rootNode,
+              overwriteRange,
             })
           ),
       };

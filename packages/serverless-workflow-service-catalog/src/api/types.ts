@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-export enum SwfServiceType {
+export enum SwfServiceCatalogServiceType {
   rest = "rest",
   graphql = "graphql",
 }
 
-export interface SwfService {
+export interface SwfServiceCatalogService {
   name: string;
   id: string;
-  type: SwfServiceType;
+  type: SwfServiceCatalogServiceType;
 
-  functions: SwfFunction[];
+  functions: SwfServiceCatalogFunction[];
   rawContent: string;
 }
 
-export enum SwfFunctionType {
+export enum SwfServiceCatalogFunctionType {
   rest = "rest",
   graphql = "graphql",
   asyncapi = "asyncapi",
 }
 
-export enum SwfFunctionArgumentType {
+export enum SwfServiceCatalogFunctionArgumentType {
   boolean = "boolean",
   object = "object",
   number = "number",
@@ -43,9 +43,9 @@ export enum SwfFunctionArgumentType {
   array = "array",
 }
 
-export interface SwfFunction {
+export interface SwfServiceCatalogFunction {
   name: string;
   operation: string;
-  arguments: Record<string, SwfFunctionArgumentType>;
-  type: SwfFunctionType;
+  arguments: Record<string, SwfServiceCatalogFunctionArgumentType>;
+  type: SwfServiceCatalogFunctionType;
 }

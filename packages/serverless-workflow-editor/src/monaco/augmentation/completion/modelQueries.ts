@@ -17,11 +17,7 @@
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import * as jsonc from "jsonc-parser";
 
-export function getSwfFunctions(workflow: Specification.Workflow | undefined, rootNode: jsonc.Node) {
-  if (workflow) {
-    return typeof workflow?.functions === "string" ? [] : workflow.functions ?? [];
-  }
-
+export function getFunctions(rootNode: jsonc.Node) {
   const functionsNode = jsonc.findNodeAtLocation(rootNode, ["functions"]);
   if (functionsNode?.type !== "array") {
     return [];

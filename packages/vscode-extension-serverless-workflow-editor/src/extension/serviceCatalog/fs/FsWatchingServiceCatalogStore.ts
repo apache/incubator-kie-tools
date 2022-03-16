@@ -17,12 +17,12 @@
 import * as vscode from "vscode";
 import { Disposable, FileType } from "vscode";
 import { parseOpenApi, SwfServiceCatalogStore } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
-import { SwfService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 const OPENAPI_EXTENSIONS_REGEX = new RegExp("^.*\\.(yaml|yml|json)$");
 
 export class FsWatchingServiceCatalogStore implements SwfServiceCatalogStore {
-  private onChangeCallback: (services: SwfService[]) => Promise<any>;
+  private onChangeCallback: (services: SwfServiceCatalogService[]) => Promise<any>;
 
   private readonly onDispose: () => void;
 
@@ -46,7 +46,7 @@ export class FsWatchingServiceCatalogStore implements SwfServiceCatalogStore {
     };
   }
 
-  public init(callback: (swfServices: SwfService[]) => Promise<any>) {
+  public init(callback: (swfServices: SwfServiceCatalogService[]) => Promise<any>) {
     this.onChangeCallback = callback;
     return this.refresh();
   }
@@ -65,8 +65,8 @@ export class FsWatchingServiceCatalogStore implements SwfServiceCatalogStore {
     }
   }
 
-  private readFileSystemServices(): Promise<SwfService[]> {
-    return new Promise<SwfService[]>((resolve, reject) => {
+  private readFileSystemServices(): Promise<SwfServiceCatalogService[]> {
+    return new Promise<SwfServiceCatalogService[]>((resolve, reject) => {
       try {
         const specsDirAbsolutePath = vscode.Uri.parse(this.specsDirPath);
 
@@ -82,7 +82,7 @@ export class FsWatchingServiceCatalogStore implements SwfServiceCatalogStore {
               return;
             }
 
-            const promises: Thenable<SwfService[]>[] = [];
+            const promises: Thenable<SwfServiceCatalogService[]>[] = [];
 
             files.forEach(([fileName, type]) => {
               if (!(type === FileType.File && OPENAPI_EXTENSIONS_REGEX.test(fileName.toLowerCase()))) {

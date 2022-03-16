@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import { SwfFunction, SwfFunctionArgumentType, SwfFunctionType, SwfService, SwfServiceType } from "../../api";
+import {
+  SwfServiceCatalogFunction,
+  SwfServiceCatalogFunctionArgumentType,
+  SwfServiceCatalogFunctionType,
+  SwfServiceCatalogService,
+  SwfServiceCatalogServiceType,
+} from "../../api";
 import * as yaml from "js-yaml";
 import { OpenAPIV3 } from "openapi-types";
 
@@ -25,7 +31,11 @@ type OpenapiPathOperations = Pick<
   "get" | "put" | "post" | "delete" | "options" | "head" | "patch" | "trace"
 >;
 
-export function parseOpenApi(args: { fileName: string; storagePath: string; content: string }): SwfService {
+export function parseOpenApi(args: {
+  fileName: string;
+  storagePath: string;
+  content: string;
+}): SwfServiceCatalogService {
   const servicePath = `${args.storagePath}/${args.fileName}`;
   const contentDoc = readOpenapiDoc(args.content);
 
@@ -33,7 +43,7 @@ export function parseOpenApi(args: { fileName: string; storagePath: string; cont
 
   return {
     name: contentDoc.info.title ?? servicePath,
-    type: SwfServiceType.rest,
+    type: SwfServiceCatalogServiceType.rest,
     id: servicePath,
     functions: functionDefinitions,
     rawContent: args.content,
@@ -49,7 +59,7 @@ function readOpenapiDoc(content: string): OpenAPIV3.Document {
   return contentDoc;
 }
 
-function extractFunctions(contentDoc: OpenAPIV3.Document, servicePath: string): SwfFunction[] {
+function extractFunctions(contentDoc: OpenAPIV3.Document, servicePath: string): SwfServiceCatalogFunction[] {
   const swfFunctions = Object.entries(contentDoc.paths).map(
     ([endpoint, pathItem]: [string, OpenAPIV3.PathItemObject]) => {
       return extractPathItemFunctions(pathItem, servicePath, endpoint, contentDoc);
@@ -63,8 +73,8 @@ function extractPathItemFunctions(
   servicePath: string,
   endpoint: string,
   contentDoc: OpenAPIV3.Document
-): SwfFunction[] {
-  const swfFunctions: SwfFunction[] = [];
+): SwfServiceCatalogFunction[] {
+  const swfFunctions: SwfServiceCatalogFunction[] = [];
 
   Object.values(pathItem).forEach((pathOperation: OpenAPIV3.OperationObject) => {
     const body: OpenAPIV3.RequestBodyObject = pathOperation.requestBody as OpenAPIV3.RequestBodyObject;
@@ -75,15 +85,15 @@ function extractPathItemFunctions(
       const name: string = pathOperation.operationId ?? endpoint.replace(/^\/+/, "");
       const operation = `${servicePath}#${name}`;
 
-      const functionArguments: Record<string, SwfFunctionArgumentType> = extractFunctionArguments(
+      const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = extractFunctionArguments(
         body.content[APPLICATION_JSON].schema ?? {},
         contentDoc
       );
 
-      const functionDef: SwfFunction = {
+      const functionDef: SwfServiceCatalogFunction = {
         name,
         operation,
-        type: SwfFunctionType.rest,
+        type: SwfServiceCatalogFunctionType.rest,
         arguments: functionArguments,
       };
       swfFunctions.push(functionDef);
@@ -96,16 +106,16 @@ function extractPathItemFunctions(
 function extractFunctionArguments(
   schema: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject,
   doc: OpenAPIV3.Document
-): Record<string, SwfFunctionArgumentType> {
+): Record<string, SwfServiceCatalogFunctionArgumentType> {
   const schemaObject: OpenAPIV3.SchemaObject = extractSchemaObject(schema, doc);
-  const functionArgs: Record<string, SwfFunctionArgumentType> = {};
+  const functionArgs: Record<string, SwfServiceCatalogFunctionArgumentType> = {};
 
   if (schemaObject.properties) {
     Object.entries(schemaObject.properties).forEach(
       ([propertyName, propertySchema]: [string, OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject]) => {
         const asReference = propertySchema as OpenAPIV3.ReferenceObject;
         if (asReference.$ref) {
-          functionArgs[propertyName] = SwfFunctionArgumentType.object;
+          functionArgs[propertyName] = SwfServiceCatalogFunctionArgumentType.object;
         } else {
           const asSchema = propertySchema as OpenAPIV3.SchemaObject;
           if (asSchema.type) {
@@ -132,20 +142,20 @@ function extractSchemaObject(
   return schema as OpenAPIV3.SchemaObject;
 }
 
-function resolveArgumentType(type: string): SwfFunctionArgumentType {
+function resolveArgumentType(type: string): SwfServiceCatalogFunctionArgumentType {
   switch (type) {
     case "boolean":
-      return SwfFunctionArgumentType.boolean;
+      return SwfServiceCatalogFunctionArgumentType.boolean;
     case "object":
-      return SwfFunctionArgumentType.object;
+      return SwfServiceCatalogFunctionArgumentType.object;
     case "number":
-      return SwfFunctionArgumentType.number;
+      return SwfServiceCatalogFunctionArgumentType.number;
     case "string":
-      return SwfFunctionArgumentType.string;
+      return SwfServiceCatalogFunctionArgumentType.string;
     case "integer":
-      return SwfFunctionArgumentType.integer;
+      return SwfServiceCatalogFunctionArgumentType.integer;
     case "array":
-      return SwfFunctionArgumentType.array;
+      return SwfServiceCatalogFunctionArgumentType.array;
   }
-  return SwfFunctionArgumentType.object;
+  return SwfServiceCatalogFunctionArgumentType.object;
 }

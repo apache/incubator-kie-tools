@@ -16,13 +16,13 @@
 
 import { editor, KeyCode, KeyMod } from "monaco-editor";
 import { SwfMonacoEditorCommandIds } from "./augmentation/commands";
-import { initJsonSchema } from "./augmentation/language/json";
-import { initYamlSchema } from "./augmentation/language/yaml";
+import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
+import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 
-initJsonSchema();
-initYamlSchema();
+initJsonSchemaDiagnostics();
+initYamlSchemaDiagnostics();
 
 export interface SwfMonacoEditorApi {
   show: (container: HTMLDivElement, theme?: EditorTheme) => editor.IStandaloneCodeEditor;

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { SwfService } from "../api";
+import { SwfServiceCatalogService } from "../api";
 
 export interface SwfServiceCatalogStore {
-  init(onChangeCallback: (services: SwfService[]) => Promise<any>): Promise<void>;
+  init(onChangeCallback: (services: SwfServiceCatalogService[]) => Promise<any>): Promise<void>;
 
   dispose(): void;
 }
