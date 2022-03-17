@@ -44,6 +44,7 @@
       <button id="undo">Undo</button>
       <button id="redo">Redo</button>
       <button id="save">Save</button>
+      <button id="Download SVG">Download SVG</button>
       <span id="unsavedChanges" class="hidden">File contains unsaved changes.</span>
     </div>
     <div id="bpmn-editor-container" />
@@ -52,6 +53,7 @@
       //Получение URL с помощью "const urlParams = new URLSearchParams(queryString);" работает некорректно
       var encodeFile = query.split("?q=");
 
+      var savedSvg = {};
       var savedContent = {};
       var projectRoles = {};
       var resourcesPaths = {};
@@ -96,6 +98,13 @@
         },
       });
 
+      var proxySavedSvg = new Proxy(savedSvg, {
+        set: function (target, key, value) {
+          target[key] = value;
+          return true;
+        },
+      });
+
       function b64DecodeUnicode(encode) {
         return decodeURIComponent(
           atob(encode)
@@ -129,6 +138,12 @@
             editor.markAsSaved();
           });
         }
+      });
+
+      document.getElementById("Download SVG").addEventListener("click", () => {
+        editor.getPreview().then((preview) => {
+          proxySavedSvg.savedSvg = preview;
+        });
       });
 
       editor.subscribeToContentChanges((isDirty) => {
