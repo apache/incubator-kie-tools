@@ -18,14 +18,18 @@ package org.kie.workbench.common.stunner.bpmn.definition;
 
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.diagram.BaseCollaborationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseRootProcessAdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.HasProcessData;
 
-public interface BPMNDiagram<D extends BaseDiagramSet, P extends BaseProcessData, S extends BaseRootProcessAdvancedData> extends BPMNViewDefinition,
-                                                                                                                                 HasProcessData<P> {
+public interface BPMNDiagram<D extends BaseDiagramSet,
+        P extends BaseProcessData,
+        S extends BaseRootProcessAdvancedData,
+        C extends BaseCollaborationSet> extends BPMNViewDefinition,
+                                                HasProcessData<P> {
 
     D getDiagramSet();
 
@@ -34,6 +38,10 @@ public interface BPMNDiagram<D extends BaseDiagramSet, P extends BaseProcessData
     P getProcessData();
 
     void setProcessData(final P processData);
+
+    C getCollaborationSet();
+
+    void setCollaborationSet(final C collaborationSet);
 
     S getAdvancedData();
 

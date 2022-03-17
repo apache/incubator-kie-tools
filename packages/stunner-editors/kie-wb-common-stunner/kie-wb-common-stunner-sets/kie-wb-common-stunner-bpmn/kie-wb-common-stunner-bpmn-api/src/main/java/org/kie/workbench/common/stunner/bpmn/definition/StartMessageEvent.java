@@ -28,6 +28,8 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.events.CorrelationModel;
+import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.events.CorrelationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
@@ -54,7 +56,10 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
-public class StartMessageEvent extends BaseStartEvent implements DataIOModel {
+public class StartMessageEvent
+        extends BaseStartEvent
+        implements DataIOModel,
+                   CorrelationModel {
 
     @Property
     @FormField(afterElement = "general")
@@ -66,6 +71,11 @@ public class StartMessageEvent extends BaseStartEvent implements DataIOModel {
     @Valid
     protected DataIOSet dataIOSet;
 
+    @Property
+    @FormField(afterElement = "dataIOset")
+    @Valid
+    protected CorrelationSet correlationSet;
+
     public StartMessageEvent() {
         this(new BPMNGeneralSet(""),
              new BackgroundSet(),
@@ -74,6 +84,7 @@ public class StartMessageEvent extends BaseStartEvent implements DataIOModel {
              new SimulationAttributeSet(),
              new AdvancedData(),
              new DataIOSet(),
+             new CorrelationSet(),
              new InterruptingMessageEventExecutionSet());
     }
 
@@ -84,6 +95,7 @@ public class StartMessageEvent extends BaseStartEvent implements DataIOModel {
                              final @MapsTo("simulationSet") SimulationAttributeSet simulationSet,
                              final @MapsTo("advancedData") AdvancedData advancedData,
                              final @MapsTo("dataIOSet") DataIOSet dataIOSet,
+                             final @MapsTo("correlationSet") CorrelationSet correlationSet,
                              final @MapsTo("executionSet") InterruptingMessageEventExecutionSet executionSet) {
 
         super(general,
@@ -93,6 +105,7 @@ public class StartMessageEvent extends BaseStartEvent implements DataIOModel {
               simulationSet,
               advancedData);
         this.dataIOSet = dataIOSet;
+        this.correlationSet = correlationSet;
         this.executionSet = executionSet;
     }
 
@@ -110,6 +123,14 @@ public class StartMessageEvent extends BaseStartEvent implements DataIOModel {
 
     public void setDataIOSet(DataIOSet dataIOSet) {
         this.dataIOSet = dataIOSet;
+    }
+
+    public CorrelationSet getCorrelationSet() {
+        return correlationSet;
+    }
+
+    public void setCorrelationSet(CorrelationSet correlationSet) {
+        this.correlationSet = correlationSet;
     }
 
     @Override
@@ -133,6 +154,7 @@ public class StartMessageEvent extends BaseStartEvent implements DataIOModel {
         return HashUtil.combineHashCodes(super.hashCode(),
                                          executionSet.hashCode(),
                                          dataIOSet.hashCode(),
+                                         correlationSet.hashCode(),
                                          labels.hashCode());
     }
 
@@ -143,6 +165,7 @@ public class StartMessageEvent extends BaseStartEvent implements DataIOModel {
             return super.equals(other) &&
                     Objects.equals(executionSet, other.executionSet) &&
                     Objects.equals(dataIOSet, other.dataIOSet) &&
+                    Objects.equals(correlationSet, other.correlationSet) &&
                     Objects.equals(labels, other.labels);
         }
         return false;

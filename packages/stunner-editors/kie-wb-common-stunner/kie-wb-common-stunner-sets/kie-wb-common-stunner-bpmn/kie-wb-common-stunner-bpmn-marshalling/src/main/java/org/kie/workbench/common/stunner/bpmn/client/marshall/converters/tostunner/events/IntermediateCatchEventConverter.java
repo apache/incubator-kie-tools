@@ -41,6 +41,7 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunne
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.BpmnNode;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.NodeConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.CatchEventPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.CorrelationPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.EventDefinitionReader;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEvent;
@@ -295,6 +296,7 @@ public class IntermediateCatchEventConverter extends AbstractConverter implement
         IntermediateMessageEventCatching definition = node.getContent().getDefinition();
 
         CatchEventPropertyReader p = propertyReaderFactory.of(event);
+        CorrelationPropertyReader correlationPropertyReader = propertyReaderFactory.of(definition);
 
         node.getContent().setBounds(p.getBounds());
 
@@ -305,20 +307,21 @@ public class IntermediateCatchEventConverter extends AbstractConverter implement
                 )
         );
 
+        MessageRef messageRef = new MessageRef(EventDefinitionReader.messageRefOf(e),
+                                               EventDefinitionReader.messageRefStructureOf(e));
+
         definition.setBackgroundSet(p.getBackgroundSet());
         definition.setFontSet(p.getFontSet());
         definition.setDimensionsSet(p.getCircleDimensionSet());
-
         definition.setDataIOSet(new DataIOSet(p.getAssignmentsInfo()));
         definition.setAdvancedData(new AdvancedData(p.getMetaDataAttributes()));
+        definition.setCorrelationSet(correlationPropertyReader.getCorrelationSet(messageRef));
 
         definition.setExecutionSet(
                 new CancellingMessageEventExecutionSet(
                         new CancelActivity(p.isCancelActivity()),
                         new SLADueDate(p.getSlaDueDate()),
-                        new MessageRef(EventDefinitionReader.messageRefOf(e),
-                                       EventDefinitionReader.messageRefStructureOf(e))
-                )
+                        messageRef)
         );
 
         return Result.success(BpmnNode.of(node, p));
@@ -422,9 +425,8 @@ public class IntermediateCatchEventConverter extends AbstractConverter implement
         CancelActivity cancelActivity = new CancelActivity(false);
         SLADueDate slaDueDate = new SLADueDate(p.getSlaDueDate());
 
-        BaseCancellingEventExecutionSet executionSet =new BaseCancellingEventExecutionSet(cancelActivity, slaDueDate);
+        BaseCancellingEventExecutionSet executionSet = new BaseCancellingEventExecutionSet(cancelActivity, slaDueDate);
         definition.setExecutionSet(executionSet);
-
 
         return Result.success(BpmnNode.of(node, p));
     }

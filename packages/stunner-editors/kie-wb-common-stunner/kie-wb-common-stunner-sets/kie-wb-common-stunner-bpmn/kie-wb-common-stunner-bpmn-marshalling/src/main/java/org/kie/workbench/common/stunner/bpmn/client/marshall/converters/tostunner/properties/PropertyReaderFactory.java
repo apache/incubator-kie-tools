@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.bpmn2.AdHocSubProcess;
@@ -41,12 +43,15 @@ import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.util.CorrelationReaderData;
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientParser;
+import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.events.CorrelationModel;
 
 public class PropertyReaderFactory {
 
     protected final BPMNDiagram diagram;
     protected final DefinitionResolver definitionResolver;
+    protected final List<CorrelationReaderData> correlationReaderDataList = new ArrayList<>();
 
     public PropertyReaderFactory(DefinitionResolver definitionResolver) {
         this.diagram = definitionResolver.getDiagram();
@@ -153,5 +158,13 @@ public class PropertyReaderFactory {
 
     public DataObjectPropertyReader of(DataObjectReference el) {
         return new DataObjectPropertyReader(el, diagram, definitionResolver.getShape(el.getId()), definitionResolver.getResolutionFactor());
+    }
+
+    public CollaborationPropertyReader of(Definitions definitions, Process process) {
+        return new CollaborationPropertyReader(definitions, process, correlationReaderDataList);
+    }
+
+    public CorrelationPropertyReader of(CorrelationModel correlationModel) {
+        return new CorrelationPropertyReader(correlationModel, correlationReaderDataList);
     }
 }
