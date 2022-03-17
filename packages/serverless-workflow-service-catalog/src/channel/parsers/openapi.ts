@@ -79,7 +79,6 @@ function extractPathItemFunctions(
   Object.values(pathItem).forEach((pathOperation: OpenAPIV3.OperationObject) => {
     const body: OpenAPIV3.RequestBodyObject = pathOperation.requestBody as OpenAPIV3.RequestBodyObject;
 
-    console.log(pathOperation.operationId);
     // Looking only at application/json mime types, we might consider others.
     if (body && body.content && body.content[APPLICATION_JSON] && body.content[APPLICATION_JSON].schema) {
       const name: string = pathOperation.operationId ?? endpoint.replace(/^\/+/, "");

@@ -59,8 +59,8 @@ export class FsWatchingServiceCatalogStore implements SwfServiceCatalogStore {
     try {
       const services = await this.readFileSystemServices();
       return this.onChangeCallback?.(services);
-    } catch (err) {
-      console.error("Cannot load services", err);
+    } catch (e) {
+      console.error("Could not refresh SWF Service Catalog services", e);
       return this.onChangeCallback?.([]);
     }
   }
@@ -100,8 +100,9 @@ export class FsWatchingServiceCatalogStore implements SwfServiceCatalogStore {
             }
           });
         });
-      } catch (error) {
-        reject(`Error loading catalog: ${error}`);
+      } catch (e) {
+        console.error(e);
+        reject(`Could not load services for SWF Service Catalog. ${e}`);
       }
     });
   }
@@ -115,7 +116,8 @@ export class FsWatchingServiceCatalogStore implements SwfServiceCatalogStore {
         content: Buffer.from(rawData).toString("utf-8"),
       });
       return [swfService];
-    } catch (err) {
+    } catch (e) {
+      console.error(e);
       return [];
     }
   }

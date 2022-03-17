@@ -60,7 +60,6 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     );
 
     editor.panel.onDidDispose(() => {
-      console.info("Disposing..");
       swfServiceCatalogStore.dispose();
     });
 
