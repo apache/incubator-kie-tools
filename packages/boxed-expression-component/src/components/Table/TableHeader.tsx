@@ -24,7 +24,7 @@ import { EditExpressionMenu, EditTextInline } from "../EditExpressionMenu";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./Table";
 import { useBoxedExpression } from "../../context";
-import { focusCurrentCell } from "./common";
+import { focusCurrentCell, getParentCell } from "./common";
 
 export interface TableHeaderProps {
   /** Table instance */
@@ -535,7 +535,6 @@ function ThCell({
   rowSpan = 1,
 }: ThCellProps) {
   const thRef = useRef<HTMLElement>(null);
-  // FIXME: esc key doesn't cancel editing of annotations cell //
 
   useEffect(() => {
     // Typescript don't accept the conversion between DOM event and React event
