@@ -37,12 +37,8 @@ const completions = new Map<
 >([
   [
     ["functions", "*"],
-    ({ currentNode, rootNode, overwriteRange }) => {
-      if (currentNode.type != "array") {
-        console.debug("Cannot autocomplete: Functions should be an array.");
-        return [];
-      }
-
+    ({ model, currentNode, rootNode, overwriteRange, cursorPosition }) => {
+      const separator = currentNode.type === "object" ? "," : "";
       const existingOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
 
       return SwfServiceCatalogSingleton.get()
@@ -58,7 +54,7 @@ const completions = new Map<
             kind: monaco.languages.CompletionItemKind.Module,
             label: swfServiceCatalogFunc.name,
             detail: swfFunction.operation,
-            insertText: JSON.stringify(swfFunction, null, 2),
+            insertText: JSON.stringify(swfFunction, null, 2) + separator,
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             range: overwriteRange,
           };
