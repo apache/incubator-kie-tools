@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.forms.dynamic.client;
 
+import java.util.Objects;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -24,7 +26,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Assert;
 import org.jboss.errai.databinding.client.api.Converter;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormView;
 import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGeneratorManager;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
@@ -103,8 +104,7 @@ public class DynamicFormRenderer implements IsWidget,
     public void renderDefaultForm(final Object model,
                                   final RenderMode renderMode,
                                   final Command callback) {
-        PortablePreconditions.checkNotNull("model",
-                                           model);
+        Objects.requireNonNull(model, "Parameter named 'model' should be not null!");
         FormRenderingContext context = dynamicFormModelGenerator.getContextForModel(model);
         if (context != null) {
             doRenderDefaultForm(context,

@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -43,8 +43,7 @@ public class DeleteElementsCommand extends AbstractGraphCompositeCommand {
     private transient DeleteCallback callback;
 
     public DeleteElementsCommand(final @MapsTo("uuids") Collection<String> uuids) {
-        this.uuids = PortablePreconditions.checkNotNull("uuids",
-                                                        uuids);
+        this.uuids = Objects.requireNonNull(uuids, "Parameter named 'uuids' should be not null!");
         this.callback = new DeleteCallback() {
         };
     }

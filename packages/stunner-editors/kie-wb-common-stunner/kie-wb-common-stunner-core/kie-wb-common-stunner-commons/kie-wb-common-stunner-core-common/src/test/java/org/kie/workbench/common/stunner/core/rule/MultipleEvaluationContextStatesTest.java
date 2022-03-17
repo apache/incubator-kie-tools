@@ -17,11 +17,12 @@
 package org.kie.workbench.common.stunner.core.rule;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -93,10 +94,9 @@ public class MultipleEvaluationContextStatesTest {
 
         CanConnect connectionRule = new CanConnect("allowConnectionsForEdge1",
                                                    "edgeBeanId",
-                                                   new Lists.Builder<CanConnect.PermittedConnection>()
-                                                           .add(new CanConnect.PermittedConnection("all",
-                                                                                                   "all"))
-                                                           .build()
+                                                   Stream.of(new CanConnect.PermittedConnection("all",
+                                                                                                "all"))
+                                                           .collect(Collectors.toList())
         );
         graphTestHandler.ruleSet.getRules().add(connectionRule);
 

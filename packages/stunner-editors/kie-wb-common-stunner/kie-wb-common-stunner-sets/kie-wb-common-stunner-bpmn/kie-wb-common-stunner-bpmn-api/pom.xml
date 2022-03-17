@@ -160,11 +160,6 @@
       <artifactId>uberfire-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-    </dependency>
-
     <!-- Testing -->
 
     <dependency>
@@ -182,13 +177,6 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-      <classifier>sources</classifier>
       <scope>test</scope>
     </dependency>
 

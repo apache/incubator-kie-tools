@@ -31,7 +31,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
-import org.kie.workbench.common.stunner.client.widgets.canvas.StunnerBoundsProviderFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -48,17 +47,11 @@ import org.uberfire.client.mvp.AbstractActivity;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 @Dependent
 @Named(PreviewDiagramScreen.SCREEN_ID)
 public class PreviewDiagramScreen extends AbstractActivity {
 
-    private static Logger LOGGER = Logger.getLogger(PreviewDiagramScreen.class.getName());
-
-    private static final int PREVIEW_WIDTH = 420;
-
-    private static final int PREVIEW_HEIGHT = StunnerBoundsProviderFactory.computeHeight(PREVIEW_WIDTH);
+    private static final Logger LOGGER = Logger.getLogger(PreviewDiagramScreen.class.getName());
 
     public static final String SCREEN_ID = "DMNProjectDiagramExplorerScreen";
 
@@ -192,6 +185,10 @@ public class PreviewDiagramScreen extends AbstractActivity {
                                    }
                                });
         }
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public interface View extends IsWidget {

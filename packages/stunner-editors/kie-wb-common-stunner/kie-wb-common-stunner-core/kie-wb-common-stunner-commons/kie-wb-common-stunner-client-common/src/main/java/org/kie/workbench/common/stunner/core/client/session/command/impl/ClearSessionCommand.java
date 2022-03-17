@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
@@ -37,7 +38,6 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static java.util.logging.Level.FINE;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * This session commands clear the canvas and internal graph structure.
@@ -89,8 +89,7 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<EditorSess
     @Override
     @SuppressWarnings("unchecked")
     public <V> void execute(final Callback<V> callback) {
-        checkNotNull("callback",
-                     callback);
+        Objects.requireNonNull(callback, "Parameter named 'callBack' should be not null!");
         final CommandResult<CanvasViolation> result = getSession()
                 .getCommandManager()
                 .execute(getSession().getCanvasHandler(),

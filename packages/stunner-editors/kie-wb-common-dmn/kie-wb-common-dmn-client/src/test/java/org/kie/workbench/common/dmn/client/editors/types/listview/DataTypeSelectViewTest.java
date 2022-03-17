@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -34,7 +36,6 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
@@ -196,7 +197,7 @@ public class DataTypeSelectViewTest {
         final HTMLOptionElement optionElement = mock(HTMLOptionElement.class);
         final DataType customDataType1 = makeDataType("b");
         final DataType customDataType2 = makeDataType("a");
-        final List<DataType> customDataTypes = new Lists.Builder().add(customDataType1).add(customDataType2).build();
+        final List<DataType> customDataTypes = Stream.of(customDataType1, customDataType2).collect(Collectors.toList());
 
         doReturn(groupElement).when(view).makeHTMLOptGroupElement();
         doReturn(optionElement).when(view).makeHTMLOptionElement();

@@ -32,24 +32,24 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 import org.drools.workbench.screens.scenariosimulation.client.editor.AbstractScenarioSimulationEditorTest;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
+import org.drools.workbench.screens.scenariosimulation.model.dmo.FieldAccessorsAndMutators;
+import org.drools.workbench.screens.scenariosimulation.model.dmo.ModelField;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.uberfire.client.callbacks.Callback;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_CLASS_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_PACKAGE;
+import static org.drools.workbench.screens.scenariosimulation.model.dmo.ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.soup.project.datamodel.oracle.ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -251,10 +251,10 @@ public class AbstractDMODataManagementStrategyTest extends AbstractScenarioSimul
                                           final String clazz,
                                           final String type) {
         return new ModelField(name,
-                clazz,
-                REGULAR_CLASS,
-                ModelField.FIELD_ORIGIN.DECLARED,
-                FieldAccessorsAndMutators.BOTH, type);
+                              clazz,
+                              REGULAR_CLASS,
+                              ModelField.FIELD_ORIGIN.DECLARED,
+                              FieldAccessorsAndMutators.BOTH, type);
     }
 
     private Map<String, FactModelTree.PropertyTypeName> getSimplePropertiesInner() {

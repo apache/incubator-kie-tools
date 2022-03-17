@@ -100,11 +100,6 @@
       <artifactId>uberfire-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-    </dependency>
-
     <!-- Java Bean & Errai validations. -->
     <dependency>
       <groupId>javax.validation</groupId>

@@ -16,15 +16,17 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.sequenceflows;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.FlowNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.BpmnEdge;
@@ -98,10 +100,11 @@ public class SequenceFlowConverterTest {
         assertNull(result.value());
 
         //testing with the source/target nodes
-        Map<String, BpmnNode> nodes = new Maps.Builder<String, BpmnNode>()
-                .put(SOURCE_ID, mock(BpmnNode.class))
-                .put(TARGET_ID, mock(BpmnNode.class))
-                .build();
+        Map<String, BpmnNode> nodes = Stream.of(
+                        new AbstractMap.SimpleEntry<>(SOURCE_ID, mock(BpmnNode.class)),
+                        new AbstractMap.SimpleEntry<>(TARGET_ID, mock(BpmnNode.class)))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
         result = tested.convertEdge(sequenceFlow, nodes);
         assertTrue(result.isSuccess());
         BpmnEdge.Simple value = (BpmnEdge.Simple) result.value();

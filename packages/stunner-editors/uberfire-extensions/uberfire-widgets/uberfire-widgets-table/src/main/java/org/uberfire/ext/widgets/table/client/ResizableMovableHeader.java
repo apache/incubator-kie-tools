@@ -18,6 +18,7 @@ package org.uberfire.ext.widgets.table.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
@@ -38,7 +39,6 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import org.gwtbootstrap3.client.ui.gwt.DataGrid;
-import org.kie.soup.commons.validation.PortablePreconditions;
 
 import static com.google.gwt.dom.client.Style.Unit.PX;
 
@@ -71,21 +71,17 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
 
     private final Element tableElement;
     private HeaderHelper current;
-    private List<ColumnChangedHandler> columnChangedHandlers = new ArrayList<ColumnChangedHandler>();
+    private List<ColumnChangedHandler> columnChangedHandlers = new ArrayList<>();
 
     public ResizableMovableHeader(final String title,
                                   final DataGrid<T> table,
                                   final UberfireColumnPicker columnPicker,
                                   final Column<T, ?> column) {
         super(new HeaderCell());
-        this.title = PortablePreconditions.checkNotNull("title",
-                                                        title);
-        this.table = PortablePreconditions.checkNotNull("table",
-                                                        table);
-        this.columnPicker = PortablePreconditions.checkNotNull("columnPicker",
-                                                               columnPicker);
-        this.column = PortablePreconditions.checkNotNull("column",
-                                                         column);
+        this.title = checkNotNull("title", title);
+        this.table = checkNotNull("table", table);
+        this.columnPicker = checkNotNull("columnPicker", columnPicker);
+        this.column = checkNotNull("column", column);
         this.tableElement = table.getElement();
     }
 
@@ -266,6 +262,10 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
             dragging = false;
             cleanUp();
         }
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     private class ColumnResizeHelper implements NativePreviewHandler {

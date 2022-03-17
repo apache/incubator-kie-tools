@@ -15,12 +15,12 @@
  */
 package org.drools.workbench.screens.scenariosimulation.webapp.client.popup;
 
+import java.util.Objects;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.uberfire.mvp.Command;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Shows simple text-only error messages in a modal popup dialog that sits above the workbench.
@@ -47,10 +47,8 @@ public class ErrorPopupPresenter {
                             final Command afterShow,
                             final Command afterClose) {
         view.showMessage(msg,
-                         checkNotNull("afterShow",
-                                      afterShow),
-                         checkNotNull("afterClose",
-                                      afterClose));
+                         checkNotNull("afterShow", afterShow),
+                         checkNotNull("afterClose", afterClose));
     }
 
     /**
@@ -62,6 +60,10 @@ public class ErrorPopupPresenter {
         view.showMessage(msg,
                          Commands.DO_NOTHING,
                          Commands.DO_NOTHING);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     /**
@@ -84,10 +86,7 @@ public class ErrorPopupPresenter {
     }
 
     public static class Commands {
-        public static final Command DO_NOTHING = new Command() {
-            public void execute() {
-            }
-        };
+        public static final Command DO_NOTHING = () -> {};
 
         public Commands() {
         }

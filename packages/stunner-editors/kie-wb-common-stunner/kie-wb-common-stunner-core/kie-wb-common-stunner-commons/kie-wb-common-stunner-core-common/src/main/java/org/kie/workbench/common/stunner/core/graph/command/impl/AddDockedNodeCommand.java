@@ -16,9 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -38,10 +39,12 @@ public class AddDockedNodeCommand extends AbstractGraphCompositeCommand {
 
     public AddDockedNodeCommand(final @MapsTo("parentUUID") String parentUUID,
                                 final @MapsTo("candidate") Node candidate) {
-        this.parentUUID = PortablePreconditions.checkNotNull("parentUUID",
-                                                             parentUUID);
-        this.candidate = PortablePreconditions.checkNotNull("candidate",
-                                                            candidate);
+        this.parentUUID = checkNotNull("parentUUID", parentUUID);
+        this.candidate = checkNotNull("candidate", candidate);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public AddDockedNodeCommand(final Node parent,

@@ -34,13 +34,6 @@
   </properties>
 
   <dependencies>
-
-    <!-- KIE Soup -->
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-    </dependency>
-
     <!-- Errai -->
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>

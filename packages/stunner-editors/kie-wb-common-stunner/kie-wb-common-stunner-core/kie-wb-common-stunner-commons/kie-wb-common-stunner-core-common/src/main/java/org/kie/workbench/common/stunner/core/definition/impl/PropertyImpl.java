@@ -16,9 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.definition.impl;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 
 @Portable
@@ -41,18 +42,18 @@ public class PropertyImpl<C> {
                         final @MapsTo("defaultValue") C defaultValue,
                         final @MapsTo("value") C value,
                         final @MapsTo("type") PropertyType type) {
-        this.id = PortablePreconditions.checkNotNull("id",
-                                                     id);
-        this.caption = PortablePreconditions.checkNotNull("caption",
-                                                          caption);
-        this.description = PortablePreconditions.checkNotNull("description",
-                                                              description);
-        this.type = PortablePreconditions.checkNotNull("type",
-                                                       type);
+        this.id = checkNotNull("id", id);
+        this.caption = checkNotNull("caption", caption);
+        this.description = checkNotNull("description", description);
+        this.type = checkNotNull("type", type);
         this.isReadOnly = isReadOnly;
         this.isOptional = isOptional;
         this.defaultValue = defaultValue;
         this.value = value;
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public String getId() {

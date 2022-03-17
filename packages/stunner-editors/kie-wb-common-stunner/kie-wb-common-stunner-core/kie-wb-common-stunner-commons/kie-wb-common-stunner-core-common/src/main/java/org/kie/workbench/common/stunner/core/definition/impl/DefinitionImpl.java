@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.definition.impl;
 
+import java.util.Objects;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 
 @Portable
 public class DefinitionImpl {
@@ -42,22 +42,18 @@ public class DefinitionImpl {
                           final @MapsTo("propertySets") Set<Object> propertySets,
                           final @MapsTo("nameProperty") PropertyImpl nameProperty,
                           final @MapsTo("properties") Set<Object> properties) {
-        this.category = PortablePreconditions.checkNotNull("category",
-                                                           category);
-        this.nameProperty = PortablePreconditions.checkNotNull("nameProperty",
-                                                               nameProperty);
-        this.title = PortablePreconditions.checkNotNull("title",
-                                                        title);
-        this.description = PortablePreconditions.checkNotNull("description",
-                                                              description);
-        this.labels = PortablePreconditions.checkNotNull("labels",
-                                                         labels);
-        this.id = PortablePreconditions.checkNotNull("id",
-                                                     id);
-        this.propertySets = PortablePreconditions.checkNotNull("propertySets",
-                                                               propertySets);
-        this.properties = PortablePreconditions.checkNotNull("properties",
-                                                             properties);
+        this.category = checkNotNull("category", category);
+        this.nameProperty = checkNotNull("nameProperty", nameProperty);
+        this.title = checkNotNull("title", title);
+        this.description = checkNotNull("description", description);
+        this.labels = checkNotNull("labels", labels);
+        this.id = checkNotNull("id", id);
+        this.propertySets = checkNotNull("propertySets", propertySets);
+        this.properties = checkNotNull("properties", properties);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public PropertyImpl getNameProperty() {

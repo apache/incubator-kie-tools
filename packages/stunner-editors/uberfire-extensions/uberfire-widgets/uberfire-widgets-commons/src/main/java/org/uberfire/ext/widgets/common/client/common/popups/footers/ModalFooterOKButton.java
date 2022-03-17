@@ -15,6 +15,8 @@
  */
 package org.uberfire.ext.widgets.common.client.common.popups.footers;
 
+import java.util.Objects;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -24,7 +26,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ModalFooter;
-import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * A Modal Footer with a single OK button
@@ -38,8 +39,7 @@ public class ModalFooterOKButton extends ModalFooter {
     Button okButton;
 
     public ModalFooterOKButton(final Command okCommand) {
-        this.okCommand = PortablePreconditions.checkNotNull("okCommand",
-                                                            okCommand);
+        this.okCommand = Objects.requireNonNull(okCommand, "Parameter named 'okCommand' should be not null!");
         add(uiBinder.createAndBindUi(this));
     }
 

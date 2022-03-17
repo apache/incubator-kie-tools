@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette;
 
+import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -26,7 +28,6 @@ import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
@@ -112,8 +113,7 @@ public class BS3PaletteWidgetViewImpl implements BS3PaletteWidgetView,
 
     @Override
     public void add(BS3PaletteWidgetPresenter widget) {
-        PortablePreconditions.checkNotNull("widget",
-                                           widget);
+        Objects.requireNonNull(widget, "Parameter named 'widget' should be not null!");
         addElement(widget.getElement());
     }
 
