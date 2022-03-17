@@ -364,12 +364,16 @@ describe("Decision Table Keyboard Navigation Tests", () => {
       // from the annotation cell press enter to start editing
       cy.get("@annotationInput").type("{enter}");
 
+      cy.get("@annotationCell").should("contain.text", "annotation-1 edited");
+
       isAnnotationCellViewModeAndFocused();
     });
 
     it("Cancel editing", () => {
       // from the annotation cell press esc to cancel editing
       cy.get("@annotationInput").type("{esc}");
+
+      cy.get("@annotationCell").should("contain.text", "annotation-1");
 
       isAnnotationCellViewModeAndFocused();
     });
