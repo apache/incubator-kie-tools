@@ -22,6 +22,7 @@ import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
 import { ServerlessWorkflowEditorChannelApiProducer } from "./ServerlessWorkflowEditorChannelApiProducer";
 import { SwfVsCodeExtensionSettings } from "./settings";
+import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
 
 let backendProxy: VsCodeBackendProxy;
 
@@ -31,6 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
   const settings = new SwfVsCodeExtensionSettings();
+  const rhhccAuthenticationStore = new RhhccAuthenticationStore();
 
   KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
@@ -46,11 +48,32 @@ export function activate(context: vscode.ExtensionContext) {
         "dist/webview/editors/serverless-workflow"
       ),
     ]),
-    channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({ settings }),
+    channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({ settings, rhhccAuthenticationStore }),
     backendProxy,
   });
 
+  context.subscriptions.push(
+    vscode.commands.registerCommand("extension.kogito.swf.logInToRhhcc", () => {
+      vscode.authentication.getSession("redhat-mas-account-auth", ["openid"], { createIfNone: true });
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.authentication.onDidChangeSessions(async (e) => {
+      if (e.provider.id === "redhat-mas-account-auth") {
+        await updateRhhccSession(rhhccAuthenticationStore);
+      }
+    })
+  );
+
+  updateRhhccSession(rhhccAuthenticationStore);
+
   console.info("Extension is successfully setup.");
+}
+
+async function updateRhhccSession(rhhccAuthenticationStore: RhhccAuthenticationStore) {
+  const session = await vscode.authentication.getSession("redhat-mas-account-auth", ["openid"]);
+  rhhccAuthenticationStore.setSession(session);
 }
 
 export function deactivate() {

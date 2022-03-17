@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+export interface SwfServiceCatalogUser {
+  username: string;
+}
+
 export enum SwfServiceCatalogServiceType {
   rest = "rest",
   graphql = "graphql",

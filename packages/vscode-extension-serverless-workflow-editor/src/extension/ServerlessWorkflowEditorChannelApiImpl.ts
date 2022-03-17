@@ -31,10 +31,13 @@ import { Notification, NotificationsApi } from "@kie-tools-core/notifications/di
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import {
+  SwfServiceCatalogService,
+  SwfServiceCatalogUser,
+} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { SwfServiceCatalogChannelApiImpl } from "@kie-tools/serverless-workflow-service-catalog/src/channel";
+import { SwfServiceCatalogChannelApiImpl } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import { ServerlessWorkflowEditorChannelApi } from "@kie-tools/serverless-workflow-editor";
 import * as vscode from "vscode";
 
@@ -138,5 +141,9 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
 
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
     return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_services();
+  }
+
+  public kogitoSwfServiceCatalog_user(): SharedValueProvider<SwfServiceCatalogUser | undefined> {
+    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_user();
   }
 }

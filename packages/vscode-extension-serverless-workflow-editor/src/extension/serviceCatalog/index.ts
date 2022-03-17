@@ -20,10 +20,15 @@ import {
   getInterpolateSettingsValue,
   settingsTokenKeys,
 } from "@kie-tools-core/vscode-extension/dist/SettingsInterpolation";
+import { RhhccServiceRegistryServiceCatalogStore } from "./rhhccServiceRegistry";
+import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { RhhccAuthenticationStore } from "../rhhcc/RhhccAuthenticationStore";
+import { AuthenticationSession } from "vscode";
 
 export function getSwfServiceCatalogStore(args: {
   filePath: string;
   configuredSpecsDirPath: string;
+  rhhccAuthenticationStore: RhhccAuthenticationStore;
 }): SwfServiceCatalogStore {
   const interpolatedSpecsDirPath = getInterpolateSettingsValue({
     filePath: args.filePath,
@@ -34,5 +39,53 @@ export function getSwfServiceCatalogStore(args: {
     ? interpolatedSpecsDirPath.substring(interpolatedSpecsDirPath.lastIndexOf("/") + 1)
     : interpolatedSpecsDirPath;
 
-  return new FsWatchingServiceCatalogStore(specsDirParentPath, interpolatedSpecsDirPath);
+  return new CompositeServiceCatalogStore({
+    fs: new FsWatchingServiceCatalogStore(specsDirParentPath, interpolatedSpecsDirPath),
+    rhhccServiceRegistry: new RhhccServiceRegistryServiceCatalogStore(args.rhhccAuthenticationStore),
+    rhhccAuthenticationStore: args.rhhccAuthenticationStore,
+  });
+}
+
+export class CompositeServiceCatalogStore implements SwfServiceCatalogStore {
+  private fsSwfServiceCatalogServices: SwfServiceCatalogService[] = [];
+  private rhhccServiceRegistriesSwfServiceCatalogServices: SwfServiceCatalogService[] = [];
+  private rhhccStoreSubscription: (session: AuthenticationSession | undefined) => void;
+
+  constructor(
+    private readonly args: {
+      fs: FsWatchingServiceCatalogStore;
+      rhhccServiceRegistry: RhhccServiceRegistryServiceCatalogStore;
+      rhhccAuthenticationStore: RhhccAuthenticationStore;
+    }
+  ) {}
+
+  public async init(callback: (swfServiceCatalogServices: SwfServiceCatalogService[]) => Promise<any>) {
+    await this.args.fs.init((s) => {
+      this.fsSwfServiceCatalogServices = s;
+      return callback(this.getCombinedSwfServiceCatalogServices());
+    });
+
+    await this.args.rhhccServiceRegistry.init((s) => {
+      this.rhhccServiceRegistriesSwfServiceCatalogServices = s;
+      return callback(this.getCombinedSwfServiceCatalogServices());
+    });
+
+    this.rhhccStoreSubscription = this.args.rhhccAuthenticationStore.subscribe(() => {
+      return this.args.rhhccServiceRegistry.refresh();
+    });
+  }
+
+  private getCombinedSwfServiceCatalogServices() {
+    return [...this.rhhccServiceRegistriesSwfServiceCatalogServices, ...this.fsSwfServiceCatalogServices];
+  }
+
+  public async refresh() {
+    // Don't need to refresh this.fs because it keeps itself updated with FS Watchers
+    return this.args.rhhccServiceRegistry.refresh();
+  }
+
+  public dispose() {
+    this.args.fs.dispose();
+    this.args.rhhccAuthenticationStore.unsubscribe(this.rhhccStoreSubscription);
+  }
 }

@@ -18,15 +18,20 @@ import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogService,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { SwfServiceCatalogUser } from "@kie-tools/serverless-workflow-service-catalog/src/api";
 
 interface SwfServiceCatalogApi {
   getServices(): SwfServiceCatalogService[];
+  getUser(): SwfServiceCatalogUser | undefined;
   getFunctions(serviceId?: string): SwfServiceCatalogFunction[];
   getFunctionByOperation(operationId: string): SwfServiceCatalogFunction | undefined;
 }
 
 class SwfServiceCatalogApiImpl implements SwfServiceCatalogApi {
-  constructor(private readonly services: SwfServiceCatalogService[] = []) {}
+  constructor(
+    private readonly services: SwfServiceCatalogService[] = [],
+    private readonly user: SwfServiceCatalogUser | undefined = undefined
+  ) {}
 
   public getFunctionByOperation(operationId: string): SwfServiceCatalogFunction | undefined {
     for (const swfService of this.services) {
@@ -51,8 +56,12 @@ class SwfServiceCatalogApiImpl implements SwfServiceCatalogApi {
     return result;
   }
 
-  public getServices(): SwfServiceCatalogService[] {
+  public getServices() {
     return this.services;
+  }
+
+  public getUser() {
+    return this.user;
   }
 }
 
@@ -63,7 +72,7 @@ export class SwfServiceCatalogSingleton {
     return SwfServiceCatalogSingleton.instance;
   }
 
-  public static init(services: SwfServiceCatalogService[] = []) {
-    SwfServiceCatalogSingleton.instance = new SwfServiceCatalogApiImpl(services);
+  public static init(services: SwfServiceCatalogService[] = [], user: SwfServiceCatalogUser | undefined) {
+    SwfServiceCatalogSingleton.instance = new SwfServiceCatalogApiImpl(services, user);
   }
 }

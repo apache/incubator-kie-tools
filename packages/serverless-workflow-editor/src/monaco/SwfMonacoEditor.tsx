@@ -39,6 +39,7 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
   const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<ServerlessWorkflowEditorChannelApi>();
   const [theme] = useSharedValue(editorEnvelopeCtx.channelApi.shared.kogitoEditor_theme);
   const [services] = useSharedValue(editorEnvelopeCtx.channelApi.shared.kogitoSwfServiceCatalog_services);
+  const [user] = useSharedValue(editorEnvelopeCtx.channelApi.shared.kogitoSwfServiceCatalog_user);
 
   const controller: SwfMonacoEditorApi = useMemo<SwfMonacoEditorApi>(() => {
     if (fileName.endsWith(".sw.json")) {
@@ -52,8 +53,9 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
   }, [content, editorEnvelopeCtx.operatingSystem, fileName, onContentChange]);
 
   useEffect(() => {
-    SwfServiceCatalogSingleton.init(services);
-  }, [services]);
+    SwfServiceCatalogSingleton.init(services, user);
+    controller.forceRedraw();
+  }, [services, user, controller]);
 
   useEffect(() => {
     if (!container.current) {

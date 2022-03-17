@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Uri } from "vscode";
+import { AuthenticationSession, Uri } from "vscode";
 import { KogitoEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiProducer";
 import { ServerlessWorkflowEditorChannelApiImpl } from "./ServerlessWorkflowEditorChannelApiImpl";
 import { KogitoEditor } from "@kie-tools-core/vscode-extension/dist/KogitoEditor";
@@ -26,13 +26,16 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 import { getSwfServiceCatalogStore } from "./serviceCatalog";
-import { SwfServiceCatalogChannelApiImpl } from "@kie-tools/serverless-workflow-service-catalog/src/channel";
+import { SwfServiceCatalogChannelApiImpl } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { SwfVsCodeExtensionSettings } from "./settings";
+import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
 
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
-  constructor(private readonly args: { settings: SwfVsCodeExtensionSettings }) {}
+  constructor(
+    private readonly args: { settings: SwfVsCodeExtensionSettings; rhhccAuthenticationStore: RhhccAuthenticationStore }
+  ) {}
   get(
     editor: KogitoEditor,
     resourceContentService: ResourceContentService,
@@ -47,6 +50,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     const swfServiceCatalogStore = getSwfServiceCatalogStore({
       filePath: editor.document.uri.path,
       configuredSpecsDirPath: this.args.settings.getSpecsDirPath(),
+      rhhccAuthenticationStore: this.args.rhhccAuthenticationStore,
     });
 
     // TODO: This is a workaround
@@ -59,8 +63,13 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_services.set(services)
     );
 
+    const rhhccSessionSubscription = this.args.rhhccAuthenticationStore.subscribe((session) => {
+      swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_user.set(getUser(session));
+    });
+
     editor.panel.onDidDispose(() => {
       swfServiceCatalogStore.dispose();
+      this.args.rhhccAuthenticationStore.unsubscribe(rhhccSessionSubscription);
     });
 
     return new ServerlessWorkflowEditorChannelApiImpl(
@@ -73,7 +82,11 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       viewType,
       i18n,
       initialBackup,
-      new SwfServiceCatalogChannelApiImpl()
+      new SwfServiceCatalogChannelApiImpl({ user: getUser(this.args.rhhccAuthenticationStore.session) })
     );
   }
+}
+
+function getUser(session: AuthenticationSession | undefined) {
+  return session ? { username: session.account.label } : undefined;
 }

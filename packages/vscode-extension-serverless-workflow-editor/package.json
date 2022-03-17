@@ -111,7 +111,14 @@
       {
         "command": "extension.kogito.silentlyGenerateSvgSw",
         "title": "Generate SVG without any notification"
+      },
+      {
+        "command": "extension.kogito.swf.logInToRhhcc",
+        "title": "Serverless Wokflow: Log in to Red Hat Hybrid Cloud Console"
       }
+    ],
+    "extensionDependencies": [
+      "redhat.vscode-redhat-account"
     ]
   }
 }

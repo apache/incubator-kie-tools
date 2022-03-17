@@ -16,12 +16,12 @@
 
 import * as vscode from "vscode";
 import { Disposable, FileType } from "vscode";
-import { parseOpenApi, SwfServiceCatalogStore } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
+import { parseOpenApi } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 const OPENAPI_EXTENSIONS_REGEX = new RegExp("^.*\\.(yaml|yml|json)$");
 
-export class FsWatchingServiceCatalogStore implements SwfServiceCatalogStore {
+export class FsWatchingServiceCatalogStore {
   private onChangeCallback: (services: SwfServiceCatalogService[]) => Promise<any>;
 
   private readonly onDispose: () => void;
@@ -46,7 +46,7 @@ export class FsWatchingServiceCatalogStore implements SwfServiceCatalogStore {
     };
   }
 
-  public init(callback: (swfServices: SwfServiceCatalogService[]) => Promise<any>) {
+  public init(callback: (newSwfServiceCatalogServices: SwfServiceCatalogService[]) => Promise<any>) {
     this.onChangeCallback = callback;
     return this.refresh();
   }
@@ -110,12 +110,13 @@ export class FsWatchingServiceCatalogStore implements SwfServiceCatalogStore {
   private async readServiceFile(fileUrl: vscode.Uri, fileName: string) {
     const rawData = await vscode.workspace.fs.readFile(fileUrl);
     try {
-      const swfService = parseOpenApi({
-        fileName,
-        storagePath: this.specsDirParentPath,
-        content: Buffer.from(rawData).toString("utf-8"),
-      });
-      return [swfService];
+      return [
+        parseOpenApi({
+          fileName,
+          storagePath: this.specsDirParentPath,
+          content: Buffer.from(rawData).toString("utf-8"),
+        }),
+      ];
     } catch (e) {
       console.error(e);
       return [];

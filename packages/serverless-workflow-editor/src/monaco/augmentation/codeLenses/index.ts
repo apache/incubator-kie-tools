@@ -4,6 +4,7 @@ import * as jsonc from "jsonc-parser";
 import { JSONPath } from "vscode-json-languageservice";
 import { SwfMonacoEditorCommandIds } from "../commands";
 import CodeLens = languages.CodeLens;
+import { SwfServiceCatalogSingleton } from "../../../serviceCatalog";
 
 export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void {
   monaco.languages.registerCodeLensProvider("json", {
@@ -32,19 +33,63 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           return [
             {
               id: commandIds["OpenFunctionsCompletionItemsAtTheBottom"],
-              title: `+ Import function`,
+              title: `+ Add function`,
               arguments: [{ position, node, newCursorPosition }],
             },
           ];
         },
       });
 
-      const codeLenses: CodeLens[] = [
-        // TODO: Implement code lenses
-        // Follow this example
-        //
-        ...importFunction,
-      ];
+      const logInToRhhcc = createCodeLenses({
+        model,
+        rootNode,
+        jsonPath: ["functions"],
+        positionLensAt: "begin",
+        commandDelegates: ({ position, node }) => {
+          if (node.type !== "array") {
+            return [];
+          }
+          const user = SwfServiceCatalogSingleton.get().getUser();
+          if (user) {
+            return [];
+          }
+
+          return [
+            {
+              id: commandIds["OpenFunctionsCompletionItemsAtTheBottom"],
+              title: `↪ Log in to Red Hat Hybrid Cloud Console`,
+              arguments: [{ position, node }],
+            },
+          ];
+        },
+      });
+
+      const refreshServicesFromRhhcc = createCodeLenses({
+        model,
+        rootNode,
+        jsonPath: ["functions"],
+        positionLensAt: "begin",
+        commandDelegates: ({ position, node }) => {
+          if (node.type !== "array") {
+            return [];
+          }
+
+          const user = SwfServiceCatalogSingleton.get().getUser();
+          if (!user) {
+            return [];
+          }
+
+          return [
+            {
+              id: commandIds["OpenFunctionsCompletionItemsAtTheBottom"],
+              title: `↺ Refresh from '${user.username}'`,
+              arguments: [{ position, node }],
+            },
+          ];
+        },
+      });
+
+      const codeLenses: CodeLens[] = [...logInToRhhcc, ...refreshServicesFromRhhcc, ...importFunction];
 
       return {
         lenses: codeLenses.flatMap((s) => s),
