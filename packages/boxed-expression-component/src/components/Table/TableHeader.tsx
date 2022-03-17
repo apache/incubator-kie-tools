@@ -133,7 +133,11 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
               focusCurrentCell(event.target);
             }}
             onCancel={(event: React.KeyboardEvent<HTMLInputElement>) => {
-              focusCurrentCell(event.target as HTMLElement);
+              const parentCell = getParentCell(event.target as HTMLElement);
+              //this timeout prevent the chell focus to call the input's blur and the onValueBlur
+              setTimeout(() => {
+                focusCurrentCell(parentCell);
+              }, 0);
             }}
             onToggle={onAnnotationCellToggle}
           />
@@ -185,119 +189,6 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
     },
     [boxedExpressionEditorGWTService]
   );
-
-  // const renderResizableHeaderCell = useCallback(
-  //   (column, rowIndex, columnIndex) => {
-  //     const headerProps = {
-  //       ...column.getHeaderProps(),
-  //       style: {},
-  //     };
-  //     const width = column.width || DEFAULT_MIN_WIDTH;
-  //     const isColspan = (column.columns?.length ?? 0) > 0 || false;
-  //     const columnKey = getColumnKey(column);
-  //     const isFocusable = /^_\w{8}-(\w{4}-){3}\w{12}$/.test(columnKey);
-  //     let isAnnotationCellEditMode = false;
-  //
-  //     const getCssClass = () => {
-  //       const cssClasses = [columnKey];
-  //       if (!column.dataType) {
-  //         cssClasses.push("no-clickable-cell");
-  //       }
-  //       if (isColspan) {
-  //         cssClasses.push("colspan-header");
-  //       }
-  //       if (column.placeholderOf) {
-  //         cssClasses.push("colspan-header");
-  //         cssClasses.push(column.placeholderOf.cssClasses);
-  //         cssClasses.push(column.placeholderOf.groupType);
-  //       }
-  //       cssClasses.push(column.groupType || "");
-  //       cssClasses.push(column.cssClasses || "");
-  //       return cssClasses.join(" ");
-  //     };
-  //
-  //     /**
-  //      * Get the rowspan value.
-  //      *
-  //      * @param cssClasses the classes of the cell
-  //      * @returns the value, default is 1
-  //      */
-  //     const getRowSpan = (cssClasses: string): number => {
-  //       if (
-  //         rowIndex === tableInstance.headerGroups.length - 1 &&
-  //         (cssClasses.includes("decision-table--input") || cssClasses.includes("decision-table--annotation"))
-  //       ) {
-  //         return 2;
-  //       }
-  //
-  //       return 1;
-  //     };
-  //
-  //     /**
-  //      * Callback called when the annotation cell toggle edit/read mode.
-  //      *
-  //      * @param isReadMode true if is read mode, false otherwise
-  //      */
-  //     const onAnnotationCellToggle = (isReadMode: boolean) => {
-  //       console.log('isReadMode', isReadMode);
-  //       isAnnotationCellEditMode = !isReadMode;
-  //     };
-  //
-  //     const cssClasses = getCssClass();
-  //
-  //     return (
-  //       <ThCell
-  //         className={cssClasses}
-  //         headerProps={headerProps}
-  //         isFocusable={isFocusable}
-  //         key={columnKey}
-  //         onClick={onHeaderClick(columnKey)}
-  //         onKeyDown={onCellKeyDown}
-  //         rowIndex={rowIndex}
-  //         rowSpan={getRowSpan(cssClasses)}
-  //         thProps={thProps(column)}
-  //       >
-  //         <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
-  //           <div className="header-cell" data-ouia-component-type="expression-column-header">
-  //             {column.dataType && editableHeader ? (
-  //               <EditExpressionMenu
-  //                 title={getColumnLabel(column.groupType)}
-  //                 selectedExpressionName={column.label}
-  //                 selectedDataType={column.dataType}
-  //                 onExpressionUpdate={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
-  //                 key={columnKey}
-  //               >
-  //                 {renderHeaderCellInfo(column, columnIndex)}
-  //               </EditExpressionMenu>
-  //             ) : (
-  //               renderHeaderCellInfo(column, columnIndex, onAnnotationCellToggle)
-  //             )}
-  //           </div>
-  //         </Resizer>
-  //       </ThCell>
-  //     );
-  //   },
-  //   [
-  //     editableHeader,
-  //     getColumnKey,
-  //     getColumnLabel,
-  //     onCellKeyDown,
-  //     onColumnNameOrDataTypeUpdate,
-  //     onHeaderClick,
-  //     onHorizontalResizeStop,
-  //     renderHeaderCellInfo,
-  //     thProps,
-  //     tableInstance,
-  //   ]
-  // );
-  //
-  // const renderColumn = useCallback(
-  //   (column: ColumnInstance, rowIndex: number, columnIndex: number) =>
-  //     column.isCountColumn
-  //       ? renderCountColumn(column, rowIndex)
-  //       : renderResizableHeaderCell(column, rowIndex, columnIndex),
-  //   [renderCountColumn, renderResizableHeaderCell]
-  // );
 
   const renderColumn = useCallback(
     (column: ColumnInstance, rowIndex: number, columnIndex: number) =>
@@ -431,7 +322,7 @@ const RenderResizableHeaderCell = ({
   const isFocusable = /^_\w{8}-(\w{4}-){3}\w{12}$/.test(columnKey);
   const [isAnnotationCellEditMode, setIsAnnotationCellEditMode] = useState(false);
 
-  const getCssClass = () => {
+  const getCssClass = useCallback(() => {
     const cssClasses = [columnKey];
     if (!column.dataType) {
       cssClasses.push("no-clickable-cell");
@@ -448,7 +339,7 @@ const RenderResizableHeaderCell = ({
     cssClasses.push(column.cssClasses || "");
     cssClasses.push(isAnnotationCellEditMode ? "focused" : "");
     return cssClasses.join(" ");
-  };
+  }, [column, columnKey, isAnnotationCellEditMode, isColspan]);
 
   /**
    * Get the rowspan value.
@@ -456,25 +347,28 @@ const RenderResizableHeaderCell = ({
    * @param cssClasses the classes of the cell
    * @returns the value, default is 1
    */
-  const getRowSpan = (cssClasses: string): number => {
-    if (
-      rowIndex === tableInstance.headerGroups.length - 1 &&
-      (cssClasses.includes("decision-table--input") || cssClasses.includes("decision-table--annotation"))
-    ) {
-      return 2;
-    }
+  const getRowSpan = useCallback(
+    (cssClasses: string): number => {
+      if (
+        rowIndex === tableInstance.headerGroups.length - 1 &&
+        (cssClasses.includes("decision-table--input") || cssClasses.includes("decision-table--annotation"))
+      ) {
+        return 2;
+      }
 
-    return 1;
-  };
+      return 1;
+    },
+    [tableInstance, rowIndex]
+  );
 
   /**
    * Callback called when the annotation cell toggle edit/read mode.
    *
    * @param isReadMode true if is read mode, false otherwise
    */
-  const onAnnotationCellToggle = (isReadMode: boolean) => {
+  const onAnnotationCellToggle = useCallback((isReadMode: boolean) => {
     setIsAnnotationCellEditMode(!isReadMode);
-  };
+  }, []);
 
   const cssClasses = getCssClass();
 

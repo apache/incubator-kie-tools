@@ -42,10 +42,6 @@ export const EditTextInline: React.FunctionComponent<EditTextInlineProps> = ({
 
   const onValueBlur = useCallback(
     (event: React.FocusEvent<HTMLInputElement>) => {
-      // this prevent a element.focus() to change the value of the component
-      if (event.relatedTarget !== null) {
-        return;
-      }
       const changedText = event.target.value;
       onTextChange(changedText, event);
       setToggle(true);

@@ -189,7 +189,6 @@
 }
 
 /** Focused Cells border ------------------------------------- */
-/* TODO: annotations header cells have no border during editing */
 .expression-container .table-component table tbody td:focus {
   border: 2px solid #438cb1;
   outline: none !important;
