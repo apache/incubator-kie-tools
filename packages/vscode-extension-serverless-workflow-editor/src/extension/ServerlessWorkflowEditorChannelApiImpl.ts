@@ -32,6 +32,7 @@ import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completi
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import {
+  SwfServiceCatalogFunction,
   SwfServiceCatalogService,
   SwfServiceCatalogUser,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
@@ -145,5 +146,20 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
 
   public kogitoSwfServiceCatalog_user(): SharedValueProvider<SwfServiceCatalogUser | undefined> {
     return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_user();
+  }
+
+  public kogitoSwfServiceCatalog_refresh(): void {
+    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_refresh();
+  }
+
+  public kogitoSwfServiceCatalog_logInToRhhcc(): void {
+    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_logInToRhhcc();
+  }
+
+  public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(
+    service: SwfServiceCatalogService,
+    importedFunction: SwfServiceCatalogFunction
+  ): void {
+    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_importFunctionFromCompletionItem(service, importedFunction);
   }
 }

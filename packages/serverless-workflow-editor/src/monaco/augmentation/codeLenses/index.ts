@@ -3,8 +3,8 @@ import { languages, Position } from "monaco-editor";
 import * as jsonc from "jsonc-parser";
 import { JSONPath } from "vscode-json-languageservice";
 import { SwfMonacoEditorCommandIds } from "../commands";
-import CodeLens = languages.CodeLens;
 import { SwfServiceCatalogSingleton } from "../../../serviceCatalog";
+import CodeLens = languages.CodeLens;
 
 export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void {
   monaco.languages.registerCodeLensProvider("json", {
@@ -56,7 +56,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
 
           return [
             {
-              id: commandIds["OpenFunctionsCompletionItemsAtTheBottom"],
+              id: commandIds["LogInToRhhcc"],
               title: `↪ Log in to Red Hat Hybrid Cloud Console`,
               arguments: [{ position, node }],
             },
@@ -81,7 +81,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
 
           return [
             {
-              id: commandIds["OpenFunctionsCompletionItemsAtTheBottom"],
+              id: commandIds["RefreshServiceCatalogFromRhhcc"],
               title: `↺ Refresh from '${user.username}'`,
               arguments: [{ position, node }],
             },

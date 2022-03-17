@@ -14,16 +14,47 @@
  * limitations under the License.
  */
 
-import { SwfServiceCatalogChannelApi, SwfServiceCatalogService, SwfServiceCatalogUser } from "../api";
+import {
+  SwfServiceCatalogChannelApi,
+  SwfServiceCatalogFunction,
+  SwfServiceCatalogService,
+  SwfServiceCatalogUser,
+} from "../api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 
 export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
-  constructor(private readonly args: { user: SwfServiceCatalogUser | undefined }) {}
+  constructor(
+    private readonly args: {
+      defaultUser: SwfServiceCatalogUser | undefined;
+      onRefresh: () => void;
+      onLogInToRhhcc: () => void;
+      onImportFunctionFromCompletionItem: (
+        service: SwfServiceCatalogService,
+        importedFunction: SwfServiceCatalogFunction
+      ) => void;
+    }
+  ) {}
 
   public kogitoSwfServiceCatalog_user(): SharedValueProvider<SwfServiceCatalogUser | undefined> {
-    return { defaultValue: this.args.user };
+    return { defaultValue: this.args.defaultUser };
   }
+
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
     return { defaultValue: [] };
+  }
+
+  public kogitoSwfServiceCatalog_logInToRhhcc(): void {
+    this.args.onLogInToRhhcc();
+  }
+
+  public kogitoSwfServiceCatalog_refresh(): void {
+    this.args.onRefresh();
+  }
+
+  public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(
+    service: SwfServiceCatalogService,
+    importedFunction: SwfServiceCatalogFunction
+  ): void {
+    this.args.onImportFunctionFromCompletionItem(service, importedFunction);
   }
 }

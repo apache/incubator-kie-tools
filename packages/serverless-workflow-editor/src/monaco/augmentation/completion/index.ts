@@ -37,7 +37,7 @@ const completions = new Map<
 >([
   [
     ["functions", "*"],
-    ({ model, currentNode, rootNode, overwriteRange, cursorPosition }) => {
+    ({ model, currentNode, rootNode, overwriteRange, cursorPosition, commandIds }) => {
       const separator = currentNode.type === "object" ? "," : "";
       const existingOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
 
@@ -57,6 +57,12 @@ const completions = new Map<
             insertText: JSON.stringify(swfFunction, null, 2) + separator,
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             range: overwriteRange,
+            command: {
+              id: commandIds["ImportFunctionFromCompletionItem"],
+              title: "Import function from completion item",
+              //FIXME: tiago Pass the service here
+              arguments: [{ service: undefined, importedFunction: swfServiceCatalogFunc }],
+            },
           };
         });
     },

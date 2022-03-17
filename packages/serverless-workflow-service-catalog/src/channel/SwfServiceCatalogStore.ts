@@ -20,4 +20,6 @@ export interface SwfServiceCatalogStore {
   init(onChangeCallback: (services: SwfServiceCatalogService[]) => Promise<any>): Promise<void>;
 
   dispose(): void;
+
+  refresh(): void;
 }

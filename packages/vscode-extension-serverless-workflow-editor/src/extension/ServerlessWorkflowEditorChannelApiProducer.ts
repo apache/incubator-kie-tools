@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import * as vscode from "vscode";
 import { AuthenticationSession, Uri } from "vscode";
 import { KogitoEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiProducer";
 import { ServerlessWorkflowEditorChannelApiImpl } from "./ServerlessWorkflowEditorChannelApiImpl";
@@ -28,9 +29,13 @@ import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core
 import { getSwfServiceCatalogStore } from "./serviceCatalog";
 import { SwfServiceCatalogChannelApiImpl } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import {
+  SwfServiceCatalogChannelApi,
+  SwfServiceCatalogService,
+} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { SwfVsCodeExtensionSettings } from "./settings";
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
+import { SwfServiceCatalogFunction } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
   constructor(
@@ -82,7 +87,23 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       viewType,
       i18n,
       initialBackup,
-      new SwfServiceCatalogChannelApiImpl({ user: getUser(this.args.rhhccAuthenticationStore.session) })
+      new SwfServiceCatalogChannelApiImpl({
+        defaultUser: getUser(this.args.rhhccAuthenticationStore.session),
+        onRefresh: () => {
+          vscode.window.setStatusBarMessage(
+            "Serverless Workflow Editor: Refreshing Service Catalog using Service Registries from Red Hat Hybrid Cloud Console...",
+            3000
+          );
+          return swfServiceCatalogStore.refresh();
+        },
+        onLogInToRhhcc: () => vscode.commands.executeCommand("extension.kogito.swf.logInToRhhcc"),
+        onImportFunctionFromCompletionItem: (
+          service: SwfServiceCatalogService,
+          importedFunction: SwfServiceCatalogFunction
+        ) => {
+          vscode.window.showInformationMessage(JSON.stringify(service) + JSON.stringify(importedFunction));
+        },
+      })
     );
   }
 }

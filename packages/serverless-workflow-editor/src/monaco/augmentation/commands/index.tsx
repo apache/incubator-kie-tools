@@ -1,6 +1,8 @@
 import { editor } from "monaco-editor";
 import * as React from "react";
 import { openWidget } from "../widgets";
+import { ServerlessWorkflowEditorChannelApi } from "../../../editor";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/src/api";
 
 // Part of an example
 //
@@ -14,14 +16,32 @@ import { openWidget } from "../widgets";
 // };
 
 export type SwfMonacoEditorCommandTypes =
+  | "LogInToRhhcc"
+  | "RefreshServiceCatalogFromRhhcc"
+  | "ImportFunctionFromCompletionItem"
   | "OpenFunctionsWidget"
   | "OpenStatesWidget"
   | "OpenFunctionsCompletionItemsAtTheBottom";
 
 export type SwfMonacoEditorCommandIds = Record<SwfMonacoEditorCommandTypes, string>;
 
-export function initAugmentationCommands(editorInstance: editor.IStandaloneCodeEditor): SwfMonacoEditorCommandIds {
+export function initAugmentationCommands(
+  editorInstance: editor.IStandaloneCodeEditor,
+  channelApi: MessageBusClientApi<ServerlessWorkflowEditorChannelApi>
+): SwfMonacoEditorCommandIds {
   return {
+    ImportFunctionFromCompletionItem: editorInstance.addCommand(0, async (ctx, args) => {
+      channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(
+        args.service,
+        args.importedFunction
+      );
+    })!,
+    LogInToRhhcc: editorInstance.addCommand(0, async (ctx, args) => {
+      channelApi.notifications.kogitoSwfServiceCatalog_logInToRhhcc.send();
+    })!,
+    RefreshServiceCatalogFromRhhcc: editorInstance.addCommand(0, async (ctx, args) => {
+      channelApi.notifications.kogitoSwfServiceCatalog_refresh.send();
+    })!,
     OpenFunctionsCompletionItemsAtTheBottom: editorInstance.addCommand(0, async (ctx, args) => {
       editorInstance.setPosition(args.newCursorPosition);
       editorInstance.trigger("OpenFunctionsCompletionItemsAtTheBottom", "editor.action.triggerSuggest", {});

@@ -14,6 +14,7 @@ export class RhhccServiceRegistryServiceCatalogStore {
   public async refresh() {
     const session = this.rhhccAuthenticationStore.session;
     if (session) {
+      // TODO: tiago Implement
       // List registries
       // List artifacts in each registry
       // Filter by type, must be OpenAPI
