@@ -1425,7 +1425,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 </Flex>
               )}
               <Flex
-                justifyContent={{ default: "justifyContentSpaceBetween" }}
+                justifyContent={{ default: "justifyContentFlexEnd" }}
                 alignItems={{ default: "alignItemsCenter" }}
                 flexWrap={{ default: "nowrap" }}
                 grow={{ default: "grow" }}
