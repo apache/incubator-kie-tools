@@ -18,13 +18,13 @@ import * as fs from "fs";
 import * as path from "path";
 import { parseOpenApi } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import {
-  SwfFunctionArgumentType,
-  SwfFunctionType,
-  SwfService,
-  SwfServiceType,
+  SwfServiceCatalogFunctionArgumentType,
+  SwfServiceCatalogFunctionType,
+  SwfServiceCatalogService,
+  SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
-function doParse(fileName: string): SwfService {
+function doParse(fileName: string): SwfServiceCatalogService {
   const filePath = path.resolve(__dirname, `examples/${fileName}`);
   const content = fs.readFileSync(filePath).toString("utf-8");
 
@@ -40,49 +40,49 @@ describe("openapi parser", () => {
     const result = doParse("multiplication.yaml");
 
     expect(result).not.toBeNull();
-    expect(result.type).toBe(SwfServiceType.rest);
+    expect(result.type).toBe(SwfServiceCatalogServiceType.rest);
     expect(result.id).toBe("specs/multiplication.yaml");
     expect(result.name).toBe("Generated API");
 
     expect(result.functions).toHaveLength(2);
 
     const doGetOperation = result.functions[0];
-    expect(doGetOperation.type).toBe(SwfFunctionType.rest);
+    expect(doGetOperation.type).toBe(SwfServiceCatalogFunctionType.rest);
     expect(doGetOperation.name).toBe("doGetOperation");
     expect(doGetOperation.operation).toBe("specs/multiplication.yaml#doGetOperation");
     expect(doGetOperation.arguments).not.toBeNull();
-    expect(doGetOperation.arguments).toHaveProperty("leftElement", SwfFunctionArgumentType.number);
-    expect(doGetOperation.arguments).toHaveProperty("product", SwfFunctionArgumentType.number);
-    expect(doGetOperation.arguments).toHaveProperty("rightElement", SwfFunctionArgumentType.number);
+    expect(doGetOperation.arguments).toHaveProperty("leftElement", SwfServiceCatalogFunctionArgumentType.number);
+    expect(doGetOperation.arguments).toHaveProperty("product", SwfServiceCatalogFunctionArgumentType.number);
+    expect(doGetOperation.arguments).toHaveProperty("rightElement", SwfServiceCatalogFunctionArgumentType.number);
 
     const doPostOperation = result.functions[1];
-    expect(doPostOperation.type).toBe(SwfFunctionType.rest);
+    expect(doPostOperation.type).toBe(SwfServiceCatalogFunctionType.rest);
     expect(doPostOperation.name).toBe("doOperation");
     expect(doPostOperation.operation).toBe("specs/multiplication.yaml#doOperation");
     expect(doPostOperation.arguments).not.toBeNull();
-    expect(doPostOperation.arguments).toHaveProperty("leftElement", SwfFunctionArgumentType.number);
-    expect(doPostOperation.arguments).toHaveProperty("product", SwfFunctionArgumentType.number);
-    expect(doPostOperation.arguments).toHaveProperty("rightElement", SwfFunctionArgumentType.number);
+    expect(doPostOperation.arguments).toHaveProperty("leftElement", SwfServiceCatalogFunctionArgumentType.number);
+    expect(doPostOperation.arguments).toHaveProperty("product", SwfServiceCatalogFunctionArgumentType.number);
+    expect(doPostOperation.arguments).toHaveProperty("rightElement", SwfServiceCatalogFunctionArgumentType.number);
   });
 
   it("parse hiring openapi", async () => {
     const result = doParse("hiring.yaml");
 
     expect(result).not.toBeNull();
-    expect(result.type).toBe(SwfServiceType.rest);
+    expect(result.type).toBe(SwfServiceCatalogServiceType.rest);
     expect(result.id).toBe("specs/hiring.yaml");
     expect(result.name).toBe("process-usertasks-timer-quarkus-with-console API");
 
     expect(result.functions).toHaveLength(1);
 
     const functionDef = result.functions[0];
-    expect(functionDef.type).toBe(SwfFunctionType.rest);
+    expect(functionDef.type).toBe(SwfServiceCatalogFunctionType.rest);
     expect(functionDef.name).toBe("hiring");
     expect(functionDef.operation).toBe("specs/hiring.yaml#hiring");
     expect(functionDef.arguments).not.toBeNull();
-    expect(functionDef.arguments).toHaveProperty("candidate", SwfFunctionArgumentType.object);
-    expect(functionDef.arguments).toHaveProperty("hr_approval", SwfFunctionArgumentType.boolean);
-    expect(functionDef.arguments).toHaveProperty("it_approval", SwfFunctionArgumentType.boolean);
+    expect(functionDef.arguments).toHaveProperty("candidate", SwfServiceCatalogFunctionArgumentType.object);
+    expect(functionDef.arguments).toHaveProperty("hr_approval", SwfServiceCatalogFunctionArgumentType.boolean);
+    expect(functionDef.arguments).toHaveProperty("it_approval", SwfServiceCatalogFunctionArgumentType.boolean);
   });
 
   it("parse wrong format test", async () => {
