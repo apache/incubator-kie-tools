@@ -18,6 +18,12 @@ import { startExtension } from "@kie-tools-core/chrome-extension-swf";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { ChromeRouter } from "./ChromeRouter";
 
+// This is a fix for using isomorphic-git (it needs buffer, but chrome screws with it)
+// https://github.com/agoncal/swagger-ui-angular6/issues/2
+(window as any).global = window;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+global.Buffer = global.Buffer || require("buffer").Buffer;
+
 const resourcesPathPrefix = new ChromeRouter().getResourcesPathPrefix();
 
 startExtension({

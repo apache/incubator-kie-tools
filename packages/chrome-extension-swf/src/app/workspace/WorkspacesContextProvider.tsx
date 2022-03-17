@@ -194,6 +194,7 @@ export function WorkspacesContextProvider(props: Props) {
       preferredName?: string;
       gitConfig?: { email: string; name: string };
     }) => {
+      console.log(args);
       return await createWorkspace({
         preferredName: args.preferredName,
         origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
@@ -225,28 +226,27 @@ export function WorkspacesContextProvider(props: Props) {
 
           await storageService.deleteFiles(fs, ignoredPaths);
 
-          // TODO: This is bugged when using via chrome extension (something with a Buffer undefined)
-          // await gitService.init({
-          //   fs: fs,
-          //   dir: workspaceRootDirPath,
-          // });
+          await gitService.init({
+            fs: fs,
+            dir: workspaceRootDirPath,
+          });
 
-          // await gitService.add({
-          //   fs: fs,
-          //   dir: workspaceRootDirPath,
-          //   relativePath: ".",
-          // });
+          await gitService.add({
+            fs: fs,
+            dir: workspaceRootDirPath,
+            relativePath: ".",
+          });
 
-          // await gitService.commit({
-          //   fs: fs,
-          //   dir: workspaceRootDirPath,
-          //   message: "Initial commit from KIE Sandbox",
-          //   targetBranch: GIT_DEFAULT_BRANCH,
-          //   author: {
-          //     name: args.gitConfig?.name ?? "Unknown",
-          //     email: args.gitConfig?.email ?? "unknown@email.com",
-          //   },
-          // });
+          await gitService.commit({
+            fs: fs,
+            dir: workspaceRootDirPath,
+            message: "Initial commit from KIE Sandbox",
+            targetBranch: GIT_DEFAULT_BRANCH,
+            author: {
+              name: args.gitConfig?.name ?? "Unknown",
+              email: args.gitConfig?.email ?? "unknown@email.com",
+            },
+          });
 
           return service.getFilesWithLazyContent(fs, workspace.workspaceId);
         },

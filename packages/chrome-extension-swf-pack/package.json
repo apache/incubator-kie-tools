@@ -22,6 +22,7 @@
     "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "yarn lint && yarn test && rimraf dist && webpack",
+    "watch:dev": "webpack --env dev --watch --progress",
     "watch:prod": "webpack --watch --progress",
     "start": "webpack serve --env dev"
   },
