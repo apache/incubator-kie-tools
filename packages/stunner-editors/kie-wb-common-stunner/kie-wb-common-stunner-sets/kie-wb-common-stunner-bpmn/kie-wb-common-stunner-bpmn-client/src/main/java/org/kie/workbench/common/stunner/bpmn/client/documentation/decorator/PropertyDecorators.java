@@ -16,15 +16,17 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.documentation.decorator;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.compensation.ActivityRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.gateway.DefaultRoute;
@@ -47,16 +49,20 @@ public class PropertyDecorators {
 
     @PostConstruct
     private void init() {
-        decorators =
-                new Maps.Builder<Class<?>, Function<Object, PropertyDecorator>>()
-                        .put(AssignmentsInfo.class,
-                             af -> new AssignmentsInfoDecorator((AssignmentsInfo) af, getDiagram()))
-                        .put(DefaultRoute.class,
-                             dr -> new DefaultRouteDecorator((DefaultRoute) dr, () -> sessionManager.getCurrentSession().getCanvasHandler(), definitionUtils))
-                        .put(ActivityRef.class,
-                             dr -> new ActivityRefDecorator((ActivityRef) dr,
-                                                            () -> sessionManager.getCurrentSession().getCanvasHandler().getDiagram(), definitionUtils))
-                        .build();
+        decorators = Stream.of(
+                        new AbstractMap.SimpleEntry<Class<?>, Function<Object, PropertyDecorator>>(
+                                AssignmentsInfo.class,
+                                af -> new AssignmentsInfoDecorator((AssignmentsInfo) af,
+                                                                   getDiagram())),
+                        new AbstractMap.SimpleEntry<Class<?>, Function<Object, PropertyDecorator>>(
+                                DefaultRoute.class,
+                                dr -> new DefaultRouteDecorator((DefaultRoute) dr,
+                                                                () -> sessionManager.getCurrentSession().getCanvasHandler(), definitionUtils)),
+                        new AbstractMap.SimpleEntry<Class<?>, Function<Object, PropertyDecorator>>(
+                                ActivityRef.class,
+                                dr -> new ActivityRefDecorator((ActivityRef) dr,
+                                                               () -> sessionManager.getCurrentSession().getCanvasHandler().getDiagram(), definitionUtils)))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private Diagram getDiagram() {

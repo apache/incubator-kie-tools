@@ -17,9 +17,10 @@
 package org.kie.workbench.common.dmn.api.editors.included;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
-import org.kie.soup.commons.util.Sets;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -28,7 +29,8 @@ public class PMMLModelMetadataTest {
 
     private static final String MODEL_NAME = "modelName";
 
-    private static final Set<PMMLParameterMetadata> PARAMETERS = new Sets.Builder<PMMLParameterMetadata>().add(mock(PMMLParameterMetadata.class)).build();
+    private static final Set<PMMLParameterMetadata> PARAMETERS = Stream.of(mock(PMMLParameterMetadata.class))
+            .collect(Collectors.toSet());
 
     @Test
     public void testGetters() {

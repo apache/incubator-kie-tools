@@ -25,8 +25,8 @@ import javax.validation.ConstraintValidatorContext;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
-import org.kie.soup.commons.cron.CronExpression;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
+import org.kie.workbench.common.stunner.bpmn.util.CronExpression;
 
 public class TimerSettingsValueValidator
         implements ConstraintValidator<ValidTimerSettingsValue, TimerSettingsValue> {

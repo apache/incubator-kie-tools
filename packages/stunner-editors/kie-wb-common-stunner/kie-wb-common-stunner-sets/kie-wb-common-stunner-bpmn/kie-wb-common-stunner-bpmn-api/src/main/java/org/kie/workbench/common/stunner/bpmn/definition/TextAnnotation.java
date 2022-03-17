@@ -17,13 +17,14 @@
 package org.kie.workbench.common.stunner.bpmn.definition;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
@@ -57,11 +58,10 @@ public class TextAnnotation extends BaseArtifacts {
     protected BPMNGeneralSet general;
 
     @Labels
-    private final static Set<String> labels = new Sets.Builder<String>()
-            .add("text_annotation")
-            .add("lane_child")
-            .add("all")
-            .build();
+    private static final Set<String> labels = Stream.of("text_annotation",
+                                                        "lane_child",
+                                                        "all")
+            .collect(Collectors.toSet());
 
     public TextAnnotation() {
         this(new BPMNGeneralSet("Text Annotation"),

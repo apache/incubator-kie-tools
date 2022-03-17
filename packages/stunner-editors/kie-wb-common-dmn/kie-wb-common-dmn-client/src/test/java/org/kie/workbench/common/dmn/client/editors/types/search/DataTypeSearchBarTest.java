@@ -16,9 +16,12 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.search;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.DOMTokenList;
@@ -26,7 +29,6 @@ import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
@@ -217,14 +219,12 @@ public class DataTypeSearchBarTest {
         final String uuid1 = "1111-1111-1111-1111";
         final Integer positionY0 = 2;
         final Integer positionY1 = -1;
-        final Map<String, Integer> store = spy(new Maps.Builder<String, Integer>()
-                                                       .put(uuid0, positionY0)
-                                                       .put(uuid1, positionY1)
-                                                       .build());
-        final Map<String, Boolean> collapsedStore = spy(new Maps.Builder<String, Boolean>()
-                                                                .put(uuid0, false)
-                                                                .put(uuid1, true)
-                                                                .build());
+        final Map<String, Integer> store = spy(Stream.of(new AbstractMap.SimpleEntry<>(uuid0, positionY0),
+                                                         new AbstractMap.SimpleEntry<>(uuid1, positionY1))
+                                                       .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        final Map<String, Boolean> collapsedStore = spy(Stream.of(new AbstractMap.SimpleEntry<>(uuid0, false),
+                                                                  new AbstractMap.SimpleEntry<>(uuid1, true))
+                                                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
         element0.classList = mock(DOMTokenList.class);
         element1.classList = mock(DOMTokenList.class);
@@ -316,10 +316,9 @@ public class DataTypeSearchBarTest {
         final String uuid1 = "1111-1111-1111-1111";
         final Integer positionY0 = 2;
         final Integer positionY1 = 4;
-        final Map<String, Integer> store = spy(new Maps.Builder<String, Integer>()
-                                                       .put(uuid0, positionY0)
-                                                       .put(uuid1, positionY1)
-                                                       .build());
+        final Map<String, Integer> store = spy(Stream.of(new AbstractMap.SimpleEntry<>(uuid0, positionY0),
+                                                         new AbstractMap.SimpleEntry<>(uuid1, positionY1))
+                                                       .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
         doReturn(store).when(searchBar).getDataTypeListPositionsStore();
 

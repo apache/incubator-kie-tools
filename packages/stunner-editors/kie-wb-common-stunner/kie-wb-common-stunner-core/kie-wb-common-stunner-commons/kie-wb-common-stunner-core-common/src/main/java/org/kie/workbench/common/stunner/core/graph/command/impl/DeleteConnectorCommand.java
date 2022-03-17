@@ -15,9 +15,10 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -37,8 +38,7 @@ public class DeleteConnectorCommand extends AbstractGraphCompositeCommand {
     private transient Edge<? extends View, Node> edge;
 
     public DeleteConnectorCommand(final @MapsTo("edge") String edgeUUID) {
-        this.edgeUUID = PortablePreconditions.checkNotNull("edgeUUID",
-                                                           edgeUUID);
+        this.edgeUUID = Objects.requireNonNull(edgeUUID, "Parameter named 'edgeUUID' should be not null!");
     }
 
     public DeleteConnectorCommand(final Edge<? extends View, Node> edge) {

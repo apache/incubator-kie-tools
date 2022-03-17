@@ -15,13 +15,15 @@
  */
 package org.kie.workbench.common.dmn.client.shape.factory;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.Association;
 import org.kie.workbench.common.dmn.api.definition.model.AuthorityRequirement;
@@ -38,32 +40,35 @@ import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFactor
 public class DMNConnectorShapeFactory implements ShapeDefFactory<DMNDefinition, DMNShapeDef, Shape> {
 
     private final Map<Class<? extends DMNDefinition>, Function<Double[], WiresConnectorViewExt>> VIEW_FACTORIES =
-            new Maps.Builder<Class<? extends DMNDefinition>, Function<Double[], WiresConnectorViewExt>>()
-                    .put(Association.class,
-                         points -> getDMNConnectorShapeViewFactory()
-                                 .association(points[0],
-                                              points[1],
-                                              points[2],
-                                              points[3]))
-                    .put(InformationRequirement.class,
-                         points -> getDMNConnectorShapeViewFactory()
-                                 .informationRequirement(points[0],
-                                                         points[1],
-                                                         points[2],
-                                                         points[3]))
-                    .put(KnowledgeRequirement.class,
-                         points -> getDMNConnectorShapeViewFactory()
-                                 .knowledgeRequirement(points[0],
-                                                       points[1],
-                                                       points[2],
-                                                       points[3]))
-                    .put(AuthorityRequirement.class,
-                         points -> getDMNConnectorShapeViewFactory()
-                                 .authorityRequirement(points[0],
-                                                       points[1],
-                                                       points[2],
-                                                       points[3]))
-                    .build();
+            Stream.of(new AbstractMap.SimpleEntry<Class<? extends DMNDefinition>, Function<Double[], WiresConnectorViewExt>>(
+                              Association.class,
+                              points -> getDMNConnectorShapeViewFactory()
+                                      .association(points[0],
+                                                   points[1],
+                                                   points[2],
+                                                   points[3])),
+                      new AbstractMap.SimpleEntry<Class<? extends DMNDefinition>, Function<Double[], WiresConnectorViewExt>>(
+                              InformationRequirement.class,
+                              points -> getDMNConnectorShapeViewFactory()
+                                      .informationRequirement(points[0],
+                                                              points[1],
+                                                              points[2],
+                                                              points[3])),
+                      new AbstractMap.SimpleEntry<Class<? extends DMNDefinition>, Function<Double[], WiresConnectorViewExt>>(
+                              KnowledgeRequirement.class,
+                              points -> getDMNConnectorShapeViewFactory()
+                                      .knowledgeRequirement(points[0],
+                                                            points[1],
+                                                            points[2],
+                                                            points[3])),
+                      new AbstractMap.SimpleEntry<Class<? extends DMNDefinition>, Function<Double[], WiresConnectorViewExt>>(
+                              AuthorityRequirement.class,
+                              points -> getDMNConnectorShapeViewFactory()
+                                      .authorityRequirement(points[0],
+                                                            points[1],
+                                                            points[2],
+                                                            points[3])))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     private final DMNConnectorShapeViewFactory dmnConnectorShapeViewFactory;
 

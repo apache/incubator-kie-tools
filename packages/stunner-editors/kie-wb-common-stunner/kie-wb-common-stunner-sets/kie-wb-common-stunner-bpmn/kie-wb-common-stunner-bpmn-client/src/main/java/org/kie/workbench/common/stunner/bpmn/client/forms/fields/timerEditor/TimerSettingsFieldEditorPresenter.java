@@ -18,11 +18,12 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.timerEditor;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
 import org.uberfire.client.mvp.UberElement;
@@ -62,10 +63,10 @@ public class TimerSettingsFieldEditorPresenter
         }
     }
 
-    final static List<Pair<String, String>> timeCycleOptions = new Lists.Builder<Pair<String, String>>()
-            .add(new Pair<>(TIME_CYCLE_LANGUAGE.ISO.text(), TIME_CYCLE_LANGUAGE.ISO.value()))
-            .add(new Pair<>(TIME_CYCLE_LANGUAGE.CRON.text(), TIME_CYCLE_LANGUAGE.CRON.value()))
-            .build();
+    static final List<Pair<String, String>> timeCycleOptions = Stream.of(
+            new Pair<>(TIME_CYCLE_LANGUAGE.ISO.text(), TIME_CYCLE_LANGUAGE.ISO.value()),
+            new Pair<>(TIME_CYCLE_LANGUAGE.CRON.text(), TIME_CYCLE_LANGUAGE.CRON.value()))
+            .collect(Collectors.toList());
 
     public interface View extends UberElement<TimerSettingsFieldEditorPresenter> {
 

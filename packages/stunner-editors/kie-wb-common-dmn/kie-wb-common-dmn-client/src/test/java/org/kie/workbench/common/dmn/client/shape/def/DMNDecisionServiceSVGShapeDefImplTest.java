@@ -16,11 +16,15 @@
 
 package org.kie.workbench.common.dmn.client.shape.def;
 
+import java.util.AbstractMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.client.resources.DMNDecisionServiceSVGViewFactory;
@@ -106,7 +110,8 @@ public class DMNDecisionServiceSVGShapeDefImplTest {
 
         verify(shapeView).setTitlePosition(HasTitle.VerticalAlignment.TOP, HasTitle.HorizontalAlignment.CENTER,
                                            HasTitle.ReferencePosition.INSIDE, HasTitle.Orientation.HORIZONTAL);
-        verify(shapeView).setMargins(new Maps.Builder().put(HasTitle.VerticalAlignment.TOP, 20.0).build());
+        verify(shapeView).setMargins(Stream.of(new AbstractMap.SimpleEntry<>(HasTitle.VerticalAlignment.TOP, 20.0))
+                                             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         verify(shapeView).setTextWrapper(TextWrapperStrategy.TRUNCATE);
     }
 

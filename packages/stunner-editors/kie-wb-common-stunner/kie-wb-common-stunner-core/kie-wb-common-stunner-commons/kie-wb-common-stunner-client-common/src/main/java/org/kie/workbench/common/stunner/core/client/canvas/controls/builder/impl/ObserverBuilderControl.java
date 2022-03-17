@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl;
 
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,15 +43,13 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 @Default
 @Observer
 @Dependent
 public class ObserverBuilderControl extends AbstractElementBuilderControl
         implements ElementBuilderControl<AbstractCanvasHandler> {
 
-    private static Logger LOGGER = Logger.getLogger(ObserverBuilderControl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ObserverBuilderControl.class.getName());
 
     private final Event<CanvasSelectionEvent> canvasSelectionEvent;
 
@@ -101,8 +100,7 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
 
     @SuppressWarnings("unchecked")
     void onBuildCanvasShape(final @Observes BuildCanvasShapeEvent event) {
-        checkNotNull("event",
-                     event);
+        Objects.requireNonNull(event, "Parameter named 'event' should be not null!");
         if (null != canvasHandler) {
             final CanvasHandler context = event.getCanvasHandler();
             if (null != context && context.equals(canvasHandler)) {

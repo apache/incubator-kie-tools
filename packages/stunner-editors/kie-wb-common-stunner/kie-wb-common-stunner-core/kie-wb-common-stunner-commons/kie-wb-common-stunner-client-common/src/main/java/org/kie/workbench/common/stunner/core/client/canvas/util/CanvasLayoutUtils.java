@@ -42,7 +42,6 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getNodeSize;
 import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getPosition;
 
@@ -243,10 +242,8 @@ public class CanvasLayoutUtils {
                            final Point2D offset,
                            final Point2D rootNodeCoordinates
     ) {
-        checkNotNull("canvasHandler",
-                     canvasHandler);
-        checkNotNull("root",
-                     root);
+        checkNotNull("canvasHandler", canvasHandler);
+        checkNotNull("root", root);
 
         graphBoundsIndexer.build(canvasHandler.getDiagram().getGraph());
 
@@ -333,6 +330,10 @@ public class CanvasLayoutUtils {
         }
 
         return newPositionUL;
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     private Point2D getNextPositionFromParent(final Point2D rootNodeCoordinates,

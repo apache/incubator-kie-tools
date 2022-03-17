@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.docks.navigator.included.components;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 
@@ -32,7 +32,7 @@ public class DecisionComponent {
 
     private DRGElement drgElement;
 
-    private final static Map<Class<?>, ImageDataUriGlyph> PALETTE_MAP = buildPaletteMap();
+    private static final Map<Class<?>, ImageDataUriGlyph> PALETTE_MAP = buildPaletteMap();
 
     public DecisionComponent(final String fileName,
                              final DRGElement drgElement,
@@ -63,13 +63,10 @@ public class DecisionComponent {
     }
 
     private static Map<Class<?>, ImageDataUriGlyph> buildPaletteMap() {
+        final Map<Class<?>, ImageDataUriGlyph> map = new HashMap<>();
 
-        final Maps.Builder<Class<?>, ImageDataUriGlyph> map = new Maps.Builder<>();
+        GLYPHS_PALETTE.forEach((aClass, glyph) -> map.put(aClass, (ImageDataUriGlyph) glyph));
 
-        GLYPHS_PALETTE.forEach((aClass, glyph) -> {
-            map.put(aClass, (ImageDataUriGlyph) glyph);
-        });
-
-        return map.build();
+        return map;
     }
 }

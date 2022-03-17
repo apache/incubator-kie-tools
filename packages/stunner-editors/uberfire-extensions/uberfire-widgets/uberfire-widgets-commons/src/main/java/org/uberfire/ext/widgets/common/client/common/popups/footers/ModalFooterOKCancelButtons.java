@@ -15,6 +15,8 @@
  */
 package org.uberfire.ext.widgets.common.client.common.popups.footers;
 
+import java.util.Objects;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -24,7 +26,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ModalFooter;
-import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * A Modal Footer with OK and Cancel buttons
@@ -42,10 +43,8 @@ public class ModalFooterOKCancelButtons extends ModalFooter {
 
     public ModalFooterOKCancelButtons(final Command okCommand,
                                       final Command cancelCommand) {
-        this.okCommand = PortablePreconditions.checkNotNull("okCommand",
-                                                            okCommand);
-        this.cancelCommand = PortablePreconditions.checkNotNull("cancelCommand",
-                                                                cancelCommand);
+        this.okCommand = checkNotNull("okCommand", okCommand);
+        this.cancelCommand = checkNotNull("cancelCommand", cancelCommand);
         add(uiBinder.createAndBindUi(this));
     }
 
@@ -65,6 +64,10 @@ public class ModalFooterOKCancelButtons extends ModalFooter {
     @UiHandler("cancelButton")
     public void onCancelButtonClick(final ClickEvent e) {
         cancelCommand.execute();
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     interface ModalFooterOKCancelButtonsBinder

@@ -15,12 +15,12 @@
  */
 package org.kie.workbench.common.dmn.api.definition.model;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.HasText;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
@@ -56,7 +56,7 @@ public class UnaryTests extends DMNElement implements IsUnaryTests,
     private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
 
     @Labels
-    private static final Set<String> stunnerLabels = new Sets.Builder<String>().build();
+    private static final Set<String> stunnerLabels = new HashSet<>();
 
     private Text text;
 
