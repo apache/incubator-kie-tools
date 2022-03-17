@@ -51,7 +51,6 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
 import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.DELETE;
 import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.KEY_BACKSPACE;
@@ -157,8 +156,7 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
     @Override
     @SuppressWarnings("unchecked")
     public <V> void execute(final Callback<V> callback) {
-        checkNotNull("callback",
-                     callback);
+        Objects.requireNonNull(callback, "Parameter named 'callback' should be not null!");
         if (null != getSession() && null != getSession().getSelectionControl()) {
             final AbstractCanvasHandler canvasHandler = getSession().getCanvasHandler();
             final SelectionControl<AbstractCanvasHandler, Element> selectionControl = getSession().getSelectionControl();

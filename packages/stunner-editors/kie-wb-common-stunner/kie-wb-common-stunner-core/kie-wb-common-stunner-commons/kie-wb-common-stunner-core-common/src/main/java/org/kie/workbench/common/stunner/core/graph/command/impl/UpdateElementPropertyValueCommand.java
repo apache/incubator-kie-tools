@@ -15,9 +15,10 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -41,13 +42,14 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
     public UpdateElementPropertyValueCommand(final @MapsTo("elementUUID") String elementUUID,
                                              final @MapsTo("field") String field,
                                              final @MapsTo("value") Object value) {
-        this.elementUUID = PortablePreconditions.checkNotNull("elementUUID",
-                                                              elementUUID);
-        this.field = PortablePreconditions.checkNotNull("field",
-                                                        field);
+        this.elementUUID = checkNotNull("elementUUID", elementUUID);
+        this.field = checkNotNull("field", field);
         this.value = value;
-
         this.element = null;
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public UpdateElementPropertyValueCommand(final Element<?> element,
@@ -68,7 +70,7 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
     @Override
     @SuppressWarnings("unchecked")
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-        final Element<Definition<?>> element = (Element<Definition<?>>) getNullSafeElement(context);
+        final Element<Definition<?>> element = getNullSafeElement(context);
         final Object p = context.getDefinitionManager().adapters().forDefinition().getProperty(element.getContent().getDefinition(),
                                                                                                field).get();
         final PropertyAdapter<Object, Object> adapter = (PropertyAdapter<Object, Object>) context.getDefinitionManager().adapters().registry().getPropertyAdapter(p.getClass());

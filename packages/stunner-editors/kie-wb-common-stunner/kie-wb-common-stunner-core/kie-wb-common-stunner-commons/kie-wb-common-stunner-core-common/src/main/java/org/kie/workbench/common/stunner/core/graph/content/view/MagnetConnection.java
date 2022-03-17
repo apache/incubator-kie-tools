@@ -27,8 +27,6 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 @Portable
 public class MagnetConnection extends DiscreteConnection {
 
@@ -43,8 +41,7 @@ public class MagnetConnection extends DiscreteConnection {
 
     private MagnetConnection(final @MapsTo("location") Point2D location,
                              final @MapsTo("auto") Boolean auto) {
-        checkNotNull("auto",
-                     auto);
+        Objects.requireNonNull(auto, "Parameter named 'auto' should be not null!");
         this.location = location;
         this.auto = auto;
     }

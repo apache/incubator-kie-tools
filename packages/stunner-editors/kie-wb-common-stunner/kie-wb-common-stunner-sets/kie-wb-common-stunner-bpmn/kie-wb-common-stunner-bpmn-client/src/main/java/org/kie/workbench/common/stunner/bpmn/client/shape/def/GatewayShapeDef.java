@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
+import java.util.AbstractMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
@@ -52,16 +54,11 @@ public class GatewayShapeDef
                          BPMNSVGViewFactory::eventGateway);
 
     public static final Map<Class<? extends BaseGateway>, Glyph> GLYPHS =
-            new Maps.Builder<Class<? extends BaseGateway>, Glyph>()
-                    .put(ParallelGateway.class,
-                         BPMNGlyphFactory.GATEWAY_PARALLEL_MULTIPLE)
-                    .put(ExclusiveGateway.class,
-                         BPMNGlyphFactory.GATEWAY_EXCLUSIVE)
-                    .put(InclusiveGateway.class,
-                         BPMNGlyphFactory.GATEWAY_INCLUSIVE)
-                    .put(EventGateway.class,
-                         BPMNGlyphFactory.GATEWAY_EVENT)
-                    .build();
+            Stream.of(new AbstractMap.SimpleEntry<>(ParallelGateway.class, BPMNGlyphFactory.GATEWAY_PARALLEL_MULTIPLE),
+                      new AbstractMap.SimpleEntry<>(ExclusiveGateway.class, BPMNGlyphFactory.GATEWAY_EXCLUSIVE),
+                      new AbstractMap.SimpleEntry<>(InclusiveGateway.class, BPMNGlyphFactory.GATEWAY_INCLUSIVE),
+                      new AbstractMap.SimpleEntry<>(EventGateway.class, BPMNGlyphFactory.GATEWAY_EVENT))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     @Override
     public SizeHandler<BaseGateway, SVGShapeView> newSizeHandler() {

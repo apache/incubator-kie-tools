@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.documentation;
 
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -38,7 +39,6 @@ import com.google.gwt.core.client.GWT;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.components.palette.BPMNCategoryDefinitionProvider;
 import org.kie.workbench.common.stunner.bpmn.client.documentation.decorator.PropertyDecorator;
 import org.kie.workbench.common.stunner.bpmn.client.documentation.decorator.PropertyDecorators;
@@ -481,13 +481,13 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
 
         private DefinitionHelper() {
 
-            iconFactory = new Maps.Builder<Class, Function<Object, Optional<String>>>()
-                    .put(CustomTask.class, def -> getServiceTaskIcon(def))
-                    .build();
+            iconFactory = Stream.of(
+                    new AbstractMap.SimpleEntry<Class, Function<Object, Optional<String>>>(CustomTask.class, def -> getServiceTaskIcon(def)))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-            categoryFactory = new Maps.Builder<Class, Function<Object, Optional<String>>>()
-                    .put(CustomTask.class, def -> getServiceTaskCategory(def))
-                    .build();
+            categoryFactory = Stream.of(
+                            new AbstractMap.SimpleEntry<Class, Function<Object, Optional<String>>>(CustomTask.class, def -> getServiceTaskCategory(def)))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         }
 
         public Optional<String> getDefinitionIcon(Object definition) {

@@ -18,13 +18,14 @@ package org.kie.workbench.common.stunner.bpmn.definition;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
@@ -81,13 +82,12 @@ public class Lane implements BPMNViewDefinition {
     protected AdvancedData advancedData;
 
     @Labels
-    private final Set<String> labels = new Sets.Builder<String>()
-            .add("all")
-            .add("PoolChild")
-            .add("fromtoall")
-            .add("canContainArtifacts")
-            .add("cm_nop")
-            .build();
+    private final Set<String> labels = Stream.of("all",
+                                                 "PoolChild",
+                                                 "fromtoall",
+                                                 "canContainArtifacts",
+                                                 "cm_nop")
+            .collect(Collectors.toSet());
 
     public Lane() {
         this(new BPMNGeneralSet("Lane"),

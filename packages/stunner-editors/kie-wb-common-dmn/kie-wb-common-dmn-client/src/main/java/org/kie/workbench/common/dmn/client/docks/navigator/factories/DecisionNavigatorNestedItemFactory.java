@@ -16,15 +16,17 @@
 
 package org.kie.workbench.common.dmn.client.docks.navigator.factories;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.model.Context;
@@ -66,15 +68,14 @@ import static org.kie.workbench.common.dmn.client.docks.navigator.DecisionNaviga
 public class DecisionNavigatorNestedItemFactory {
 
     private static final Map<Class<? extends Expression>, DecisionNavigatorItem.Type> ITEM_TYPE_BY_EXPRESSION =
-            new Maps.Builder<Class<? extends Expression>, DecisionNavigatorItem.Type>()
-                    .put(Context.class, CONTEXT)
-                    .put(DecisionTable.class, DECISION_TABLE)
-                    .put(FunctionDefinition.class, FUNCTION_DEFINITION)
-                    .put(Invocation.class, INVOCATION)
-                    .put(List.class, LIST)
-                    .put(LiteralExpression.class, LITERAL_EXPRESSION)
-                    .put(Relation.class, RELATION)
-                    .build();
+            Stream.of(new AbstractMap.SimpleEntry<>(Context.class, CONTEXT),
+                      new AbstractMap.SimpleEntry<>(DecisionTable.class, DECISION_TABLE),
+                      new AbstractMap.SimpleEntry<>(FunctionDefinition.class, FUNCTION_DEFINITION),
+                      new AbstractMap.SimpleEntry<>(Invocation.class, INVOCATION),
+                      new AbstractMap.SimpleEntry<>(List.class, LIST),
+                      new AbstractMap.SimpleEntry<>(LiteralExpression.class, LITERAL_EXPRESSION),
+                      new AbstractMap.SimpleEntry<>(Relation.class, RELATION))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     private final SessionManager sessionManager;
 

@@ -30,14 +30,14 @@ import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Settings;
+import org.drools.scenariosimulation.api.model.imports.Import;
+import org.drools.scenariosimulation.api.model.imports.Imports;
 import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.JSIExpressionIdentifierType;
 import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.JSIFactIdentifierType;
 import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.JSIImportType;
 import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.JSIImportsType;
 import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.JSISettingsType;
 import org.junit.Test;
-import org.kie.soup.project.datamodel.imports.Import;
-import org.kie.soup.project.datamodel.imports.Imports;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;

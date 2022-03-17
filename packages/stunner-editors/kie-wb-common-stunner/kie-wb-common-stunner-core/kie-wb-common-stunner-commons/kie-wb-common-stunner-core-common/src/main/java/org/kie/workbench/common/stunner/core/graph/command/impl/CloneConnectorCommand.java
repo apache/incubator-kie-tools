@@ -15,12 +15,12 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
@@ -59,11 +59,14 @@ public final class CloneConnectorCommand extends AbstractGraphCompositeCommand {
     }
 
     public CloneConnectorCommand(Edge candidate, String sourceNodeUUID, String targetNodeUUID, Consumer<Edge> callback) {
-        this.candidate = PortablePreconditions.checkNotNull("candidate",
-                                                            candidate);
-        this.sourceNodeUUID = PortablePreconditions.checkNotNull("sourceNodeUUID", sourceNodeUUID);
-        this.targetNodeUUID = PortablePreconditions.checkNotNull("targetNodeUUID", targetNodeUUID);
+        this.candidate = checkNotNull("candidate", candidate);
+        this.sourceNodeUUID = checkNotNull("sourceNodeUUID", sourceNodeUUID);
+        this.targetNodeUUID = checkNotNull("targetNodeUUID", targetNodeUUID);
         this.callback = Optional.ofNullable(callback);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     @Override

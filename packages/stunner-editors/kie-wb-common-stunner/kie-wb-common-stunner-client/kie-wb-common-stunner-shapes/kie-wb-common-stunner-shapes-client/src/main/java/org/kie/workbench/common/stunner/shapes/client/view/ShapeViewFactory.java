@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.stunner.shapes.client.view;
 
+import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.shapes.client.factory.PictureProvidersManager;
 import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class ShapeViewFactory {
@@ -50,8 +50,7 @@ public class ShapeViewFactory {
     public PictureShapeView pictureFromUri(final SafeUri uri,
                                            final double width,
                                            final double height) {
-        checkNotNull("uri",
-                     uri);
+        checkNotNull("uri", uri);
         return new PictureShapeView(uri.asString(),
                                     width,
                                     height);
@@ -60,12 +59,15 @@ public class ShapeViewFactory {
     public PictureShapeView picture(final Object source,
                                     final double width,
                                     final double height) {
-        checkNotNull("source",
-                     source);
+        checkNotNull("source", source);
         final SafeUri uri = pictureProvidersManager.getUri(source);
         return new PictureShapeView(uri.asString(),
                                     width,
                                     height);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public CircleView circle(final double radius) {

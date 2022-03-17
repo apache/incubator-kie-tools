@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.google.gwt.core.client.GWT;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
@@ -35,7 +35,7 @@ public class ExpressionEditorColumnRenderer extends BaseGridColumnRenderer<Optio
     private final GridWidgetRegistry registry;
 
     public ExpressionEditorColumnRenderer(final GridWidgetRegistry registry) {
-        this.registry = PortablePreconditions.checkNotNull("registry", registry);
+        this.registry = Objects.requireNonNull(registry, "Parameter named 'registry' should be not null!");
     }
 
     @Override

@@ -18,46 +18,37 @@ package org.uberfire.backend.vfs;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public final class PathFactory {
 
     public static final String LOCK_FILE_EXTENSION = ".ulock";
-    public static String VERSION_PROPERTY = "hasVersionSupport";
+    public static final String VERSION_PROPERTY = "hasVersionSupport";
 
     private PathFactory() {
     }
 
     public static Path newPath(final String fileName,
                                final String uri) {
-        return new PathImpl(checkNotEmpty("fileName",
-                                          fileName),
-                            checkNotEmpty("uri",
-                                          uri));
+        return new PathImpl(checkNotEmpty("fileName", fileName),
+                            checkNotEmpty("uri", uri));
     }
 
     public static Path newPathBasedOn(final String fileName,
                                       final String uri,
                                       final Path path) {
-        return new PathImpl(checkNotEmpty("fileName",
-                                          fileName),
-                            checkNotEmpty("uri",
-                                          uri),
-                            checkNotNull("path",
-                                         path));
+        return new PathImpl(checkNotEmpty("fileName", fileName),
+                            checkNotEmpty("uri", uri),
+                            checkNotNull("path", path));
     }
 
     public static Path newPath(final String fileName,
                                final String uri,
                                final Map<String, Object> attrs) {
-        return new PathImpl(checkNotEmpty("fileName",
-                                          fileName),
-                            checkNotEmpty("uri",
-                                          uri),
+        return new PathImpl(checkNotEmpty("fileName", fileName),
+                            checkNotEmpty("uri", uri),
                             attrs);
     }
 
@@ -83,8 +74,7 @@ public final class PathFactory {
      * @return the lock path
      */
     public static Path newLockPath(final Path path) {
-        checkNotNull("path",
-                     path);
+        checkNotNull("path", path);
 
         final String systemUri = path.toURI().replaceFirst("(/|\\\\)([^/&^\\\\]*)@([^/&^\\\\]*)",
                                                            "$1locks@system/system$1$3$1$2");
@@ -108,8 +98,7 @@ public final class PathFactory {
      * @return the locked path.
      */
     public static Path fromLock(final Path lockPath) {
-        checkNotNull("path",
-                     lockPath);
+        checkNotNull("path", lockPath);
 
         final String uri = lockPath.toURI().replaceFirst("locks@system/system(/|\\\\)([^/&^\\\\]*)(/|\\\\)([^/&^\\\\]*)",
                                                          "$4@$2");
@@ -118,6 +107,17 @@ public final class PathFactory {
                                                                   ""),
                                    uri.replace(LOCK_FILE_EXTENSION,
                                                ""));
+    }
+
+    private static String checkNotEmpty(String name, String parameter) {
+        if (parameter == null || parameter.trim().length() == 0) {
+            throw new IllegalArgumentException("Parameter named '" + name + "' should be filled!");
+        }
+        return parameter;
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     @Portable
@@ -145,15 +145,15 @@ public final class PathFactory {
             this.fileName = fileName;
             this.uri = uri;
             if (attrs == null) {
-                this.attributes = new HashMap<String, Object>();
+                this.attributes = new HashMap<>();
             } else {
                 if (attrs.containsKey(VERSION_PROPERTY)) {
                     hasVersionSupport = (Boolean) attrs.remove(VERSION_PROPERTY);
                 }
                 if (attrs.size() > 0) {
-                    this.attributes = new HashMap<String, Object>(attrs);
+                    this.attributes = new HashMap<>(attrs);
                 } else {
-                    this.attributes = new HashMap<String, Object>();
+                    this.attributes = new HashMap<>();
                 }
             }
         }

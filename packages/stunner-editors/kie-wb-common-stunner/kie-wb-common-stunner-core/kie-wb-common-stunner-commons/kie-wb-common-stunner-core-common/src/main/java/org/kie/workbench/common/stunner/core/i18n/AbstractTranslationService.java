@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.i18n;
 
+import java.util.Objects;
 import java.util.Optional;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public abstract class AbstractTranslationService implements StunnerTranslationService {
@@ -33,22 +33,19 @@ public abstract class AbstractTranslationService implements StunnerTranslationSe
 
     @Override
     public String getDefinitionSetDescription(String defSetId) {
-        PortablePreconditions.checkNotNull("defSetId",
-                                           defSetId);
+        checkNotNull("defSetId", defSetId);
         return getValue(defSetId + I18N_SEPARATOR + DESCRIPTION_SUFFIX);
     }
 
     @Override
     public String getDefinitionTitle(String defId) {
-        PortablePreconditions.checkNotNull("defId",
-                                           defId);
+        checkNotNull("defId", defId);
         return getValue(defId + I18N_SEPARATOR + TITLE_SUFFIX);
     }
 
     @Override
     public String getDefinitionDescription(String defId) {
-        PortablePreconditions.checkNotNull("defId",
-                                           defId);
+        checkNotNull("defId", defId);
         return getValue(defId + I18N_SEPARATOR + DESCRIPTION_SUFFIX);
     }
 
@@ -59,7 +56,7 @@ public abstract class AbstractTranslationService implements StunnerTranslationSe
 
     @Override
     public String getPropertyCaption(String propId) {
-        PortablePreconditions.checkNotNull("propId", propId);
+        checkNotNull("propId", propId);
         return Optional
                 .ofNullable(getValue(propId + I18N_SEPARATOR + CAPTION_SUFFIX))
                 .orElseGet(() -> Optional.ofNullable(getValue(propId + I18N_SEPARATOR + LABEL_SUFFIX))
@@ -70,6 +67,10 @@ public abstract class AbstractTranslationService implements StunnerTranslationSe
     @Override
     public String getViolationMessage(RuleViolation ruleViolation) {
         return getRuleViolationMessage(ruleViolation);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     protected String getRuleViolationMessage(final RuleViolation ruleViolation) {

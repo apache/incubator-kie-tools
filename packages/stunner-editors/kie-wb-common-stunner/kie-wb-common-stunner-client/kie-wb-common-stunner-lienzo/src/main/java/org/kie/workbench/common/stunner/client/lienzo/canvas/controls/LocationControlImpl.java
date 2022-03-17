@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -76,7 +77,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 import static org.appformer.client.keyboardShortcuts.KeyboardShortcutsApiOpts.Repeat.REPEAT;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ARROW_DOWN;
 import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ARROW_LEFT;
 import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ARROW_RIGHT;
@@ -92,11 +92,11 @@ public class LocationControlImpl
         implements LocationControl<AbstractCanvasHandler, Element>,
                    CanvasControl.SessionAware<EditorSession> {
 
-    private final static double LARGE_DISTANCE = 25d;
-    private final static double NORMAL_DISTANCE = 5d;
-    private final static double SHORT_DISTANCE = 1d;
+    private static final double LARGE_DISTANCE = 25d;
+    private static final double NORMAL_DISTANCE = 5d;
+    private static final double SHORT_DISTANCE = 1d;
 
-    private static Logger LOGGER = Logger.getLogger(LocationControlImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(LocationControlImpl.class.getName());
 
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private final Event<ShapeLocationsChangedEvent> shapeLocationsChangedEvent;
@@ -337,8 +337,7 @@ public class LocationControlImpl
     }
 
     void onCanvasSelectionEvent(final @Observes CanvasSelectionEvent event) {
-        checkNotNull("event",
-                     event);
+        checkNotNull("event", event);
 
         if (checkEventContext(event)) {
             selectedIDs.clear();
@@ -347,11 +346,14 @@ public class LocationControlImpl
     }
 
     void onCanvasClearSelectionEvent(final @Observes CanvasClearSelectionEvent event) {
-        checkNotNull("event",
-                     event);
+        checkNotNull("event", event);
         if (checkEventContext(event)) {
             selectedIDs.clear();
         }
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     @SuppressWarnings("unchecked")

@@ -16,13 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.rule.context.impl;
 
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -40,18 +42,12 @@ import org.kie.workbench.common.stunner.core.rule.context.NodeDockingContext;
 public class StatefulGraphEvaluationContexts {
 
     private static final Map<Class<? extends GraphEvaluationContext>, ContextConsumer<? extends GraphEvaluationContext>> CONSUMERS_BY_TYPE =
-            new Maps.Builder<Class<? extends GraphEvaluationContext>, ContextConsumer<? extends GraphEvaluationContext>>()
-                    .put(ElementCardinalityContext.class,
-                         new ElementCardinalityContextConsumer())
-                    .put(ConnectorCardinalityContext.class,
-                         new ConnectorCardinalityContextConsumer())
-                    .put(GraphConnectionContext.class,
-                         new ConnectionStateContextConsumer())
-                    .put(NodeContainmentContext.class,
-                         new ContainmentStateContextConsumer())
-                    .put(NodeDockingContext.class,
-                         new DockingStateContextConsumer())
-                    .build();
+            Stream.of(new AbstractMap.SimpleEntry<>(ElementCardinalityContext.class, new ElementCardinalityContextConsumer()),
+                      new AbstractMap.SimpleEntry<>(ConnectorCardinalityContext.class, new ConnectorCardinalityContextConsumer()),
+                      new AbstractMap.SimpleEntry<>(GraphConnectionContext.class, new ConnectionStateContextConsumer()),
+                      new AbstractMap.SimpleEntry<>(NodeContainmentContext.class, new ContainmentStateContextConsumer()),
+                      new AbstractMap.SimpleEntry<>(NodeDockingContext.class, new DockingStateContextConsumer()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     @SuppressWarnings("unchecked")
     public static <T> T evaluate(final GraphEvaluationContext context,

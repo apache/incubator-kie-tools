@@ -29,9 +29,6 @@
 
   <inherits name="org.gwtbootstrap3.extras.select.SelectNoResources"/>
 
-  <inherits name="org.kie.soup.project.datamodel.ProjectDataModelAPI"/>
-  <inherits name="org.kie.soup.project.datamodel.commons.ProjectDataModelCommons"/>
-
   <inherits name="org.uberfire.UberfireAPI"/>
 
 </module>

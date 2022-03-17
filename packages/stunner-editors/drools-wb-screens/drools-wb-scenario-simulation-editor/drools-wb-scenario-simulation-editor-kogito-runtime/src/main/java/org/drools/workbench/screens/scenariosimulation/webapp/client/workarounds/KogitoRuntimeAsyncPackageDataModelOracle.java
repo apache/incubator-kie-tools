@@ -23,7 +23,7 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmo.KogitoAsyncPackageDataModelOracle;
-import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.drools.workbench.screens.scenariosimulation.model.dmo.ModelField;
 
 @ApplicationScoped
 public class KogitoRuntimeAsyncPackageDataModelOracle extends KogitoAsyncPackageDataModelOracle {

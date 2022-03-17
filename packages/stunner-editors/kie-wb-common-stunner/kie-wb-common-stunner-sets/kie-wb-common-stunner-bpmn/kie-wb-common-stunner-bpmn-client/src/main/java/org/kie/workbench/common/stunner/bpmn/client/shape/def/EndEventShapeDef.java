@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
+import java.util.AbstractMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
@@ -61,21 +63,14 @@ public class EndEventShapeDef
                          BPMNSVGViewFactory::endCompensationEvent);
 
     public static final Map<Class<? extends BaseEndEvent>, Glyph> GLYPHS =
-            new Maps.Builder<Class<? extends BaseEndEvent>, Glyph>()
-                    .put(EndNoneEvent.class,
-                         BPMNGlyphFactory.EVENT_END_NONE)
-                    .put(EndSignalEvent.class,
-                         BPMNGlyphFactory.EVENT_END_SIGNAL)
-                    .put(EndMessageEvent.class,
-                         BPMNGlyphFactory.EVENT_END_MESSAGE)
-                    .put(EndTerminateEvent.class,
-                         BPMNGlyphFactory.EVENT_END_TERMINATE)
-                    .put(EndErrorEvent.class,
-                         BPMNGlyphFactory.EVENT_END_ERROR)
-                    .put(EndEscalationEvent.class,
-                         BPMNGlyphFactory.EVENT_END_ESCALATION)
-                    .put(EndCompensationEvent.class, BPMNGlyphFactory.EVENT_END_COMPENSATION)
-                    .build();
+            Stream.of(new AbstractMap.SimpleEntry<>(EndNoneEvent.class, BPMNGlyphFactory.EVENT_END_NONE),
+                      new AbstractMap.SimpleEntry<>(EndSignalEvent.class, BPMNGlyphFactory.EVENT_END_SIGNAL),
+                      new AbstractMap.SimpleEntry<>(EndMessageEvent.class, BPMNGlyphFactory.EVENT_END_MESSAGE),
+                      new AbstractMap.SimpleEntry<>(EndTerminateEvent.class, BPMNGlyphFactory.EVENT_END_TERMINATE),
+                      new AbstractMap.SimpleEntry<>(EndErrorEvent.class, BPMNGlyphFactory.EVENT_END_ERROR),
+                      new AbstractMap.SimpleEntry<>(EndEscalationEvent.class, BPMNGlyphFactory.EVENT_END_ESCALATION),
+                      new AbstractMap.SimpleEntry<>(EndCompensationEvent.class, BPMNGlyphFactory.EVENT_END_COMPENSATION))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     @Override
     public FontHandler<BaseEndEvent, SVGShapeView> newFontHandler() {

@@ -18,11 +18,12 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.select;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
@@ -131,11 +132,11 @@ public class MapSelectionControlTest {
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         when(canvasHandler.getGraphIndex()).thenReturn(index);
-        when(canvas.getShape(eq(ELEMENT_UUID))).thenReturn(shape);
+        when(canvas.getShape(ELEMENT_UUID)).thenReturn(shape);
         when(canvas.getShapes()).thenReturn(Collections.singletonList(shape));
         when(shape.getUUID()).thenReturn(ELEMENT_UUID);
         when(shape.getShapeView()).thenReturn(shapeView);
-        when(shapeEventHandler.supports(eq(ViewEventType.MOUSE_CLICK))).thenReturn(true);
+        when(shapeEventHandler.supports(ViewEventType.MOUSE_CLICK)).thenReturn(true);
         this.tested = new MapSelectionControl(e -> elementSelectedEvent.fire((CanvasSelectionEvent) e),
                                               e -> clearSelectionEvent.fire((CanvasClearSelectionEvent) e));
         this.tested.setReadonly(false);
@@ -223,10 +224,10 @@ public class MapSelectionControlTest {
         tested.select(element.getUUID());
         assertEquals(1, tested.getSelectedItems().size());
         assertEquals(ELEMENT_UUID, tested.getSelectedItems().iterator().next());
-        verify(shape, times(1)).applyState(eq(ShapeState.SELECTED));
-        verify(shape, never()).applyState(eq(ShapeState.NONE));
-        verify(shape, never()).applyState(eq(ShapeState.INVALID));
-        verify(shape, never()).applyState(eq(ShapeState.HIGHLIGHT));
+        verify(shape, times(1)).applyState(ShapeState.SELECTED);
+        verify(shape, never()).applyState(ShapeState.NONE);
+        verify(shape, never()).applyState(ShapeState.INVALID);
+        verify(shape, never()).applyState(ShapeState.HIGHLIGHT);
         verify(canvas, times(1)).focus();
         final ArgumentCaptor<CanvasSelectionEvent> elementSelectedEventArgumentCaptor =
                 ArgumentCaptor.forClass(CanvasSelectionEvent.class);
@@ -246,10 +247,10 @@ public class MapSelectionControlTest {
 
         assertEquals(1, tested.getSelectedItems().size());
         assertEquals(ELEMENT_UUID, tested.getSelectedItems().iterator().next());
-        verify(shape, times(2)).applyState(eq(ShapeState.SELECTED));
-        verify(shape, never()).applyState(eq(ShapeState.NONE));
-        verify(shape, never()).applyState(eq(ShapeState.INVALID));
-        verify(shape, never()).applyState(eq(ShapeState.HIGHLIGHT));
+        verify(shape, times(2)).applyState(ShapeState.SELECTED);
+        verify(shape, never()).applyState(ShapeState.NONE);
+        verify(shape, never()).applyState(ShapeState.INVALID);
+        verify(shape, never()).applyState(ShapeState.HIGHLIGHT);
         verify(canvas, times(2)).focus();
         final ArgumentCaptor<CanvasSelectionEvent> elementSelectedEventArgumentCaptor =
                 ArgumentCaptor.forClass(CanvasSelectionEvent.class);
@@ -267,10 +268,10 @@ public class MapSelectionControlTest {
         tested.register(element);
         tested.setReadonly(true);
         tested.select(element.getUUID());
-        verify(shape, never()).applyState(eq(ShapeState.SELECTED));
-        verify(shape, never()).applyState(eq(ShapeState.NONE));
-        verify(shape, never()).applyState(eq(ShapeState.INVALID));
-        verify(shape, times(1)).applyState(eq(ShapeState.HIGHLIGHT));
+        verify(shape, never()).applyState(ShapeState.SELECTED);
+        verify(shape, never()).applyState(ShapeState.NONE);
+        verify(shape, never()).applyState(ShapeState.INVALID);
+        verify(shape, times(1)).applyState(ShapeState.HIGHLIGHT);
         verify(canvas, times(1)).focus();
     }
 
@@ -281,10 +282,10 @@ public class MapSelectionControlTest {
         tested.select(element.getUUID());
         tested.deselect(element.getUUID());
         assertTrue(tested.getSelectedItems().isEmpty());
-        verify(shape, times(1)).applyState(eq(ShapeState.SELECTED));
-        verify(shape, times(1)).applyState(eq(ShapeState.NONE));
-        verify(shape, never()).applyState(eq(ShapeState.INVALID));
-        verify(shape, never()).applyState(eq(ShapeState.HIGHLIGHT));
+        verify(shape, times(1)).applyState(ShapeState.SELECTED);
+        verify(shape, times(1)).applyState(ShapeState.NONE);
+        verify(shape, never()).applyState(ShapeState.INVALID);
+        verify(shape, never()).applyState(ShapeState.HIGHLIGHT);
     }
 
     @Test
@@ -294,10 +295,10 @@ public class MapSelectionControlTest {
         tested.select(element.getUUID());
         tested.clearSelection();
         assertTrue(tested.getSelectedItems().isEmpty());
-        verify(shape, times(1)).applyState(eq(ShapeState.SELECTED));
-        verify(shape, times(1)).applyState(eq(ShapeState.NONE));
-        verify(shape, never()).applyState(eq(ShapeState.INVALID));
-        verify(shape, never()).applyState(eq(ShapeState.HIGHLIGHT));
+        verify(shape, times(1)).applyState(ShapeState.SELECTED);
+        verify(shape, times(1)).applyState(ShapeState.NONE);
+        verify(shape, never()).applyState(ShapeState.INVALID);
+        verify(shape, never()).applyState(ShapeState.HIGHLIGHT);
         verify(clearSelectionEvent,
                times(1)).fire(any(CanvasClearSelectionEvent.class));
     }
@@ -341,7 +342,7 @@ public class MapSelectionControlTest {
         tested.init(canvasHandler);
         tested.register(element);
         tested.register(rootElement);
-        tested.select(new Sets.Builder<String>().add(ROOT_UUID).add(ELEMENT_UUID).build());
+        tested.select(Stream.of(ROOT_UUID, ELEMENT_UUID).collect(Collectors.toSet()));
 
         when(index.get(ELEMENT_UUID)).thenReturn(element);
         when(index.get(ROOT_UUID)).thenReturn(rootElement);
@@ -360,7 +361,7 @@ public class MapSelectionControlTest {
                                                                                 shape);
         tested.onShapeRemoved(shapeRemovedEvent);
         assertTrue(tested.getSelectedItems().isEmpty());
-        verify(shape, times(1)).applyState(eq(ShapeState.SELECTED));
+        verify(shape, times(1)).applyState(ShapeState.SELECTED);
     }
 
     @Test
@@ -371,10 +372,10 @@ public class MapSelectionControlTest {
         CanvasClearSelectionEvent event = new CanvasClearSelectionEvent(canvasHandler);
         tested.onCanvasClearSelection(event);
         assertTrue(tested.getSelectedItems().isEmpty());
-        verify(shape, times(1)).applyState(eq(ShapeState.SELECTED));
-        verify(shape, times(1)).applyState(eq(ShapeState.NONE));
-        verify(shape, never()).applyState(eq(ShapeState.INVALID));
-        verify(shape, never()).applyState(eq(ShapeState.HIGHLIGHT));
+        verify(shape, times(1)).applyState(ShapeState.SELECTED);
+        verify(shape, times(1)).applyState(ShapeState.NONE);
+        verify(shape, never()).applyState(ShapeState.INVALID);
+        verify(shape, never()).applyState(ShapeState.HIGHLIGHT);
         verify(clearSelectionEvent,
                never()).fire(any(CanvasClearSelectionEvent.class));
     }
@@ -388,10 +389,10 @@ public class MapSelectionControlTest {
         tested.onCanvasElementSelected(event);
         assertEquals(1, tested.getSelectedItems().size());
         assertEquals(ELEMENT_UUID, tested.getSelectedItems().iterator().next());
-        verify(shape, times(1)).applyState(eq(ShapeState.SELECTED));
-        verify(shape, times(1)).applyState(eq(ShapeState.NONE));
-        verify(shape, never()).applyState(eq(ShapeState.INVALID));
-        verify(shape, never()).applyState(eq(ShapeState.HIGHLIGHT));
+        verify(shape, times(1)).applyState(ShapeState.SELECTED);
+        verify(shape, times(1)).applyState(ShapeState.NONE);
+        verify(shape, never()).applyState(ShapeState.INVALID);
+        verify(shape, never()).applyState(ShapeState.HIGHLIGHT);
         final ArgumentCaptor<CanvasSelectionEvent> elementSelectedEventArgumentCaptor =
                 ArgumentCaptor.forClass(CanvasSelectionEvent.class);
         verify(elementSelectedEvent,

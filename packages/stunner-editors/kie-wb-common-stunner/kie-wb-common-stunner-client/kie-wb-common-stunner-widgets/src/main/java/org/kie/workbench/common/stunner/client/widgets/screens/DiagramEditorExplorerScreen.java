@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.stunner.client.widgets.screens;
 
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,8 +47,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 /**
  * The screen for the project context (includes the kie workbenches) which is included in a docked area
  * and displays a preview and and a diagram element's explorer (using a tree visual hierarchy) for the one being edited.
@@ -57,7 +56,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 @Named(DiagramEditorExplorerScreen.SCREEN_ID)
 public class DiagramEditorExplorerScreen extends AbstractActivity {
 
-    private static Logger LOGGER = Logger.getLogger(DiagramEditorExplorerScreen.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DiagramEditorExplorerScreen.class.getName());
 
     public static final String SCREEN_ID = "ProjectDiagramExplorerScreen";
     public static final String TITLE = "Explore";
@@ -71,7 +70,6 @@ public class DiagramEditorExplorerScreen extends AbstractActivity {
     private final View view;
 
     private PlaceRequest placeRequest;
-    private String title = TITLE;
     private TreeExplorer explorerWidget;
     private SessionDiagramPreview<AbstractSession> previewWidget;
 
@@ -167,21 +165,22 @@ public class DiagramEditorExplorerScreen extends AbstractActivity {
 
     @SuppressWarnings("unchecked")
     void onCanvasSessionOpened(@Observes SessionOpenedEvent sessionOpenedEvent) {
-        checkNotNull("sessionOpenedEvent",
-                     sessionOpenedEvent);
+        checkNotNull("sessionOpenedEvent", sessionOpenedEvent);
         show(sessionOpenedEvent.getSession());
     }
 
     void onCanvasSessionDestroyed(@Observes SessionDestroyedEvent sessionDestroyedEvent) {
-        checkNotNull("sessionDestroyedEvent",
-                     sessionDestroyedEvent);
+        checkNotNull("sessionDestroyedEvent", sessionDestroyedEvent);
         close();
     }
 
     void onSessionDiagramOpenedEvent(@Observes SessionDiagramOpenedEvent sessionDiagramOpenedEvent) {
-        checkNotNull("sessionDiagramOpenedEvent",
-                     sessionDiagramOpenedEvent);
+        checkNotNull("sessionDiagramOpenedEvent", sessionDiagramOpenedEvent);
         show(sessionDiagramOpenedEvent.getSession());
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     private void showExplorer(final ClientSession session) {
@@ -194,7 +193,7 @@ public class DiagramEditorExplorerScreen extends AbstractActivity {
     }
 
     private void showPreview(final ClientSession session) {
-        if (null != session && session instanceof AbstractSession) {
+        if (session instanceof AbstractSession) {
             if (null != previewWidget) {
                 closePreview();
             }

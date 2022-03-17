@@ -17,13 +17,13 @@
 package org.uberfire.ext.widgets.core.client.tree;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Composite;
@@ -35,8 +35,6 @@ import org.uberfire.client.workbench.ouia.OuiaComponent;
 import org.uberfire.client.workbench.ouia.OuiaComponentIdAttribute;
 import org.uberfire.client.workbench.ouia.OuiaComponentTypeAttribute;
 import org.uberfire.ext.widgets.core.client.resources.TreeNavigatorResources;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class TreeItem<I extends TreeItem> extends Composite implements OuiaComponent {
 
@@ -74,8 +72,7 @@ public class TreeItem<I extends TreeItem> extends Composite implements OuiaCompo
     ) {
         this.label = label;
         this.uuid = value;
-        this.type = checkNotNull("type",
-                                 type);
+        this.type = Objects.requireNonNull(type, "Parameter named 'type' should be not null!");
 
         if (type.equals(Type.CONTAINER) || type.equals(Type.ROOT)) {
             final FlowPanel folder = contentProvider.get();
@@ -103,21 +100,18 @@ public class TreeItem<I extends TreeItem> extends Composite implements OuiaCompo
                             folderName.add(name);
                         }
                     }
-                    header.addDomHandler(new ClickHandler() {
-                                             @Override
-                                             public void onClick(ClickEvent event) {
-                                                 if (!isSelected) {
-                                                     updateSelected();
-                                                 }
-                                                 if (state.equals(State.CLOSE)) {
-                                                     setState(State.OPEN,
-                                                              true);
-                                                 } else {
-                                                     setState(State.CLOSE,
-                                                              true);
-                                                 }
-                                             }
-                                         },
+                    header.addDomHandler(event -> {
+                        if (!isSelected) {
+                            updateSelected();
+                        }
+                        if (state.equals(State.CLOSE)) {
+                            setState(State.OPEN,
+                                     true);
+                        } else {
+                            setState(State.CLOSE,
+                                     true);
+                        }
+                    },
                                          ClickEvent.getType());
                 }
                 {
@@ -148,13 +142,8 @@ public class TreeItem<I extends TreeItem> extends Composite implements OuiaCompo
                         itemName.add(name);
                     }
                 }
-                item.addDomHandler(new ClickHandler() {
-                                       @Override
-                                       public void onClick(ClickEvent event) {
-                                           tree.onSelection((I) TreeItem.this,
-                                                            true);
-                                       }
-                                   },
+                item.addDomHandler(event -> tree.onSelection((I) TreeItem.this,
+                                  true),
                                    ClickEvent.getType());
             }
             initWidget(item);
