@@ -19,23 +19,35 @@ import * as React from "react";
 import { Logger } from "../../Logger";
 import { Dependencies } from "../Dependencies";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
+import { GlobalContext } from "./GlobalContext";
+import { ChromeExtensionI18nContextProvider } from "../i18n";
 
-export interface GlobalContextType {
+export interface GlobalProps {
   id: string;
-  envelopeLocator: EditorEnvelopeLocator;
+  editorEnvelopeLocator: EditorEnvelopeLocator;
   logger: Logger;
   dependencies?: Dependencies;
   resourceContentServiceFactory: ResourceContentServiceFactory;
-  imagesUriPath: string;
   resourcesUriPath: string;
+  imagesUriPath: string;
 }
 
-export const GlobalContext = React.createContext<GlobalContextType>({} as any);
-
-export function useGlobals() {
-  return React.useContext(GlobalContext);
-}
-
-export function useEditorEnvelopeLocator() {
-  return React.useContext(GlobalContext).envelopeLocator;
-}
+export const Global: React.FunctionComponent<GlobalProps> = (props) => {
+  return (
+    <ChromeExtensionI18nContextProvider>
+      <GlobalContext.Provider
+        value={{
+          id: props.id,
+          logger: props.logger,
+          dependencies: props.dependencies,
+          envelopeLocator: props.editorEnvelopeLocator,
+          imagesUriPath: props.imagesUriPath,
+          resourcesUriPath: props.resourcesUriPath,
+          resourceContentServiceFactory: props.resourceContentServiceFactory,
+        }}
+      >
+        {props.children}
+      </GlobalContext.Provider>
+    </ChromeExtensionI18nContextProvider>
+  );
+};

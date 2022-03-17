@@ -60,7 +60,7 @@ export function ServerlessWorkflowList() {
         <EmptyStateBody>
           For help getting started, access the <a>quick start guide</a>.
         </EmptyStateBody>
-        <Button variant="primary" onClick={() => history.push({ pathname: routes.newWorskapce.path({}) })}>
+        <Button variant="primary" onClick={() => history.replace({ pathname: routes.newWorskapce.path({}) })}>
           Create Serverless Workflow
         </Button>
       </EmptyState>
@@ -114,7 +114,10 @@ export function ServerlessWorkflowList() {
               return (
                 <Flex direction={{ default: "column" }} fullWidth={{ default: "fullWidth" }} style={{ height: "100%" }}>
                   <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
-                    <Button variant="primary" onClick={() => history.push({ pathname: routes.newWorskapce.path({}) })}>
+                    <Button
+                      variant="primary"
+                      onClick={() => history.replace({ pathname: routes.newWorskapce.path({}) })}
+                    >
                       Create Serverless Workflow
                     </Button>
                   </FlexItem>

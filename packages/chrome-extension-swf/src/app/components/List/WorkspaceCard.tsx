@@ -126,7 +126,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
               isCompact={true}
               style={{ cursor: "pointer" }}
               onClick={() => {
-                history.push({
+                history.replace({
                   pathname: routes.workspaceWithFilePath.path({
                     workspaceId: editableFiles[0].workspaceId,
                     fileRelativePath: editableFiles[0].relativePath,

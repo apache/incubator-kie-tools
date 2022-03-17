@@ -15,24 +15,37 @@
  */
 
 import * as React from "react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import * as ReactDOM from "react-dom";
 import { SWF_MENU_ITEM_CONTAINER_CLASS, SWF_PAGE_CONTAINER_CLASS } from "../../constants";
 import { RoutesSwitch } from "../../navigation/RoutesSwitch";
 import { useGlobals } from "../../common/GlobalContext";
+import { Main } from "../../common/Main";
 
 interface CreateServerlessWorkflowAppProps {
   id: string;
 }
 
-const SWF_URL_PATH = "/application-services/swf";
+const SWF_URL_PATH = "/application-services/swf/#/";
 
-let lastUrl = location.href;
+let lastUrl = window.location.href;
+
+const urlPathObserver = (callback: () => void) => {
+  new MutationObserver(() => {
+    const url = window.location.href;
+    if (url !== lastUrl) {
+      if (!url.includes(SWF_URL_PATH)) {
+        callback();
+      }
+      lastUrl = url;
+    }
+  }).observe(document, { subtree: true, childList: true });
+};
 
 export function ServerlessWorkflowMenuApp(props: CreateServerlessWorkflowAppProps) {
   const globals = useGlobals();
 
-  const dependencies = globals.dependencies!;
+  const dependencies = useMemo(() => globals.dependencies!, [globals.dependencies]);
 
   const [menuLoaded, setMenuLoaded] = useState(false);
   const [container, setContainer] = useState<HTMLElement | null>(null);
@@ -48,7 +61,7 @@ export function ServerlessWorkflowMenuApp(props: CreateServerlessWorkflowAppProp
         source: "web",
       },
       "Serverless Workflow",
-      "https://console.redhat.com/application-services/swf"
+      "https://console.redhat.com/application-services/swf/#/"
     );
 
     document.title = "Serverless Workflow";
@@ -63,21 +76,17 @@ export function ServerlessWorkflowMenuApp(props: CreateServerlessWorkflowAppProp
   }, [dependencies.applicationServices]);
 
   useEffect(() => {
-    if (window.location.pathname.includes(SWF_URL_PATH)) {
+    if (window.location.pathname.includes(SWF_URL_PATH) && !showPage) {
       openPage();
     }
+  }, [openPage, showPage]);
 
-    new MutationObserver(() => {
-      const url = location.href;
-      if (url !== lastUrl) {
-        if (!url.includes(SWF_URL_PATH)) {
-          setShowPage(false);
-          dependencies.applicationServices.page()!.style.display = "";
-        }
-        lastUrl = url;
-      }
-    }).observe(document, { subtree: true, childList: true });
-  }, [dependencies.applicationServices, openPage]);
+  useEffect(() => {
+    urlPathObserver(() => {
+      setShowPage(false);
+      dependencies.applicationServices.page()!.style.display = "";
+    });
+  }, [dependencies.applicationServices]);
 
   useEffect(() => {
     if (menuLoaded) {
@@ -112,7 +121,9 @@ export function ServerlessWorkflowMenuApp(props: CreateServerlessWorkflowAppProp
         )}
       {showPage &&
         ReactDOM.createPortal(
-          <RoutesSwitch />,
+          <Main>
+            <RoutesSwitch />
+          </Main>,
           createPageContainer(
             props.id,
             dependencies.applicationServices.main()!,

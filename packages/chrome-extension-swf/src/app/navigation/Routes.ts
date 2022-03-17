@@ -106,18 +106,29 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
   };
 }
 
-export const routes = {
-  home: new Route<{
-    queryParams: QueryParams.EXPAND;
-  }>(() => "/"),
+export const routes = (imagesUriPath: string, resourcesUriPath: string) => {
+  return {
+    home: new Route<{
+      queryParams: QueryParams.EXPAND;
+    }>(() => "/"),
 
-  newWorskapce: new Route(() => "/new"),
+    newWorskapce: new Route(() => "/new"),
 
-  importSwf: new Route<{
-    queryParams: QueryParams.URL | QueryParams.BRANCH;
-  }>(() => `/import`),
+    import: new Route<{
+      queryParams: QueryParams.URL | QueryParams.BRANCH;
+    }>(() => `/import`),
 
-  workspaceWithFilePath: new Route<{
-    pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_RELATIVE_PATH;
-  }>(({ workspaceId, fileRelativePath }) => `/${workspaceId}/file/${fileRelativePath}`),
+    workspaceWithFilePath: new Route<{
+      pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_RELATIVE_PATH;
+    }>(({ workspaceId, fileRelativePath }) => `/${workspaceId}/file/${fileRelativePath}`),
+
+    static: {
+      images: {
+        vscodeLogoBlue: new Route<{}>(() => `${imagesUriPath}/vscode.svg`),
+        vscodeLogoWhite: new Route<{}>(() => `${imagesUriPath}/vscode-alt.svg`),
+        kogitoLogoWhite: new Route<{}>(() => `${imagesUriPath}/kogito_logo_white.png`),
+        kieHorizontalLogoReverse: new Route<{}>(() => `${imagesUriPath}/kie_horizontal_rgb_fullcolor_reverse.svg`),
+      },
+    },
+  };
 };

@@ -43,7 +43,7 @@ export function NewWorkspaceWithEmptyFilePage() {
         })
       )
       .then((file) => {
-        history.push({
+        history.replace({
           pathname: routes.workspaceWithFilePath.path({
             workspaceId: file.workspaceId,
             fileRelativePath: file.relativePath,

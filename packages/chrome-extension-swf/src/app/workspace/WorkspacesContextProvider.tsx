@@ -366,7 +366,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const addEmptyFile = useCallback(
     async (args: { fs: KieSandboxFs; workspaceId: string; destinationDirRelativePath: string; extension: string }) =>
-      addFile({ ...args, name: NEW_FILE_DEFAULT_NAME, content: "" }),
+      addFile({ ...args, name: NEW_FILE_DEFAULT_NAME, content: "{}" }),
     [addFile]
   );
 

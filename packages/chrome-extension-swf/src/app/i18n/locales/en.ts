@@ -122,4 +122,39 @@ export const en: ChromeExtensionI18n = {
       useWizard: "Configure through the guided wizard instead",
     },
   },
+  embedModal: {
+    title: "Embed",
+    description:
+      "Embed the editor and content in your page. Choose the options below and copy the embed code to your clipboard:",
+    copy: "Copy",
+    source: {
+      current: {
+        label: "Current content",
+        description: "The embedded Editor will contain the current content, so it cannot be changed externally.",
+      },
+      gist: {
+        tooltip: `Only available when editing a file from a ${en_common.names.github} gist.`,
+        label: `${en_common.names.github} gist`,
+        description:
+          "The embedded Editor will fetch the content from the open gist. Changes made to this gist will be reflected in the Editor.",
+      },
+    },
+    embedCode: "Embed code",
+    copiedToClipboard: "Copied to clipboard",
+  },
+  githubTokenModal: {
+    header: {
+      title: `${en_common.names.github} ${en_common.names.oauth} ${en_common.terms.token}`,
+      subtitle: `Set up your ${en_common.names.github} token so you can create and update gist.`,
+    },
+    footer: {
+      createNewToken: "Create a new token",
+      placeHolder: "Paste your token here",
+    },
+    body: {
+      disclaimer: `The token you provide is locally stored as a browser cookie and is never shared with anyone.`,
+      learnMore: `Learn more about ${en_common.names.github} tokens`,
+      note: `You should provide a token with the ${"'gist'".bold()} permission.`,
+    },
+  },
 };

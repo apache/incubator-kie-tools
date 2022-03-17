@@ -28,10 +28,8 @@ const resourcesPathPrefix = new ChromeRouter().getResourcesPathPrefix();
 
 startExtension({
   name: "Kogito :: Serverless Workflow Extension",
-  imageUris: {
-    kie: chrome.runtime.getURL("/resources/kie_icon_rgb_fullcolor_default.svg"),
-    serverlessWorkflow: chrome.runtime.getURL("/resources/sw-logo-transparent.png"),
-  },
+  imagesUriPath: chrome.runtime.getURL("/images"),
+  resourcesUriPath: chrome.runtime.getURL("/resources"),
   editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
     new EnvelopeMapping(
       "sw",

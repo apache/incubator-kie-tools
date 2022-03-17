@@ -4,11 +4,10 @@ import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/d
 import { Logger } from "../../Logger";
 import { ResourceContentServiceFactory } from "../common/ChromeResourceContentService";
 import { RoutesSwitch } from "../navigation/RoutesSwitch";
+import { Global } from "../common/Global";
 
-const imageUris = {
-  kie: "/resources/kie_icon_rgb_fullcolor_default.svg",
-  serverlessWorkflow: "/resources/sw-logo-transparent.png",
-};
+const imagesUriPath = "/images/";
+const resourcesUriPath = "/resources/";
 
 export const editorEnvelopeLocator = new EditorEnvelopeLocator(window.location.origin, [
   new EnvelopeMapping("sw", "**/*.sw.+(json|yml|yaml)", `envelope/`, `envelope/index.html`),
@@ -19,13 +18,16 @@ const resourceContentServiceFactory = new ResourceContentServiceFactory();
 const logger = new Logger("standalone-chrome-extension-swf");
 
 export const App = () => (
-  <Main
+  <Global
     id={"standalone"}
     editorEnvelopeLocator={editorEnvelopeLocator}
     logger={logger}
     resourceContentServiceFactory={resourceContentServiceFactory}
-    imageUris={imageUris}
+    imagesUriPath={imagesUriPath}
+    resourcesUriPath={resourcesUriPath}
   >
-    <RoutesSwitch />
-  </Main>
+    <Main>
+      <RoutesSwitch />
+    </Main>
+  </Global>
 );

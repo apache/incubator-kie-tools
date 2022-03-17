@@ -32,7 +32,7 @@ export function NoMatchPage() {
   const history = useHistory();
 
   const returnHome = useCallback(() => {
-    history.push({ pathname: routes.home.path({}) });
+    history.replace({ pathname: routes.home.path({}) });
   }, [history, routes]);
 
   return (

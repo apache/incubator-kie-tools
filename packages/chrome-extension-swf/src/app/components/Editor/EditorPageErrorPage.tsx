@@ -37,7 +37,7 @@ export function EditorPageErrorPage(props: Props) {
   const [showDetails, setShowDetails] = useState(false);
 
   const returnHome = useCallback(() => {
-    history.push({ pathname: routes.home.path({}) });
+    history.replace({ pathname: routes.home.path({}) });
   }, [history, routes]);
 
   const detailsString = useMemo(() => {

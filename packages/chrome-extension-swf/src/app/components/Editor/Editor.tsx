@@ -18,20 +18,12 @@ import * as React from "react";
 import { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditor, useEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
-import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
-import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { useChromeExtensionI18n } from "../../i18n";
 import { SW_JSON_EXTENSION } from "../../openshift/OpenShiftContext";
 import { useGlobals } from "../../common/GlobalContext";
 import { LoadingSpinner } from "../../common/LoadingSpinner";
 import { Page, PageSection, PageSectionVariants } from "@patternfly/react-core/dist/js/components/Page";
-import { EditorToolbar } from "./EditorToolbar";
 import { useWorkspaceFilePromise } from "../../workspace/hooks/WorkspaceFileHooks";
 import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
@@ -46,12 +38,7 @@ import { useWorkspaces } from "../../workspace/WorkspacesContext";
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
 import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
-
-enum FormValiationOptions {
-  INITIAL = "INITIAL",
-  ERROR = "ERROR",
-  SUCCESS = "SUCCESS",
-}
+import { EditorToolbarNew } from "./EditorToolbarNew";
 
 export interface ServerlessWorkflowEditorProps {
   workspaceId: string;
@@ -250,9 +237,9 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
           </Bullseye>
         }
         rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
-        resolved={() => (
+        resolved={(file) => (
           <Page>
-            <EditorToolbar workspaceFilePromise={workspaceFilePromise} editor={editor} />
+            <EditorToolbarNew workspaceFile={file} editor={editor} alerts={alerts} alertsRef={alertsRef} />
             <PageSection variant={PageSectionVariants.default}>
               <div style={{ height: "100%" }}>
                 {!isEditorReady && <LoadingSpinner />}

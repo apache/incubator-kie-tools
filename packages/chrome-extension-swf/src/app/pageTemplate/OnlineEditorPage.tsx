@@ -34,18 +34,13 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
           <MastheadMain style={{ justifyContent: "space-between" }}>
             <PageHeaderToolsItem className={"pf-l-flex"}>
               <MastheadBrand
-                onClick={() => history.push({ pathname: routes.home.path({}) })}
+                onClick={() => history.replace({ pathname: routes.home.path({}) })}
                 style={{ textDecoration: "none" }}
               >
                 <Flex alignItems={{ default: "alignItemsCenter" }}>
                   <FlexItem style={{ display: "flex", alignItems: "center" }}>
                     <TextContent>
                       <Text component={TextVariants.h1}>Serverless Workflow</Text>
-                    </TextContent>
-                  </FlexItem>
-                  <FlexItem style={{ display: "flex", alignItems: "center" }}>
-                    <TextContent>
-                      <Text component={TextVariants.h3}>Sandbox</Text>
                     </TextContent>
                   </FlexItem>
                 </Flex>

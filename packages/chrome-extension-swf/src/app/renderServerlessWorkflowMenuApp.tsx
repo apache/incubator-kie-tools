@@ -18,21 +18,14 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import { createAndGetMainContainer } from "./utils";
-import { Globals, Main } from "./common/Main";
 import { ServerlessWorkflowMenuApp } from "./components/Menu/ServerlessWorkflowMenuApp";
+import { Global, GlobalProps } from "./common/Global";
 
-export function renderServerlessWorkflowMenuApp(args: Globals) {
+export function renderServerlessWorkflowMenuApp(args: GlobalProps) {
   ReactDOM.render(
-    <Main
-      id={args.id}
-      editorEnvelopeLocator={args.editorEnvelopeLocator}
-      dependencies={args.dependencies}
-      logger={args.logger}
-      resourceContentServiceFactory={args.resourceContentServiceFactory}
-      imageUris={args.imageUris}
-    >
+    <Global {...args}>
       <ServerlessWorkflowMenuApp id={args.id} />
-    </Main>,
+    </Global>,
     createAndGetMainContainer(args.id, args.dependencies!.all.body()),
     () => args.logger.log("Mounted.")
   );
