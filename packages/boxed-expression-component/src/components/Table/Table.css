@@ -210,6 +210,13 @@
   table
   thead
   tr:last-child
+  th.decision-table--annotation.focused
+  > .react-resizable,
+.expression-container
+  .decision-table-expression
+  table
+  thead
+  tr:last-child
   th.decision-table--annotation:focus
   > .react-resizable,
 .expression-container

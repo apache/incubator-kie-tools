@@ -17,7 +17,7 @@
 import { Th, Thead, Tr } from "@patternfly/react-table";
 import * as _ from "lodash";
 import * as React from "react";
-import { useCallback, useMemo, useEffect, useRef, ChangeEvent } from "react";
+import { useCallback, useMemo, useEffect, useRef, useState, ChangeEvent } from "react";
 import { Column, ColumnInstance, HeaderGroup, TableInstance } from "react-table";
 import { DataType, TableHeaderVisibility } from "../../api";
 import { EditExpressionMenu, EditTextInline } from "../EditExpressionMenu";
@@ -123,7 +123,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   );
 
   const renderCellInfoLabel = useCallback(
-    (column: ColumnInstance, columnIndex: number) => {
+    (column: ColumnInstance, columnIndex: number, onAnnotationCellToggle?: (isReadMode: boolean) => void) => {
       if (column.inlineEditable) {
         return (
           <EditTextInline
@@ -135,6 +135,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
             onCancel={(event: React.KeyboardEvent<HTMLInputElement>) => {
               focusCurrentCell(event.target as HTMLElement);
             }}
+            onToggle={onAnnotationCellToggle}
           />
         );
       }
@@ -144,9 +145,11 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   );
 
   const renderHeaderCellInfo = useCallback(
-    (column, columnIndex) => (
+    (column, columnIndex, onAnnotationCellToggle?: (isReadMode: boolean) => void) => (
       <div className="header-cell-info" data-ouia-component-type="expression-column-header-cell-info">
-        {column.headerCellElement ? column.headerCellElement : renderCellInfoLabel(column, columnIndex)}
+        {column.headerCellElement
+          ? column.headerCellElement
+          : renderCellInfoLabel(column, columnIndex, onAnnotationCellToggle)}
         {column.dataType ? <p className="pf-u-text-truncate data-type">({column.dataType})</p> : null}
       </div>
     ),
@@ -183,106 +186,160 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
     [boxedExpressionEditorGWTService]
   );
 
-  const renderResizableHeaderCell = useCallback(
-    (column, rowIndex, columnIndex) => {
-      const headerProps = {
-        ...column.getHeaderProps(),
-        style: {},
-      };
-      const width = column.width || DEFAULT_MIN_WIDTH;
-      const isColspan = (column.columns?.length ?? 0) > 0 || false;
-      const columnKey = getColumnKey(column);
-      const isFocusable = /^_\w{8}-(\w{4}-){3}\w{12}$/.test(columnKey);
+  // const renderResizableHeaderCell = useCallback(
+  //   (column, rowIndex, columnIndex) => {
+  //     const headerProps = {
+  //       ...column.getHeaderProps(),
+  //       style: {},
+  //     };
+  //     const width = column.width || DEFAULT_MIN_WIDTH;
+  //     const isColspan = (column.columns?.length ?? 0) > 0 || false;
+  //     const columnKey = getColumnKey(column);
+  //     const isFocusable = /^_\w{8}-(\w{4}-){3}\w{12}$/.test(columnKey);
+  //     let isAnnotationCellEditMode = false;
+  //
+  //     const getCssClass = () => {
+  //       const cssClasses = [columnKey];
+  //       if (!column.dataType) {
+  //         cssClasses.push("no-clickable-cell");
+  //       }
+  //       if (isColspan) {
+  //         cssClasses.push("colspan-header");
+  //       }
+  //       if (column.placeholderOf) {
+  //         cssClasses.push("colspan-header");
+  //         cssClasses.push(column.placeholderOf.cssClasses);
+  //         cssClasses.push(column.placeholderOf.groupType);
+  //       }
+  //       cssClasses.push(column.groupType || "");
+  //       cssClasses.push(column.cssClasses || "");
+  //       return cssClasses.join(" ");
+  //     };
+  //
+  //     /**
+  //      * Get the rowspan value.
+  //      *
+  //      * @param cssClasses the classes of the cell
+  //      * @returns the value, default is 1
+  //      */
+  //     const getRowSpan = (cssClasses: string): number => {
+  //       if (
+  //         rowIndex === tableInstance.headerGroups.length - 1 &&
+  //         (cssClasses.includes("decision-table--input") || cssClasses.includes("decision-table--annotation"))
+  //       ) {
+  //         return 2;
+  //       }
+  //
+  //       return 1;
+  //     };
+  //
+  //     /**
+  //      * Callback called when the annotation cell toggle edit/read mode.
+  //      *
+  //      * @param isReadMode true if is read mode, false otherwise
+  //      */
+  //     const onAnnotationCellToggle = (isReadMode: boolean) => {
+  //       console.log('isReadMode', isReadMode);
+  //       isAnnotationCellEditMode = !isReadMode;
+  //     };
+  //
+  //     const cssClasses = getCssClass();
+  //
+  //     return (
+  //       <ThCell
+  //         className={cssClasses}
+  //         headerProps={headerProps}
+  //         isFocusable={isFocusable}
+  //         key={columnKey}
+  //         onClick={onHeaderClick(columnKey)}
+  //         onKeyDown={onCellKeyDown}
+  //         rowIndex={rowIndex}
+  //         rowSpan={getRowSpan(cssClasses)}
+  //         thProps={thProps(column)}
+  //       >
+  //         <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
+  //           <div className="header-cell" data-ouia-component-type="expression-column-header">
+  //             {column.dataType && editableHeader ? (
+  //               <EditExpressionMenu
+  //                 title={getColumnLabel(column.groupType)}
+  //                 selectedExpressionName={column.label}
+  //                 selectedDataType={column.dataType}
+  //                 onExpressionUpdate={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
+  //                 key={columnKey}
+  //               >
+  //                 {renderHeaderCellInfo(column, columnIndex)}
+  //               </EditExpressionMenu>
+  //             ) : (
+  //               renderHeaderCellInfo(column, columnIndex, onAnnotationCellToggle)
+  //             )}
+  //           </div>
+  //         </Resizer>
+  //       </ThCell>
+  //     );
+  //   },
+  //   [
+  //     editableHeader,
+  //     getColumnKey,
+  //     getColumnLabel,
+  //     onCellKeyDown,
+  //     onColumnNameOrDataTypeUpdate,
+  //     onHeaderClick,
+  //     onHorizontalResizeStop,
+  //     renderHeaderCellInfo,
+  //     thProps,
+  //     tableInstance,
+  //   ]
+  // );
+  //
+  // const renderColumn = useCallback(
+  //   (column: ColumnInstance, rowIndex: number, columnIndex: number) =>
+  //     column.isCountColumn
+  //       ? renderCountColumn(column, rowIndex)
+  //       : renderResizableHeaderCell(column, rowIndex, columnIndex),
+  //   [renderCountColumn, renderResizableHeaderCell]
+  // );
 
-      const getCssClass = () => {
-        const cssClasses = [columnKey];
-        if (!column.dataType) {
-          cssClasses.push("no-clickable-cell");
-        }
-        if (isColspan) {
-          cssClasses.push("colspan-header");
-        }
-        if (column.placeholderOf) {
-          cssClasses.push("colspan-header");
-          cssClasses.push(column.placeholderOf.cssClasses);
-          cssClasses.push(column.placeholderOf.groupType);
-        }
-        cssClasses.push(column.groupType || "");
-        cssClasses.push(column.cssClasses || "");
-        return cssClasses.join(" ");
-      };
-
-      /**
-       * Get the rowspan value.
-       *
-       * @param cssClasses the classes of the cell
-       * @returns the value, default is 1
-       */
-      const getRowSpan = (cssClasses: string): number => {
-        if (
-          rowIndex === tableInstance.headerGroups.length - 1 &&
-          (cssClasses.includes("decision-table--input") || cssClasses.includes("decision-table--annotation"))
-        ) {
-          return 2;
-        }
-
-        return 1;
-      };
-
-      const cssClasses = getCssClass();
-
-      return (
-        <ThCell
-          className={cssClasses}
-          headerProps={headerProps}
-          isFocusable={isFocusable}
-          key={columnKey}
-          onClick={onHeaderClick(columnKey)}
-          onKeyDown={onCellKeyDown}
+  const renderColumn = useCallback(
+    (column: ColumnInstance, rowIndex: number, columnIndex: number) =>
+      column.isCountColumn ? (
+        renderCountColumn(column, rowIndex)
+      ) : (
+        <RenderResizableHeaderCell
+          key={`${rowIndex}_${columnIndex}`}
+          editableHeader={editableHeader}
+          getColumnKey={getColumnKey}
+          getColumnLabel={getColumnLabel}
+          onCellKeyDown={onCellKeyDown}
+          onColumnNameOrDataTypeUpdate={onColumnNameOrDataTypeUpdate}
+          onHeaderClick={onHeaderClick}
+          onHorizontalResizeStop={onHorizontalResizeStop}
+          renderHeaderCellInfo={renderHeaderCellInfo}
+          thProps={thProps}
+          tableInstance={tableInstance}
+          column={column}
           rowIndex={rowIndex}
-          rowSpan={getRowSpan(cssClasses)}
-          thProps={thProps(column)}
-        >
-          <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
-            <div className="header-cell" data-ouia-component-type="expression-column-header">
-              {column.dataType && editableHeader ? (
-                <EditExpressionMenu
-                  title={getColumnLabel(column.groupType)}
-                  selectedExpressionName={column.label}
-                  selectedDataType={column.dataType}
-                  onExpressionUpdate={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
-                  key={columnKey}
-                >
-                  {renderHeaderCellInfo(column, columnIndex)}
-                </EditExpressionMenu>
-              ) : (
-                renderHeaderCellInfo(column, columnIndex)
-              )}
-            </div>
-          </Resizer>
-        </ThCell>
-      );
-    },
+          columnIndex={columnIndex}
+          skipLastHeaderGroup={skipLastHeaderGroup}
+          tableColumns={tableColumns}
+          onColumnsUpdate={onColumnsUpdate}
+        />
+      ),
     [
+      renderCountColumn,
       editableHeader,
       getColumnKey,
       getColumnLabel,
       onCellKeyDown,
       onColumnNameOrDataTypeUpdate,
+      onColumnsUpdate,
       onHeaderClick,
       onHorizontalResizeStop,
       renderHeaderCellInfo,
-      thProps,
+      skipLastHeaderGroup,
+      tableColumns,
       tableInstance,
+      thProps,
     ]
-  );
-
-  const renderColumn = useCallback(
-    (column: ColumnInstance, rowIndex: number, columnIndex: number) =>
-      column.isCountColumn
-        ? renderCountColumn(column, rowIndex)
-        : renderResizableHeaderCell(column, rowIndex, columnIndex),
-    [renderCountColumn, renderResizableHeaderCell]
   );
 
   const getHeaderGroups = useCallback(
@@ -334,6 +391,126 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   return <>{header}</>;
 };
 
+interface RenderResizableHeaderCellProps extends TableHeaderProps {
+  column: any;
+  rowIndex: number;
+  columnIndex: number;
+  onColumnNameOrDataTypeUpdate: (column: ColumnInstance, columnIndex: number) => any;
+  getColumnLabel: (groupType: string) => string | undefined;
+  onHeaderClick: (columnKey: string) => () => void;
+  onHorizontalResizeStop: (column: Column, columnWidth: number) => void;
+  renderHeaderCellInfo: (
+    column: Column,
+    columnIndex: number,
+    onAnnotationCellToggle?: (isReadMode: boolean) => void
+  ) => React.ReactElement;
+}
+
+const RenderResizableHeaderCell = ({
+  editableHeader,
+  getColumnKey,
+  getColumnLabel,
+  onCellKeyDown,
+  onColumnNameOrDataTypeUpdate,
+  onHeaderClick,
+  onHorizontalResizeStop,
+  renderHeaderCellInfo,
+  thProps,
+  tableInstance,
+  column,
+  rowIndex,
+  columnIndex,
+}: RenderResizableHeaderCellProps) => {
+  const headerProps = {
+    ...column.getHeaderProps(),
+    style: {},
+  };
+  const width = column.width || DEFAULT_MIN_WIDTH;
+  const isColspan = (column.columns?.length ?? 0) > 0 || false;
+  const columnKey = getColumnKey(column);
+  const isFocusable = /^_\w{8}-(\w{4}-){3}\w{12}$/.test(columnKey);
+  const [isAnnotationCellEditMode, setIsAnnotationCellEditMode] = useState(false);
+
+  const getCssClass = () => {
+    const cssClasses = [columnKey];
+    if (!column.dataType) {
+      cssClasses.push("no-clickable-cell");
+    }
+    if (isColspan) {
+      cssClasses.push("colspan-header");
+    }
+    if (column.placeholderOf) {
+      cssClasses.push("colspan-header");
+      cssClasses.push(column.placeholderOf.cssClasses);
+      cssClasses.push(column.placeholderOf.groupType);
+    }
+    cssClasses.push(column.groupType || "");
+    cssClasses.push(column.cssClasses || "");
+    cssClasses.push(isAnnotationCellEditMode ? "focused" : "");
+    return cssClasses.join(" ");
+  };
+
+  /**
+   * Get the rowspan value.
+   *
+   * @param cssClasses the classes of the cell
+   * @returns the value, default is 1
+   */
+  const getRowSpan = (cssClasses: string): number => {
+    if (
+      rowIndex === tableInstance.headerGroups.length - 1 &&
+      (cssClasses.includes("decision-table--input") || cssClasses.includes("decision-table--annotation"))
+    ) {
+      return 2;
+    }
+
+    return 1;
+  };
+
+  /**
+   * Callback called when the annotation cell toggle edit/read mode.
+   *
+   * @param isReadMode true if is read mode, false otherwise
+   */
+  const onAnnotationCellToggle = (isReadMode: boolean) => {
+    setIsAnnotationCellEditMode(!isReadMode);
+  };
+
+  const cssClasses = getCssClass();
+
+  return (
+    <ThCell
+      className={cssClasses}
+      headerProps={headerProps}
+      isFocusable={isFocusable}
+      key={columnKey}
+      onClick={onHeaderClick(columnKey)}
+      onKeyDown={onCellKeyDown}
+      rowIndex={rowIndex}
+      rowSpan={getRowSpan(cssClasses)}
+      thProps={thProps(column)}
+    >
+      <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
+        <div className="header-cell" data-ouia-component-type="expression-column-header">
+          {column.dataType && editableHeader ? (
+            <EditExpressionMenu
+              title={getColumnLabel(column.groupType)}
+              selectedExpressionName={column.label}
+              selectedDataType={column.dataType}
+              onExpressionUpdate={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
+              key={columnKey}
+            >
+              {renderHeaderCellInfo(column, columnIndex)}
+            </EditExpressionMenu>
+          ) : (
+            renderHeaderCellInfo(column, columnIndex, onAnnotationCellToggle)
+          )}
+        </div>
+      </Resizer>
+    </ThCell>
+  );
+};
+
 interface ThCellProps {
   children?: React.ReactElement;
   className: string;
@@ -358,6 +535,7 @@ function ThCell({
   rowSpan = 1,
 }: ThCellProps) {
   const thRef = useRef<HTMLElement>(null);
+  // FIXME: esc key doesn't cancel editing of annotations cell //
 
   useEffect(() => {
     // Typescript don't accept the conversion between DOM event and React event
