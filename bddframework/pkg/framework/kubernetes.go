@@ -73,6 +73,19 @@ func WaitForPodsWithLabel(namespace, labelName, labelValue string, numberOfPods,
 		}, CheckPodsWithLabelInError(namespace, labelName, labelValue))
 }
 
+// WaitForPodsWithLabels waits for pods with specific label to be available and running
+func WaitForPodsWithLabels(namespace string, labels map[string]string, numberOfPods, timeoutInMin int) error {
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("%d Pods with labels '%v' available and running", numberOfPods, labels), timeoutInMin,
+		func() (bool, error) {
+			pods, err := GetPodsWithLabels(namespace, labels)
+			if err != nil || (len(pods.Items) != numberOfPods) {
+				return false, err
+			}
+
+			return CheckPodsAreReady(pods), nil
+		}, CheckPodsWithLabelsInError(namespace, labels))
+}
+
 // WaitForPodsInNamespace waits for pods in specific namespace to be available and running
 func WaitForPodsInNamespace(namespace string, numberOfPods, timeoutInMin int) error {
 	return WaitForOnOpenshift(namespace, "Pods in namespace available and running", timeoutInMin,
@@ -404,6 +417,18 @@ func CheckPodsByDeploymentInError(namespace string, dName string) func() (bool, 
 func CheckPodsWithLabelInError(namespace, labelName, labelValue string) func() (bool, error) {
 	return func() (bool, error) {
 		pods, err := GetPodsWithLabels(namespace, map[string]string{labelName: labelValue})
+		if err != nil {
+			return true, err
+
+		}
+		return checkPodsInError(pods.Items)
+	}
+}
+
+// CheckPodsWithLabelsInError returns a function that checks the pods error state.
+func CheckPodsWithLabelsInError(namespace string, labels map[string]string) func() (bool, error) {
+	return func() (bool, error) {
+		pods, err := GetPodsWithLabels(namespace, labels)
 		if err != nil {
 			return true, err
 

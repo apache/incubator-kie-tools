@@ -154,3 +154,11 @@ func IsInfinispanAvailable(namespace string) bool {
 	}
 	return infrastructure.NewInfinispanHandler(context).IsInfinispanAvailable()
 }
+
+// GetRunningInfinispanPodLabels returns the labels set to infinispan pod instances
+func GetRunningInfinispanPodLabels(crName string) map[string]string {
+	return map[string]string{
+		"app":           "infinispan-pod",
+		"infinispan_cr": crName,
+	}
+}

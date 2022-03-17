@@ -56,7 +56,7 @@ func (data *Data) infinispanOperatorIsDeployed() error {
 }
 
 func (data *Data) infinispanInstanceHasPodsRunningWithinMinutes(name string, numberOfPods, timeOutInMin int) error {
-	return framework.WaitForPodsWithLabel(data.Namespace, "infinispan_cr", name, numberOfPods, timeOutInMin)
+	return framework.WaitForPodsWithLabels(data.Namespace, framework.GetRunningInfinispanPodLabels(name), numberOfPods, timeOutInMin)
 }
 
 func (data *Data) infinispanInstanceIsDeployedWithConfiguration(name string, table *godog.Table) error {
@@ -70,7 +70,7 @@ func (data *Data) infinispanInstanceIsDeployedWithConfiguration(name string, tab
 		return err
 	}
 
-	return framework.WaitForPodsWithLabel(data.Namespace, "app", "infinispan-pod", 1, 3)
+	return framework.WaitForPodsWithLabels(data.Namespace, framework.GetRunningInfinispanPodLabels(name), 1, 3)
 }
 
 func (data *Data) infinispanInstanceIsDeployedForPerformanceWithinMinutesWithConfiguration(name string, timeOutInMin int, table *godog.Table) error {
@@ -94,7 +94,7 @@ func (data *Data) scaleInfinispanInstanceToPodsWithinMinutes(name string, nbPods
 	if err != nil {
 		return err
 	}
-	return framework.WaitForPodsWithLabel(data.Namespace, "infinispan_cr", name, nbPods, timeoutInMin)
+	return framework.WaitForPodsWithLabels(data.Namespace, framework.GetRunningInfinispanPodLabels(name), nbPods, timeoutInMin)
 }
 
 // Misc methods
