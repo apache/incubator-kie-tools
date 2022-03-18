@@ -19,7 +19,7 @@
 
 <module>
     <inherits name="org.jboss.errai.ioc.Container"/>
-    <inherits name="javax.enterprise.Support"/>javax.interceptor.InterceptorBinding
+    <inherits name="javax.enterprise.Support"/>
     <inherits name="org.jboss.errai.enterprise.CDIShared"/>
 
     <entry-point class='org.jboss.errai.enterprise.client.cdi.CDIClientBootstrap'/>

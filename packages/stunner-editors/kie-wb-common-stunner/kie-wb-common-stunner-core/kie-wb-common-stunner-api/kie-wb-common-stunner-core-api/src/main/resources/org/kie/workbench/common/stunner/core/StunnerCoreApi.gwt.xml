@@ -22,6 +22,7 @@
   <inherits name="org.uberfire.UberfireAPI"/>
 
   <inherits name="org.jboss.errai.common.ErraiCommon"/>
+  <inherits name="org.jboss.errai.databinding.DataBinding"/>
 
   <source path="api"/>
   <source path="command"/>
